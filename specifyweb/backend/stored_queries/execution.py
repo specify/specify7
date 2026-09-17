@@ -5,7 +5,7 @@ import os
 import re
 import traceback
 
-from typing import Callable, Literal, NamedTuple
+from typing import Callable, Literal, NamedTuple, Iterable
 import xml.dom.minidom
 from collections import namedtuple, defaultdict
 from functools import reduce
@@ -26,9 +26,9 @@ from specifyweb.backend.trees.utils import get_search_filters
 from . import models
 from .format import ObjectFormatter, ObjectFormatterProps
 from .query_construct import QueryConstruct
-from .relative_date_utils import apply_absolute_date
-from .field_spec_maps import apply_specify_user_name
+from .field_spec_maps import transform_field_specs
 from .web_portal_export import query_to_web_portal_zip as _query_to_web_portal_zip, WebportalQueryResultProcessors
+from specifyweb.backend.stored_queries.queryfield import QueryField
 from specifyweb.backend.notifications.models import Message
 from specifyweb.backend.permissions.permissions import check_table_permissions
 from specifyweb.specify.models import Loan, Loanpreparation, Loanreturnpreparation, Taxontreedef
@@ -82,17 +82,17 @@ def set_group_concat_max_len(connection):
     """
     connection.execute("SET group_concat_max_len = 1024 * 1024 * 1024")
 
-def _pick_synonymy_table(field_specs, base_table):
+def _pick_synonymy_table(query_fields: list[QueryField], base_table):
     if base_table is not None and is_tree_table(base_table):
         return base_table
 
-    for field_spec in field_specs:
-        if field_spec.fieldspec.contains_tree_rank():
-            return field_spec.fieldspec.table
+    for query_field in query_fields:
+        if query_field.fieldspec.contains_tree_rank():
+            return query_field.fieldspec.table
 
-    for field_spec in field_specs:
-        if is_tree_table(field_spec.fieldspec.table):
-            return field_spec.fieldspec.table
+    for query_field in query_fields:
+        if is_tree_table(query_field.fieldspec.table):
+            return query_field.fieldspec.table
 
     return None
 
@@ -327,14 +327,14 @@ def query_to_web_portal_zip(
         collection=collection,
         user=user,
         tableid=tableid,
-        field_specs=field_specs,
+        query_fields=field_specs,
         props=BuildQueryProps(recordsetid=recordsetid, replace_nulls=True, distinct=distinct),
     )
 
     processors = [
         *DefaultQueryProcessors(
             tableid=tableid,
-            field_specs=field_specs,
+            query_fields=field_specs,
             collection=collection,
             user=user
         ),
@@ -414,7 +414,7 @@ def query_to_csv(
         query=query,
         processors=DefaultQueryProcessors(
             tableid=tableid,
-            field_specs=field_specs,
+            query_fields=field_specs,
             collection=collection,
             user=user
         )
@@ -492,7 +492,7 @@ def query_to_kml(
         query=query,
         processors=DefaultQueryProcessors(
             tableid=tableid,
-            field_specs=field_specs,
+            query_fields=field_specs,
             collection=collection,
             user=user
         )
@@ -695,7 +695,7 @@ def run_ephemeral_query(collection, user, spquery):
             series=series,
             search_synonymy=search_synonymy,
             count_only=count_only,
-            field_specs=field_specs,
+            query_fields=field_specs,
             limit=limit,
             offset=offset,
             recordsetid=recordsetid,
@@ -853,12 +853,12 @@ def execute(
     session,
     collection,
     user,
-    tableid,
-    distinct,
-    series,
-    search_synonymy,
-    count_only,
-    field_specs,
+    tableid: int,
+    distinct: bool,
+    series: bool,
+    search_synonymy: bool,
+    count_only: bool,
+    query_fields: Iterable[QueryField],
     limit,
     offset,
     recordsetid=None,
@@ -876,7 +876,7 @@ def execute(
         collection,
         user,
         tableid,
-        field_specs,
+        query_fields,
         BuildQueryProps(
             recordsetid=recordsetid,
             formatauditobjs=formatauditobjs,
@@ -887,12 +887,14 @@ def execute(
         ),
     )
 
+    log_sqlalchemy_query(query)
+
     if count_only:
         if series:
             cat_num_sort_type = 0
-            for field_spec in field_specs:
-                if field_spec.fieldspec.get_field() and field_spec.fieldspec.get_field().name.lower() == 'catalognumber':
-                    cat_num_sort_type = field_spec.sort_type
+            for query_field in query_fields:
+                if query_field.fieldspec.get_field() and query_field.fieldspec.get_field().name.lower() == 'catalognumber':
+                    cat_num_sort_type = query_field.sort_type
                     break
             return {'count': len(series_post_query(query, limit=SERIES_MAX_ROWS, offset=0, sort_type=cat_num_sort_type, is_count=True))}
         else:
@@ -901,10 +903,10 @@ def execute(
         cat_num_col_id = None
         cat_num_sort_type = None
         idx = 0
-        for field_spec in field_specs:
-            if field_spec.fieldspec.get_field() and field_spec.fieldspec.get_field().name.lower() == 'catalognumber':
+        for query_field in query_fields:
+            if query_field.fieldspec.get_field() and query_field.fieldspec.get_field().name.lower() == 'catalognumber':
                 cat_num_col_id = idx
-                cat_num_sort_type = field_spec.sort_type
+                cat_num_sort_type = query_field.sort_type
                 break
             idx += 1
         is_valid_series_query = series and \
@@ -928,17 +930,12 @@ def execute(
         if limit:
             query = query.limit(limit)
 
-        log_sqlalchemy_query(query)
-
-
-        log_sqlalchemy_query(query) # Debugging
-
         results = list(
             apply_special_post_query_processing(
                 query=query,
                 processors=DefaultQueryProcessors(
                     tableid=tableid,
-                    field_specs=field_specs,
+                    query_fields=query_fields,
                     collection=collection,
                     user=user
                 )
@@ -950,8 +947,8 @@ def build_query(
     session,
     collection,
     user,
-    tableid,
-    field_specs,
+    tableid: int,
+    query_fields: Iterable[QueryField],
     props: BuildQueryProps = BuildQueryProps(),
 ):
     """Build a sqlalchemy query using the QueryField objects given by
@@ -990,8 +987,7 @@ def build_query(
     id_field = model._id
     catalog_number_field = model.catalogNumber if hasattr(model, 'catalogNumber') else None
 
-    field_specs = [apply_absolute_date(field_spec) for field_spec in field_specs]
-    field_specs = [apply_specify_user_name(field_spec, user) for field_spec in field_specs]
+    query_fields = list(transform_field_specs(query_fields, user))
 
     query_construct_query = session.query(id_field)
     if props.series and catalog_number_field:
@@ -1023,9 +1019,9 @@ def build_query(
 
     tables_to_read = {
             table
-            for fs in field_specs
+            for field in query_fields
             for table in query.tables_in_path(
-                fs.fieldspec.root_table, fs.fieldspec.join_path
+                field.fieldspec.root_table, field.fieldspec.join_path
             )
     }
 
@@ -1071,17 +1067,15 @@ def build_query(
     order_by_exprs = []
     selected_fields = []
     predicates_by_field = defaultdict(list)
-    # augment_field_specs(field_specs, formatauditobjs)
-    for fs in field_specs:
-        # sort_type = SORT_TYPES[fs.sort_type]
-        sort_type = QuerySort.by_id(fs.sort_type)
+    for query_field in query_fields:
+        sort_type = QuerySort.by_id(query_field.sort_type)
 
-        if props.series and fs.fieldspec.get_field() and fs.fieldspec.get_field().name.lower() == 'catalognumber':
-            _, _, predicate = fs.add_to_query(query, formatauditobjs=props.formatauditobjs)
-            predicates_by_field[fs.fieldspec].append(predicate) if predicate is not None else None
+        if props.series and query_field.fieldspec.get_field() and query_field.fieldspec.get_field().name.lower() == 'catalognumber':
+            _, _, predicate = query_field.add_to_query(query, formatauditobjs=props.formatauditobjs)
+            predicates_by_field[query_field.fieldspec].append(predicate) if predicate is not None else None
             continue
 
-        query, field, predicate = fs.add_to_query(
+        query, field, predicate = query_field.add_to_query(
             query, formatauditobjs=props.formatauditobjs, collection=collection, user=user
         )
 
@@ -1089,8 +1083,8 @@ def build_query(
             continue
 
         formatted_field = None
-        if fs.display:
-            formatted_field = query.objectformatter.fieldformat(fs, field)
+        if query_field.display:
+            formatted_field = query.objectformatter.fieldformat(query_field, field)
             query = query.add_columns(formatted_field)
             selected_fields.append(formatted_field)
         
@@ -1102,7 +1096,7 @@ def build_query(
             order_by_exprs.append(sort_type(field))
 
         if predicate is not None:
-            predicates_by_field[fs.fieldspec].append(predicate)
+            predicates_by_field[query_field.fieldspec].append(predicate)
 
     if props.implicit_or:
         implicit_ors = [
@@ -1122,26 +1116,22 @@ def build_query(
         query = group_by_displayed_fields(query, selected_fields)
     
     if props.search_synonymy:
-        synonymy_table = _pick_synonymy_table(field_specs, base_table)
+        synonymy_table = _pick_synonymy_table(query_fields, base_table)
         if synonymy_table is None:
             logger.info("search_synonymy requested but no tree table found... skipping")
         else:
-            log_sqlalchemy_query(query.query)
             synonymized_query = synonymize_tree_query(query.query, synonymy_table)
             query = query._replace(query=synonymized_query)
 
     internal_predicate = query.get_internal_filters()
     query = query.filter(internal_predicate)
 
-    logger.debug("query: %s", query.query)
     return query.query, order_by_exprs
 
 def series_post_query(query, limit=40, offset=0, sort_type=0, co_id_cat_num_pair_col_index=0, is_count=False):
     """Transform the query results by removing the co_id:catnum pair column
     and adding a co_id colum and formatted catnum range column.
     Sort the results by the first catnum in the range."""
-
-    log_sqlalchemy_query(query)
 
     def parse_catalog_for_comparing(s):
         def check_for_decimal(s):

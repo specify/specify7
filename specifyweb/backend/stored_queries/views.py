@@ -103,7 +103,7 @@ def query(request, id):
             series=series,
             search_synonymy=search_synonymy,
             count_only=count_only, 
-            field_specs=field_specs, 
+            query_fields=field_specs,
             limit=limit, 
             offset=offset
         )

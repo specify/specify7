@@ -1017,7 +1017,7 @@ def run_batch_edit_query(props: BatchEditProps):
             series=False,
             search_synonymy=False,
             count_only=False,
-            field_specs=query_with_hidden,
+            query_fields=query_with_hidden,
             limit=limit,
             offset=offset,
             recordsetid=recordsetid,
