@@ -276,6 +276,6 @@ FROM run-common AS run
 
 RUN mv specifyweb.wsgi specifyweb_wsgi.py
 
-CMD ["ve/bin/gunicorn", "-w", "3", "-b", "0.0.0.0:8000", "-t", "300", "specifyweb_wsgi"]
+CMD ["ve/bin/gunicorn", "--worker-class", "gthread", "-w", "1", "--threads", "5", "-b", "0.0.0.0:8000", "-t", "300", "--max-requests", "500", "--max-requests-jitter", "50", "specifyweb_wsgi"]
 
 
