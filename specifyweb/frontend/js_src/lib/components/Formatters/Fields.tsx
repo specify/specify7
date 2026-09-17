@@ -276,7 +276,10 @@ function FieldFormat({
     : [format, ''];
   const updateFormat = (newPrefix: string, newSuffix: string): void => {
     const format = `${newPrefix}${substitution}${newSuffix}`;
-    handleChange({ ...field, format: format === '%s' ? undefined : format });
+    handleChange({
+      ...field,
+      format: format === '%s' ? undefined : localized(format),
+    });
   };
 
   return (

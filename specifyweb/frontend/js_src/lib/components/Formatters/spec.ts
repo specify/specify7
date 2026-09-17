@@ -122,7 +122,7 @@ const fieldSpec = (table: SpecifyTable | undefined) =>
     ),
     aggregator: syncers.xmlAttribute('aggregator', 'skip'),
     formatter: syncers.xmlAttribute('formatter', 'skip'),
-    format: syncers.xmlAttribute('format', 'skip'),
+    format: syncers.xmlAttribute('format', 'skip', false),
     fieldFormatter: syncers.xmlAttribute('uiFieldFormatter', 'skip'),
     field: pipe(syncers.xmlContent, syncers.field(table?.name)),
     trimZeros: pipe(
