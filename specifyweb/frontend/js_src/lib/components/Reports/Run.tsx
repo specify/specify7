@@ -44,7 +44,7 @@ export function RunReport({
     <form
       action="/report_runner/run/"
       className="hidden"
-      method="post"
+      method="POST"
       ref={setForm}
       target={reportWindowContext}
     >
