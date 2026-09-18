@@ -91,7 +91,7 @@ def query(request, id):
         tableid = sp_query.contextTableId
         count_only = sp_query.countOnly
 
-        field_specs = [QueryField.from_spqueryfield(field, value_from_request(field, request.GET))
+        query_fields = [QueryField.from_spqueryfield(field, value_from_request(field, request.GET))
                        for field in sorted(sp_query.fields, key=lambda field: field.position)]
 
         data = execute(
@@ -103,7 +103,7 @@ def query(request, id):
             series=series,
             search_synonymy=search_synonymy,
             count_only=count_only, 
-            query_fields=field_specs,
+            query_fields=query_fields,
             limit=limit, 
             offset=offset
         )

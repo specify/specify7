@@ -686,7 +686,7 @@ def run_ephemeral_query(collection, user, spquery):
     format_audits = spquery.get("formatauditrecids", False)
 
     with models.session_context() as session:
-        field_specs = fields_from_json(spquery["fields"])
+        query_fields = fields_from_json(spquery["fields"])
         return execute(
             session=session,
             collection=collection,
@@ -696,7 +696,7 @@ def run_ephemeral_query(collection, user, spquery):
             series=series,
             search_synonymy=search_synonymy,
             count_only=count_only,
-            query_fields=field_specs,
+            query_fields=query_fields,
             limit=limit,
             offset=offset,
             recordsetid=recordsetid,
@@ -859,7 +859,7 @@ def execute(
     series: bool,
     search_synonymy: bool,
     count_only: bool,
-    query_fields: Iterable[QueryField],
+    query_fields: list[QueryField],
     limit,
     offset,
     recordsetid=None,
