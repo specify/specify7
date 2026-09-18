@@ -40,6 +40,20 @@ class CollectingEventTests(ApiTests):
             fetched_event.collectingtrip.collectingtripname,
             "Existing Collecting Trip")
 
+    def test_add_paleocontext_to_collectingevent(self):
+        paleocontext = models.Paleocontext.objects.create(
+            paleocontextname="Somewhere",
+            discipline=self.discipline)
+
+        ce = models.Collectingevent.objects.create(
+            discipline=self.discipline,
+            paleocontext=paleocontext)
+
+        fetched_event = models.Collectingevent.objects.get(id=ce.id)
+        self.assertEqual(fetched_event.paleocontext, paleocontext)
+        self.assertEqual(fetched_event.paleocontext.paleocontextname, "Somewhere")
+
+
     def test_collectionobjects_block_delete(self):
         ce = models.Collectingevent.objects.create(
             discipline=self.discipline)
