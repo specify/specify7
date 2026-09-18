@@ -319,6 +319,49 @@ class BorrowTests(ApiTests):
             self.discipline,
         )
 
+    def test_create_new_shipped_to_agent(self):
+        new_agent = models.Agent.objects.create(
+            agenttype=0,
+            firstname='New',
+            lastname='Shipped To Agent',
+            division=self.division,
+        )
+
+        borrow = models.Borrow.objects.create(
+            collectionmemberid=self.collection.id,
+            invoicenumber='BORROW-NEW-SHIPPED-TO-001',
+        )
+
+        shipment = borrow.shipments.create(
+            shipmentnumber='BORROW-NEW-SHIPPED-TO-001',
+            shippedto=new_agent,
+            discipline=self.discipline,
+        )
+
+        fetched_shipment = models.Shipment.objects.get(
+            id=shipment.id,
+        )
+
+        self.assertEqual(
+            fetched_shipment.borrow,
+            borrow,
+        )
+        self.assertEqual(
+            fetched_shipment.shippedto,
+            new_agent,
+        )
+        self.assertEqual(
+            fetched_shipment.shippedto.firstname,
+            'New',
+        )
+        self.assertEqual(
+            fetched_shipment.shippedto.lastname,
+            'Shipped To Agent',
+        )
+        self.assertEqual(
+            fetched_shipment.discipline,
+            self.discipline,
+        )
 
 
 
