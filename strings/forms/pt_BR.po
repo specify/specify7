@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-09-15 16:52+0000\n"
+"PO-Revision-Date: 2026-09-18 23:51+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/forms/pt_BR/>\n"
@@ -643,8 +643,8 @@ msgstr "Mostrar intervalo de transferência de peso"
 #, fuzzy
 msgid "bulkCarryForwardRangeErrorDescription"
 msgstr ""
-"Não é possível prosseguir com o registro através do intervalo especificado "
-"{field:string}."
+"Não é possível prosseguir com o registro através do intervalo {field:string} "
+"especificado."
 
 #. Used in: Components > Forms > Bulk Carry Forward
 #: components/Forms/BulkCarryForward.tsx:303
@@ -810,7 +810,7 @@ msgstr "Grade"
 #: components/FormMeta/index.tsx:199
 #, fuzzy
 msgid "subviewConfiguration"
-msgstr "Subvisualização"
+msgstr "Subvista"
 
 #. Used in: Components > Form Meta > Read Only Mode ⬤ Components > Header > User Tools
 #: components/FormMeta/ReadOnlyMode.tsx:20
@@ -823,7 +823,7 @@ msgstr "Desativar o modo somente leitura"
 #: components/FormMeta/ReadOnlyMode.tsx:20
 #, fuzzy
 msgid "enableReadOnly"
-msgstr "Ativar modo somente leitura"
+msgstr "Ativar o modo somente leitura"
 
 #. Used in: Components > Data Entry Tables > Edit
 #: components/DataEntryTables/Edit.tsx:75
