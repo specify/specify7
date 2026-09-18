@@ -38,6 +38,7 @@ from specifyweb.backend.stored_queries.queryfield import fields_from_json, QUREY
 from specifyweb.backend.stored_queries.synonomy import synonymize_tree_query
 
 from specifyweb.specify.datamodel import datamodel, is_tree_table
+from specifyweb.specify.models_utils.load_datamodel import Table
 
 logger = logging.getLogger(__name__)
 
@@ -943,6 +944,163 @@ def execute(
         )
         return {"results": results}
 
+
+# REFACTOR: Clean up this and the other QueryConstruct functions
+def build_query_construct_base(
+    session,
+    collection,
+    user,
+    id_field,
+    props: BuildQueryProps,
+    catalognumber_field = None
+):
+    query_construct_query = session.query(id_field)
+    if props.series and catalognumber_field:
+        query_construct_query = session.query(
+            func.group_concat(
+                func.concat(
+                    id_field,
+                    ':',
+                    catalognumber_field
+                ),
+                separator='|'
+            ).label('co_id_catnum_paired_values')
+        )
+    elif props.distinct:
+        query_construct_query = session.query(
+            func.group_concat(id_field.distinct(), separator=','))
+    else:
+        query_construct_query = session.query(id_field)
+
+    query = QueryConstruct(
+        collection=collection,
+        objectformatter=ObjectFormatter(
+            collection,
+            user,
+            props.replace_nulls,
+            props=props.formatter_props,
+        ),
+        query=query_construct_query
+    )
+    return query
+
+# REFACTOR: Clean up this and the other QueryConstruct functions
+def filter_query_by_recordset(
+    session,
+    collection,
+    query: QueryConstruct,
+    id_field: int,
+    tableid: int,
+    recordsetid: int
+):
+    recordset = session.query(models.RecordSet).get(recordsetid)
+    if recordset is None:
+        raise AssertionError(
+            f"Unexpected recordset id '{recordsetid}' in request. Recordset not found.",
+            {
+                "recordsetId": recordsetid,
+                "localizationKey": "unexpectedRecordsetId",
+            },
+        )
+    if recordset.collectionMemberId != collection.id:
+        raise AssertionError(
+            f"Unexpected recordset id '{recordsetid}' in request. Recordset is not in collection '{collection.id}'.",
+            {
+                "recordsetId": recordsetid,
+                "collectionId": collection.id,
+                "expectedCollectionId": recordset.collectionMemberId,
+                "localizationKey": "unexpectedRecordsetCollection",
+            },
+        )
+    if recordset.dbTableId != tableid:
+        raise AssertionError(
+            f"Unexpected tableId '{tableid}' in request. Expected '{recordset.dbTableId}'",
+            {
+                "tableId": tableid,
+                "expectedTableId": recordset.dbTableId,
+                "localizationKey": "unexpectedTableId",
+            },
+        )
+    return query.join(
+        models.RecordSetItem, models.RecordSetItem.recordId == id_field
+    ).filter(models.RecordSetItem.recordSet == recordset)
+
+# REFACTOR: Clean up this and the other QueryConstruct functions
+def apply_where_condition_to_query(
+    query: QueryConstruct,
+    predicates_by_fieldspec,
+    use_implicit_ors: bool = True
+):
+    if use_implicit_ors:
+        implicit_ors = [
+            reduce(sql.or_, ps) for ps in predicates_by_fieldspec.values() if ps
+        ]
+
+        if implicit_ors:
+            where = reduce(sql.and_, implicit_ors)
+            query = query.filter(where)
+    else:
+        where = reduce(sql.and_, (p for ps in predicates_by_fieldspec.values() for p in ps))
+        query = query.filter(where)
+    return query
+
+# REFACTOR: Clean up this and the other QueryConstruct functions
+def add_fields_to_query(
+    collection,
+    user,
+    query: QueryConstruct,
+    query_fields: list[QueryField],
+    series: bool = False,
+    formatauditobjs: bool = False,
+    use_implicit_ors: bool = True
+):
+    order_by_exprs = []
+    selected_fields = []
+    predicates_by_fieldspec = defaultdict(list)
+    for query_field in query_fields:
+        sort_type = QuerySort.by_id(query_field.sort_type)
+
+        if series and query_field.fieldspec.get_field() and query_field.fieldspec.get_field().name.lower() == 'catalognumber':
+            _, _, predicate = query_field.add_to_query(query, formatauditobjs=formatauditobjs)
+            predicates_by_fieldspec[query_field.fieldspec].append(predicate) if predicate is not None else None
+            continue
+
+        query, field, predicate = query_field.add_to_query(
+            query, formatauditobjs=formatauditobjs, collection=collection, user=user
+        )
+
+        if field is None:
+            continue
+
+        formatted_field = None
+        if query_field.display:
+            formatted_field = query.objectformatter.fieldformat(query_field, field)
+            query = query.add_columns(formatted_field)
+            selected_fields.append(formatted_field)
+
+
+        if sort_type is not None:
+            order_by_exprs.append(sort_type(field))
+
+        if predicate is not None:
+            predicates_by_fieldspec[query_field.fieldspec].append(predicate)
+    query = apply_where_condition_to_query(query, predicates_by_fieldspec, use_implicit_ors)
+    return query, selected_fields, order_by_exprs
+
+# REFACTOR: Clean up this and the other QueryConstruct functions
+def search_on_synonyms(
+    query: QueryConstruct,
+    query_fields: list[QueryField],
+    base_table: Table,
+):
+    synonymy_table = _pick_synonymy_table(query_fields, base_table)
+    if synonymy_table is None:
+        logger.info("search_synonymy requested but no tree table found... skipping")
+    else:
+        synonymized_query = synonymize_tree_query(query.query, synonymy_table)
+        query = query._replace(query=synonymized_query)
+    return query
+
 def build_query(
     session,
     collection,
@@ -983,39 +1141,19 @@ def build_query(
     search_synonymy = if True, search synonym nodes as well, and return all record IDs associated with parent node
     """
     model = models.models_by_tableid[tableid]
-    base_table = datamodel.get_table_by_id(tableid, strict=True)
     id_field = model._id
-    catalog_number_field = model.catalogNumber if hasattr(model, 'catalogNumber') else None
+    query = build_query_construct_base(
+        session=session,
+        collection=collection,
+        user=user,
+        id_field=id_field,
+        props=props,
+        catalognumber_field=(
+            model.catalogNumber if hasattr(model, 'catalogNumber') else None
+        )
+    )
 
     query_fields = list(transform_field_specs(query_fields, user))
-
-    query_construct_query = session.query(id_field)
-    if props.series and catalog_number_field:
-        query_construct_query = session.query(
-            func.group_concat(
-                func.concat(
-                    id_field,
-                    ':',
-                    catalog_number_field
-                ),
-                separator='|'
-            ).label('co_id_catnum_paired_values')
-        )
-    elif props.distinct:
-        query_construct_query = session.query(func.group_concat(id_field.distinct(), separator=','))
-    else:
-        query_construct_query = session.query(id_field)
-    
-    query = QueryConstruct(
-        collection=collection,
-        objectformatter=ObjectFormatter(
-            collection,
-            user,
-            props.replace_nulls,
-            props=props.formatter_props,
-        ),
-        query=query_construct_query
-    )
 
     tables_to_read = {
             table
@@ -1032,96 +1170,32 @@ def build_query(
 
     if props.recordsetid is not None:
         logger.debug("joining query to recordset: %s", props.recordsetid)
-        recordset = session.query(models.RecordSet).get(props.recordsetid)
-        if recordset is None:
-            raise AssertionError(
-                f"Unexpected recordset id '{props.recordsetid}' in request. Recordset not found.",
-                {
-                    "recordsetId": props.recordsetid,
-                    "localizationKey": "unexpectedRecordsetId",
-                },
-            )
-        if recordset.collectionMemberId != collection.id:
-            raise AssertionError(
-                f"Unexpected recordset id '{props.recordsetid}' in request. Recordset is not in collection '{collection.id}'.",
-                {
-                    "recordsetId": props.recordsetid,
-                    "collectionId": collection.id,
-                    "expectedCollectionId": recordset.collectionMemberId,
-                    "localizationKey": "unexpectedRecordsetCollection",
-                },
-            )
-        if recordset.dbTableId != tableid:
-            raise AssertionError(
-                f"Unexpected tableId '{tableid}' in request. Expected '{recordset.dbTableId}'",
-                {
-                    "tableId": tableid,
-                    "expectedTableId": recordset.dbTableId,
-                    "localizationKey": "unexpectedTableId",
-                },
-            )
-        query = query.join(
-            models.RecordSetItem, models.RecordSetItem.recordId == id_field
-        ).filter(models.RecordSetItem.recordSet == recordset)
-
-    order_by_exprs = []
-    selected_fields = []
-    predicates_by_field = defaultdict(list)
-    for query_field in query_fields:
-        sort_type = QuerySort.by_id(query_field.sort_type)
-
-        if props.series and query_field.fieldspec.get_field() and query_field.fieldspec.get_field().name.lower() == 'catalognumber':
-            _, _, predicate = query_field.add_to_query(query, formatauditobjs=props.formatauditobjs)
-            predicates_by_field[query_field.fieldspec].append(predicate) if predicate is not None else None
-            continue
-
-        query, field, predicate = query_field.add_to_query(
-            query, formatauditobjs=props.formatauditobjs, collection=collection, user=user
+        query = filter_query_by_recordset(
+            session=session,
+            collection=collection,
+            query=query,
+            id_field=id_field,
+            tableid=tableid,
+            recordsetid=props.recordsetid
         )
 
-        if field is None:
-            continue
-
-        formatted_field = None
-        if query_field.display:
-            formatted_field = query.objectformatter.fieldformat(query_field, field)
-            query = query.add_columns(formatted_field)
-            selected_fields.append(formatted_field)
-        
-        if hasattr(field, 'key') and field.key and field.key.lower() == 'catalognumber':
-            catalog_number_field = formatted_field
-
-
-        if sort_type is not None:
-            order_by_exprs.append(sort_type(field))
-
-        if predicate is not None:
-            predicates_by_field[query_field.fieldspec].append(predicate)
-
-    if props.implicit_or:
-        implicit_ors = [
-            reduce(sql.or_, ps) for ps in predicates_by_field.values() if ps
-        ]
-
-        if implicit_ors:
-            where = reduce(sql.and_, implicit_ors)
-            query = query.filter(where)
-    else:
-        where = reduce(sql.and_, (p for ps in predicates_by_field.values() for p in ps))
-        query = query.filter(where)
+    query, selected_fields, order_by_exprs = add_fields_to_query(
+        collection=collection,
+        user=user,
+        query=query,
+        query_fields=query_fields,
+        series=props.series,
+        formatauditobjs=props.formatauditobjs
+    )
 
     if props.series:
         query = group_by_displayed_fields(query, selected_fields, ignore_cat_num=True)
     elif props.distinct:
         query = group_by_displayed_fields(query, selected_fields)
-    
+
     if props.search_synonymy:
-        synonymy_table = _pick_synonymy_table(query_fields, base_table)
-        if synonymy_table is None:
-            logger.info("search_synonymy requested but no tree table found... skipping")
-        else:
-            synonymized_query = synonymize_tree_query(query.query, synonymy_table)
-            query = query._replace(query=synonymized_query)
+        base_table = datamodel.get_table_by_id_strict(tableid)
+        query = search_on_synonyms(query, query_fields, base_table)
 
     internal_predicate = query.get_internal_filters()
     query = query.filter(internal_predicate)
