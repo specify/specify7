@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-09-15 16:53+0000\n"
+"PO-Revision-Date: 2026-09-18 23:51+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Croatian <https://hosted.weblate.org/projects/specify-7/forms/"
 "hr/>\n"
@@ -577,7 +577,7 @@ msgstr "Prenesi dalje"
 #: components/FormMeta/CarryForward.tsx:121
 #, fuzzy
 msgid "carryForwardEnabled"
-msgstr "Prikaži gumb za prijenos naprijed"
+msgstr "Prikaži gumb za prenošenje naprijed"
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:201
@@ -891,4 +891,4 @@ msgstr "Broj kataloga Numerički"
 #: components/FormCells/COJODialog.tsx:94
 #, fuzzy
 msgid "addCOGChildren"
-msgstr "Dodajte COG djecu"
+msgstr "Dodajte djecu COG-a"
