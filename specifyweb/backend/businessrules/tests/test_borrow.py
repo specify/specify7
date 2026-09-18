@@ -363,6 +363,83 @@ class BorrowTests(ApiTests):
             self.discipline,
         )
 
+    def test_add_borrow_material_with_all_fields(self):
+        borrow = models.Borrow.objects.create(
+            collectionmemberid=self.collection.id,
+            invoicenumber='BORROW-MATERIAL-001',
+        )
+
+        borrow_material = borrow.borrowmaterials.create(
+            collectionmemberid=self.collection.id,
+            materialnumber='MATERIAL-001',
+            description='Borrow material description',
+            quantity=10,
+            quantityresolved=4,
+            quantityreturned=3,
+            incomments='Borrow material incoming comments',
+            outcomments='Borrow material outgoing comments',
+            text1='Borrow material text one',
+            text2='Borrow material text two',
+            createdbyagent=self.agent,
+            modifiedbyagent=self.agent,
+        )
+
+        fetched_material = models.Borrowmaterial.objects.get(
+            id=borrow_material.id,
+        )
+
+        self.assertEqual(
+            fetched_material.borrow,
+            borrow,
+        )
+        self.assertEqual(
+            fetched_material.collectionmemberid,
+            self.collection.id,
+        )
+        self.assertEqual(
+            fetched_material.materialnumber,
+            'MATERIAL-001',
+        )
+        self.assertEqual(
+            fetched_material.description,
+            'Borrow material description',
+        )
+        self.assertEqual(
+            fetched_material.quantity,
+            10,
+        )
+        self.assertEqual(
+            fetched_material.quantityresolved,
+            4,
+        )
+        self.assertEqual(
+            fetched_material.quantityreturned,
+            3,
+        )
+        self.assertEqual(
+            fetched_material.incomments,
+            'Borrow material incoming comments',
+        )
+        self.assertEqual(
+            fetched_material.outcomments,
+            'Borrow material outgoing comments',
+        )
+        self.assertEqual(
+            fetched_material.text1,
+            'Borrow material text one',
+        )
+        self.assertEqual(
+            fetched_material.text2,
+            'Borrow material text two',
+        )
+        self.assertEqual(
+            fetched_material.createdbyagent,
+            self.agent,
+        )
+        self.assertEqual(
+            fetched_material.modifiedbyagent,
+            self.agent,
+        )
 
 
 
