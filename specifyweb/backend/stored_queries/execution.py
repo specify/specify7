@@ -946,14 +946,18 @@ def execute(
 
 
 # REFACTOR: Clean up this and the other QueryConstruct functions
+# Make it easier to use for external callers (e.g., tests) and make sure it's
+# pure
+# Maybe add or merge these to QueryConstruct?
 def build_query_construct_base(
     session,
     collection,
     user,
-    id_field,
+    model,
     props: BuildQueryProps,
-    catalognumber_field = None
 ):
+    id_field = model._id
+    catalognumber_field = model.catalogNumber if hasattr(model, 'catalogNumber') else None
     query_construct_query = session.query(id_field)
     if props.series and catalognumber_field:
         query_construct_query = session.query(
@@ -985,6 +989,9 @@ def build_query_construct_base(
     return query
 
 # REFACTOR: Clean up this and the other QueryConstruct functions
+# Make it easier to use for external callers (e.g., tests) and make sure it's
+# pure
+# Maybe add or merge these to QueryConstruct?
 def filter_query_by_recordset(
     session,
     collection,
@@ -1026,6 +1033,8 @@ def filter_query_by_recordset(
     ).filter(models.RecordSetItem.recordSet == recordset)
 
 # REFACTOR: Clean up this and the other QueryConstruct functions
+# This could probably be folded into add_fields_to_query?
+# Though if possible/feasible, we can keep this separate to make testing easier
 def apply_where_condition_to_query(
     query: QueryConstruct,
     predicates_by_fieldspec,
@@ -1045,6 +1054,9 @@ def apply_where_condition_to_query(
     return query
 
 # REFACTOR: Clean up this and the other QueryConstruct functions
+# Make it easier to use for external callers (e.g., tests) and make sure it's
+# pure
+# Maybe add or merge these to QueryConstruct?
 def add_fields_to_query(
     collection,
     user,
@@ -1088,6 +1100,9 @@ def add_fields_to_query(
     return query, selected_fields, order_by_exprs
 
 # REFACTOR: Clean up this and the other QueryConstruct functions
+# Make it easier to use for external callers (e.g., tests) and make sure it's
+# pure
+# Maybe add or merge these to QueryConstruct?
 def search_on_synonyms(
     query: QueryConstruct,
     query_fields: list[QueryField],
@@ -1146,11 +1161,8 @@ def build_query(
         session=session,
         collection=collection,
         user=user,
-        id_field=id_field,
+        model=model,
         props=props,
-        catalognumber_field=(
-            model.catalogNumber if hasattr(model, 'catalogNumber') else None
-        )
     )
 
     query_fields = list(transform_field_specs(query_fields, user))
