@@ -441,6 +441,105 @@ class BorrowTests(ApiTests):
             self.agent,
         )
 
+    def test_add_multiple_agents_materials_and_shipments(self):
+        borrow = models.Borrow.objects.create(
+            collectionmemberid=self.collection.id,
+            invoicenumber='BORROW-MULTIPLE-001',
+        )
+
+        second_agent = models.Agent.objects.create(
+            agenttype=0,
+            firstname='Second',
+            lastname='Borrow Agent',
+            division=self.division,
+        )
+
+        first_borrow_agent = borrow.borrowagents.create(
+            agent=self.agent,
+            collectionmemberid=self.collection.id,
+            role='Borrower',
+        )
+
+        second_borrow_agent = borrow.borrowagents.create(
+            agent=second_agent,
+            collectionmemberid=self.collection.id,
+            role='Borrower',
+        )
+
+        first_material = borrow.borrowmaterials.create(
+            collectionmemberid=self.collection.id,
+            materialnumber='MULTIPLE-MATERIAL-001',
+            description='First borrow material',
+            quantity=1,
+        )
+
+        second_material = borrow.borrowmaterials.create(
+            collectionmemberid=self.collection.id,
+            materialnumber='MULTIPLE-MATERIAL-002',
+            description='Second borrow material',
+            quantity=2,
+        )
+
+        first_shipment = borrow.shipments.create(
+            shipmentnumber='MULTIPLE-SHIPMENT-001',
+            shipmentmethod='Courier',
+            discipline=self.discipline,
+        )
+
+        second_shipment = borrow.shipments.create(
+            shipmentnumber='MULTIPLE-SHIPMENT-002',
+            shipmentmethod='Mail',
+            discipline=self.discipline,
+        )
+
+        fetched_borrow = models.Borrow.objects.get(
+            id=borrow.id,
+        )
+
+        self.assertEqual(
+            fetched_borrow.borrowagents.count(),
+            2,
+        )
+        self.assertEqual(
+            fetched_borrow.borrowmaterials.count(),
+            2,
+        )
+        self.assertEqual(
+            fetched_borrow.shipments.count(),
+            2,
+        )
+
+        self.assertTrue(
+            fetched_borrow.borrowagents.filter(
+                id=first_borrow_agent.id,
+            ).exists()
+        )
+        self.assertTrue(
+            fetched_borrow.borrowagents.filter(
+                id=second_borrow_agent.id,
+            ).exists()
+        )
+        self.assertTrue(
+            fetched_borrow.borrowmaterials.filter(
+                id=first_material.id,
+            ).exists()
+        )
+        self.assertTrue(
+            fetched_borrow.borrowmaterials.filter(
+                id=second_material.id,
+            ).exists()
+        )
+        self.assertTrue(
+            fetched_borrow.shipments.filter(
+                id=first_shipment.id,
+            ).exists()
+        )
+        self.assertTrue(
+            fetched_borrow.shipments.filter(
+                id=second_shipment.id,
+            ).exists()
+        )
+
 
 
     
