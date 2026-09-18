@@ -1197,7 +1197,8 @@ def build_query(
         query=query,
         query_fields=query_fields,
         series=props.series,
-        formatauditobjs=props.formatauditobjs
+        formatauditobjs=props.formatauditobjs,
+        use_implicit_ors=props.implicit_or
     )
 
     if props.series:
