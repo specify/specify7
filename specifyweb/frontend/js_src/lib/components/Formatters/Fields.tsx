@@ -74,7 +74,7 @@ export function Fields({
               <th>{resourcesText.separator()}</th>
               <th>{schemaText.field()}</th>
               <th>{resourcesText.displayFormat()}</th>
-              {displayFormatter && <th>{resourcesText.fieldFormat()}</th>}
+              {displayFormatter && <th>{schemaText.fieldFormat()}</th>}
               <th />
             </tr>
           </thead>

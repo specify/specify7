@@ -1005,17 +1005,6 @@ export const resourcesText = createDictionary({
     'hr-hr': 'Format prikaza',
     nb: 'Visningsformat',
   },
-  fieldFormat: {
-    'en-us': 'Field Format',
-    'de-ch': 'Feldformat',
-    'es-es': 'Formato de campo',
-    'fr-fr': 'Format de champ',
-    'ru-ru': 'Формат поля',
-    'uk-ua': 'Формат поля',
-    'pt-br': 'Formato do campo',
-    'hr-hr': 'Format polja',
-    nb: 'Feltformat',
-  },
   expandConditionalField: {
     'en-us': 'Expand Conditional Field',
     'de-ch': 'Bedingtes Feld erweitern',
