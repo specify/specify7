@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-09-15 16:51+0000\n"
+"PO-Revision-Date: 2026-09-18 23:51+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/forms/"
 "ru/>\n"
@@ -50,7 +50,7 @@ msgstr "Значения {values:string} должны быть уникальн�
 #: components/DataModel/uniquenessRules.ts:138
 #, fuzzy
 msgid "valuesOfMustBeUniqueToDatabase"
-msgstr "Значения {values:string} должны быть уникальными для базы данных."
+msgstr "Значения {values:string} должны быть уникальными для всей базы данных."
 
 #. Used in: Components > Forms > Delete Button
 #: components/Forms/DeleteButton.tsx:139
@@ -281,7 +281,7 @@ msgid "saveConflictDescription"
 msgstr ""
 "Данные, отображаемые на этой странице, были изменены другим пользователем "
 "или в другой вкладке браузера и устарели. Для предотвращения сохранения "
-"несогласованных данных необходимо перезагрузить страницу."
+"некорректных данных необходимо перезагрузить страницу."
 
 #. Used in: Components > Forms > Save
 #: components/Forms/Save.tsx:339
@@ -668,7 +668,7 @@ msgstr "Конец диапазона переноса"
 #: components/FormMeta/CarryForward.tsx:240
 #, fuzzy
 msgid "createRecordSetOnBulkCarryForward"
-msgstr "Создать набор записей в функции массового переноса."
+msgstr "Создание набора записей в рамках функции массового переноса."
 
 #. Used in: Components > Form Meta > Clone
 #: components/FormMeta/Clone.tsx:31
@@ -783,7 +783,7 @@ msgstr "Найти примеры использования"
 #: components/FormMeta/PickListUsages.tsx:68
 #, fuzzy
 msgid "usagesOfPickList"
-msgstr "Использование выпадающего списка \"{pickList:string}\""
+msgstr "Использование списка выбора \"{pickList:string}\""
 
 #. Used in: Components > Form Meta > Sub View Meta
 #: components/FormMeta/SubViewMeta.tsx:36

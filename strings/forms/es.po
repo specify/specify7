@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-09-15 16:51+0000\n"
+"PO-Revision-Date: 2026-09-18 23:51+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/forms/"
 "es/>\n"
@@ -264,7 +264,7 @@ msgstr "Guardar bloqueado"
 #: components/Forms/Save.tsx:342
 #, fuzzy
 msgid "saveBlockedDescription"
-msgstr "El formulario no se puede guardar debido al siguiente error:"
+msgstr "No se puede guardar el formulario debido al siguiente error:"
 
 #. Used in: Components > Form Commands > Index
 #: components/FormCommands/index.tsx:115
@@ -550,7 +550,7 @@ msgstr "Configurar los campos que se transferirán"
 #: components/FormMeta/CarryForward.tsx:225
 #, fuzzy
 msgid "bulkCarryForwardSettingsDescription"
-msgstr "Configure los campos para transferirlos masivamente."
+msgstr "Configure los campos para transferir masivamente."
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:394
