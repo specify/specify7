@@ -46,7 +46,6 @@ function buildWorkbench(
         key === 'isSearchResult' ? meta.isSearchResult === true : undefined,
       cellIsType: (meta: Cell | undefined, type: string) =>
         type === 'searchResults' && meta?.isSearchResult === true,
-      // Navigating away is out of scope here, so there is nothing to walk
       getCellMetaObject: () => [],
     },
   };
@@ -69,3 +68,73 @@ const buildUtils = (
   };
   return utils;
 };
+
+describe('replaceCells, replace all', () => {
+  test('replaces every editable cell that matched the search', () => {
+    const { workbench, setDataAtCell } = buildWorkbench([
+      [cell('old'), cell('old')],
+    ]);
+    buildUtils(workbench, 'replaceAll').replaceCells(enterKey, replacement);
+    expect(setDataAtCell).toHaveBeenCalledWith([
+      [0, 0, 'new'],
+      [0, 1, 'new'],
+    ]);
+  });
+
+  test('leaves read only cells alone', () => {
+    const { workbench, setDataAtCell } = buildWorkbench([
+      [cell('old'), cell('old', { readOnly: true })],
+    ]);
+    buildUtils(workbench, 'replaceAll').replaceCells(enterKey, replacement);
+    expect(setDataAtCell).toHaveBeenCalledWith([[0, 0, 'new']]);
+  });
+
+  test('replaces nothing when every match is read only', () => {
+    const { workbench, setDataAtCell } = buildWorkbench([
+      [cell('old', { readOnly: true }), cell('old', { readOnly: true })],
+    ]);
+    buildUtils(workbench, 'replaceAll').replaceCells(enterKey, replacement);
+    expect(setDataAtCell).toHaveBeenCalledWith([]);
+  });
+
+  test('skips cells that did not match the search', () => {
+    const { workbench, setDataAtCell } = buildWorkbench([
+      [cell('old'), cell('other', { isSearchResult: false })],
+    ]);
+    buildUtils(workbench, 'replaceAll').replaceCells(enterKey, replacement);
+    expect(setDataAtCell).toHaveBeenCalledWith([[0, 0, 'new']]);
+  });
+
+  test('skips empty cells so defaults are not overwritten', () => {
+    const { workbench, setDataAtCell } = buildWorkbench([
+      [cell('old'), cell('')],
+    ]);
+    buildUtils(workbench, 'replaceAll').replaceCells(enterKey, replacement);
+    expect(setDataAtCell).toHaveBeenCalledWith([[0, 0, 'new']]);
+  });
+
+  test('ignores keys other than Enter', () => {
+    const { workbench, setDataAtCell } = buildWorkbench([[cell('old')]]);
+    buildUtils(workbench, 'replaceAll').replaceCells(
+      { key: 'a' } as React.KeyboardEvent<HTMLInputElement>,
+      replacement
+    );
+    expect(setDataAtCell).not.toHaveBeenCalled();
+  });
+});
+
+describe('replaceCells, replace next', () => {
+  test('replaces the selected cell when it is editable', () => {
+    const { workbench, setDataAtCell } = buildWorkbench([[cell('old')]]);
+    buildUtils(workbench, 'replaceNext').replaceCells(enterKey, replacement);
+    expect(setDataAtCell).toHaveBeenCalledWith(0, 0, 'new');
+  });
+
+  test('refuses to replace the selected cell when it is read only', () => {
+    const { workbench, setDataAtCell } = buildWorkbench([
+      [cell('old', { readOnly: true })],
+    ]);
+    buildUtils(workbench, 'replaceNext').replaceCells(enterKey, replacement);
+    expect(setDataAtCell).not.toHaveBeenCalled();
+  });
+});
