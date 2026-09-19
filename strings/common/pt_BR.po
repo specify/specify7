@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-09-20 00:51+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Mateus Liberale Gomes <sergiogomes209403@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/common/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -118,7 +118,6 @@ msgstr "Cancelar"
 #: components/Formatters/List.tsx:115
 #: components/SchemaConfig/Languages.tsx:73
 #: components/SetupTool/index.tsx:299
-#, fuzzy
 msgid "back"
 msgstr "Voltar"
 
