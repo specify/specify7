@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-09-15 16:53+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-09-20 00:51+0000\n"
+"Last-Translator: Mateus Liberale Gomes <sergiogomes209403@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/common/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -15,7 +15,7 @@ msgstr ""
 #: components/Core/SplashScreen.tsx:28
 #, fuzzy
 msgid "specifySeven"
-msgstr "Especifique 7"
+msgstr "Specify 7"
 
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Setup Tool > Setup Overview ⬤ Components > Tree View > Create Tree ⬤ Components > Work Bench > Data Set Meta ⬤ Utils > Parser > Definitions
 #: components/Preferences/UserDefinitions.tsx:2081
