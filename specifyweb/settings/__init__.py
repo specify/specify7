@@ -96,8 +96,10 @@ SA_DATABASE_URL = get_sa_db_url(DATABASE_NAME)
 
 SA_TEST_DB_URL = get_sa_db_url(f'test_{DATABASE_NAME}')
 
-# Prevent MySQL connection timeouts
+# Recycle pooled connections hourly; pre-ping replaces sockets already
+# closed by MySQL wait_timeout or idle network drops.
 SA_POOL_RECYCLE = 3600
+SA_POOL_PRE_PING = True
 
 SPECIFY_THICK_CLIENT = os.path.expanduser(THICK_CLIENT_LOCATION)
 
