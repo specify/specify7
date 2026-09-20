@@ -121,7 +121,7 @@ def _expand_rows_for_repeat(report_jrxml, report_data, report_id=None):
         if report is not None:
             if report.repeatfield:
                 return _expand_rows_by_field(report_data, report.repeatfield)
-            if report.repeatcount:
+            if report.repeatcount is not None:
                 return _expand_rows_by_count(report_data, report.repeatcount)
 
     return _expand_rows_for_repeat_count(report_jrxml, report_data)
