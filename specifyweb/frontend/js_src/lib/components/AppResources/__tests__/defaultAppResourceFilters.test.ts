@@ -8,6 +8,7 @@ test('defaultAppResourceFilters', () => {
         "dataEntryTables",
         "dataObjectFormatters",
         "defaultUserPreferences",
+        "dwcaDefinition",
         "expressSearchConfig",
         "interactionsTables",
         "label",

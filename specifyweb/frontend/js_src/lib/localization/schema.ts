@@ -372,6 +372,15 @@ export const schemaText = createDictionary({
     'hr-hr': 'Format polja',
     nb: 'Felt-format',
   },
+  dataModelAlignment: {
+    'en-us': 'Data Model Alignment',
+  },
+  noDataModelAlignment: {
+    'en-us': 'No alignment found.',
+  },
+  term: {
+    'en-us': 'Term',
+  },
   uiFormattersForField: {
     'en-us': 'Field Formatters for {fieldLabel:string}',
     'de-ch': 'Feldformatierer für {fieldLabel:string}',

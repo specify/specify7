@@ -25,12 +25,15 @@ export function QueryFields({
   onChangeField: handleChangeField,
   onMappingChange: handleMappingChange,
   onRemoveField: handleRemoveField,
+  canRemoveField,
+  isFieldReadOnly,
   onOpen: handleOpen,
   onClose: handleClose,
   onLineFocus: handleLineFocus,
   onLineMove: handleLineMove,
   onOpenMap: handleOpenMap,
   onChangeFields: handleChangeFields,
+  renderFieldPrefix,
 }: {
   readonly baseTableName: keyof Tables;
   readonly fields: RA<QueryField>;
@@ -59,6 +62,12 @@ export function QueryFields({
       ) => void)
     | undefined;
   readonly onRemoveField: ((line: number) => void) | undefined;
+  readonly canRemoveField?:
+    | ((field: QueryField, line: number) => boolean)
+    | undefined;
+  readonly isFieldReadOnly?:
+    | ((field: QueryField, line: number) => boolean)
+    | undefined;
   readonly onOpen: ((line: number, index: number) => void) | undefined;
   readonly onClose: (() => void) | undefined;
   readonly onLineFocus: ((line: number) => void) | undefined;
@@ -67,6 +76,9 @@ export function QueryFields({
     | undefined;
   readonly onOpenMap: ((line: number) => void) | undefined;
   readonly onChangeFields?: ((fields: RA<QueryField>) => void) | undefined;
+  readonly renderFieldPrefix?:
+    | ((field: QueryField, line: number) => JSX.Element)
+    | undefined;
 }): JSX.Element {
   const fieldsContainerRef = React.useRef<HTMLUListElement | null>(null);
 
@@ -183,7 +195,7 @@ export function QueryFields({
           items-center overflow-y-auto sm:flex-1
           ${
             isBasic
-              ? 'grid grid-cols-[auto,auto,1fr,auto] content-start items-start gap-x-2 gap-y-2'
+              ? 'grid grid-cols-[4rem,minmax(0,18rem),minmax(0,1fr),auto,auto] content-start items-start gap-x-2 gap-y-2'
               : ''
           }
         `}
@@ -205,7 +217,11 @@ export function QueryFields({
                 openedElement?.line === line ? openedElement?.index : undefined
               }
               showHiddenFields={showHiddenFields}
-              onChange={handleChangeField?.bind(undefined, line)}
+              onChange={
+                isFieldReadOnly?.(field, line)
+                  ? undefined
+                  : handleChangeField?.bind(undefined, line)
+              }
               onClose={handleClose}
               onLineFocus={(target): void =>
                 (target === 'previous' && line === 0) ||
@@ -219,20 +235,43 @@ export function QueryFields({
                           : line + 1
                     )
               }
-              onMappingChange={handleMappingChange?.bind(undefined, line)}
+              onMappingChange={
+                isFieldReadOnly?.(field, line)
+                  ? undefined
+                  : handleMappingChange?.bind(undefined, line)
+              }
               onMoveDown={
-                line + 1 === length || handleLineMove === undefined
+                isFieldReadOnly?.(field, line) ||
+                line + 1 === length ||
+                handleLineMove === undefined
                   ? undefined
                   : (): void => handleLineMove?.(line, 'down')
               }
               onMoveUp={
-                line === 0 || handleLineMove === undefined
+                isFieldReadOnly?.(field, line) ||
+                line === 0 ||
+                handleLineMove === undefined
                   ? undefined
                   : (): void => handleLineMove?.(line, 'up')
               }
-              onOpen={handleOpen?.bind(undefined, line)}
+              onOpen={
+                isFieldReadOnly?.(field, line)
+                  ? undefined
+                  : handleOpen?.bind(undefined, line)
+              }
               onOpenMap={handleOpenMap?.bind(undefined, line)}
-              onRemove={handleRemoveField?.bind(undefined, line)}
+              onRemove={
+                handleRemoveField !== undefined &&
+                isFieldReadOnly?.(field, line) !== true &&
+                (canRemoveField?.(field, line) ?? true)
+                  ? handleRemoveField.bind(undefined, line)
+                  : undefined
+              }
+              renderFieldPrefix={
+                renderFieldPrefix === undefined
+                  ? undefined
+                  : (): JSX.Element => renderFieldPrefix(field, line)
+              }
             />
           </li>
         </ErrorBoundary>
