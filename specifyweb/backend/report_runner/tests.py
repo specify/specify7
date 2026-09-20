@@ -14,7 +14,7 @@ from specifyweb.backend.stored_queries.tests.test_views.raw_query import (
 )
 from specifyweb.backend.stored_queries.tests.tests import SQLAlchemySetup
 from specifyweb.specify.api.crud import post_resource
-from specifyweb.specify.models import Spreport
+from specifyweb.specify.models import Spappresourcedir, Spreport
 from specifyweb.specify.tests.test_api import ApiTests
 
 
@@ -94,6 +94,119 @@ class TestRunReport(ApiTests):
             json.loads(request_data['data']),
             report_data,
         )
+
+    def _make_report(self, **report_kwargs):
+        """Create a real SpReport (with app resource) for run-view tests."""
+        appdir = Spappresourcedir.objects.create(discipline=self.discipline)
+        appresource = appdir.sppersistedappresources.create(
+            version=0,
+            mimetype='jrxml/label',
+            level=0,
+            name='Repeat Label',
+            description='Repeat Label',
+            specifyuser=self.specifyuser,
+            metadata='tableid=-1;reporttype=Report;',
+        )
+        return Spreport.objects.create(
+            version=0,
+            name='Repeat Label',
+            appresource=appresource,
+            specifyuser=self.specifyuser,
+            **report_kwargs,
+        )
+
+    @override_settings(
+        REPORT_RUNNER_HOST='report-runner',
+        REPORT_RUNNER_PORT='8080',
+    )
+    @patch('specifyweb.backend.report_runner.views.requests.post')
+    @patch('specifyweb.backend.report_runner.views.run_query')
+    def test_run_expands_rows_from_repeat_field(
+        self,
+        run_query: Mock,
+        requests_post: Mock,
+    ):
+        """End-to-end: the run view reads RepeatField from a real SpReport row
+        and expands each result row by that field's value before sending the
+        data to the report renderer."""
+        report = self._make_report(
+            repeatfield='1,63-preparations.preparation.countAmt',
+        )
+
+        report_data = {
+            'fields': ['id', '1,63-preparations.preparation.countAmt'],
+            'rows': [
+                [self.collectionobjects[0].id, 3],
+                [self.collectionobjects[1].id, 2],
+            ],
+        }
+        run_query.return_value = report_data
+        requests_post.return_value.status_code = 200
+        requests_post.return_value.content = b'%PDF-1.4 test'
+
+        client = Client()
+        client.force_login(self.specifyuser)
+
+        response = client.post(
+            '/report_runner/run/',
+            {
+                'query': json.dumps({'name': 'New Query'}),
+                'parameters': json.dumps({}),
+                'report': '<jasperReport />',
+                'reportId': report.id,
+            },
+        )
+
+        self._assertStatusCodeEqual(response, 200)
+
+        sent = json.loads(requests_post.call_args.kwargs['data']['data'])
+        self.assertEqual(len(sent['rows']), 5)  # 3 + 2
+        self.assertEqual(sent['rows'][0], [self.collectionobjects[0].id, 3])
+        self.assertEqual(sent['rows'][3], [self.collectionobjects[1].id, 2])
+
+    @override_settings(
+        REPORT_RUNNER_HOST='report-runner',
+        REPORT_RUNNER_PORT='8080',
+    )
+    @patch('specifyweb.backend.report_runner.views.requests.post')
+    @patch('specifyweb.backend.report_runner.views.run_query')
+    def test_run_expands_rows_from_repeat_count(
+        self,
+        run_query: Mock,
+        requests_post: Mock,
+    ):
+        """End-to-end: the run view repeats every row a fixed number of times
+        when the SpReport row has RepeatCount but no RepeatField."""
+        report = self._make_report(repeatcount=3)
+
+        report_data = {
+            'fields': ['id', '1,63-preparations.preparation.countAmt'],
+            'rows': [
+                [self.collectionobjects[0].id, 9],
+                [self.collectionobjects[1].id, 9],
+            ],
+        }
+        run_query.return_value = report_data
+        requests_post.return_value.status_code = 200
+        requests_post.return_value.content = b'%PDF-1.4 test'
+
+        client = Client()
+        client.force_login(self.specifyuser)
+
+        response = client.post(
+            '/report_runner/run/',
+            {
+                'query': json.dumps({'name': 'New Query'}),
+                'parameters': json.dumps({}),
+                'report': '<jasperReport />',
+                'reportId': report.id,
+            },
+        )
+
+        self._assertStatusCodeEqual(response, 200)
+
+        sent = json.loads(requests_post.call_args.kwargs['data']['data'])
+        self.assertEqual(len(sent['rows']), 6)  # 2 rows * 3
 
 
 class TestCreateReport(SQLAlchemySetup):
