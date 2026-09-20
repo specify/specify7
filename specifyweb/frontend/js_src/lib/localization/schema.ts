@@ -378,9 +378,6 @@ export const schemaText = createDictionary({
   noDataModelAlignment: {
     'en-us': 'No alignment found.',
   },
-  vocabulary: {
-    'en-us': 'Vocabulary',
-  },
   term: {
     'en-us': 'Term',
   },

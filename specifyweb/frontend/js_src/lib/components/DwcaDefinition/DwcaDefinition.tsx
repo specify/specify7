@@ -1465,11 +1465,6 @@ function DwcaDefinitionEditorLoaded({
                 name: identifierTerm,
               }),
             ];
-              dwcaText.dwcaRequiredTerm({
-                title: identifierTerm.split(/[\/#]/).at(-1) ?? identifierTerm,
-                name: identifierTerm,
-              }),
-            ];
         if (!mapping.extension) return missingIdentifier;
         const required = (mapping.extensionDefinition?.fields ?? []).filter(
           ({ required }) => required === true

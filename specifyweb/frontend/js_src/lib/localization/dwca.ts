@@ -77,9 +77,6 @@ export const dwcaText = createDictionary({
   dwcaAddField: {
     'en-us': 'Add a {query:string} field to begin mapping.',
   },
-  dwcaOccurrenceId: {
-    'en-us': 'Occurrence ID (occurrenceID)',
-  },
   dwcaRequiredTerm: {
     'en-us': '{title:string} ({name:string})',
   },
