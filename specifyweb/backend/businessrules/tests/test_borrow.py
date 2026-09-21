@@ -716,3 +716,35 @@ class BorrowTests(ApiTests):
             fetched.borrow.invoicenumber,
             'BORROW-ATTACHMENT-001',
         )
+
+    def test_delete_attachment_from_borrow(self):
+        borrow = models.Borrow.objects.create(
+            collectionmemberid=self.collection.id,
+            invoicenumber='BORROW-ATTACHMENT-DELETE-001',
+        )
+
+        attachment = models.Attachment.objects.create(
+            origfilename='borrow_doc_delete.pdf',
+            tableid=borrow.specify_model.tableId,
+            title='Borrow Document',
+        )
+
+        borrow_attachment = models.Borrowattachment.objects.create(
+            borrow=borrow,
+            attachment=attachment,
+            ordinal=0,
+        )
+
+        attachment_id = attachment.id
+        borrow_attachment_id = borrow_attachment.id
+
+        borrow_attachment.delete()
+
+        self.assertEqual(
+            models.Borrowattachment.objects.filter(id=borrow_attachment_id).count(),
+            0,
+        )
+        self.assertEqual(
+            models.Attachment.objects.filter(id=attachment_id).count(),
+            0,
+        )
