@@ -162,6 +162,9 @@
     "tailwindcss": {
       "sucrase": "^3.35.1"
     },
+    "css-loader": {
+      "postcss-selector-parser": "^7.1.3"
+    },
     "typedoc": {
       "minimatch": "5.1.8"
     },
