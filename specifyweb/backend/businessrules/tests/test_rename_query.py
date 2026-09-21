@@ -1,4 +1,3 @@
-from specifyweb.specify import models
 from specifyweb.specify.tests.test_api import ApiTests
 from specifyweb.specify.api.crud import post_resource, update_obj
 from .raw_query import get_simple_query
