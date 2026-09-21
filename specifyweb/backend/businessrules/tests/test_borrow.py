@@ -665,3 +665,54 @@ class BorrowTests(ApiTests):
             fetched_borrow.modifiedbyagent,
             self.agent,
         )
+
+    def test_add_attachment_to_borrow(self):
+        borrow = models.Borrow.objects.create(
+            collectionmemberid=self.collection.id,
+            invoicenumber='BORROW-ATTACHMENT-001',
+        )
+
+        attachment = models.Attachment.objects.create(
+            origfilename='borrow_doc.pdf',
+            tableid=borrow.specify_model.tableId,
+            title='Borrow Document',
+        )
+
+        borrow_attachment = models.Borrowattachment.objects.create(
+            borrow=borrow,
+            attachment=attachment,
+            ordinal=0,
+        )
+
+        fetched = models.Borrowattachment.objects.get(
+            id=borrow_attachment.id,
+        )
+
+        self.assertEqual(
+            fetched.borrow,
+            borrow,
+        )
+        self.assertEqual(
+            fetched.attachment,
+            attachment,
+        )
+        self.assertEqual(
+            fetched.ordinal,
+            0,
+        )
+        self.assertEqual(
+            fetched.attachment.origfilename,
+            'borrow_doc.pdf',
+        )
+        self.assertEqual(
+            fetched.attachment.tableid,
+            borrow.specify_model.tableId,
+        )
+        self.assertEqual(
+            fetched.attachment.title,
+            'Borrow Document',
+        )
+        self.assertEqual(
+            fetched.borrow.invoicenumber,
+            'BORROW-ATTACHMENT-001',
+        )
