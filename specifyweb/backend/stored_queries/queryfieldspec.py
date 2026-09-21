@@ -526,6 +526,8 @@ class QueryFieldSpec(
         strict=False,
         collection=None,
         user=None,
+        use_tree_range=False,
+        use_rank_lookup=False,
     ):
         # print "############################################################################"
         # print "formatauditobjs " + str(formatauditobjs)
@@ -533,7 +535,9 @@ class QueryFieldSpec(
         #    print "field name " + self.get_field().name
         # print "is auditlog obj format field = " + str(self.is_auditlog_obj_format_field(formatauditobjs))
         # print "############################################################################"
-        query, orm_field, field, table = self.add_spec_to_query(query, formatter)
+        query, orm_field, field, table = self.add_spec_to_query(
+            query, formatter, use_tree_range=use_tree_range, use_rank_lookup=use_rank_lookup
+        )
         return self.apply_filter(
             query,
             orm_field,
@@ -549,7 +553,7 @@ class QueryFieldSpec(
         )
 
     def add_spec_to_query(
-        self, query, formatter=None, aggregator=None, cycle_detector=[]
+        self, query, formatter=None, aggregator=None, cycle_detector=[], use_tree_range=False, use_rank_lookup=False
     ):
 
         if self.get_field() is None:
@@ -587,6 +591,8 @@ class QueryFieldSpec(
                     field,
                     self.join_path[tree_rank_idx + 1 :],
                     self,
+                    use_range=use_tree_range,
+                    use_rank_lookup=use_rank_lookup,
                 )
             else:
                 try:

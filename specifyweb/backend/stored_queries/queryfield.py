@@ -4,7 +4,7 @@ from collections import namedtuple
 from typing import Any, NamedTuple, Literal
 
 from .query_ops import QueryOps, QUERYFIELD_OPERATION_NUMBER
-from .queryfieldspec import QueryFieldSpec
+from .queryfieldspec import QueryFieldSpec, TreeRankQuery
 
 logger = logging.getLogger(__name__)
 
@@ -78,7 +78,7 @@ class QueryField(NamedTuple):
             strict=field.isStrict,
         )
 
-    def add_to_query(self, query, no_filter=False, formatauditobjs=False, collection=None, user=None):
+    def add_to_query(self, query, no_filter=False, formatauditobjs=False, collection=None, user=None, optimize_tree=True):
         logger.info("adding field %s", self)
         value_required_for_filter = QueryOps.OPERATIONS[self.op_num] not in (
             "op_true",  # 6
@@ -92,6 +92,24 @@ class QueryField(NamedTuple):
             self.value == "" and value_required_for_filter and not self.negate
         )
 
+        # Positive scalar filters reject missing ancestors, allowing MariaDB to
+        # start at the matching rank instead of walking up from every specimen.
+        # Empty/negated filters need the existing missing-ancestor semantics;
+        # relationship paths and date transformations retain their usual joins.
+        path = self.fieldspec.join_path
+        use_tree_range = (
+            optimize_tree
+            and not no_filter
+            and not self.negate
+            and (not value_required_for_filter or isinstance(self.value, str))
+            and self.op_num in {0, 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 15, 18}
+            and len(path) >= 2
+            and isinstance(path[-2], TreeRankQuery)
+            and not path[-1].is_relationship
+            and sum(isinstance(part, TreeRankQuery) for part in path) == 1
+            and self.fieldspec.date_part is None
+        )
+
         return self.fieldspec.add_to_query(
             query,
             value=self.value,
@@ -102,4 +120,9 @@ class QueryField(NamedTuple):
             strict=self.strict,
             collection=collection,
             user=user,
+            use_tree_range=use_tree_range,
+            use_rank_lookup=use_tree_range and not (
+                self.op_num == 1
+                and self.fieldspec.get_field().name.lower() == self.fieldspec.table.idFieldName.lower()
+            ),
         )
