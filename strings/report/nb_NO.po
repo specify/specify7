@@ -100,6 +100,7 @@ msgstr "Generer etikett"
 #: components/FormMeta/index.tsx:193
 #: components/FormParse/fields.ts:134
 #: components/FormParse/__tests__/fields.test.ts:147
+#: components/FormParse/__tests__/fields.test.ts:161
 #. Used in: Components > Form Meta > Index ⬤ Components > Form Parse > Fields ⬤ Form Parse > __tests__ > Fields
 msgid "generateLabelOnSave"
 msgstr "Generer etikett ved lagring"

@@ -18,7 +18,7 @@ msgstr ""
 msgid "openMap"
 msgstr "Відкрийте карту"
 
-#: components/Leaflet/Map.tsx:113
+#: components/Leaflet/Map.tsx:108
 #: components/Preferences/UserDefinitions.tsx:2235
 #: components/QueryBuilder/ToMap.tsx:67
 #: components/QueryBuilder/ToMap.tsx:264
