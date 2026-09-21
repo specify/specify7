@@ -181,7 +181,6 @@ function LoadedDataViewFromTable({
         },
       })
     );
-  if (table === undefined) return null;
 
   const definition = React.useMemo(
     () => getDataViewQueryDefinition(queries, tableName),
@@ -199,6 +198,8 @@ function LoadedDataViewFromTable({
     () => parseQueryFields(runtimeFields ?? definition.fields),
     [definition.fields, runtimeFields]
   );
+
+  if (table === undefined) return null;
 
   if (queryData !== undefined)
     return (
