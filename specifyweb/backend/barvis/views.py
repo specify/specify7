@@ -1,60 +1,42 @@
+from django.db.models import Count, IntegerField, OuterRef, Subquery
+from django.db.models.functions import Coalesce
 from django.http import HttpResponse
-from django.db.models import Count, Q
 
 from specifyweb.middleware.general import require_GET
-from specifyweb.specify.views import login_maybe_required
 from specifyweb.specify.api.filter_by_col import filter_by_collection
 from specifyweb.specify.api.serializers import toJson
-from specifyweb.specify.models import Taxon
+from specifyweb.specify.models import Determination, Taxon
+from specifyweb.specify.views import login_maybe_required
 
-from django.db import connection
+
+def get_taxon_bar_data(collection):
+    """Return taxon tile rows with a correlated current-count lookup."""
+    current_determination_counts = (
+        Determination.objects
+        .filter(taxon_id=OuterRef('pk'), iscurrent=True)
+        .values('taxon_id')
+        .annotate(count=Count('id'))
+        .values('count')
+    )
+    taxons = Taxon.objects.annotate(
+        current_determination_count=Coalesce(
+            Subquery(
+                current_determination_counts,
+                output_field=IntegerField(),
+            ),
+            0,
+        )
+    ).values_list(
+        'id', 'rankid', 'parent_id', 'name', 'current_determination_count'
+    )
+    return list(filter_by_collection(taxons, collection))
 
 
 @require_GET
 @login_maybe_required
 def taxon_bar(request):
-    # "Returns the data for creating a taxon tiles visualization."
-    # cursor = connection.cursor()
-    # cursor.execute("""
-    # SELECT t.TaxonID,
-    # t.RankID,
-    # t.ParentID,
-    # t.Name,
-    # (SELECT COUNT(*) FROM determination d WHERE t.TaxonID = d.TaxonID AND d.IsCurrent = 1)
-    # FROM taxon t
-    # WHERE t.TaxonTreeDefID = %s
-    # """, [request.specify_collection.discipline.taxontreedef_id])
-
-    # Implementing the previous SQL query in Django ORM:
-    taxons = (
-        Taxon.objects.annotate(
-            current_determination_count=Count(
-                'determinations', filter=Q(determinations__iscurrent=True))
-        )
-        .values_list("id", "rankid", "parent_id", "name", "current_determination_count")
+    """Return the data for creating a taxon tiles visualization."""
+    return HttpResponse(
+        toJson(get_taxon_bar_data(request.specify_collection)),
+        content_type='application/json',
     )
-    filtered_taxons = filter_by_collection(taxons, request.specify_collection)
-    result = toJson(list(filtered_taxons))
-
-    # SELECT d.TaxonID, COUNT(DISTINCT d.CollectionObjectID), t.ParentID
-    # FROM determination d
-    # INNER JOIN taxon t ON t.TaxonID = d.TaxonID
-    # WHERE d.CollectionMemberID = %s
-    # AND d.IsCurrent = 1
-    # GROUP BY d.TaxonId
-    # ORDER BY d.TaxonId
-    # """, [request.specify_collection.id])
-    # result = toJson(cursor.fetchall())
-    # session = Session()
-    # query = session.query(
-    #     Determination.TaxonID,
-    #     func.count(distinct(Determination.CollectionObjectID)),
-    #     Taxon.ParentID) \
-    #     .join(Taxon, Determination.TaxonID == Taxon.taxonId) \
-    #     .filter(Determination.collectionMemberId == request.specify_collection.id) \
-    #     .filter(Determination.isCurrent == True) \
-    #     .group_by(Determination.TaxonID).order_by(Determination.TaxonID)
-
-    # result = toJson(list(query))
-    # session.close()
-    return HttpResponse(result, content_type='application/json')
