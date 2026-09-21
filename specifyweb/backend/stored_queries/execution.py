@@ -73,6 +73,7 @@ class BuildQueryProps(NamedTuple):
     search_synonymy: bool = False
     implicit_or: bool = True
     formatter_props: ObjectFormatterProps = DefaultQueryFormatterProps()
+    optimize_for_page: bool = False
 
 
 def set_group_concat_max_len(connection):
@@ -884,6 +885,7 @@ def execute(
             series=series,
             search_synonymy=search_synonymy,
             formatter_props=formatter_props,
+            optimize_for_page=bool(limit) and not (count_only or distinct or series),
         ),
     )
 
@@ -1095,6 +1097,7 @@ def build_query(
         query, field, predicate = fs.add_to_query(
             query, formatauditobjs=props.formatauditobjs, collection=collection, user=user,
             optimize_tree=optimize_tree,
+            prefer_parent_lookup=props.optimize_for_page,
         )
 
         if field is None:
