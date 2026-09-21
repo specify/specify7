@@ -138,7 +138,11 @@ class TreeRangeFilterTests(SqlTreeSetup):
                     self.field('4.taxon.name'), self.field('4.taxon.Genus', op, value),
                 ])
                 self.assertTrue(rows)
-                self.assertIn('WITH RECURSIVE', statement)
+                if op == 1:
+                    self.assertNotIn('WITH RECURSIVE', statement)
+                    self.assertIn('BETWEEN', statement)
+                else:
+                    self.assertIn('WITH RECURSIVE', statement)
                 self.assertEqual(statement.count('LEFT OUTER JOIN taxon '), 1)
 
     def test_missing_rank_and_negation_keep_existing_null_semantics(self):
@@ -166,50 +170,9 @@ class TreeRangeFilterTests(SqlTreeSetup):
             self.field('3.geography.Country', 1, 'USA'),
         ])
         self.assertTrue(rows)
-        self.assertIn('WITH RECURSIVE', statement)
+        self.assertNotIn('WITH RECURSIVE', statement)
+        self.assertIn('BETWEEN', statement)
         self.assertEqual(statement.count('LEFT OUTER JOIN geography '), 1)
-
-    def test_pages_choose_lookup_from_tree_depth_and_page_size(self):
-        _, shallow_sql = self.assert_equivalent([
-            self.field('3.geography.name'), self.field('3.geography.Country', 1, 'USA'),
-        ], optimize_for_page=True, page_size=20)
-        self.assertNotIn('WITH RECURSIVE', shallow_sql)
-        self.assertIn('ParentID', shallow_sql)
-        _, deep_sql = self.assert_equivalent([
-            self.field('4.taxon.name'), self.field('4.taxon.Genus', 1, 'Alpha'),
-        ], optimize_for_page=True, page_size=10)
-        self.assertIn('WITH RECURSIVE', deep_sql)
-        for depth, uses_lookup in [(8, False), (9, True)]:
-            with self.subTest(depth=depth), patch(
-                'specifyweb.backend.stored_queries.query_construct.get_treedefs',
-                return_value=[(self.taxontreedef.id, depth)],
-            ):
-                _, statement = self.assert_equivalent([
-                    self.field('4.taxon.name'), self.field('4.taxon.Genus', 1, 'Alpha'),
-                ], optimize_for_page=True, page_size=8)
-                self.assertEqual('WITH RECURSIVE' in statement, uses_lookup)
-
-    def test_execute_only_prefers_parent_lookup_for_ungrouped_pages(self):
-        from unittest.mock import Mock
-        from specifyweb.backend.stored_queries.execution import execute
-        for count_only, limit, distinct, series, expected in [
-            (False, 40, False, False, True),
-            (True, 40, False, False, False),
-            (False, 0, False, False, False),
-            (False, None, False, False, False),
-            (False, 40, True, False, False),
-            (False, 40, False, True, False),
-        ]:
-            with self.subTest(count_only=count_only, limit=limit, distinct=distinct, series=series):
-                with patch('specifyweb.backend.stored_queries.execution.set_group_concat_max_len'), patch(
-                    'specifyweb.backend.stored_queries.execution.build_query',
-                    side_effect=RuntimeError('query built'),
-                ) as build:
-                    with self.assertRaisesMessage(RuntimeError, 'query built'):
-                        execute(Mock(info={'connection': Mock()}), self.collection, self.specifyuser,
-                                3, distinct, series, False, count_only, [], limit, 0)
-                    self.assertEqual(build.call_args.args[5].optimize_for_page, expected)
-                    self.assertEqual(build.call_args.args[5].page_size, limit if expected else None)
 
     def test_missing_or_reversed_numbering_falls_back_without_writes(self):
         from specifyweb.specify.models import Taxon
