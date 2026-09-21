@@ -16,7 +16,9 @@ const serializedFields = [
   { fieldName: 'Name' },
 ] as unknown as readonly SerializedResource<SpQueryField>[];
 
-afterEach(() => jest.useRealTimers());
+afterEach(() => {
+  jest.useRealTimers();
+});
 
 test('serializes the current fields and defers an authorized query run', () => {
   jest.useFakeTimers();
