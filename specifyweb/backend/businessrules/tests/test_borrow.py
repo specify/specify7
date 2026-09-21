@@ -540,6 +540,128 @@ class BorrowTests(ApiTests):
             ).exists()
         )
 
+    def test_fill_remaining_borrow_fields(self):
+        current_due_date = timezone.now()
+        original_due_date = timezone.now()
+        received_date = timezone.now()
+        date_closed = timezone.now()
 
+        address = models.Addressofrecord.objects.create(
+            agent=self.agent,
+            address='123 Museum Street',
+            address2='Suite 4',
+            city='Lawrence',
+            state='Kansas',
+            postalcode='66045',
+            country='USA',
+            remarks='Address of record remarks',
+        )
 
-    
+        borrow = models.Borrow.objects.create(
+            collectionmemberid=self.collection.id,
+            invoicenumber='BORROW-REMAINING-001',
+            borrowdateprecision=1,
+            currentduedate=current_due_date,
+            originalduedate=original_due_date,
+            receiveddate=received_date,
+            dateclosed=date_closed,
+            isclosed=True,
+            isfinancialresponsibility=False,
+            number1=Decimal('12.34'),
+            number2=Decimal('56.78'),
+            numberofitemsborrowed=5,
+            remarks='Borrow remarks',
+            status='Open',
+            text1='Borrow text one',
+            text2='Borrow text two',
+            yesno1=True,
+            yesno2=False,
+            addressofrecord=address,
+            createdbyagent=self.agent,
+            modifiedbyagent=self.agent,
+        )
+
+        fetched_borrow = models.Borrow.objects.get(
+            id=borrow.id,
+        )
+
+        self.assertEqual(
+            fetched_borrow.borrowdateprecision,
+            1,
+        )
+        self.assertEqual(
+            fetched_borrow.currentduedate,
+            current_due_date,
+        )
+        self.assertEqual(
+            fetched_borrow.originalduedate,
+            original_due_date,
+        )
+        self.assertEqual(
+            fetched_borrow.receiveddate,
+            received_date,
+        )
+        self.assertEqual(
+            fetched_borrow.dateclosed,
+            date_closed,
+        )
+        self.assertIs(
+            fetched_borrow.isclosed,
+            True,
+        )
+        self.assertIs(
+            fetched_borrow.isfinancialresponsibility,
+            False,
+        )
+        self.assertEqual(
+            fetched_borrow.number1,
+            Decimal('12.34'),
+        )
+        self.assertEqual(
+            fetched_borrow.number2,
+            Decimal('56.78'),
+        )
+        self.assertEqual(
+            fetched_borrow.numberofitemsborrowed,
+            5,
+        )
+        self.assertEqual(
+            fetched_borrow.remarks,
+            'Borrow remarks',
+        )
+        self.assertEqual(
+            fetched_borrow.status,
+            'Open',
+        )
+        self.assertEqual(
+            fetched_borrow.text1,
+            'Borrow text one',
+        )
+        self.assertEqual(
+            fetched_borrow.text2,
+            'Borrow text two',
+        )
+        self.assertIs(
+            fetched_borrow.yesno1,
+            True,
+        )
+        self.assertIs(
+            fetched_borrow.yesno2,
+            False,
+        )
+        self.assertEqual(
+            fetched_borrow.addressofrecord,
+            address,
+        )
+        self.assertEqual(
+            fetched_borrow.addressofrecord.city,
+            'Lawrence',
+        )
+        self.assertEqual(
+            fetched_borrow.createdbyagent,
+            self.agent,
+        )
+        self.assertEqual(
+            fetched_borrow.modifiedbyagent,
+            self.agent,
+        )
