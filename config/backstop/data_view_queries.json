@@ -410,6 +410,19 @@
       "fields": [
         {
           "tableList": "87",
+          "stringId": "87.collectingtrip.collectingTripName",
+          "fieldName": "collectingTripName",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 0,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "87",
           "stringId": "87.collectingtrip.timestampModified",
           "fieldName": "timestampModified",
           "isRelFld": false,
