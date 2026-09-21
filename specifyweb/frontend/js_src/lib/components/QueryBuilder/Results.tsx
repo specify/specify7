@@ -660,8 +660,9 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
               }}
               onRowSelected={(rowIndex): void => {
                 const id = loadedResults[rowIndex][queryIdField] as number;
-                setSelectedRows(new Set([id]));
-                handleSelected?.([id]);
+                const newSelectedRows = new Set(selectedRows).add(id);
+                setSelectedRows(newSelectedRows);
+                handleSelected?.(Array.from(newSelectedRows));
                 lastSelectedRow.current = rowIndex;
               }}
             />
