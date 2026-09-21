@@ -670,7 +670,7 @@ export const treeText = createDictionary({
     'de-ch': 'Positionen bearbeiten',
     'pt-br': 'Editar classificações',
     'hr-hr': 'Uredi rangove',
-    nb: 'Rediger ranger',
+    nb: 'Rediger nivåer',
   },
   resourceToDelete: {
     'en-us': 'This will permanently delete the following resource',
@@ -747,7 +747,7 @@ export const treeText = createDictionary({
     'uk-ua': 'Додати новий ранг',
     'pt-br': 'Adicionar novo cargo',
     'hr-hr': 'Dodaj novi rang',
-    nb: 'Legg til ny rang',
+    nb: 'Legg til nytt nivå',
   },
   chooseParentRank: {
     'en-us': 'Choose Parent Rank',
@@ -758,7 +758,7 @@ export const treeText = createDictionary({
     'uk-ua': 'Виберіть батьківський рейтинг',
     'pt-br': 'Escolha a classificação principal',
     'hr-hr': 'Odaberite roditeljski rang',
-    nb: 'Velg overordnet rang',
+    nb: 'Velg overordnet nivå',
   },
   moveItems: {
     'en-us': 'Move Items',
@@ -989,7 +989,7 @@ export const treeText = createDictionary({
     'pt-br': 'Criação da árvore padrão iniciada',
     'ru-ru': 'Началось создание дерева по умолчанию.',
     'uk-ua': 'Розпочато створення дерева за замовчуванням',
-    nb: 'Standardtreoppretting startet',
+    nb: 'Standard oppretting av tre startet',
   },
   defaultTreeCreationStartedDescription: {
     'en-us':
@@ -1020,7 +1020,7 @@ export const treeText = createDictionary({
     'pt-br': 'O processo padrão de criação da árvore foi iniciado.',
     'ru-ru': 'Начался процесс создания дерева по умолчанию.',
     'uk-ua': 'Процес створення дерева за замовчуванням розпочато.',
-    nb: 'Standardprosessen for treopprettelse har startet.',
+    nb: 'Standardprosessen for opprettelse av trestruktur har startet.',
   },
   defaultTreeTaskFailed: {
     'en-us': 'Default tree creation failed.',
@@ -1031,7 +1031,7 @@ export const treeText = createDictionary({
     'pt-br': 'A criação da árvore padrão falhou.',
     'ru-ru': 'Создание дерева по умолчанию не удалось.',
     'uk-ua': 'Не вдалося створити дерево за замовчуванням.',
-    nb: 'Standard treopprettelse mislyktes.',
+    nb: 'Standardopprettelse av trestruktur mislyktes.',
   },
   defaultTreeTaskCancelled: {
     'en-us': 'Default tree creation was cancelled.',
@@ -1042,7 +1042,7 @@ export const treeText = createDictionary({
     'pt-br': 'A criação da árvore padrão foi cancelada.',
     'ru-ru': 'Создание дерева по умолчанию было отменено.',
     'uk-ua': 'Створення дерева за замовчуванням скасовано.',
-    nb: 'Standard treopprettelse ble avbrutt.',
+    nb: 'Opprettelse av standardtrestrukturen ble avbrutt.',
   },
   defaultTreeTaskCompleted: {
     'en-us': 'Default tree creation completed successfully.',
@@ -1054,7 +1054,7 @@ export const treeText = createDictionary({
     'pt-br': 'Criação da árvore padrão concluída com sucesso.',
     'ru-ru': 'Создание дерева по умолчанию успешно завершено.',
     'uk-ua': 'Створення дерева за замовчуванням успішно завершено.',
-    nb: 'Standard treopprettelse ble fullført.',
+    nb: 'Opprettelse av standardtrestrukturen ble fullført.',
   },
   defaultTreeCreationProgress: {
     comment: 'E.x, Creating tree record 999/1,000',
@@ -1074,11 +1074,12 @@ export const treeText = createDictionary({
       'Создание записи дерева {current:number|formatted}/{total:number|formatted}',
     'uk-ua':
       'Створення запису дерева {current:number|formatted}/{total:number|formatted}',
-    nb: 'Oppretter trepost {current:number|formatted}/{total:number|formatted}',
+    nb: 'Oppretter element i trestrukturen {current:number|formatted}/{total:number|formatted}',
   },
   defaultTreeCreationLoadingMessage: {
     'en-us': 'Default tree creation is in progress, please wait...',
-    'de-ch': 'Die Erstellung der Standardbaumstruktur läuft, bitte warten...',
+    'de-ch':
+      'Die Erstellung der Standardbaumstruktur läuft, bitte warten Sie...',
     'es-es':
       'La creación del árbol predeterminado está en curso, por favor espere...',
     'fr-fr':
@@ -1088,7 +1089,7 @@ export const treeText = createDictionary({
     'ru-ru':
       'Идет процесс создания дерева по умолчанию, пожалуйста, подождите...',
     'uk-ua': 'Триває створення дерева за замовчуванням, зачекайте...',
-    nb: 'Standard treopprettelse pågår, vennligst vent ...',
+    nb: 'Opprettelse av standardtrestrukturen pågår. Vent litt …',
   },
   missingRanks: {
     'en-us': 'Missing Ranks',
@@ -1099,7 +1100,7 @@ export const treeText = createDictionary({
     'pt-br': 'Patentes Ausentes',
     'ru-ru': 'Отсутствующие звания',
     'uk-ua': 'Відсутні ранги',
-    nb: 'Manglende ranger',
+    nb: 'Manglende nivåer',
   },
   missingRanksDescription: {
     'en-us':
@@ -1118,7 +1119,7 @@ export const treeText = createDictionary({
       'Выбранное вами для загрузки дерево содержит записи в рангах, отсутствующих в вашем дереве.',
     'uk-ua':
       'Заповнене дерево, яке ви вибрали для завантаження, містить записи в рангах, яких бракує у вашому дереві.',
-    nb: 'Det utfylte treet du valgte å laste ned inneholder poster i ranger som mangler i treet ditt.',
+    nb: 'Det utfylte treet du valgte å laste ned inneholder poster på nivåer som mangler i treet ditt.',
   },
   createMissingRanks: {
     'en-us': 'Should the missing ranks be created?',
@@ -1129,7 +1130,7 @@ export const treeText = createDictionary({
     'pt-br': 'Deveriam ser criadas as patentes que faltam?',
     'ru-ru': 'Следует ли создать недостающие звания?',
     'uk-ua': 'Чи слід створювати відсутні ряди?',
-    nb: 'Bør de manglende rangene opprettes?',
+    nb: 'Bør de manglende nivåene opprettes?',
   },
   source: {
     'en-us': 'Source',
