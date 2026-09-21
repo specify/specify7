@@ -748,3 +748,62 @@ class BorrowTests(ApiTests):
             models.Attachment.objects.filter(id=attachment_id).count(),
             0,
         )
+
+    def test_save_newly_created_borrow(self):
+        borrow = models.Borrow.objects.create(
+            collectionmemberid=self.collection.id,
+            invoicenumber='BORROW-SAVE-001',
+            borrowdate=timezone.now(),
+        )
+
+        borrow.borrowagents.create(
+            agent=self.agent,
+            collectionmemberid=self.collection.id,
+            role='Borrower',
+        )
+
+        borrow.shipments.create(
+            shipmentnumber='BORROW-SAVE-SHIPMENT-001',
+            discipline=self.discipline,
+        )
+
+        borrow.borrowmaterials.create(
+            collectionmemberid=self.collection.id,
+            materialnumber='BORROW-SAVE-MATERIAL-001',
+        )
+
+        attachment = models.Attachment.objects.create(
+            origfilename='borrow_save_doc.pdf',
+            tableid=borrow.specify_model.tableId,
+            title='Borrow Save Document',
+        )
+
+        borrow.borrowattachments.create(
+            attachment=attachment,
+            ordinal=0,
+        )
+
+        fetched_borrow = models.Borrow.objects.get(
+            id=borrow.id,
+        )
+
+        self.assertEqual(
+            fetched_borrow.invoicenumber,
+            'BORROW-SAVE-001',
+        )
+        self.assertEqual(
+            fetched_borrow.borrowagents.count(),
+            1,
+        )
+        self.assertEqual(
+            fetched_borrow.shipments.count(),
+            1,
+        )
+        self.assertEqual(
+            fetched_borrow.borrowmaterials.count(),
+            1,
+        )
+        self.assertEqual(
+            fetched_borrow.borrowattachments.count(),
+            1,
+        )
