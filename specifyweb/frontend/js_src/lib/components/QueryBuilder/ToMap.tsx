@@ -2,7 +2,6 @@ import type L from 'leaflet';
 import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
-import { useLiveState } from '../../hooks/useLiveState';
 import { localityText } from '../../localization/locality';
 import { f } from '../../utils/functools';
 import type { RA, WritableArray } from '../../utils/types';
@@ -178,21 +177,13 @@ export function QueryToMapDialog({
 }): JSX.Element {
   const [map, setMap] = React.useState<LeafletInstance | undefined>(undefined);
   const localityData = React.useRef<RA<LocalityDataWithId>>([]);
-  const [initialData] = useLiveState<
-    | {
-        readonly localityData: RA<LocalityData>;
-        readonly onClick: ReturnType<typeof createClickCallback>;
-      }
-    | undefined
-  >(
-    React.useCallback(() => {
-      const extracted = extractLocalities(results, localityMappings);
-      return {
-        localityData: extracted.map(({ localityData }) => localityData),
-        onClick: createClickCallback(tableName, extracted),
-      };
-    }, [results])
-  );
+  const [initialData] = React.useState(() => {
+    const extracted = extractLocalities(results, localityMappings);
+    return {
+      localityData: extracted.map(({ localityData }) => localityData),
+      onClick: createClickCallback(tableName, extracted),
+    };
+  });
 
   const taxonId = React.useMemo(
     () => brokerData?.taxonId ?? extractQueryTaxonId(tableName, fields),
@@ -202,6 +193,8 @@ export function QueryToMapDialog({
   const description = useExtendedMap(map, data);
 
   const markerCountRef = React.useRef(results.length);
+  const mapRef = React.useRef(map);
+  mapRef.current = map;
 
   const handleAddPoints = React.useCallback(
     (results: RA<QueryResultRow>) => {
@@ -216,8 +209,8 @@ export function QueryToMapDialog({
         ...extractLocalities(results, localityMappings),
       ];
 
-      if (map === undefined) return;
-      addLeafletMarkers(tableName, map, localityData.current);
+      if (mapRef.current === undefined) return;
+      addLeafletMarkers(tableName, mapRef.current, localityData.current);
       localityData.current = [];
     },
     [tableName, localityMappings]
@@ -225,13 +218,16 @@ export function QueryToMapDialog({
 
   useFetchLoop(handleFetchMore, handleAddPoints);
 
+  React.useEffect(() => {
+    if (map === undefined || localityData.current.length === 0) return;
+    addLeafletMarkers(tableName, map, localityData.current);
+    localityData.current = [];
+  }, [map, tableName]);
+
   /*
    * The below is used for sanity checking at un-mount.
    * A unit test for this functionality is tricky. A runtime check is simpler
    */
-  const mapRef = React.useRef(map);
-  mapRef.current = map;
-
   React.useEffect(
     () => () => {
       if (mapRef.current === undefined) return;
