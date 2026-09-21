@@ -99,7 +99,7 @@ def _expand_rows_for_repeat_count(report_jrxml, report_data):
     )
 
 
-def _expand_rows_for_repeat(report_jrxml, report_data, report_id=None):
+def _expand_rows_for_repeat(report_jrxml, report_data, report=None):
     """Expand rows for label repetition, mirroring Specify 6.
 
     Precedence:
@@ -112,19 +112,36 @@ def _expand_rows_for_repeat(report_jrxml, report_data, report_id=None):
     The first two mirror how Specify 6 stores this configuration on the report
     record, so labels migrated from Specify 6 repeat without editing the jrxml.
     """
-    if report_id not in (None, ''):
-        try:
-            report = Spreport.objects.get(id=report_id)
-        except (Spreport.DoesNotExist, ValueError, TypeError):
-            report = None
-
-        if report is not None:
-            if report.repeatfield:
-                return _expand_rows_by_field(report_data, report.repeatfield)
-            if report.repeatcount is not None:
-                return _expand_rows_by_count(report_data, report.repeatcount)
+    if report is not None:
+        if report.repeatfield:
+            return _expand_rows_by_field(report_data, report.repeatfield)
+        if report.repeatcount is not None:
+            return _expand_rows_by_count(report_data, report.repeatcount)
 
     return _expand_rows_for_repeat_count(report_jrxml, report_data)
+
+
+def _get_report_for_repeat(report_id, query_json, collection, user):
+    if report_id in (None, ''):
+        return None
+
+    try:
+        query_id = int(json.loads(query_json).get('id'))
+        report_id = int(report_id)
+    except (AttributeError, TypeError, ValueError):
+        return None
+
+    return Spreport.objects.filter(
+        id=report_id,
+        query_id=query_id,
+        appresource__spappresourcedir__discipline=collection.discipline,
+    ).filter(
+        Q(appresource__spappresourcedir__collection=None) |
+        Q(appresource__spappresourcedir__collection=collection)
+    ).filter(
+        Q(appresource__spappresourcedir__specifyuser=user) |
+        Q(appresource__spappresourcedir__ispersonal=False)
+    ).first()
 
 
 class ReportsPT(PermissionTarget):
@@ -152,14 +169,20 @@ def run(request):
     port = settings.REPORT_RUNNER_PORT
     if port == '': port = 80
 
-    report_data = run_query(request.specify_collection, request.specify_user, request.POST['query'])
+    query_json = request.POST['query']
+    report_data = run_query(request.specify_collection, request.specify_user, query_json)
     if len(report_data['rows']) < 1:
         return HttpResponse(_("The report query returned no results."), content_type="text/plain")
 
     report_data = _expand_rows_for_repeat(
         request.POST['report'],
         report_data,
-        request.POST.get('reportId'),
+        _get_report_for_repeat(
+            request.POST.get('reportId'),
+            query_json,
+            request.specify_collection,
+            request.specify_user,
+        ),
     )
 
     r = requests.post("http://%s:%s/report" %
