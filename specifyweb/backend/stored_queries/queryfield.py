@@ -77,7 +77,7 @@ class QueryField(NamedTuple):
             strict=field.isStrict,
         )
 
-    def add_to_query(self, query, no_filter=False, formatauditobjs=False, collection=None, user=None, optimize_tree=True, prefer_parent_lookup=False, page_size=None):
+    def add_to_query(self, query, no_filter=False, formatauditobjs=False, collection=None, user=None, optimize_tree=True):
         logger.info("adding field %s", self)
         value_required_for_filter = QueryOps.OPERATIONS[self.op_num] not in (
             "op_true",  # 6
@@ -108,17 +108,10 @@ class QueryField(NamedTuple):
             and sum(isinstance(part, TreeRankQuery) for part in path) == 1
             and self.fieldspec.date_part is None
         )
-        use_rank_lookup = use_tree_range and not (
-            self.op_num == 1
-            and self.fieldspec.get_field().name.lower() == self.fieldspec.table.idFieldName.lower()
-        )
-        if use_rank_lookup and prefer_parent_lookup and page_size and query.collection is not None:
-            query, treedefs, _ = query.tree_rank_metadata(self.fieldspec.table, path[-2])
-            # A parent walk touches one ancestor per rank for every page row.
-            # Build the shared rank lookup once when that walk exceeds the
-            # requested page's work budget.
-            if max(depth for _, depth in treedefs) <= page_size:
-                use_tree_range = use_rank_lookup = False
+        # Exact matches can start at the matching ancestor and range over its
+        # descendants. Other operators share a descendant-to-rank lookup so
+        # they do not repeatedly walk every node's parent chain.
+        use_rank_lookup = use_tree_range and self.op_num != 1
 
         return self.fieldspec.add_to_query(
             query,
