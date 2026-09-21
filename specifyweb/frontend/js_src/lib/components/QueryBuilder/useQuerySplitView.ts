@@ -68,14 +68,17 @@ export function useQuerySplitView(
 
   const [resultsVersion, setResultsVersion] = React.useState(0);
   const notifiedRunRef = React.useRef<number | undefined>(undefined);
+  const queryRunCountRef = React.useRef(queryRunCount);
+  queryRunCountRef.current = queryRunCount;
   const onResults = React.useCallback(
     (results: RA<QueryResultRow | undefined>): void => {
       const hasRow = results.some((result) => result !== undefined);
-      if (!hasRow || notifiedRunRef.current === queryRunCount) return;
-      notifiedRunRef.current = queryRunCount;
+      const currentRun = queryRunCountRef.current;
+      if (!hasRow || notifiedRunRef.current === currentRun) return;
+      notifiedRunRef.current = currentRun;
       setResultsVersion((version) => version + 1);
     },
-    [queryRunCount]
+    []
   );
 
   // Track transitions so clearing selection (e.g. on close) doesn't retrigger
