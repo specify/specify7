@@ -136,6 +136,9 @@ function Row({
   );
   const viewUrl = typeof resource === 'object' ? resource.viewUrl() : undefined;
 
+  const rawId = result[queryIdField];
+  const hasValidId = typeof rawId === 'number' && Number.isFinite(rawId);
+
   const splitRecords: RA<number> | undefined = React.useMemo(
     () =>
       typeof result[0] === 'string' && result[0].includes(',')
@@ -189,12 +192,15 @@ function Row({
             <div
               onClick={(event): void => {
                 event.stopPropagation();
+                // Same finite-number guard as onRowSelected, so unusable IDs can't be selected
+                if (!hasValidId) return;
                 handleSelected?.(!isSelected, event.shiftKey);
               }}
             >
               <Input.Checkbox
                 aria-label={commonText.select()}
                 checked={isSelected}
+                isReadOnly={!hasValidId}
                 onChange={f.undefined}
               />
             </div>
