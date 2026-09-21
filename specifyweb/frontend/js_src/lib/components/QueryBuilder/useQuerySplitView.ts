@@ -81,6 +81,16 @@ export function useQuerySplitView(
     []
   );
 
+  // Clear the parent-owned selection on a new query run, but not on
+  // orientation changes (isSplit/isHorizontal don't affect this effect)
+  const previousQueryRunCountRef = React.useRef(queryRunCount);
+  React.useEffect(() => {
+    if (queryRunCount === previousQueryRunCountRef.current) return;
+    previousQueryRunCountRef.current = queryRunCount;
+    setSelectedRows(new Set());
+    setSelectedIndex(0);
+  }, [queryRunCount]);
+
   // Track transitions so clearing selection (e.g. on close) doesn't retrigger
   // a selection; only enabling split view or a fresh set of results should
   const previousIsSplitRef = React.useRef(false);
