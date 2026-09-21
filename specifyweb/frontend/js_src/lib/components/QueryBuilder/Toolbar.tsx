@@ -16,6 +16,7 @@ export function QueryToolbar({
   isSeries,
   showSeries,
   searchSynonymy,
+  isEmbedded,
   onToggleHidden: handleToggleHidden,
   onToggleDistinct: handleToggleDistinct,
   onToggleSeries: handleToggleSeries,
@@ -29,6 +30,7 @@ export function QueryToolbar({
   readonly isSeries: boolean;
   readonly showSeries: boolean;
   readonly searchSynonymy: boolean;
+  readonly isEmbedded: boolean;
   readonly onToggleHidden: (value: boolean) => void;
   readonly onToggleDistinct: () => void;
   readonly onToggleSeries: () => void;
@@ -85,14 +87,18 @@ export function QueryToolbar({
             {queryText.countOnly()}
           </Button.Small>
           <Submit.Small
-            onClick={(event): void => {
-              // QueryBuilder can be embedded inside another form (for example
-              // the DataViewQueries app resource editor). Do not let this 
-              // submit that parent form and reload the page.
-              event.preventDefault();
-              event.stopPropagation();
-              handleSubmitClick();
-            }}
+            onClick={
+              isEmbedded
+                ? (event): void => {
+                    // Do not let this submit the parent form when the Query
+                    // Builder is embedded inside another form (for example
+                    // the DataViewQueries app resource editor).
+                    event.preventDefault();
+                    event.stopPropagation();
+                    handleSubmitClick();
+                  }
+                : undefined
+            }
           >
             {queryText.query()}
           </Submit.Small>

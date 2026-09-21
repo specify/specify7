@@ -570,6 +570,7 @@ function Wrapped({
               />
               <QueryToolbar
                 isDistinct={query.selectDistinct ?? false}
+                isEmbedded={isEmbedded}
                 isSeries={query.smushed ?? false}
                 searchSynonymy={query.searchSynonymy ?? false}
                 showHiddenFields={showHiddenFields}
