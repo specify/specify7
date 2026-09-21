@@ -1071,6 +1071,17 @@ def build_query(
     order_by_exprs = []
     selected_fields = []
     predicates_by_field = defaultdict(list)
+    # Materializing a subtree can cost more than parent lookups when the caller
+    # has already restricted the query to explicit record IDs.
+    optimize_tree = props.recordsetid is None and not any(
+        len(fs.fieldspec.join_path) == 1
+        and base_table is not None
+        and fs.fieldspec.get_field() == base_table.idField
+        and fs.op_num in (1, 10)
+        and not fs.negate
+        and fs.value not in ('', None)
+        for fs in field_specs
+    )
     # augment_field_specs(field_specs, formatauditobjs)
     for fs in field_specs:
         # sort_type = SORT_TYPES[fs.sort_type]
@@ -1082,7 +1093,8 @@ def build_query(
             continue
 
         query, field, predicate = fs.add_to_query(
-            query, formatauditobjs=props.formatauditobjs, collection=collection, user=user
+            query, formatauditobjs=props.formatauditobjs, collection=collection, user=user,
+            optimize_tree=optimize_tree,
         )
 
         if field is None:
