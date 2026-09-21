@@ -1,10 +1,14 @@
+from __future__ import annotations
+
 from email.policy import strict
 import logging
 from collections import namedtuple
-from typing import Any, NamedTuple, Literal
+from typing import Any, NamedTuple, Literal, TYPE_CHECKING
 
 from .query_ops import QueryOps, QUERYFIELD_OPERATION_NUMBER
-from .queryfieldspec import QueryFieldSpec, TreeRankQuery
+
+if TYPE_CHECKING:
+    from .queryfieldspec import QueryFieldSpec
 
 logger = logging.getLogger(__name__)
 
@@ -58,6 +62,8 @@ class QueryField(NamedTuple):
 
     @classmethod
     def from_spqueryfield(cls, field: EphemeralField, value: str | None=None):
+        from .queryfieldspec import QueryFieldSpec
+
         logger.info("processing field from %r", field)
         fieldspec = QueryFieldSpec.from_stringid(
             field.stringId, field.isRelFld)
@@ -78,6 +84,8 @@ class QueryField(NamedTuple):
         )
 
     def add_to_query(self, query, no_filter=False, formatauditobjs=False, collection=None, user=None, optimize_tree=True):
+        from .queryfieldspec import TreeRankQuery
+
         logger.info("adding field %s", self)
         value_required_for_filter = QueryOps.OPERATIONS[self.op_num] not in (
             "op_true",  # 6
