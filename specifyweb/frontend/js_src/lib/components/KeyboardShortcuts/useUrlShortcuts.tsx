@@ -4,13 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import { usePromise } from '../../hooks/useAsyncState';
 import { isExternalUrl } from '../../utils/ajax/helpers';
 import type { MenuItem } from '../Core/Main';
+import { rawUserToolsPromise } from '../Header/userToolDefinitions';
 import { userPreferences } from '../Preferences/userPreferences';
 import { bindKeyboardShortcut } from './context';
-import { shortcutToolsPromise } from './UrlShortcuts';
 
 export function useUrlShortcuts(): void {
   const [shortcuts] = userPreferences.use('header', 'actions', 'urlShortcuts');
-  const [userTools] = usePromise(shortcutToolsPromise(), false);
+  const [userTools] = usePromise(rawUserToolsPromise(), false);
   const navigate = useNavigate();
   React.useEffect(() => {
     const userToolsByUrl = new Map<string, MenuItem>();
