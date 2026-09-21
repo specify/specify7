@@ -53,8 +53,18 @@ function isSpQueryFieldDefinition(
 ): value is SerializedResource<SpQueryField> {
   if (typeof value !== 'object' || value === null || Array.isArray(value))
     return false;
-  const { stringId } = value as Partial<SerializedResource<SpQueryField>>;
-  return typeof stringId === 'string' && stringId.length > 0;
+  const field = value as Partial<SerializedResource<SpQueryField>>;
+  return (
+    typeof field.stringId === 'string' &&
+    typeof field.fieldName === 'string' &&
+    typeof field.tableList === 'string' &&
+    typeof field.isDisplay === 'boolean' &&
+    typeof field.isNot === 'boolean' &&
+    typeof field.sortType === 'number' &&
+    typeof field.operStart === 'number' &&
+    typeof field.startValue === 'string' &&
+    (field.isRelFld === null || typeof field.isRelFld === 'boolean')
+  );
 }
 
 function isDataViewQueryDefinition(
