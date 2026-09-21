@@ -48,6 +48,15 @@ function isDataViewQueriesFile(value: unknown): value is DataViewQueriesFile {
   );
 }
 
+function isSpQueryFieldDefinition(
+  value: unknown
+): value is SerializedResource<SpQueryField> {
+  if (typeof value !== 'object' || value === null || Array.isArray(value))
+    return false;
+  const { stringId } = value as Partial<SerializedResource<SpQueryField>>;
+  return typeof stringId === 'string' && stringId.length > 0;
+}
+
 function isDataViewQueryDefinition(
   value: unknown
 ): value is DataViewQueryDefinition {
@@ -57,8 +66,7 @@ function isDataViewQueryDefinition(
     !Array.isArray(value) &&
     Array.isArray((value as { readonly fields?: unknown }).fields) &&
     (value as { readonly fields: unknown[] }).fields.every(
-      (field) =>
-        typeof field === 'object' && field !== null && !Array.isArray(field)
+      isSpQueryFieldDefinition
     )
   );
 }
