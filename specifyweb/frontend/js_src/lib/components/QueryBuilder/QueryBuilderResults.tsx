@@ -35,6 +35,7 @@ export function QueryBuilderResults({
   isSplit,
   isHorizontal,
   onReRun: handleReRun,
+  onResults: handleResults,
   onRunQuery: handleRunQuery,
   onSelected: handleSelected,
   onSortChange: handleSortChange,
@@ -62,6 +63,7 @@ export function QueryBuilderResults({
   readonly isSplit: boolean;
   readonly isHorizontal: boolean;
   readonly onReRun: () => void;
+  readonly onResults?: (results: RA<QueryResultRow | undefined>) => void;
   readonly onRunQuery: (fields?: RA<QueryField>) => void;
   readonly onSelected: (ids: RA<number>) => void;
   readonly onSortChange: (fields: RA<QueryField>) => void;
@@ -150,6 +152,7 @@ export function QueryBuilderResults({
       splitPane={isSplit ? recordPreview : undefined}
       table={table}
       onReRun={handleReRun}
+      onResults={handleResults}
       onSelected={handleSelected}
       onSortChange={handleSortChange}
     />

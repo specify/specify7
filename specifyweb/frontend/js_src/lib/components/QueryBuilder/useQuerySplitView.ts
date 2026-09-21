@@ -9,7 +9,10 @@ import { userPreferences } from '../Preferences/userPreferences';
 const SMALL_SCREEN_WIDTH = 768;
 
 export function useQuerySplitView(
-  resultsRef: React.MutableRefObject<RA<QueryResultRow | undefined> | undefined>
+  resultsRef: React.MutableRefObject<
+    RA<QueryResultRow | undefined> | undefined
+  >,
+  queryRunCount: number
 ): {
   readonly selectedRows: ReadonlySet<number>;
   readonly setSelectedRows: React.Dispatch<
@@ -22,6 +25,7 @@ export function useQuerySplitView(
   readonly isHorizontal: boolean;
   readonly toggleSplit: () => void;
   readonly toggleOrientation: () => void;
+  readonly onResults: (results: RA<QueryResultRow | undefined>) => void;
 } {
   const [selectedRows, setSelectedRows] = React.useState<ReadonlySet<number>>(
     new Set()
@@ -62,13 +66,35 @@ export function useQuerySplitView(
     return true;
   }, [resultsRef]);
 
+  const [resultsVersion, setResultsVersion] = React.useState(0);
+  const notifiedRunRef = React.useRef<number | undefined>(undefined);
+  const onResults = React.useCallback(
+    (results: RA<QueryResultRow | undefined>): void => {
+      const hasRow = results.some((result) => result !== undefined);
+      if (!hasRow || notifiedRunRef.current === queryRunCount) return;
+      notifiedRunRef.current = queryRunCount;
+      setResultsVersion((version) => version + 1);
+    },
+    [queryRunCount]
+  );
+
+  // Track transitions so clearing selection (e.g. on close) doesn't retrigger
+  // a selection; only enabling split view or a fresh set of results should
+  const previousIsSplitRef = React.useRef(false);
+  const previousResultsVersionRef = React.useRef(resultsVersion);
   React.useEffect(() => {
-    if (!isSplit || selectedRows.size > 0 || selectFirstResult()) return;
-    const interval = setInterval(() => {
-      if (selectFirstResult()) clearInterval(interval);
-    }, 200);
-    return (): void => clearInterval(interval);
-  }, [isSplit, selectedRows.size, selectFirstResult]);
+    const splitJustEnabled = isSplit && !previousIsSplitRef.current;
+    const newResultsArrived =
+      resultsVersion !== previousResultsVersionRef.current;
+    previousIsSplitRef.current = isSplit;
+    previousResultsVersionRef.current = resultsVersion;
+    if (
+      isSplit &&
+      selectedRows.size === 0 &&
+      (splitJustEnabled || newResultsArrived)
+    )
+      selectFirstResult();
+  }, [isSplit, resultsVersion, selectedRows.size, selectFirstResult]);
 
   const toggleSplit = (): void => {
     const nextIsSplit = !isSplit;
@@ -85,5 +111,6 @@ export function useQuerySplitView(
     isHorizontal,
     toggleSplit,
     toggleOrientation,
+    onResults,
   };
 }
