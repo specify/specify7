@@ -133,16 +133,20 @@ export function QueryHeader({
           />
         </ErrorBoundary>
       ) : undefined}
-      <SplitViewToggleButton
-        disabled={!canSplit}
-        isSplit={isSplit}
-        onToggle={onToggleSplit}
-      />
-      <SplitViewOrientationButton
-        disabled={!isSplit}
-        isHorizontal={isHorizontal}
-        onToggle={onToggleOrientation}
-      />
+      {hasPermission('/querybuilder/query', 'execute') && (
+        <>
+          <SplitViewToggleButton
+            disabled={!canSplit}
+            isSplit={isSplit}
+            onToggle={onToggleSplit}
+          />
+          <SplitViewOrientationButton
+            disabled={!isSplit}
+            isHorizontal={isHorizontal}
+            onToggle={onToggleOrientation}
+          />
+        </>
+      )}
       <span className="-ml-2 flex-1" />
       <div className="flex flex-wrap justify-center gap-2">
         <Button.Small onClick={() => setIsBasic(!isBasic)}>
