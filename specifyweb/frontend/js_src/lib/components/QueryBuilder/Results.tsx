@@ -170,6 +170,10 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
             ),
           },
           (_, index) => index * props.fetchSize
+        ).filter((offset) =>
+          currentResults
+            .slice(offset, offset + props.fetchSize)
+            .some((result) => result !== undefined)
         );
         const pages = await Promise.all(
           offsets.map((offset) => fetchResults(offset))
