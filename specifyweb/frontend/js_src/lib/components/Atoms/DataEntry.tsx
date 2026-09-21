@@ -204,7 +204,7 @@ export const DataEntry = {
     const ref = React.useRef<HTMLAnchorElement>(null);
     const keyboardShortcut = userPreferences.useKeyboardShortcut(
       'form',
-      'queryComboBox',
+      'dialogs',
       'openRelatedRecordInNewTab',
       resource === undefined ? undefined : (): void => ref.current?.click()
     );

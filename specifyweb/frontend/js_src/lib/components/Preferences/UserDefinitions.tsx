@@ -584,8 +584,6 @@ export const userPreferenceDefinitions = {
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
-          close: defineKeyboardShortcut(commonText.close(), 'KeyC'),
-          save: defineKeyboardShortcut(commonText.save(), 'KeyS'),
           rememberPosition: definePref<boolean>({
             title: preferencesText.rememberDialogPositions(),
             requiresReload: false,
@@ -950,6 +948,23 @@ export const userPreferenceDefinitions = {
             preferencesText.openFormMeta(),
             'KeyM'
           ),
+          save: defineKeyboardShortcut(commonText.save(), 'Ctrl+KeyS'),
+          carryForward: defineKeyboardShortcut(
+            formsText.carryForward(),
+            'Ctrl+Shift+KeyC'
+          ),
+          clone: defineKeyboardShortcut(formsText.clone(), 'Ctrl+Shift+KeyL'),
+        },
+      },
+      dialogs: {
+        title: preferencesText.dialogs(),
+        items: {
+          close: defineKeyboardShortcut(commonText.close(), 'KeyC'),
+          save: defineKeyboardShortcut(commonText.save(), 'KeyS'),
+          openRelatedRecordInNewTab: defineKeyboardShortcut(
+            preferencesText.openRelatedRecordInNewTab(),
+            'KeyO'
+          ),
         },
       },
       definition: {
@@ -1260,10 +1275,6 @@ export const userPreferenceDefinitions = {
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
-          openRelatedRecordInNewTab: defineKeyboardShortcut(
-            preferencesText.openRelatedRecordInNewTab(),
-            'KeyO'
-          ),
         },
       },
       recordSet: {

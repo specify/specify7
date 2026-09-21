@@ -357,14 +357,14 @@ export function Dialog({
     'input[type="submit"], button[type="submit"]'
   );
   userPreferences.useKeyboardShortcut(
-    'general',
-    'dialog',
+    'form',
+    'dialogs',
     'close',
     isOpen && typeof handleClose === 'function' ? handleClose : undefined
   );
   userPreferences.useKeyboardShortcut(
-    'general',
-    'dialog',
+    'form',
+    'dialogs',
     'save',
     isOpen && saveButton !== null && saveButton !== undefined
       ? (): void => saveButton.click()
