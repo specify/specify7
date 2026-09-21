@@ -192,7 +192,6 @@ function Row({
             <div
               onClick={(event): void => {
                 event.stopPropagation();
-                // Same finite-number guard as onRowSelected, so unusable IDs can't be selected
                 if (!hasValidId) return;
                 handleSelected?.(!isSelected, event.shiftKey);
               }}

@@ -18,7 +18,7 @@ import { ReadOnlyContext } from '../Core/Contexts';
 import { fetchCollection } from '../DataModel/collection';
 import { backendFilter, getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { resourceEvents } from '../DataModel/resource';
+import { idFromUrl, resourceEvents } from '../DataModel/resource';
 import { getTableById, tables } from '../DataModel/tables';
 import type { SpQuery } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
@@ -137,16 +137,27 @@ export function QueryListDialog({
           return;
         // Reconcile against searchFilter rather than current-page membership, since totalCount spans all pages
         const name = (resource.get('name') as string | undefined) ?? '';
-        const matchesFilter =
+        const matchesSearch =
           searchFilter === '' ||
           name.toLowerCase().includes(searchFilter.toLowerCase());
-        if (!matchesFilter) return;
+        // Mirror every collection filter fetchCollection was called with,
+        // so an out-of-scope deletion doesn't decrement an unrelated count
+        const activeFilters = filters ?? { specifyUser: userInformation.id };
+        const specifyUserId = idFromUrl(
+          (resource.get('specifyUser') as string | null) ?? ''
+        );
+        const matchesSpecifyUser = specifyUserId === activeFilters.specifyUser;
+        const matchesContextTableId =
+          !('contextTableId' in activeFilters) ||
+          resource.get('contextTableId') === activeFilters.contextTableId;
+        if (!matchesSearch || !matchesSpecifyUser || !matchesContextTableId)
+          return;
         setData({
           records: data.records.filter((query) => query.id !== resource.id),
           totalCount: data.totalCount - 1,
         });
       }),
-    [data, searchFilter, setData]
+    [data, filters, searchFilter, setData]
   );
 
   const totalCountRef = React.useRef<number | undefined>(undefined);
