@@ -22,8 +22,13 @@ export function useUrlShortcuts(): void {
         ? undefined
         : bindKeyboardShortcut(shortcuts, () => {
             const userTool = userToolsByUrl.get(path);
-            if (userTool?.onClick !== undefined) void userTool.onClick();
+            if (userTool?.onClick !== undefined)
+              void userTool.onClick().then(() =>
+                globalThis.location.assign(path)
+              );
             else if (isExternalUrl(path)) globalThis.open(path, '_blank');
+            else if (userTool !== undefined)
+              globalThis.location.assign(path);
             else navigate(path);
           })
     );
