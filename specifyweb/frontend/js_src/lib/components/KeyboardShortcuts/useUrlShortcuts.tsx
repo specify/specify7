@@ -4,13 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import { usePromise } from '../../hooks/useAsyncState';
 import { isExternalUrl } from '../../utils/ajax/helpers';
 import type { MenuItem } from '../Core/Main';
-import { rawUserToolsPromise } from '../Header/userToolDefinitions';
 import { userPreferences } from '../Preferences/userPreferences';
 import { bindKeyboardShortcut } from './context';
+import { shortcutToolsPromise } from './UrlShortcuts';
 
 export function useUrlShortcuts(): void {
   const [shortcuts] = userPreferences.use('header', 'actions', 'urlShortcuts');
-  const [userTools] = usePromise(rawUserToolsPromise(), false);
+  const [userTools] = usePromise(shortcutToolsPromise(), false);
   const navigate = useNavigate();
   React.useEffect(() => {
     const userToolsByUrl = new Map<string, MenuItem>();
@@ -23,12 +23,11 @@ export function useUrlShortcuts(): void {
         : bindKeyboardShortcut(shortcuts, () => {
             const userTool = userToolsByUrl.get(path);
             if (userTool?.onClick !== undefined)
-              void userTool.onClick().then(() =>
-                globalThis.location.assign(path)
-              );
+              void userTool
+                .onClick()
+                .then(() => globalThis.location.assign(path));
             else if (isExternalUrl(path)) globalThis.open(path, '_blank');
-            else if (userTool !== undefined)
-              globalThis.location.assign(path);
+            else if (userTool !== undefined) globalThis.location.assign(path);
             else navigate(path);
           })
     );

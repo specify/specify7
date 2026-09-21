@@ -5,6 +5,7 @@ import { useAsyncState, usePromise } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
+import { headerText } from '../../localization/header';
 import { preferencesText } from '../../localization/preferences';
 import { f } from '../../utils/functools';
 import type { GetSet, RA, WritableArray } from '../../utils/types';
@@ -14,6 +15,7 @@ import { Button } from '../Atoms/Button';
 import { Input } from '../Atoms/Form';
 import { ReadOnlyContext } from '../Core/Contexts';
 import type { MenuItem } from '../Core/Main';
+import { rawMenuItemsPromise } from '../Header/menuItemDefinitions';
 import { rawUserToolsPromise } from '../Header/userToolDefinitions';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import type { PreferenceRendererProps } from '../Preferences/types';
@@ -22,13 +24,29 @@ import type { KeyboardShortcuts } from './config';
 import { emptyShortcuts, KeyboardShortcutPreferenceItem } from './Shortcuts';
 
 export type UrlShortcuts = Partial<Record<string, KeyboardShortcuts>>;
+export type ShortcutToolGroups = Record<string, Record<string, MenuItem>>;
+
+export const shortcutToolsPromise = f.store(
+  async (): Promise<ShortcutToolGroups> => {
+    const [menuItems, userTools] = await Promise.all([
+      rawMenuItemsPromise(),
+      rawUserToolsPromise(),
+    ]);
+    return {
+      [headerText.main()]: Object.fromEntries(
+        menuItems.map((item) => [item.name, item])
+      ),
+      ...userTools,
+    };
+  }
+);
 
 export function UrlShortcutsEditor(
   props: PreferenceRendererProps<UrlShortcuts>
 ): JSX.Element {
   const [isOpen, _, __, handleToggle] = useBooleanState(false);
   const isReadOnly = React.useContext(ReadOnlyContext);
-  const [userTools] = usePromise(rawUserToolsPromise(), false);
+  const [userTools] = usePromise(shortcutToolsPromise(), false);
 
   return (
     <>
@@ -76,9 +94,9 @@ function EditorDialog({
   onChange: handleChange,
 }: PreferenceRendererProps<UrlShortcuts>): JSX.Element | null {
   const [categorizedRoutes] = useAsyncState(getCategorizedRoutes, true);
-  const [userTools] = usePromise(rawUserToolsPromise(), false);
+  const [userTools] = usePromise(shortcutToolsPromise(), false);
   const localValue = useTriggerState(value);
-  const userToolPaths = React.useMemo(
+  const shortcutToolPaths = React.useMemo(
     () =>
       new Set(
         Object.values(userTools ?? {})
@@ -107,7 +125,7 @@ function EditorDialog({
       <H3>{preferencesText.customPages()}</H3>
       <CustomRouteBrowser
         categorized={categorizedRoutes}
-        excludedPaths={userToolPaths}
+        excludedPaths={shortcutToolPaths}
         value={localValue}
       />
     </Dialog>
