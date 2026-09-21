@@ -8,6 +8,9 @@ from .queryfieldspec import QueryFieldSpec, TreeRankQuery
 
 logger = logging.getLogger(__name__)
 
+# Prefer parent lookups for shallow trees; deeper trees are cheaper to
+# materialize as a rank range.
+MAX_PAGE_PARENT_LOOKUP_RANKS = 8
 
 QUREYFIELD_SORT_T = Literal[
     0,  # NONE
@@ -78,7 +81,7 @@ class QueryField(NamedTuple):
             strict=field.isStrict,
         )
 
-    def add_to_query(self, query, no_filter=False, formatauditobjs=False, collection=None, user=None, optimize_tree=True):
+    def add_to_query(self, query, no_filter=False, formatauditobjs=False, collection=None, user=None, optimize_tree=True, prefer_parent_lookup=False):
         logger.info("adding field %s", self)
         value_required_for_filter = QueryOps.OPERATIONS[self.op_num] not in (
             "op_true",  # 6
@@ -109,6 +112,16 @@ class QueryField(NamedTuple):
             and sum(isinstance(part, TreeRankQuery) for part in path) == 1
             and self.fieldspec.date_part is None
         )
+        use_rank_lookup = use_tree_range and not (
+            self.op_num == 1
+            and self.fieldspec.get_field().name.lower() == self.fieldspec.table.idFieldName.lower()
+        )
+        if use_rank_lookup and prefer_parent_lookup and query.collection is not None:
+            query, treedefs, _ = query.tree_rank_metadata(self.fieldspec.table, path[-2])
+            # A bounded page can stop after a handful of parent lookups in a
+            # shallow tree. Materializing the entire rank delays that first page.
+            if max(depth for _, depth in treedefs) <= MAX_PAGE_PARENT_LOOKUP_RANKS:
+                use_tree_range = use_rank_lookup = False
 
         return self.fieldspec.add_to_query(
             query,
@@ -121,8 +134,5 @@ class QueryField(NamedTuple):
             collection=collection,
             user=user,
             use_tree_range=use_tree_range,
-            use_rank_lookup=use_tree_range and not (
-                self.op_num == 1
-                and self.fieldspec.get_field().name.lower() == self.fieldspec.table.idFieldName.lower()
-            ),
+            use_rank_lookup=use_rank_lookup,
         )
