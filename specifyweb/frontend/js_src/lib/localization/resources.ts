@@ -18,7 +18,7 @@ export const resourcesText = createDictionary({
     'de-ch': 'App Ressourcen',
     'pt-br': 'Recursos do aplicativo',
     'hr-hr': 'Resursi aplikacije',
-    nb: 'App-ressurser',
+    nb: 'Appressurser',
   },
   formDefinition: {
     'en-us': 'Form Definition',
@@ -95,7 +95,7 @@ export const resourcesText = createDictionary({
     'de-ch': 'Typ',
     'pt-br': 'Tipo',
     'hr-hr': 'Tip',
-    nb: 'Type',
+    nb: 'Format',
   },
   userTypes: {
     'en-us': 'User Types',
@@ -106,7 +106,7 @@ export const resourcesText = createDictionary({
     'de-ch': 'Benutzertypen',
     'pt-br': 'Tipos de usuários',
     'hr-hr': 'Vrste korisnika',
-    nb: 'Brukertyper',
+    nb: 'Bruker Format',
   },
   resources: {
     'en-us': 'Resources',
@@ -183,7 +183,7 @@ export const resourcesText = createDictionary({
     'de-ch': 'Express Suche Konfigurieren',
     'pt-br': 'Configuração de Busca Expressa',
     'hr-hr': 'Konfiguracija brzog pretraživanja',
-    nb: 'Ekspresssøkkonfigurasjon',
+    nb: 'Konfigurer Enkelt søk',
   },
   typeSearches: {
     'en-us': 'Type Searches',
@@ -483,7 +483,7 @@ export const resourcesText = createDictionary({
     'de-ch': 'Leaflet-Layer',
     'pt-br': 'Camadas de Folhetos',
     'hr-hr': 'Slojevi letaka',
-    nb: 'Brosjyrelag',
+    nb: 'Kartlag',
   },
   textEditor: {
     'en-us': 'Text Editor',
@@ -604,7 +604,7 @@ export const resourcesText = createDictionary({
     'uk-ua': 'За замовчуванням',
     'pt-br': 'Padrão',
     'hr-hr': 'Zadano',
-    nb: 'Misligholde',
+    nb: 'Standard',
   },
   separator: {
     'en-us': 'Separator',
@@ -615,7 +615,7 @@ export const resourcesText = createDictionary({
     'uk-ua': 'Роздільник',
     'pt-br': 'Separador',
     'hr-hr': 'Separator',
-    nb: 'Separator',
+    nb: 'Skilletegn',
   },
   suffix: {
     'en-us': 'Suffix',
@@ -637,7 +637,7 @@ export const resourcesText = createDictionary({
     'uk-ua': 'Ліміт',
     'pt-br': 'Limite',
     'hr-hr': 'Ograničiti',
-    nb: 'Begrense',
+    nb: 'Grense',
   },
   defaultInline: {
     'en-us': '(default)',
@@ -648,7 +648,7 @@ export const resourcesText = createDictionary({
     'uk-ua': '(за умовчанням)',
     'pt-br': '(padrão)',
     'hr-hr': '(zadano)',
-    nb: '(misligholde)',
+    nb: '(standard)',
   },
   sortField: {
     'en-us': 'Sort Field',
@@ -688,7 +688,7 @@ export const resourcesText = createDictionary({
       'Pesquise os registros da sua coleção para visualizar o formatador de registros.',
     'hr-hr':
       'Pretražite zapise svoje zbirke kako biste pregledali formater zapisa',
-    nb: 'Søk i samlingspostene dine for å forhåndsvise postformateringen',
+    nb: 'Søk i samlingspostene for å forhåndsvise formatet',
   },
   editorNotAvailable: {
     'en-us': 'Visual editor is not available for this resource',
@@ -787,7 +787,7 @@ export const resourcesText = createDictionary({
     'uk-ua': 'Умова Значення поля',
     'pt-br': 'Valor do campo de condição',
     'hr-hr': 'Vrijednost polja uvjeta',
-    nb: 'Verdi i betingelsesfeltet',
+    nb: 'Verdien i betingelsesfeltet',
   },
   conditionDescription: {
     'en-us':
@@ -858,7 +858,7 @@ export const resourcesText = createDictionary({
     'uk-ua': 'Опублікувати',
     'pt-br': 'Publicar',
     'hr-hr': 'Objaviti',
-    nb: 'Utgi',
+    nb: 'Publiser',
   },
   fileName: {
     'en-us': 'File name',
@@ -876,7 +876,7 @@ export const resourcesText = createDictionary({
     'de-ch': 'Als Benutzer ausführen',
     'es-es': 'Ejecutar como usuario',
     'fr-fr': "Exécuter en tant qu'utilisateur",
-    'ru-ru': 'Запустить от имени пользователя',
+    'ru-ru': 'Запуск от имени пользователя',
     'uk-ua': 'Запуск від імені користувача',
     'pt-br': 'Executar como usuário',
     'hr-hr': 'Pokreni kao korisnik',
@@ -902,7 +902,7 @@ export const resourcesText = createDictionary({
     'uk-ua': 'Запустити в колекції',
     'pt-br': 'Executar em coleção',
     'hr-hr': 'Pokreni u kolekciji',
-    nb: 'Kjør inn samlingen',
+    nb: 'Kjør i samlingen',
   },
   createNewForm: {
     'en-us': 'Create a new view definition',
@@ -981,7 +981,7 @@ export const resourcesText = createDictionary({
     'uk-ua': 'Умовний формат',
     'pt-br': 'Formatação condicional',
     'hr-hr': 'Uvjetni format',
-    nb: 'Betinget formatering',
+    nb: 'Betinget format',
   },
   customizeFieldFormatters: {
     'en-us': 'Customize Field Formats',
@@ -1008,7 +1008,7 @@ export const resourcesText = createDictionary({
   collapseConditionalField: {
     'en-us': 'Collapse Conditional Field',
     'de-ch': 'Zusammenbruch des bedingten Feldes',
-    'es-es': 'Colapso del campo condicional',
+    'es-es': 'Campo condicional de colapso',
     'fr-fr': 'Réduire le champ conditionnel',
     'ru-ru': 'Свернуть условное поле',
     'uk-ua': 'Згорнути умовне поле',
@@ -1047,7 +1047,7 @@ export const resourcesText = createDictionary({
     'uk-ua': 'Потрібне поточне визначення.',
     'pt-br': 'É necessária uma avaliação atual.',
     'hr-hr': 'Potrebna je trenutna odluka.',
-    nb: 'En aktuell avgjørelse er nødvendig.',
+    nb: 'En gyldig avgjørelse er nødvendig.',
   },
   cogAddedToItself: {
     'en-us': 'A COG cannot be added to itself.',
@@ -1127,13 +1127,13 @@ export const resourcesText = createDictionary({
   deleteExchangeOutPrep: {
     'en-us': 'A exchanged out preparation cannot be deleted',
     'de-ch': 'Eine ausgetauschte Zubereitung kann nicht gelöscht werden.',
-    'es-es': 'Una preparación intercambiada no se puede eliminar.',
+    'es-es': 'Una preparación intercambiada no se puede eliminar',
     'fr-fr': 'Une préparation échangée ne peut pas être supprimée',
     'pt-br': 'Uma preparação substituída não pode ser excluída.',
     'ru-ru': 'Заменённый препарат удалить нельзя.',
     'uk-ua': 'Обмінений препарат не можна видалити',
     'hr-hr': 'Zamijenjeni pripravak ne može se izbrisati',
-    nb: 'Et utskiftet preparat kan ikke slettes',
+    nb: 'Et preparat som er gitt eller byttet bort kan ikke slettes',
   },
   deleteExchangeInPrep: {
     'en-us': 'A exchanged in preparation cannot be deleted',
@@ -1145,7 +1145,7 @@ export const resourcesText = createDictionary({
     'ru-ru': 'Подготовленный обмен не может быть удален.',
     'uk-ua': 'Обмін, що готується, не можна видалити',
     'hr-hr': 'Razmjena u pripremi ne može se izbrisati',
-    nb: 'En utveksling som er under forberedelse kan ikke slettes',
+    nb: 'Et preparat som er fått i gave eller er byttet til seg kan ikke slettes',
   },
   selectDeterminationTaxon: {
     'en-us': 'Select one taxon-tree set to continue with:',
@@ -1223,7 +1223,7 @@ export const resourcesText = createDictionary({
     'es-es': 'La preparación se utiliza en un préstamo.',
     'fr-fr': 'Cette préparation est en cours de prêt.',
     'pt-br': 'O preparo é utilizado em um empréstimo.',
-    'ru-ru': 'Данный препарат используется в кредите.',
+    'ru-ru': 'Данный препарат используется при оформлении кредита.',
     'uk-ua': 'Препарат використовується у позиці.',
     'hr-hr': 'Priprema se koristi u zajmu.',
     nb: 'Preparatet brukes i et lån.',
