@@ -155,6 +155,24 @@ class TreeRangeFilterTests(SqlTreeSetup):
                 self.assertIn(self.skipped.id, {row[0] for row in rows})
                 self.assertIn('ParentID', statement)
 
+    def test_removed_rank_is_skipped_without_tree_joins(self):
+        displayed_rank = self.field('4.taxon.Genus')
+        removed_rank = TreeRankQuery.create('Removed Rank', 'Taxon')
+        missing_field = displayed_rank._replace(
+            fieldspec=displayed_rank.fieldspec._replace(
+                join_path=(removed_rank, displayed_rank.fieldspec.join_path[-1]),
+            ),
+        )
+
+        rows, statement = self.run_query([
+            self.field('4.taxon.name'),
+            missing_field,
+        ])
+
+        self.assertTrue(rows)
+        self.assertTrue(all(row[2] is None for row in rows))
+        self.assertNotIn('LEFT OUTER JOIN taxon', statement)
+
     def test_repeated_filters_and_multiple_ranks(self):
         for implicit_or in [True, False]:
             self.assert_equivalent([
