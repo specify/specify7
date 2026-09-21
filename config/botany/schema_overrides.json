@@ -1,7 +1,6 @@
 {
   "collectingevent": {
     "ishidden": false,
-    "desc": "Collecting Event",
     "items": [
       {"stationfieldnumber": {"ishidden": false, "name": "Collector Number", "desc": "Collector Number"}},
       {"remarks": {"ishidden": false, "name": "Locality and Habitat Notes", "desc": "Locality and Habitat Notes"}}
@@ -9,7 +8,6 @@
   },
   "collectionobject": {
     "ishidden": false,
-    "desc": "Collection Object",
     "items": [
       {"text1": {"ishidden": false, "picklistname": "Phenology", "name": "Phenology", "desc": "Phenology"}},
       {"description": {"ishidden": false, "name": "Specimen Description", "desc": "Specimen Description"}},

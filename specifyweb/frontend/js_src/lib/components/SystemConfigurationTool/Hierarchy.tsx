@@ -461,7 +461,7 @@ export function Hierarchy({
 
   const loading = React.useContext(LoadingContext);
 
-  const isGeographyGlobal = systemInfo.geography_is_global;
+  const isGeographyGlobal = systemInfo.geography_is_global ?? false;
 
   const [
     disciplineCreationOpen,

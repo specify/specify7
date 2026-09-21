@@ -7,6 +7,8 @@ from sqlalchemy.sql.elements import ClauseElement
 from sqlalchemy.sql.selectable import Select
 from sqlalchemy.sql.sqltypes import NullType
 
+from django.conf import settings
+
 logger = logging.getLogger(__name__)
 
 def _coerce_statement(obj: Any) -> ClauseElement:
@@ -50,7 +52,7 @@ def log_sqlalchemy_query(
     Run in the stored_queries.execute file, in the execute function, right before the return statement:
         from specifyweb.specify.utils import log_sqlalchemy_query; log_sqlalchemy_query(query)
     """
-    if not logger.isEnabledFor(level):
+    if not logger.isEnabledFor(level) or not settings.DEBUG:
         return None  # skip compiling and logging if we're not logging at this level
 
     dialect = dialect or mysql_dialect.dialect()

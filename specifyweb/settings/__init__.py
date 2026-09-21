@@ -82,10 +82,7 @@ DATABASES = {
     },
 }
 
-DB_ALIAS = os.getenv("DJANGO_DB_ALIAS", "default") # Might want to set to "app" in the future
-if DB_ALIAS != "default":
-    from copy import deepcopy
-    DATABASES['default'] = deepcopy(DATABASES[DB_ALIAS])
+DATABASE_ROUTERS = ["specifyweb.specify.migration_utils.router.MigrationRouter"]
 
 def get_sa_db_url(db_name):
     return 'mysql://{}:{}@{}:{}/{}?charset=utf8'.format(
@@ -146,13 +143,11 @@ LANGUAGES = [
 
 SITE_ID = 1
 
+USE_TZ=False
+
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
 USE_I18N = True
-
-# If you set this to False, Django will not format dates, numbers and
-# calendars according to the current locale
-USE_L10N = True
 
 LANGUAGE_COOKIE_NAME='language'
 

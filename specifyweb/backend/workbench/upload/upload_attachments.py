@@ -128,7 +128,8 @@ def add_attachments_to_plan(
                 column=f"_ATTACHMENT_ORDINAL_{index}",
                 matchBehavior="ignoreNever",
                 nullAllowed=True,
-                default="0"
+                default="0",
+                disambiguationBehavior="ask"
             )
             attackment_columns = {}
             for field in attachment_fields_to_copy:
@@ -136,7 +137,8 @@ def add_attachments_to_plan(
                     column=f"_ATTACHMENT_{field.upper()}_{index}",
                     matchBehavior="ignoreNever",
                     nullAllowed=True,
-                    default=attachment_field_default(field)
+                    default=attachment_field_default(field),
+                    disambiguationBehavior="ask"
                 )
             attachment_uploadable = UploadTable(
                 name="Attachment",

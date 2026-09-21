@@ -283,7 +283,7 @@ def canonicalize_remove_node(node: ToRemoveNode) -> Q:
 
 
 def _map_matchee(matchee: list[ToRemoveMatchee], model_name: str) -> Exists:
-    model: Model = get_model(model_name)
+    model = get_model(model_name)
     qs = [Q(**match["filter_on"]) for match in matchee]
     qs_or = Func.make_ors(qs)
     query = model.objects.filter(qs_or)
@@ -309,7 +309,7 @@ SPECIAL_TREE_FIELDS_TO_SKIP = [
 ]
 
 
-def safe_fetch(model: Model, filters, version):
+def safe_fetch(model, filters, version):
     if filters is None:
         return None
     try:

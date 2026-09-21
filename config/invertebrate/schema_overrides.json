@@ -1,14 +1,12 @@
 {
   "collectingevent": {
     "ishidden": false,
-    "desc": "Collecting Event",
     "items": [
       {"method": {"ishidden": false, "picklistname": "CollectingMethod", "name": "Method", "desc": "Method"}}
     ]
   },
   "collectionobjectattribute": {
     "ishidden": false,
-    "desc": "Collection Object Attribute",
     "items": [
       {"text4": {"ishidden": false, "picklistname": "LifeStage", "name": "Stage", "desc": "Stage"}},
       {"text6": {"ishidden": false, "name": "Body Width", "desc": "Body Width"}},

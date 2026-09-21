@@ -836,6 +836,7 @@ class RowPlanCanonical(NamedTuple):
                 overrideScope=None,
                 wbcols=wb_cols,
                 static={},
+                preserveIdentity=(base_table.name.lower() == "attachment"),
                 # FEAT: Remove this restriction to allow adding brand new data anywhere
                 # that's about the best we can do, to make relationships readonly. we can't really omit them during headers finding, because they are "still" there
                 toOne=Func.remove_keys(to_one_upload_tables, _relationship_is_editable),

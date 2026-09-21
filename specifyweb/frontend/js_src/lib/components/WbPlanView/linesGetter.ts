@@ -21,6 +21,7 @@ export const defaultColumnOptions: ColumnOptions = {
   matchBehavior: 'ignoreNever',
   nullAllowed: true,
   default: null,
+  disambiguationBehavior: 'ask',
 } as const;
 
 export const columnOptionsAreDefault = (

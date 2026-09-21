@@ -31,7 +31,7 @@ export function ChronoChart(): JSX.Element {
         >
           <ImageViewer
             alt="Chrono Chart"
-            src="/static/img/chronostratChart2023-09.jpg"
+            src="/static/img/chronostratChart2026-06.jpg"
           />
         </Dialog>
       )}

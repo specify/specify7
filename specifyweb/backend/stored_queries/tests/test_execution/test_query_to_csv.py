@@ -181,8 +181,12 @@ tests = [
 ]
 
 
-def return_first(first, *args, **kwargs):
-    return first
+def return_first(query, processors, **kwargs):
+    for raw_row in query.yield_per(7000):
+        row = list(raw_row)
+        for processor in processors:
+            row = processor(row)
+        yield tuple(row)
 
 
 def make_test(test_fn, mock_post_processing):

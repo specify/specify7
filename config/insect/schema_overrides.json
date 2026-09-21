@@ -1,7 +1,6 @@
 {
   "collectionobjectattribute": {
     "ishidden": false,
-    "desc": "Collection Object Attribute",
     "items": [
       {"text2": {"ishidden": false, "name": "Weight", "desc": "Weight"}},
       {"text3": {"ishidden": false, "name": "Length", "desc": "Length"}},

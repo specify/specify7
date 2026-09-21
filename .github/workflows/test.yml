@@ -78,27 +78,22 @@ jobs:
           - 6379
 
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Get Specify 6 from cache
-        id: cache-specify6
-        uses: actions/cache@v3
+      - name: Checkout Copy of Repo
+        uses: actions/checkout@v4
         with:
-          path: Specify6
-          key: specify6.8.02-cache
-
-      - name: Install Specify 6
-        if: steps.cache-specify6.outputs.cache-hit != 'true'
-        run: |
-          wget https://update.specifysoftware.org/6802/Specify_unix_64.sh
-          sh Specify_unix_64.sh -q -dir ./Specify6
-
-      - name:
-          Patch Specify datamodel (Sam, you made the Attachment.origFilename too
-          long)
-        run: sed -i 's/name="origFilename"
-          type="java.lang.String"/name="origFilename" type="text"/'
-          ./Specify6/config/specify_datamodel.xml
+          # We're not making any writes to the repo, so there's no need to
+          # store the credentials in git config
+          persist-credentials: false
+          # Ugh, don't like fetching the entire copy of the Specify 7 repo
+          # here, but this was needed because the details of the most recent
+          # tag was required from the build version Make target
+          # The backend tests can be run on a branch that can be some arbitrary
+          # distance from the most recent tag, so we can't realistically set a
+          # reasonable fetch depth here.
+          # There might be some Git command to do this, will need to look into
+          # that if we want to somewhat speed up the backend tests
+          fetch-depth: 0
+        
 
       - name: Install ubuntu dependencies
         run: |
@@ -121,7 +116,7 @@ jobs:
 
       - name: Create settings file
         run: |
-          echo "THICK_CLIENT_LOCATION = '${{ github.workspace }}/Specify6'" >> specifyweb/settings/local_specify_settings.py
+          echo "THICK_CLIENT_LOCATION = '${{ github.workspace }}'" >> specifyweb/settings/local_specify_settings.py
           echo "DATABASE_HOST = '127.0.0.1'" >> specifyweb/settings/local_specify_settings.py
           echo "DATABASE_PORT = ${{ job.services.mariadb.ports[3306] }}" >> specifyweb/settings/local_specify_settings.py
           echo "MASTER_NAME = 'MasterUser'" >> specifyweb/settings/local_specify_settings.py

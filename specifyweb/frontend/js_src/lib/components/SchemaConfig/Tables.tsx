@@ -1,9 +1,6 @@
 import React from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
 
 import { useCachedState } from '../../hooks/useCachedState';
-import { commonText } from '../../localization/common';
-import { schemaText } from '../../localization/schema';
 import { wbPlanText } from '../../localization/wbPlan';
 import type { CacheDefinitions } from '../../utils/cache/definitions';
 import type { RA } from '../../utils/types';
@@ -17,48 +14,8 @@ import type { SpecifyTable } from '../DataModel/specifyTable';
 import { genericTables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
-import { Dialog } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasTablePermission } from '../Permissions/helpers';
-import { formatUrl } from '../Router/queryString';
-
-export function SchemaConfigTables(): JSX.Element {
-  const { language = '' } = useParams();
-  const navigate = useNavigate();
-
-  return (
-    <Dialog
-      buttons={
-        <>
-          <Link.Success
-            download={`schema_localization_${language}.json`}
-            href={formatUrl('/context/schema_localization.json', {
-              lang: language,
-            })}
-          >
-            {commonText.export()}
-          </Link.Success>
-          <span className="-ml-2 flex-1" />
-          <Button.Secondary
-            onClick={(): void => navigate('/specify/schema-config/')}
-          >
-            {commonText.back()}
-          </Button.Secondary>
-        </>
-      }
-      header={schemaText.tables()}
-      onClose={(): void => navigate('/specify')}
-    >
-      <TableList
-        cacheKey="schemaConfig"
-        getAction={(table): string =>
-          `/specify/schema-config/${language}/${table.name}/`
-        }
-        localizeTableNames={false}
-      />
-    </Dialog>
-  );
-}
 
 /**
  * Get the names of all cache categories in cache definitions that have
@@ -110,12 +67,16 @@ export function TableList({
   filter = defaultFilter,
   children,
   localizeTableNames = true,
+  currentTableName,
+  badge,
 }: {
   readonly cacheKey: CacheKey;
   readonly getAction: (table: SpecifyTable) => string | (() => void);
   readonly filter?: (showHiddenTables: boolean, table: SpecifyTable) => boolean;
   readonly children?: (table: SpecifyTable) => React.ReactNode;
   readonly localizeTableNames?: boolean;
+  readonly currentTableName?: string;
+  readonly badge?: (table: SpecifyTable) => React.ReactNode;
 }): JSX.Element {
   const [showHiddenTables = false, setShowHiddenTables] = useCachedState(
     cacheKey,
@@ -130,12 +91,35 @@ export function TableList({
     [filter, showHiddenTables]
   );
 
+  const listRef = React.useRef<HTMLUListElement | null>(null);
+  const activeRef = React.useRef<HTMLAnchorElement | null>(null);
+  const hasScrolledRef = React.useRef(false);
+
+  React.useEffect(() => {
+    if (hasScrolledRef.current || currentTableName === '') return;
+    const list = listRef.current;
+    const active = activeRef.current;
+    if (list === null || active === null) return;
+    hasScrolledRef.current = true;
+    const listRect = list.getBoundingClientRect();
+    const activeRect = active.getBoundingClientRect();
+    list.scrollTop +=
+      activeRect.top - listRect.top - (listRect.height - activeRect.height) / 2;
+  }, [currentTableName]);
+
   return (
     <div className="flex flex-col items-start gap-2 overflow-auto">
-      <Ul className="flex w-full flex-1 flex-col gap-1 overflow-y-auto">
+      <Ul
+        className="relative flex w-full flex-1 flex-col gap-1 overflow-y-auto"
+        forwardRef={listRef}
+      >
         {sortedTables.map((table) => {
           const action = getAction(table);
           const extraContent = children?.(table);
+          const badgeContent = badge?.(table);
+          const isCurrent =
+            currentTableName !== undefined &&
+            table.name.toLowerCase() === currentTableName.toLowerCase();
           const isVisible =
             showHiddenTables ||
             children === undefined ||
@@ -145,6 +129,7 @@ export function TableList({
               <TableIcon label={false} name={table.name} />
               {localizeTableNames ? table.label : localized(table.name)}{' '}
               {extraContent !== undefined && extraContent}
+              {badgeContent}
             </>
           );
           return isVisible ? (
@@ -152,7 +137,14 @@ export function TableList({
               {typeof action === 'function' ? (
                 <Button.LikeLink onClick={action}>{content}</Button.LikeLink>
               ) : (
-                <Link.Default href={action}>{content}</Link.Default>
+                <Link.Default
+                  aria-current={isCurrent ? 'page' : undefined}
+                  className={isCurrent ? 'font-bold' : undefined}
+                  forwardRef={isCurrent ? activeRef : undefined}
+                  href={action}
+                >
+                  {content}
+                </Link.Default>
               )}
             </li>
           ) : undefined;

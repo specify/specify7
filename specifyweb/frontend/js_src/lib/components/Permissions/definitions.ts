@@ -65,6 +65,7 @@ export const operationPolicies = {
     'execute',
     'export_csv',
     'export_kml',
+    'export_to_web_portal',
     'create_recordset',
   ],
   '/workbench/dataset': [

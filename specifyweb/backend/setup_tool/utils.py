@@ -1,14 +1,12 @@
+import logging
 import json
 from pathlib import Path
-from django.db.models import Model as DjangoModel
 from typing import Optional, Type
+
+from django.db.models import Model as DjangoModel
+
 from specifyweb.specify.api_utils import strict_uri_to_model
 
-import logging
-
-from specifyweb.backend.context.app_resource import DISCIPLINE_NAMES
-
-from specifyweb.specify.models import Picklist, Picklistitem, Splocalecontaineritem
 logger = logging.getLogger(__name__)
 
 def resolve_uri_or_fallback(uri: Optional[str], id: Optional[int], table: Type[DjangoModel]) -> Optional[DjangoModel]:

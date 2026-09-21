@@ -184,23 +184,6 @@ def get_tree_rows(treedef, tree, parentid, sortfield, include_author, include_st
 
     treedef_col = getattr(node, tree_table.name + "TreeDefID")
     orderby     = getattr(node, tree_table.get_field_strict(sortfield).name)
-    child_counts = (
-        select(
-            child.ParentID.label("parent_id"),
-            func.count(child._id).label("child_count"),
-        )
-        .group_by(child.ParentID)
-        .subquery()
-    )
-    synonym_names = (
-        select(
-            synonym.AcceptedID.label("accepted_id"),
-            group_concat(distinct(synonym.fullName), separator=", ").label("synonyms"),
-        )
-        .where(synonym.AcceptedID.is_not(None))
-        .group_by(synonym.AcceptedID)
-        .subquery()
-    )
 
     cols = [
         node._id.label("id"),
@@ -232,8 +215,16 @@ def get_tree_rows(treedef, tree, parentid, sortfield, include_author, include_st
             if include_start_end_periods
             else literal("NULL")
         ).label("end_uncertainty"),
-        func.coalesce(child_counts.c.child_count, 0).label("child_count"),
-        synonym_names.c.synonyms.label("synonyms"),
+        select(func.count(child._id))
+            .where(child.ParentID == node._id)
+            .correlate(node)
+            .scalar_subquery()
+            .label("child_count"),
+        select(group_concat(distinct(synonym.fullName), separator=", "))
+            .where(synonym.AcceptedID == node._id)
+            .correlate(node)
+            .scalar_subquery()
+            .label("synonyms"),
         (
             node.isBioStrat
             if tree == 'geologictimeperiod'
@@ -264,8 +255,6 @@ def get_tree_rows(treedef, tree, parentid, sortfield, include_author, include_st
     query = (
         select(*cols)
         .outerjoin(accepted, node.AcceptedID == accepted._id)
-        .outerjoin(child_counts, child_counts.c.parent_id == node._id)
-        .outerjoin(synonym_names, synonym_names.c.accepted_id == node._id)
         .where(treedef_col == int(treedef))
         .where(node.ParentID == parentid)
         .order_by(orderby)
@@ -279,8 +268,13 @@ def tree_stats(request, treedef, tree, parentid):
     "Returns tree stats (collection object count) for tree nodes parented by <parentid>."
 
     using_cte = (tree in ['geography', 'taxon', 'storage'])
+    include_synonym_count = (
+        tree == 'taxon'
+        and request.GET.get('includeSynonymCount', 'false') == 'true'
+    )
     results = get_tree_stats(
-        treedef, tree, parentid, request.specify_collection, sqlmodels.session_context, using_cte)
+        treedef, tree, parentid, request.specify_collection, sqlmodels.session_context, using_cte,
+        include_synonym_count)
 
     return HttpResponse(toJson(results), content_type="application/json")
 

@@ -66,40 +66,8 @@ exports[`AttachmentCell simple render 1`] = `
     >
       <button
         type="button"
-      >
-        <img
-          alt="kubiodiversitylogo.jpg"
-          class="
-        max-h-full max-w-full border-2 border-white object-contain
-        dark:border-black
-      "
-          src="http://host.docker.internal/fileget?coll=KU+Fish+Voucher+Collection&type=T&filename=a6daad6c-5091-4461-86ee-eeba9434ef2b.jpg&scale=123"
-          style="width: 123px; height: 123px;"
-        />
-      </button>
+      />
     </div>
-    <a
-      aria-label="Download"
-      class="icon link rounded absolute right-0 top-0"
-      download="topbrc4.jpg"
-      href="/attachment_gw/proxy/?coll=KU+Fish+Voucher+Collection&type=O&filename=a6daad6c-5091-4461-86ee-eeba9434ef2b.jpg&downloadname=topbrc4.jpg"
-      target="_blank"
-      title="Download"
-    >
-      <svg
-        aria-hidden="true"
-        class="w-6 h-6 flex-shrink-0"
-        fill="currentColor"
-        viewBox="0 0 20 20"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          clip-rule="evenodd"
-          d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
-          fill-rule="evenodd"
-        />
-      </svg>
-    </a>
   </div>
 </DocumentFragment>
 `;

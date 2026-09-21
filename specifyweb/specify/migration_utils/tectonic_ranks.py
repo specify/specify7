@@ -1,157 +1,145 @@
 import logging
+
+from django.db.models import OuterRef, Subquery, Exists
+
 logger = logging.getLogger(__name__)
+
+DEFAULT_RANKS = (
+    {"rankid": 0, "name": "Root", "attrs": {"isenforced": True}},
+    {"rankid": 10, "name": "Superstructure"},
+    {"rankid": 20, "name": "Tectonic Domain"},
+    {"rankid": 30, "name": "Tectonic Subdomain"},
+    {"rankid": 40, "name": "Tectonic Unit"},
+    {"rankid": 50, "name": "Tectonic Subunit"}
+)
 
 def create_default_tectonic_ranks(apps): 
     TectonicUnitTreeDefItem = apps.get_model('specify', 'TectonicUnitTreeDefItem')
     TectonicTreeDef = apps.get_model('specify', 'TectonicUnitTreeDef')
     Discipline = apps.get_model('specify', 'Discipline')
 
-    disciplines = Discipline.objects.filter(tectonicunittreedef__isnull=True).exclude(
-        id__in=TectonicTreeDef.objects.values_list('discipline_id', flat=True)
+    # Create empty TectonicUnit trees for Disciplines which don't have already them
+    _create_tectonic_unit_for_discipline(
+        Discipline_Model=Discipline,
+        Tectonicunittreedef_Model=TectonicTreeDef
     )
 
-    for discipline in disciplines:
-        tectonic_tree_def = TectonicTreeDef.objects.filter(discipline=discipline).first()
-        if not tectonic_tree_def:
-            tectonic_tree_def, _ = TectonicTreeDef.objects.get_or_create(name="Tectonic Unit", discipline=discipline)
+    trees_missing_ranks = TectonicTreeDef.objects.filter(treedefitems__isnull=True)
 
-        root, root_created = TectonicUnitTreeDefItem.objects.get_or_create(
+    for tectonic_tree_def in trees_missing_ranks:
+
+        current_parent = None
+        for default_rank in DEFAULT_RANKS:
+            # At this point, these get_or_create calls should always be the
+            # equivalent of create (as we know these nodes didn't exist).
+            # But keeping the get_or_create here just because
+            current_parent, _ = TectonicUnitTreeDefItem.objects.get_or_create(
+                rankid=default_rank["rankid"],
+                parent=current_parent,
+                treedef=tectonic_tree_def,
+                defaults={
+                    "name": default_rank["name"],
+                    "title": default_rank["name"],
+                    **default_rank.get('attrs', {})
+                }
+            )
+
+def create_root_tectonic_node(apps): 
+    TectonicUnit = apps.get_model('specify', 'TectonicUnit')
+    TectonicUnitTreeDefItem = apps.get_model('specify', 'TectonicUnitTreeDefItem')
+    TectonicUnitTreeDef = apps.get_model('specify', 'TectonicUnitTreeDef')
+
+    trees_missing_root_node = TectonicUnitTreeDef.objects.annotate(
+        root_node_exists=Exists(
+            TectonicUnit.objects.filter(
+                parent=None,
+                definition=OuterRef("pk")
+            )
+        )
+    ).filter(
+        root_node_exists=False
+    )
+
+    for tree in trees_missing_root_node:
+        root_rank, _ = TectonicUnitTreeDefItem.objects.get_or_create(
             rankid=0,
             parent=None,
-            treedef=tectonic_tree_def,
+            treedef=tree,
             defaults={
                 "name": "Root",
                 "title": "Root",
                 "isenforced": True
             }
         )
-        if discipline.tectonicunittreedef_id != tectonic_tree_def.id:
-                discipline.tectonicunittreedef = tectonic_tree_def
-                discipline.save(update_fields=["tectonicunittreedef"])
-        if not root_created:
-            # BUG?: handle setting the tectonicunittreedef on the Discipline
-            # here? We can probably practically assume it's already set if the
-            # root node exists.
-            continue
-
-        # At this point, these get_or_create calls should always be the
-        # equivalent of create (as we know the root node didn't exist).
-        # But keeping the get_or_create here just because
-        superstructure, _ = TectonicUnitTreeDefItem.objects.get_or_create(
-            name="Superstructure",
-            title="Superstructure",
-            rankid=10,
-            parent=root,
-            treedef=tectonic_tree_def,
+        TectonicUnit.objects.create(
+            name="Root",
+            fullname="Root",
+            isaccepted=1,
+            nodenumber=1,
+            rankid=0,
+            parent=None,
+            definition=tree,
+            definitionitem=root_rank
         )
-        tectonic_domain, _ = TectonicUnitTreeDefItem.objects.get_or_create(
-            name="Tectonic Domain",
-            title="Tectonic Domain",
-            rankid=20,
-            parent=superstructure,
-            treedef=tectonic_tree_def,
-        )
-        tectonic_subdomain, _ = TectonicUnitTreeDefItem.objects.get_or_create(
-            name="Tectonic Subdomain",
-            title="Tectonic Subdomain",
-            rankid=30,
-            parent=tectonic_domain,
-            treedef=tectonic_tree_def,
-        )
-        tectonic_unit, _ = TectonicUnitTreeDefItem.objects.get_or_create(
-            name="Tectonic Unit",
-            title="Tectonic Unit",
-            rankid=40,
-            parent=tectonic_subdomain,
-            treedef=tectonic_tree_def,
-        )
-        tectonic_subunit, _ = TectonicUnitTreeDefItem.objects.get_or_create(
-            name="Tectonic Subunit",
-            title="Tectonic Subunit",
-            rankid=50,
-            parent=tectonic_unit,
-            treedef=tectonic_tree_def,
-        )
-
-        discipline.tectonicunittreedef = tectonic_tree_def
-        discipline.save()
-
-def revert_default_tectonic_ranks(apps, schema_editor=None):
-    TectonicUnit = apps.get_model('specify', 'TectonicUnit')
-    TectonicUnitTreeDefItem = apps.get_model('specify', 'TectonicUnitTreeDefItem')
-    TectonicTreeDef = apps.get_model('specify', 'TectonicUnitTreeDef')
-    Discipline = apps.get_model('specify', 'Discipline')
-
-    for discipline in Discipline.objects.all():
-        tectonic_tree_defs = TectonicTreeDef.objects.filter(name="Tectonic Unit", discipline=discipline)
-
-        for tectonic_tree_def in tectonic_tree_defs:
-            tectonic_unit_tree_def_items = TectonicUnitTreeDefItem.objects.filter(treedef=tectonic_tree_def).order_by('-id')
-
-            for item in tectonic_unit_tree_def_items:
-                TectonicUnit.objects.filter(definitionitem=item).delete()
-
-                item.delete()
-
-            discipline.tectonicunittreedef = None
-            discipline.save()
-            tectonic_tree_def.delete()
-
-def create_root_tectonic_node(apps): 
-    TectonicUnit = apps.get_model('specify', 'TectonicUnit')
-    TectonicUnitTreeDefItem = apps.get_model('specify', 'TectonicUnitTreeDefItem')
-    TectonicUnitTreeDef = apps.get_model('specify', 'TectonicUnitTreeDef')
-    Discipline = apps.get_model('specify', 'Discipline')
-
-    for discipline in Discipline.objects.all(): 
-
-        tectonic_tree_def = TectonicUnitTreeDef.objects.filter(discipline=discipline).first()
-        if not tectonic_tree_def:
-            tectonic_tree_def, is_created = TectonicUnitTreeDef.objects.get_or_create(
-                name="Tectonic Unit",
-                discipline=discipline
-            )
-
-        tectonic_tree_def_item = TectonicUnitTreeDefItem.objects.filter(treedef=tectonic_tree_def, rankid=0, parent=None).first()
-        if not tectonic_tree_def_item:
-            tectonic_tree_def_item, is_created = TectonicUnitTreeDefItem.objects.get_or_create(
-                name="Root",
-                title="Root",
-                treedef=tectonic_tree_def,
-                rankid=0,
-                parent=None,
-                isenforced=True
-            )
-
-        root = TectonicUnit.objects.filter(definition=tectonic_tree_def, definitionitem=tectonic_tree_def_item, rankid=0, parent=None).first()
-        if not root:
-            root, is_created = TectonicUnit.objects.get_or_create(
-                name="Root",
-                fullname="Root",
-                isaccepted=1,
-                nodenumber=1,
-                rankid=0,
-                parent=None,
-                definition=tectonic_tree_def,
-                definitionitem=tectonic_tree_def_item
-            )
-
-            if is_created:
-                logger.info(f"Created root tectonic unit for discipline {discipline.name}")
+        logger.info(f"Created root tectonic unit for discipline {tree.discipline_id}")
 
     TectonicUnitTreeDefItem.objects.filter(parent=None,rankid=0, isenforced__isnull=True).update(isenforced=True)
 
-def revert_create_root_tectonic_node(apps, schema_editor=None):
-    TectonicUnit = apps.get_model('specify', 'TectonicUnit')
-    TectonicUnitTreeDefItem = apps.get_model('specify', 'TectonicUnitTreeDefItem')
-    TectonicTreeDef = apps.get_model('specify', 'TectonicUnitTreeDef')
-    Discipline = apps.get_model('specify', 'Discipline')
+def _create_tectonic_unit_for_discipline(Discipline_Model, Tectonicunittreedef_Model):
+    # Fetches Discipline objects with an empty TectonicUnitTreeDef relationship
+    # and no TectonicUnitTreeDef objects with a set discipline
+    # Most commonly, this would be in the case of creating a Discipline in
+    # Specify 6 after the TectonicUnitTreeDef migrations have been run in
+    # Specify 7
+    disciplines_missing_tectonicunit = Discipline_Model.objects.filter(
+        tectonicunittreedef__isnull=True,
+        tectonicunittreedefs__isnull=True
+    ).values_list("pk", flat=True)
 
-    for discipline in Discipline.objects.all():
-        tectonic_tree_def = TectonicTreeDef.objects.filter(name="Tectonic Unit", discipline=discipline).first()
-        
-        if tectonic_tree_def:
-            TectonicUnitTreeDefItem.objects.filter(treedef=tectonic_tree_def).delete()
-            TectonicUnit.objects.filter(
-                name="Root"
-            ).delete()
+    Tectonicunittreedef_Model.objects.bulk_create(
+        [
+            Tectonicunittreedef_Model(
+                name="Tectonic Unit",
+                discipline_id=disciplineid
+            ) for disciplineid in disciplines_missing_tectonicunit
+        ],
+        batch_size=1000
+    )
+
+    # If there are cases where Discipline -> tectonicunittreedef is not set,
+    # but there is at least one TectonicUnitTreeDef pointing to the Discipline,
+    # then set the Discipline -> tectonicunittreedef relationship to the "first"
+    # TectonicUnitTreeDef -> discipline
+    Discipline_Model.objects.filter(
+        tectonicunittreedef__isnull=True,
+        tectonicunittreedefs__isnull=False
+    ).update(
+        tectonicunittreedef=Subquery(
+            Tectonicunittreedef_Model.objects.filter(
+                discipline=OuterRef("pk")
+            ).order_by("pk").values("pk")[:1]
+        )
+    )
+
+def fix_tectonic_unit_treedef_discipline_links(apps):
+    Discipline = apps.get_model('specify', 'Discipline')
+    Tectonicunittreedef = apps.get_model('specify', 'Tectonicunittreedef')
+
+    _create_tectonic_unit_for_discipline(
+        Discipline_Model=Discipline,
+        Tectonicunittreedef_Model=Tectonicunittreedef
+    )
+
+    # If there's any TectonicUnitTreeDef objects with a NULL
+    # discipline, set the discipline relationship to the
+    # Discipline -> tectonicunittreedef
+    Tectonicunittreedef.objects.filter(
+        discipline__isnull=True,
+        disciplines__isnull=False
+    ).update(
+        discipline=Subquery(
+            Discipline.objects.filter(
+                tectonicunittreedef=OuterRef("pk")
+            ).order_by("pk").values("pk")[:1]
+        )
+    )

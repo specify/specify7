@@ -3,7 +3,8 @@ from specifyweb.specify import models
 from specifyweb.specify.tests.test_api import ApiTests
 from ..exceptions import BusinessRuleException
 import datetime
-
+from specifyweb.specify.api.crud import update_obj, get_resource
+from specifyweb.specify.api.exceptions import StaleObjectException
 
 class PermitTests(ApiTests):
     def test_number_is_unique(self):
@@ -133,4 +134,58 @@ class PermitTests(ApiTests):
         # Verifying it's gone
         self.assertEqual(permit.permitattachments.count(), 0)
         self.assertEqual(models.Attachment.objects.filter(id=attachment.id).count(), 0)
+
+
+    def test_delete_permit_without_blockers(self):
+        permit = models.Permit.objects.create(
+            institution=self.institution,
+            permitnumber='P-DEL-001',
+        )
+        permit_id = permit.id
+
+        permit.delete()
+
+        self.assertEqual(
+            models.Permit.objects.filter(id=permit_id).count(),
+            0,
+        )
+    
+    def test_edit_permit_updates_version(self):
+        permit = models.Permit.objects.create(
+            institution=self.institution,
+            permitnumber='P-EDIT-001',
+        )
+        def skip_perms_check(_):
+            return None
+        data = get_resource('permit', permit.id, skip_perms_check) # fetches the permit from the database and stores in the data dictionary
+        data['remarks'] = 'Updated remark'
+
+        updated = update_obj(
+            self.collection,
+            self.agent,
+            'permit',
+            data['id'],
+            data['version'],
+            data,
+        )
+        self.assertEqual(updated.version, permit.version + 1)
+
+        fetched = models.Permit.objects.get(id=permit.id)
+        self.assertEqual(fetched.remarks, 'Updated remark')
+        self.assertEqual(fetched.version, permit.version + 1)
+
+        # Stale object detection
+        data['version'] = 0
+        with self.assertRaises(StaleObjectException):
+            update_obj(
+                self.collection,
+                self.agent,
+                'permit',
+                data['id'],
+                data['version'],
+                data,
+            )
+
+
+    
 

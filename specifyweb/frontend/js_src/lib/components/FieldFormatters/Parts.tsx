@@ -153,26 +153,38 @@ function Part({
         />
       </td>
       <td>
-        <Input.Text
-          aria-label={resourcesText.value()}
-          disabled={part.type === 'year' || part.type === 'numeric'}
-          isReadOnly={isReadOnly}
-          required
-          value={
-            part.type === 'regex'
-              ? (part.regexPlaceholder ?? '')
-              : part.placeholder
-          }
-          onValueChange={(placeholder): void =>
-            handleChange(
-              normalizeFieldFormatterPart({
-                ...part,
-                [part.type === 'regex' ? 'regexPlaceholder' : 'placeholder']:
+        {part.type === 'regex' ? (
+          // For regex parts, the value field stores the actual regex pattern.
+          <RegexField
+            ariaLabel={resourcesText.value()}
+            placeholder={resourcesText.value()}
+            value={part.placeholder}
+            onChange={(placeholder): void =>
+              handleChange(
+                normalizeFieldFormatterPart({
+                  ...part,
                   placeholder,
-              })
-            )
-          }
-        />
+                })
+              )
+            }
+          />
+        ) : (
+          <Input.Text
+            aria-label={resourcesText.value()}
+            disabled={part.type === 'year' || part.type === 'numeric'}
+            isReadOnly={isReadOnly}
+            required
+            value={part.placeholder}
+            onValueChange={(placeholder): void =>
+              handleChange(
+                normalizeFieldFormatterPart({
+                  ...part,
+                  placeholder,
+                })
+              )
+            }
+          />
+        )}
       </td>
       <td>
         {part.type === 'numeric' ? (
@@ -205,12 +217,16 @@ function Part({
             {formsText.autoNumberByYear()}
           </Label.Inline>
         ) : part.type === 'regex' ? (
-          <RegexField
-            value={part.placeholder}
-            onChange={(placeholder): void =>
+          <Input.Text
+            aria-label={resourcesText.pattern()}
+            isReadOnly={isReadOnly}
+            placeholder={resourcesText.pattern()}
+            required
+            value={part.regexPlaceholder ?? ''}
+            onValueChange={(regexPlaceholder): void =>
               handleChange({
                 ...part,
-                placeholder,
+                regexPlaceholder,
               })
             }
           />
@@ -235,9 +251,13 @@ function Part({
 const maxSize = 99;
 
 function RegexField({
+  ariaLabel,
+  placeholder,
   value,
   onChange: handleChange,
 }: {
+  readonly ariaLabel: LocalizedString;
+  readonly placeholder: LocalizedString;
   readonly value: LocalizedString;
   readonly onChange: (newValue: LocalizedString) => void;
 }): JSX.Element {
@@ -245,9 +265,9 @@ function RegexField({
   const [pendingValue, setPendingValue] = useTriggerState(value);
   return (
     <Input.Text
-      aria-label={resourcesText.pattern()}
+      aria-label={ariaLabel}
       isReadOnly={isReadOnly}
-      placeholder={resourcesText.pattern()}
+      placeholder={placeholder}
       required
       value={pendingValue}
       onBlur={({ target }): void => {

@@ -91,7 +91,8 @@ class MainSetupTearDown:
             geographytreedef=self.geographytreedef,
             division=self.division,
             datatype=self.datatype,
-            type='paleobotany'
+            type='paleobotany',
+            name='paleobotany'
         )
 
         apply_default_uniqueness_rules(self.discipline)
@@ -182,6 +183,9 @@ class MainSetupTearDown:
     # TODO: Replace all such tests with below.
     def assertExists(self, queryset: QuerySet):
         self.assertTrue(queryset.exists(), "Record does not exist!")
+
+    def assertNotExists(self, queryset: QuerySet):
+        self.assertFalse(queryset.exists(), "Record is supposed to not exist!")
 
 class ApiTests(MainSetupTearDown, TestCase): pass
 

@@ -85,6 +85,7 @@ class Migration(migrations.Migration):
     dependencies = [
         ('permissions', '0007_add_stats_edit_permission')
     ]
+    # BUG: Make this reversible
     operations = [
         migrations.RunPython(add_attachment_import_role)
     ]

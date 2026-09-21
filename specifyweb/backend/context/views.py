@@ -39,8 +39,9 @@ from .schema_localization import get_schema_languages, get_schema_localization
 from .viewsets import get_views
 from specifyweb.backend.setup_tool.api import (
     get_config_progress,
-    filter_ready_collections_for_config_tasks,
     filter_ready_disciplines_for_config_tasks,
+    is_collection_available,
+    is_guided_setup_complete,
 )
    
 def set_collection_cookie(response, collection_id): # pragma: no cover
@@ -302,7 +303,7 @@ def collection(request):
             return HttpResponseBadRequest('collection does not exist', content_type="text/plain")
         if collection.id not in [c.id for c in available_collections]:
             return HttpResponseBadRequest('access denied')
-        if get_config_progress(collection.id).get('busy'):
+        if get_config_progress(collection.discipline_id).get('busy'):
             return HttpResponseBadRequest('discipline creation is in progress')
         response = HttpResponse('ok')
         set_collection_cookie(response, collection.id)
@@ -323,8 +324,10 @@ def user(request):
     from specifyweb.specify.api.serializers import obj_to_data, toJson
     data = obj_to_data(request.specify_user)
     data['isauthenticated'] = request.user.is_authenticated
-    available_collections = users_collections_for_sp7(request.specify_user.id)
-    available_collections = _filter_collections_not_ready_for_config_task(available_collections)
+    available_collections = filter(
+        is_collection_available,
+        users_collections_for_sp7(request.specify_user.id)
+    )
     data['available_collections'] = [
         obj_to_data(c)
         for c in available_collections
@@ -656,9 +659,7 @@ def remote_prefs(request):
 @require_http_methods(['GET', 'HEAD'])
 def get_server_time(request):
     return JsonResponse({"server_time": timezone.now().isoformat()})
-  
-def _filter_collections_not_ready_for_config_task(collections):
-    return filter_ready_collections_for_config_tasks(collections)
+
   
 def _filter_disciplines_not_ready_for_config_task(disciplines):
     return filter_ready_disciplines_for_config_tasks(disciplines)
@@ -671,7 +672,6 @@ def _build_system_data(*, filter_not_ready_collections: bool):
 
     if filter_not_ready_collections:
         disciplines = _filter_disciplines_not_ready_for_config_task(disciplines)
-        collections = _filter_collections_not_ready_for_config_task(collections)
 
     discipline_map = {}
     for discipline in disciplines:
@@ -714,27 +714,53 @@ def _build_system_data(*, filter_not_ready_collections: bool):
 @skip_collection_access_check
 def system_info(request):
     "Return various information about this Specify instance."
-    spversion = Spversion.objects.get()
-    collection = request.specify_collection
-    discipline = collection.discipline if collection is not None else None
-    institution = Institution.objects.get()
+    setup_complete = is_guided_setup_complete()
+
+    spversion = Spversion.objects.first()
+    collection = None
+    discipline = None
+    if setup_complete:
+        try:
+            collection = request.specify_collection
+        except Collection.DoesNotExist:
+            collection = None
+        else:
+            discipline = collection.discipline if collection is not None else None
+    institution = Institution.objects.first()
+
+    database_version = spversion.appversion if spversion is not None else None
+    schema_version = spversion.schemaversion if spversion is not None else None
+
+    institution_name = institution.name if institution is not None else None
+    institution_guid = institution.guid if institution is not None else None
+    geography_is_global = (
+        institution.issinglegeographytree if institution is not None else None
+    )
+
+    if not setup_complete:
+        database_version = None
+        schema_version = None
+        institution_name = None
+        institution_guid = None
+        geography_is_global = None
 
     info = dict(
         version=settings.VERSION,
         specify6_version=re.findall(r'SPECIFY_VERSION=(.*)', specify_jar.read('resources_en.properties').decode('utf-8'))[0],
-        database_version=spversion.appversion,
-        schema_version=spversion.schemaversion,
+        setup_complete=setup_complete,
+        database_version=database_version,
+        schema_version=schema_version,
         stats_url=settings.STATS_URL,
         stats_2_url=settings.STATS_2_URL,
         database=settings.DATABASE_NAME,
-        institution=institution.name,
-        institution_guid=institution.guid,
-        discipline=discipline and discipline.name,
-        collection=collection and collection.collectionname,
-        collection_guid=collection and collection.guid,
-        isa_number=collection and collection.isanumber,
-        discipline_type=discipline and discipline.type,
-        geography_is_global=institution.issinglegeographytree
+        institution=institution_name,
+        institution_guid=institution_guid,
+        discipline=discipline.name if setup_complete and discipline is not None else None,
+        collection=collection.collectionname if setup_complete and collection is not None else None,
+        collection_guid=collection.guid if setup_complete and collection is not None else None,
+        isa_number=collection.isanumber if setup_complete and collection is not None else None,
+        discipline_type=discipline.type if setup_complete and discipline is not None else None,
+        geography_is_global=geography_is_global,
         )
     return HttpResponse(json.dumps(info), content_type='application/json')
 

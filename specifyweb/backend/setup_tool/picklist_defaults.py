@@ -25,7 +25,7 @@ def create_default_picklists(collection: Collection, discipline_type: str | None
     if global_picklists is None:
         logger.exception('No global picklists found in global_picklists.json.')
         return
-    
+
     create_picklists(global_picklists, collection)
 
     # Get discipline picklists
@@ -33,7 +33,7 @@ def create_default_picklists(collection: Collection, discipline_type: str | None
     if discipline_type is None:
         return
     discipline_defaults = load_json_from_file(Path(__file__).parent.parent.parent.parent / 'config' / 'common' / 'picklists.json')
-    
+
     discipline_picklists = discipline_defaults.get(discipline_type, None)
     if discipline_picklists is None:
         logger.warning(f'No picklists found for discipline "{discipline_type}" in picklists.json.')

@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { commonText } from '../../localization/common';
-import { reportsText } from '../../localization/report';
 import { schemaText } from '../../localization/schema';
 import { f } from '../../utils/functools';
 import { booleanFormatter } from '../../utils/parser/parse';
@@ -55,13 +54,13 @@ const fieldColumns = f.store(
   () =>
     ({
       name: getField(tables.SpLocaleContainerItem, 'name').label,
-      label: reportsText.labels(),
+      label: schemaText.caption(),
       description: schemaText.description(),
       isHidden: getField(tables.SpLocaleContainerItem, 'isHidden').label,
       isReadOnly: schemaText.readOnly(),
       isRequired: getField(tables.SpLocaleContainerItem, 'isRequired').label,
       type: getField(tables.SpLocaleContainerItem, 'type').label,
-      length: schemaText.fieldLength(),
+      length: schemaText.characterLimit(),
       databaseColumn: schemaText.databaseColumn(),
     }) as const
 );

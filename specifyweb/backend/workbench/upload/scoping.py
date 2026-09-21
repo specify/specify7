@@ -147,6 +147,7 @@ def extend_columnoptions(
         matchBehavior=colopts.matchBehavior,
         nullAllowed=colopts.nullAllowed,
         default=colopts.default,
+        disambiguationBehavior=colopts.disambiguationBehavior,
         schemaitem=schemaitem,
         # Formatters are "scoped" here, that is, all they need is a value coming directly from the row.
         uiformatter=(None if scoped_formatter is None else CustomRepr(scoped_formatter, friendly_repr)),
@@ -318,6 +319,7 @@ def apply_scoping_to_uploadtable(
         static=ut.static,
         toOne=to_ones,
         toMany=to_many,  # type: ignore
+        preserveIdentity=ut.preserveIdentity,
         scopingAttrs=scoping_relationships(collection, table),
         disambiguation=None,
         # Often, we'll need to recur down to clone (nested one-to-ones). Having this entire is handy in such a case

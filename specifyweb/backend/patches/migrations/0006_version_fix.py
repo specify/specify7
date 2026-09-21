@@ -1,6 +1,7 @@
-from django.db import migrations, connection
+from django.db import migrations
 
 def set_null_versions_to_zero_and_default(apps, schema_editor):
+    connection = schema_editor.connection
     with connection.cursor() as cursor:
         cursor.execute("""
             SELECT table_name
