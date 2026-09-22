@@ -80,6 +80,29 @@ test('malformed table definitions use generated defaults', () => {
   expect(() => makeDataViewQuery('Agent', definition)).not.toThrow();
 });
 
+test('unsupported operStart values use generated defaults', () => {
+  const file = parseDataViewQueries(
+    JSON.stringify({
+      version: 1,
+      queries: {
+        Agent: {
+          fields: [
+            addMissingFields('SpQueryField', {
+              fieldName: 'Name',
+              operStart: Number.MAX_SAFE_INTEGER,
+            }),
+          ],
+        },
+      },
+    })
+  );
+
+  expect(getStoredDataViewQueryDefinition(file, 'Agent')).toBeUndefined();
+  expect(getDataViewQueryDefinition(file, 'Agent')).toEqual(
+    defaultDataViewQuery('Agent')
+  );
+});
+
 test('table definitions with null fields use generated defaults', () => {
   const file = parseDataViewQueries(
     JSON.stringify({ version: 1, queries: { Agent: { fields: [null] } } })

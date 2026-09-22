@@ -8,6 +8,7 @@ import { serializeResource } from '../DataModel/serializers';
 import { strictGetTable } from '../DataModel/tables';
 import type { SpQuery, SpQueryField, Tables } from '../DataModel/types';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
+import { queryFieldFilterSpecs } from '../QueryBuilder/FieldFilterSpec';
 import { createQuery } from '../QueryBuilder';
 import { getAppResourceUrl } from '../../utils/ajax/helpers';
 import { ajax } from '../../utils/ajax';
@@ -54,6 +55,9 @@ function isSpQueryFieldDefinition(
   if (typeof value !== 'object' || value === null || Array.isArray(value))
     return false;
   const field = value as Partial<SerializedResource<SpQueryField>>;
+  const validOperatorIds = new Set(
+    Object.values(queryFieldFilterSpecs).map(({ id }) => id)
+  );
   return (
     typeof field.stringId === 'string' &&
     typeof field.fieldName === 'string' &&
@@ -62,6 +66,7 @@ function isSpQueryFieldDefinition(
     typeof field.isNot === 'boolean' &&
     typeof field.sortType === 'number' &&
     typeof field.operStart === 'number' &&
+    validOperatorIds.has(field.operStart) &&
     typeof field.startValue === 'string' &&
     (field.isRelFld === null || typeof field.isRelFld === 'boolean')
   );
