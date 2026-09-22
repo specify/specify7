@@ -9,8 +9,10 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { usePromise } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
+import { formsText } from '../../localization/forms';
 import { headerText } from '../../localization/header';
 import { preferencesText } from '../../localization/preferences';
+import { queryText } from '../../localization/query';
 import { StringToJsx } from '../../localization/utils';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
@@ -236,15 +238,65 @@ export function usePrefDefinitions(prefType: PreferenceType = 'user') {
           const shortcutItems = subCategoryData.items.filter(
             ([_name, item]) =>
               'renderer' in item &&
-              (item.renderer.name === 'KeyboardShortcutPreferenceItem' ||
-                item.renderer.name === 'UrlShortcutsEditor')
+              item.renderer.name === 'KeyboardShortcutPreferenceItem'
           );
           return shortcutItems.length === 0
             ? []
             : [
                 [
                   `${category}.${subCategory}`,
-                  { ...subCategoryData, items: shortcutItems },
+                  {
+                    ...subCategoryData,
+                    ...(category === 'form' && subCategory === 'actions'
+                      ? {
+                          title: `${formsText.forms()} ${commonText.actions()}`,
+                          description: preferencesText.formActionsDescription(),
+                        }
+                      : category === 'form' && subCategory === 'dialogs'
+                        ? {
+                            title: `${preferencesText.dialogs()} ${commonText.actions()}`,
+                            description:
+                              preferencesText.dialogActionsDescription(),
+                          }
+                        : category === 'treeEditor' && subCategory === 'actions'
+                          ? {
+                              title: `${preferencesText.treeEditor()} ${commonText.actions()}`,
+                              description:
+                                preferencesText.treeActionsDescription(),
+                            }
+                          : category === 'queryBuilder' &&
+                              subCategory === 'actions'
+                            ? {
+                                title: `${queryText.queryBuilder()} ${commonText.actions()}`,
+                                description:
+                                  preferencesText.queryBuilderActionsDescription(),
+                              }
+                            : {}),
+                    items: shortcutItems,
+                  },
+                ] as const,
+              ];
+        })
+    );
+
+    const urlShortcutSubCategories = visibleDefinitions.flatMap(
+      ([category, { subCategories }]) =>
+        subCategories.flatMap(([subCategory, subCategoryData]) => {
+          const urlShortcutItems = subCategoryData.items.filter(
+            ([_name, item]) =>
+              'renderer' in item && item.renderer.name === 'UrlShortcutsEditor'
+          );
+          return urlShortcutItems.length === 0
+            ? []
+            : [
+                [
+                  `${category}.${subCategory}`,
+                  {
+                    ...subCategoryData,
+                    title: preferencesText.urlShortcuts(),
+                    description: preferencesText.urlShortcutsDescription(),
+                    items: urlShortcutItems,
+                  },
                 ] as const,
               ];
         })
@@ -282,7 +334,7 @@ export function usePrefDefinitions(prefType: PreferenceType = 'user') {
         'keyboardShortcuts',
         {
           title: preferencesText.keyboardShortcuts(),
-          subCategories: shortcutSubCategories,
+          subCategories: [...shortcutSubCategories, ...urlShortcutSubCategories],
         },
       ] as const,
     ].filter(

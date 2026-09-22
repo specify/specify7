@@ -2784,9 +2784,24 @@ export const preferencesText = createDictionary({
   pressKeys: { 'en-us': 'Press desired key combination...' },
   noKeyAssigned: { 'en-us': 'No key binding assigned' },
   keyboardShortcuts: { 'en-us': 'Keyboard Shortcuts' },
+  formActionsDescription: {
+    'en-us': 'Shortcuts for actions in regular data entry forms.',
+  },
+  dialogActionsDescription: {
+    'en-us': 'Shortcuts for actions available in dialogs, such as closing or saving.',
+  },
+  treeActionsDescription: {
+    'en-us': 'Shortcuts for actions in the Tree Editor.',
+  },
+  queryBuilderActionsDescription: {
+    'en-us': 'Shortcuts for actions in the Query Builder.',
+  },
   openRelatedRecordInNewTab: { 'en-us': 'Open related record in new tab' },
   openFormMeta: { 'en-us': 'Open form meta' },
   urlShortcuts: { 'en-us': 'Keyboard Shortcuts to URLs' },
+  urlShortcutsDescription: {
+    'en-us': 'Shortcuts for opening custom pages or other URLs from anywhere in Specify.',
+  },
   pages: { 'en-us': 'Pages' },
   overlays: { 'en-us': 'Overlays' },
   customPages: { 'en-us': 'Custom Pages' },
