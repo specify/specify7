@@ -157,11 +157,14 @@ function LoadedDataViewFromTable({
       const positions = new Map(
         orderedIds.map((id, index) => [id, index] as const)
       );
-      const reordered = [...selectedIdsRef.current].sort(
-        (left, right) =>
-          (positions.get(left) ?? Number.MAX_SAFE_INTEGER) -
-          (positions.get(right) ?? Number.MAX_SAFE_INTEGER)
-      );
+      const reordered = selectedIdsRef.current
+        .filter((id) => positions.has(id))
+        .sort((left, right) => positions.get(left)! - positions.get(right)!);
+      if (reordered.length === 0) {
+        setSelectedIds([]);
+        setSelectedIndex(0);
+        return;
+      }
       setSelectedIds(reordered);
     },
     []
