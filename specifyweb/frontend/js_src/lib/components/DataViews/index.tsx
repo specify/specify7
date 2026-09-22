@@ -95,6 +95,8 @@ function LoadedDataViewFromTable({
   selectedIdsRef.current = selectedIds;
   const resultOrderRef = React.useRef<ReadonlyArray<number>>([]);
   const [selectedIndex, setSelectedIndex] = React.useState(0);
+  const selectedIndexRef = React.useRef(selectedIndex);
+  selectedIndexRef.current = selectedIndex;
   const resultsScrollRef = React.useRef<HTMLDivElement | null>(null);
   const restoreScrollTopRef = React.useRef<number | undefined>(undefined);
   const [splitViewByDefault] = userPreferences.use(
@@ -139,6 +141,7 @@ function LoadedDataViewFromTable({
 
   const handleResults = React.useCallback(
     (rows: ReadonlyArray<ReadonlyArray<unknown> | undefined>): void => {
+      const focusedId = selectedIdsRef.current[selectedIndexRef.current];
       const orderedIds = rows.flatMap((row) => {
         const id = getNumericResultId(row?.[queryIdField]);
         return id === undefined ? [] : [id];
@@ -166,6 +169,12 @@ function LoadedDataViewFromTable({
         return;
       }
       setSelectedIds(reordered);
+      const focusedIndex = reordered.indexOf(focusedId);
+      setSelectedIndex(
+        focusedIndex >= 0
+          ? focusedIndex
+          : Math.min(selectedIndexRef.current, reordered.length - 1)
+      );
     },
     []
   );
