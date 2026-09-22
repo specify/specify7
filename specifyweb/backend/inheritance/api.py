@@ -1,15 +1,16 @@
-from typing import Callable
+from typing import Callable, Iterable
 
 from specifyweb.backend.inheritance.utils import get_cat_num_inheritance_setting, get_parent_cat_num_inheritance_setting
 from specifyweb.specify.models import Collectionobjectgroupjoin, Component
+from specifyweb.backend.stored_queries.queryfield import QueryField
 
 
 def do_nothing[T](items: T) -> T:
     return items
 
 
-def parent_inheritance_query_processor(tableid, field_specs, collection, user) -> Callable[[list], list]:
-    first_field_names = [fs.fieldspec.join_path[0].name for fs in field_specs if fs.fieldspec.join_path]
+def parent_inheritance_query_processor(tableid: int, query_fields: list[QueryField], collection, user) -> Callable[[list], list]:
+    first_field_names = [qf.fieldspec.join_path[0].name for qf in query_fields if qf.fieldspec.join_path]
     if tableid != 1029 or 'catalogNumber' not in first_field_names:
         return do_nothing
 
@@ -20,7 +21,7 @@ def parent_inheritance_query_processor(tableid, field_specs, collection, user) -
     catalog_number_field_index = first_field_names.index('catalogNumber') + 1
 
     # op_num 1 is refering to the filter equal, the inheritance will only work if we have cat num equal, other operators will not function
-    if field_specs[catalog_number_field_index - 1].op_num != 1:
+    if query_fields[catalog_number_field_index - 1].op_num != 1:
         return do_nothing
 
     def _processor(row: list):
@@ -39,11 +40,11 @@ def parent_inheritance_query_processor(tableid, field_specs, collection, user) -
     return _processor
 
 
-def cog_inheritance_query_processor(tableid, field_specs, collection, user) -> Callable[[list], list]:
+def cog_inheritance_query_processor(tableid: int, query_fields: list[QueryField], collection, user) -> Callable[[list], list]:
     first_field_names = [
-        fs.fieldspec.join_path[0].name.lower()
-        for fs in field_specs
-        if fs.fieldspec.join_path
+        qf.fieldspec.join_path[0].name.lower()
+        for qf in query_fields
+        if qf.fieldspec.join_path
     ]
     if tableid != 1 or 'catalognumber' not in first_field_names:
         return do_nothing
@@ -55,7 +56,7 @@ def cog_inheritance_query_processor(tableid, field_specs, collection, user) -> C
     catalog_number_field_index = first_field_names.index('catalognumber') + 1
 
     # op_num 1 is refering to the filter equal, the inheritance will only work if we have cat num equal, other operators will not function
-    if field_specs[catalog_number_field_index - 1].op_num != 1:
+    if query_fields[catalog_number_field_index - 1].op_num != 1:
         return do_nothing
 
     # For a given result, replace null catalog numbers with the collection
@@ -81,15 +82,19 @@ def cog_inheritance_query_processor(tableid, field_specs, collection, user) -> C
     return _processor
 
 
-def DefaultQueryProcessors(tableid, field_specs, collection, user) -> list[Callable[[list], list]]:
-    visible_field_specs = list(filter(lambda qfield: qfield.display, field_specs))
-    kwargs = {
-        "tableid": tableid,
-        "field_specs": visible_field_specs,
-        "collection": collection,
-        "user": user
-    }
+def DefaultQueryProcessors(tableid: int, query_fields: Iterable[QueryField], collection, user) -> list[Callable[[list], list]]:
+    visible_query_fields = list(filter(lambda qfield: qfield.display, query_fields))
     return [
-        parent_inheritance_query_processor(**kwargs),
-        cog_inheritance_query_processor(**kwargs)
+        parent_inheritance_query_processor(
+            tableid=tableid,
+            query_fields=visible_query_fields,
+            collection=collection,
+            user=user
+        ),
+        cog_inheritance_query_processor(
+            tableid=tableid,
+            query_fields=visible_query_fields,
+            collection=collection,
+            user=user
+        )
     ]
