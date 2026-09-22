@@ -2783,6 +2783,7 @@ export const preferencesText = createDictionary({
   },
   pressKeys: { 'en-us': 'Press desired key combination...' },
   noKeyAssigned: { 'en-us': 'No key binding assigned' },
+  keyboardShortcuts: { 'en-us': 'Keyboard Shortcuts' },
   openRelatedRecordInNewTab: { 'en-us': 'Open related record in new tab' },
   openFormMeta: { 'en-us': 'Open form meta' },
   urlShortcuts: { 'en-us': 'Keyboard Shortcuts to URLs' },

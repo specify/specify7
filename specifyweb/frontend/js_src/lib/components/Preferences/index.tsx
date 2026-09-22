@@ -13,7 +13,7 @@ import { headerText } from '../../localization/header';
 import { preferencesText } from '../../localization/preferences';
 import { StringToJsx } from '../../localization/utils';
 import { f } from '../../utils/functools';
-import type { IR } from '../../utils/types';
+import type { IR, RA } from '../../utils/types';
 import { Container, H2, Key } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
@@ -54,6 +54,25 @@ type SubcategoryDocumentation = {
   readonly href: string;
   readonly label: LocalizedString | (() => LocalizedString);
 };
+
+type VisiblePreferenceSubcategory = readonly [
+  string,
+  {
+    readonly title: GenericPreferences[string]['subCategories'][string]['title'];
+    readonly description?:
+      GenericPreferences[string]['subCategories'][string]['description'];
+    readonly items: RA<readonly [string, PreferenceItem<any>]>;
+  }
+];
+
+type VisiblePreferenceCategory = readonly [
+  string,
+  {
+    readonly title: GenericPreferences[string]['title'];
+    readonly description?: GenericPreferences[string]['description'];
+    readonly subCategories: RA<VisiblePreferenceSubcategory>;
+  }
+];
 
 const SUBCATEGORY_DOCS_MAP: Record<
   string,
@@ -184,40 +203,94 @@ export function usePrefDefinitions(
 
   const definitions = preferenceDefinitions[prefType];
 
-  return React.useMemo(
-    () =>
-      Object.entries(definitions)
-        .map(
-          ([category, { subCategories, ...categoryData }]) =>
-            [
-              category,
+  return React.useMemo<RA<VisiblePreferenceCategory>>(() => {
+    const visibleDefinitions: RA<VisiblePreferenceCategory> = Object.entries(
+      definitions
+    )
+      .map(([category, { subCategories, ...categoryData }]) => {
+        const visibleSubCategories = Object.entries(subCategories)
+          .map(([subCategory, { items, ...subCategoryData }]) => {
+            const visibleItems = Object.entries(items).filter(
+              ([_name, item]) =>
+                typeof item.visible === 'function'
+                  ? item.visible(preferencesVisibilityContext)
+                  : item.visible !== false
+            );
+            return [
+              subCategory,
+              { ...subCategoryData, items: visibleItems },
+            ] as const;
+          })
+          .filter(([_name, { items }]) => items.length > 0);
+        return [
+          category,
+          { ...categoryData, subCategories: visibleSubCategories },
+        ] as const;
+      })
+      .filter(
+        ([_name, { subCategories }]) => subCategories.length > 0
+      ) as unknown as RA<VisiblePreferenceCategory>;
+
+    if (prefType !== 'user') return visibleDefinitions;
+
+    const shortcutSubCategories = visibleDefinitions.flatMap(
+      ([category, { subCategories }]) =>
+        subCategories.flatMap(
+          ([subCategory, subCategoryData]) => {
+            const shortcutItems = subCategoryData.items.filter(
+              ([_name, item]) =>
+                'renderer' in item &&
+                (item.renderer.name === 'KeyboardShortcutPreferenceItem' ||
+                  item.renderer.name === 'UrlShortcutsEditor')
+            );
+            return shortcutItems.length === 0
+              ? []
+              : [
+                  [
+                    `${category}.${subCategory}`,
+                    { ...subCategoryData, items: shortcutItems },
+                  ] as const,
+                ];
+          }
+        )
+    );
+
+    const regularDefinitions = visibleDefinitions.map(
+      ([category, categoryData]) => [
+        category,
+        {
+          ...categoryData,
+          subCategories: categoryData.subCategories.map(
+            ([subCategory, subCategoryData]) => [
+              subCategory,
               {
-                ...categoryData,
-                subCategories: Object.entries(subCategories)
-                  .map(
-                    ([subCategory, { items, ...subCategoryData }]) =>
-                      [
-                        subCategory,
-                        {
-                          ...subCategoryData,
-                          items: Object.entries(items).filter(([_name, item]) => {
-                            const visible =
-                              typeof item.visible === 'function'
-                                ? item.visible(preferencesVisibilityContext)
-                                : item.visible !== false;
-                            if (!visible) return false;
-                            return true;
-                          }),
-                        },
-                      ] as const
-                  )
-                  .filter(([_name, { items }]) => items.length > 0),
+                ...subCategoryData,
+                items: subCategoryData.items.filter(
+                  ([_name, item]) =>
+                    !('renderer' in item) ||
+                    (item.renderer.name !== 'KeyboardShortcutPreferenceItem' &&
+                      item.renderer.name !== 'UrlShortcutsEditor')
+                ),
               },
             ] as const
-        )
-        .filter(([_name, { subCategories }]) => subCategories.length > 0),
-    [definitions, preferencesVisibilityContext, prefType]
-  );
+          ),
+        },
+      ] as const
+    );
+
+    return [
+      ...regularDefinitions,
+      [
+        'keyboardShortcuts',
+        {
+          title: preferencesText.keyboardShortcuts(),
+          subCategories: shortcutSubCategories,
+        },
+      ] as const,
+    ].filter(
+      ([_name, { subCategories }]) => subCategories.length > 0
+    ) as unknown as RA<VisiblePreferenceCategory>;
+  }, [definitions, preferencesVisibilityContext, prefType]);
 }
 
 export function PreferencesContent({
@@ -250,6 +323,8 @@ export function PreferencesContent({
         readonly items: readonly (readonly [string, PreferenceItem<any>])[];
       }
     ): JSX.Element => {
+      if (categoryKey === 'keyboardShortcuts')
+        [categoryKey, subcategoryKey] = subcategoryKey.split('.');
       const subcategoryDocument =
         SUBCATEGORY_DOCS_MAP[categoryKey]?.[subcategoryKey];
 
