@@ -293,8 +293,7 @@ export function usePrefDefinitions(prefType: PreferenceType = 'user') {
                   `${category}.${subCategory}`,
                   {
                     ...subCategoryData,
-                    title: preferencesText.urlShortcuts(),
-                    description: preferencesText.urlShortcutsDescription(),
+                    title: headerText.userTools(),
                     items: urlShortcutItems,
                   },
                 ] as const,
