@@ -387,14 +387,6 @@ export const routes: RA<EnhancedRoute> = [
       ),
   },
   {
-    path: 'user-keyboard-shortcuts',
-    title: preferencesText.keyboardShortcuts(),
-    element: () =>
-      import('../Preferences').then(
-        ({ KeyboardShortcutsWrapper }) => KeyboardShortcutsWrapper
-      ),
-  },
-  {
     path: 'collection-preferences',
     title: preferencesText.collectionPreferences(),
     element: () =>

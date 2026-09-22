@@ -2781,7 +2781,6 @@ export const preferencesText = createDictionary({
     comment: 'Shift key on the keyboard',
     'en-us': 'Shift',
   },
-  keyboardShortcuts: { 'en-us': 'Keyboard Shortcuts' },
   pressKeys: { 'en-us': 'Press desired key combination...' },
   noKeyAssigned: { 'en-us': 'No key binding assigned' },
   openRelatedRecordInNewTab: { 'en-us': 'Open related record in new tab' },

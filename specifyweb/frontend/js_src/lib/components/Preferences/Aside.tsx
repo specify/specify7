@@ -9,7 +9,6 @@ import { pathIsOverlay } from '../Router/UnloadProtect';
 import { scrollIntoView } from '../TreeView/helpers';
 import type { PreferenceType } from './index';
 import { usePrefDefinitions } from './index';
-import type { PreferencesFilter } from './index';
 
 export function PreferencesAside({
   activeCategory,
@@ -17,16 +16,14 @@ export function PreferencesAside({
   references,
   prefType = 'user',
   definitions: passedDefinitions,
-  filter = 'allUserPreferences',
 }: {
   readonly activeCategory: number | undefined;
   readonly setActiveCategory: (activeCategory: number | undefined) => void;
   readonly references: React.RefObject<WritableArray<HTMLElement | undefined>>;
   readonly prefType?: PreferenceType;
   readonly definitions?: ReturnType<typeof usePrefDefinitions>;
-  readonly filter?: PreferencesFilter;
 }): JSX.Element {
-  const hookDefinitions = usePrefDefinitions(prefType, filter);
+  const hookDefinitions = usePrefDefinitions(prefType);
   const definitions = passedDefinitions ?? hookDefinitions;
   const navigate = useNavigate();
   const location = useLocation();

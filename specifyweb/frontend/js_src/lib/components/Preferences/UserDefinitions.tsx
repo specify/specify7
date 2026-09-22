@@ -718,7 +718,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: true,
             defaultValue: {
-              '/specify/user-keyboard-shortcuts': { other: ['Ctrl+Slash'] },
+              '/specify/user-preferences': { other: ['Ctrl+Slash'] },
             },
             renderer: UrlShortcutsEditor,
             container: 'div',

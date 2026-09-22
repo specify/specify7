@@ -85,17 +85,10 @@ const preferencesPromise = Promise.all([
   collectionPreferences.fetch(),
 ]).then(f.true);
 
-export type PreferencesFilter =
-  | 'allUserPreferences'
-  | 'userKeyboardShortcuts'
-  | 'userPreferences';
-
 function Preferences({
   prefType = 'user',
-  filter = 'allUserPreferences',
 }: {
   readonly prefType?: PreferenceType;
-  readonly filter?: PreferencesFilter;
 }): JSX.Element {
   const [changesMade, handleChangesMade] = useBooleanState();
   const [needsRestart, handleRestartNeeded] = useBooleanState();
@@ -104,13 +97,11 @@ function Preferences({
   const navigate = useNavigate();
 
   const basePreferences = preferenceInstances[prefType];
-  const definitions = usePrefDefinitions(prefType, filter);
+  const definitions = usePrefDefinitions(prefType);
   const heading =
     prefType === 'collection'
       ? preferencesText.collectionPreferences()
-      : filter === 'userKeyboardShortcuts'
-        ? preferencesText.keyboardShortcuts()
-        : preferencesText.preferences();
+      : preferencesText.preferences();
 
   React.useEffect(
     () =>
@@ -153,7 +144,6 @@ function Preferences({
           <PreferencesAside
             activeCategory={visibleChild}
             definitions={definitions}
-            filter={filter}
             prefType={prefType}
             references={references}
             setActiveCategory={setVisibleChild}
@@ -180,8 +170,7 @@ function Preferences({
 
 /** Hide invisible preferences. Remote empty categories and subCategories */
 export function usePrefDefinitions(
-  prefType: PreferenceType = 'user',
-  filter: PreferencesFilter = 'allUserPreferences'
+  prefType: PreferenceType = 'user'
 ) {
   const isDarkMode = useDarkMode();
   const isRedirecting = React.useContext(userPreferences.Context) !== undefined;
@@ -217,15 +206,7 @@ export function usePrefDefinitions(
                                 ? item.visible(preferencesVisibilityContext)
                                 : item.visible !== false;
                             if (!visible) return false;
-                            if (prefType !== 'user' || filter === 'allUserPreferences')
-                              return true;
-                            const isKeyboardShortcut =
-                              'renderer' in item &&
-                              (item.renderer.name === 'KeyboardShortcutPreferenceItem' ||
-                                item.renderer.name === 'UrlShortcutsEditor');
-                            return filter === 'userKeyboardShortcuts'
-                              ? isKeyboardShortcut
-                              : !isKeyboardShortcut;
+                            return true;
                           }),
                         },
                       ] as const
@@ -235,7 +216,7 @@ export function usePrefDefinitions(
             ] as const
         )
         .filter(([_name, { subCategories }]) => subCategories.length > 0),
-    [definitions, preferencesVisibilityContext, filter, prefType]
+    [definitions, preferencesVisibilityContext, prefType]
   );
 }
 
@@ -544,12 +525,7 @@ function createPreferencesWrapper(Component: React.ComponentType) {
 }
 
 export const PreferencesWrapper = createPreferencesWrapper(Preferences);
-export const UserPreferencesWrapper = createPreferencesWrapper(() => (
-  <Preferences filter="userPreferences" />
-));
-export const KeyboardShortcutsWrapper = createPreferencesWrapper(() => (
-  <Preferences filter="userKeyboardShortcuts" />
-));
+export const UserPreferencesWrapper = createPreferencesWrapper(Preferences);
 export const CollectionPreferencesWrapper = createPreferencesWrapper(
   CollectionPreferences
 );
