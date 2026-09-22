@@ -26,7 +26,7 @@ class TestDeletePreviousVersionObjects(ApiTests):
                 treedef=self.taxontreedef,
             )
         ]
-
+        
         geologic_root = models.Geologictimeperiodtreedefitem.objects.create(
             name='Root geologic time period',
             rankid=0,
@@ -174,7 +174,38 @@ class TestDeletePreviousVersionObjects(ApiTests):
                 deaccessionnumber='Test deaccession',
             )
         ]
+        
+        self.recordset = models.Recordset.objects.create(
+            name='Previous Record set',
+            collectionmemberid=self.collection.id,
+            dbtableid=models.Collectionobject.specify_model.tableId,
+            specifyuser=self.specifyuser,
+            type=0,
+        )
 
+    def test_delete_recordset_created_in_previous_version(self):
+        recordset = self.recordset
+        recordset_id = recordset.id
+        
+        recordset.recordsetitems.create(
+            recordid=self.collectionobjects[0].id
+        )
+        
+        self.assertEqual(
+            recordset.recordsetitems.count(), 1 
+        )
+        
+        recordset.delete()
+                
+        self.assertFalse(
+            models.Recordset.objects.filter(id=recordset_id).exists()
+        )
+       
+        self.assertFalse(
+            models.Recordsetitem.objects.filter(recordset_id=recordset_id).exists()
+        )
+
+        
     def test_delete_collectionobject_created_in_previous_version(self):
         collectionobject = self.collectionobjects[0]
         object_id = collectionobject.id
