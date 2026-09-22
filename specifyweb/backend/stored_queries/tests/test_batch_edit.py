@@ -2342,4 +2342,55 @@ class QueryConstructionTests(SQLAlchemySetup):
         (headers, rows, packs, plan, order) = run_batch_edit_query(props)
 
         self.assertEqual(headers, expected_captions)
+
+    # Tests to verify batch edit relationships are not editable. 
+    def _make_determination(self):
+        return models.Determination.objects.create(
+            collectionobject=self.collectionobjects[0],
+            remarks="Remarks for collection object 1, det 1",
+        )
+
+    def _run_omitting_relationships(self, omit_relationships: bool):
+        base_table = "collectionobject"
+        query_paths = [
+            ["catalognumber"],
+            ["cataloger", "firstname"],
+            ["determinations", "remarks"],
+        ]
+        added = [(base_table, *path) for path in query_paths]
+        query_fields = [
+            BatchEditPack._query_field(QueryFieldSpec.from_path(path), 0)
+            for path in added
+        ]
+        props = self.build_props(query_fields, base_table)
+        props["omit_relationships"] = omit_relationships
+        (headers, rows, packs, plan, order) = run_batch_edit_query(props)
+        return headers, plan["uploadable"]["uploadTable"]
+
+    @patch(OBJ_FORMATTER_PATH, new=fake_obj_formatter)
+    def test_relationships_are_editable_by_default(self):
+        self._make_determination()
+        (headers, upload_table) = self._run_omitting_relationships(False)
+        self.assertIn("cataloger", upload_table["toOne"])
+        self.assertIn("determinations", upload_table["toMany"])
+
+    @patch(OBJ_FORMATTER_PATH, new=fake_obj_formatter)
+    def test_omitting_relationships_removes_them_from_the_upload_plan(self):
+        self._make_determination()
+        (headers, upload_table) = self._run_omitting_relationships(True)
+        self.assertEqual(upload_table["toOne"], {})
+        self.assertEqual(upload_table["toMany"], {})
+
+    @patch(OBJ_FORMATTER_PATH, new=fake_obj_formatter)
+    def test_base_table_fields_stay_editable_without_relationships(self):
+        self._make_determination()
+        (headers, upload_table) = self._run_omitting_relationships(True)
+        self.assertIn("catalognumber", upload_table["wbcols"])
+
+    @patch(OBJ_FORMATTER_PATH, new=fake_obj_formatter)
+    def test_relationship_columns_are_still_shown(self):
+        self._make_determination()
+        (shown_headers, _) = self._run_omitting_relationships(False)
+        (omitted_headers, _) = self._run_omitting_relationships(True)
+        self.assertEqual(omitted_headers, shown_headers)
         
