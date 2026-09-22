@@ -16,8 +16,8 @@ class TestAppResource(ApiTests):
     def test_data_view_queries_inherit_by_table(
         self, get_from_db: Mock, load_from_filesystem: Mock
     ):
-        discipline = ('{"version": 1, "queries": {"Agent": {"fields": [1]}, "Loan": {"fields": [2]}}}', 'application/json', 1)
-        personal = ('{"version": 1, "queries": {"Agent": {"fields": [3]}}}', 'application/json', 2)
+        discipline = ('{"version": 1, "queries": {"Agent": {"fields": [{"marker": 1}]}, "Loan": {"fields": [{"marker": 2}]}}}', 'application/json', 1)
+        personal = ('{"version": 1, "queries": {"Agent": {"fields": [{"marker": 3}]}}}', 'application/json', 2)
         get_from_db.side_effect = lambda _collection, _user, level, _name: {
             'Discipline': discipline,
             'Personal': personal,
@@ -29,7 +29,7 @@ class TestAppResource(ApiTests):
         self.assertIsNotNone(result)
         self.assertEqual(
             result[0],
-            '{"version": 1, "queries": {"Agent": {"fields": [3]}, "Loan": {"fields": [2]}}}',
+            '{"version": 1, "queries": {"Agent": {"fields": [{"marker": 3}]}, "Loan": {"fields": [{"marker": 2}]}}}',
         )
         self.assertEqual(result[1:], ('application/json', 2))
 
@@ -38,8 +38,8 @@ class TestAppResource(ApiTests):
     def test_data_view_queries_skip_malformed_override_entry(
         self, get_from_db: Mock, load_from_filesystem: Mock
     ):
-        discipline = ('{"version": 1, "queries": {"Agent": {"fields": [1]}, "Loan": {"fields": [2]}}}', 'application/json', 1)
-        personal = ('{"version": 1, "queries": {"Agent": {}, "Loan": {"fields": [3]}}}', 'application/json', 2)
+        discipline = ('{"version": 1, "queries": {"Agent": {"fields": [{"marker": 1}]}, "Loan": {"fields": [{"marker": 2}]}}}', 'application/json', 1)
+        personal = ('{"version": 1, "queries": {"Agent": {}, "Loan": {"fields": [{"marker": 3}]}}}', 'application/json', 2)
         get_from_db.side_effect = lambda _collection, _user, level, _name: {
             'Discipline': discipline,
             'Personal': personal,
@@ -51,7 +51,7 @@ class TestAppResource(ApiTests):
         self.assertIsNotNone(result)
         self.assertEqual(
             result[0],
-            '{"version": 1, "queries": {"Agent": {"fields": [1]}, "Loan": {"fields": [3]}}}',
+            '{"version": 1, "queries": {"Agent": {"fields": [{"marker": 1}]}, "Loan": {"fields": [{"marker": 3}]}}}',
         )
         self.assertEqual(result[1:], ('application/json', 2))
 
