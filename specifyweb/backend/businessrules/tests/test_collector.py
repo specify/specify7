@@ -78,8 +78,12 @@ class CollectorTests(ApiTests):
 
         fetched_collectors = models.Collector.objects.filter(collectingevent=collectingevent)
         self.assertEqual(fetched_collectors.count(), 2)
-        self.assertIn(collector1, fetched_collectors)
-        self.assertIn(collector2, fetched_collectors)
+        fetched_collector1 = fetched_collectors.get(id=collector1.id)
+        fetched_collector2 = fetched_collectors.get(id=collector2.id)
+        self.assertTrue(fetched_collector1.isprimary)
+        self.assertEqual(fetched_collector1.ordernumber, 0)
+        self.assertFalse(fetched_collector2.isprimary)
+        self.assertEqual(fetched_collector2.ordernumber, 1)
 
     @skip("business rule removed in https://github.com/specify/specify7/issues/327")
     def test_division_cannot_be_null(self):
