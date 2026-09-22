@@ -80,8 +80,10 @@ class CollectorTests(ApiTests):
         self.assertEqual(fetched_collectors.count(), 2)
         fetched_collector1 = fetched_collectors.get(id=collector1.id)
         fetched_collector2 = fetched_collectors.get(id=collector2.id)
+        self.assertEqual(fetched_collector1.agent, self.agent)
         self.assertTrue(fetched_collector1.isprimary)
         self.assertEqual(fetched_collector1.ordernumber, 0)
+        self.assertEqual(fetched_collector2.agent, new_agent)
         self.assertFalse(fetched_collector2.isprimary)
         self.assertEqual(fetched_collector2.ordernumber, 1)
 
