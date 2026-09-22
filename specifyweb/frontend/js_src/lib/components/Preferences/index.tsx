@@ -108,7 +108,9 @@ function Preferences({
   const heading =
     prefType === 'collection'
       ? preferencesText.collectionPreferences()
-      : preferencesText.preferences();
+      : filter === 'userKeyboardShortcuts'
+        ? preferencesText.keyboardShortcuts()
+        : preferencesText.preferences();
 
   React.useEffect(
     () =>
