@@ -122,8 +122,8 @@ export function QueryTables({
 }): JSX.Element {
   return (
     <Ul className="flex flex-col gap-1">
-      {tables.map(({ name, label }, index) => (
-        <li className="flex items-center gap-2" key={index}>
+      {tables.map(({ name, label }) => (
+        <li className="flex items-center gap-2" key={name}>
           <div className="min-w-0 flex-1">
             <QueryTableItem
               count={counts?.[name]}
