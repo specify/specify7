@@ -1,12 +1,13 @@
-from specifyweb.specify import models
+from specifyweb.backend.stored_queries.tests.tests import SQLAlchemySetup
 from specifyweb.specify.tests.test_api import ApiTests
 from specifyweb.specify.api.crud import post_resource, update_obj
-from .raw_query import get_simple_query
+from specifyweb.backend.stored_queries.tests.test_views.raw_query import (
+    get_simple_query,
+)
 
 
 
-
-class TestRenameQuery(ApiTests):
+class TestRenameQuery(SQLAlchemySetup):
 
 
     def setUp(self):
@@ -24,9 +25,11 @@ class TestRenameQuery(ApiTests):
         update_obj(
             self.collection,
             self.agent,
+            'spquery',
             query.id,
             query.version,
             {
+                **get_simple_query(self.specifyuser),
                 "name": "Renamed Query",
             },
         )
