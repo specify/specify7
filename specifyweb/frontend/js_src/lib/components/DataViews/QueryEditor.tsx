@@ -8,6 +8,7 @@ import type { SpQueryField, Tables } from '../DataModel/types';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
 import { defaultDataViewTablesConfig } from './config';
 import {
+  getDataViewQueryDefinition,
   getStoredDataViewQueryDefinition,
   makeDataViewQuery,
   parseDataViewQueries,
@@ -68,9 +69,7 @@ export function DataViewQueryEditorContent({
     () =>
       makeDataViewQuery(
         tableName,
-        getStoredDataViewQueryDefinition(fileRef.current, tableName) ?? {
-          fields: [],
-        }
+        getDataViewQueryDefinition(fileRef.current, tableName)
       ),
     // The Query Builder owns its live field state. Replacing its query
     // resource for every field change resets that state and the field list's
@@ -85,23 +84,35 @@ export function DataViewQueryEditorContent({
       readonly searchSynonymy: boolean | null;
       readonly isSeries: boolean | null;
     }): void => {
+      const currentFile = fileRef.current;
+      const definition = {
+        fields: changes.fields,
+        selectDistinct: changes.isDistinct ?? false,
+        searchSynonymy: changes.searchSynonymy ?? false,
+        smushed: changes.isSeries ?? false,
+      };
+      const defaultFile: DataViewQueriesFile = {
+        version: 1,
+        queries: {
+          [tableName]: getDataViewQueryDefinition(currentFile, tableName),
+        },
+      };
+      const changedFile: DataViewQueriesFile = {
+        version: 1,
+        queries: { [tableName]: definition },
+      };
       if (
-        changes.fields.length === 0 &&
-        getStoredDataViewQueryDefinition(fileRef.current, tableName) ===
-          undefined
+        getStoredDataViewQueryDefinition(currentFile, tableName) ===
+          undefined &&
+        serializeStableDataViewQueries(changedFile) ===
+          serializeStableDataViewQueries(defaultFile)
       )
         return;
-      const currentFile = fileRef.current;
       const nextFile: DataViewQueriesFile = {
         ...currentFile,
         queries: {
           ...currentFile.queries,
-          [tableName]: {
-            fields: changes.fields,
-            selectDistinct: changes.isDistinct ?? false,
-            searchSynonymy: changes.searchSynonymy ?? false,
-            smushed: changes.isSeries ?? false,
-          },
+          [tableName]: definition,
         },
       };
       if (
