@@ -161,7 +161,6 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     fetchCount()
       .then(async (refreshedTotalCount) => {
         if (generation !== refreshGenerationRef.current) return;
-        setTotalCount(refreshedTotalCount);
         const offsets = Array.from(
           {
             length: Math.min(
