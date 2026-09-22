@@ -2799,6 +2799,9 @@ export const preferencesText = createDictionary({
   openRelatedRecordInNewTab: { 'en-us': 'Open related record in new tab' },
   openFormMeta: { 'en-us': 'Open form meta' },
   urlShortcuts: { 'en-us': 'Keyboard Shortcuts to URLs' },
+  urlShortcutsDescription: {
+    'en-us': 'Shortcuts for opening custom pages or other URLs from anywhere in Specify.',
+  },
   pages: { 'en-us': 'Pages' },
   overlays: { 'en-us': 'Overlays' },
   customPages: { 'en-us': 'Custom Pages' },

@@ -58,15 +58,18 @@ export function UrlShortcutsEditor(
           value={[props.value, props.onChange]}
         />
       )}
-      <div className="mt-6 border-t border-gray-300 pt-4">
+      <section className="mt-4 rounded border border-gray-300 p-3">
         <H3>{preferencesText.urlShortcuts()}</H3>
+        <p className="mb-3 text-gray-500">
+          {preferencesText.urlShortcutsDescription()}
+        </p>
         <Button.Small
           aria-current={isOpen ? true : undefined}
           onClick={handleToggle}
         >
           {isReadOnly ? commonText.view() : commonText.edit()}
         </Button.Small>
-      </div>
+      </section>
       {isOpen && (
         <EditorDialog
           {...props}
