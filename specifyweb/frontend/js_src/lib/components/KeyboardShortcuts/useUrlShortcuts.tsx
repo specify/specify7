@@ -6,6 +6,7 @@ import { isExternalUrl } from '../../utils/ajax/helpers';
 import type { MenuItem } from '../Core/Main';
 import { rawUserToolsPromise } from '../Header/userToolDefinitions';
 import { userPreferences } from '../Preferences/userPreferences';
+import { pathIsOverlay } from '../Router/UnloadProtect';
 import { bindKeyboardShortcut } from './context';
 
 export function useUrlShortcuts(): void {
@@ -27,6 +28,7 @@ export function useUrlShortcuts(): void {
                 .onClick()
                 .then(() => globalThis.location.assign(path));
             else if (isExternalUrl(path)) globalThis.open(path, '_blank');
+            else if (pathIsOverlay(path)) navigate(path);
             else if (userTool !== undefined) globalThis.location.assign(path);
             else navigate(path);
           })
