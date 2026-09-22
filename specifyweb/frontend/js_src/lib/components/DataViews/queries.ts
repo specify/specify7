@@ -261,7 +261,7 @@ export async function saveUserDataViewQueries(
     )
   );
   const mergedCurrent = matchingResources.reduce(
-    (combined, { id }, index) => {
+    (combined, {}, index) => {
       const currentResourceData = parseDataViewQueries(allResourceData[index]);
       return {
         version: 1 as const,
