@@ -152,12 +152,19 @@ export function QueryListDialog({
           resource.get('contextTableId') === activeFilters.contextTableId;
         if (!matchesSearch || !matchesSpecifyUser || !matchesContextTableId)
           return;
+        const newTotalCount = Math.max(0, data.totalCount - 1);
+        currentPage[1](
+          Math.min(
+            currentPage[0],
+            Math.max(0, Math.ceil(newTotalCount / limit) - 1)
+          )
+        );
         setData({
           records: data.records.filter((query) => query.id !== resource.id),
-          totalCount: data.totalCount - 1,
+          totalCount: newTotalCount,
         });
       }),
-    [data, filters, searchFilter, setData]
+    [currentPage, data, filters, limit, searchFilter, setData]
   );
 
   const totalCountRef = React.useRef<number | undefined>(undefined);
