@@ -333,7 +333,10 @@ export function usePrefDefinitions(prefType: PreferenceType = 'user') {
         'keyboardShortcuts',
         {
           title: preferencesText.keyboardShortcuts(),
-          subCategories: [...shortcutSubCategories, ...urlShortcutSubCategories],
+          subCategories: [
+            ...shortcutSubCategories,
+            ...urlShortcutSubCategories,
+          ],
         },
       ] as const,
     ].filter(

@@ -2788,7 +2788,8 @@ export const preferencesText = createDictionary({
     'en-us': 'Shortcuts for actions in regular data entry forms.',
   },
   dialogActionsDescription: {
-    'en-us': 'Shortcuts for actions available in dialogs, such as closing or saving.',
+    'en-us':
+      'Shortcuts for actions available in dialogs, such as closing or saving.',
   },
   treeActionsDescription: {
     'en-us': 'Shortcuts for actions in the Tree Editor.',
@@ -2800,7 +2801,8 @@ export const preferencesText = createDictionary({
   openFormMeta: { 'en-us': 'Open form meta' },
   urlShortcuts: { 'en-us': 'Keyboard Shortcuts to URLs' },
   urlShortcutsDescription: {
-    'en-us': 'Shortcuts for opening custom pages or other URLs from anywhere in Specify.',
+    'en-us':
+      'Shortcuts for opening custom pages or other URLs from anywhere in Specify.',
   },
   pages: { 'en-us': 'Pages' },
   overlays: { 'en-us': 'Overlays' },
