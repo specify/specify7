@@ -137,7 +137,7 @@ export function QueryTables({
           {handleEdit === undefined ? undefined : (
             <Button.Icon
               icon="pencil"
-              title={commonText.edit()}
+              title={`${commonText.edit()} ${label}`}
               onClick={(): void => handleEdit(name)}
             />
           )}
