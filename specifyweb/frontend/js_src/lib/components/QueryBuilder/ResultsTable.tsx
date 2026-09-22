@@ -189,18 +189,18 @@ function Row({
             className={`${getCellClassName(condenseQueryResults)} sticky`}
             role="cell"
           >
-            <div
-              onClick={(event): void => {
-                event.stopPropagation();
-                if (!hasValidId) return;
-                handleSelected?.(!isSelected, event.shiftKey);
-              }}
-            >
+            <div onClick={(event): void => event.stopPropagation()}>
               <Input.Checkbox
                 aria-label={commonText.select()}
                 checked={isSelected}
                 isReadOnly={!hasValidId}
-                onChange={f.undefined}
+                onChange={(event): void => {
+                  if (!hasValidId) return;
+                  handleSelected?.(
+                    event.currentTarget.checked,
+                    (event.nativeEvent as MouseEvent).shiftKey
+                  );
+                }}
               />
             </div>
           </div>
