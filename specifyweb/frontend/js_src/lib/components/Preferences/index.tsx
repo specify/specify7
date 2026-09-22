@@ -59,10 +59,9 @@ type VisiblePreferenceSubcategory = readonly [
   string,
   {
     readonly title: GenericPreferences[string]['subCategories'][string]['title'];
-    readonly description?:
-      GenericPreferences[string]['subCategories'][string]['description'];
+    readonly description?: GenericPreferences[string]['subCategories'][string]['description'];
     readonly items: RA<readonly [string, PreferenceItem<any>]>;
-  }
+  },
 ];
 
 type VisiblePreferenceCategory = readonly [
@@ -71,7 +70,7 @@ type VisiblePreferenceCategory = readonly [
     readonly title: GenericPreferences[string]['title'];
     readonly description?: GenericPreferences[string]['description'];
     readonly subCategories: RA<VisiblePreferenceSubcategory>;
-  }
+  },
 ];
 
 const SUBCATEGORY_DOCS_MAP: Record<
@@ -188,9 +187,7 @@ function Preferences({
 }
 
 /** Hide invisible preferences. Remote empty categories and subCategories */
-export function usePrefDefinitions(
-  prefType: PreferenceType = 'user'
-) {
+export function usePrefDefinitions(prefType: PreferenceType = 'user') {
   const isDarkMode = useDarkMode();
   const isRedirecting = React.useContext(userPreferences.Context) !== undefined;
   const preferencesVisibilityContext = React.useMemo(
@@ -235,47 +232,48 @@ export function usePrefDefinitions(
 
     const shortcutSubCategories = visibleDefinitions.flatMap(
       ([category, { subCategories }]) =>
-        subCategories.flatMap(
-          ([subCategory, subCategoryData]) => {
-            const shortcutItems = subCategoryData.items.filter(
-              ([_name, item]) =>
-                'renderer' in item &&
-                (item.renderer.name === 'KeyboardShortcutPreferenceItem' ||
-                  item.renderer.name === 'UrlShortcutsEditor')
-            );
-            return shortcutItems.length === 0
-              ? []
-              : [
-                  [
-                    `${category}.${subCategory}`,
-                    { ...subCategoryData, items: shortcutItems },
-                  ] as const,
-                ];
-          }
-        )
+        subCategories.flatMap(([subCategory, subCategoryData]) => {
+          const shortcutItems = subCategoryData.items.filter(
+            ([_name, item]) =>
+              'renderer' in item &&
+              (item.renderer.name === 'KeyboardShortcutPreferenceItem' ||
+                item.renderer.name === 'UrlShortcutsEditor')
+          );
+          return shortcutItems.length === 0
+            ? []
+            : [
+                [
+                  `${category}.${subCategory}`,
+                  { ...subCategoryData, items: shortcutItems },
+                ] as const,
+              ];
+        })
     );
 
     const regularDefinitions = visibleDefinitions.map(
-      ([category, categoryData]) => [
-        category,
-        {
-          ...categoryData,
-          subCategories: categoryData.subCategories.map(
-            ([subCategory, subCategoryData]) => [
-              subCategory,
-              {
-                ...subCategoryData,
-                items: subCategoryData.items.filter(
-                  ([_name, item]) =>
-                    !('renderer' in item) ||
-                    (item.renderer.name !== 'KeyboardShortcutPreferenceItem' &&
-                      item.renderer.name !== 'UrlShortcutsEditor')
-                ),
-              },
-            ] as const
-          ),
-        },
-      ] as const
+      ([category, categoryData]) =>
+        [
+          category,
+          {
+            ...categoryData,
+            subCategories: categoryData.subCategories.map(
+              ([subCategory, subCategoryData]) =>
+                [
+                  subCategory,
+                  {
+                    ...subCategoryData,
+                    items: subCategoryData.items.filter(
+                      ([_name, item]) =>
+                        !('renderer' in item) ||
+                        (item.renderer.name !==
+                          'KeyboardShortcutPreferenceItem' &&
+                          item.renderer.name !== 'UrlShortcutsEditor')
+                    ),
+                  },
+                ] as const
+            ),
+          },
+        ] as const
     );
 
     return [

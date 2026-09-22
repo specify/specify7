@@ -1313,7 +1313,10 @@ export const userPreferenceDefinitions = {
             formsText.goToLastRecord(),
             'Ctrl+Shift+ArrowDown'
           ),
-          addResource: defineKeyboardShortcut(resourcesText.addResource(), 'KeyA'),
+          addResource: defineKeyboardShortcut(
+            resourcesText.addResource(),
+            'KeyA'
+          ),
         },
       },
       formTable: {
