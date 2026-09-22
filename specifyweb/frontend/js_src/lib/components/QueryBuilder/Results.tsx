@@ -668,7 +668,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
                 const id = rawId;
                 if (typeof id !== 'number' || !Number.isFinite(id)) return;
 
-                const newSelectedRows = new Set(selectedRows).add(id);
+                const newSelectedRows = new Set([id]);
                 setSelectedRows(newSelectedRows);
                 handleSelected?.(Array.from(newSelectedRows));
                 lastSelectedRow.current = rowIndex;
