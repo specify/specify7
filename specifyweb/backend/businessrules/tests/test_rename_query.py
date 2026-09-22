@@ -1,4 +1,3 @@
-from specifyweb.backend.stored_queries.tests.tests import SQLAlchemySetup
 from specifyweb.specify.tests.test_api import ApiTests
 from specifyweb.specify.api.crud import post_resource, update_obj
 from specifyweb.backend.stored_queries.tests.test_views.raw_query import (
@@ -7,7 +6,7 @@ from specifyweb.backend.stored_queries.tests.test_views.raw_query import (
 
 
 
-class TestRenameQuery(SQLAlchemySetup):
+class TestRenameQuery(ApiTests):
 
 
     def setUp(self):
