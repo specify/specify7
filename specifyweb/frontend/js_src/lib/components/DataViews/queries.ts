@@ -248,24 +248,37 @@ export async function saveUserDataViewQueries(
       readonly mimetype: string;
     }>
   >('/context/user_resource/', { headers: { Accept: 'application/json' } });
-  const [resource, ...duplicates] = resources.data.filter(
+  const matchingResources = resources.data.filter(
     ({ name, mimetype }) =>
       name === dataViewQueriesResourceName && mimetype === 'application/json'
   );
-  const existingData =
-    resource === undefined
-      ? undefined
-      : await ajax<{ readonly data?: string }>(
-          `/context/user_resource/${resource.id}/`,
-          { headers: { Accept: 'application/json' } }
-        ).then(({ data: resourceData }) => resourceData.data);
+  const [resource, ...duplicates] = matchingResources;
+  const allResourceData = await Promise.all(
+    matchingResources.map(async ({ id }) =>
+      ajax<{ readonly data?: string }>(`/context/user_resource/${id}/`, {
+        headers: { Accept: 'application/json' },
+      }).then(({ data: resourceData }) => resourceData.data)
+    )
+  );
+  const mergedCurrent = matchingResources.reduce(
+    (combined, { id }, index) => {
+      const currentResourceData = parseDataViewQueries(allResourceData[index]);
+      return {
+        version: 1 as const,
+        queries: {
+          ...combined.queries,
+          ...currentResourceData.queries,
+        },
+      };
+    },
+    { version: 1 as const, queries: {} as DataViewQueriesFile['queries'] }
+  );
   const incoming = parseDataViewQueries(data);
-  const current = parseDataViewQueries(existingData);
   const editedQuery = incoming.queries[tableName];
   const mergedData = serializeDataViewQueries({
     version: 1,
     queries: {
-      ...current.queries,
+      ...mergedCurrent.queries,
       ...(editedQuery === undefined ? {} : { [tableName]: editedQuery }),
     },
   });

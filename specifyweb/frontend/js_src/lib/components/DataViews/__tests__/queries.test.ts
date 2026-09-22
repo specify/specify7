@@ -1,6 +1,7 @@
 import { addMissingFields } from '../../DataModel/addMissingFields';
 import { serializeResource } from '../../DataModel/serializers';
 import { strictGetTable } from '../../DataModel/tables';
+import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
 import {
   defaultDataViewQuery,
@@ -8,6 +9,7 @@ import {
   getStoredDataViewQueryDefinition,
   makeDataViewQuery,
   parseDataViewQueries,
+  saveUserDataViewQueries,
   serializeDataViewQueries,
 } from '../queries';
 import { getNumericResultId } from '../index';
@@ -100,6 +102,90 @@ test('unsupported operStart values use generated defaults', () => {
   expect(getStoredDataViewQueryDefinition(file, 'Agent')).toBeUndefined();
   expect(getDataViewQueryDefinition(file, 'Agent')).toEqual(
     defaultDataViewQuery('Agent')
+  );
+});
+
+const canonicalRecord = {
+  id: 1,
+  name: 'DataViewQueries',
+  mimetype: 'application/json',
+};
+const duplicateRecord = {
+  id: 2,
+  name: 'DataViewQueries',
+  mimetype: 'application/json',
+};
+const makeField = (fieldName: string) => ({
+  stringId: fieldName,
+  fieldName,
+  tableList: 'Agent',
+  isDisplay: true,
+  isNot: false,
+  sortType: 0,
+  operStart: 1,
+  startValue: '',
+  isRelFld: null,
+  isStrict: false,
+});
+const canonicalData = {
+  version: 1,
+  queries: {
+    Agent: {
+      fields: [makeField('Name')],
+    },
+  },
+};
+const duplicateData = {
+  version: 1,
+  queries: {
+    Loan: {
+      fields: [makeField('LoanNumber')],
+    },
+  },
+};
+const updatedAgent = {
+  fields: [makeField('Abbreviation')],
+};
+const mergedData = {
+  version: 1,
+  queries: {
+    Agent: updatedAgent,
+    Loan: duplicateData.queries.Loan,
+  },
+};
+
+overrideAjax('/context/user_resource/', [canonicalRecord, duplicateRecord]);
+overrideAjax(`/context/user_resource/${canonicalRecord.id}/`, {
+  data: JSON.stringify(canonicalData),
+});
+overrideAjax(`/context/user_resource/${duplicateRecord.id}/`, {
+  data: JSON.stringify(duplicateData),
+});
+overrideAjax(
+  `/context/user_resource/${canonicalRecord.id}/`,
+  '',
+  {
+    method: 'PUT',
+    body: {
+      name: 'DataViewQueries',
+      mimetype: 'application/json',
+      metadata: '',
+      data: JSON.stringify(mergedData, undefined, 2),
+    },
+  },
+  true
+);
+overrideAjax(`/context/user_resource/${duplicateRecord.id}/`, '', {
+  method: 'DELETE',
+});
+overrideAjax('/context/app.resource?name=DataViewQueries', '', {
+  method: 'HEAD',
+});
+
+test('duplicate Data View resources preserve all table overrides before deletion', async () => {
+  await saveUserDataViewQueries(
+    JSON.stringify({ version: 1, queries: { Agent: updatedAgent } }),
+    'Agent'
   );
 });
 
