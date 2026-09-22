@@ -126,14 +126,37 @@ def get_app_resource(collection, user, resource_name, additional_default=False):
     return None
 
 
+def _is_valid_data_view_query_field(value):
+    """Return True when a value matches the serialized SpQueryField contract."""
+    if not isinstance(value, dict):
+        return False
+    return (
+        isinstance(value.get('stringId'), str)
+        and isinstance(value.get('fieldName'), str)
+        and isinstance(value.get('tableList'), str)
+        and isinstance(value.get('isDisplay'), bool)
+        and isinstance(value.get('isNot'), bool)
+        and isinstance(value.get('sortType'), (int, float))
+        and not isinstance(value.get('sortType'), bool)
+        and isinstance(value.get('operStart'), (int, float))
+        and not isinstance(value.get('operStart'), bool)
+        and value['operStart'] in range(19)
+        and isinstance(value.get('startValue'), str)
+        and (
+            value.get('isRelFld') is None
+            or isinstance(value.get('isRelFld'), bool)
+        )
+    )
+
+
 def _is_valid_data_view_query_definition(value):
-    """Return True when a value looks like a usable DataView query definition."""
+    """Return True when a value matches a usable DataView query definition."""
     if not isinstance(value, dict):
         return False
     fields = value.get('fields')
-    if not isinstance(fields, list):
-        return False
-    return all(isinstance(field, dict) for field in fields)
+    return isinstance(fields, list) and all(
+        _is_valid_data_view_query_field(field) for field in fields
+    )
 
 
 def get_data_view_queries_resource(collection, user):
