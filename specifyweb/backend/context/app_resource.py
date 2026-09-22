@@ -126,6 +126,16 @@ def get_app_resource(collection, user, resource_name, additional_default=False):
     return None
 
 
+def _is_valid_data_view_query_definition(value):
+    """Return True when a value looks like a usable DataView query definition."""
+    if not isinstance(value, dict):
+        return False
+    fields = value.get('fields')
+    if not isinstance(fields, list):
+        return False
+    return all(isinstance(field, dict) for field in fields)
+
+
 def get_data_view_queries_resource(collection, user):
     """Return DataViewQueries merged across the app-resource hierarchy."""
     resources = []
@@ -151,7 +161,11 @@ def get_data_view_queries_resource(collection, user):
             or not isinstance(data.get('queries'), dict)
         ):
             continue
-        queries.update(data['queries'])
+        for key, value in data['queries'].items():
+            if not _is_valid_data_view_query_definition(value):
+                logger.warning('Ignoring malformed DataView query override for %s', key)
+                continue
+            queries[key] = value
 
     # Return the most-specific resource's metadata while exposing the merged
     # JSON payload to the client.
