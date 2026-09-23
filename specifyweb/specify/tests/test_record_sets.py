@@ -1,9 +1,44 @@
 from specifyweb.specify.tests.test_api import ApiTests
 from specifyweb.specify.models import Recordset, Recordsetitem, Collectionobject
+from specifyweb.specify.api.crud import post_resource
+from specifyweb.specify.api.serializers import obj_to_data, uri_for_model
+
 
 
 class RecordSetCreationTests(ApiTests):
 
+    def test_add_new_record_set(self):
+        """Add a new recordset"""
+        recordset = Recordset.objects.create(
+            dbtableid=Collectionobject.specify_model.tableId,
+            name="Test RS add existing",
+            type=0,
+            collectionmemberid=self.collection.id,
+            specifyuser=self.specifyuser,
+            )
+        co_ids = [co.id for co in self.collectionobjects]
+        
+        Recordsetitem.objects.bulk_create([
+            Recordsetitem(recordset=recordset, recordid=co_id)
+            for co_id in co_ids
+        ])
+        existing_co = self.collectionobjects[0]
+        recordset.recordsetitems.create(recordid=existing_co.id)
+
+        obj = post_resource(
+                    self.collection,
+                    self.agent,
+                    "collectionobject",
+                    {
+                        "collection": uri_for_model("collection", self.collection.id),
+                        "catalognumber": "foobar",
+                    },
+                    recordsetid=self.recordset.id,
+                )
+        self.assertEqual(self.recordset.recordsetitems.filter(recordid=obj.id).count(), 1)
+
+
+        
     def test_create_record_set_with_multiple_records(self):
         """Create a record set and add multiple Collection Objects to it."""
         recordset = Recordset.objects.create(
