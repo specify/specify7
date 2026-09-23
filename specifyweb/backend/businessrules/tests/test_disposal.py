@@ -17,7 +17,7 @@ class DisposalTests(ApiTests):
         record_set.recordsetitems.create(
             recordid=self.collectionobjects[0].id,
         )
-        
+
         disposal = models.Disposal.objects.create(
             disposalnumber='DISPOSAL-RECORDSET-001',
         )
@@ -36,3 +36,25 @@ class DisposalTests(ApiTests):
             fetched.preparation,
             prep,
         )
+
+    def test_create_disposal_prep_by_entering_cat_number(self):
+        self._create_prep_type()
+        self._create_prep(self.collectionobjects[0], None)
+
+        self.collectionobjects[0].catalognumber = 'CAT-1001'
+        self.collectionobjects[0].save()
+
+        co = models.Collectionobject.objects.get(catalognumber='CAT-1001')
+        prep = models.Preparation.objects.get(collectionobject=co)
+
+        disposal = models.Disposal.objects.create(
+            disposalnumber='DISPOSAL-CATNUM-001',
+        )
+        disposal_prep = models.Disposalpreparation.objects.create(
+            disposal=disposal,
+            preparation=prep,
+        )
+
+        fetched = models.Disposalpreparation.objects.get(id=disposal_prep.id)
+        self.assertEqual(fetched.preparation.collectionobject.catalognumber, 'CAT-1001')
+        self.assertEqual(fetched.disposal.disposalnumber, 'DISPOSAL-CATNUM-001')
