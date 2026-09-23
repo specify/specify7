@@ -126,6 +126,7 @@ function LoadedDataViewFromTable({
   const [refreshToken, setRefreshToken] = React.useState(0);
   const [queryRunCount, setQueryRunCount] = React.useState(1);
   const [queryData, setQueryData] = React.useState<string | undefined>();
+  const [isQueryDirty, setIsQueryDirty] = React.useState(false);
   const [isSavingQuery, setIsSavingQuery] = React.useState(false);
   const [runtimeFields, setRuntimeFields] = React.useState<
     ReturnType<typeof unParseQueryFields> | undefined
@@ -184,7 +185,8 @@ function LoadedDataViewFromTable({
     setRefreshToken((token) => token + 1);
   }, []);
   const handleCloseQueryEditor = (): void => setQueryData(undefined);
-  const handleOpenQueryEditor = (): void =>
+  const handleOpenQueryEditor = (): void => {
+    setIsQueryDirty(false);
     setQueryData(
       serializeDataViewQueries({
         version: 1,
@@ -193,6 +195,7 @@ function LoadedDataViewFromTable({
         },
       })
     );
+  };
 
   const definition = React.useMemo(
     () => getDataViewQueryDefinition(queries, tableName),
@@ -225,9 +228,9 @@ function LoadedDataViewFromTable({
               {commonText.cancel()}
             </Button.Secondary>
             <Button.Success
-              disabled={isSavingQuery}
+              disabled={isSavingQuery || !isQueryDirty}
               onClick={(): void => {
-                if (isSavingQuery) return;
+                if (isSavingQuery || !isQueryDirty) return;
                 setIsSavingQuery(true);
                 saveUserDataViewQueries(queryData, tableName)
                   .then(() => {
@@ -249,7 +252,10 @@ function LoadedDataViewFromTable({
         <DataViewQueryEditorContent
           data={queryData}
           tableName={tableName}
-          onChange={setQueryData}
+          onChange={(nextData): void => {
+            setQueryData(nextData);
+            setIsQueryDirty(true);
+          }}
         />
       </Dialog>
     );

@@ -35,6 +35,7 @@ export function DataViewTables(): JSX.Element {
   const [isEditing, handleEditing] = useBooleanState();
   const [queries, reloadQueries] = useDataViewQueries();
   const [queryData, setQueryData] = React.useState<string | undefined>();
+  const [isQueryDirty, setIsQueryDirty] = React.useState(false);
   const [isSavingQuery, setIsSavingQuery] = React.useState(false);
   const [queryTable, setQueryTable] = React.useState<
     keyof Tables | undefined
@@ -42,6 +43,7 @@ export function DataViewTables(): JSX.Element {
   const counts = useTableRecordCounts(tables);
   const handleOpenQueryEditor = (tableName: keyof Tables): void => {
     if (queries === undefined) return;
+    setIsQueryDirty(false);
     setQueryData(
       serializeDataViewQueries({
         version: 1,
@@ -53,6 +55,7 @@ export function DataViewTables(): JSX.Element {
     setQueryTable(tableName);
   };
   const handleCloseQueryEditor = (): void => {
+    setIsQueryDirty(false);
     setQueryTable(undefined);
     setQueryData(undefined);
   };
@@ -68,9 +71,9 @@ export function DataViewTables(): JSX.Element {
               {commonText.cancel()}
             </Button.Secondary>
             <Button.Success
-              disabled={isSavingQuery}
+              disabled={isSavingQuery || !isQueryDirty}
               onClick={(): void => {
-                if (isSavingQuery) return;
+                if (isSavingQuery || !isQueryDirty) return;
                 setIsSavingQuery(true);
                 saveUserDataViewQueries(queryData, queryTable)
                   .then(reloadQueries)
@@ -90,7 +93,10 @@ export function DataViewTables(): JSX.Element {
           data={queryData}
           key={queryTable}
           tableName={queryTable}
-          onChange={setQueryData}
+          onChange={(nextData): void => {
+            setQueryData(nextData);
+            setIsQueryDirty(true);
+          }}
         />
       </Dialog>
     );
