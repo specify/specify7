@@ -143,8 +143,11 @@ def _is_valid_data_view_query_field(value):
         and value['operStart'] in range(19)
         and isinstance(value.get('startValue'), str)
         and (
-            value.get('isRelFld') is None
-            or isinstance(value.get('isRelFld'), bool)
+            'isRelFld' in value
+            and (
+                value.get('isRelFld') is None
+                or isinstance(value.get('isRelFld'), bool)
+            )
         )
     )
 
