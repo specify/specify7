@@ -1293,9 +1293,9 @@
         },
         {
           "tableList": "58,58-children",
-          "stringId": "58,58-children.storage.fullName",
-          "fieldName": "fullName",
-          "isRelFld": false,
+          "stringId": "58,58-children.storage.children",
+          "fieldName": "children",
+          "isRelFld": true,
           "sortType": 0,
           "position": 1,
           "isDisplay": true,
