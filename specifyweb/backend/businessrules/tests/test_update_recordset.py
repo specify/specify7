@@ -2,7 +2,7 @@ from specifyweb.specify import models
 from specifyweb.specify.tests.test_api import ApiTests
 
 
-class TestUpdateResource(ApiTests):
+class TestUpdateRecordset(ApiTests):
 
     def setUp(self):
         super().setUp()
@@ -21,7 +21,8 @@ class TestUpdateResource(ApiTests):
 
         recordset.name= '2nd Record Set Name'
 
-        self.assertEqual(recordset.name, '2nd Record Set Name',)
+        self.assertEqual(recordset.name, '2nd Record Set Name',
+        )
         recordset.save()
         recordset.refresh_from_db()
         
