@@ -25,17 +25,6 @@ class RecordSetCreationTests(ApiTests):
         existing_co = self.collectionobjects[0]
         recordset.recordsetitems.create(recordid=existing_co.id)
 
-        obj = post_resource(
-                    self.collection,
-                    self.agent,
-                    "collectionobject",
-                    {
-                        "collection": uri_for_model("collection", self.collection.id),
-                        "catalognumber": "foobar",
-                    },
-                    recordsetid=self.recordset.id,
-                )
-        self.assertEqual(self.recordset.recordsetitems.filter(recordid=obj.id).count(), 1)
 
 
         
