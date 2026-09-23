@@ -20,9 +20,10 @@ class RecordSetCreationTests(ApiTests):
             Recordsetitem(recordset=recordset, recordid=co_id)
             for co_id in co_ids
         ])
-        self.assertEqual( self.recordset.recordsetitems.filter(recordid=obj.id).count(), 1)
-        existing_co = self.collectionobjects[0]
-
+        self.assertEqual( 
+            set(recordset.recordsetitems.values_list("recordid", flat=True)),
+            set(co_ids)
+        )
 
 
         
