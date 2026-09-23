@@ -24,7 +24,7 @@ describe('useFormatted', () => {
     },
   });
 
-  test('sets the formatted value initially', () => {
+  test('sets the formatted value initially', async () => {
     const collectionObject = new tables.CollectionObject.Resource({
       catalogNumber: '5',
     });
@@ -38,7 +38,7 @@ describe('useFormatted', () => {
     waitFor(() => expect(result).toBe('000000005'));
   });
 
-  test('updates formatted value when value changes', () => {
+  test('updates formatted value when value changes', async () => {
     const collectionObject = new tables.CollectionObject.Resource({
       catalogNumber: '5',
     });

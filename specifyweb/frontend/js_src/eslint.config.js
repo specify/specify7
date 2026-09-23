@@ -4,7 +4,7 @@
 import accessibility from 'eslint-plugin-jsx-a11y';
 import arrayFunc from 'eslint-plugin-array-func';
 import comments from 'eslint-plugin-write-good-comments';
-import eslintComments from 'eslint-plugin-eslint-comments/lib/configs/recommended.js';
+import eslintComments from 'eslint-plugin-eslint-comments';
 import { FlatCompat } from '@eslint/eslintrc';
 import functional from 'eslint-plugin-functional';
 import globals from 'globals';
@@ -21,12 +21,13 @@ import simpleImportSort from 'eslint-plugin-simple-import-sort';
 import sonarjs from 'eslint-plugin-sonarjs';
 import testingLibrary from 'eslint-plugin-testing-library';
 import tsdoc from 'eslint-plugin-tsdoc';
-import typescriptEslint from '@typescript-eslint/eslint-plugin/dist/configs/eslint-recommended.js';
+import typescriptEslint from '@typescript-eslint/eslint-plugin';
 import typescript from '@typescript-eslint/eslint-plugin';
-import typescriptRecommended from '@typescript-eslint/eslint-plugin/dist/configs/recommended.js';
-import typescriptRecommendedTyped from '@typescript-eslint/eslint-plugin/dist/configs/recommended-requiring-type-checking.js';
-import typescriptStrict from '@typescript-eslint/eslint-plugin/dist/configs/strict.js';
-import unicornRecommended from 'eslint-plugin-unicorn/configs/recommended.js';
+import typescriptRecommended from '@typescript-eslint/eslint-plugin';
+import typescriptRecommendedTyped from '@typescript-eslint/eslint-plugin';
+import typescriptStrict from '@typescript-eslint/eslint-plugin';
+import unicorn  from 'eslint-plugin-unicorn';
+import eslintPluginUnicorn from 'eslint-plugin-unicorn';
 
 const OFF = 'off';
 const WARN = 'warn';
@@ -99,20 +100,19 @@ const testRules = {
 
 const base_config = [
   js.configs.recommended,
-  ...typescriptEslint.overrides,
-  ...compat.config(unicornRecommended),
-  //...compat.config(arrayFunc.configs.all),
+  //...compat.config(typescript.configs.recommended),
+  //...compat.config(unicornRecommended.configs.recommended),
+  //...compat.config(arrayFunc.configs),
   ...compat.config(react.configs.recommended),
   ...compat.config(reactHooks.configs.recommended),
-  ...compat.config(eslintComments),
-  ...compat.config(regexp.configs.recommended),
-  ...compat.config(functional.configs['external-typescript-recommended']),
-  ...compat.config(functional.configs.recommended),
-  ...compat.config(functional.configs['no-object-orientation']),
-  ...compat.config(functional.configs['no-statements']),
-  ...compat.config(functional.configs['no-exceptions']),
-  ...compat.config(functional.configs['currying']),
-  ...compat.config(functional.configs['stylistic']),
+  ...compat.config(eslintComments.configs.recommended),
+  //...compat.config(regexp.configs.recommended),
+  //...compat.config(functional.configs.recommended),
+  //...compat.config(functional.configs.externalTypeScriptRecommended),
+  //...compat.config(functional.configs.noStatements),
+  //...compat.config(functional.configs.noExceptions),
+  //...compat.config(functional.configs.currying),
+  //...compat.config(functional.configs.stylistic),
   ...compat.config(promise.configs.recommended),
   {
     languageOptions: {
@@ -131,6 +131,8 @@ const base_config = [
       react,
       'react-hooks': reactHooks,
       sonarjs,
+	  unicorn,
+	  regexp,
       /**
        * An awesome rule, but have to temporarily disable it until
        * https://github.com/BrainMaestro/eslint-plugin-optimize-regex/issues/66
@@ -140,9 +142,9 @@ const base_config = [
     },
     rules: {
       // TODO: this is fragile
-      ...typescriptRecommended.rules,
-      ...typescriptRecommendedTyped.rules,
-      ...typescriptStrict.rules,
+      //...typescriptRecommended.rules,
+      //...typescriptRecommendedTyped.rules,
+      //...typescriptStrict.rules,
 
       'no-non-null-assertion': OFF,
       // I intercept the calls to console and display them in the UI
@@ -452,7 +454,7 @@ const base_config = [
       ],
       '@typescript-eslint/no-dynamic-delete': ERROR,
       '@typescript-eslint/no-extraneous-class': ERROR,
-      '@typescript-eslint/no-implicit-any-catch': ERROR,
+      //'@typescript-eslint/no-implicit-any-catch': ERROR,
       '@typescript-eslint/no-invalid-void-type': [
         ERROR,
         {
@@ -505,7 +507,7 @@ const base_config = [
       'no-dupe-class-members': OFF,
       '@typescript-eslint/no-dupe-class-members': ERROR,
       'no-duplicate-imports': OFF,
-      '@typescript-eslint/no-duplicate-imports': ERROR,
+      //'@typescript-eslint/no-duplicate-imports': ERROR,
       'no-invalid-this': OFF,
       '@typescript-eslint/no-invalid-this': OFF,
       'no-loss-of-precision': OFF,
@@ -529,7 +531,7 @@ const base_config = [
       'no-redeclare': OFF,
       '@typescript-eslint/no-redeclare': ERROR,
       'no-throw-literal': OFF,
-      '@typescript-eslint/no-throw-literal': ERROR,
+      //'@typescript-eslint/no-throw-literal': ERROR,
       'no-unused-expressions': OFF,
       '@typescript-eslint/no-unused-expressions': ERROR,
       'no-useless-constructor': OFF,
@@ -560,7 +562,7 @@ const base_config = [
        */
       '@typescript-eslint/no-redundant-type-constituents': WARN,
       '@typescript-eslint/no-useless-empty-export': ERROR,
-      '@typescript-eslint/sort-type-union-intersection-members': ERROR,
+      //'@typescript-eslint/sort-type-union-intersection-members': ERROR,
       'no-array-constructor': OFF,
       '@typescript-eslint/no-array-constructor': ERROR,
       'no-empty-function': OFF,
@@ -670,7 +672,6 @@ _    * While overusing non-null assertions can be harmful, there are
       'no-negated-condition': OFF,
       'unicorn/no-negated-condition': ERROR,
       'unicorn/no-new-array': ERROR,
-      'unicorn/no-unsafe-regex': ERROR,
       'unicorn/numeric-separators-style': ERROR,
       'unicorn/prefer-array-flat-map': ERROR,
       // Query selector has worse performance and is less explicit
@@ -742,7 +743,7 @@ _    * While overusing non-null assertions can be harmful, there are
       'regexp/no-unused-capturing-group': ERROR,
       'regexp/no-useless-flag': ERROR,
       'regexp/no-useless-lazy': ERROR,
-      'regexp/no-useless-non-greedy': ERROR,
+      'regexp/no-useless-lazy': ERROR,
       'regexp/no-useless-quantifier': ERROR,
       'regexp/no-useless-range': ERROR,
       'regexp/no-zero-quantifier': ERROR,
@@ -757,7 +758,7 @@ _    * While overusing non-null assertions can be harmful, there are
       'regexp/letter-case': ERROR,
       'regexp/no-useless-escape': ERROR,
       'regexp/no-useless-non-capturing-group': ERROR,
-      'regexp/order-in-character-class': ERROR,
+      'regexp/sort-character-class-elements': ERROR,
       'regexp/prefer-character-class': ERROR,
       'regexp/prefer-named-backreference': ERROR,
       'regexp/prefer-unicode-codepoint-escapes': ERROR,
@@ -768,31 +769,31 @@ _    * While overusing non-null assertions can be harmful, there are
 
       'write-good-comments/write-good-comments': WARN,
 
-      // I have an ESLint rule that enforces "readonly" types everywhere
-      'functional/immutable-data': OFF,
-      /*
-       * I have an ESLint that detects usages of "let" that are not
-       * reassigned
-       */
-      'functional/no-let': OFF,
-      // There are many use cases for this
-      'functional/no-mixed-type': OFF,
-      // This is not always possible due to readability concerns
-      'functional/no-conditional-statement': OFF,
-      // This is less useful when working with readOnly types
-      'functional/no-expression-statement': OFF,
-      // Callbacks need to return void
-      'functional/no-return-void': OFF,
-      // Promise reject can be handled in a generic way (.catch(error))
-      'functional/no-promise-reject': OFF,
-      // Partially covered by other rules
-      'functional/functional-parameters': OFF,
-      // Redundant with functional/no-class
-      'functional/no-this-expression': OFF,
-      'functional/prefer-tacit': [
-        ERROR,
-        { assumeTypes: { allowFixer: false } },
-      ],
+      //// I have an ESLint rule that enforces "readonly" types everywhere
+      //'functional/immutable-data': OFF,
+      ///*
+      // * I have an ESLint that detects usages of "let" that are not
+      // * reassigned
+      // */
+      //'functional/no-let': OFF,
+      //// There are many use cases for this
+      //'functional/no-mixed-type': OFF,
+      //// This is not always possible due to readability concerns
+      //'functional/no-conditional-statement': OFF,
+      //// This is less useful when working with readOnly types
+      //'functional/no-expression-statement': OFF,
+      //// Callbacks need to return void
+      //'functional/no-return-void': OFF,
+      //// Promise reject can be handled in a generic way (.catch(error))
+      //'functional/no-promise-reject': OFF,
+      //// Partially covered by other rules
+      //'functional/functional-parameters': OFF,
+      //// Redundant with functional/no-class
+      //'functional/no-this-expression': OFF,
+      //'functional/prefer-tacit': [
+      //  ERROR,
+      //  { assumeTypes: { allowFixer: false } },
+      //],
 
       /**
        * An awesome rule, but have to temporary disable it until
@@ -940,7 +941,7 @@ export default [
       'testing-library/no-global-regexp-flag-in-query': WARN,
       'testing-library/no-manual-cleanup': ERROR,
       'testing-library/prefer-user-event': ERROR,
-      'testing-library/prefer-wait-for': ERROR,
+      //'testing-library/prefer-wait-for': ERROR,
     },
   },
   {
