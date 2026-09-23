@@ -200,7 +200,7 @@
 	<format name="Disposal" title="Disposal" class="edu.ku.brc.specify.datamodel.Disposal" default="true">
 		<switch single="true">
 			<fields>
-				<field formatter="DisposalNumber">disposal number</field>
+				<field>disposalNumber</field>
 			</fields>
 		</switch>
 	</format>
@@ -236,7 +236,7 @@
 	<format name="ExchangeOut" title="ExchangeOut" class="edu.ku.brc.specify.datamodel.ExchangeOut" default="true">
 		<switch single="true">
 			<fields>
-				<field formatter="ExchangeOutNumber">exchange out number</field>
+				<field>exchangeOutNumber</field>
 			</fields>
 		</switch>
 	</format>
@@ -300,7 +300,7 @@
 	<format name="Gift" title="Gift" class="edu.ku.brc.specify.datamodel.Gift" default="true">
 		<switch single="true">
 			<fields>
-				<field formatter="GiftNumber">gift number</field>
+				<field>giftNumber</field>
 			</fields>
 		</switch>
 	</format>
