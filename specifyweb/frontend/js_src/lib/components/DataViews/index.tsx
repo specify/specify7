@@ -102,6 +102,7 @@ function LoadedDataViewFromTable({
   const selectedIdsRef = React.useRef(selectedIds);
   selectedIdsRef.current = selectedIds;
   const resultOrderRef = React.useRef<ReadonlyArray<number>>([]);
+  const hasSeenNonEmptyResultsRef = React.useRef(false);
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const selectedIndexRef = React.useRef(selectedIndex);
   selectedIndexRef.current = selectedIndex;
@@ -155,9 +156,13 @@ function LoadedDataViewFromTable({
         const id = getNumericResultId(row?.[queryIdField]);
         return id === undefined ? [] : [id];
       });
+      const isInitialResults =
+        !hasSeenNonEmptyResultsRef.current && orderedIds.length > 0;
+      if (orderedIds.length > 0) hasSeenNonEmptyResultsRef.current = true;
       resultOrderRef.current = orderedIds;
 
       if (selectedIdsRef.current.length === 0) {
+        if (!isInitialResults) return;
         const firstId = orderedIds[0];
         if (firstId !== undefined) {
           setSelectedIds([firstId]);
