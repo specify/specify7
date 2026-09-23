@@ -197,6 +197,13 @@
 			</fields>
 		</switch>
 	</format>
+	<format name="Disposal" title="Disposal" class="edu.ku.brc.specify.datamodel.Disposal" default="true">
+		<switch single="true">
+			<fields>
+				<field formatter="DisposalNumber">disposal number</field>
+			</fields>
+		</switch>
+	</format>
 	<format name="DisposalAgent" title="DisposalAgent" class="edu.ku.brc.specify.datamodel.DisposalAgent" default="true">
 		<switch single="true">
 			<fields>
@@ -223,6 +230,13 @@
 		<switch single="true">
 			<fields>
 				<field>primerDesignator</field>
+			</fields>
+		</switch>
+	</format>
+	<format name="ExchangeOut" title="ExchangeOut" class="edu.ku.brc.specify.datamodel.ExchangeOut" default="true">
+		<switch single="true">
+			<fields>
+				<field formatter="ExchangeOutNumber">exchange out number</field>
 			</fields>
 		</switch>
 	</format>
@@ -280,6 +294,13 @@
 		<switch single="true">
 			<fields>
 				<field>fullName</field>
+			</fields>
+		</switch>
+	</format>
+	<format name="Gift" title="Gift" class="edu.ku.brc.specify.datamodel.Gift" default="true">
+		<switch single="true">
+			<fields>
+				<field formatter="GiftNumber">gift number</field>
 			</fields>
 		</switch>
 	</format>
