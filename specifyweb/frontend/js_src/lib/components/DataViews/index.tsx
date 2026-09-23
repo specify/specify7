@@ -368,18 +368,14 @@ function LoadedDataViewFromTable({
         <span className="-ml-2 flex-1" />
       </header>
       <div className="flex h-full max-h-full min-h-0 min-w-0 flex-1 overflow-hidden">
-        {isSplit ? (
-          <SplitView
-            isHorizontal={isHorizontal}
-            isSplit={isSplit}
-            primaryPane={results}
-            primaryPaneKey="query-results"
-            secondaryPane={form}
-            secondaryPaneKey="record-preview"
-          />
-        ) : (
-          results
-        )}
+        <SplitView
+          isHorizontal={isHorizontal}
+          isSplit={isSplit}
+          primaryPane={results}
+          primaryPaneKey="query-results"
+          secondaryPane={form}
+          secondaryPaneKey="record-preview"
+        />
       </div>
     </div>
   );
