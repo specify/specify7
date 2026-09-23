@@ -178,7 +178,9 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
           offsets.map((offset) => fetchResults(offset))
         );
         if (generation !== refreshGenerationRef.current) return;
-        const refreshedResults = currentResults.slice();
+        const refreshedResults = (
+          currentResultsRef.current ?? currentResults
+        ).slice();
         let refreshedResultCount = refreshedTotalCount;
         // Stop applying pages once a short page is hit, so a later full page
         // can't re-extend the array past the earliest known end of data
