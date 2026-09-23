@@ -3,12 +3,13 @@ import Splitter from 'm-react-splitters';
 
 import { Button } from '../Atoms/Button';
 import { treeText } from '../../localization/tree';
+import { useTriggerState } from '../../hooks/useTriggerState';
 
 export function useSplitViewOrientation(defaultHorizontal = true): {
   readonly isHorizontal: boolean;
   readonly toggleOrientation: () => void;
 } {
-  const [isHorizontal, setIsHorizontal] = React.useState(defaultHorizontal);
+  const [isHorizontal, setIsHorizontal] = useTriggerState(defaultHorizontal);
   return {
     isHorizontal,
     toggleOrientation: (): void => setIsHorizontal((horizontal) => !horizontal),
