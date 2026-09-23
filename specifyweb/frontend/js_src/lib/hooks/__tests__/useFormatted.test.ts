@@ -35,7 +35,7 @@ describe('useFormatted', () => {
      * See https://github.com/testing-library/react-testing-library/issues/480#issuecomment-530008573
      */
 
-    waitFor(() => expect(result).toBe('000000005'));
+    await waitFor(() => expect(result).toBe('000000005'));
   });
 
   test('updates formatted value when value changes', async () => {
@@ -45,10 +45,10 @@ describe('useFormatted', () => {
     const { result } = renderHook(() => useFormatted(collectionObject));
 
     // This wait is still needed.
-    waitFor(() => expect(result).toBe('000000005'));
+    await waitFor(() => expect(result).toBe('000000005'));
 
     act(() => void collectionObject.set('catalogNumber', '7'));
 
-    waitFor(() => expect(result).toBe('000000007'));
+    await waitFor(() => expect(result).toBe('000000007'));
   });
 });
