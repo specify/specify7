@@ -58,3 +58,19 @@ class DisposalTests(ApiTests):
         fetched = models.Disposalpreparation.objects.get(id=disposal_prep.id)
         self.assertEqual(fetched.preparation.collectionobject.catalognumber, 'CAT-1001')
         self.assertEqual(fetched.disposal.disposalnumber, 'DISPOSAL-CATNUM-001')
+
+    def test_create_disposal_prep_without_preparations(self):
+        disposal = models.Disposal.objects.create(
+            disposalnumber='DISPOSAL-NOPREPS-001',
+        )
+
+        fetched_disposal = models.Disposal.objects.get(id=disposal.id)
+
+        self.assertEqual(
+            fetched_disposal.disposalnumber,
+            'DISPOSAL-NOPREPS-001',
+        )
+        self.assertEqual(
+            fetched_disposal.disposalpreparations.count(),
+            0,
+        )
