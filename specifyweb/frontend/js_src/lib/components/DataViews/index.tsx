@@ -8,7 +8,11 @@ import { DataEntry } from '../Atoms/DataEntry';
 import { H2 } from '../Atoms';
 import type { Tables } from '../DataModel/types';
 import { getTable } from '../DataModel/tables';
-import { ProtectedTable } from '../Permissions/PermissionDenied';
+import {
+  PermissionDenied,
+  ProtectedTable,
+} from '../Permissions/PermissionDenied';
+import { hasPermission } from '../Permissions/helpers';
 import { RecordSelectorFromIds } from '../FormSliders/RecordSelectorFromIds';
 import { QueryResultsWrapper } from '../QueryBuilder/ResultsWrapper';
 import { parseQueryFields, unParseQueryFields } from '../QueryBuilder/helpers';
@@ -45,7 +49,11 @@ export function TableDataView(): JSX.Element {
     <NotFoundView />
   ) : (
     <ProtectedTable tableName={table.name} action="read">
-      <DataViewFromTable tableName={table.name} />
+      {hasPermission('/querybuilder/query', 'execute') ? (
+        <DataViewFromTable tableName={table.name} />
+      ) : (
+        <PermissionDenied resource="/querybuilder/query" action="execute" />
+      )}
     </ProtectedTable>
   );
 }
