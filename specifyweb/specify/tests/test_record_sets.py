@@ -13,7 +13,8 @@ class RecordSetCreationTests(ApiTests):
             collectionmemberid=self.collection.id,
             specifyuser=self.specifyuser,
             )
-
+        
+        recordset.refresh_from_db()
         self.assertEqual(recordset.name,"first_recordset_name")
  
     def test_create_record_set_with_multiple_records(self):
