@@ -609,8 +609,8 @@ msgstr "Fjern"
 #: components/Header/ExpressSearchTask.tsx:133
 #: components/Header/ExpressSearchTask.tsx:227
 #: components/Header/index.tsx:136
-#: components/Header/__tests__/Header.test.tsx:50
-#: components/Header/__tests__/Header.test.tsx:56
+#: components/Header/__tests__/Header.test.tsx:47
+#: components/Header/__tests__/Header.test.tsx:53
 #: components/HomePage/index.tsx:56
 #: components/SchemaConfig/Sidebar.tsx:41
 #: components/SchemaConfig/Sidebar.tsx:42
@@ -909,8 +909,8 @@ msgid "export"
 msgstr "Eksport"
 
 #: components/Attachments/index.tsx:252
-#: components/Attachments/__tests__/AttachmentsView.test.tsx:109
-#: components/Attachments/__tests__/AttachmentsView.test.tsx:131
+#: components/Attachments/__tests__/AttachmentsView.test.tsx:106
+#: components/Attachments/__tests__/AttachmentsView.test.tsx:128
 #: components/LocalityUpdate/Status.tsx:234
 #: components/LocalityUpdate/index.tsx:135
 #: components/QueryBuilder/Import.tsx:70

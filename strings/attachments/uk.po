@@ -52,9 +52,9 @@ msgstr "Масштаб"
 #: components/Attachments/index.tsx:54
 #: components/Attachments/index.tsx:247
 #: components/Attachments/index.tsx:287
-#: components/Attachments/__tests__/AttachmentsView.test.tsx:105
-#: components/Attachments/__tests__/AttachmentsView.test.tsx:114
-#: components/Attachments/__tests__/AttachmentsView.test.tsx:136
+#: components/Attachments/__tests__/AttachmentsView.test.tsx:102
+#: components/Attachments/__tests__/AttachmentsView.test.tsx:111
+#: components/Attachments/__tests__/AttachmentsView.test.tsx:133
 #: components/AttachmentsBulkImport/Upload.tsx:257
 #: components/AttachmentsBulkImport/Upload.tsx:264
 #: components/Header/index.tsx:186
