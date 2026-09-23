@@ -138,6 +138,7 @@ export function TableList({
             <li className="contents" key={table.tableId}>
               {typeof action === 'function' ? (
                 <Button.LikeLink
+                  aria-current={isCurrent ? 'true' : undefined}
                   className={isCurrent ? 'font-bold text-brand-300' : undefined}
                   onClick={action}
                 >
