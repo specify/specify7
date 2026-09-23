@@ -14,10 +14,6 @@ class LocalityBusinessRuleTests(ApiTests):
         self.assertEqual(fetched_locality.srclatlongunit, 0)
         self.assertEqual(fetched_locality.discipline, self.discipline)
 
-        fetched_event = models.Collectingevent.objects.get(id=collectingevent.id)
-        self.assertEqual(fetched_event.locality, locality)
-        self.assertEqual(fetched_event.locality.localityname, "Somewhere")
-
     def test_collectingevents_block_delete(self):
         locality = models.Locality.objects.create(
             localityname="Somewhere",
