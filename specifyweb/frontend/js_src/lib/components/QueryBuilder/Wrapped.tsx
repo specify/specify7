@@ -620,7 +620,6 @@ function Wrapped({
               table={table}
               onReRun={(): void => dispatch({ type: 'RunQueryAction' })}
               onResults={handleSplitViewResults}
-              onRunQuery={(fields): void => runQuery('regular', fields)}
               onSelected={(ids): void => {
                 setSelectedIndex(Math.max(0, ids.length - 1));
                 handleSelected?.(ids);

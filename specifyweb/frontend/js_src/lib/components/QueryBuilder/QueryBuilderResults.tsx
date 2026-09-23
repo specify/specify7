@@ -36,7 +36,6 @@ export function QueryBuilderResults({
   isHorizontal,
   onReRun: handleReRun,
   onResults: handleResults,
-  onRunQuery: handleRunQuery,
   onSelected: handleSelected,
   onSortChange: handleSortChange,
 }: {
@@ -64,10 +63,10 @@ export function QueryBuilderResults({
   readonly isHorizontal: boolean;
   readonly onReRun: () => void;
   readonly onResults?: (results: RA<QueryResultRow | undefined>) => void;
-  readonly onRunQuery: (fields?: RA<QueryField>) => void;
   readonly onSelected: (ids: RA<number>) => void;
   readonly onSortChange: (fields: RA<QueryField>) => void;
 }): JSX.Element | null {
+  const [refreshToken, setRefreshToken] = React.useState(0);
   const selectedIds = React.useMemo(
     () => Array.from(selectedRows),
     [selectedRows]
@@ -95,7 +94,7 @@ export function QueryBuilderResults({
             setSelectedIndex(0);
           }}
           onDelete={undefined}
-          onSaved={(): void => handleRunQuery()}
+          onSaved={(): void => setRefreshToken((token) => token + 1)}
           onSlide={setSelectedIndex}
         />
       )}
@@ -145,6 +144,7 @@ export function QueryBuilderResults({
       forceCollection={forceCollection}
       queryResource={queryResource}
       queryRunCount={state.queryRunCount}
+      refreshToken={refreshToken}
       recordSetId={recordSet?.id}
       resultsRef={resultsRef}
       selectedRows={[selectedRows, setSelectedRows]}
