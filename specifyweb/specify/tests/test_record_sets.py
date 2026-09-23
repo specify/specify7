@@ -1,7 +1,5 @@
 from specifyweb.specify.tests.test_api import ApiTests
 from specifyweb.specify.models import Recordset, Recordsetitem, Collectionobject
-from specifyweb.specify.api.crud import post_resource
-from specifyweb.specify.api.serializers import obj_to_data, uri_for_model
 
 
 
@@ -22,8 +20,8 @@ class RecordSetCreationTests(ApiTests):
             Recordsetitem(recordset=recordset, recordid=co_id)
             for co_id in co_ids
         ])
+        self.assertEqual( self.recordset.recordsetitems.filter(recordid=obj.id).count(), 1)
         existing_co = self.collectionobjects[0]
-        recordset.recordsetitems.create(recordid=existing_co.id)
 
 
 
