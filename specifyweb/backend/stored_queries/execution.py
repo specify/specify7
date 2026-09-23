@@ -973,8 +973,6 @@ def build_query_construct_base(
     elif props.distinct:
         query_construct_query = session.query(
             func.group_concat(id_field.distinct(), separator=','))
-    else:
-        query_construct_query = session.query(id_field)
 
     query = QueryConstruct(
         collection=collection,

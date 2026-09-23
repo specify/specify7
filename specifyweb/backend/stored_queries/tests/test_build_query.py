@@ -1,7 +1,7 @@
 from specifyweb.specify.models import Taxontreedefitem, datamodel
 from specifyweb.backend.stored_queries import models as models
 from specifyweb.backend.stored_queries.queryfield import fields_from_json
-from specifyweb.backend.stored_queries.execution import QuerySort, BuildQueryProps, build_query, DefaultQueryFormatterProps, build_query_construct_base, add_fields_to_query
+from specifyweb.backend.stored_queries.execution import QuerySort, BuildQueryProps, build_query_construct_base, add_fields_to_query
 from specifyweb.backend.stored_queries.tests.tests import SQLAlchemySetup
 
 class TestBuildQuery(SQLAlchemySetup):
@@ -92,7 +92,7 @@ class TestBuildQuery(SQLAlchemySetup):
                 model=model,
                 props=props
             )
-            query, selected_fields, order_by_exprs = add_fields_to_query(
+            query, _selected_fields, _order_by_expressions = add_fields_to_query(
                 collection=collection,
                 user=user,
                 query=query_base,
