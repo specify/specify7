@@ -62,12 +62,14 @@ export function SplitView({
   primaryPaneKey,
   secondaryPaneKey,
   isHorizontal,
+  isSplit = true,
 }: {
   readonly primaryPane: JSX.Element;
   readonly secondaryPane: JSX.Element;
   readonly primaryPaneKey: string;
   readonly secondaryPaneKey: string;
   readonly isHorizontal: boolean;
+  readonly isSplit?: boolean;
 }): JSX.Element {
   return (
     <Splitter
@@ -87,7 +89,7 @@ export function SplitView({
         {primaryPane}
       </div>
       <div
-        className={`flex h-full min-h-0 min-w-0 overflow-auto ${
+        className={`${isSplit ? 'flex' : 'hidden'} h-full min-h-0 min-w-0 overflow-auto ${
           isHorizontal ? 'border-l' : 'border-t'
         } border-gray-400`}
         key={secondaryPaneKey}

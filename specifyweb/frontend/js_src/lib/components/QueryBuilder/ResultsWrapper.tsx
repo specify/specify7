@@ -38,6 +38,7 @@ export function QueryResultsWrapper({
   refreshToken,
   splitPane,
   splitHorizontal,
+  isSplit,
   ...props
 }: ResultsProps & {
   readonly createRecordSet: JSX.Element | undefined;
@@ -49,6 +50,7 @@ export function QueryResultsWrapper({
   readonly refreshToken?: number;
   readonly splitPane?: JSX.Element;
   readonly splitHorizontal?: boolean;
+  readonly isSplit?: boolean;
   readonly onReRun: () => void;
 }): JSX.Element | null {
   const newProps = useQueryResultsWrapper(props);
@@ -79,6 +81,7 @@ export function QueryResultsWrapper({
   ) : (
     <SplitView
       isHorizontal={splitHorizontal ?? true}
+      isSplit={isSplit}
       primaryPane={queryResults}
       primaryPaneKey="query-results"
       secondaryPane={splitPane}

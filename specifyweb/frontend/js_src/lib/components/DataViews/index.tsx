@@ -371,6 +371,7 @@ function LoadedDataViewFromTable({
         {isSplit ? (
           <SplitView
             isHorizontal={isHorizontal}
+            isSplit={isSplit}
             primaryPane={results}
             primaryPaneKey="query-results"
             secondaryPane={form}

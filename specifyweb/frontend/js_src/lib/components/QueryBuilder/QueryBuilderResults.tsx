@@ -148,8 +148,9 @@ export function QueryBuilderResults({
       recordSetId={recordSet?.id}
       resultsRef={resultsRef}
       selectedRows={[selectedRows, setSelectedRows]}
+      isSplit={isSplit}
       splitHorizontal={isHorizontal}
-      splitPane={isSplit ? recordPreview : undefined}
+      splitPane={recordPreview}
       table={table}
       onReRun={handleReRun}
       onResults={handleResults}
