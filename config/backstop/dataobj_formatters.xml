@@ -603,13 +603,16 @@
 		<aggregator name="DNASequencingRunAttachment" title="DNASequencingRunAttachment" class="edu.ku.brc.specify.datamodel.DNASequencingRunAttachment" default="true" separator="; " ending="" format="identity" orderfieldname="ordinal"/>
 		<aggregator name="DeaccessionAgent" title="DeaccessionAgent" class="edu.ku.brc.specify.datamodel.DeaccessionAgent" default="true" separator="; " ending="" format="DeaccessionAgent"/>
 		<aggregator name="Determination" title="Determination" class="edu.ku.brc.specify.datamodel.Determination" default="true" separator="; " ending="" count="1" format="Determination"/>
+		<aggregator name="Disposal" title="Disposal" class="edu.ku.brc.specify.datamodel.Disposal" default="true" separator="; " ending="" format="Disposal"/>
 		<aggregator name="DisposalAgent" title="DisposalAgent" class="edu.ku.brc.specify.datamodel.DisposalAgent" default="true" separator="; " ending="" format="DisposalAgent"/>
 		<aggregator name="DisposalPrep" title="Disposal Prep" class="edu.ku.brc.specify.datamodel.DisposalPreparation" default="true" separator="; " ending="" count="0" format="DisposalPreparation"/>
+		<aggregator name="ExchangeOut" title="ExchangeOut" class="edu.ku.brc.specify.datamodel.ExchangeOut" default="true" separator="; " ending="" format="ExchangeOut"/>
 		<aggregator name="Extractor" title="Extractor" class="edu.ku.brc.specify.datamodel.Extractor" default="true" separator="; " ending="" format="Extractor" orderfieldname="orderNumber"/>
 		<aggregator name="FieldNotebookAttachment" title="FieldNotebookAttachment" class="edu.ku.brc.specify.datamodel.FieldNotebookAttachment" default="true" separator="; " ending="" format="identity" orderfieldname="ordinal"/>
 		<aggregator name="FieldNotebookPageAttachment" title="FieldNotebookPageAttachment" class="edu.ku.brc.specify.datamodel.FieldNotebookPageAttachment" default="true" separator="; " ending="" format="identity" orderfieldname="ordinal"/>
 		<aggregator name="FieldNotebookPageSetAttachment" title="FieldNotebookPageSetAttachment" class="edu.ku.brc.specify.datamodel.FieldNotebookPageSetAttachment" default="true" separator="; " ending="" format="identity" orderfieldname="ordinal"/>
 		<aggregator name="FundingAgent" title="FundingAgent" class="edu.ku.brc.specify.datamodel.FundingAgent" default="true" separator="; " ending="" format="FundingAgent" orderfieldname="orderNumber"/>
+		<aggregator name="Gift" title="Gift" class="edu.ku.brc.specify.datamodel.Gift" default="true" separator="; " ending="" format="Gift"/>
 		<aggregator name="GiftAgent" title="GiftAgent" class="edu.ku.brc.specify.datamodel.GiftAgent" default="true" separator="; " ending="" format="GiftAgent"/>
 		<aggregator name="GiftAttachment" title="GiftAttachment" class="edu.ku.brc.specify.datamodel.GiftAttachment" default="true" separator="; " ending="" format="LoanAgent"/>
 		<aggregator name="GiftPrep" title="Gift Prep" class="edu.ku.brc.specify.datamodel.GiftPreparation" default="true" separator="; " ending="" count="0" format="GiftPreparation"/>
