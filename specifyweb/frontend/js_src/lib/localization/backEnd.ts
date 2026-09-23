@@ -215,13 +215,13 @@ export const backEndText = createDictionary({
     'fr-fr':
       'la valeur {value:string} ne correspond pas au formateur {formatter:string}',
     'ru-ru':
-      'Значение {value:string} не соответствует форматеру {formatter:string}',
+      'Значение {value:string} не соответствует форматтеру {formatter:string}',
     'uk-ua': 'значення {value:string} не відповідає формату {formatter:string}',
     'pt-br':
       'O valor {value:string} não corresponde ao formatador {formatter:string}',
     'hr-hr':
       'vrijednost {value:string} ne odgovara formateru {formatter:string}',
-    nb: 'Verdien {value:string} samsvarer ikke med formateringsprogrammet {formatter:string}',
+    nb: 'Verdien {value:string} samsvarer ikke med forventet formatering {formatter:string}',
   },
   invalidPartialRecord: {
     'en-us': 'this field must be empty if {column:string} is empty',
@@ -321,6 +321,17 @@ export const backEndText = createDictionary({
       '{tableName:string} mora imati jedinstveni {fieldName:string} u {parentField:string}',
     nb: '{tableName:string} må ha unik {fieldName:string} i {parentField:string}',
   },
+  conflictingRecordIds: {
+    'en-us': 'Conflicting record IDs: {ids:string}',
+    'de-ch': 'Konfliktierende Datensatz-IDs: {ids:string}',
+    'es-es': 'Identificadores de registro conflictivos: {ids:string}',
+    'fr-fr': "Identifiants d'enregistrement en conflit : {ids:string}",
+    'hr-hr': 'Konfliktni ID-ovi zapisa: {ids:string}',
+    nb: 'Konfliktende post-ID-er: {ids:string}',
+    'pt-br': 'IDs de registro conflitantes: {ids:string}',
+    'ru-ru': 'Конфликтующие идентификаторы записей: {ids:string}',
+    'uk-ua': 'Конфліктуючі ідентифікатори записів: {ids:string}',
+  },
   deletingTreeRoot: {
     'en-us': 'Can not delete root level tree definition item',
     'es-es':
@@ -362,7 +373,7 @@ export const backEndText = createDictionary({
     'pt-br':
       'A classificação do nó da árvore é maior que a de alguns de seus filhos.',
     'hr-hr': 'Rang čvora stabla je veći od ranga nekih njegovih potomaka',
-    nb: 'Trenodens rangering er høyere enn noen av dens barn',
+    nb: 'Trenodens nivå er høyere enn noen av de underliggende',
   },
   nodeOperationToSynonymizedParent: {
     'en-us':
@@ -542,7 +553,7 @@ export const backEndText = createDictionary({
     'fr-fr':
       'Impossible de créer un rapport : {mimeTypeField:string} n\'est pas l\'un des "jrxml/label" ou "jrxml/report"',
     'ru-ru':
-      'Невозможно создать отчет: {mimeTypeField:string} не является ни одним из "jrxml/label", ни "jrxml/report".',
+      'Невозможно создать отчет: {mimeTypeField:string} не является ни одним из "jrxml/label" или "jrxml/report"',
     'uk-ua':
       'Не вдається створити звіт: {mimeTypeField:string} має бути "jrxml/label" або "jrxml/report"',
     'de-ch':
@@ -687,7 +698,7 @@ export const backEndText = createDictionary({
     'ru-ru': 'Недопустимый тип для выбранного(ых) ранга(ов) дерева.',
     'uk-ua': 'Недійсний тип для вибраного(их) рангу(ів) дерева',
     'hr-hr': 'Nevažeća vrsta za odabrani rang(ove) stabla',
-    nb: 'Ugyldig type for valgte trerangering(er)',
+    nb: 'Ugyldig kategori for valgte nivå i treet',
   },
   invalidComponentType: {
     'en-us': 'Invalid {componentType: string} for selected tree rank(s)',

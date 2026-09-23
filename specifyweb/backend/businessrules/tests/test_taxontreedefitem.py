@@ -1,6 +1,4 @@
-from django.db.models import ProtectedError
 from specifyweb.specify.tests.test_api import ApiTests
-from ..exceptions import TreeBusinessRuleException
 from specifyweb.specify import models
 
 class TaxonTreeDefItemTests(ApiTests):
@@ -30,5 +28,35 @@ class TaxonTreeDefItemTests(ApiTests):
             name="Animals",
             definition=kingdom.treedef,
             rankid=kingdom.rankid)
-
         animals.delete()
+
+    def test_delete_unused_rank_reparents_children(self):
+        kingdom = self.roottaxontreedefitem.children.create(
+            name="Kingdom",
+            treedef=self.taxontreedef,
+            rankid=self.roottaxontreedefitem.rankid+100)
+        phylum = kingdom.children.create(
+            name="Phylum",
+            treedef=self.taxontreedef,
+            rankid=kingdom.rankid+100)
+
+        models.Taxontreedefitem.objects.filter(id=kingdom.id).delete()
+
+        phylum.refresh_from_db()
+        self.assertEqual(phylum.parent_id, self.roottaxontreedefitem.id)
+        self.assertFalse(models.Taxontreedefitem.objects.filter(id=kingdom.id).exists())
+
+    def test_full_tree_delete_still_cascades(self):
+        kingdom = self.roottaxontreedefitem.children.create(
+            name="Kingdom",
+            treedef=self.taxontreedef,
+            rankid=self.roottaxontreedefitem.rankid+100)
+        kingdom.treeentries.create(
+            parent=self.roottaxon,
+            name="Animals",
+            definition=kingdom.treedef,
+            rankid=kingdom.rankid)
+
+        self.taxontreedef.delete()
+
+        self.assertFalse(models.Taxontreedef.objects.filter(id=self.taxontreedef.id).exists())

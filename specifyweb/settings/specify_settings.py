@@ -83,6 +83,9 @@ SEPARATE_WEB_ATTACHMENT_FOLDERS = False
 # Set to true if the asset server requires auth token to get files.
 WEB_ATTACHMENT_REQUIRES_KEY_FOR_GET = False
 
+# Timeout in seconds for requests made to the asset server.
+WEB_ATTACHMENT_TIMEOUT = float(os.getenv('WEB_ATTACHMENT_TIMEOUT', 5))
+
 # Report runner service
 REPORT_RUNNER_HOST = ''
 REPORT_RUNNER_PORT = ''

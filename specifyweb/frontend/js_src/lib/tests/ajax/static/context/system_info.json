@@ -1,14 +1,18 @@
 {
   "version": "(debug)",
   "specify6_version": "6.8.03",
+  "setup_complete": true,
   "database_version": "6.8.03",
   "schema_version": "2.9",
   "stats_url": "https://sp7-stats.specifycloud.org/capture",
+  "stats_2_url": "https://stats-2.specifycloud.org",
   "database": "specify",
   "institution": "University of Kansas Biodiversity Institute",
   "institution_guid": "77ff1bff-af23-4647-b5d1-9d3c414fd003",
   "discipline": "Ichthyology",
   "collection": "KU Fish Voucher Collection",
   "collection_guid": "3f55b3fa-292d-4170-bd46-66dca41d7f05",
-  "isa_number": "2014427"
+  "isa_number": "2014427",
+  "discipline_type": "fish",
+  "geography_is_global": true
 }

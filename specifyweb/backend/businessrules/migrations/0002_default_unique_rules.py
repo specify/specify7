@@ -56,5 +56,5 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RunPython(apply_default_rules,
-                             remove_default_rules, atomic=True),
+                                remove_default_rules, atomic=True),
     ]

@@ -162,7 +162,7 @@ export const localityText = createDictionary({
     'de-ch': '{geographyTable:string} muss kartiert werden',
     'pt-br': '{geographyTable:string} deve ser mapeado.',
     'hr-hr': '{geographyTable:string} mora biti mapiran',
-    nb: '{geographyTable:string} må kartlegges',
+    nb: '{geographyTable:string} må mappes',
   },
   geographyRequiredDescription: {
     'en-us':
@@ -202,7 +202,7 @@ export const localityText = createDictionary({
     'de-ch': 'NW-Ecke',
     'pt-br': 'Canto noroeste',
     'hr-hr': 'SZ kut',
-    nb: 'NV-hjørnet',
+    nb: 'NV-hjørne',
   },
   southEastCorner: {
     comment: 'Represents coordinates. Careful with translation',
@@ -214,7 +214,7 @@ export const localityText = createDictionary({
     'de-ch': 'SO-Ecke',
     'pt-br': 'Canto sudeste',
     'hr-hr': 'JI kut',
-    nb: 'SE Corner',
+    nb: 'SØ-hjørne',
   },
   coordinateType: {
     'en-us': 'Coordinate Type',
@@ -555,7 +555,7 @@ export const localityText = createDictionary({
     'fr-fr':
       "Mise à jour des localités {taskId : chaîne} Rapport d'incident - {date : chaîne}",
     'ru-ru':
-      'Обновление локальной инфраструктуры {taskId: string} Отчет о сбое - {date: string}',
+      'Обновление локальной среды {taskId: string} Отчет о сбое - {date: string}',
     'uk-ua':
       'Оновлення місцевості {taskId: string} Звіт про збій - {date: string}',
     'pt-br':
@@ -646,7 +646,7 @@ export const localityText = createDictionary({
   localityUpdateStarted: {
     'en-us': 'The Locality Update process has started',
     'de-ch': 'Der Prozess zur Aktualisierung der Ortsdaten wurde gestartet.',
-    'es-es': 'El proceso de actualización de localidades ha comenzado.',
+    'es-es': 'El proceso de actualización de localidad ha comenzado.',
     'fr-fr': 'Le processus de mise à jour des localités a commencé.',
     'ru-ru': 'Начался процесс обновления информации о местности.',
     'uk-ua': 'Розпочато процес оновлення місцевості',

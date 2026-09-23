@@ -47,6 +47,7 @@ from .upload_result import (
     FailedBusinessRule,
     ReportInfo,
     TreeInfo,
+    to_failed_business_rule,
 )
 from .uploadable import (
     Row,
@@ -604,9 +605,9 @@ class BoundTreeRecord(NamedTuple):
     # complexity into BatchEdit as a hyper specific case, and there's more
     # contextual overhead for this function and the caller as both have to
     # agree on what tree_node_id should be.
-    # Ideally this should be integregated better into the native matching
+    # Ideally this should be integrated better into the native matching
     # behavior for tree records.
-    def process_with_exising(self, tree_node_id: int | None) -> UploadResult:
+    def process_with_existing(self, tree_node_id: int | None) -> UploadResult:
         processed = self.process_row()
         # We first check if the row can be resolved to an existing Tree node,
         # or a new Tree node should be created
@@ -614,7 +615,7 @@ class BoundTreeRecord(NamedTuple):
         # data, then we check if the passed-in record has some value for the
         # relationship.
         # If the row can't be resolved but the record does have data through
-        # the relationship, then just indicate a match against the exisitng
+        # the relationship, then just indicate a match against the existing
         # record which presumably isn't present in the BatchEdit Data Set.
         if isinstance(processed.record_result, NullRecord) and tree_node_id is not None:
             columns = [pr.column for prs in self.parsedFields.values() for pr in prs]
@@ -987,7 +988,7 @@ class BoundTreeRecord(NamedTuple):
                         obj = self._do_insert(model, **new_attrs)
                 except (BusinessRuleException, IntegrityError) as e:
                     return UploadResult(
-                        FailedBusinessRule(str(e), {}, info), parent_result, {}
+                        to_failed_business_rule(e, info), parent_result, {}
                     )
 
             result = UploadResult(Uploaded(obj.id, info, []), parent_result, {})

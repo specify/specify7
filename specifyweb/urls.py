@@ -41,7 +41,7 @@ urlpatterns = [
     # just redirect root url to the main specify view
     path('', skip_collection_access_check(RedirectView.as_view(url='/specify/'))),
 
-    re_path(r'^opensearch.xml$', search_view),
+    path('opensearch.xml', search_view),
 
     # This is the main specify view.
     # Every URL beginning with '/specify/' is handled
@@ -53,7 +53,7 @@ urlpatterns = [
     path('api/', include(api_urls)),
     path('api/backup/', include(backup_urls)),
     path('images/<path:path>', images),
-    re_path(r'^properties/(?P<name>.+).properties$', properties), # Note fully supported since remmoving dependence on specify.jar
+    path('properties/<path:name>.properties', properties), # Note fully supported since remmoving dependence on specify.jar
 
     path('documentation/', include(doc_urls)),
 

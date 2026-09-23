@@ -27,6 +27,7 @@ import { Dialog } from '../Molecules/Dialog';
 import { ProtectedTable } from '../Permissions/PermissionDenied';
 import { OrderPicker } from '../Preferences/Renderers';
 import { attachmentSettingsPromise } from './attachments';
+import { useAttachmentServerStatus } from './attachments';
 import { AttachmentGallery } from './Gallery';
 import { allTablesWithAttachments, tablesWithAttachments } from './utils';
 
@@ -44,18 +45,23 @@ export function AttachmentsView({
   const navigate = useNavigate();
   const [isConfigured] = usePromise(attachmentSettingsPromise, true);
 
-  return isConfigured === undefined ? null : isConfigured ? (
+  if (isConfigured === undefined) return null;
+
+  if (isConfigured === false)
+    return (
+      <Dialog
+        buttons={commonText.close()}
+        header={attachmentsText.attachmentServerUnavailable()}
+        onClose={(): void => navigate('/specify/')}
+      >
+        {attachmentsText.attachmentServerUnavailableDescription()}
+      </Dialog>
+    );
+
+  return (
     <ProtectedTable action="read" tableName="Attachment">
       <Attachments onClick={onClick} />
     </ProtectedTable>
-  ) : (
-    <Dialog
-      buttons={commonText.close()}
-      header={attachmentsText.attachmentServerUnavailable()}
-      onClose={(): void => navigate('/specify/')}
-    >
-      {attachmentsText.attachmentServerUnavailableDescription()}
-    </Dialog>
   );
 }
 
@@ -65,6 +71,7 @@ function Attachments({
   readonly onClick?: (attachment: SerializedResource<Attachment>) => void;
 }): JSX.Element {
   useMenuItem('attachments');
+  const attachmentServerStatus = useAttachmentServerStatus();
 
   const isInDialog = React.useContext(DialogContext);
 
@@ -234,6 +241,12 @@ function Attachments({
               />
             </Label.Inline>
             <Button.BorderedGray
+              disabled={attachmentServerStatus === 'unavailable'}
+              title={
+                attachmentServerStatus === 'unavailable'
+                  ? attachmentsText.attachmentServerUnavailable()
+                  : undefined
+              }
               onClick={() => navigate('/specify/overlay/attachments/import/')}
             >
               {commonText.import()}
@@ -241,25 +254,38 @@ function Attachments({
           </>
         )}
       </header>
-      <AttachmentGallery
-        attachments={collection?.records ?? []}
-        isComplete={
-          typeof collection === 'object' &&
-          collection.totalCount === collection.records.length
-        }
-        key={`${order}_${JSON.stringify(filter)}`}
-        scale={scale}
-        onChange={(attachment, index): void =>
-          collection === undefined
-            ? undefined
-            : setCollection({
-                records: replaceItem(collection.records, index, attachment),
-                totalCount: collection.totalCount,
-              })
-        }
-        onClick={onClick}
-        onFetchMore={collection === undefined ? undefined : fetchMore}
-      />
+      {attachmentServerStatus === 'unavailable' ? (
+        <AttachmentServerUnavailable />
+      ) : (
+        <AttachmentGallery
+          attachments={collection?.records ?? []}
+          isComplete={
+            typeof collection === 'object' &&
+            collection.totalCount === collection.records.length
+          }
+          key={`${order}_${JSON.stringify(filter)}`}
+          scale={scale}
+          onChange={(attachment, index): void =>
+            collection === undefined
+              ? undefined
+              : setCollection({
+                  records: replaceItem(collection.records, index, attachment),
+                  totalCount: collection.totalCount,
+                })
+          }
+          onClick={onClick}
+          onFetchMore={collection === undefined ? undefined : fetchMore}
+        />
+      )}
     </Container.FullGray>
+  );
+}
+
+function AttachmentServerUnavailable(): JSX.Element {
+  return (
+    <div className="flex flex-col items-center gap-2 p-8 text-center">
+      <H2>{attachmentsText.attachmentServerUnavailable()}</H2>
+      <p>{attachmentsText.attachmentServerUnavailableDescription()}</p>
+    </div>
   );
 }

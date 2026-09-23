@@ -35,9 +35,12 @@ export function useParserDefaultValue(
      * Don't auto set numeric to "0", unless it is the default value
      * in the form definition
      */
+    const parserUsesNumberValue =
+      parser.type === 'number' || typeof parser.value === 'number';
+
     const hasDefault =
       parser.value !== undefined &&
-      (parser.type !== 'number' || parser.value !== 0);
+      (!parserUsesNumberValue || parser.value !== 0);
 
     const fieldValue = resource.get(field.name) as
       | boolean
@@ -54,7 +57,7 @@ export function useParserDefaultValue(
        * should overwrite that of the resource
        */
       resource.isNew() &&
-      (parser.type !== 'number' ||
+      (!parserUsesNumberValue ||
         typeof fieldValue !== 'number' ||
         fieldValue === 0) &&
       ((parser.type !== 'text' && parser.type !== 'date') ||

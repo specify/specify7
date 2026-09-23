@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { reportsText } from '../../localization/report';
 import { schemaText } from '../../localization/schema';
 import { f } from '../../utils/functools';
 import { booleanFormatter } from '../../utils/parser/parse';
@@ -55,7 +54,7 @@ export const schemaViewerTableColumns = f.store(
   () =>
     ({
       name: getField(tables.SpLocaleContainer, 'name').label,
-      label: reportsText.labels(),
+      label: schemaText.caption(),
       isSystem: getField(tables.SpLocaleContainer, 'isSystem').label,
       isHidden: getField(tables.SpLocaleContainer, 'isHidden').label,
       tableId: schemaText.tableId(),
