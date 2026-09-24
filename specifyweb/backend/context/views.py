@@ -28,7 +28,7 @@ from specifyweb.middleware.general import require_http_methods
 from specifyweb.backend.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, \
     check_permission_targets, skip_collection_access_check, query_pt, \
-    CollectionAccessPT
+    CollectionAccessPT, enforce
 from specifyweb.specify.models import Collection, Discipline, Division, Collectionobject, Institution, \
     Specifyuser, Spprincipal, Spversion, Collectionobjecttype, Picklist, Splocalecontainer, \
     Splocalecontaineritem, Splocaleitemstr
@@ -629,6 +629,23 @@ def _schema_import_operations(collection, schema, language, references=None):
 @login_maybe_required
 @require_http_methods(['POST'])
 def schema_localization_import(request):
+    schema_config_tables = [
+        '/table/splocalecontainer',
+        '/table/splocalecontaineritem',
+        '/table/splocaleitemstr',
+    ]
+    enforce(
+        request.specify_collection,
+        request.specify_user_agent,
+        schema_config_tables,
+        'create',
+    )
+    enforce(
+        request.specify_collection,
+        request.specify_user_agent,
+        schema_config_tables,
+        'update',
+    )
     try:
         payload = json.loads(request.body)
         schema = payload.get('schema', payload)
