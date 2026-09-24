@@ -22,7 +22,7 @@ import sonarjs from 'eslint-plugin-sonarjs';
 import testingLibrary from 'eslint-plugin-testing-library';
 import tsdoc from 'eslint-plugin-tsdoc';
 import typescript from '@typescript-eslint/eslint-plugin';
-import unicorn  from 'eslint-plugin-unicorn';
+import unicorn from 'eslint-plugin-unicorn';
 
 const OFF = 'off';
 const WARN = 'warn';
@@ -126,8 +126,8 @@ const base_config = [
       react,
       'react-hooks': reactHooks,
       sonarjs,
-	  unicorn,
-	  regexp,
+      unicorn,
+      regexp,
       /**
        * An awesome rule, but have to temporarily disable it until
        * https://github.com/BrainMaestro/eslint-plugin-optimize-regex/issues/66
@@ -822,7 +822,7 @@ _    * While overusing non-null assertions can be harmful, there are
     ...compat.config(jest.configs.recommended),
     ...compat.config(jest.configs.style),
     ...compat.config(jestDom.configs.recommended),
-  ].map((config) => ({...config, files:testFiles})),
+  ].map((config) => ({ ...config, files: testFiles })),
   {
     files: testFiles,
     rules: testRules,
@@ -852,9 +852,10 @@ export default [
   ...base_config,
 
   ...compat.config(accessibility.configs.strict),
-  ...[
-    ...compat.config(testingLibrary.configs.react),
-  ].map((config) => ({...config, files:testFiles}), testFiles),
+  ...[...compat.config(testingLibrary.configs.react)].map(
+    (config) => ({ ...config, files: testFiles }),
+    testFiles
+  ),
   {
     rules: {
       'react/prop-types': OFF,
