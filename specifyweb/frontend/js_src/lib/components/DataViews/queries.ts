@@ -260,9 +260,9 @@ export async function saveUserDataViewQueries(
       }).then(({ data: resourceData }) => resourceData.data)
     )
   );
-  const mergedCurrent = matchingResources.reduce(
-    (combined, {}, index) => {
-      const currentResourceData = parseDataViewQueries(allResourceData[index]);
+  const mergedCurrent = allResourceData.reduce(
+    (combined, resourceData) => {
+      const currentResourceData = parseDataViewQueries(resourceData);
       return {
         version: 1 as const,
         queries: {
