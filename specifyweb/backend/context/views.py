@@ -593,8 +593,10 @@ def _schema_import_operations(collection, schema, language, references=None):
         if not isinstance(table_data, dict):
             raise ValueError
         values = _schema_import_values(
-            table_data, SCHEMA_IMPORT_FIELDS[Splocalecontainer], references
+            table_data, SCHEMA_IMPORT_FIELDS[Splocalecontainer],
+            {**references, 'format': references['itemformat']}
         )
+        
         if values:
             operations.append(('PUT', Splocalecontainer, container, values))
         _schema_import_string(
@@ -647,6 +649,10 @@ def schema_localization_import(request):
             'format': _schema_import_resource_names(
                 request.specify_collection, request.specify_user,
                 'DataObjFormatters', './/format'
+            ),
+            'itemformat': _schema_import_resource_names(
+                request.specify_collection, request.specify_user,
+                'UIFormatters', './/format'
             ),
             'aggregator': _schema_import_resource_names(
                 request.specify_collection, request.specify_user,
