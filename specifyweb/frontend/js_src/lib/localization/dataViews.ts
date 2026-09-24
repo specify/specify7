@@ -18,6 +18,23 @@ export const dataViewsText = createDictionary({
     'en-us': '{tableLabel:string} Records',
   },
   configureDataViews: {
-    'en-us': 'Configure Data Views tables',
+    'en-us': 'Configure {dataViews:string} tables',
+  },
+  dataViewQueries: {
+    comment: 'The name of the Data View query app resource type',
+    'en-us': 'Data View Queries',
+  },
+  splitViewByDefault: {
+    'en-us': 'Enable {splitView:string} by default',
+  },
+  configureQuery: {
+    'en-us': 'Configure query',
+  },
+  splitViewDescription: {
+    'en-us':
+      '{splitView:string} displays query results alongside a record preview, allowing you to review records without leaving the results list.',
+  },
+  splitViewOrientation: {
+    'en-us': 'Default {splitView:string} orientation',
   },
 } as const);
