@@ -648,6 +648,10 @@ def schema_localization_import(request):
                 request.specify_collection, request.specify_user,
                 'DataObjFormatters', './/format'
             ),
+            'aggregator': _schema_import_resource_names(
+                request.specify_collection, request.specify_user,
+                'DataObjFormatters', './/aggregator'
+            ),
             'picklistname': {
                 name.lower() for name in Picklist.objects.filter(
                     collection=request.specify_collection
