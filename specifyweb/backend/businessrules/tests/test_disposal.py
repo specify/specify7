@@ -1,3 +1,5 @@
+from django.utils import timezone
+
 from specifyweb.specify import models
 from specifyweb.specify.tests.test_api import ApiTests
 
@@ -74,3 +76,23 @@ class DisposalTests(ApiTests):
             fetched_disposal.disposalpreparations.count(),
             0,
         )
+
+    def test_fill_disposal_number_and_date(self):
+        disposal_date = timezone.now()
+
+        disposal = models.Disposal.objects.create(
+            disposalnumber='DISPOSAL-8569-001',
+            disposaldate=disposal_date,
+        )
+
+        fetched_disposal = models.Disposal.objects.get(id=disposal.id)
+
+        self.assertEqual(
+            fetched_disposal.disposalnumber,
+            'DISPOSAL-8569-001',
+        )
+        self.assertEqual(
+            fetched_disposal.disposaldate,
+            disposal_date,
+        )
+
