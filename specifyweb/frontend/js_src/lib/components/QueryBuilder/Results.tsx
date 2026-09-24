@@ -193,7 +193,10 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
             break;
           }
         }
-        refreshedResults.length = refreshedResultCount;
+        refreshedResults.length = Math.min(
+          refreshedResults.length,
+          refreshedResultCount
+        );
         setTotalCount(refreshedResultCount);
         setResults(refreshedResults);
       })
