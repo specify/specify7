@@ -34,6 +34,16 @@ export const schemaText = createDictionary({
     'en-us':
       'The {schemaConfig:string} export provided is invalid and cannot be imported.',
   },
+  importSchemaSuccess: {
+    'en-us': '{schemaConfig:string} imported successfully',
+  },
+  importSchemaRefreshError: {
+    'en-us':
+      'The import succeeded, but the page could not refresh automatically. Reload the page to see the imported changes.',
+  },
+  reloadSchemaConfig: {
+    'en-us': 'Reload Page',
+  },
   table: {
     'en-us': 'Table',
     'ru-ru': 'Стол',

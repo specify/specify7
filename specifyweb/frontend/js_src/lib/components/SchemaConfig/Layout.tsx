@@ -56,6 +56,7 @@ function SchemaConfigLayoutContent(): JSX.Element {
   const loading = React.useContext(LoadingContext);
   const [importFile, setImportFile] = React.useState<File | undefined>();
   const [importError, setImportError] = React.useState(false);
+  const [importRefreshError, setImportRefreshError] = React.useState(false);
 
   React.useEffect(() => {
     setSingleResource(`/specify/schema-config/${rawLanguage}/`);
@@ -96,8 +97,13 @@ function SchemaConfigLayoutContent(): JSX.Element {
             errorMode: 'silent',
           })
         )
-        .then(() => handleSchemaSaved(rawLanguage, tableName))
-        .catch(() => setImportError(true))
+        .then(
+          () =>
+            handleSchemaSaved(rawLanguage, tableName).catch(() =>
+              setImportRefreshError(true)
+            ),
+          () => setImportError(true)
+        )
     );
   };
 
@@ -148,7 +154,7 @@ function SchemaConfigLayoutContent(): JSX.Element {
               schemaConfig: schemaText.schemaConfig(),
             })}
           </p>
-          <p>{schemaText.importSchemaLimitations()}</p>          
+          <p>{schemaText.importSchemaLimitations()}</p>
           <p className="italic">
             {schemaText.importSchemaBackupPrompt({
               schemaConfig: schemaText.schemaConfig(),
@@ -172,6 +178,22 @@ function SchemaConfigLayoutContent(): JSX.Element {
               schemaConfig: schemaText.schemaConfig(),
             })}
           </p>
+        </Dialog>
+      )}
+      {importRefreshError && (
+        <Dialog
+          buttons={
+            <Button.Success onClick={(): void => globalThis.location.reload()}>
+              {schemaText.reloadSchemaConfig()}
+            </Button.Success>
+          }
+          icon={dialogIcons.success}
+          header={schemaText.importSchemaSuccess({
+            schemaConfig: schemaText.schemaConfig(),
+          })}
+          onClose={(): void => setImportRefreshError(false)}
+        >
+          <p>{schemaText.importSchemaRefreshError()}</p>
         </Dialog>
       )}
     </Container.Full>
