@@ -25,7 +25,7 @@ export const routes: RA<EnhancedRoute> = [
       ),
   },
   {
-    path: 'simple-search',
+    path: 'express-search',
     element: () =>
       import('../Header/ExpressSearchTask').then(
         ({ ExpressSearchView }) => ExpressSearchView
@@ -33,12 +33,12 @@ export const routes: RA<EnhancedRoute> = [
     title: headerText.simpleSearch(),
   },
   {
-    path: 'express_search',
-    element: <Redirect to="/specify/simple-search/" />,
+    path: 'simple_search',
+    element: <Redirect to="/specify/express-search/" />,
   },
   {
-    path: 'express-search',
-    element: <Redirect to="/specify/simple-search/" />,
+    path: 'simple-search',
+    element: <Redirect to="/specify/express-search/" />,
   },
   {
     path: 'data-model',

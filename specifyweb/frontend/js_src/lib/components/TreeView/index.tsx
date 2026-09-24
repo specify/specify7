@@ -142,15 +142,33 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
     `conformations${tableName}`
   );
 
-  React.useEffect(
-    () => setUrlConformation(serializeConformation(conformation)),
-    [conformation, setUrlConformation]
-  );
+  // On initial mount, restore conformation from URL or cache.
+  // The URL is the single source of truth during a session;
+  // the cache persists state for when the user closes and reopens the tab.
+  const isFirstRender = React.useRef(true);
   React.useEffect(() => {
-    if (typeof urlConformation !== 'string') return;
-    const parsed = deserializeConformation(urlConformation);
-    setConformation(parsed);
-  }, [setConformation]);
+    if (!isFirstRender.current) return;
+
+    if (typeof urlConformation === 'string') {
+      // URL has a conformation → use it as the initial state
+      const parsed = deserializeConformation(urlConformation);
+      setConformation(parsed);
+    } else if (conformation !== defaultConformation) {
+      // No URL conformation but cache has one → promote to URL
+      setUrlConformation(serializeConformation(conformation));
+    }
+    // If neither URL nor cache has a conformation, use the default (empty).
+  }, [conformation, urlConformation, setConformation, setUrlConformation]);
+
+  // When the user interacts with the tree, persist the conformation
+  // to both the URL (primary) and the cache (for session restoration).
+  React.useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    setUrlConformation(serializeConformation(conformation));
+  }, [conformation, setUrlConformation]);
 
   useTitle(treeText.treeViewTitle({ treeName: table.label }));
 
@@ -179,19 +197,34 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
     'displayAuthor'
   );
 
+  const includeStartEndPeriods = userPreferences.get(
+    'treeEditor',
+    'geologicTimePeriod',
+    'displayChronoPeriods'
+  );
+
   const baseUrl = `/trees/specify_tree/${tableName.toLowerCase()}/${
     treeDefinition.id
   }`;
 
+  const [biostratFilter = 'all', setBiostratFilter] = useCachedState(
+    'tree',
+    'biostratFilter'
+  );
+
   const getRows = React.useCallback(
     async (parentId: number | 'null') =>
       fetchRows(
-        // See above comment for sortField being hard coded as name here
-        formatUrl(`${baseUrl}/${parentId}/name/`, {
-          includeAuthor: includeAuthor.toString(),
-        })
+        formatUrl(
+          `${baseUrl}/${parentId}/${tableName === 'GeologicTimePeriod' ? 'startPeriod' : 'name'}/`,
+          {
+            includeAuthor: includeAuthor.toString(),
+            includeStartEndPeriods: includeStartEndPeriods.toString(),
+            biostrat: biostratFilter,
+          }
+        )
       ),
-    [baseUrl]
+    [baseUrl, tableName, includeAuthor, includeStartEndPeriods, biostratFilter]
   );
 
   const [rows, setRows] = useAsyncState<RA<Row>>(
@@ -260,6 +293,7 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
       <Tree
         actionRow={actionRow}
         baseUrl={baseUrl}
+        biostratFilter={biostratFilter}
         conformation={[conformation, setConformation]}
         focusPath={states[type].focusPath}
         focusRef={toolbarButtonRef}
@@ -326,6 +360,7 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
           }}
         />
         <TreeViewSearch
+          biostratFilter={biostratFilter}
           forwardRef={searchBoxRef}
           tableName={tableName}
           treeDefinitionId={treeDefinition.id}
@@ -400,13 +435,31 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
       ) : (
         treeContainer('first')
       )}
-      <Label.Inline>
-        <Input.Checkbox
-          checked={hideEmptyNodes}
-          onValueChange={setHideEmptyNodes}
-        />
-        {treeText.associatedNodesOnly()}
-      </Label.Inline>
+      <div className="flex items-center justify-between">
+        <Label.Inline>
+          <Input.Checkbox
+            checked={hideEmptyNodes}
+            onValueChange={setHideEmptyNodes}
+          />
+          {treeText.associatedNodesOnly()}
+        </Label.Inline>
+        {tableName === 'GeologicTimePeriod' && (
+          <Select
+            className="w-max"
+            aria-label={treeText.biostratFilter()}
+            title={treeText.biostratFilter()}
+            value={biostratFilter}
+            onValueChange={(value: string): void => {
+              setBiostratFilter(value as 'all' | 'bio' | 'chrono');
+              setRows(undefined);
+            }}
+          >
+            <option value="all">{treeText.biostratAll()}</option>
+            <option value="chrono">{treeText.biostratChrono()}</option>
+            <option value="bio">{treeText.biostratBio()}</option>
+          </Select>
+        )}
+      </div>
     </Container.Full>
   );
 }

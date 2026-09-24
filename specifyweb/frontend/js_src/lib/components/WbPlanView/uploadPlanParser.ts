@@ -13,11 +13,13 @@ import { formatToManyIndex, formatTreeRank } from './mappingHelpers';
 import { RANK_KEY_DELIMITER } from './uploadPlanBuilder';
 
 export type MatchBehaviors = 'ignoreAlways' | 'ignoreNever' | 'ignoreWhenBlank';
+export type DisambiguationBehaviors = 'ask' | 'pickFirst';
 
 export type ColumnOptions = {
   readonly matchBehavior: MatchBehaviors;
   readonly nullAllowed: boolean;
   readonly default: string | null;
+  readonly disambiguationBehavior: DisambiguationBehaviors;
 };
 
 export type ColumnDefinition =
@@ -120,10 +122,13 @@ function parseTreeTypes(
 function resolveField(table: SpecifyTable, fieldName: string): RA<string> {
   const field = table.strictGetField(fieldName);
   if (field.isRelationship) {
-    softFail(new Error('Upload plan has a column mapped to a relationship'), {
-      table,
-      fieldName,
-    });
+    softFail(
+      new Error('Data set mapping has a column mapped to a relationship'),
+      {
+        table,
+        fieldName,
+      }
+    );
     return [field.name, field.relatedTable.idField.name];
   }
   return [field.name];

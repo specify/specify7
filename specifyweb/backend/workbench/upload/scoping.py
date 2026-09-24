@@ -147,6 +147,7 @@ def extend_columnoptions(
         matchBehavior=colopts.matchBehavior,
         nullAllowed=colopts.nullAllowed,
         default=colopts.default,
+        disambiguationBehavior=colopts.disambiguationBehavior,
         schemaitem=schemaitem,
         # Formatters are "scoped" here, that is, all they need is a value coming directly from the row.
         uiformatter=(None if scoped_formatter is None else CustomRepr(scoped_formatter, friendly_repr)),

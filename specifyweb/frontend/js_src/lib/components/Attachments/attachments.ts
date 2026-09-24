@@ -67,6 +67,8 @@ const thumbnailable = new Set([
   'image/gif',
   'image/png',
   'image/tiff',
+  'image/heic',
+  'image/heif',
   'application/pdf',
 ]);
 

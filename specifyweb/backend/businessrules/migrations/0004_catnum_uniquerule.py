@@ -1,11 +1,13 @@
 from django.db import migrations
+from django.db.models.functions import Lower
 
 from specifyweb.backend.businessrules.migration_utils import catnum_rule_editable
 from specifyweb.backend.businessrules.uniqueness_rules import create_uniqueness_rule
 
 
 def catnum_rule_uneditable(apps, schema_editor):
-    """ Find any CollectionObject catalogNumber must be unique to Collection
+    """
+    Find any CollectionObject catalogNumber must be unique to Collection
     rules which are editable on the frontend (have isDatabaseConstraint=False)
     and set their isDatabaseConstraint=True.
 
@@ -18,7 +20,7 @@ def catnum_rule_uneditable(apps, schema_editor):
         # REFACTOR: Some of these queries should be able to be combined to
         # improve performance and limit how often we need to hit the database
         model_rules = UniquenessRule.objects.filter(
-            modelName="Collectionobject",
+            modelName__iexact="Collectionobject",
             discipline_id=discipline.id,
             isDatabaseConstraint=False
         )
@@ -26,16 +28,24 @@ def catnum_rule_uneditable(apps, schema_editor):
         has_catalognumber_rule = False
         matching_rule_ids: list[int] = []
         for rule in model_rules:
-            rule_fields = rule.uniquenessrulefield_set.all()
+            rule_fields = (rule
+                            .uniquenessrulefield_set
+                            .all()
+                            .values_list(Lower("fieldPath"), "isScope"))
 
-            fields = rule_fields.filter(isScope=False)
-            scopes = rule_fields.filter(isScope=True)
+            fields = []
+            scopes = []
+            for field_path, is_scope in rule_fields:
+                if is_scope:
+                    scopes.append(field_path)
+                else:
+                    fields.append(field_path)
 
             # We're only interested in the rule "CollectionObject catalogNumber
             # must be unique to Collection"
-            # We check for length of fields and scopes because get() raises an
-            # exception if more than one result is returned
-            if (len(fields) == 1 and len(scopes) == 1) and (fields.get().fieldPath.lower() == "catalognumber" and scopes.get().fieldPath.lower() == "collection"):
+            # There can be other rules which include Catalog Number and Collection
+            # with other fields: ignore these
+            if (len(fields) == 1 and len(scopes) == 1) and (fields[0] == "catalognumber" and scopes[0] == "collection"):
                 has_catalognumber_rule = True
                 matching_rule_ids.append(rule.id)
 

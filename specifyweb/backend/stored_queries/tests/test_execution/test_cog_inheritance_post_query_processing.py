@@ -1,4 +1,4 @@
-from specifyweb.backend.inheritance.api import cog_inheritance_post_query_processing
+from specifyweb.backend.inheritance.api import cog_inheritance_query_processor
 from specifyweb.backend.interactions.tests.test_cog_consolidated_prep_context import (
     TestCogConsolidatedPrepContext,
 )
@@ -27,11 +27,11 @@ class TestCogInheritancePostQueryProcessing(
                 query_fields,
             )
 
-            query = cog_inheritance_post_query_processing(
-                query, table.tableId, query_fields, self.collection, self.specifyuser
+            processor = cog_inheritance_query_processor(
+                table.tableId, query_fields, self.collection, self.specifyuser
             )
 
-            result = list(query)
+            result = [tuple(processor(list(row))) for row in query]
 
         self.assertEqual(result, [(self.agent.id, "Test", 0)])
 
@@ -48,11 +48,11 @@ class TestCogInheritancePostQueryProcessing(
                 query_fields,
             )
 
-            query = cog_inheritance_post_query_processing(
-                query, table.tableId, query_fields, self.collection, self.specifyuser
+            processor = cog_inheritance_query_processor(
+                table.tableId, query_fields, self.collection, self.specifyuser
             )
 
-            result = list(query)
+            result = [tuple(processor(list(row))) for row in query]
 
         self.assertCountEqual(
             result,
@@ -90,11 +90,11 @@ class TestCogInheritancePostQueryProcessing(
                 query_fields,
             )
 
-            query = cog_inheritance_post_query_processing(
-                query, table.tableId, query_fields, self.collection, self.specifyuser
+            processor = cog_inheritance_query_processor(
+                table.tableId, query_fields, self.collection, self.specifyuser
             )
 
-            result = list(query)
+            result = [tuple(processor(list(row))) for row in query]
 
         self.assertCountEqual(
             [

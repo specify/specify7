@@ -236,7 +236,11 @@ _INTERACTION_TABLES = (
     "giftattachment", "loanattachment", "permitattachment"
 )
 
-LIBRARY_ROLES = {
+class DefaultRole(TypedDict):
+    description: str
+    policies: dict[str, tuple[str, ...]]
+
+LIBRARY_ROLES: dict[str, DefaultRole] = {
     "Assign Roles": {
         "description": "Gives ability to assign existing roles to existing users.",
         "policies": {
@@ -395,15 +399,18 @@ class DefaultRole(TypedDict):
 
 def _create_role_and_policies(role_model, role_policy_model, role_name: str, role_filters: dict = dict()):
     resolved_role: DefaultRole = LIBRARY_ROLES[role_name]
-    role, is_new = role_model.objects.get_or_create(
+    role = role_model.objects.filter(
         name=role_name,
-        **role_filters,
-        defaults={
-            "description": resolved_role["description"]
-        }
-    )
-    if not is_new:
+        **role_filters
+    ).order_by('pk').first()
+    if role is not None:
         return role
+
+    role = role_model.objects.create(
+        name=role_name,
+        description=resolved_role["description"],
+        **role_filters
+    )
 
     role_policy_model.objects.bulk_create(
         [
@@ -416,19 +423,25 @@ def _create_role_and_policies(role_model, role_policy_model, role_name: str, rol
             for action in actions
         ]
     )
+    return role
 
 def create_missing_library_roles(apps = apps):
     LibraryRole = apps.get_model('permissions', 'LibraryRole')
     LibraryRolePolicy = apps.get_model('permissions', 'LibraryRolePolicy')
     all_roles = set(LIBRARY_ROLES.keys())
 
-    existing_role_names = LibraryRole.objects.annotate(
-        name_lower=Lower("name")
-    ).filter(
-        name_lower__in=(role.lower() for role in all_roles)
-    ).values_list("name", flat=True)
+    existing_role_names = set(
+        LibraryRole.objects.annotate(
+            name_lower=Lower("name")
+        ).filter(
+            name_lower__in=(role.lower() for role in all_roles)
+        ).values_list("name_lower", flat=True)
+    )
 
-    missing_roles = all_roles - set(existing_role_names)
+    missing_roles = {
+        role for role in all_roles
+        if role.lower() not in existing_role_names
+    }
     for missing_role in missing_roles:
         _create_role_and_policies(
             LibraryRole,

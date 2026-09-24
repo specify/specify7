@@ -114,13 +114,13 @@ function pullUp(node: PairedNode, threshold: number): number {
 }
 
 export function makeTreeMap(container: SVGElement, rawRoot: PairedNode) {
-  const root = hierarchy(rawRoot)
+  const root = hierarchy<PairedNode>(rawRoot)
     .sum(({ count }) => count)
     .sort(sortFunction(({ data }) => data.id));
 
   const svg = select(container);
 
-  treemap()
+  treemap<PairedNode>()
     .tile(treemapBinary)
     .size([container.clientWidth, container.clientHeight])
     .round(true)(root);

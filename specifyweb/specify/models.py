@@ -430,6 +430,10 @@ class Agentidentifier(models.Model):
     class Meta:
         db_table = 'agentidentifier'
         ordering = ()
+        indexes = [
+            models.Index(fields=['identifier'], name='agentidentifier_identifier_idx'),
+            models.Index(fields=['identifiertype'], name='agid_identifiertype_idx'),
+        ]
 
     
     save = partialmethod(custom_save)
@@ -456,6 +460,10 @@ class Agentspecialty(models.Model):
         db_table = 'agentspecialty'
         ordering = ()
         unique_together = (('agent', 'ordernumber'),)
+        indexes = [
+            models.Index(fields=['ordernumber'], name='agentspecialty_ordernumber_idx'),
+            models.Index(fields=['specialtyname'], name='agsp_specialtyname_idx'),
+        ]
 
     
     save = partialmethod(custom_save)
@@ -484,6 +492,9 @@ class Agentvariant(models.Model):
     class Meta:
         db_table = 'agentvariant'
         ordering = ()
+        indexes = [
+            models.Index(fields=['name'], name='agentvariant_name_idx'),
+        ]
 
     
     save = partialmethod(custom_save)
@@ -571,7 +582,7 @@ class Attachment(models.Model):
             models.Index(fields=['dateimaged'], name='DateImagedIDX'),
             models.Index(fields=['scopeid'], name='AttchScopeIDIDX'),
             models.Index(fields=['scopetype'], name='AttchScopeTypeIDX'),
-            models.Index(fields=['guid'], name='AttchmentGuidIDX')
+            models.Index(fields=['guid'], name='AttchmentGuidIDX'),
         ]
 
     
@@ -638,6 +649,9 @@ class Attachmentmetadata(models.Model):
     class Meta:
         db_table = 'attachmentmetadata'
         ordering = ()
+        indexes = [
+            models.Index(fields=['name'], name='attachmentmetadata_name_idx'),
+        ]
 
     
     save = partialmethod(custom_save)
@@ -716,6 +730,9 @@ class Author(models.Model):
         db_table = 'author'
         ordering = ('ordernumber',)
         unique_together = (('referencework', 'agent'),)
+        indexes = [
+            models.Index(fields=['ordernumber'], name='author_ordernumber_idx'),
+        ]
 
     
     save = partialmethod(custom_save)
@@ -1509,7 +1526,9 @@ class Collectionobject(models.Model):
             models.Index(fields=['uniqueidentifier'], name='COUniqueIdentifierIDX'),
             models.Index(fields=['altcatalognumber'], name='AltCatalogNumberIDX'),
             models.Index(fields=['guid'], name='ColObjGuidIDX'),
-            models.Index(fields=['collectionmemberid'], name='COColMemIDX')
+            models.Index(fields=['collectionmemberid'], name='COColMemIDX'),
+            models.Index(fields=['name'], name='collectionobject_name_idx'),
+            models.Index(fields=['projectnumber'], name='colobj_projectnumber_idx'),
         ]
 
     
@@ -1940,7 +1959,8 @@ class Collectionobjectproperty(models.Model):
         db_table = 'collectionobjectproperty'
         ordering = ()
         indexes = [
-            models.Index(fields=['collectionmemberid'], name='COLOBJPROPColMemIDX')
+            models.Index(fields=['collectionmemberid'], name='COLOBJPROPColMemIDX'),
+            models.Index(fields=['guid'], name='collectionobjectprop_guid_idx'),
         ]
 
     
@@ -1968,6 +1988,9 @@ class Collectionreltype(models.Model):
     class Meta:
         db_table = 'collectionreltype'
         ordering = ()
+        indexes = [
+            models.Index(fields=['name'], name='collectionreltype_name_idx'),
+        ]
 
     
     save = partialmethod(custom_save)
@@ -3115,7 +3138,8 @@ class Exchangein(models.Model):
         ordering = ()
         indexes = [
             models.Index(fields=['exchangedate'], name='ExchangeDateIDX'),
-            models.Index(fields=['descriptionofmaterial'], name='DescriptionOfMaterialIDX')
+            models.Index(fields=['descriptionofmaterial'], name='DescriptionOfMaterialIDX'),
+            models.Index(fields=['exchangeinnumber'], name='exchin_exchinnum_idx'),
         ]
 
     
@@ -3335,6 +3359,9 @@ class Exsiccataitem(models.Model):
     class Meta:
         db_table = 'exsiccataitem'
         ordering = ()
+        indexes = [
+            models.Index(fields=['number'], name='exsiccataitem_number_idx'),
+        ]
 
     
     save = partialmethod(custom_save)
@@ -3687,7 +3714,11 @@ class Geography(model_extras.Geography):
         ordering = ()
         indexes = [
             models.Index(fields=['name'], name='GeoNameIDX'),
-            models.Index(fields=['fullname'], name='GeoFullNameIDX')
+            models.Index(fields=['fullname'], name='GeoFullNameIDX'),
+            models.Index(fields=['commonname'], name='geography_commonname_idx'),
+            models.Index(fields=['guid'], name='geography_guid_idx'),
+            models.Index(fields=['highestchildnodenumber'], name='geography_hchnodenum_idx'),
+            models.Index(fields=['nodenumber'], name='geography_nodenumber_idx'),
         ]
 
     
@@ -3715,6 +3746,9 @@ class Geographytreedef(models.Model):
     class Meta:
         db_table = 'geographytreedef'
         ordering = ()
+        indexes = [
+            models.Index(fields=['name'], name='geographytreedef_name_idx'),
+        ]
 
     
     save = partialmethod(custom_save)
@@ -3748,6 +3782,9 @@ class Geographytreedefitem(model_extras.Geographytreedefitem):
     class Meta:
         db_table = 'geographytreedefitem'
         ordering = ()
+        indexes = [
+            models.Index(fields=['name'], name='geogtreedefitem_name_idx'),
+        ]
 
     
     save = partialmethod(custom_save)
@@ -3793,7 +3830,9 @@ class Geologictimeperiod(model_extras.Geologictimeperiod):
         indexes = [
             models.Index(fields=['name'], name='GTPNameIDX'),
             models.Index(fields=['fullname'], name='GTPFullNameIDX'),
-            models.Index(fields=['guid'], name='GTPGuidIDX')
+            models.Index(fields=['guid'], name='GTPGuidIDX'),
+            models.Index(fields=['highestchildnodenumber'], name='geotime_highchildnodenumb_idx'),
+            models.Index(fields=['nodenumber'], name='geotime_nodenumber_idx'),
         ]
 
     
@@ -3821,6 +3860,9 @@ class Geologictimeperiodtreedef(models.Model):
     class Meta:
         db_table = 'geologictimeperiodtreedef'
         ordering = ()
+        indexes = [
+            models.Index(fields=['name'], name='geotimetreedef_name_idx'),
+        ]
 
     
     save = partialmethod(custom_save)
@@ -3854,6 +3896,9 @@ class Geologictimeperiodtreedefitem(model_extras.Geologictimeperiodtreedefitem):
     class Meta:
         db_table = 'geologictimeperiodtreedefitem'
         ordering = ()
+        indexes = [
+            models.Index(fields=['name'], name='geotimetreedefitem_name_idx'),
+        ]
 
     
     save = partialmethod(custom_save)
@@ -4166,7 +4211,8 @@ class Institutionnetwork(models.Model):
         db_table = 'institutionnetwork'
         ordering = ()
         indexes = [
-            models.Index(fields=['name'], name='InstNetworkNameIDX')
+            models.Index(fields=['name'], name='InstNetworkNameIDX'),
+            models.Index(fields=['altname'], name='institutionnetwork_altname_idx'),
         ]
 
     
@@ -4228,6 +4274,9 @@ class Latlonpolygon(models.Model):
     class Meta:
         db_table = 'latlonpolygon'
         ordering = ()
+        indexes = [
+            models.Index(fields=['name'], name='latlonpolygon_name_idx'),
+        ]
 
     
     save = partialmethod(custom_save)
@@ -4292,7 +4341,9 @@ class Lithostrat(model_extras.Lithostrat):
         indexes = [
             models.Index(fields=['name'], name='LithoNameIDX'),
             models.Index(fields=['fullname'], name='LithoFullNameIDX'),
-            models.Index(fields=['guid'], name='LithoGuidIDX')
+            models.Index(fields=['guid'], name='LithoGuidIDX'),
+            models.Index(fields=['highestchildnodenumber'], name='lithostrat_hchnode_idx'),
+            models.Index(fields=['nodenumber'], name='lithostrat_nodenumber_idx'),
         ]
 
     
@@ -4320,6 +4371,9 @@ class Lithostrattreedef(models.Model):
     class Meta:
         db_table = 'lithostrattreedef'
         ordering = ()
+        indexes = [
+            models.Index(fields=['name'], name='lithostratdef_name_idx'),
+        ]
 
     
     save = partialmethod(custom_save)
@@ -4353,6 +4407,9 @@ class Lithostrattreedefitem(model_extras.Lithostrattreedefitem):
     class Meta:
         db_table = 'lithostrattreedefitem'
         ordering = ()
+        indexes = [
+            models.Index(fields=['name'], name='lithostratdefitem_name_idx'),
+        ]
 
     
     save = partialmethod(custom_save)
@@ -4622,7 +4679,8 @@ class Locality(models.Model):
             models.Index(fields=['discipline'], name='LocalityDisciplineIDX'),
             models.Index(fields=['namedplace'], name='NamedPlaceIDX'),
             models.Index(fields=['uniqueidentifier'], name='LocalityUniqueIdentifierIDX'),
-            models.Index(fields=['relationtonamedplace'], name='RelationToNamedPlaceIDX')
+            models.Index(fields=['relationtonamedplace'], name='RelationToNamedPlaceIDX'),
+            models.Index(fields=['guid'], name='locality_guid_idx'),
         ]
 
     
@@ -4848,7 +4906,8 @@ class Materialsample(models.Model):
         db_table = 'materialsample'
         ordering = ()
         indexes = [
-            models.Index(fields=['ggbn_sampledesignation'], name='DesignationIDX')
+            models.Index(fields=['ggbn_sampledesignation'], name='DesignationIDX'),
+            models.Index(fields=['guid'], name='materialsample_guid_idx'),
         ]
 
     
@@ -4881,6 +4940,9 @@ class Morphbankview(models.Model):
     class Meta:
         db_table = 'morphbankview'
         ordering = ()
+        indexes = [
+            models.Index(fields=['viewname'], name='morphbankview_viewname_idx'),
+        ]
 
     
     save = partialmethod(custom_save)
@@ -4924,6 +4986,9 @@ class Otheridentifier(models.Model):
     class Meta:
         db_table = 'otheridentifier'
         ordering = ()
+        indexes = [
+            models.Index(fields=['identifier'], name='otheridentifier_identifier_idx'),
+        ]
         indexes = [
             models.Index(fields=['collectionmemberid'], name='OthIdColMemIDX')
         ]
@@ -5120,7 +5185,10 @@ class Picklist(models.Model):
         db_table = 'picklist'
         ordering = ()
         indexes = [
-            models.Index(fields=['name'], name='PickListNameIDX')
+            models.Index(fields=['name'], name='PickListNameIDX'),
+            models.Index(fields=['fieldname'], name='picklist_fieldname_idx'),
+            models.Index(fields=['filterfieldname'], name='picklist_filterfieldname_idx'),
+            models.Index(fields=['tablename'], name='picklist_tablename_idx'),
         ]
 
     
@@ -5173,6 +5241,9 @@ class Preptype(models.Model):
     class Meta:
         db_table = 'preptype'
         ordering = ()
+        indexes = [
+            models.Index(fields=['name'], name='preptype_name_idx'),
+        ]
 
     
     save = partialmethod(custom_save)
@@ -5564,7 +5635,8 @@ class Preparationproperty(models.Model):
         db_table = 'preparationproperty'
         ordering = ()
         indexes = [
-            models.Index(fields=['collectionmemberid'], name='PREPPROPColMemIDX')
+            models.Index(fields=['collectionmemberid'], name='PREPPROPColMemIDX'),
+            models.Index(fields=['guid'], name='preparationprop_guid_idx'),
         ]
 
     
@@ -5722,7 +5794,8 @@ class Referencework(models.Model):
             models.Index(fields=['title'], name='RefWrkTitleIDX'),
             models.Index(fields=['publisher'], name='RefWrkPublisherIDX'),
             models.Index(fields=['guid'], name='RefWrkGuidIDX'),
-            models.Index(fields=['isbn'], name='ISBNIDX')
+            models.Index(fields=['isbn'], name='ISBNIDX'),
+            models.Index(fields=['librarynumber'], name='refwork_librarynum_idx'),
         ]
 
     
@@ -6046,6 +6119,9 @@ class Spauditlogfield(models.Model):
     class Meta:
         db_table = 'spauditlogfield'
         ordering = ()
+        indexes = [
+            models.Index(fields=['fieldname'], name='spauditlogfield_fieldname_idx'),
+        ]
 
     
     save = partialmethod(custom_save)
@@ -6080,6 +6156,9 @@ class Spexportschema(models.Model):
     class Meta:
         db_table = 'spexportschema'
         ordering = ()
+        indexes = [
+            models.Index(fields=['schemaname'], name='spexportschema_schemaname_idx'),
+        ]
 
     
     save = partialmethod(custom_save)
@@ -6108,6 +6187,9 @@ class Spexportschemaitem(models.Model):
     class Meta:
         db_table = 'spexportschemaitem'
         ordering = ()
+        indexes = [
+            models.Index(fields=['fieldname'], name='spexpschemaitem_fieldname_idx'),
+        ]
 
     
     save = partialmethod(custom_save)
@@ -6137,6 +6219,9 @@ class Spexportschemaitemmapping(models.Model):
     class Meta:
         db_table = 'spexportschemaitemmapping'
         ordering = ()
+        indexes = [
+            models.Index(fields=['exportedfieldname'], name='spexpitemmap_expfld_idx'),
+        ]
 
     
     save = partialmethod(custom_save)
@@ -6164,7 +6249,8 @@ class Spexportschemamapping(models.Model):
         db_table = 'spexportschemamapping'
         ordering = ()
         indexes = [
-            models.Index(fields=['collectionmemberid'], name='SPEXPSCHMMAPColMemIDX')
+            models.Index(fields=['collectionmemberid'], name='SPEXPSCHMMAPColMemIDX'),
+            models.Index(fields=['mappingname'], name='spexpschemamap_mappingname_idx'),
         ]
 
     
@@ -6194,7 +6280,9 @@ class Spfieldvaluedefault(models.Model):
         db_table = 'spfieldvaluedefault'
         ordering = ()
         indexes = [
-            models.Index(fields=['collectionmemberid'], name='SpFieldValueDefaultColMemIDX')
+            models.Index(fields=['collectionmemberid'], name='SpFieldValueDefaultColMemIDX'),
+            models.Index(fields=['fieldname'], name='spfieldvaluedef_fieldname_idx'),
+            models.Index(fields=['tablename'], name='spfieldvaluedef_tablename_idx'),
         ]
 
     
@@ -6230,7 +6318,8 @@ class Splocalecontainer(models.Model):
         db_table = 'splocalecontainer'
         ordering = ()
         indexes = [
-            models.Index(fields=['name'], name='SpLocaleContainerNameIDX')
+            models.Index(fields=['name'], name='SpLocaleContainerNameIDX'),
+            models.Index(fields=['picklistname'], name='splocalecont_picklistname_idx'),
         ]
 
     
@@ -6265,7 +6354,9 @@ class Splocalecontaineritem(models.Model):
         db_table = 'splocalecontaineritem'
         ordering = ()
         indexes = [
-            models.Index(fields=['name'], name='SpLocaleContainerItemNameIDX')
+            models.Index(fields=['name'], name='SpLocaleContainerItemNameIDX'),
+            models.Index(fields=['picklistname'], name='splocalecontitem_picklist_idx'),
+            models.Index(fields=['weblinkname'], name='splocalecontitem_weblink_idx'),
         ]
 
     
@@ -6320,6 +6411,9 @@ class Sppermission(models.Model):
     class Meta:
         db_table = 'sppermission'
         ordering = ()
+        indexes = [
+            models.Index(fields=['name'], name='sppermission_name_idx'),
+        ]
 
     save = partialmethod(custom_save)
 
@@ -6355,6 +6449,9 @@ class Spprincipal(models.Model):
     class Meta:
         db_table = 'spprincipal'
         ordering = ()
+        indexes = [
+            models.Index(fields=['name'], name='spprincipal_name_idx'),
+        ]
 
     
     save = partialmethod(custom_save)
@@ -6391,7 +6488,8 @@ class Spquery(models.Model):
         db_table = 'spquery'
         ordering = ()
         indexes = [
-            models.Index(fields=['name'], name='SpQueryNameIDX')
+            models.Index(fields=['name'], name='SpQueryNameIDX'),
+            models.Index(fields=['contextname'], name='spquery_contextname_idx'),
         ]
 
     
@@ -6435,6 +6533,10 @@ class Spqueryfield(models.Model):
     class Meta:
         db_table = 'spqueryfield'
         ordering = ('position',)
+        indexes = [
+            models.Index(fields=['fieldname'], name='spqueryfield_fieldname_idx'),
+            models.Index(fields=['formatname'], name='spqueryfield_formatname_idx'),
+        ]
 
     
     save = partialmethod(custom_save)
@@ -6593,7 +6695,8 @@ class Spviewsetobj(models.Model):
         db_table = 'spviewsetobj'
         ordering = ()
         indexes = [
-            models.Index(fields=['name'], name='SpViewObjNameIDX')
+            models.Index(fields=['name'], name='SpViewObjNameIDX'),
+            models.Index(fields=['filename'], name='spviewsetobj_filename_idx'),
         ]
 
     
@@ -6663,6 +6766,9 @@ class Specifyuser(model_extras.Specifyuser):
     class Meta:
         db_table = 'specifyuser'
         ordering = ()
+        indexes = [
+            models.Index(fields=['name'], name='specifyuser_name_idx'),
+        ]
 
     
     # save = partialmethod(custom_save)
@@ -6705,7 +6811,9 @@ class Storage(model_extras.Storage):
         ordering = ()
         indexes = [
             models.Index(fields=['name'], name='StorNameIDX'),
-            models.Index(fields=['fullname'], name='StorFullNameIDX')
+            models.Index(fields=['fullname'], name='StorFullNameIDX'),
+            models.Index(fields=['highestchildnodenumber'], name='storage_highchildnodenumb_idx'),
+            models.Index(fields=['nodenumber'], name='storage_nodenumber_idx'),
         ]
 
     
@@ -6759,6 +6867,9 @@ class Storagetreedef(models.Model):
     class Meta:
         db_table = 'storagetreedef'
         ordering = ()
+        indexes = [
+            models.Index(fields=['name'], name='storagetreedef_name_idx'),
+        ]
 
     
     save = partialmethod(custom_save)
@@ -6792,6 +6903,9 @@ class Storagetreedefitem(model_extras.Storagetreedefitem):
     class Meta:
         db_table = 'storagetreedefitem'
         ordering = ()
+        indexes = [
+            models.Index(fields=['name'], name='storagetreedefitem_name_idx'),
+        ]
 
     
     save = partialmethod(custom_save)
@@ -6910,7 +7024,11 @@ class Taxon(model_extras.Taxon):
             models.Index(fields=['commonname'], name='TaxonCommonNameIDX'),
             models.Index(fields=['name'], name='TaxonNameIDX'),
             models.Index(fields=['fullname'], name='TaxonFullNameIDX'),
-            models.Index(fields=['environmentalprotectionstatus'], name='EPSIDX') # Avoid error: The index name 'EnvironmentalProtectionStatusIDX' cannot be longer than 30 characters.
+            models.Index(fields=['environmentalprotectionstatus'], name='EPSIDX'), # Avoid error: The index name 'EnvironmentalProtectionStatusIDX' cannot be longer than 30 characters.
+            models.Index(fields=['cultivarname'], name='taxon_cultivarname_idx'),
+            models.Index(fields=['groupnumber'], name='taxon_groupnumber_idx'),
+            models.Index(fields=['highestchildnodenumber'], name='taxon_highchildnodenumb_idx'),
+            models.Index(fields=['nodenumber'], name='taxon_nodenumber_idx'),
         ]
 
     
@@ -7187,6 +7305,9 @@ class Taxontreedef(models.Model):
     class Meta:
         db_table = 'taxontreedef'
         ordering = ()
+        indexes = [
+            models.Index(fields=['name'], name='taxontreedef_name_idx'),
+        ]
 
     
     save = partialmethod(custom_save)
@@ -7222,6 +7343,9 @@ class Taxontreedefitem(model_extras.Taxontreedefitem):
     class Meta:
         db_table = 'taxontreedefitem'
         ordering = ()
+        indexes = [
+            models.Index(fields=['name'], name='taxontreedefitem_name_idx'),
+        ]
 
     
     save = partialmethod(custom_save)
@@ -7347,6 +7471,9 @@ class Voucherrelationship(models.Model):
     class Meta:
         db_table = 'voucherrelationship'
         ordering = ()
+        indexes = [
+            models.Index(fields=['vouchernumber'], name='voucherrel_vouchernumber_idx'),
+        ]
         indexes = [
             models.Index(fields=['collectionmemberid'], name='VRXDATColMemIDX')
         ]
@@ -7647,6 +7774,9 @@ class Collectionobjecttype(models.Model):
     class Meta:
         db_table = 'collectionobjecttype'
         ordering = ()
+        indexes = [
+            models.Index(fields=['name'], name='collectionobjecttype_name_idx'),
+        ]
 
     save = partialmethod(custom_save)
 
@@ -7671,6 +7801,9 @@ class Collectionobjectgrouptype(models.Model):
     class Meta:
         db_table = 'collectionobjectgrouptype'
         ordering = ()
+        indexes = [
+            models.Index(fields=['name'], name='colobjgrouptype_name_idx'),
+        ]
     
     save = partialmethod(custom_save)
 
@@ -7710,6 +7843,10 @@ class Collectionobjectgroup(models.Model): # aka. Cog
     class Meta:
         db_table = 'collectionobjectgroup'
         ordering = ()
+        indexes = [
+            models.Index(fields=['guid'], name='collectionobjectgroup_guid_idx'),
+            models.Index(fields=['name'], name='collectionobjectgroup_name_idx'),
+        ]
 
     save = partialmethod(custom_save)
 
@@ -7968,6 +8105,9 @@ class Tectonicunittreedef(models.Model):
     class Meta:
         db_table = 'tectonicunittreedef'
         ordering = ()
+        indexes = [
+            models.Index(fields=['name'], name='tectunitdef_name_idx'),
+        ]
 
     save = partialmethod(custom_save)
 
@@ -8000,6 +8140,9 @@ class Tectonicunittreedefitem(model_extras.Tectonicunittreedefitem):
     class Meta:
         db_table = 'tectonicunittreedefitem'
         ordering = ()
+        indexes = [
+            models.Index(fields=['name'], name='tectunitdefitem_name_idx'),
+        ]
 
     save = partialmethod(custom_save)
 
@@ -8039,6 +8182,13 @@ class Tectonicunit(model_extras.Tectonicunit):
     class Meta:
         db_table = 'tectonicunit'
         ordering = ()
+        indexes = [
+            models.Index(fields=['fullname'], name='tectonicunit_fullname_idx'),
+            models.Index(fields=['guid'], name='tectonicunit_guid_idx'),
+            models.Index(fields=['highestchildnodenumber'], name='tectonicunit_highchildnumb_idx'),
+            models.Index(fields=['name'], name='tectonicunit_name_idx'),
+            models.Index(fields=['nodenumber'], name='tectonicunit_nodenumber_idx'),
+        ]
 
     save = partialmethod(custom_save)
 

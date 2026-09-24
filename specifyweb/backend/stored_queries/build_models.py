@@ -1,8 +1,38 @@
-from typing import Optional
-from specifyweb.specify.models_utils.load_datamodel import Datamodel, Table, Field, Relationship
+from typing import NamedTuple, Optional
+from specifyweb.specify.models_utils.load_datamodel import (
+    Datamodel,
+    Field,
+    ManyToMany,
+    Relationship,
+    Table,
+)
 from sqlalchemy import Table as Table_Sqlalchemy, Column, ForeignKey, types, orm, MetaData
 from sqlalchemy.dialects.mysql import BIT as mysql_bit_type
 metadata = MetaData()
+
+
+MANY_TO_MANY_TABLES = {
+    "Project_colobj": {
+        "table": "project_colobj",
+        "id_column": "ProjectColObjID",
+        "through_fields": {
+            "collectionobject": {
+                "model": "CollectionObject",
+                "column": "CollectionObjectID",
+            },
+            "project": {
+                "model": "Project",
+                "column": "ProjectID",
+            },
+        },
+    },
+}
+
+
+class ManyToManyJoinInfo(NamedTuple):
+    table: str
+    local_column: str
+    remote_column: str
 
 class BaseIdAlias:
     id_attr_name: Optional[str] = None
@@ -65,6 +95,69 @@ def make_column(flddef: Field):
                   nullable = not flddef.required)
 
 
+def make_many_to_many_table(datamodel: Datamodel, table_info):
+    columns = [Column(table_info["id_column"], types.Integer, primary_key=True)]
+
+    for through_field in table_info["through_fields"].values():
+        remote_tabledef = datamodel.get_table(through_field["model"])
+        if remote_tabledef is None:
+            return
+
+        fk_target = ".".join((remote_tabledef.table, remote_tabledef.idColumn))
+        columns.append(
+            Column(
+                through_field["column"],
+                types.Integer,
+                ForeignKey(fk_target),
+                nullable=False,
+            )
+        )
+
+    return Table_Sqlalchemy(table_info["table"], metadata, *columns)
+
+
+def get_many_to_many_join_info(
+    datamodel: Datamodel, reldef: Relationship
+) -> ManyToManyJoinInfo | None:
+    if not isinstance(reldef, ManyToMany):
+        return None
+
+    table_info = MANY_TO_MANY_TABLES.get(reldef.through_model)
+    if table_info is None:
+        return None
+
+    local_field = table_info["through_fields"].get(reldef.through_field)
+    if local_field is None:
+        return None
+
+    remote_field = None
+    related_table = datamodel.get_table(reldef.relatedModelName)
+    related_relationship = (
+        related_table.get_field(reldef.otherSideName, strict=False)
+        if related_table is not None and reldef.otherSideName
+        else None
+    )
+    remote_through_field = getattr(related_relationship, "through_field", None)
+    if remote_through_field is not None:
+        remote_field = table_info["through_fields"].get(remote_through_field)
+
+    if remote_field is None:
+        remote_fields = [
+            field
+            for through_field, field in table_info["through_fields"].items()
+            if through_field != reldef.through_field
+        ]
+        if len(remote_fields) != 1:
+            return None
+        remote_field = remote_fields[0]
+
+    return ManyToManyJoinInfo(
+        table=table_info["table"],
+        local_column=local_field["column"],
+        remote_column=remote_field["column"],
+    )
+
+
 field_type_map = {
     'text'                 : types.Text,
     'json'                 : types.JSON,
@@ -84,7 +177,15 @@ field_type_map = {
 }
 
 def make_tables(datamodel: Datamodel):
-    return {td.table: make_table(datamodel, td) for td in datamodel.tables}
+    tables = {td.table: make_table(datamodel, td) for td in datamodel.tables}
+
+    for table_info in MANY_TO_MANY_TABLES.values():
+        if table_info["table"] not in tables:
+            table = make_many_to_many_table(datamodel, table_info)
+            if table is not None:
+                tables[table_info["table"]] = table
+
+    return tables
 
 def make_classes(datamodel: Datamodel):
     def make_class(tabledef):
@@ -106,6 +207,35 @@ def map_classes(datamodel: Datamodel, tables: list[Table], classes):
         table = tables[ tabledef.table ]
 
         def make_relationship(reldef):
+            if isinstance(reldef, ManyToMany):
+                join_info = get_many_to_many_join_info(datamodel, reldef)
+                remote_tabledef = datamodel.get_table(reldef.relatedModelName)
+                if (
+                    join_info is None
+                    or remote_tabledef is None
+                    or reldef.relatedModelName not in classes
+                    or join_info.table not in tables
+                ):
+                    return
+
+                remote_class = classes[reldef.relatedModelName]
+                remote_table = tables[remote_tabledef.table]
+                secondary_table = tables[join_info.table]
+
+                return reldef.name, orm.relationship(
+                    remote_class,
+                    secondary=secondary_table,
+                    primaryjoin=(
+                        table.c[tabledef.idColumn]
+                        == secondary_table.c[join_info.local_column]
+                    ),
+                    secondaryjoin=(
+                        remote_table.c[remote_tabledef.idColumn]
+                        == secondary_table.c[join_info.remote_column]
+                    ),
+                    viewonly=True,
+                )
+
             if not hasattr(reldef, 'column') or not reldef.column or reldef.relatedModelName not in classes:
                 return
 
@@ -141,4 +271,3 @@ def map_classes(datamodel: Datamodel, tables: list[Table], classes):
 
     for tabledef in datamodel.tables:
         map_class(tabledef)
-

@@ -9,6 +9,7 @@ urlpatterns = [
     # the main business data API
     re_path(r'^specify_schema/openapi.json$', schema.openapi),
     re_path(r'^specify_schema/(?P<model>\w+)/$', schema.view),
+    re_path(r'^specify/', include('specifyweb.backend.batch_identify.urls')), # batch identify
     re_path(r'^specify/(?P<model>\w+)/(?P<id>\d+)/$', views.resource), # permissions added
     re_path(r'^specify/(?P<model>\w+)/$', views.collection), # permissions added
 

@@ -124,6 +124,33 @@ describe('useParserDefaultValue', () => {
     expect(resource.get(field.name as never)).toBe(true);
   });
 
+  test('Checkbox parser with default false sets value to false', () => {
+    const resource = new tables.CollectingEventAttribute.Resource();
+    const field =
+      tables.CollectingEventAttribute.strictGetLiteralField('yesno1');
+    expect(resource.get(field.name as never)).toBeUndefined();
+    const parser: Parser = {
+      type: 'checkbox',
+      value: false,
+    };
+    renderHook(() => useParserDefaultValue(resource, field, parser));
+
+    expect(resource.get(field.name as never)).toBe(false);
+  });
+
+  test('Checkbox without explicit default does not set value', () => {
+    const resource = new tables.CollectingEventAttribute.Resource();
+    const field =
+      tables.CollectingEventAttribute.strictGetLiteralField('yesno1');
+    expect(resource.get(field.name as never)).toBeUndefined();
+    const parser: Parser = {
+      type: 'checkbox',
+    };
+    renderHook(() => useParserDefaultValue(resource, field, parser));
+
+    expect(resource.get(field.name as never)).toBeUndefined();
+  });
+
   test('Date parser sets value', () => {
     const resource = new tables.CollectingTrip.Resource();
     const field = tables.CollectingTrip.strictGetLiteralField('date1');

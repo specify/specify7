@@ -10,17 +10,20 @@ import type { BrokerRecord } from './fetchers';
 import { extractBrokerField } from './fetchers';
 import type { BrokerData } from './Overlay';
 import { NoBrokerData } from './Overlay';
+import { UnavailableBrokerData } from './Overlay';
 import { SpecifyNetworkResponse } from './Response';
 
 export function SpecifyNetworkOccurrence({
-  data: { occurrence },
+  data: { occurrence, occurrenceUnavailable },
   onClose: handleClose,
 }: {
   readonly data: BrokerData;
   readonly onClose: () => void;
 }): JSX.Element {
   return typeof occurrence === 'object' ? (
-    occurrence.length === 0 ? (
+    occurrenceUnavailable ? (
+      <UnavailableBrokerData onClose={handleClose} />
+    ) : occurrence.length === 0 ? (
       <NoBrokerData onClose={handleClose} />
     ) : (
       <Dialog
@@ -98,7 +101,7 @@ function OccurrenceTable({
 }
 
 export function SpecifyNetworkSpecies({
-  data: { species, speciesName },
+  data: { species, speciesName, speciesUnavailable },
   onClose: handleClose,
 }: {
   readonly data: BrokerData;
@@ -106,6 +109,8 @@ export function SpecifyNetworkSpecies({
 }): JSX.Element {
   return species === undefined ? (
     <LoadingScreen />
+  ) : speciesUnavailable ? (
+    <UnavailableBrokerData onClose={handleClose} />
   ) : species.length === 0 ? (
     <NoBrokerData onClose={handleClose} />
   ) : (

@@ -156,8 +156,7 @@ export const resources: RA<ResourceConfig> = [
     resourceName: 'institution',
     label: setupToolText.institution(),
     description: setupToolText.institutionDescription(),
-    documentationUrl:
-      'https://discourse.specifysoftware.org/t/guided-setup/3234',
+    documentationUrl: 'https://speciforum.org/t/guided-setup/3234',
     fields: [
       {
         name: 'name',

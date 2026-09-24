@@ -35,10 +35,10 @@ export const operationPolicies = {
   '/tree/edit/storage': [
     'merge',
     'move',
+    'bulk_move',
     'synonymize',
     'desynonymize',
     'repair',
-    'bulk_move',
   ],
   '/tree/edit/geologictimeperiod': [
     'merge',
@@ -65,6 +65,7 @@ export const operationPolicies = {
     'execute',
     'export_csv',
     'export_kml',
+    'export_to_web_portal',
     'create_recordset',
   ],
   '/workbench/dataset': [

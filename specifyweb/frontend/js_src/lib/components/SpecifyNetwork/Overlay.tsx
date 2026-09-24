@@ -17,7 +17,9 @@ import { SpecifyNetworkOccurrence, SpecifyNetworkSpecies } from './Table';
 
 export type BrokerData = {
   readonly occurrence: RA<BrokerRecord> | undefined;
+  readonly occurrenceUnavailable: boolean;
   readonly species: RA<BrokerRecord> | undefined;
+  readonly speciesUnavailable: boolean;
   readonly taxonId: number | false | undefined;
   readonly speciesName: LocalizedString | undefined;
 };
@@ -55,7 +57,8 @@ export function useBrokerData(
   guid: string | undefined,
   taxonId: number | false | undefined
 ): BrokerData {
-  const occurrence = useOccurrence(guid);
+  const occurrenceResult = useOccurrence(guid);
+  const occurrence = occurrenceResult?.records;
   const occurrenceSpeciesName = React.useMemo(
     () =>
       // Prefer the species name from an aggregator over local as it is more trustworthy
@@ -66,7 +69,8 @@ export function useBrokerData(
           localSpecies,
     [occurrence, localSpecies]
   );
-  const species = useSpecies(occurrenceSpeciesName);
+  const speciesResult = useSpecies(occurrenceSpeciesName);
+  const species = speciesResult?.records;
   const speciesName = React.useMemo(
     () =>
       (typeof species === 'object'
@@ -78,12 +82,22 @@ export function useBrokerData(
   return React.useMemo(
     () => ({
       occurrence,
+      occurrenceUnavailable: occurrenceResult?.isUnavailable ?? false,
       species,
+      speciesUnavailable: speciesResult?.isUnavailable ?? false,
       speciesName,
       taxonId,
       guid,
     }),
-    [occurrence, species, speciesName, taxonId, guid]
+    [
+      occurrence,
+      occurrenceResult?.isUnavailable,
+      species,
+      speciesResult?.isUnavailable,
+      speciesName,
+      taxonId,
+      guid,
+    ]
   );
 }
 
@@ -120,6 +134,22 @@ export function NoBrokerData({
       onClose={handleClose}
     >
       {specifyNetworkText.noDataErrorDescription()}
+    </Dialog>
+  );
+}
+
+export function UnavailableBrokerData({
+  onClose: handleClose,
+}: {
+  readonly onClose: () => void;
+}): JSX.Element {
+  return (
+    <Dialog
+      buttons={commonText.close()}
+      header={specifyNetworkText.brokerUnavailable()}
+      onClose={handleClose}
+    >
+      {specifyNetworkText.brokerUnavailableDescription()}
     </Dialog>
   );
 }
