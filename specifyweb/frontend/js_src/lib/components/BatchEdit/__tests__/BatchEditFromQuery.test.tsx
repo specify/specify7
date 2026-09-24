@@ -68,7 +68,10 @@ function render({
     void promise;
   };
   return mount(
-    <MemoryRouter initialEntries={['/']}>
+    <MemoryRouter 
+      future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
+      initialEntries={['/']}
+    >
       <UnloadProtectsContext.Provider value={[]}>
         <LoadingContext.Provider value={handleLoading}>
           <Routes>
