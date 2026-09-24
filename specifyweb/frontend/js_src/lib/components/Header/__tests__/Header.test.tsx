@@ -37,10 +37,7 @@ overrideAjax('/attachment_gw/health/', '', {
 function TestHeaderItems(): JSX.Element {
   return (
     <Router.MemoryRouter
-      future={{
-        v7_relativeSplatPath: true,
-        v7_startTransition: true,
-      }}
+	  useTransitions={true}
     >
       <SetMenuContext.Provider value={jest.fn()}>
         <HeaderItems

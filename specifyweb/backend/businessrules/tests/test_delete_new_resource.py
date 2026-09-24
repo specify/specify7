@@ -304,3 +304,20 @@ class TestDeleteObjects(ApiTests):
             models.Deaccession.objects.filter(id=deaccession_id).count(),
             0,
         )
+
+    def test_delete_recordset(self):
+        recordset = models.Recordset.objects.create (
+            name="Test record set",
+            collectionmemberid =self.collection.id,
+            specifyuser=self.specifyuser,
+            dbtableid=models.Collectionobject.specify_model.tableId,
+            type=0,
+        )
+        recordset_id = recordset.id
+
+        recordset.delete()
+
+        self.assertEqual(
+            models.Recordset.objects.filter(id=recordset_id).count(),
+            0,
+        )

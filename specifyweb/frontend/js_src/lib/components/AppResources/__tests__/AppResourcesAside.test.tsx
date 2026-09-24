@@ -161,8 +161,8 @@ describe('AppResourcesAside (expanded case)', () => {
     const { asFragment: asFragmentAllExpanded, unmount: unmountExpandedll } =
       mount(
         <Router.MemoryRouter
-          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
           initialEntries={['/specify/resources/']}
+		  useTransitions={true}
         >
           <AppResourcesAside
             conformations={[_conformations, setConformations]}

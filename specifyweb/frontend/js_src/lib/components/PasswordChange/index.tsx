@@ -54,7 +54,7 @@ function ChangePassword({
 
   return (
     <SplashScreen>
-      <Form method="post">
+      <Form method="POST">
         <input
           name="csrfmiddlewaretoken"
           type="hidden"

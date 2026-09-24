@@ -121,7 +121,8 @@ export const batchEditText = createDictionary({
   },
   missingRanksInQuery: {
     'en-us': 'Query requires additional ranks for batch editing',
-    'de-ch': 'Für die Stapelbearbeitung sind zusätzliche Ränge erforderlich.',
+    'de-ch':
+      'Für die Stapelbearbeitung sind zusätzliche Rangfolgen erforderlich.',
     'es-es':
       'La consulta requiere rangos adicionales para la edición por lotes.',
     'fr-fr':
@@ -274,7 +275,7 @@ export const batchEditText = createDictionary({
     'es-es': 'Comprometerse',
     'fr-fr': 'Téléverser',
     'pt-br': 'Comprometer-se',
-    'ru-ru': 'Пожертвование',
+    'ru-ru': 'Совершение',
     'uk-ua': 'Здійснення',
     'hr-hr': 'Počinjanje',
     nb: 'Bekreft',
@@ -482,7 +483,7 @@ export const batchEditText = createDictionary({
     'es-es': 'Facilitar las relaciones',
     'fr-fr': 'Activer les relations',
     'pt-br': 'Promover relacionamentos',
-    'ru-ru': 'Обеспечьте развитие отношений',
+    'ru-ru': 'Развивайте отношения',
     'uk-ua': "Увімкнути зв'язки",
     'hr-hr': 'Omogući odnose',
     nb: 'Aktiver relasjoner',
@@ -499,7 +500,7 @@ export const batchEditText = createDictionary({
     'pt-br':
       'Permite a edição em lote de relacionamentos da tabela base. O rollback é desativado quando os relacionamentos estão ativados.',
     'ru-ru':
-      'Позволяет пакетно редактировать связи в базовой таблице. Откат отключен, если связи включены.',
+      'Позволяет пакетно редактировать связи базовой таблицы. Откат отключен, если связи включены.',
     'uk-ua':
       "Дозволяє пакетне редагування зв'язків базової таблиці. Відкат вимкнено, якщо зв'язки ввімкнено.",
     'hr-hr':

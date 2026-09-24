@@ -124,8 +124,8 @@ export function TestComponentWrapperRouter({
 }) {
   return (
     <Router.MemoryRouter
-      future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
       initialEntries={initialEntries}
+	  useTransitions={true}
     >
       <Router.Routes>
         <Router.Route element={<Router.Outlet context={context} />} path="/">

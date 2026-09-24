@@ -533,7 +533,7 @@ user_roles = openapi(schema={
 
 def serialize_role(role: models.Role | models.LibraryRole) -> dict:
     policies = defaultdict(list)
-    for p in role.policies.all():
+    for p in role.policies.all().iterator(chunk_size=2000):
         policies[p.resource].append(p.action)
 
     return {

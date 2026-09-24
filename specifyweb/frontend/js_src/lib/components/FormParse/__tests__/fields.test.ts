@@ -147,6 +147,21 @@ describe('parseFormField', () => {
       label: reportsText.generateLabelOnSave(),
     }));
 
+  // [FormParse] Recognize generate invoice as print on save
+  test('recognizes generate invoice checkbox', () => {
+    const result = parse(
+      '<cell uiType="checkbox" ignore="true" name="generateInvoice" />',
+      {}
+    );
+    expect(result).toEqual({
+      defaultValue: undefined,
+      isReadOnly: false,
+      type: 'Checkbox',
+      printOnSave: true,
+      label: reportsText.generateLabelOnSave(),
+    });
+  });
+
   test('Textarea', () =>
     expect(
       parse('<cell uiType="textarea" ignore="true" default="a" />', {})

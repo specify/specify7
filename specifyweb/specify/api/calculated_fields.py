@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 def calculate_totals_deaccession(obj, Model, related_field_name):
     total_preps = 0
     total_items = 0
-    for prep in Model.objects.filter(deaccession=obj):
+    for prep in Model.objects.filter(deaccession=obj).iterator(chunk_size=2000):
         counts = calc_prep_item_count(prep, related_field_name, {})
         total_preps += counts["totalPreps"]
         total_items += counts["totalItems"]
