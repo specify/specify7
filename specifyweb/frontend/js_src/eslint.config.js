@@ -818,9 +818,11 @@ _    * While overusing non-null assertions can be harmful, there are
       'no-console': OFF,
     },
   },
-  ...compat.config(jest.configs.recommended),
-  ...compat.config(jest.configs.style),
-  ...compat.config(jestDom.configs.recommended),
+  ...[
+    ...compat.config(jest.configs.recommended),
+    ...compat.config(jest.configs.style),
+    ...compat.config(jestDom.configs.recommended),
+  ].map((config) => ({...config, files:testFiles})),
   {
     files: testFiles,
     rules: testRules,
@@ -850,7 +852,9 @@ export default [
   ...base_config,
 
   ...compat.config(accessibility.configs.strict),
-  ...compat.config(testingLibrary.configs.react),
+  ...[
+    ...compat.config(testingLibrary.configs.react),
+  ].map((config) => ({...config, files:testFiles}), testFiles),
   {
     rules: {
       'react/prop-types': OFF,
