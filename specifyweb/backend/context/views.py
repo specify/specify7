@@ -541,23 +541,27 @@ def _schema_import_string(operations, parent, parent_field, text, language, coun
     country_filter = Q(country__isnull=True) | Q(country='')
     if country is not None:
         country_filter = Q(country__iexact=country)
-    string = Splocaleitemstr.objects.filter(
-        **{parent_field: parent, 'language': language}
-    ).filter(country_filter).filter(
-        Q(variant='') | Q(variant__isnull=True)
-    ).order_by('-id').first()
-    if string is None:
-        operations.append((
-            'POST', Splocaleitemstr, None,
-            {
-                'text': text,
-                'language': language,
-                'country': country,
-                parent_field: uri_for_model(parent.__class__, parent.id),
-            },
-        ))
-    elif string.text != text:
-        operations.append(('PUT', Splocaleitemstr, string, {'text': text}))
+    with transaction.atomic():
+        locked_parent = parent.__class__.objects.select_for_update().get(pk=parent.pk)
+        string = Splocaleitemstr.objects.filter(
+            **{parent_field: locked_parent, 'language': language}
+        ).filter(country_filter).filter(
+            Q(variant='') | Q(variant__isnull=True)
+        ).order_by('-id').first()
+        if string is None:
+            operations.append((
+                'POST', Splocaleitemstr, None,
+                {
+                    'text': text,
+                    'language': language,
+                    'country': country,
+                    parent_field: uri_for_model(
+                        locked_parent.__class__, locked_parent.id
+                    ),
+                },
+            ))
+        elif string.text != text:
+            operations.append(('PUT', Splocaleitemstr, string, {'text': text}))
 
 
 def _schema_import_operations(collection, schema, language, references=None):
@@ -628,43 +632,41 @@ def schema_localization_import(request):
             r'[A-Za-z]{2}(?:-[A-Za-z]{2})?', language
         ):
             raise ValueError
-        operations = _schema_import_operations(
-            request.specify_collection,
-            schema,
-            language,
-            {
-                'format': _schema_import_resource_names(
-                    request.specify_collection, request.specify_user,
-                    'DataObjFormatters', './/format'
-                ),
-                'picklistname': {
-                    name.lower() for name in Picklist.objects.filter(
-                        collection=request.specify_collection
-                    ).values_list('name', flat=True)
-                },
-                'weblinkname': _schema_import_resource_names(
-                    request.specify_collection, request.specify_user,
-                    'WebLinks', './/weblinkdef/name'
-                ),
+        references = {
+            'format': _schema_import_resource_names(
+                request.specify_collection, request.specify_user,
+                'DataObjFormatters', './/format'
+            ),
+            'picklistname': {
+                name.lower() for name in Picklist.objects.filter(
+                    collection=request.specify_collection
+                ).values_list('name', flat=True)
             },
-        )
+            'weblinkname': _schema_import_resource_names(
+                request.specify_collection, request.specify_user,
+                'WebLinks', './/weblinkdef/name'
+            ),
+        }
+
+        from specifyweb.specify.api.crud import post_resource, put_resource
+
+        with transaction.atomic():
+            operations = _schema_import_operations(
+                request.specify_collection, schema, language, references
+            )
+            for method, model, resource, data in operations:
+                if method == 'PUT':
+                    put_resource(
+                        request.specify_collection, request.specify_user_agent,
+                        model.__name__, resource.id, resource.version, data
+                    )
+                else:
+                    post_resource(
+                        request.specify_collection, request.specify_user_agent,
+                        model.__name__, data
+                    )
     except (AttributeError, KeyError, TypeError, ValueError, json.JSONDecodeError):
         return HttpResponseBadRequest()
-
-    from specifyweb.specify.api.crud import post_resource, put_resource
-
-    with transaction.atomic():
-        for method, model, resource, data in operations:
-            if method == 'PUT':
-                put_resource(
-                    request.specify_collection, request.specify_user_agent,
-                    model.__name__, resource.id, resource.version, data
-                )
-            else:
-                post_resource(
-                    request.specify_collection, request.specify_user_agent,
-                    model.__name__, data
-                )
     return JsonResponse({'updated': len(operations)})
 
 view_parameters_schema = [

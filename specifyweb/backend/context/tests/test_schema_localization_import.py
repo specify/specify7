@@ -1,9 +1,14 @@
 import json
+import threading
+from concurrent.futures import ThreadPoolExecutor
+from unittest.mock import patch
 
+from django.db import close_old_connections
 from django.test import Client
 
+from specifyweb.backend.context.views import _schema_import_string
 from specifyweb.specify import models
-from specifyweb.specify.tests.test_api import ApiTests
+from specifyweb.specify.tests.test_api import ApiTests, ApiTransactionTests
 
 
 class SchemaLocalizationImportTests(ApiTests):
@@ -173,3 +178,59 @@ class SchemaLocalizationImportTests(ApiTests):
         )
 
         self.assertEqual(response.status_code, 400)
+
+
+class ConcurrentSchemaLocalizationImportTests(ApiTransactionTests):
+    def setUp(self):
+        super().setUp()
+        self.container = models.Splocalecontainer.objects.create(
+            discipline=self.discipline, name='Accession', schematype=0
+        )
+        self.clients = [self._make_client(), self._make_client()]
+
+    def _make_client(self):
+        client = Client()
+        client.force_login(self.specifyuser)
+        client.cookies['collection'] = str(self.collection.id)
+        return client
+
+    def test_concurrent_imports_do_not_create_duplicate_strings(self):
+        payload = json.dumps({
+            'language': 'en-US',
+            'schema': {'accession': {'name': 'Imported Accession'}},
+        })
+        barrier = threading.Barrier(2)
+
+        def synchronize_import(*args):
+            _schema_import_string(*args)
+            if args[3] is not None:
+                try:
+                    barrier.wait(timeout=1)
+                except threading.BrokenBarrierError:
+                    pass
+
+        def import_schema(client):
+            close_old_connections()
+            try:
+                return client.post(
+                    '/context/schema_localization_import.json',
+                    data=payload,
+                    content_type='application/json',
+                )
+            finally:
+                close_old_connections()
+
+        with patch(
+            'specifyweb.backend.context.views._schema_import_string',
+            side_effect=synchronize_import,
+        ), ThreadPoolExecutor(max_workers=2) as executor:
+            responses = list(executor.map(import_schema, self.clients))
+
+        self.assertEqual([response.status_code for response in responses], [200, 200])
+        strings = models.Splocaleitemstr.objects.filter(
+            containername=self.container,
+            language='en',
+            country__iexact='us',
+        ).filter(variant__isnull=True)
+        self.assertEqual(strings.count(), 1)
+        self.assertEqual(strings.get().text, 'Imported Accession')
