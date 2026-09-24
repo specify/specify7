@@ -45,7 +45,7 @@ def get_cog_consolidated_preps(cog: Collectionobjectgroup) -> list[Preparation]:
     # For each child cog, recursively get the consolidated preparations
     child_cogs = Collectionobjectgroupjoin.objects.filter(
         parentcog=cog, childcog__isnull=False
-    ).values_list("childcog", flat=True)
+    ).values_list("childcog", flat=True).iterator(chunk_size=2000)
     consolidated_preps = []
     for child_cog_id in child_cogs:
         child_cog = Collectionobjectgroup.objects.filter(
@@ -56,7 +56,7 @@ def get_cog_consolidated_preps(cog: Collectionobjectgroup) -> list[Preparation]:
     # Get the child CollectionObjects
     collection_objects = Collectionobjectgroupjoin.objects.filter(
         parentcog=cog, childco__isnull=False
-    ).values_list("childco", flat=True)
+    ).values_list("childco", flat=True).iterator(chunk_size=2000)
 
     # For each CollectionObject, get the preparations
     for co in collection_objects:
