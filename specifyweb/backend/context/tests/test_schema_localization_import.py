@@ -261,6 +261,8 @@ class ConcurrentSchemaLocalizationImportTests(ApiTransactionTests):
                 try:
                     barrier.wait(timeout=1)
                 except threading.BrokenBarrierError:
+                    # Best-effort synchronization for concurrency overlap in this test;
+                    # if one worker times out or exits early, continue without failing here.
                     pass
 
         def import_schema(client):
