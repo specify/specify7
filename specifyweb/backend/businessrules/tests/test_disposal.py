@@ -166,5 +166,49 @@ class DisposalTests(ApiTests):
             'Agent',
         )
 
+    def test_add_multiple_agents_and_preps_to_disposal(self):
+        self._create_prep_type()
+        first_prep = self._create_prep(self.collectionobjects[0], None)
+        second_prep = self._create_prep(self.collectionobjects[1], None)
+
+        second_agent = models.Agent.objects.create(
+            agenttype=0,
+            firstname='Second',
+            lastname='Disposal Agent',
+            division=self.division,
+        )
+
+        disposal = models.Disposal.objects.create(
+            disposalnumber='DISPOSAL-MULTIPLE-001',
+        )
+
+        disposal.disposalagents.create(
+            agent=self.agent,
+            role='Agent',
+        )
+        disposal.disposalagents.create(
+            agent=second_agent,
+            role='Agent',
+        )
+
+        disposal.disposalpreparations.create(
+            preparation=first_prep,
+        )
+        disposal.disposalpreparations.create(
+            preparation=second_prep,
+        )
+
+        fetched_disposal = models.Disposal.objects.get(id=disposal.id)
+
+        self.assertEqual(
+            fetched_disposal.disposalagents.count(),
+            2,
+        )
+        self.assertEqual(
+            fetched_disposal.disposalpreparations.count(),
+            2,
+        )
+
+
 
 
