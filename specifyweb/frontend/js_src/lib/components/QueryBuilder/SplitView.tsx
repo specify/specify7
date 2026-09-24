@@ -73,14 +73,16 @@ export function SplitView({
 }): JSX.Element {
   return (
     <Splitter
-      className="h-full max-h-full min-h-0 min-w-0 w-full flex-1 overflow-hidden"
+      className={`h-full max-h-full min-h-0 min-w-0 w-full flex-1 overflow-hidden ${
+        isSplit ? '' : '[&_.handle-bar]:hidden'
+      }`}
       position={isHorizontal ? 'vertical' : 'horizontal'}
-      primaryPaneHeight="50%"
-      primaryPaneMaxHeight="80%"
-      primaryPaneMaxWidth="80%"
+      primaryPaneHeight={isSplit ? '50%' : '100%'}
+      primaryPaneMaxHeight={isSplit ? '80%' : '100%'}
+      primaryPaneMaxWidth={isSplit ? '80%' : '100%'}
       primaryPaneMinHeight={1}
       primaryPaneMinWidth={1}
-      primaryPaneWidth="50%"
+      primaryPaneWidth={isSplit ? '50%' : '100%'}
     >
       <div
         className="flex h-full min-h-0 min-w-0 overflow-auto"
