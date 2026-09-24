@@ -123,4 +123,48 @@ class DisposalTests(ApiTests):
             'Agent',
         )
 
+    def test_create_new_agent_for_disposal(self):
+        disposal = models.Disposal.objects.create(
+            disposalnumber='DISPOSAL-NEW-AGENT-001',
+        )
+
+        new_agent = models.Agent.objects.create(
+            agenttype=0,
+            firstname='New',
+            lastname='Disposal Agent',
+            division=self.division,
+        )
+
+        disposal_agent = disposal.disposalagents.create(
+            agent=new_agent,
+            role='Agent',
+        )
+
+        fetched_agent = models.Agent.objects.get(id=new_agent.id)
+        fetched_disposal_agent = models.Disposalagent.objects.get(
+            id=disposal_agent.id,
+        )
+
+        self.assertEqual(
+            fetched_agent.firstname,
+            'New',
+        )
+        self.assertEqual(
+            fetched_agent.lastname,
+            'Disposal Agent',
+        )
+        self.assertEqual(
+            fetched_disposal_agent.disposal.id,
+            disposal.id,
+        )
+        self.assertEqual(
+            fetched_disposal_agent.agent.id,
+            new_agent.id,
+        )
+        self.assertEqual(
+            fetched_disposal_agent.role,
+            'Agent',
+        )
+
+
 
