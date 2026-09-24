@@ -304,3 +304,68 @@ class FormatterAggregatorTests(SQLAlchemySetup):
             query, expr = object_formatter.objformat(query, models.AccessionAgent, None)
             query = query.query.add_columns(expr)
             self.assertCountEqual(list(query), [('text 1 value for this accession',), (' text 2 value for this accession role2',)])
+
+    def test_null_formatted_field_suppresses_separator(self):
+        """Separator on a formatted (relationship) field must be suppressed
+        when the relationship is null.  Regression test for issue #6406."""
+        formatter_def = """
+        <formatters>
+          <format
+            name="Accession"
+            title="Accession"
+            class="edu.ku.brc.specify.datamodel.Accession"
+            default="true"
+          >
+            <switch single="true">
+              <fields>
+                <field>accessionNumber</field>
+              </fields>
+            </switch>
+          </format>
+          <format
+            name="AccessionAgent"
+            title="AccessionAgent"
+            class="edu.ku.brc.specify.datamodel.AccessionAgent"
+            default="true"
+          >
+            <switch single="true">
+              <fields>
+                <field>role</field>
+                <field sep=" -Acc: " formatter="Accession">accession</field>
+              </fields>
+            </switch>
+          </format>
+        </formatters>
+        """
+        object_formatter = self.get_formatter(formatter_def)
+
+        accession_1 = spmodels.Accession.objects.create(
+            accessionnumber='ACC-001',
+            division=self.division,
+        )
+
+        # AccessionAgent WITH an accession -- separator should appear
+        spmodels.Accessionagent.objects.create(
+            agent=self.agent,
+            role='roleA',
+            accession=accession_1,
+        )
+        # AccessionAgent WITHOUT an accession -- separator must NOT appear
+        spmodels.Accessionagent.objects.create(
+            agent=self.agent,
+            role='roleB',
+            accession=None,
+        )
+
+        with FormatterAggregatorTests.test_session_context() as session:
+            query = QueryConstruct(
+                collection=self.collection,
+                objectformatter=object_formatter,
+                query=session.query()
+            )
+            query, expr = object_formatter.objformat(query, models.AccessionAgent, None)
+            query = query.query.add_columns(expr)
+            results = sorted([row[0] for row in query])
+            # With accession: "roleA -Acc: ACC-001"
+            # Without accession: "roleB" (no separator leaking)
+            self.assertEqual(results, ['roleA -Acc: ACC-001', 'roleB'])
