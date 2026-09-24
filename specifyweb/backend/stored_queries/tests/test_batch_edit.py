@@ -6,6 +6,8 @@ from specifyweb.backend.stored_queries.batch_edit import (
     BatchEditProps,
     RowPlanMap,
     run_batch_edit_query,
+    naive_field_format,
+    _get_date_part_field_name,
 )
 
 from specifyweb.backend.stored_queries.queryfield import fields_from_json
@@ -2342,4 +2344,154 @@ class QueryConstructionTests(SQLAlchemySetup):
         (headers, rows, packs, plan, order) = run_batch_edit_query(props)
 
         self.assertEqual(headers, expected_captions)
-        
+
+
+class DateFieldLabelTests(SQLAlchemySetup):
+    """Tests for issue #6808: date field components must get distinct labels."""
+
+    def test_naive_field_format_includes_date_part(self):
+        """naive_field_format must include (Day), (Month), (Year) for date parts."""
+        base_table = "collectionobject"
+
+        full_date = QueryFieldSpec.from_path([base_table, "catalogedDate"])
+        day = full_date._replace(date_part="Day")
+        month = full_date._replace(date_part="Month")
+        year = full_date._replace(date_part="Year")
+
+        self.assertEqual(
+            naive_field_format(full_date),
+            "CollectionObject catalogedDate",
+        )
+        self.assertEqual(
+            naive_field_format(day),
+            "CollectionObject catalogedDate (Day)",
+        )
+        self.assertEqual(
+            naive_field_format(month),
+            "CollectionObject catalogedDate (Month)",
+        )
+        self.assertEqual(
+            naive_field_format(year),
+            "CollectionObject catalogedDate (Year)",
+        )
+
+    def test_get_date_part_field_name_distinguishes_parts(self):
+        """_get_date_part_field_name returns distinct keys per date component."""
+        base_table = "collectionobject"
+
+        full_date_spec = QueryFieldSpec.from_path([base_table, "catalogedDate"])
+        day_spec = full_date_spec._replace(date_part="Day")
+        month_spec = full_date_spec._replace(date_part="Month")
+        year_spec = full_date_spec._replace(date_part="Year")
+
+        full_date = BatchEditPack._query_field(full_date_spec, 0)
+        day = BatchEditPack._query_field(day_spec, 0)
+        month = BatchEditPack._query_field(month_spec, 0)
+        year = BatchEditPack._query_field(year_spec, 0)
+
+        names = [
+            _get_date_part_field_name(full_date),
+            _get_date_part_field_name(day),
+            _get_date_part_field_name(month),
+            _get_date_part_field_name(year),
+        ]
+
+        self.assertEqual(names[0], "catalogedDate__Full Date")
+        self.assertEqual(names[1], "catalogedDate__Day")
+        self.assertEqual(names[2], "catalogedDate__Month")
+        self.assertEqual(names[3], "catalogedDate__Year")
+
+        # All names must be distinct
+        self.assertEqual(len(set(names)), 4)
+
+    @patch(OBJ_FORMATTER_PATH, new=fake_obj_formatter)
+    def test_date_field_headers_without_captions(self):
+        """Without captions, date field headers must include part suffix (#6808)."""
+        base_table = "collectionobject"
+
+        full_date_spec = QueryFieldSpec.from_path([base_table, "catalogedDate"])
+        day_spec = full_date_spec._replace(date_part="Day")
+        month_spec = full_date_spec._replace(date_part="Month")
+        year_spec = full_date_spec._replace(date_part="Year")
+
+        query_fields = [
+            BatchEditPack._query_field(full_date_spec, 0),
+            BatchEditPack._query_field(day_spec, 0),
+            BatchEditPack._query_field(month_spec, 0),
+            BatchEditPack._query_field(year_spec, 0),
+        ]
+
+        props = BatchEditProps(
+            collection=self.collection,
+            user=self.specifyuser,
+            contexttableid=datamodel.get_table_strict(base_table).tableId,
+            fields=query_fields,
+            session_maker=DateFieldLabelTests.test_session_context,
+            captions=None,
+            limit=None,
+            recordsetid=None,
+            omit_relationships=False,
+            treedefsfilter=None,
+        )
+
+        (headers, rows, packs, plan, order) = run_batch_edit_query(props)
+
+        # Each date component must have a distinct header with the correct suffix
+        self.assertIn("CollectionObject catalogedDate", headers)
+        self.assertIn("CollectionObject catalogedDate (Day)", headers)
+        self.assertIn("CollectionObject catalogedDate (Month)", headers)
+        self.assertIn("CollectionObject catalogedDate (Year)", headers)
+
+        # No duplicate headers
+        date_headers = [h for h in headers if "catalogedDate" in h]
+        self.assertEqual(len(date_headers), len(set(date_headers)))
+
+    @patch(OBJ_FORMATTER_PATH, new=fake_obj_formatter)
+    def test_date_field_headers_with_captions(self):
+        """With captions, date field headers must use the correct caption per component (#6808)."""
+        base_table = "collectionobject"
+
+        full_date_spec = QueryFieldSpec.from_path([base_table, "catalogedDate"])
+        day_spec = full_date_spec._replace(date_part="Day")
+        month_spec = full_date_spec._replace(date_part="Month")
+        year_spec = full_date_spec._replace(date_part="Year")
+
+        query_fields = [
+            BatchEditPack._query_field(full_date_spec, 0),
+            BatchEditPack._query_field(day_spec, 0),
+            BatchEditPack._query_field(month_spec, 0),
+            BatchEditPack._query_field(year_spec, 0),
+        ]
+
+        captions = [
+            "Cataloged Date",
+            "Cataloged Date (Day)",
+            "Cataloged Date (Month)",
+            "Cataloged Date (Year)",
+        ]
+
+        props = BatchEditProps(
+            collection=self.collection,
+            user=self.specifyuser,
+            contexttableid=datamodel.get_table_strict(base_table).tableId,
+            fields=query_fields,
+            session_maker=DateFieldLabelTests.test_session_context,
+            captions=captions,
+            limit=None,
+            recordsetid=None,
+            omit_relationships=False,
+            treedefsfilter=None,
+        )
+
+        (headers, rows, packs, plan, order) = run_batch_edit_query(props)
+
+        # Each date component must use its caption, not all showing "(Year)"
+        self.assertIn("Cataloged Date", headers)
+        self.assertIn("Cataloged Date (Day)", headers)
+        self.assertIn("Cataloged Date (Month)", headers)
+        self.assertIn("Cataloged Date (Year)", headers)
+
+        # No duplicate headers
+        date_headers = [h for h in headers if "Cataloged Date" in h]
+        self.assertEqual(len(date_headers), len(set(date_headers)))
+
