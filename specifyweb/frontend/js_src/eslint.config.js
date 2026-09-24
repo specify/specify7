@@ -21,13 +21,8 @@ import simpleImportSort from 'eslint-plugin-simple-import-sort';
 import sonarjs from 'eslint-plugin-sonarjs';
 import testingLibrary from 'eslint-plugin-testing-library';
 import tsdoc from 'eslint-plugin-tsdoc';
-import typescriptEslint from '@typescript-eslint/eslint-plugin';
 import typescript from '@typescript-eslint/eslint-plugin';
-import typescriptRecommended from '@typescript-eslint/eslint-plugin';
-import typescriptRecommendedTyped from '@typescript-eslint/eslint-plugin';
-import typescriptStrict from '@typescript-eslint/eslint-plugin';
 import unicorn  from 'eslint-plugin-unicorn';
-import eslintPluginUnicorn from 'eslint-plugin-unicorn';
 
 const OFF = 'off';
 const WARN = 'warn';
@@ -742,7 +737,6 @@ _    * While overusing non-null assertions can be harmful, there are
       'regexp/no-trivially-nested-quantifier': ERROR,
       'regexp/no-unused-capturing-group': ERROR,
       'regexp/no-useless-flag': ERROR,
-      'regexp/no-useless-lazy': ERROR,
       'regexp/no-useless-lazy': ERROR,
       'regexp/no-useless-quantifier': ERROR,
       'regexp/no-useless-range': ERROR,
