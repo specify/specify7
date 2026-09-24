@@ -13,8 +13,19 @@ class BatchImageTests(ApiTests):
                 tableid=1,
             )
         ]
+        self.datasetattachment = [
+             models.Spdatasetattachment.objects.create(
+                  collectionmemberid=0,
+                  ordinal=0,
+                  attachment= attachment,
+                  spdataset=spdataset,
 
-    def test_add_attachment(self):
+
+
+             )
+        ]
+
+    def test_validate_attachment(self):
             attachment = post_resource(
                 self.collection,
                 self.agent,
