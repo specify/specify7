@@ -70,10 +70,7 @@ afterEach(() => {
 test('selects multiple image files', async () => {
   const { container, getByRole, user } = mount(
     <Router.MemoryRouter
-      future={{
-        v7_relativeSplatPath: true,
-        v7_startTransition: true,
-      }}
+      useTransitions={true}
     >
       <SetMenuContext.Provider value={jest.fn()}>
         <WbImportAttachmentsView />
@@ -109,10 +106,7 @@ test('selects multiple image files', async () => {
 test('selects different image file types', async () => {
   const { container, getByRole, user } = mount(
     <Router.MemoryRouter
-      future={{
-        v7_relativeSplatPath: true,
-        v7_startTransition: true,
-      }}
+	  useTransitions={true}
     >
       <SetMenuContext.Provider value={jest.fn()}>
         <WbImportAttachmentsView />
@@ -162,10 +156,7 @@ test('imports selected attachment files', async () => {
   const { container, findByText, getByRole, user } = mount(
     <Router.MemoryRouter
       initialEntries={['/']}
-      future={{
-        v7_relativeSplatPath: true,
-        v7_startTransition: true,
-      }}
+	  useTransitions={true}
     >
       <UnloadProtectsContext.Provider value={[]}>
         <Router.Routes>
