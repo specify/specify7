@@ -516,8 +516,12 @@ def _schema_import_values(data, fields, references):
         key = key.lower()
         if key not in fields:
             continue
+SCHEMA_IMPORT_NULLABLE_BOOLEAN_FIELDS = {'isrequired'}
+
         if key in SCHEMA_IMPORT_BOOLEAN_FIELDS:
-            if type(value) is not bool:
+            if type(value) is not bool and not (
+                value is None and key in SCHEMA_IMPORT_NULLABLE_BOOLEAN_FIELDS
+            ):
                 raise ValueError
         elif value is not None and not isinstance(value, str):
             raise ValueError
