@@ -1,18 +1,13 @@
 import json
-
-from specifyweb.backend.stored_queries.batch_edit import (
-    make_dataset,
-    run_batch_edit_query,
-)
+from specifyweb.backend.stored_queries.batch_edit import make_dataset, run_batch_edit_query # type: ignore
 from specifyweb.backend.stored_queries.queryfield import QueryField
 from specifyweb.backend.stored_queries.queryfieldspec import QueryFieldSpec
 from specifyweb.backend.stored_queries.tests.test_batch_edit import props_builder
 from specifyweb.backend.stored_queries.tests.tests import SQLAlchemySetup
 from specifyweb.backend.workbench.models import Spdataset
-from specifyweb.backend.workbench.tasks import unupload
 from specifyweb.backend.workbench.upload.tests.base import UploadTestsBase
 from specifyweb.backend.workbench.upload.upload import (
-    do_upload_dataset,
+    do_upload_dataset, 
     rollback_batch_edit,
 )
 from specifyweb.backend.workbench.views import regularize_rows
@@ -20,8 +15,8 @@ from specifyweb.specify.models import Collectionobject
 
 """
 Creating a batch edit data set also creates a backup through the make_dataset 
-function. Rolling back (rollback_batch_edit) re-uploads the backedup values over 
-the committed records, then unuploads the data set
+function. Rolling back (rollback_batch_edit) re-uploads the backed up values over 
+the committed records, calling upon unupload to roll back the data set
 """
 
 ORIGINAL_REMARKS = "Remarks before batch edit"
