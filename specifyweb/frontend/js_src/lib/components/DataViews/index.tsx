@@ -76,11 +76,14 @@ function DataViewFromTable({
   readonly tableName: keyof Tables;
 }): JSX.Element | null {
   const [queries, reloadQueries] = useDataViewQueries();
-  return queries === undefined ? null : (
+  const lastQueriesRef = React.useRef(queries);
+  if (queries !== undefined) lastQueriesRef.current = queries;
+  const loadedQueries = queries ?? lastQueriesRef.current;
+  return loadedQueries === undefined ? null : (
     <LoadedDataViewFromTable
       key={tableName}
       tableName={tableName}
-      queries={queries}
+      queries={loadedQueries}
       reloadQueries={reloadQueries}
     />
   );
