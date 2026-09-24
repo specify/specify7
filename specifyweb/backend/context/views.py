@@ -593,8 +593,7 @@ def _schema_import_operations(collection, schema, language, references=None):
         if not isinstance(table_data, dict):
             raise ValueError
         values = _schema_import_values(
-            table_data, SCHEMA_IMPORT_FIELDS[Splocalecontainer],
-            {**references, 'format': references['itemformat']}
+            table_data, SCHEMA_IMPORT_FIELDS[Splocalecontainer], references
         )
         
         if values:
@@ -614,8 +613,8 @@ def _schema_import_operations(collection, schema, language, references=None):
             if item is None:
                 continue
             values = _schema_import_values(
-                item_data, SCHEMA_IMPORT_FIELDS[Splocalecontaineritem], references
-            )
+                item_data, SCHEMA_IMPORT_FIELDS[Splocalecontaineritem],
+                {**references, 'format': references['itemformat']}            )
             if values:
                 operations.append(('PUT', Splocalecontaineritem, item, values))
             _schema_import_string(
