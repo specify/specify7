@@ -16,6 +16,10 @@ export const schemaText = createDictionary({
     'en-us':
       'Importing a {schemaConfig:string} will overwrite the current one. This action cannot be undone.',
   },
+  importSchemaLanguageWarning: {
+    'en-us':
+      'The exported schema language must match the language currently being configured.',
+  },
   importSchemaBackupPrompt: {
     'en-us':
       'We strongly recommend downloading a backup of the current {schemaConfig:string} before importing.',
@@ -32,7 +36,7 @@ export const schemaText = createDictionary({
   },
   importSchemaError: {
     'en-us':
-      'The {schemaConfig:string} export provided is invalid and cannot be imported.',
+      'The {schemaConfig:string} export is invalid or was exported for a different language and cannot be imported.',
   },
   importSchemaSuccess: {
     'en-us': '{schemaConfig:string} imported successfully',

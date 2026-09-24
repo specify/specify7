@@ -476,8 +476,13 @@ def schema_localization(request):
     form ll[-cc] where ll is a language code and cc is an optional
     country code.
     """
-    lang = request.GET.get('lang', request.LANGUAGE_CODE)
-    return JsonResponse(get_schema_localization(request.specify_collection, 0, lang))
+    lang = request.GET.get('lang', request.LANGUAGE_CODE).lower()
+    schema = get_schema_localization(request.specify_collection, 0, lang)
+    return JsonResponse(
+        {'language': lang, 'schema': schema}
+        if request.GET.get('export') == 'true'
+        else schema
+    )
 
 
 SCHEMA_IMPORT_FIELDS = {
@@ -487,6 +492,7 @@ SCHEMA_IMPORT_FIELDS = {
     },
 }
 SCHEMA_IMPORT_BOOLEAN_FIELDS = {'ishidden', 'isrequired'}
+SCHEMA_IMPORT_NULLABLE_BOOLEAN_FIELDS = {'isrequired'}
 SCHEMA_IMPORT_TABLE_KEYS = {
     'items', 'name', 'desc', *SCHEMA_IMPORT_FIELDS[Splocalecontainer]
 }
@@ -516,8 +522,6 @@ def _schema_import_values(data, fields, references):
         key = key.lower()
         if key not in fields:
             continue
-SCHEMA_IMPORT_NULLABLE_BOOLEAN_FIELDS = {'isrequired'}
-
         if key in SCHEMA_IMPORT_BOOLEAN_FIELDS:
             if type(value) is not bool and not (
                 value is None and key in SCHEMA_IMPORT_NULLABLE_BOOLEAN_FIELDS
@@ -632,6 +636,13 @@ def schema_localization_import(request):
             r'[A-Za-z]{2}(?:-[A-Za-z]{2})?', language
         ):
             raise ValueError
+        if isinstance(schema, dict) and {'language', 'schema'} <= schema.keys():
+            source_language = schema['language']
+            if not isinstance(source_language, str) or (
+                source_language.lower() != language.lower()
+            ):
+                raise ValueError
+            schema = schema['schema']
         references = {
             'format': _schema_import_resource_names(
                 request.specify_collection, request.specify_user,

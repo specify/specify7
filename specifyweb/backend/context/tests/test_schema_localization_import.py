@@ -24,6 +24,16 @@ class SchemaLocalizationImportTests(ApiTests):
         self.client.force_login(self.specifyuser)
         self.client.cookies['collection'] = str(self.collection.id)
 
+    def test_export_includes_source_language(self):
+        response = self.client.get(
+            '/context/schema_localization.json?lang=en-US&export=true'
+        )
+
+        self.assertEqual(response.status_code, 200)
+        export = response.json()
+        self.assertEqual(export['language'], 'en-us')
+        self.assertIn('accession', export['schema'])
+
     def test_imports_schema_values_and_skips_unknown_entries(self):
         response = self.client.post(
             '/context/schema_localization_import.json',
@@ -122,6 +132,50 @@ class SchemaLocalizationImportTests(ApiTests):
         )
         string.refresh_from_db()
         self.assertEqual(string.text, 'Updated US Accession')
+
+    def test_imports_export_when_source_language_matches(self):
+        response = self.client.post(
+            '/context/schema_localization_import.json',
+            data=json.dumps({
+                'language': 'en-US',
+                'schema': {
+                    'language': 'en-us',
+                    'schema': {'accession': {'name': 'Imported Accession'}},
+                },
+            }),
+            content_type='application/json',
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            models.Splocaleitemstr.objects.get(
+                containername=self.container,
+                language='en',
+                country='us',
+            ).text,
+            'Imported Accession',
+        )
+
+    def test_rejects_export_when_source_language_differs(self):
+        response = self.client.post(
+            '/context/schema_localization_import.json',
+            data=json.dumps({
+                'language': 'fr',
+                'schema': {
+                    'language': 'en',
+                    'schema': {'accession': {'name': 'Should Not Import'}},
+                },
+            }),
+            content_type='application/json',
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertFalse(
+            models.Splocaleitemstr.objects.filter(
+                containername=self.container,
+                text='Should Not Import',
+            ).exists()
+        )
 
     def test_invalid_values_do_not_write(self):
         response = self.client.post(

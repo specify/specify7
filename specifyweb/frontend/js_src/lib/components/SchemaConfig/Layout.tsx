@@ -130,6 +130,7 @@ function SchemaConfigLayoutContent(): JSX.Element {
                 download={`schema_localization_${rawLanguage}.json`}
                 href={formatUrl('/context/schema_localization.json', {
                   lang: rawLanguage,
+                  export: 'true',
                 })}
               >
                 {schemaText.downloadSchemaBackup({
@@ -154,6 +155,7 @@ function SchemaConfigLayoutContent(): JSX.Element {
               schemaConfig: schemaText.schemaConfig(),
             })}
           </p>
+          <p>{schemaText.importSchemaLanguageWarning()}</p>
           <p>{schemaText.importSchemaLimitations()}</p>
           <p className="italic">
             {schemaText.importSchemaBackupPrompt({

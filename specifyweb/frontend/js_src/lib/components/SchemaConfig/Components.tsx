@@ -42,6 +42,7 @@ export function SchemaConfigHeader({
         download={`schema_localization_${rawLanguage}.json`}
         href={formatUrl('/context/schema_localization.json', {
           lang: rawLanguage,
+          export: 'true',
         })}
       >
         {commonText.export()}
