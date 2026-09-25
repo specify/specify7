@@ -101,8 +101,13 @@ exports[`Link.NewTab renders without errors 1`] = `
   >
     Close
     <span
-      aria-hidden="true"
+      title="(opens in a new tab)"
     >
+      <span
+        class="sr-only"
+      >
+        (opens in a new tab)
+      </span>
       <svg
         aria-hidden="true"
         class="w-6 h-6 flex-shrink-0"

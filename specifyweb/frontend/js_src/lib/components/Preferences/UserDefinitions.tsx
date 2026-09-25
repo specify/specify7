@@ -19,6 +19,7 @@ import { reportsText } from '../../localization/report';
 import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
 import { statsText } from '../../localization/stats';
+import { treeText } from '../../localization/tree';
 import type { Language } from '../../localization/utils/config';
 import { LANGUAGE } from '../../localization/utils/config';
 import { wbPlanText } from '../../localization/wbPlan';
@@ -39,6 +40,10 @@ import type { TableFields } from '../DataModel/helperTypes';
 import { genericTables, tables } from '../DataModel/tables';
 import type { Collection, Tables } from '../DataModel/types';
 import { error, softError } from '../Errors/assert';
+import type { KeyboardShortcuts } from '../KeyboardShortcuts/config';
+import { KeyboardShortcutPreferenceItem } from '../KeyboardShortcuts/Shortcuts';
+import type { UrlShortcuts } from '../KeyboardShortcuts/UrlShortcuts';
+import { UrlShortcutsEditor } from '../KeyboardShortcuts/UrlShortcuts';
 import type { StatLayout } from '../Statistics/types';
 import {
   LanguagePreferencesItem,
@@ -56,6 +61,7 @@ import {
 } from './Renderers';
 import type {
   GenericPreferences,
+  PreferenceItem,
   PreferenceRendererProps,
   PreferencesVisibilityContext,
 } from './types';
@@ -164,6 +170,22 @@ function CollectionObjectFieldPreferenceItem({
  */
 export const tableLabel = (tableName: keyof Tables): LocalizedString =>
   genericTables[tableName]?.label ?? camelToHuman(tableName);
+
+const defineKeyboardShortcut = (
+  title: LocalizedString,
+  defaultValue: KeyboardShortcuts | string
+): PreferenceItem<KeyboardShortcuts> =>
+  definePref<KeyboardShortcuts>({
+    title,
+    requiresReload: false,
+    visible: true,
+    defaultValue:
+      typeof defaultValue === 'string'
+        ? { other: [defaultValue] }
+        : defaultValue,
+    renderer: KeyboardShortcutPreferenceItem,
+    container: 'div',
+  });
 
 export const userPreferenceDefinitions = {
   general: {
@@ -688,6 +710,21 @@ export const userPreferenceDefinitions = {
           }),
         },
       },
+      actions: {
+        title: commonText.actions(),
+        items: {
+          urlShortcuts: definePref<UrlShortcuts>({
+            title: headerText.userTools(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: {
+              '/specify/user-preferences': { other: ['Ctrl+Slash'] },
+            },
+            renderer: UrlShortcutsEditor,
+            container: 'div',
+          }),
+        },
+      },
     },
   },
   interactions: {
@@ -902,6 +939,32 @@ export const userPreferenceDefinitions = {
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
+        },
+      },
+      actions: {
+        title: commonText.actions(),
+        items: {
+          openFormMeta: defineKeyboardShortcut(
+            preferencesText.openFormMeta(),
+            'KeyM'
+          ),
+          save: defineKeyboardShortcut(commonText.save(), 'Ctrl+KeyS'),
+          carryForward: defineKeyboardShortcut(
+            formsText.carryForward(),
+            'Ctrl+Shift+KeyC'
+          ),
+          clone: defineKeyboardShortcut(formsText.clone(), 'Ctrl+Shift+KeyL'),
+        },
+      },
+      dialogs: {
+        title: preferencesText.dialogs(),
+        items: {
+          close: defineKeyboardShortcut(commonText.close(), 'KeyC'),
+          save: defineKeyboardShortcut(commonText.save(), 'KeyS'),
+          openRelatedRecordInNewTab: defineKeyboardShortcut(
+            preferencesText.openRelatedRecordInNewTab(),
+            'KeyO'
+          ),
         },
       },
       definition: {
@@ -1234,6 +1297,26 @@ export const userPreferenceDefinitions = {
               },
             ],
           }),
+          goToFirstRecord: defineKeyboardShortcut(
+            formsText.goToFirstRecord(),
+            'Ctrl+Shift+ArrowUp'
+          ),
+          goToPreviousRecord: defineKeyboardShortcut(
+            formsText.goToPreviousRecord(),
+            'Ctrl+Shift+ArrowLeft'
+          ),
+          goToNextRecord: defineKeyboardShortcut(
+            formsText.goToNextRecord(),
+            'Ctrl+Shift+ArrowRight'
+          ),
+          goToLastRecord: defineKeyboardShortcut(
+            formsText.goToLastRecord(),
+            'Ctrl+Shift+ArrowDown'
+          ),
+          addResource: defineKeyboardShortcut(
+            resourcesText.addResource(),
+            'KeyA'
+          ),
         },
       },
       formTable: {
@@ -1551,6 +1634,19 @@ export const userPreferenceDefinitions = {
               },
             ],
           }),
+        },
+      },
+      actions: {
+        title: commonText.actions(),
+        items: {
+          search: defineKeyboardShortcut(commonText.search(), 'KeyS'),
+          query: defineKeyboardShortcut(queryText.query(), 'KeyQ'),
+          edit: defineKeyboardShortcut(commonText.edit(), 'KeyE'),
+          add: defineKeyboardShortcut(treeText.addChild(), 'KeyA'),
+          move: defineKeyboardShortcut(treeText.moveNode(), 'KeyM'),
+          bulkMove: defineKeyboardShortcut(treeText.moveItems(), 'KeyB'),
+          merge: defineKeyboardShortcut(treeText.mergeNode(), 'KeyC'),
+          synonymize: defineKeyboardShortcut(treeText.synonymizeNode(), 'KeyY'),
         },
       },
       geography: {
@@ -1891,6 +1987,18 @@ export const userPreferenceDefinitions = {
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
+        },
+      },
+      actions: {
+        title: commonText.actions(),
+        items: {
+          query: defineKeyboardShortcut(queryText.query(), 'KeyR'),
+          count: defineKeyboardShortcut(queryText.countOnly(), 'KeyC'),
+          distinct: defineKeyboardShortcut(queryText.distinct(), 'KeyD'),
+          browseInForms: defineKeyboardShortcut(
+            queryText.browseInForms(),
+            'KeyF'
+          ),
         },
       },
       appearance: {

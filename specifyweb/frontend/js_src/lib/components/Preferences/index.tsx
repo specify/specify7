@@ -9,11 +9,13 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { usePromise } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
+import { formsText } from '../../localization/forms';
 import { headerText } from '../../localization/header';
 import { preferencesText } from '../../localization/preferences';
+import { queryText } from '../../localization/query';
 import { StringToJsx } from '../../localization/utils';
 import { f } from '../../utils/functools';
-import type { IR } from '../../utils/types';
+import type { IR, RA } from '../../utils/types';
 import { Container, H2, Key } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
@@ -54,6 +56,24 @@ type SubcategoryDocumentation = {
   readonly href: string;
   readonly label: LocalizedString | (() => LocalizedString);
 };
+
+type VisiblePreferenceSubcategory = readonly [
+  string,
+  {
+    readonly title: GenericPreferences[string]['subCategories'][string]['title'];
+    readonly description?: GenericPreferences[string]['subCategories'][string]['description'];
+    readonly items: RA<readonly [string, PreferenceItem<any>]>;
+  },
+];
+
+type VisiblePreferenceCategory = readonly [
+  string,
+  {
+    readonly title: GenericPreferences[string]['title'];
+    readonly description?: GenericPreferences[string]['description'];
+    readonly subCategories: RA<VisiblePreferenceSubcategory>;
+  },
+];
 
 const SUBCATEGORY_DOCS_MAP: Record<
   string,
@@ -97,6 +117,7 @@ function Preferences({
   const navigate = useNavigate();
 
   const basePreferences = preferenceInstances[prefType];
+  const definitions = usePrefDefinitions(prefType);
   const heading =
     prefType === 'collection'
       ? preferencesText.collectionPreferences()
@@ -142,12 +163,16 @@ function Preferences({
         >
           <PreferencesAside
             activeCategory={visibleChild}
+            definitions={definitions}
             prefType={prefType}
             references={references}
             setActiveCategory={setVisibleChild}
           />
-          <PreferencesContent forwardRefs={forwardRefs} prefType={prefType} />
-          <span className="flex-1" />
+          <PreferencesContent
+            definitions={definitions}
+            forwardRefs={forwardRefs}
+            prefType={prefType}
+          />
         </div>
         <div className="flex justify-end">
           {changesMade ? (
@@ -177,50 +202,162 @@ export function usePrefDefinitions(prefType: PreferenceType = 'user') {
 
   const definitions = preferenceDefinitions[prefType];
 
-  return React.useMemo(
-    () =>
-      Object.entries(definitions)
-        .map(
-          ([category, { subCategories, ...categoryData }]) =>
-            [
-              category,
-              {
-                ...categoryData,
-                subCategories: Object.entries(subCategories)
-                  .map(
-                    ([subCategory, { items, ...subCategoryData }]) =>
-                      [
-                        subCategory,
-                        {
-                          ...subCategoryData,
-                          items: Object.entries(items).filter(
-                            ([_name, { visible }]) =>
-                              typeof visible === 'function'
-                                ? visible(preferencesVisibilityContext)
-                                : visible !== false
-                          ),
-                        },
-                      ] as const
-                  )
-                  .filter(([_name, { items }]) => items.length > 0),
-              },
-            ] as const
-        )
-        .filter(([_name, { subCategories }]) => subCategories.length > 0),
-    [definitions, preferencesVisibilityContext]
-  );
+  return React.useMemo<RA<VisiblePreferenceCategory>>(() => {
+    const visibleDefinitions: RA<VisiblePreferenceCategory> = Object.entries(
+      definitions
+    )
+      .map(([category, { subCategories, ...categoryData }]) => {
+        const visibleSubCategories = Object.entries(subCategories)
+          .map(([subCategory, { items, ...subCategoryData }]) => {
+            const visibleItems = Object.entries(items).filter(
+              ([_name, item]) =>
+                typeof item.visible === 'function'
+                  ? item.visible(preferencesVisibilityContext)
+                  : item.visible !== false
+            );
+            return [
+              subCategory,
+              { ...subCategoryData, items: visibleItems },
+            ] as const;
+          })
+          .filter(([_name, { items }]) => items.length > 0);
+        return [
+          category,
+          { ...categoryData, subCategories: visibleSubCategories },
+        ] as const;
+      })
+      .filter(
+        ([_name, { subCategories }]) => subCategories.length > 0
+      ) as unknown as RA<VisiblePreferenceCategory>;
+
+    if (prefType !== 'user') return visibleDefinitions;
+
+    const shortcutSubCategories = visibleDefinitions.flatMap(
+      ([category, { subCategories }]) =>
+        subCategories.flatMap(([subCategory, subCategoryData]) => {
+          const shortcutItems = subCategoryData.items.filter(
+            ([_name, item]) =>
+              'renderer' in item &&
+              item.renderer.name === 'KeyboardShortcutPreferenceItem'
+          );
+          return shortcutItems.length === 0
+            ? []
+            : [
+                [
+                  `${category}.${subCategory}`,
+                  {
+                    ...subCategoryData,
+                    ...(category === 'form' && subCategory === 'actions'
+                      ? {
+                          title: `${formsText.forms()} ${commonText.actions()}`,
+                          description: preferencesText.formActionsDescription(),
+                        }
+                      : category === 'form' && subCategory === 'dialogs'
+                        ? {
+                            title: `${preferencesText.dialogs()} ${commonText.actions()}`,
+                            description:
+                              preferencesText.dialogActionsDescription(),
+                          }
+                        : category === 'treeEditor' && subCategory === 'actions'
+                          ? {
+                              title: `${preferencesText.treeEditor()} ${commonText.actions()}`,
+                              description:
+                                preferencesText.treeActionsDescription(),
+                            }
+                          : category === 'queryBuilder' &&
+                              subCategory === 'actions'
+                            ? {
+                                title: `${queryText.queryBuilder()} ${commonText.actions()}`,
+                                description:
+                                  preferencesText.queryBuilderActionsDescription(),
+                              }
+                            : {}),
+                    items: shortcutItems,
+                  },
+                ] as const,
+              ];
+        })
+    );
+
+    const urlShortcutSubCategories = visibleDefinitions.flatMap(
+      ([category, { subCategories }]) =>
+        subCategories.flatMap(([subCategory, subCategoryData]) => {
+          const urlShortcutItems = subCategoryData.items.filter(
+            ([_name, item]) =>
+              'renderer' in item && item.renderer.name === 'UrlShortcutsEditor'
+          );
+          return urlShortcutItems.length === 0
+            ? []
+            : [
+                [
+                  `${category}.${subCategory}`,
+                  {
+                    ...subCategoryData,
+                    title: headerText.userTools(),
+                    items: urlShortcutItems,
+                  },
+                ] as const,
+              ];
+        })
+    );
+
+    const regularDefinitions = visibleDefinitions.map(
+      ([category, categoryData]) =>
+        [
+          category,
+          {
+            ...categoryData,
+            subCategories: categoryData.subCategories.map(
+              ([subCategory, subCategoryData]) =>
+                [
+                  subCategory,
+                  {
+                    ...subCategoryData,
+                    items: subCategoryData.items.filter(
+                      ([_name, item]) =>
+                        !('renderer' in item) ||
+                        (item.renderer.name !==
+                          'KeyboardShortcutPreferenceItem' &&
+                          item.renderer.name !== 'UrlShortcutsEditor')
+                    ),
+                  },
+                ] as const
+            ),
+          },
+        ] as const
+    );
+
+    return [
+      ...regularDefinitions,
+      [
+        'keyboardShortcuts',
+        {
+          title: preferencesText.keyboardShortcuts(),
+          subCategories: [
+            ...shortcutSubCategories,
+            ...urlShortcutSubCategories,
+          ],
+        },
+      ] as const,
+    ].filter(
+      ([_name, { subCategories }]) => subCategories.length > 0
+    ) as unknown as RA<VisiblePreferenceCategory>;
+  }, [definitions, preferencesVisibilityContext, prefType]);
 }
 
 export function PreferencesContent({
   forwardRefs,
   prefType = 'user',
+  definitions: passedDefinitions,
 }: {
   readonly forwardRefs?: (index: number, element: HTMLElement | null) => void;
   readonly prefType?: PreferenceType;
+  readonly definitions?: ReturnType<typeof usePrefDefinitions>;
 }): JSX.Element {
   const isReadOnly = React.useContext(ReadOnlyContext);
 
-  const definitions = usePrefDefinitions(prefType);
+  const hookDefinitions = usePrefDefinitions(prefType);
+  const definitions = passedDefinitions ?? hookDefinitions;
 
   const basePreferences = preferenceInstances[prefType];
 
@@ -238,6 +375,8 @@ export function PreferencesContent({
         readonly items: readonly (readonly [string, PreferenceItem<any>])[];
       }
     ): JSX.Element => {
+      if (categoryKey === 'keyboardShortcuts')
+        [categoryKey, subcategoryKey] = subcategoryKey.split('.');
       const subcategoryDocument =
         SUBCATEGORY_DOCS_MAP[categoryKey]?.[subcategoryKey];
 
@@ -376,7 +515,7 @@ export function PreferencesContent({
   );
 
   return (
-    <div className="flex h-fit flex-col gap-6">
+    <div className="flex h-fit min-w-0 flex-1 flex-col gap-6">
       {definitions.map(
         (
           [category, { title, description = undefined, subCategories }],
@@ -513,6 +652,7 @@ function createPreferencesWrapper(Component: React.ComponentType) {
 }
 
 export const PreferencesWrapper = createPreferencesWrapper(Preferences);
+export const UserPreferencesWrapper = createPreferencesWrapper(Preferences);
 export const CollectionPreferencesWrapper = createPreferencesWrapper(
   CollectionPreferences
 );

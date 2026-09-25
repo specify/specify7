@@ -548,6 +548,7 @@ function AttachmentViewerDialog({
         <div className="flex items-center gap-2 md:gap-2 ml-auto">
           <Slider
             count={attachments?.length ?? 1}
+            enableKeyboardShortcuts={false}
             value={selectedAttachment?.spDataSetAttachment?.ordinal ?? 0}
             onChange={(newValue: number) => {
               setSelectedAttachment(attachments[newValue]);

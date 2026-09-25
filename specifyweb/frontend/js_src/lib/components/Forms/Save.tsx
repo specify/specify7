@@ -203,6 +203,12 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   const ButtonComponent = saveBlocked ? Button.Danger : Button.Save;
   const SubmitComponent = saveBlocked ? Submit.Danger : Submit.Save;
 
+  const {
+    BulkCarryForward,
+    dialogs: BulkCarryForwardDialogs,
+    handleBulkCarryForward,
+  } = useBulkCarryForward({ resource, showBulkCarryCount, showBulkCarryRange });
+
   // Don't allow cloning the resource if it changed
   const isChanged = saveRequired || externalSaveRequired;
 
@@ -232,11 +238,46 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     </ButtonComponent>
   );
 
-  const {
-    BulkCarryForward,
-    dialogs: BulkCarryForwardDialogs,
-    handleBulkCarryForward,
-  } = useBulkCarryForward({ resource, showBulkCarryCount, showBulkCarryRange });
+  const carryForwardResources =
+    (showBulkCarryCount || showBulkCarryRange) &&
+    handleBulkCarryForward !== undefined
+      ? handleBulkCarryForward
+      : async (): Promise<RA<SpecifyResource<SCHEMA>>> => [
+          await resource.clone(false),
+        ];
+  const carryForward =
+    typeof handleAdd === 'function' && canCreate && showCarry
+      ? (): void => {
+          smoothScroll(form, 0);
+          loading(
+            carryForwardResources().then((resources) =>
+              resources !== undefined ? handleAdd(resources) : undefined
+            )
+          );
+        }
+      : undefined;
+  const clone =
+    typeof handleAdd === 'function' && canCreate && showClone
+      ? (): void => {
+          smoothScroll(form, 0);
+          loading(
+            resource.clone(true).then((resources) => handleAdd([resources]))
+          );
+        }
+      : undefined;
+  userPreferences.useKeyboardShortcut(
+    'form',
+    'actions',
+    'save',
+    canSave && !isSaveDisabled ? handleSubmit : undefined
+  );
+  userPreferences.useKeyboardShortcut(
+    'form',
+    'actions',
+    'carryForward',
+    carryForward
+  );
+  userPreferences.useKeyboardShortcut('form', 'actions', 'clone', clone);
 
   return (
     <>
@@ -258,12 +299,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
                  *
                  */
                 false,
-                (showBulkCarryCount || showBulkCarryRange) &&
-                  handleBulkCarryForward !== undefined
-                  ? handleBulkCarryForward
-                  : async (): Promise<RA<SpecifyResource<SCHEMA>>> => [
-                      await resource.clone(false),
-                    ]
+                carryForwardResources
               )
             : undefined}
           {showClone
