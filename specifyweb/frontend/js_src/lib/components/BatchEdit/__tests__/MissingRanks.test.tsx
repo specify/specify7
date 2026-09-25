@@ -170,4 +170,9 @@ describe('picking trees in the missing rank dialog', () => {
     );
     expectTreeFilter(ajax, { taxon: [1] });
   });
+
+  test('sends no filter when no tree is picked', async () => {
+    const ajax = await continueWithTrees();
+    expectTreeFilter(ajax, {});
+  });
 });
