@@ -338,7 +338,7 @@ jobs:
           pip install requests
 
       - name: Run EOL check and comment
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const { execSync } = require('child_process');
