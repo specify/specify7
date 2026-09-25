@@ -1194,6 +1194,13 @@ class SQLUploadTests(SQLAlchemySetup, UploadTestsBase):
 
         self.assertEqual(ranks, self._default_tree_ranks() | self._plant_tree_ranks())
 
+    def test_no_trees_selected_adds_every_tree(self):
+        self._make_plant_tree()
+
+        ranks = self._tree_ranks_for_genus_query({})
+
+        self.assertEqual(ranks, self._default_tree_ranks() | self._plant_tree_ranks())
+
     def enforce_in_log(
         self,
         record_id,
