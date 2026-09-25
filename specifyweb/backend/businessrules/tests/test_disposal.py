@@ -275,6 +275,53 @@ class DisposalTests(ApiTests):
             self.agent,
         )
 
+    def test_add_attachment_to_disposal(self):
+        disposal = models.Disposal.objects.create(
+            disposalnumber='DISPOSAL-ATTACHMENT-001',
+        )
+
+        attachment = models.Attachment.objects.create(
+            origfilename='disposal_doc.pdf',
+            tableid=disposal.specify_model.tableId,
+            title='Disposal Document',
+        )
+
+        disposal_attachment = models.Disposalattachment.objects.create(
+            disposal=disposal,
+            attachment=attachment,
+            ordinal=0,
+        )
+
+        fetched = models.Disposalattachment.objects.get(
+            id=disposal_attachment.id,
+        )
+
+        self.assertEqual(
+            fetched.disposal,
+            disposal,
+        )
+        self.assertEqual(
+            fetched.attachment,
+            attachment,
+        )
+        self.assertEqual(
+            fetched.ordinal,
+            0,
+        )
+        self.assertEqual(
+            fetched.attachment.origfilename,
+            'disposal_doc.pdf',
+        )
+        self.assertEqual(
+            fetched.attachment.tableid,
+            disposal.specify_model.tableId,
+        )
+        self.assertEqual(
+            fetched.attachment.title,
+            'Disposal Document',
+        )
+
+
 
 
 
