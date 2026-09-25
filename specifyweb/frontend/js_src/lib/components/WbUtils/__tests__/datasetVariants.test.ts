@@ -84,7 +84,7 @@ describe('batch edit rollback availability', () => {
         .defaultValue
     ).toBe(true);
 
-    // Unset preferences resolve to the declared defaults
+    // Unset preferences resolve to the defaults.
     expect(
       userPreferences.get('batchEdit', 'editor', 'enableRelationships')
     ).toBe(true);
@@ -105,5 +105,26 @@ describe('batch edit rollback availability', () => {
       '/workbench/dataset',
       'unupload'
     );
+  });
+});
+
+describe('batch edit validation availability', () => {
+  test.each([true, false])(
+    'follows the batch edit validate permission (%s)',
+    (permission) => {
+      mockedHasPermission.mockReturnValue(permission);
+      expect(datasetVariants.batchEdit.canValidate()).toBe(permission);
+      expect(mockedHasPermission).toHaveBeenCalledWith(
+        '/batch_edit/dataset',
+        'validate'
+      );
+    }
+  );
+
+  test('does not depend on the relationships preference', () => {
+    // Unlike rollback, validating is allowed when relationships are enabled.
+    setBatchEditPreferences(true, true);
+    mockedHasPermission.mockReturnValue(true);
+    expect(datasetVariants.batchEdit.canValidate()).toBe(true);
   });
 });
