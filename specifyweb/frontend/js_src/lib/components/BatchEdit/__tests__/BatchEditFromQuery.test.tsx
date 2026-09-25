@@ -1,7 +1,9 @@
+import { within } from '@testing-library/react';
 import React from 'react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { batchEditText } from '../../../localization/batchEdit';
 import { commonText } from '../../../localization/common';
+import { interactionsText } from '../../../localization/interactions';
 import { queryText } from '../../../localization/query';
 import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
@@ -14,6 +16,7 @@ import { tables } from '../../DataModel/tables';
 import { userPreferences } from '../../Preferences/userPreferences';
 import type { QueryField } from '../../QueryBuilder/helpers';
 import type { MappingPath } from '../../WbPlanView/Mapper';
+import { formatTreeRank } from '../../WbPlanView/mappingHelpers';
 import { BatchEditFromQuery } from '../index';
 
 requireContext();
@@ -59,7 +62,7 @@ function render({
   needsSaved = false,
 }: {
   readonly saveRequired?: boolean;
-  readonly baseTableName?: 'Collection' | 'CollectionObject';
+  readonly baseTableName?: 'Collection' | 'CollectionObject' | 'Taxon';
   readonly fields?: RA<QueryField>;
   readonly contextName?: string;
   readonly needsSaved?: boolean;
@@ -200,4 +203,67 @@ describe('the enable relationships preference', () => {
       );
     }
   );
+});
+
+const renderTaxonQuery = (rank: string) =>
+  render({
+    baseTableName: 'Taxon',
+    contextName: 'Taxon',
+    fields: [queryField([formatTreeRank(rank), 'name'])],
+  });
+
+const missingRank = (rank: string): string =>
+  `${rank} - ${tables.Taxon.strictGetField('name').label}`;
+
+describe('the missing rank dialog', () => {
+  test('appears when ranks are missing', async () => {
+    const { getByRole, findByRole, queryByText, user } = renderTaxonQuery('Genus');
+    await withoutActWarnings(async () => {
+      await user.click(getByRole('button', { name: batchEditText.batchEdit() }));
+      const dialog = await findByRole('dialog');
+      expect(dialog).toHaveTextContent(batchEditText.missingRanksInQuery());
+      expect(
+        within(dialog)
+          .getAllByRole('listitem')
+          .map((item) => item.textContent)
+      ).toEqual(['Subgenus', 'Species', 'Subspecies'].map(missingRank));
+      expect(queryByText('Data set opened')).toBeNull();
+    });
+  });
+
+  test('does not appear when the query already reaches the lowest rank', async () => {
+    const { getByRole, findByText, queryByRole, user } =
+      renderTaxonQuery('Subspecies');
+    await withoutActWarnings(async () => {
+      await user.click(getByRole('button', { name: batchEditText.batchEdit() }));
+      expect(await findByText('Data set opened')).toBeInTheDocument();
+      expect(queryByRole('dialog')).toBeNull();
+    });
+  });
+
+  test('continuing creates the data set', async () => {
+    const { getByRole, findByRole, findByText, user } = renderTaxonQuery('Genus');
+    await withoutActWarnings(async () => {
+      await user.click(getByRole('button', { name: batchEditText.batchEdit() }));
+      const dialog = await findByRole('dialog');
+      await user.click(
+        within(dialog).getByRole('button', { name: interactionsText.continue() })
+      );
+      expect(await findByText('Data set opened')).toBeInTheDocument();
+    });
+  });
+
+  test('closing it does not create the data set', async () => {
+    const { getByRole, findByRole, queryByRole, queryByText, user } =
+      renderTaxonQuery('Genus');
+    await withoutActWarnings(async () => {
+      await user.click(getByRole('button', { name: batchEditText.batchEdit() }));
+      const dialog = await findByRole('dialog');
+      await user.click(
+        within(dialog).getByRole('button', { name: commonText.close() })
+      );
+      expect(queryByRole('dialog')).toBeNull();
+      expect(queryByText('Data set opened')).toBeNull();
+    });
+  });
 });
