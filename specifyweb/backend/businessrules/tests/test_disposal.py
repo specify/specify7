@@ -320,8 +320,3 @@ class DisposalTests(ApiTests):
             fetched.attachment.title,
             'Disposal Document',
         )
-
-
-
-
-
