@@ -95,7 +95,7 @@ export const mergingText = createDictionary({
     'uk-ua': 'Елементи керування вкладеним переглядом',
     'pt-br': 'Controles de subvisualização',
     'hr-hr': 'Kontrole podprikaza',
-    nb: 'Undervisningskontroller',
+    nb: 'Innstillinger for delvisning',
   },
   mergeFields: {
     comment: 'Example: "Merge Addresses"',
@@ -129,7 +129,7 @@ export const mergingText = createDictionary({
     'uk-ua': 'Відхилити від об’єднання',
     'pt-br': 'Remover da fusão',
     'hr-hr': 'Odbaci spajanje',
-    nb: 'Avvis fra sammenslåing',
+    nb: 'Fjern fra sammenslåing',
   },
   agentContainsGroupDescription: {
     'en-us': 'Agents contain group members',
