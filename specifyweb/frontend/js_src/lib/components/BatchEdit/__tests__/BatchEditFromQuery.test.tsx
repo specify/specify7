@@ -6,10 +6,12 @@ import { queryText } from '../../../localization/query';
 import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
 import { mount } from '../../../tests/reactUtils';
+import * as ajaxModule from '../../../utils/ajax';
 import type { RA } from '../../../utils/types';
 import { LoadingContext } from '../../Core/Contexts';
 import { UnloadProtectsContext } from '../../Router/UnloadProtect';
 import { tables } from '../../DataModel/tables';
+import { userPreferences } from '../../Preferences/userPreferences';
 import type { QueryField } from '../../QueryBuilder/helpers';
 import type { MappingPath } from '../../WbPlanView/Mapper';
 import { BatchEditFromQuery } from '../index';
@@ -157,4 +159,47 @@ describe('the unsaved query guard', () => {
       expect(queryByRole('dialog')).toBeNull();
     });
   });
+});
+
+// Enable raltionships in user preferences.
+function mockEnableRelationships(enabled: boolean): void {
+  const realGet = userPreferences.get.bind(userPreferences);
+  jest.spyOn(userPreferences, 'get').mockImplementation(((
+    category: string,
+    subcategory: string,
+    item: string
+  ) =>
+    category === 'batchEdit' &&
+    subcategory === 'editor' &&
+    item === 'enableRelationships'
+      ? enabled
+      : realGet(category as never, subcategory as never, item as never)) as never);
+}
+
+describe('the enable relationships preference', () => {
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  test.each([
+    [true, false],
+    [false, true],
+  ])(
+    'enableRelationships=%s asks the back end for omitRelationships=%s',
+    async (enableRelationships, omitRelationships) => {
+      mockEnableRelationships(enableRelationships);
+      const ajax = jest.spyOn(ajaxModule, 'ajax');
+      const { getByRole, findByText, user } = render();
+      await withoutActWarnings(async () => {
+        await user.click(getByRole('button', { name: batchEditText.batchEdit() }));
+        expect(await findByText('Data set opened')).toBeInTheDocument();
+      });
+      expect(ajax).toHaveBeenCalledWith(
+        '/stored_query/batch_edit/',
+        expect.objectContaining({
+          body: expect.objectContaining({ omitrelationships: omitRelationships }),
+        })
+      );
+    }
+  );
 });
