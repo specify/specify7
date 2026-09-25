@@ -3,6 +3,7 @@ from specifyweb.specify.models import (
     Collectionobject,
     Collectionobjecttype,
     Component,
+    Accession,
 )
 from specifyweb.specify.tests.test_api import ApiTests
 from specifyweb.backend.businessrules.tests.test_component import enable_unique_catnum_pref
@@ -31,6 +32,22 @@ class CollectionObjectTests(ApiTests):
             catalognumber=self.collectionobjects[0].catalognumber + 'foo')
         test_co.delete()
 
+    def test_add_existing_accession_to_collectionobject(self):
+        accession = Accession.objects.create(
+            accessionnumber="Test Accession",
+            division=self.division,
+        )
+
+        collection_object = Collectionobject.objects.create(
+            collection=self.collection,
+            accession=accession,
+        )
+
+        fetched_object = Collectionobject.objects.get(id=collection_object.id)
+        self.assertEqual(fetched_object.accession, accession)
+        self.assertEqual(fetched_object.accession.accessionnumber, "Test Accession")
+
+    
     def test_default_collectionobjecttype(self):
         default_type = Collectionobjecttype.objects.create(
             name="default type",
