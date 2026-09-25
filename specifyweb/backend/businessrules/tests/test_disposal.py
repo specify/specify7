@@ -1,3 +1,4 @@
+from decimal import Decimal
 from django.utils import timezone
 
 from specifyweb.specify import models
@@ -207,6 +208,71 @@ class DisposalTests(ApiTests):
         self.assertEqual(
             fetched_disposal.disposalpreparations.count(),
             2,
+        )
+
+    def test_fill_remaining_disposal_fields(self):
+        disposal = models.Disposal.objects.create(
+            disposalnumber='DISPOSAL-REMAINING-001',
+            type='Loan Transfer',
+            donotexport=True,
+            number1=Decimal('12.34'),
+            number2=Decimal('56.78'),
+            remarks='Disposal remarks',
+            text1='Disposal text one',
+            text2='Disposal text two',
+            yesno1=True,
+            yesno2=False,
+            createdbyagent=self.agent,
+            modifiedbyagent=self.agent,
+        )
+
+        fetched_disposal = models.Disposal.objects.get(
+            id=disposal.id,
+        )
+
+        self.assertEqual(
+            fetched_disposal.type,
+            'Loan Transfer',
+        )
+        self.assertIs(
+            fetched_disposal.donotexport,
+            True,
+        )
+        self.assertEqual(
+            fetched_disposal.number1,
+            Decimal('12.34'),
+        )
+        self.assertEqual(
+            fetched_disposal.number2,
+            Decimal('56.78'),
+        )
+        self.assertEqual(
+            fetched_disposal.remarks,
+            'Disposal remarks',
+        )
+        self.assertEqual(
+            fetched_disposal.text1,
+            'Disposal text one',
+        )
+        self.assertEqual(
+            fetched_disposal.text2,
+            'Disposal text two',
+        )
+        self.assertIs(
+            fetched_disposal.yesno1,
+            True,
+        )
+        self.assertIs(
+            fetched_disposal.yesno2,
+            False,
+        )
+        self.assertEqual(
+            fetched_disposal.createdbyagent,
+            self.agent,
+        )
+        self.assertEqual(
+            fetched_disposal.modifiedbyagent,
+            self.agent,
         )
 
 
