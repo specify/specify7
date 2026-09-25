@@ -12,6 +12,7 @@ from specifyweb.backend.workbench.upload.upload import (
 )
 from specifyweb.backend.workbench.views import regularize_rows
 from specifyweb.specify.models import Collectionobject
+from specifyweb.backend.workbench.tasks import unupload
 
 """
 Creating a batch edit data set also creates a backup through the make_dataset 
@@ -109,3 +110,16 @@ class BatchEditRollbackTests(SQLAlchemySetup, UploadTestsBase):
         dataset = self._commit_edit()
         rollback_batch_edit(dataset, self.collection, self.agent)
         self.assertTrue(Collectionobject.objects.filter(id=self.co.id).exists())
+
+    def test_rollback_makes_the_data_set_rolled_back(self):
+        dataset = self._commit_edit()
+        dataset.uploaderstatus = {"operation": "unuploading", "taskid": None}
+        dataset.save()
+        unupload(self.collection.id, dataset.id, self.agent.id)
+        dataset.refresh_from_db()
+        self.assertTrue(dataset.rolledback)
+        self.assertIsNone(dataset.uploaderstatus)
+        self.assertTrue(dataset.get_dataset_as_dict()["rolledback"])
+        self.assertTrue(dataset.get_dataset_as_dict()["isupdate"])
+        self.co.refresh_from_db()
+        self.assertEqual(self.co.remarks, ORIGINAL_REMARKS)
