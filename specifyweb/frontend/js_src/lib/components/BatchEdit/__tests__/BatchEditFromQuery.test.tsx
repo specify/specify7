@@ -71,9 +71,7 @@ function render({
   };
   return mount(
     <MemoryRouter 
-      future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
-      initialEntries={['/']}
-    >
+      initialEntries={['/']}>
       <UnloadProtectsContext.Provider value={[]}>
         <LoadingContext.Provider value={handleLoading}>
           <Routes>
