@@ -139,3 +139,49 @@ class DeaccessionTests(ApiTests):
             fetched_deaccession.agent2,
             self.agent,
         )
+
+    def test_add_attachment_to_deaccession(self):
+        deaccession = models.Deaccession.objects.create(
+            deaccessionnumber='DEACCESSION-ATTACHMENT-001',
+        )
+
+        attachment = models.Attachment.objects.create(
+            origfilename='deaccession_doc.pdf',
+            tableid=deaccession.specify_model.tableId,
+            title='Deaccession Document',
+        )
+
+        deaccession_attachment = models.Deaccessionattachment.objects.create(
+            deaccession=deaccession,
+            attachment=attachment,
+            ordinal=0,
+        )
+
+        fetched = models.Deaccessionattachment.objects.get(
+            id=deaccession_attachment.id,
+        )
+
+        self.assertEqual(
+            fetched.deaccession,
+            deaccession,
+        )
+        self.assertEqual(
+            fetched.attachment,
+            attachment,
+        )
+        self.assertEqual(
+            fetched.ordinal,
+            0,
+        )
+        self.assertEqual(
+            fetched.attachment.origfilename,
+            'deaccession_doc.pdf',
+        )
+        self.assertEqual(
+            fetched.attachment.tableid,
+            deaccession.specify_model.tableId,
+        )
+        self.assertEqual(
+            fetched.attachment.title,
+            'Deaccession Document',
+        )
