@@ -2,6 +2,7 @@ import logging
 from collections import namedtuple, deque
 
 from sqlalchemy import orm, sql, or_
+from django.db.models import F, Q
 
 import specifyweb.specify.models as spmodels
 from specifyweb.backend.trees.utils import get_treedefs
@@ -10,12 +11,6 @@ from .queryfieldspec import TreeRankQuery, QueryFieldSpec
 from specifyweb.backend.stored_queries import models
 
 logger = logging.getLogger(__name__)
-
-def _safe_filter(query):
-    count = query.count()
-    if count <= 1:
-        return query.first()
-    raise Exception(f"Got more than one matching: {list(query)}")
 
 class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter query join_cache tree_rank_count internal_filters')):
 
@@ -27,7 +22,58 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
         kwargs['internal_filters'] = []
         return super().__new__(cls, *args, **kwargs)
 
-    def handle_tree_field(self, node, table, tree_rank: TreeRankQuery, next_join_path, current_field_spec: QueryFieldSpec):
+    def tree_rank_metadata(self, table, tree_rank):
+        """Resolve ranks once per query, shared by all paths into the same tree."""
+        query = self
+        defs_key = ('TreeDefinitions', table.name)
+        if defs_key not in query.join_cache:
+            query = query._replace(join_cache=query.join_cache.copy())
+            query.join_cache[defs_key] = get_treedefs(query.collection, table.name)
+        treedefs = query.join_cache[defs_key]
+
+        # TreeRankQuery equality does not include the explicit tree definition.
+        rank_key = ('TreeRankItems', table.name, tree_rank.name, tree_rank.treedef_id)
+        if rank_key not in query.join_cache:
+            item_model = getattr(spmodels, table.django_name + 'treedefitem')
+            def_ids = [
+                def_id for def_id, _ in treedefs
+                if tree_rank.treedef_id is None or tree_rank.treedef_id == def_id
+            ]
+            items = item_model.objects.filter(
+                treedef_id__in=def_ids, name=tree_rank.name
+            ).values_list('treedef_id', 'id')
+            by_definition = {}
+            for def_id, item_id in items:
+                if def_id in by_definition:
+                    raise Exception('Got more than one matching tree rank')
+                by_definition[def_id] = item_id
+            ranks = [(def_id, by_definition[def_id]) for def_id in def_ids if def_id in by_definition]
+            query = query._replace(join_cache=query.join_cache.copy())
+            query.join_cache[rank_key] = ranks
+        return query, treedefs, query.join_cache[rank_key]
+
+    def tree_numbering_available(self, table, treedefs):
+        """Fall back to parent links for trees with missing or reversed intervals.
+
+        Tree writes maintain the nesting invariant. Do not renumber a tree while
+        reading it, or cache this check across requests (uploads can change it).
+        """
+        cache_key = ('TreeNumbering', table.name)
+        query = self
+        if cache_key not in query.join_cache:
+            model = getattr(spmodels, table.django_name)
+            invalid = model.objects.filter(
+                definition_id__in=[def_id for def_id, _ in treedefs]
+            ).filter(
+                Q(nodenumber__isnull=True)
+                | Q(highestchildnodenumber__isnull=True)
+                | Q(highestchildnodenumber__lt=F('nodenumber'))
+            ).exists()
+            query = query._replace(join_cache=query.join_cache.copy())
+            query.join_cache[cache_key] = not invalid
+        return query, query.join_cache[cache_key]
+
+    def handle_tree_field(self, node, table, tree_rank: TreeRankQuery, next_join_path, current_field_spec: QueryFieldSpec, use_range=False, use_rank_lookup=False):
         query = self
         query_before_tree_joins = query
         if query.collection is None:  # Not sure it makes sense to query across collections
@@ -40,13 +86,84 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
         treedefitem_column = table.name + 'TreeDefItemID'
         treedef_column = table.name + 'TreeDefID'
 
+        query, treedefs, treedefs_with_ranks = query.tree_rank_metadata(table, tree_rank)
+
+        if not treedefs_with_ranks:
+            logger.warning(
+                "Didn't find tree rank %r across any %s tree; skipping field",
+                tree_rank.name,
+                table.name,
+            )
+            return query_before_tree_joins, None, None, table
+
+        if use_range:
+            query, use_range = query.tree_numbering_available(table, treedefs)
+        if use_range:
+            # One matching ancestor at this rank, including the node itself.
+            # Keep the filter on the ancestor column so the optimizer can start
+            # with selective ID/name indexes and range-scan descendants.
+            range_cache_key = (node, 'TreeRankLookup' if use_rank_lookup else 'TreeRankRange',
+                               tree_rank.name, tree_rank.treedef_id)
+            if range_cache_key in query.join_cache:
+                ancestor = query.join_cache[range_cache_key]
+            else:
+                ancestor = orm.aliased(getattr(models, table.name))
+                if use_rank_lookup:
+                    # Map descendants to their ancestor once for this rank. The
+                    # unfiltered mapping preserves displayed values when filters
+                    # are combined with OR, while the PK join avoids a range
+                    # comparison against every node at the requested rank.
+                    model = getattr(models, table.name)
+                    rank_node = orm.aliased(model)
+                    child = orm.aliased(model)
+                    lookup = sql.select(
+                        rank_node._id.label('node_id'),
+                        rank_node._id.label('ancestor_id'),
+                        getattr(rank_node, treedef_column).label('definition_id'),
+                    ).where(
+                        getattr(rank_node, treedefitem_column).in_(
+                            [item_id for _, item_id in treedefs_with_ranks]
+                        ),
+                    ).cte(recursive=True)
+                    lookup = lookup.union(sql.select(
+                        child._id, lookup.c.ancestor_id, getattr(child, treedef_column),
+                    ).join(lookup, sql.and_(
+                        child.ParentID == lookup.c.node_id,
+                        getattr(child, treedef_column) == lookup.c.definition_id,
+                    )))
+                    query = query._replace(query=query.query.outerjoin(
+                        lookup, node._id == lookup.c.node_id,
+                    ).outerjoin(ancestor, ancestor._id == lookup.c.ancestor_id))
+                else:
+                    query = query._replace(query=query.query.outerjoin(ancestor, sql.and_(
+                        getattr(node, treedef_column) == getattr(ancestor, treedef_column),
+                        getattr(ancestor, treedefitem_column).in_(
+                            [item_id for _, item_id in treedefs_with_ranks]
+                        ),
+                        node.nodeNumber.between(ancestor.nodeNumber, ancestor.highestChildNodeNumber),
+                    )))
+                query = query._replace(join_cache=query.join_cache.copy())
+                query.join_cache[range_cache_key] = ancestor
+            field_spec = current_field_spec._replace(
+                root_table=table,
+                root_sql_table=ancestor,
+                join_path=next_join_path,
+            )
+            query, column, field, result_table = field_spec.add_spec_to_query(query)
+            query = query._replace(internal_filters=[
+                *query.internal_filters,
+                or_(
+                    getattr(node, treedef_column).in_([def_id for def_id, _ in treedefs_with_ranks]),
+                    getattr(node, treedef_column).is_(None),
+                ),
+            ])
+            return query, column, field, result_table
+
         cache_key = (node, 'TreeRanks')
         if cache_key in query.join_cache:
             logger.debug("using join cache for %r tree ranks.", node)
             ancestors, treedefs = query.join_cache[cache_key]
         else:
-            treedefs = get_treedefs(query.collection, table.name)
-
             # We need to take the max here. Otherwise, it is possible that the same rank
             # name may not occur at the same level across tree defs.
             max_depth = max(depth for _, depth in treedefs)
@@ -60,24 +177,6 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
             logger.debug("adding to join cache for %r tree ranks.", node)
             query = query._replace(join_cache=query.join_cache.copy())
             query.join_cache[cache_key] = (ancestors, treedefs)
-
-        item_model = getattr(spmodels, table.django_name + "treedefitem")
-
-        # TODO: optimize out the ranks that appear? cache them
-        treedefs_with_ranks: list[tuple[int, int]] = [tup for tup in [
-            (treedef_id, _safe_filter(item_model.objects.filter(treedef_id=treedef_id, name=tree_rank.name).values_list('id', flat=True)))
-            for treedef_id, _ in treedefs
-            # For constructing tree queries for batch edit
-            if (tree_rank.treedef_id is None or tree_rank.treedef_id == treedef_id)
-            ] if tup[1] is not None]
-
-        if not treedefs_with_ranks:
-            logger.warning(
-                "Didn't find tree rank %r across any %s tree; skipping field",
-                tree_rank.name,
-                table.name,
-            )
-            return query_before_tree_joins, None, None, table
 
         treedefitem_params = [treedefitem_id for (_, treedefitem_id) in treedefs_with_ranks]
 
