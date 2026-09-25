@@ -34,7 +34,7 @@ import { hasTablePermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import { FormContext } from './BaseResourceView';
-import { useBulkCarryForward } from './BulkCarryForward';
+import { useBulkCarryForward, SeriesFormContext } from './BulkCarryForward';
 import { FORBID_ADDING, NO_CLONE } from './ResourceView';
 export const saveFormUnloadProtect = formsText.unsavedFormUnloadProtect();
 
@@ -179,6 +179,23 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
             )
             .then(handleSaved)
             .finally(() => {
+              // TODO: Update this code and uncomment
+              if (usingSeriesForm && seriesRangeEndValue !== '' && handleBulkCarryForward !== undefined) {
+                /*
+                * If using the in-form series input the record should not
+                * be saved before bulk carry forward.
+                */
+                handleBulkCarryForward(true).then((resources) => {
+                  if (handleAdd && resources !== undefined) {
+                    handleAdd(resources);
+                  }
+                }).then(() => {
+                  unsetUnloadProtect();
+                  handleSaved?.();
+                  setIsSaving(false);
+                })
+                return;
+              }
               unsetUnloadProtect();
               setIsSaving(false);
             });
@@ -232,6 +249,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     </ButtonComponent>
   );
 
+  const { seriesEnd: seriesRangeEndValue, usingSeries: usingSeriesForm } = React.useContext(SeriesFormContext);
   const {
     BulkCarryForward,
     dialogs: BulkCarryForwardDialogs,
