@@ -1104,6 +1104,96 @@ class SQLUploadTests(SQLAlchemySetup, UploadTestsBase):
         self.co_1_prep_1.refresh_from_db()
         self.assertEqual(self.co_1_prep_1.text1, "Edited by batch edit")
 
+
+    def _make_plant_tree(self):
+        plant_tree = get_table("Taxontreedef").objects.create(
+            name="Plant ttd", discipline=self.discipline
+        )
+        plant_tree.treedefitems.create(name="Taxonomy Root", rankid=0)
+        plant_tree.treedefitems.create(name="Kingdom", rankid=10)
+        plant_tree.treedefitems.create(name="Genus", rankid=180)
+        plant_tree.treedefitems.create(name="Species", rankid=220)
+        plant_tree.treedefitems.create(name="Variety", rankid=240)
+        return plant_tree
+
+    def _tree_ranks_for_genus_query(self, treedefsfilter):
+        query_fields = fields_from_json(
+            [
+                {
+                    "tablelist": "1",
+                    "stringid": "1.collectionobject.catalogNumber",
+                    "fieldname": "catalogNumber",
+                    "isrelfld": False,
+                    "sorttype": 0,
+                    "position": 0,
+                    "isdisplay": True,
+                    "operstart": 8,
+                    "startvalue": "",
+                    "isnot": False,
+                },
+                {
+                    "tablelist": "1,9-determinations,4",
+                    "stringid": "1,9-determinations,4.taxon.Genus",
+                    "fieldname": "Genus",
+                    "isrelfld": False,
+                    "sorttype": 0,
+                    "position": 1,
+                    "isdisplay": True,
+                    "operstart": 8,
+                    "startvalue": "",
+                    "isnot": False,
+                },
+            ]
+        )
+        get_table("Determination").objects.create(
+            collectionobject=self.co_1, remarks="A determination"
+        )
+        props = self._build_props(query_fields, "Collectionobject")
+        props["treedefsfilter"] = treedefsfilter
+
+        (headers, rows, packs, plan_json, visual_order) = run_batch_edit_query(props)
+
+        found = set()
+
+        def collect(node):
+            if isinstance(node, dict):
+                for rank_key in node.get("treeRecord", {}).get("ranks", {}):
+                    tree_name, rank_name = rank_key.split(RANK_KEY_DELIMITER)[:2]
+                    found.add((tree_name, rank_name))
+                for value in node.values():
+                    collect(value)
+            elif isinstance(node, list):
+                for value in node:
+                    collect(value)
+
+        collect(plan_json)
+        return found
+
+    def _default_tree_ranks(self):
+        return {
+            (self.taxontreedef.name, rank)
+            for rank in ["Genus", "Subgenus", "Species", "Subspecies"]
+        }
+
+    def _plant_tree_ranks(self):
+        return {("Plant ttd", rank) for rank in ["Genus", "Species", "Variety"]}
+
+    def test_only_the_selected_trees_ranks_are_added(self):
+        plant_tree = self._make_plant_tree()
+
+        ranks = self._tree_ranks_for_genus_query({"taxon": [plant_tree.id]})
+
+        self.assertEqual(ranks, self._plant_tree_ranks())
+
+    def test_every_selected_trees_ranks_are_added(self):
+        plant_tree = self._make_plant_tree()
+
+        ranks = self._tree_ranks_for_genus_query(
+            {"taxon": [self.taxontreedef.id, plant_tree.id]}
+        )
+
+        self.assertEqual(ranks, self._default_tree_ranks() | self._plant_tree_ranks())
+
     def enforce_in_log(
         self,
         record_id,
