@@ -761,6 +761,91 @@ class SQLUploadTests(SQLAlchemySetup, UploadTestsBase):
         self.assertEqual(Attachment.objects.count(), initial_attachment_count)
         self.enforce_in_log(self.co_1_attachment.id, "attachment", "UPDATE")
 
+    def _dataset_editing_a_preparation(self):
+        query_paths = [
+            ["catalognumber"],
+            ["preparations", "countamt"],
+            ["preparations", "text1"],
+        ]
+        query_fields = [
+            self.make_query(QueryFieldSpec.from_path(("Collectionobject", *path)), 0)
+            for path in query_paths
+        ]
+        props = self._build_props(query_fields, "Collectionobject")
+
+        (headers, rows, packs, plan_json, visual_order) = run_batch_edit_query(props)
+
+        mapped_rows = [
+            [*row, json.dumps({"batch_edit": pack})] for (row, pack) in zip(rows, packs)
+        ]
+        regularized_rows = regularize_rows(len(headers), mapped_rows, skip_empty=False)
+        row_index = next(
+            index
+            for index, pack in enumerate(packs)
+            if pack["self"]["id"] == self.co_1.id
+        )
+
+        dataset_rows = [row[:] for row in regularized_rows]
+        dataset_rows[row_index][headers.index("Preparation text1")] = "Edited by batch edit"
+
+        dataset_id, _ = make_dataset(
+            user=self.specifyuser,
+            collection=self.collection,
+            name="validate-batch-edit",
+            headers=headers,
+            regularized_rows=dataset_rows,
+            agent=self.agent,
+            json_upload_plan=plan_json,
+            visual_order=visual_order,
+        )
+        return Spdataset.objects.get(id=dataset_id), row_index
+
+    def test_validating_reports_changes_to_related_records(self):
+        dataset, row_index = self._dataset_editing_a_preparation()
+
+        results = do_upload_dataset(
+            self.collection, self.agent.id, dataset, no_commit=True, allow_partial=False
+        )
+
+        self.assertIsInstance(
+            results[row_index].toMany["preparations"][0].record_result, Updated
+        )
+
+    def test_validating_does_not_save_changes(self):
+        dataset, _ = self._dataset_editing_a_preparation()
+
+        do_upload_dataset(
+            self.collection, self.agent.id, dataset, no_commit=True, allow_partial=False
+        )
+
+        self.co_1_prep_1.refresh_from_db()
+        self.assertEqual(self.co_1_prep_1.text1, "Value for preparation")
+
+    def test_validating_does_not_mark_the_data_set_uploaded(self):
+        dataset, _ = self._dataset_editing_a_preparation()
+
+        do_upload_dataset(
+            self.collection, self.agent.id, dataset, no_commit=True, allow_partial=False
+        )
+
+        dataset.refresh_from_db()
+        self.assertIsNotNone(dataset.rowresults)
+        self.assertIsNone(dataset.uploadresult)
+        self.assertFalse(dataset.was_uploaded())
+
+    def test_a_validated_data_set_can_be_committed(self):
+        dataset, _ = self._dataset_editing_a_preparation()
+
+        do_upload_dataset(
+            self.collection, self.agent.id, dataset, no_commit=True, allow_partial=False
+        )
+        do_upload_dataset(
+            self.collection, self.agent.id, dataset, no_commit=False, allow_partial=False
+        )
+
+        self.co_1_prep_1.refresh_from_db()
+        self.assertEqual(self.co_1_prep_1.text1, "Edited by batch edit")
+
     def enforce_in_log(
         self,
         record_id,
