@@ -38,6 +38,26 @@ function Coordinate({
       false
     );
   const isChanging = React.useRef<boolean>(false);
+  /**
+   * Whether the current value arrived from an actual change — the user typing, or
+   * one of the two resourceOn handlers below reacting to a field being set
+   * elsewhere — as opposed to simply being read off the resource when the form
+   * first rendered. Only a real change may write back; see the guard in the
+   * parsing effect.
+   */
+  const hasValueChanged = React.useRef<boolean>(false);
+  /*
+   * Declared before every other effect so it runs first on a resource swap.
+   * A record selector slides a NEW resource into this same component instance —
+   * useFieldParser notes that "Resource changes when sliding in a record
+   * selector, but react reuses the DOM component". Without this reset the latch
+   * stays set after any edit and the write-back gate below would stand open for
+   * every subsequent record, reintroducing the very corruption this guards.
+   */
+  React.useEffect(() => {
+    hasValueChanged.current = false;
+  }, [resource, coordinateTextField]);
+
   React.useEffect(
     () =>
       resourceOn(
@@ -49,6 +69,12 @@ function Coordinate({
             (resource.get(coordinateTextField) ?? '') === '' &&
             (resource.get(coordinateField) ?? '') !== ''
           )
+            /*
+             * Deliberately does NOT set hasValueChanged: this handler fires on
+             * mount (resourceOn(..., true)), so treating it as a change would
+             * write to a record the curator has only opened. Display updates;
+             * nothing persists until there is a real edit.
+             */
             updateValue(resource.get(coordinateField));
         },
         true
@@ -65,6 +91,7 @@ function Coordinate({
           if (isChanging.current) return;
           const coordinate = resource.get(coordinateField)?.toString() ?? '';
           const parsed = (fieldType === 'Lat' ? Lat : Long).parse(coordinate);
+          hasValueChanged.current = true;
           updateValue(parsed?.asFloat() ?? null);
         },
         // Only run this when coordinate field is changed externally
@@ -100,6 +127,24 @@ function Coordinate({
           : commonText.notApplicable()
         : undefined
     );
+
+    /**
+     * Opening a record must never modify it.
+     *
+     * Everything above this point is display-only — the validation message and
+     * the formatted "Parsed" column. Everything below writes to the resource and
+     * marks it dirty, so it may only run in response to an actual user edit.
+     *
+     * Without this guard the effect fires on first render and rewrites
+     * coordinateTextField with the trimmed string. trimLatLong() drops every
+     * character outside [\s\d"'\-.:ensw°], so a locality stored as "96° 57' O"
+     * (Spanish Oeste = West, longitude -96.95) is silently rewritten to
+     * "96° 57' " and +96.95 — the opposite hemisphere — and the evidence that it
+     * was ever West is destroyed. The verbatim text is the value of record here;
+     * the decimal is derived from it. That makes this data loss, not a display
+     * concern, and it happens without the user touching a field.
+     */
+    if (!hasValueChanged.current) return;
 
     isChanging.current = true;
 
@@ -145,12 +190,19 @@ function Coordinate({
   ]);
 
   const isReadOnly = React.useContext(ReadOnlyContext);
+  const handleValueChange = React.useCallback(
+    (newValue: string): void => {
+      hasValueChanged.current = true;
+      updateValue(newValue);
+    },
+    [updateValue]
+  );
   return (
     <Input.Text
       forwardRef={validationRef}
       isReadOnly={isReadOnly}
       value={value?.toString() ?? ''}
-      onValueChange={updateValue}
+      onValueChange={handleValueChange}
     />
   );
 }
