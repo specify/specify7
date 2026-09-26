@@ -277,7 +277,7 @@ jobs:
         run: |
           # TODO: Once most errors are fixed remove "set +e" to not ignore errors
           set +e
-          npx eslint --fix --color `echo "${{steps.changed.outputs.changed}}" | tr " " "\n"`
+          ESLINT_USE_FLAT_CONFIG=true npx eslint --fix --color `echo "${{steps.changed.outputs.changed}}" | tr " " "\n"`
           set -e
 
       - name: Reformat all code with Prettier
