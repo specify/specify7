@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-09-26 15:53+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Eirik Rindal <eirik.rindal@nhm.uio.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/resources/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -416,19 +416,17 @@ msgstr "Verdien i betingelsesfeltet"
 
 #. Used in: Components > Formatters > Definitions
 #: components/Formatters/Definitions.tsx:184
-#, fuzzy
 msgid "conditionDescription"
 msgstr ""
-"Dette formatet vil bare bli brukt hvis verdien i betingelsesfeltet er lik "
-"denne betingelsen og ikke er null."
+"Dette formatet vil bare bli brukt hvis betingelsene er oppfylt og ikke er "
+"null."
 
 #. Used in: Components > App Resources > Tabs
 #: components/AppResources/Tabs.tsx:165
-#, fuzzy
 msgid "wrongScopeWarning"
 msgstr ""
-"Denne ressursen tilhører en annen samling/disiplin enn den du er i for "
-"øyeblikket. Det anbefales å bytte samling før du redigerer denne ressursen."
+"Denne ressursen tilhører en annen samling/disiplinen enn den du er i for "
+"øyeblikket. Det anbefales å bytte samling før du redigerer dette."
 
 #. Used in: Components > Web Links > Element
 #: components/WebLinks/Element.tsx:82
