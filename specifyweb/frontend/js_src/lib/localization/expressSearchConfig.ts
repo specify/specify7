@@ -1027,7 +1027,7 @@ export const expressSearchConfigText = createDictionary({
       'Préstamos con los objetos de la colección en preparación de préstamos.',
     'fr-fr': 'Prêts associés aux objets et à leurs préparations',
     'hr-hr': 'Krediti s predmetima naplate na pripremi kredita.',
-    nb: 'Utlån med samlingsobjektene på låne-preparater',
+    nb: 'Utlån med samlingsobjektene på låne-preparater.',
     'pt-br':
       'Empréstimos com objetos de cobrança em preparativos de empréstimo.',
     'ru-ru':
