@@ -496,7 +496,9 @@ SCHEMA_IMPORT_NULLABLE_BOOLEAN_FIELDS = {'isrequired'}
 SCHEMA_IMPORT_TABLE_KEYS = {
     'items', 'name', 'desc', *SCHEMA_IMPORT_FIELDS[Splocalecontainer]
 }
-SCHEMA_IMPORT_REFERENCE_FIELDS = {'format', 'picklistname', 'weblinkname'}
+SCHEMA_IMPORT_REFERENCE_FIELDS = {
+    'format', 'aggregator', 'picklistname', 'weblinkname',
+}
 
 
 def _schema_import_resource_names(collection, user, resource, path):
