@@ -5,7 +5,7 @@ import os
 import re
 import traceback
 
-from typing import Callable, Literal, NamedTuple
+from typing import Callable, Literal, NamedTuple, Iterable
 import xml.dom.minidom
 from collections import namedtuple, defaultdict
 from functools import reduce
@@ -26,9 +26,9 @@ from specifyweb.backend.trees.utils import get_search_filters
 from . import models
 from .format import ObjectFormatter, ObjectFormatterProps
 from .query_construct import QueryConstruct
-from .relative_date_utils import apply_absolute_date
-from .field_spec_maps import apply_specify_user_name
+from .field_spec_maps import transform_field_specs
 from .web_portal_export import query_to_web_portal_zip as _query_to_web_portal_zip, WebportalQueryResultProcessors
+from specifyweb.backend.stored_queries.queryfield import QueryField
 from specifyweb.backend.notifications.models import Message
 from specifyweb.backend.permissions.permissions import check_table_permissions
 from specifyweb.specify.models import Loan, Loanpreparation, Loanreturnpreparation, Taxontreedef
@@ -38,6 +38,7 @@ from specifyweb.backend.stored_queries.queryfield import fields_from_json, QUREY
 from specifyweb.backend.stored_queries.synonomy import synonymize_tree_query
 
 from specifyweb.specify.datamodel import datamodel, is_tree_table
+from specifyweb.specify.models_utils.load_datamodel import Table
 
 logger = logging.getLogger(__name__)
 
@@ -82,17 +83,17 @@ def set_group_concat_max_len(connection):
     """
     connection.execute("SET group_concat_max_len = 1024 * 1024 * 1024")
 
-def _pick_synonymy_table(field_specs, base_table):
+def _pick_synonymy_table(query_fields: list[QueryField], base_table):
     if base_table is not None and is_tree_table(base_table):
         return base_table
 
-    for field_spec in field_specs:
-        if field_spec.fieldspec.contains_tree_rank():
-            return field_spec.fieldspec.table
+    for query_field in query_fields:
+        if query_field.fieldspec.contains_tree_rank():
+            return query_field.fieldspec.table
 
-    for field_spec in field_specs:
-        if is_tree_table(field_spec.fieldspec.table):
-            return field_spec.fieldspec.table
+    for query_field in query_fields:
+        if is_tree_table(query_field.fieldspec.table):
+            return query_field.fieldspec.table
 
     return None
 
@@ -327,14 +328,14 @@ def query_to_web_portal_zip(
         collection=collection,
         user=user,
         tableid=tableid,
-        field_specs=field_specs,
+        query_fields=field_specs,
         props=BuildQueryProps(recordsetid=recordsetid, replace_nulls=True, distinct=distinct),
     )
 
     processors = [
         *DefaultQueryProcessors(
             tableid=tableid,
-            field_specs=field_specs,
+            query_fields=field_specs,
             collection=collection,
             user=user
         ),
@@ -414,7 +415,7 @@ def query_to_csv(
         query=query,
         processors=DefaultQueryProcessors(
             tableid=tableid,
-            field_specs=field_specs,
+            query_fields=field_specs,
             collection=collection,
             user=user
         )
@@ -492,7 +493,7 @@ def query_to_kml(
         query=query,
         processors=DefaultQueryProcessors(
             tableid=tableid,
-            field_specs=field_specs,
+            query_fields=field_specs,
             collection=collection,
             user=user
         )
@@ -685,7 +686,7 @@ def run_ephemeral_query(collection, user, spquery):
     format_audits = spquery.get("formatauditrecids", False)
 
     with models.session_context() as session:
-        field_specs = fields_from_json(spquery["fields"])
+        query_fields = fields_from_json(spquery["fields"])
         return execute(
             session=session,
             collection=collection,
@@ -695,7 +696,7 @@ def run_ephemeral_query(collection, user, spquery):
             series=series,
             search_synonymy=search_synonymy,
             count_only=count_only,
-            field_specs=field_specs,
+            query_fields=query_fields,
             limit=limit,
             offset=offset,
             recordsetid=recordsetid,
@@ -853,12 +854,12 @@ def execute(
     session,
     collection,
     user,
-    tableid,
-    distinct,
-    series,
-    search_synonymy,
-    count_only,
-    field_specs,
+    tableid: int,
+    distinct: bool,
+    series: bool,
+    search_synonymy: bool,
+    count_only: bool,
+    query_fields: list[QueryField],
     limit,
     offset,
     recordsetid=None,
@@ -876,7 +877,7 @@ def execute(
         collection,
         user,
         tableid,
-        field_specs,
+        query_fields,
         BuildQueryProps(
             recordsetid=recordsetid,
             formatauditobjs=formatauditobjs,
@@ -887,12 +888,14 @@ def execute(
         ),
     )
 
+    log_sqlalchemy_query(query)
+
     if count_only:
         if series:
             cat_num_sort_type = 0
-            for field_spec in field_specs:
-                if field_spec.fieldspec.get_field() and field_spec.fieldspec.get_field().name.lower() == 'catalognumber':
-                    cat_num_sort_type = field_spec.sort_type
+            for query_field in query_fields:
+                if query_field.fieldspec.get_field() and query_field.fieldspec.get_field().name.lower() == 'catalognumber':
+                    cat_num_sort_type = query_field.sort_type
                     break
             return {'count': len(series_post_query(query, limit=SERIES_MAX_ROWS, offset=0, sort_type=cat_num_sort_type, is_count=True))}
         else:
@@ -901,10 +904,10 @@ def execute(
         cat_num_col_id = None
         cat_num_sort_type = None
         idx = 0
-        for field_spec in field_specs:
-            if field_spec.fieldspec.get_field() and field_spec.fieldspec.get_field().name.lower() == 'catalognumber':
+        for query_field in query_fields:
+            if query_field.fieldspec.get_field() and query_field.fieldspec.get_field().name.lower() == 'catalognumber':
                 cat_num_col_id = idx
-                cat_num_sort_type = field_spec.sort_type
+                cat_num_sort_type = query_field.sort_type
                 break
             idx += 1
         is_valid_series_query = series and \
@@ -928,17 +931,12 @@ def execute(
         if limit:
             query = query.limit(limit)
 
-        log_sqlalchemy_query(query)
-
-
-        log_sqlalchemy_query(query) # Debugging
-
         results = list(
             apply_special_post_query_processing(
                 query=query,
                 processors=DefaultQueryProcessors(
                     tableid=tableid,
-                    field_specs=field_specs,
+                    query_fields=query_fields,
                     collection=collection,
                     user=user
                 )
@@ -946,12 +944,186 @@ def execute(
         )
         return {"results": results}
 
+
+# REFACTOR: Clean up this and the other QueryConstruct functions
+# Make it easier to use for external callers (e.g., tests) and make sure it's
+# pure
+# Maybe add or merge these to QueryConstruct?
+def build_query_construct_base(
+    session,
+    collection,
+    user,
+    model,
+    props: BuildQueryProps,
+):
+    id_field = model._id
+    catalognumber_field = model.catalogNumber if hasattr(model, 'catalogNumber') else None
+    query_construct_query = session.query(id_field)
+    if props.series and catalognumber_field:
+        query_construct_query = session.query(
+            func.group_concat(
+                func.concat(
+                    id_field,
+                    ':',
+                    catalognumber_field
+                ),
+                separator='|'
+            ).label('co_id_catnum_paired_values')
+        )
+    elif props.distinct:
+        query_construct_query = session.query(
+            func.group_concat(id_field.distinct(), separator=','))
+
+    query = QueryConstruct(
+        collection=collection,
+        objectformatter=ObjectFormatter(
+            collection,
+            user,
+            props.replace_nulls,
+            props=props.formatter_props,
+        ),
+        query=query_construct_query
+    )
+    return query
+
+# REFACTOR: Clean up this and the other QueryConstruct functions
+# Make it easier to use for external callers (e.g., tests) and make sure it's
+# pure
+# Maybe add or merge these to QueryConstruct?
+def filter_query_by_recordset(
+    session,
+    collection,
+    query: QueryConstruct,
+    id_field: int,
+    tableid: int,
+    recordsetid: int
+):
+    recordset = session.query(models.RecordSet).get(recordsetid)
+    if recordset is None:
+        raise AssertionError(
+            f"Unexpected recordset id '{recordsetid}' in request. Recordset not found.",
+            {
+                "recordsetId": recordsetid,
+                "localizationKey": "unexpectedRecordsetId",
+            },
+        )
+    if recordset.collectionMemberId != collection.id:
+        raise AssertionError(
+            f"Unexpected recordset id '{recordsetid}' in request. Recordset is not in collection '{collection.id}'.",
+            {
+                "recordsetId": recordsetid,
+                "collectionId": collection.id,
+                "expectedCollectionId": recordset.collectionMemberId,
+                "localizationKey": "unexpectedRecordsetCollection",
+            },
+        )
+    if recordset.dbTableId != tableid:
+        raise AssertionError(
+            f"Unexpected tableId '{tableid}' in request. Expected '{recordset.dbTableId}'",
+            {
+                "tableId": tableid,
+                "expectedTableId": recordset.dbTableId,
+                "localizationKey": "unexpectedTableId",
+            },
+        )
+    return query.join(
+        models.RecordSetItem, models.RecordSetItem.recordId == id_field
+    ).filter(models.RecordSetItem.recordSet == recordset)
+
+# REFACTOR: Clean up this and the other QueryConstruct functions
+# This could probably be folded into add_fields_to_query?
+# Though if possible/feasible, we can keep this separate to make testing easier
+def apply_where_condition_to_query(
+    query: QueryConstruct,
+    predicates_by_fieldspec,
+    use_implicit_ors: bool = True
+):
+    if use_implicit_ors:
+        implicit_ors = [
+            reduce(sql.or_, ps) for ps in predicates_by_fieldspec.values() if ps
+        ]
+
+        if implicit_ors:
+            where = reduce(sql.and_, implicit_ors)
+            query = query.filter(where)
+    else:
+        where = reduce(sql.and_, (p for ps in predicates_by_fieldspec.values() for p in ps))
+        query = query.filter(where)
+    return query
+
+# REFACTOR: Clean up this and the other QueryConstruct functions
+# Make it easier to use for external callers (e.g., tests) and make sure it's
+# pure
+# Maybe add or merge these to QueryConstruct?
+def add_fields_to_query(
+    collection,
+    user,
+    query: QueryConstruct,
+    query_fields: list[QueryField],
+    series: bool = False,
+    formatauditobjs: bool = False,
+    use_implicit_ors: bool = True
+):
+    order_by_exprs = []
+    selected_fields = []
+    predicates_by_fieldspec = defaultdict(list)
+    for query_field in query_fields:
+        sort_type = QuerySort.by_id(query_field.sort_type)
+
+        if series and query_field.fieldspec.get_field() and query_field.fieldspec.get_field().name.lower() == 'catalognumber':
+            _, _, predicate = query_field.add_to_query(query, formatauditobjs=formatauditobjs)
+            predicates_by_fieldspec[query_field.fieldspec].append(predicate) if predicate is not None else None
+            continue
+
+        query, field, predicate = query_field.add_to_query(
+            query, formatauditobjs=formatauditobjs, collection=collection, user=user
+        )
+
+        if field is None:
+            # Keep the result column in place when a displayed tree rank is
+            # missing, while omitting its filter and sort behavior.
+            if query_field.display:
+                query = query.add_columns(sql.null())
+            continue
+
+        formatted_field = None
+        if query_field.display:
+            formatted_field = query.objectformatter.fieldformat(query_field, field)
+            query = query.add_columns(formatted_field)
+            selected_fields.append(formatted_field)
+
+
+        if sort_type is not None:
+            order_by_exprs.append(sort_type(field))
+
+        if predicate is not None:
+            predicates_by_fieldspec[query_field.fieldspec].append(predicate)
+    query = apply_where_condition_to_query(query, predicates_by_fieldspec, use_implicit_ors)
+    return query, selected_fields, order_by_exprs
+
+# REFACTOR: Clean up this and the other QueryConstruct functions
+# Make it easier to use for external callers (e.g., tests) and make sure it's
+# pure
+# Maybe add or merge these to QueryConstruct?
+def search_on_synonyms(
+    query: QueryConstruct,
+    query_fields: list[QueryField],
+    base_table: Table,
+):
+    synonymy_table = _pick_synonymy_table(query_fields, base_table)
+    if synonymy_table is None:
+        logger.info("search_synonymy requested but no tree table found... skipping")
+    else:
+        synonymized_query = synonymize_tree_query(query.query, synonymy_table)
+        query = query._replace(query=synonymized_query)
+    return query
+
 def build_query(
     session,
     collection,
     user,
-    tableid,
-    field_specs,
+    tableid: int,
+    query_fields: Iterable[QueryField],
     props: BuildQueryProps = BuildQueryProps(),
 ):
     """Build a sqlalchemy query using the QueryField objects given by
@@ -986,46 +1158,22 @@ def build_query(
     search_synonymy = if True, search synonym nodes as well, and return all record IDs associated with parent node
     """
     model = models.models_by_tableid[tableid]
-    base_table = datamodel.get_table_by_id(tableid, strict=True)
     id_field = model._id
-    catalog_number_field = model.catalogNumber if hasattr(model, 'catalogNumber') else None
-
-    field_specs = [apply_absolute_date(field_spec) for field_spec in field_specs]
-    field_specs = [apply_specify_user_name(field_spec, user) for field_spec in field_specs]
-
-    query_construct_query = session.query(id_field)
-    if props.series and catalog_number_field:
-        query_construct_query = session.query(
-            func.group_concat(
-                func.concat(
-                    id_field,
-                    ':',
-                    catalog_number_field
-                ),
-                separator='|'
-            ).label('co_id_catnum_paired_values')
-        )
-    elif props.distinct:
-        query_construct_query = session.query(func.group_concat(id_field.distinct(), separator=','))
-    else:
-        query_construct_query = session.query(id_field)
-    
-    query = QueryConstruct(
+    query = build_query_construct_base(
+        session=session,
         collection=collection,
-        objectformatter=ObjectFormatter(
-            collection,
-            user,
-            props.replace_nulls,
-            props=props.formatter_props,
-        ),
-        query=query_construct_query
+        user=user,
+        model=model,
+        props=props,
     )
+
+    query_fields = list(transform_field_specs(query_fields, user))
 
     tables_to_read = {
             table
-            for fs in field_specs
+            for field in query_fields
             for table in query.tables_in_path(
-                fs.fieldspec.root_table, fs.fieldspec.join_path
+                field.fieldspec.root_table, field.fieldspec.join_path
             )
     }
 
@@ -1036,116 +1184,43 @@ def build_query(
 
     if props.recordsetid is not None:
         logger.debug("joining query to recordset: %s", props.recordsetid)
-        recordset = session.query(models.RecordSet).get(props.recordsetid)
-        if recordset is None:
-            raise AssertionError(
-                f"Unexpected recordset id '{props.recordsetid}' in request. Recordset not found.",
-                {
-                    "recordsetId": props.recordsetid,
-                    "localizationKey": "unexpectedRecordsetId",
-                },
-            )
-        if recordset.collectionMemberId != collection.id:
-            raise AssertionError(
-                f"Unexpected recordset id '{props.recordsetid}' in request. Recordset is not in collection '{collection.id}'.",
-                {
-                    "recordsetId": props.recordsetid,
-                    "collectionId": collection.id,
-                    "expectedCollectionId": recordset.collectionMemberId,
-                    "localizationKey": "unexpectedRecordsetCollection",
-                },
-            )
-        if recordset.dbTableId != tableid:
-            raise AssertionError(
-                f"Unexpected tableId '{tableid}' in request. Expected '{recordset.dbTableId}'",
-                {
-                    "tableId": tableid,
-                    "expectedTableId": recordset.dbTableId,
-                    "localizationKey": "unexpectedTableId",
-                },
-            )
-        query = query.join(
-            models.RecordSetItem, models.RecordSetItem.recordId == id_field
-        ).filter(models.RecordSetItem.recordSet == recordset)
-
-    order_by_exprs = []
-    selected_fields = []
-    predicates_by_field = defaultdict(list)
-    # augment_field_specs(field_specs, formatauditobjs)
-    for fs in field_specs:
-        # sort_type = SORT_TYPES[fs.sort_type]
-        sort_type = QuerySort.by_id(fs.sort_type)
-
-        if props.series and fs.fieldspec.get_field() and fs.fieldspec.get_field().name.lower() == 'catalognumber':
-            _, _, predicate = fs.add_to_query(query, formatauditobjs=props.formatauditobjs)
-            predicates_by_field[fs.fieldspec].append(predicate) if predicate is not None else None
-            continue
-
-        query, field, predicate = fs.add_to_query(
-            query, formatauditobjs=props.formatauditobjs, collection=collection, user=user
+        query = filter_query_by_recordset(
+            session=session,
+            collection=collection,
+            query=query,
+            id_field=id_field,
+            tableid=tableid,
+            recordsetid=props.recordsetid
         )
 
-        if field is None:
-            # Keep the result column in place when a displayed tree rank is
-            # missing, while omitting its filter and sort behavior.
-            if fs.display:
-                query = query.add_columns(sql.null())
-            continue
-
-        formatted_field = None
-        if fs.display:
-            formatted_field = query.objectformatter.fieldformat(fs, field)
-            query = query.add_columns(formatted_field)
-            selected_fields.append(formatted_field)
-        
-        if hasattr(field, 'key') and field.key and field.key.lower() == 'catalognumber':
-            catalog_number_field = formatted_field
-
-
-        if sort_type is not None:
-            order_by_exprs.append(sort_type(field))
-
-        if predicate is not None:
-            predicates_by_field[fs.fieldspec].append(predicate)
-
-    if props.implicit_or:
-        implicit_ors = [
-            reduce(sql.or_, ps) for ps in predicates_by_field.values() if ps
-        ]
-
-        if implicit_ors:
-            where = reduce(sql.and_, implicit_ors)
-            query = query.filter(where)
-    else:
-        where = reduce(sql.and_, (p for ps in predicates_by_field.values() for p in ps))
-        query = query.filter(where)
+    query, selected_fields, order_by_exprs = add_fields_to_query(
+        collection=collection,
+        user=user,
+        query=query,
+        query_fields=query_fields,
+        series=props.series,
+        formatauditobjs=props.formatauditobjs,
+        use_implicit_ors=props.implicit_or
+    )
 
     if props.series:
         query = group_by_displayed_fields(query, selected_fields, ignore_cat_num=True)
     elif props.distinct:
         query = group_by_displayed_fields(query, selected_fields)
-    
+
     if props.search_synonymy:
-        synonymy_table = _pick_synonymy_table(field_specs, base_table)
-        if synonymy_table is None:
-            logger.info("search_synonymy requested but no tree table found... skipping")
-        else:
-            log_sqlalchemy_query(query.query)
-            synonymized_query = synonymize_tree_query(query.query, synonymy_table)
-            query = query._replace(query=synonymized_query)
+        base_table = datamodel.get_table_by_id_strict(tableid)
+        query = search_on_synonyms(query, query_fields, base_table)
 
     internal_predicate = query.get_internal_filters()
     query = query.filter(internal_predicate)
 
-    logger.debug("query: %s", query.query)
     return query.query, order_by_exprs
 
 def series_post_query(query, limit=40, offset=0, sort_type=0, co_id_cat_num_pair_col_index=0, is_count=False):
     """Transform the query results by removing the co_id:catnum pair column
     and adding a co_id colum and formatted catnum range column.
     Sort the results by the first catnum in the range."""
-
-    log_sqlalchemy_query(query)
 
     def parse_catalog_for_comparing(s):
         def check_for_decimal(s):
