@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-09-25 07:52+0000\n"
+"PO-Revision-Date: 2026-09-26 12:51+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Croatian <https://hosted.weblate.org/projects/specify-7/"
 "attachments/hr/>\n"
@@ -340,7 +340,7 @@ msgstr ""
 #: components/Preferences/UserDefinitions.tsx:1455
 #, fuzzy
 msgid "showControls"
-msgstr "Prikaži kontrole privitaka"
+msgstr "Prikaži kontrole za privitke"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1456
