@@ -2888,7 +2888,6 @@ class Determination(models.Model):
         indexes = [
             models.Index(fields=['determineddate'], name='DeterminedDateIDX'),
             models.Index(fields=['collectionmemberid'], name='DetMemIDX'),
-            models.Index(fields=['iscurrent', 'taxon'], name='DetCurrentTaxonIDX'),
             models.Index(
                 fields=['collectionmemberid', 'iscurrent', 'taxon'],
                 name='DetColMemCurrentTaxonIDX',
