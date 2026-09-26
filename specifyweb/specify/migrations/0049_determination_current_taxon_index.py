@@ -15,4 +15,11 @@ class Migration(migrations.Migration):
                 name='DetCurrentTaxonIDX',
             ),
         ),
+        migrations.AddIndex(
+            model_name='determination',
+            index=models.Index(
+                fields=['collectionmemberid', 'iscurrent', 'taxon'],
+                name='DetColMemCurrentTaxonIDX',
+            ),
+        ),
     ]

@@ -13,7 +13,11 @@ def get_taxon_bar_data(collection):
     """Return taxon tile rows with a correlated current-count lookup."""
     current_determination_counts = (
         Determination.objects
-        .filter(taxon_id=OuterRef('pk'), iscurrent=True)
+        .filter(
+            taxon_id=OuterRef('pk'),
+            collectionmemberid=collection.id,
+            iscurrent=True,
+        )
         .values('taxon_id')
         .annotate(count=Count('id'))
         .values('count')

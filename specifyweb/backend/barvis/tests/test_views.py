@@ -1,4 +1,4 @@
-from specifyweb.specify.models import Determination, Taxon, Taxontreedefitem
+from specifyweb.specify.models import Collection, Determination, Taxon, Taxontreedefitem
 from specifyweb.specify.tests.test_api import ApiTests
 
 from specifyweb.backend.barvis.views import get_taxon_bar_data
@@ -26,6 +26,12 @@ class TaxonBarTests(ApiTests):
         )
 
     def test_returns_current_determination_counts_without_changing_rows(self):
+        collection_2 = Collection.objects.create(
+            catalognumformatname='test',
+            collectionname='TestCollection2',
+            isembeddedcollectingevent=False,
+            discipline=self.discipline,
+        )
         Determination.objects.create(
             collectionobject=self.collectionobjects[0], taxon=self.taxon,
             collectionmemberid=self.collection.id, iscurrent=True,
@@ -39,6 +45,11 @@ class TaxonBarTests(ApiTests):
         Determination.objects.create(
             collectionobject=self.collectionobjects[2], taxon=self.taxon,
             collectionmemberid=self.collection.id, iscurrent=False,
+            createdbyagent=self.agent, modifiedbyagent=self.agent,
+        )
+        Determination.objects.create(
+            collectionobject=self.collectionobjects[2], taxon=self.taxon,
+            collectionmemberid=collection_2.id, iscurrent=True,
             createdbyagent=self.agent, modifiedbyagent=self.agent,
         )
 
