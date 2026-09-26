@@ -363,7 +363,7 @@ export const attachmentsText = createDictionary({
       'O processo de reversão estava em andamento quando ocorreu uma interrupção. Alguns arquivos podem ter sido excluídos.',
     'hr-hr':
       'Vraćanje je bilo u tijeku kada je došlo do prekida. Neke datoteke su možda izbrisane.',
-    nb: 'Tilbakestillingen pågikk da et avbrudd oppsto. Noen filer kan ha blitt slettet.',
+    nb: 'Tilbakestillingen pågikk da et avbrudd oppsto. Noen filer kan ha blitt slettet',
   },
   attachmentId: {
     'en-us': 'Attachment ID',
@@ -415,7 +415,7 @@ export const attachmentsText = createDictionary({
       'O envio dos anexos os criará no servidor de ativos e no banco de dados especificado.',
     'hr-hr':
       'Prijenosom privitaka stvorit će se privitci na poslužitelju imovine i u Navedite bazu podataka',
-    nb: 'Opplasting av vedlegg vil opprette vedlegg på ressursserveren og i Specify-databasen.',
+    nb: 'Opplasting av vedlegg vil opprette vedlegg på ressursserveren og i Specify-databasen',
   },
   interrupted: {
     'en-us': 'Interrupted',

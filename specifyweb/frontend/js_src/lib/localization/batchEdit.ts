@@ -267,7 +267,7 @@ export const batchEditText = createDictionary({
       'Цей відкочений набір даних збережено, проте його не можна редагувати. Будь ласка, повторіть запит.',
     'hr-hr':
       'Ovaj vraćeni skup podataka je spremljen, međutim, ne može se uređivati. Ponovno pokrenite upit.',
-    nb: 'Dette tilbakerullede datasettet er lagret, men det kan ikke redigeres. Kjør søket på nytt.',
+    nb: 'Dette tilbakerullede datasettet er lagret, men det kan ikke redigeres. Kjør søket på nytt',
   },
   committing: {
     'en-us': 'Committing',
