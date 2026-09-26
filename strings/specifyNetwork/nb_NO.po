@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-09-26 15:54+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Eirik Rindal <eirik.rindal@nhm.uio.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/specifyNetwork/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -32,7 +32,6 @@ msgstr "Finner ingen data for denne forespørselen"
 
 #. Used in: Components > Specify Network > Overlay
 #: components/SpecifyNetwork/Overlay.tsx:136
-#, fuzzy
 msgid "noDataErrorDescription"
 msgstr "Prøv å søke etter en annen oppføring"
 
