@@ -169,6 +169,7 @@ async function formatField(
     fieldFormatter,
     formatFieldValue = true,
     trimZeros = false,
+    format: displayFormat,
   }: Formatter['definition']['fields'][number]['fields'][number] & {
     readonly formatFieldValue?: boolean;
   },
@@ -184,6 +185,14 @@ async function formatField(
   const cycleDetector = [...cycleDetection, parentResource];
 
   let formatted: string | undefined = undefined;
+  if (fields === undefined) {
+    // An unmapped field is a static formatter entry. Its separator is the
+    // text to emit, rather than a separator for another value.
+    return {
+      formatted: displayFormat ?? separator ?? '',
+      separator: localized(''),
+    };
+  }
   const hasPermission = hasPathPermission(fields ?? [], 'read');
 
   if (hasPermission) {
@@ -229,6 +238,20 @@ async function formatField(
         : num.toString();
   }
 
+  if (displayFormat !== undefined) {
+    const substitution = displayFormat.includes('%s')
+      ? '%s'
+      : displayFormat.includes('%d')
+        ? '%d'
+        : undefined;
+    formatted =
+      substitution === undefined
+        ? displayFormat
+        : formatted === undefined || formatted === ''
+          ? undefined
+          : displayFormat.replace(substitution, formatted);
+  }
+
   return {
     formatted: formatted?.toString() ?? '',
     separator: (formatted ?? '') === '' ? '' : separator,
@@ -251,6 +274,7 @@ export async function fetchPathAsString(
       separator: localized(''),
       aggregator: undefined,
       fieldFormatter: undefined,
+      format: undefined,
       formatFieldValue,
       trimZeros: false,
     },
@@ -301,6 +325,7 @@ const autoGenerateFormatter = (table: SpecifyTable): Formatter => ({
             formatter: undefined,
             aggregator: undefined,
             fieldFormatter: undefined,
+            format: undefined,
             trimZeros: false,
           })),
       },
