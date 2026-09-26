@@ -11,6 +11,8 @@ import './__mocks__/ResizeObserver';
 import { configure } from '@testing-library/react';
 import failOnConsole from 'jest-fail-on-console';
 
+import { TextEncoder, TextDecoder } from 'util';
+
 // Fail a test if it calls console.error or console.warn
 failOnConsole();
 
@@ -22,3 +24,5 @@ failOnConsole();
 configure({
   throwSuggestions: true,
 });
+
+Object.assign(global, { TextDecoder, TextEncoder });

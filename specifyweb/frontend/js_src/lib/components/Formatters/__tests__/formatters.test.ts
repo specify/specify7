@@ -106,6 +106,7 @@ describe('formatField', () => {
           formatter: undefined,
           aggregator: undefined,
           fieldFormatter: undefined,
+          format: undefined,
           separator: localized(', '),
           trimZeros: false,
         },
@@ -132,6 +133,7 @@ describe('formatField', () => {
           formatter: undefined,
           aggregator: undefined,
           fieldFormatter: undefined,
+          format: undefined,
           formatFieldValue: false,
           separator: localized(', '),
           trimZeros: false,
@@ -142,6 +144,61 @@ describe('formatField', () => {
       formatted: '1',
       separator: ', ',
     });
+  });
+
+  test('applies a field format and preserves static formatter entries', async () => {
+    const parentResource = new tables.Collector.Resource({ id: collectorId });
+    await expect(
+      formatField(
+        {
+          field: [
+            tables.Collector.strictGetField('agent'),
+            tables.Agent.strictGetField('agentType'),
+          ],
+          formatter: undefined,
+          aggregator: undefined,
+          fieldFormatter: undefined,
+          format: localized('(%s)'),
+          separator: localized(''),
+          trimZeros: false,
+        },
+        parentResource
+      )
+    ).resolves.toEqual({ formatted: '(Person)', separator: '' });
+    await expect(
+      formatField(
+        {
+          field: undefined,
+          formatter: undefined,
+          aggregator: undefined,
+          fieldFormatter: undefined,
+          format: undefined,
+          separator: localized(' / '),
+          trimZeros: false,
+        },
+        parentResource
+      )
+    ).resolves.toEqual({ formatted: ' / ', separator: '' });
+  });
+
+  test('omits empty mapped values from substitution formats', async () => {
+    const parentResource = new tables.Agent.Resource({ agentType: undefined });
+    const field = [tables.Agent.strictGetField('agentType')];
+    const base = {
+      field,
+      formatter: undefined,
+      aggregator: undefined,
+      fieldFormatter: undefined,
+      separator: localized(''),
+      trimZeros: false,
+    } as const;
+
+    await expect(
+      formatField({ ...base, format: localized('%s') }, parentResource)
+    ).resolves.toEqual({ formatted: '', separator: '' });
+    await expect(
+      formatField({ ...base, format: localized('%d') }, parentResource)
+    ).resolves.toEqual({ formatted: '', separator: '' });
   });
 });
 
@@ -195,6 +252,7 @@ test('Circular formatting is detected and prevented', async () => {
               separator: localized(''),
               formatter: undefined,
               fieldFormatter: undefined,
+              format: undefined,
               trimZeros: false,
             },
             {
@@ -203,6 +261,7 @@ test('Circular formatting is detected and prevented', async () => {
               separator: localized(''),
               formatter: undefined,
               fieldFormatter: undefined,
+              format: undefined,
               trimZeros: false,
             },
           ],
@@ -229,6 +288,7 @@ test('Circular formatting is detected and prevented', async () => {
               separator: localized(' - '),
               formatter: undefined,
               fieldFormatter: undefined,
+              format: undefined,
               trimZeros: false,
             },
             {
@@ -237,6 +297,7 @@ test('Circular formatting is detected and prevented', async () => {
               separator: localized(' -- '),
               formatter: undefined,
               fieldFormatter: undefined,
+              format: undefined,
               trimZeros: false,
             },
           ],

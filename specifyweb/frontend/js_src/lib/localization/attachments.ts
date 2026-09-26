@@ -555,7 +555,7 @@ export const attachmentsText = createDictionary({
     'ru-ru': 'Показать элементы управления вложениями',
     'uk-ua': 'Показати елементи керування вкладеннями',
     'pt-br': 'Mostrar controles de anexo',
-    'hr-hr': 'Prikaži kontrole privitaka',
+    'hr-hr': 'Prikaži kontrole za privitke',
     nb: 'Vis vedleggskontroller',
   },
   showControlsDescription: {

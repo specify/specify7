@@ -994,6 +994,17 @@ export const resourcesText = createDictionary({
     'hr-hr': 'Prilagodite formate polja',
     nb: 'Tilpass feltformater',
   },
+  displayFormat: {
+    'en-us': 'Display Format',
+    'de-ch': 'Anzeigeformat',
+    'es-es': 'Formato de visualización',
+    'fr-fr': "Format d'affichage",
+    'ru-ru': 'Формат отображения',
+    'uk-ua': 'Формат відображення',
+    'pt-br': 'Formato de exibição',
+    'hr-hr': 'Format prikaza',
+    nb: 'Visningsformat',
+  },
   expandConditionalField: {
     'en-us': 'Expand Conditional Field',
     'de-ch': 'Bedingtes Feld erweitern',
