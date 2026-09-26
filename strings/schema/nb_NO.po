@@ -226,8 +226,9 @@ msgstr "Desimal"
 msgid "readOnly"
 msgstr "Skrivebeskyttet"
 
+#: components/Formatters/Fields.tsx:77
 #: components/SchemaConfig/Format.tsx:67
-#. Used in: Components > Schema Config > Format
+#. Used in: Components > Formatters > Fields ⬤ Components > Schema Config > Format
 msgid "fieldFormat"
 msgstr "Felt-format"
 
@@ -413,8 +414,3 @@ msgstr "skjult"
 #. Used in: Components > Schema Config > Fields
 msgid "visible"
 msgstr "Synlig"
-
-#: components/Formatters/Fields.tsx:76
-#. Used in: Components > Formatters > Fields
-msgid "customFieldFormat"
-msgstr "Tilpasset feltformat"

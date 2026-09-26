@@ -162,7 +162,7 @@ msgstr "Форматировщики записей"
 
 #: components/Formatters/Aggregator.tsx:69
 #: components/Formatters/Element.tsx:132
-#: components/Formatters/Fields.tsx:287
+#: components/Formatters/Fields.tsx:361
 #. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Element ⬤ Components > Formatters > Fields
 #, fuzzy
 msgid "formatter"
@@ -374,7 +374,7 @@ msgstr "По умолчанию"
 #: components/FieldFormatters/index.ts:410
 #: components/Formatters/Aggregator.tsx:28
 #: components/Formatters/Fields.tsx:74
-#: components/Formatters/Fields.tsx:178
+#: components/Formatters/Fields.tsx:180
 #. Used in: Components > Field Formatters > Index ⬤ Components > Formatters > Aggregator ⬤ Components > Formatters > Fields
 #, fuzzy
 msgid "separator"
@@ -444,7 +444,7 @@ msgstr "Добавить определение"
 
 #: components/FormEditor/Editor.tsx:133
 #: components/Formatters/Definitions.tsx:172
-#: components/Formatters/Definitions.tsx:253
+#: components/Formatters/Definitions.tsx:254
 #. Used in: Components > Form Editor > Editor ⬤ Components > Formatters > Definitions
 #, fuzzy
 msgid "deleteDefinition"
@@ -457,8 +457,8 @@ msgid "urlPart"
 msgstr "URL-часть"
 
 #: components/FieldFormatters/Parts.tsx:90
-#: components/Formatters/Definitions.tsx:213
-#: components/Formatters/Fields.tsx:125
+#: components/Formatters/Definitions.tsx:214
+#: components/Formatters/Fields.tsx:127
 #. Used in: Components > Field Formatters > Parts ⬤ Components > Formatters > Definitions ⬤ Components > Formatters > Fields
 #, fuzzy
 msgid "addField"
@@ -585,13 +585,20 @@ msgstr "Перед редактированием следующей формы 
 msgid "conditionalFormatter"
 msgstr "Условный формат"
 
-#: components/Formatters/Fields.tsx:136
+#: components/Formatters/Fields.tsx:138
 #. Used in: Components > Formatters > Fields
 #, fuzzy
 msgid "customizeFieldFormatters"
 msgstr "Настройка форматов полей"
 
-#: components/Formatters/Definitions.tsx:262
+#: components/Formatters/Fields.tsx:76
+#: components/Formatters/Fields.tsx:211
+#: components/Formatters/Fields.tsx:287
+#. Used in: Components > Formatters > Fields
+msgid "displayFormat"
+msgstr "Формат отображения"
+
+#: components/Formatters/Definitions.tsx:263
 #. Used in: Components > Formatters > Definitions
 #, fuzzy
 msgid "expandConditionalField"
@@ -609,7 +616,7 @@ msgstr "Свернуть условное поле"
 msgid "conditionalFieldValue"
 msgstr "Условное значение поля"
 
-#: components/Formatters/Definitions.tsx:219
+#: components/Formatters/Definitions.tsx:220
 #. Used in: Components > Formatters > Definitions
 #, fuzzy
 msgid "formatPreview"
@@ -718,21 +725,21 @@ msgstr "Данный препарат используется при оформ
 msgid "preparationIsNegative"
 msgstr "Количество подготовленных образцов не может быть отрицательным."
 
-#: components/Formatters/Fields.tsx:336
-#: components/Formatters/Fields.tsx:337
-#: components/Formatters/Fields.tsx:342
+#: components/Formatters/Fields.tsx:410
+#: components/Formatters/Fields.tsx:411
+#: components/Formatters/Fields.tsx:416
 #. Used in: Components > Formatters > Fields
 #, fuzzy
 msgid "configureField"
 msgstr "Настроить поле"
 
-#: components/Formatters/Fields.tsx:381
+#: components/Formatters/Fields.tsx:455
 #. Used in: Components > Formatters > Fields
 #, fuzzy
 msgid "trimZeros"
 msgstr "Обрезка нулей"
 
-#: components/Formatters/Fields.tsx:375
+#: components/Formatters/Fields.tsx:449
 #. Used in: Components > Formatters > Fields
 #, fuzzy
 msgid "trimZerosDescription"

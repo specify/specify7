@@ -141,7 +141,7 @@ msgstr "Formateurs d'enregistrements"
 
 #: components/Formatters/Aggregator.tsx:69
 #: components/Formatters/Element.tsx:132
-#: components/Formatters/Fields.tsx:287
+#: components/Formatters/Fields.tsx:361
 #. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Element ⬤ Components > Formatters > Fields
 msgid "formatter"
 msgstr "Format de table"
@@ -321,7 +321,7 @@ msgstr "Défaut"
 #: components/FieldFormatters/index.ts:410
 #: components/Formatters/Aggregator.tsx:28
 #: components/Formatters/Fields.tsx:74
-#: components/Formatters/Fields.tsx:178
+#: components/Formatters/Fields.tsx:180
 #. Used in: Components > Field Formatters > Index ⬤ Components > Formatters > Aggregator ⬤ Components > Formatters > Fields
 msgid "separator"
 msgstr "Séparateur"
@@ -383,7 +383,7 @@ msgstr "Ajouter une définition"
 
 #: components/FormEditor/Editor.tsx:133
 #: components/Formatters/Definitions.tsx:172
-#: components/Formatters/Definitions.tsx:253
+#: components/Formatters/Definitions.tsx:254
 #. Used in: Components > Form Editor > Editor ⬤ Components > Formatters > Definitions
 msgid "deleteDefinition"
 msgstr "Supprimer la définition"
@@ -394,8 +394,8 @@ msgid "urlPart"
 msgstr "Partie d'URL"
 
 #: components/FieldFormatters/Parts.tsx:90
-#: components/Formatters/Definitions.tsx:213
-#: components/Formatters/Fields.tsx:125
+#: components/Formatters/Definitions.tsx:214
+#: components/Formatters/Fields.tsx:127
 #. Used in: Components > Field Formatters > Parts ⬤ Components > Formatters > Definitions ⬤ Components > Formatters > Fields
 msgid "addField"
 msgstr "Ajouter un champ"
@@ -502,12 +502,19 @@ msgstr "Vous devez enregistrer ce formulaire avant d'en modifier un autre."
 msgid "conditionalFormatter"
 msgstr "Format conditionnel"
 
-#: components/Formatters/Fields.tsx:136
+#: components/Formatters/Fields.tsx:138
 #. Used in: Components > Formatters > Fields
 msgid "customizeFieldFormatters"
 msgstr "Personnaliser les formats de champ"
 
-#: components/Formatters/Definitions.tsx:262
+#: components/Formatters/Fields.tsx:76
+#: components/Formatters/Fields.tsx:211
+#: components/Formatters/Fields.tsx:287
+#. Used in: Components > Formatters > Fields
+msgid "displayFormat"
+msgstr "Format d'affichage"
+
+#: components/Formatters/Definitions.tsx:263
 #. Used in: Components > Formatters > Definitions
 msgid "expandConditionalField"
 msgstr "Développer le champ conditionnel"
@@ -522,7 +529,7 @@ msgstr "Réduire le champ conditionnel"
 msgid "conditionalFieldValue"
 msgstr "Valeur de champ conditionnelle"
 
-#: components/Formatters/Definitions.tsx:219
+#: components/Formatters/Definitions.tsx:220
 #. Used in: Components > Formatters > Definitions
 msgid "formatPreview"
 msgstr "Aperçu du format"
@@ -615,19 +622,19 @@ msgstr "Cette préparation est en cours de prêt."
 msgid "preparationIsNegative"
 msgstr "Le nombre de préparations ne peut pas être négatif."
 
-#: components/Formatters/Fields.tsx:336
-#: components/Formatters/Fields.tsx:337
-#: components/Formatters/Fields.tsx:342
+#: components/Formatters/Fields.tsx:410
+#: components/Formatters/Fields.tsx:411
+#: components/Formatters/Fields.tsx:416
 #. Used in: Components > Formatters > Fields
 msgid "configureField"
 msgstr "Configurer le champ"
 
-#: components/Formatters/Fields.tsx:381
+#: components/Formatters/Fields.tsx:455
 #. Used in: Components > Formatters > Fields
 msgid "trimZeros"
 msgstr "Supprimer les zéros"
 
-#: components/Formatters/Fields.tsx:375
+#: components/Formatters/Fields.tsx:449
 #. Used in: Components > Formatters > Fields
 msgid "trimZerosDescription"
 msgstr "Supprimer les zéros non significatifs des valeurs numériques."

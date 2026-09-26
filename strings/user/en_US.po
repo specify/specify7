@@ -180,7 +180,7 @@ msgstr ""
 "You lack sufficient privileges for that action, or your current session has "
 "been logged out."
 
-#: components/Formatters/formatters.ts:220
+#: components/Formatters/formatters.ts:229
 #: components/Forms/dataObjFormatters.ts:290
 #: components/QueryComboBox/index.tsx:203
 #: components/Statistics/Categories.tsx:76

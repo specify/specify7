@@ -583,8 +583,8 @@ msgstr "Téléchargé"
 #: components/FormCells/FormTable.tsx:545
 #: components/FormPlugins/CollectionRelOneToMany.tsx:136
 #: components/FormSliders/IntegratedRecordSelector.tsx:342
-#: components/Formatters/Fields.tsx:215
-#: components/Formatters/Fields.tsx:216
+#: components/Formatters/Fields.tsx:236
+#: components/Formatters/Fields.tsx:237
 #: components/QueryBuilder/Components.tsx:167
 #: components/QueryBuilder/FieldFilterTool.tsx:100
 #: components/QueryBuilder/FieldFilterTool.tsx:103
@@ -982,7 +982,7 @@ msgstr "Selectionné"
 #: components/FormCells/FormTable.tsx:418
 #: components/FormCells/FormTable.tsx:420
 #: components/FormSliders/IntegratedRecordSelector.tsx:112
-#: components/Formatters/Definitions.tsx:243
+#: components/Formatters/Definitions.tsx:244
 #: components/Header/index.tsx:156
 #: components/Molecules/AutoComplete.tsx:569
 #: components/SchemaConfig/Sidebar.tsx:26

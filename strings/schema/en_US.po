@@ -216,8 +216,9 @@ msgstr "Decimal"
 msgid "readOnly"
 msgstr "Read-only"
 
+#: components/Formatters/Fields.tsx:77
 #: components/SchemaConfig/Format.tsx:67
-#. Used in: Components > Schema Config > Format
+#. Used in: Components > Formatters > Fields ⬤ Components > Schema Config > Format
 msgid "fieldFormat"
 msgstr "Field Format"
 
@@ -403,8 +404,3 @@ msgstr "hidden"
 #. Used in: Components > Schema Config > Fields
 msgid "visible"
 msgstr "Visible"
-
-#: components/Formatters/Fields.tsx:76
-#. Used in: Components > Formatters > Fields
-msgid "customFieldFormat"
-msgstr "Custom Field Format"

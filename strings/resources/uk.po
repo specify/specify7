@@ -141,7 +141,7 @@ msgstr "Форматувальники записів"
 
 #: components/Formatters/Aggregator.tsx:69
 #: components/Formatters/Element.tsx:132
-#: components/Formatters/Fields.tsx:287
+#: components/Formatters/Fields.tsx:361
 #. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Element ⬤ Components > Formatters > Fields
 msgid "formatter"
 msgstr "Формат таблиці"
@@ -319,7 +319,7 @@ msgstr "За замовчуванням"
 #: components/FieldFormatters/index.ts:410
 #: components/Formatters/Aggregator.tsx:28
 #: components/Formatters/Fields.tsx:74
-#: components/Formatters/Fields.tsx:178
+#: components/Formatters/Fields.tsx:180
 #. Used in: Components > Field Formatters > Index ⬤ Components > Formatters > Aggregator ⬤ Components > Formatters > Fields
 msgid "separator"
 msgstr "Роздільник"
@@ -381,7 +381,7 @@ msgstr "Додайте визначення"
 
 #: components/FormEditor/Editor.tsx:133
 #: components/Formatters/Definitions.tsx:172
-#: components/Formatters/Definitions.tsx:253
+#: components/Formatters/Definitions.tsx:254
 #. Used in: Components > Form Editor > Editor ⬤ Components > Formatters > Definitions
 msgid "deleteDefinition"
 msgstr "Видалити визначення"
@@ -392,8 +392,8 @@ msgid "urlPart"
 msgstr "URL-адреса"
 
 #: components/FieldFormatters/Parts.tsx:90
-#: components/Formatters/Definitions.tsx:213
-#: components/Formatters/Fields.tsx:125
+#: components/Formatters/Definitions.tsx:214
+#: components/Formatters/Fields.tsx:127
 #. Used in: Components > Field Formatters > Parts ⬤ Components > Formatters > Definitions ⬤ Components > Formatters > Fields
 msgid "addField"
 msgstr "Додати поле"
@@ -499,12 +499,19 @@ msgstr "Вам потрібно зберегти цю форму, перш ні�
 msgid "conditionalFormatter"
 msgstr "Умовний формат"
 
-#: components/Formatters/Fields.tsx:136
+#: components/Formatters/Fields.tsx:138
 #. Used in: Components > Formatters > Fields
 msgid "customizeFieldFormatters"
 msgstr "Налаштувати формати полів"
 
-#: components/Formatters/Definitions.tsx:262
+#: components/Formatters/Fields.tsx:76
+#: components/Formatters/Fields.tsx:211
+#: components/Formatters/Fields.tsx:287
+#. Used in: Components > Formatters > Fields
+msgid "displayFormat"
+msgstr "Формат відображення"
+
+#: components/Formatters/Definitions.tsx:263
 #. Used in: Components > Formatters > Definitions
 msgid "expandConditionalField"
 msgstr "Розгорнути умовне поле"
@@ -519,7 +526,7 @@ msgstr "Згорнути умовне поле"
 msgid "conditionalFieldValue"
 msgstr "Умовне значення поля"
 
-#: components/Formatters/Definitions.tsx:219
+#: components/Formatters/Definitions.tsx:220
 #. Used in: Components > Formatters > Definitions
 msgid "formatPreview"
 msgstr "Попередній перегляд формату"
@@ -612,19 +619,19 @@ msgstr "Препарат використовується у позиці."
 msgid "preparationIsNegative"
 msgstr "Кількість підготовок не може бути від'ємним значенням"
 
-#: components/Formatters/Fields.tsx:336
-#: components/Formatters/Fields.tsx:337
-#: components/Formatters/Fields.tsx:342
+#: components/Formatters/Fields.tsx:410
+#: components/Formatters/Fields.tsx:411
+#: components/Formatters/Fields.tsx:416
 #. Used in: Components > Formatters > Fields
 msgid "configureField"
 msgstr "Налаштувати поле"
 
-#: components/Formatters/Fields.tsx:381
+#: components/Formatters/Fields.tsx:455
 #. Used in: Components > Formatters > Fields
 msgid "trimZeros"
 msgstr "Обрізати нулі"
 
-#: components/Formatters/Fields.tsx:375
+#: components/Formatters/Fields.tsx:449
 #. Used in: Components > Formatters > Fields
 msgid "trimZerosDescription"
 msgstr "Видаліть початкові нулі з числових значень."

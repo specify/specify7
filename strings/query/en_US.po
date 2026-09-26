@@ -234,8 +234,8 @@ msgstr "(any rank)"
 msgid "anyTree"
 msgstr "(any tree)"
 
-#: components/Formatters/Fields.tsx:223
-#: components/Formatters/Fields.tsx:224
+#: components/Formatters/Fields.tsx:244
+#: components/Formatters/Fields.tsx:245
 #: components/QueryBuilder/QueryLineTools.tsx:103
 #: components/QueryBuilder/QueryLineTools.tsx:105
 #: components/Toolbar/ListEdit.tsx:111
@@ -243,8 +243,8 @@ msgstr "(any tree)"
 msgid "moveUp"
 msgstr "Move Up"
 
-#: components/Formatters/Fields.tsx:230
-#: components/Formatters/Fields.tsx:231
+#: components/Formatters/Fields.tsx:251
+#: components/Formatters/Fields.tsx:252
 #: components/QueryBuilder/QueryLineTools.tsx:111
 #: components/QueryBuilder/QueryLineTools.tsx:113
 #: components/Toolbar/ListEdit.tsx:117
