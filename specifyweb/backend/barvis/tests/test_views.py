@@ -44,6 +44,13 @@ class TaxonBarTests(ApiTests):
             collectionmemberid=self.collection.id, iscurrent=True,
             createdbyagent=self.agent, modifiedbyagent=self.agent,
         )
+        Determination.objects.bulk_create([
+            Determination(
+                collectionobject=self.collectionobjects[0], taxon=self.taxon,
+                collectionmemberid=self.collection.id, iscurrent=True,
+                createdbyagent=self.agent, modifiedbyagent=self.agent,
+            ),
+        ])
         Determination.objects.create(
             collectionobject=self.collectionobjects[2], taxon=self.taxon,
             collectionmemberid=self.collection.id, iscurrent=False,

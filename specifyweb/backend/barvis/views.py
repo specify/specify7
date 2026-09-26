@@ -19,7 +19,7 @@ def get_taxon_bar_data(collection):
             iscurrent=True,
         )
         .values('taxon_id')
-        .annotate(count=Count('id'))
+        .annotate(count=Count('collectionobject', distinct=True))
         .values('count')
     )
     taxons = Taxon.objects.annotate(
