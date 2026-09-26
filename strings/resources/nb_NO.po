@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-09-26 15:53+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Eirik Rindal <eirik.rindal@nhm.uio.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/resources/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -540,18 +540,14 @@ msgstr "En gyldig avgjørelse er nødvendig."
 #. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:344
 #: components/DataModel/businessRuleDefs.ts:363
-#, fuzzy
 msgid "cogAddedToItself"
 msgstr "En COG kan ikke legges til seg selv."
 
 #. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 #: components/DataModel/businessRuleDefs.ts:293
 #: components/DataModel/__tests__/businessRules.test.ts:416
-#, fuzzy
 msgid "primaryCogChildRequired"
-msgstr ""
-"En konsolidert samlingsobjektgruppe må ha et primært "
-"samlingsobjektunderordnet"
+msgstr "En konsolidert samlingsobjektgruppe må ha et primært underobjekt"
 
 #. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:381
@@ -561,21 +557,18 @@ msgstr "Primæroppføring CO kan ikke slettes."
 
 #. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:902
-#, fuzzy
 msgid "deleteLoanedPrep"
-msgstr "Et lånt preparat kan ikke slettes"
+msgstr "Et utlånt preparat kan ikke slettes"
 
 #. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:910
-#, fuzzy
 msgid "deleteGiftedPrep"
-msgstr "En gavepreparat kan ikke slettes"
+msgstr "En preparat som er gitt i gave, kan ikke slettes"
 
 #. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:918
-#, fuzzy
 msgid "deleteDisposedPrep"
-msgstr "Et kassert preparat kan ikke slettes"
+msgstr "Et avhendet objekt kan ikke slettes"
 
 #. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:926
@@ -589,9 +582,8 @@ msgstr "Et preparat som er fått i gave eller er byttet til seg kan ikke slettes
 
 #. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:906
-#, fuzzy
 msgid "selectDeterminationTaxon"
-msgstr "Velg ett taksontresett for å fortsette med:"
+msgstr "Velg ett taksontre for å fortsette med:"
 
 #. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 #: components/DataModel/businessRuleDefs.ts:196
@@ -612,7 +604,6 @@ msgstr ""
 #. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:260
 #: components/DataModel/businessRuleDefs.ts:572
-#, fuzzy
 msgid "catalogNumberAlreadyUsed"
 msgstr ""
 "{catalogNumberFieldName: string} {catalogNumber: string} er allerede i bruk "
@@ -620,46 +611,39 @@ msgstr ""
 
 #. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:877
-#, fuzzy
 msgid "preparationUsedInLoan"
-msgstr "Preparatet brukes i et lån."
+msgstr "Preparatet er på utlån."
 
 #. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:870
-#, fuzzy
 msgid "preparationIsNegative"
-msgstr "Antall forberedelser kan ikke være negativt"
+msgstr "Antall av preparater kan ikke være negativt"
 
 #. Used in: Components > Formatters > Fields
 #: components/Formatters/Fields.tsx:410
 #: components/Formatters/Fields.tsx:411
 #: components/Formatters/Fields.tsx:416
-#, fuzzy
 msgid "configureField"
 msgstr "Konfigurer feltet"
 
 #. Used in: Components > Formatters > Fields
 #: components/Formatters/Fields.tsx:455
-#, fuzzy
 msgid "trimZeros"
 msgstr "Trim nuller"
 
 #. Used in: Components > Formatters > Fields
 #: components/Formatters/Fields.tsx:449
-#, fuzzy
 msgid "trimZerosDescription"
 msgstr "Fjern innledende nuller fra numeriske verdier."
 
 #. Used in: Components > Field Formatters > Field Formatter
 #: components/FieldFormatters/FieldFormatter.tsx:139
-#, fuzzy
 msgid "formatterPreviewUnavailable"
-msgstr "Forhåndsvisning for formatering av denne typen er ikke tilgjengelig"
+msgstr "Forhåndsvisning for formatering er ikke tilgjengelig"
 
 #. Used in: Components > Field Formatters > Field Formatter
 #: components/FieldFormatters/FieldFormatter.tsx:150
 #: components/FieldFormatters/FieldFormatter.tsx:178
-#, fuzzy
 msgid "nonConformingInline"
 msgstr "(ikke-samsvarende)"
 
@@ -668,31 +652,26 @@ msgstr "(ikke-samsvarende)"
 #: components/FieldFormatters/Parts.tsx:159
 #: components/FieldFormatters/Parts.tsx:160
 #: components/FieldFormatters/Parts.tsx:173
-#, fuzzy
 msgid "value"
 msgstr "Verdi"
 
 #. Used in: Components > Field Formatters > Index
 #: components/FieldFormatters/index.ts:403
-#, fuzzy
 msgid "constant"
 msgstr "Konstant"
 
 #. Used in: Components > Field Formatters > Index
 #: components/FieldFormatters/index.ts:405
-#, fuzzy
 msgid "alpha"
 msgstr "Alfa"
 
 #. Used in: Components > Field Formatters > Index
 #: components/FieldFormatters/index.ts:406
-#, fuzzy
 msgid "numeric"
 msgstr "Numerisk"
 
 #. Used in: Components > Field Formatters > Index
 #: components/FieldFormatters/index.ts:407
-#, fuzzy
 msgid "alphanumeric"
 msgstr "Alfanumerisk"
 
@@ -710,13 +689,11 @@ msgstr "Regulært uttrykk"
 
 #. Used in: Components > Field Formatters > Field Formatter
 #: components/FieldFormatters/FieldFormatter.tsx:177
-#, fuzzy
 msgid "exampleField"
 msgstr "Eksempelfelt"
 
 #. Used in: Components > Field Formatters > Parts
 #: components/FieldFormatters/Parts.tsx:221
 #: components/FieldFormatters/Parts.tsx:223
-#, fuzzy
 msgid "pattern"
 msgstr "Mønster"
