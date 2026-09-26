@@ -9,6 +9,8 @@ class TaxonBarTests(ApiTests):
         super().setUp()
         self.discipline.taxontreedef = self.taxontreedef
         self.discipline.save()
+        self.taxontreedef.discipline = self.discipline
+        self.taxontreedef.save()
 
         root_rank = Taxontreedefitem.objects.create(
             name='Root', rankid=0, treedef=self.taxontreedef
