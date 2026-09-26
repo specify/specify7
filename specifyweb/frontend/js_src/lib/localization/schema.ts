@@ -9,6 +9,45 @@ import { createDictionary } from './utils';
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
 export const schemaText = createDictionary({
+  importSchema: {
+    'en-us': 'Import {schemaConfig:string}',
+  },
+  importSchemaWarning: {
+    'en-us':
+      'Importing a {schemaConfig:string} will overwrite the current one. This action cannot be undone.',
+  },
+  importSchemaLanguageWarning: {
+    'en-us':
+      'The exported schema language must match the language currently being configured.',
+  },
+  importSchemaBackupPrompt: {
+    'en-us':
+      'We strongly recommend downloading a backup of the current {schemaConfig:string} before importing.',
+  },
+  importSchemaLimitations: {
+    'en-us':
+      'This import will not assign pick lists, field formats, or web links unless they already exist.',
+  },
+  downloadSchemaBackup: {
+    'en-us': 'Export {schemaConfig:string}',
+  },
+  importSchemaContinue: {
+    'en-us': 'Continue Import',
+  },
+  importSchemaError: {
+    'en-us':
+      'The {schemaConfig:string} export is invalid or was exported for a different language and cannot be imported.',
+  },
+  importSchemaSuccess: {
+    'en-us': '{schemaConfig:string} imported successfully',
+  },
+  importSchemaRefreshError: {
+    'en-us':
+      'The import succeeded, but the page could not refresh automatically. Reload the page to see the imported changes.',
+  },
+  reloadSchemaConfig: {
+    'en-us': 'Reload Page',
+  },
   table: {
     'en-us': 'Table',
     'ru-ru': 'Стол',
