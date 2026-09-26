@@ -121,7 +121,7 @@ export const welcomeText = createDictionary({
       "Specify 7, © 2026, Centre de recherche de l'Université du Kansas. Specify est fourni SANS AUCUNE GARANTIE. Il s'agit d'un logiciel libre et open source distribué sous licence GNU GPL v3.",
     'hr-hr':
       'Specify 7, autorsko pravo 2026., Istraživački centar Sveučilišta u Kansasu. Specify dolazi APSOLUTNO BEZ JAMSTVA. Ovo je besplatni softver otvorenog koda licenciran pod GNU General Public License v3.',
-    nb: 'Specificate 7, Copyright 2026, University of Kansas Center for Research. Specifice leveres UTEN GARANTI. Dette er gratis programvare med åpen kildekode lisensiert under GNU General Public License v3.',
+    nb: 'Specify 7, Copyright 2025, University of Kansas Center for Research. Specify leveres UTEN NOEN FORM FOR GARANTI. Dette er fri, åpen kildekode-programvare, lisensiert under GNU General Public License v2.',
     'pt-br':
       'Specify 7, Copyright 2026, Centro de Pesquisa da Universidade do Kansas. Specify é fornecido SEM QUALQUER GARANTIA. Este é um software livre e de código aberto licenciado sob a Licença Pública Geral GNU v3.',
     'ru-ru':

@@ -440,7 +440,7 @@ export const headerText = createDictionary({
       'A tradução para este idioma ainda não está completa. Alguns elementos podem estar sem localização ou com localização incorreta. Se você estiver interessado em nos ajudar a concluir a localização, siga as instruções.',
     'hr-hr':
       'Prijevod na ovaj jezik još nije dovršen. Nekim elementima možda nedostaje lokalizacija ili je lokalizacija netočna. Ako ste zainteresirani da nam pomognete dovršiti lokalizaciju, molimo <link>slijedite upute.</link>',
-    nb: 'Oversettelsen til dette språket er ikke fullført ennå. Noen elementer kan mangle lokal tilpasning, eller ha feil lokal tilpasning. Hvis du er interessert i å hjelpe oss med å fullføre lokal tilpasning, kan du <link> følge instruksjonene.</link>',
+    nb: 'Oversettelsen til dette språket er ikke fullført ennå. Noen elementer kan mangle lokal tilpasning, eller ha feil lokal tilpasning. Hvis du er interessert i å hjelpe oss med å fullføre lokal tilpasning, kan du <link>følge instruksjonene.</link>',
   },
   tableApi: {
     'en-us': 'Tables API',
