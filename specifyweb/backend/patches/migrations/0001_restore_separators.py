@@ -2,6 +2,31 @@
 
 from django.db import migrations
 
+
+def restore_separators(apps, schema_editor):
+    if schema_editor.connection.vendor == 'postgresql':
+        sql = """
+            UPDATE spappresourcedata
+            SET data = REPLACE(data, 'separator=""', 'separator="; "')
+            WHERE "SpAppResourceID" IN (
+                SELECT "SpAppResourceID"
+                FROM spappresource
+                WHERE "Name" = 'DataObjFormatters'
+            );
+        """
+    else:
+        sql = """
+            UPDATE spappresourcedata spard
+            SET spard.data = REPLACE(spard.data, 'separator=""', 'separator="; "')
+            WHERE spard.SpAppResourceID IN (
+                SELECT spar.SpAppResourceID
+                FROM spappresource spar
+                WHERE spar.Name = 'DataObjFormatters'
+            );
+        """
+    with schema_editor.connection.cursor() as cursor:
+        cursor.execute(sql)
+
 class Migration(migrations.Migration):
 
     initial = True
@@ -11,16 +36,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunSQL(
-            """
-            UPDATE spappresourcedata spard
-            SET spard.data = REPLACE(spard.data, 'separator=""', 'separator="; "')
-            WHERE spard.SpAppResourceID IN (
-                SELECT spar.SpAppResourceID
-                FROM spappresource spar
-                WHERE spar.Name = 'DataObjFormatters'
-            );
-            """,
-            reverse_sql='' # This should not be reversed
-        )
+        migrations.RunPython(restore_separators, migrations.RunPython.noop)
     ]
