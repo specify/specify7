@@ -1133,7 +1133,7 @@ export const resourcesText = createDictionary({
     'ru-ru': 'Утилизированный препарат удалить невозможно.',
     'uk-ua': 'Викинутий препарат не можна видалити',
     'hr-hr': 'Odbačeni pripravak ne može se izbrisati',
-    nb: 'Et avhendet objekt kan ikke slettes',
+    nb: 'Et avhendet preparat kan ikke slettes',
   },
   deleteExchangeOutPrep: {
     'en-us': 'A exchanged out preparation cannot be deleted',
