@@ -501,7 +501,7 @@ class Migration(migrations.Migration):
         migrations.AddConstraint(
             model_name='specifyuser_spprincipal',
             constraint=models.UniqueConstraint(
-                fields=('specifyuser', 'spprincipal'), name='specifyuser_spprincipal'),
+                fields=('specifyuser', 'spprincipal'), name='specifyuser_spprincipal_unique'),
         ),
         migrations.AddConstraint(
             model_name='project_colobj',
