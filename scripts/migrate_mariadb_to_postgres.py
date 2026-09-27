@@ -17,6 +17,7 @@ DATABASE_USER = os.environ["MASTER_NAME"]
 DATABASE_PASSWORD = os.environ["MASTER_PASSWORD"]
 TARGET_HOST = os.environ.get("TARGET_HOST", "postgres")
 TARGET_PORT = int(os.environ.get("TARGET_PORT", "5432"))
+FRAMEWORK_TABLES = {"django_migrations", "django_content_type", "auth_permission"}
 
 
 def normalize_value(value, data_type):
@@ -86,7 +87,7 @@ def main():
             target_cursor.execute("SET session_replication_role = replica")
 
             for target_table in target_tables:
-                if target_table == "django_migrations":
+                if target_table in FRAMEWORK_TABLES:
                     continue
                 source_table = source_tables.get(target_table.lower())
                 if source_table is None:
