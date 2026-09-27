@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-09-26 16:51+0000\n"
-"Last-Translator: Eirik Rindal <eirik.rindal@nhm.uio.no>\n"
+"PO-Revision-Date: 2026-09-27 12:51+0000\n"
+"Last-Translator: Gunnhild Marthinsen <gunnhilm@nhm.uio.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/expressSearchConfig/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -316,7 +316,7 @@ msgstr "Innsamler innsamlingshendelse"
 
 #. Used in: 
 msgid "CollEventToCollectors_desc"
-msgstr "Innsamlingshendelser koblet med agentene som samlet inn specimens."
+msgstr "Innsamlingshendelser koblet med agentene som samlet inn eksemplarer."
 
 #. Used in: 
 msgid "AgentExchangeIn"
