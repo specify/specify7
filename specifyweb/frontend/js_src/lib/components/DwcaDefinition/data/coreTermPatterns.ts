@@ -133,7 +133,7 @@ const darwinCoreTermPatterns: Readonly<Record<string, readonly string[]>> = {
   'http://rs.tdwg.org/dwc/terms/georeferencedDate': [
     'geocoorddetail.georefdetdate',
   ],
-  'http://rs.tdwg.org/dwc/terms/georeferencedBy': ['agent.georefdetby'],
+  'http://rs.tdwg.org/dwc/terms/georeferencedBy': ['georefdetby'],
   'http://rs.tdwg.org/dwc/terms/georeferenceProtocol': [
     'geocoorddetail.protocol',
   ],

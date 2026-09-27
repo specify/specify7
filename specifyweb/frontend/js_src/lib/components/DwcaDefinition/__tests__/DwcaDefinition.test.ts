@@ -69,7 +69,7 @@ describe('DwCA query field term mapping', () => {
     ).toEqual(['determination.determineddate']);
     expect(
       coreTermPatterns['http://rs.tdwg.org/dwc/terms/georeferencedBy']
-    ).toEqual(['agent.georefdetby']);
+    ).toEqual(['georefdetby']);
   });
 
   test('uses discipline-specific schema override sources', () => {
