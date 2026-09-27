@@ -83,9 +83,9 @@ export function parseTermExamples(examples: string): readonly TermExample[] {
   });
 }
 
-function formatTermExampleText(text: string): string {
-  // Because the term examples are stored in the GBIF catalogs as HTML-encoded text, 
-  // decode the common HTML entities here. The backslash escapes are used to prevent 
+export function formatTermExampleText(text: string): string {
+  // Because the term examples are stored in the GBIF catalogs as HTML-encoded text,
+  // decode the common HTML entities here. The backslash escapes are used to prevent
   // Markdown formatting in the React rendering.
   return text
     .replace(/\\([\\`*_{}[\]()#+.!-])/g, '$1')

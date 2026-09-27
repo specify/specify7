@@ -5,7 +5,10 @@ import type { RA } from '../../utils/types';
 import { localized } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
-import { TermInfoDialog } from '../DwcaDefinition/DwcaDefinition';
+import {
+  formatTermExampleText,
+  TermInfoDialog,
+} from '../DwcaDefinition/DwcaDefinition';
 import gbifCores from '../DwcaDefinition/data/gbifCores.json';
 import { coreTermPatterns } from '../DwcaDefinition/data/coreTermPatterns';
 import gbifExtensions from '../DwcaDefinition/data/gbifExtensions.json';
@@ -106,7 +109,11 @@ export function SchemaConfigAlignment({
                           {localized(term.title ?? term.name)}
                         </Button.LikeLink>
                       </td>
-                      <td>{localized(term.description ?? '')}</td>
+                      <td>
+                        {formatTermExampleText(
+                          localized(term.description ?? '')
+                        )}
+                      </td>
                     </tr>
                   );
                 })}
