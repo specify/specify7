@@ -62,7 +62,7 @@ if [[ "$DATABASE_ENGINE" == "postgres" || "$DATABASE_ENGINE" == "postgresql" ]];
 
   # PostgreSQL creates the configured database and role through the container
   # entrypoint. Django migrations create the schema and migration history.
-  ve/bin/python manage.py migrate --database=migrations
+  ve/bin/python manage.py migrate --database=default
   echo "PostgreSQL database setup complete."
   exit 0
 fi
