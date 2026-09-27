@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-09-26 15:53+0000\n"
-"Last-Translator: Eirik Rindal <eirik.rindal@nhm.uio.no>\n"
+"PO-Revision-Date: 2026-09-27 12:51+0000\n"
+"Last-Translator: Gunnhild Marthinsen <gunnhilm@nhm.uio.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/resources/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -568,7 +568,7 @@ msgstr "En preparat som er gitt i gave, kan ikke slettes"
 #. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:918
 msgid "deleteDisposedPrep"
-msgstr "Et avhendet objekt kan ikke slettes"
+msgstr "Et avhendet preparat kan ikke slettes"
 
 #. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:926
