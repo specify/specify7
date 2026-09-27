@@ -735,15 +735,4 @@ export const schemaText = createDictionary({
     'hr-hr': 'Vidljivo',
     nb: 'Synlig',
   },
-  customFieldFormat: {
-    'en-us': 'Custom Field Format',
-    'de-ch': 'Format für benutzerdefinierte Felder',
-    'es-es': 'Formato de campo personalizado',
-    'fr-fr': 'Format de champ personnalisé',
-    'ru-ru': 'Формат пользовательского поля',
-    'uk-ua': 'Формат користувацького поля',
-    'pt-br': 'Formato de campo personalizado',
-    'hr-hr': 'Prilagođeni format polja',
-    nb: 'Tilpasset feltformat',
-  },
 } as const);

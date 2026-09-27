@@ -133,7 +133,7 @@ function Wrapped({
   const loading = React.useContext(LoadingContext);
   return (
     <SplashScreen>
-      <Form forwardRef={formRef} method="post">
+      <Form forwardRef={formRef} method="POST">
         <h2>
           {commonText.colonHeader({ header: commonText.chooseCollection() })}
         </h2>

@@ -73,12 +73,7 @@ export function LeafletMap({
       void map.remove();
       forwardRef?.(undefined);
     };
-  }, [
-    tileLayers,
-    container,
-    forwardRef,
-    handleToggleFullScreen,
-  ]);
+  }, [tileLayers, container, forwardRef, handleToggleFullScreen]);
 
   const children = (
     <div
