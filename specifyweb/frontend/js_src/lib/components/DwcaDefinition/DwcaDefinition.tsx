@@ -84,11 +84,15 @@ export function parseTermExamples(examples: string): readonly TermExample[] {
 }
 
 function formatTermExampleText(text: string): string {
+  // Because the term examples are stored in the GBIF catalogs as HTML-encoded text, 
+  // decode the common HTML entities here. The backslash escapes are used to prevent 
+  // Markdown formatting in the React rendering.
   return text
     .replace(/\\([\\`*_{}[\]()#+.!-])/g, '$1')
     .replaceAll('&amp;', '&')
     .replaceAll('&quot;', '"')
-    .replaceAll('&#39;', "'");
+    .replaceAll('&#39;', "'")
+    .replaceAll('&#x27;', "'");
 }
 
 function renderTermExampleDescription(description: string): JSX.Element {
@@ -381,7 +385,11 @@ export function TermInfoDialog({
         </div>
         <div>
           <dt className="font-semibold">{dwcaText.dwcaDescription()}</dt>
-          <dd>{term.description || dwcaText.dwcaNoDescriptionAvailable()}</dd>
+          <dd>
+            {term.description === undefined || term.description === ''
+              ? dwcaText.dwcaNoDescriptionAvailable()
+              : formatTermExampleText(term.description)}
+          </dd>
         </div>
         {term.examples !== undefined && term.examples !== '' && (
           <div>
