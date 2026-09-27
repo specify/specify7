@@ -11,6 +11,7 @@ MIGRATOR_NAME="${MIGRATOR_NAME:-}"
 MIGRATOR_PASSWORD="${MIGRATOR_PASSWORD:-}"
 DB_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD:-}"
 DB_NAME="${DATABASE_NAME}"
+DATABASE_ENGINE="${DATABASE_ENGINE:-mariadb}"
 APP_USER_NAME="${APP_USER_NAME:-}"
 APP_USER_PASSWORD="${APP_USER_PASSWORD:-}"
 
@@ -49,6 +50,21 @@ fi
 if [[ -z "$MIGRATOR_PASSWORD" || -z "$APP_USER_NAME" || -z "$APP_USER_PASSWORD" ]]; then
   echo "Error: One or more required user-related environment variables are missing or empty."
   exit 1
+fi
+
+if [[ "$DATABASE_ENGINE" == "postgres" || "$DATABASE_ENGINE" == "postgresql" ]]; then
+  echo "Starting PostgreSQL database setup..."
+  until (exec 3<>/dev/tcp/"$DB_HOST"/"$DB_PORT") 2>/dev/null; do
+    echo "PostgreSQL is not available yet. Retrying in 5 seconds..."
+    sleep 5
+  done
+  echo "PostgreSQL is up and running."
+
+  # PostgreSQL creates the configured database and role through the container
+  # entrypoint. Django migrations create the schema and migration history.
+  ve/bin/python manage.py migrate --database=migrations
+  echo "PostgreSQL database setup complete."
+  exit 0
 fi
 
 # Relationship flags between the three users

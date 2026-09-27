@@ -14,6 +14,7 @@ RUN set -eux; \
         python3.12-dev \
         libldap2 \
         libmariadb3 \
+        libpq5 \
         rsync \
         mariadb-client \
         tzdata \
@@ -74,6 +75,7 @@ RUN set -eux; \
             python3.12-venv \
             python3.12-dev \
             libmariadb-dev \
+            libpq-dev \
             tzdata \
             && break; \
       echo "apt-get install failed, retrying in 5 seconds..."; sleep 5; \
@@ -277,5 +279,4 @@ FROM run-common AS run
 RUN mv specifyweb.wsgi specifyweb_wsgi.py
 
 CMD ["ve/bin/gunicorn", "-w", "3", "-b", "0.0.0.0:8000", "-t", "300", "specifyweb_wsgi"]
-
 
