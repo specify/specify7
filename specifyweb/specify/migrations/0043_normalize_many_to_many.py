@@ -222,13 +222,16 @@ def tables_exist(connection, *table_names: str) -> tuple[str, ...]:
     db_name = connection.settings_dict['NAME']
     rows = None
     with connection.cursor() as cursor:
+        placeholders = ', '.join(['%s'] * len(table_names))
+        schema = 'CURRENT_SCHEMA()' if connection.vendor == 'postgresql' else '%s'
         sql = """
             SELECT TABLE_NAME
             FROM INFORMATION_SCHEMA.TABLES
-            WHERE TABLE_SCHEMA = %s
-                AND TABLE_NAME IN %s;
-            """
-        cursor.execute(sql, [db_name, table_names])
+            WHERE TABLE_SCHEMA = {schema}
+                AND TABLE_NAME IN ({placeholders});
+            """.format(schema=schema, placeholders=placeholders)
+        params = list(table_names) if connection.vendor == 'postgresql' else [db_name, *table_names]
+        cursor.execute(sql, params)
         rows = cursor.fetchall()
     if not rows:
         return tuple()
