@@ -118,6 +118,45 @@ const eventTemplate: DwcaTemplate = {
 </archive>`,
 };
 
+const taxonTemplate: DwcaTemplate = {
+  name: 'Specify → Darwin Core Taxon',
+  coreRowTypes: ['http://rs.tdwg.org/dwc/terms/Taxon'],
+  targets: [
+    {
+      extension: false,
+      rowType: 'http://rs.tdwg.org/dwc/terms/Taxon',
+    },
+  ],
+  definition: `<?xml version="1.0" encoding="UTF-8"?>
+<archive>
+  <core rowType="http://rs.tdwg.org/dwc/terms/Taxon">
+    <queries>
+      <query name="taxon.csv" contextTableId="4">
+        <id stringId="4.taxon.guid" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/taxonID"/>
+        <field stringId="4.taxon.fullName" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/scientificName"/>
+        <field stringId="4.taxon.author" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/scientificNameAuthorship"/>
+        <field stringId="4.taxon.Kingdom" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/kingdom"/>
+        <field stringId="4.taxon.Phylum" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/phylum"/>
+        <field stringId="4.taxon.Class" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/class"/>
+        <field stringId="4.taxon.Order" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/order"/>
+        <field stringId="4.taxon.Superfamily" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/superfamily"/>
+        <field stringId="4.taxon.Family" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/family"/>
+        <field stringId="4.taxon.Subfamily" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/subfamily"/>
+        <field stringId="4.taxon.Tribe" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/tribe"/>
+        <field stringId="4.taxon.Subtribe" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/subtribe"/>
+        <field stringId="4.taxon.Genus" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/genus"/>
+        <field stringId="4.taxon.Subgenus" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/subgenus"/>
+        <field stringId="4.taxon.Species" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/specificEpithet"/>
+        <field stringId="4.taxon.Subspecies" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/infraspecificEpithet"/>
+        <field stringId="4,77-definitionItem.taxontreedefitem.name" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/taxonRank"/>
+        <field stringId="4.taxon.commonName" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/vernacularName"/>
+        <field stringId="4.taxon.remarks" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/taxonRemarks"/>
+      </query>
+    </queries>
+  </core>
+</archive>`,
+};
+
 type DisciplineField = {
   readonly stringId: string;
   readonly term: string;
@@ -339,4 +378,5 @@ export const defaultTemplates: readonly DwcaTemplate[] = [
     makeDisciplineOccurrenceTemplate(disciplineType, fields)
   ),
   eventTemplate,
+  taxonTemplate,
 ];

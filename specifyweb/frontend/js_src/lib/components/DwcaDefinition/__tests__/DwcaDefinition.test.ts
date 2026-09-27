@@ -125,6 +125,19 @@ describe('DwCA query field term mapping', () => {
     expect(template?.definition).toContain('10.collectingevent.startDate');
   });
 
+  test('provides a Taxon core default mapping', () => {
+    const template = defaultTemplates.find(
+      ({ name }) => name === 'Specify → Darwin Core Taxon'
+    );
+    expect(template?.coreRowTypes).toEqual([
+      'http://rs.tdwg.org/dwc/terms/Taxon',
+    ]);
+    expect(template?.definition).toContain(
+      'term="http://rs.tdwg.org/dwc/terms/taxonID"'
+    );
+    expect(template?.definition).toContain('4.taxon.fullName');
+  });
+
   test('uses the core or row type as the mapping URL value', () => {
     expect(
       getMappingTabValue({ extension: false, rowType: 'occurrence' })
