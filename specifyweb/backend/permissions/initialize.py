@@ -110,7 +110,7 @@ def assign_users_to_roles(apps=apps) -> None:
                 u.specifyuserid as user_id,
                 u."Name" as user_name,
                 u."UserType" as user_type,
-                p.usergroupscopeid as collection_id,
+                p."userGroupScopeID" as collection_id,
                 c."CollectionName" as collection_name
             FROM specifyuser u
             JOIN specifyuser_spprincipal up ON up."SpecifyUserID" = u.specifyuserid
