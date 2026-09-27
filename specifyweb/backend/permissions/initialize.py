@@ -105,26 +105,29 @@ def assign_users_to_roles(apps=apps) -> None:
     results = []
 
     with connection.cursor() as cursor:
-        cursor.execute("""
+        query = """
             SELECT
-                u.SpecifyUserID as user_id,
-                u.Name as user_name,
-                u.UserType as user_type,
+                u.specifyuserid as user_id,
+                u."Name" as user_name,
+                u."UserType" as user_type,
                 p.usergroupscopeid as collection_id,
-                c.CollectionName as collection_name
+                c."CollectionName" as collection_name
             FROM specifyuser u
-            JOIN specifyuser_spprincipal up ON up.SpecifyUserID = u.SpecifyUserID
-            JOIN spprincipal p ON p.SpPrincipalID = up.SpPrincipalID
-            JOIN collection c ON c.UserGroupScopeId = p.userGroupScopeID
-            WHERE p.groupType IS NULL
+            JOIN specifyuser_spprincipal up ON up."SpecifyUserID" = u.specifyuserid
+            JOIN spprincipal p ON p.spprincipalid = up."SpPrincipalID"
+            JOIN collection c ON c.usergroupscopeid = p."userGroupScopeID"
+            WHERE p."groupType" IS NULL
             AND NOT EXISTS (
                 SELECT 1
                 FROM spuserrole ur 
                 JOIN sprole r ON r.id = ur.role_id 
-                WHERE r.collection_id = c.UserGroupScopeId
-                AND ur.specifyuser_id = u.SpecifyUserID
+                WHERE r.collection_id = c.usergroupscopeid
+                AND ur.specifyuser_id = u.specifyuserid
             );
-        """)
+        """
+        if connection.vendor != 'postgresql':
+            query = query.replace('"', '`')
+        cursor.execute(query)
 
         results = cursor.fetchall()
     
