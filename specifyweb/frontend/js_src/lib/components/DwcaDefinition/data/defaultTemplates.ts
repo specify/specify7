@@ -45,6 +45,7 @@ const occurrenceTemplate: DwcaTemplate = {
         <field stringId="1,9-determinations,4.taxon.Subspecies" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/infraspecificEpithet"/>
         <field stringId="1,9-determinations,4,77-definitionItem.taxontreedefitem.name" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/taxonRank"/>
         <field stringId="1,9-determinations,4.taxon.fullName" oper="12" value="" isNot="true" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/scientificName"/>
+        <field stringId="1,9-determinations.determination.isCurrent" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/identificationVerificationStatus"/>
         <field stringId="1,9-determinations.determination.typeStatusName" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/typeStatus"/>
         <field stringId="1,9-determinations.determination.determinedDate" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/dateIdentified"/>
         <field stringId="1,9-determinations,5-determiner.agent.determiner" oper="8" value="" isNot="false" isRelFld="true" formatName="" term="http://rs.tdwg.org/dwc/terms/identifiedBy"/>

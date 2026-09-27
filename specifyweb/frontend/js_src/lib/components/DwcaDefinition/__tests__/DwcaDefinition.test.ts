@@ -103,6 +103,15 @@ describe('DwCA query field term mapping', () => {
     );
   });
 
+  test('includes the current determination in the Occurrence template', () => {
+    const template = defaultTemplates.find(
+      ({ name }) => name === 'Specify → Darwin Core Occurrence'
+    );
+    expect(template?.definition).toContain(
+      '1,9-determinations.determination.isCurrent'
+    );
+  });
+
   test('uses the core or row type as the mapping URL value', () => {
     expect(
       getMappingTabValue({ extension: false, rowType: 'occurrence' })
