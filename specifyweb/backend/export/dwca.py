@@ -238,10 +238,11 @@ def make_dwca(collection, user, definition, output_file, eml=None):
         def collect_ids(row):
             core_id = row[core_stanza.id_field_idx + 1]
             if core_id in core_ids:
+                identifier_term = get_core_identifier_term(core_stanza.row_type)
                 raise DwCAException(_(
-                    "The core query returned duplicate occurrenceID values. "
-                    "Each core row must have a unique occurrenceID."
-                ))
+                    "The core query returned duplicate %(identifier_term)s values. "
+                    "Each core row must have a unique %(identifier_term)s."
+                ) % {'identifier_term': identifier_term})
             core_ids.add(core_id)
             return True
 
