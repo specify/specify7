@@ -18,7 +18,7 @@ export const schemaText = createDictionary({
     'de-ch': 'Tabelle',
     'pt-br': 'Mesa',
     'hr-hr': 'Stol',
-    nb: 'Bord',
+    nb: 'Tabell',
   },
   tables: {
     'en-us': 'Tables',
@@ -51,7 +51,7 @@ export const schemaText = createDictionary({
     'uk-ua': 'Без столу',
     'pt-br': 'Sem mesa',
     'hr-hr': 'Bez stola',
-    nb: 'Uten bord',
+    nb: 'Uten tabell',
   },
   schemaConfig: {
     'en-us': 'Schema Config',
@@ -720,7 +720,7 @@ export const schemaText = createDictionary({
     'de-ch': 'Specify 7 Datenmodell',
     'pt-br': 'Especifique 7 modelos de dados',
     'hr-hr': 'Navedite 7 podatkovnih modela',
-    nb: 'Spesifiser 7 datamodell',
+    nb: 'Specify 7 datamodell',
   },
   hidden: {
     'en-us': 'hidden',
