@@ -91,7 +91,7 @@ DATABASE_ROUTERS = ["specifyweb.specify.migration_utils.router.MigrationRouter"]
 
 def get_sa_db_url(db_name):
     if DATABASE_ENGINE in ('postgres', 'postgresql'):
-        return 'postgresql+psycopg://{}:{}@{}:{}/{}'.format(
+        return 'postgresql+psycopg2://{}:{}@{}:{}/{}'.format(
             MASTER_NAME,
             MASTER_PASSWORD,
             DATABASE_HOST,
