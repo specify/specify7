@@ -23,6 +23,27 @@ def name_generator():
 
 
 def uniquify_index_name(connection) -> str:
+    if connection.vendor == 'postgresql':
+        cursor = connection.cursor()
+        cursor.execute(
+            """
+            SELECT indexname
+            FROM pg_indexes
+            WHERE tablename = 'collectionobject'
+              AND indexname LIKE %s
+            ORDER BY index_name;
+            """,
+            [DEFAULT_INDEX_NAME + "%"],
+        )
+        index_names = [row[0] for row in cursor.fetchall()]
+        if DEFAULT_INDEX_NAME not in index_names:
+            return DEFAULT_INDEX_NAME
+        index_names.remove(DEFAULT_INDEX_NAME)
+
+        for name in name_generator():
+            if name not in index_names:
+                return name
+
     db_name = connection.settings_dict['NAME']
     cursor = connection.cursor()
     sql = """
@@ -48,6 +69,20 @@ def uniquify_index_name(connection) -> str:
 
 
 def get_index_names(connection) -> tuple[str]:
+    if connection.vendor == 'postgresql':
+        cursor = connection.cursor()
+        cursor.execute(
+            """
+            SELECT indexname
+            FROM pg_indexes
+            WHERE tablename = 'collectionobject'
+              AND indexdef LIKE '%%UNIQUE%%'
+              AND indexdef LIKE '%%catalognumber%%'
+              AND indexdef LIKE '%%collectionid%%';
+            """
+        )
+        return [row[0] for row in cursor.fetchall()]
+
     db_name = connection.settings_dict['NAME']
     cursor = connection.cursor()
     sql = """
