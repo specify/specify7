@@ -112,6 +112,19 @@ describe('DwCA query field term mapping', () => {
     );
   });
 
+  test('provides an Event core default mapping', () => {
+    const template = defaultTemplates.find(
+      ({ name }) => name === 'Specify → Darwin Core Event'
+    );
+    expect(template?.coreRowTypes).toEqual([
+      'http://rs.tdwg.org/dwc/terms/Event',
+    ]);
+    expect(template?.definition).toContain(
+      'term="http://rs.tdwg.org/dwc/terms/eventID"'
+    );
+    expect(template?.definition).toContain('10.collectingevent.startDate');
+  });
+
   test('uses the core or row type as the mapping URL value', () => {
     expect(
       getMappingTabValue({ extension: false, rowType: 'occurrence' })

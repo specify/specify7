@@ -79,6 +79,45 @@ const occurrenceTemplate: DwcaTemplate = {
 </archive>`,
 };
 
+const eventTemplate: DwcaTemplate = {
+  name: 'Specify → Darwin Core Event',
+  coreRowTypes: ['http://rs.tdwg.org/dwc/terms/Event'],
+  targets: [
+    {
+      extension: false,
+      rowType: 'http://rs.tdwg.org/dwc/terms/Event',
+    },
+  ],
+  definition: `<?xml version="1.0" encoding="UTF-8"?>
+<archive>
+  <core rowType="http://rs.tdwg.org/dwc/terms/Event">
+    <queries>
+      <query name="event.csv" contextTableId="10">
+        <id stringId="10.collectingevent.guid" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/eventID"/>
+        <field stringId="10.collectingevent.stationFieldNumber" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/fieldNumber"/>
+        <field stringId="10.collectingevent.startDate" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/eventDate"/>
+        <field stringId="10.collectingevent.startDateNumericDay" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/day"/>
+        <field stringId="10.collectingevent.startDateNumericMonth" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/month"/>
+        <field stringId="10.collectingevent.startDateNumericYear" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/year"/>
+        <field stringId="10.collectingevent.startDateVerbatim" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/verbatimEventDate"/>
+        <field stringId="10.collectingevent.startTime" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/eventTime"/>
+        <field stringId="10.collectingevent.method" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/samplingProtocol"/>
+        <field stringId="10.collectingevent.remarks" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/eventRemarks"/>
+        <field stringId="10,2.locality.localityName" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/locality"/>
+        <field stringId="10,2.locality.latitude1" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/decimalLatitude"/>
+        <field stringId="10,2.locality.longitude1" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/decimalLongitude"/>
+        <field stringId="10,2.locality.datum" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/geodeticDatum"/>
+        <field stringId="10,2.locality.remarks" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/locationRemarks"/>
+        <field stringId="10,2,3.geography.Continent" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/continent"/>
+        <field stringId="10,2,3.geography.Country" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/country"/>
+        <field stringId="10,2,3.geography.State" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/stateProvince"/>
+        <field stringId="10,2,3.geography.County" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/county"/>
+      </query>
+    </queries>
+  </core>
+</archive>`,
+};
+
 type DisciplineField = {
   readonly stringId: string;
   readonly term: string;
@@ -299,4 +338,5 @@ export const defaultTemplates: readonly DwcaTemplate[] = [
   ...Object.entries(disciplineFields).map(([disciplineType, fields]) =>
     makeDisciplineOccurrenceTemplate(disciplineType, fields)
   ),
+  eventTemplate,
 ];
