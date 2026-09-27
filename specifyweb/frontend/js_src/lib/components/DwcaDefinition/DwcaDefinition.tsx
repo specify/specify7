@@ -55,15 +55,56 @@ type Mapping = {
   readonly terms: RA<string | undefined>;
 };
 
-type TermDefinition = {
+export type TermDefinition = {
   readonly name: string;
   readonly title?: string;
   readonly description?: string;
+  readonly examples?: string;
   readonly vocabulary?: string;
   readonly iri?: string;
   readonly group?: string;
   readonly required?: boolean;
 };
+
+export type TermExample = {
+  readonly value: string;
+  readonly description: string;
+};
+
+export function parseTermExamples(examples: string): readonly TermExample[] {
+  const values = examples.includes('`')
+    ? examples.split(/;\s+(?=`)/)
+    : [examples];
+  return values.map((example) => {
+    const match = /^`([^`]*)`\s*(.*)$/s.exec(example);
+    return match === null
+      ? { value: example, description: '' }
+      : { value: match[1]!, description: match[2] };
+  });
+}
+
+function formatTermExampleText(text: string): string {
+  return text
+    .replace(/\\([\\`*_{}[\]()#+.!-])/g, '$1')
+    .replaceAll('&amp;', '&')
+    .replaceAll('&quot;', '"')
+    .replaceAll('&#39;', "'");
+}
+
+function renderTermExampleDescription(description: string): JSX.Element {
+  const parts = formatTermExampleText(description).split(/(`[^`]*`)/g);
+  return (
+    <>
+      {parts.map((part, index) =>
+        part.startsWith('`') && part.endsWith('`') ? (
+          <code key={index}>{part.slice(1, -1)}</code>
+        ) : (
+          part
+        )
+      )}
+    </>
+  );
+}
 
 const customTermOption = '__custom__';
 const customRowTypeOption = '__custom_row_type__';
@@ -285,7 +326,7 @@ const getRowTypeOptionLabel = (rowType: string): string =>
   getExtensionDefinitionForRowType(rowType)?.title ??
   rowType;
 
-function TermInfoDialog({
+export function TermInfoDialog({
   term,
   extension,
   onClose,
@@ -342,6 +383,31 @@ function TermInfoDialog({
           <dt className="font-semibold">{dwcaText.dwcaDescription()}</dt>
           <dd>{term.description || dwcaText.dwcaNoDescriptionAvailable()}</dd>
         </div>
+        {term.examples !== undefined && term.examples !== '' && (
+          <div>
+            <dt className="font-semibold">{dwcaText.dwcaExamples()}</dt>
+            <dd>
+              <ul className="list-disc space-y-1 pl-5">
+                {parseTermExamples(term.examples).map(
+                  ({ value, description }, index) => (
+                    <li key={`${value}-${index}`}>
+                      {term.examples?.includes('`') ? (
+                        <>
+                          <code>{formatTermExampleText(value)}</code>
+                          {description === '' ? null : (
+                            <> {renderTermExampleDescription(description)}</>
+                          )}
+                        </>
+                      ) : (
+                        formatTermExampleText(value)
+                      )}
+                    </li>
+                  )
+                )}
+              </ul>
+            </dd>
+          </div>
+        )}
       </dl>
     </Dialog>
   );
@@ -1019,10 +1085,20 @@ function TermPicker({
     : (mapping.extensionDefinition?.fields ?? occurrenceCore.fields);
   const value = getMappingTerm(mapping, field) ?? '';
   const options: RA<TermDefinition> = terms.map(
-    ({ name, title, description, vocabulary, iri, group, required }) => ({
+    ({
+      name,
+      title,
+      description,
+      examples,
+      vocabulary,
+      iri,
+      group,
+      required,
+    }) => ({
       name,
       title: title ?? name,
       description,
+      examples,
       vocabulary,
       iri,
       group,

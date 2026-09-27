@@ -43,6 +43,9 @@ export const dwcaText = createDictionary({
   dwcaDescription: {
     'en-us': 'Description',
   },
+  dwcaExamples: {
+    'en-us': 'Examples',
+  },
   dwcaNoDescriptionAvailable: {
     'en-us': 'No description is available.',
   },

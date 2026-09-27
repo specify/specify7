@@ -22,11 +22,21 @@ import {
   serializeDefinition,
   updateMappingTerm,
   updateMappingFields,
+  parseTermExamples,
 } from '../DwcaDefinition';
 import { defaultTemplates } from '../data/defaultTemplates';
 
 const occurrenceId = 'http://rs.tdwg.org/dwc/terms/occurrenceID';
 const kingdom = 'http://rs.tdwg.org/dwc/terms/kingdom';
+
+test('parses documented term examples into values and descriptions', () => {
+  expect(
+    parseTermExamples('`1971` (in the year 1971); `1900/1909` (a range)')
+  ).toEqual([
+    { value: '1971', description: '(in the year 1971)' },
+    { value: '1900/1909', description: '(a range)' },
+  ]);
+});
 
 requireContext();
 

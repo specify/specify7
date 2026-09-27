@@ -3,8 +3,9 @@ import React from 'react';
 import { schemaText } from '../../localization/schema';
 import type { RA } from '../../utils/types';
 import { localized } from '../../utils/types';
-import { Link } from '../Atoms/Link';
+import { Button } from '../Atoms/Button';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
+import { TermInfoDialog } from '../DwcaDefinition/DwcaDefinition';
 import gbifCores from '../DwcaDefinition/data/gbifCores.json';
 import { coreTermPatterns } from '../DwcaDefinition/data/coreTermPatterns';
 import gbifExtensions from '../DwcaDefinition/data/gbifExtensions.json';
@@ -49,6 +50,9 @@ export function SchemaConfigAlignment({
 }: {
   readonly field: LiteralField | Relationship;
 }): JSX.Element {
+  const [selectedAlignment, setSelectedAlignment] = React.useState<
+    FieldAlignment | undefined
+  >(undefined);
   const alignments = React.useMemo(() => getFieldAlignments(field), [field]);
   const alignmentsByVocabulary = React.useMemo(() => {
     const grouped = new Map<
@@ -84,20 +88,41 @@ export function SchemaConfigAlignment({
                 </tr>
               </thead>
               <tbody>
-                {terms.map((term) => (
-                  <tr key={term.name}>
-                    <td>
-                      <Link.NewTab href={term.iri}>
-                        {localized(term.title ?? term.name)}
-                      </Link.NewTab>
-                    </td>
-                    <td>{localized(term.description ?? '')}</td>
-                  </tr>
-                ))}
+                {terms.map((term) => {
+                  const alignment = alignments.find(
+                    (candidate) =>
+                      candidate.vocabulary === vocabulary &&
+                      candidate.term === term
+                  );
+                  return (
+                    <tr key={term.name}>
+                      <td>
+                        <Button.LikeLink
+                          onClick={(): void => {
+                            if (alignment !== undefined)
+                              setSelectedAlignment(alignment);
+                          }}
+                        >
+                          {localized(term.title ?? term.name)}
+                        </Button.LikeLink>
+                      </td>
+                      <td>{localized(term.description ?? '')}</td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </section>
         ))
+      )}
+      {selectedAlignment !== undefined && (
+        <TermInfoDialog
+          term={selectedAlignment.term}
+          extension={gbifExtensions.some(
+            ({ rowType }) => rowType === selectedAlignment.vocabulary.rowType
+          )}
+          onClose={(): void => setSelectedAlignment(undefined)}
+        />
       )}
     </fieldset>
   );

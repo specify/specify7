@@ -26,6 +26,7 @@ type CatalogField = {
   readonly title: string;
   readonly required: boolean;
   readonly description?: string;
+  readonly examples?: string;
   readonly vocabulary?: string;
   readonly iri: string;
   readonly group?: string;
@@ -88,6 +89,9 @@ function parseDefinition(entry: RegistryEntry, xml: string): CatalogDefinition {
       title: fieldAttributes['@_label'] ?? fieldAttributes['@_name'] ?? name,
       required: fieldAttributes['@_required'] === 'true',
       description: fieldAttributes['@_dc:description'] ?? '',
+      ...(fieldAttributes['@_examples'] === undefined
+        ? {}
+        : { examples: fieldAttributes['@_examples'] }),
       vocabulary: fieldAttributes['@_namespace'] ?? '',
       iri: name,
       group: fieldAttributes['@_group'] ?? '',

@@ -37,6 +37,18 @@ jobs:
         working-directory: specifyweb/frontend/js_src
         run: npm run dwca:catalog
 
+      - name: Verify GBIF catalog examples
+        working-directory: specifyweb/frontend/js_src
+        run: |
+          node --input-type=module -e '
+            import cores from "./lib/components/DwcaDefinition/data/gbifCores.json" with { type: "json" };
+            import extensions from "./lib/components/DwcaDefinition/data/gbifExtensions.json" with { type: "json" };
+            const fields = [...cores, ...extensions].flatMap(({ fields }) => fields);
+            if (!fields.some(({ examples }) => examples !== undefined && examples !== "")) {
+              throw new Error("GBIF catalogs do not contain any field examples");
+            }
+          '
+
       - name: Check for catalog changes
         id: changes
         run: |
