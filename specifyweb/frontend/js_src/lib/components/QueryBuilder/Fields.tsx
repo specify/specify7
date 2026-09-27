@@ -214,7 +214,9 @@ export function QueryFields({
           items-center overflow-y-auto sm:flex-1
           ${
             isBasic
-              ? 'grid grid-cols-[4rem,minmax(0,18rem),minmax(0,1fr),auto,auto] content-start items-start gap-x-2 gap-y-2'
+              ? `grid grid-cols-[4rem,minmax(0,18rem),minmax(0,1fr),auto${
+                  renderFieldPrefix === undefined ? '' : ',auto'
+                }] content-start items-start gap-x-2 gap-y-2`
               : ''
           }
         `}
