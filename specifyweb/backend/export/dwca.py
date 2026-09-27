@@ -304,7 +304,7 @@ def validate_definition(definition):
         extension_stanzas = [
             Stanza.from_xml(node) for node in element_tree.findall('extension')
         ]
-    except ValueError as error:
+    except (KeyError, ValueError) as error:
         raise DwCAException(_("Definition contains invalid query attributes.")) from error
     if any(
         query.tableid != core_table_id

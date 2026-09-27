@@ -123,7 +123,9 @@ const darwinCoreTermPatterns: Readonly<Record<string, readonly string[]>> = {
   'http://rs.tdwg.org/dwc/terms/fieldNumber': [
     'collectingevent.stationfieldnumber',
   ],
-  'http://rs.tdwg.org/dwc/terms/dateIdentified': ['determineddate'],
+  'http://rs.tdwg.org/dwc/terms/dateIdentified': [
+    'determination.determineddate',
+  ],
   'http://rs.tdwg.org/dwc/terms/locationID': ['locality.guid'],
   'http://rs.tdwg.org/dwc/terms/georeferenceRemarks': [
     'geocoorddetail.georefremarks',
@@ -169,6 +171,72 @@ const darwinCoreTermPatterns: Readonly<Record<string, readonly string[]>> = {
     'locality.verbatimlongitude',
   ],
 };
+
+export type DisciplineTermPatterns = Readonly<
+  Record<string, readonly string[]>
+>;
+
+/**
+ * These fields are configured in discipline schema overrides and therefore
+ * cannot be safely inferred by the shared mapper.
+ */
+export const disciplineTermPatterns: Readonly<
+  Record<string, DisciplineTermPatterns>
+> = {
+  bird: {
+    'http://rs.tdwg.org/dwc/terms/sex': ['collectionobjectattribute.text2'],
+    'http://rs.tdwg.org/dwc/terms/lifeStage': [
+      'collectionobjectattribute.text1',
+    ],
+  },
+  fish: {
+    'http://rs.tdwg.org/dwc/terms/sex': ['collectionobjectattribute.text1'],
+    'http://rs.tdwg.org/dwc/terms/lifeStage': [
+      'collectionobjectattribute.text4',
+    ],
+    'http://rs.tdwg.org/dwc/terms/habitat': ['collectingeventattribute.text9'],
+    'http://rs.tdwg.org/dwc/terms/minimumDepthInMeters': [
+      'collectingeventattribute.text1',
+    ],
+    'http://rs.tdwg.org/dwc/terms/maximumDepthInMeters': [
+      'collectingeventattribute.text2',
+    ],
+  },
+  herpetology: {
+    'http://rs.tdwg.org/dwc/terms/sex': ['collectionobjectattribute.text1'],
+    'http://rs.tdwg.org/dwc/terms/lifeStage': [
+      'collectionobjectattribute.text4',
+    ],
+  },
+  insect: {
+    'http://rs.tdwg.org/dwc/terms/sex': ['collectionobjectattribute.text1'],
+    'http://rs.tdwg.org/dwc/terms/lifeStage': [
+      'collectionobjectattribute.text4',
+    ],
+  },
+  invertebrate: {
+    'http://rs.tdwg.org/dwc/terms/sex': ['collectionobjectattribute.text1'],
+    'http://rs.tdwg.org/dwc/terms/lifeStage': [
+      'collectionobjectattribute.text4',
+    ],
+  },
+  mammal: {
+    'http://rs.tdwg.org/dwc/terms/sex': ['collectionobjectattribute.text1'],
+    'http://rs.tdwg.org/dwc/terms/lifeStage': [
+      'collectionobjectattribute.text4',
+    ],
+  },
+};
+
+export function getCoreTermPatterns(
+  disciplineType: string | null | undefined
+): Readonly<Record<string, readonly string[]>> {
+  const disciplinePatterns =
+    disciplineType === undefined || disciplineType === null
+      ? undefined
+      : disciplineTermPatterns[disciplineType.toLowerCase()];
+  return { ...coreTermPatterns, ...disciplinePatterns };
+}
 
 // GBIF extension mappings. Keep these limited to fields that have a known
 // Specify data-model source. Terms in gbifExtensions.json without a reliable

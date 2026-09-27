@@ -85,6 +85,9 @@ export function QueryFields({
   const fieldsRef = React.useRef(fields);
   fieldsRef.current = fields;
 
+  const isFieldReadOnlyRef = React.useRef(isFieldReadOnly);
+  isFieldReadOnlyRef.current = isFieldReadOnly;
+
   const handleChangeFieldRef = React.useRef(handleChangeFields);
   handleChangeFieldRef.current = handleChangeFields;
 
@@ -117,6 +120,16 @@ export function QueryFields({
         interactiveElements.some((element) => target.closest(element) !== null)
       )
         event.cancel();
+
+      const sourceIndex = event.startIndex;
+      if (
+        sourceIndex !== undefined &&
+        isFieldReadOnlyRef.current?.(
+          fieldsRef.current[sourceIndex]!,
+          sourceIndex
+        )
+      )
+        event.cancel();
     });
 
     sortable.on('mirror:created', (event) => {
@@ -138,6 +151,12 @@ export function QueryFields({
         newItems.splice(newIndex, 0, fieldsRef.current[oldIndex]);
         newItems.splice(oldIndex + 1, 1);
       }
+
+      const readOnlyFieldMoved = fieldsRef.current.some((field, index) => {
+        if (isFieldReadOnlyRef.current?.(field, index) !== true) return false;
+        return newItems.indexOf(field) !== index;
+      });
+      if (readOnlyFieldMoved) return;
 
       handleChangeFieldRef.current?.(newItems);
       handleLineFocus?.(newIndex);

@@ -28,6 +28,7 @@ import {
 import { fetchContext as fetchTables, tables } from '../DataModel/tables';
 import type { SpQuery, SpQueryField } from '../DataModel/types';
 import { getField } from '../DataModel/helpers';
+import { getSystemInfo } from '../InitialContext/systemInfo';
 import { userInformation } from '../InitialContext/userInformation';
 import { getFieldBlockerKey, useSaveBlockers } from '../DataModel/saveBlockers';
 import { createQuery } from '../QueryBuilder';
@@ -37,7 +38,7 @@ import type { QueryField } from '../QueryBuilder/helpers';
 import { Dialog, dialogClassNames, LoadingScreen } from '../Molecules/Dialog';
 import gbifCores from './data/gbifCores.json';
 import { defaultTemplates, type DwcaTemplate } from './data/defaultTemplates';
-import { coreTermPatterns, occurrenceIdTerm } from './data/coreTermPatterns';
+import { getCoreTermPatterns, occurrenceIdTerm } from './data/coreTermPatterns';
 import gbifExtensions from './data/gbifExtensions.json';
 
 type ExtensionDefinition = (typeof gbifExtensions)[number];
@@ -618,11 +619,13 @@ function autoMapCoreFields(
   const usedTerms = new Set<string>();
   const terms = fields.map((field) => {
     const stringId = field.stringId.toLowerCase();
-    const match = Object.entries(coreTermPatterns).find(
+    const match = Object.entries(
+      getCoreTermPatterns(getSystemInfo()?.discipline_type)
+    ).find(
       ([term, patterns]) =>
         availableTerms.has(term) &&
         !usedTerms.has(term) &&
-        patterns.some((pattern) => stringId.includes(pattern))
+        patterns.some((pattern) => stringId.endsWith(pattern))
     )?.[0];
     if (match !== undefined) usedTerms.add(match);
     return match;

@@ -25,7 +25,10 @@ import {
   parseTermExamples,
 } from '../DwcaDefinition';
 import { defaultTemplates } from '../data/defaultTemplates';
-import { coreTermPatterns } from '../data/coreTermPatterns';
+import {
+  coreTermPatterns,
+  getCoreTermPatterns,
+} from '../data/coreTermPatterns';
 
 const occurrenceId = 'http://rs.tdwg.org/dwc/terms/occurrenceID';
 const kingdom = 'http://rs.tdwg.org/dwc/terms/kingdom';
@@ -61,6 +64,43 @@ describe('DwCA query field term mapping', () => {
     expect(
       coreTermPatterns['http://rs.tdwg.org/dwc/terms/georeferenceSources']
     ).toEqual(['geocoorddetail.georefdetref']);
+    expect(
+      coreTermPatterns['http://rs.tdwg.org/dwc/terms/dateIdentified']
+    ).toEqual(['determination.determineddate']);
+    expect(
+      coreTermPatterns['http://rs.tdwg.org/dwc/terms/georeferencedBy']
+    ).toEqual(['agent.georefdetby']);
+  });
+
+  test('uses discipline-specific schema override sources', () => {
+    expect(
+      getCoreTermPatterns('bird')['http://rs.tdwg.org/dwc/terms/sex']
+    ).toEqual(['collectionobjectattribute.text2']);
+    expect(
+      getCoreTermPatterns('fish')['http://rs.tdwg.org/dwc/terms/habitat']
+    ).toEqual(['collectingeventattribute.text9']);
+    expect(
+      getCoreTermPatterns('mammal')['http://rs.tdwg.org/dwc/terms/lifeStage']
+    ).toEqual(['collectionobjectattribute.text4']);
+    expect(
+      getCoreTermPatterns(undefined)['http://rs.tdwg.org/dwc/terms/sex']
+    ).toBeUndefined();
+  });
+
+  test('lists discipline occurrence defaults independently', () => {
+    const bird = defaultTemplates.find(
+      ({ name }) => name === 'Specify → Darwin Core Occurrence (Bird)'
+    );
+    const fish = defaultTemplates.find(
+      ({ name }) => name === 'Specify → Darwin Core Occurrence (Fish)'
+    );
+    expect(bird).toBeDefined();
+    expect(fish).toBeDefined();
+    expect(bird?.disciplineTypes).toEqual(['bird']);
+    expect(fish?.disciplineTypes).toEqual(['fish']);
+    expect(fish?.definition).toContain(
+      '1,10,92.collectingeventattribute.text9'
+    );
   });
 
   test('uses the core or row type as the mapping URL value', () => {
@@ -563,6 +603,45 @@ describe('DwCA query field term mapping', () => {
         rowType: 'http://rs.gbif.org/terms/1.0/MeasurementOrFacts',
       })
     ).toBe(undefined);
+    const eolTemplate = defaultTemplates.find(
+      ({ name }) => name === 'Specify → EOL References Extension'
+    );
+    expect(
+      getTemplateMapping(eolTemplate!, {
+        extension: true,
+        rowType: 'http://eol.org/schema/reference/Reference',
+      })?.rowType
+    ).toBe('http://eol.org/schema/reference/Reference');
+  });
+
+  test('preserves source indexes when query fields are sorted by position', () => {
+    const [mapping] = parseDefinition(
+      `<archive><core rowType="http://rs.tdwg.org/dwc/terms/Occurrence"><queries><query name="core.csv" contextTableId="1"><field stringId="1.collectionobject.guid" /><field stringId="1.collectionobject.catalogNumber" /></query></queries></core></archive>`
+    );
+    if (mapping === undefined) throw new Error('Core mapping was not parsed');
+
+    const reordered = mapping.fields.map((field, index) => ({
+      ...field,
+      position: index === 0 ? 1 : 0,
+    }));
+    const parsed = parseQueryFields(reordered);
+    expect(
+      parsed.map(({ sourceStringId, sourceIndex }) => [
+        sourceStringId,
+        sourceIndex,
+      ])
+    ).toEqual([
+      ['1.collectionobject.catalogNumber', 1],
+      ['1.collectionobject.guid', 0],
+    ]);
+  });
+
+  test('does not match date parts to complete date fields', () => {
+    const [mapping] = parseDefinition(
+      `<archive><core rowType="http://rs.tdwg.org/dwc/terms/Occurrence"><queries><query name="core.csv" contextTableId="1"><field stringId="1,10.collectingevent.startDatePrecision" /></query></queries></core></archive>`
+    );
+    if (mapping === undefined) throw new Error('Core mapping was not parsed');
+    expect(mapping.terms).toEqual([occurrenceId, undefined]);
   });
 
   test('automatically maps the expanded core default field patterns', () => {
@@ -649,14 +728,8 @@ describe('DwCA query field term mapping', () => {
         '1,10.collectingevent.startDateNumericYear',
         'http://rs.tdwg.org/dwc/terms/year',
       ],
-      [
-        '1,10,92.collectingeventattribute.number13',
-        'http://rs.tdwg.org/dwc/terms/minimumDepthInMeters',
-      ],
-      [
-        '1,10,92.collectingeventattribute.number12',
-        'http://rs.tdwg.org/dwc/terms/maximumDepthInMeters',
-      ],
+      ['1,10,92.collectingeventattribute.number13', undefined],
+      ['1,10,92.collectingeventattribute.number12', undefined],
       ['1,10,2.locality.localityName', 'http://rs.tdwg.org/dwc/terms/locality'],
       [
         '1,10,2,123.geoCoordDetails.geocoorddetail.geoRefDetRef',

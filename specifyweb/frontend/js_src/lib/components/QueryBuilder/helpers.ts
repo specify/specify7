@@ -70,63 +70,69 @@ export function parseQueryFields(
 ): RA<QueryField> {
   return group(
     Array.from(queryFields)
-      .sort(sortFunction(({ position }) => position))
-      .map(({ isNot, isDisplay, isStrict, ...field }, index) => {
-        const fieldSpec = QueryFieldSpec.fromStringId(
-          field.stringId,
-          field.isRelFld ?? false
-        );
+      .map((field, sourceIndex) => ({ field, sourceIndex }))
+      .sort(sortFunction(({ field: { position } }) => position))
+      .map(
+        (
+          { field: { isNot, isDisplay, isStrict, ...field }, sourceIndex },
+          index
+        ) => {
+          const fieldSpec = QueryFieldSpec.fromStringId(
+            field.stringId,
+            field.isRelFld ?? false
+          );
 
-        /*
-         * SpQueryField.startValue containing fullDate may be in different formats
-         * See https://github.com/specify/specify7/issues/1348
-         */
-        const startValue =
-          typeof field.startValue === 'string' &&
-          fieldSpec.datePart === 'fullDate' &&
-          !field.startValue.includes(today)
-            ? field.startValue
-                .split(',')
-                .map((value) =>
-                  parseValue(
-                    parserFromType('java.sql.Timestamp'),
-                    undefined,
-                    value
+          /*
+           * SpQueryField.startValue containing fullDate may be in different formats
+           * See https://github.com/specify/specify7/issues/1348
+           */
+          const startValue =
+            typeof field.startValue === 'string' &&
+            fieldSpec.datePart === 'fullDate' &&
+            !field.startValue.includes(today)
+              ? field.startValue
+                  .split(',')
+                  .map((value) =>
+                    parseValue(
+                      parserFromType('java.sql.Timestamp'),
+                      undefined,
+                      value
+                    )
                   )
-                )
-                .map((parsed) =>
-                  parsed?.isValid
-                    ? (parsed.parsed as string)
-                    : (field.startValue ?? '')
-                )
-                .join(',')
-            : field.startValue;
+                  .map((parsed) =>
+                    parsed?.isValid
+                      ? (parsed.parsed as string)
+                      : (field.startValue ?? '')
+                  )
+                  .join(',')
+              : field.startValue;
 
-        const mappingPath = fieldSpec.toMappingPath();
-        return [
-          mappingPathToString(mappingPath),
-          {
-            id: index,
-            sourceIndex: index,
-            sourceStringId: field.stringId,
-            mappingPath,
-            sortType: sortTypes[field.sortType],
-            filter: {
-              type: defined(
-                Object.entries(queryFieldFilterSpecs).find(
-                  ([_, { id }]) => id === field.operStart
-                ),
-                `Unknown SpQueryField.operStart value: ${field.operStart}`
-              )[KEY],
-              fieldFormat: field.formatName ?? undefined,
-              isNot,
-              isStrict,
-              startValue,
+          const mappingPath = fieldSpec.toMappingPath();
+          return [
+            mappingPathToString(mappingPath),
+            {
+              id: index,
+              sourceIndex,
+              sourceStringId: field.stringId,
+              mappingPath,
+              sortType: sortTypes[field.sortType],
+              filter: {
+                type: defined(
+                  Object.entries(queryFieldFilterSpecs).find(
+                    ([_, { id }]) => id === field.operStart
+                  ),
+                  `Unknown SpQueryField.operStart value: ${field.operStart}`
+                )[KEY],
+                fieldFormat: field.formatName ?? undefined,
+                isNot,
+                isStrict,
+                startValue,
+              },
+              isDisplay,
             },
-            isDisplay,
-          },
-        ] as const;
-      })
+          ] as const;
+        }
+      )
   ).map(([_mappingPath, groupedFields]) => ({
     ...removeKey(groupedFields[0], 'filter'),
     filters: groupedFields.map(({ filter }) => filter),

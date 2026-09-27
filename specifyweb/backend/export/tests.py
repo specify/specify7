@@ -65,3 +65,37 @@ class DwcaValidationTest(TestCase):
         )
         with self.assertRaises(DwCAException):
             validate_definition(invalid_definition)
+
+    def test_translates_missing_query_field_attributes(self):
+        definition = '''
+            <archive>
+              <core rowType="http://rs.tdwg.org/dwc/terms/Occurrence">
+                <queries>
+                  <query contextTableId="1" name="occurrence.csv">
+                    <id isRelFld="false" oper="11" value="" isNot="false"
+                        term="http://rs.tdwg.org/dwc/terms/occurrenceID" />
+                  </query>
+                </queries>
+              </core>
+            </archive>
+        '''
+        with self.assertRaises(DwCAException):
+            validate_definition(definition)
+
+    def test_translates_missing_constant_field_attributes(self):
+        definition = '''
+            <archive>
+              <core rowType="http://rs.tdwg.org/dwc/terms/Occurrence">
+                <queries>
+                  <query contextTableId="1" name="occurrence.csv">
+                    <id stringId="1.collectionobject.guid" isRelFld="false"
+                        oper="11" value="" isNot="false"
+                        term="http://rs.tdwg.org/dwc/terms/occurrenceID" />
+                  </query>
+                </queries>
+                <field value="PreservedSpecimen" />
+              </core>
+            </archive>
+        '''
+        with self.assertRaises(DwCAException):
+            validate_definition(definition)
