@@ -491,7 +491,7 @@ class Migration(migrations.Migration):
         migrations.AddConstraint(
             model_name='spprincipal_sppermission',
             constraint=models.UniqueConstraint(
-                fields=('spprincipal', 'sppermission'), name='spprincipal_sppermission'),
+                fields=('spprincipal', 'sppermission'), name='spprincipal_sppermission_unique'),
         ),
         migrations.AddConstraint(
             model_name='spexportschema_exportmapping',
