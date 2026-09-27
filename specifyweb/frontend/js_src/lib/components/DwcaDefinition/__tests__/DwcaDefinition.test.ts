@@ -115,6 +115,25 @@ describe('DwCA query field term mapping', () => {
     ).toBe('identification');
   });
 
+  test('includes the current determination in the Identification template', () => {
+    const template = defaultTemplates.find(
+      ({ name }) => name === 'Specify → Identification History Extension'
+    );
+    const mapping = getTemplateMapping(
+      template!,
+      {
+        extension: true,
+        rowType: 'http://rs.tdwg.org/dwc/terms/Identification',
+      },
+      'http://rs.tdwg.org/dwc/terms/Occurrence'
+    );
+    expect(
+      mapping?.fields.some(({ stringId }) =>
+        stringId.endsWith('determination.isCurrent')
+      )
+    ).toBe(true);
+  });
+
   test('disambiguates duplicate extension tab names', () => {
     expect(
       getMappingTabValues([
