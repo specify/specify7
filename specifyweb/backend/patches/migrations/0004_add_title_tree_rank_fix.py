@@ -1,4 +1,18 @@
 from django.db import migrations
+from django.db.models import F
+
+
+def add_titles(apps, schema_editor):
+    for model_name in (
+        'Geographytreedefitem',
+        'Taxontreedefitem',
+        'Storagetreedefitem',
+        'Tectonicunittreedefitem',
+        'Lithostrattreedefitem',
+        'Geologictimeperiodtreedefitem',
+    ):
+        model = apps.get_model('specify', model_name)
+        model.objects.filter(title__isnull=True).update(title=F('name'))
 
 class Migration(migrations.Migration):
 
@@ -7,33 +21,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunSQL(
-            """
-            UPDATE geographytreedefitem
-            SET Title = Name
-            WHERE Title IS NULL;
-
-            UPDATE taxontreedefitem
-            SET Title = Name
-            WHERE Title IS NULL;
-
-            UPDATE storagetreedefitem
-            SET Title = Name
-            WHERE Title IS NULL;
-
-            UPDATE tectonicunittreedefitem
-            SET Title = Name
-            WHERE Title IS NULL;
-
-            UPDATE lithostrattreedefitem
-            SET Title = Name
-            WHERE Title IS NULL;
-
-            UPDATE geologictimeperiodtreedefitem
-            SET Title = Name
-            WHERE Title IS NULL;
-            """,
-            # No reverse SQL because this change is irreversible
-            reverse_sql=''
-        )
+        migrations.RunPython(add_titles, migrations.RunPython.noop)
     ]
