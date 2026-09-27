@@ -847,7 +847,7 @@ export const expressSearchConfigText = createDictionary({
     'fr-fr': 'Événements de collecte associés aux agents collecteurs',
     'hr-hr':
       'Događaji prikupljanja upareni s agentima koji su prikupljali uzorke.',
-    nb: 'Innsamlingshendelser koblet med agentene som samlet inn specimens.',
+    nb: 'Innsamlingshendelser koblet med agentene som samlet inn eksemplarer.',
     'pt-br':
       'Coletando eventos relacionados aos agentes que coletaram as amostras.',
     'ru-ru':

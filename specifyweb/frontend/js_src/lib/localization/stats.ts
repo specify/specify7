@@ -41,7 +41,7 @@ export const statsText = createDictionary({
     'ru-ru': 'Типовые образцы',
     'uk-ua': 'Типові зразки',
     'hr-hr': 'Tipični uzorci',
-    nb: 'Typer',
+    nb: 'Type eksemplarer',
   },
   curation: {
     'en-us': 'Curation',
