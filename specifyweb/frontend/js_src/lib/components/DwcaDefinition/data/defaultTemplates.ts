@@ -269,7 +269,6 @@ export const defaultTemplates: readonly DwcaTemplate[] = [
       <query name="Identification.csv" contextTableId="1">
         <id stringId="1.collectionobject.guid" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/occurrenceID"/>
         <field stringId="1,9-determinations.determination.guid" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/identificationID"/>
-        <field stringId="1,9-determinations.determination.isCurrent" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="Current"/>
         <field stringId="1,9-determinations.determination.remarks" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/identificationRemarks"/>
         <field stringId="1,9-determinations.determination.determinedDate" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/dateIdentified"/>
         <field stringId="1,9-determinations,5-determiner.agent.determiner" oper="8" value="" isNot="false" isRelFld="true" formatName="" term="http://rs.tdwg.org/dwc/terms/identifiedBy"/>
@@ -278,15 +277,8 @@ export const defaultTemplates: readonly DwcaTemplate[] = [
         <field stringId="1,9-determinations.determination.confidence" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/taxonRemarks"/>
         <field stringId="1,9-determinations,4.taxon.Kingdom" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/kingdom"/>
         <field stringId="1,9-determinations,4.taxon.Phylum" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/phylum"/>
-        <field stringId="1,9-determinations,4.taxon.Subphylum" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="Subphylum"/>
-        <field stringId="1,9-determinations,4.taxon.Superclass" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="Superclass"/>
         <field stringId="1,9-determinations,4.taxon.Class" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/class"/>
-        <field stringId="1,9-determinations,4.taxon.Subclass" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="Subclass"/>
-        <field stringId="1,9-determinations,4.taxon.Infraclass" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="Infraclass"/>
-        <field stringId="1,9-determinations,4.taxon.Superorder" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="Superorder"/>
         <field stringId="1,9-determinations,4.taxon.Order" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/order"/>
-        <field stringId="1,9-determinations,4.taxon.Suborder" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="Suborder"/>
-        <field stringId="1,9-determinations,4.taxon.Infraorder" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="Infraorder"/>
         <field stringId="1,9-determinations,4.taxon.Superfamily" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/superfamily"/>
         <field stringId="1,9-determinations,4.taxon.Family" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/family"/>
         <field stringId="1,9-determinations,4.taxon.Subfamily" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/subfamily"/>
@@ -296,7 +288,6 @@ export const defaultTemplates: readonly DwcaTemplate[] = [
         <field stringId="1,9-determinations,4.taxon.Subgenus" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/subgenus"/>
         <field stringId="1,9-determinations,4.taxon.Species" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/specificEpithet"/>
         <field stringId="1,9-determinations,4.taxon.Subspecies" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/infraspecificEpithet"/>
-        <field stringId="1,9-determinations,4.taxon.Infraspecies" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="Infraspecies"/>
       </query>
     </queries>
     <coreid index="0"/>
