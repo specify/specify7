@@ -7,7 +7,10 @@ def restore_separators(apps, schema_editor):
     if schema_editor.connection.vendor == 'postgresql':
         sql = """
             UPDATE spappresourcedata
-            SET data = REPLACE(data, 'separator=""', 'separator="; "')
+            SET data = convert_to(
+                REPLACE(convert_from(data, 'UTF8'), 'separator=""', 'separator="; "'),
+                'UTF8'
+            )
             WHERE "SpAppResourceID" IN (
                 SELECT "SpAppResourceID"
                 FROM spappresource
