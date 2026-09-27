@@ -8,6 +8,21 @@ def add_column_if_missing(apps, schema_editor):
     column = 'SelectSeries'
 
     with schema_editor.connection.cursor() as c:
+        if schema_editor.connection.vendor == 'postgresql':
+            c.execute(
+                """
+                SELECT 1
+                  FROM information_schema.columns
+                 WHERE table_schema = current_schema()
+                   AND table_name   = %s
+                   AND column_name  = %s
+                """,
+                [table, column]
+            )
+            if not c.fetchone():
+                c.execute(f'ALTER TABLE "{table}" ADD COLUMN "{column}" BOOLEAN NULL;')
+            return
+
         c.execute(
             """
             SELECT 1
