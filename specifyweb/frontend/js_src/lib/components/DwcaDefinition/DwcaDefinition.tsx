@@ -1250,7 +1250,7 @@ function QueryMapping({
     string | undefined
   >();
   const isIdentifierField = (field: QueryField): boolean =>
-    (field.sourceIndex ?? field.id) === 0;
+    getMappingFieldIndex(mapping, field) === 0;
   const handleRowTypeChange = (rowType: string): void => {
     const extensionDefinition = mapping.extension
       ? getExtensionDefinitionForRowType(rowType)
