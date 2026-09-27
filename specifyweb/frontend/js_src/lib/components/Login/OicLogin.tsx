@@ -40,7 +40,7 @@ export function OicLogin({
   return (
     <SplashScreen>
       <LoginLanguageChooser languages={data.languages} />
-      <Form forwardRef={formRef} method="post">
+      <Form forwardRef={formRef} method="POST">
         {typeof data.inviteToken === 'object' && (
           <p>
             {userText.helloMessage({ userName: data.inviteToken.username })}

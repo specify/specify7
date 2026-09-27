@@ -543,7 +543,7 @@ export const backEndText = createDictionary({
       'Tipo de coleção inesperado "{unexpectedTypeName:string}". Esperado "{collectionName:string}"',
     'hr-hr':
       'Neočekivana vrsta kolekcije "{unexpectedTypeName:string}". Očekivana "{collectionName:string}"',
-    nb: 'Uventet samlingstype «{unexpectedTypeName:string}». Forventet «{collectionName:string}».',
+    nb: 'Uventet samlingstype «{unexpectedTypeName:string}». Forventet «{collectionName:string}»',
   },
   invalidReportMimetype: {
     'en-us':
@@ -675,7 +675,7 @@ export const backEndText = createDictionary({
       'У цьому рядку виявлено зміну області застосування. Рекомендується видалити цей рядок з набору даних',
     'hr-hr':
       'U ovom retku otkrivena je promjena opsega. Preporučuje se brisanje ovog retka iz skupa podataka.',
-    nb: 'En endring i omfanget er oppdaget i denne raden. Det anbefales å slette denne raden fra datasettet.',
+    nb: 'En endring i omfanget er oppdaget i denne raden. Det anbefales å slette denne raden fra datasettet',
   },
   multipleTreeDefsInRow: {
     'en-us': 'Multiple tree definitions in row',
