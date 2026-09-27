@@ -26,18 +26,12 @@ const darwinCoreTermPatterns: Readonly<Record<string, readonly string[]>> = {
     'collectingevent.startdate',
     'collectingevent.enddate',
   ],
-  'http://rs.tdwg.org/dwc/terms/basisOfRecord': ['collection.collectiontype'],
   'http://rs.tdwg.org/dwc/terms/datasetName': [
     'collection.description',
     'collection.collectionname',
   ],
   'http://rs.tdwg.org/dwc/terms/datasetID': ['collection.guid'],
-  'http://rs.tdwg.org/dwc/terms/institutionID': ['institution.altname'],
-  'http://purl.org/dc/terms/license': [
-    'institution.copyright',
-    'institution.disclaimer',
-    'attachment.license',
-  ],
+  'http://rs.tdwg.org/dwc/terms/institutionID': ['institution.guid'],
   'http://purl.org/dc/terms/accessRights': ['institution.termsofuse'],
   'http://purl.org/dc/terms/modified': ['.timestampmodified'],
   'http://rs.tdwg.org/dwc/terms/otherCatalogNumbers': ['.altcatalognumber'],
@@ -45,10 +39,7 @@ const darwinCoreTermPatterns: Readonly<Record<string, readonly string[]>> = {
     'preferredtaxon.fullname',
     'taxon.fullname',
   ],
-  'http://rs.tdwg.org/dwc/terms/scientificNameAuthorship': [
-    'taxon.species author',
-    'taxon.author',
-  ],
+  'http://rs.tdwg.org/dwc/terms/scientificNameAuthorship': ['taxon.author'],
   [occurrenceIdTerm]: ['collectionobject.guid'],
   'http://rs.tdwg.org/dwc/terms/continent': ['geography.continent'],
   'http://rs.tdwg.org/dwc/terms/country': ['geography.country'],
@@ -74,11 +65,6 @@ const darwinCoreTermPatterns: Readonly<Record<string, readonly string[]>> = {
     'collectionobject.countamt',
     'collectionobjectattribute.countamt',
   ],
-  'http://rs.tdwg.org/dwc/terms/sex': ['collectionobjectattribute.text10'],
-  'http://rs.tdwg.org/dwc/terms/lifeStage': [
-    'collectionobjectattribute.text12',
-  ],
-  'http://rs.tdwg.org/dwc/terms/habitat': ['collectingeventattribute.text17'],
   'http://rs.tdwg.org/dwc/terms/kingdom': ['taxon.kingdom'],
   'http://rs.tdwg.org/dwc/terms/phylum': ['taxon.phylum'],
   'http://rs.tdwg.org/dwc/terms/class': ['taxon.class'],
@@ -100,7 +86,7 @@ const darwinCoreTermPatterns: Readonly<Record<string, readonly string[]>> = {
     'collectingevent.guid',
     'collectingevent.stationfieldnumber',
   ],
-  'http://rs.tdwg.org/dwc/terms/recordNumber': ['fieldnumber'],
+  'http://rs.tdwg.org/dwc/terms/recordNumber': ['collectionobject.fieldnumber'],
   'http://rs.tdwg.org/dwc/terms/identifiedBy': [
     'agent.determiner',
     'determination.determiner',
@@ -126,7 +112,7 @@ const darwinCoreTermPatterns: Readonly<Record<string, readonly string[]>> = {
   'http://rs.tdwg.org/dwc/terms/islandGroup': ['localitydetail.islandgroup'],
   'http://rs.tdwg.org/dwc/terms/locationRemarks': ['locality.remarks'],
   'http://rs.tdwg.org/dwc/terms/georeferenceSources': [
-    'locality.latlongmethod',
+    'geocoorddetail.georefdetref',
   ],
   'http://rs.tdwg.org/dwc/terms/collectionCode': [
     'collection.code',
@@ -134,7 +120,9 @@ const darwinCoreTermPatterns: Readonly<Record<string, readonly string[]>> = {
   ],
   'http://rs.tdwg.org/dwc/terms/eventRemarks': ['collectingevent.remarks'],
   'http://rs.tdwg.org/dwc/terms/institutionCode': ['institution.code'],
-  'http://rs.tdwg.org/dwc/terms/fieldNumber': ['fieldnumber'],
+  'http://rs.tdwg.org/dwc/terms/fieldNumber': [
+    'collectingevent.stationfieldnumber',
+  ],
   'http://rs.tdwg.org/dwc/terms/dateIdentified': ['determineddate'],
   'http://rs.tdwg.org/dwc/terms/locationID': ['locality.guid'],
   'http://rs.tdwg.org/dwc/terms/georeferenceRemarks': [

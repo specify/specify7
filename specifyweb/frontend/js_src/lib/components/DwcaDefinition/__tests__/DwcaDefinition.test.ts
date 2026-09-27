@@ -25,6 +25,7 @@ import {
   parseTermExamples,
 } from '../DwcaDefinition';
 import { defaultTemplates } from '../data/defaultTemplates';
+import { coreTermPatterns } from '../data/coreTermPatterns';
 
 const occurrenceId = 'http://rs.tdwg.org/dwc/terms/occurrenceID';
 const kingdom = 'http://rs.tdwg.org/dwc/terms/kingdom';
@@ -41,6 +42,27 @@ test('parses documented term examples into values and descriptions', () => {
 requireContext();
 
 describe('DwCA query field term mapping', () => {
+  test('uses semantically correct shared Darwin Core sources', () => {
+    expect(coreTermPatterns['http://rs.tdwg.org/dwc/terms/basisOfRecord']).toBe(
+      undefined
+    );
+    expect(
+      coreTermPatterns['http://rs.tdwg.org/dwc/terms/institutionID']
+    ).toEqual(['institution.guid']);
+    expect(
+      coreTermPatterns['http://rs.tdwg.org/dwc/terms/scientificNameAuthorship']
+    ).toEqual(['taxon.author']);
+    expect(
+      coreTermPatterns['http://rs.tdwg.org/dwc/terms/fieldNumber']
+    ).toEqual(['collectingevent.stationfieldnumber']);
+    expect(
+      coreTermPatterns['http://rs.tdwg.org/dwc/terms/recordNumber']
+    ).toEqual(['collectionobject.fieldnumber']);
+    expect(
+      coreTermPatterns['http://rs.tdwg.org/dwc/terms/georeferenceSources']
+    ).toEqual(['geocoorddetail.georefdetref']);
+  });
+
   test('uses the core or row type as the mapping URL value', () => {
     expect(
       getMappingTabValue({ extension: false, rowType: 'occurrence' })
@@ -551,20 +573,12 @@ describe('DwCA query field term mapping', () => {
         'http://rs.tdwg.org/dwc/terms/collectionCode',
       ],
       [
-        '1,23,26,96,94.institution.altName',
+        '1,23,26,96,94.institution.guid',
         'http://rs.tdwg.org/dwc/terms/institutionID',
-      ],
-      [
-        '1,23,26,96,94.institution.copyright',
-        'http://purl.org/dc/terms/license',
       ],
       [
         '1,23,26,96,94.institution.termsOfUse',
         'http://purl.org/dc/terms/accessRights',
-      ],
-      [
-        '1,23.collection.collectionType',
-        'http://rs.tdwg.org/dwc/terms/basisOfRecord',
       ],
       [
         '1,23.collection.description',
@@ -580,7 +594,7 @@ describe('DwCA query field term mapping', () => {
         'http://purl.org/dc/terms/modified',
       ],
       [
-        '1,9-determinations,4.taxon.Species Author',
+        '1,9-determinations,4.taxon.author',
         'http://rs.tdwg.org/dwc/terms/scientificNameAuthorship',
       ],
       [
@@ -643,17 +657,9 @@ describe('DwCA query field term mapping', () => {
         '1,10,92.collectingeventattribute.number12',
         'http://rs.tdwg.org/dwc/terms/maximumDepthInMeters',
       ],
-      [
-        '1,93.collectionobjectattribute.text10',
-        'http://rs.tdwg.org/dwc/terms/sex',
-      ],
-      [
-        '1,93.collectionobjectattribute.text12',
-        'http://rs.tdwg.org/dwc/terms/lifeStage',
-      ],
       ['1,10,2.locality.localityName', 'http://rs.tdwg.org/dwc/terms/locality'],
       [
-        '1,10,2.locality.latLongMethod',
+        '1,10,2,123.geoCoordDetails.geocoorddetail.geoRefDetRef',
         'http://rs.tdwg.org/dwc/terms/georeferenceSources',
       ],
       [
@@ -708,10 +714,7 @@ describe('DwCA query field term mapping', () => {
         '1,63-preparations.preparation.preparations',
         'http://rs.tdwg.org/dwc/terms/preparations',
       ],
-      [
-        '1,10,92.collectingeventattribute.text17',
-        'http://rs.tdwg.org/dwc/terms/habitat',
-      ],
+      ['1,10,92.collectingeventattribute.text17', undefined],
       ['1,10,2.locality.elevationMethod', undefined],
     ] as const;
     const xml = `<archive><core rowType="http://rs.tdwg.org/dwc/terms/Occurrence"><queries><query name="core.csv" contextTableId="1">${fields
