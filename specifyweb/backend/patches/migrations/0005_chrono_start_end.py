@@ -1,30 +1,17 @@
 from django.db import migrations
+from django.db.models import F
 
 def reverse_faulty_end_start_period(apps, schema_editor):
-    connection = schema_editor.connection
-    with connection.cursor() as cursor:
-        # Check if the table geologictimeperiod exists
-        cursor.execute("""
-            SELECT COUNT(*)
-            FROM information_schema.tables
-            WHERE table_name = 'geologictimeperiod' AND table_schema = DATABASE();
-        """)
-        result = cursor.fetchone()
-        if result is None or result[0] != 1:
-            raise RuntimeError("Expected table 'geologictimeperiod' does not exist. Migration cannot proceed.")
-
-        # Perform the update if the table exists
-        cursor.execute("""
-            UPDATE geologictimeperiod AS gtp
-            JOIN (
-                SELECT GeologicTimePeriodID, StartPeriod AS orig_start
-                FROM geologictimeperiod
-                WHERE StartPeriod < EndPeriod
-            ) AS sub ON gtp.GeologicTimePeriodID = sub.GeologicTimePeriodID
-            SET 
-                gtp.StartPeriod = gtp.EndPeriod,
-                gtp.EndPeriod = sub.orig_start;
-        """)
+    GeologicTimePeriod = apps.get_model('specify', 'Geologictimeperiod')
+    using = schema_editor.connection.alias
+    periods = GeologicTimePeriod.objects.using(using).filter(
+        startperiod__lt=F('endperiod')
+    ).values_list('pk', 'startperiod', 'endperiod')
+    for primary_key, startperiod, endperiod in periods:
+        GeologicTimePeriod.objects.using(using).filter(pk=primary_key).update(
+            startperiod=endperiod,
+            endperiod=startperiod,
+        )
 class Migration(migrations.Migration):
 
     dependencies = [
