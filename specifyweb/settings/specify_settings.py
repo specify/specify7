@@ -47,6 +47,11 @@ SPECIFY_CONFIG_DIR = os.environ.get(
 # from a Specify 6 installation.
 DATABASE_NAME = 'SpecifyDB'
 
+# Supported database backend. MariaDB remains the default for compatibility
+# with existing Specify 6 databases; PostgreSQL is used by the migration
+# rehearsal when explicitly selected.
+DATABASE_ENGINE = os.getenv('DATABASE_ENGINE', 'mariadb').lower()
+
 # Database hostname or IP. Will use localhost:3306 by default.
 DATABASE_HOST = ''
 DATABASE_PORT = ''
@@ -54,6 +59,10 @@ DATABASE_PORT = ''
 # Any extra options for the database connection
 # https://docs.djangoproject.com/en/4.2/ref/settings/#std-setting-OPTIONS
 DATABASE_OPTIONS = {}
+
+SERIALIZATION_MODULES = {
+    'specify': 'specifyweb.specify.serializer',
+}
 
 # The master, migrator, and application user logins. The migrator and app
 # credentials fall back through the more privileged roles for compatibility.

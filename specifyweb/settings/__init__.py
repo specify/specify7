@@ -39,9 +39,14 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
+if DATABASE_ENGINE in ('postgres', 'postgresql'):
+    DJANGO_DATABASE_ENGINE = 'django.db.backends.postgresql'
+else:
+    DJANGO_DATABASE_ENGINE = 'specifyweb.backend.hibernateboolsbackend.backends.mysql'
+
 DATABASES = {
     'default': {
-        'ENGINE': 'specifyweb.backend.hibernateboolsbackend.backends.mysql',
+        'ENGINE': DJANGO_DATABASE_ENGINE,
         'NAME': DATABASE_NAME,
         'USER': APP_USER_NAME,
         'PASSWORD': APP_USER_PASSWORD,
@@ -51,7 +56,7 @@ DATABASES = {
         'TEST': {}
     },
     'app': {
-        'ENGINE': 'specifyweb.backend.hibernateboolsbackend.backends.mysql',
+        'ENGINE': DJANGO_DATABASE_ENGINE,
         'NAME': DATABASE_NAME,
         'USER': APP_USER_NAME,
         'PASSWORD': APP_USER_PASSWORD,
@@ -61,7 +66,7 @@ DATABASES = {
         'TEST': {}
     },
     'migrations': {
-        'ENGINE': 'specifyweb.backend.hibernateboolsbackend.backends.mysql',
+        'ENGINE': DJANGO_DATABASE_ENGINE,
         'NAME': DATABASE_NAME,
         'USER': MIGRATOR_NAME,
         'PASSWORD': MIGRATOR_PASSWORD,
@@ -71,7 +76,7 @@ DATABASES = {
         'TEST': {}
     },
     'master': {
-        'ENGINE': 'specifyweb.backend.hibernateboolsbackend.backends.mysql',
+        'ENGINE': DJANGO_DATABASE_ENGINE,
         'NAME': DATABASE_NAME,
         'USER': MASTER_NAME,
         'PASSWORD': MASTER_PASSWORD,
@@ -85,6 +90,13 @@ DATABASES = {
 DATABASE_ROUTERS = ["specifyweb.specify.migration_utils.router.MigrationRouter"]
 
 def get_sa_db_url(db_name):
+    if DATABASE_ENGINE in ('postgres', 'postgresql'):
+        return 'postgresql+psycopg://{}:{}@{}:{}/{}'.format(
+            MASTER_NAME,
+            MASTER_PASSWORD,
+            DATABASE_HOST,
+            DATABASE_PORT or 5432,
+            db_name)
     return 'mysql://{}:{}@{}:{}/{}?charset=utf8'.format(
         MASTER_NAME,
         MASTER_PASSWORD,
