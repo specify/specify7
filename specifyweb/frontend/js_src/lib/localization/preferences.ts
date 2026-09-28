@@ -991,7 +991,7 @@ export const preferencesText = createDictionary({
     'de-ch': 'Kritterlos',
     'pt-br': 'Sem criaturas',
     'hr-hr': 'Navedite prskanje (bez stvorenja)',
-    nb: 'Specify Splash (ingen critters)',
+    nb: 'Specify Splash (ingen Critters)',
   },
   customImage: {
     'en-us': 'Custom Image',
