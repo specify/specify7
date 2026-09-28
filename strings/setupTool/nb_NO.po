@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-09-26 15:53+0000\n"
-"Last-Translator: Eirik Rindal <eirik.rindal@nhm.uio.no>\n"
+"PO-Revision-Date: 2026-09-28 06:51+0000\n"
+"Last-Translator: Gunnhild Marthinsen <gunnhilm@nhm.uio.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/setupTool/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -161,12 +161,12 @@ msgstr "Et kontakttelefonnummer."
 #: components/SetupTool/setupResources.ts:307
 #: components/SetupTool/setupResources.ts:344
 msgid "treeRanks"
-msgstr "Trerangeringer"
+msgstr "Tre-nivåer"
 
 #. Used in: Components > Setup Tool > Setup Form
 #: components/SetupTool/SetupForm.tsx:398
 msgid "rank"
-msgstr "Rang"
+msgstr "Nivå"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:266
@@ -202,13 +202,12 @@ msgstr "Velg et tre"
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:117
 msgid "include"
-msgstr "Inkludere"
+msgstr "Inkluder"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:118
-#, fuzzy
 msgid "includeDescription"
-msgstr "Inkluder plasserer nivået i tredefinisjonen."
+msgstr "\"Inkluder\" plasserer nivået i tredefinisjonen."
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:126
@@ -231,8 +230,8 @@ msgstr "I fullt navn"
 #: components/SetupTool/setupResources.ts:136
 msgid "inFullNameDescription"
 msgstr ""
-"«Er i fullt navn» inkluderer nivået når du bygger et uttrykk for fullt "
-"navn, som kan spørres og brukes i rapporter."
+"«Er i fullt navn» inkluderer nivået når du bygger et fullt-navn-uttrykk, som "
+"kan spørres og brukes i rapporter."
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:143
@@ -246,9 +245,8 @@ msgstr "Skilletegn refererer til tegnet som skiller nivåene når hele navnet vi
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:235
-#, fuzzy
 msgid "storageTree"
-msgstr "Lagringstre"
+msgstr "Magasin-tre"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:303
