@@ -185,3 +185,75 @@ class DeaccessionTests(ApiTests):
             fetched.attachment.title,
             'Deaccession Document',
         )
+
+    def test_add_disposals_gifts_and_exchange_outs(self):
+        self._create_prep_type()
+
+        deaccession = models.Deaccession.objects.create(
+            deaccessionnumber='DEACCESSION-LINKS-001',
+        )
+
+        disposal = models.Disposal.objects.create(
+            disposalnumber='DISPOSAL-LINK-001',
+            deaccession=deaccession,
+        )
+        disposal.disposalpreparations.create(
+            preparation=self._create_prep(self.collectionobjects[0], None, countamt=2),
+        )
+
+        gift = models.Gift.objects.create(
+            giftnumber='GIFT-LINK-001',
+            discipline=self.discipline,
+            deaccession=deaccession,
+        )
+        gift.giftpreparations.create(
+            discipline=self.discipline,
+            preparation=self._create_prep(self.collectionobjects[1], None, countamt=3),
+        )
+
+        exchangeout = models.Exchangeout.objects.create(
+            exchangeoutnumber='EXCHANGE-LINK-001',
+            agentcatalogedby=self.agent,
+            agentsentto=self.agent,
+            division=self.division,
+            deaccession=deaccession,
+        )
+        exchangeout.exchangeoutpreps.create(
+            discipline=self.discipline,
+            preparation=self._create_prep(self.collectionobjects[2], None, countamt=4),
+        )
+
+        fetched_deaccession = models.Deaccession.objects.get(id=deaccession.id)
+
+        self.assertEqual(
+            fetched_deaccession.disposals.count(),
+            1,
+        )
+        self.assertEqual(
+            fetched_deaccession.gifts.count(),
+            1,
+        )
+        self.assertEqual(
+            fetched_deaccession.exchangeouts.count(),
+            1,
+        )
+
+        total_preps = (
+            disposal.disposalpreparations.count()
+            + gift.giftpreparations.count()
+            + exchangeout.exchangeoutpreps.count()
+        )
+        total_items = (
+            disposal.disposalpreparations.first().preparation.countamt
+            + gift.giftpreparations.first().preparation.countamt
+            + exchangeout.exchangeoutpreps.first().preparation.countamt
+        )
+
+        self.assertEqual(
+            total_preps,
+            3,
+        )
+        self.assertEqual(
+            total_items,
+            9,
+        )
