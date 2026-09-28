@@ -53,3 +53,27 @@ class LoanTests(ApiTests):
             fetched.preparation,
             prep,
         )
+
+    def test_create_loan_by_entering_cat_number(self):
+        self._create_prep_type()
+        self._create_prep(self.collectionobjects[0], None)
+
+        self.collectionobjects[0].catalognumber = 'CAT-LOAN-1001'
+        self.collectionobjects[0].save()
+
+        co = models.Collectionobject.objects.get(catalognumber='CAT-LOAN-1001')
+        prep = models.Preparation.objects.get(collectionobject=co)
+
+        loan = models.Loan.objects.create(
+            loannumber='LOAN-CATNUM-001',
+            discipline=self.discipline,
+        )
+        loan_prep = models.Loanpreparation.objects.create(
+            loan=loan,
+            discipline=self.discipline,
+            preparation=prep,
+        )
+
+        fetched = models.Loanpreparation.objects.get(id=loan_prep.id)
+        self.assertEqual(fetched.preparation.collectionobject.catalognumber, 'CAT-LOAN-1001')
+        self.assertEqual(fetched.loan.loannumber, 'LOAN-CATNUM-001')
