@@ -92,7 +92,7 @@ class UploadTable(NamedTuple):
         )
 
     def _to_json(self) -> dict:
-        result = dict(
+        result: dict[str, Any] = dict(
             wbcols={k: v.to_json() for k, v in self.wbcols.items()}, static=self.static
         )
         if self.preserveIdentity:
