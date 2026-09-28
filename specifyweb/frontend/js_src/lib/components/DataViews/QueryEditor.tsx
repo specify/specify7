@@ -77,6 +77,14 @@ export function DataViewQueryEditorContent({
     [tableName]
   );
 
+  const initialChange = React.useRef<
+    | {
+        readonly tableName: keyof Tables;
+        readonly value: string;
+      }
+    | undefined
+  >(undefined);
+
   const handleQueryChange = React.useCallback(
     (changes: {
       readonly fields: RA<SerializedResource<SpQueryField>>;
@@ -101,11 +109,16 @@ export function DataViewQueryEditorContent({
         version: 1,
         queries: { [tableName]: definition },
       };
+      const changedValue = serializeStableDataViewQueries(changedFile);
+      if (initialChange.current?.tableName !== tableName) {
+        initialChange.current = { tableName, value: changedValue };
+        return;
+      }
+      if (initialChange.current.value === changedValue) return;
       if (
         getStoredDataViewQueryDefinition(currentFile, tableName) ===
           undefined &&
-        serializeStableDataViewQueries(changedFile) ===
-          serializeStableDataViewQueries(defaultFile)
+        changedValue === serializeStableDataViewQueries(defaultFile)
       )
         return;
       const nextFile: DataViewQueriesFile = {
@@ -132,8 +145,7 @@ export function DataViewQueryEditorContent({
       {lockedTableName === undefined ? (
         <CollapsibleTableList
           badge={(table): React.ReactNode =>
-            getStoredDataViewQueryDefinition(file, table.name) ===
-            undefined ? undefined : (
+            file.queries[table.name] === undefined ? undefined : (
               <span
                 aria-hidden
                 className="h-2 w-2 shrink-0 rounded-full bg-brand-400"
