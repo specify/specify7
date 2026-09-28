@@ -257,3 +257,38 @@ class DeaccessionTests(ApiTests):
             total_items,
             9,
         )
+
+    def test_save_newly_created_deaccession(self):
+        deaccession = models.Deaccession.objects.create(
+            deaccessionnumber='DEACCESSION-SAVE-001',
+            deaccessiondate=timezone.now(),
+            status='Completed',
+        )
+
+        attachment = models.Attachment.objects.create(
+            origfilename='deaccession_save_doc.pdf',
+            tableid=deaccession.specify_model.tableId,
+            title='Deaccession Save Document',
+        )
+
+        deaccession.deaccessionattachments.create(
+            attachment=attachment,
+            ordinal=0,
+        )
+
+        fetched_deaccession = models.Deaccession.objects.get(
+            id=deaccession.id,
+        )
+
+        self.assertEqual(
+            fetched_deaccession.deaccessionnumber,
+            'DEACCESSION-SAVE-001',
+        )
+        self.assertEqual(
+            fetched_deaccession.status,
+            'Completed',
+        )
+        self.assertEqual(
+            fetched_deaccession.deaccessionattachments.count(),
+            1,
+        )
