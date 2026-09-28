@@ -316,7 +316,7 @@ export const statsText = createDictionary({
     'pt-br': 'Nome do item',
     'uk-ua': 'Назва елемента',
     'hr-hr': 'Naziv stavke',
-    nb: 'Varenavn',
+    nb: 'Element navn',
   },
   itemValue: {
     'en-us': 'Item Value',
@@ -327,7 +327,7 @@ export const statsText = createDictionary({
     'pt-br': 'Valor do item',
     'uk-ua': 'Значення елемента',
     'hr-hr': 'Vrijednost stavke',
-    nb: 'Elementverdi',
+    nb: 'Element-verdi',
   },
   downloadAsTSV: {
     'en-us': 'Download as TSV',

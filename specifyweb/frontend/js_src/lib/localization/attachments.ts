@@ -40,7 +40,7 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Attachment-Server nicht verfügbar',
     'pt-br': 'Servidor de anexos indisponível',
     'hr-hr': 'Poslužitelj priloga nije dostupan',
-    nb: 'Serveren for vedlegg er ikke tilgjengelig',
+    nb: 'Vedleggsserveren utilgjengelig',
   },
   attachmentServerUnavailableDescription: {
     'en-us': 'Setup your attachment server',
@@ -51,7 +51,7 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Richten Sie Ihren Attachment-Server ein',
     'pt-br': 'Configure seu servidor de anexos.',
     'hr-hr': 'Postavite svoj poslužitelj priloga',
-    nb: 'Konfigurer serveren for vedlegg',
+    nb: 'Sett opp vedleggsserveren din',
   },
   orderBy: {
     'en-us': 'Order By',
@@ -223,7 +223,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Скасовано',
     'pt-br': 'Cancelado',
     'hr-hr': 'Otkazano',
-    nb: 'Avbrutt',
+    nb: 'Kanselert',
   },
   frontEndInterruption: {
     'en-us': '{action:string} was in progress when interruption occurred',
