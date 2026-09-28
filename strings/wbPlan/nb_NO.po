@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-09-28 06:51+0000\n"
-"Last-Translator: Eirik Rindal <eirik.rindal@nhm.uio.no>\n"
+"Last-Translator: Gunnhild Marthinsen <gunnhilm@nhm.uio.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/wbPlan/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -144,7 +144,8 @@ msgstr "Aldri ignorer"
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:272
 msgid "ignoreNeverDescription"
-msgstr "Denne kolonnen vil alltid bli vurdert for matching, uavhengig av verdien."
+msgstr ""
+"Denne kolonnen vil alltid bli vurdert for matching, uavhengig av verdien"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:300
