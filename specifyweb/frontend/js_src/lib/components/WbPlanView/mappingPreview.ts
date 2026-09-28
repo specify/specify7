@@ -95,9 +95,28 @@ export function generateMappingPathPreview(
     generateFieldData: 'selectedOnly',
     spec: navigatorSpecs.permissive,
   });
-  const agentFieldPreview = getAgentFieldPreview(baseTableName, mappingPath);
-  if (agentFieldPreview !== undefined) return agentFieldPreview;
 
+  const appendToManyIndex = (
+    mappingPath: MappingPath,
+    preview: string
+  ): string => {
+    const toManyLocation = Array.from(mappingPath)
+      .reverse()
+      .findIndex(valueIsToManyIndex);
+    const toManyIndex = mappingPath[mappingPath.length - 1 - toManyLocation];
+    const toManyIndexFormatted =
+      toManyIndex !== undefined && getNumberFromToManyIndex(toManyIndex) > 1
+        ? toManyIndex
+        : undefined;
+
+    return filterArray([preview, toManyIndexFormatted])
+      .filter(Boolean)
+      .join(' - ');
+  };
+
+  const agentFieldPreview = getAgentFieldPreview(baseTableName, mappingPath);
+  if (agentFieldPreview !== undefined)
+    return appendToManyIndex(mappingPath, agentFieldPreview);
   const finalMappingElement = mappingLineData.at(-1);
   const pathFields = mappingPath
     .slice(0, -1)
@@ -112,7 +131,8 @@ export function generateMappingPathPreview(
     pathFields.at(-1)?.toLowerCase() === 'agent'
   ) {
     const parentLabel = finalMappingElement?.selectLabel;
-    if (parentLabel !== undefined) return `${parentLabel} - Agent`;
+    if (parentLabel !== undefined)
+      return appendToManyIndex(mappingPath, `${parentLabel} - Agent`);
   }
 
   if (
@@ -132,8 +152,10 @@ export function generateMappingPathPreview(
       typeof parentField?.optionLabel === 'string'
         ? parentField.optionLabel
         : undefined;
-    if (parentLabel?.toLowerCase().endsWith(' agent')) return parentLabel;
-    if (parentLabel !== undefined) return `${parentLabel} - Agent`;
+    if (parentLabel?.toLowerCase().endsWith(' agent'))
+      return appendToManyIndex(mappingPath, parentLabel);
+    if (parentLabel !== undefined)
+      return appendToManyIndex(mappingPath, `${parentLabel} - Agent`);
   }
 
   // Extract labels from mappingLineData
