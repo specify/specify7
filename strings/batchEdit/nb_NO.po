@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-09-26 15:52+0000\n"
-"Last-Translator: Eirik Rindal <eirik.rindal@nhm.uio.no>\n"
+"PO-Revision-Date: 2026-09-28 06:51+0000\n"
+"Last-Translator: Gunnhild Marthinsen <gunnhilm@nhm.uio.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/batchEdit/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -88,20 +88,20 @@ msgstr ""
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:115
 msgid "commit"
-msgstr "Bekreft"
+msgstr "Utfør"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:120
 msgid "startCommitDescription"
 msgstr ""
-"Når datasettet er bekreftet, vil data oppdateres, legges til og slettes i "
-"Specify-databasen, basert på dataene i regnearket."
+"Når datasettet sendt, vil data oppdateres, legges til og slettes i Specify-"
+"databasen, basert på dataene i regnearket."
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:124
 msgid "startRevertDescription"
 msgstr ""
-"Tilbakestilling av datasettet vil oppdatere verdiene på nytt, slette "
+"Tilbakerulling av datasettet vil oppdatere verdiene på nytt, slette "
 "opprettede poster og opprette nye poster"
 
 #. Used in: Components > Wb Utils > Dataset Variants
@@ -121,17 +121,17 @@ msgstr ""
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:127
 msgid "committing"
-msgstr "Bekreft"
+msgstr "Utfører"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:128
 msgid "beStatusCommit"
-msgstr "Status for commit'ing av datasett"
+msgstr "Status for prosessering av datasett"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:116
 msgid "startCommit"
-msgstr "Starte datasett-commit?"
+msgstr "Starte datasett-prosessering?"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:117
@@ -146,22 +146,22 @@ msgstr "Utføringen mislyktes på grunn av én eller flere celleverdifeil."
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:118
 msgid "commitCancelled"
-msgstr "Utføring avbrutt"
+msgstr "Prosessering avbrutt"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:121
 msgid "commitCancelledDescription"
-msgstr "Beskrivelse av avbrutt utføring (commit)"
+msgstr "Beskrivelse av avbrutt prosessering"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:129
 msgid "commitSuccessful"
-msgstr "Utføring fullført uten feil"
+msgstr "Prosessering fullført uten feil"
 
 #. Used in: Components > Work Bench > Record Set
 #: components/WorkBench/RecordSet.tsx:77
 msgid "batchEditRecordSetName"
-msgstr "BE-commit av \"{dataSet:string}\""
+msgstr "BE-utøfring av \"{dataSet:string}\""
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:594
