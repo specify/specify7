@@ -44,7 +44,7 @@ export const wbText = createDictionary({
   },
   validation: {
     'en-us': 'Validation',
-    'ru-ru': 'Проверка',
+    'ru-ru': 'Валидация',
     'es-es': 'Validación',
     'fr-fr': 'Validation',
     'uk-ua': 'Перевірка',
@@ -106,7 +106,7 @@ export const wbText = createDictionary({
     'de-ch': 'Begriffsklärung',
     'pt-br': 'Desambiguar',
     'hr-hr': 'Višeznačno',
-    nb: 'Tydeliggjøre',
+    nb: 'Avklar flertydighet',
   },
   fillDown: {
     'en-us': 'Fill Down',
@@ -139,7 +139,7 @@ export const wbText = createDictionary({
     'de-ch': 'Zurücksetzen',
     'pt-br': 'Reverter',
     'hr-hr': 'Vrati',
-    nb: 'Tilbakestill',
+    nb: 'Gå tilbake',
   },
   dataCheck: {
     'en-us': 'Live Validation',
@@ -154,7 +154,7 @@ export const wbText = createDictionary({
   },
   dataCheckOn: {
     'en-us': 'Live Validation: On',
-    'ru-ru': 'Проверка в реальном времени: включена.',
+    'ru-ru': 'Проверка в реальном времени: включена',
     'es-es': 'Validación en vivo: En',
     'fr-fr': 'Vérification des données : activée',
     'uk-ua': 'Перевірка в реальному часі: увімкнено',
@@ -235,7 +235,7 @@ export const wbText = createDictionary({
     'de-ch': 'Wiederbeschaffungswert',
     'pt-br': 'Valor de reposição',
     'hr-hr': 'Zamjenska vrijednost',
-    nb: 'Erstatningsverdi',
+    nb: 'Ny verdi',
   },
   searchResults: {
     'en-us': 'Search Results',
@@ -718,7 +718,7 @@ export const wbText = createDictionary({
     'uk-ua':
       'Перевірте набір даних і перегляньте підказки при наведенні курсора миші для кожної клітинки з помилкою, потім внесіть відповідні виправлення. Збережіть дані та повторіть спробу {type:string}.',
     'hr-hr':
-      'Validirajte skup podataka i pregledajte upute za prelazak mišem preko svake ćelije s pogreškom, a zatim izvršite odgovarajuće ispravke. Spremite i ponovno pokušajte {type:string}.',
+      'Provjerite valjanost skupa podataka i pregledajte upute za prelazak mišem preko svake ćelije s pogreškom, a zatim izvršite odgovarajuće ispravke. Spremite i ponovno pokušajte {type:string}.',
     nb: 'Valider datasettet og se gjennom musepekertipsene for hver feilcelle, og gjør deretter de nødvendige rettelsene. Lagre og prøv {type:string} på nytt.',
   },
   dataSetRollback: {
@@ -819,7 +819,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Завантаження скасовано',
     'pt-br': 'Envio cancelado',
     'hr-hr': 'Prijenos otkazan',
-    nb: 'Opplasting avbrutt',
+    nb: 'Opplasting kansellert',
   },
   uploadCanceledDescription: {
     'en-us': 'The upload was cancelled. No changes were made to the database.',
@@ -976,7 +976,7 @@ export const wbText = createDictionary({
     'pt-br':
       'Esta ferramenta requer que as colunas de localidade sejam mapeadas.',
     'hr-hr': 'Ovaj alat zahtijeva mapiranje stupaca lokaliteta',
-    nb: 'Dette verktøyet krever at lokalitetskolonner kartlegges',
+    nb: 'Dette verktøyet krever at lokalitetskolonner tilordnes',
   },
   unavailableWhenUploaded: {
     'en-us': 'This tool does not work with uploaded data sets',
@@ -1121,7 +1121,7 @@ export const wbText = createDictionary({
     'de-ch': 'Regulären Ausdruck verwenden',
     'pt-br': 'Use expressões regulares',
     'hr-hr': 'Koristite regularni izraz',
-    nb: 'Bruk regulært uttrykk',
+    nb: 'Bruk regulært uttrykk (regular expression)',
   },
   liveUpdate: {
     'en-us': 'Live search',
@@ -1624,7 +1624,7 @@ export const wbText = createDictionary({
       'Falha ao cancelar a operação {operationName:string}. Tente novamente mais tarde.',
     'hr-hr':
       'Nije uspjelo otkazivanje operacije {operationName:string}. Pokušajte ponovno kasnije.',
-    nb: 'Kunne ikke avbryte {operationName:string}-operasjonen. Prøv på nytt senere.',
+    nb: 'Kunne ikke kansellere {operationName:string}-operasjonen. Prøv på nytt senere.',
   },
   wbStatusOperationNoProgress: {
     comment: 'E.x, Validating...',
