@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-09-28 06:51+0000\n"
-"Last-Translator: Bjørn Petter Løfall <bplofall@gmail.com>\n"
+"Last-Translator: Tommy Prestø <tommy.presto@ntnu.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/header/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -264,7 +264,7 @@ msgstr "Utvikler-verktøy"
 #. Used in: Components > Header > User Tool Definitions
 #: components/Header/userToolDefinitions.ts:159
 msgid "forum"
-msgstr "Brukerforum"
+msgstr "Specify's diskusjonsforum"
 
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Router Commands > Cache Buster
 #: components/Errors/ErrorDialog.tsx:150
