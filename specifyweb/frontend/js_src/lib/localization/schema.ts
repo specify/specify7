@@ -610,7 +610,7 @@ export const schemaText = createDictionary({
     'fr-fr': "Règles d'unicité",
     'ru-ru': 'Правила уникальности',
     'uk-ua': 'Правила унікальності',
-    'pt-br': 'Regras de Unicidade',
+    'pt-br': 'Regras de singularidade',
     'hr-hr': 'Pravila jedinstvenosti',
     nb: 'Unikhetsregler',
   },

@@ -44,7 +44,7 @@ export const wbText = createDictionary({
   },
   validation: {
     'en-us': 'Validation',
-    'ru-ru': 'Проверка',
+    'ru-ru': 'Валидация',
     'es-es': 'Validación',
     'fr-fr': 'Validation',
     'uk-ua': 'Перевірка',
@@ -154,7 +154,7 @@ export const wbText = createDictionary({
   },
   dataCheckOn: {
     'en-us': 'Live Validation: On',
-    'ru-ru': 'Проверка в реальном времени: включена.',
+    'ru-ru': 'Проверка в реальном времени: включена',
     'es-es': 'Validación en vivo: En',
     'fr-fr': 'Vérification des données : activée',
     'uk-ua': 'Перевірка в реальному часі: увімкнено',
@@ -718,7 +718,7 @@ export const wbText = createDictionary({
     'uk-ua':
       'Перевірте набір даних і перегляньте підказки при наведенні курсора миші для кожної клітинки з помилкою, потім внесіть відповідні виправлення. Збережіть дані та повторіть спробу {type:string}.',
     'hr-hr':
-      'Validirajte skup podataka i pregledajte upute za prelazak mišem preko svake ćelije s pogreškom, a zatim izvršite odgovarajuće ispravke. Spremite i ponovno pokušajte {type:string}.',
+      'Provjerite valjanost skupa podataka i pregledajte upute za prelazak mišem preko svake ćelije s pogreškom, a zatim izvršite odgovarajuće ispravke. Spremite i ponovno pokušajte {type:string}.',
     nb: 'Valider datasettet og se gjennom musepekertipsene for hver feilcelle, og gjør deretter de nødvendige rettelsene. Lagre og prøv {type:string} på nytt.',
   },
   dataSetRollback: {
