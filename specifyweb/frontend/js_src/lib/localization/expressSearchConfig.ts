@@ -380,7 +380,7 @@ export const expressSearchConfigText = createDictionary({
     'en-us':
       'Taxa linked to geography records through collection object determinations and collecting event localities.',
     'de-ch':
-      'Taxa, die über die Bestimmung von Sammlungsobjekten und Sammelorten mit geographischen Aufzeichnungen verknüpft sind.',
+      'Taxa, die über die Bestimmung von Sammelobjekten und Sammelorten mit geographischen Aufzeichnungen verknüpft sind.',
     'es-es':
       'Taxones vinculados a registros geográficos mediante la determinación de objetos de colección y localidades de eventos de recolección.',
     'fr-fr':
@@ -487,7 +487,7 @@ export const expressSearchConfigText = createDictionary({
   },
   OtherSynsCollObjs: {
     'en-us': 'Collection Object Taxon (all synonyms)',
-    'de-ch': 'Sammlungsobjekt-Taxon (alle Synonyme)',
+    'de-ch': 'Sammlung Objekt Taxon (alle Synonyme)',
     'es-es': 'Taxonomía de objetos de colección (todos los sinónimos)',
     'fr-fr': 'Objets et leurs taxons (tous les synonymes)',
     'hr-hr': 'Takson objekta zbirke (svi sinonimi)',
@@ -648,7 +648,7 @@ export const expressSearchConfigText = createDictionary({
     'hr-hr': 'Događaj prikupljanja objekata kolekcije',
     nb: 'Samlingsobjekt Innsamlingshendelse',
     'pt-br': 'Evento de coleta de objetos da coleção',
-    'ru-ru': 'Событие по сбору коллекционных объектов',
+    'ru-ru': 'Событие по сбору коллекционных предметов',
     'uk-ua': "Подія збору об'єктів колекції",
   },
   CEToCO_desc: {
@@ -822,7 +822,7 @@ export const expressSearchConfigText = createDictionary({
     'pt-br':
       'Períodos geológicos com objetos de coleção conectados por contextos cronoestratigráficos.',
     'ru-ru':
-      'Геологические периоды времени, объекты коллекции которых связаны хроностратиграфическим контекстом.',
+      'Геологические временные периоды, объекты коллекции которых связаны хроностратиграфическим контекстом.',
     'uk-ua':
       "Геологічні періоди часу з об'єктами колекції, пов'язаними через хроностратиграфічні контексти.",
   },
@@ -1016,7 +1016,7 @@ export const expressSearchConfigText = createDictionary({
     'hr-hr': 'Zajam predmeta za kolekciju',
     nb: 'Utlån av samlingsobjekt',
     'pt-br': 'Empréstimo de Objetos de Coleção',
-    'ru-ru': 'Объект сбора займа',
+    'ru-ru': 'Заем объекта коллекции',
     'uk-ua': 'Позика на предмет колекції',
   },
   LoanCO_desc: {
@@ -1088,7 +1088,7 @@ export const expressSearchConfigText = createDictionary({
     'ru-ru':
       'Литостратиграфические единицы и предметы коллекций, связанные палеоконтекстными взаимосвязями.',
     'uk-ua':
-      "Літостратиграфічні одиниці та об'єкти колекцій, пов'язані через палеоконтекстні зв'язки.",
+      "Літостратиграфічні одиниці та колекційні об'єкти, пов'язані через палеоконтекстні зв'язки.",
   },
   PermitToCO: {
     'en-us': 'Collection Object Permit',
@@ -1202,7 +1202,7 @@ export const expressSearchConfigText = createDictionary({
     'de-ch': 'Repository-Vereinbarungen und ihre Ursprungsagenten.',
     'es-es': 'Acuerdos de depósito y sus agentes originadores.',
     'fr-fr': 'Accords de dépôt et leurs agents initiateurs.',
-    'hr-hr': 'Ugovori o repozitoriji i njihovi izvorni agenti.',
+    'hr-hr': 'Sporazumi o repozitoriju i njihovi izvorni agenti.',
     nb: 'Depot avtaler og deres opprinnnelige agenter.',
     'pt-br': 'Acordos de repositório e seus agentes originadores.',
     'ru-ru': 'Соглашения о хранении и их инициаторы.',
@@ -1250,7 +1250,7 @@ export const expressSearchConfigText = createDictionary({
       'Objets de collection et leurs fiches taxonomiques de détermination.',
     'hr-hr': 'Zbirni objekti i njihovi taksonomski zapisi o determinaciji.',
     nb: 'Samlingsobjekter og deres bestemmelses-taksonposter.',
-    'pt-br': 'Objetos de coleção e seus registros taxonômicos de determinação.',
+    'pt-br': 'Objetos da coleção e seus registros taxonômicos de determinação.',
     'ru-ru': 'Объекты коллекции и записи об их определении по таксонам.',
     'uk-ua': "Колекційні об'єкти та записи їх детермінації.",
   },
@@ -1274,7 +1274,8 @@ export const expressSearchConfigText = createDictionary({
       'Intercambios entrantes con objetos de la colección en preparaciones intercambiadas.',
     'fr-fr':
       'Échanges entrants avec des objets dans les préparations échangées.',
-    'hr-hr': 'Dolazne razmjene s objektima zbirke u razmijenjenim pripremama.',
+    'hr-hr':
+      'Dolazne razmjene s objektima kolekcije u razmijenjenim pripremama.',
     nb: 'Innkommende utvekslingsmateriale med samleobjekter i utvekslede preparater.',
     'pt-br': 'Trocas recebidas com objetos de coleção em preparações trocadas.',
     'ru-ru': 'Входящие обмены с объектами коллекции в рамках обмена.',
@@ -1283,7 +1284,7 @@ export const expressSearchConfigText = createDictionary({
   ExchangeOutCO: {
     'en-us': 'Collection Object Exchange Out',
     'de-ch': 'Sammlungsobjektaustausch Ausgabe',
-    'es-es': 'Intercambio de objetos de colección saliente',
+    'es-es': 'Intercambio de objetos de colección fuera',
     'fr-fr': 'Objets échangé (sortant)',
     'hr-hr': 'Razmjena objekata kolekcije',
     nb: 'Samlingsobjekt Materiale-utveksling Ut',
