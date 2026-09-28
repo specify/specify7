@@ -95,6 +95,46 @@ export function generateMappingPathPreview(
     generateFieldData: 'selectedOnly',
     spec: navigatorSpecs.permissive,
   });
+  const agentFieldPreview = getAgentFieldPreview(baseTableName, mappingPath);
+  if (agentFieldPreview !== undefined) return agentFieldPreview;
+
+  const finalMappingElement = mappingLineData.at(-1);
+  const pathFields = mappingPath
+    .slice(0, -1)
+    .filter(
+      (part) =>
+        !valueIsToManyIndex(part) &&
+        !valueIsTreeRank(part) &&
+        !valueIsPartialField(part)
+    );
+  if (
+    mappingPath.at(-1) === formattedEntry &&
+    pathFields.at(-1)?.toLowerCase() === 'agent'
+  ) {
+    const parentLabel = finalMappingElement?.selectLabel;
+    if (parentLabel !== undefined) return `${parentLabel} - Agent`;
+  }
+
+  if (
+    mappingPath.at(-1) === formattedEntry &&
+    finalMappingElement?.tableName?.toLowerCase() === 'agent'
+  ) {
+    const parentField = mappingLineData
+      .slice(0, -1)
+      .reverse()
+      .map((mappingElement) => Object.values(mappingElement.fieldsData)[0])
+      .find((field) =>
+        typeof field?.optionLabel === 'string'
+          ? !field.optionLabel.startsWith('#')
+          : false
+      );
+    const parentLabel =
+      typeof parentField?.optionLabel === 'string'
+        ? parentField.optionLabel
+        : undefined;
+    if (parentLabel?.toLowerCase().endsWith(' agent')) return parentLabel;
+    if (parentLabel !== undefined) return `${parentLabel} - Agent`;
+  }
 
   // Extract labels from mappingLineData
   const fieldLabels = [
@@ -203,4 +243,45 @@ export function generateMappingPathPreview(
   ])
     .filter(Boolean)
     .join(' - ');
+}
+
+function getAgentFieldPreview(
+  baseTableName: keyof Tables,
+  mappingPath: MappingPath
+): string | undefined {
+  let table = strictGetTable(baseTableName);
+  let agentPrefix: string | undefined;
+  let finalFieldLabel: string | undefined;
+  let parentRelationshipLabel: string | undefined;
+
+  for (const [index, part] of mappingPath.entries()) {
+    if (
+      valueIsToManyIndex(part) ||
+      valueIsTreeRank(part) ||
+      valueIsPartialField(part) ||
+      part === formattedEntry
+    )
+      continue;
+
+    const field = table.getField(part);
+    if (field === undefined) continue;
+
+    if (field.isRelationship) {
+      if (field.relatedTable.name.toLowerCase() === 'agent') {
+        agentPrefix =
+          field.label.toLowerCase() === 'agent'
+            ? parentRelationshipLabel
+            : field.label.replace(/\s+Agent$/u, '');
+      } else {
+        parentRelationshipLabel = field.label;
+      }
+      table = field.relatedTable;
+    } else if (index === mappingPath.length - 1) {
+      finalFieldLabel = field.label;
+    }
+  }
+
+  return agentPrefix !== undefined && finalFieldLabel !== undefined
+    ? `${agentPrefix} - ${finalFieldLabel}`
+    : undefined;
 }
