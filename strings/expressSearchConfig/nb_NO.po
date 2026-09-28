@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-09-28 07:51+0000\n"
-"Last-Translator: Gunnhild Marthinsen <gunnhilm@nhm.uio.no>\n"
+"Last-Translator: Josh Jenkins Shaw <joshua.m.j.shaw@ntnu.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/expressSearchConfig/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -134,13 +134,13 @@ msgstr "Ingen beskrivelse tilgjengelig."
 
 #. Used in: 
 msgid "CollObjToDeterminer"
-msgstr "Takson for samlingsobjekt"
+msgstr "Takson SamlingsObjekt"
 
 #. Used in: 
 msgid "CollObjToDeterminer_desc"
 msgstr ""
-"Samlingsobjekter med gjeldende bestemmelser, som viser det gjeldene "
-"taksonnavnet, norsk navn og bestemmer."
+"Samlingsobjekter med gjeldende bestemmelser, som viser det bestemte "
+"taksonnavnet, taksonets populærnavn og bestemmer."
 
 #. Used in: 
 msgid "CollObToLocality"
@@ -154,7 +154,7 @@ msgstr ""
 
 #. Used in: 
 msgid "CollObject"
-msgstr "Takson for samlingsobjekt"
+msgstr "Samlingsobjekt Takson"
 
 #. Used in: 
 msgid "CollObject_desc"
@@ -172,7 +172,7 @@ msgstr ""
 
 #. Used in: 
 msgid "ColObjCollectors"
-msgstr "Samlere for samlingsobjekter"
+msgstr "Samlingsobjekt Samlere"
 
 #. Used in: 
 msgid "ColObjCollectors_desc"
