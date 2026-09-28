@@ -40,7 +40,7 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Attachment-Server nicht verfügbar',
     'pt-br': 'Servidor de anexos indisponível',
     'hr-hr': 'Poslužitelj priloga nije dostupan',
-    nb: 'Serveren for vedlegg er ikke tilgjengelig',
+    nb: 'Vedleggsserveren utilgjengelig',
   },
   attachmentServerUnavailableDescription: {
     'en-us': 'Setup your attachment server',
@@ -51,7 +51,7 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Richten Sie Ihren Attachment-Server ein',
     'pt-br': 'Configure seu servidor de anexos.',
     'hr-hr': 'Postavite svoj poslužitelj priloga',
-    nb: 'Konfigurer serveren for vedlegg',
+    nb: 'Sett opp vedleggsserveren din',
   },
   orderBy: {
     'en-us': 'Order By',
@@ -223,7 +223,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Скасовано',
     'pt-br': 'Cancelado',
     'hr-hr': 'Otkazano',
-    nb: 'Avbrutt',
+    nb: 'Kanselert',
   },
   frontEndInterruption: {
     'en-us': '{action:string} was in progress when interruption occurred',
@@ -363,7 +363,7 @@ export const attachmentsText = createDictionary({
       'O processo de reversão estava em andamento quando ocorreu uma interrupção. Alguns arquivos podem ter sido excluídos.',
     'hr-hr':
       'Vraćanje je bilo u tijeku kada je došlo do prekida. Neke datoteke su možda izbrisane.',
-    nb: 'Tilbakestillingen pågikk da et avbrudd oppsto. Noen filer kan ha blitt slettet.',
+    nb: 'Tilbakestillingen pågikk da et avbrudd oppsto. Noen filer kan ha blitt slettet',
   },
   attachmentId: {
     'en-us': 'Attachment ID',
@@ -415,7 +415,7 @@ export const attachmentsText = createDictionary({
       'O envio dos anexos os criará no servidor de ativos e no banco de dados especificado.',
     'hr-hr':
       'Prijenosom privitaka stvorit će se privitci na poslužitelju imovine i u Navedite bazu podataka',
-    nb: 'Opplasting av vedlegg vil opprette vedlegg på ressursserveren og i Specify-databasen.',
+    nb: 'Opplasting av vedlegg vil opprette vedlegg på ressursserveren og i Specify-databasen',
   },
   interrupted: {
     'en-us': 'Interrupted',
@@ -555,7 +555,7 @@ export const attachmentsText = createDictionary({
     'ru-ru': 'Показать элементы управления вложениями',
     'uk-ua': 'Показати елементи керування вкладеннями',
     'pt-br': 'Mostrar controles de anexo',
-    'hr-hr': 'Prikaži kontrole privitaka',
+    'hr-hr': 'Prikaži kontrole za privitke',
     nb: 'Vis vedleggskontroller',
   },
   showControlsDescription: {

@@ -385,7 +385,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Preencher a árvore com registros padrão',
     'ru-ru': 'Заполнить дерево записями по умолчанию',
     'uk-ua': 'Заповнити дерево записами за замовчуванням',
-    nb: 'Fyll treet med standardoppføringer',
+    nb: 'Fyll treet med standardverdier',
   },
   preloadTreeDescription: {
     'en-us': 'Download default records for this tree.',
@@ -396,7 +396,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Baixe os registros padrão para esta árvore.',
     'ru-ru': 'Загрузить записи по умолчанию для этого дерева.',
     'uk-ua': 'Завантажити записи за замовчуванням для цього дерева.',
-    nb: 'Last ned standardoppføringer for dette treet.',
+    nb: 'Last ned standardverdier for dette treet.',
   },
   treeToPreload: {
     'en-us': 'Tree to download:',
@@ -513,7 +513,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Separador',
     'ru-ru': 'Сепаратор',
     'uk-ua': 'Роздільник',
-    nb: 'Separator',
+    nb: 'Skilletegn',
   },
   fullNameSeparatorDescription: {
     'en-us':
