@@ -292,3 +292,33 @@ class DeaccessionTests(ApiTests):
             fetched_deaccession.deaccessionattachments.count(),
             1,
         )
+
+    def test_delete_deaccession(self):
+        deaccession = models.Deaccession.objects.create(
+            deaccessionnumber='DEACCESSION-DELETE-001',
+        )
+
+        attachment = models.Attachment.objects.create(
+            origfilename='deaccession_delete_doc.pdf',
+            tableid=deaccession.specify_model.tableId,
+            title='Deaccession Delete Document',
+        )
+
+        deaccession_attachment = deaccession.deaccessionattachments.create(
+            attachment=attachment,
+            ordinal=0,
+        )
+
+        deaccession_id = deaccession.id
+        deaccession_attachment_id = deaccession_attachment.id
+
+        deaccession.delete()
+
+        self.assertFalse(
+            models.Deaccession.objects.filter(id=deaccession_id).exists(),
+        )
+        self.assertFalse(
+            models.Deaccessionattachment.objects.filter(
+                id=deaccession_attachment_id,
+            ).exists(),
+        )
