@@ -322,7 +322,7 @@ export const treeText = createDictionary({
       'Todas as referências ao nó {treeName:string} "{nodeName:string}" serão substituídas por "{parentName:string}", e todos os descendentes de "{nodeName:string}" serão movidos para "{parentName:string}", com quaisquer descendentes correspondentes em nome e classificação sendo eles próprios mesclados recursivamente.',
     'hr-hr':
       'Sve reference na čvor {treeName:string} "{nodeName:string}" bit će zamijenjene s "{parentName:string}", a svi potomci "{nodeName:string}" bit će premješteni u "{parentName:string}", a svi potomci koji se podudaraju po imenu i rangu bit će rekurzivno spojeni.',
-    nb: 'Alle referanser til noden {treeName:string} «{nodeName:string}» vil bli erstattet med «{parentName:string}», og alle underordnede av «{nodeName:string}» vil bli flyttet til «{parentName:string}». Underordnede med samme navn og rang vil selv bli slått sammen automatisk.',
+    nb: 'Alle referanser til noden {treeName:string} «{nodeName:string}» vil bli erstattet med «{parentName:string}», og alle underordnede av «{nodeName:string}» vil bli flyttet til «{parentName:string}». Underordnede med samme navn og nivå vil selv bli slått sammen automatisk.',
   },
   synonymizeNode: {
     'en-us': 'Synonymize node',

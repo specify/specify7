@@ -172,7 +172,7 @@ export const resourcesText = createDictionary({
     'uk-ua': 'Експорт',
     'pt-br': 'Exportações',
     'hr-hr': 'Izvoz',
-    nb: 'Eksport',
+    nb: 'Eksporter',
   },
   expressSearchConfig: {
     'en-us': 'Express Search Config',
@@ -183,7 +183,7 @@ export const resourcesText = createDictionary({
     'de-ch': 'Express Suche Konfigurieren',
     'pt-br': 'Configuração de Busca Expressa',
     'hr-hr': 'Konfiguracija brzog pretraživanja',
-    nb: 'Konfigurer Enkelt søk',
+    nb: 'Konfigurasjon for enkelt søk',
   },
   typeSearches: {
     'en-us': 'Type Searches',
@@ -970,7 +970,7 @@ export const resourcesText = createDictionary({
     'uk-ua': 'Вам потрібно зберегти цю форму, перш ніж редагувати іншу',
     'pt-br': 'Você precisa salvar este formulário antes de editar outro.',
     'hr-hr': 'Morate spremiti ovaj obrazac prije nego što uredite drugi',
-    nb: 'Du må lagre dette skjemaet før du redigerer et nytt.',
+    nb: 'Du må lagre dette skjemaet før du redigerer et nytt',
   },
   conditionalFormatter: {
     'en-us': 'Conditional Format',
@@ -1100,7 +1100,7 @@ export const resourcesText = createDictionary({
     'ru-ru': 'Первичную запись CO удалить невозможно.',
     'uk-ua': 'Основний запис CO неможливо видалити.',
     'hr-hr': 'Primarni zapis CO ne može se izbrisati.',
-    nb: 'Primæroppføring CO kan ikke slettes.',
+    nb: 'Primær-databasepost CO kan ikke slettes.',
   },
   deleteLoanedPrep: {
     'en-us': 'A loaned preparation cannot be deleted',
@@ -1383,7 +1383,7 @@ export const resourcesText = createDictionary({
     'ru-ru': 'Регулярное выражение',
     'uk-ua': 'Регулярний вираз',
     'hr-hr': 'Regularni izraz',
-    nb: 'Regulært uttrykk',
+    nb: 'Regulært uttrykk (regular expression)',
   },
   exampleField: {
     'en-us': 'Example Field',

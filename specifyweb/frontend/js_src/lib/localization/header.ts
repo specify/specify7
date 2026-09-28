@@ -462,7 +462,7 @@ export const headerText = createDictionary({
     'de-ch': 'Operations-API',
     'pt-br': 'API de Operações',
     'hr-hr': 'API za operacije',
-    nb: 'Drifts-API',
+    nb: 'API-operasjoner',
   },
   documentation: {
     'en-us': 'Documentation',
@@ -506,7 +506,7 @@ export const headerText = createDictionary({
     'de-ch': 'Community-Forum',
     'pt-br': 'Fórum da Comunidade',
     'hr-hr': 'Forum zajednice',
-    nb: 'Brukerforum',
+    nb: "Specify's diskusjonsforum",
   },
   clearCache: {
     'en-us': 'Clear Browser Cache',

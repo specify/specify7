@@ -118,7 +118,7 @@ export const localityText = createDictionary({
       '{localityTable:string} muss Koordinaten haben, um kartiert werden zu können.',
     'pt-br': '{localityTable:string} deve ter coordenadas para ser mapeado.',
     'hr-hr': '{localityTable:string} mora imati koordinate za mapiranje.',
-    nb: '{localityTable:string} må ha koordinater for å bli kartlagt.',
+    nb: '{localityTable:string} må ha koordinater for å bli tilordnet.',
   },
   occurrencePoints: {
     'en-us': 'Pins',
@@ -162,7 +162,7 @@ export const localityText = createDictionary({
     'de-ch': '{geographyTable:string} muss kartiert werden',
     'pt-br': '{geographyTable:string} deve ser mapeado.',
     'hr-hr': '{geographyTable:string} mora biti mapiran',
-    nb: '{geographyTable:string} må mappes',
+    nb: '{geographyTable:string} må tilordnes',
   },
   geographyRequiredDescription: {
     'en-us':
