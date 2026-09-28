@@ -558,7 +558,7 @@ export const treeText = createDictionary({
     `,
     'en-us': 'Synonymized {collectionObjectTable:string} Count',
     'de-ch': 'Synonymisiert {collectionObjectTable:string} Zählung',
-    'es-es': 'Conteo de sinónimos {collectionObjectTable:string}',
+    'es-es': 'Conteo {collectionObjectTable:string} Sinonimizado',
     'fr-fr': 'Compte synonymisé {collectionObjectTable:string}',
     'hr-hr': 'Sinonimizirani {collectionObjectTable:string} broj',
     nb: 'Synonymisert {collectionObjectTable:string}-antall',
