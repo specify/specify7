@@ -7,13 +7,13 @@ msgstr "Content-Type: text/plain\n"
 #: components/Attachments/index.tsx:168
 #: components/FormSliders/AttachmentsCollection.tsx:68
 #: components/FormSliders/AttachmentsCollection.tsx:91
-#: components/Header/menuItemDefinitions.ts:95
+#: components/Header/menuItemDefinitions.ts:101
 #: components/Molecules/SyncAttachmentPicker.tsx:118
 #: components/Molecules/SyncAttachmentPicker.tsx:127
 #: components/Preferences/CollectionDefinitions.tsx:47
-#: components/Preferences/UserDefinitions.tsx:1426
+#: components/Preferences/UserDefinitions.tsx:1428
 #: components/Router/Routes.tsx:190
-#: components/Router/Routes.tsx:502
+#: components/Router/Routes.tsx:514
 #: components/Statistics/StatsSpec.tsx:508
 #: components/WbAttachmentViewer/index.tsx:132
 #: components/WbImportAttachments/index.tsx:131
@@ -59,7 +59,7 @@ msgstr "Setup your attachment server"
 
 #: components/Attachments/index.tsx:217
 #: components/FormMeta/SubViewMeta.tsx:42
-#: components/Preferences/UserDefinitions.tsx:1413
+#: components/Preferences/UserDefinitions.tsx:1415
 #. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 msgid "orderBy"
 msgstr "Order By"
@@ -267,12 +267,12 @@ msgstr "Look for more attachments"
 msgid "hideForm"
 msgstr "Hide Form"
 
-#: components/Preferences/UserDefinitions.tsx:1463
+#: components/Preferences/UserDefinitions.tsx:1465
 #. Used in: Components > Preferences > User Definitions
 msgid "collapseFormByDefault"
 msgstr "Collapse form by default"
 
-#: components/Preferences/UserDefinitions.tsx:1464
+#: components/Preferences/UserDefinitions.tsx:1466
 #. Used in: Components > Preferences > User Definitions
 msgid "collapseFormByDefaultDescription"
 msgstr ""
@@ -280,12 +280,12 @@ msgstr ""
 "existing attachments. If attachment controls are hidden, this setting has "
 "no effect."
 
-#: components/Preferences/UserDefinitions.tsx:1455
+#: components/Preferences/UserDefinitions.tsx:1457
 #. Used in: Components > Preferences > User Definitions
 msgid "showControls"
 msgstr "Show attachment controls"
 
-#: components/Preferences/UserDefinitions.tsx:1456
+#: components/Preferences/UserDefinitions.tsx:1458
 #. Used in: Components > Preferences > User Definitions
 msgid "showControlsDescription"
 msgstr ""
@@ -317,7 +317,7 @@ msgstr "Correctly Formatted"
 msgid "stoppedByUser"
 msgstr "Stopped By User"
 
-#: components/Router/OverlayRoutes.tsx:246
+#: components/Router/OverlayRoutes.tsx:255
 #: components/Router/Routes.tsx:221
 #: components/Toolbar/WbsDialog.tsx:195
 #: components/WbImportAttachments/index.tsx:162

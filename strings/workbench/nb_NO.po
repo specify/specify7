@@ -11,9 +11,9 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 2026.10.dev0\n"
 
-#: components/Header/menuItemDefinitions.ts:90
-#: components/Preferences/UserDefinitions.tsx:1987
-#: components/Router/OverlayRoutes.tsx:160
+#: components/Header/menuItemDefinitions.ts:96
+#: components/Preferences/UserDefinitions.tsx:2055
+#: components/Router/OverlayRoutes.tsx:169
 #: components/WbUtils/datasetVariants.tsx:30
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Wb Utils > Dataset Variants
 msgid "workBench"
@@ -90,7 +90,7 @@ msgstr "Fyll opp"
 msgid "revert"
 msgstr "Gå tilbake"
 
-#: components/Preferences/UserDefinitions.tsx:1993
+#: components/Preferences/UserDefinitions.tsx:2061
 #: components/WbActions/WbValidate.tsx:67
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Actions > Wb Validate
 msgid "dataCheck"
@@ -102,7 +102,7 @@ msgstr "Live-validering"
 msgid "dataCheckOn"
 msgstr "Live-validering: På"
 
-#: components/Preferences/UserDefinitions.tsx:1994
+#: components/Preferences/UserDefinitions.tsx:2062
 #. Used in: Components > Preferences > User Definitions
 msgid "dataCheckDescription"
 msgstr ""
@@ -577,44 +577,44 @@ msgid "delimiter"
 msgstr "Skilletegn:"
 
 #: components/Molecules/CsvFilePicker.tsx:172
-#: components/Preferences/UserDefinitions.tsx:1849
-#: components/Preferences/UserDefinitions.tsx:2101
+#: components/Preferences/UserDefinitions.tsx:1875
+#: components/Preferences/UserDefinitions.tsx:2169
 #. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
 msgid "comma"
 msgstr "Komma"
 
 #: components/Molecules/CsvFilePicker.tsx:174
-#: components/Preferences/UserDefinitions.tsx:1857
-#: components/Preferences/UserDefinitions.tsx:2109
+#: components/Preferences/UserDefinitions.tsx:1883
+#: components/Preferences/UserDefinitions.tsx:2177
 #. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
 msgid "semicolon"
 msgstr "Semikolon"
 
 #: components/Molecules/CsvFilePicker.tsx:173
-#: components/Preferences/UserDefinitions.tsx:1853
-#: components/Preferences/UserDefinitions.tsx:2105
+#: components/Preferences/UserDefinitions.tsx:1879
+#: components/Preferences/UserDefinitions.tsx:2173
 #. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
 msgid "tab"
 msgstr "Fane"
 
 #: components/Molecules/CsvFilePicker.tsx:175
-#: components/Preferences/UserDefinitions.tsx:1861
-#: components/Preferences/UserDefinitions.tsx:2113
+#: components/Preferences/UserDefinitions.tsx:1887
+#: components/Preferences/UserDefinitions.tsx:2181
 #. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
 msgid "space"
 msgstr "Rom"
 
 #: components/Molecules/CsvFilePicker.tsx:176
-#: components/Preferences/UserDefinitions.tsx:1865
-#: components/Preferences/UserDefinitions.tsx:2117
+#: components/Preferences/UserDefinitions.tsx:1891
+#: components/Preferences/UserDefinitions.tsx:2185
 #. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
 msgid "pipe"
 msgstr "Rør"
 
 #: components/Molecules/CsvFilePicker.tsx:212
-#: components/Preferences/UserDefinitions.tsx:742
-#: components/Preferences/UserDefinitions.tsx:763
-#: components/Preferences/UserDefinitions.tsx:784
+#: components/Preferences/UserDefinitions.tsx:744
+#: components/Preferences/UserDefinitions.tsx:765
+#: components/Preferences/UserDefinitions.tsx:786
 #. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
 msgid "determineAutomatically"
 msgstr "Bestem automatisk"

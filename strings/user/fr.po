@@ -73,7 +73,7 @@ msgstr "Répéter le nouveau mot de passe"
 
 #: components/Core/Main.tsx:97
 #: components/Header/userToolDefinitions.ts:29
-#: components/Router/Routes.tsx:471
+#: components/Router/Routes.tsx:483
 #. Used in: Components > Core > Main ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes
 msgid "logOut"
 msgstr "Se déconnecter"
@@ -124,7 +124,7 @@ msgstr ""
 "votre compte {providerName:string} lors de vos prochaines connexions."
 
 #: components/Header/userToolDefinitions.ts:111
-#: components/Router/OverlayRoutes.tsx:183
+#: components/Router/OverlayRoutes.tsx:192
 #: components/Toolbar/MasterKey.tsx:43
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Master Key
 msgid "generateMasterKey"

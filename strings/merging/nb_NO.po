@@ -11,7 +11,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 2026.10.dev0\n"
 
-#: components/Preferences/UserDefinitions.tsx:1925
+#: components/Preferences/UserDefinitions.tsx:1993
 #. Used in: Components > Preferences > User Definitions
 msgid "recordMerging"
 msgstr "Slå sammen poster"
@@ -21,7 +21,7 @@ msgstr "Slå sammen poster"
 #: components/Merging/index.tsx:97
 #: components/Merging/index.tsx:408
 #: components/Merging/index.tsx:421
-#: components/Router/OverlayRoutes.tsx:240
+#: components/Router/OverlayRoutes.tsx:249
 #. Used in: Components > Form Meta > Merge Record ⬤ Components > Merging > Index ⬤ Components > Router > Overlay Routes
 msgid "mergeRecords"
 msgstr "Slå sammen poster"
@@ -63,7 +63,7 @@ msgid "mergeFields"
 msgstr "Slå sammen {field:string}"
 
 #: components/Merging/index.tsx:273
-#: components/Preferences/UserDefinitions.tsx:1931
+#: components/Preferences/UserDefinitions.tsx:1999
 #. Used in: Components > Merging > Index ⬤ Components > Preferences > User Definitions
 msgid "autoPopulate"
 msgstr "Automatisk utfylling"

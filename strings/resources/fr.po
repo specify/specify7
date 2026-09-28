@@ -14,7 +14,7 @@ msgstr ""
 #: components/AppResources/Filters.tsx:87
 #: components/AppResources/Filters.tsx:134
 #: components/Header/userToolDefinitions.ts:76
-#: components/Preferences/UserDefinitions.tsx:2162
+#: components/Preferences/UserDefinitions.tsx:2230
 #: components/Router/Routes.tsx:259
 #: components/Security/registry.ts:218
 #. Used in: Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Security > Registry
@@ -24,7 +24,7 @@ msgstr "Ressources de l'application"
 #: components/AppResources/Create.tsx:288
 #: components/FormMeta/Definition.tsx:31
 #: components/FormMeta/Definition.tsx:74
-#: components/Preferences/UserDefinitions.tsx:908
+#: components/Preferences/UserDefinitions.tsx:910
 #. Used in: Components > App Resources > Create ⬤ Components > Form Meta > Definition ⬤ Components > Preferences > User Definitions
 msgid "formDefinition"
 msgstr "Masques de saisie"
@@ -32,7 +32,7 @@ msgstr "Masques de saisie"
 #: components/AppResources/EditorComponents.tsx:51
 #: components/AppResources/Filters.tsx:73
 #: components/AppResources/Filters.tsx:118
-#: components/AppResources/types.tsx:35
+#: components/AppResources/types.tsx:36
 #. Used in: Components > App Resources > Editor Components ⬤ Components > App Resources > Filters ⬤ Components > App Resources > Types
 msgid "formDefinitions"
 msgstr "Définition du masque de saisie"
@@ -88,12 +88,12 @@ msgstr "Sous-catégories"
 msgid "addResource"
 msgstr "Ajouter une ressource"
 
-#: components/AppResources/types.tsx:30
+#: components/AppResources/types.tsx:31
 #. Used in: Components > App Resources > Types
 msgid "appResource"
 msgstr "Ressources de l'application"
 
-#: components/AppResources/types.tsx:128
+#: components/AppResources/types.tsx:138
 #. Used in: Components > App Resources > Types
 msgid "rssExportFeed"
 msgstr "Flux RSS d'export"
@@ -103,22 +103,22 @@ msgstr "Flux RSS d'export"
 msgid "exports"
 msgstr "Exports"
 
-#: components/AppResources/types.tsx:135
+#: components/AppResources/types.tsx:145
 #. Used in: Components > App Resources > Types
 msgid "expressSearchConfig"
 msgstr "Configuration de la recherche express"
 
-#: components/AppResources/types.tsx:143
+#: components/AppResources/types.tsx:153
 #. Used in: Components > App Resources > Types
 msgid "typeSearches"
 msgstr "Type de recherche"
 
-#: components/AppResources/types.tsx:151
+#: components/AppResources/types.tsx:161
 #. Used in: Components > App Resources > Types
 msgid "webLinks"
 msgstr "Liens Web"
 
-#: components/AppResources/types.tsx:159
+#: components/AppResources/types.tsx:169
 #: components/FieldFormatters/Element.tsx:16
 #: components/SchemaConfig/Format.tsx:108
 #. Used in: Components > App Resources > Types ⬤ Components > Field Formatters > Element ⬤ Components > Schema Config > Format
@@ -134,7 +134,7 @@ msgstr ""
 "et les formulaires. Il gère la numérotation automatique et la composition "
 "des différents éléments qui définissent le champ."
 
-#: components/AppResources/types.tsx:167
+#: components/AppResources/types.tsx:177
 #. Used in: Components > App Resources > Types
 msgid "dataObjectFormatters"
 msgstr "Formateurs d'enregistrements"
@@ -206,32 +206,32 @@ msgstr "Veuillez désigner l'un des formateurs comme formateur par défaut"
 msgid "duplicateFormatters"
 msgstr "Les noms des formateurs d'enregistrements doivent être uniques"
 
-#: components/AppResources/types.tsx:175
+#: components/AppResources/types.tsx:185
 #. Used in: Components > App Resources > Types
 msgid "dataEntryTables"
 msgstr "Tables de saisie des données"
 
-#: components/AppResources/types.tsx:183
+#: components/AppResources/types.tsx:193
 #. Used in: Components > App Resources > Types
 msgid "interactionsTables"
 msgstr "Tables d'interactions"
 
-#: components/AppResources/types.tsx:190
+#: components/AppResources/types.tsx:200
 #. Used in: Components > App Resources > Types
 msgid "otherXmlResource"
 msgstr "Autres ressources XML"
 
-#: components/AppResources/types.tsx:197
+#: components/AppResources/types.tsx:207
 #. Used in: Components > App Resources > Types
 msgid "otherJsonResource"
 msgstr "Autre ressource JSON"
 
-#: components/AppResources/types.tsx:204
+#: components/AppResources/types.tsx:214
 #. Used in: Components > App Resources > Types
 msgid "otherPropertiesResource"
 msgstr "Autre ressource textuelle"
 
-#: components/AppResources/types.tsx:211
+#: components/AppResources/types.tsx:221
 #. Used in: Components > App Resources > Types
 msgid "otherAppResource"
 msgstr "Autres ressources"
@@ -248,7 +248,7 @@ msgstr "Filtres"
 msgid "custom"
 msgstr "Personnalisé"
 
-#: components/AppResources/types.tsx:120
+#: components/AppResources/types.tsx:130
 #. Used in: Components > App Resources > Types
 msgid "leafletLayers"
 msgstr "Couches leaflet (cartes)"

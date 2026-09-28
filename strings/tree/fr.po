@@ -11,8 +11,8 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 2026.9.dev0\n"
 
-#: components/Header/menuItemDefinitions.ts:50
-#: components/Router/OverlayRoutes.tsx:88
+#: components/Header/menuItemDefinitions.ts:51
+#: components/Router/OverlayRoutes.tsx:89
 #: components/SetupTool/SetupForm.tsx:330
 #: components/Toolbar/TreeRepair.tsx:42
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Setup Tool > Setup Form ⬤ Components > Toolbar > Tree Repair
@@ -323,18 +323,31 @@ msgstr "Cela supprimera définitivement la ressource suivante"
 msgid "associatedNodesOnly"
 msgstr "Afficher uniquement les nœuds avec des objets associés"
 
+#: components/Preferences/UserDefinitions.tsx:1801
+#: components/Preferences/UserDefinitions.tsx:1804
+#: components/Preferences/UserDefinitions.tsx:1813
+#: components/Preferences/UserDefinitions.tsx:1958
+#: components/Preferences/UserDefinitions.tsx:1961
+#: components/Preferences/UserDefinitions.tsx:1970
+#: components/QueryBuilder/SplitView.tsx:53
 #: components/TreeView/index.tsx:375
-#. Used in: Components > Tree View > Index
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Split View ⬤ Components > Tree View > Index
 msgid "splitView"
 msgstr "Vue fractionnée"
 
+#: components/Preferences/UserDefinitions.tsx:1819
+#: components/Preferences/UserDefinitions.tsx:1976
+#: components/QueryBuilder/SplitView.tsx:33
 #: components/TreeView/index.tsx:381
-#. Used in: Components > Tree View > Index
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Split View ⬤ Components > Tree View > Index
 msgid "horizontal"
 msgstr "Horizontal"
 
+#: components/Preferences/UserDefinitions.tsx:1820
+#: components/Preferences/UserDefinitions.tsx:1977
+#: components/QueryBuilder/SplitView.tsx:33
 #: components/TreeView/index.tsx:381
-#. Used in: Components > Tree View > Index
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Split View ⬤ Components > Tree View > Index
 msgid "vertical"
 msgstr "Vertical"
 

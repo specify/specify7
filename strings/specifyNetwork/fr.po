@@ -61,7 +61,7 @@ msgstr "Signalé par {provider:string}"
 msgid "collectionDate"
 msgstr "Date de collecte"
 
-#: components/SpecifyNetwork/Map.tsx:221
+#: components/SpecifyNetwork/Map.tsx:232
 #. Used in: Components > Specify Network > Map
 msgid "mapDescription"
 msgstr ""

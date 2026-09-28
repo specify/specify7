@@ -17,13 +17,13 @@ msgstr ""
 #: components/Attachments/index.tsx:168
 #: components/FormSliders/AttachmentsCollection.tsx:68
 #: components/FormSliders/AttachmentsCollection.tsx:91
-#: components/Header/menuItemDefinitions.ts:95
+#: components/Header/menuItemDefinitions.ts:101
 #: components/Molecules/SyncAttachmentPicker.tsx:118
 #: components/Molecules/SyncAttachmentPicker.tsx:127
 #: components/Preferences/CollectionDefinitions.tsx:47
-#: components/Preferences/UserDefinitions.tsx:1426
+#: components/Preferences/UserDefinitions.tsx:1428
 #: components/Router/Routes.tsx:190
-#: components/Router/Routes.tsx:502
+#: components/Router/Routes.tsx:514
 #: components/Statistics/StatsSpec.tsx:508
 #: components/WbAttachmentViewer/index.tsx:132
 #: components/WbImportAttachments/index.tsx:131
@@ -69,7 +69,7 @@ msgstr "Sett opp vedleggsserveren din"
 
 #: components/Attachments/index.tsx:217
 #: components/FormMeta/SubViewMeta.tsx:42
-#: components/Preferences/UserDefinitions.tsx:1413
+#: components/Preferences/UserDefinitions.tsx:1415
 #. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 msgid "orderBy"
 msgstr "Sorter etter"
@@ -277,24 +277,24 @@ msgstr "Se etter flere vedlegg"
 msgid "hideForm"
 msgstr "Skjul skjema"
 
-#: components/Preferences/UserDefinitions.tsx:1463
+#: components/Preferences/UserDefinitions.tsx:1465
 #. Used in: Components > Preferences > User Definitions
 msgid "collapseFormByDefault"
 msgstr "Skjul skjema som standard"
 
-#: components/Preferences/UserDefinitions.tsx:1464
+#: components/Preferences/UserDefinitions.tsx:1466
 #. Used in: Components > Preferences > User Definitions
 msgid "collapseFormByDefaultDescription"
 msgstr ""
 "Skal vedleggsskjemaet skjules som standard når eksisterende vedlegg vises? "
 "Hvis vedleggskontrollene er skjult, har denne innstillingen ingen effekt."
 
-#: components/Preferences/UserDefinitions.tsx:1455
+#: components/Preferences/UserDefinitions.tsx:1457
 #. Used in: Components > Preferences > User Definitions
 msgid "showControls"
 msgstr "Vis vedleggskontroller"
 
-#: components/Preferences/UserDefinitions.tsx:1456
+#: components/Preferences/UserDefinitions.tsx:1458
 #. Used in: Components > Preferences > User Definitions
 msgid "showControlsDescription"
 msgstr ""
@@ -326,7 +326,7 @@ msgstr "Riktig formatert"
 msgid "stoppedByUser"
 msgstr "Stoppet av bruker"
 
-#: components/Router/OverlayRoutes.tsx:246
+#: components/Router/OverlayRoutes.tsx:255
 #: components/Router/Routes.tsx:221
 #: components/Toolbar/WbsDialog.tsx:195
 #: components/WbImportAttachments/index.tsx:162

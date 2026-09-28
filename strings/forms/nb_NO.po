@@ -11,7 +11,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 2026.10.dev0\n"
 
-#: components/Preferences/UserDefinitions.tsx:810
+#: components/Preferences/UserDefinitions.tsx:812
 #. Used in: Components > Preferences > User Definitions
 msgid "forms"
 msgstr "Skjema"
@@ -197,14 +197,14 @@ msgstr "Lagre posten først"
 
 #: components/FormSliders/Slider.tsx:32
 #: components/FormSliders/Slider.tsx:34
-#: components/Preferences/UserDefinitions.tsx:1229
+#: components/Preferences/UserDefinitions.tsx:1231
 #. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 msgid "firstRecord"
 msgstr "Første post"
 
 #: components/FormSliders/Slider.tsx:96
 #: components/FormSliders/Slider.tsx:98
-#: components/Preferences/UserDefinitions.tsx:1233
+#: components/Preferences/UserDefinitions.tsx:1235
 #. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 msgid "lastRecord"
 msgstr "Siste post"
@@ -679,7 +679,7 @@ msgid "subForm"
 msgstr "Delskjema"
 
 #: components/FormMeta/SubViewMeta.tsx:37
-#: components/Preferences/UserDefinitions.tsx:1240
+#: components/Preferences/UserDefinitions.tsx:1242
 #. Used in: Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 msgid "formTable"
 msgstr "Rutenett"

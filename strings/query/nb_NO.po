@@ -11,9 +11,9 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 2026.10.dev0\n"
 
-#: components/Preferences/UserDefinitions.tsx:2290
-#: components/QueryBuilder/Header.tsx:97
-#: components/QueryBuilder/Toolbar.tsx:88
+#: components/Preferences/UserDefinitions.tsx:2358
+#: components/QueryBuilder/Header.tsx:108
+#: components/QueryBuilder/Toolbar.tsx:103
 #: components/Reports/RecordSets.tsx:95
 #: components/Toolbar/RecordSetEdit.tsx:52
 #: components/TreeView/Actions.tsx:95
@@ -23,17 +23,19 @@ msgstr ""
 msgid "query"
 msgstr "Utvidet søk"
 
-#: components/Header/menuItemDefinitions.ts:69
-#: components/Router/OverlayRoutes.tsx:123
-#: components/Toolbar/Query.tsx:78
-#: components/Toolbar/Query.tsx:219
-#: components/Toolbar/Query.tsx:221
+#: components/Header/menuItemDefinitions.ts:70
+#: components/Router/OverlayRoutes.tsx:124
+#: components/Toolbar/Query.tsx:79
+#: components/Toolbar/Query.tsx:242
+#: components/Toolbar/Query.tsx:246
+#: components/Toolbar/Query.tsx:268
+#: components/Toolbar/Query.tsx:270
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Query
 msgid "queries"
 msgstr "Utvidede søk"
 
 #: components/Preferences/CollectionDefinitions.tsx:291
-#: components/Preferences/UserDefinitions.tsx:1792
+#: components/Preferences/UserDefinitions.tsx:1794
 #: components/SearchDialog/index.tsx:243
 #: components/SearchDialog/index.tsx:387
 #: components/Security/registry.ts:210
@@ -43,11 +45,11 @@ msgstr "Bygg utvidet søk"
 
 #: components/QueryBuilder/Export.tsx:118
 #: components/QueryBuilder/index.tsx:130
-#: components/Router/OverlayRoutes.tsx:138
+#: components/Router/OverlayRoutes.tsx:139
 #: components/Statistics/AddStatDialog.tsx:64
 #: components/Statistics/AddStatDialog.tsx:140
 #: components/Statistics/AddStatDialog.tsx:149
-#: components/Toolbar/QueryTablesWrapper.tsx:163
+#: components/Toolbar/QueryTablesWrapper.tsx:187
 #. Used in: Components > Query Builder > Export ⬤ Components > Query Builder > Index ⬤ Components > Router > Overlay Routes ⬤ Components > Statistics > Add Stat Dialog ⬤ Components > Toolbar > Query Tables Wrapper
 msgid "newQueryName"
 msgstr "Nytt utvidet søk"
@@ -101,7 +103,7 @@ msgstr "Søke-definisjonen inneholder ufullstendige felt"
 msgid "queryDeleteIncompleteDescription"
 msgstr "Det er ufullførte felt i søkedefinisjonen. Vil du fjerne dem?"
 
-#: components/QueryBuilder/Wrapped.tsx:188
+#: components/QueryBuilder/Wrapped.tsx:183
 #. Used in: Components > Query Builder > Wrapped
 msgid "queryUnloadProtect"
 msgstr "Den nye eller endrede søkedefinisjonen er ikke lagret"
@@ -149,7 +151,7 @@ msgstr "Det vises et varsel når eksportfilen er fullført og klar for nedlastin
 msgid "invalidPicklistValue"
 msgstr "{value:string} (gjeldende, ugyldig verdi)"
 
-#: components/QueryBuilder/Header.tsx:91
+#: components/QueryBuilder/Header.tsx:102
 #. 🟥Used in query builder header when querying on record set. Used in: Components > Query Builder > Header
 msgid "queryRecordSetTitle"
 msgstr ""
@@ -161,27 +163,27 @@ msgstr ""
 msgid "treeQueryName"
 msgstr "{tableName:string} bruker «{nodeFullName:string}»"
 
-#: components/QueryBuilder/Wrapped.tsx:489
+#: components/QueryBuilder/Wrapped.tsx:479
 #. Used in: Components > Query Builder > Wrapped
 msgid "newButtonDescription"
 msgstr "Legg til nytt felt"
 
-#: components/QueryBuilder/Toolbar.tsx:85
+#: components/QueryBuilder/Toolbar.tsx:87
 #. 🟥Verb. Used in: Components > Query Builder > Toolbar
 msgid "countOnly"
 msgstr "Antall"
 
-#: components/QueryBuilder/Toolbar.tsx:72
+#: components/QueryBuilder/Toolbar.tsx:74
 #. Used in: Components > Query Builder > Toolbar
 msgid "distinct"
 msgstr "Distinkt"
 
-#: components/QueryBuilder/Toolbar.tsx:58
+#: components/QueryBuilder/Toolbar.tsx:60
 #. Used in: Components > Query Builder > Toolbar
 msgid "series"
 msgstr "Serier"
 
-#: components/QueryBuilder/Toolbar.tsx:81
+#: components/QueryBuilder/Toolbar.tsx:83
 #. Used in: Components > Query Builder > Toolbar
 msgid "searchSynonyms"
 msgstr "Søk etter synonymer"
@@ -372,7 +374,7 @@ msgstr "I"
 msgid "inDescription"
 msgstr "En kommaseparert liste med verdier"
 
-#: components/Preferences/UserDefinitions.tsx:1550
+#: components/Preferences/UserDefinitions.tsx:1552
 #: components/QueryBuilder/FieldFilterSpec.tsx:512
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter Spec
 msgid "contains"
@@ -388,7 +390,7 @@ msgstr "Tom"
 msgid "and"
 msgstr "og"
 
-#: components/Preferences/UserDefinitions.tsx:1546
+#: components/Preferences/UserDefinitions.tsx:1548
 #: components/QueryBuilder/FieldFilterSpec.tsx:520
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter Spec
 msgid "startsWith"
@@ -414,7 +416,7 @@ msgstr "eller"
 msgid "yes"
 msgstr "Ja"
 
-#: components/QueryBuilder/ResultsTable.tsx:220
+#: components/QueryBuilder/ResultsTable.tsx:236
 #: components/QueryBuilder/ToForms.tsx:56
 #. Used in: Components > Query Builder > Results Table ⬤ Components > Query Builder > To Forms
 msgid "queryResults"
@@ -553,13 +555,13 @@ msgstr "Bytt til relativ"
 msgid "switchToAbsolute"
 msgstr "Bytt til absolutt"
 
-#: components/QueryBuilder/Header.tsx:105
+#: components/QueryBuilder/Header.tsx:116
 #. Used in: Components > Query Builder > Header
 msgid "scrollToEditor"
 msgstr "Bla til editor"
 
 #: components/LocalityUpdate/Status.tsx:312
-#: components/QueryBuilder/ResultsTable.tsx:205
+#: components/QueryBuilder/ResultsTable.tsx:221
 #. Used in: Components > Locality Update > Status ⬤ Components > Query Builder > Results Table
 msgid "viewRecords"
 msgstr "Vis poster"

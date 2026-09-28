@@ -15,7 +15,7 @@ msgstr ""
 #: components/AppResources/Filters.tsx:87
 #: components/AppResources/Filters.tsx:134
 #: components/Header/userToolDefinitions.ts:76
-#: components/Preferences/UserDefinitions.tsx:2162
+#: components/Preferences/UserDefinitions.tsx:2230
 #: components/Router/Routes.tsx:259
 #: components/Security/registry.ts:218
 #. Used in: Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Security > Registry
@@ -25,7 +25,7 @@ msgstr "Ресурси програми"
 #: components/AppResources/Create.tsx:288
 #: components/FormMeta/Definition.tsx:31
 #: components/FormMeta/Definition.tsx:74
-#: components/Preferences/UserDefinitions.tsx:908
+#: components/Preferences/UserDefinitions.tsx:910
 #. Used in: Components > App Resources > Create ⬤ Components > Form Meta > Definition ⬤ Components > Preferences > User Definitions
 msgid "formDefinition"
 msgstr "Визначення форми"
@@ -33,7 +33,7 @@ msgstr "Визначення форми"
 #: components/AppResources/EditorComponents.tsx:51
 #: components/AppResources/Filters.tsx:73
 #: components/AppResources/Filters.tsx:118
-#: components/AppResources/types.tsx:35
+#: components/AppResources/types.tsx:36
 #. Used in: Components > App Resources > Editor Components ⬤ Components > App Resources > Filters ⬤ Components > App Resources > Types
 msgid "formDefinitions"
 msgstr "Визначення форми"
@@ -89,12 +89,12 @@ msgstr "Підкатегорії"
 msgid "addResource"
 msgstr "Додати ресурс"
 
-#: components/AppResources/types.tsx:30
+#: components/AppResources/types.tsx:31
 #. Used in: Components > App Resources > Types
 msgid "appResource"
 msgstr "Підкатегорії"
 
-#: components/AppResources/types.tsx:128
+#: components/AppResources/types.tsx:138
 #. Used in: Components > App Resources > Types
 msgid "rssExportFeed"
 msgstr "Канал експорту RSS"
@@ -104,22 +104,22 @@ msgstr "Канал експорту RSS"
 msgid "exports"
 msgstr "Експорт"
 
-#: components/AppResources/types.tsx:135
+#: components/AppResources/types.tsx:145
 #. Used in: Components > App Resources > Types
 msgid "expressSearchConfig"
 msgstr "Конфігурація експрес-пошуку"
 
-#: components/AppResources/types.tsx:143
+#: components/AppResources/types.tsx:153
 #. Used in: Components > App Resources > Types
 msgid "typeSearches"
 msgstr "Пошук типів"
 
-#: components/AppResources/types.tsx:151
+#: components/AppResources/types.tsx:161
 #. Used in: Components > App Resources > Types
 msgid "webLinks"
 msgstr "Веб-посилання"
 
-#: components/AppResources/types.tsx:159
+#: components/AppResources/types.tsx:169
 #: components/FieldFormatters/Element.tsx:16
 #: components/SchemaConfig/Format.tsx:108
 #. Used in: Components > App Resources > Types ⬤ Components > Field Formatters > Element ⬤ Components > Schema Config > Format
@@ -134,7 +134,7 @@ msgstr ""
 "результатах запиту, експорті та формах. Він керує автонумерацією та "
 "композицією різних частин, що визначають поле."
 
-#: components/AppResources/types.tsx:167
+#: components/AppResources/types.tsx:177
 #. Used in: Components > App Resources > Types
 msgid "dataObjectFormatters"
 msgstr "Форматувальники записів"
@@ -204,32 +204,32 @@ msgstr "Будь ласка, призначте один із форматува
 msgid "duplicateFormatters"
 msgstr "Імена форматування записів мають бути унікальними"
 
-#: components/AppResources/types.tsx:175
+#: components/AppResources/types.tsx:185
 #. Used in: Components > App Resources > Types
 msgid "dataEntryTables"
 msgstr "Таблиці введення даних"
 
-#: components/AppResources/types.tsx:183
+#: components/AppResources/types.tsx:193
 #. Used in: Components > App Resources > Types
 msgid "interactionsTables"
 msgstr "Таблиці взаємодій"
 
-#: components/AppResources/types.tsx:190
+#: components/AppResources/types.tsx:200
 #. Used in: Components > App Resources > Types
 msgid "otherXmlResource"
 msgstr "Інший XML-ресурс"
 
-#: components/AppResources/types.tsx:197
+#: components/AppResources/types.tsx:207
 #. Used in: Components > App Resources > Types
 msgid "otherJsonResource"
 msgstr "Інший JSON-ресурс"
 
-#: components/AppResources/types.tsx:204
+#: components/AppResources/types.tsx:214
 #. Used in: Components > App Resources > Types
 msgid "otherPropertiesResource"
 msgstr "Ресурс інших властивостей"
 
-#: components/AppResources/types.tsx:211
+#: components/AppResources/types.tsx:221
 #. Used in: Components > App Resources > Types
 msgid "otherAppResource"
 msgstr "Інший ресурс"
@@ -246,7 +246,7 @@ msgstr "Фільтри"
 msgid "custom"
 msgstr "Спеціальні"
 
-#: components/AppResources/types.tsx:120
+#: components/AppResources/types.tsx:130
 #. Used in: Components > App Resources > Types
 msgid "leafletLayers"
 msgstr "Шари листівок"

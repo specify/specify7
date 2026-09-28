@@ -1,7 +1,7 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/Preferences/UserDefinitions.tsx:2124
+#: components/Preferences/UserDefinitions.tsx:2192
 #: components/WorkBench/WbView.tsx:252
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Work Bench > Wb View
 msgid "dataMapper"
@@ -88,7 +88,7 @@ msgid "hiddenFields"
 msgstr "Hidden Fields"
 
 #: components/FormMeta/CarryForward.tsx:426
-#: components/QueryBuilder/Toolbar.tsx:46
+#: components/QueryBuilder/Toolbar.tsx:48
 #: components/WbPlanView/MapperComponents.tsx:83
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Query Builder > Toolbar ⬤ Components > Wb Plan View > Mapper Components
 msgid "revealHiddenFormFields"
@@ -223,7 +223,7 @@ msgstr "Select a Base Table"
 msgid "chooseExistingPlan"
 msgstr "Choose Existing Mapping"
 
-#: components/SchemaConfig/Tables.tsx:158
+#: components/SchemaConfig/Tables.tsx:166
 #. Used in: Components > Schema Config > Tables
 msgid "showAllTables"
 msgstr "Show All Tables"

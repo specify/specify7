@@ -11,7 +11,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 2026.9.dev0\n"
 
-#: components/Preferences/UserDefinitions.tsx:2124
+#: components/Preferences/UserDefinitions.tsx:2192
 #: components/WorkBench/WbView.tsx:252
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Work Bench > Wb View
 msgid "dataMapper"
@@ -98,7 +98,7 @@ msgid "hiddenFields"
 msgstr "Champs cachés"
 
 #: components/FormMeta/CarryForward.tsx:426
-#: components/QueryBuilder/Toolbar.tsx:46
+#: components/QueryBuilder/Toolbar.tsx:48
 #: components/WbPlanView/MapperComponents.tsx:83
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Query Builder > Toolbar ⬤ Components > Wb Plan View > Mapper Components
 msgid "revealHiddenFormFields"
@@ -235,7 +235,7 @@ msgstr "Sélectionnez une table de base"
 msgid "chooseExistingPlan"
 msgstr "Choisir un mappage existant"
 
-#: components/SchemaConfig/Tables.tsx:158
+#: components/SchemaConfig/Tables.tsx:166
 #. Used in: Components > Schema Config > Tables
 msgid "showAllTables"
 msgstr "Afficher toutes les tables"

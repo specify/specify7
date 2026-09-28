@@ -29,21 +29,21 @@ msgid "currentCollection"
 msgstr "Поточна {collectionTable:string}"
 
 #: components/DataEntryTables/index.tsx:43
-#: components/Header/menuItemDefinitions.ts:39
-#: components/Router/OverlayRoutes.tsx:72
+#: components/Header/menuItemDefinitions.ts:40
+#: components/Router/OverlayRoutes.tsx:73
 #. Used in: Components > Data Entry Tables > Index ⬤ Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes
 msgid "dataEntry"
 msgstr "Введення даних"
 
 #: components/Header/userToolDefinitions.ts:124
-#: components/Router/OverlayRoutes.tsx:199
+#: components/Router/OverlayRoutes.tsx:208
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 msgid "makeDwca"
 msgstr "Створити архів DwC"
 
 #: components/Header/userToolDefinitions.ts:116
-#: components/Router/OverlayRoutes.tsx:191
-#: components/Router/OverlayRoutes.tsx:271
+#: components/Router/OverlayRoutes.tsx:200
+#: components/Router/OverlayRoutes.tsx:280
 #: components/Toolbar/BackupDatabase.tsx:84
 #: components/Toolbar/BackupStatus.tsx:84
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Backup Database ⬤ Components > Toolbar > Backup Status
@@ -51,7 +51,7 @@ msgid "backupDatabase"
 msgstr "Резервне копіювання бази даних"
 
 #: components/Header/userToolDefinitions.ts:130
-#: components/Router/OverlayRoutes.tsx:207
+#: components/Router/OverlayRoutes.tsx:216
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 msgid "updateExportFeed"
 msgstr "Оновити RSS-канал"
@@ -119,7 +119,7 @@ msgid "createReport"
 msgstr "Створити новий звіт"
 
 #: components/Header/userToolDefinitions.ts:102
-#: components/Router/OverlayRoutes.tsx:175
+#: components/Router/OverlayRoutes.tsx:184
 #: components/Toolbar/TreeRepair.tsx:173
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Tree Repair
 msgid "repairTree"
@@ -159,7 +159,7 @@ msgstr "Ресурс метаданих"
 
 #: components/Header/ExpressSearchTask.tsx:68
 #: components/Header/ExpressSearchTask.tsx:200
-#: components/Router/OverlayRoutes.tsx:52
+#: components/Router/OverlayRoutes.tsx:53
 #: components/Router/Routes.tsx:33
 #. Used in: Components > Header > Express Search Task ⬤ Components > Router > Overlay Routes ⬤ Components > Router > Routes
 msgid "simpleSearch"
@@ -175,15 +175,15 @@ msgstr "Первинний пошук"
 msgid "secondarySearch"
 msgstr "Вторинний пошук"
 
-#: components/Preferences/Renderers.tsx:127
+#: components/Preferences/Renderers.tsx:128
 #. Used in: Components > Preferences > Renderers
 msgid "menuItems"
 msgstr "Елементи меню"
 
 #: components/Header/UserTools.tsx:48
 #: components/Header/UserTools.tsx:79
-#: components/Preferences/Renderers.tsx:125
-#: components/Router/OverlayRoutes.tsx:44
+#: components/Preferences/Renderers.tsx:126
+#: components/Router/OverlayRoutes.tsx:45
 #. Used in: Components > Header > User Tools ⬤ Components > Preferences > Renderers ⬤ Components > Router > Overlay Routes
 msgid "userTools"
 msgstr "Інструменти"
@@ -241,7 +241,7 @@ msgstr "API операцій"
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:271
 #: components/Header/ExpressSearchTask.tsx:156
 #: components/Header/userToolDefinitions.ts:152
-#: components/Preferences/UserDefinitions.tsx:623
+#: components/Preferences/UserDefinitions.tsx:625
 #: components/Preferences/index.tsx:65
 #: components/Preferences/index.tsx:71
 #: components/SetupTool/index.tsx:285
@@ -268,7 +268,7 @@ msgstr "Форум"
 
 #: components/Errors/ErrorDialog.tsx:150
 #: components/Header/userToolDefinitions.ts:176
-#: components/Router/Routes.tsx:463
+#: components/Router/Routes.tsx:475
 #: components/RouterCommands/CacheBuster.tsx:39
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Router Commands > Cache Buster
 msgid "clearCache"

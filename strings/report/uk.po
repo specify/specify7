@@ -12,7 +12,7 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 5.17.1\n"
 
-#: components/AppResources/types.tsx:77
+#: components/AppResources/types.tsx:78
 #. Used in: Components > App Resources > Types
 msgid "label"
 msgstr "Етикетка"
@@ -22,17 +22,17 @@ msgstr "Етикетка"
 msgid "labels"
 msgstr "Етикетки"
 
-#: components/AppResources/types.tsx:85
+#: components/AppResources/types.tsx:86
 #. Used in: Components > App Resources > Types
 msgid "report"
 msgstr "Звіт"
 
-#: components/Header/menuItemDefinitions.ts:83
-#: components/Preferences/UserDefinitions.tsx:1962
+#: components/Header/menuItemDefinitions.ts:89
+#: components/Preferences/UserDefinitions.tsx:2030
 #: components/Reports/Parameters.tsx:91
 #: components/Reports/index.tsx:143
 #: components/Reports/index.tsx:150
-#: components/Router/OverlayRoutes.tsx:154
+#: components/Router/OverlayRoutes.tsx:163
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Reports > Parameters ⬤ Components > Reports > Index ⬤ Components > Router > Overlay Routes
 msgid "reports"
 msgstr "Звіти"

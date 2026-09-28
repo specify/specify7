@@ -12,10 +12,10 @@ msgstr ""
 "X-Generator: Weblate 2026.10.dev0\n"
 
 #: components/FormCommands/ShowTransactions.tsx:70
-#: components/Header/menuItemDefinitions.ts:57
+#: components/Header/menuItemDefinitions.ts:58
 #: components/Interactions/InteractionsDialog.tsx:58
-#: components/Preferences/UserDefinitions.tsx:694
-#: components/Router/OverlayRoutes.tsx:96
+#: components/Preferences/UserDefinitions.tsx:696
+#: components/Router/OverlayRoutes.tsx:97
 #. Used in: Components > Form Commands > Show Transactions ⬤ Components > Header > Menu Item Definitions ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes
 #, fuzzy
 msgid "interactions"
@@ -234,7 +234,7 @@ msgstr ""
 #: components/FormMeta/CarryForward.tsx:382
 #: components/Interactions/LoanReturn.tsx:197
 #: components/Interactions/PrepDialog.tsx:140
-#: components/QueryBuilder/Results.tsx:364
+#: components/QueryBuilder/Results.tsx:481
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Query Builder > Results
 #, fuzzy
 msgid "deselectAll"

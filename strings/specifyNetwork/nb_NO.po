@@ -61,7 +61,7 @@ msgstr "Rapportert av {provider:string}"
 msgid "collectionDate"
 msgstr "Innsamlet dato"
 
-#: components/SpecifyNetwork/Map.tsx:221
+#: components/SpecifyNetwork/Map.tsx:232
 #. Used in: Components > Specify Network > Map
 msgid "mapDescription"
 msgstr "Dette kartet viser forekomster av dette taksonet fra iDigBio- og GBIF."

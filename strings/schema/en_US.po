@@ -12,15 +12,15 @@ msgstr "Table"
 
 #: components/Attachments/index.tsx:202
 #: components/FormEditor/Table.tsx:49
-#: components/Router/Routes.tsx:427
-#: components/SchemaConfig/Sidebar.tsx:26
-#: components/SchemaConfig/Sidebar.tsx:33
-#: components/SchemaConfig/Sidebar.tsx:36
-#. Used in: Components > Attachments > Index ⬤ Components > Form Editor > Table ⬤ Components > Router > Routes ⬤ Components > Schema Config > Sidebar
+#: components/Router/Routes.tsx:439
+#: components/SchemaConfig/Tables.tsx:206
+#: components/SchemaConfig/Tables.tsx:219
+#: components/SchemaConfig/Tables.tsx:222
+#. Used in: Components > Attachments > Index ⬤ Components > Form Editor > Table ⬤ Components > Router > Routes ⬤ Components > Schema Config > Tables
 msgid "tables"
 msgstr "Tables"
 
-#: components/Preferences/UserDefinitions.tsx:883
+#: components/Preferences/UserDefinitions.tsx:885
 #: components/WbPlanView/MapperComponents.tsx:528
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Plan View > Mapper Components
 msgid "tableName"
@@ -32,8 +32,8 @@ msgid "withoutTable"
 msgstr "Without Table"
 
 #: components/Header/userToolDefinitions.ts:69
-#: components/Preferences/UserDefinitions.tsx:826
-#: components/Router/Routes.tsx:397
+#: components/Preferences/UserDefinitions.tsx:828
+#: components/Router/Routes.tsx:409
 #: components/SchemaConfig/Components.tsx:31
 #: components/SchemaConfig/Languages.tsx:36
 #: components/Security/registry.ts:206
@@ -46,8 +46,8 @@ msgstr "Schema Config"
 msgid "unsavedSchemaUnloadProtect"
 msgstr "Schema changes have not been saved"
 
-#: components/SchemaConfig/Sidebar.tsx:50
-#: components/SchemaConfig/Sidebar.tsx:52
+#: components/SchemaConfig/Sidebar.tsx:22
+#: components/SchemaConfig/Sidebar.tsx:24
 #. Used in: Components > Schema Config > Sidebar
 msgid "unsavedChanges"
 msgstr "Unsaved changes"
@@ -243,7 +243,7 @@ msgstr "Web Link"
 msgid "userDefined"
 msgstr "User Defined"
 
-#: components/Router/Routes.tsx:412
+#: components/Router/Routes.tsx:424
 #: components/SchemaConfig/Languages.tsx:29
 #: components/SchemaConfig/Languages.tsx:78
 #. Used in: Components > Router > Routes ⬤ Components > Schema Config > Languages
@@ -339,7 +339,7 @@ msgstr "ID Field"
 msgid "tableUniquenessRules"
 msgstr "{tableName:string} Uniqueness Rules"
 
-#: components/Router/OverlayRoutes.tsx:254
+#: components/Router/OverlayRoutes.tsx:263
 #: components/SchemaConfig/Table.tsx:93
 #. Used in: Components > Router > Overlay Routes ⬤ Components > Schema Config > Table
 msgid "uniquenessRules"
