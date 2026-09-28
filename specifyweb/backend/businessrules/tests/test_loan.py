@@ -16,3 +16,40 @@ class LoanTests(ApiTests):
         models.Loan.objects.create(
             loannumber='2',
             discipline=self.discipline)
+
+    def test_create_loan_by_choosing_recordset(self):
+        self._create_prep_type()
+        prep = self._create_prep(self.collectionobjects[0], None)
+
+        record_set = models.Recordset.objects.create(
+            collectionmemberid=self.collection.id,
+            dbtableid=models.Collectionobject.specify_model.tableId,
+            name='Loan Recordset',
+            type=0,
+            specifyuser=self.specifyuser,
+        )
+
+        record_set.recordsetitems.create(
+            recordid=self.collectionobjects[0].id,
+        )
+
+        loan = models.Loan.objects.create(
+            loannumber='LOAN-RECORDSET-001',
+            discipline=self.discipline,
+        )
+
+        loan_prep = loan.loanpreparations.create(
+            discipline=self.discipline,
+            preparation=prep,
+        )
+
+        fetched = models.Loanpreparation.objects.get(id=loan_prep.id)
+
+        self.assertEqual(
+            fetched.loan,
+            loan,
+        )
+        self.assertEqual(
+            fetched.preparation,
+            prep,
+        )
