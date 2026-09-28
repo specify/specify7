@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-09-26 15:54+0000\n"
-"Last-Translator: Eirik Rindal <eirik.rindal@nhm.uio.no>\n"
+"PO-Revision-Date: 2026-09-28 06:51+0000\n"
+"Last-Translator: Gunnhild Marthinsen <gunnhilm@nhm.uio.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/specifyNetwork/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -52,7 +52,6 @@ msgstr "Datakvalitet"
 
 #. Used in: Components > Specify Network > Table
 #: components/SpecifyNetwork/Table.tsx:67
-#, fuzzy
 msgid "reportedBy"
 msgstr "Rapportert av {provider:string}"
 
@@ -123,28 +122,24 @@ msgstr "Sluttår"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:165
-#, fuzzy
 msgid "publishingOrganizationKey"
 msgstr "GBIF Publishing Organization Key"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:167
-#, fuzzy
 msgid "publishingOrganizationKeyDescription"
 msgstr ""
-"GBIF «publishingOrgKey» (en UUID) for denne samlingen, brukt for Angi "
-"nettverksintegrasjon."
+"GBIF «publishingOrgKey» (en UUID) for denne samlingen, brukt for Specify "
+"Network integrasjon."
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:174
-#, fuzzy
 msgid "collectionKey"
 msgstr "GBIF-datasettnøkkel"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:175
-#, fuzzy
 msgid "collectionKeyDescription"
 msgstr ""
-"GBIF-en «dataSetKey» (en UUID) for denne samlingen, brukt for Angi "
-"nettverksintegrasjon."
+"GBIF «dataSetKey» (en UUID) for denne samlingen, brukt for Specify Network "
+"integrasjon."
