@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-09-28 06:51+0000\n"
-"Last-Translator: Gunnhild Marthinsen <gunnhilm@nhm.uio.no>\n"
+"Last-Translator: Josh Jenkins Shaw <joshua.m.j.shaw@ntnu.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/setupTool/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -119,12 +119,12 @@ msgstr "Byen der institusjonen ligger."
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:197
 msgid "addressState"
-msgstr "Provins/Stat"
+msgstr "Fylke/Region"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:198
 msgid "addressStateDescription"
-msgstr "Staten eller provinsen."
+msgstr "Fylket eller regionen."
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:204
@@ -212,7 +212,7 @@ msgstr "\"Inkluder\" plasserer nivået i tredefinisjonen."
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:126
 msgid "enforced"
-msgstr "Håndhevet"
+msgstr "Enforced"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:127
