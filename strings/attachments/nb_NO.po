@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-09-26 15:52+0000\n"
-"Last-Translator: Eirik Rindal <eirik.rindal@nhm.uio.no>\n"
+"PO-Revision-Date: 2026-09-28 06:51+0000\n"
+"Last-Translator: Josh Jenkins Shaw <joshua.m.j.shaw@ntnu.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/attachments/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -58,14 +58,14 @@ msgstr "Skala"
 #: components/Header/index.tsx:186
 #: components/WbImportAttachments/index.tsx:134
 msgid "attachmentServerUnavailable"
-msgstr "Serveren for vedlegg er ikke tilgjengelig"
+msgstr "Vedleggsserveren utilgjengelig"
 
 #. Used in: Components > Attachments > Viewer ⬤ Components > Attachments > Index
 #: components/Attachments/Viewer.tsx:384
 #: components/Attachments/index.tsx:57
 #: components/Attachments/index.tsx:288
 msgid "attachmentServerUnavailableDescription"
-msgstr "Konfigurer serveren for vedlegg"
+msgstr "Sett opp vedleggsserveren din"
 
 #. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 #: components/Attachments/index.tsx:217
