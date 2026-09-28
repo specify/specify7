@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-09-27 12:51+0000\n"
+"PO-Revision-Date: 2026-09-28 06:51+0000\n"
 "Last-Translator: Gunnhild Marthinsen <gunnhilm@nhm.uio.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/resources/nb_NO/>\n"
@@ -101,16 +101,15 @@ msgstr "RSS-eksportfeed"
 #. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:102
 msgid "exports"
-msgstr "Eksport"
+msgstr "Eksporter"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:135
 msgid "expressSearchConfig"
-msgstr "Konfigurer Enkelt søk"
+msgstr "Konfigurasjon for enkelt søk"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:143
-#, fuzzy
 msgid "typeSearches"
 msgstr "Typesøk"
 
@@ -288,7 +287,6 @@ msgstr "Globale preferanser"
 #: components/AppResources/tree.ts:124
 #: components/AppResources/__tests__/disambiguateGlobalPrefs.test.ts:55
 #: components/AppResources/__tests__/getGlobalAllResources.test.ts:69
-#, fuzzy
 msgid "remotePreferences"
 msgstr "Fjerninnstillinger"
 
@@ -490,9 +488,8 @@ msgstr "Lagre skjemaet først"
 
 #. Used in: Components > Form Meta > Index
 #: components/FormMeta/index.tsx:117
-#, fuzzy
 msgid "saveFormFirstDescription"
-msgstr "Du må lagre dette skjemaet før du redigerer et nytt."
+msgstr "Du må lagre dette skjemaet før du redigerer et nytt"
 
 #. Used in: Components > Formatters > Formatter
 #: components/Formatters/Formatter.tsx:77
@@ -551,9 +548,8 @@ msgstr "En konsolidert samlingsobjektgruppe må ha et primært underobjekt"
 
 #. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:381
-#, fuzzy
 msgid "deletePrimaryRecord"
-msgstr "Primæroppføring CO kan ikke slettes."
+msgstr "Primær-databasepost CO kan ikke slettes."
 
 #. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:902
@@ -588,14 +584,12 @@ msgstr "Velg ett taksontre for å fortsette med:"
 #. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 #: components/DataModel/businessRuleDefs.ts:196
 #: components/DataModel/__tests__/businessRules.test.ts:182
-#, fuzzy
 msgid "invalidDeterminationTaxon"
 msgstr ""
 "Bestemmelsen tilhører ikke taksontreet som er knyttet til samlingsobjekttypen"
 
 #. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:432
-#, fuzzy
 msgid "invalidNameTaxon"
 msgstr ""
 "{taxonName: string} tilhører ikke {taxonTableLabel: string}-treet som er "
@@ -677,15 +671,13 @@ msgstr "Alfanumerisk"
 
 #. Used in: Components > Field Formatters > Index
 #: components/FieldFormatters/index.ts:408
-#, fuzzy
 msgid "anychar"
 msgstr "Hvilket som helst tegn"
 
 #. Used in: Components > Field Formatters > Index
 #: components/FieldFormatters/index.ts:409
-#, fuzzy
 msgid "regex"
-msgstr "Regulært uttrykk"
+msgstr "Regulært uttrykk (regular expression)"
 
 #. Used in: Components > Field Formatters > Field Formatter
 #: components/FieldFormatters/FieldFormatter.tsx:177
