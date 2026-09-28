@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-09-26 15:52+0000\n"
-"Last-Translator: Eirik Rindal <eirik.rindal@nhm.uio.no>\n"
+"PO-Revision-Date: 2026-09-28 06:51+0000\n"
+"Last-Translator: Gunnhild Marthinsen <gunnhilm@nhm.uio.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/backEnd/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -107,8 +107,8 @@ msgstr "Det finnes flere plassholderverdier for «Opplastede» i treet!"
 #: components/WorkBench/resultMessageResolvers.ts:307
 msgid "missingRequiredTreeParent"
 msgstr ""
-"Manglende eller ikke-kartlagt obligatorisk rangverdi for foreldretre for "
-"«{names:string}»."
+"Manglende eller ikke-tilordnet obligatorisk nivå-verdi for foreldretre for «"
+"{names:string}»."
 
 #. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:70
@@ -143,7 +143,7 @@ msgstr "Kan ikke slette definisjonselementet på rotnivåtreet"
 #: components/Errors/JsonError.tsx:156
 #: components/WorkBench/resultMessageResolvers.ts:189
 msgid "nodeParentInvalidRank"
-msgstr "Trenodens overordnede har en høyere rang enn seg selv"
+msgstr "Trenodens foreldre-node har et høyere nivå enn seg selv"
 
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 #: components/Errors/JsonError.tsx:158
@@ -178,7 +178,7 @@ msgstr "Synonymiserende node «{nodeName:string}» som har underordnede"
 #: components/WorkBench/resultMessageResolvers.ts:184
 msgid "badTreeStructureInvalidRanks"
 msgstr ""
-"Dårlig trestruktur: Fant {badRanks:number|formatted} tilfeller der noderang "
+"Dårlig trestruktur: Fant {badRanks:number|formatted} tilfeller der node-nivå "
 "ikke er høyere enn den overordnede"
 
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
@@ -295,7 +295,7 @@ msgstr "Ugyldig kategori for valgte nivå i treet"
 #. Used in: Components > Work Bench > Result Message Resolvers
 #: components/WorkBench/resultMessageResolvers.ts:303
 msgid "invalidComponentType"
-msgstr "Ugyldig {componentType: string} for valgte trerangering(er)"
+msgstr "Ugyldig {componentType: string} for valgte trenivå(er)"
 
 #. Used in: Components > Work Bench > Result Message Resolvers
 #: components/WorkBench/resultMessageResolvers.ts:324
