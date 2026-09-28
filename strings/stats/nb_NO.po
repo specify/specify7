@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-09-27 12:51+0000\n"
+"PO-Revision-Date: 2026-09-28 06:51+0000\n"
 "Last-Translator: Gunnhild Marthinsen <gunnhilm@nhm.uio.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/stats/nb_NO/>\n"
@@ -161,15 +161,13 @@ msgstr "Kategorinavn"
 
 #. Used in: Components > Statistics > Hooks
 #: components/Statistics/hooks.tsx:377
-#, fuzzy
 msgid "itemName"
-msgstr "Varenavn"
+msgstr "Element navn"
 
 #. Used in: Components > Statistics > Hooks
 #: components/Statistics/hooks.tsx:378
-#, fuzzy
 msgid "itemValue"
-msgstr "Elementverdi"
+msgstr "Element-verdi"
 
 #. Used in: Components > Statistics > Index
 #: components/Statistics/index.tsx:545
