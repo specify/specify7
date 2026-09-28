@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-09-27 12:51+0000\n"
+"PO-Revision-Date: 2026-09-28 07:51+0000\n"
 "Last-Translator: Gunnhild Marthinsen <gunnhilm@nhm.uio.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/tree/nb_NO/>\n"
@@ -153,9 +153,9 @@ msgstr "Velg en ny lokasjon \"{nodeName:string}\"-preparater skal flyttes til"
 msgid "mergeNodeMessage"
 msgstr ""
 "Alle referanser til noden {treeName:string} «{nodeName:string}» vil bli "
-"erstattet med «{parentName:string}», og alle underordnede av "
-"«{nodeName:string}» vil bli flyttet til «{parentName:string}». Underordnede "
-"med samme navn og rang vil selv bli slått sammen automatisk."
+"erstattet med «{parentName:string}», og alle underordnede av «"
+"{nodeName:string}» vil bli flyttet til «{parentName:string}». Underordnede "
+"med samme navn og nivå vil selv bli slått sammen automatisk."
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:436
