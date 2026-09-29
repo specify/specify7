@@ -77,3 +77,20 @@ class LoanTests(ApiTests):
         fetched = models.Loanpreparation.objects.get(id=loan_prep.id)
         self.assertEqual(fetched.preparation.collectionobject.catalognumber, 'CAT-LOAN-1001')
         self.assertEqual(fetched.loan.loannumber, 'LOAN-CATNUM-001')
+
+    def test_create_loan_without_preparations(self):
+        loan = models.Loan.objects.create(
+            loannumber='LOAN-NOPREPS-001',
+            discipline=self.discipline,
+        )
+
+        fetched_loan = models.Loan.objects.get(id=loan.id)
+
+        self.assertEqual(
+            fetched_loan.loannumber,
+            'LOAN-NOPREPS-001',
+        )
+        self.assertEqual(
+            fetched_loan.loanpreparations.count(),
+            0,
+        )
