@@ -237,7 +237,7 @@ msgstr "Die Option „Alle anwenden“ ist während der Datenprüfung nicht verf
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Utils > Dataset Variants
 #, fuzzy
 msgid "beginRollback"
-msgstr "Datensatz zurücksetzen?"
+msgstr "Datensatz-Rollback starten?"
 
 #: components/WbUtils/datasetVariants.tsx:50
 #. Used in: Components > Wb Utils > Dataset Variants

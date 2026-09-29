@@ -633,7 +633,7 @@ msgstr "Recherche"
 #. Used in: Components > Toolbar > Query
 #, fuzzy
 msgid "searchFor"
-msgstr ""
+msgstr "Rechercher {resource:string}"
 
 #: components/Reports/index.tsx:201
 #: components/SearchDialog/index.tsx:306

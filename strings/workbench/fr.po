@@ -18,7 +18,7 @@ msgstr ""
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Wb Utils > Dataset Variants
 #, fuzzy
 msgid "workBench"
-msgstr "Table de travail"
+msgstr "Établi"
 
 #: components/AttachmentsBulkImport/Rollback.tsx:29
 #: components/AttachmentsBulkImport/Rollback.tsx:93
@@ -30,7 +30,7 @@ msgstr "Table de travail"
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Wb Utils > Dataset Variants ⬤ Components > Work Bench > Status
 #, fuzzy
 msgid "rollback"
-msgstr "Retour en arrière"
+msgstr "Annulation"
 
 #: components/AttachmentsBulkImport/Import.tsx:433
 #: components/WbActions/WbValidate.tsx:82
@@ -60,7 +60,7 @@ msgstr "Télécharger"
 #. Used in: Components > Work Bench > Status
 #, fuzzy
 msgid "rollingBack"
-msgstr "Retour en arrière"
+msgstr "Retour"
 
 #: components/AttachmentsBulkImport/Upload.tsx:109
 #: components/WbUtils/datasetVariants.tsx:53
@@ -75,25 +75,25 @@ msgstr "Téléchargement"
 #. Used in: Components > Attachments Bulk Import > Validation Dialog ⬤ Components > Work Bench > Status
 #, fuzzy
 msgid "validating"
-msgstr "Validation en cours"
+msgstr "Validation"
 
 #: components/WorkBench/WbSpreadsheet.tsx:169
 #. Used in: Components > Work Bench > Wb Spreadsheet
 #, fuzzy
 msgid "disambiguate"
-msgstr "Lever l'ambiguïté"
+msgstr "Désambiguïser"
 
 #: components/WorkBench/WbSpreadsheet.tsx:293
 #. Used in: Components > Work Bench > Wb Spreadsheet
 #, fuzzy
 msgid "fillDown"
-msgstr "Remplir vers le bas"
+msgstr "Remplissez vers le bas"
 
 #: components/WorkBench/WbSpreadsheet.tsx:293
 #. Used in: Components > Work Bench > Wb Spreadsheet
 #, fuzzy
 msgid "fillUp"
-msgstr "Remplir vers le haut"
+msgstr "Compléter"
 
 #: components/WbActions/WbRevert.tsx:33
 #: components/WbActions/WbRevert.tsx:41
@@ -107,14 +107,14 @@ msgstr "Revenir"
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Actions > Wb Validate
 #, fuzzy
 msgid "dataCheck"
-msgstr "Vérification des données"
+msgstr "Validation en direct"
 
 #: components/WbActions/WbValidate.tsx:63
 #: components/WbActions/WbValidate.tsx:66
 #. Used in: Components > Wb Actions > Wb Validate
 #, fuzzy
 msgid "dataCheckOn"
-msgstr "Vérification des données : activée"
+msgstr "Validation en direct : activée"
 
 #: components/Preferences/UserDefinitions.tsx:2062
 #. Used in: Components > Preferences > User Definitions
@@ -130,7 +130,7 @@ msgstr ""
 #. Used in: Components > Wb Toolkit > Change Owner
 #, fuzzy
 msgid "changeOwner"
-msgstr "Changer de propriétaire"
+msgstr "Changer le propriétaire"
 
 #: components/WbToolkit/CoordinateConverter.tsx:62
 #. Used in: Components > Wb Toolkit > Coordinate Converter
@@ -155,20 +155,20 @@ msgstr "Remplacer"
 #. Used in: Components > Wb Utils > Index
 #, fuzzy
 msgid "replacementValue"
-msgstr "Valeur de remplacement"
+msgstr "valeur de remplacement"
 
 #: components/SpecifyNetworkCollection/Setup.tsx:69
 #: components/WbUtils/index.tsx:112
 #. Used in: Components > Specify Network Collection > Setup ⬤ Components > Wb Utils > Index
 #, fuzzy
 msgid "searchResults"
-msgstr "Résultats de recherche"
+msgstr "Résultats de la recherche"
 
 #: components/WbUtils/Navigation.tsx:100
 #. Used in: Components > Wb Utils > Navigation
 #, fuzzy
 msgid "clickToToggle"
-msgstr "Cliquez pour basculer la visibilité"
+msgstr "Cliquez pour afficher ou masquer."
 
 #: components/WorkBench/AdvancedSearch.tsx:111
 #: components/WorkBench/AdvancedSearch.tsx:214
@@ -215,25 +215,24 @@ msgid "noDisambiguationResultsDescription"
 msgstr ""
 "Aucun des enregistrements correspondants n'existe actuellement dans la base "
 "de données. Cela peut se produire si tous les enregistrements "
-"correspondants ont été supprimés depuis le processus de validation, ou si "
-"toutes les correspondances étaient ambiguës par rapport aux autres "
-"enregistrements de cet ensemble de données. Dans ce dernier cas, vous "
-"devrez ajouter des champs et des valeurs à l'ensemble de données pour lever "
-"l'ambiguïté."
+"correspondants ont été supprimés depuis la validation, ou si toutes les "
+"correspondances étaient ambiguës par rapport à d'autres enregistrements de "
+"cet ensemble de données. Dans ce dernier cas, vous devrez ajouter des "
+"champs et des valeurs à l'ensemble de données pour lever l'ambiguïté."
 
 #: components/WorkBench/Disambiguation.tsx:68
 #. Used in: Components > Work Bench > Disambiguation
 #, fuzzy
 msgid "disambiguateMatches"
-msgstr "Lever l'ambiguïté des correspondances d'enregistrements multiples"
+msgstr "Désambiguïsation des correspondances multiples d'enregistrements"
 
 #: components/WorkBench/Disambiguation.tsx:57
 #. Used in: Components > Work Bench > Disambiguation
 #, fuzzy
 msgid "applyAllUnavailable"
 msgstr ""
-"« Appliquer tout » n'est pas disponible lorsque la vérification des données "
-"est en cours."
+"L'option « Tout appliquer » n'est pas disponible pendant la vérification "
+"des données."
 
 #: components/AttachmentsBulkImport/Rollback.tsx:134
 #: components/WbUtils/datasetVariants.tsx:49
@@ -241,31 +240,31 @@ msgstr ""
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Utils > Dataset Variants
 #, fuzzy
 msgid "beginRollback"
-msgstr "Commencer la restauration de l'ensemble de données ?"
+msgstr "Début de la restauration de l'ensemble de données ?"
 
 #: components/WbUtils/datasetVariants.tsx:50
 #. Used in: Components > Wb Utils > Dataset Variants
 #, fuzzy
 msgid "beginRollbackDescription"
 msgstr ""
-"Le retour arrière supprimera les nouveaux enregistrements de données "
-"ajoutés par cet ensemble de données à la base de données Specify. Il sera "
-"annulé si des données importées ont été référencées (réutilisées) par "
-"d'autres enregistrements de données depuis leur importat."
+"L'annulation supprimera les nouveaux enregistrements de données ajoutés par "
+"cet ensemble de données à la base de données Specify. L'annulation complète "
+"sera annulée si des données importées ont été référencées (réutilisées) par "
+"d'autres enregistrements de données depuis leur importation."
 
 #: components/WbUtils/datasetVariants.tsx:42
 #. Used in: Components > Wb Utils > Dataset Variants
 #, fuzzy
 msgid "startUpload"
-msgstr "Commencer le téléchargement de l'ensemble de données ?"
+msgstr "Démarrer le chargement de l'ensemble de données ?"
 
 #: components/WbUtils/datasetVariants.tsx:46
 #. Used in: Components > Wb Utils > Dataset Variants
 #, fuzzy
 msgid "startUploadDescription"
 msgstr ""
-"Le chargement ajoutera tous les nouveaux enregistrements de cet ensemble de "
-"données à votre base de données."
+"Le chargement de ce fichier ajoutera tous les nouveaux enregistrements de "
+"cet ensemble de données à votre base de données."
 
 #: components/WorkBench/DataSetMeta.tsx:169
 #. Used in: Components > Work Bench > Data Set Meta
@@ -313,7 +312,7 @@ msgstr ""
 #. Used in: Components > Wb Actions > Wb Save
 #, fuzzy
 msgid "saving"
-msgstr "Enregistrement..."
+msgstr "Économie..."
 
 #: components/WorkBench/WbView.tsx:124
 #. Used in: Components > Work Bench > Wb View
@@ -327,17 +326,15 @@ msgstr ""
 #. Used in: Components > Work Bench > Wb Validation
 #, fuzzy
 msgid "noMatchErrorMessage"
-msgstr ""
-"Aucun enregistrement correspondant pour la table à correspondance "
-"obligatoire."
+msgstr "Aucun enregistrement correspondant à la table de correspondance obligatoire."
 
 #: components/WorkBench/WbValidation.tsx:383
 #. Used in: Components > Work Bench > Wb Validation
 #, fuzzy
 msgid "matchedMultipleErrorMessage"
 msgstr ""
-"Cette valeur correspond à deux enregistrements existants ou plus et la "
-"correspondance doit être levée avant le téléchargement."
+"Cette valeur correspond à deux enregistrements de base de données existants "
+"ou plus, et la correspondance doit être levée avant le téléchargement."
 
 #: components/WbActions/index.tsx:381
 #. Used in: Components > Wb Actions > Index
@@ -378,16 +375,16 @@ msgstr "La validation a détecté des erreurs dans l'ensemble de données."
 #. Used in: Components > Wb Utils > Dataset Variants
 #, fuzzy
 msgid "uploadSuccessful"
-msgstr "Téléchargement terminé avec succès"
+msgstr "Téléchargement réussi"
 
 #: components/WbUtils/datasetVariants.tsx:51
 #. Used in: Components > Wb Utils > Dataset Variants
 #, fuzzy
 msgid "uploadSuccessfulDescription"
 msgstr ""
-"Vos données ont été téléchargées dans la base de données. Pour voir le "
-"nombre de nouveaux enregistrements ajoutés à chaque table, cliquez sur « "
-"Résultats » dans la barre d'outils au-dessus de la grille de données."
+"Vos données ont été correctement chargées dans la base de données. Vous "
+"pouvez consulter ci-dessous le nombre de nouveaux enregistrements ajoutés à "
+"chaque table."
 
 #: components/WbUtils/datasetVariants.tsx:43
 #. Used in: Components > Wb Utils > Dataset Variants
@@ -400,8 +397,8 @@ msgstr "Échec du chargement en raison de cellules erronées"
 #, fuzzy
 msgid "uploadErrorsDescription"
 msgstr ""
-"Le téléchargement a échoué en raison d'une ou plusieurs erreurs de valeur "
-"de cellule."
+"Le chargement a échoué en raison d'une ou plusieurs erreurs de valeur de "
+"cellule."
 
 #: components/WbActions/index.tsx:414
 #. Used in: Components > Wb Actions > Index
@@ -445,7 +442,7 @@ msgstr ""
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Actions > Index
 #, fuzzy
 msgid "rollbackCanceled"
-msgstr "Restauration annulée"
+msgstr "Annulation de la restauration"
 
 #: components/AttachmentsBulkImport/Rollback.tsx:31
 #: components/WbActions/index.tsx:298
@@ -476,13 +473,13 @@ msgstr ""
 #. Used in: Components > Wb Toolkit > Coordinate Converter
 #, fuzzy
 msgid "coordinateConverter"
-msgstr "Format de géocoordonnées"
+msgstr "Format des géocoordonnées"
 
 #: components/WbToolkit/CoordinateConverter.tsx:243
 #. Used in: Components > Wb Toolkit > Coordinate Converter
 #, fuzzy
 msgid "coordinateConverterDescription"
-msgstr "Choisissez un format de géocoordonnée préféré"
+msgstr "Choisissez un format de géocoordonnées préféré"
 
 #: components/WorkBench/mapping.ts:82
 #. 🟥When empty string is used as a default value for a column, this is shown instead. Used in: Components > Work Bench > Mapping
@@ -494,7 +491,7 @@ msgstr "(chaîne vide)"
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "wbUploadedUnavailable"
-msgstr "L'ensemble de données doit être validé ou téléchargé"
+msgstr "L'ensemble de données doit être validé ou téléchargé."
 
 #: components/WbActions/WbValidate.tsx:56
 #: components/WbActions/WbValidate.tsx:78
@@ -513,7 +510,7 @@ msgstr ""
 #. Used in: Components > Wb Actions > Wb Upload ⬤ Components > Wb Actions > Wb Validate ⬤ Components > Wb Toolkit > Change Owner ⬤ Components > Wb Toolkit > Index
 #, fuzzy
 msgid "unavailableWhileEditing"
-msgstr "Cette action nécessite que toutes les modifications soient enregistrées"
+msgstr "Cette action nécessite que toutes les modifications soient enregistrées."
 
 #: components/WbActions/WbUpload.tsx:78
 #: components/WbActions/WbUpload.tsx:93
@@ -521,8 +518,8 @@ msgstr "Cette action nécessite que toutes les modifications soient enregistrée
 #, fuzzy
 msgid "uploadUnavailableWhileHasErrors"
 msgstr ""
-"L'importation n'est pas disponible alors que certaines cellules comportent "
-"des erreurs de validation"
+"Le chargement est indisponible car certaines cellules présentent des "
+"erreurs de validation."
 
 #: components/WbActions/WbValidate.tsx:54
 #: components/WbToolkit/CoordinateConverter.tsx:56
@@ -532,16 +529,14 @@ msgstr ""
 #, fuzzy
 msgid "unavailableWhileViewingResults"
 msgstr ""
-"Cette action n'est pas disponible lors de l'affichage des résultats du "
-"téléchargement"
+"Cette action est indisponible lors de la consultation des résultats de "
+"chargement."
 
 #: components/WbActions/index.tsx:123
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "unavailableWhileValidating"
-msgstr ""
-"Cette action n'est pas disponible lorsque la vérification des données est "
-"en cours"
+msgstr "Cette action est indisponible pendant la vérification des données."
 
 #: components/WbToolkit/CoordinateConverter.tsx:58
 #: components/WbToolkit/GeoLocate.tsx:55
@@ -549,7 +544,7 @@ msgstr ""
 #. Used in: Components > Wb Toolkit > Coordinate Converter ⬤ Components > Wb Toolkit > Geo Locate ⬤ Components > Wb Toolkit > Wb Leaflet Map
 #, fuzzy
 msgid "unavailableWithoutLocality"
-msgstr "Cet outil nécessite que les colonnes de localité soient mappées"
+msgstr "Cet outil nécessite le mappage des colonnes de localité"
 
 #: components/WbToolkit/CoordinateConverter.tsx:54
 #: components/WbToolkit/GeoLocate.tsx:51
@@ -580,7 +575,7 @@ msgstr "Télécharger les résultats"
 #. Used in: Components > Work Bench > Wb Spreadsheet
 #, fuzzy
 msgid "noUploadResultsAvailable"
-msgstr "Aucun résultat de téléchargement n'est disponible pour cette cellule"
+msgstr "Aucun résultat de chargement n'est disponible pour cette cellule."
 
 #: components/WorkBench/AdvancedSearch.tsx:116
 #. Used in: Components > Work Bench > Advanced Search
@@ -616,19 +611,19 @@ msgstr "Options de recherche"
 #. Used in: Components > Work Bench > Advanced Search
 #, fuzzy
 msgid "findEntireCellsOnly"
-msgstr "Rechercher uniquement des cellules entières"
+msgstr "Trouver uniquement les cellules entières"
 
 #: components/WorkBench/AdvancedSearch.tsx:151
 #. Used in: Components > Work Bench > Advanced Search
 #, fuzzy
 msgid "matchCase"
-msgstr "Cas de correspondance"
+msgstr "Étui de correspondance"
 
 #: components/WorkBench/AdvancedSearch.tsx:158
 #. Used in: Components > Work Bench > Advanced Search
 #, fuzzy
 msgid "useRegularExpression"
-msgstr "Utiliser une expression régulière"
+msgstr "Utilisez une expression régulière"
 
 #: components/WorkBench/AdvancedSearch.tsx:165
 #. Used in: Components > Work Bench > Advanced Search
@@ -646,25 +641,25 @@ msgstr "Options de remplacement"
 #. Used in: Components > Work Bench > Advanced Search
 #, fuzzy
 msgid "replaceMode"
-msgstr "Mode de remplacement"
+msgstr "Remplacer le mode"
 
 #: components/WorkBench/AdvancedSearch.tsx:185
 #. Used in: Components > Work Bench > Advanced Search
 #, fuzzy
 msgid "replaceAll"
-msgstr "Remplacer toutes les correspondances"
+msgstr "Remplacer toutes les allumettes"
 
 #: components/WorkBench/AdvancedSearch.tsx:186
 #. Used in: Components > Work Bench > Advanced Search
 #, fuzzy
 msgid "replaceNext"
-msgstr "Remplacer l'occurrence suivante"
+msgstr "Remplacer la prochaine occurrence"
 
 #: components/Router/Routes.tsx:215
 #. Used in: Components > Router > Routes
 #, fuzzy
 msgid "importDataSet"
-msgstr "Importer un ensemble de données"
+msgstr "Ensemble de données d'importation"
 
 #: components/WbImport/index.tsx:39
 #. Used in: Components > Wb Import > Index
@@ -676,13 +671,13 @@ msgstr "Importer un fichier pour créer un nouvel ensemble de données"
 #. Used in: Components > Molecules > File Picker
 #, fuzzy
 msgid "previewDataSet"
-msgstr "Aperçu de l'ensemble de données"
+msgstr "Aperçu du jeu de données"
 
 #: components/Molecules/FilePicker.tsx:313
 #. Used in: Components > Molecules > File Picker
 #, fuzzy
 msgid "errorImporting"
-msgstr "Les erreurs suivantes se sont produites lors de l'importation du fichier :"
+msgstr "Les erreurs suivantes se sont produites lors de l'importation du fichier :"
 
 #: components/WbImport/helpers.ts:108
 #: components/WbImport/helpers.ts:134
@@ -695,13 +690,13 @@ msgstr "Le fichier {fileName:string} est corrompu ou ne contient aucune donnée�
 #. Used in: Components > Molecules > Csv File Picker
 #, fuzzy
 msgid "characterEncoding"
-msgstr "Encodage des caractères :"
+msgstr "Encodage des caractères :"
 
 #: components/Molecules/CsvFilePicker.tsx:198
 #. Used in: Components > Molecules > Csv File Picker
 #, fuzzy
 msgid "delimiter"
-msgstr "Délimiteur :"
+msgstr "Délimiteur :"
 
 #: components/Molecules/CsvFilePicker.tsx:172
 #: components/Preferences/UserDefinitions.tsx:1875
@@ -762,14 +757,14 @@ msgstr "Nom du nouveau jeu de données :"
 #. Used in: Components > Molecules > File Picker
 #, fuzzy
 msgid "firstRowIsHeader"
-msgstr "La première ligne est l'en-tête :"
+msgstr "La première ligne est l'en-tête :"
 
 #: components/Molecules/FilePicker.tsx:225
 #: components/Toolbar/WbsDialog.tsx:198
 #. Used in: Components > Molecules > File Picker ⬤ Components > Toolbar > Wbs Dialog
 #, fuzzy
 msgid "importFile"
-msgstr "Importer un fichier"
+msgstr "Fichier d'importation"
 
 #: components/WbImport/helpers.ts:67
 #. Used in: Components > Wb Import > Helpers
@@ -789,7 +784,7 @@ msgstr "Nouvel ensemble de données {date}"
 #. Used in: Components > Wb Utils > Dataset Variants
 #, fuzzy
 msgid "dataSets"
-msgstr "{variant:string} ensemble de données"
+msgstr "{variant:string} Ensembles de données"
 
 #: components/WbUtils/datasetVariants.tsx:34
 #: components/WbUtils/datasetVariants.tsx:108
@@ -803,8 +798,8 @@ msgstr "Il n'existe actuellement aucun ensemble de données."
 #, fuzzy
 msgid "createDataSetInstructions"
 msgstr ""
-"Utilisez « Importer un fichier » ou « Créer un nouveau » pour en créer un "
-"nouveau."
+"Utilisez « Importer un fichier » ou « Créer un nouveau fichier » pour en "
+"créer un nouveau."
 
 #: components/Toolbar/WbsDialog.tsx:209
 #. Used in: Components > Toolbar > Wbs Dialog
@@ -831,7 +826,7 @@ msgstr "Nom de l'ensemble de données"
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "numberOfRows"
-msgstr "Nombre de rangées"
+msgstr "Nombre de lignes"
 
 #: components/WorkBench/DataSetMeta.tsx:247
 #. Used in: Components > Work Bench > Data Set Meta
@@ -855,20 +850,20 @@ msgstr "(pas de nom de fichier)"
 #. Used in: Components > Wb Toolkit > Change Owner
 #, fuzzy
 msgid "changeDataSetOwner"
-msgstr "Modifier le propriétaire de l'ensemble de données"
+msgstr "Modifier le propriétaire du jeu de données"
 
 #: components/WbToolkit/ChangeOwner.tsx:110
 #. Used in: Components > Wb Toolkit > Change Owner
 #, fuzzy
 msgid "changeDataSetOwnerDescription"
-msgstr "Sélectionnez un nouveau propriétaire :"
+msgstr "Sélectionner le nouveau propriétaire :"
 
 #: components/WbToolkit/ChangeOwner.tsx:78
 #: components/WbToolkit/ChangeOwner.tsx:81
 #. Used in: Components > Wb Toolkit > Change Owner
 #, fuzzy
 msgid "dataSetOwnerChanged"
-msgstr "Le propriétaire de l'ensemble de données a changé"
+msgstr "Le propriétaire de l'ensemble de données a changé."
 
 #: components/WorkBench/DataSetMeta.tsx:380
 #. Used in: Components > Work Bench > Data Set Meta
@@ -898,13 +893,13 @@ msgstr "État de restauration de l'ensemble de données"
 #. Used in: Components > Wb Utils > Dataset Variants
 #, fuzzy
 msgid "wbStatusUpload"
-msgstr "Statut de téléchargement de l'ensemble de données"
+msgstr "État du chargement de l'ensemble de données"
 
 #: components/WorkBench/Status.tsx:69
 #. Used in: Components > Work Bench > Status
 #, fuzzy
 msgid "wbStatusValidation"
-msgstr "Statut de validation de l'ensemble de données"
+msgstr "État de validation de l'ensemble de données"
 
 #: components/AttachmentsBulkImport/ActionState.tsx:38
 #: components/AttachmentsBulkImport/ActionState.tsx:39
@@ -959,7 +954,7 @@ msgstr ""
 #. Used in: Components > Attachments Bulk Import > Action State ⬤ Components > Work Bench > Status
 #, fuzzy
 msgid "stop"
-msgstr "Arrêter"
+msgstr "Arrêt"
 
 #: components/WorkBench/Status.tsx:137
 #. Used in: Components > Work Bench > Status
@@ -1025,7 +1020,7 @@ msgstr "Enregistrements concernés"
 #. Used in: Components > Work Bench > Results
 #, fuzzy
 msgid "potentialAffectedResults"
-msgstr "Des enregistrements ont été affectés"
+msgstr "Des enregistrements potentiels ont été affectés."
 
 #: components/WorkBench/Results.tsx:59
 #. Used in: Components > Work Bench > Results
@@ -1045,7 +1040,7 @@ msgstr "Nombre de nouveaux enregistrements qui seraient affectés dans chaque ta
 #. Used in: Components > Wb Actions > Wb Upload ⬤ Components > Wb Actions > Index ⬤ Components > Work Bench > Results
 #, fuzzy
 msgid "recordsCreated"
-msgstr "Nouveaux enregistrements"
+msgstr "Nouveaux records"
 
 #: components/WbActions/WbUpload.tsx:171
 #: components/WbActions/index.tsx:265
@@ -1053,7 +1048,7 @@ msgstr "Nouveaux enregistrements"
 #. Used in: Components > Wb Actions > Wb Upload ⬤ Components > Wb Actions > Index ⬤ Components > Work Bench > Results
 #, fuzzy
 msgid "recordsUpdated"
-msgstr "Enregistrements mis-à-jour"
+msgstr "Archives mises à jour"
 
 #: components/WbActions/WbUpload.tsx:173
 #: components/WbActions/index.tsx:267
@@ -1061,7 +1056,7 @@ msgstr "Enregistrements mis-à-jour"
 #. Used in: Components > Wb Actions > Wb Upload ⬤ Components > Wb Actions > Index ⬤ Components > Work Bench > Results
 #, fuzzy
 msgid "recordsDeleted"
-msgstr "Enregistrements supprimés (à l'exclusion des enregistrements dépendants)"
+msgstr "Enregistrements supprimés (à l'exclusion des personnes à charge)"
 
 #: components/WbActions/WbUpload.tsx:174
 #: components/WbActions/index.tsx:268

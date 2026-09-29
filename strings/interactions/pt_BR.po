@@ -118,7 +118,7 @@ msgstr "Preparativos"
 #. Used in: Components > Form Commands > Index
 #, fuzzy
 msgid "preparationsCanNotBeReturned"
-msgstr "Neste contexto, as preparações não podem ser devolvidas."
+msgstr "Neste contexto, os produtos não podem ser devolvidos."
 
 #: components/Interactions/LoanReturn.tsx:75
 #. Used in: Components > Interactions > Loan Return
