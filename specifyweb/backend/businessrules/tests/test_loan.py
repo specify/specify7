@@ -141,3 +141,31 @@ class LoanTests(ApiTests):
             fetched.role,
             'Loan agent',
         )
+
+    def test_create_new_agent_for_loan(self):
+        loan = models.Loan.objects.create(
+            loannumber='LOAN-NEWAGENT-001',
+            discipline=self.discipline,
+        )
+
+        agent = models.Agent.objects.create(
+            agenttype=0,
+            division=self.division,
+        )
+
+        loan_agent = loan.loanagents.create(
+            agent=agent,
+            role='Loan agent',
+            discipline=self.discipline,
+        )
+
+        fetched = models.Loanagent.objects.get(id=loan_agent.id)
+
+        self.assertEqual(
+            fetched.agent_id,
+            agent.id,
+        )
+        self.assertEqual(
+            fetched.agent.agenttype,
+            0,
+        )
