@@ -1,44 +1,24 @@
 from specifyweb.specify import models
 from specifyweb.specify.tests.test_api import ApiTests
-from specifyweb.specify.api.crud import create_obj, delete_resource, get_collection, get_resource, post_resource, update_obj
+from specifyweb.specify.api.crud import post_resource
 
 
 class BatchImageTests(ApiTests):
     def setUp(self):
         super().setUp()
+        
+        self.attachments = [  
+         models.Attachment.objects.create(
+            attachmentlocation='0123.png',
+                origfilename='0123.png',
+                title='0123.png',
+                mimetype='image/png',
+                tableid=model.Attachment.specify_model.tableId,
+        )
+    ]
 
-        self.attachments = [
-            models.Attachment.objects.create(
-                origfilename='test.txt',
-                tableid=1,
-            )
-        ]
-        self.datasetattachment = [
-             models.Spdatasetattachment.objects.create(
-                  collectionmemberid=0,
-                  ordinal=0,
-                  attachment= attachment,
-                  spdataset=spdataset,
+    def test_match_collectionobject_catnumber(self):
+        attachment = self.attachments[0]
 
-
-
-             )
-        ]
-
-    def test_validate_attachment(self):
-            attachment = post_resource(
-                self.collection,
-                self.agent,
-                'attachment',
-                {'origfilename': 'new.txt', 'tableid': 1},
-            )
-    
-            self.assertIsNotNone(attachment.id)
-            self.assertExists(
-                models.Attachment.objects.filter(
-                    id=attachment.id,
-                    origfilename='new.txt',
-                )
-            )
-    
-            attachment.delete()
+        
+        self.assertEquals()
