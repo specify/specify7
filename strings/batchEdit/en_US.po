@@ -2,12 +2,26 @@ msgid ""
 msgstr "Content-Type: text/plain\n"
 
 #: components/BatchEdit/index.tsx:221
+#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:107
+#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:116
+#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:124
+#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:131
+#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:140
+#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:149
+#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:158
+#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:195
+#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:222
+#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:238
+#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:247
+#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:260
+#: components/BatchEdit/__tests__/MissingRanks.test.tsx:110
+#: components/BatchEdit/__tests__/MissingRanks.test.tsx:143
 #: components/Header/menuItemDefinitions.ts:117
 #: components/Preferences/UserDefinitions.tsx:2355
 #: components/Router/OverlayRoutes.tsx:272
 #: components/WbUtils/datasetVariants.tsx:88
 #: components/WbUtils/datasetVariants.tsx:104
-#. Used in: Components > Batch Edit > Index ⬤ Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Wb Utils > Dataset Variants
+#. Used in: Components > Batch Edit > Index ⬤ Batch Edit > __tests__ > Batch Edit From Query ⬤ Batch Edit > __tests__ > Missing Ranks ⬤ Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Wb Utils > Dataset Variants
 msgid "batchEdit"
 msgstr "Batch Edit"
 
@@ -35,7 +49,8 @@ msgid "addTreeRank"
 msgstr "The following ranks will be added to the query to enable batch editing"
 
 #: components/BatchEdit/MissingRanks.tsx:89
-#. Used in: Components > Batch Edit > Missing Ranks
+#: components/BatchEdit/__tests__/MissingRanks.test.tsx:145
+#. Used in: Components > Batch Edit > Missing Ranks ⬤ Batch Edit > __tests__ > Missing Ranks
 msgid "pickTreesToFilter"
 msgstr ""
 "The selected rank(s) are found in multiple trees. Pick tree(s) to batch "
@@ -52,7 +67,8 @@ msgid "errorInQuery"
 msgstr "Following errors were found in the query"
 
 #: components/BatchEdit/MissingRanks.tsx:48
-#. Used in: Components > Batch Edit > Missing Ranks
+#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:224
+#. Used in: Components > Batch Edit > Missing Ranks ⬤ Batch Edit > __tests__ > Batch Edit From Query
 msgid "missingRanksInQuery"
 msgstr "Query requires additional ranks for batch editing"
 
@@ -176,12 +192,16 @@ msgstr ""
 "the record is empty or not. Default value is {default: boolean}"
 
 #: components/BatchEdit/index.tsx:215
-#. Used in: Components > Batch Edit > Index
+#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:118
+#. Used in: Components > Batch Edit > Index ⬤ Batch Edit > __tests__ > Batch Edit From Query
 msgid "batchEditDisabled"
 msgstr "Batch Edit is disabled for system tables and scoping hierarchy tables"
 
 #: components/WorkBench/DataSetMeta.tsx:388
-#. Used in: Components > Work Bench > Data Set Meta
+#: components/WorkBench/__tests__/DataSetMeta.test.tsx:50
+#: components/WorkBench/__tests__/DataSetMeta.test.tsx:59
+#: components/WorkBench/__tests__/DataSetMeta.test.tsx:69
+#. Used in: Components > Work Bench > Data Set Meta ⬤ Work Bench > __tests__ > Data Set Meta
 msgid "cannotEditAfterRollback"
 msgstr "(Batch Edit datasets cannot be edited after rollback - Read Only)"
 

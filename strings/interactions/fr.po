@@ -238,10 +238,12 @@ msgid "noPreparationsWarning"
 msgstr "Aucun de ces enregistrements n'a de préparation. Souhaitez-vous continuer ?"
 
 #: components/BatchEdit/MissingRanks.tsx:44
+#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:250
+#: components/BatchEdit/__tests__/MissingRanks.test.tsx:117
 #: components/FormSliders/AttachmentWarningDeletion.tsx:53
 #: components/Interactions/InteractionDialog.tsx:480
 #: components/TreeView/AddRank.tsx:62
-#. Used in: Components > Batch Edit > Missing Ranks ⬤ Components > Form Sliders > Attachment Warning Deletion ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Tree View > Add Rank
+#. Used in: Components > Batch Edit > Missing Ranks ⬤ Batch Edit > __tests__ > Batch Edit From Query ⬤ Batch Edit > __tests__ > Missing Ranks ⬤ Components > Form Sliders > Attachment Warning Deletion ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Tree View > Add Rank
 msgid "continue"
 msgstr "Continuer"
 

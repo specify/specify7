@@ -719,7 +719,9 @@ msgid "formatInputAs"
 msgstr "Format kao: {commaSeparatedFormats:string}"
 
 #: components/BatchEdit/index.tsx:241
-#. Used in: Components > Batch Edit > Index
+#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:142
+#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:151
+#. Used in: Components > Batch Edit > Index ⬤ Batch Edit > __tests__ > Batch Edit From Query
 #, fuzzy
 msgid "unsavedChangesInQuery"
 msgstr "Upit ima nespremljene promjene"
