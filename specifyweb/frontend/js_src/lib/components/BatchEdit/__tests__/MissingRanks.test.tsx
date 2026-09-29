@@ -140,7 +140,9 @@ describe('picking trees in the missing rank dialog', () => {
   test('offers a checkbox for each tree the rank is in', async () => {
     const { getByRole, findByRole, user } = renderGenusQuery();
     await withoutActWarnings(async () => {
-      await user.click(getByRole('button', { name: batchEditText.batchEdit() }));
+      await user.click(
+        getByRole('button', { name: batchEditText.batchEdit() })
+      );
       const dialog = await findByRole('dialog');
       expect(dialog).toHaveTextContent(batchEditText.pickTreesToFilter());
       expect(
