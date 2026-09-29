@@ -420,6 +420,7 @@ export function AutoComplete<T>({
         autoComplete="off"
         onChange={({ target }): void => {
           const value = (target as HTMLInputElement).value;
+          ++requestId.current;
           handleRefreshItems(source, value);
           setPendingValue(value);
           if (typeof pendingValueRef === 'object')
