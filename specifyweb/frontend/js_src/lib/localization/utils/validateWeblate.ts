@@ -172,20 +172,18 @@ async function createComponent(
   warn(`Creating a component for "${name}"`);
   const { addons, ...settings } =
     localizationKinds[kind].getComponentSettings(name);
-  fetch(componentsApiUrl, {
+  const response = await fetch(componentsApiUrl, {
     headers: {
       Authorization: getToken(),
       'Content-Type': 'application/json',
     },
     method: 'POST',
     body: JSON.stringify(settings),
-  })
-    .then(async (response) =>
-      response.status === Http.CREATED
-        ? f.void()
-        : Promise.reject(await response.text())
-    )
-    .then(console.log);
+  });
+  if (response.status === Http.CREATED) return;
+  error(
+    `Failed to create a Weblate component for "${name}": ${await response.text()}`
+  );
 }
 
 /**
