@@ -1,6 +1,80 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
+#: components/SchemaConfig/Layout.tsx:154
+#: components/SchemaConfig/Layout.tsx:179
+#. Used in: Components > Schema Config > Layout
+msgid "importSchema"
+msgstr "Import {schemaConfig:string}"
+
+#: components/SchemaConfig/Layout.tsx:160
+#. Used in: Components > Schema Config > Layout
+msgid "importSchemaWarning"
+msgstr ""
+"Importing a {schemaConfig:string} will overwrite the current one. This "
+"action cannot be undone."
+
+#: components/SchemaConfig/Layout.tsx:164
+#. Used in: Components > Schema Config > Layout
+msgid "importSchemaLanguageWarning"
+msgstr ""
+"The exported schema language must match the language currently being "
+"configured."
+
+#: components/SchemaConfig/Layout.tsx:167
+#. Used in: Components > Schema Config > Layout
+msgid "importSchemaBackupPrompt"
+msgstr ""
+"We strongly recommend downloading a backup of the current "
+"{schemaConfig:string} before importing."
+
+#: components/SchemaConfig/Layout.tsx:165
+#. Used in: Components > Schema Config > Layout
+msgid "importSchemaLimitations"
+msgstr ""
+"This import will not assign pick lists, field formats, or web links unless "
+"they already exist."
+
+#: components/SchemaConfig/Layout.tsx:142
+#. Used in: Components > Schema Config > Layout
+msgid "downloadSchemaBackup"
+msgstr "Export {schemaConfig:string}"
+
+#: components/SchemaConfig/Layout.tsx:149
+#. Used in: Components > Schema Config > Layout
+msgid "importSchemaContinue"
+msgstr "Continue Import"
+
+#: components/SchemaConfig/Layout.tsx:185
+#. Used in: Components > Schema Config > Layout
+msgid "importSchemaError"
+msgstr ""
+"The {schemaConfig:string} export is invalid or was exported for a different "
+"language and cannot be imported."
+
+#: components/SchemaConfig/Layout.tsx:197
+#: components/SchemaConfig/Layout.tsx:217
+#. Used in: Components > Schema Config > Layout
+msgid "importSchemaSuccess"
+msgstr "{schemaConfig:string} imported successfully"
+
+#: components/SchemaConfig/Layout.tsx:203
+#. Used in: Components > Schema Config > Layout
+msgid "importSchemaSuccessDescription"
+msgstr "The imported {schemaConfig:string} has been saved."
+
+#: components/SchemaConfig/Layout.tsx:222
+#. Used in: Components > Schema Config > Layout
+msgid "importSchemaRefreshError"
+msgstr ""
+"The import succeeded, but the page could not refresh automatically. Reload "
+"the page to see the imported changes."
+
+#: components/SchemaConfig/Layout.tsx:213
+#. Used in: Components > Schema Config > Layout
+msgid "reloadSchemaConfig"
+msgstr "Reload Page"
+
 #: components/SchemaConfig/Table.tsx:51
 #: components/SchemaViewer/schemaToTsv.tsx:14
 #: components/Security/PreviewTables.tsx:69
@@ -34,14 +108,23 @@ msgstr "Without Table"
 #: components/Header/userToolDefinitions.ts:69
 #: components/Preferences/UserDefinitions.tsx:828
 #: components/Router/Routes.tsx:409
-#: components/SchemaConfig/Components.tsx:31
+#: components/SchemaConfig/Components.tsx:36
 #: components/SchemaConfig/Languages.tsx:36
+#: components/SchemaConfig/Layout.tsx:143
+#: components/SchemaConfig/Layout.tsx:155
+#: components/SchemaConfig/Layout.tsx:161
+#: components/SchemaConfig/Layout.tsx:168
+#: components/SchemaConfig/Layout.tsx:180
+#: components/SchemaConfig/Layout.tsx:186
+#: components/SchemaConfig/Layout.tsx:198
+#: components/SchemaConfig/Layout.tsx:204
+#: components/SchemaConfig/Layout.tsx:218
 #: components/Security/registry.ts:206
-#. Used in: Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Languages ⬤ Components > Security > Registry
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Languages ⬤ Components > Schema Config > Layout ⬤ Components > Security > Registry
 msgid "schemaConfig"
 msgstr "Schema Config"
 
-#: components/SchemaConfig/Layout.tsx:57
+#: components/SchemaConfig/Layout.tsx:69
 #. Used in: Components > Schema Config > Layout
 msgid "unsavedSchemaUnloadProtect"
 msgstr "Schema changes have not been saved"

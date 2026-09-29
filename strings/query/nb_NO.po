@@ -146,7 +146,7 @@ msgstr "Det vises et varsel når eksportfilen er fullført og klar for nedlastin
 
 #: components/PickLists/index.tsx:188
 #: components/QueryBuilder/Formatter.tsx:220
-#: components/SchemaConfig/Components.tsx:94
+#: components/SchemaConfig/Components.tsx:122
 #. 🟥Used when selected pick list value is not one of allowed values. Used in: Components > Pick Lists > Index ⬤ Components > Query Builder > Formatter ⬤ Components > Schema Config > Components
 msgid "invalidPicklistValue"
 msgstr "{value:string} (gjeldende, ugyldig verdi)"

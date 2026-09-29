@@ -12,6 +12,68 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 2026.10.dev0\n"
 
+#: components/SchemaConfig/Layout.tsx:154
+#: components/SchemaConfig/Layout.tsx:179
+#. Used in: Components > Schema Config > Layout
+msgid "importSchema"
+msgstr ""
+
+#: components/SchemaConfig/Layout.tsx:160
+#. Used in: Components > Schema Config > Layout
+msgid "importSchemaWarning"
+msgstr ""
+
+#: components/SchemaConfig/Layout.tsx:164
+#. Used in: Components > Schema Config > Layout
+msgid "importSchemaLanguageWarning"
+msgstr ""
+
+#: components/SchemaConfig/Layout.tsx:167
+#. Used in: Components > Schema Config > Layout
+msgid "importSchemaBackupPrompt"
+msgstr ""
+
+#: components/SchemaConfig/Layout.tsx:165
+#. Used in: Components > Schema Config > Layout
+msgid "importSchemaLimitations"
+msgstr ""
+
+#: components/SchemaConfig/Layout.tsx:142
+#. Used in: Components > Schema Config > Layout
+msgid "downloadSchemaBackup"
+msgstr ""
+
+#: components/SchemaConfig/Layout.tsx:149
+#. Used in: Components > Schema Config > Layout
+msgid "importSchemaContinue"
+msgstr ""
+
+#: components/SchemaConfig/Layout.tsx:185
+#. Used in: Components > Schema Config > Layout
+msgid "importSchemaError"
+msgstr ""
+
+#: components/SchemaConfig/Layout.tsx:197
+#: components/SchemaConfig/Layout.tsx:217
+#. Used in: Components > Schema Config > Layout
+msgid "importSchemaSuccess"
+msgstr ""
+
+#: components/SchemaConfig/Layout.tsx:203
+#. Used in: Components > Schema Config > Layout
+msgid "importSchemaSuccessDescription"
+msgstr ""
+
+#: components/SchemaConfig/Layout.tsx:222
+#. Used in: Components > Schema Config > Layout
+msgid "importSchemaRefreshError"
+msgstr ""
+
+#: components/SchemaConfig/Layout.tsx:213
+#. Used in: Components > Schema Config > Layout
+msgid "reloadSchemaConfig"
+msgstr ""
+
 #: components/SchemaConfig/Table.tsx:51
 #: components/SchemaViewer/schemaToTsv.tsx:14
 #: components/Security/PreviewTables.tsx:69
@@ -45,14 +107,23 @@ msgstr "Ohne Tisch"
 #: components/Header/userToolDefinitions.ts:69
 #: components/Preferences/UserDefinitions.tsx:828
 #: components/Router/Routes.tsx:409
-#: components/SchemaConfig/Components.tsx:31
+#: components/SchemaConfig/Components.tsx:36
 #: components/SchemaConfig/Languages.tsx:36
+#: components/SchemaConfig/Layout.tsx:143
+#: components/SchemaConfig/Layout.tsx:155
+#: components/SchemaConfig/Layout.tsx:161
+#: components/SchemaConfig/Layout.tsx:168
+#: components/SchemaConfig/Layout.tsx:180
+#: components/SchemaConfig/Layout.tsx:186
+#: components/SchemaConfig/Layout.tsx:198
+#: components/SchemaConfig/Layout.tsx:204
+#: components/SchemaConfig/Layout.tsx:218
 #: components/Security/registry.ts:206
-#. Used in: Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Languages ⬤ Components > Security > Registry
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Languages ⬤ Components > Schema Config > Layout ⬤ Components > Security > Registry
 msgid "schemaConfig"
 msgstr "Schema konfigurieren"
 
-#: components/SchemaConfig/Layout.tsx:57
+#: components/SchemaConfig/Layout.tsx:69
 #. Used in: Components > Schema Config > Layout
 msgid "unsavedSchemaUnloadProtect"
 msgstr "Schema Änderungen wurden nicht gespeichert"
