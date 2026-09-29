@@ -233,6 +233,7 @@ export type FieldSearchResult = {
   readonly label: string;
   readonly isHidden: boolean;
   readonly joinCount: number;
+  readonly tableName: keyof Tables;
 };
 
 const fieldSearchDepthLimit = 6;
@@ -318,6 +319,7 @@ export function searchFields({
         ].join(' → '),
         isHidden,
         joinCount: current.joinCount,
+        tableName: current.table.name,
       });
     });
 
@@ -389,6 +391,7 @@ export function searchFields({
             ].join(' → '),
             isHidden: current.isHidden || relationship.overrides.isHidden,
             joinCount: current.joinCount + 1,
+            tableName: relationship.relatedTable.name,
           });
         queue.push({
           table: relationship.relatedTable,

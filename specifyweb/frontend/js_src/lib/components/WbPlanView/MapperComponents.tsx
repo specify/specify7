@@ -172,6 +172,7 @@ export function MappingView({
     null
   );
   const [search, setSearch] = React.useState('');
+  const [visibleResultCount, setVisibleResultCount] = React.useState(10);
   const searchResults = React.useMemo(
     () =>
       baseTableName === undefined
@@ -181,9 +182,12 @@ export function MappingView({
             search,
             showHiddenFields,
             spec: navigatorSpecs.wbPlanView,
-          }).slice(0, 50),
+          }),
     [baseTableName, search, showHiddenFields]
   );
+  React.useEffect(() => {
+    setVisibleResultCount(10);
+  }, [baseTableName, search, showHiddenFields]);
   React.useEffect(() => {
     if (globalThis.ResizeObserver === undefined || mappingView === null)
       return undefined;
@@ -216,13 +220,23 @@ export function MappingView({
             aria-label={commonText.search()}
             className="absolute left-0 top-full z-20 max-h-48 w-full overflow-y-auto border border-gray-500 bg-white dark:bg-neutral-600"
             role="listbox"
+            onScroll={(event): void => {
+              const element = event.currentTarget;
+              if (
+                element.scrollTop + element.clientHeight >=
+                element.scrollHeight - 8
+              )
+                setVisibleResultCount((count) =>
+                  Math.min(count + 10, searchResults.length)
+                );
+            }}
           >
             {searchResults.length === 0 ? (
               <div className="p-2">{commonText.noResults()}</div>
             ) : (
-              searchResults.map((result) => (
+              searchResults.slice(0, visibleResultCount).map((result) => (
                 <button
-                  className="block w-full p-2 text-left hover:bg-gray-200 dark:hover:bg-neutral-700"
+                  className="flex w-full items-center gap-2 p-2 text-left hover:bg-gray-200 dark:hover:bg-neutral-700"
                   key={result.mappingPath.join('.')}
                   type="button"
                   onClick={(): void => {
@@ -230,6 +244,7 @@ export function MappingView({
                     setSearch('');
                   }}
                 >
+                  <TableIcon label={false} name={result.tableName} />
                   {result.label}
                 </button>
               ))
