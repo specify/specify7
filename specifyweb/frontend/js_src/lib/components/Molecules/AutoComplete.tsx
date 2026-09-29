@@ -196,7 +196,9 @@ export function AutoComplete<T>({
           if (currentRequestId === requestId.current) updateItems(items, value);
         })
         .catch(softFail)
-        .finally(handleLoaded);
+        .finally(() => {
+          if (currentRequestId === requestId.current) handleLoaded();
+        });
     }, delay),
     []
   );
