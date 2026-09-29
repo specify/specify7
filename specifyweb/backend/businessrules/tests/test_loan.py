@@ -388,3 +388,52 @@ class LoanTests(ApiTests):
         self.assertEqual(fetched_loan.integer3, 3)
         self.assertTrue(fetched_loan.yesno1)
         self.assertFalse(fetched_loan.yesno2)
+
+    def test_save_newly_created_loan(self):
+        self._create_prep_type()
+
+        loan = models.Loan.objects.create(
+            loannumber='LOAN-SAVE-001',
+            discipline=self.discipline,
+            loandate=timezone.now(),
+            status='Active',
+        )
+
+        agent = models.Agent.objects.create(
+            agenttype=0,
+            division=self.division,
+        )
+        loan.loanagents.create(
+            agent=agent,
+            role='Loan agent',
+            discipline=self.discipline,
+        )
+
+        loan.loanpreparations.create(
+            discipline=self.discipline,
+            preparation=self._create_prep(self.collectionobjects[0], None),
+        )
+
+        loan.shipments.create(
+            shipmentnumber='SHIPMENT-SAVE-001',
+            discipline=self.discipline,
+        )
+
+        fetched_loan = models.Loan.objects.get(id=loan.id)
+
+        self.assertEqual(
+            fetched_loan.loannumber,
+            'LOAN-SAVE-001',
+        )
+        self.assertEqual(
+            fetched_loan.loanagents.count(),
+            1,
+        )
+        self.assertEqual(
+            fetched_loan.loanpreparations.count(),
+            1,
+        )
+        self.assertEqual(
+            fetched_loan.shipments.count(),
+            1,
+        )
