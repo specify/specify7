@@ -215,14 +215,9 @@ export type SortConfigs = {
     | 'relationshipCount'
     | 'tableId';
   readonly attachmentImport:
-    | 'fileSize'
-    | 'matchedId'
-    | 'selectedFileName'
-    | 'status';
+    'fileSize' | 'matchedId' | 'selectedFileName' | 'status';
   readonly attachmentDatasets:
-    | 'name'
-    | 'timestampCreated'
-    | 'timestampModified';
+    'name' | 'timestampCreated' | 'timestampModified';
   readonly listOfBatchEditDataSets: 'dateCreated' | 'dateUploaded' | 'name';
 };
 
@@ -234,13 +229,7 @@ interface CacheValueDict extends IR<CacheValue> {}
 interface CacheValues extends RA<CacheValue> {}
 
 type CacheValue =
-  | CacheValueDict
-  | CacheValues
-  | boolean
-  | number
-  | string
-  | null
-  | undefined;
+  CacheValueDict | CacheValues | boolean | number | string | null | undefined;
 
 /**
  * This will trigger a TypeScript type error if any cache definition

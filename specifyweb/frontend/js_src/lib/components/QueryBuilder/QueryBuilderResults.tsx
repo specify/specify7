@@ -48,8 +48,7 @@ export function QueryBuilderResults({
   readonly isReadOnly: boolean;
   readonly saveRequired: boolean;
   readonly getQueryFieldRecords:
-    | (() => RA<SerializedResource<SpQueryField>>)
-    | undefined;
+    (() => RA<SerializedResource<SpQueryField>>) | undefined;
   readonly selectedRows: ReadonlySet<number>;
   readonly setSelectedRows: React.Dispatch<
     React.SetStateAction<ReadonlySet<number>>

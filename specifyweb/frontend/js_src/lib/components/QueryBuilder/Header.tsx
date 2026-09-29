@@ -60,8 +60,7 @@ export function QueryHeader({
   readonly state: MainState;
   readonly isEmbedded: boolean;
   readonly getQueryFieldRecords:
-    | (() => RA<SerializedResource<SpQueryField>>)
-    | undefined;
+    (() => RA<SerializedResource<SpQueryField>>) | undefined;
   readonly saveRequired: boolean;
   readonly unsetUnloadProtect: () => void;
   readonly onTriedToSave: () => void;
