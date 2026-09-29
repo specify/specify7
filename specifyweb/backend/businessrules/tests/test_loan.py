@@ -227,3 +227,27 @@ class LoanTests(ApiTests):
             fetched.shippedby,
             self.agent,
         )
+
+    def test_create_new_shipped_by_agent_for_shipment(self):
+        loan = models.Loan.objects.create(
+            loannumber='LOAN-NEWSHIPPEDBY-001',
+            discipline=self.discipline,
+        )
+
+        agent = models.Agent.objects.create(
+            agenttype=0,
+            division=self.division,
+        )
+
+        shipment = loan.shipments.create(
+            shipmentnumber='SHIPMENT-NEWSHIPPEDBY-001',
+            discipline=self.discipline,
+            shippedby=agent,
+        )
+
+        fetched = models.Shipment.objects.get(id=shipment.id)
+
+        self.assertEqual(
+            fetched.shippedby_id,
+            agent.id,
+        )
