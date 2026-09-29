@@ -60,6 +60,7 @@ export const getInitialState = ({
 });
 
 type Actions =
+  | Action<'SetMappingViewAction', { readonly mappingPath: MappingPath }>
   | Action<
       'ChangeFieldAction',
       { readonly line: number; readonly field: QueryField }
@@ -91,6 +92,10 @@ type Actions =
   | Action<'SavedQueryAction'>;
 
 export const reducer = generateReducer<MainState, Actions>({
+  SetMappingViewAction: ({ state, action }) => ({
+    ...state,
+    mappingView: action.mappingPath,
+  }),
   ResetStateAction: ({ action: { state } }) => ({
     ...state,
     openedElement: {

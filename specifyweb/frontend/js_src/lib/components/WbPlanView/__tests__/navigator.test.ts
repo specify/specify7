@@ -1,10 +1,48 @@
 import { requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
 import { localized } from '../../../utils/types';
-import { getMappingLineData } from '../navigator';
+import { getMappingLineData, searchFields } from '../navigator';
 import { navigatorSpecs } from '../navigatorSpecs';
 
 requireContext();
+
+test('searchFields returns matching downstream fields in join order', () => {
+  const results = searchFields({
+    baseTableName: 'CollectionObject',
+    search: 'taxon',
+    spec: navigatorSpecs.wbPlanView,
+  });
+  expect(results.length).toBeGreaterThan(0);
+  expect(results.every(({ mappingPath }) => mappingPath.at(-1))).toBe(true);
+  const joinCounts = results.map(({ joinCount }) => joinCount);
+  expect(joinCounts).toEqual([...joinCounts].sort((a, b) => a - b));
+});
+
+test('searchFields matches relationship names and returns complete paths', () => {
+  const results = searchFields({
+    baseTableName: 'CollectionObject',
+    search: 'determination',
+    spec: navigatorSpecs.wbPlanView,
+  });
+
+  expect(results).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        mappingPath: expect.arrayContaining(['determinations']),
+      }),
+    ])
+  );
+});
+
+test('searchFields returns no results for empty input', () => {
+  expect(
+    searchFields({
+      baseTableName: 'CollectionObject',
+      search: '  ',
+      spec: navigatorSpecs.wbPlanView,
+    })
+  ).toEqual([]);
+});
 
 // TEST: break this test into smaller tests
 theories(getMappingLineData, [

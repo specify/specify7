@@ -228,6 +228,188 @@ export type MappingLineData = Pick<
   readonly defaultValue: string;
 };
 
+export type FieldSearchResult = {
+  readonly mappingPath: MappingPath;
+  readonly label: string;
+  readonly isHidden: boolean;
+  readonly joinCount: number;
+};
+
+const fieldSearchDepthLimit = 6;
+const fieldSearchResultLimit = 500;
+
+const fieldSearchLabel = (value: unknown): string => `${value}`;
+
+/** Find selectable fields in downstream relationships in join order. */
+export function searchFields({
+  baseTableName,
+  search,
+  showHiddenFields = false,
+  spec,
+}: {
+  readonly baseTableName: keyof Tables;
+  readonly search: string;
+  readonly showHiddenFields?: boolean;
+  readonly spec: NavigatorSpec;
+}): RA<FieldSearchResult> {
+  const normalizedSearch = search.trim().toLocaleLowerCase();
+  if (normalizedSearch.length === 0) return [];
+
+  type QueueItem = {
+    readonly table: SpecifyTable;
+    readonly mappingPath: MappingPath;
+    readonly tablePath: readonly string[];
+    readonly relationshipLabels: readonly string[];
+    readonly relationshipNames: readonly string[];
+    readonly isHidden: boolean;
+    readonly joinCount: number;
+  };
+
+  const queue: QueueItem[] = [
+    {
+      table: strictGetTable(baseTableName),
+      mappingPath: [],
+      tablePath: [baseTableName],
+      relationshipLabels: [],
+      relationshipNames: [],
+      isHidden: false,
+      joinCount: 0,
+    },
+  ];
+  const results: FieldSearchResult[] = [];
+
+  const matches = (values: readonly string[]): boolean =>
+    values.some((value) =>
+      value.toLocaleLowerCase().includes(normalizedSearch)
+    );
+
+  while (queue.length > 0 && results.length < fieldSearchResultLimit) {
+    const current = queue.shift()!;
+    const fields = [current.table.idField, ...current.table.fields];
+
+    fields.forEach((field) => {
+      if (field.isRelationship) return;
+      const isHidden =
+        current.isHidden ||
+        (spec.useSchemaOverrides ? field.overrides.isHidden : field.isHidden);
+      if (isHidden && !showHiddenFields) return;
+      if (
+        !spec.isNoRestrictions() &&
+        !spec.includeReadOnly &&
+        field.overrides.isReadOnly
+      )
+        return;
+      if (
+        !matches([
+          field.name,
+          fieldSearchLabel(field.label),
+          ...current.relationshipLabels,
+          ...current.relationshipNames,
+        ])
+      )
+        return;
+
+      results.push({
+        mappingPath: [...current.mappingPath, field.name],
+        label: [
+          fieldSearchLabel(current.table.label),
+          ...current.relationshipLabels,
+          fieldSearchLabel(field.label),
+        ].join(' → '),
+        isHidden,
+        joinCount: current.joinCount,
+      });
+    });
+
+    if (current.joinCount >= fieldSearchDepthLimit) continue;
+
+    current.table.fields
+      .filter((field): field is Relationship => field.isRelationship)
+      .filter((relationship) => {
+        const isHidden = current.isHidden || relationship.overrides.isHidden;
+        if (isHidden && !showHiddenFields) return false;
+        if (
+          !spec.isNoRestrictions() &&
+          !spec.includeReadOnly &&
+          relationship.overrides.isReadOnly
+        )
+          return false;
+        if (
+          spec.hasActionPermission() &&
+          spec.ensurePermission() !== undefined &&
+          (isTreeTable(current.table.name)
+            ? !hasTreeAccess(
+                current.table.name as AnyTree['tableName'],
+                spec.ensurePermission()!
+              )
+            : !hasTablePermission(
+                relationship.relatedTable.name,
+                spec.ensurePermission()!
+              ))
+        )
+          return false;
+        if (
+          !spec.allowNestedToMany &&
+          (relationshipIsToMany(relationship) ||
+            relationshipIsRemoteToOne(relationship)) &&
+          current.mappingPath.some((part) => part.startsWith('#'))
+        )
+          return false;
+        if (
+          !spec.includeToManyToTree &&
+          (relationshipIsToMany(relationship) ||
+            relationshipIsRemoteToOne(relationship)) &&
+          isTreeTable(relationship.relatedTable.name)
+        )
+          return false;
+        return (
+          !isTreeTable(current.table.name) || spec.includeRelationshipsFromTree
+        );
+      })
+      .forEach((relationship) => {
+        if (current.tablePath.includes(relationship.relatedTable.name)) return;
+        const relationshipPath = [
+          ...current.mappingPath,
+          relationship.name,
+          ...(relationshipIsToMany(relationship) ||
+          relationshipIsRemoteToOne(relationship)
+            ? [formatToManyIndex(1)]
+            : []),
+        ];
+        queue.push({
+          table: relationship.relatedTable,
+          mappingPath: relationshipPath,
+          tablePath: [...current.tablePath, relationship.relatedTable.name],
+          relationshipLabels: [
+            ...current.relationshipLabels,
+            fieldSearchLabel(relationship.label),
+          ],
+          relationshipNames: [...current.relationshipNames, relationship.name],
+          isHidden: current.isHidden || relationship.overrides.isHidden,
+          joinCount: current.joinCount + 1,
+        });
+      });
+  }
+
+  const specialPath = ['determinations', 'taxon'];
+  return results.sort((a, b) => {
+    const hiddenOrder = Number(a.isHidden) - Number(b.isHidden);
+    if (hiddenOrder !== 0) return hiddenOrder;
+    const depthOrder = a.joinCount - b.joinCount;
+    if (depthOrder !== 0) return depthOrder;
+    const specialOrder = (path: MappingPath): number =>
+      baseTableName === 'CollectionObject' &&
+      path.includes(specialPath[0]) &&
+      path.includes(specialPath[1])
+        ? 0
+        : 1;
+    return (
+      specialOrder(a.mappingPath) - specialOrder(b.mappingPath) ||
+      a.label.localeCompare(b.label)
+    );
+  });
+}
+
 /**
  * Get data required to build a mapping line from a source mapping path
  * Handles circular dependencies and must match tables

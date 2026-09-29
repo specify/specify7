@@ -33,7 +33,7 @@ import {
   type MappingPath,
   DEFAULT_BATCH_EDIT_PREFS,
 } from './Mapper';
-import { getMappingLineData } from './navigator';
+import { getMappingLineData, searchFields } from './navigator';
 import { navigatorSpecs } from './navigatorSpecs';
 import type {
   ColumnOptions,
@@ -153,9 +153,15 @@ const defaultValue = 300;
 
 export function MappingView({
   mappingElementProps,
+  baseTableName,
+  showHiddenFields,
+  onSelectSearchResult: handleSelectSearchResult,
   children,
 }: {
   readonly mappingElementProps: RA<MappingElementProps>;
+  readonly baseTableName?: keyof Tables;
+  readonly showHiddenFields?: boolean;
+  readonly onSelectSearchResult?: (mappingPath: MappingPath) => void;
   readonly children: JSX.Element | undefined;
 }): JSX.Element | null {
   // `resize` event listener for the mapping view
@@ -164,6 +170,19 @@ export function MappingView({
   const initialHeight = React.useRef(mappingViewHeight);
   const [mappingView, setMappingView] = React.useState<HTMLElement | null>(
     null
+  );
+  const [search, setSearch] = React.useState('');
+  const searchResults = React.useMemo(
+    () =>
+      baseTableName === undefined
+        ? []
+        : searchFields({
+            baseTableName,
+            search,
+            showHiddenFields,
+            spec: navigatorSpecs.wbPlanView,
+          }).slice(0, 50),
+    [baseTableName, search, showHiddenFields]
   );
   React.useEffect(() => {
     if (globalThis.ResizeObserver === undefined || mappingView === null)
@@ -179,6 +198,53 @@ export function MappingView({
 
     return (): void => resizeObserver.disconnect();
   }, [mappingView, setMappingViewHeight]);
+
+  const fieldSearch =
+    baseTableName !== undefined &&
+    typeof handleSelectSearchResult === 'function' ? (
+      <div className="relative flex w-full flex-col bg-white dark:bg-neutral-800">
+        <Input.Text
+          aria-label={commonText.search()}
+          className="w-full rounded-none"
+          id="field-search"
+          placeholder={commonText.search()}
+          value={search}
+          onValueChange={setSearch}
+        />
+        {search.length > 0 && (
+          <div
+            aria-label={commonText.search()}
+            className="absolute left-0 top-full z-20 max-h-48 w-full overflow-y-auto border border-gray-500 bg-white dark:bg-neutral-600"
+            role="listbox"
+          >
+            {searchResults.length === 0 ? (
+              <div className="p-2">{commonText.noResults()}</div>
+            ) : (
+              searchResults.map((result) => (
+                <button
+                  className="block w-full p-2 text-left hover:bg-gray-200 dark:hover:bg-neutral-700"
+                  key={result.mappingPath.join('.')}
+                  type="button"
+                  onClick={(): void => {
+                    handleSelectSearchResult(result.mappingPath);
+                    setSearch('');
+                  }}
+                >
+                  {result.label}
+                </button>
+              ))
+            )}
+          </div>
+        )}
+      </div>
+    ) : undefined;
+
+  const mappingElementPropsWithSearch = mappingElementProps.map(
+    (mappingElement, index) =>
+      index === 0 && fieldSearch !== undefined
+        ? { ...mappingElement, fieldSearch }
+        : mappingElement
+  );
 
   return (
     <section
@@ -196,7 +262,9 @@ export function MappingView({
     >
       <div className="flex h-full w-max gap-8">
         <div className="flex gap-1" role="list">
-          <MappingPathComponent mappingLineData={mappingElementProps} />
+          <MappingPathComponent
+            mappingLineData={mappingElementPropsWithSearch}
+          />
         </div>
         {children}
       </div>

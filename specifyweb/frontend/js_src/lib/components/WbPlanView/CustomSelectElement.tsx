@@ -220,6 +220,7 @@ type CustomSelectElementPropsBase = {
   readonly onClose?: () => void;
   readonly customSelectOptionGroups?: IR<CustomSelectElementOptionGroupProps>;
   readonly autoMapperSuggestions?: JSX.Element;
+  readonly fieldSearch?: JSX.Element;
 };
 
 export type CustomSelectElementPropsClosed = CustomSelectElementPropsBase & {
@@ -467,6 +468,7 @@ export function CustomSelectElement({
   onClose: handleClose,
   previewOption,
   autoMapperSuggestions,
+  fieldSearch,
   validation,
 }: CustomSelectElementPropsClosed | CustomSelectElementPropsOpen): JSX.Element {
   const has = React.useCallback(
@@ -748,7 +750,7 @@ export function CustomSelectElement({
     <article
       aria-live={has('interactive') ? 'polite' : 'off'}
       className={`
-        custom-select relative flex h-8 flex-col
+        custom-select relative flex ${fieldSearch ? 'h-auto w-full' : 'h-8'} flex-col
         custom-select-${upperToKebab(customSelectType)}
         ${customSelectClassNames[customSelectType] ?? ''}
       `}
@@ -833,6 +835,7 @@ export function CustomSelectElement({
     >
       {autoMapperSuggestions}
       {header}
+      {fieldSearch}
       {preview}
       {optionsShadow}
       {customSelectOptions}
