@@ -208,3 +208,22 @@ class LoanTests(ApiTests):
         self.assertIsNotNone(
             fetched.shipmentdate,
         )
+
+    def test_add_existing_shipped_by_agent_to_shipment(self):
+        loan = models.Loan.objects.create(
+            loannumber='LOAN-SHIPPEDBY-001',
+            discipline=self.discipline,
+        )
+
+        shipment = loan.shipments.create(
+            shipmentnumber='SHIPMENT-SHIPPEDBY-001',
+            discipline=self.discipline,
+            shippedby=self.agent,
+        )
+
+        fetched = models.Shipment.objects.get(id=shipment.id)
+
+        self.assertEqual(
+            fetched.shippedby,
+            self.agent,
+        )
