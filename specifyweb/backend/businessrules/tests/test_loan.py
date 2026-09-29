@@ -437,3 +437,28 @@ class LoanTests(ApiTests):
             fetched_loan.shipments.count(),
             1,
         )
+
+    def test_check_collection_object_is_loaned(self):
+        self._create_prep_type()
+
+        prep = self._create_prep(self.collectionobjects[0], None)
+
+        loan = models.Loan.objects.create(
+            loannumber='LOAN-LOANED-001',
+            discipline=self.discipline,
+        )
+        loan.loanpreparations.create(
+            discipline=self.discipline,
+            preparation=prep,
+        )
+
+        fetched_prep = models.Preparation.objects.get(id=prep.id)
+
+        self.assertEqual(
+            fetched_prep.loanpreparations.count(),
+            1,
+        )
+        self.assertEqual(
+            fetched_prep.loanpreparations.first().loan.loannumber,
+            'LOAN-LOANED-001',
+        )
