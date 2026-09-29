@@ -184,6 +184,11 @@ class TestEditPreviousVersionObjects(ApiTests):
         recordset.save()
         recordset.refresh_from_db()
 
+        self.assertEqual(
+            recordset.name,
+            'Updated Name',
+        )
+
     def test_edit_collectionobject_created_in_previous_version(self):
         collectionobject = self.collectionobjects[0]
 
