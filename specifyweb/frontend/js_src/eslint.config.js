@@ -813,8 +813,8 @@ _    * While overusing non-null assertions can be harmful, there are
     files: ['**/*.md/*.{js,ts,tsx}'],
     rules: {
       'no-undef': OFF,
-      'no-unused-expression': OFF,
-      'no-unused-var': OFF,
+      'no-unused-expressions': OFF,
+      'no-unused-vars': OFF,
       'no-console': OFF,
     },
   },
