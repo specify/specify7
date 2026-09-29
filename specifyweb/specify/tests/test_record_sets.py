@@ -14,8 +14,8 @@ class RecordSetCreationTests(ApiTests):
             specifyuser=self.specifyuser,
             )
         
-        recordset.refresh_from_db()
-        self.assertEqual(recordset.name,"first_recordset_name")
+        saved = Recordset.objects.get(pk=recordset.pk)
+        self.assertEqual(saved.name,"first_recordset_name")
  
     def test_create_record_set_with_multiple_records(self):
         """Create a record set and add multiple Collection Objects to it."""
