@@ -236,6 +236,7 @@ export function AutoComplete<T>({
    */
   const ignoreFilter = currentValue === pendingValue;
   const itemSource = ignoreFilter ? (results ?? []) : filteredItems;
+  const [activeIndex, setActiveIndex] = React.useState(-1);
   const virtualizer = useVirtualizer({
     count: itemSource.length,
     getScrollElement: () => dataList,
@@ -263,12 +264,49 @@ export function AutoComplete<T>({
     pendingItem === undefined;
   const listHasItems = showAdd || isLoading || itemSource.length > 0;
 
+  React.useEffect(() => setActiveIndex(-1), [itemSource]);
+
   function handleChanged(item: AutoCompleteItem<T>): void {
     handleChange(item);
     const value =
       typeof item.label === 'string' ? item.label : (item.searchValue ?? '');
     setPendingValue(value);
     if (typeof pendingValueRef === 'object') pendingValueRef.current = value;
+  }
+
+  function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>): void {
+    if (itemSource.length === 0 && !showAdd) return;
+
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+      event.preventDefault();
+      event.stopPropagation();
+      const direction = event.key === 'ArrowDown' ? 1 : -1;
+      const nextIndex =
+        activeIndex === -1
+          ? direction === 1
+            ? 0
+            : itemSource.length - 1
+          : Math.min(
+              itemSource.length - 1,
+              Math.max(0, activeIndex + direction)
+            );
+      setActiveIndex(nextIndex);
+      virtualizer.scrollToIndex(nextIndex);
+    } else if (event.key === 'Home' || event.key === 'End') {
+      event.preventDefault();
+      event.stopPropagation();
+      const nextIndex = event.key === 'Home' ? 0 : itemSource.length - 1;
+      setActiveIndex(nextIndex);
+      virtualizer.scrollToIndex(nextIndex);
+    } else if (event.key === 'Enter' && activeIndex >= 0) {
+      const item = itemSource[activeIndex];
+      if (item !== undefined) {
+        event.preventDefault();
+        event.stopPropagation();
+        handleChanged(item);
+        inputRef.current?.blur();
+      }
+    }
   }
 
   const isInDialog = typeof React.useContext(DialogContext) === 'function';
@@ -438,6 +476,7 @@ export function AutoComplete<T>({
               : (currentItem?.searchValue ?? '');
         }}
         ref={forwardChildRef}
+        onKeyDown={handleKeyDown}
         onBlur={withHandleBlur(inputProps?.onBlur).onBlur}
         /*
          * Padding for the button. Using "em" so as to match @tailwind/forms
@@ -556,7 +595,10 @@ export function AutoComplete<T>({
                   <Combobox.Option as={React.Fragment} value={item}>
                     {({ active, selected }): JSX.Element => (
                       <li
-                        className={optionClassName(active, selected)}
+                        className={optionClassName(
+                          active || index === activeIndex,
+                          selected
+                        )}
                         onMouseDown={handleOptionMouseDown}
                       >
                         {typeof item.icon === 'string' ? (
