@@ -171,8 +171,7 @@ async function fetchFromField(
   );
 
   const table = caseInsensitiveHash(genericTables, tableName) as
-    | SpecifyTable
-    | undefined;
+    SpecifyTable | undefined;
 
   // REFACTOR: Prefer letting the backend work with the nitty-gritty scoping
   // details. Frontend should just tell the backend it wants a result scoped.
