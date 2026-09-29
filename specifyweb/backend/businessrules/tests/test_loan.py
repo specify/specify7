@@ -1,3 +1,4 @@
+from decimal import Decimal
 from django.utils import timezone
 
 from specifyweb.specify import models
@@ -346,3 +347,44 @@ class LoanTests(ApiTests):
             fetched_loan.shipments.count(),
             2,
         )
+
+    def test_fill_remaining_loan_fields(self):
+        loan = models.Loan.objects.create(
+            loannumber='LOAN-REMAINING-001',
+            discipline=self.discipline,
+            purposeofloan='Research',
+            status='Active',
+            remarks='Loan remarks',
+            specialconditions='Keep dry',
+            contents='Plant specimens',
+            srcgeography='South Africa',
+            srctaxonomy='Proteaceae',
+            receivedcomments='Received in good condition',
+            text1='Text 1',
+            text2='Text 2',
+            text3='Text 3',
+            text4='Text 4',
+            text5='Text 5',
+            yesno1=True,
+            yesno2=False,
+            number1=Decimal('1.5'),
+            number2=Decimal('2.5'),
+            integer1=1,
+            integer2=2,
+            integer3=3,
+            isfinancialresponsibility=True,
+        )
+
+        fetched_loan = models.Loan.objects.get(id=loan.id)
+
+        self.assertEqual(fetched_loan.purposeofloan, 'Research')
+        self.assertEqual(fetched_loan.status, 'Active')
+        self.assertEqual(fetched_loan.remarks, 'Loan remarks')
+        self.assertEqual(fetched_loan.specialconditions, 'Keep dry')
+        self.assertEqual(fetched_loan.text1, 'Text 1')
+        self.assertEqual(fetched_loan.text5, 'Text 5')
+        self.assertEqual(fetched_loan.number1, Decimal('1.5'))
+        self.assertEqual(fetched_loan.integer1, 1)
+        self.assertEqual(fetched_loan.integer3, 3)
+        self.assertTrue(fetched_loan.yesno1)
+        self.assertFalse(fetched_loan.yesno2)
