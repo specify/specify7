@@ -169,3 +169,42 @@ class LoanTests(ApiTests):
             fetched.agent.agenttype,
             0,
         )
+
+    def test_add_shipment_and_fill_all_fields(self):
+        loan = models.Loan.objects.create(
+            loannumber='LOAN-SHIPMENT-001',
+            discipline=self.discipline,
+        )
+
+        shipment = loan.shipments.create(
+            shipmentnumber='SHIPMENT-001',
+            discipline=self.discipline,
+            shipmentdate=timezone.now(),
+            shipmentmethod='Courier',
+            numberofpackages=2,
+            insuredforamount='1000',
+            weight='5 kg',
+            remarks='Handle with care',
+        )
+
+        fetched = models.Shipment.objects.get(id=shipment.id)
+
+        self.assertEqual(
+            fetched.loan,
+            loan,
+        )
+        self.assertEqual(
+            fetched.shipmentnumber,
+            'SHIPMENT-001',
+        )
+        self.assertEqual(
+            fetched.shipmentmethod,
+            'Courier',
+        )
+        self.assertEqual(
+            fetched.numberofpackages,
+            2,
+        )
+        self.assertIsNotNone(
+            fetched.shipmentdate,
+        )
