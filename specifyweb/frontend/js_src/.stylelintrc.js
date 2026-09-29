@@ -37,7 +37,7 @@ export default {
     'length-zero-no-unit': true,
     'font-weight-notation': 'numeric',
     'function-url-scheme-allowed-list': ['https', 'data'],
-    'keyframes-name-pattern': '[a-z]+(-[a-z]+)*',
+    'keyframes-name-pattern': '^[a-z]+(-[a-z]+)*$',
     'number-max-precision': 2,
     'shorthand-property-no-redundant-values': true,
     'custom-property-pattern': '[a-z]+(-[a-z]+)*',
