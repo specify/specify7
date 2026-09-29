@@ -490,3 +490,33 @@ class LoanTests(ApiTests):
             fetched.ordinal,
             0,
         )
+
+    def test_delete_attachment_from_loan(self):
+        loan = models.Loan.objects.create(
+            loannumber='LOAN-ATTACH-DELETE-001',
+            discipline=self.discipline,
+        )
+
+        attachment = models.Attachment.objects.create(
+            origfilename='loan_delete_doc.pdf',
+            tableid=loan.specify_model.tableId,
+            title='Loan Delete Document',
+        )
+
+        loan_attachment = loan.loanattachments.create(
+            attachment=attachment,
+            ordinal=0,
+        )
+
+        loan_attachment_id = loan_attachment.id
+        loan_attachment.delete()
+
+        self.assertFalse(
+            models.Loanattachment.objects.filter(
+                id=loan_attachment_id,
+            ).exists(),
+        )
+        self.assertEqual(
+            loan.loanattachments.count(),
+            0,
+        )
