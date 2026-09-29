@@ -41,6 +41,9 @@ export const schemaText = createDictionary({
   importSchemaSuccess: {
     'en-us': '{schemaConfig:string} imported successfully',
   },
+  importSchemaSuccessDescription: {
+    'en-us': 'The imported {schemaConfig:string} has been saved.',
+  },
   importSchemaRefreshError: {
     'en-us':
       'The import succeeded, but the page could not refresh automatically. Reload the page to see the imported changes.',

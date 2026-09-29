@@ -56,6 +56,7 @@ function SchemaConfigLayoutContent(): JSX.Element {
   const loading = React.useContext(LoadingContext);
   const [importFile, setImportFile] = React.useState<File | undefined>();
   const [importError, setImportError] = React.useState(false);
+  const [importSuccessful, setImportSuccessful] = React.useState(false);
   const [importRefreshError, setImportRefreshError] = React.useState(false);
 
   React.useEffect(() => {
@@ -98,12 +99,17 @@ function SchemaConfigLayoutContent(): JSX.Element {
           })
         )
         .then(
-          () =>
-            handleSchemaSaved(rawLanguage, tableName).catch(() =>
-              setImportRefreshError(true)
-            ),
+          () => setImportSuccessful(true),
           () => setImportError(true)
         )
+    );
+  };
+  const closeImportSuccess = (): void => {
+    setImportSuccessful(false);
+    loading(
+      handleSchemaSaved(rawLanguage, tableName).catch(() =>
+        setImportRefreshError(true)
+      )
     );
   };
 
@@ -177,6 +183,24 @@ function SchemaConfigLayoutContent(): JSX.Element {
         >
           <p>
             {schemaText.importSchemaError({
+              schemaConfig: schemaText.schemaConfig(),
+            })}
+          </p>
+        </Dialog>
+      )}
+      {importSuccessful && (
+        <Dialog
+          buttons={
+            <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+          }
+          icon={dialogIcons.success}
+          header={schemaText.importSchemaSuccess({
+            schemaConfig: schemaText.schemaConfig(),
+          })}
+          onClose={closeImportSuccess}
+        >
+          <p>
+            {schemaText.importSchemaSuccessDescription({
               schemaConfig: schemaText.schemaConfig(),
             })}
           </p>
