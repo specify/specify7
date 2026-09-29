@@ -40,14 +40,14 @@ msgid "password"
 msgstr "Lozinka"
 
 #: components/FormPlugins/CollectionRelOneToMany.tsx:181
-#: components/QueryComboBox/index.tsx:626
+#: components/QueryComboBox/index.tsx:627
 #. Used in: Components > Form Plugins > Collection Rel One To Many ⬤ Components > Query Combo Box > Index
 #, fuzzy
 msgid "collectionAccessDenied"
 msgstr "Nemate pristup ovoj kolekciji"
 
 #: components/FormPlugins/CollectionRelOneToMany.tsx:184
-#: components/QueryComboBox/index.tsx:629
+#: components/QueryComboBox/index.tsx:630
 #. Used in: Components > Form Plugins > Collection Rel One To Many ⬤ Components > Query Combo Box > Index
 #, fuzzy
 msgid "collectionAccessDeniedDescription"
@@ -219,7 +219,7 @@ msgstr "Nemate dovoljna prava za tu radnju ili je vaša trenutna sesija odjavlje
 
 #: components/Formatters/formatters.ts:229
 #: components/Forms/dataObjFormatters.ts:290
-#: components/QueryComboBox/index.tsx:203
+#: components/QueryComboBox/index.tsx:206
 #: components/Statistics/Categories.tsx:76
 #: components/Statistics/StatItems.tsx:186
 #: components/Statistics/StatItems.tsx:269

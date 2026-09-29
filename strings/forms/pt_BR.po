@@ -402,7 +402,7 @@ msgstr "Campo obrigatório."
 
 #: components/ExportFeed/Editor.tsx:399
 #: components/ExportFeed/Editor.tsx:403
-#: components/QueryComboBox/index.tsx:197
+#: components/QueryComboBox/index.tsx:200
 #: utils/parser/__tests__/definitions.test.ts:203
 #: utils/parser/__tests__/definitions.test.ts:205
 #: utils/parser/__tests__/definitions.test.ts:221
@@ -557,7 +557,7 @@ msgid "removeFromRecordSet"
 msgstr "Remover de {recordSetTable:string}"
 
 #: components/AttachmentsBulkImport/utils.ts:620
-#: components/Molecules/AutoComplete.tsx:558
+#: components/Molecules/AutoComplete.tsx:639
 #. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Molecules > Auto Complete
 #, fuzzy
 msgid "nothingFound"

@@ -260,7 +260,7 @@ msgstr "Créer"
 #: components/QueryBuilder/LoanReturn.tsx:156
 #: components/QueryBuilder/LoanReturn.tsx:222
 #: components/QueryBuilder/Save.tsx:66
-#: components/QueryComboBox/index.tsx:625
+#: components/QueryComboBox/index.tsx:626
 #: components/Reports/Report.tsx:51
 #: components/Reports/Report.tsx:60
 #: components/Router/RouterUtils.tsx:193
@@ -418,7 +418,7 @@ msgstr "Sauvegarder"
 #: components/Forms/Save.tsx:279
 #: components/Forms/__tests__/Save.test.tsx:26
 #: components/Merging/CompareSubView.tsx:184
-#: components/Molecules/AutoComplete.tsx:550
+#: components/Molecules/AutoComplete.tsx:631
 #: components/PickLists/index.tsx:280
 #: components/QueryBuilder/Wrapped.tsx:476
 #: components/SchemaConfig/Format.tsx:299
@@ -524,7 +524,7 @@ msgstr "Outils"
 #: components/Interactions/PrepReturnRow.tsx:96
 #: components/Leaflet/index.ts:196
 #: components/Merging/Usages.tsx:49
-#: components/Molecules/AutoComplete.tsx:457
+#: components/Molecules/AutoComplete.tsx:511
 #: components/Molecules/FormattedResource.tsx:16
 #: components/Molecules/FormattedResource.tsx:31
 #: components/Molecules/LinkedRecords.tsx:49
@@ -538,7 +538,7 @@ msgstr "Outils"
 #: components/QueryBuilder/QueryLineFilter.tsx:90
 #: components/QueryBuilder/Results.tsx:469
 #: components/QueryBuilder/Results.tsx:470
-#: components/QueryComboBox/index.tsx:450
+#: components/QueryComboBox/index.tsx:451
 #: components/SchemaConfig/Fields.tsx:181
 #: components/SchemaConfig/index.tsx:98
 #: components/SchemaConfig/index.tsx:99
@@ -997,7 +997,7 @@ msgstr "Selectionné"
 #: components/FormSliders/IntegratedRecordSelector.tsx:112
 #: components/Formatters/Definitions.tsx:244
 #: components/Header/index.tsx:156
-#: components/Molecules/AutoComplete.tsx:569
+#: components/Molecules/AutoComplete.tsx:650
 #: components/SchemaConfig/Tables.tsx:206
 #. Used in: Components > Form Cells > Form Table ⬤ Components > Form Sliders > Integrated Record Selector ⬤ Components > Formatters > Definitions ⬤ Components > Header > Index ⬤ Components > Molecules > Auto Complete ⬤ Components > Schema Config > Tables
 msgid "expand"
