@@ -10,12 +10,15 @@ class RecordSetCreationTests(ApiTests):
         recordset = Recordset.objects.create(
             dbtableid=Collectionobject.specify_model.tableId,
             name="first_recordset_name",
-          
+            type=0,
+            collectionmemberid=self.collection.id,
+            specifyuser=self.specifyuser,
+        )
         saved = Recordset.objects.get(pk=recordset.pk)
-        self.assertEqual(saved.name,"first_recordset_name")   
-          
+        self.assertEqual(saved.name, "first_recordset_name")
+
     def test_add_new_record_set(self):
-        """Add a new recordset"""cc
+        """Add a new recordset"""
         recordset = Recordset.objects.create(
             dbtableid=Collectionobject.specify_model.tableId,
             name="Test RS add existing",
