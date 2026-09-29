@@ -294,3 +294,55 @@ class LoanTests(ApiTests):
             fetched.shippedto_id,
             agent.id,
         )
+
+    def test_add_multiple_loan_agents_preps_and_shipments(self):
+        self._create_prep_type()
+
+        loan = models.Loan.objects.create(
+            loannumber='LOAN-MULTIPLE-001',
+            discipline=self.discipline,
+        )
+
+        loan.loanagents.create(
+            agent=self.agent,
+            role='Loan agent',
+            discipline=self.discipline,
+        )
+        loan.loanagents.create(
+            agent=self.agent,
+            role='Shipped by',
+            discipline=self.discipline,
+        )
+
+        loan.loanpreparations.create(
+            discipline=self.discipline,
+            preparation=self._create_prep(self.collectionobjects[0], None),
+        )
+        loan.loanpreparations.create(
+            discipline=self.discipline,
+            preparation=self._create_prep(self.collectionobjects[1], None),
+        )
+
+        loan.shipments.create(
+            shipmentnumber='SHIPMENT-MULTI-001',
+            discipline=self.discipline,
+        )
+        loan.shipments.create(
+            shipmentnumber='SHIPMENT-MULTI-002',
+            discipline=self.discipline,
+        )
+
+        fetched_loan = models.Loan.objects.get(id=loan.id)
+
+        self.assertEqual(
+            fetched_loan.loanagents.count(),
+            2,
+        )
+        self.assertEqual(
+            fetched_loan.loanpreparations.count(),
+            2,
+        )
+        self.assertEqual(
+            fetched_loan.shipments.count(),
+            2,
+        )
