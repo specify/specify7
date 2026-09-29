@@ -3,6 +3,7 @@ from specifyweb.specify.models import (
     Collectionobject,
     Collectionobjecttype,
     Component,
+    Agent,
     Accession,
 )
 from specifyweb.specify.tests.test_api import ApiTests
@@ -74,7 +75,9 @@ class CollectionObjectTests(ApiTests):
 
     def test_add_new_cataloger_new_agent(self):
         new_agent = Agent.objects.create(
-            username="new_cataloger",
+            agenttype=0,
+            firstname="New",
+            lastname="Cataloger",
             division=self.division,
         )
 
@@ -86,6 +89,7 @@ class CollectionObjectTests(ApiTests):
         fetched_object = Collectionobject.objects.get(id=collection_object.id)
         self.assertEqual(fetched_object.cataloger, new_agent)
         self.assertEqual(fetched_object.cataloger.id, new_agent.id)
+
 
     def test_default_collectionobjecttype(self):
         default_type = Collectionobjecttype.objects.create(
