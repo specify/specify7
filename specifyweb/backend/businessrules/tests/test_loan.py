@@ -114,3 +114,30 @@ class LoanTests(ApiTests):
         self.assertIsNotNone(fetched_loan.originalduedate)
         self.assertIsNotNone(fetched_loan.currentduedate)
         self.assertIsNotNone(fetched_loan.datereceived)
+
+    def test_add_existing_agent_to_loan(self):
+        loan = models.Loan.objects.create(
+            loannumber='LOAN-AGENT-001',
+            discipline=self.discipline,
+        )
+
+        loan_agent = loan.loanagents.create(
+            agent=self.agent,
+            role='Loan agent',
+            discipline=self.discipline,
+        )
+
+        fetched = models.Loanagent.objects.get(id=loan_agent.id)
+
+        self.assertEqual(
+            fetched.agent,
+            self.agent,
+        )
+        self.assertEqual(
+            fetched.loan,
+            loan,
+        )
+        self.assertEqual(
+            fetched.role,
+            'Loan agent',
+        )
