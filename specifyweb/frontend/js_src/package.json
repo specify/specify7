@@ -211,15 +211,15 @@
     "braces": "^3.0.3",
     "@eslint/eslintrc": {
       "minimatch": {
-		  "." : "^3.1.5",
-		  "brace-expansion": "^1.1.7"
-	  }
+        ".": "^3.1.5",
+        "brace-expansion": "^1.1.7"
+      }
     },
     "eslint-plugin-react": {
       "minimatch": {
-		  "." : "^3.1.5",
-		  "brace-expansion": "^1.1.7"
-	  }
+        ".": "^3.1.5",
+        "brace-expansion": "^1.1.7"
+      }
     }
   }
 }
