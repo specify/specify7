@@ -462,3 +462,31 @@ class LoanTests(ApiTests):
             fetched_prep.loanpreparations.first().loan.loannumber,
             'LOAN-LOANED-001',
         )
+
+    def test_add_attachment_to_loan(self):
+        loan = models.Loan.objects.create(
+            loannumber='LOAN-ATTACH-001',
+            discipline=self.discipline,
+        )
+
+        attachment = models.Attachment.objects.create(
+            origfilename='loan_document.pdf',
+            tableid=loan.specify_model.tableId,
+            title='Loan Document',
+        )
+
+        loan.loanattachments.create(
+            attachment=attachment,
+            ordinal=0,
+        )
+
+        fetched = models.Loanattachment.objects.get(attachment=attachment)
+
+        self.assertEqual(
+            fetched.loan,
+            loan,
+        )
+        self.assertEqual(
+            fetched.ordinal,
+            0,
+        )
