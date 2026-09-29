@@ -45,6 +45,7 @@ import {
   getQueryComboBoxConditions,
   getRelatedCollectionId,
   makeComboBoxQuery,
+  deduplicateQueryComboBoxResults,
   pendingValueToResource,
   scopeNewResourceToCollection,
   useQueryComboBoxDefaults,
@@ -54,6 +55,8 @@ import { useCollectionRelationships } from './useCollectionRelationships';
 import { useTreeData } from './useTreeData';
 import { TreeDefinitionContext } from './useTreeData';
 import { useTypeSearch } from './useTypeSearch';
+
+const queryComboBoxResultLimit = 100;
 
 /*
  * REFACTOR: split this component
@@ -356,8 +359,7 @@ export function QueryComboBox({
               .map(async (query) =>
                 runQuery<readonly [id: number, label: LocalizedString]>(query, {
                   collectionId: forceCollection ?? relatedCollectionId,
-                  // REFACTOR: allow customizing these arbitrary limits
-                  limit: 1000,
+                  limit: queryComboBoxResultLimit,
                 })
               )
           ).then((responses) =>
@@ -368,15 +370,15 @@ export function QueryComboBox({
              * REFACTOR: refactor to use OR queries across fields once
              *   supported
              */
-            responses.flat().map(([id, label]) => ({
-              data: getResourceApiUrl(
+            deduplicateQueryComboBoxResults(responses).map(([id, label]) => {
+              const data = getResourceApiUrl(
                 field.isRelationship
                   ? field.relatedTable.name
                   : resource.specifyTable.name,
                 id
-              ),
-              label,
-            }))
+              );
+              return { data, label };
+            })
           )
         : [],
     [
@@ -420,7 +422,6 @@ export function QueryComboBox({
           disabled={
             !isLoaded ||
             isReadOnly ||
-            formType === 'formTable' ||
             typeSearch === undefined ||
             /**
              * Don't disable the input if it is currently focused
