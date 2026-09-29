@@ -368,14 +368,28 @@ export function searchFields({
       })
       .forEach((relationship) => {
         if (current.tablePath.includes(relationship.relatedTable.name)) return;
+        const relationshipIsToManyField =
+          relationshipIsToMany(relationship) ||
+          relationshipIsRemoteToOne(relationship);
         const relationshipPath = [
           ...current.mappingPath,
           relationship.name,
-          ...(relationshipIsToMany(relationship) ||
-          relationshipIsRemoteToOne(relationship)
-            ? [formatToManyIndex(1)]
-            : []),
+          ...(relationshipIsToManyField ? [formatToManyIndex(1)] : []),
         ];
+        if (matches([relationship.name, fieldSearchLabel(relationship.label)]))
+          results.push({
+            mappingPath: [...relationshipPath, formattedEntry],
+            label: [
+              fieldSearchLabel(current.table.label),
+              ...current.relationshipLabels,
+              fieldSearchLabel(relationship.label),
+              relationshipIsToManyField
+                ? queryText.aggregatedInline()
+                : queryText.formattedInline(),
+            ].join(' → '),
+            isHidden: current.isHidden || relationship.overrides.isHidden,
+            joinCount: current.joinCount + 1,
+          });
         queue.push({
           table: relationship.relatedTable,
           mappingPath: relationshipPath,

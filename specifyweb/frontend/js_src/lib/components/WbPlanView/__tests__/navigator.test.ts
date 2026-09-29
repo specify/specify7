@@ -34,6 +34,34 @@ test('searchFields matches relationship names and returns complete paths', () =>
   );
 });
 
+test('searchFields includes aggregate and formatted relationship options', () => {
+  const aggregateResults = searchFields({
+    baseTableName: 'CollectionObject',
+    search: 'determinations',
+    spec: navigatorSpecs.wbPlanView,
+  });
+  const formattedResults = searchFields({
+    baseTableName: 'CollectionObject',
+    search: 'cataloger',
+    spec: navigatorSpecs.wbPlanView,
+  });
+
+  expect(aggregateResults).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        mappingPath: ['determinations', '#1', '-formatted'],
+      }),
+    ])
+  );
+  expect(formattedResults).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        mappingPath: ['cataloger', '-formatted'],
+      }),
+    ])
+  );
+});
+
 test('searchFields returns no results for empty input', () => {
   expect(
     searchFields({
