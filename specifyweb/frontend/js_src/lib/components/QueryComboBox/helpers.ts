@@ -1,4 +1,5 @@
 import type { RA, WritableArray } from '../../utils/types';
+import type { LocalizedString } from 'typesafe-i18n';
 import { toTable, toTreeTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -21,6 +22,15 @@ import { flippedSortTypes } from '../QueryBuilder/helpers';
 import type { TypeSearch } from './spec';
 import type { CollectionRelationships } from './useCollectionRelationships';
 import type { QueryComboBoxTreeData } from './useTreeData';
+
+export function deduplicateQueryComboBoxResults(
+  responses: ReadonlyArray<ReadonlyArray<readonly [number, LocalizedString]>>
+): RA<readonly [number, LocalizedString]> {
+  const uniqueResults = new Map<number, readonly [number, LocalizedString]>();
+  for (const result of responses.flat())
+    if (!uniqueResults.has(result[0])) uniqueResults.set(result[0], result);
+  return Array.from(uniqueResults.values());
+}
 
 export function makeComboBoxQuery({
   fieldName,

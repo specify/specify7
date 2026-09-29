@@ -9,6 +9,7 @@ import { icons } from '../Atoms/Icons';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpAppResourceDir, Tables } from '../DataModel/types';
 import type { AppResourceMode } from './helpers';
+import { dataViewsText } from '../../localization/dataViews';
 
 export type AppResourceScope =
   | 'collection'
@@ -101,6 +102,15 @@ export const appResourceSubTypes = ensure<IR<AppResourceSubType>>()({
       'https://speciforum.org/t/setting-default-user-preferences/1447',
     icon: icons.cog,
     label: preferencesText.defaultUserPreferences(),
+  },
+  dataViewQueries: {
+    mimeType: 'application/json',
+    name: 'DataViewQueries',
+    documentationUrl: undefined,
+    icon: icons.eye,
+    label: dataViewsText.dataViewQueries(),
+    useTemplate: false,
+    scope: ['collection', 'discipline', 'user'],
   },
   // TODO: There should be useTemplate: false below? (like it is for userPreferences)
   collectionPreferences: {
