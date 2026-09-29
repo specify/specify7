@@ -345,6 +345,14 @@ export const commonText = createDictionary({
   },
   searchFor: {
     'en-us': 'Search for {resource:string}',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'hr-hr': '',
+    nb: '',
+    'pt-br': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   noResults: {
     'en-us': 'No Results',
