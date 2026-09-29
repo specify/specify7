@@ -9,6 +9,48 @@ import { createDictionary } from './utils';
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
 export const schemaText = createDictionary({
+  importSchema: {
+    'en-us': 'Import {schemaConfig:string}',
+  },
+  importSchemaWarning: {
+    'en-us':
+      'Importing a {schemaConfig:string} will overwrite the current one. This action cannot be undone.',
+  },
+  importSchemaLanguageWarning: {
+    'en-us':
+      'The exported schema language must match the language currently being configured.',
+  },
+  importSchemaBackupPrompt: {
+    'en-us':
+      'We strongly recommend downloading a backup of the current {schemaConfig:string} before importing.',
+  },
+  importSchemaLimitations: {
+    'en-us':
+      'This import will not assign pick lists, field formats, or web links unless they already exist.',
+  },
+  downloadSchemaBackup: {
+    'en-us': 'Export {schemaConfig:string}',
+  },
+  importSchemaContinue: {
+    'en-us': 'Continue Import',
+  },
+  importSchemaError: {
+    'en-us':
+      'The {schemaConfig:string} export is invalid or was exported for a different language and cannot be imported.',
+  },
+  importSchemaSuccess: {
+    'en-us': '{schemaConfig:string} imported successfully',
+  },
+  importSchemaSuccessDescription: {
+    'en-us': 'The imported {schemaConfig:string} has been saved.',
+  },
+  importSchemaRefreshError: {
+    'en-us':
+      'The import succeeded, but the page could not refresh automatically. Reload the page to see the imported changes.',
+  },
+  reloadSchemaConfig: {
+    'en-us': 'Reload Page',
+  },
   table: {
     'en-us': 'Table',
     'ru-ru': 'Стол',
@@ -610,7 +652,7 @@ export const schemaText = createDictionary({
     'fr-fr': "Règles d'unicité",
     'ru-ru': 'Правила уникальности',
     'uk-ua': 'Правила унікальності',
-    'pt-br': 'Regras de Unicidade',
+    'pt-br': 'Regras de singularidade',
     'hr-hr': 'Pravila jedinstvenosti',
     nb: 'Unikhetsregler',
   },
@@ -734,16 +776,5 @@ export const schemaText = createDictionary({
     'pt-br': 'Visível',
     'hr-hr': 'Vidljivo',
     nb: 'Synlig',
-  },
-  customFieldFormat: {
-    'en-us': 'Custom Field Format',
-    'de-ch': 'Format für benutzerdefinierte Felder',
-    'es-es': 'Formato de campo personalizado',
-    'fr-fr': 'Format de champ personnalisé',
-    'ru-ru': 'Формат пользовательского поля',
-    'uk-ua': 'Формат користувацького поля',
-    'pt-br': 'Formato de campo personalizado',
-    'hr-hr': 'Prilagođeni format polja',
-    nb: 'Tilpasset feltformat',
   },
 } as const);

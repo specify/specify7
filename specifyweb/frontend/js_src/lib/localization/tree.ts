@@ -144,7 +144,7 @@ export const treeText = createDictionary({
     'uk-ua': 'Перемістіть сюди всі препарати "{nodeName:string}"',
     'pt-br': 'Mova todos os preparativos "{nodeName:string}" para cá.',
     'hr-hr': 'Premjestite sve pripreme "{nodeName:string}" ovdje',
-    nb: 'Flytt alle forberedelser for "{nodeName:string}" hit',
+    nb: 'Flytt alle preparater for "{nodeName:string}" hit',
   },
   nodeMoveMessage: {
     'en-us':
@@ -182,7 +182,7 @@ export const treeText = createDictionary({
       'Os preparativos do nó {treeName:string} "{nodeName:string}" serão colocados no novo local "{parentName:string}".',
     'hr-hr':
       'Pripreme čvora {treeName:string} "{nodeName:string}" bit će smještene pod novu lokaciju "{parentName:string}".',
-    nb: 'Forberedelser for noden {treeName:string} «{nodeName:string}» vil bli plassert under det nye stedet «{parentName:string}».',
+    nb: '{treeName:string}-noden «{nodeName:string}» preparater vil bli plassert under det nye stedet «{parentName:string}».',
   },
   cantMoveHere: {
     'en-us': "Can't move this tree node here",
@@ -303,7 +303,7 @@ export const treeText = createDictionary({
       'Selecione um novo alvo para os preparativos "{nodeName:string}" a serem movidos para',
     'hr-hr':
       'Odaberite novi cilj za pripreme "{nodeName:string}" koje će se premjestiti u',
-    nb: 'Velg et nytt mål som forberedelsene til "{nodeName:string}" skal flyttes til',
+    nb: 'Velg en ny lokasjon "{nodeName:string}"-preparater skal flyttes til',
   },
   mergeNodeMessage: {
     'en-us':
@@ -322,7 +322,7 @@ export const treeText = createDictionary({
       'Todas as referências ao nó {treeName:string} "{nodeName:string}" serão substituídas por "{parentName:string}", e todos os descendentes de "{nodeName:string}" serão movidos para "{parentName:string}", com quaisquer descendentes correspondentes em nome e classificação sendo eles próprios mesclados recursivamente.',
     'hr-hr':
       'Sve reference na čvor {treeName:string} "{nodeName:string}" bit će zamijenjene s "{parentName:string}", a svi potomci "{nodeName:string}" bit će premješteni u "{parentName:string}", a svi potomci koji se podudaraju po imenu i rangu bit će rekurzivno spojeni.',
-    nb: 'Alle referanser til noden {treeName:string} «{nodeName:string}» vil bli erstattet med «{parentName:string}», og alle underordnede av «{nodeName:string}» vil bli flyttet til «{parentName:string}». Underordnede med samme navn og rang vil selv bli slått sammen automatisk.',
+    nb: 'Alle referanser til noden {treeName:string} «{nodeName:string}» vil bli erstattet med «{parentName:string}», og alle underordnede av «{nodeName:string}» vil bli flyttet til «{parentName:string}». Underordnede med samme navn og nivå vil selv bli slått sammen automatisk.',
   },
   synonymizeNode: {
     'en-us': 'Synonymize node',
@@ -558,7 +558,7 @@ export const treeText = createDictionary({
     `,
     'en-us': 'Synonymized {collectionObjectTable:string} Count',
     'de-ch': 'Synonymisiert {collectionObjectTable:string} Zählung',
-    'es-es': 'Conteo de sinónimos {collectionObjectTable:string}',
+    'es-es': 'Conteo {collectionObjectTable:string} Sinonimizado',
     'fr-fr': 'Compte synonymisé {collectionObjectTable:string}',
     'hr-hr': 'Sinonimizirani {collectionObjectTable:string} broj',
     nb: 'Synonymisert {collectionObjectTable:string}-antall',
