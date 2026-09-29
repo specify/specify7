@@ -336,7 +336,7 @@ export function AutoComplete<T>({
         const isOverflowing = inputBottom + listHeight > parentBottom;
         if (isOverflowing) {
           dataList.style.top = '';
-          dataList.style.bottom = `${document.body.clientHeight - inputTop}px`;
+          dataList.style.bottom = `${globalThis.innerHeight - inputTop}px`;
         } else {
           dataList.style.top = `${inputBottom}px`;
           dataList.style.bottom = '';
