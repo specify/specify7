@@ -69,8 +69,7 @@ export type QueryResultsProps = {
    */
   readonly fetchSize: number;
   readonly fetchResults:
-    | ((offset: number) => Promise<RA<QueryResultRow>>)
-    | undefined;
+    ((offset: number) => Promise<RA<QueryResultRow>>) | undefined;
   readonly fetchCount: (() => Promise<number>) | undefined;
   readonly totalCount: number | undefined;
   readonly fieldSpecs: RA<QueryFieldSpec>;

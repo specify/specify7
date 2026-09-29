@@ -1,6 +1,7 @@
 import { within } from '@testing-library/react';
 import React from 'react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
+
 import { batchEditText } from '../../../localization/batchEdit';
 import { commonText } from '../../../localization/common';
 import { interactionsText } from '../../../localization/interactions';
@@ -11,10 +12,10 @@ import { mount } from '../../../tests/reactUtils';
 import * as ajaxModule from '../../../utils/ajax';
 import type { RA } from '../../../utils/types';
 import { LoadingContext } from '../../Core/Contexts';
-import { UnloadProtectsContext } from '../../Router/UnloadProtect';
 import { tables } from '../../DataModel/tables';
 import { userPreferences } from '../../Preferences/userPreferences';
 import type { QueryField } from '../../QueryBuilder/helpers';
+import { UnloadProtectsContext } from '../../Router/UnloadProtect';
 import type { MappingPath } from '../../WbPlanView/Mapper';
 import { formatTreeRank } from '../../WbPlanView/mappingHelpers';
 import { BatchEditFromQuery } from '../index';
@@ -35,9 +36,13 @@ async function withoutActWarnings(
 }
 
 overrideAjax('/api/workbench/dataset/?isupdate=1', []);
-overrideAjax('/stored_query/batch_edit/', { id: datasetId }, {
-  method: 'POST',
-});
+overrideAjax(
+  '/stored_query/batch_edit/',
+  { id: datasetId },
+  {
+    method: 'POST',
+  }
+);
 
 const queryField = (mappingPath: MappingPath): QueryField => ({
   id: 0,
@@ -73,8 +78,7 @@ function render({
     void promise;
   };
   return mount(
-    <MemoryRouter 
-      initialEntries={['/']}>
+    <MemoryRouter initialEntries={['/']}>
       <UnloadProtectsContext.Provider value={[]}>
         <LoadingContext.Provider value={handleLoading}>
           <Routes>
@@ -128,8 +132,10 @@ describe('the Batch Edit button', () => {
   test('creates the data set and opens it', async () => {
     const { getByRole, findByText, user } = render();
     await withoutActWarnings(async () => {
-      await user.click(getByRole('button', { name: batchEditText.batchEdit() }));
-      expect(await findByText('Data set opened')).toBeInTheDocument();
+      await user.click(
+        getByRole('button', { name: batchEditText.batchEdit() })
+      );
+      await expect(findByText('Data set opened')).resolves.toBeInTheDocument();
     });
   });
 });
@@ -141,7 +147,7 @@ describe('the unsaved query guard', () => {
     expect(getByRole('dialog')).toHaveTextContent(
       queryText.unsavedChangesInQuery()
     );
-    expect(queryByText('Data set opened')).toBeNull();
+    expect(queryByText('Data set opened')).not.toBeInTheDocument();
   });
 
   test('warns when the query resource itself is unsaved', async () => {
@@ -155,9 +161,11 @@ describe('the unsaved query guard', () => {
   test('the warning can be dismissed', async () => {
     const { getByRole, queryByRole, user } = render({ saveRequired: true });
     await withoutActWarnings(async () => {
-      await user.click(getByRole('button', { name: batchEditText.batchEdit() }));
+      await user.click(
+        getByRole('button', { name: batchEditText.batchEdit() })
+      );
       await user.click(getByRole('button', { name: commonText.close() }));
-      expect(queryByRole('dialog')).toBeNull();
+      expect(queryByRole('dialog')).not.toBeInTheDocument();
     });
   });
 });
@@ -165,16 +173,22 @@ describe('the unsaved query guard', () => {
 // Enable raltionships in user preferences.
 function mockEnableRelationships(enabled: boolean): void {
   const realGet = userPreferences.get.bind(userPreferences);
-  jest.spyOn(userPreferences, 'get').mockImplementation(((
-    category: string,
-    subcategory: string,
-    item: string
-  ) =>
-    category === 'batchEdit' &&
-    subcategory === 'editor' &&
-    item === 'enableRelationships'
-      ? enabled
-      : realGet(category as never, subcategory as never, item as never)) as never);
+  jest
+    .spyOn(userPreferences, 'get')
+    .mockImplementation(((
+      category: string,
+      subcategory: string,
+      item: string
+    ) =>
+      category === 'batchEdit' &&
+      subcategory === 'editor' &&
+      item === 'enableRelationships'
+        ? enabled
+        : realGet(
+            category as never,
+            subcategory as never,
+            item as never
+          )) as never);
 }
 
 describe('the enable relationships preference', () => {
@@ -192,13 +206,19 @@ describe('the enable relationships preference', () => {
       const ajax = jest.spyOn(ajaxModule, 'ajax');
       const { getByRole, findByText, user } = render();
       await withoutActWarnings(async () => {
-        await user.click(getByRole('button', { name: batchEditText.batchEdit() }));
-        expect(await findByText('Data set opened')).toBeInTheDocument();
+        await user.click(
+          getByRole('button', { name: batchEditText.batchEdit() })
+        );
+        await expect(
+          findByText('Data set opened')
+        ).resolves.toBeInTheDocument();
       });
       expect(ajax).toHaveBeenCalledWith(
         '/stored_query/batch_edit/',
         expect.objectContaining({
-          body: expect.objectContaining({ omitrelationships: omitRelationships }),
+          body: expect.objectContaining({
+            omitrelationships: omitRelationships,
+          }),
         })
       );
     }
@@ -217,9 +237,12 @@ const missingRank = (rank: string): string =>
 
 describe('the missing rank dialog', () => {
   test('appears when ranks are missing', async () => {
-    const { getByRole, findByRole, queryByText, user } = renderTaxonQuery('Genus');
+    const { getByRole, findByRole, queryByText, user } =
+      renderTaxonQuery('Genus');
     await withoutActWarnings(async () => {
-      await user.click(getByRole('button', { name: batchEditText.batchEdit() }));
+      await user.click(
+        getByRole('button', { name: batchEditText.batchEdit() })
+      );
       const dialog = await findByRole('dialog');
       expect(dialog).toHaveTextContent(batchEditText.missingRanksInQuery());
       expect(
@@ -227,7 +250,7 @@ describe('the missing rank dialog', () => {
           .getAllByRole('listitem')
           .map((item) => item.textContent)
       ).toEqual(['Subgenus', 'Species', 'Subspecies'].map(missingRank));
-      expect(queryByText('Data set opened')).toBeNull();
+      expect(queryByText('Data set opened')).not.toBeInTheDocument();
     });
   });
 
@@ -235,21 +258,28 @@ describe('the missing rank dialog', () => {
     const { getByRole, findByText, queryByRole, user } =
       renderTaxonQuery('Subspecies');
     await withoutActWarnings(async () => {
-      await user.click(getByRole('button', { name: batchEditText.batchEdit() }));
-      expect(await findByText('Data set opened')).toBeInTheDocument();
-      expect(queryByRole('dialog')).toBeNull();
+      await user.click(
+        getByRole('button', { name: batchEditText.batchEdit() })
+      );
+      await expect(findByText('Data set opened')).resolves.toBeInTheDocument();
+      expect(queryByRole('dialog')).not.toBeInTheDocument();
     });
   });
 
   test('continuing creates the data set', async () => {
-    const { getByRole, findByRole, findByText, user } = renderTaxonQuery('Genus');
+    const { getByRole, findByRole, findByText, user } =
+      renderTaxonQuery('Genus');
     await withoutActWarnings(async () => {
-      await user.click(getByRole('button', { name: batchEditText.batchEdit() }));
+      await user.click(
+        getByRole('button', { name: batchEditText.batchEdit() })
+      );
       const dialog = await findByRole('dialog');
       await user.click(
-        within(dialog).getByRole('button', { name: interactionsText.continue() })
+        within(dialog).getByRole('button', {
+          name: interactionsText.continue(),
+        })
       );
-      expect(await findByText('Data set opened')).toBeInTheDocument();
+      await expect(findByText('Data set opened')).resolves.toBeInTheDocument();
     });
   });
 
@@ -257,13 +287,15 @@ describe('the missing rank dialog', () => {
     const { getByRole, findByRole, queryByRole, queryByText, user } =
       renderTaxonQuery('Genus');
     await withoutActWarnings(async () => {
-      await user.click(getByRole('button', { name: batchEditText.batchEdit() }));
+      await user.click(
+        getByRole('button', { name: batchEditText.batchEdit() })
+      );
       const dialog = await findByRole('dialog');
       await user.click(
         within(dialog).getByRole('button', { name: commonText.close() })
       );
-      expect(queryByRole('dialog')).toBeNull();
-      expect(queryByText('Data set opened')).toBeNull();
+      expect(queryByRole('dialog')).not.toBeInTheDocument();
+      expect(queryByText('Data set opened')).not.toBeInTheDocument();
     });
   });
 });
