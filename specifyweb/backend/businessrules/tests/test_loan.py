@@ -1,3 +1,5 @@
+from django.utils import timezone
+
 from specifyweb.specify import models
 from specifyweb.specify.tests.test_api import ApiTests
 from ..exceptions import BusinessRuleException
@@ -94,3 +96,21 @@ class LoanTests(ApiTests):
             fetched_loan.loanpreparations.count(),
             0,
         )
+
+    def test_fill_loan_number_and_dates(self):
+        loan = models.Loan.objects.create(
+            loannumber='LOAN-DATES-001',
+            discipline=self.discipline,
+            loandate=timezone.now(),
+            originalduedate=timezone.now(),
+            currentduedate=timezone.now(),
+            datereceived=timezone.now(),
+        )
+
+        fetched_loan = models.Loan.objects.get(id=loan.id)
+
+        self.assertEqual(fetched_loan.loannumber, 'LOAN-DATES-001')
+        self.assertIsNotNone(fetched_loan.loandate)
+        self.assertIsNotNone(fetched_loan.originalduedate)
+        self.assertIsNotNone(fetched_loan.currentduedate)
+        self.assertIsNotNone(fetched_loan.datereceived)
