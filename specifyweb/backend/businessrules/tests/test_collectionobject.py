@@ -47,7 +47,46 @@ class CollectionObjectTests(ApiTests):
         self.assertEqual(fetched_object.accession, accession)
         self.assertEqual(fetched_object.accession.accessionnumber, "Test Accession")
 
-    
+    def test_add_new_accession_to_collectionobject(self):
+        accession = Accession.objects.create(
+            accessionnumber="New Test Accession",
+            division=self.division,
+        )
+
+        collection_object = Collectionobject.objects.create(
+            collection=self.collection,
+            accession=accession,
+        )
+
+        fetched_object = Collectionobject.objects.get(id=collection_object.id)
+        self.assertEqual(fetched_object.accession, accession)
+        self.assertEqual(fetched_object.accession.accessionnumber, "New Test Accession")
+
+    def test_add_cataloger_with_existing_agent(self):
+        collection_object = Collectionobject.objects.create(
+            collection=self.collection,
+            cataloger=self.agent,
+        )
+
+        fetched_object = Collectionobject.objects.get(id=collection_object.id)
+        self.assertEqual(fetched_object.cataloger, self.agent)
+        self.assertEqual(fetched_object.cataloger.id, self.agent.id)
+
+    def test_add_new_cataloger_new_agent(self):
+        new_agent = Agent.objects.create(
+            username="new_cataloger",
+            division=self.division,
+        )
+
+        collection_object = Collectionobject.objects.create(
+            collection=self.collection,
+            cataloger=new_agent,
+        )
+
+        fetched_object = Collectionobject.objects.get(id=collection_object.id)
+        self.assertEqual(fetched_object.cataloger, new_agent)
+        self.assertEqual(fetched_object.cataloger.id, new_agent.id)
+
     def test_default_collectionobjecttype(self):
         default_type = Collectionobjecttype.objects.create(
             name="default type",
