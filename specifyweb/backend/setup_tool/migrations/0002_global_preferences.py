@@ -119,13 +119,20 @@ def migrate_collection_preferences(legacy_resources, apps):
         collection = Collection.objects.filter(id=collection_id).first()
         if collection is None:
             continue
-        directory, _ = Spappresourcedir.objects.get_or_create(
-            collection_id=collection.id,
-            discipline_id=collection.discipline_id,
-            usertype=None,
-            ispersonal=False,
-            specifyuser=None,
-        )
+        directory_filters = {
+            'collection_id': collection.id,
+            'discipline_id': collection.discipline_id,
+            'usertype': None,
+            'ispersonal': False,
+            'specifyuser': None,
+        }
+        directory = Spappresourcedir.objects.filter(
+            **directory_filters
+        ).first()
+        if directory is None:
+            directory = Spappresourcedir.objects.create(
+                **directory_filters
+            )
         resource, _ = Spappresource.objects.get_or_create(
             spappresourcedir=directory,
             name='CollectionPreferences',
