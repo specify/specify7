@@ -380,7 +380,6 @@ export function searchFields({
             : field.name,
         ],
         label: [
-          fieldSearchLabel(current.table.label),
           ...current.relationshipLabels,
           fieldSearchLabel(field.label),
         ].join(' → '),
@@ -444,7 +443,6 @@ export function searchFields({
               addResult({
                 mappingPath: [...rankPath, field.name],
                 label: [
-                  fieldSearchLabel(current.table.label),
                   ...current.relationshipLabels,
                   rankMatches
                     ? rankLabel
@@ -522,7 +520,6 @@ export function searchFields({
           addResult({
             mappingPath: [...relationshipPath, formattedEntry],
             label: [
-              fieldSearchLabel(current.table.label),
               ...current.relationshipLabels,
               fieldSearchLabel(relationship.label),
               relationshipIsToManyField

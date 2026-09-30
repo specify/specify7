@@ -34,6 +34,29 @@ test('searchFields matches relationship names and returns complete paths', () =>
   );
 });
 
+test('searchFields does not prefix downstream fields with the leaf table', () => {
+  const results = searchFields({
+    baseTableName: 'CollectionObject',
+    search: 'Country',
+    spec: navigatorSpecs.wbPlanView,
+  });
+
+  expect(results).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        mappingPath: [
+          'collectingEvent',
+          'locality',
+          'geography',
+          '$Country',
+          'name',
+        ],
+        label: expect.not.stringMatching(/^Geography →/u),
+      }),
+    ])
+  );
+});
+
 test('searchFields includes aggregate and formatted relationship options', () => {
   const aggregateResults = searchFields({
     baseTableName: 'CollectionObject',
