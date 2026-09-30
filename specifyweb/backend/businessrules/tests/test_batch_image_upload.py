@@ -1,14 +1,12 @@
-from unittest.mock import patch
 import json
+from unittest.mock import patch
 
 from django.test import Client
-from django.db import transaction
 
 from specifyweb.backend.stored_queries.tests.tests import SQLAlchemySetup
 from specifyweb.backend.stored_queries.tests.test_views.raw_query import (
     get_simple_query,
 )
-from specifyweb.specify import models
 
 
 class TestCollectionobjectCatnumber(SQLAlchemySetup):
@@ -16,35 +14,24 @@ class TestCollectionobjectCatnumber(SQLAlchemySetup):
     def test_match_collectionobject_by_cat_number(self, session_context):
         session_context.return_value = TestCollectionobjectCatnumber.test_session_context()
 
-        with transaction.atomic():
-            models.Collectionobject.objects.create(
-                catalognumber='num-add',
-                collection=self.collection,
-                collectionmemberid=1,
-            )
-
         target = self.collectionobjects[0]
         target.catalognumber = "123"
         target.save()
 
-
         c = Client()
         c.force_login(self.specifyuser)
-        response = c.post(f'/stored_query/ephemeral/', get_simple_query(self.specifyuser), content_type="application/json")
+
+       
+        query = get_simple_query(self.specifyuser)
+        query["fields"][0].update({
+            "operstart": 10,
+            "startvalue": "123",
+        })
+
+        response = c.post("/stored_query/ephemeral/",query,content_type="application/json",)
         
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-                    {'results': [
-                            [target.id, '123'],
-                            [target.id, 'num-1'],
-                            [target.id, 'num-2'],
-                            [target.id, 'num-3'],
-                            [target.id, 'num-4'],
-                            [target.id, 'num-add']
-                        ]
-                    },
-                    json.loads(response.content.decode())
-                )
-
-
-
+            json.loads(response.content.decode()),
+            {"results": [[target.id, "123"]]},
+        )
