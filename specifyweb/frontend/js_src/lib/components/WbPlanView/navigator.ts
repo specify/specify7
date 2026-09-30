@@ -239,6 +239,7 @@ export type FieldSearchResult = {
 
 const fieldSearchDepthLimit = 6;
 const fieldSearchResultLimit = 500;
+const fieldSearchVisitedStateLimit = 10_000;
 
 type FieldSearchPathPreference = {
   readonly baseTableName: keyof Tables;
@@ -286,17 +287,21 @@ const getFieldSearchPathPriority = (
 /** Find selectable fields in downstream relationships in join order. */
 export function searchFields({
   baseTableName,
+  limit = fieldSearchResultLimit,
+  offset = 0,
   search,
   showHiddenFields = false,
   spec,
 }: {
   readonly baseTableName: keyof Tables;
+  readonly limit?: number;
+  readonly offset?: number;
   readonly search: string;
   readonly showHiddenFields?: boolean;
   readonly spec: NavigatorSpec;
 }): RA<FieldSearchResult> {
   const normalizedSearch = search.trim().toLocaleLowerCase();
-  if (normalizedSearch.length === 0) return [];
+  if (normalizedSearch.length === 0 || limit <= 0) return [];
 
   type QueueItem = {
     readonly table: SpecifyTable;
@@ -320,14 +325,24 @@ export function searchFields({
     },
   ];
   const results: FieldSearchResult[] = [];
+  let queueIndex = 0;
+  let visitedStateCount = 0;
+
+  const addResult = (result: FieldSearchResult): void => {
+    if (results.length < fieldSearchResultLimit) results.push(result);
+  };
 
   const matches = (values: readonly string[]): boolean =>
     values.some((value) =>
       value.toLocaleLowerCase().includes(normalizedSearch)
     );
 
-  while (queue.length > 0 && results.length < fieldSearchResultLimit) {
-    const current = queue.shift()!;
+  while (
+    queueIndex < queue.length &&
+    visitedStateCount < fieldSearchVisitedStateLimit
+  ) {
+    const current = queue[queueIndex++]!;
+    visitedStateCount += 1;
     const fields = [current.table.idField, ...current.table.fields];
 
     fields.forEach((field) => {
@@ -352,7 +367,7 @@ export function searchFields({
       )
         return;
 
-      results.push({
+      addResult({
         mappingPath: [...current.mappingPath, field.name],
         label: [
           fieldSearchLabel(current.table.label),
@@ -416,7 +431,7 @@ export function searchFields({
                 (spec.useSchemaOverrides
                   ? field.overrides.isHidden
                   : field.isHidden);
-              results.push({
+              addResult({
                 mappingPath: [...rankPath, field.name],
                 label: [
                   fieldSearchLabel(current.table.label),
@@ -491,7 +506,7 @@ export function searchFields({
           ...(relationshipIsToManyField ? [formatToManyIndex(1)] : []),
         ];
         if (matches([relationship.name, fieldSearchLabel(relationship.label)]))
-          results.push({
+          addResult({
             mappingPath: [...relationshipPath, formattedEntry],
             label: [
               fieldSearchLabel(current.table.label),
@@ -522,28 +537,30 @@ export function searchFields({
   }
 
   const specialPath = ['determinations', 'taxon'];
-  return results.sort((a, b) => {
-    const hiddenOrder = Number(a.isHidden) - Number(b.isHidden);
-    if (hiddenOrder !== 0) return hiddenOrder;
-    const depthOrder = a.joinCount - b.joinCount;
-    if (depthOrder !== 0) return depthOrder;
-    const pathPriorityOrder =
-      getFieldSearchPathPriority(baseTableName, a.mappingPath) -
-      getFieldSearchPathPriority(baseTableName, b.mappingPath);
-    if (pathPriorityOrder !== 0) return pathPriorityOrder;
-    const searchRankOrder = a.searchRank - b.searchRank;
-    if (searchRankOrder !== 0) return searchRankOrder;
-    const specialOrder = (path: MappingPath): number =>
-      baseTableName === 'CollectionObject' &&
-      path.includes(specialPath[0]) &&
-      path.includes(specialPath[1])
-        ? 0
-        : 1;
-    return (
-      specialOrder(a.mappingPath) - specialOrder(b.mappingPath) ||
-      a.label.localeCompare(b.label)
-    );
-  });
+  return results
+    .sort((a, b) => {
+      const hiddenOrder = Number(a.isHidden) - Number(b.isHidden);
+      if (hiddenOrder !== 0) return hiddenOrder;
+      const depthOrder = a.joinCount - b.joinCount;
+      if (depthOrder !== 0) return depthOrder;
+      const pathPriorityOrder =
+        getFieldSearchPathPriority(baseTableName, a.mappingPath) -
+        getFieldSearchPathPriority(baseTableName, b.mappingPath);
+      if (pathPriorityOrder !== 0) return pathPriorityOrder;
+      const searchRankOrder = a.searchRank - b.searchRank;
+      if (searchRankOrder !== 0) return searchRankOrder;
+      const specialOrder = (path: MappingPath): number =>
+        baseTableName === 'CollectionObject' &&
+        path.includes(specialPath[0]) &&
+        path.includes(specialPath[1])
+          ? 0
+          : 1;
+      return (
+        specialOrder(a.mappingPath) - specialOrder(b.mappingPath) ||
+        a.label.localeCompare(b.label)
+      );
+    })
+    .slice(offset, offset + limit);
 }
 
 /**

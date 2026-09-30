@@ -134,6 +134,30 @@ test('searchFields returns no results for empty input', () => {
   ).toEqual([]);
 });
 
+test('searchFields supports bounded result windows', () => {
+  const allResults = searchFields({
+    baseTableName: 'CollectionObject',
+    search: 'taxon',
+    spec: navigatorSpecs.wbPlanView,
+  });
+  const firstResults = searchFields({
+    baseTableName: 'CollectionObject',
+    limit: 3,
+    search: 'taxon',
+    spec: navigatorSpecs.wbPlanView,
+  });
+  const nextResults = searchFields({
+    baseTableName: 'CollectionObject',
+    limit: 3,
+    offset: 3,
+    search: 'taxon',
+    spec: navigatorSpecs.wbPlanView,
+  });
+
+  expect(firstResults).toEqual(allResults.slice(0, 3));
+  expect(nextResults).toEqual(allResults.slice(3, 6));
+});
+
 test('searchFields tolerates hidden-field searches across unconfigured trees', () => {
   expect(() =>
     searchFields({
