@@ -2,6 +2,7 @@ import json
 from unittest.mock import patch
 
 from django.test import Client
+from specifyweb.specify import models
 
 from specifyweb.backend.stored_queries.tests.tests import SQLAlchemySetup
 from specifyweb.backend.stored_queries.tests.test_views.raw_query import (
@@ -67,3 +68,38 @@ class TestCollectionobjectAltCatalogNumber(SQLAlchemySetup):
             json.loads(response.content.decode()),
             {"results": [[altcat.id, "123"]]},
         )
+
+class TestTaxonFullname(SQLAlchemySetup):
+    @patch("specifyweb.backend.stored_queries.execution.models.session_context")
+    def test_match_taxon_by_full_name(self, session_context):
+        session_context.return_value = TestTaxonFullname.test_session_context()
+
+        root = self.taxontreedef.treedefitems.create(name="Taxonomy Root", rankid=0)
+        taxon = root.treeentries.create(
+            name="John Doe",
+            fullname="John Doe",
+            definition=self.taxontreedef,
+            rankid=root.rankid,
+        )
+        models.Determination.objects.create(
+            collectionobject=self.collectionobjects[0],
+            taxon=taxon,
+            iscurrent=True,
+        )
+
+        c = Client()
+        c.force_login(self.specifyuser)
+
+        query = get_simple_query(self.specifyuser)
+        query["fields"][0].update({
+            "tablelist": "1,9-determinations,4",
+            "stringid": "1,9-determinations,4.taxon.fullname",
+            "fieldname": "fullname",
+            "operstart": 1,
+            "startvalue": "John Doe",
+        })
+
+        response = c.post( "/stored_query/ephemeral/",query,content_type="application/json",)
+
+        self.assertEqual(response.status_code, 200, response.content.decode())
+        self.assertEqual(json.loads(response.content.decode()),{"results": [[self.collectionobjects[0].id, "John Doe"]]},)
