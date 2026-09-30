@@ -103,3 +103,30 @@ class TestTaxonFullname(SQLAlchemySetup):
 
         self.assertEqual(response.status_code, 200, response.content.decode())
         self.assertEqual(json.loads(response.content.decode()),{"results": [[self.collectionobjects[0].id, "John Doe"]]},)
+
+class TestCollectingEventGUID(SQLAlchemySetup):
+    @patch("specifyweb.backend.stored_queries.execution.models.session_context")
+    def test_match_collecting_event_by_guid(self, session_context):
+        session_context.return_value = TestCollectingEventGUID.test_session_context()
+
+        collectingevent = models.Collectingevent.objects.create(
+
+        )
+
+        
+
+        c = Client()
+        c.force_login(self.specifyuser)
+
+        query = get_simple_query(self.specifyuser)
+
+        response = c.post(
+            "/stored_query/ephemeral/",
+            query,
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 200, response.content.decode())
+        self.assertEqual(json.loads(response.content.decode()),{"results": [[self.collectionobjects[0].id, "John Doe"]]},)
+    
+    
