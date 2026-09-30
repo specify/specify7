@@ -3,6 +3,17 @@ from specifyweb.specify import models
 from specifyweb.specify.tests.test_api import ApiTests
 
 class LocalityBusinessRuleTests(ApiTests):
+    def test_create_locality_with_fields(self):
+        locality = models.Locality.objects.create(
+            localityname="Somewhere",
+            srclatlongunit=0,
+            discipline=self.discipline)
+
+        fetched_locality = models.Locality.objects.get(id=locality.id)
+        self.assertEqual(fetched_locality.localityname, "Somewhere")
+        self.assertEqual(fetched_locality.srclatlongunit, 0)
+        self.assertEqual(fetched_locality.discipline, self.discipline)
+
     def test_collectingevents_block_delete(self):
         locality = models.Locality.objects.create(
             localityname="Somewhere",

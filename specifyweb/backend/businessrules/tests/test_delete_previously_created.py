@@ -26,7 +26,7 @@ class TestDeletePreviousVersionObjects(ApiTests):
                 treedef=self.taxontreedef,
             )
         ]
-
+        
         geologic_root = models.Geologictimeperiodtreedefitem.objects.create(
             name='Root geologic time period',
             rankid=0,
@@ -174,7 +174,38 @@ class TestDeletePreviousVersionObjects(ApiTests):
                 deaccessionnumber='Test deaccession',
             )
         ]
+        
+        self.recordset = models.Recordset.objects.create(
+            name='Previous Record set',
+            collectionmemberid=self.collection.id,
+            dbtableid=models.Collectionobject.specify_model.tableId,
+            specifyuser=self.specifyuser,
+            type=0,
+        )
 
+    def test_delete_recordset_created_in_previous_version(self):
+        recordset = self.recordset
+        recordset_id = recordset.id
+        
+        recordset.recordsetitems.create(
+            recordid=self.collectionobjects[0].id
+        )
+        
+        self.assertEqual(
+            recordset.recordsetitems.count(), 1 
+        )
+        
+        recordset.delete()
+                
+        self.assertFalse(
+            models.Recordset.objects.filter(id=recordset_id).exists()
+        )
+       
+        self.assertFalse(
+            models.Recordsetitem.objects.filter(recordset_id=recordset_id).exists()
+        )
+
+        
     def test_delete_collectionobject_created_in_previous_version(self):
         collectionobject = self.collectionobjects[0]
         object_id = collectionobject.id
@@ -389,13 +420,44 @@ class TestDeletePreviousVersionObjects(ApiTests):
         )
 
     def test_delete_loan_created_in_previous_version(self):
+        self._create_prep_type()
+
         loan = self.loans[0]
+
+        first_prep = self._create_prep(self.collectionobjects[0], None)
+        second_prep = self._create_prep(self.collectionobjects[1], None)
+
+        loan.loanpreparations.create(
+            discipline=self.discipline,
+            preparation=first_prep,
+        )
+        loan.loanpreparations.create(
+            discipline=self.discipline,
+            preparation=second_prep,
+        )
+
         object_id = loan.id
 
         loan.delete()
 
         self.assertEqual(
             models.Loan.objects.filter(id=object_id).count(),
+            0,
+        )
+        self.assertEqual(
+            models.Loanpreparation.objects.filter(loan_id=object_id).count(),
+            0,
+        )
+
+        first_prep.refresh_from_db()
+        second_prep.refresh_from_db()
+
+        self.assertEqual(
+            first_prep.loanpreparations.count(),
+            0,
+        )
+        self.assertEqual(
+            second_prep.loanpreparations.count(),
             0,
         )
 

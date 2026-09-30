@@ -1086,6 +1086,10 @@ def build_query(
         )
 
         if field is None:
+            # Keep the result column in place when a displayed tree rank is
+            # missing, while omitting its filter and sort behavior.
+            if fs.display:
+                query = query.add_columns(sql.null())
             continue
 
         formatted_field = None
