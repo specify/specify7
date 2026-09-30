@@ -146,22 +146,6 @@ def migrate_collection_preferences(legacy_resources, apps):
         merge_resource_values(resource, values, Spappresourcedata)
 
 
-def delete_remote_preferences(legacy_resources, apps):
-    Spappresource = apps.get_model('specify', 'Spappresource')
-    Spappresourcedir = apps.get_model('specify', 'Spappresourcedir')
-    directory_ids = {
-        resource_data.spappresource.spappresourcedir_id
-        for resource_data in legacy_resources
-    }
-    Spappresource.objects.filter(
-        spappresourcedir_id__in=directory_ids,
-        name='preferences',
-    ).delete()
-    for directory_id in directory_ids:
-        if not Spappresource.objects.filter(spappresourcedir_id=directory_id).exists():
-            Spappresourcedir.objects.filter(id=directory_id).delete()
-
-
 def migrate_global_preferences(apps, schema_editor):
     Spappresource = apps.get_model('specify', 'Spappresource')
     Spappresourcedir = apps.get_model('specify', 'Spappresourcedir')
@@ -215,7 +199,6 @@ def migrate_global_preferences(apps, schema_editor):
         )
 
     migrate_collection_preferences(legacy_resources, apps)
-    delete_remote_preferences(legacy_resources, apps)
 
 
 class Migration(migrations.Migration):
