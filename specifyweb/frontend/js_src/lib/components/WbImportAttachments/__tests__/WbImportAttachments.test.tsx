@@ -69,9 +69,7 @@ afterEach(() => {
 // [Import Attachments] Select multiple image files
 test('selects multiple image files', async () => {
   const { container, getByRole, user } = mount(
-    <Router.MemoryRouter
-      useTransitions={true}
-    >
+    <Router.MemoryRouter useTransitions={true}>
       <SetMenuContext.Provider value={jest.fn()}>
         <WbImportAttachmentsView />
       </SetMenuContext.Provider>
@@ -105,9 +103,7 @@ test('selects multiple image files', async () => {
 // [Import Attachments] Select different image file types
 test('selects different image file types', async () => {
   const { container, getByRole, user } = mount(
-    <Router.MemoryRouter
-	  useTransitions={true}
-    >
+    <Router.MemoryRouter useTransitions={true}>
       <SetMenuContext.Provider value={jest.fn()}>
         <WbImportAttachmentsView />
       </SetMenuContext.Provider>
@@ -154,10 +150,7 @@ test('imports selected attachment files', async () => {
     .mockResolvedValue(deserializeResource(testAttachment));
 
   const { container, findByText, getByRole, user } = mount(
-    <Router.MemoryRouter
-      initialEntries={['/']}
-	  useTransitions={true}
-    >
+    <Router.MemoryRouter initialEntries={['/']} useTransitions={true}>
       <UnloadProtectsContext.Provider value={[]}>
         <Router.Routes>
           <Router.Route

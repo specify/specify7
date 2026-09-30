@@ -310,7 +310,7 @@ export const userText = createDictionary({
       'Você não tem acesso a nenhum {collectionTable:string} que contenha este recurso por meio da conta atualmente conectada.',
     'hr-hr':
       'Nemate pristup nijednom {collectionTable:string} koji sadrži ovaj resurs putem trenutno prijavljenog računa',
-    nb: 'Du har ikke tilgang til noen {collectionTable:string} som inneholder denne ressursen gjennom kontoen du for øyeblikket er pålogget med.',
+    nb: 'Du har ikke tilgang til noen {collectionTable:string} som inneholder denne ressursen gjennom kontoen du for øyeblikket er pålogget med',
   },
   resourceInaccessible: {
     'en-us':
@@ -787,7 +787,7 @@ export const userText = createDictionary({
       'Observação: a pré-visualização pode estar desatualizada. Salve as alterações para atualizar a pré-visualização.',
     'hr-hr':
       'Napomena: pregled je možda zastario. Spremite promjene da biste ažurirali pregled.',
-    nb: 'Merk: Forhåndsvisningen kan være utdatert. Lagre endringene for å oppdatere forhåndsvisningen.',
+    nb: 'Merk: Forhåndsvisningen kan være utdatert. Lagre endringene for å oppdatere forhåndsvisningen',
   },
   allUsers: {
     'en-us': 'All Users',
@@ -1053,7 +1053,7 @@ export const userText = createDictionary({
       'Considere definir uma senha para este usuário. Usuários sem senha não poderão fazer login.',
     'hr-hr':
       'Razmislite o postavljanju lozinke za ovog korisnika. Korisnici bez lozinke neće se moći prijaviti.',
-    nb: 'Vurder å angi et passord for denne brukeren. Brukere uten passord vil ikke kunne logge på.',
+    nb: 'Vurder å angi et passord for denne brukeren. Brukere uten passord vil ikke kunne logge på',
   },
   setCollections: {
     'en-us': 'Set Collections',
@@ -1125,7 +1125,7 @@ export const userText = createDictionary({
       'Não foi possível carregar completamente os agentes atribuídos porque você não tem acesso de leitura aos registros disciplinares.',
     'hr-hr':
       'Nije moguće u potpunosti učitati dodijeljene agente jer nemate pristup za čitanje disciplinskih zapisa.',
-    nb: 'Kan ikke laste inn tildelte agenter fullstendig fordi du ikke har lesetilgang til Disiplin poster',
+    nb: 'Kan ikke laste inn tildelte agenter fullstendig fordi du ikke har lesetilgang til Disiplin poster.',
   },
   externalIdentityProviders: {
     'en-us': 'External identity providers:',
