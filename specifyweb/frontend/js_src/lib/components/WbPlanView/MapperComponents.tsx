@@ -34,6 +34,7 @@ import {
   DEFAULT_BATCH_EDIT_PREFS,
 } from './Mapper';
 import { getMappingLineData, searchFields } from './navigator';
+import type { NavigatorSpec } from './navigatorSpecs';
 import { navigatorSpecs } from './navigatorSpecs';
 import type {
   ColumnOptions,
@@ -155,12 +156,14 @@ export function MappingView({
   mappingElementProps,
   baseTableName,
   showHiddenFields,
+  searchSpec = navigatorSpecs.wbPlanView,
   onSelectSearchResult: handleSelectSearchResult,
   children,
 }: {
   readonly mappingElementProps: RA<MappingElementProps>;
   readonly baseTableName?: keyof Tables;
   readonly showHiddenFields?: boolean;
+  readonly searchSpec?: NavigatorSpec;
   readonly onSelectSearchResult?: (mappingPath: MappingPath) => void;
   readonly children: JSX.Element | undefined;
 }): JSX.Element | null {
@@ -181,13 +184,13 @@ export function MappingView({
             baseTableName,
             search,
             showHiddenFields,
-            spec: navigatorSpecs.wbPlanView,
+            spec: searchSpec,
           }),
-    [baseTableName, search, showHiddenFields]
+    [baseTableName, search, searchSpec, showHiddenFields]
   );
   React.useEffect(() => {
     setVisibleResultCount(10);
-  }, [baseTableName, search, showHiddenFields]);
+  }, [baseTableName, search, searchSpec, showHiddenFields]);
   React.useEffect(() => {
     if (globalThis.ResizeObserver === undefined || mappingView === null)
       return undefined;

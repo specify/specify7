@@ -472,6 +472,7 @@ function Wrapped({
                     },
                   })}
                   showHiddenFields={showHiddenFields}
+                  searchSpec={navigatorSpecs.queryBuilder}
                   onSelectSearchResult={(mappingPath): void =>
                     dispatch({ type: 'SetMappingViewAction', mappingPath })
                   }

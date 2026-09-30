@@ -71,7 +71,7 @@ test('searchFields resolves tree ranks and rank fields', () => {
   const fullNameResults = searchFields({
     baseTableName: 'CollectionObject',
     search: 'Full Name',
-    spec: navigatorSpecs.wbPlanView,
+    spec: navigatorSpecs.queryBuilder,
   });
 
   expect(speciesResults).toEqual(
@@ -143,6 +143,30 @@ test('searchFields tolerates hidden-field searches across unconfigured trees', (
       spec: navigatorSpecs.wbPlanView,
     })
   ).not.toThrow();
+});
+
+test('searchFields includes read-only fields only for Query Builder', () => {
+  const workBenchResults = searchFields({
+    baseTableName: 'CollectionObject',
+    search: 'timestampModified',
+    spec: navigatorSpecs.wbPlanView,
+  });
+  const queryBuilderResults = searchFields({
+    baseTableName: 'CollectionObject',
+    search: 'timestampModified',
+    spec: navigatorSpecs.queryBuilder,
+  });
+
+  expect(
+    workBenchResults.some(({ mappingPath }) =>
+      mappingPath.includes('timestampModified')
+    )
+  ).toBe(false);
+  expect(
+    queryBuilderResults.some(({ mappingPath }) =>
+      mappingPath.includes('timestampModified')
+    )
+  ).toBe(true);
 });
 
 // TEST: break this test into smaller tests

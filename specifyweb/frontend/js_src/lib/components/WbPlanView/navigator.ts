@@ -397,8 +397,8 @@ export function searchFields({
               if (
                 !spec.isNoRestrictions() &&
                 !spec.includeReadOnly &&
-                !spec.includeAllTreeFields &&
-                field.overrides.isReadOnly
+                field.overrides.isReadOnly &&
+                !(rankMatches && field.name === 'fullName')
               )
                 return false;
               return rankMatches
