@@ -534,6 +534,8 @@ class QueryFieldSpec(
         # print "is auditlog obj format field = " + str(self.is_auditlog_obj_format_field(formatauditobjs))
         # print "############################################################################"
         query, orm_field, field, table = self.add_spec_to_query(query, formatter)
+        if orm_field is None:
+            return query, None, None
         return self.apply_filter(
             query,
             orm_field,

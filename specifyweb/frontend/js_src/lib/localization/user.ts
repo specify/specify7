@@ -224,7 +224,7 @@ export const userText = createDictionary({
     'pt-br':
       'Atualmente, não há nenhum usuário "Especifique" associado à sua conta {providerName:string}. Se você tiver um nome de usuário e senha "Especifique", poderá inseri-los abaixo para associar esse usuário à sua conta {providerName:string} para logins futuros.',
     'hr-hr':
-      'Trenutno nijedan Navedite korisnika nije povezan s vašim {providerName:string} računom. Ako imate Navedite korisničko ime i lozinku, možete ih unijeti u nastavku kako biste tog korisnika povezali s vašim {providerName:string} računom za buduće prijave.',
+      'Trenutno nijedan Navedite korisnika nije povezan s vašim {providerName:string} računom. Ako imate Navedite korisničko ime i lozinku, možete ih unijeti u nastavku kako biste povezali tog korisnika s vašim {providerName:string} računom za buduće prijave.',
     nb: 'Det er for øyeblikket ingen Specify-bruker tilknyttet {providerName:string}-kontoen din. Hvis du har et Specify-brukernavn og -passord, kan du skrive dem inn nedenfor for å tilknytte den brukeren til {providerName:string}-kontoen din for fremtidige pålogginger.',
   },
   generateMasterKey: {
@@ -310,7 +310,7 @@ export const userText = createDictionary({
       'Você não tem acesso a nenhum {collectionTable:string} que contenha este recurso por meio da conta atualmente conectada.',
     'hr-hr':
       'Nemate pristup nijednom {collectionTable:string} koji sadrži ovaj resurs putem trenutno prijavljenog računa',
-    nb: 'Du har ikke tilgang til noen {collectionTable:string} som inneholder denne ressursen gjennom kontoen du for øyeblikket er pålogget med.',
+    nb: 'Du har ikke tilgang til noen {collectionTable:string} som inneholder denne ressursen gjennom kontoen du for øyeblikket er pålogget med',
   },
   resourceInaccessible: {
     'en-us':
@@ -703,7 +703,7 @@ export const userText = createDictionary({
     'fr-fr': "Politiques d'autorisation des rôles",
     'uk-ua': 'Політики дозволів для ролей',
     'de-ch': 'Rollenberechtigungsrichtlinien',
-    'pt-br': 'Políticas de permissão de função',
+    'pt-br': 'Políticas de permissão de funções',
     'hr-hr': 'Pravila o dopuštenjima uloga',
     nb: 'Policyer for rolletillatelser',
   },
@@ -787,7 +787,7 @@ export const userText = createDictionary({
       'Observação: a pré-visualização pode estar desatualizada. Salve as alterações para atualizar a pré-visualização.',
     'hr-hr':
       'Napomena: pregled je možda zastario. Spremite promjene da biste ažurirali pregled.',
-    nb: 'Merk: Forhåndsvisningen kan være utdatert. Lagre endringene for å oppdatere forhåndsvisningen.',
+    nb: 'Merk: Forhåndsvisningen kan være utdatert. Lagre endringene for å oppdatere forhåndsvisningen',
   },
   allUsers: {
     'en-us': 'All Users',
@@ -1053,7 +1053,7 @@ export const userText = createDictionary({
       'Considere definir uma senha para este usuário. Usuários sem senha não poderão fazer login.',
     'hr-hr':
       'Razmislite o postavljanju lozinke za ovog korisnika. Korisnici bez lozinke neće se moći prijaviti.',
-    nb: 'Vurder å angi et passord for denne brukeren. Brukere uten passord vil ikke kunne logge på.',
+    nb: 'Vurder å angi et passord for denne brukeren. Brukere uten passord vil ikke kunne logge på',
   },
   setCollections: {
     'en-us': 'Set Collections',
@@ -1122,10 +1122,10 @@ export const userText = createDictionary({
     'fr-fr':
       "Impossible de charger complètement les agents assignés car vous n'avez pas accès en lecture aux enregistrements de la discipline.",
     'pt-br':
-      'Não foi possível carregar completamente os agentes atribuídos porque você não tem permissão de leitura para acessar os registros disciplinares.',
+      'Não foi possível carregar completamente os agentes atribuídos porque você não tem acesso de leitura aos registros disciplinares.',
     'hr-hr':
       'Nije moguće u potpunosti učitati dodijeljene agente jer nemate pristup za čitanje disciplinskih zapisa.',
-    nb: 'Kan ikke laste inn tildelte agenter fullstendig fordi du ikke har lesetilgang til Disiplin poster',
+    nb: 'Kan ikke laste inn tildelte agenter fullstendig fordi du ikke har lesetilgang til Disiplin poster.',
   },
   externalIdentityProviders: {
     'en-us': 'External identity providers:',
@@ -1324,7 +1324,7 @@ export const userText = createDictionary({
     'es-es': 'Opciones de configuración de cuenta',
     'fr-fr': 'Options de configuration du compte',
     'uk-ua': 'Параметри налаштування облікового запису',
-    'de-ch': 'Optionen zur Kontoeinrichtung',
+    'de-ch': 'Kontoeinrichtungsoptionen',
     'pt-br': 'Opções de configuração da conta',
     'hr-hr': 'Opcije postavljanja računa',
     nb: 'Alternativer for kontooppsett',

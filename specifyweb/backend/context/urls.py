@@ -3,7 +3,6 @@ Defines the urls for the app context subsystem
 """
 
 from django.urls import path
-from django.urls import path
 
 from . import views, user_resources, collection_resources
 from specifyweb.backend.attachment_gw.views import get_settings as attachment_settings
@@ -30,6 +29,7 @@ urlpatterns = [
     path('viewsets.json', views.viewsets),
     path('datamodel.json', views.datamodel),
     path('schema_localization.json', views.schema_localization),
+    path('schema_localization_import.json', views.schema_localization_import),
     path('app.resource', views.app_resource),
     path('available_related_searches.json', views.available_related_searches),
     path('remoteprefs.properties', views.remote_prefs),

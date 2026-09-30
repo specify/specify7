@@ -172,7 +172,7 @@ export const resourcesText = createDictionary({
     'uk-ua': 'Експорт',
     'pt-br': 'Exportações',
     'hr-hr': 'Izvoz',
-    nb: 'Eksport',
+    nb: 'Eksporter',
   },
   expressSearchConfig: {
     'en-us': 'Express Search Config',
@@ -183,7 +183,7 @@ export const resourcesText = createDictionary({
     'de-ch': 'Express Suche Konfigurieren',
     'pt-br': 'Configuração de Busca Expressa',
     'hr-hr': 'Konfiguracija brzog pretraživanja',
-    nb: 'Konfigurer Enkelt søk',
+    nb: 'Konfigurasjon for enkelt søk',
   },
   typeSearches: {
     'en-us': 'Type Searches',
@@ -806,7 +806,7 @@ export const resourcesText = createDictionary({
       'Este formato será usado somente se o valor do campo de condição for igual a essa condição e não for nulo.',
     'hr-hr':
       'Ovaj format će se koristiti samo ako je vrijednost polja uvjeta jednaka ovom uvjetu i nije null.',
-    nb: 'Dette formatet vil bare bli brukt hvis verdien i betingelsesfeltet er lik denne betingelsen og ikke er null.',
+    nb: 'Dette formatet vil bare bli brukt hvis betingelsene er oppfylt og ikke er null.',
   },
   wrongScopeWarning: {
     'en-us':
@@ -825,7 +825,7 @@ export const resourcesText = createDictionary({
       'Este recurso pertence a uma coleção/disciplina diferente daquela em que você está atualmente. Recomenda-se trocar de coleção antes de editar este recurso.',
     'hr-hr':
       'Ovaj resurs pripada drugoj zbirci/disciplini od one u kojoj se trenutno nalazite. Preporučuje se promjena zbirke prije uređivanja ovog resursa.',
-    nb: 'Denne ressursen tilhører en annen samling/disiplin enn den du er i for øyeblikket. Det anbefales å bytte samling før du redigerer denne ressursen.',
+    nb: 'Denne ressursen tilhører en annen samling/disiplinen enn den du er i for øyeblikket. Det anbefales å bytte samling før du redigerer dette.',
   },
   thisFieldName: {
     'en-us': 'This field name (for preview purposes only)',
@@ -970,7 +970,7 @@ export const resourcesText = createDictionary({
     'uk-ua': 'Вам потрібно зберегти цю форму, перш ніж редагувати іншу',
     'pt-br': 'Você precisa salvar este formulário antes de editar outro.',
     'hr-hr': 'Morate spremiti ovaj obrazac prije nego što uredite drugi',
-    nb: 'Du må lagre dette skjemaet før du redigerer et nytt.',
+    nb: 'Du må lagre dette skjemaet før du redigerer et nytt',
   },
   conditionalFormatter: {
     'en-us': 'Conditional Format',
@@ -994,6 +994,17 @@ export const resourcesText = createDictionary({
     'hr-hr': 'Prilagodite formate polja',
     nb: 'Tilpass feltformater',
   },
+  displayFormat: {
+    'en-us': 'Display Format',
+    'de-ch': 'Anzeigeformat',
+    'es-es': 'Formato de visualización',
+    'fr-fr': "Format d'affichage",
+    'ru-ru': 'Формат отображения',
+    'uk-ua': 'Формат відображення',
+    'pt-br': 'Formato de exibição',
+    'hr-hr': 'Format prikaza',
+    nb: 'Visningsformat',
+  },
   expandConditionalField: {
     'en-us': 'Expand Conditional Field',
     'de-ch': 'Bedingtes Feld erweitern',
@@ -1008,7 +1019,7 @@ export const resourcesText = createDictionary({
   collapseConditionalField: {
     'en-us': 'Collapse Conditional Field',
     'de-ch': 'Zusammenbruch des bedingten Feldes',
-    'es-es': 'Colapso del campo condicional',
+    'es-es': 'Campo condicional de colapso',
     'fr-fr': 'Réduire le champ conditionnel',
     'ru-ru': 'Свернуть условное поле',
     'uk-ua': 'Згорнути умовне поле',
@@ -1077,7 +1088,7 @@ export const resourcesText = createDictionary({
       "Консолідована група об'єктів колекції повинна мати дочірній об'єкт первинної колекції",
     'hr-hr':
       'Konsolidirana grupa objekata kolekcije mora imati primarni podređeni objekt kolekcije',
-    nb: 'En konsolidert samlingsobjektgruppe må ha et primært samlingsobjektunderordnet',
+    nb: 'En konsolidert samlingsobjektgruppe må ha et primært underobjekt',
   },
   deletePrimaryRecord: {
     'en-us': 'Primary record CO cannot be deleted.',
@@ -1089,7 +1100,7 @@ export const resourcesText = createDictionary({
     'ru-ru': 'Первичную запись CO удалить невозможно.',
     'uk-ua': 'Основний запис CO неможливо видалити.',
     'hr-hr': 'Primarni zapis CO ne može se izbrisati.',
-    nb: 'Primæroppføring CO kan ikke slettes.',
+    nb: 'Primær-databasepost CO kan ikke slettes.',
   },
   deleteLoanedPrep: {
     'en-us': 'A loaned preparation cannot be deleted',
@@ -1100,7 +1111,7 @@ export const resourcesText = createDictionary({
     'ru-ru': 'Заимствованный препарат удалить невозможно.',
     'uk-ua': 'Позичений препарат не можна видалити',
     'hr-hr': 'Posuđeni preparat se ne može izbrisati',
-    nb: 'Et lånt preparat kan ikke slettes',
+    nb: 'Et utlånt preparat kan ikke slettes',
   },
   deleteGiftedPrep: {
     'en-us': 'A gifted preparation cannot be deleted',
@@ -1111,7 +1122,7 @@ export const resourcesText = createDictionary({
     'ru-ru': 'Одарённый препарат удалить невозможно.',
     'uk-ua': 'Подарований препарат не можна видалити',
     'hr-hr': 'Poklonjena priprema ne može se izbrisati',
-    nb: 'En gavepreparat kan ikke slettes',
+    nb: 'En preparat som er gitt i gave, kan ikke slettes',
   },
   deleteDisposedPrep: {
     'en-us': 'A disposed preparation cannot be deleted',
@@ -1122,12 +1133,12 @@ export const resourcesText = createDictionary({
     'ru-ru': 'Утилизированный препарат удалить невозможно.',
     'uk-ua': 'Викинутий препарат не можна видалити',
     'hr-hr': 'Odbačeni pripravak ne može se izbrisati',
-    nb: 'Et kassert preparat kan ikke slettes',
+    nb: 'Et avhendet preparat kan ikke slettes',
   },
   deleteExchangeOutPrep: {
     'en-us': 'A exchanged out preparation cannot be deleted',
     'de-ch': 'Eine ausgetauschte Zubereitung kann nicht gelöscht werden.',
-    'es-es': 'Una preparación intercambiada no se puede eliminar.',
+    'es-es': 'Una preparación intercambiada no se puede eliminar',
     'fr-fr': 'Une préparation échangée ne peut pas être supprimée',
     'pt-br': 'Uma preparação substituída não pode ser excluída.',
     'ru-ru': 'Заменённый препарат удалить нельзя.',
@@ -1155,7 +1166,7 @@ export const resourcesText = createDictionary({
       'Seleccione un conjunto de árboles taxonómicos con el que continuar:',
     'fr-fr': "Sélectionnez un arbre d'arbres taxonomiques pour continuer :",
     'hr-hr': 'Odaberite jedan skup taksonskog stabla za nastavak:',
-    nb: 'Velg ett taksontresett for å fortsette med:',
+    nb: 'Velg ett taksontre for å fortsette med:',
     'pt-br': 'Selecione um conjunto de árvores taxonômicas para continuar:',
     'ru-ru': 'Выберите один набор таксономических деревьев, чтобы продолжить:',
     'uk-ua': 'Оберіть один набір дерева-таксону з яким продовжувати:',
@@ -1223,10 +1234,10 @@ export const resourcesText = createDictionary({
     'es-es': 'La preparación se utiliza en un préstamo.',
     'fr-fr': 'Cette préparation est en cours de prêt.',
     'pt-br': 'O preparo é utilizado em um empréstimo.',
-    'ru-ru': 'Данный препарат используется в кредите.',
+    'ru-ru': 'Данный препарат используется при оформлении кредита.',
     'uk-ua': 'Препарат використовується у позиці.',
     'hr-hr': 'Priprema se koristi u zajmu.',
-    nb: 'Preparatet brukes i et lån.',
+    nb: 'Preparatet er på utlån.',
   },
   preparationIsNegative: {
     'en-us': 'Preparation count cannot be negative',
@@ -1237,7 +1248,7 @@ export const resourcesText = createDictionary({
     'ru-ru': 'Количество подготовленных образцов не может быть отрицательным.',
     'uk-ua': "Кількість підготовок не може бути від'ємним значенням",
     'hr-hr': 'Broj priprema ne može biti negativan',
-    nb: 'Antall forberedelser kan ikke være negativt',
+    nb: 'Antall av preparater kan ikke være negativt',
   },
   configureField: {
     'en-us': 'Configure field',
@@ -1284,7 +1295,7 @@ export const resourcesText = createDictionary({
       'Предварительный просмотр для форматировщика этого типа недоступен.',
     'uk-ua': 'Попередній перегляд для форматера цього типу недоступний',
     'hr-hr': 'Pregled za formater ove vrste nije dostupan',
-    nb: 'Forhåndsvisning for formatering av denne typen er ikke tilgjengelig',
+    nb: 'Forhåndsvisning for formatering er ikke tilgjengelig',
   },
   nonConformingInline: {
     'en-us': '(non-conforming)',
@@ -1372,7 +1383,7 @@ export const resourcesText = createDictionary({
     'ru-ru': 'Регулярное выражение',
     'uk-ua': 'Регулярний вираз',
     'hr-hr': 'Regularni izraz',
-    nb: 'Regulært uttrykk',
+    nb: 'Regulært uttrykk (regular expression)',
   },
   exampleField: {
     'en-us': 'Example Field',
