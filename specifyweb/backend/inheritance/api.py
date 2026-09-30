@@ -1,15 +1,21 @@
-from typing import Callable, Iterable
+from __future__ import annotations
+from typing import TYPE_CHECKING, Callable, Iterable
 
 from specifyweb.backend.inheritance.utils import get_cat_num_inheritance_setting, get_parent_cat_num_inheritance_setting
 from specifyweb.specify.models import Collectionobjectgroupjoin, Component
-from specifyweb.backend.stored_queries.queryfield import QueryField
+
+# This likely isn't entirely needed, but there is little harm in this as
+# QueryField is only needed as a type, so in the case there would be a cyclical
+# import it would already be handled.
+if TYPE_CHECKING:
+    from specifyweb.backend.stored_queries.queryfield import QueryField
 
 
 def do_nothing[T](items: T) -> T:
     return items
 
 
-def parent_inheritance_query_processor(tableid: int, query_fields: list[QueryField], collection, user) -> Callable[[list], list]:
+def parent_inheritance_query_processor(tableid: int, query_fields: "list[QueryField]", collection, user) -> Callable[[list], list]:
     first_field_names = [qf.fieldspec.join_path[0].name for qf in query_fields if qf.fieldspec.join_path]
     if tableid != 1029 or 'catalogNumber' not in first_field_names:
         return do_nothing
