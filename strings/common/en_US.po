@@ -182,8 +182,8 @@ msgstr "Create"
 #: components/BatchEdit/MissingRanks.tsx:42
 #: components/BatchEdit/QueryError.tsx:23
 #: components/BatchEdit/index.tsx:238
-#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:159
-#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:263
+#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:166
+#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:292
 #: components/BatchIdentify/index.tsx:780
 #: components/BatchIdentify/index.tsx:856
 #: components/BatchIdentify/index.tsx:1009

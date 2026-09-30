@@ -611,8 +611,8 @@ msgid "formatInputAs"
 msgstr "Formater som: {commaSeparatedFormats:string}"
 
 #: components/BatchEdit/index.tsx:241
-#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:142
-#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:151
+#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:147
+#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:156
 #. Used in: Components > Batch Edit > Index ⬤ Batch Edit > __tests__ > Batch Edit From Query
 msgid "unsavedChangesInQuery"
 msgstr "Søket har ulagrede endringer"

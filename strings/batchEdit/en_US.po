@@ -2,20 +2,20 @@ msgid ""
 msgstr "Content-Type: text/plain\n"
 
 #: components/BatchEdit/index.tsx:221
-#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:107
-#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:116
-#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:124
-#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:131
-#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:140
-#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:149
-#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:158
-#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:195
-#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:222
-#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:238
-#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:247
-#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:260
+#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:110
+#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:119
+#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:127
+#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:135
+#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:145
+#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:154
+#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:164
+#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:209
+#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:241
+#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:259
+#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:271
+#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:288
 #: components/BatchEdit/__tests__/MissingRanks.test.tsx:110
-#: components/BatchEdit/__tests__/MissingRanks.test.tsx:143
+#: components/BatchEdit/__tests__/MissingRanks.test.tsx:144
 #: components/Header/menuItemDefinitions.ts:117
 #: components/Preferences/UserDefinitions.tsx:2355
 #: components/Router/OverlayRoutes.tsx:272
@@ -49,7 +49,7 @@ msgid "addTreeRank"
 msgstr "The following ranks will be added to the query to enable batch editing"
 
 #: components/BatchEdit/MissingRanks.tsx:89
-#: components/BatchEdit/__tests__/MissingRanks.test.tsx:145
+#: components/BatchEdit/__tests__/MissingRanks.test.tsx:147
 #. Used in: Components > Batch Edit > Missing Ranks ⬤ Batch Edit > __tests__ > Missing Ranks
 msgid "pickTreesToFilter"
 msgstr ""
@@ -67,7 +67,7 @@ msgid "errorInQuery"
 msgstr "Following errors were found in the query"
 
 #: components/BatchEdit/MissingRanks.tsx:48
-#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:224
+#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:244
 #. Used in: Components > Batch Edit > Missing Ranks ⬤ Batch Edit > __tests__ > Batch Edit From Query
 msgid "missingRanksInQuery"
 msgstr "Query requires additional ranks for batch editing"
@@ -192,7 +192,7 @@ msgstr ""
 "the record is empty or not. Default value is {default: boolean}"
 
 #: components/BatchEdit/index.tsx:215
-#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:118
+#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:121
 #. Used in: Components > Batch Edit > Index ⬤ Batch Edit > __tests__ > Batch Edit From Query
 msgid "batchEditDisabled"
 msgstr "Batch Edit is disabled for system tables and scoping hierarchy tables"

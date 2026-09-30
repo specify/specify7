@@ -237,7 +237,7 @@ msgid "noPreparationsWarning"
 msgstr "Жоден із цих записів не має підготовки. Бажаєте продовжити?"
 
 #: components/BatchEdit/MissingRanks.tsx:44
-#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:250
+#: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:276
 #: components/BatchEdit/__tests__/MissingRanks.test.tsx:117
 #: components/FormSliders/AttachmentWarningDeletion.tsx:53
 #: components/Interactions/InteractionDialog.tsx:480
