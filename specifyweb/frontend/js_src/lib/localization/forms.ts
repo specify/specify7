@@ -1132,7 +1132,7 @@ export const formsText = createDictionary({
     'de-ch': 'Dieses Feld ist erforderlich. Es muss übertragen werden',
     'pt-br': 'Este campo é obrigatório. Ele deve ser mantido.',
     'hr-hr': 'Ovo polje je obavezno. Mora se prenijeti dalje.',
-    nb: 'Dette feltet er obligatorisk. Det må tas med videre.',
+    nb: 'Dette feltet er obligatorisk. Det må tas med videre',
   },
   bulkCarryForwardRangeEnabled: {
     'en-us': 'Show Bulk Carry Forward range',

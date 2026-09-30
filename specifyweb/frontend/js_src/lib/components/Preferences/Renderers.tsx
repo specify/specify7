@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { usePromise } from '../../hooks/useAsyncState';
 import { useTriggerState } from '../../hooks/useTriggerState';
@@ -136,53 +137,75 @@ export function HeaderItemsPreferenceItem({
   );
 }
 
-export function OrderPicker<SCHEMA extends AnySchema>({
+export type OrderPickerOrder<
+  SCHEMA extends AnySchema,
+  EXTRA_FIELD extends string = never,
+> =
+  | EXTRA_FIELD
+  | `-${EXTRA_FIELD}`
+  | `-${string & keyof SCHEMA['fields']}`
+  | (string & keyof SCHEMA['fields']);
+
+export function OrderPicker<
+  SCHEMA extends AnySchema,
+  EXTRA_FIELD extends string = never,
+>({
   table,
   order,
   onChange: handleChange,
+  additionalFields = [],
+  includeHiddenFields = false,
+  includeVirtualFields = true,
 }: {
   readonly table: SpecifyTable<SCHEMA>;
-  readonly order:
-    | `-${string & keyof SCHEMA['fields']}`
-    | (string & keyof SCHEMA['fields'])
-    | undefined;
-  readonly onChange: (
-    order:
-      | `-${string & keyof SCHEMA['fields']}`
-      | (string & keyof SCHEMA['fields'])
-  ) => void;
+  readonly order: OrderPickerOrder<SCHEMA, EXTRA_FIELD> | undefined;
+  readonly onChange: (order: OrderPickerOrder<SCHEMA, EXTRA_FIELD>) => void;
+  readonly additionalFields?: RA<{
+    readonly name: EXTRA_FIELD;
+    readonly label: LocalizedString;
+  }>;
+  readonly includeHiddenFields?: boolean;
+  readonly includeVirtualFields?: boolean;
 }): JSX.Element {
+  const getFields = (isDescending: boolean) =>
+    table.literalFields.filter(
+      ({ isHidden, isVirtual, name }) =>
+        (includeHiddenFields ||
+          !isHidden ||
+          (isDescending ? order?.slice(1) : order) === name) &&
+        (includeVirtualFields || !isVirtual)
+    );
   return (
     <Select
       value={order}
       onValueChange={(newOrder): void =>
-        handleChange(newOrder as Exclude<typeof order, undefined>)
+        handleChange(newOrder as OrderPickerOrder<SCHEMA, EXTRA_FIELD>)
       }
     >
       <option value="">{commonText.none()}</option>
       <optgroup label={commonText.ascending()}>
-        {table.literalFields
-          .filter(
-            /*
-             * "order === name" is necessary in case Accession.timestampCreated
-             * is a hidden field in the schema
-             */
-            ({ isHidden, name }) => !isHidden || order === name
-          )
-          .map(({ name, label }) => (
-            <option key={name} value={name}>
-              {label}
-            </option>
-          ))}
+        {additionalFields.map(({ name, label }) => (
+          <option key={name} value={name}>
+            {label}
+          </option>
+        ))}
+        {getFields(false).map(({ name, label }) => (
+          <option key={name} value={name}>
+            {label}
+          </option>
+        ))}
       </optgroup>
       <optgroup label={commonText.descending()}>
-        {table.literalFields
-          .filter(({ isHidden, name }) => !isHidden || order?.slice(1) === name)
-          .map(({ name, label }) => (
-            <option key={name} value={`-${name}`}>
-              {label}
-            </option>
-          ))}
+        {additionalFields.map(({ name, label }) => (
+          <option key={name} value={`-${name}`}>
+            {label}
+          </option>
+        ))}
+        {getFields(true).map(({ name, label }) => (
+          <option key={name} value={`-${name}`}>
+            {label}
+          </option>
+        ))}
       </optgroup>
     </Select>
   );
