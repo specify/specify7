@@ -596,3 +596,26 @@ class PermissionsApiTest(ApiTests):
         self.assertTrue(c2.login(name='testuser2', password='testuser2password'))
         response = c2.get('/api/specify/collectionobject/')
         self.assertEqual(response.status_code, 200)
+
+    def test_delete_user(self) -> None:
+        c = Client()
+        c.force_login(self.specifyuser)
+
+        user2 = spmodels.Specifyuser.objects.create( # type: ignore
+            isloggedin=False,
+            isloggedinreport=False,
+            name="testuser2",
+            password="")
+
+        models.UserPolicy.objects.create(
+            collection=self.collection,
+            specifyuser=user2,
+            resource="/table/%",
+            action="read",
+        )
+
+        response = c.delete(f'/api/specify/specifyuser/{user2.id}/')
+        self.assertEqual(response.status_code, 204)
+
+        self.assertFalse(spmodels.Specifyuser.objects.filter(id=user2.id).exists())
+        self.assertFalse(models.UserPolicy.objects.filter(specifyuser_id=user2.id).exists())
