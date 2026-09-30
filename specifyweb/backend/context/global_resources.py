@@ -14,6 +14,20 @@ from specifyweb.specify.api.serializers import toJson
 from specifyweb.specify.models import Spappresource, Spappresourcedir
 from specifyweb.specify.views import openapi
 
+REQUIRED_RESOURCE_FIELDS = ('name', 'mimetype', 'metadata', 'data')
+
+
+def parse_resource_data(request):
+    try:
+        resource_data = json.loads(request.body)
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        return None
+    if not isinstance(resource_data, dict):
+        return None
+    if not all(field in resource_data for field in REQUIRED_RESOURCE_FIELDS):
+        return None
+    return resource_data
+
 
 class GlobalPreferencesPT(PermissionTarget):
     resource = '/preferences/global'
@@ -52,7 +66,9 @@ class GlobalResources(View):
 
     def post(self, request):
         check_global_permission(request, GlobalPreferencesPT.update)
-        post_data = json.loads(request.body)
+        post_data = parse_resource_data(request)
+        if post_data is None:
+            return http.HttpResponseBadRequest('Invalid global resource payload')
         with transaction.atomic():
             directory, _ = Spappresourcedir.objects.get_or_create(
                 collection=None,
@@ -103,7 +119,9 @@ class GlobalResource(View):
 
     def put(self, request, resourceid: int):
         check_global_permission(request, GlobalPreferencesPT.update)
-        put_data = json.loads(request.body)
+        put_data = parse_resource_data(request)
+        if put_data is None:
+            return http.HttpResponseBadRequest('Invalid global resource payload')
         with transaction.atomic():
             resource = get_object_or_404(global_resources(), pk=resourceid)
             resource.name = put_data['name']
