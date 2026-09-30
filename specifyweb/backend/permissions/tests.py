@@ -540,3 +540,19 @@ class PermissionsApiTest(ApiTests):
             content_type='application/json',
         )
         self.assertEqual(response.status_code, 204)
+
+    def test_create_user_institution(self) -> None:
+        c = Client()
+        c.force_login(self.specifyuser)
+
+        response = c.post(
+            '/api/specify/specifyuser/',
+            data=json.dumps({'name': 'testuser2'}),
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 201)
+
+        user2 = spmodels.Specifyuser.objects.get(name='testuser2')
+        response = c.get(f'/api/specify/specifyuser/{user2.id}/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json.loads(response.content)['name'], 'testuser2')
