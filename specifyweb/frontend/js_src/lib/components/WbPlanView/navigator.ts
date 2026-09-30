@@ -346,7 +346,12 @@ export function searchFields({
     const fields = [current.table.idField, ...current.table.fields];
 
     fields.forEach((field) => {
-      if (field.isRelationship || isTreeTable(current.table.name)) return;
+      if (
+        field.isVirtual ||
+        field.isRelationship ||
+        isTreeTable(current.table.name)
+      )
+        return;
       const isHidden =
         current.isHidden ||
         (spec.useSchemaOverrides ? field.overrides.isHidden : field.isHidden);
@@ -368,7 +373,12 @@ export function searchFields({
         return;
 
       addResult({
-        mappingPath: [...current.mappingPath, field.name],
+        mappingPath: [
+          ...current.mappingPath,
+          field.isTemporal()
+            ? formatPartialField(field.name, 'fullDate')
+            : field.name,
+        ],
         label: [
           fieldSearchLabel(current.table.label),
           ...current.relationshipLabels,
@@ -401,7 +411,7 @@ export function searchFields({
           const rankMatches = matches([rank.name, rankLabel]);
 
           current.table.fields
-            .filter((field) => !field.isRelationship)
+            .filter((field) => !field.isVirtual && !field.isRelationship)
             .filter((field) => {
               const isHidden =
                 current.isHidden ||
@@ -455,6 +465,9 @@ export function searchFields({
     current.table.fields
       .filter((field): field is Relationship => field.isRelationship)
       .filter((relationship) => {
+        // Someday when we support virtual fields in the Query Builder,
+        // this should be re-enabled.
+        if (relationship.isVirtual) return false;
         const isHidden = current.isHidden || relationship.overrides.isHidden;
         if (isHidden && !showHiddenFields) return false;
         if (

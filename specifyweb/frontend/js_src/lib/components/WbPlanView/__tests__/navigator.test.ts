@@ -188,9 +188,35 @@ test('searchFields includes read-only fields only for Query Builder', () => {
   ).toBe(false);
   expect(
     queryBuilderResults.some(({ mappingPath }) =>
-      mappingPath.includes('timestampModified')
+      mappingPath.includes('timestampModified-fullDate')
     )
   ).toBe(true);
+  expect(queryBuilderResults).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        mappingPath: expect.arrayContaining(['timestampModified-fullDate']),
+      }),
+    ])
+  );
+  expect(
+    queryBuilderResults.some(
+      ({ mappingPath }) => mappingPath.at(-1) === 'timestampModified'
+    )
+  ).toBe(false);
+});
+
+test('searchFields excludes virtual fields and relationships', () => {
+  const results = searchFields({
+    baseTableName: 'CollectionObject',
+    search: 'currentDetermination',
+    spec: navigatorSpecs.queryBuilder,
+  });
+
+  expect(
+    results.some(({ mappingPath }) =>
+      mappingPath.includes('currentDetermination')
+    )
+  ).toBe(false);
 });
 
 // TEST: break this test into smaller tests
