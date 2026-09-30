@@ -370,7 +370,7 @@ export function searchFields({
       isTreeTable(current.table.name) &&
       hasTreeAccess(current.table.name, 'read')
     ) {
-      const definitions = getTreeDefinitions(current.table.name, 'all');
+      const definitions = getTreeDefinitions(current.table.name, 'all') ?? [];
       definitions.forEach(({ definition, ranks }) => {
         const definitionPath =
           spec.useSpecificTreeInterface && definitions.length > 1

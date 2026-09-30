@@ -134,6 +134,17 @@ test('searchFields returns no results for empty input', () => {
   ).toEqual([]);
 });
 
+test('searchFields tolerates hidden-field searches across unconfigured trees', () => {
+  expect(() =>
+    searchFields({
+      baseTableName: 'CollectionObject',
+      search: 'modified',
+      showHiddenFields: true,
+      spec: navigatorSpecs.wbPlanView,
+    })
+  ).not.toThrow();
+});
+
 // TEST: break this test into smaller tests
 theories(getMappingLineData, [
   {
