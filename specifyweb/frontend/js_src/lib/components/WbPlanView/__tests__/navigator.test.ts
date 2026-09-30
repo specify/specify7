@@ -62,6 +62,68 @@ test('searchFields includes aggregate and formatted relationship options', () =>
   );
 });
 
+test('searchFields resolves tree ranks and rank fields', () => {
+  const speciesResults = searchFields({
+    baseTableName: 'CollectionObject',
+    search: 'Species',
+    spec: navigatorSpecs.wbPlanView,
+  });
+  const fullNameResults = searchFields({
+    baseTableName: 'CollectionObject',
+    search: 'Full Name',
+    spec: navigatorSpecs.wbPlanView,
+  });
+
+  expect(speciesResults).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        mappingPath: ['determinations', '#1', 'taxon', '$Species', 'fullName'],
+        label: expect.stringMatching(/Species$/u),
+      }),
+    ])
+  );
+  expect(speciesResults).not.toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        mappingPath: ['determinations', '#1', 'taxon', '$Species', 'name'],
+      }),
+    ])
+  );
+  expect(fullNameResults).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        mappingPath: expect.arrayContaining(['$Species', 'fullName']),
+      }),
+    ])
+  );
+});
+
+test('searchFields prefers the collecting event route to collectors', () => {
+  const results = searchFields({
+    baseTableName: 'CollectionObject',
+    search: 'collectors',
+    spec: navigatorSpecs.wbPlanView,
+  });
+  const normalizedPath = (mappingPath: readonly string[]): string[] =>
+    mappingPath.filter(
+      (part) => !part.startsWith('#') && part !== '-formatted'
+    );
+  const preferredIndex = results.findIndex(
+    ({ mappingPath }) =>
+      normalizedPath(mappingPath).slice(0, 2).join('.') ===
+      'collectingEvent.collectors'
+  );
+  const discouragedIndex = results.findIndex(
+    ({ mappingPath }) =>
+      normalizedPath(mappingPath).slice(0, 2).join('.') ===
+      'cataloger.collectors'
+  );
+
+  expect(preferredIndex).toBeGreaterThanOrEqual(0);
+  expect(discouragedIndex).toBeGreaterThanOrEqual(0);
+  expect(preferredIndex).toBeLessThan(discouragedIndex);
+});
+
 test('searchFields returns no results for empty input', () => {
   expect(
     searchFields({

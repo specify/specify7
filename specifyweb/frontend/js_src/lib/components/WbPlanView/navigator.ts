@@ -234,12 +234,54 @@ export type FieldSearchResult = {
   readonly isHidden: boolean;
   readonly joinCount: number;
   readonly tableName: keyof Tables;
+  readonly searchRank: number;
 };
 
 const fieldSearchDepthLimit = 6;
 const fieldSearchResultLimit = 500;
 
+type FieldSearchPathPreference = {
+  readonly baseTableName: keyof Tables;
+  readonly path: readonly string[];
+  readonly priority: number;
+};
+
+// Lower priorities are shown first. Keep all matching paths; these only affect
+// ordering. Paths omit to-many indexes and special mapping fields.
+const fieldSearchPathPreferences: readonly FieldSearchPathPreference[] = [
+  {
+    baseTableName: 'CollectionObject',
+    path: ['collectingEvent', 'collectors'],
+    priority: -100,
+  },
+  {
+    baseTableName: 'CollectionObject',
+    path: ['cataloger', 'collectors'],
+    priority: 100,
+  },
+];
+
 const fieldSearchLabel = (value: unknown): string => `${value}`;
+
+const normalizeFieldSearchPath = (path: MappingPath): readonly string[] =>
+  path.filter(
+    (part) =>
+      !part.startsWith('#') && !part.startsWith('$') && part !== formattedEntry
+  );
+
+const getFieldSearchPathPriority = (
+  baseTableName: keyof Tables,
+  mappingPath: MappingPath
+): number => {
+  const normalizedPath = normalizeFieldSearchPath(mappingPath);
+  return (
+    fieldSearchPathPreferences.find(
+      ({ baseTableName: preferenceBaseTableName, path }) =>
+        preferenceBaseTableName === baseTableName &&
+        path.every((part, index) => normalizedPath[index] === part)
+    )?.priority ?? 0
+  );
+};
 
 /** Find selectable fields in downstream relationships in join order. */
 export function searchFields({
@@ -289,7 +331,7 @@ export function searchFields({
     const fields = [current.table.idField, ...current.table.fields];
 
     fields.forEach((field) => {
-      if (field.isRelationship) return;
+      if (field.isRelationship || isTreeTable(current.table.name)) return;
       const isHidden =
         current.isHidden ||
         (spec.useSchemaOverrides ? field.overrides.isHidden : field.isHidden);
@@ -320,8 +362,78 @@ export function searchFields({
         isHidden,
         joinCount: current.joinCount,
         tableName: current.table.name,
+        searchRank: 1,
       });
     });
+
+    if (
+      isTreeTable(current.table.name) &&
+      hasTreeAccess(current.table.name, 'read')
+    ) {
+      const definitions = getTreeDefinitions(current.table.name, 'all');
+      definitions.forEach(({ definition, ranks }) => {
+        const definitionPath =
+          spec.useSpecificTreeInterface && definitions.length > 1
+            ? [formatTreeDefinition(definition.name)]
+            : [];
+        ranks.slice(1).forEach((rank) => {
+          const rankPath = [
+            ...current.mappingPath,
+            ...definitionPath,
+            formatTreeRank(rank.name),
+          ];
+          const rankLabel = fieldSearchLabel(rank.title ?? rank.name);
+          const rankMatches = matches([rank.name, rankLabel]);
+
+          current.table.fields
+            .filter((field) => !field.isRelationship)
+            .filter((field) => {
+              const isHidden =
+                current.isHidden ||
+                (spec.useSchemaOverrides
+                  ? field.overrides.isHidden
+                  : field.isHidden);
+              if (isHidden && !showHiddenFields) return false;
+              if (
+                !spec.isNoRestrictions() &&
+                !spec.includeReadOnly &&
+                !spec.includeAllTreeFields &&
+                field.overrides.isReadOnly
+              )
+                return false;
+              return rankMatches
+                ? field.name === 'fullName'
+                : matches([
+                    field.name,
+                    fieldSearchLabel(field.label),
+                    ...current.relationshipLabels,
+                    ...current.relationshipNames,
+                  ]);
+            })
+            .forEach((field) => {
+              const isHidden =
+                current.isHidden ||
+                (spec.useSchemaOverrides
+                  ? field.overrides.isHidden
+                  : field.isHidden);
+              results.push({
+                mappingPath: [...rankPath, field.name],
+                label: [
+                  fieldSearchLabel(current.table.label),
+                  ...current.relationshipLabels,
+                  rankMatches
+                    ? rankLabel
+                    : `${rankLabel} - ${fieldSearchLabel(field.label)}`,
+                ].join(' → '),
+                isHidden,
+                joinCount: current.joinCount,
+                tableName: current.table.name,
+                searchRank: rankMatches ? 0 : 1,
+              });
+            });
+        });
+      });
+    }
 
     if (current.joinCount >= fieldSearchDepthLimit) continue;
 
@@ -392,6 +504,7 @@ export function searchFields({
             isHidden: current.isHidden || relationship.overrides.isHidden,
             joinCount: current.joinCount + 1,
             tableName: relationship.relatedTable.name,
+            searchRank: 1,
           });
         queue.push({
           table: relationship.relatedTable,
@@ -414,6 +527,12 @@ export function searchFields({
     if (hiddenOrder !== 0) return hiddenOrder;
     const depthOrder = a.joinCount - b.joinCount;
     if (depthOrder !== 0) return depthOrder;
+    const pathPriorityOrder =
+      getFieldSearchPathPriority(baseTableName, a.mappingPath) -
+      getFieldSearchPathPriority(baseTableName, b.mappingPath);
+    if (pathPriorityOrder !== 0) return pathPriorityOrder;
+    const searchRankOrder = a.searchRank - b.searchRank;
+    if (searchRankOrder !== 0) return searchRankOrder;
     const specialOrder = (path: MappingPath): number =>
       baseTableName === 'CollectionObject' &&
       path.includes(specialPath[0]) &&
