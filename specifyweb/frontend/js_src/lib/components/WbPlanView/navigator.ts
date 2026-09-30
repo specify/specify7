@@ -423,11 +423,11 @@ export function searchFields({
                 !spec.isNoRestrictions() &&
                 !spec.includeReadOnly &&
                 field.overrides.isReadOnly &&
-                !(rankMatches && field.name === 'fullName')
+                !(rankMatches && field.name === 'name')
               )
                 return false;
               return rankMatches
-                ? field.name === 'fullName'
+                ? field.name === 'name'
                 : matches([
                     field.name,
                     fieldSearchLabel(field.label),

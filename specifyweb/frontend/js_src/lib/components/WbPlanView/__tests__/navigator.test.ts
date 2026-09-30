@@ -77,7 +77,7 @@ test('searchFields resolves tree ranks and rank fields', () => {
   expect(speciesResults).toEqual(
     expect.arrayContaining([
       expect.objectContaining({
-        mappingPath: ['determinations', '#1', 'taxon', '$Species', 'fullName'],
+        mappingPath: ['determinations', '#1', 'taxon', '$Species', 'name'],
         label: expect.stringMatching(/Species$/u),
       }),
     ])
@@ -85,7 +85,7 @@ test('searchFields resolves tree ranks and rank fields', () => {
   expect(speciesResults).not.toEqual(
     expect.arrayContaining([
       expect.objectContaining({
-        mappingPath: ['determinations', '#1', 'taxon', '$Species', 'name'],
+        mappingPath: ['determinations', '#1', 'taxon', '$Species', 'fullName'],
       }),
     ])
   );
