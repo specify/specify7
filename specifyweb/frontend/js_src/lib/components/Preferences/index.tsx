@@ -88,8 +88,8 @@ const SUBCATEGORY_DOCS_MAP: Record<
 const preferencesPromise = Promise.all([
   userPreferences.fetch(),
   collectionPreferences.fetch(),
-  globalPreferences.fetch(),
 ]).then(f.true);
+const globalPreferencesPromise = globalPreferences.fetch().then(f.true);
 
 function Preferences({
   prefType = 'user',
@@ -529,16 +529,23 @@ function CollectionPreferences(): JSX.Element {
   );
 }
 
-function createPreferencesWrapper(Component: React.ComponentType) {
+function createPreferencesWrapper(
+  Component: React.ComponentType,
+  promise: Promise<boolean>
+) {
   return function Wrapper(): JSX.Element | null {
-    const [hasFetched] = usePromise(preferencesPromise, true);
+    const [hasFetched] = usePromise(promise, true);
     return hasFetched ? <Component /> : null;
   };
 }
 
-export const PreferencesWrapper = createPreferencesWrapper(Preferences);
+export const PreferencesWrapper = createPreferencesWrapper(
+  Preferences,
+  preferencesPromise
+);
 export const CollectionPreferencesWrapper = createPreferencesWrapper(
-  CollectionPreferences
+  CollectionPreferences,
+  preferencesPromise
 );
 
 function GlobalPreferences(): JSX.Element {
@@ -551,5 +558,7 @@ function GlobalPreferences(): JSX.Element {
   );
 }
 
-export const GlobalPreferencesWrapper =
-  createPreferencesWrapper(GlobalPreferences);
+export const GlobalPreferencesWrapper = createPreferencesWrapper(
+  GlobalPreferences,
+  globalPreferencesPromise
+);
