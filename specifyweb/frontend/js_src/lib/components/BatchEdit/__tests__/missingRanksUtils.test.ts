@@ -25,7 +25,7 @@ describe('findAllMissing', () => {
       Taxon: { Taxonomy: missing('Subgenus', 'Species', 'Subspecies') },
     });
   });
-  
+
   test('a query at the lowest rank is missing nothing', () => {
     expect(findAllMissing(taxonQuery(atRank('Subspecies')))).toEqual({});
   });
@@ -40,7 +40,9 @@ describe('findAllMissing', () => {
 
   test('a rank queried without its name counts as missing', () => {
     expect(findAllMissing(taxonQuery(atRank('Genus', 'author')))).toEqual({
-      Taxon: { Taxonomy: missing('Genus', 'Subgenus', 'Species', 'Subspecies') },
+      Taxon: {
+        Taxonomy: missing('Genus', 'Subgenus', 'Species', 'Subspecies'),
+      },
     });
   });
 

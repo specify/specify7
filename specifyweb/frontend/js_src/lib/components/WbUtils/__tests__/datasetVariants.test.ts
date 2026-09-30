@@ -21,7 +21,7 @@ const setBatchEditPreferences = (
   userPreferences.set('batchEdit', 'editor', 'showRollback', showRollback);
 };
 
-// Drop every explicitly set preference so lookups fall back to the defaults 
+// Drop every explicitly set preference so lookups fall back to the defaults
 const resetPreferences = (): void => userPreferences.setRaw({});
 
 beforeAll(() => {
