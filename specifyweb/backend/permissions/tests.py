@@ -540,3 +540,82 @@ class PermissionsApiTest(ApiTests):
             content_type='application/json',
         )
         self.assertEqual(response.status_code, 204)
+
+    def test_create_user_institution(self) -> None:
+        c = Client()
+        c.force_login(self.specifyuser)
+
+        response = c.post(
+            '/api/specify/specifyuser/',
+            data=json.dumps({'name': 'testuser2'}),
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 201)
+
+        user2 = spmodels.Specifyuser.objects.get(name='testuser2')
+        response = c.get(f'/api/specify/specifyuser/{user2.id}/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json.loads(response.content)['name'], 'testuser2')
+
+    def test_create_user_in_collection(self) -> None:
+        c = Client()
+        c.force_login(self.specifyuser)
+
+        response = c.post(
+            '/api/specify/specifyuser/',
+            data=json.dumps({'name': 'testuser2'}),
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 201)
+
+        user2 = spmodels.Specifyuser.objects.get(name='testuser2')
+        user2.set_password('testuser2password')
+        user2.save()
+
+        # a user needs an agent in the discipline before getting collection access
+        spmodels.Agent.objects.create( # type: ignore
+            agenttype=0,
+            firstname="Test",
+            lastname="User",
+            division=self.division,
+            specifyuser=user2)
+
+        response = c.put(
+            f'/permissions/user_policies/{self.collection.id}/{user2.id}/',
+            data={
+                permissions.CollectionAccessPT.resource: ["access"],
+                '/table/collectionobject': ["read"],
+                '/field/%': ["%"],
+            },
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 204)
+
+        # the new user can log in and read the collection's collection objects
+        c2 = Client()
+        self.assertTrue(c2.login(name='testuser2', password='testuser2password'))
+        response = c2.get('/api/specify/collectionobject/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_delete_user(self) -> None:
+        c = Client()
+        c.force_login(self.specifyuser)
+
+        user2 = spmodels.Specifyuser.objects.create( # type: ignore
+            isloggedin=False,
+            isloggedinreport=False,
+            name="testuser2",
+            password="")
+
+        models.UserPolicy.objects.create(
+            collection=self.collection,
+            specifyuser=user2,
+            resource="/table/%",
+            action="read",
+        )
+
+        response = c.delete(f'/api/specify/specifyuser/{user2.id}/')
+        self.assertEqual(response.status_code, 204)
+
+        self.assertFalse(spmodels.Specifyuser.objects.filter(id=user2.id).exists())
+        self.assertFalse(models.UserPolicy.objects.filter(specifyuser_id=user2.id).exists())
