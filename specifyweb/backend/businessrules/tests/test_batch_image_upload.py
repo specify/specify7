@@ -17,7 +17,7 @@ class TestCollectionobjectCatnumber(SQLAlchemySetup):
         session_context.return_value = TestCollectionobjectCatnumber.test_session_context()
 
         with transaction.atomic():
-            target = models.Collectionobject.objects.create(
+            models.Collectionobject.objects.create(
                 catalognumber='num-add',
                 collection=self.collection,
                 collectionmemberid=1,
