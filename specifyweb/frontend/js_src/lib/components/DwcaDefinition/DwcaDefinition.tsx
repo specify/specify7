@@ -86,16 +86,23 @@ export function parseTermExamples(examples: string): readonly TermExample[] {
   });
 }
 
+const decodedHtmlEntities: Readonly<Record<string, string>> = {
+  '&amp;': '&',
+  '&quot;': '"',
+  '&#39;': "'",
+  '&#x27;': "'",
+};
+
 export function formatTermExampleText(text: string): string {
   // Because the term examples are stored in the GBIF catalogs as HTML-encoded text,
   // decode the common HTML entities here. The backslash escapes are used to prevent
   // Markdown formatting in the React rendering.
   return text
     .replace(/\\([\\`*_{}[\]()#+.!-])/g, '$1')
-    .replaceAll('&amp;', '&')
-    .replaceAll('&quot;', '"')
-    .replaceAll('&#39;', "'")
-    .replaceAll('&#x27;', "'");
+    .replaceAll(
+      /&(?:amp|quot|#39|#x27);/g,
+      (entity) => decodedHtmlEntities[entity]!
+    );
 }
 
 function renderTermExampleDescription(description: string): JSX.Element {

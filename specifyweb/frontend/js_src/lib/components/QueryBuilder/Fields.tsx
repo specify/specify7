@@ -163,8 +163,8 @@ export function QueryFields({
     });
 
     sortable.on('sortable:sort', (event) => {
-      // The package's bundled declaration omits `over`, although the runtime
-      // SortableSortEvent exposes it.
+      // `over` is available at runtime, but is not included in the bundled
+      // SortableSortEvent type yet.
       const over = (event as unknown as { readonly over: HTMLElement }).over;
       const parent = over.parentElement;
       const overIndex =

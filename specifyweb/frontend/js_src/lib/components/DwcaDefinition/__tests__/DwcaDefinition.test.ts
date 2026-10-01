@@ -15,6 +15,7 @@ import {
   getCoreDefinitionForRowType,
   getExtensionDefinitionForRowType,
   getDefaultMappingFileName,
+  formatTermExampleText,
   isExtensionApplicableToCore,
   isTemplateApplicableToCore,
   isDefinitionXmlValid,
@@ -42,6 +43,11 @@ test('parses documented term examples into values and descriptions', () => {
     { value: '1971', description: '(in the year 1971)' },
     { value: '1900/1909', description: '(a range)' },
   ]);
+});
+
+test('decodes HTML entities exactly once', () => {
+  expect(formatTermExampleText('&amp; &quot; &#39; &#x27;')).toBe("& \" ' '");
+  expect(formatTermExampleText('&amp;quot;')).toBe('&quot;');
 });
 
 requireContext();
