@@ -711,10 +711,11 @@ export const userPreferenceDefinitions = {
         },
       },
       actions: {
-        title: commonText.actions(),
+        title: preferencesText.keyboardShortcuts(),
         items: {
           shortcutsEnabled: definePref<boolean>({
             title: preferencesText.shortcutsEnabled(),
+            description: preferencesText.shortcutsEnabledDescription(),
             requiresReload: false,
             visible: true,
             defaultValue: true,
@@ -967,7 +968,7 @@ export const userPreferenceDefinitions = {
         title: preferencesText.dialogs(),
         items: {
           close: defineKeyboardShortcut(commonText.close(), 'Ctrl+KeyC'),
-          save: defineKeyboardShortcut(commonText.save(), 'KeyS'),
+          save: defineKeyboardShortcut(commonText.save(), 'Ctrl+KeyS'),
           openRelatedRecordInNewTab: defineKeyboardShortcut(
             preferencesText.openRelatedRecordInNewTab(),
             'KeyO'
