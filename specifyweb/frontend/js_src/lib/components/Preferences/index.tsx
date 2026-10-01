@@ -286,12 +286,6 @@ export function usePrefDefinitions(prefType: PreferenceType = 'user') {
             ([_name, item]) =>
               'renderer' in item && item.renderer.name === 'UrlShortcutsEditor'
           );
-          const shortcutToggle = subCategoryData.items.find(
-            ([name]) =>
-              category === 'header' &&
-              subCategory === 'actions' &&
-              name === 'shortcutsEnabled'
-          );
           return urlShortcutItems.length === 0
             ? []
             : [
@@ -300,10 +294,30 @@ export function usePrefDefinitions(prefType: PreferenceType = 'user') {
                   {
                     ...subCategoryData,
                     title: preferencesText.keyboardShortcuts(),
-                    items:
-                      shortcutToggle === undefined
-                        ? urlShortcutItems
-                        : [shortcutToggle, ...urlShortcutItems],
+                    items: urlShortcutItems,
+                  },
+                ] as const,
+              ];
+        })
+    );
+
+    const shortcutToggleSubCategory = visibleDefinitions.flatMap(
+      ([category, { subCategories }]) =>
+        subCategories.flatMap(([subCategory, subCategoryData]) => {
+          const shortcutToggle = subCategoryData.items.find(
+            ([name]) =>
+              category === 'header' &&
+              subCategory === 'actions' &&
+              name === 'shortcutsEnabled'
+          );
+          return shortcutToggle === undefined
+            ? []
+            : [
+                [
+                  `${category}.shortcutsEnabled`,
+                  {
+                    title: preferencesText.keyboardShortcuts(),
+                    items: [shortcutToggle],
                   },
                 ] as const,
               ];
@@ -351,6 +365,7 @@ export function usePrefDefinitions(prefType: PreferenceType = 'user') {
         {
           title: preferencesText.keyboardShortcuts(),
           subCategories: [
+            ...shortcutToggleSubCategory,
             ...shortcutSubCategories,
             ...urlShortcutSubCategories,
           ],

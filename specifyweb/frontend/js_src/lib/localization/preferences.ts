@@ -2785,6 +2785,10 @@ export const preferencesText = createDictionary({
   noKeyAssigned: { 'en-us': 'No key binding assigned' },
   keyboardShortcuts: { 'en-us': 'Keyboard Shortcuts' },
   shortcutsEnabled: { 'en-us': 'Enable Keyboard Shortcuts' },
+  shortcutsEnabledDescription: {
+    'en-us':
+      'When disabled, keyboard shortcuts will not run and the shortcut cheat sheet will not appear.',
+  },
   formActionsDescription: {
     'en-us': 'Shortcuts for actions in regular data entry forms.',
   },
