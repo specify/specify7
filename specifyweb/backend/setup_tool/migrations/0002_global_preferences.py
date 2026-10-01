@@ -154,16 +154,15 @@ def migrate_global_preferences(apps, schema_editor):
     Spappresourcedir = apps.get_model('specify', 'Spappresourcedir')
     Spappresourcedata = apps.get_model('specify', 'Spappresourcedata')
 
-    directories = Spappresourcedir.objects.filter(
-        collection__isnull=True,
-        discipline__isnull=True,
+    resource_owner = SpecifyUser.objects.order_by('id').first()
+    directory, _ = Spappresourcedir.objects.get_or_create(
+        collection=None,
+        discipline=None,
         usertype='Global Prefs',
         ispersonal=False,
+        defaults={'specifyuser': resource_owner},
     )
-    directory = directories.first()
-    if directory is None:
-        return
-    resource_owner = directory.specifyuser or SpecifyUser.objects.order_by('id').first()
+    resource_owner = directory.specifyuser or resource_owner
 
     target = Spappresource.objects.filter(
         spappresourcedir=directory,
