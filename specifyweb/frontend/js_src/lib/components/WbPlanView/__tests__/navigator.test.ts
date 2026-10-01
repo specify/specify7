@@ -209,6 +209,26 @@ test('searchFields supports bounded result windows', () => {
   expect(nextResults).toEqual(allResults.slice(3, 6));
 });
 
+test('searchFields supports offsets beyond the result page limit', () => {
+  const resultBeforeLimit = searchFields({
+    baseTableName: 'CollectionObject',
+    search: 'a',
+    limit: 1,
+    offset: 499,
+    spec: navigatorSpecs.queryBuilder,
+  });
+  const offsetResults = searchFields({
+    baseTableName: 'CollectionObject',
+    search: 'a',
+    limit: 1,
+    offset: 500,
+    spec: navigatorSpecs.queryBuilder,
+  });
+
+  expect(resultBeforeLimit).toHaveLength(1);
+  expect(offsetResults).toHaveLength(1);
+});
+
 test('searchFields tolerates hidden-field searches across unconfigured trees', () => {
   expect(() =>
     searchFields({

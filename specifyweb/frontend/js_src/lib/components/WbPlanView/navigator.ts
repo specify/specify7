@@ -607,7 +607,7 @@ export function searchFields({
         a.label.localeCompare(b.label)
       );
     })
-    .slice(offset, Math.min(offset + limit, fieldSearchResultLimit));
+    .slice(offset, offset + Math.min(limit, fieldSearchResultLimit));
 }
 
 /**
