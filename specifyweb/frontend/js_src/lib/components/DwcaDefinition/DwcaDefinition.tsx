@@ -661,7 +661,7 @@ function newMapping(
       ? (definition?.rowType ?? '')
       : (definition?.rowType ?? coreRowType),
     fileName: definition
-      ? `${definition.name}.csv`
+      ? getDefaultMappingFileName(definition)
       : extension
         ? ''
         : 'core.csv',
@@ -670,6 +670,10 @@ function newMapping(
     terms: [],
   });
 }
+
+export const getDefaultMappingFileName = (
+  definition: Pick<Definition, 'rowType'>
+): string => `${encodeURIComponent(definition.rowType)}.csv`;
 
 function mappingFromQuery(
   mapping: Mapping,
@@ -769,10 +773,12 @@ function ExtensionDialog({
   ) => void;
   readonly onClose: () => void;
 }): JSX.Element {
-  const [extensionName, setExtensionName] = React.useState('');
+  const [extensionRowType, setExtensionRowType] = React.useState('');
   const [queryName, setQueryName] = React.useState('');
-  const extension = extensions.find(({ name }) => name === extensionName);
-  const isFromScratch = extensionName === customExtensionOption;
+  const extension = extensions.find(
+    ({ rowType }) => rowType === extensionRowType
+  );
+  const isFromScratch = extensionRowType === customExtensionOption;
   const templates =
     extension === undefined
       ? []
@@ -830,15 +836,15 @@ function ExtensionDialog({
         <Label.Block>
           {dwcaText.dwcaExtension()}
           <Select
-            value={localized(extensionName)}
+            value={localized(extensionRowType)}
             onValueChange={(value): void => {
-              setExtensionName(value);
+              setExtensionRowType(value);
               if (value === customExtensionOption) {
                 setQueryName('');
                 return;
               }
               const selectedExtension = extensions.find(
-                ({ name }) => name === value
+                ({ rowType }) => rowType === value
               );
               const defaultTemplate = defaultTemplates.find(
                 (template) =>
@@ -862,8 +868,8 @@ function ExtensionDialog({
             <option value={customExtensionOption}>
               {dwcaText.dwcaStartFromScratch()}
             </option>
-            {extensions.map(({ name, title }) => (
-              <option key={name} value={name}>
+            {extensions.map(({ rowType, title }) => (
+              <option key={rowType} value={rowType}>
                 {title}
               </option>
             ))}
