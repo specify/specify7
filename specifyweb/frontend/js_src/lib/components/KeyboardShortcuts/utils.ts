@@ -12,6 +12,22 @@ import {
 import { keyJoinSymbol } from './context';
 
 export const localizedKeyJoinSymbol = ' + ';
+
+export function cleanupEmptyShortcuts(
+  value: KeyboardShortcuts
+): KeyboardShortcuts {
+  const shortcuts = Object.fromEntries(
+    Object.entries(value).map(([platform, shortcuts]) => [
+      platform,
+      shortcuts?.filter((shortcut) => shortcut.length > 0),
+    ])
+  );
+  const isCompletelyEmpty = Object.values(shortcuts).every(
+    (shortcuts) => shortcuts === undefined || shortcuts.length === 0
+  );
+  return isCompletelyEmpty ? {} : shortcuts;
+}
+
 export function localizeKeyboardShortcut(shortcut: string): LocalizedString {
   const parts = shortcut.split(keyJoinSymbol);
   const hasShift = parts.includes('Shift');
@@ -58,9 +74,9 @@ export function resolvePlatformShortcuts(
       : shortcut.other?.map(replaceCtrlWithMeta);
   else if ('windows' in shortcut)
     return keyboardPlatform === 'other'
-      ? shortcut.other
-      : shortcut.other?.map(replaceCtrlWithMeta);
-  else if ('mac' in shortcut) return shortcut.other?.map(replaceMetaWithCtrl);
+      ? shortcut.windows
+      : shortcut.windows?.map(replaceCtrlWithMeta);
+  else if ('mac' in shortcut) return shortcut.mac?.map(replaceMetaWithCtrl);
   else return undefined;
 }
 

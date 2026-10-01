@@ -19,6 +19,7 @@ import type { KeyboardShortcuts } from './config';
 import { keyboardPlatform } from './config';
 import { keyJoinSymbol, setKeyboardEventInterceptor } from './context';
 import {
+  cleanupEmptyShortcuts,
   localizedKeyJoinSymbol,
   localizeKeyboardShortcut,
   resolvePlatformShortcuts,
@@ -69,7 +70,7 @@ export function KeyboardShortcutPreferenceItem({
         ? (): void => {
             currentlyEditingShortcut = undefined;
             editingEvent.trigger('change');
-            handleChange?.(cleanupEmpty(valueRef.current));
+            handleChange?.(cleanupEmptyShortcuts(valueRef.current));
           }
         : undefined,
     [isEditing, handleChange]
@@ -127,20 +128,6 @@ export function KeyboardShortcutPreferenceItem({
       )}
     </div>
   );
-}
-
-function cleanupEmpty(value: KeyboardShortcuts): KeyboardShortcuts {
-  const shortcuts = Object.fromEntries(
-    Object.entries(value).map(([platform, shortcuts]) => [
-      platform,
-      // Drop empty strings
-      shortcuts?.filter((shortcut) => shortcut.length > 0),
-    ])
-  );
-  const isCompletelyEmpty = Object.values(shortcuts).every(
-    (shortcuts) => shortcuts === undefined || shortcuts.length === 0
-  );
-  return isCompletelyEmpty ? {} : value;
 }
 
 function EditKeyboardShortcut({
