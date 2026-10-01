@@ -2787,7 +2787,7 @@ export const preferencesText = createDictionary({
   shortcutsEnabled: { 'en-us': 'Enable Keyboard Shortcuts' },
   shortcutsEnabledDescription: {
     'en-us':
-      'When disabled, keyboard shortcuts will not run and the shortcut cheat sheet will not appear.',
+      'When enabled, keyboard shortcuts can be used to perform various actions in Specify. You can press and hold the <key>Ctrl</key> key (or <key>⌘</key> key on Mac) to see a list of available shortcuts. When disabled, all keyboard shortcuts are ignored.',
   },
   formActionsDescription: {
     'en-us': 'Shortcuts for actions in regular data entry forms.',
