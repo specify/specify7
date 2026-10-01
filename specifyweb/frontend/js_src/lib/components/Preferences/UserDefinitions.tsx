@@ -713,6 +713,13 @@ export const userPreferenceDefinitions = {
       actions: {
         title: commonText.actions(),
         items: {
+          shortcutsEnabled: definePref<boolean>({
+            title: preferencesText.shortcutsEnabled(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
           urlShortcuts: definePref<UrlShortcuts>({
             title: headerText.userTools(),
             requiresReload: false,

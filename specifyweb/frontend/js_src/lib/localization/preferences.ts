@@ -2784,6 +2784,7 @@ export const preferencesText = createDictionary({
   pressKeys: { 'en-us': 'Press desired key combination...' },
   noKeyAssigned: { 'en-us': 'No key binding assigned' },
   keyboardShortcuts: { 'en-us': 'Keyboard Shortcuts' },
+  shortcutsEnabled: { 'en-us': 'Enable Keyboard Shortcuts' },
   formActionsDescription: {
     'en-us': 'Shortcuts for actions in regular data entry forms.',
   },

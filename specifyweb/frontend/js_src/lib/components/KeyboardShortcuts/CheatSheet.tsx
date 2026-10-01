@@ -5,16 +5,24 @@ import type { RA } from '../../utils/types';
 import { SECOND } from '../Atoms/timeUnits';
 import { Portal } from '../Molecules/Portal';
 import type { ActiveKeyboardShortcut } from './context';
-import { getActiveKeyboardShortcuts } from './context';
+import {
+  getActiveKeyboardShortcuts,
+  useKeyboardShortcutsEnabled,
+} from './context';
 import { localizedKeyJoinSymbol, localizeKeyboardShortcut } from './utils';
 
 const holdDuration = 1 * SECOND;
 const modifierKeys = new Set(['Control', 'Meta']);
 
 export function KeyboardShortcutCheatSheet(): JSX.Element | null {
+  const shortcutsEnabled = useKeyboardShortcutsEnabled();
   const [shortcuts, setShortcuts] = React.useState<
     RA<ActiveKeyboardShortcut> | undefined
   >(undefined);
+
+  React.useEffect(() => {
+    if (!shortcutsEnabled) setShortcuts(undefined);
+  }, [shortcutsEnabled]);
 
   React.useEffect(() => {
     let timeout: ReturnType<typeof setTimeout> | undefined;

@@ -2,6 +2,7 @@
  * Allows to register a key listener
  */
 
+import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import type { RA, WritableArray } from '../../utils/types';
@@ -30,6 +31,26 @@ type ShortcutListener = {
 export type ShortcutScope = 'context' | 'global';
 
 const listeners = new Map<string, WritableArray<ShortcutListener>>();
+let shortcutsEnabled = true;
+const enabledListeners = new Set<() => void>();
+
+export function setKeyboardShortcutsEnabled(enabled: boolean): void {
+  shortcutsEnabled = enabled;
+  enabledListeners.forEach((listener) => listener());
+}
+
+export function useKeyboardShortcutsEnabled(): boolean {
+  return React.useSyncExternalStore(
+    (listener) => {
+      enabledListeners.add(listener);
+      return (): void => {
+        enabledListeners.delete(listener);
+      };
+    },
+    () => shortcutsEnabled,
+    () => true
+  );
+}
 
 export type ActiveKeyboardShortcut = {
   readonly label: LocalizedString;
@@ -38,12 +59,16 @@ export type ActiveKeyboardShortcut = {
 };
 
 export const getActiveKeyboardShortcuts = (): RA<ActiveKeyboardShortcut> =>
-  Array.from(listeners.entries()).flatMap(([shortcut, shortcutListeners]) => {
-    const listener = shortcutListeners.at(-1);
-    return listener?.label === undefined
-      ? []
-      : [{ label: listener.label, scope: listener.scope, shortcut }];
-  });
+  !shortcutsEnabled
+    ? []
+    : Array.from(listeners.entries()).flatMap(
+        ([shortcut, shortcutListeners]) => {
+          const listener = shortcutListeners.at(-1);
+          return listener?.label === undefined
+            ? []
+            : [{ label: listener.label, scope: listener.scope, shortcut }];
+        }
+      );
 
 /**
  * When setting a keyboard shortcut in user preferences, we want to:
@@ -118,7 +143,9 @@ document.addEventListener('keydown', (event) => {
   }
 
   const keyString = keysToString(modifiers, pressedKeys);
-  const handler = interceptor ?? listeners.get(keyString)?.at(-1)?.callback;
+  const handler = shortcutsEnabled
+    ? (interceptor ?? listeners.get(keyString)?.at(-1)?.callback)
+    : undefined;
   if (typeof handler === 'function') {
     handler(keyString);
     /*

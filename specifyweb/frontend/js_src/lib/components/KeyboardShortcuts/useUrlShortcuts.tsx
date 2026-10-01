@@ -8,13 +8,21 @@ import type { MenuItem } from '../Core/Main';
 import { rawMenuItemsPromise } from '../Header/menuItemDefinitions';
 import { rawUserToolsPromise } from '../Header/userToolDefinitions';
 import { userPreferences } from '../Preferences/userPreferences';
-import { bindKeyboardShortcut } from './context';
+import { bindKeyboardShortcut, setKeyboardShortcutsEnabled } from './context';
 
 export function useUrlShortcuts(): void {
   const [shortcuts] = userPreferences.use('header', 'actions', 'urlShortcuts');
+  const [shortcutsEnabled] = userPreferences.use(
+    'header',
+    'actions',
+    'shortcutsEnabled'
+  );
   const [menuItems] = usePromise(rawMenuItemsPromise(), false);
   const [userTools] = usePromise(rawUserToolsPromise(), false);
   const navigate = useNavigate();
+  React.useEffect(() => {
+    setKeyboardShortcutsEnabled(shortcutsEnabled);
+  }, [shortcutsEnabled]);
   React.useEffect(() => {
     const userToolsByUrl = new Map<string, MenuItem>();
     menuItems?.forEach((tool) => userToolsByUrl.set(tool.url, tool));
