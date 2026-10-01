@@ -19,7 +19,7 @@ afterEach(() => {
   document.querySelector('#portal-root')?.remove();
 });
 
-test('shows active shortcuts after holding Control for two seconds', () => {
+test('shows active shortcuts after holding Control for one second', () => {
   const cleanup = bindKeyboardShortcut(
     { other: ['Ctrl+KeyA'] },
     jest.fn(),
@@ -28,7 +28,7 @@ test('shows active shortcuts after holding Control for two seconds', () => {
   const { queryByRole, getByText } = mount(<KeyboardShortcutCheatSheet />);
 
   fireEvent.keyDown(document, { code: 'ControlLeft', key: 'Control' });
-  act(() => jest.advanceTimersByTime(1999));
+  act(() => jest.advanceTimersByTime(999));
   expect(
     queryByRole('dialog', { name: preferencesText.keyboardShortcuts() })
   ).not.toBeInTheDocument();
@@ -60,4 +60,37 @@ test('cancels the pop-up when another key is pressed', () => {
 
   expect(queryByRole('dialog')).not.toBeInTheDocument();
   cleanup();
+});
+
+test('shows context shortcuts above global shortcuts with a separator', () => {
+  const cleanupContext = bindKeyboardShortcut(
+    { other: ['Ctrl+KeyA'] },
+    jest.fn(),
+    localized('Context action')
+  );
+  const cleanupGlobal = bindKeyboardShortcut(
+    { other: ['Ctrl+KeyB'] },
+    jest.fn(),
+    localized('Global action'),
+    'global'
+  );
+  const { getByRole, getByText } = mount(<KeyboardShortcutCheatSheet />);
+
+  fireEvent.keyDown(document, { code: 'ControlLeft', key: 'Control' });
+  act(() => jest.runOnlyPendingTimers());
+
+  const contextShortcut = getByText('Context action');
+  const separator = getByRole('separator');
+  const globalShortcut = getByText('Global action');
+  expect(
+    contextShortcut.compareDocumentPosition(separator) &
+      Node.DOCUMENT_POSITION_FOLLOWING
+  ).toBeTruthy();
+  expect(
+    separator.compareDocumentPosition(globalShortcut) &
+      Node.DOCUMENT_POSITION_FOLLOWING
+  ).toBeTruthy();
+
+  cleanupContext();
+  cleanupGlobal();
 });

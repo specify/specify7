@@ -56,6 +56,11 @@ export function KeyboardShortcutCheatSheet(): JSX.Element | null {
     };
   }, []);
 
+  const contextShortcuts = shortcuts?.filter(
+    ({ scope }) => scope === 'context'
+  );
+  const globalShortcuts = shortcuts?.filter(({ scope }) => scope === 'global');
+
   return shortcuts === undefined || shortcuts.length === 0 ? null : (
     <Portal>
       <section
@@ -73,30 +78,51 @@ export function KeyboardShortcutCheatSheet(): JSX.Element | null {
           <h2 className="mb-6 text-center text-2xl font-semibold">
             {preferencesText.keyboardShortcuts()}
           </h2>
-          <div className="grid grid-cols-1 gap-x-12 gap-y-4 sm:grid-cols-2 lg:grid-cols-3">
-            {shortcuts.map(({ label, shortcut }) => (
-              <div
-                className="flex min-w-0 items-center justify-between gap-4 border-b border-white/15 pb-3"
-                key={`${label}-${shortcut}`}
-              >
-                <span className="truncate">{label}</span>
-                <kbd className="flex shrink-0 gap-1">
-                  {localizeKeyboardShortcut(shortcut)
-                    .split(localizedKeyJoinSymbol)
-                    .map((key, index) => (
-                      <span
-                        className="min-w-7 rounded-md bg-white/15 px-2 py-1 text-center font-mono text-sm shadow-sm"
-                        key={`${key}-${index}`}
-                      >
-                        {key}
-                      </span>
-                    ))}
-                </kbd>
-              </div>
-            ))}
-          </div>
+          {contextShortcuts !== undefined && contextShortcuts.length > 0 && (
+            <ShortcutGrid shortcuts={contextShortcuts} />
+          )}
+          {contextShortcuts !== undefined &&
+            contextShortcuts.length > 0 &&
+            globalShortcuts !== undefined &&
+            globalShortcuts.length > 0 && (
+              <hr className="my-6 border-white/25" />
+            )}
+          {globalShortcuts !== undefined && globalShortcuts.length > 0 && (
+            <ShortcutGrid shortcuts={globalShortcuts} />
+          )}
         </div>
       </section>
     </Portal>
+  );
+}
+
+function ShortcutGrid({
+  shortcuts,
+}: {
+  readonly shortcuts: RA<ActiveKeyboardShortcut>;
+}): JSX.Element {
+  return (
+    <div className="grid grid-cols-1 gap-x-12 gap-y-4 sm:grid-cols-2 lg:grid-cols-3">
+      {shortcuts.map(({ label, shortcut }) => (
+        <div
+          className="flex min-w-0 items-center justify-between gap-4 border-b border-white/15 pb-3"
+          key={`${label}-${shortcut}`}
+        >
+          <span className="truncate">{label}</span>
+          <kbd className="flex shrink-0 gap-1">
+            {localizeKeyboardShortcut(shortcut)
+              .split(localizedKeyJoinSymbol)
+              .map((key, index) => (
+                <span
+                  className="min-w-7 rounded-md bg-white/15 px-2 py-1 text-center font-mono text-sm shadow-sm"
+                  key={`${key}-${index}`}
+                >
+                  {key}
+                </span>
+              ))}
+          </kbd>
+        </div>
+      ))}
+    </div>
   );
 }

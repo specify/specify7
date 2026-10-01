@@ -24,19 +24,25 @@ import { resolvePlatformShortcuts } from './utils';
 type ShortcutListener = {
   readonly callback: () => void;
   readonly label: LocalizedString | undefined;
+  readonly scope: ShortcutScope;
 };
+
+export type ShortcutScope = 'context' | 'global';
 
 const listeners = new Map<string, WritableArray<ShortcutListener>>();
 
 export type ActiveKeyboardShortcut = {
   readonly label: LocalizedString;
+  readonly scope: ShortcutScope;
   readonly shortcut: string;
 };
 
 export const getActiveKeyboardShortcuts = (): RA<ActiveKeyboardShortcut> =>
   Array.from(listeners.entries()).flatMap(([shortcut, shortcutListeners]) => {
-    const label = shortcutListeners.at(-1)?.label;
-    return label === undefined ? [] : [{ label, shortcut }];
+    const listener = shortcutListeners.at(-1);
+    return listener?.label === undefined
+      ? []
+      : [{ label: listener.label, scope: listener.scope, shortcut }];
   });
 
 /**
@@ -57,12 +63,13 @@ export function setKeyboardEventInterceptor(
 export function bindKeyboardShortcut(
   shortcut: KeyboardShortcuts,
   callback: () => void,
-  label?: LocalizedString
+  label?: LocalizedString,
+  scope: ShortcutScope = 'context'
 ): () => void {
   const shortcuts = resolvePlatformShortcuts(shortcut) ?? [];
   shortcuts.forEach((string) => {
     const shortcutListeners = listeners.get(string);
-    const listener = { callback, label };
+    const listener = { callback, label, scope };
     if (shortcutListeners === undefined) listeners.set(string, [listener]);
     else shortcutListeners.push(listener);
   });

@@ -41,7 +41,8 @@ export function useUrlShortcuts(): void {
                 globalThis.location.assign(path);
               else navigate(path);
             },
-            userTool?.title ?? localized(path)
+            userTool?.title ?? localized(path),
+            'global'
           );
     });
     return (): void => cleanup.forEach((cleanup) => cleanup?.());
