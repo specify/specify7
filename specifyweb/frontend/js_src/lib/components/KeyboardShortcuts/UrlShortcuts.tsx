@@ -206,6 +206,13 @@ type CategoryRoutes = Record<string, LocalizedString | undefined>;
 // Some routes are not fit for keyboard shortcuts, so we exclude them from the list of routes to display.
 const excludedRouteNames = new Set(['test-error', 'not-found']);
 
+const isExcludedPath = (
+  path: string,
+  excludedPaths: ReadonlySet<string>
+): boolean =>
+  excludedPaths.has(path) ||
+  excludedPaths.has(path.endsWith('/') ? path.slice(0, -1) : `${path}/`);
+
 const getCategorizedRoutes = f.store(async (): Promise<CategorizedRoutes> => {
   const [entrypointRoutes, routes, overlayRoutes] = await Promise.all([
     /*
@@ -276,7 +283,7 @@ function RouteBrowser({
   return (
     <Ul className="flex flex-col gap-2 mb-4">
       {Object.entries(routes).map(([path, title]) =>
-        excludedPaths.has(path) ? undefined : (
+        isExcludedPath(path, excludedPaths) ? undefined : (
           <RouteShortcut key={path} path={path} title={title} value={value} />
         )
       )}
@@ -341,7 +348,7 @@ function CustomRouteBrowser({
       {Object.entries(value).map(([path, shortcuts], index) =>
         path in categorized.pages ||
         path in categorized.overlays ||
-        excludedPaths.has(path) ? undefined : (
+        isExcludedPath(path, excludedPaths) ? undefined : (
           <CustomRouteShortcut
             // Don't use path as key to not lose focus as user types path
             key={index}
