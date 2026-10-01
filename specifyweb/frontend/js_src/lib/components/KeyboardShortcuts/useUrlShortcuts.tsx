@@ -26,9 +26,9 @@ export function useUrlShortcuts(): void {
               void userTool
                 .onClick()
                 .then(() => globalThis.location.assign(path));
-            else if (isExternalUrl(path)) globalThis.open(path, '_blank');
+            else if (isExternalUrl(path))
+              globalThis.open(path, '_blank', 'noopener,noreferrer');
             else if (
-              userTool !== undefined &&
               !path.startsWith('/specify/') &&
               !path.startsWith('/accounts/')
             )
