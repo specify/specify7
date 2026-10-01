@@ -102,7 +102,7 @@ export function COJODialog({
                 <TableIcon label name={table.name} />
                 {table.label}
                 <DataEntry.Add
-                  enableShortcut
+                  enableShortcut={false}
                   onClick={(): void => {
                     setState('Add');
                     setResourceTable(table);
