@@ -314,7 +314,7 @@ export function usePrefDefinitions(prefType: PreferenceType = 'user') {
             ? []
             : [
                 [
-                  `${category}.shortcutsEnabled`,
+                  `${category}.${subCategory}.shortcutsEnabled`,
                   {
                     title: preferencesText.keyboardShortcuts(),
                     items: [shortcutToggle],
@@ -407,6 +407,7 @@ export function PreferencesContent({
         readonly items: readonly (readonly [string, PreferenceItem<any>])[];
       }
     ): JSX.Element => {
+      const renderedSubcategoryKey = subcategoryKey;
       if (categoryKey === 'keyboardShortcuts')
         [categoryKey, subcategoryKey] = subcategoryKey.split('.');
       const subcategoryDocument =
@@ -415,7 +416,7 @@ export function PreferencesContent({
       return (
         <section
           className="flex flex-col items-start gap-4 md:items-stretch"
-          key={`${categoryKey}-${subcategoryKey}`}
+          key={`${categoryKey}-${renderedSubcategoryKey}`}
         >
           <div className="flex items-center gap-2">
             <h4 className={`${className.headerGray} text-xl md:text-center`}>
