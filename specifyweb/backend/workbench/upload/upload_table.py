@@ -985,15 +985,30 @@ class BoundUpdateTable(BoundUploadTable):
         return super()._handle_row(skip_match=True, allow_null=allow_null)
 
     def _process_to_ones(self) -> dict[str, UploadResult]:
+        needs_reference_record = any(
+            not uploadable.is_one_to_one()
+            and hasattr(uploadable, "process_with_existing")
+            for uploadable in self.toOne.values()
+        )
+        reference_record = (self._get_reference(should_cache=False)
+                            if needs_reference_record else None)
         return {
             field_name: (
                 to_one_def.save_row(force=(not self.auditor.props.allow_delete_dependents))
                 if to_one_def.is_one_to_one()
-                else (
-                    to_one_def.save_row(force=True)
-                    if self._should_update_to_one_in_place(to_one_def)
-                    else to_one_def.process_row()
+                # This branch is for #8298. Also the PR #8400
+                else to_one_def.save_row(force=True)
+                if self._should_update_to_one_in_place(to_one_def)
+                else
+                # REFACTOR: Clean this up
+                # This branch is for #8469. Also see PRs #8487 and #8498
+                to_one_def.process_with_existing(
+                    getattr(reference_record, field_name + "_id")
                 )
+                if hasattr(to_one_def, "process_with_existing")
+                and reference_record
+                and hasattr(reference_record, field_name + "_id")
+                else to_one_def.process_row()
             )
             for field_name, to_one_def in Func.sort_by_key(self.toOne)
         }

@@ -60,6 +60,7 @@ describe('AppResourcesFilters', () => {
         'collectionPreferences',
         'dataEntryTables',
         'dataObjectFormatters',
+        'dataViewQueries',
         'defaultUserPreferences',
         'dwcaDefinition',
         'expressSearchConfig',

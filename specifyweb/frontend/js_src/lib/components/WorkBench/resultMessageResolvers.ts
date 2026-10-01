@@ -16,7 +16,10 @@ type BusinessRuleMessageResolver = (
   payload: IR<unknown>
 ) => LocalizedString | undefined;
 
-export const backendParsingMessageResolvers: RR<string, PayloadMessageResolver> = {
+export const backendParsingMessageResolvers: RR<
+  string,
+  PayloadMessageResolver
+> = {
   failedParsingBoolean: (payload): LocalizedString =>
     backEndText.failedParsingBoolean({ value: payload.value as string }),
   failedParsingDecimal: (payload): LocalizedString =>
@@ -142,7 +145,10 @@ function getSchemaFieldLabels(
     : formatConjunction(labels);
 }
 
-export const businessRuleMessageResolvers: RR<string, BusinessRuleMessageResolver> = {
+export const businessRuleMessageResolvers: RR<
+  string,
+  BusinessRuleMessageResolver
+> = {
   fieldNotUnique: (payload): LocalizedString | undefined => {
     const tableName = getStringPayload(payload, 'table');
     const fieldName = getStringPayload(payload, 'fieldName');
@@ -179,7 +185,8 @@ export const businessRuleMessageResolvers: RR<string, BusinessRuleMessageResolve
       badRanks: Number(payload.badRanks) || 0,
     }),
   deletingTreeRoot: (): LocalizedString => backEndText.deletingTreeRoot(),
-  nodeParentInvalidRank: (): LocalizedString => backEndText.nodeParentInvalidRank(),
+  nodeParentInvalidRank: (): LocalizedString =>
+    backEndText.nodeParentInvalidRank(),
   nodeChildrenInvalidRank: (): LocalizedString =>
     backEndText.nodeChildrenInvalidRank(),
   nodeOperationToSynonymizedParent: (payload): LocalizedString =>
@@ -286,7 +293,8 @@ export const validationMessageResolvers: RR<string, PayloadMessageResolver> = {
     }),
   fieldRequiredByUploadPlan: (): LocalizedString =>
     backEndText.fieldRequiredByUploadPlan(),
-  invalidTreeStructure: (): LocalizedString => backEndText.invalidTreeStructure(),
+  invalidTreeStructure: (): LocalizedString =>
+    backEndText.invalidTreeStructure(),
   scopeChangeError: (): LocalizedString => backEndText.scopeChangeDetected(),
   multipleTreeDefsInRow: (): LocalizedString =>
     backEndText.multipleTreeDefsInRow(),
@@ -323,6 +331,8 @@ export const attachmentValidationMessageResolvers: RR<
 export function resolveAttachmentValidationMessageByKey(
   key: string
 ): LocalizedString {
-  return attachmentValidationMessageResolvers[key]?.() ??
-    backEndText.attachmentNotFound();
+  return (
+    attachmentValidationMessageResolvers[key]?.() ??
+    backEndText.attachmentNotFound()
+  );
 }

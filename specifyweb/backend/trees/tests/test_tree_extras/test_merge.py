@@ -1,10 +1,52 @@
 from specifyweb.backend.businessrules.exceptions import TreeBusinessRuleException
-from specifyweb.specify.models import Geography, Locality, Taxon, Taxontreedef, Taxontreedefitem
+from specifyweb.specify.models import Determination, Geography, Locality, Spauditlog, Taxon, Taxontreedef, Taxontreedefitem
 from specifyweb.backend.trees.tests.test_trees import GeographyTree
 from specifyweb.backend.trees.extras import merge, _batch_reparent_children, validate_tree_numbering
 
 class TestMerge(GeographyTree):
     
+    def test_taxon_merge_audits_updated_determinations(self):
+        root = self.make_taxontree(
+            "Life",
+            "Taxonomy Root",
+            definition=self.taxontreedef,
+        )
+        source = self.make_taxontree(
+            "Source",
+            "Kingdom",
+            definition=self.taxontreedef,
+            parent=root,
+        )
+        target = self.make_taxontree(
+            "Target",
+            "Kingdom",
+            definition=self.taxontreedef,
+            parent=root,
+        )
+        determination = Determination.objects.create(
+            collectionobject=self.collectionobjects[0],
+            collectionmemberid=self.collection.id,
+            taxon=source,
+            preferredtaxon=source,
+            iscurrent=True,
+        )
+
+        merge(source, target, self.agent)
+
+        audit_logs = Spauditlog.objects.filter(
+            tablenum=Determination.specify_model.tableId,
+            recordid=determination.id,
+            action=1,
+        )
+        self.assertEqual(audit_logs.count(), 2)
+        self.assertCountEqual(
+            audit_logs.values_list("fields__fieldname", flat=True),
+            ["taxon", "preferredtaxon"],
+        )
+        determination.refresh_from_db()
+        self.assertEqual(determination.taxon_id, target.id)
+        self.assertEqual(determination.preferredtaxon_id, target.id)
+
     def test_different_type(self):
         with self.assertRaises(AssertionError) as context:
             merge(self.na, self.collectionobjects[0], self.agent)
@@ -54,6 +96,12 @@ class TestMerge(GeographyTree):
         locality_3 = self._make_locality(self.springmo)
 
         locality_4 = self._make_locality(self.springill)
+        locality_ids = [
+            locality_1.id,
+            locality_2.id,
+            locality_3.id,
+            locality_4.id,
+        ]
         merge(self.springmo, self.springill, self.agent)
 
 
@@ -64,6 +112,14 @@ class TestMerge(GeographyTree):
                 ).count(), 
                 4
             )
+        self.assertEqual(
+            Spauditlog.objects.filter(
+                tablenum=Locality.specify_model.tableId,
+                recordid__in=locality_ids,
+                action=1,
+            ).count(),
+            3,
+        )
         
     def test_complicated_merge(self):
 

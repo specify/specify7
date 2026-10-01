@@ -2,6 +2,7 @@ import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
 import { monthsPickListName } from '../../PickLists/definitions';
 import { formatUrl } from '../../Router/queryString';
+import { Http } from '../../../utils/ajax/definitions';
 import { addMissingFields } from '../addMissingFields';
 import { formatRelationshipPath } from '../helpers';
 import { getResourceApiUrl } from '../resource';
@@ -11,6 +12,7 @@ import {
   getCollectionForResource,
 } from '../scoping';
 import { tables } from '../tables';
+import type { Tables } from '../types';
 
 requireContext();
 
@@ -124,6 +126,19 @@ describe('Resource initialization preferences', () => {
     jest.clearAllMocks();
   });
 
+  overrideAjax(
+    '/api/specify/collectionobject/',
+    {
+      resource_uri: getResourceApiUrl('CollectionObject', 2),
+      id: 2,
+      collection: getResourceApiUrl('Collection', 4),
+      collectionObjectType: getResourceApiUrl('CollectionObjectType', 2),
+      catalogNumber: 'num-regenerated',
+      text1: 'copied field',
+    },
+    { method: 'POST', responseCode: Http.CREATED }
+  );
+
   test('CO_CREATE_COA', () => {
     const collectionObject = new tables.CollectionObject.Resource();
     expect(collectionObject.get('collectionObjectAttribute')).toBe(
@@ -174,6 +189,81 @@ describe('Resource initialization preferences', () => {
         .then((collection) => collection.models.length)
     ).resolves.toBe(0);
   });
+
+  test('Cloning a CollectionObject copies fields and omits unique fields', async () => {
+    const original = new tables.CollectionObject.Resource(
+      addMissingFields('CollectionObject', {
+        resource_uri: getResourceApiUrl('CollectionObject', 1),
+        id: 1,
+        collection: getResourceApiUrl(
+          'Collection',
+          schema.domainLevelIds.collection
+        ),
+        collectionObjectType: getResourceApiUrl('CollectionObjectType', 2),
+        catalogNumber: 'num-original',
+        text1: 'copied field',
+      })
+    );
+
+    const cloned = await original.clone(true);
+
+    expect(cloned.id).toBeUndefined();
+    expect(cloned.get('collection')).toBe(original.get('collection'));
+    expect(cloned.get('collectionObjectType')).toBe(
+      original.get('collectionObjectType')
+    );
+    expect(cloned.get('text1')).toBe('copied field');
+    expect(cloned.get('catalogNumber')).toBeUndefined();
+
+    await cloned.save();
+
+    expect(cloned.id).toBe(2);
+    expect(cloned.get('catalogNumber')).toBe('num-regenerated');
+    expect(cloned.get('text1')).toBe('copied field');
+
+    expect(original.id).toBe(1);
+    expect(original.get('catalogNumber')).toBe('num-original');
+    expect(original.get('text1')).toBe('copied field');
+  });
+
+  test.each([
+    'Attachment',
+    'TaxonTreeDefItem',
+    'GeologicTimePeriodTreeDefItem',
+    'LithoStratTreeDefItem',
+    'TectonicUnitTreeDefItem',
+    'Agent',
+    'CollectingEvent',
+    'Geography',
+    'Locality',
+    'Accession',
+    'Loan',
+    'Gift',
+    'Borrow',
+    'Disposal',
+    'Deaccession',
+  ])(
+    'Cloning %s copies fields and preserves the original',
+    async (tableName) => {
+      const typedTableName = tableName as keyof Tables;
+      const table = tables[typedTableName];
+      const record = {
+        resource_uri: getResourceApiUrl(typedTableName, 1),
+        id: 1,
+        remarks: 'Test remarks',
+      };
+      const original = new table.Resource(
+        addMissingFields(typedTableName, record)
+      );
+
+      const cloned = await original.clone(true);
+
+      expect(cloned.id).toBeUndefined();
+      expect(cloned.get('remarks')).toBe('Test remarks');
+      expect(original.id).toBe(1);
+      expect(original.get('remarks')).toBe('Test remarks');
+    }
+  );
 
   test('Cloning resource does not create duplicates', async () => {
     // See Issue #3278

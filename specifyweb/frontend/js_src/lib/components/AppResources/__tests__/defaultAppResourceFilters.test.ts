@@ -7,6 +7,7 @@ test('defaultAppResourceFilters', () => {
         "collectionPreferences",
         "dataEntryTables",
         "dataObjectFormatters",
+        "dataViewQueries",
         "defaultUserPreferences",
         "dwcaDefinition",
         "expressSearchConfig",

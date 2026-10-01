@@ -322,6 +322,35 @@ def mutation_log(action, node, agent, parent, dirty_flds: list[FieldChangeInfo])
     from specifyweb.backend.workbench.upload.auditlog import auditlog
     auditlog.log_action(action, node, agent, node.parent, dirty_flds)
 
+def _update_related_records(node, target, agent, related_model, field_name):
+    from specifyweb.backend.workbench.upload.auditlog import auditlog
+
+    field = related_model._meta.get_field(field_name)
+    records = related_model.objects.filter(
+        **{field.name: node}
+    ).select_for_update()
+    record_ids = []
+    for record in records:
+        record_ids.append(record.id)
+        # QuerySet.update() bypasses the normal auditing, so we have to log
+        # while the old foreign-key value is still available on the object.
+        auditlog.update(
+            record,
+            agent,
+            node.parent,
+            [FieldChangeInfo(
+                field_name=field.name,
+                old_value=getattr(record, field.attname),
+                new_value=target.id,
+            )],
+        )
+
+    # Apply the updates in bulk *after* the audit entries have been created.
+    if record_ids:
+        related_model.objects.filter(id__in=record_ids).update(
+            **{field.name: target}
+        )
+
 def merge(node, into, agent):
     from specifyweb.specify import models
     logger.info('merging %s into %s', node, into)
@@ -386,7 +415,9 @@ def merge(node, into, agent):
                 related_model_name, field_name = match.groups()
                 related_model = getattr(models, related_model_name)
                 assert related_model != model or field_name != 'parent', 'children were added during merge'
-                related_model.objects.filter(**{field_name: node}).update(**{field_name: target})
+                _update_related_records(
+                    node, target, agent, related_model, field_name
+                )
 
     assert False, "failed to move all referrences to merged tree node"
 

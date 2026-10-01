@@ -30,7 +30,10 @@ export function resolveValidationMessage(
     return businessRuleMessage;
   }
 
-  const specificValidationMessage = resolveSpecificValidationMessage(key, payload);
+  const specificValidationMessage = resolveSpecificValidationMessage(
+    key,
+    payload
+  );
   if (specificValidationMessage !== undefined) {
     return specificValidationMessage;
   }

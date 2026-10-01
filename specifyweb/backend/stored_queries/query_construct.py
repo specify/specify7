@@ -29,6 +29,7 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
 
     def handle_tree_field(self, node, table, tree_rank: TreeRankQuery, next_join_path, current_field_spec: QueryFieldSpec):
         query = self
+        query_before_tree_joins = query
         if query.collection is None:  # Not sure it makes sense to query across collections
             raise AssertionError(
                 f"No Collection found in Query for {table}",
@@ -39,7 +40,7 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
         treedefitem_column = table.name + 'TreeDefItemID'
         treedef_column = table.name + 'TreeDefID'
 
-        cache_key = (node, 'TreeRanks')
+        cache_key = (table, 'TreeRanks')
         if cache_key in query.join_cache:
             logger.debug("using join cache for %r tree ranks.", node)
             ancestors, treedefs = query.join_cache[cache_key]
@@ -70,7 +71,13 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
             if (tree_rank.treedef_id is None or tree_rank.treedef_id == treedef_id)
             ] if tup[1] is not None]
 
-        assert len(treedefs_with_ranks) >= 1, "Didn't find the tree rank across any tree"
+        if not treedefs_with_ranks:
+            logger.warning(
+                "Didn't find tree rank %r across any %s tree; skipping field",
+                tree_rank.name,
+                table.name,
+            )
+            return query_before_tree_joins, None, None, table
 
         treedefitem_params = [treedefitem_id for (_, treedefitem_id) in treedefs_with_ranks]
 
