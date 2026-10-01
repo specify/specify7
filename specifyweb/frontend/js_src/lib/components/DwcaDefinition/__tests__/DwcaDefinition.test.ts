@@ -822,9 +822,9 @@ describe('DwCA query field term mapping', () => {
       'http://purl.org/ontology/bibo/doi'
     );
     expect(doiIndex).toBeGreaterThanOrEqual(0);
-    expect(mapping?.fields[doiIndex!]?.stringId.endsWith('referencework.doi')).toBe(
-      true
-    );
+    expect(
+      mapping?.fields[doiIndex!]?.stringId.endsWith('referencework.doi')
+    ).toBe(true);
   });
 
   test('preserves source indexes when query fields are sorted by position', () => {

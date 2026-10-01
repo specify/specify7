@@ -687,8 +687,7 @@ export const hasEmptyRequiredMappingValues = (
   mappings: RA<Pick<Mapping, 'fileName' | 'rowType'>>
 ): boolean =>
   mappings.some(
-    ({ fileName, rowType }) =>
-      fileName.trim() === '' || rowType.trim() === ''
+    ({ fileName, rowType }) => fileName.trim() === '' || rowType.trim() === ''
   );
 
 function mappingFromQuery(
@@ -882,9 +881,7 @@ function ExtensionDialog({
               );
             }}
           >
-            <option value="">
-              {dwcaText.dwcaChooseExtension()}
-            </option>
+            <option value="">{dwcaText.dwcaChooseExtension()}</option>
             <option value={customExtensionOption}>
               {dwcaText.dwcaStartFromScratch()}
             </option>
@@ -899,9 +896,7 @@ function ExtensionDialog({
           <Label.Block>
             {dwcaText.dwcaChooseTemplateOrQuery()}
             <Select value={localized(queryName)} onValueChange={setQueryName}>
-              <option value="">
-                {dwcaText.dwcaChooseQuery()}
-              </option>
+              <option value="">{dwcaText.dwcaChooseQuery()}</option>
               <option value="empty">{dwcaText.dwcaStartFromScratch()}</option>
               {templates.length > 0 && (
                 <optgroup label={dwcaText.dwcaTemplates()}>
@@ -1234,9 +1229,7 @@ function TermPicker({
             }}
           >
             <option value={customTermOption}>{resourcesText.custom()}</option>
-            <option value="">
-              {dwcaText.dwcaChooseTerm()}
-            </option>
+            <option value="">{dwcaText.dwcaChooseTerm()}</option>
             {value !== '' && selectedTerm === undefined && (
               <option value={value}>{value}</option>
             )}
@@ -1416,9 +1409,7 @@ function QueryMapping({
                 }
               }}
             >
-              <option value="">
-                {dwcaText.dwcaChooseRowType()}
-              </option>
+              <option value="">{dwcaText.dwcaChooseRowType()}</option>
               {rowTypeDefaults.map((rowType) => (
                 <option key={rowType} value={rowType}>
                   {getRowTypeOptionLabel(rowType)}
@@ -1459,9 +1450,7 @@ function QueryMapping({
                 });
               }}
             >
-              <option value="">
-                {dwcaText.dwcaChooseQuery()}
-              </option>
+              <option value="">{dwcaText.dwcaChooseQuery()}</option>
               {availableTemplates.length > 0 && (
                 <optgroup label={dwcaText.dwcaTemplates()}>
                   {availableTemplates.map((template) => (
