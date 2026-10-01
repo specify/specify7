@@ -725,9 +725,7 @@ export const userPreferenceDefinitions = {
             title: headerText.userTools(),
             requiresReload: false,
             visible: true,
-            defaultValue: {
-              '/specify/user-preferences': { other: ['Ctrl+Slash'] },
-            },
+            defaultValue: {},
             renderer: UrlShortcutsEditor,
             container: 'div',
           }),
