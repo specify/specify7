@@ -144,6 +144,12 @@
     "@eslint/eslintrc": {
       "minimatch": "3.1.4"
     },
+    "minimatch@3.1.4": {
+      "brace-expansion": "2.0.2"
+    },
+    "minimatch@5.1.8": {
+      "brace-expansion": "2.0.2"
+    },
     "glob@10.3.10": {
       "minimatch": "9.0.9"
     },
