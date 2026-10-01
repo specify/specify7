@@ -5,16 +5,19 @@ import { usePromise } from '../../hooks/useAsyncState';
 import { isExternalUrl } from '../../utils/ajax/helpers';
 import { localized } from '../../utils/types';
 import type { MenuItem } from '../Core/Main';
+import { rawMenuItemsPromise } from '../Header/menuItemDefinitions';
 import { rawUserToolsPromise } from '../Header/userToolDefinitions';
 import { userPreferences } from '../Preferences/userPreferences';
 import { bindKeyboardShortcut } from './context';
 
 export function useUrlShortcuts(): void {
   const [shortcuts] = userPreferences.use('header', 'actions', 'urlShortcuts');
+  const [menuItems] = usePromise(rawMenuItemsPromise(), false);
   const [userTools] = usePromise(rawUserToolsPromise(), false);
   const navigate = useNavigate();
   React.useEffect(() => {
     const userToolsByUrl = new Map<string, MenuItem>();
+    menuItems?.forEach((tool) => userToolsByUrl.set(tool.url, tool));
     Object.values(userTools ?? {}).forEach((tools) =>
       Object.values(tools).forEach((tool) => userToolsByUrl.set(tool.url, tool))
     );
@@ -43,5 +46,5 @@ export function useUrlShortcuts(): void {
     });
     return (): void => cleanup.forEach((cleanup) => cleanup?.());
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [shortcuts, userTools, navigate]);
+  }, [shortcuts, menuItems, userTools, navigate]);
 }
