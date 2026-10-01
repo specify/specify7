@@ -34,7 +34,7 @@ export function getFieldAlignments(
   const seen = new Set<string>();
 
   Object.entries(coreTermPatterns).forEach(([termName, patterns]) => {
-    if (!patterns.some((pattern) => fieldIdentity.includes(pattern))) return;
+    if (!patterns.some((pattern) => fieldIdentity.endsWith(pattern))) return;
     vocabularies.forEach((vocabulary) => {
       const term = vocabulary.fields.find(({ name }) => name === termName);
       if (term === undefined) return;

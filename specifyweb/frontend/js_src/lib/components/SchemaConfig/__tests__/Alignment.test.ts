@@ -13,6 +13,18 @@ describe('data model vocabulary alignments', () => {
     expect(alignment?.term.name).toBe('http://rs.tdwg.org/dwc/terms/eventDate');
   });
 
+  test('does not match patterns inside longer field names', () => {
+    const alignments = getFieldAlignments(
+      field('CollectingEvent', 'StartDateNumericDay')
+    );
+
+    expect(
+      alignments.some(
+        ({ term }) => term.name === 'http://rs.tdwg.org/dwc/terms/eventDate'
+      )
+    ).toBe(false);
+  });
+
   test('returns all terms matching one field pattern', () => {
     const alignments = getFieldAlignments(
       field('CollectionObjectAttribute', 'CountAmt')
