@@ -4,6 +4,7 @@ import { useSearchParameter } from '../../hooks/navigation';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import { dwcaText } from '../../localization/dwca';
+import { formsText } from '../../localization/forms';
 import { queryText } from '../../localization/query';
 import { resourcesText } from '../../localization/resources';
 import type { RA } from '../../utils/types';
@@ -681,6 +682,14 @@ function newMapping(
 export const getDefaultMappingFileName = (
   definition: Pick<Definition, 'rowType'>
 ): string => `${encodeURIComponent(definition.rowType)}.csv`;
+
+export const hasEmptyRequiredMappingValues = (
+  mappings: RA<Pick<Mapping, 'fileName' | 'rowType'>>
+): boolean =>
+  mappings.some(
+    ({ fileName, rowType }) =>
+      fileName.trim() === '' || rowType.trim() === ''
+  );
 
 function mappingFromQuery(
   mapping: Mapping,
@@ -1660,6 +1669,16 @@ function DwcaDefinitionEditorLoaded({
       getFieldBlockerKey(appResourceDataField, 'dwca-file-names')
     );
   }, [appResourceDataField, hasDuplicateFileNames, setSaveBlockers]);
+  const hasEmptyRequiredValues = React.useMemo(
+    () => hasEmptyRequiredMappingValues(mappings),
+    [mappings]
+  );
+  React.useEffect(() => {
+    setSaveBlockers(
+      hasEmptyRequiredValues ? [formsText.requiredField()] : [],
+      getFieldBlockerKey(appResourceDataField, 'dwca-required-values')
+    );
+  }, [appResourceDataField, hasEmptyRequiredValues, setSaveBlockers]);
   React.useEffect(() => {
     if (tabValue === undefined) return;
     if (tabIndex === -1) setTabValue(undefined);

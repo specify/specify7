@@ -16,6 +16,7 @@ import {
   getExtensionDefinitionForRowType,
   getDefaultMappingFileName,
   formatTermExampleText,
+  hasEmptyRequiredMappingValues,
   isExtensionApplicableToCore,
   isTemplateApplicableToCore,
   isDefinitionXmlValid,
@@ -48,6 +49,20 @@ test('parses documented term examples into values and descriptions', () => {
 test('decodes HTML entities exactly once', () => {
   expect(formatTermExampleText('&amp; &quot; &#39; &#x27;')).toBe("& \" ' '");
   expect(formatTermExampleText('&amp;quot;')).toBe('&quot;');
+});
+
+test('detects empty required mapping values', () => {
+  expect(
+    hasEmptyRequiredMappingValues([{ fileName: ' ', rowType: 'row-type' }])
+  ).toBe(true);
+  expect(
+    hasEmptyRequiredMappingValues([{ fileName: 'data.csv', rowType: '\t' }])
+  ).toBe(true);
+  expect(
+    hasEmptyRequiredMappingValues([
+      { fileName: 'data.csv', rowType: 'row-type' },
+    ])
+  ).toBe(false);
 });
 
 requireContext();
