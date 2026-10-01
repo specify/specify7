@@ -3,6 +3,7 @@ import { theories } from '../../../tests/utils';
 import { localized } from '../../../utils/types';
 import { getMappingLineData, searchFields } from '../navigator';
 import { navigatorSpecs } from '../navigatorSpecs';
+import { strictGetTable } from '../../DataModel/tables';
 
 requireContext();
 
@@ -318,6 +319,25 @@ test('searchFields uses any rank for formatted tree relationships', () => {
     expect.arrayContaining([
       expect.objectContaining({
         mappingPath: ['storage', '$-any', '-formatted'],
+      }),
+    ])
+  );
+});
+
+test('searchFields labels ID fields as ID', () => {
+  const idFieldName = strictGetTable('CollectionObject').idField.name;
+  const results = searchFields({
+    baseTableName: 'CollectionObject',
+    search: idFieldName,
+    showHiddenFields: true,
+    spec: navigatorSpecs.queryBuilder,
+  });
+
+  expect(results).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        mappingPath: [idFieldName],
+        label: 'ID',
       }),
     ])
   );

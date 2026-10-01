@@ -391,7 +391,9 @@ export function searchFields({
         ],
         label: [
           ...current.relationshipLabels,
-          fieldSearchLabel(field.label),
+          field.name === current.table.idField.name
+            ? commonText.id()
+            : fieldSearchLabel(field.label),
         ].join(' → '),
         isHidden,
         joinCount: current.joinCount,
