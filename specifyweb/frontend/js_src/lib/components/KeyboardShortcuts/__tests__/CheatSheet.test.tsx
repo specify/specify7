@@ -62,6 +62,16 @@ test('cancels the pop-up when another key is pressed', () => {
   cleanup();
 });
 
+test('does not open for chords with multiple modifiers', () => {
+  const { queryByRole } = mount(<KeyboardShortcutCheatSheet />);
+
+  fireEvent.keyDown(document, { code: 'MetaLeft', key: 'Meta' });
+  fireEvent.keyDown(document, { code: 'ShiftLeft', key: 'Shift' });
+  act(() => jest.advanceTimersByTime(1000));
+
+  expect(queryByRole('dialog')).not.toBeInTheDocument();
+});
+
 test('shows context shortcuts above global shortcuts with a separator', () => {
   const cleanupContext = bindKeyboardShortcut(
     { other: ['Ctrl+KeyA'] },

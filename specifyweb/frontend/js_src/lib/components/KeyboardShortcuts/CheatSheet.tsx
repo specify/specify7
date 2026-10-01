@@ -39,6 +39,11 @@ export function KeyboardShortcutCheatSheet(): JSX.Element | null {
     const handleKeyDown = (event: KeyboardEvent): void => {
       if (modifierKeys.has(event.key)) {
         heldModifiers.add(event.key);
+        if (heldModifiers.size > 1) {
+          if (timeout !== undefined) clearTimeout(timeout);
+          timeout = undefined;
+          return;
+        }
         if (timeout === undefined && !isVisible && !event.repeat)
           timeout = setTimeout(() => {
             timeout = undefined;
