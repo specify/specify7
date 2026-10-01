@@ -8,7 +8,7 @@ import type { ActiveKeyboardShortcut } from './context';
 import { getActiveKeyboardShortcuts } from './context';
 import { localizedKeyJoinSymbol, localizeKeyboardShortcut } from './utils';
 
-const holdDuration = 2 * SECOND;
+const holdDuration = 1 * SECOND;
 const modifierKeys = new Set(['Control', 'Meta']);
 
 export function KeyboardShortcutCheatSheet(): JSX.Element | null {
