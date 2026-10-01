@@ -3,12 +3,10 @@ from __future__ import annotations
 from email.policy import strict
 import logging
 from collections import namedtuple
-from typing import Any, NamedTuple, Literal, TYPE_CHECKING
+from importlib import import_module
+from typing import Any, NamedTuple, Literal
 
 from .query_ops import QueryOps, QUERYFIELD_OPERATION_NUMBER
-
-if TYPE_CHECKING:
-    from .queryfieldspec import QueryFieldSpec
 
 logger = logging.getLogger(__name__)
 
@@ -51,7 +49,7 @@ def fields_from_json(json_fields) -> list["QueryField"]:
 
 
 class QueryField(NamedTuple):
-    fieldspec: QueryFieldSpec
+    fieldspec: Any
     op_num: QUERYFIELD_OPERATION_NUMBER
     value: str | None
     negate: bool
@@ -62,10 +60,9 @@ class QueryField(NamedTuple):
 
     @classmethod
     def from_spqueryfield(cls, field: EphemeralField, value: str | None=None):
-        from .queryfieldspec import QueryFieldSpec
-
         logger.info("processing field from %r", field)
-        fieldspec = QueryFieldSpec.from_stringid(
+        queryfieldspec = import_module(".queryfieldspec", package=__package__)
+        fieldspec = queryfieldspec.QueryFieldSpec.from_stringid(
             field.stringId, field.isRelFld)
 
         if field.isRelFld:
@@ -84,8 +81,6 @@ class QueryField(NamedTuple):
         )
 
     def add_to_query(self, query, no_filter=False, formatauditobjs=False, collection=None, user=None, optimize_tree=True):
-        from .queryfieldspec import TreeRankQuery
-
         logger.info("adding field %s", self)
         value_required_for_filter = QueryOps.OPERATIONS[self.op_num] not in (
             "op_true",  # 6
@@ -111,9 +106,9 @@ class QueryField(NamedTuple):
             and (not value_required_for_filter or isinstance(self.value, str))
             and self.op_num in {0, 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 15, 18}
             and len(path) >= 2
-            and isinstance(path[-2], TreeRankQuery)
+            and hasattr(path[-2], "treedef_id")
             and not path[-1].is_relationship
-            and sum(isinstance(part, TreeRankQuery) for part in path) == 1
+            and sum(hasattr(part, "treedef_id") for part in path) == 1
             and self.fieldspec.date_part is None
         )
         # Exact matches can start at the matching ancestor and range over its
