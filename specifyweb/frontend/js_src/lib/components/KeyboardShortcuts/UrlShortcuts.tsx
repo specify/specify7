@@ -204,7 +204,7 @@ const cleanupShortcuts = (shortcuts: UrlShortcuts): UrlShortcuts =>
 type CategorizedRoutes = Record<'overlays' | 'pages', CategoryRoutes>;
 type CategoryRoutes = Record<string, LocalizedString | undefined>;
 // Some routes are not fit for keyboard shortcuts, so we exclude them from the list of routes to display.
-const excludedRouteNames = new Set(['test-error', 'not-found']);
+const excludedRouteNames = new Set(['test-error', 'not-found', 'workbench-attachment', 'legacy_login']);
 
 const isExcludedPath = (
   path: string,
