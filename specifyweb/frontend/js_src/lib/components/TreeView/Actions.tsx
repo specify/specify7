@@ -243,7 +243,7 @@ function QueryButton({
     'treeEditor',
     'actions',
     'query',
-    () => window.open(href, '_blank')
+    () => window.open(href, '_blank', 'noopener,noreferrer')
   );
 
   const href = `/specify/query/fromtree/${tableName.toLowerCase()}/${
