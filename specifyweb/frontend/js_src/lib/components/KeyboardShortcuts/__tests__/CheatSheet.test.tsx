@@ -72,6 +72,19 @@ test('does not open for chords with multiple modifiers', () => {
   expect(queryByRole('dialog')).not.toBeInTheDocument();
 });
 
+test.each([
+  ['Shift', 'Control'],
+  ['Alt', 'Control'],
+])('does not open when %s is pressed before %s', (first, second) => {
+  const { queryByRole } = mount(<KeyboardShortcutCheatSheet />);
+
+  fireEvent.keyDown(document, { key: first });
+  fireEvent.keyDown(document, { key: second });
+  act(() => jest.advanceTimersByTime(1000));
+
+  expect(queryByRole('dialog')).not.toBeInTheDocument();
+});
+
 test('shows context shortcuts above global shortcuts with a separator', () => {
   const cleanupContext = bindKeyboardShortcut(
     { other: ['Ctrl+KeyA'] },

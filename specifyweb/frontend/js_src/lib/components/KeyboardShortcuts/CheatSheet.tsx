@@ -12,7 +12,8 @@ import {
 import { localizedKeyJoinSymbol, localizeKeyboardShortcut } from './utils';
 
 const holdDuration = 1 * SECOND;
-const modifierKeys = new Set(['Control', 'Meta']);
+const modifierKeys = new Set(['Alt', 'Control', 'Meta', 'Shift']);
+const triggeringModifierKeys = new Set(['Control', 'Meta']);
 
 export function KeyboardShortcutCheatSheet(): JSX.Element | null {
   const shortcutsEnabled = useKeyboardShortcutsEnabled();
@@ -46,7 +47,12 @@ export function KeyboardShortcutCheatSheet(): JSX.Element | null {
           timeout = undefined;
           return;
         }
-        if (timeout === undefined && !isVisible && !event.repeat)
+        if (
+          triggeringModifierKeys.has(event.key) &&
+          timeout === undefined &&
+          !isVisible &&
+          !event.repeat
+        )
           timeout = setTimeout(() => {
             timeout = undefined;
             isVisible = true;
