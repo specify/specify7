@@ -240,6 +240,11 @@ export type FieldSearchResult = {
 const fieldSearchDepthLimit = 6;
 const fieldSearchResultLimit = 500;
 const fieldSearchVisitedStateLimit = 10_000;
+// There are some tables that should not be searchable.
+const fieldSearchExcludedTables: ReadonlySet<keyof Tables> = new Set([
+  'SpecifyUser',
+  'Workbench',
+]);
 
 type FieldSearchPathPreference = {
   readonly baseTableName: keyof Tables;
@@ -301,7 +306,12 @@ export function searchFields({
   readonly spec: NavigatorSpec;
 }): RA<FieldSearchResult> {
   const normalizedSearch = search.trim().toLocaleLowerCase();
-  if (normalizedSearch.length === 0 || limit <= 0) return [];
+  if (
+    normalizedSearch.length === 0 ||
+    limit <= 0 ||
+    fieldSearchExcludedTables.has(baseTableName)
+  )
+    return [];
 
   type QueueItem = {
     readonly table: SpecifyTable;
@@ -470,7 +480,11 @@ export function searchFields({
       .filter((relationship) => {
         // Someday when we support virtual fields in the Query Builder,
         // this should be re-enabled.
-        if (relationship.isVirtual) return false;
+        if (
+          relationship.isVirtual ||
+          fieldSearchExcludedTables.has(relationship.relatedTable.name)
+        )
+          return false;
         const isHidden = current.isHidden || relationship.overrides.isHidden;
         if (isHidden && !showHiddenFields) return false;
         if (

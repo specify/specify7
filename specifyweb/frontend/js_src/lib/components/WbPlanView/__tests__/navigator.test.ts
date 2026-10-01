@@ -269,6 +269,28 @@ test('searchFields excludes virtual fields and relationships', () => {
   ).toBe(false);
 });
 
+test('searchFields excludes SpecifyUser and Workbench tables', () => {
+  for (const [search, tableName, relationshipName] of [
+    ['specifyuser', 'SpecifyUser', 'specifyUser'],
+    ['workbench', 'Workbench', 'workbench'],
+  ] as const) {
+    const results = searchFields({
+      baseTableName: 'CollectionObject',
+      search,
+      spec: navigatorSpecs.queryBuilder,
+    });
+
+    expect(results.every((result) => result.tableName !== tableName)).toBe(
+      true
+    );
+    expect(
+      results.every(
+        ({ mappingPath }) => !mappingPath.includes(relationshipName)
+      )
+    ).toBe(true);
+  }
+});
+
 // TEST: break this test into smaller tests
 theories(getMappingLineData, [
   {
