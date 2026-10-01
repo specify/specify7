@@ -102,6 +102,8 @@ def migrate_collection_preferences(legacy_resources, apps):
     Spappresourcedir = apps.get_model('specify', 'Spappresourcedir')
     Spappresourcedata = apps.get_model('specify', 'Spappresourcedata')
     resource_owner = SpecifyUser.objects.order_by('id').first()
+    if resource_owner is None:
+        return
     collection_values = {}
 
     for resource_data in legacy_resources:
@@ -173,7 +175,7 @@ def migrate_global_preferences(apps, schema_editor):
         spappresource__name='preferences',
     ))
 
-    if target is None:
+    if target is None and resource_owner is not None:
         legacy_data = list(
         Spappresourcedata.objects.filter(
             spappresource__spappresourcedir__usertype__in=['Prefs', 'Global Prefs'],
