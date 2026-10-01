@@ -402,7 +402,7 @@ describe('DwCA query field term mapping', () => {
     );
   });
 
-  test('does not drop a relationship term when QueryBuilder marks the field hidden', () => {
+  test('does not serialize terms on hidden relationship fields', () => {
     const xml = `<archive><core rowType="http://rs.tdwg.org/dwc/terms/Occurrence"><queries><query name="core.csv" contextTableId="1">
       <id stringId="1.collectionobject.guid" term="${occurrenceId}" />
       <field stringId="1,63-preparations.preparation.preparations" isRelFld="true" term="http://rs.tdwg.org/dwc/terms/preparations" />
@@ -416,7 +416,10 @@ describe('DwCA query field term mapping', () => {
       ),
     };
 
-    expect(serializeDefinition([hiddenMapping])).toContain(
+    expect(hiddenMapping.terms[1]).toBe(
+      'http://rs.tdwg.org/dwc/terms/preparations'
+    );
+    expect(serializeDefinition([hiddenMapping])).not.toContain(
       'term="http://rs.tdwg.org/dwc/terms/preparations"'
     );
   });

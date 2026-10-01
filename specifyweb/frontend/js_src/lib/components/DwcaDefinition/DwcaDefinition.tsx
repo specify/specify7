@@ -1076,7 +1076,11 @@ export function serializeDefinition(mappings: RA<Mapping>): string {
       node.setAttribute('isRelFld', String(field.isRelFld));
       if (field.formatName !== null)
         node.setAttribute('formatName', field.formatName ?? '');
-      if (typeof term === 'string' && term.length > 0)
+      if (
+        field.isDisplay === true &&
+        typeof term === 'string' &&
+        term.length > 0
+      )
         node.setAttribute('term', term);
       query.append(node);
       if (field.isDisplay === true) {
