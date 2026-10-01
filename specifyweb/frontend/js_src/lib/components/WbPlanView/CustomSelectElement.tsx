@@ -700,6 +700,7 @@ export function CustomSelectElement({
       className={`
         border-brand-300 h-fit flex-1 cursor-pointer
         overflow-x-hidden rounded-b border bg-[color:var(--custom-select-b1)]
+        ${fieldSearch ? 'border-t-0' : ''}
         ${has('preview') ? 'z-[2]' : ''}
         ${has('scroll') ? 'overflow-y-scroll' : 'overflow-y-auto'}
         ${has('shadow') ? 'max-h-[theme(spacing.64)] shadow-md' : ''}

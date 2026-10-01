@@ -209,10 +209,15 @@ export function MappingView({
   const fieldSearch =
     baseTableName !== undefined &&
     typeof handleSelectSearchResult === 'function' ? (
-      <div className="relative flex w-full flex-col bg-white dark:bg-neutral-800">
+      <div
+        className="
+          relative flex w-full flex-col border border-brand-300
+          bg-white dark:bg-neutral-800
+        "
+      >
         <Input.Text
           aria-label={commonText.search()}
-          className="w-full rounded-none"
+          className="w-full rounded-none border-0 !ring-0 !shadow-none focus:border-0 focus:!ring-0"
           id="field-search"
           placeholder={commonText.search()}
           value={search}
