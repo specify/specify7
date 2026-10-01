@@ -5,7 +5,10 @@ import { usePromise } from '../../hooks/useAsyncState';
 import { isExternalUrl } from '../../utils/ajax/helpers';
 import { localized } from '../../utils/types';
 import type { MenuItem } from '../Core/Main';
-import { rawMenuItemsPromise } from '../Header/menuItemDefinitions';
+import {
+  expressSearchMenuItem,
+  rawMenuItemsPromise,
+} from '../Header/menuItemDefinitions';
 import { rawUserToolsPromise } from '../Header/userToolDefinitions';
 import { userPreferences } from '../Preferences/userPreferences';
 import { bindKeyboardShortcut, setKeyboardShortcutsEnabled } from './context';
@@ -25,6 +28,7 @@ export function useUrlShortcuts(): void {
   }, [shortcutsEnabled]);
   React.useEffect(() => {
     const userToolsByUrl = new Map<string, MenuItem>();
+    userToolsByUrl.set(expressSearchMenuItem.url, expressSearchMenuItem);
     menuItems?.forEach((tool) => userToolsByUrl.set(tool.url, tool));
     Object.values(userTools ?? {}).forEach((tools) =>
       Object.values(tools).forEach((tool) => userToolsByUrl.set(tool.url, tool))
