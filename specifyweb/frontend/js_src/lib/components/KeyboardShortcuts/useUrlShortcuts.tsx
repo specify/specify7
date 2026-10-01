@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { usePromise } from '../../hooks/useAsyncState';
 import { isExternalUrl } from '../../utils/ajax/helpers';
+import { localized } from '../../utils/types';
 import type { MenuItem } from '../Core/Main';
 import { rawUserToolsPromise } from '../Header/userToolDefinitions';
 import { userPreferences } from '../Preferences/userPreferences';
@@ -20,21 +21,25 @@ export function useUrlShortcuts(): void {
     const cleanup = Object.entries(shortcuts).map(([path, shortcuts]) =>
       shortcuts === undefined
         ? undefined
-        : bindKeyboardShortcut(shortcuts, () => {
-            const userTool = userToolsByUrl.get(path);
-            if (userTool?.onClick !== undefined)
-              void userTool
-                .onClick()
-                .then(() => globalThis.location.assign(path));
-            else if (isExternalUrl(path))
-              globalThis.open(path, '_blank', 'noopener,noreferrer');
-            else if (
-              !path.startsWith('/specify/') &&
-              !path.startsWith('/accounts/')
-            )
-              globalThis.location.assign(path);
-            else navigate(path);
-          })
+        : bindKeyboardShortcut(
+            shortcuts,
+            () => {
+              const userTool = userToolsByUrl.get(path);
+              if (userTool?.onClick !== undefined)
+                void userTool
+                  .onClick()
+                  .then(() => globalThis.location.assign(path));
+              else if (isExternalUrl(path))
+                globalThis.open(path, '_blank', 'noopener,noreferrer');
+              else if (
+                !path.startsWith('/specify/') &&
+                !path.startsWith('/accounts/')
+              )
+                globalThis.location.assign(path);
+              else navigate(path);
+            },
+            localized(path)
+          )
     );
     return (): void => cleanup.forEach((cleanup) => cleanup?.());
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -12,7 +12,8 @@ import { localizeKeyboardShortcut, resolvePlatformShortcuts } from './utils';
  */
 export function useManualKeyboardShortcut(
   shortcuts: KeyboardShortcuts | undefined,
-  callback: (() => void) | undefined
+  callback: (() => void) | undefined,
+  label?: LocalizedString
 ): void {
   const callbackRef = React.useRef(callback);
   callbackRef.current = callback;
@@ -20,9 +21,9 @@ export function useManualKeyboardShortcut(
   React.useEffect(
     () =>
       typeof shortcuts === 'object' && hasCallback
-        ? bindKeyboardShortcut(shortcuts, () => callbackRef.current?.())
+        ? bindKeyboardShortcut(shortcuts, () => callbackRef.current?.(), label)
         : undefined,
-    [hasCallback, shortcuts]
+    [hasCallback, label, shortcuts]
   );
 }
 
@@ -37,7 +38,9 @@ export function useKeyboardShortcutLabel(
 ): LocalizedString {
   return React.useMemo(() => {
     const platformShortcuts =
-      shortcuts === undefined ? [] : resolvePlatformShortcuts(shortcuts) ?? [];
+      shortcuts === undefined
+        ? []
+        : (resolvePlatformShortcuts(shortcuts) ?? []);
     return localized(
       platformShortcuts.length > 0
         ? ` (${formatDisjunction(

@@ -442,7 +442,7 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
       ? string & keyof DEFINITIONS[CATEGORY]['subCategories']
       : never,
     ITEM extends string &
-      keyof DEFINITIONS[CATEGORY]['subCategories'][SUBCATEGORY]['items']
+      keyof DEFINITIONS[CATEGORY]['subCategories'][SUBCATEGORY]['items'],
   >(
     category: CATEGORY,
     subcategory: SUBCATEGORY,
@@ -452,16 +452,21 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
     const [shortcuts] = this.use(category, subcategory, item);
 
     const hasCallback = typeof callback === 'function';
+    const definition = this.definition(
+      category,
+      subcategory,
+      item
+    ) as PreferenceItem<unknown>;
+    const resolvedTitle =
+      typeof definition.title === 'function'
+        ? definition.title()
+        : definition.title;
+    const label = typeof resolvedTitle === 'string' ? resolvedTitle : undefined;
 
     // Calling hook conditionally like this is fine as this condition is constant during runtime of a page
     if (process.env.NODE_ENV === 'development') {
       // eslint-disable-next-line react-hooks/rules-of-hooks
       React.useEffect(() => {
-        const definition = this.definition(
-          category,
-          subcategory,
-          item
-        ) as PreferenceItem<unknown>;
         if (
           !('renderer' in definition) ||
           definition.renderer.name !== 'KeyboardShortcutPreferenceItem'
@@ -473,7 +478,7 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
     }
 
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    useManualKeyboardShortcut(shortcuts, callback);
+    useManualKeyboardShortcut(shortcuts, callback, label);
 
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const localizedShortcut = useKeyboardShortcutLabel(shortcuts);

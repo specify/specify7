@@ -2,6 +2,8 @@
  * Allows to register a key listener
  */
 
+import type { LocalizedString } from 'typesafe-i18n';
+
 import type { RA, WritableArray } from '../../utils/types';
 import type { KeyboardShortcuts, ModifierKey } from './config';
 import { allModifierKeys, specialKeyboardKeys } from './config';
@@ -19,7 +21,23 @@ import { resolvePlatformShortcuts } from './utils';
  * have things work correctly, we store listeners as a stack, with the most
  * recently added listener (last one) being the active one.
  */
-const listeners = new Map<string, WritableArray<() => void>>();
+type ShortcutListener = {
+  readonly callback: () => void;
+  readonly label: LocalizedString | undefined;
+};
+
+const listeners = new Map<string, WritableArray<ShortcutListener>>();
+
+export type ActiveKeyboardShortcut = {
+  readonly label: LocalizedString;
+  readonly shortcut: string;
+};
+
+export const getActiveKeyboardShortcuts = (): RA<ActiveKeyboardShortcut> =>
+  Array.from(listeners.entries()).flatMap(([shortcut, shortcutListeners]) => {
+    const label = shortcutListeners.at(-1)?.label;
+    return label === undefined ? [] : [{ label, shortcut }];
+  });
 
 /**
  * When setting a keyboard shortcut in user preferences, we want to:
@@ -38,18 +56,22 @@ export function setKeyboardEventInterceptor(
 
 export function bindKeyboardShortcut(
   shortcut: KeyboardShortcuts,
-  callback: () => void
+  callback: () => void,
+  label?: LocalizedString
 ): () => void {
   const shortcuts = resolvePlatformShortcuts(shortcut) ?? [];
   shortcuts.forEach((string) => {
     const shortcutListeners = listeners.get(string);
-    if (shortcutListeners === undefined) listeners.set(string, [callback]);
-    else shortcutListeners.push(callback);
+    const listener = { callback, label };
+    if (shortcutListeners === undefined) listeners.set(string, [listener]);
+    else shortcutListeners.push(listener);
   });
   return () =>
     shortcuts.forEach((string) => {
       const activeListeners = listeners.get(string)!;
-      const lastIndex = activeListeners.lastIndexOf(callback);
+      const lastIndex = activeListeners.findLastIndex(
+        (listener) => listener.callback === callback
+      );
       if (lastIndex !== -1) activeListeners.splice(lastIndex, 1);
       if (activeListeners.length === 0) listeners.delete(string);
     });
@@ -89,7 +111,7 @@ document.addEventListener('keydown', (event) => {
   }
 
   const keyString = keysToString(modifiers, pressedKeys);
-  const handler = interceptor ?? listeners.get(keyString)?.at(-1);
+  const handler = interceptor ?? listeners.get(keyString)?.at(-1)?.callback;
   if (typeof handler === 'function') {
     handler(keyString);
     /*
