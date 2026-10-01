@@ -595,8 +595,8 @@ function Wrapped({
                    * still want to execute the query (Form onSubmit is not fired
                    * in that case so we have to do it manually)
                    */
-                  form?.checkValidity() === false
-                    ? runQuery('regular')
+                  isEmbedded || form?.checkValidity() === false
+                    ? scheduleRun('regular')
                     : undefined
                 }
                 onToggleDistinct={(): void => {
