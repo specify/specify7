@@ -293,7 +293,11 @@ export function QueryFields({
                   ? undefined
                   : handleOpen?.bind(undefined, line)
               }
-              onOpenMap={handleOpenMap?.bind(undefined, line)}
+              onOpenMap={
+                isFieldReadOnly?.(field, line)
+                  ? undefined
+                  : handleOpenMap?.bind(undefined, line)
+              }
               onRemove={
                 handleRemoveField !== undefined &&
                 isFieldReadOnly?.(field, line) !== true &&
