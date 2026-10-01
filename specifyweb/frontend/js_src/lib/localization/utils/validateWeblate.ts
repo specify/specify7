@@ -91,10 +91,17 @@ function getToken(): string {
   return `Token ${key}`;
 }
 
-const doFetch = async (url: string): Promise<IR<unknown>> =>
-  fetch(url, {
+const doFetch = async (url: string): Promise<IR<unknown>> => {
+  const response = await fetch(url, {
     headers: { Authorization: getToken() },
-  }).then(async (response) => response.json());
+  });
+  if (!response.ok)
+    throw new Error(
+      `Weblate API request failed (${response.status} ${response.statusText}) ` +
+        `for ${url}: ${await response.text()}`
+    );
+  return response.json();
+};
 
 const fetchComponents = async (
   url = componentsApiUrl
@@ -172,20 +179,18 @@ async function createComponent(
   warn(`Creating a component for "${name}"`);
   const { addons, ...settings } =
     localizationKinds[kind].getComponentSettings(name);
-  fetch(componentsApiUrl, {
+  const response = await fetch(componentsApiUrl, {
     headers: {
       Authorization: getToken(),
       'Content-Type': 'application/json',
     },
     method: 'POST',
     body: JSON.stringify(settings),
-  })
-    .then(async (response) =>
-      response.status === Http.CREATED
-        ? f.void()
-        : Promise.reject(await response.text())
-    )
-    .then(console.log);
+  });
+  if (response.status === Http.CREATED) return;
+  error(
+    `Failed to create a Weblate component for "${name}": ${await response.text()}`
+  );
 }
 
 /**
