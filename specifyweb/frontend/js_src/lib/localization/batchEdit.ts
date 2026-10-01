@@ -191,7 +191,7 @@ export const batchEditText = createDictionary({
     'ru-ru': 'Совершить',
     'uk-ua': 'Здійснити',
     'hr-hr': 'Potvrdi',
-    nb: 'Bekreft',
+    nb: 'Utfør',
   },
   startCommitDescription: {
     'en-us':
@@ -210,7 +210,7 @@ export const batchEditText = createDictionary({
       'Запис набору даних оновить, додасть та видалить дані з електронної таблиці до бази даних Specify.',
     'hr-hr':
       'Potvrdom skupa podataka ažurirat će se, dodavati i brisati podaci iz proračunske tablice u bazu podataka Specify.',
-    nb: 'Når datasettet er bekreftet, vil data oppdateres, legges til og slettes i Specify-databasen, basert på dataene i regnearket.',
+    nb: 'Når datasettet sendt, vil data oppdateres, legges til og slettes i Specify-databasen, basert på dataene i regnearket.',
   },
   startRevertDescription: {
     'en-us':
@@ -229,7 +229,7 @@ export const batchEditText = createDictionary({
       'Відкат набору даних призведе до повторного оновлення значень, видалення створених записів та створення нових записів.',
     'hr-hr':
       'Vraćanje skupa podataka ponovno će ažurirati vrijednosti, izbrisati kreirane zapise i kreirati nove zapise',
-    nb: 'Tilbakestilling av datasettet vil oppdatere verdiene på nytt, slette opprettede poster og opprette nye poster',
+    nb: 'Tilbakerulling av datasettet vil oppdatere verdiene på nytt, slette opprettede poster og opprette nye poster',
   },
   commitSuccessfulDescription: {
     'en-us':
@@ -278,7 +278,7 @@ export const batchEditText = createDictionary({
     'ru-ru': 'Совершение',
     'uk-ua': 'Здійснення',
     'hr-hr': 'Počinjanje',
-    nb: 'Bekreft',
+    nb: 'Utfører',
   },
   beStatusCommit: {
     'en-us': 'Data Set Commit Status',
@@ -289,7 +289,7 @@ export const batchEditText = createDictionary({
     'ru-ru': 'Статус фиксации набора данных',
     'uk-ua': 'Стан фіксації набору даних',
     'hr-hr': 'Status potvrđivanja skupa podataka',
-    nb: "Status for commit'ing av datasett",
+    nb: 'Status for prosessering av datasett',
   },
   startCommit: {
     'en-us': 'Begin Data Set Commit?',
@@ -300,7 +300,7 @@ export const batchEditText = createDictionary({
     'ru-ru': 'Начало фиксации набора данных?',
     'uk-ua': 'Почати фіксацію набору даних?',
     'hr-hr': 'Započeti potvrđivanje skupa podataka?',
-    nb: 'Starte datasett-commit?',
+    nb: 'Starte datasett-prosessering?',
   },
   commitErrors: {
     'en-us': 'Commit Failed due to Error Cells',
@@ -340,7 +340,7 @@ export const batchEditText = createDictionary({
     'ru-ru': 'Подтверждение отменено',
     'uk-ua': 'Зміна фіксації',
     'hr-hr': 'Potvrda otkazana',
-    nb: 'Utføring avbrutt',
+    nb: 'Prosessering avbrutt',
   },
   commitCancelledDescription: {
     'en-us': 'Commit Cancelled Description',
@@ -351,7 +351,7 @@ export const batchEditText = createDictionary({
     'ru-ru': 'Подтверждение отменено Описание',
     'uk-ua': 'Опис скасованого підтвердження',
     'hr-hr': 'Opis otkazanog potvrđivanja',
-    nb: 'Beskrivelse av avbrutt utføring (commit)',
+    nb: 'Beskrivelse av avbrutt prosessering',
   },
   commitSuccessful: {
     'en-us': 'Commit Completed with No Errors',
@@ -362,7 +362,7 @@ export const batchEditText = createDictionary({
     'ru-ru': 'Фиксация изменений завершена без ошибок.',
     'uk-ua': 'Коміт завершено без помилок',
     'hr-hr': 'Potvrda završena bez grešaka',
-    nb: 'Utføring fullført uten feil',
+    nb: 'Prosessering fullført uten feil',
   },
   batchEditRecordSetName: {
     'en-us': 'BE commit of "{dataSet:string}"',
@@ -373,7 +373,7 @@ export const batchEditText = createDictionary({
     'ru-ru': 'BE commit of "{dataSet:string}"',
     'uk-ua': 'BE коміт "{dataSet:string}"',
     'hr-hr': 'BE potvrda od "{dataSet:string}"',
-    nb: 'BE-commit av "{dataSet:string}"',
+    nb: 'BE-utøfring av "{dataSet:string}"',
   },
   deferForMatch: {
     'en-us': 'Use only visible fields for match',
