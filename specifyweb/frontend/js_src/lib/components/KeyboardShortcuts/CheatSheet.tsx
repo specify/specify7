@@ -25,6 +25,8 @@ export function KeyboardShortcutCheatSheet(): JSX.Element | null {
   }, [shortcutsEnabled]);
 
   React.useEffect(() => {
+    if (!shortcutsEnabled) return undefined;
+
     let timeout: ReturnType<typeof setTimeout> | undefined;
     let isVisible = false;
     const heldModifiers = new Set<string>();
@@ -67,7 +69,7 @@ export function KeyboardShortcutCheatSheet(): JSX.Element | null {
       document.removeEventListener('keyup', handleKeyUp);
       globalThis.removeEventListener('blur', hide);
     };
-  }, []);
+  }, [shortcutsEnabled]);
 
   const contextShortcuts = shortcuts?.filter(
     ({ scope }) => scope === 'context'
