@@ -883,7 +883,7 @@ function ExtensionDialog({
             }}
           >
             <option value="">
-              {dwcaText.dwcaChoose({ item: dwcaText.dwcaExtension() })}
+              {dwcaText.dwcaChooseExtension()}
             </option>
             <option value={customExtensionOption}>
               {dwcaText.dwcaStartFromScratch()}
@@ -900,7 +900,7 @@ function ExtensionDialog({
             {dwcaText.dwcaChooseTemplateOrQuery()}
             <Select value={localized(queryName)} onValueChange={setQueryName}>
               <option value="">
-                {dwcaText.dwcaChoose({ item: queryText.query() })}
+                {dwcaText.dwcaChooseQuery()}
               </option>
               <option value="empty">{dwcaText.dwcaStartFromScratch()}</option>
               {templates.length > 0 && (
@@ -1235,7 +1235,7 @@ function TermPicker({
           >
             <option value={customTermOption}>{resourcesText.custom()}</option>
             <option value="">
-              {dwcaText.dwcaChoose({ item: dwcaText.dwcaTerm() })}
+              {dwcaText.dwcaChooseTerm()}
             </option>
             {value !== '' && selectedTerm === undefined && (
               <option value={value}>{value}</option>
@@ -1417,7 +1417,7 @@ function QueryMapping({
               }}
             >
               <option value="">
-                {dwcaText.dwcaChoose({ item: dwcaText.dwcaRowType() })}
+                {dwcaText.dwcaChooseRowType()}
               </option>
               {rowTypeDefaults.map((rowType) => (
                 <option key={rowType} value={rowType}>
@@ -1460,7 +1460,7 @@ function QueryMapping({
               }}
             >
               <option value="">
-                {dwcaText.dwcaChoose({ item: queryText.query().toLowerCase() })}
+                {dwcaText.dwcaChooseQuery()}
               </option>
               {availableTemplates.length > 0 && (
                 <optgroup label={dwcaText.dwcaTemplates()}>

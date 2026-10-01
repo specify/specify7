@@ -65,8 +65,17 @@ export const dwcaText = createDictionary({
   dwcaStartFromScratch: {
     'en-us': 'Start from scratch',
   },
-  dwcaChoose: {
-    'en-us': 'Choose a {item:string}',
+  dwcaChooseExtension: {
+    'en-us': 'Choose an extension',
+  },
+  dwcaChooseTerm: {
+    'en-us': 'Choose a term',
+  },
+  dwcaChooseRowType: {
+    'en-us': 'Choose a row type',
+  },
+  dwcaChooseQuery: {
+    'en-us': 'Choose a query',
   },
   dwcaNoDefaultOrSaved: {
     'en-us':
