@@ -526,7 +526,6 @@ export function searchFields({
         );
       })
       .forEach((relationship) => {
-        if (current.tablePath.includes(relationship.relatedTable.name)) return;
         const relationshipIsToManyField =
           relationshipIsToMany(relationship) ||
           relationshipIsRemoteToOne(relationship);
@@ -556,6 +555,11 @@ export function searchFields({
             tableName: relationship.relatedTable.name,
             searchRank: 1,
           });
+
+        // Return matching self-referential relationships, but do not traverse
+        // through them or the search could revisit the same table forever.
+        if (current.tablePath.includes(relationship.relatedTable.name)) return;
+
         queue.push({
           table: relationship.relatedTable,
           mappingPath: relationshipPath,

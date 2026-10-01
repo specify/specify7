@@ -291,6 +291,22 @@ test('searchFields excludes SpecifyUser and Workbench tables', () => {
   }
 });
 
+test('searchFields includes matching self-referential relationships', () => {
+  const results = searchFields({
+    baseTableName: 'Preparation',
+    search: 'organ',
+    spec: navigatorSpecs.queryBuilder,
+  });
+
+  expect(results).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        mappingPath: ['preparedByAgent', 'organization', '-formatted'],
+      }),
+    ])
+  );
+});
+
 // TEST: break this test into smaller tests
 theories(getMappingLineData, [
   {
