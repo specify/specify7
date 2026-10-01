@@ -10,7 +10,7 @@ import tempfile
 from unittest.mock import patch
 from zipfile import ZipFile
 
-from django.test import TestCase
+from django.test import Client, TestCase
 
 from specifyweb.specify.models import (
     Spappresource,
@@ -103,3 +103,16 @@ class ExportFeedTests(ApiTests):
             messages = Message.objects.filter(user=self.specifyuser)
             self.assertTrue(messages.exists())
             self.assertIn('test_export.zip', messages[0].content)
+
+    def test_rss_feed_lists_published_items(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            # create the archive file that the feed references
+            open(os.path.join(tmp, 'test_export.zip'), 'w').close()
+
+            with patch('specifyweb.backend.export.views.FEED_DIR', tmp):
+                response = Client().get('/export/rss/')
+
+            self.assertEqual(response.status_code, 200)
+            content = response.content.decode()
+            self.assertIn('test_export.zip', content)
+            self.assertIn('Test Item', content)
