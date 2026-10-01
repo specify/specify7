@@ -966,7 +966,7 @@ export const userPreferenceDefinitions = {
       dialogs: {
         title: preferencesText.dialogs(),
         items: {
-          close: defineKeyboardShortcut(commonText.close(), 'KeyC'),
+          close: defineKeyboardShortcut(commonText.close(), 'Ctrl+KeyC'),
           save: defineKeyboardShortcut(commonText.save(), 'KeyS'),
           openRelatedRecordInNewTab: defineKeyboardShortcut(
             preferencesText.openRelatedRecordInNewTab(),
