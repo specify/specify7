@@ -122,9 +122,17 @@ function EditorDialog({
       }
     >
       <H3>{preferencesText.pages()}</H3>
-      <RouteBrowser routes={categorizedRoutes.pages} value={localValue} />
+      <RouteBrowser
+        routes={categorizedRoutes.pages}
+        excludedPaths={shortcutToolPaths}
+        value={localValue}
+      />
       <H3>{preferencesText.overlays()}</H3>
-      <RouteBrowser routes={categorizedRoutes.overlays} value={localValue} />
+      <RouteBrowser
+        routes={categorizedRoutes.overlays}
+        excludedPaths={shortcutToolPaths}
+        value={localValue}
+      />
       <H3>{preferencesText.customPages()}</H3>
       <CustomRouteBrowser
         categorized={categorizedRoutes}
@@ -255,16 +263,20 @@ const scoutTree = (
 
 function RouteBrowser({
   routes,
+  excludedPaths,
   value,
 }: {
   readonly routes: CategoryRoutes;
+  readonly excludedPaths: ReadonlySet<string>;
   readonly value: GetSet<UrlShortcuts>;
 }): JSX.Element {
   return (
     <Ul className="flex flex-col gap-2 mb-4">
-      {Object.entries(routes).map(([path, title]) => (
-        <RouteShortcut key={path} path={path} title={title} value={value} />
-      ))}
+      {Object.entries(routes).map(([path, title]) =>
+        excludedPaths.has(path) ? undefined : (
+          <RouteShortcut key={path} path={path} title={title} value={value} />
+        )
+      )}
     </Ul>
   );
 }
