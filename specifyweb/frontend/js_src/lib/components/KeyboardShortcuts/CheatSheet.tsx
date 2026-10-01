@@ -66,6 +66,7 @@ export function KeyboardShortcutCheatSheet(): JSX.Element | null {
         <div
           className={`
             max-h-full w-full max-w-5xl overflow-auto rounded-2xl
+            pointer-events-auto
             border border-white/20 bg-neutral-800/90 p-8 text-white shadow-2xl
           `}
         >
