@@ -79,6 +79,7 @@ export function Slider({
     <nav className="flex justify-center gap-2 print:hidden">
       <Button.Small
         aria-label={formsText.goToFirstRecord()}
+        disabled={goToFirstRecord === undefined}
         title={`${formsText.goToFirstRecord()}${goToFirstRecordShortcut}`}
         onClick={goToFirstRecord}
       >
@@ -87,6 +88,7 @@ export function Slider({
       <Button.Small
         aria-label={formsText.goToPreviousRecord()}
         className="px-4 dark:bg-neutral-500"
+        disabled={goToPreviousRecord === undefined}
         title={`${formsText.goToPreviousRecord()}${goToPreviousRecordShortcut}`}
         onClick={goToPreviousRecord}
       >
@@ -133,6 +135,7 @@ export function Slider({
       <Button.Small
         aria-label={formsText.goToNextRecord()}
         className="px-4 dark:bg-neutral-500"
+        disabled={goToNextRecord === undefined}
         title={`${formsText.goToNextRecord()}${goToNextRecordShortcut}`}
         onClick={goToNextRecord}
       >
@@ -140,6 +143,7 @@ export function Slider({
       </Button.Small>
       <Button.Small
         aria-label={formsText.goToLastRecord()}
+        disabled={goToLastRecord === undefined}
         title={`${formsText.goToLastRecord()}${goToLastRecordShortcut}`}
         onClick={goToLastRecord}
       >
