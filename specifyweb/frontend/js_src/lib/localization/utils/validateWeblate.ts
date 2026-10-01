@@ -91,10 +91,17 @@ function getToken(): string {
   return `Token ${key}`;
 }
 
-const doFetch = async (url: string): Promise<IR<unknown>> =>
-  fetch(url, {
+const doFetch = async (url: string): Promise<IR<unknown>> => {
+  const response = await fetch(url, {
     headers: { Authorization: getToken() },
-  }).then(async (response) => response.json());
+  });
+  if (!response.ok)
+    throw new Error(
+      `Weblate API request failed (${response.status} ${response.statusText}) ` +
+        `for ${url}: ${await response.text()}`
+    );
+  return response.json();
+};
 
 const fetchComponents = async (
   url = componentsApiUrl
