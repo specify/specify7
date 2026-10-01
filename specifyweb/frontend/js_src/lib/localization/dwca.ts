@@ -19,6 +19,10 @@ export const dwcaText = createDictionary({
   dwcaDefinition: {
     'en-us': 'Darwin Core definition',
   },
+  dwcaInvalidDefinition: {
+    'en-us':
+      'This Darwin Core definition contains invalid XML. Fix it in the XML editor before using the visual editor.',
+  },
   dwcaTerm: {
     'en-us': 'Term',
   },

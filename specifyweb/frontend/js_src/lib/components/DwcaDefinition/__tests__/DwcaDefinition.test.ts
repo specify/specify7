@@ -16,6 +16,7 @@ import {
   getExtensionDefinitionForRowType,
   isExtensionApplicableToCore,
   isTemplateApplicableToCore,
+  isDefinitionXmlValid,
   getTermDisplayLabel,
   getTemplateMapping,
   parseDefinition,
@@ -70,6 +71,9 @@ describe('DwCA query field term mapping', () => {
     expect(
       coreTermPatterns['http://rs.tdwg.org/dwc/terms/georeferencedBy']
     ).toEqual(['georefdetby']);
+    expect(
+      coreTermPatterns['http://rs.tdwg.org/dwc/terms/countryCode']
+    ).toEqual(['geography.country geographycode']);
   });
 
   test('uses discipline-specific schema override sources', () => {
@@ -108,7 +112,7 @@ describe('DwCA query field term mapping', () => {
       ({ name }) => name === 'Specify → Darwin Core Occurrence'
     );
     expect(template?.definition).toContain(
-      '1,9-determinations.determination.isCurrent'
+      'stringId="1,9-determinations.determination.isCurrent" oper="6" value="" isNot="false" isRelFld="false" formatName=""/'
     );
   });
 
@@ -216,6 +220,26 @@ describe('DwCA query field term mapping', () => {
 
     expect(core?.fileName).toBe('specimens.csv');
     expect(extension?.fileName).toBe('images.csv');
+  });
+
+  test('preserves additional queries and constant fields', () => {
+    const [mapping] = parseDefinition(`
+      <archive>
+        <core rowType="http://rs.tdwg.org/dwc/terms/Occurrence">
+          <queries>
+            <query name="occurrence.csv" contextTableId="1" />
+            <query name="extra.csv" contextTableId="1">
+              <field stringId="1.collectionobject.catalogNumber" oper="8" value="" isNot="false" isRelFld="false" term="http://rs.tdwg.org/dwc/terms/catalogNumber" />
+            </query>
+          </queries>
+          <field value="PreservedSpecimen" term="http://rs.tdwg.org/dwc/terms/basisOfRecord" />
+        </core>
+      </archive>
+    `);
+
+    const serialized = serializeDefinition([mapping!]);
+    expect(serialized).toContain('name="extra.csv"');
+    expect(serialized).toContain('value="PreservedSpecimen"');
   });
 
   test('uses the serialized field index rather than the rendered line id', () => {
@@ -538,6 +562,31 @@ describe('DwCA query field term mapping', () => {
         'http://rs.tdwg.org/dwc/terms/Event'
       )
     ).toBe(false);
+  });
+
+  test('filters discipline-specific templates by the current discipline', () => {
+    const bird = defaultTemplates.find(
+      ({ name }) => name === 'Specify → Darwin Core Occurrence (Bird)'
+    )!;
+    expect(
+      isTemplateApplicableToCore(
+        bird,
+        'http://rs.tdwg.org/dwc/terms/Occurrence',
+        'bird'
+      )
+    ).toBe(true);
+    expect(
+      isTemplateApplicableToCore(
+        bird,
+        'http://rs.tdwg.org/dwc/terms/Occurrence',
+        'fish'
+      )
+    ).toBe(false);
+  });
+
+  test('rejects malformed definition XML', () => {
+    expect(isDefinitionXmlValid('<archive><core></archive>')).toBe(false);
+    expect(isDefinitionXmlValid('<archive />')).toBe(true);
   });
 
   test('resolves extension definitions from their row types', () => {

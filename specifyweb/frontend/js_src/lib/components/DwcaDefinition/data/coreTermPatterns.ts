@@ -53,7 +53,7 @@ const darwinCoreTermPatterns: Readonly<Record<string, readonly string[]>> = {
   ],
   // This only works if the rank is named exactly 'Country'
   'http://rs.tdwg.org/dwc/terms/countryCode': [
-    'geography.Country geographyCode',
+    'geography.country geographycode',
   ],
   'http://rs.tdwg.org/dwc/terms/decimalLatitude': ['locality.latitude1'],
   'http://rs.tdwg.org/dwc/terms/decimalLongitude': ['locality.longitude1'],

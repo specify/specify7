@@ -54,6 +54,8 @@ type Mapping = {
   readonly query: SpecifyResource<SpQuery>;
   readonly fields: RA<SerializedResource<SpQueryField>>;
   readonly terms: RA<string | undefined>;
+  readonly additionalQueries?: RA<string>;
+  readonly constantFields?: RA<string>;
 };
 
 export type TermDefinition = {
@@ -449,8 +451,15 @@ export function getTemplateMapping(
 
 export function isTemplateApplicableToCore(
   template: DwcaTemplate,
-  coreRowType: string
+  coreRowType: string,
+  disciplineType = getSystemInfo()?.discipline_type
 ): boolean {
+  if (
+    template.disciplineTypes !== undefined &&
+    (disciplineType == null ||
+      !template.disciplineTypes.includes(disciplineType))
+  )
+    return false;
   if (template.coreRowTypes !== undefined)
     return template.coreRowTypes.includes(coreRowType);
   return template.targets.some((target) =>
@@ -923,7 +932,13 @@ export function parseDefinition(data: string | null): RA<Mapping> {
   return [core, ...extensions]
     .filter((stanza): stanza is Element => stanza !== undefined)
     .map((stanza, index) => {
-      const queryNode = stanza.querySelector('queries > query');
+      const queriesNode = Array.from(stanza.children).find(
+        ({ tagName }) => tagName === 'queries'
+      );
+      const queryNodes = Array.from(queriesNode?.children ?? []).filter(
+        ({ tagName }) => tagName === 'query'
+      );
+      const queryNode = queryNodes[0];
       const extension = stanza.tagName === 'extension';
       const table = baseTable;
       const fieldNodes = Array.from(queryNode?.children ?? []).filter(
@@ -989,8 +1004,21 @@ export function parseDefinition(data: string | null): RA<Mapping> {
         terms: explicitTerms.map(
           (term, fieldIndex) => term ?? automaticTerms[fieldIndex]
         ),
+        additionalQueries: queryNodes
+          .slice(1)
+          .map((node) => new XMLSerializer().serializeToString(node)),
+        constantFields: Array.from(stanza.children)
+          .filter(({ tagName }) => tagName === 'field')
+          .map((node) => new XMLSerializer().serializeToString(node)),
       });
     });
+}
+
+export function isDefinitionXmlValid(data: string | null): boolean {
+  if (typeof data !== 'string' || data.trim() === '') return true;
+  return !new DOMParser()
+    .parseFromString(data, 'text/xml')
+    .querySelector('parsererror');
 }
 
 function prettyXml(data: string): string {
@@ -1057,7 +1085,23 @@ export function serializeDefinition(mappings: RA<Mapping>): string {
       }
     });
     queries.append(query);
+    mapping.additionalQueries?.forEach((serializedQuery) => {
+      const parsed = new DOMParser().parseFromString(
+        serializedQuery,
+        'text/xml'
+      );
+      if (!parsed.querySelector('parsererror'))
+        queries.append(document.importNode(parsed.documentElement, true));
+    });
     stanza.append(queries);
+    mapping.constantFields?.forEach((serializedField) => {
+      const parsed = new DOMParser().parseFromString(
+        serializedField,
+        'text/xml'
+      );
+      if (!parsed.querySelector('parsererror'))
+        stanza.append(document.importNode(parsed.documentElement, true));
+    });
     const id = document.createElement(mapping.extension ? 'coreid' : 'id');
     id.setAttribute('index', String(idIndex));
     stanza.append(id);
@@ -1491,7 +1535,9 @@ export function DwcaDefinitionEditor(props: AppResourceTabProps): JSX.Element {
     React.useCallback(() => fetchTables.then(() => true), []),
     false
   );
-  return isDataModelLoaded ? (
+  return !isDefinitionXmlValid(props.data) ? (
+    <ErrorMessage>{dwcaText.dwcaInvalidDefinition()}</ErrorMessage>
+  ) : isDataModelLoaded ? (
     <DwcaDefinitionEditorLoaded {...props} />
   ) : (
     <LoadingScreen />
