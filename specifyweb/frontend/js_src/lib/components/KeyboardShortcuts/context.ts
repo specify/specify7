@@ -142,6 +142,7 @@ function isInInput(event: KeyboardEvent): boolean {
   const target = event.target as HTMLElement;
   return (
     target.tagName === 'INPUT' ||
+    target.tagName === 'SELECT' ||
     target.tagName === 'TEXTAREA' ||
     target.isContentEditable
   );
