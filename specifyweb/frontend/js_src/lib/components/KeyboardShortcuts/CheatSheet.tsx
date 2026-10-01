@@ -8,7 +8,7 @@ import type { ActiveKeyboardShortcut } from './context';
 import { getActiveKeyboardShortcuts } from './context';
 import { localizedKeyJoinSymbol, localizeKeyboardShortcut } from './utils';
 
-const holdDuration = 3 * SECOND;
+const holdDuration = 2 * SECOND;
 const modifierKeys = new Set(['Control', 'Meta']);
 
 export function KeyboardShortcutCheatSheet(): JSX.Element | null {
@@ -61,7 +61,7 @@ export function KeyboardShortcutCheatSheet(): JSX.Element | null {
       <section
         aria-label={preferencesText.keyboardShortcuts()}
         role="dialog"
-        className="pointer-events-none fixed inset-0 z-[10000] flex items-center justify-center bg-black/20 p-8 backdrop-blur-sm"
+        className="pointer-events-none fixed inset-0 z-[10000] flex items-center justify-center bg-black/20 p-8"
       >
         <div
           className={`

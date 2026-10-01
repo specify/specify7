@@ -19,7 +19,7 @@ afterEach(() => {
   document.querySelector('#portal-root')?.remove();
 });
 
-test('shows active shortcuts after holding Control for three seconds', () => {
+test('shows active shortcuts after holding Control for two seconds', () => {
   const cleanup = bindKeyboardShortcut(
     { other: ['Ctrl+KeyA'] },
     jest.fn(),
@@ -28,7 +28,7 @@ test('shows active shortcuts after holding Control for three seconds', () => {
   const { queryByRole, getByText } = mount(<KeyboardShortcutCheatSheet />);
 
   fireEvent.keyDown(document, { code: 'ControlLeft', key: 'Control' });
-  act(() => jest.advanceTimersByTime(2999));
+  act(() => jest.advanceTimersByTime(1999));
   expect(
     queryByRole('dialog', { name: preferencesText.keyboardShortcuts() })
   ).not.toBeInTheDocument();
@@ -56,7 +56,7 @@ test('cancels the pop-up when another key is pressed', () => {
 
   fireEvent.keyDown(document, { code: 'ControlLeft', key: 'Control' });
   fireEvent.keyDown(document, { code: 'KeyA', key: 'a' });
-  act(() => jest.advanceTimersByTime(3000));
+  act(() => jest.advanceTimersByTime(2000));
 
   expect(queryByRole('dialog')).not.toBeInTheDocument();
   cleanup();
