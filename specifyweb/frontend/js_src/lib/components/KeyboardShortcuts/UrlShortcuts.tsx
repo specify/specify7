@@ -15,7 +15,10 @@ import { Button } from '../Atoms/Button';
 import { Input } from '../Atoms/Form';
 import { ReadOnlyContext } from '../Core/Contexts';
 import type { MenuItem } from '../Core/Main';
-import { rawMenuItemsPromise } from '../Header/menuItemDefinitions';
+import {
+  expressSearchMenuItem,
+  rawMenuItemsPromise,
+} from '../Header/menuItemDefinitions';
 import { rawUserToolsPromise } from '../Header/userToolDefinitions';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import type { PreferenceRendererProps } from '../Preferences/types';
@@ -34,7 +37,7 @@ export const shortcutToolsPromise = f.store(
     ]);
     return {
       [headerText.main()]: Object.fromEntries(
-        menuItems.map((item) => [item.name, item])
+        [expressSearchMenuItem, ...menuItems].map((item) => [item.name, item])
       ),
       ...userTools,
     };
@@ -204,7 +207,12 @@ const cleanupShortcuts = (shortcuts: UrlShortcuts): UrlShortcuts =>
 type CategorizedRoutes = Record<'overlays' | 'pages', CategoryRoutes>;
 type CategoryRoutes = Record<string, LocalizedString | undefined>;
 // Some routes are not fit for keyboard shortcuts, so we exclude them from the list of routes to display.
-const excludedRouteNames = new Set(['test-error', 'not-found', 'workbench-attachment', 'legacy_login']);
+const excludedRouteNames = new Set([
+  'test-error',
+  'not-found',
+  'workbench-attachment',
+  'legacy_login',
+]);
 
 const isExcludedPath = (
   path: string,
