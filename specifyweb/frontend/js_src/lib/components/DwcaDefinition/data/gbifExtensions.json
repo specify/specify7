@@ -6,7 +6,7 @@
     "url": "http://rs.gbif.org/extension/ac/audiovisual_2026-02-24.xml",
     "rowType": "http://rs.tdwg.org/ac/terms/Multimedia",
     "namespace": "http://rs.tdwg.org/ac/terms/",
-    "issued": "2026-08-17",
+    "issued": "2026-09-09",
     "description": "The Audiovisual Core is a set of vocabularies designed to represent metadata for biodiversity multimedia resources and collections. These vocabularies aim to represent information that will help to determine whether a particular resource or collection will be fit for some particular biodiversity science application before acquiring the media. Among others, the vocabularies address such concerns as the management of the media and collections, descriptions of their content, their taxonomic, geographic, and temporal coverage, and the appropriate ways to retrieve, attribute and reproduce them.",
     "subject": "",
     "fields": [
@@ -113,7 +113,7 @@
         "name": "http://ns.adobe.com/xap/1.0/Rating",
         "title": "Rating",
         "required": false,
-        "description": "A user-assigned rating for this file. The value shall be -1 or in the range [0..5], where -1 indicates &quot;rejected&quot; and 0 indicates &quot;unrated&quot;.  If xmp:Rating is not present, a value of 0 should be assumed.",
+        "description": "A user-assigned rating for this file. The value shall be -1 or in the range [0..5], where -1 indicates \"rejected\" and 0 indicates \"unrated\".  If xmp:Rating is not present, a value of 0 should be assumed.",
         "vocabulary": "http://ns.adobe.com/xap/1.0/",
         "iri": "http://ns.adobe.com/xap/1.0/Rating",
         "group": "Management Vocabulary"
@@ -122,7 +122,7 @@
         "name": "http://rs.tdwg.org/ac/terms/commenterLiteral",
         "title": "Commenter",
         "required": false,
-        "description": "The name of a person who created a comment, or the literal &quot;anonymous&quot; (= anonymously commented).",
+        "description": "The name of a person who created a comment, or the literal \"anonymous\" (= anonymously commented).",
         "vocabulary": "http://rs.tdwg.org/ac/terms/",
         "iri": "http://rs.tdwg.org/ac/terms/commenterLiteral",
         "group": "Management Vocabulary"
@@ -618,7 +618,7 @@
         "title": "Footprint SRS",
         "required": false,
         "description": "A Well-Known Text (WKT) representation of the Spatial Reference System (SRS) for the footprintWKT of the Location. Do not use this term to describe the SRS of the decimalLatitude and decimalLongitude, even if it is the same as for the footprintWKT - use the geodeticDatum instead.",
-        "examples": "`GEOGCS[&quot;GCS_WGS_1984&quot;, DATUM[&quot;D_WGS_1984&quot;, SPHEROID[&quot;WGS_1984&quot;,6378137,298.257223563]], PRIMEM[&quot;Greenwich&quot;,0], UNIT[&quot;Degree&quot;,0.0174532925199433]]` (WKT for the standard WGS84 Spatial Reference System EPSG:4326).",
+        "examples": "`GEOGCS[\"GCS_WGS_1984\", DATUM[\"D_WGS_1984\", SPHEROID[\"WGS_1984\",6378137,298.257223563]], PRIMEM[\"Greenwich\",0], UNIT[\"Degree\",0.0174532925199433]]` (WKT for the standard WGS84 Spatial Reference System EPSG:4326).",
         "vocabulary": "http://rs.tdwg.org/dwc/terms/",
         "iri": "http://rs.tdwg.org/dwc/terms/footprintSRS",
         "group": "Geography Vocabulary"
@@ -918,7 +918,7 @@
         "title": "Verbatim Longitude",
         "required": false,
         "description": "The verbatim original longitude of the Location. The coordinate ellipsoid, geodeticDatum, or full Spatial Reference System (SRS) for these coordinates should be stored in verbatimSRS and the coordinate system should be stored in verbatimCoordinateSystem.",
-        "examples": "`121d 10&#x27; 34&quot; W`",
+        "examples": "`121d 10' 34\" W`",
         "vocabulary": "http://rs.tdwg.org/dwc/terms/",
         "iri": "http://rs.tdwg.org/dwc/terms/verbatimLongitude",
         "group": "Geography Vocabulary"
@@ -993,7 +993,7 @@
         "name": "http://rs.tdwg.org/dwc/terms/identificationQualifier",
         "title": "Identification Qualifier",
         "required": false,
-        "description": "A brief phrase or a standard term (&quot;cf.&quot;, &quot;aff.&quot;) to express the determiner&#x27;s doubts about the Identification.",
+        "description": "A brief phrase or a standard term (\"cf.\", \"aff.\") to express the determiner's doubts about the Identification.",
         "examples": "`aff. agrifolia var. oxyadenia` (for `Quercus aff. agrifolia var. oxyadenia` with accompanying values `Quercus` in genus, `agrifolia`  in specificEpithet, `oxyadenia`  in infraspecificEpithet, and `var.` in taxonRank. `cf. var. oxyadenia` for `Quercus agrifolia cf. var. oxyadenia` with accompanying values `Quercus` in genus, `agrifolia` in specificEpithet, `oxyadenia` in infraspecificEpithet, and `var.` in taxonRank.",
         "vocabulary": "http://rs.tdwg.org/dwc/terms/",
         "iri": "http://rs.tdwg.org/dwc/terms/identificationQualifier",
@@ -1013,7 +1013,7 @@
         "name": "http://rs.tdwg.org/dwc/terms/nameAccordingTo",
         "title": "Name According To",
         "required": false,
-        "description": "The reference to the source in which the specific taxon concept circumscription is defined or implied - traditionally signified by the Latin &quot;sensu&quot; or &quot;sec.&quot; (from secundum, meaning &quot;according to&quot;). For taxa that result from identifications, a reference to the keys, monographs, experts and other sources should be given.",
+        "description": "The reference to the source in which the specific taxon concept circumscription is defined or implied - traditionally signified by the Latin \"sensu\" or \"sec.\" (from secundum, meaning \"according to\"). For taxa that result from identifications, a reference to the keys, monographs, experts and other sources should be given.",
         "examples": "`McCranie, J. R., D. B. Wake, and L. D. Wilson. 1996. The taxonomic status of Bolitoglossa schmidti, with comments on the biology of the Mesoamerican salamander Bolitoglossa dofleini (Caudata: Plethodontidae). Carib. J. Sci. 32:395-398.`, `Werner Greuter 2008`. `Lilljeborg 1861, Upsala Univ. Arsskrift, Math. Naturvet., pp. 4, 5`",
         "vocabulary": "http://rs.tdwg.org/dwc/terms/",
         "iri": "http://rs.tdwg.org/dwc/terms/nameAccordingTo",
@@ -1163,7 +1163,7 @@
         "name": "http://rs.tdwg.org/ac/terms/resourceCreationTechnique",
         "title": "Resource Creation Technique",
         "required": false,
-        "description": "Information about technical aspects of the creation and digitization process of the resource. This includes modification steps (&quot;retouching&quot;) after the initial resource capture.",
+        "description": "Information about technical aspects of the creation and digitization process of the resource. This includes modification steps (\"retouching\") after the initial resource capture.",
         "examples": "Encoding method or settings, numbers of channels, lighting, frames per second, data rate, interlaced or progressive, multiflash lighting, remote control, automatic interval exposure.",
         "vocabulary": "http://rs.tdwg.org/ac/terms/",
         "iri": "http://rs.tdwg.org/ac/terms/resourceCreationTechnique",
@@ -1735,7 +1735,7 @@
         "name": "http://rs.tdwg.org/dwc/terms/identificationQualifier",
         "title": "Identification Qualifier",
         "required": false,
-        "description": "A brief phrase or a standard term (&quot;cf.&quot;, &quot;aff.&quot;) to express the determiner&#x27;s doubts about the dwc:Identification.",
+        "description": "A brief phrase or a standard term (\"cf.\", \"aff.\") to express the determiner's doubts about the dwc:Identification.",
         "examples": "`aff. agrifolia var. oxyadenia` (for `Quercus aff. agrifolia var. oxyadenia` with accompanying values `Quercus` in genus, `agrifolia`  in specificEpithet, `oxyadenia`  in infraspecificEpithet, and `var.` in taxonRank); `cf. var. oxyadenia` (for `Quercus agrifolia cf. var. oxyadenia` with accompanying values `Quercus` in genus, `agrifolia` in specificEpithet, `oxyadenia` in infraspecificEpithet, and `var.` in taxonRank)",
         "vocabulary": "http://rs.tdwg.org/dwc/terms/",
         "iri": "http://rs.tdwg.org/dwc/terms/identificationQualifier",
@@ -1796,7 +1796,7 @@
         "title": "Identification Verification Status",
         "required": false,
         "description": "A categorical indicator of the extent to which the taxonomic identification has been verified to be correct.",
-        "examples": "`0` (&quot;unverified&quot; in HISPID/ABCD).",
+        "examples": "`0` (\"unverified\" in HISPID/ABCD).",
         "vocabulary": "http://rs.tdwg.org/dwc/terms/",
         "iri": "http://rs.tdwg.org/dwc/terms/identificationVerificationStatus",
         "group": "Identification"
@@ -1934,8 +1934,8 @@
         "name": "http://rs.tdwg.org/dwc/terms/nameAccordingTo",
         "title": "Name According To",
         "required": false,
-        "description": "The reference to the source in which the specific taxon concept circumscription is defined or implied - traditionally signified by the Latin &quot;sensu&quot; or &quot;sec.&quot; (from secundum, meaning &quot;according to&quot;). For taxa that result from identifications, a reference to the keys, monographs, experts and other sources should be given.",
-        "examples": "`Franz NM, Cardona-Duque J (2013) Description of two new species and phylogenetic reassessment of Perelleschus Wibmer &amp; O’Brien, 1986 (Coleoptera: Curculionidae), with a complete taxonomic concept history of Perelleschus sec. Franz &amp; Cardona-Duque, 2013. Syst Biodivers. 11: 209–236.` (as the full citation of the Franz &amp; Cardona-Duque (2013) in Perelleschus splendida sec. Franz &amp; Cardona-Duque (2013))",
+        "description": "The reference to the source in which the specific taxon concept circumscription is defined or implied - traditionally signified by the Latin \"sensu\" or \"sec.\" (from secundum, meaning \"according to\"). For taxa that result from identifications, a reference to the keys, monographs, experts and other sources should be given.",
+        "examples": "`Franz NM, Cardona-Duque J (2013) Description of two new species and phylogenetic reassessment of Perelleschus Wibmer & O’Brien, 1986 (Coleoptera: Curculionidae), with a complete taxonomic concept history of Perelleschus sec. Franz & Cardona-Duque, 2013. Syst Biodivers. 11: 209–236.` (as the full citation of the Franz & Cardona-Duque (2013) in Perelleschus splendida sec. Franz & Cardona-Duque (2013))",
         "vocabulary": "http://rs.tdwg.org/dwc/terms/",
         "iri": "http://rs.tdwg.org/dwc/terms/nameAccordingTo",
         "group": "Taxon"
@@ -2115,7 +2115,7 @@
         "title": "Infraspecific Epithet",
         "required": false,
         "description": "The name of the lowest or terminal infraspecific epithet of the dwc:scientificName, excluding any rank designation.",
-        "examples": "`concolor` (for scientificName `Puma concolor concolor (Linnaeus, 1771)`); `oxyadenia` (for scientificName `Quercus agrifolia var. oxyadenia (Torr.) J.T. Howell`); `laxa` (for scientificName `Cheilanthes hirta f. laxa (Kunze) W.Jacobsen &amp; N.Jacobsen`); `scaberrima` (for scientificName `Indigofera charlieriana var. scaberrima (Schinz) J.B.Gillett`)",
+        "examples": "`concolor` (for scientificName `Puma concolor concolor (Linnaeus, 1771)`); `oxyadenia` (for scientificName `Quercus agrifolia var. oxyadenia (Torr.) J.T. Howell`); `laxa` (for scientificName `Cheilanthes hirta f. laxa (Kunze) W.Jacobsen & N.Jacobsen`); `scaberrima` (for scientificName `Indigofera charlieriana var. scaberrima (Schinz) J.B.Gillett`)",
         "vocabulary": "http://rs.tdwg.org/dwc/terms/",
         "iri": "http://rs.tdwg.org/dwc/terms/infraspecificEpithet",
         "group": "Taxon"
@@ -2125,7 +2125,7 @@
         "title": "Cultivar Epithet",
         "required": false,
         "description": "Part of the name of a cultivar, cultivar group or grex that follows the dwc:scientificName.",
-        "examples": "`King Edward` (for scientificName `Solanum tuberosum &#x27;King Edward&#x27;` and taxonRank `cultivar`); `Mishmiense` (for scientificName `Rhododendron boothii Mishmiense Group` and taxonRank `cultivar group`); `Atlantis` (for scientificName `Paphiopedilum Atlantis grex` and taxonRank `grex`)",
+        "examples": "`King Edward` (for scientificName `Solanum tuberosum 'King Edward'` and taxonRank `cultivar`); `Mishmiense` (for scientificName `Rhododendron boothii Mishmiense Group` and taxonRank `cultivar group`); `Atlantis` (for scientificName `Paphiopedilum Atlantis grex` and taxonRank `grex`)",
         "vocabulary": "http://rs.tdwg.org/dwc/terms/",
         "iri": "http://rs.tdwg.org/dwc/terms/cultivarEpithet",
         "group": "Taxon"
@@ -2524,7 +2524,7 @@
         "title": "Reported Weather",
         "required": false,
         "description": "A list of weather or climatic conditions present during the dwc:Event.",
-        "examples": "`{&quot;minimumTemperatureInDegreesFahrenheit&quot;: 18, &quot;maximumTemperatureInDegreesFahrenheit&quot;: 32}`",
+        "examples": "`{\"minimumTemperatureInDegreesFahrenheit\": 18, \"maximumTemperatureInDegreesFahrenheit\": 32}`",
         "vocabulary": "http://rs.tdwg.org/eco/terms/",
         "iri": "http://rs.tdwg.org/eco/terms/reportedWeather",
         "group": "Site"
@@ -3546,7 +3546,7 @@
         "name": "https://w3id.org/mixs/0000056",
         "title": "assembly_qual",
         "required": false,
-        "description": "The assembly quality category is based on sets of criteria outlined for each assembly quality category. For MISAG/MIMAG; Finished: Single, validated, contiguous sequence per replicon without gaps or ambiguities with a consensus error rate equivalent to Q50 or better. High Quality Draft:Multiple fragments where gaps span repetitive regions. Presence of the 23S, 16S and 5S rRNA genes and at least 18 tRNAs. Medium Quality Draft:Many fragments with little to no review of assembly other than reporting of standard assembly statistics. Low Quality Draft:Many fragments with little to no review of assembly other than reporting of standard assembly statistics. Assembly statistics include, but are not limited to total assembly size, number of contigs, contig N50/L50, and maximum contig length. For MIUVIG; Finished: Single, validated, contiguous sequence per replicon without gaps or ambiguities, with extensive manual review and editing to annotate putative gene functions and transcriptional units. High-quality draft genome: One or multiple fragments, totaling ≥ 90% of the expected genome or replicon sequence or predicted complete. Genome fragment(s): One or multiple fragments, totalling &lt; 90% of the expected genome or replicon sequence, or for which no genome size could be estimated",
+        "description": "The assembly quality category is based on sets of criteria outlined for each assembly quality category. For MISAG/MIMAG; Finished: Single, validated, contiguous sequence per replicon without gaps or ambiguities with a consensus error rate equivalent to Q50 or better. High Quality Draft:Multiple fragments where gaps span repetitive regions. Presence of the 23S, 16S and 5S rRNA genes and at least 18 tRNAs. Medium Quality Draft:Many fragments with little to no review of assembly other than reporting of standard assembly statistics. Low Quality Draft:Many fragments with little to no review of assembly other than reporting of standard assembly statistics. Assembly statistics include, but are not limited to total assembly size, number of contigs, contig N50/L50, and maximum contig length. For MIUVIG; Finished: Single, validated, contiguous sequence per replicon without gaps or ambiguities, with extensive manual review and editing to annotate putative gene functions and transcriptional units. High-quality draft genome: One or multiple fragments, totaling ≥ 90% of the expected genome or replicon sequence or predicted complete. Genome fragment(s): One or multiple fragments, totalling < 90% of the expected genome or replicon sequence, or for which no genome size could be estimated",
         "examples": "High-quality draft genome",
         "vocabulary": "https://w3id.org/mixs/",
         "iri": "https://w3id.org/mixs/0000056",
@@ -3676,7 +3676,7 @@
         "name": "https://w3id.org/mixs/0000069",
         "title": "compl_score",
         "required": false,
-        "description": "Completeness score is typically based on either the fraction of markers found as compared to a database or the percent of a genome found as compared to a closely related reference genome. High Quality Draft: &gt;90%, Medium Quality Draft: &gt;50%, and Low Quality Draft: &lt; 50% should have the indicated completeness scores",
+        "description": "Completeness score is typically based on either the fraction of markers found as compared to a database or the percent of a genome found as compared to a closely related reference genome. High Quality Draft: >90%, Medium Quality Draft: >50%, and Low Quality Draft: < 50% should have the indicated completeness scores",
         "examples": "med;60%",
         "vocabulary": "https://w3id.org/mixs/",
         "iri": "https://w3id.org/mixs/0000069",
@@ -3706,7 +3706,7 @@
         "name": "https://w3id.org/mixs/0000072",
         "title": "contam_score",
         "required": false,
-        "description": "The contamination score is based on the fraction of single-copy genes that are observed more than once in a query genome. The following scores are acceptable for; High Quality Draft: &lt; 5%, Medium Quality Draft: &lt; 10%, Low Quality Draft: &lt; 10%. Contamination must be below 5% for a SAG or MAG to be deposited into any of the public databases",
+        "description": "The contamination score is based on the fraction of single-copy genes that are observed more than once in a query genome. The following scores are acceptable for; High Quality Draft: < 5%, Medium Quality Draft: < 10%, Low Quality Draft: < 10%. Contamination must be below 5% for a SAG or MAG to be deposited into any of the public databases",
         "examples": "1%",
         "vocabulary": "https://w3id.org/mixs/",
         "iri": "https://w3id.org/mixs/0000072",
@@ -5311,7 +5311,7 @@
         "title": "project",
         "required": false,
         "description": "The name or code for the project associated with the relevé",
-        "examples": "&quot;Project Bos-Eco-Systemen&quot;",
+        "examples": "\"Project Bos-Eco-Systemen\"",
         "vocabulary": "http://rs.gbif.org/terms/1.0/",
         "iri": "http://rs.gbif.org/terms/1.0/project",
         "group": ""
@@ -5321,7 +5321,7 @@
         "title": "syntaxonName",
         "required": false,
         "description": "The description (not a code) of the plant community or vegetation unit associated with the relevé",
-        "examples": "&quot;Littorelletea&quot;, &quot;Luzulo-Fagetum Meusel 1937&quot;",
+        "examples": "\"Littorelletea\", \"Luzulo-Fagetum Meusel 1937\"",
         "vocabulary": "http://rs.gbif.org/terms/1.0/",
         "iri": "http://rs.gbif.org/terms/1.0/syntaxonName",
         "group": ""
@@ -5331,7 +5331,7 @@
         "title": "aspect",
         "required": false,
         "description": "The compass direction that the relevé site faces",
-        "examples": "&quot;N&quot;, &quot;NE&quot;, &quot;NNE&quot;",
+        "examples": "\"N\", \"NE\", \"NNE\"",
         "vocabulary": "http://rs.gbif.org/terms/1.0/",
         "iri": "http://rs.gbif.org/terms/1.0/aspect",
         "group": ""
@@ -5341,7 +5341,7 @@
         "title": "inclinationInDegrees",
         "required": false,
         "description": "The angle of inclination of the relevé site in degrees, rounded to the nearest whole number",
-        "examples": "&quot;40&quot;",
+        "examples": "\"40\"",
         "vocabulary": "http://rs.gbif.org/terms/1.0/",
         "iri": "http://rs.gbif.org/terms/1.0/inclinationInDegrees",
         "group": ""
@@ -5351,7 +5351,7 @@
         "title": "coverTotalInPercentage",
         "required": false,
         "description": "The total cover (%) of all plants, rounded to the nearest hundredth (2 decimal places)",
-        "examples": "&quot;99&quot;, &quot;0.01&quot;",
+        "examples": "\"99\", \"0.01\"",
         "vocabulary": "http://rs.gbif.org/terms/1.0/",
         "iri": "http://rs.gbif.org/terms/1.0/coverTotalInPercentage",
         "group": ""
@@ -5361,7 +5361,7 @@
         "title": "coverTreesInPercentage",
         "required": false,
         "description": "The  cover (%) of trees, rounded to the nearest hundredth (2 decimal places)",
-        "examples": "&quot;70&quot;, &quot;0.01&quot;",
+        "examples": "\"70\", \"0.01\"",
         "vocabulary": "http://rs.gbif.org/terms/1.0/",
         "iri": "http://rs.gbif.org/terms/1.0/coverTreesInPercentage",
         "group": ""
@@ -5371,7 +5371,7 @@
         "title": "coverShrubsInPercentage",
         "required": false,
         "description": "The  cover (%) of shrubs, rounded to the nearest hundredth (2 decimal places)",
-        "examples": "&quot;50&quot;, &quot;0.01&quot;",
+        "examples": "\"50\", \"0.01\"",
         "vocabulary": "http://rs.gbif.org/terms/1.0/",
         "iri": "http://rs.gbif.org/terms/1.0/coverShrubsInPercentage",
         "group": ""
@@ -5381,7 +5381,7 @@
         "title": "coverHerbsInPercentage",
         "required": false,
         "description": "The  cover (%) of the herb layer, rounded to the nearest hundredth (2 decimal places)",
-        "examples": "&quot;15&quot;, &quot;0.01&quot;",
+        "examples": "\"15\", \"0.01\"",
         "vocabulary": "http://rs.gbif.org/terms/1.0/",
         "iri": "http://rs.gbif.org/terms/1.0/coverHerbsInPercentage",
         "group": ""
@@ -5391,7 +5391,7 @@
         "title": "coverCryptogamsInPercentage",
         "required": false,
         "description": "The  cover (%) of cryptogams, rounded to the nearest hundredth (2 decimal places)",
-        "examples": "&quot;15&quot;, &quot;0.01&quot;",
+        "examples": "\"15\", \"0.01\"",
         "vocabulary": "http://rs.gbif.org/terms/1.0/",
         "iri": "http://rs.gbif.org/terms/1.0/coverCryptogamsInPercentage",
         "group": ""
@@ -5401,7 +5401,7 @@
         "title": "coverMossesInPercentage",
         "required": false,
         "description": "The  cover (%) of mosses, rounded to the nearest hundredth (2 decimal places)",
-        "examples": "&quot;10&quot;, &quot;0.01&quot;",
+        "examples": "\"10\", \"0.01\"",
         "vocabulary": "http://rs.gbif.org/terms/1.0/",
         "iri": "http://rs.gbif.org/terms/1.0/coverMossesInPercentage",
         "group": ""
@@ -5411,7 +5411,7 @@
         "title": "coverLichensInPercentage",
         "required": false,
         "description": "The  cover (%) of lichens, rounded to the nearest hundredth (2 decimal places)",
-        "examples": "&quot;99&quot;, &quot;0.01&quot;",
+        "examples": "\"99\", \"0.01\"",
         "vocabulary": "http://rs.gbif.org/terms/1.0/",
         "iri": "http://rs.gbif.org/terms/1.0/coverLichensInPercentage",
         "group": ""
@@ -5421,7 +5421,7 @@
         "title": "coverAlgaeInPercentage",
         "required": false,
         "description": "The  cover (%) of algae, rounded to the nearest hundredth (2 decimal places)",
-        "examples": "&quot;1&quot;, &quot;0.01&quot;",
+        "examples": "\"1\", \"0.01\"",
         "vocabulary": "http://rs.gbif.org/terms/1.0/",
         "iri": "http://rs.gbif.org/terms/1.0/coverAlgaeInPercentage",
         "group": ""
@@ -5431,7 +5431,7 @@
         "title": "coverLitterInPercentage",
         "required": false,
         "description": "The  cover (%) of litter, rounded to the nearest hundredth (2 decimal places)",
-        "examples": "&quot;65&quot;, &quot;0.01&quot;",
+        "examples": "\"65\", \"0.01\"",
         "vocabulary": "http://rs.gbif.org/terms/1.0/",
         "iri": "http://rs.gbif.org/terms/1.0/coverLitterInPercentage",
         "group": ""
@@ -5441,7 +5441,7 @@
         "title": "coverWaterInPercentage",
         "required": false,
         "description": "The  cover (%) of open water, rounded to the nearest hundredth (2 decimal places)",
-        "examples": "&quot;25&quot;, &quot;0.01&quot;",
+        "examples": "\"25\", \"0.01\"",
         "vocabulary": "http://rs.gbif.org/terms/1.0/",
         "iri": "http://rs.gbif.org/terms/1.0/coverWaterInPercentage",
         "group": ""
@@ -5451,7 +5451,7 @@
         "title": "coverRockInPercentage",
         "required": false,
         "description": "The  cover (%) of bare rock, rounded to the nearest hundredth (2 decimal places)",
-        "examples": "&quot;55&quot;, &quot;0.01&quot;",
+        "examples": "\"55\", \"0.01\"",
         "vocabulary": "http://rs.gbif.org/terms/1.0/",
         "iri": "http://rs.gbif.org/terms/1.0/coverRockInPercentage",
         "group": ""
@@ -5461,7 +5461,7 @@
         "title": "treeLayerHeightInMeters",
         "required": false,
         "description": "The height in meters of the tree layer, rounded to the nearest whole number",
-        "examples": "&quot;19&quot;",
+        "examples": "\"19\"",
         "vocabulary": "http://rs.gbif.org/terms/1.0/",
         "iri": "http://rs.gbif.org/terms/1.0/treeLayerHeightInMeters",
         "group": ""
@@ -5471,7 +5471,7 @@
         "title": "shrubLayerHeightInMeters",
         "required": false,
         "description": "The height in meters of the shrub layer, can be written in decimal notation",
-        "examples": "&quot;2.1&quot;",
+        "examples": "\"2.1\"",
         "vocabulary": "http://rs.gbif.org/terms/1.0/",
         "iri": "http://rs.gbif.org/terms/1.0/shrubLayerHeightInMeters",
         "group": ""
@@ -5481,7 +5481,7 @@
         "title": "herbLayerHeightInCentimeters",
         "required": false,
         "description": "The height in centimeters of the high herb layer, rounded to the nearest whole number",
-        "examples": "&quot;25&quot;",
+        "examples": "\"25\"",
         "vocabulary": "http://rs.gbif.org/terms/1.0/",
         "iri": "http://rs.gbif.org/terms/1.0/herbLayerHeightInCentimeters",
         "group": ""
@@ -5491,7 +5491,7 @@
         "title": "mossesIdentified",
         "required": false,
         "description": "The value is true if mosses in the releve were identified",
-        "examples": "&quot;True&quot; &quot;False&quot;, or left empty if unknown",
+        "examples": "\"True\" \"False\", or left empty if unknown",
         "vocabulary": "http://rs.gbif.org/terms/1.0/",
         "iri": "http://rs.gbif.org/terms/1.0/mossesIdentified",
         "group": ""
@@ -5501,7 +5501,7 @@
         "title": "lichensIdentified",
         "required": false,
         "description": "The value is true if lichens in the releve were identified",
-        "examples": "&quot;True&quot; &quot;False&quot;, or left empty if unknown",
+        "examples": "\"True\" \"False\", or left empty if unknown",
         "vocabulary": "http://rs.gbif.org/terms/1.0/",
         "iri": "http://rs.gbif.org/terms/1.0/lichensIdentified",
         "group": ""
@@ -6768,7 +6768,7 @@
         "title": "title",
         "required": false,
         "description": "An optional display label for the URL that the publisher may prefer be displayed with the identifier or link",
-        "examples": "&quot;Danaus plexippus page&quot;, &quot;COL Taxon LSID&quot;",
+        "examples": "\"Danaus plexippus page\", \"COL Taxon LSID\"",
         "vocabulary": "http://purl.org/dc/terms/",
         "iri": "http://purl.org/dc/terms/title",
         "group": ""
@@ -8884,7 +8884,7 @@
         "name": "http://purl.org/dc/terms/rights",
         "title": "rights",
         "required": false,
-        "description": "Statement of rights associated with the resource. Creative Commons licenses require the resource to be attributed &quot;in the manner specified by the author or licensor&quot;, and this is where that should be specified.",
+        "description": "Statement of rights associated with the resource. Creative Commons licenses require the resource to be attributed \"in the manner specified by the author or licensor\", and this is where that should be specified.",
         "examples": "Photo by Jane Doe",
         "vocabulary": "http://purl.org/dc/terms/",
         "iri": "http://purl.org/dc/terms/rights",

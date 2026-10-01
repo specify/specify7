@@ -55,7 +55,7 @@ const parser = new XMLParser({
   ignoreAttributes: false,
   attributeNamePrefix: '@_',
   preserveOrder: true,
-  processEntities: false,
+  processEntities: { maxTotalExpansions: Number.POSITIVE_INFINITY },
 });
 
 function getChildren(node: XmlNode, name: string): readonly XmlNode[] {
@@ -75,7 +75,9 @@ function parseDefinition(entry: RegistryEntry, xml: string): CatalogDefinition {
     throw new Error(`No extension element in ${entry.url}`);
 
   const rootAttributes = attributes(root);
-  const properties = getChildren(root, 'extension');
+  const properties = getChildren(root, 'extension').filter(
+    (child) => 'property' in child
+  );
   if (properties.length === 0)
     throw new Error(`Invalid definition ${entry.url}`);
 
