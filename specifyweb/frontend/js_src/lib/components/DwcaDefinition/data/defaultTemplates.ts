@@ -318,7 +318,7 @@ export const defaultTemplates: readonly DwcaTemplate[] = [
 				<field term="http://eol.org/schema/reference/publicationType" isNot="false" isRelFld="false" oper="8" stringId="1,29-collectionObjectCitations,69.referencework.referenceWorkType" value=""/>
 				<field term="http://purl.org/ontology/bibo/authorList" isNot="false" isRelFld="true" oper="8" stringId="1,29-collectionObjectCitations,69,17-authors.author.authors" value=""/>
 				<field term="http://purl.org/dc/terms/title" isNot="true" isRelFld="false" oper="12" stringId="1,29-collectionObjectCitations,69.referencework.title" value=""/>
-				<field term="http://purl.org/ontology/bibo/doi" isNot="false" isRelFld="false" oper="8" stringId="1,29-collectionObjectCitations,69.referencework.text2" value=""/>
+				<field term="http://purl.org/ontology/bibo/doi" isNot="false" isRelFld="false" oper="8" stringId="1,29-collectionObjectCitations,69.referencework.doi" value=""/>
 				<field term="http://purl.org/dc/terms/identifier" isNot="false" isRelFld="false" oper="8" stringId="1,29-collectionObjectCitations,69.referencework.guid" value=""/>
 				<field term="http://purl.org/dc/terms/created" isNot="false" isRelFld="false" oper="8" stringId="1,29-collectionObjectCitations,69.referencework.workDate" value=""/>
 				<field term="http://eol.org/schema/reference/primaryTitle" isNot="false" isRelFld="false" oper="8" stringId="1,29-collectionObjectCitations,69,51.journal.journalName" value=""/>

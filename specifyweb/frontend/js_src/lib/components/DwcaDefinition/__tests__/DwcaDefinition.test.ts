@@ -776,6 +776,20 @@ describe('DwCA query field term mapping', () => {
     ).toBe('http://eol.org/schema/reference/Reference');
   });
 
+  test('maps the EOL reference DOI term to the DOI field', () => {
+    const template = defaultTemplates.find(
+      ({ name }) => name === 'Specify → EOL References Extension'
+    );
+    const [mapping] = parseDefinition(template?.definition ?? '');
+    const doiIndex = mapping?.terms.indexOf(
+      'http://purl.org/ontology/bibo/doi'
+    );
+    expect(doiIndex).toBeGreaterThanOrEqual(0);
+    expect(mapping?.fields[doiIndex!]?.stringId.endsWith('referencework.doi')).toBe(
+      true
+    );
+  });
+
   test('preserves source indexes when query fields are sorted by position', () => {
     const [mapping] = parseDefinition(
       `<archive><core rowType="http://rs.tdwg.org/dwc/terms/Occurrence"><queries><query name="core.csv" contextTableId="1"><field stringId="1.collectionobject.guid" /><field stringId="1.collectionobject.catalogNumber" /></query></queries></core></archive>`
