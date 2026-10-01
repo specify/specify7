@@ -34,6 +34,11 @@ import { reportsAvailable } from '../Reports/available';
 import { filterMenuItems } from './menuItemProcessing';
 
 const rawMenuItems = ensure<IR<Omit<MenuItem, 'name'>>>()({
+  expressSearch: {
+    url: '/specify/overlay/express-search/',
+    title: headerText.simpleSearch(),
+    icon: icons.search,
+  },
   dataEntry: {
     url: '/specify/overlay/data-entry/',
     title: headerText.dataEntry(),
