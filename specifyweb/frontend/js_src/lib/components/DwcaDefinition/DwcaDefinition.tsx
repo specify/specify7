@@ -457,7 +457,7 @@ export function isTemplateApplicableToCore(
   if (
     template.disciplineTypes !== undefined &&
     (disciplineType == null ||
-      !template.disciplineTypes.includes(disciplineType))
+      !template.disciplineTypes.includes(disciplineType.toLowerCase()))
   )
     return false;
   if (template.coreRowTypes !== undefined)

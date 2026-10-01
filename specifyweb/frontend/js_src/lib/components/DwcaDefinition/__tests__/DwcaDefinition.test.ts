@@ -142,6 +142,20 @@ describe('DwCA query field term mapping', () => {
     expect(template?.definition).toContain('4.taxon.fullName');
   });
 
+  test('matches template discipline types case-insensitively', () => {
+    const template = defaultTemplates.find(
+      ({ disciplineTypes }) => disciplineTypes?.includes('bird') === true
+    );
+    expect(template).toBeDefined();
+    expect(
+      isTemplateApplicableToCore(
+        template!,
+        'http://rs.tdwg.org/dwc/terms/Occurrence',
+        'BIRD'
+      )
+    ).toBe(true);
+  });
+
   test('uses the core or row type as the mapping URL value', () => {
     expect(
       getMappingTabValue({ extension: false, rowType: 'occurrence' })
