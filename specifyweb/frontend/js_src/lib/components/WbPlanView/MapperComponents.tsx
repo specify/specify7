@@ -6,6 +6,7 @@ import { useCachedState } from '../../hooks/useCachedState';
 import { useId } from '../../hooks/useId';
 import { batchEditText } from '../../localization/batchEdit';
 import { commonText } from '../../localization/common';
+import { expressSearchConfigText } from '../../localization/expressSearchConfig';
 import { headerText } from '../../localization/header';
 import { schemaText } from '../../localization/schema';
 import { wbPlanText } from '../../localization/wbPlan';
@@ -219,7 +220,7 @@ export function MappingView({
           aria-label={commonText.search()}
           className="w-full rounded-none border-0 !ring-0 !shadow-none focus:border-0 focus:!ring-0"
           id="field-search"
-          placeholder={commonText.search()}
+          placeholder={expressSearchConfigText.searchFieldsTab()}
           value={search}
           onValueChange={setSearch}
         />
