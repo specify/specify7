@@ -18,13 +18,13 @@ export function useUrlShortcuts(): void {
     Object.values(userTools ?? {}).forEach((tools) =>
       Object.values(tools).forEach((tool) => userToolsByUrl.set(tool.url, tool))
     );
-    const cleanup = Object.entries(shortcuts).map(([path, shortcuts]) =>
-      shortcuts === undefined
+    const cleanup = Object.entries(shortcuts).map(([path, shortcuts]) => {
+      const userTool = userToolsByUrl.get(path);
+      return shortcuts === undefined
         ? undefined
         : bindKeyboardShortcut(
             shortcuts,
             () => {
-              const userTool = userToolsByUrl.get(path);
               if (userTool?.onClick !== undefined)
                 void userTool
                   .onClick()
@@ -38,9 +38,9 @@ export function useUrlShortcuts(): void {
                 globalThis.location.assign(path);
               else navigate(path);
             },
-            localized(path)
-          )
-    );
+            userTool?.title ?? localized(path)
+          );
+    });
     return (): void => cleanup.forEach((cleanup) => cleanup?.());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shortcuts, userTools, navigate]);
