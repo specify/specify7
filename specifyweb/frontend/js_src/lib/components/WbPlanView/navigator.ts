@@ -339,7 +339,7 @@ export function searchFields({
   let visitedStateCount = 0;
 
   const addResult = (result: FieldSearchResult): void => {
-    if (results.length < fieldSearchResultLimit) results.push(result);
+    results.push(result);
   };
 
   const matches = (values: readonly string[]): boolean =>
@@ -605,7 +605,7 @@ export function searchFields({
         a.label.localeCompare(b.label)
       );
     })
-    .slice(offset, offset + limit);
+    .slice(offset, Math.min(offset + limit, fieldSearchResultLimit));
 }
 
 /**
