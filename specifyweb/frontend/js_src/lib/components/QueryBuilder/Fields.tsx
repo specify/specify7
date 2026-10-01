@@ -15,6 +15,21 @@ import type { QueryField } from './helpers';
 import { queryFieldsToFieldSpecs } from './helpers';
 import { QueryLine } from './Line';
 
+export function canMoveField(
+  fields: RA<QueryField>,
+  line: number,
+  direction: 'down' | 'up',
+  isFieldReadOnly: ((field: QueryField, line: number) => boolean) | undefined
+): boolean {
+  const destination = direction === 'up' ? line - 1 : line + 1;
+  return (
+    destination >= 0 &&
+    destination < fields.length &&
+    isFieldReadOnly?.(fields[line]!, line) !== true &&
+    isFieldReadOnly?.(fields[destination]!, destination) !== true
+  );
+}
+
 export function QueryFields({
   baseTableName,
   fields,
@@ -262,15 +277,13 @@ export function QueryFields({
                   : handleMappingChange?.bind(undefined, line)
               }
               onMoveDown={
-                isFieldReadOnly?.(field, line) ||
-                line + 1 === length ||
+                !canMoveField(fields, line, 'down', isFieldReadOnly) ||
                 handleLineMove === undefined
                   ? undefined
                   : (): void => handleLineMove?.(line, 'down')
               }
               onMoveUp={
-                isFieldReadOnly?.(field, line) ||
-                line === 0 ||
+                !canMoveField(fields, line, 'up', isFieldReadOnly) ||
                 handleLineMove === undefined
                   ? undefined
                   : (): void => handleLineMove?.(line, 'up')
