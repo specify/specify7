@@ -88,10 +88,10 @@ def merge_resource_values(resource, values, Spappresourcedata):
     if target_data is None:
         Spappresourcedata.objects.create(
             spappresource=resource,
-            data=json.dumps(target_values),
+            data=json.dumps(target_values).encode(),
         )
     else:
-        target_data.data = json.dumps(target_values)
+        target_data.data = json.dumps(target_values).encode()
         target_data.save()
 
 
@@ -199,7 +199,7 @@ def migrate_global_preferences(apps, schema_editor):
         )
         Spappresourcedata.objects.create(
             spappresource=target,
-            data=json.dumps(values),
+            data=json.dumps(values).encode(),
         )
 
     migrate_collection_preferences(legacy_resources, apps)
