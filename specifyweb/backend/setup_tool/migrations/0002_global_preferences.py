@@ -97,9 +97,11 @@ def merge_resource_values(resource, values, Spappresourcedata):
 
 def migrate_collection_preferences(legacy_resources, apps):
     Collection = apps.get_model('specify', 'Collection')
+    SpecifyUser = apps.get_model('specify', 'SpecifyUser')
     Spappresource = apps.get_model('specify', 'Spappresource')
     Spappresourcedir = apps.get_model('specify', 'Spappresourcedir')
     Spappresourcedata = apps.get_model('specify', 'Spappresourcedata')
+    resource_owner = SpecifyUser.objects.order_by('id').first()
     collection_values = {}
 
     for resource_data in legacy_resources:
@@ -140,13 +142,14 @@ def migrate_collection_preferences(legacy_resources, apps):
                 'level': 0,
                 'mimetype': 'application/json',
                 'metadata': '',
-                'specifyuser': None,
+                'specifyuser': resource_owner,
             },
         )
         merge_resource_values(resource, values, Spappresourcedata)
 
 
 def migrate_global_preferences(apps, schema_editor):
+    SpecifyUser = apps.get_model('specify', 'SpecifyUser')
     Spappresource = apps.get_model('specify', 'Spappresource')
     Spappresourcedir = apps.get_model('specify', 'Spappresourcedir')
     Spappresourcedata = apps.get_model('specify', 'Spappresourcedata')
@@ -160,6 +163,7 @@ def migrate_global_preferences(apps, schema_editor):
     directory = directories.first()
     if directory is None:
         return
+    resource_owner = directory.specifyuser or SpecifyUser.objects.order_by('id').first()
 
     target = Spappresource.objects.filter(
         spappresourcedir=directory,
@@ -187,7 +191,7 @@ def migrate_global_preferences(apps, schema_editor):
 
         target = Spappresource.objects.create(
             spappresourcedir=directory,
-            specifyuser=directory.specifyuser,
+            specifyuser=resource_owner,
             level=0,
             name='GlobalPreferences',
             mimetype='application/json',
