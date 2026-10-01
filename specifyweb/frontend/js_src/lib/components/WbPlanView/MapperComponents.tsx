@@ -237,7 +237,6 @@ export function MappingView({
           <div
             aria-label={commonText.search()}
             className="absolute left-0 top-full z-20 max-h-48 w-full overflow-y-auto border border-gray-500 bg-white dark:bg-neutral-600"
-            role="listbox"
             onScroll={(event): void => {
               const element = event.currentTarget;
               if (
