@@ -34,19 +34,19 @@ export function Slider({
   const resolvedValue = Number.isNaN(pendingValue) ? '' : pendingValue + 1;
 
   const goToFirstRecord =
-    value === 0 || handleChange === undefined
+    value <= 0 || handleChange === undefined
       ? undefined
       : (): void => handleChange?.(0);
   const goToPreviousRecord =
-    value === 0 || handleChange === undefined
+    value <= 0 || handleChange === undefined
       ? undefined
       : (): void => handleChange(value - 1);
   const goToNextRecord =
-    value + 1 === count || handleChange === undefined
+    value + 1 >= count || handleChange === undefined
       ? undefined
       : (): void => handleChange?.(value + 1);
   const goToLastRecord =
-    value + 1 === count || handleChange === undefined
+    value + 1 >= count || handleChange === undefined
       ? undefined
       : (): void => handleChange?.(count - 1);
 
