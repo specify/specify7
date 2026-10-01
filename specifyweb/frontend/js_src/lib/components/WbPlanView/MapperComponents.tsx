@@ -152,6 +152,7 @@ export function ValidationResults(props: {
 }
 
 const defaultValue = 300;
+const fieldSearchDebounceRate = 200;
 
 export function MappingView({
   mappingElementProps,
@@ -176,18 +177,26 @@ export function MappingView({
     null
   );
   const [search, setSearch] = React.useState('');
+  const [debouncedSearch, setDebouncedSearch] = React.useState('');
   const [visibleResultCount, setVisibleResultCount] = React.useState(10);
+  React.useEffect(() => {
+    const timeout = globalThis.setTimeout(
+      () => setDebouncedSearch(search),
+      fieldSearchDebounceRate
+    );
+    return (): void => globalThis.clearTimeout(timeout);
+  }, [search]);
   const searchResults = React.useMemo(
     () =>
       baseTableName === undefined
         ? []
         : searchFields({
             baseTableName,
-            search,
+            search: debouncedSearch,
             showHiddenFields,
             spec: searchSpec,
           }),
-    [baseTableName, search, searchSpec, showHiddenFields]
+    [baseTableName, debouncedSearch, searchSpec, showHiddenFields]
   );
   React.useEffect(() => {
     setVisibleResultCount(10);
