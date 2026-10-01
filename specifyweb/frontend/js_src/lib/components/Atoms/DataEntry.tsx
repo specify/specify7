@@ -206,7 +206,9 @@ export const DataEntry = {
       'form',
       'dialogs',
       'openRelatedRecordInNewTab',
-      resource === undefined ? undefined : (): void => ref.current?.click()
+      typeof resource === 'object' && !resource.isNew()
+        ? (): void => ref.current?.click()
+        : undefined
     );
     return typeof resource === 'object' && !resource.isNew() ? (
       <Link.NewTab
