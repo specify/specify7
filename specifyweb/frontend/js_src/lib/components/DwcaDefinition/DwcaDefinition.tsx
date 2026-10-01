@@ -975,11 +975,13 @@ export function parseDefinition(data: string | null): RA<Mapping> {
         baseTable,
         extensionDefinition,
         rowType,
-        fileName: extensionDefinition
-          ? `${extensionDefinition.name}.csv`
-          : extension
-            ? (queryNode?.getAttribute('name') ?? `${index}.csv`)
-            : 'core.csv',
+        fileName:
+          queryNode?.getAttribute('name') ??
+          (extensionDefinition
+            ? `${extensionDefinition.name}.csv`
+            : extension
+              ? `${index}.csv`
+              : 'core.csv'),
         query,
         fields: serializedFields,
         // Legacy definitions often omitted terms for recognizable fields.

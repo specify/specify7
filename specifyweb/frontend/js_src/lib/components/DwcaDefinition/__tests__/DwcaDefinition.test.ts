@@ -202,6 +202,22 @@ describe('DwCA query field term mapping', () => {
     }
   });
 
+  test('preserves saved file names for known vocabularies', () => {
+    const [core, extension] = parseDefinition(`
+      <archive>
+        <core rowType="http://rs.tdwg.org/dwc/terms/Occurrence">
+          <queries><query name="specimens.csv" contextTableId="1" /></queries>
+        </core>
+        <extension rowType="http://rs.gbif.org/terms/1.0/Multimedia">
+          <queries><query name="images.csv" contextTableId="1" /></queries>
+        </extension>
+      </archive>
+    `);
+
+    expect(core?.fileName).toBe('specimens.csv');
+    expect(extension?.fileName).toBe('images.csv');
+  });
+
   test('uses the serialized field index rather than the rendered line id', () => {
     const mapping = {
       extension: false,
