@@ -115,10 +115,37 @@ test('searchFields resolves tree ranks and rank fields', () => {
   expect(fullNameResults).toEqual(
     expect.arrayContaining([
       expect.objectContaining({
-        mappingPath: expect.arrayContaining(['$Species', 'fullName']),
+        mappingPath: expect.arrayContaining(['$-any', 'fullName']),
       }),
     ])
   );
+});
+
+test('searchFields uses any rank for tree field-name matches', () => {
+  const results = searchFields({
+    baseTableName: 'Preparation',
+    search: 'Ordinal',
+    spec: navigatorSpecs.queryBuilder,
+  });
+
+  expect(results).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        mappingPath: [
+          'storage',
+          '$-any',
+          'storageAttachments',
+          '#1',
+          'ordinal',
+        ],
+      }),
+    ])
+  );
+  expect(
+    results.some(({ mappingPath }) =>
+      mappingPath.some((part) => /^\$/.test(part) && part !== '$-any')
+    )
+  ).toBe(false);
 });
 
 test('searchFields prefers the collecting event route to collectors', () => {

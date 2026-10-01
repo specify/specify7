@@ -401,13 +401,18 @@ export function searchFields({
             ? [formatTreeDefinition(definition.name)]
             : [];
         ranks.slice(1).forEach((rank) => {
+          const rankLabel = fieldSearchLabel(rank.title ?? rank.name);
+          const rankMatches = matches([rank.name, rankLabel]);
+
+          // A field-name match applies to every rank. Use one canonical path
+          // instead of returning the same field once for every concrete rank.
+          if (!rankMatches && rank !== ranks[1]) return;
+
           const rankPath = [
             ...current.mappingPath,
             ...definitionPath,
-            formatTreeRank(rank.name),
+            formatTreeRank(rankMatches ? rank.name : anyTreeRank),
           ];
-          const rankLabel = fieldSearchLabel(rank.title ?? rank.name);
-          const rankMatches = matches([rank.name, rankLabel]);
 
           current.table.fields
             .filter((field) => !field.isVirtual && !field.isRelationship)
@@ -444,9 +449,9 @@ export function searchFields({
                 mappingPath: [...rankPath, field.name],
                 label: [
                   ...current.relationshipLabels,
-                  rankMatches
-                    ? rankLabel
-                    : `${rankLabel} - ${fieldSearchLabel(field.label)}`,
+                  ...(rankMatches
+                    ? [rankLabel]
+                    : [fieldSearchLabel(field.label)]),
                 ].join(' → '),
                 isHidden,
                 joinCount: current.joinCount,
@@ -511,8 +516,14 @@ export function searchFields({
         const relationshipIsToManyField =
           relationshipIsToMany(relationship) ||
           relationshipIsRemoteToOne(relationship);
+        const treeRankPath =
+          isTreeTable(current.table.name) &&
+          !valueIsTreeMeta(current.mappingPath.at(-1))
+            ? [formatTreeRank(anyTreeRank)]
+            : [];
         const relationshipPath = [
           ...current.mappingPath,
+          ...treeRankPath,
           relationship.name,
           ...(relationshipIsToManyField ? [formatToManyIndex(1)] : []),
         ];
