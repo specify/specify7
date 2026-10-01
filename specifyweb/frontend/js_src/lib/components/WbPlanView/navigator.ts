@@ -542,7 +542,13 @@ export function searchFields({
         ];
         if (matches([relationship.name, fieldSearchLabel(relationship.label)]))
           addResult({
-            mappingPath: [...relationshipPath, formattedEntry],
+            mappingPath: [
+              ...relationshipPath,
+              ...(isTreeTable(relationship.relatedTable.name)
+                ? [formatTreeRank(anyTreeRank)]
+                : []),
+              formattedEntry,
+            ],
             label: [
               ...current.relationshipLabels,
               fieldSearchLabel(relationship.label),

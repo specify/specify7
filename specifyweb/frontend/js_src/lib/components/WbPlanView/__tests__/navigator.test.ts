@@ -307,6 +307,22 @@ test('searchFields includes matching self-referential relationships', () => {
   );
 });
 
+test('searchFields uses any rank for formatted tree relationships', () => {
+  const results = searchFields({
+    baseTableName: 'Preparation',
+    search: 'storage',
+    spec: navigatorSpecs.queryBuilder,
+  });
+
+  expect(results).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        mappingPath: ['storage', '$-any', '-formatted'],
+      }),
+    ])
+  );
+});
+
 // TEST: break this test into smaller tests
 theories(getMappingLineData, [
   {
