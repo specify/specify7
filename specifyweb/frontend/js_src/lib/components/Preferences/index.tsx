@@ -307,22 +307,24 @@ export function usePrefDefinitions(prefType: PreferenceType = 'user') {
           category,
           {
             ...categoryData,
-            subCategories: categoryData.subCategories.map(
-              ([subCategory, subCategoryData]) =>
-                [
-                  subCategory,
-                  {
-                    ...subCategoryData,
-                    items: subCategoryData.items.filter(
-                      ([_name, item]) =>
-                        !('renderer' in item) ||
-                        (item.renderer.name !==
-                          'KeyboardShortcutPreferenceItem' &&
-                          item.renderer.name !== 'UrlShortcutsEditor')
-                    ),
-                  },
-                ] as const
-            ),
+            subCategories: categoryData.subCategories
+              .map(
+                ([subCategory, subCategoryData]) =>
+                  [
+                    subCategory,
+                    {
+                      ...subCategoryData,
+                      items: subCategoryData.items.filter(
+                        ([_name, item]) =>
+                          !('renderer' in item) ||
+                          (item.renderer.name !==
+                            'KeyboardShortcutPreferenceItem' &&
+                            item.renderer.name !== 'UrlShortcutsEditor')
+                      ),
+                    },
+                  ] as const
+              )
+              .filter(([_subCategory, { items }]) => items.length > 0),
           },
         ] as const
     );
