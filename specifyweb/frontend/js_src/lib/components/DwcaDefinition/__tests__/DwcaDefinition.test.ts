@@ -246,6 +246,28 @@ describe('DwCA query field term mapping', () => {
     }
   });
 
+  test('does not replace a relationship GUID with the core identifier', () => {
+    const relationshipGuid = '4,4-parent.taxon.guid';
+    const [mapping] = parseDefinition(`
+      <archive>
+        <core rowType="http://rs.tdwg.org/dwc/terms/Taxon">
+          <queries><query name="taxon.csv" contextTableId="4">
+            <field stringId="${relationshipGuid}" term="http://rs.tdwg.org/dwc/terms/parentNameUsageID" />
+          </query></queries>
+        </core>
+      </archive>
+    `);
+
+    expect(mapping?.fields.map(({ stringId }) => stringId)).toEqual([
+      '4.taxon.guid',
+      relationshipGuid,
+    ]);
+    expect(mapping?.terms).toEqual([
+      'http://rs.tdwg.org/dwc/terms/taxonID',
+      'http://rs.tdwg.org/dwc/terms/parentNameUsageID',
+    ]);
+  });
+
   test('preserves saved file names for known vocabularies', () => {
     const [core, extension] = parseDefinition(`
       <archive>

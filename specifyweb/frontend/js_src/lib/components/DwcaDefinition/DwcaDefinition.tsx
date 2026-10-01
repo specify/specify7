@@ -709,8 +709,12 @@ const isCoreIdentifierField = (
   field: SerializedResource<SpQueryField>
 ): boolean => {
   const stringId = field.stringId.toLowerCase();
-  const pattern = `${mapping.baseTable.name.toLowerCase()}.guid`;
-  return stringId === pattern || stringId.endsWith(`.${pattern}`);
+  const tableName = mapping.baseTable.name.toLowerCase();
+  return (
+    stringId === 'guid' ||
+    stringId === `${tableName}.guid` ||
+    stringId === `${mapping.baseTable.tableId}.${tableName}.guid`
+  );
 };
 
 export function ensureIdentifierTerm(mapping: Mapping): Mapping {
