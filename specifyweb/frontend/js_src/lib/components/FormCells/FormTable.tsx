@@ -581,6 +581,7 @@ export function FormTable<SCHEMA extends AnySchema>({
       relationship.name === 'children' ? (
       <COJODialog
         collection={collection}
+        enableShortcut={dialog !== false}
         parentResource={
           collection?.related as
             | SpecifyResource<CollectionObjectGroup>

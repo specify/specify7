@@ -45,7 +45,7 @@ export function QueryToolbar({
     'queryBuilder',
     'actions',
     'distinct',
-    canRunDistinct ? handleToggleDistinct : undefined
+    canRunDistinct && !isSeries ? handleToggleDistinct : undefined
   );
   const runCountOnlyKeyboardShortcut = userPreferences.useKeyboardShortcut(
     'queryBuilder',

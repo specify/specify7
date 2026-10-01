@@ -246,7 +246,12 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
           await resource.clone(false),
         ];
   const carryForward =
-    typeof handleAdd === 'function' && canCreate && showCarry
+    typeof handleAdd === 'function' &&
+    canCreate &&
+    showCarry &&
+    !resource.isNew() &&
+    !isChanged &&
+    !isSaving
       ? (): void => {
           smoothScroll(form, 0);
           loading(
@@ -257,7 +262,12 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
         }
       : undefined;
   const clone =
-    typeof handleAdd === 'function' && canCreate && showClone
+    typeof handleAdd === 'function' &&
+    canCreate &&
+    showClone &&
+    !resource.isNew() &&
+    !isChanged &&
+    !isSaving
       ? (): void => {
           smoothScroll(form, 0);
           loading(
