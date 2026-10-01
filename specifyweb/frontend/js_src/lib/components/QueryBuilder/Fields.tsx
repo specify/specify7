@@ -30,6 +30,15 @@ export function canMoveField(
   );
 }
 
+export const isReadOnlyFieldIndex = (
+  fields: RA<QueryField>,
+  index: number,
+  isFieldReadOnly: ((field: QueryField, line: number) => boolean) | undefined
+): boolean =>
+  index >= 0 &&
+  index < fields.length &&
+  isFieldReadOnly?.(fields[index]!, index) === true;
+
 export function QueryFields({
   baseTableName,
   fields,
@@ -151,6 +160,23 @@ export function QueryFields({
       const parentZIndex = findClosestZIndex(event.source);
       if (parentZIndex !== undefined)
         event.mirror.style.zIndex = (parentZIndex + 1).toString();
+    });
+
+    sortable.on('sortable:sort', (event) => {
+      // The package's bundled declaration omits `over`, although the runtime
+      // SortableSortEvent exposes it.
+      const over = (event as unknown as { readonly over: HTMLElement }).over;
+      const parent = over.parentElement;
+      const overIndex =
+        parent === null ? -1 : Array.from(parent.children).indexOf(over);
+      if (
+        isReadOnlyFieldIndex(
+          fieldsRef.current,
+          overIndex,
+          isFieldReadOnlyRef.current
+        )
+      )
+        event.cancel();
     });
 
     sortable.on('sortable:stop', (event) => {

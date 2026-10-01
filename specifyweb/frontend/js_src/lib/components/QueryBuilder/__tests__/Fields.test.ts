@@ -1,4 +1,4 @@
-import { canMoveField } from '../Fields';
+import { canMoveField, isReadOnlyFieldIndex } from '../Fields';
 import type { QueryField } from '../helpers';
 
 const fields: readonly QueryField[] = [0, 1, 2].map((id) => ({
@@ -30,5 +30,19 @@ describe('canMoveField', () => {
   test('prevents moves past collection boundaries', () => {
     expect(canMoveField(fields, 0, 'up', undefined)).toBe(false);
     expect(canMoveField(fields, 2, 'down', undefined)).toBe(false);
+  });
+});
+
+describe('isReadOnlyFieldIndex', () => {
+  test('identifies valid read-only target indexes', () => {
+    expect(isReadOnlyFieldIndex(fields, 1, isFieldReadOnly)).toBe(true);
+    expect(isReadOnlyFieldIndex(fields, 0, isFieldReadOnly)).toBe(false);
+  });
+
+  test('rejects indexes outside the field collection', () => {
+    expect(isReadOnlyFieldIndex(fields, -1, isFieldReadOnly)).toBe(false);
+    expect(isReadOnlyFieldIndex(fields, fields.length, isFieldReadOnly)).toBe(
+      false
+    );
   });
 });
