@@ -286,6 +286,12 @@ export function usePrefDefinitions(prefType: PreferenceType = 'user') {
             ([_name, item]) =>
               'renderer' in item && item.renderer.name === 'UrlShortcutsEditor'
           );
+          const shortcutToggle = subCategoryData.items.find(
+            ([name]) =>
+              category === 'header' &&
+              subCategory === 'actions' &&
+              name === 'shortcutsEnabled'
+          );
           return urlShortcutItems.length === 0
             ? []
             : [
@@ -293,8 +299,11 @@ export function usePrefDefinitions(prefType: PreferenceType = 'user') {
                   `${category}.${subCategory}`,
                   {
                     ...subCategoryData,
-                    title: headerText.userTools(),
-                    items: urlShortcutItems,
+                    title: preferencesText.keyboardShortcuts(),
+                    items:
+                      shortcutToggle === undefined
+                        ? urlShortcutItems
+                        : [shortcutToggle, ...urlShortcutItems],
                   },
                 ] as const,
               ];
@@ -314,13 +323,19 @@ export function usePrefDefinitions(prefType: PreferenceType = 'user') {
                     subCategory,
                     {
                       ...subCategoryData,
-                      items: subCategoryData.items.filter(
-                        ([_name, item]) =>
-                          !('renderer' in item) ||
-                          (item.renderer.name !==
-                            'KeyboardShortcutPreferenceItem' &&
-                            item.renderer.name !== 'UrlShortcutsEditor')
-                      ),
+                      items: subCategoryData.items.filter(([_name, item]) => {
+                        const isShortcutToggle =
+                          category === 'header' &&
+                          subCategory === 'actions' &&
+                          _name === 'shortcutsEnabled';
+                        return (
+                          !isShortcutToggle &&
+                          (!('renderer' in item) ||
+                            (item.renderer.name !==
+                              'KeyboardShortcutPreferenceItem' &&
+                              item.renderer.name !== 'UrlShortcutsEditor'))
+                        );
+                      }),
                     },
                   ] as const
               )

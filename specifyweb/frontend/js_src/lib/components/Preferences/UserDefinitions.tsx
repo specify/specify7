@@ -711,11 +711,10 @@ export const userPreferenceDefinitions = {
         },
       },
       actions: {
-        title: preferencesText.keyboardShortcuts(),
+        title: commonText.actions(),
         items: {
           shortcutsEnabled: definePref<boolean>({
             title: preferencesText.shortcutsEnabled(),
-            description: preferencesText.shortcutsEnabledDescription(),
             requiresReload: false,
             visible: true,
             defaultValue: true,
