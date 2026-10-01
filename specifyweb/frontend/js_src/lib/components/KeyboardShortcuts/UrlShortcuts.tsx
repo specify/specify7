@@ -203,6 +203,8 @@ const cleanupShortcuts = (shortcuts: UrlShortcuts): UrlShortcuts =>
 
 type CategorizedRoutes = Record<'overlays' | 'pages', CategoryRoutes>;
 type CategoryRoutes = Record<string, LocalizedString | undefined>;
+// Some routes are not fit for keyboard shortcuts, so we exclude them from the list of routes to display.
+const excludedRouteNames = new Set(['test-error', 'not-found']);
 
 const getCategorizedRoutes = f.store(async (): Promise<CategorizedRoutes> => {
   const [entrypointRoutes, routes, overlayRoutes] = await Promise.all([
@@ -245,6 +247,7 @@ const scoutTree = (
     const hasContent = typeof route.element === 'function';
 
     if (route.path !== undefined) {
+      if (excludedRouteNames.has(route.path)) return entries;
       const isDynamic = route.path.includes('*') || route.path.includes(':');
       if (isDynamic) return entries;
 
