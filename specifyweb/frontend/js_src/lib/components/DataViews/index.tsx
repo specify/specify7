@@ -291,6 +291,10 @@ function LoadedDataViewFromTable({
       createRecordSet={undefined}
       extraButtons={undefined}
       onReRun={handleRefresh}
+      onDeleted={(): void => {
+        setSelectedIds([]);
+        setSelectedIndex(0);
+      }}
       onMerged={handleMerged}
       onSortChange={(newFields): void => {
         setRuntimeFields(unParseQueryFields(table.name, newFields));

@@ -91,6 +91,7 @@ export type QueryResultsProps = {
   readonly tableClassName?: string;
   readonly selectedRows: GetSet<ReadonlySet<number>>;
   readonly onResults?: (results: RA<QueryResultRow | undefined>) => void;
+  readonly onDeleted?: (recordId: number) => void;
   readonly onMerged?: () => void;
   readonly scrollRef?: React.MutableRefObject<HTMLDivElement | null>;
   readonly restoreScrollTopRef?: React.MutableRefObject<number | undefined>;
@@ -121,6 +122,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     tableClassName = '',
     selectedRows: [selectedRows, setSelectedRows],
     onResults: handleResults,
+    onDeleted: handleDeleted,
     scrollRef,
     restoreScrollTopRef,
     refreshToken,
@@ -499,7 +501,10 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
               <RecordMergingLink
                 selectedRows={selectedRows}
                 table={table}
-                onDeleted={handleDelete}
+                onDeleted={(recordId): void => {
+                  handleDelete(recordId);
+                  handleDeleted?.(recordId);
+                }}
                 onMerged={handleMerged ?? handleReRun}
               />
             ) : undefined}

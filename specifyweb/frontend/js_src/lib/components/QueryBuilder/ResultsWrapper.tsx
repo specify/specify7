@@ -34,6 +34,7 @@ export function QueryResultsWrapper({
   extraButtons,
   onSelected: handleSelected,
   onResults: handleResults,
+  onDeleted: handleDeleted,
   onReRun: handleReRun,
   onMerged: handleMerged,
   refreshToken,
@@ -67,6 +68,7 @@ export function QueryResultsWrapper({
         <QueryResults
           {...newProps}
           onResults={handleResults}
+          onDeleted={handleDeleted}
           createRecordSet={createRecordSet}
           extraButtons={extraButtons}
           onReRun={handleReRun}
@@ -111,6 +113,7 @@ type ResultsProps = {
   readonly containerClassName?: string;
   readonly tableClassName?: string;
   readonly onResults?: (results: RA<QueryResultRow | undefined>) => void;
+  readonly onDeleted?: (recordId: number) => void;
   readonly onMerged?: () => void;
   readonly scrollRef?: React.MutableRefObject<HTMLDivElement | null>;
   readonly restoreScrollTopRef?: React.MutableRefObject<number | undefined>;
