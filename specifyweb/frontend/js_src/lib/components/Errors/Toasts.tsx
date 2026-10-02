@@ -27,6 +27,7 @@ type ErrorToast = State<
 type NotificationToast = State<
   'Notification',
   {
+    readonly messageId: string;
     readonly message: LocalizedString;
     readonly onClick: () => void;
     readonly onDismiss: () => void;

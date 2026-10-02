@@ -3,6 +3,7 @@ import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { mount } from '../../../tests/reactUtils';
+import { ping } from '../../../utils/ajax/ping';
 import { Toasts } from '../../Errors/Toasts';
 import { UnloadProtectsContext } from '../../Router/UnloadProtect';
 import { Notifications } from '../Notifications';
@@ -13,8 +14,10 @@ import {
 import { useNotificationsFetch } from '../hooks';
 
 jest.mock('../hooks');
+jest.mock('../../../utils/ajax/ping');
 
 const mockedUseNotificationsFetch = jest.mocked(useNotificationsFetch);
+const mockedPing = jest.mocked(ping);
 
 const makeNotification = (
   messageId: string,
@@ -35,6 +38,7 @@ test('unknown notification types use the generic heading', () => {
 });
 
 test('new notification toasts open the dialog with current notifications', async () => {
+  mockedPing.mockResolvedValue(200);
   let notifications: readonly GenericNotification[] = [];
   let handleIncoming:
     | ((notifications: readonly GenericNotification[]) => void)
@@ -61,7 +65,12 @@ test('new notification toasts open the dialog with current notifications', async
     'query-export-to-csv-complete',
     'query.csv'
   );
-  notifications = [csv, dwca];
+  const kml = makeNotification(
+    '3',
+    'query-export-to-kml-complete',
+    'query.kml'
+  );
+  notifications = [csv, dwca, kml];
 
   act(() => {
     handleIncoming?.(notifications);
@@ -96,19 +105,30 @@ test('new notification toasts open the dialog with current notifications', async
   const dwcaToast = view.getByRole('button', {
     name: /DwCA export completed/i,
   });
+  expect(
+    view.getByRole('button', { name: /Query export to KML completed/i })
+  ).toBeInTheDocument();
   await view.user.click(
     within(dwcaToast.parentElement ?? dwcaToast).getByRole('button', {
       name: 'Dismiss',
     })
   );
-  expect(dwcaToast).not.toBeInTheDocument();
+  expect(
+    view.queryByRole('button', { name: /DwCA export completed/i })
+  ).not.toBeInTheDocument();
 
   await view.user.click(csvToast);
 
   const dialog = view.getByRole('dialog');
   expect(dialog).toHaveTextContent('Query export to CSV completed.');
   expect(dialog).toHaveTextContent('DwCA export completed.');
+  await view.user.click(
+    within(dialog).getAllByRole('button', { name: 'Delete' })[2]!
+  );
+  expect(
+    view.queryByRole('button', { name: /Query export to KML completed/i })
+  ).not.toBeInTheDocument();
   expect(
     within(dialog).getAllByRole('link', { name: 'Download' })
-  ).toHaveLength(2);
+  ).toHaveLength(3);
 });

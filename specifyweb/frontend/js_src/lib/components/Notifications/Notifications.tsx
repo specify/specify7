@@ -35,6 +35,7 @@ export function Notifications({
         ...toasts,
         ...newNotifications.map((notification) => ({
           type: 'Notification' as const,
+          messageId: notification.messageId,
           message: getNotificationHeading(notification),
           onClick: handleOpen,
           onDismiss: f.void,
@@ -64,6 +65,17 @@ export function Notifications({
         })
       : notificationsText.notificationsLoading();
 
+  const removeNotificationToasts = React.useCallback(
+    (messageIds: ReadonlySet<string>): void =>
+      setToasts((toasts) =>
+        toasts.filter(
+          (toast) =>
+            toast.type !== 'Notification' || !messageIds.has(toast.messageId)
+        )
+      ),
+    [setToasts]
+  );
+
   function handleClearAll() {
     if (notifications === undefined) return;
     const message_ids = notifications.map(({ messageId }) => messageId);
@@ -76,6 +88,7 @@ export function Notifications({
     }).then(() => {
       // After the notifications are deleted on the server, clear them from the local state
       setNotifications([]);
+      removeNotificationToasts(new Set(message_ids));
     });
   }
 
@@ -149,6 +162,7 @@ export function Notifications({
                 notification={notification}
                 onDelete={(promise): void => {
                   freezeFetchPromise.current = promise;
+                  removeNotificationToasts(new Set([notification.messageId]));
                   setNotifications(
                     notifications.filter((item) => item !== notification)
                   );
