@@ -83,17 +83,19 @@ test('notification toasts disappear after ten seconds', () => {
 
 test('new notification toasts open the dialog with current notifications', async () => {
   mockedPing.mockResolvedValue(200);
-  let notifications: readonly GenericNotification[] = [];
   let handleIncoming:
     | ((notifications: readonly GenericNotification[]) => void)
     | undefined;
 
   mockedUseNotificationsFetch.mockImplementation(({ onNewNotifications }) => {
-    handleIncoming = onNewNotifications;
-    return {
-      notifications,
-      setNotifications: jest.fn(),
+    const [notifications, setNotifications] = React.useState<
+      readonly GenericNotification[] | undefined
+    >([]);
+    handleIncoming = (incomingNotifications): void => {
+      onNewNotifications?.(incomingNotifications);
+      setNotifications(incomingNotifications);
     };
+    return { notifications, setNotifications };
   });
 
   const view = mount(
@@ -114,17 +116,8 @@ test('new notification toasts open the dialog with current notifications', async
     'query-export-to-kml-complete',
     'query.kml'
   );
-  notifications = [csv, dwca, kml];
-
   act(() => {
-    handleIncoming?.(notifications);
-    view.rerender(
-      <UnloadProtectsContext.Provider value={[]}>
-        <Toasts>
-          <Notifications isCollapsed />
-        </Toasts>
-      </UnloadProtectsContext.Provider>
-    );
+    handleIncoming?.([csv, dwca, kml]);
   });
 
   const csvToast = view.getByRole('button', {
@@ -174,5 +167,5 @@ test('new notification toasts open the dialog with current notifications', async
   ).not.toBeInTheDocument();
   expect(
     within(dialog).getAllByRole('link', { name: 'Download' })
-  ).toHaveLength(3);
+  ).toHaveLength(2);
 });
