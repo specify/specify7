@@ -353,6 +353,24 @@ export function Dialog({
 
   const [buttonContainer, setButtonContainer] =
     React.useState<HTMLDivElement | null>(null);
+  const saveButton = buttonContainer?.querySelector<HTMLElement>(
+    'input[type="submit"], button[type="submit"]'
+  );
+  userPreferences.useKeyboardShortcut(
+    'form',
+    'dialogs',
+    'close',
+    isOpen && typeof handleClose === 'function' ? handleClose : undefined
+  );
+  userPreferences.useKeyboardShortcut(
+    'form',
+    'dialogs',
+    'save',
+    isOpen && saveButton !== null && saveButton !== undefined
+      ? (): void => saveButton.click()
+      : undefined
+  );
+
   const iconType = React.useMemo(() => {
     if (!showIcon) return 'none';
     if (typeof defaultIcon === 'string') return defaultIcon;

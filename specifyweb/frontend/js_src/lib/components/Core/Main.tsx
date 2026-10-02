@@ -13,6 +13,7 @@ import { Header } from '../Header';
 import { MenuContext, SetMenuContext } from '../Header/MenuContext';
 import type { MenuItemName } from '../Header/menuItemDefinitions';
 import { userInformation } from '../InitialContext/userInformation';
+import { KeyboardShortcutCheatSheet } from '../KeyboardShortcuts/CheatSheet';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { ReactLazy } from '../Router/ReactLazy';
 import { Router } from '../Router/Router';
@@ -77,6 +78,7 @@ export function Main({
 
         <VersionMismatch />
         <OnlineStatus />
+        <KeyboardShortcutCheatSheet />
         <ReportEventHandler />
       </SetMenuContext.Provider>
     </MenuContext.Provider>

@@ -6,14 +6,21 @@ import { setDevelopmentGlobal } from '../types';
 // These HTTP methods do not require CSRF protection
 export const csrfSafeMethod = new Set(['GET', 'HEAD', 'OPTIONS', 'TRACE']);
 
-export const isExternalUrl = (url: string): boolean =>
-  /*
-   * Blob URLs may point to the same origin, but should be treated as external
-   * by the navigator
-   */
-  url.startsWith('blob:') ||
-  new URL(url, globalThis.location.origin).origin !==
-    globalThis.location.origin;
+export function isExternalUrl(url: string): boolean {
+  try {
+    /*
+     * Blob URLs may point to the same origin, but should be treated as external
+     * by the navigator
+     */
+    return (
+      url.startsWith('blob:') ||
+      new URL(url, globalThis.location.origin).origin !==
+        globalThis.location.origin
+    );
+  } catch {
+    return true;
+  }
+}
 
 /**
  * Make sure the given URL is from current origin and give it back without

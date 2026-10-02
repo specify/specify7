@@ -119,6 +119,13 @@ const rawMenuItems = ensure<IR<Omit<MenuItem, 'name'>>>()({
   },
 } as const);
 
+export const expressSearchMenuItem: MenuItem = {
+  name: 'expressSearch',
+  url: '/specify/overlay/express-search/',
+  title: headerText.simpleSearch(),
+  icon: icons.search,
+};
+
 export type MenuItemName = keyof typeof rawMenuItems | 'search';
 
 /**
