@@ -62,6 +62,7 @@ describe('AppResourcesFilters', () => {
         'dataObjectFormatters',
         'dataViewQueries',
         'defaultUserPreferences',
+        'dwcaDefinition',
         'expressSearchConfig',
         'interactionsTables',
         'label',
