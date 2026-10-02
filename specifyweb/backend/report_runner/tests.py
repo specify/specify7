@@ -3,12 +3,18 @@ from unittest.mock import Mock, patch
 
 from django.test import Client, override_settings
 
+from specifyweb.backend.report_runner.views import (
+    _expand_rows_by_count,
+    _expand_rows_by_field,
+    _expand_rows_for_repeat,
+    _expand_rows_for_repeat_count,
+)
 from specifyweb.backend.stored_queries.tests.test_views.raw_query import (
     get_simple_query,
 )
 from specifyweb.backend.stored_queries.tests.tests import SQLAlchemySetup
 from specifyweb.specify.api.crud import post_resource
-from specifyweb.specify.models import Spreport
+from specifyweb.specify.models import Spappresourcedir, Spreport
 from specifyweb.specify.tests.test_api import ApiTests
 
 
@@ -88,6 +94,177 @@ class TestRunReport(ApiTests):
             json.loads(request_data['data']),
             report_data,
         )
+
+    def _make_report(self, **report_kwargs):
+        """Create a real SpReport (with app resource) for run-view tests."""
+        query = report_kwargs.pop('query', None) or post_resource(
+            self.collection,
+            self.agent,
+            'spquery',
+            get_simple_query(self.specifyuser),
+        )
+        appdir = Spappresourcedir.objects.create(discipline=self.discipline)
+        appresource = appdir.sppersistedappresources.create(
+            version=0,
+            mimetype='jrxml/label',
+            level=0,
+            name='Repeat Label',
+            description='Repeat Label',
+            specifyuser=self.specifyuser,
+            metadata='tableid=-1;reporttype=Report;',
+        )
+        return Spreport.objects.create(
+            version=0,
+            name='Repeat Label',
+            appresource=appresource,
+            query=query,
+            specifyuser=self.specifyuser,
+            **report_kwargs,
+        )
+
+    @override_settings(
+        REPORT_RUNNER_HOST='report-runner',
+        REPORT_RUNNER_PORT='8080',
+    )
+    @patch('specifyweb.backend.report_runner.views.requests.post')
+    @patch('specifyweb.backend.report_runner.views.run_query')
+    def test_run_expands_rows_from_repeat_field(
+        self,
+        run_query: Mock,
+        requests_post: Mock,
+    ):
+        """End-to-end: the run view reads RepeatField from a real SpReport row
+        and expands each result row by that field's value before sending the
+        data to the report renderer."""
+        report = self._make_report(
+            repeatfield='1,63-preparations.preparation.countAmt',
+        )
+
+        report_data = {
+            'fields': ['id', '1,63-preparations.preparation.countAmt'],
+            'rows': [
+                [self.collectionobjects[0].id, 3],
+                [self.collectionobjects[1].id, 2],
+            ],
+        }
+        run_query.return_value = report_data
+        requests_post.return_value.status_code = 200
+        requests_post.return_value.content = b'%PDF-1.4 test'
+
+        client = Client()
+        client.force_login(self.specifyuser)
+
+        response = client.post(
+            '/report_runner/run/',
+            {
+                'query': json.dumps({
+                    'id': report.query_id,
+                    'name': 'New Query',
+                }),
+                'parameters': json.dumps({}),
+                'report': '<jasperReport />',
+                'reportId': report.id,
+            },
+        )
+
+        self._assertStatusCodeEqual(response, 200)
+
+        sent = json.loads(requests_post.call_args.kwargs['data']['data'])
+        self.assertEqual(len(sent['rows']), 5)  # 3 + 2
+        self.assertEqual(sent['rows'][0], [self.collectionobjects[0].id, 3])
+        self.assertEqual(sent['rows'][3], [self.collectionobjects[1].id, 2])
+
+    @override_settings(
+        REPORT_RUNNER_HOST='report-runner',
+        REPORT_RUNNER_PORT='8080',
+    )
+    @patch('specifyweb.backend.report_runner.views.requests.post')
+    @patch('specifyweb.backend.report_runner.views.run_query')
+    def test_run_expands_rows_from_repeat_count(
+        self,
+        run_query: Mock,
+        requests_post: Mock,
+    ):
+        """End-to-end: the run view repeats every row a fixed number of times
+        when the SpReport row has RepeatCount but no RepeatField."""
+        report = self._make_report(repeatcount=3)
+
+        report_data = {
+            'fields': ['id', '1,63-preparations.preparation.countAmt'],
+            'rows': [
+                [self.collectionobjects[0].id, 9],
+                [self.collectionobjects[1].id, 9],
+            ],
+        }
+        run_query.return_value = report_data
+        requests_post.return_value.status_code = 200
+        requests_post.return_value.content = b'%PDF-1.4 test'
+
+        client = Client()
+        client.force_login(self.specifyuser)
+
+        response = client.post(
+            '/report_runner/run/',
+            {
+                'query': json.dumps({
+                    'id': report.query_id,
+                    'name': 'New Query',
+                }),
+                'parameters': json.dumps({}),
+                'report': '<jasperReport />',
+                'reportId': report.id,
+            },
+        )
+
+        self._assertStatusCodeEqual(response, 200)
+
+        sent = json.loads(requests_post.call_args.kwargs['data']['data'])
+        self.assertEqual(len(sent['rows']), 6)  # 2 rows * 3
+
+    @override_settings(
+        REPORT_RUNNER_HOST='report-runner',
+        REPORT_RUNNER_PORT='8080',
+    )
+    @patch('specifyweb.backend.report_runner.views.requests.post')
+    @patch('specifyweb.backend.report_runner.views.run_query')
+    def test_run_ignores_repeat_settings_from_mismatched_report(
+        self,
+        run_query: Mock,
+        requests_post: Mock,
+    ):
+        report = self._make_report(repeatcount=3)
+        other_query = post_resource(
+            self.collection,
+            self.agent,
+            'spquery',
+            get_simple_query(self.specifyuser),
+        )
+        report_data = {
+            'fields': ['id'],
+            'rows': [[self.collectionobjects[0].id]],
+        }
+        run_query.return_value = report_data
+        requests_post.return_value.status_code = 200
+        requests_post.return_value.content = b'%PDF-1.4 test'
+
+        client = Client()
+        client.force_login(self.specifyuser)
+        response = client.post(
+            '/report_runner/run/',
+            {
+                'query': json.dumps({
+                    'id': other_query.id,
+                    'name': 'Other Query',
+                }),
+                'parameters': json.dumps({}),
+                'report': '<jasperReport />',
+                'reportId': report.id,
+            },
+        )
+
+        self._assertStatusCodeEqual(response, 200)
+        sent = json.loads(requests_post.call_args.kwargs['data']['data'])
+        self.assertEqual(sent, report_data)
 
 
 class TestCreateReport(SQLAlchemySetup):
@@ -178,3 +355,183 @@ class TestCreateLabel(SQLAlchemySetup):
             '1.collectionobject.catalogNumber',
             label_data.get_decoded_data(),
         )
+
+
+_JASPER_NS = 'http://jasperreports.sourceforge.net/jasperreports'
+
+def _make_jrxml(repeat_field=None):
+    """Build a minimal jrxml string, optionally with a repeat-count property."""
+    prop = (
+        f'<property xmlns="{_JASPER_NS}" name="specify.repeat.count.field"'
+        f' value="{repeat_field}"/>'
+        if repeat_field else ''
+    )
+    return (
+        f'<jasperReport xmlns="{_JASPER_NS}">'
+        f'{prop}'
+        f'</jasperReport>'
+    )
+
+
+class TestExpandRowsForRepeatCount(ApiTests):
+
+    def _data(self, rows):
+        return {
+            'fields': ['id', '1,63-preparations.preparation.countAmt'],
+            'rows': rows,
+        }
+
+    def test_no_property_returns_data_unchanged(self):
+        data = self._data([[1, 3], [2, 2]])
+        result = _expand_rows_for_repeat_count(_make_jrxml(), data)
+        self.assertEqual(result, data)
+
+    def test_rows_expanded_by_count_field(self):
+        data = self._data([[1, 3], [2, 2]])
+        result = _expand_rows_for_repeat_count(
+            _make_jrxml('1,63-preparations.preparation.countAmt'), data
+        )
+        self.assertEqual(result['fields'], data['fields'])
+        self.assertEqual(len(result['rows']), 5)  # 3 + 2
+        self.assertEqual(result['rows'][0], [1, 3])
+        self.assertEqual(result['rows'][3], [2, 2])
+
+    def test_count_of_one_does_not_duplicate(self):
+        data = self._data([[1, 1]])
+        result = _expand_rows_for_repeat_count(
+            _make_jrxml('1,63-preparations.preparation.countAmt'), data
+        )
+        self.assertEqual(len(result['rows']), 1)
+
+    def test_null_count_defaults_to_one(self):
+        data = self._data([[1, None]])
+        result = _expand_rows_for_repeat_count(
+            _make_jrxml('1,63-preparations.preparation.countAmt'), data
+        )
+        self.assertEqual(len(result['rows']), 1)
+
+    def test_zero_count_defaults_to_one(self):
+        data = self._data([[1, 0]])
+        result = _expand_rows_for_repeat_count(
+            _make_jrxml('1,63-preparations.preparation.countAmt'), data
+        )
+        self.assertEqual(len(result['rows']), 1)
+
+    def test_field_not_in_result_set_returns_data_unchanged(self):
+        data = self._data([[1, 3]])
+        result = _expand_rows_for_repeat_count(
+            _make_jrxml('1,63-preparations.preparation.nonexistent'), data
+        )
+        self.assertEqual(result, data)
+
+    def test_invalid_jrxml_returns_data_unchanged(self):
+        data = self._data([[1, 3]])
+        result = _expand_rows_for_repeat_count('not valid xml', data)
+        self.assertEqual(result, data)
+
+
+class TestExpandRowsByField(ApiTests):
+
+    def _data(self, rows):
+        return {
+            'fields': ['id', '1,63-preparations.preparation.countAmt'],
+            'rows': rows,
+        }
+
+    def test_rows_expanded_by_field_value(self):
+        data = self._data([[1, 3], [2, 2]])
+        result = _expand_rows_by_field(
+            data, '1,63-preparations.preparation.countAmt'
+        )
+        self.assertEqual(len(result['rows']), 5)
+        self.assertEqual(result['rows'][0], [1, 3])
+        self.assertEqual(result['rows'][3], [2, 2])
+
+    def test_null_zero_and_invalid_default_to_one(self):
+        data = self._data([[1, None], [2, 0], [3, 'x']])
+        result = _expand_rows_by_field(
+            data, '1,63-preparations.preparation.countAmt'
+        )
+        self.assertEqual(len(result['rows']), 3)
+
+    def test_missing_field_returns_data_unchanged(self):
+        data = self._data([[1, 3]])
+        result = _expand_rows_by_field(data, 'not.a.field')
+        self.assertEqual(result, data)
+
+    def test_empty_field_returns_data_unchanged(self):
+        data = self._data([[1, 3]])
+        result = _expand_rows_by_field(data, None)
+        self.assertEqual(result, data)
+
+
+class TestExpandRowsByCount(ApiTests):
+
+    def _data(self, rows):
+        return {'fields': ['id'], 'rows': rows}
+
+    def test_every_row_repeated_fixed_count(self):
+        data = self._data([[1], [2]])
+        result = _expand_rows_by_count(data, 3)
+        self.assertEqual(len(result['rows']), 6)
+        self.assertEqual(result['rows'][:3], [[1], [1], [1]])
+
+    def test_count_of_one_returns_data_unchanged(self):
+        data = self._data([[1], [2]])
+        result = _expand_rows_by_count(data, 1)
+        self.assertEqual(result, data)
+
+    def test_invalid_count_returns_data_unchanged(self):
+        data = self._data([[1]])
+        self.assertEqual(_expand_rows_by_count(data, None), data)
+        self.assertEqual(_expand_rows_by_count(data, 'x'), data)
+
+
+class TestExpandRowsForRepeat(ApiTests):
+
+    def _data(self, rows):
+        return {
+            'fields': ['id', '1,63-preparations.preparation.countAmt'],
+            'rows': rows,
+        }
+
+    def test_repeat_field_takes_precedence(self):
+        report = Mock(
+            repeatfield='1,63-preparations.preparation.countAmt',
+            repeatcount=99,
+        )
+        data = self._data([[1, 3], [2, 2]])
+        result = _expand_rows_for_repeat(_make_jrxml(), data, report)
+        self.assertEqual(len(result['rows']), 5)
+
+    def test_repeat_count_used_when_no_field(self):
+        report = Mock(repeatfield=None, repeatcount=3)
+        data = self._data([[1, 9], [2, 9]])
+        result = _expand_rows_for_repeat(_make_jrxml(), data, report)
+        self.assertEqual(len(result['rows']), 6)
+
+    def test_falls_back_to_jrxml_when_report_has_no_config(self):
+        report = Mock(repeatfield=None, repeatcount=None)
+        data = self._data([[1, 3]])
+        result = _expand_rows_for_repeat(
+            _make_jrxml('1,63-preparations.preparation.countAmt'),
+            data,
+            report,
+        )
+        self.assertEqual(len(result['rows']), 3)
+
+    def test_no_report_id_uses_jrxml(self):
+        data = self._data([[1, 3]])
+        result = _expand_rows_for_repeat(
+            _make_jrxml('1,63-preparations.preparation.countAmt'), data
+        )
+        self.assertEqual(len(result['rows']), 3)
+
+    def test_missing_report_falls_back_to_jrxml(self):
+        data = self._data([[1, 3]])
+        result = _expand_rows_for_repeat(
+            _make_jrxml('1,63-preparations.preparation.countAmt'),
+            data,
+            None,
+        )
+        self.assertEqual(len(result['rows']), 3)
