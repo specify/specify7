@@ -1,12 +1,10 @@
 import React from 'react';
 
+import { useResponsiveSplitView } from '../../hooks/useResponsiveSplitView';
 import type { RA } from '../../utils/types';
-import { listen } from '../../utils/events';
+import { userPreferences } from '../Preferences/userPreferences';
 import { queryIdField, type QueryResultRow } from './Results';
 import { useSplitViewOrientation } from './SplitView';
-import { userPreferences } from '../Preferences/userPreferences';
-
-const SMALL_SCREEN_WIDTH = 768;
 
 export function useQuerySplitView(
   resultsRef: React.MutableRefObject<
@@ -21,7 +19,9 @@ export function useQuerySplitView(
   readonly selectedIndex: number;
   readonly setSelectedIndex: React.Dispatch<React.SetStateAction<number>>;
   readonly isSplit: boolean;
-  readonly canSplit: boolean;
+  readonly canUseHorizontalSplit: boolean;
+  readonly splitViewRef: React.RefCallback<HTMLDivElement>;
+  readonly maximumPrimaryPaneWidth: number;
   readonly isHorizontal: boolean;
   readonly toggleSplit: () => void;
   readonly toggleOrientation: () => void;
@@ -42,19 +42,15 @@ export function useQuerySplitView(
     'splitViewOrientation'
   );
   const [rawIsSplit, setIsSplit] = React.useState(splitViewByDefault);
-  const [canSplit, setCanSplit] = React.useState(
-    window.innerWidth >= SMALL_SCREEN_WIDTH
-  );
-  React.useEffect(() => {
-    const handleResize = (): void =>
-      setCanSplit(window.innerWidth >= SMALL_SCREEN_WIDTH);
-    handleResize();
-    return listen(window, 'resize', handleResize);
-  }, []);
-  const isSplit = rawIsSplit && canSplit;
-  const { isHorizontal, toggleOrientation } = useSplitViewOrientation(
-    splitViewOrientation === 'horizontal'
-  );
+  const isSplit = rawIsSplit;
+  const { isHorizontal: preferredIsHorizontal, toggleOrientation } =
+    useSplitViewOrientation(splitViewOrientation === 'horizontal');
+  const {
+    canUseHorizontalSplit,
+    containerRef: splitViewRef,
+    isHorizontal,
+    maximumPrimaryPaneWidth,
+  } = useResponsiveSplitView(preferredIsHorizontal);
 
   const selectFirstResult = React.useCallback((): boolean => {
     const firstId = resultsRef.current?.find(
@@ -120,7 +116,9 @@ export function useQuerySplitView(
     selectedIndex,
     setSelectedIndex,
     isSplit,
-    canSplit,
+    canUseHorizontalSplit,
+    splitViewRef,
+    maximumPrimaryPaneWidth,
     isHorizontal,
     toggleSplit,
     toggleOrientation,

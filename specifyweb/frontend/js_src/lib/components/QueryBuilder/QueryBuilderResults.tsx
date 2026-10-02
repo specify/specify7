@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { commonText } from '../../localization/common';
-import { localized, type RA } from '../../utils/types';
+import { type RA, localized } from '../../utils/types';
 import { BatchEditFromQuery } from '../BatchEdit';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -34,6 +34,8 @@ export function QueryBuilderResults({
   resultsRef,
   isSplit,
   isHorizontal,
+  maximumPrimaryPaneWidth,
+  splitViewRef,
   onReRun: handleReRun,
   onResults: handleResults,
   onSelected: handleSelected,
@@ -61,6 +63,8 @@ export function QueryBuilderResults({
   >;
   readonly isSplit: boolean;
   readonly isHorizontal: boolean;
+  readonly maximumPrimaryPaneWidth: number;
+  readonly splitViewRef: React.RefCallback<HTMLDivElement>;
   readonly onReRun: () => void;
   readonly onResults?: (results: RA<QueryResultRow | undefined>) => void;
   readonly onSelected: (ids: RA<number>) => void;
@@ -149,8 +153,10 @@ export function QueryBuilderResults({
       resultsRef={resultsRef}
       selectedRows={[selectedRows, setSelectedRows]}
       isSplit={isSplit}
+      splitContainerRef={splitViewRef}
       splitHorizontal={isHorizontal}
       splitPane={recordPreview}
+      splitPrimaryPaneMaxWidth={`${maximumPrimaryPaneWidth}px`}
       table={table}
       onReRun={handleReRun}
       onResults={handleResults}
