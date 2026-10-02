@@ -6,7 +6,10 @@ import { mount } from '../../../tests/reactUtils';
 import { Toasts } from '../../Errors/Toasts';
 import { UnloadProtectsContext } from '../../Router/UnloadProtect';
 import { Notifications } from '../Notifications';
-import type { GenericNotification } from '../NotificationRenderers';
+import {
+  getNotificationHeading,
+  type GenericNotification,
+} from '../NotificationRenderers';
 import { useNotificationsFetch } from '../hooks';
 
 jest.mock('../hooks');
@@ -23,6 +26,12 @@ const makeNotification = (
   timestamp: `2023-09-19T01:22:0${messageId}`,
   type,
   payload: { file: file as LocalizedString },
+});
+
+test('unknown notification types use the generic heading', () => {
+  expect(getNotificationHeading(makeNotification('1', '__proto__', ''))).toBe(
+    'Notifications'
+  );
 });
 
 test('new notification toasts open the dialog with current notifications', async () => {

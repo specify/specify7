@@ -86,9 +86,15 @@ const notificationHeadings: IR<
 
 export const getNotificationHeading = (
   notification: GenericNotification
-): LocalizedString =>
-  notificationHeadings[notification.type]?.(notification) ??
-  notificationsText.notifications();
+): LocalizedString => {
+  const heading = Object.prototype.hasOwnProperty.call(
+    notificationHeadings,
+    notification.type
+  )
+    ? notificationHeadings[notification.type]
+    : undefined;
+  return heading?.(notification) ?? notificationsText.notifications();
+};
 
 export const notificationRenderers: IR<
   (notification: GenericNotification) => React.ReactNode
