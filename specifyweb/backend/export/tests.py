@@ -40,6 +40,18 @@ FEED_XML = """<feed>
     <guid>test-item-guid</guid>
     <description>test item description</description>
   </item>
+  <item filename="unpublished_export.zip" days="1" collectionid="{collection_id}" userid="{user_id}" definition="DwCATestDefinition" metadata="DwCATestEML" publish="false">
+    <title>Unpublished Item</title>
+    <id>unpublished-item-id</id>
+    <guid>unpublished-item-guid</guid>
+    <description>unpublished item description</description>
+  </item>
+  <item filename="missing_archive_export.zip" days="1" collectionid="{collection_id}" userid="{user_id}" definition="DwCATestDefinition" metadata="DwCATestEML" publish="true">
+    <title>Missing Archive Item</title>
+    <id>missing-archive-item-id</id>
+    <guid>missing-archive-item-guid</guid>
+    <description>missing archive item description</description>
+  </item>
 </feed>"""
 
 DWCA_DEFINITION = """<definition>
@@ -123,3 +135,9 @@ class ExportFeedTests(SQLAlchemySetup):
             content = response.content.decode()
             self.assertIn('test_export.zip', content)
             self.assertIn('Test Item', content)
+
+            # unpublished items and items with no archive file are excluded
+            self.assertNotIn('unpublished_export.zip', content)
+            self.assertNotIn('Unpublished Item', content)
+            self.assertNotIn('missing_archive_export.zip', content)
+            self.assertNotIn('Missing Archive Item', content)
