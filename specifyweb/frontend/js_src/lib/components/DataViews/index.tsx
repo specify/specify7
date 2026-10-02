@@ -200,6 +200,15 @@ function LoadedDataViewFromTable({
       restoreScrollTopRef.current = resultsScrollRef.current.scrollTop;
     setRefreshToken((token) => token + 1);
   }, []);
+  const handleMerged = React.useCallback((): void => {
+    /*
+     * Merging removes the selected records. Clear the preview before the
+     * refreshed results arrive so it does not try to load deleted records.
+     */
+    setSelectedIds([]);
+    setSelectedIndex(0);
+    handleRefresh();
+  }, [handleRefresh]);
   const handleCloseQueryEditor = (): void => setQueryData(undefined);
   const handleOpenQueryEditor = (): void => {
     setIsQueryDirty(false);
@@ -282,6 +291,7 @@ function LoadedDataViewFromTable({
       createRecordSet={undefined}
       extraButtons={undefined}
       onReRun={handleRefresh}
+      onMerged={handleMerged}
       onSortChange={(newFields): void => {
         setRuntimeFields(unParseQueryFields(table.name, newFields));
         setQueryRunCount((count) => count + 1);

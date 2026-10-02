@@ -91,6 +91,7 @@ export type QueryResultsProps = {
   readonly tableClassName?: string;
   readonly selectedRows: GetSet<ReadonlySet<number>>;
   readonly onResults?: (results: RA<QueryResultRow | undefined>) => void;
+  readonly onMerged?: () => void;
   readonly scrollRef?: React.MutableRefObject<HTMLDivElement | null>;
   readonly restoreScrollTopRef?: React.MutableRefObject<number | undefined>;
   readonly refreshToken?: number;
@@ -113,6 +114,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     onSelected: handleSelected,
     onSortChange: handleSortChange,
     onReRun: handleReRun,
+    onMerged: handleMerged,
     createRecordSet,
     extraButtons,
     containerClassName = '',
@@ -498,7 +500,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
                 selectedRows={selectedRows}
                 table={table}
                 onDeleted={handleDelete}
-                onMerged={handleReRun}
+                onMerged={handleMerged ?? handleReRun}
               />
             ) : undefined}
             {hasToolPermission('recordSets', 'create') && totalCount !== 0 ? (
