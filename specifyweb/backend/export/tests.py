@@ -56,7 +56,8 @@ DWCA_DEFINITION = """<definition>
 EML = "<eml><dataset/></eml>"
 
 
-def noop(*args, **kwargs): ...
+def noop(*args, **kwargs):
+    pass
 
 
 class ExportFeedTests(SQLAlchemySetup):
