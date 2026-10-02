@@ -481,4 +481,7 @@ export const interactionsText = createDictionary({
     'hr-hr': 'Nije dostupno',
     nb: 'Ikke tilgjengelig',
   },
+  invertSelection: {
+    'en-us': 'Invert Selection',
+  },
 } as const);
