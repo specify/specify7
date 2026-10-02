@@ -5,10 +5,11 @@ import type { State } from 'typesafe-reducer';
 import { commonText } from '../../localization/common';
 import { mainText } from '../../localization/main';
 import type { GetOrSet, RA } from '../../utils/types';
-import { removeItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { dialogIcons, icons } from '../Atoms/Icons';
 import { error } from './assert';
+
+export const NOTIFICATION_TOAST_DURATION = 10_000;
 
 type ErrorToast = State<
   'Error',
@@ -54,10 +55,16 @@ export function Toasts({
         >
           {toasts.map((toast, index) => (
             <Toast
-              key={index}
+              key={
+                toast.type === 'Notification'
+                  ? `notification-${toast.messageId}`
+                  : index
+              }
               toast={toast}
               onClose={(): void =>
-                setToasts((toasts) => removeItem(toasts, index))
+                setToasts((toasts) =>
+                  toasts.filter((currentToast) => currentToast !== toast)
+                )
               }
             />
           ))}
@@ -82,10 +89,28 @@ function Toast({
 }): JSX.Element {
   const previousFocused = React.useRef(document.activeElement);
   const isError = toast.type === 'Error';
+  const handleCloseRef = React.useRef(handleClose);
+  handleCloseRef.current = handleClose;
+  const remainingTime = React.useRef(NOTIFICATION_TOAST_DURATION);
+  const [isTimerPaused, setIsTimerPaused] = React.useState(false);
+
+  React.useEffect(() => {
+    if (isError || isTimerPaused) return undefined;
+    const startedAt = Date.now();
+    const timeout = globalThis.setTimeout(() => {
+      toast.onDismiss();
+      handleCloseRef.current();
+    }, remainingTime.current);
+    return (): void => {
+      globalThis.clearTimeout(timeout);
+      remainingTime.current -= Date.now() - startedAt;
+    };
+  }, [isError, isTimerPaused, toast]);
+
   return (
     <div
       className={`
-        flex gap-2 rounded border shadow
+        relative flex gap-2 overflow-hidden rounded border shadow
         ${
           isError
             ? 'border-red-500 bg-red-200 hover:bg-red-300 dark:bg-red-900 dark:hover:bg-red-800'
@@ -93,6 +118,11 @@ function Toast({
               dark:border-gray-600 dark:bg-neutral-800 dark:hover:bg-neutral-700`
         }
       `}
+      onBlur={(event): void => {
+        if (!event.currentTarget.contains(event.relatedTarget))
+          setIsTimerPaused(false);
+      }}
+      onFocus={(): void => setIsTimerPaused(true)}
     >
       <Button.LikeLink
         aria-live={isError ? 'assertive' : 'polite'}
@@ -113,7 +143,7 @@ function Toast({
         {isError ? (
           dialogIcons.error
         ) : (
-          <span className="text-green-600 dark:text-green-400">
+          <span className="text-brand-300 dark:text-brand-400">
             {icons.bell}
           </span>
         )}
@@ -128,11 +158,24 @@ function Toast({
         icon="x"
         title={commonText.dismiss()}
         onClick={(): void => {
-          (previousFocused.current as HTMLElement | null)?.focus();
+          if (isError) (previousFocused.current as HTMLElement | null)?.focus();
           toast.onDismiss();
           handleClose();
         }}
       />
+      {!isError && (
+        <span
+          aria-hidden
+          className={`
+            notification-toast-progress absolute inset-x-0 bottom-0 h-1
+            origin-left bg-brand-300 dark:bg-brand-400
+          `}
+          style={{
+            animationDuration: `${NOTIFICATION_TOAST_DURATION}ms`,
+            animationPlayState: isTimerPaused ? 'paused' : 'running',
+          }}
+        />
+      )}
     </div>
   );
 }

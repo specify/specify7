@@ -4,6 +4,20 @@
  */
 @tailwind base;
 
+@keyframes notification-toast-progress {
+  from {
+    transform: scaleX(1);
+  }
+
+  to {
+    transform: scaleX(0);
+  }
+}
+
+.notification-toast-progress {
+  animation: notification-toast-progress 5s linear forwards;
+}
+
 /*
  * REFACTOR: get rid of most global styles once everything is using React components
  *   (can use arbitrary variants too)
@@ -36,8 +50,9 @@
      * Disables transitions for text color.
      * See https://github.com/specify/specify7/issues/1561
      */
-    transition-property: background-color, border-color, text-decoration-color,
-      fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+    transition-property:
+      background-color, border-color, text-decoration-color, fill, stroke,
+      opacity, box-shadow, transform, filter, backdrop-filter;
   }
 
   [type='text'],
