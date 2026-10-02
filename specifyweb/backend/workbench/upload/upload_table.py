@@ -1038,6 +1038,7 @@ class BoundUpdateTable(BoundUploadTable):
             **self.static,
         }
 
+        # .attname suffixes all relationship table names with '_id'
         to_one_ids = {
             model._meta.get_field(fieldname).attname: result.get_id()
             for fieldname, result in to_one_results.items()
@@ -1056,7 +1057,9 @@ class BoundUpdateTable(BoundUploadTable):
             scope_change_error = ParseFailures([WorkBenchParseFailure("scopeChangeError", {}, self.parsedFields[0].column)])
             return UploadResult(scope_change_error, {}, {})
 
-        to_one_changes = BoundUpdateTable._field_changed(reference_record, to_one_ids)
+        # finds -to-ones that have been changed and that 
+        # need to be logged in the audit log and committed to the database
+        to_one_changes_ids = BoundUpdateTable._field_changed(reference_record, to_one_ids)
 
         to_one_matched_and_changed = {
             related: result._replace(
@@ -1064,7 +1067,7 @@ class BoundUpdateTable(BoundUploadTable):
             )
             for related, result in to_one_results.items()
             if isinstance(result.record_result, Matched)
-            and model._meta.get_field(related).attname in to_one_changes
+            and model._meta.get_field(related).attname in to_one_changes_ids
         }
 
         to_one_results = {**to_one_results, **to_one_matched_and_changed}
@@ -1086,7 +1089,7 @@ class BoundUpdateTable(BoundUploadTable):
 
         # Changed is just concrete field changes. We might have changed a to-one too.
         # This is done like this to avoid an unecessary save when we know there is no
-        if changed or to_one_changes:
+        if changed or to_one_changes_ids:
             attrs = {
                 **attrs,
                 **to_one_ids,
@@ -1097,11 +1100,27 @@ class BoundUpdateTable(BoundUploadTable):
                 ),
             }
 
+            
+            # this object has the same form as to_one_changes_ids
+            # but the keys and field_name do not have the '_id' suffix
+            # we pass this to the audit log to be consistent with how changing 
+            # -to-ones  is logged when changes are made through forms
+            to_one_changes_names = {
+                model._meta.get_field(fieldname).name: FieldChangeInfo( 
+                    field_name= model._meta.get_field(fieldname).name,
+                    old_value=getattr(reference_record, model._meta.get_field(fieldname).attname),
+                    new_value=newval.get_id()
+                )
+                for fieldname, newval in to_one_results.items() 
+                if model._meta.get_field(fieldname).attname in to_one_changes_ids.keys()
+            }
+
+
             with transaction.atomic():
                 try:
                     updated = self._do_update(
                         reference_record,
-                        [*to_one_changes.values(), *concrete_field_changes.values()],
+                        [*to_one_changes_names.values(), *concrete_field_changes.values()],
                         **attrs,
                     )
                     picklist_additions = self._do_picklist_additions()
