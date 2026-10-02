@@ -418,6 +418,7 @@ function Wrapped({
             <div className="flex snap-start flex-col gap-4 overflow-y-auto">
               {showMappingView && (
                 <MappingView
+                  baseTableName={state.baseTableName}
                   mappingElementProps={getMappingLineProps({
                     mappingLineData: getMappingLineData({
                       baseTableName: state.baseTableName,
@@ -470,6 +471,11 @@ function Wrapped({
                         });
                     },
                   })}
+                  showHiddenFields={showHiddenFields}
+                  searchSpec={navigatorSpecs.queryBuilder}
+                  onSelectSearchResult={(mappingPath): void =>
+                    dispatch({ type: 'SetMappingViewAction', mappingPath })
+                  }
                 >
                   {isReadOnly ? undefined : (
                     <Button.Small
