@@ -717,13 +717,19 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
       primaryPane={queryResults}
       primaryPaneKey="query-results"
       primaryPaneMaxWidth={splitPrimaryPaneMaxWidth}
-      secondaryPane={renderSplitPane({
-        results: results ?? [],
-        selectedRows,
-        totalCount,
-        onFetchMore: canFetchMore ? handleFetchMore : undefined,
-        onDelete: handleDelete,
-      })}
+      secondaryPane={
+        isSplit ? (
+          renderSplitPane({
+            results: results ?? [],
+            selectedRows,
+            totalCount,
+            onFetchMore: canFetchMore ? handleFetchMore : undefined,
+            onDelete: handleDelete,
+          })
+        ) : (
+          <></>
+        )
+      }
       secondaryPaneKey="split-pane"
     />
   );
