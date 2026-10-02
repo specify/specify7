@@ -281,8 +281,10 @@ function Wrapped({
     selectedIndex,
     setSelectedIndex,
     isSplit,
-    canSplit,
+    canUseHorizontalSplit,
     isHorizontal,
+    maximumPrimaryPaneWidth,
+    splitViewRef,
     toggleSplit,
     toggleOrientation,
     onResults: handleSplitViewResults,
@@ -360,7 +362,7 @@ function Wrapped({
             }}
             onTriedToSave={handleTriedToSave}
             isSplit={isSplit}
-            canSplit={canSplit}
+            canUseHorizontalSplit={canUseHorizontalSplit}
             isHorizontal={isHorizontal}
             onToggleSplit={toggleSplit}
             onToggleOrientation={toggleOrientation}
@@ -607,6 +609,7 @@ function Wrapped({
               isHorizontal={isHorizontal}
               isReadOnly={isReadOnly}
               isSplit={isSplit}
+              maximumPrimaryPaneWidth={maximumPrimaryPaneWidth}
               query={query}
               queryResource={queryResource}
               recordSet={recordSet}
@@ -616,6 +619,7 @@ function Wrapped({
               selectedRows={selectedRows}
               setSelectedIndex={setSelectedIndex}
               setSelectedRows={setSelectedRows}
+              splitViewRef={splitViewRef}
               state={state}
               table={table}
               onReRun={(): void => dispatch({ type: 'RunQueryAction' })}
