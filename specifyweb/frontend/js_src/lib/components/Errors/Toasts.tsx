@@ -171,7 +171,7 @@ function Toast({
             origin-left bg-brand-300 dark:bg-brand-400
           `}
           style={{
-            animationDuration: `${NOTIFICATION_TOAST_DURATION}ms`,
+            animation: `notification-toast-progress ${NOTIFICATION_TOAST_DURATION}ms linear forwards`,
             animationPlayState: isTimerPaused ? 'paused' : 'running',
           }}
         />

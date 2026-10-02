@@ -14,10 +14,6 @@
   }
 }
 
-.notification-toast-progress {
-  animation: notification-toast-progress 5s linear forwards;
-}
-
 /*
  * REFACTOR: get rid of most global styles once everything is using React components
  *   (can use arbitrary variants too)
