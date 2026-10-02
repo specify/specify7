@@ -17,7 +17,7 @@ from specifyweb.specify.models import (
     Spappresourcedata,
     Spappresourcedir,
 )
-from specifyweb.specify.tests.test_api import ApiTests
+from specifyweb.backend.stored_queries.tests.tests import SQLAlchemySetup
 from specifyweb.backend.notifications.models import Message
 from specifyweb.backend.export.feed import update_feed
 
@@ -56,7 +56,10 @@ DWCA_DEFINITION = """<definition>
 EML = "<eml><dataset/></eml>"
 
 
-class ExportFeedTests(ApiTests):
+def noop(*args, **kwargs): ...
+
+
+class ExportFeedTests(SQLAlchemySetup):
     def setUp(self):
         super().setUp()
         directory = Spappresourcedir.objects.create(ispersonal=False)
@@ -87,7 +90,10 @@ class ExportFeedTests(ApiTests):
     def test_update_feed_generates_archive_and_notification(self):
         with tempfile.TemporaryDirectory() as tmp:
             with patch('specifyweb.backend.export.feed.FEED_DIR', tmp):
-                update_feed(force=True)
+                # make_dwca must run queries against the Django test database
+                with patch('specifyweb.backend.export.dwca.session_context', ExportFeedTests.test_session_context):
+                    with patch('specifyweb.backend.stored_queries.execution.set_group_concat_max_len', noop):
+                        update_feed(force=True)
 
             path = os.path.join(tmp, 'test_export.zip')
             self.assertTrue(os.path.exists(path))
