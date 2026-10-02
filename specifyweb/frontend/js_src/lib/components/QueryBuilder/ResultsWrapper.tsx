@@ -22,7 +22,7 @@ import {
   queryFieldsToFieldSpecs,
   unParseQueryFields,
 } from './helpers';
-import type { QueryResultRow } from './Results';
+import type { QueryResultRow, QueryResultsSplitPaneProps } from './Results';
 import { QueryResults } from './Results';
 import { SplitView } from './SplitView';
 
@@ -35,6 +35,7 @@ export function QueryResultsWrapper({
   onSelected: handleSelected,
   onResults: handleResults,
   onReRun: handleReRun,
+  renderSplitPane,
   refreshToken,
   splitPane,
   splitContainerRef,
@@ -56,6 +57,7 @@ export function QueryResultsWrapper({
   readonly splitPrimaryPaneMaxWidth?: string;
   readonly isSplit?: boolean;
   readonly onReRun: () => void;
+  readonly renderSplitPane?: (props: QueryResultsSplitPaneProps) => JSX.Element;
 }): JSX.Element | null {
   const newProps = useQueryResultsWrapper(props);
 
@@ -65,7 +67,10 @@ export function QueryResultsWrapper({
     );
 
   const queryResults = (
-    <div className="flex flex-1 snap-start overflow-hidden">
+    <div
+      className="flex flex-1 snap-start overflow-hidden"
+      ref={renderSplitPane === undefined ? undefined : splitContainerRef}
+    >
       <ErrorBoundary dismissible>
         <QueryResults
           {...newProps}
@@ -73,6 +78,10 @@ export function QueryResultsWrapper({
           createRecordSet={createRecordSet}
           extraButtons={extraButtons}
           onReRun={handleReRun}
+          renderSplitPane={renderSplitPane}
+          isSplit={isSplit}
+          splitHorizontal={splitHorizontal}
+          splitPrimaryPaneMaxWidth={splitPrimaryPaneMaxWidth}
           onSelected={handleSelected}
           refreshToken={refreshToken}
         />

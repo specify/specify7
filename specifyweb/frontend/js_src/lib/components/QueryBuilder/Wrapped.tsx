@@ -288,7 +288,7 @@ function Wrapped({
     toggleSplit,
     toggleOrientation,
     onResults: handleSplitViewResults,
-  } = useQuerySplitView(resultsRef, state.queryRunCount);
+  } = useQuerySplitView(state.queryRunCount);
 
   const showSeries = React.useMemo(
     () =>
