@@ -10,7 +10,6 @@ import { DataEntry } from '../Atoms/DataEntry';
 import { getTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
-import { RecordSelectorFromIds } from '../FormSliders/RecordSelectorFromIds';
 import { Dialog } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasPermission } from '../Permissions/helpers';
@@ -23,11 +22,11 @@ import { parseQueryFields, unParseQueryFields } from '../QueryBuilder/helpers';
 import { queryIdField } from '../QueryBuilder/Results';
 import { QueryResultsWrapper } from '../QueryBuilder/ResultsWrapper';
 import {
-  SplitView,
   SplitViewOrientationButton,
   SplitViewToggleButton,
   useSplitViewOrientation,
 } from '../QueryBuilder/SplitView';
+import { QueryFormView } from '../QueryBuilder/ToForms';
 import { NotFoundView } from '../Router/NotFoundView';
 import type { DataViewQueriesFile } from './queries';
 import {
@@ -103,7 +102,6 @@ function LoadedDataViewFromTable({
   const selectedIdsRef = React.useRef(selectedIds);
   selectedIdsRef.current = selectedIds;
   const resultOrderRef = React.useRef<ReadonlyArray<number>>([]);
-  const hasSeenNonEmptyResultsRef = React.useRef(false);
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const selectedIndexRef = React.useRef(selectedIndex);
   selectedIndexRef.current = selectedIndex;
@@ -153,20 +151,9 @@ function LoadedDataViewFromTable({
         const id = getNumericResultId(row?.[queryIdField]);
         return id === undefined ? [] : [id];
       });
-      const isInitialResults =
-        !hasSeenNonEmptyResultsRef.current && orderedIds.length > 0;
-      if (orderedIds.length > 0) hasSeenNonEmptyResultsRef.current = true;
       resultOrderRef.current = orderedIds;
 
-      if (selectedIdsRef.current.length === 0) {
-        if (!isInitialResults) return;
-        const firstId = orderedIds[0];
-        if (firstId !== undefined) {
-          setSelectedIds([firstId]);
-          setSelectedIndex(0);
-        }
-        return;
-      }
+      if (selectedIdsRef.current.length === 0) return;
 
       const positions = new Map(
         orderedIds.map((id, index) => [id, index] as const)
@@ -308,38 +295,36 @@ function LoadedDataViewFromTable({
       table={table}
       onResults={handleResults}
       refreshToken={refreshToken}
-      restoreScrollTopRef={restoreScrollTopRef}
-      scrollRef={resultsScrollRef}
-    />
-  );
-  const form = (
-    <div className="flex min-h-0 min-w-0 flex-1 items-center justify-center overflow-auto bg-[color:var(--form-background)]">
-      {selectedIds.length === 0 ? (
-        <p className="m-auto text-neutral-500">{commonText.select()}</p>
-      ) : (
-        <RecordSelectorFromIds
-          canRemove={false}
-          defaultIndex={selectedIndex}
-          dialog={false}
-          ids={[...selectedIds]}
-          isDependent={false}
-          isInRecordSet={false}
-          newResource={undefined}
+      isSplit={isSplit}
+      splitHorizontal={isHorizontal}
+      splitPrimaryPaneMaxWidth={`${maximumPrimaryPaneWidth}px`}
+      renderSplitPane={({
+        results,
+        selectedRows: resultSelection,
+        totalCount,
+        onFetchMore,
+        onDelete,
+      }) => (
+        <QueryFormView
+          results={results}
+          selectedRows={resultSelection}
+          selectedIndex={selectedIndex}
           table={table}
           title={dataViewsText.tableRecords({ tableLabel: table.label })}
-          totalCount={selectedIds.length}
-          onAdd={undefined}
-          onClone={undefined}
+          totalCount={totalCount}
           onClose={(): void => {
             setSelectedIds([]);
             setSelectedIndex(0);
           }}
-          onDelete={undefined}
+          onDelete={onDelete}
+          onFetchMore={onFetchMore}
           onSaved={handleRefresh}
-          onSlide={(index): void => setSelectedIndex(index)}
+          onSlide={setSelectedIndex}
         />
       )}
-    </div>
+      restoreScrollTopRef={restoreScrollTopRef}
+      scrollRef={resultsScrollRef}
+    />
   );
 
   return (
@@ -367,15 +352,7 @@ function LoadedDataViewFromTable({
         className="flex h-full max-h-full min-h-0 min-w-0 flex-1 overflow-hidden"
         ref={splitViewRef}
       >
-        <SplitView
-          isHorizontal={isHorizontal}
-          isSplit={isSplit}
-          primaryPane={results}
-          primaryPaneKey="query-results"
-          primaryPaneMaxWidth={`${maximumPrimaryPaneWidth}px`}
-          secondaryPane={form}
-          secondaryPaneKey="record-preview"
-        />
+        {results}
       </div>
     </div>
   );
