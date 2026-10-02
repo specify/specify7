@@ -5,6 +5,7 @@ Defines the resources that are provided by this subsystem
 import json
 import os
 import re
+import logging
 from typing import List
 from xml.etree import ElementTree
 
@@ -14,7 +15,7 @@ from django.contrib.auth import authenticate, login as auth_login, \
 from django.db import connection, transaction
 from django.db.models import Q
 from django.http import Http404, HttpResponse, HttpResponseBadRequest, \
-    HttpResponseForbidden, JsonResponse
+    HttpResponseForbidden, HttpResponseServerError, JsonResponse
 from django.urls import URLPattern
 from django.utils.translation import get_language_info
 from django.utils.translation import gettext as _
@@ -46,6 +47,8 @@ from specifyweb.backend.setup_tool.api import (
     is_collection_available,
     is_guided_setup_complete,
 )
+
+logger = logging.getLogger(__name__)
    
 def set_collection_cookie(response, collection_id): # pragma: no cover
     response.set_cookie('collection', str(collection_id), max_age=365*24*60*60)
@@ -655,13 +658,13 @@ def schema_localization_import(request):
         if not isinstance(language, str) or not re.fullmatch(
             r'[A-Za-z]{2}(?:-[A-Za-z]{2})?', language
         ):
-            raise ValueError
+            raise ValueError(f"Invalid language string: {language}")
         if isinstance(schema, dict) and {'language', 'schema'} <= schema.keys():
             source_language = schema['language']
             if not isinstance(source_language, str) or (
                 source_language.lower() != language.lower()
             ):
-                raise ValueError
+                raise ValueError(f"Invalid Localization (expected {source_language}, got {language}")
             schema = schema['schema']
         references = {
             'format': _schema_import_resource_names(
@@ -704,8 +707,12 @@ def schema_localization_import(request):
                         request.specify_collection, request.specify_user_agent,
                         model.__name__, data
                     )
-    except (AttributeError, KeyError, TypeError, ValueError, json.JSONDecodeError):
-        return HttpResponseBadRequest()
+    except (ValueError, json.JSONDecodeError) as err:
+        return HttpResponseBadRequest(f"{{\"original error\": \"{err}\" }}", content_type="text/json")
+    except (AttributeError, KeyError, TypeError) as err:
+        logger.warning(f"Schema Import failed: {err}")
+        return HttpResponseServerError(err, content_type="text/plain")
+
     return JsonResponse({'updated': len(operations)})
 
 view_parameters_schema = [
