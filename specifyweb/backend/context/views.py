@@ -882,11 +882,14 @@ def view_helper(request, limit):
 def remote_prefs(request):
     "Return the 'remoteprefs' java properties file from the database."
 
-    get_all_remote_prefs_database = import_string(
-        'specifyweb.backend.context.remote_prefs.get_all_remote_prefs_database'
+    get_all_runtime_remote_prefs_database = import_string(
+        'specifyweb.backend.context.remote_prefs.get_all_runtime_remote_prefs_database'
     )
 
-    return HttpResponse(get_all_remote_prefs_database(), content_type='text/x-java-properties')
+    return HttpResponse(
+        get_all_runtime_remote_prefs_database(request.specify_collection.id),
+        content_type='text/x-java-properties',
+    )
 
 @require_http_methods(['GET', 'HEAD'])
 def get_server_time(request):

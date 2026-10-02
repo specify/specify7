@@ -12,7 +12,7 @@ import type { Attachment } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { ResourceView } from '../Forms/ResourceView';
-import { getPref } from '../InitialContext/remotePrefs';
+import { globalPreferences } from '../Preferences/globalPreferences';
 import { AttachmentGallerySkeleton } from '../SkeletonLoaders/AttachmentGallery';
 import { AttachmentCell } from './Cell';
 import { AttachmentDialog } from './Dialog';
@@ -44,7 +44,11 @@ export function AttachmentGallery({
     defaultPreFetchDistance
   );
   const [columns, setColumns] = React.useState<number>(3);
-  const attachmentHeight = getPref('attachment.preview_size');
+  const attachmentHeight = globalPreferences.get(
+    'general',
+    'attachments',
+    'attachmentThumbnailSize'
+  );
   React.useEffect(() => {
     const calculateColumns = (ref: React.RefObject<HTMLElement | null>) => {
       if (ref.current) {
