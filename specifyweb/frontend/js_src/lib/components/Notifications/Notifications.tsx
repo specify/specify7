@@ -6,15 +6,20 @@ import { notificationsText } from '../../localization/notifications';
 import { formData } from '../../utils/ajax/helpers';
 import { ping } from '../../utils/ajax/ping';
 import { f } from '../../utils/functools';
+import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
+import { SetToastsContext } from '../Errors/Toasts';
 import { MenuButton } from '../Header/index';
 import { DateElement } from '../Molecules/DateElement';
 import { Dialog, dialogClassNames, LoadingScreen } from '../Molecules/Dialog';
 import { useNotificationsFetch } from './hooks';
 import type { GenericNotification } from './NotificationRenderers';
-import { notificationRenderers } from './NotificationRenderers';
+import {
+  getNotificationHeading,
+  notificationRenderers,
+} from './NotificationRenderers';
 
 export function Notifications({
   isCollapsed,
@@ -23,10 +28,25 @@ export function Notifications({
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   const freezeFetchPromise = React.useRef<Promise<void> | undefined>(undefined);
+  const setToasts = React.useContext(SetToastsContext);
+  const handleNewNotifications = React.useCallback(
+    (newNotifications: RA<GenericNotification>): void =>
+      setToasts((toasts) => [
+        ...toasts,
+        ...newNotifications.map((notification) => ({
+          type: 'Notification' as const,
+          message: getNotificationHeading(notification),
+          onClick: handleOpen,
+          onDismiss: f.void,
+        })),
+      ]),
+    [handleOpen, setToasts]
+  );
 
   const { notifications, setNotifications } = useNotificationsFetch({
     freezeFetchPromise,
     isOpen,
+    onNewNotifications: handleNewNotifications,
   });
 
   const notificationCount = notifications?.length;

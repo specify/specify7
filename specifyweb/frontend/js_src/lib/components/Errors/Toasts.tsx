@@ -7,7 +7,7 @@ import { mainText } from '../../localization/main';
 import type { GetOrSet, RA } from '../../utils/types';
 import { removeItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
-import { dialogIcons } from '../Atoms/Icons';
+import { dialogIcons, icons } from '../Atoms/Icons';
 import { error } from './assert';
 
 type ErrorToast = State<
@@ -24,16 +24,16 @@ type ErrorToast = State<
   }
 >;
 
-/**
- * Toasts are only used for errors at the moment. The biggest reason is this
- * simplifies focus management: we just auto-focus the toast when it appears
- * and revert the focus back once dismissed.
- *
- * If extending toasts in the future, need to consider:
- * - a keyboard shortcut to focus the toast
- * - auto-dismissal of toasts after 6s and a way to disable auto dismissal
- */
-export type ToastMessage = ErrorToast;
+type NotificationToast = State<
+  'Notification',
+  {
+    readonly message: LocalizedString;
+    readonly onClick: () => void;
+    readonly onDismiss: () => void;
+  }
+>;
+
+export type ToastMessage = ErrorToast | NotificationToast;
 
 export function Toasts({
   children,
@@ -55,7 +55,9 @@ export function Toasts({
             <Toast
               key={index}
               toast={toast}
-              onClose={(): void => setToasts(removeItem(toasts, index))}
+              onClose={(): void =>
+                setToasts((toasts) => removeItem(toasts, index))
+              }
             />
           ))}
         </div>
@@ -78,19 +80,42 @@ function Toast({
   readonly onClose: () => void;
 }): JSX.Element {
   const previousFocused = React.useRef(document.activeElement);
+  const isError = toast.type === 'Error';
   return (
-    <div className="hover:brightness-80 flex gap-2 rounded border border-red-500 bg-red-200 shadow dark:bg-red-900">
+    <div
+      className={`
+        flex gap-2 rounded border shadow
+        ${
+          isError
+            ? 'border-red-500 bg-red-200 hover:bg-red-300 dark:bg-red-900 dark:hover:bg-red-800'
+            : `border-gray-400 bg-gray-200 hover:bg-gray-300
+              dark:border-gray-600 dark:bg-neutral-800 dark:hover:bg-neutral-700`
+        }
+      `}
+    >
       <Button.LikeLink
-        aria-live={toast.type === 'Error' ? 'assertive' : 'polite'}
-        className="flex-1 p-4 hover:text-black dark:hover:text-gray-200"
+        aria-live={isError ? 'assertive' : 'polite'}
+        className={`
+          flex-1 p-4 !text-black hover:!text-black
+          dark:!text-gray-100 dark:hover:!text-gray-100
+        `}
         forwardRef={(element): void => {
-          if (element === null) return;
+          if (element === null || !isError) return;
           previousFocused.current = document.activeElement;
           element.focus();
         }}
-        onClick={toast.onClick}
+        onClick={(): void => {
+          toast.onClick();
+          handleClose();
+        }}
       >
-        {dialogIcons.error}
+        {isError ? (
+          dialogIcons.error
+        ) : (
+          <span className="text-green-600 dark:text-green-400">
+            {icons.bell}
+          </span>
+        )}
         <div className="flex flex-col gap-2">
           {toast.message}
           <br />
