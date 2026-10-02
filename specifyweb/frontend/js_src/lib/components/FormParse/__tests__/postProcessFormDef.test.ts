@@ -94,6 +94,7 @@ const missingLabelTextField = ensure<FormCellDefinition>()({
   fieldDefinition: {
     defaultValue: undefined,
     isReadOnly: false,
+    isSeries: false,
     min: undefined,
     max: undefined,
     step: undefined,
