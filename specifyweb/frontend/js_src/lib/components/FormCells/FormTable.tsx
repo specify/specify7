@@ -78,6 +78,20 @@ function measureSubviewText(
   );
 }
 
+function measureSubviewHeader(
+  text: string,
+  font: string,
+  context: CanvasRenderingContext2D
+): number {
+  const words = text.trim().split(/\s+/u);
+  const middle = Math.ceil(words.length / 2);
+  return measureSubviewText(
+    `${words.slice(0, middle).join(' ')}\n${words.slice(middle).join(' ')}`,
+    font,
+    context
+  );
+}
+
 function measureSubviewCell(
   cell: HTMLElement,
   context: CanvasRenderingContext2D
@@ -359,7 +373,7 @@ export function FormTable<SCHEMA extends AnySchema>({
               minSubviewColumnWidth,
               header === null
                 ? 0
-                : measureSubviewText(
+                : measureSubviewHeader(
                     header.textContent ?? '',
                     getComputedStyle(header).font,
                     context
