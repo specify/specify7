@@ -12,10 +12,9 @@ logger = logging.getLogger(__name__)
 
 from django.db import models, connection
 from django.db.models import F, Q, ProtectedError
-from django.conf import settings
 
 from specifyweb.backend.businessrules.exceptions import TreeBusinessRuleException
-import specifyweb.specify.models as spmodels
+from specifyweb.specify.models_utils.model_extras import ModelWithTable
 
 from  specifyweb.backend.workbench.upload.auditcodes import TREE_BULK_MOVE, TREE_MERGE, TREE_SYNONYMIZE, TREE_DESYNONYMIZE
 
@@ -29,8 +28,9 @@ def validate_node_numbers(table, revalidate_after=True):
     if revalidate_after:
         validate_tree_numbering(table)
 
-class Tree(models.Model):
+class Tree(ModelWithTable):
     _requires_collection_user = True
+
     class Meta:
         abstract = True
 

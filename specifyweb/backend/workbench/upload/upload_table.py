@@ -6,6 +6,7 @@ from django.db import transaction, IntegrityError
 
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 from specifyweb.specify import models
+from specifyweb.specify.models_utils.model_extras import ModelWithTable
 from specifyweb.specify.utils.func import Func
 from specifyweb.specify.utils.field_change_info import FieldChangeInfo
 from specifyweb.specify.utils.autonumbering import AutonumberingLockDispatcher
@@ -359,7 +360,7 @@ class BoundUploadTable(NamedTuple):
         return isinstance(self.current_id, int)
 
     @property
-    def django_model(self) -> models.ModelWithTable:
+    def django_model(self) -> ModelWithTable:
         return getattr(models, self.name.capitalize())
 
     @property
@@ -502,8 +503,8 @@ class BoundUploadTable(NamedTuple):
             else update_table.process_row_with_null()
         )
 
-    def _get_reference(self, should_cache=True) -> models.ModelWithTable | None:
-        model: models.ModelWithTable = self.django_model
+    def _get_reference(self, should_cache=True) -> ModelWithTable | None:
+        model: ModelWithTable = self.django_model
         current_id = self.current_id
 
         if current_id is None:
@@ -705,7 +706,7 @@ class BoundUploadTable(NamedTuple):
 
     def _do_upload(
         self,
-        model: models.ModelWithTable,
+        model: ModelWithTable,
         to_one_results: dict[str, UploadResult],
         info: ReportInfo,
     ) -> UploadResult:
@@ -779,7 +780,7 @@ class BoundUploadTable(NamedTuple):
         return UploadResult(record, to_one_results, to_many_results)
 
     def _handle_to_many(
-        self, update: bool, parent_id: int, model: models.ModelWithTable
+        self, update: bool, parent_id: int, model: ModelWithTable
     ):
         return {
             fieldname: _upload_to_manys(

@@ -1,21 +1,22 @@
-from collections import defaultdict
+import json
 
 from django import http
 from django.db import router, transaction
-from django.db.models.deletion import Collector, CASCADE, PROTECT
+from django.db.models.deletion import Collector
 from django.db.models import ForeignKey
-from django.views.decorators.http import require_POST
 
 from specifyweb.middleware.general import require_http_methods
 from specifyweb.specify.api.crud import (
     get_discipline_delete_guard_blockers,
     get_object_or_404,
-    get_model,
     prepare_discipline_for_delete,
 )
-from specifyweb.specify.models import protect_with_blockers
 from specifyweb.specify.api.serializers import toJson
 from specifyweb.specify.views import login_maybe_required
+
+from specifyweb.backend.delete_blockers.validators import DeleteBlockerRequestForm
+from specifyweb.backend.delete_blockers.filter import DeleteBlockerFilters
+
 
 @login_maybe_required
 @require_http_methods(['GET', 'HEAD'])
@@ -30,7 +31,7 @@ def old_delete_blockers(request, model, id):
     obj = get_object_or_404(model, id=int(id))
     using = router.db_for_write(obj.__class__, instance=obj)
 
-    if obj._meta.model_name == 'discipline': # Special case for discipline
+    if obj._meta.model_name == 'discipline':  # Special case for discipline
         guard_blockers = get_discipline_delete_guard_blockers(obj)
         if guard_blockers:
             result = guard_blockers
@@ -46,59 +47,40 @@ def old_delete_blockers(request, model, id):
 
     return http.HttpResponse(toJson(result), content_type='application/json')
 
+
 @login_maybe_required
-@require_http_methods(['GET'])
-def delete_blockers(request, model, id):
-    limit = int(request.GET["limit"]) if "limit" in request.GET else 20
-    offset = int(request.GET["offset"]) if "offset" in request.GET else 0
+@require_http_methods(['GET', 'POST'])
+def delete_blockers(request: http.HttpRequest, model: str, id: int):
     obj = get_object_or_404(model, id=int(id))
-    immediate, deferred = fetch_immediate_blockers(obj, limit=limit, offset=offset)
+
+    if request.method == "POST":
+        request_data = json.loads(request.body)
+    else:
+        request_data = request.GET
+
+
+    request_filters = DeleteBlockerRequestForm(request_data)
+    if not request_filters.is_valid():
+        return http.HttpResponseBadRequest(
+            toJson(request_filters.errors), content_type='application/json'
+        )
+
+    blocker_fetcher = DeleteBlockerFilters.from_json(obj, json=request_filters.cleaned_data)
+    blocked, deferred = blocker_fetcher.fetch()
     result = {
-        "results": immediate,
+        "results": blocked,
         "next": deferred
     }
-    return http.HttpResponse(toJson(result), content_type='application/json')
+    return http.JsonResponse(result)
 
-def fetch_immediate_blockers(obj, limit=20, offset=0):
-    all_fields = obj._meta.get_fields(include_hidden=True)
-    all_relationships = filter(
-        # Check whether there are any concrete fields that SHOULD be included
-        # here, like some ToOne fields that acts as blockers
-        lambda field: field.is_relation and not field.concrete,
-        all_fields
-    )
-    results = []
-    next = []
-    for relationship in all_relationships:
-        related_ids = _prepare_blockers(obj, relationship, limit=limit, offset=offset)
-        if len(related_ids) == 0:
-            continue
-        complete = limit == 0 or len(related_ids) < limit
-        payload = {
-            "table": relationship.related_model._meta.model_name,
-            "field": relationship.field.name,
-            "ids": list(related_ids),
-            "offset": offset,
-            "limit": limit,
-            "complete": complete
-        }
-        if relationship.on_delete is protect_with_blockers or relationship.on_delete is PROTECT:
-            results.append(payload)
-        elif relationship.on_delete is CASCADE:
-            next.append(payload)
-    return results, next
+@login_maybe_required
+@require_http_methods(['GET', 'POST'])
+def count_blockers(request: http.HttpRequest, model: str, id: int):
+    obj = get_object_or_404(model, id=int(id))
 
-
-def _prepare_blockers(obj, relationship, limit=20, offset=0):
-    query_set = (
-        relationship.related_model.objects
-            .filter(
-                **{relationship.field.name: obj.pk}
-            ).order_by("pk")
-            .values_list("pk", flat=True))
-    if limit != 0:
-        query_set = query_set[offset: offset + limit]
-    return query_set
+    delete_block_fetcher = DeleteBlockerFilters(obj, count_only=True)
+    result = delete_block_fetcher.count()
+    return http.JsonResponse(result)
 
 def _collect_delete_blockers(obj, using) -> list[dict]:
     collector = Collector(using=using)
@@ -110,6 +92,7 @@ def _collect_delete_blockers(obj, using) -> list[dict]:
         ] for field, sub_objs in collector.delete_blockers
     ])
 
+
 def _serialize_delete_blocker(field, sub_objs) -> dict:
     normalized = _normalize_many_to_many_blocker(field, sub_objs)
     if normalized is not None:
@@ -120,6 +103,7 @@ def _serialize_delete_blocker(field, sub_objs) -> dict:
         'field': field.name,
         'ids': [sub_obj.id for sub_obj in sub_objs]
     }
+
 
 def _normalize_many_to_many_blocker(field, sub_objs) -> dict | None:
     through_model = sub_objs[0].__class__
@@ -166,6 +150,7 @@ def _normalize_many_to_many_blocker(field, sub_objs) -> dict | None:
         'field': relationship.name,
         'ids': [getattr(sub_obj, other_field.attname) for sub_obj in sub_objs],
     }
+
 
 def flatten(l):
     return [item for sublist in l for item in sublist]
