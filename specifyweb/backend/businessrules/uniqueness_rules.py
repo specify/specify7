@@ -8,9 +8,8 @@ from dataclasses import dataclass
 from typing import Any, TypedDict, Iterable
 
 from django.apps import apps
-from django.db import connections, router, transaction
-from django.db.models import Q, Count, Exists, OuterRef, F, Func
-from django.db import models as dj_models
+from django.db import connections, transaction
+from django.db.models import Q, Count
 from django.db.migrations.recorder import MigrationRecorder
 from django.core.exceptions import ObjectDoesNotExist, FieldDoesNotExist
 from specifyweb.specify.api.crud import get_model

@@ -10,14 +10,14 @@ For non-security issues, our [support team](mailto:support@specifysoftware.org)
 is always available to help with troubleshooting and answer any questions. We
 also have a large online community of users who are willing to share their
 experiences and help each other out. You can visit the
-[Specify Community Forum](https://discourse.specifysoftware.org/) to ask any
+[Specify Community Forum](https://speciforum.org/) to ask any
 questions you may have about configuration or deployment.
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 7.11.x  | :white_check_mark: |
-| 7.10.x   | :white_check_mark: |
-| < 7.9.x | :x:                |
+| 7.12.x  | :white_check_mark: |
+| 7.11.x   | :white_check_mark: |
+| < 7.10.x | :x:                |
 
 We support the latest version of Specify 6 only. You can report vulnerabilities
 or other issues for that application on the

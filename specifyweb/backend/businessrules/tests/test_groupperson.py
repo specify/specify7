@@ -30,4 +30,3 @@ class GroupPersonTests(ApiTests):
                 group=group,
                 member=self.agent,
                 division=self.division)
-

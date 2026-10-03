@@ -22524,8 +22524,8 @@
         "type": null,
         "isrequired": false,
         "weblinkname": null,
-        "name": "Is BioStratigraphy",
-        "desc": "Is BioStratigraphy"
+        "name": "Is Biostratigraphy",
+        "desc": "Is Biostratigraphy"
       },
       "modifiedbyagent": {
         "format": null,
@@ -35978,8 +35978,8 @@
         "type": "java.lang.String",
         "isrequired": false,
         "weblinkname": null,
-        "name": "Meta Data",
-        "desc": "Meta Data"
+        "name": "Metadata",
+        "desc": "Metadata"
       },
       "mimetype": {
         "format": null,
@@ -39586,8 +39586,8 @@
         "type": "java.lang.String",
         "isrequired": false,
         "weblinkname": null,
-        "name": "Meta Data",
-        "desc": "Meta Data"
+        "name": "Metadata",
+        "desc": "Metadata"
       },
       "modifiedbyagent": {
         "format": null,
@@ -46041,8 +46041,8 @@
         "type": "java.lang.String",
         "isrequired": false,
         "weblinkname": null,
-        "name": "Meta Data",
-        "desc": "Meta Data"
+        "name": "Metadata",
+        "desc": "Metadata"
       },
       "modifiedbyagent": {
         "format": null,

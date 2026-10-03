@@ -268,7 +268,6 @@ expected_errors = {
     "AutoNumberingScheme": {"not_found": ["collections", "disciplines", "divisions"]},
     "Collection": {"not_found": ["numberingSchemes", "userGroups"]},
     "CollectionObject": {
-        "not_found": ["projects"],
         "incorrect_direction": {"cojo": ["onetomany", "onetoone"]},
     },
     "DNASequencingRun": {
@@ -286,7 +285,6 @@ expected_errors = {
             "localityDetails": ["onetomany", "zerotoone"],
         }
     },
-    "Project": {"not_found": ["collectionObjects"]},
     "SpExportSchema": {"not_found": ["spExportSchemaMappings"]},
     "SpExportSchemaMapping": {"not_found": ["spExportSchemas"]},
     "SpPermission": {"not_found": ["principals"]},

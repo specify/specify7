@@ -1,3 +1,4 @@
+import { batchIdentifyText } from '../../localization/batchIdentify';
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { preferencesText } from '../../localization/preferences';
@@ -132,12 +133,20 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
       icon: icons.rss,
     },
   },
-  [commonText.import()]: {
+  [commonText.tools()]: {
     localityUpdate: {
       title: headerText.localityUpdateTool(),
       enabled: () => userInformation.isadmin,
       url: '/specify/import/locality-dataset/',
       icon: icons.globe,
+    },
+    batchIdentify: {
+      title: batchIdentifyText.batchIdentify(),
+      url: '/specify/overlay/batch-identify/',
+      icon: icons.clipboardCopy,
+      enabled: () =>
+        hasTablePermission('CollectionObject', 'read') &&
+        hasTablePermission('Determination', 'create'),
     },
   },
   [headerText.documentation()]: {
@@ -148,12 +157,12 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
     },
     forum: {
       title: headerText.forum(),
-      url: 'https://discourse.specifysoftware.org/',
+      url: 'https://speciforum.org/',
       icon: icons.annotation,
     },
     technicalDocumentation: {
       title: headerText.technicalDocumentation(),
-      url: 'https://discourse.specifysoftware.org/c/docs/',
+      url: 'https://speciforum.org/c/docs/',
       icon: icons.bookOpen,
     },
   },

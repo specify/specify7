@@ -27,7 +27,9 @@ test('Query Combo Box with current agent selected', () => {
     field: tables.CollectionObject.strictGetRelationship('cataloger'),
     defaultRecord,
   });
-  expect(resource.get('cataloger')).toBe(userInformation.agent.resource_uri);
+  expect(resource.get('cataloger')).toBe(
+    userInformation.currentCollectionAgent?.resource_uri
+  );
 });
 test('Query Combo Box with current user selected', () => {
   const resource = new tables.RecordSet.Resource();

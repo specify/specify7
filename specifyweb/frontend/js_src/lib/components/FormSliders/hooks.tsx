@@ -1,25 +1,70 @@
 import React from 'react';
-
 import { useTriggerState } from '../../hooks/useTriggerState';
-import type { GetOrSet, IR, R, RA } from '../../utils/types';
+import { GetOrSet, R, RA } from '../../utils/types';
 import { removeKey } from '../../utils/utils';
+import { DEFAULT_FETCH_LIMIT } from '../DataModel/collection';
 import { raise, softFail } from '../Errors/Crash';
-import type { QueryResultRow, QueryResultsProps } from './Results';
 
-export function useFetchQueryResults({
+/**
+ * Provides a way to somewhat lazily paginate through an arbitary set of
+ * records.
+ * Pseudocode Example:
+ * ```ts
+ * // Say we have some record IDs that can be in some set of arbitary size, and
+ * // we want to handle pagination within that set.
+ * const initialIds = [1, 2, 3];
+ * const totalCount = 200;
+ * // The "fetch" function fetches a page of records at some offset up to some
+ * // limit
+ * const fetchMoreIds = (offset: number) => fetch("url", {offset, limit: 20});
+ * const {
+ *   results: [results, setResults],
+ *   onFetchMore: handleFetchMore,
+ *   totalCount: [totalCount, setTotalCount],
+ *   canFetchMore
+ * } = usePaginatedRecords({
+ *      initialData: initialIds,
+ *      totalCount,
+ *      fetchSize: 3,
+ *      fetchResults: fetchMoreIds
+ * });
+ *
+ * // We can call handleFetchMore to automatically grab the next fetchSize
+ * // records
+ * const fetchedNext = await handleFetchMore();
+ * console.log(fetchedNext); // [4, 5, 6]
+ * // Now results will have the next fetchSize results
+ * console.log(results); // [1, 2, 3, 4, 5, 6]
+ * // We can pass in a specific index to fetch only from that index
+ * const fetchFromFar = await handleFetchMore(99);
+ * console.log(fetchFromFar); // [100, 101, 102]
+ * // Note that the results array can be sparse, with holes at the indexes
+ * // where results have not been fetched
+ * console.log(results);
+ * // [1, 2, 3, 4, 5, 6, <holes at in-between indexes>, 100, 101, 102]
+ * ```
+ */
+export function usePaginatedRecords<
+  PAGINATED_TYPE,
+  FETCH_ARGS extends RA<unknown>,
+>({
   initialData,
-  fetchResults,
   totalCount: initialTotalCount,
-  fetchSize,
-}: Pick<
-  QueryResultsProps,
-  'fetchResults' | 'fetchSize' | 'initialData' | 'totalCount'
->): {
-  readonly results: GetOrSet<RA<QueryResultRow | undefined> | undefined>;
-  readonly fetchersRef: {
-    readonly current: IR<Promise<RA<QueryResultRow> | void>>;
-  };
-  readonly onFetchMore: (index?: number) => Promise<RA<QueryResultRow> | void>;
+  fetchSize = DEFAULT_FETCH_LIMIT,
+  fetchResults,
+}: {
+  readonly initialData: RA<PAGINATED_TYPE> | undefined;
+  readonly totalCount: number | undefined;
+  readonly fetchSize?: number;
+  readonly fetchResults:
+    | ((offset: number, ...args: FETCH_ARGS) => Promise<RA<PAGINATED_TYPE>>)
+    | undefined;
+}): {
+  readonly results: GetOrSet<RA<PAGINATED_TYPE | undefined> | undefined>;
+  readonly onFetchMore: (
+    index?: number,
+    ...args: FETCH_ARGS
+  ) => Promise<RA<PAGINATED_TYPE> | void>;
   readonly totalCount: GetOrSet<number | undefined>;
   readonly canFetchMore: boolean;
 } {
@@ -30,34 +75,27 @@ export function useFetchQueryResults({
    * hundreds of thousands of results.
    */
   const getSetResults = useTriggerState<
-    RA<QueryResultRow | undefined> | undefined
+    RA<PAGINATED_TYPE | undefined> | undefined
   >(initialData);
   const [results, setResults] = getSetResults;
   const resultsRef = React.useRef(results);
-  const handleSetResults: GetOrSet<
-    RA<QueryResultRow | undefined> | undefined
-  >[1] = React.useCallback(
-    (results) => {
-      const resolved =
-        typeof results === 'function' ? results(resultsRef.current) : results;
-      setResults(resolved);
-      resultsRef.current = resolved;
-    },
-    [setResults]
-  );
 
   // Queue for fetching
-  const fetchersRef = React.useRef<R<Promise<RA<QueryResultRow> | void>>>({});
+  const fetchersRef = React.useRef<R<Promise<RA<PAGINATED_TYPE> | void>>>({});
 
   const getSetTotalCount = useTriggerState(initialTotalCount);
   const [totalCount] = getSetTotalCount;
+
   const canFetchMore =
     !Array.isArray(results) ||
     totalCount === undefined ||
     results.length < totalCount;
 
   const handleFetchMore = React.useCallback(
-    async (index?: number): Promise<RA<QueryResultRow> | void> => {
+    async (
+      index?: number,
+      ...args: FETCH_ARGS
+    ): Promise<RA<PAGINATED_TYPE> | void> => {
       const currentResults = resultsRef.current;
       const canFetch = Array.isArray(currentResults);
 
@@ -87,7 +125,7 @@ export function useFetchQueryResults({
           : naiveFetchIndex;
 
       // Prevent concurrent fetching in different places
-      fetchersRef.current[fetchIndex] ??= fetchResults(fetchIndex)
+      fetchersRef.current[fetchIndex] ??= fetchResults(fetchIndex, ...args)
         .then(async (newResults) => {
           if (
             process.env.NODE_ENV === 'development' &&
@@ -111,7 +149,7 @@ export function useFetchQueryResults({
           combinedResults[fetchIndex] ??= undefined;
           combinedResults.splice(fetchIndex, newResults.length, ...newResults);
 
-          handleSetResults(combinedResults);
+          setResults(combinedResults);
 
           fetchersRef.current = removeKey(
             fetchersRef.current,
@@ -119,7 +157,7 @@ export function useFetchQueryResults({
           );
 
           if (typeof index === 'number' && index >= combinedResults.length)
-            return handleFetchMore(index);
+            return handleFetchMore(index, ...args);
           return newResults;
         })
         .catch(raise);
@@ -130,8 +168,7 @@ export function useFetchQueryResults({
   );
 
   return {
-    fetchersRef,
-    results: [results, handleSetResults],
+    results: [results, setResults],
     onFetchMore: handleFetchMore,
     totalCount: getSetTotalCount,
     canFetchMore,

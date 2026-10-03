@@ -61,13 +61,13 @@ const SUBCATEGORY_DOCS_MAP: Record<
 > = {
   treeManagement: {
     synonymized: {
-      href: 'https://discourse.specifysoftware.org/t/enable-creating-children-for-synonymized-nodes/987',
+      href: 'https://speciforum.org/t/enable-creating-children-for-synonymized-nodes/987',
       label: headerText.documentation(),
     },
   },
   statistics: {
     appearance: {
-      href: 'https://discourse.specifysoftware.org/t/statistics-page/1135',
+      href: 'https://speciforum.org/t/statistics-page/1135',
       label: headerText.documentation(),
     },
   },

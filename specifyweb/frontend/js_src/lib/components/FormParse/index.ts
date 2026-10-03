@@ -50,6 +50,7 @@ export type ViewDescription = ParsedFormDefinition & {
   readonly errors?: RA<LogMessage>;
   readonly viewSetId?: number;
   readonly name: string;
+  readonly isAttachmentPlugin?: true;
 };
 
 type AltView = {

@@ -937,6 +937,35 @@ def upload_results(request, ds) -> http.HttpResponse:
 
 @openapi(
     schema={
+        "get": {
+            "responses": {
+                "200": {
+                    "description": "Returns users the dataset may be transferred to.",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {
+                                            "type": "number",
+                                            "description": "User ID of the transfer recipient",
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "description": "User name of the transfer recipient",
+                                        },
+                                    },
+                                    "required": ["id", "name"],
+                                    "additionalProperties": False,
+                                },
+                            }
+                        }
+                    },
+                }
+            },
+        },
         "post": {
             "requestBody": {
                 "required": True,
@@ -1059,12 +1088,9 @@ def up_schema(request) -> http.HttpResponse:
     components=open_api_components,
 )
 @login_maybe_required
-@require_POST
+@require_http_methods(["GET", "POST"])
 def transfer(request, ds_id: int) -> http.HttpResponse:
-    """Transfer dataset's ownership to a different user."""
-    if "specifyuserid" not in request.POST:
-        return http.HttpResponseBadRequest("missing parameter: specifyuserid")
-
+    """List valid transfer recipients or transfer dataset ownership."""
     ds = get_object_or_404(models.Spdataset, id=ds_id)
     check_permission_targets(
         request.specify_collection.id,
@@ -1074,6 +1100,17 @@ def transfer(request, ds_id: int) -> http.HttpResponse:
 
     if ds.specifyuser != request.specify_user:
         return http.HttpResponseForbidden()
+
+    if request.method == "GET":
+        users = list(
+            Specifyuser.objects.exclude(id=request.specify_user.id)
+            .order_by("name", "id")
+            .values("id", "name")[:500]
+        )
+        return http.JsonResponse(users, safe=False)
+
+    if "specifyuserid" not in request.POST:
+        return http.HttpResponseBadRequest("missing parameter: specifyuserid")
 
     try:
         ds.specifyuser = Specifyuser.objects.get(id=request.POST["specifyuserid"])

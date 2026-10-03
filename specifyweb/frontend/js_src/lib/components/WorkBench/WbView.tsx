@@ -12,7 +12,7 @@
 
 import '../../../css/workbench.css';
 
-import type { HotTable } from '@handsontable/react';
+import type { HotTableRef } from '@handsontable/react-wrapper';
 import type Handsontable from 'handsontable';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -103,7 +103,7 @@ export function WbView({
   );
 
   const spreadsheetContainerRef = React.useRef<HTMLElement>(null);
-  const [hotTable, setHotTable] = React.useState<HotTable | null>(null);
+  const [hotTable, setHotTable] = React.useState<HotTableRef | null>(null);
   const hot = hotTable?.hotInstance ?? undefined;
 
   const isUploaded =
@@ -189,6 +189,7 @@ export function WbView({
     hot,
     workbench,
     triggerDatasetRefresh,
+    cellCounts,
   });
 
   const { openDisambiguationDialog, disambiguationDialogs } =
@@ -199,6 +200,21 @@ export function WbView({
       validation: workbench.validation,
       disambiguation: workbench.disambiguation,
     });
+
+  React.useEffect(() => {
+    if (hot === undefined) return;
+    let canceled = false;
+    const refresh = (): void => {
+      if (canceled) return;
+      hot.refreshDimensions();
+      hot.render();
+    };
+    const frameId = requestAnimationFrame(() => requestAnimationFrame(refresh));
+    return () => {
+      canceled = true;
+      cancelAnimationFrame(frameId);
+    };
+  }, [hot, showAttachments, showResults, showToolkit]);
 
   const searchRef = React.useRef<HTMLInputElement | null>(null);
 
@@ -215,7 +231,7 @@ export function WbView({
       }
     >
       <section
-        className={`wbs-form ${className.containerFull}`}
+        className={`wbs-form ${className.containerFull} ${className.formStyles}`}
         ref={spreadsheetContainerRef}
       >
         <div
@@ -303,10 +319,15 @@ export function WbView({
           {useAttachments ? (
             <aside aria-live="polite">
               <WbAttachmentsPreview
+                checkDeletedFail={checkDeletedFail}
                 dataset={dataset}
                 hot={hot}
+                isUploaded={isUploaded}
+                searchRef={searchRef}
                 showPanel={showAttachments}
+                workbench={workbench}
                 onClose={toggleAttachments}
+                onSpreadsheetUpToDate={spreadsheetUpToDate}
               />
             </aside>
           ) : null}

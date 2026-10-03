@@ -142,8 +142,8 @@ def _update_discipline_dirs_to_correct_type():
 
 def _create_missing_discipline_dirs():
     created = 0
-    disciplines_missing_resourcedirs = Discipline.objects.filter(
-        ~Exists(
+    disciplines_missing_resourcedirs = Discipline.objects.annotate(
+        has_discipline_dir=Exists(
             Spappresourcedir.objects.filter(
                 collection__isnull=True,
                 usertype__isnull=True,
@@ -151,6 +151,8 @@ def _create_missing_discipline_dirs():
                 discipline_id=OuterRef("pk")
             )
         )
+    ).filter(
+        has_discipline_dir=False
     ).values_list("pk", "name")
 
     # will be tuple[tuple[int, str]...]

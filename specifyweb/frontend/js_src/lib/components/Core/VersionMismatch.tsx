@@ -35,7 +35,7 @@ export function VersionMismatch(): JSX.Element | null {
       </p>
       <p>{mainText.versionMismatchSecondDescription()}</p>
       <p>
-        <Link.NewTab href="https://discourse.specifysoftware.org/t/resolve-specify-7-schema-version-mismatch/884">
+        <Link.NewTab href="https://speciforum.org/t/resolve-specify-7-schema-version-mismatch/884">
           {mainText.versionMismatchInstructions()}
         </Link.NewTab>
       </p>

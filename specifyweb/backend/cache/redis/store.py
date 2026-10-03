@@ -10,11 +10,11 @@ def set_bytes(key: str | bytes, value: bytes, time_to_live=None, override_existi
     return _set_string(format_key(key), value, time_to_live=time_to_live, override_existing=override_existing, decode_responses=False)
 
 
-def get_string(key: str | bytes, delete_key=False) -> str:
+def get_string(key: str | bytes, delete_key=False) -> str | None:
     return _get_string(format_key(key), delete_key=delete_key, decode_responses=True)
 
 
-def get_bytes(key: str | bytes, delete_key=False) -> bytes:
+def get_bytes(key: str | bytes, delete_key=False) -> bytes | None:
     return _get_string(format_key(key), delete_key=delete_key, decode_responses=False)
 
 

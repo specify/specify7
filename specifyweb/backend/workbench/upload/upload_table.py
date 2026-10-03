@@ -6,6 +6,7 @@ from django.db import transaction, IntegrityError
 
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 from specifyweb.specify import models
+from specifyweb.specify.models_utils.model_extras import ModelWithTable
 from specifyweb.specify.utils.func import Func
 from specifyweb.specify.utils.field_change_info import FieldChangeInfo
 from specifyweb.specify.utils.autonumbering import AutonumberingLockDispatcher
@@ -359,7 +360,7 @@ class BoundUploadTable(NamedTuple):
         return isinstance(self.current_id, int)
 
     @property
-    def django_model(self) -> models.ModelWithTable:
+    def django_model(self) -> ModelWithTable:
         return getattr(models, self.name.capitalize())
 
     @property
@@ -502,8 +503,8 @@ class BoundUploadTable(NamedTuple):
             else update_table.process_row_with_null()
         )
 
-    def _get_reference(self, should_cache=True) -> models.ModelWithTable | None:
-        model: models.ModelWithTable = self.django_model
+    def _get_reference(self, should_cache=True) -> ModelWithTable | None:
+        model: ModelWithTable = self.django_model
         current_id = self.current_id
 
         if current_id is None:
@@ -674,11 +675,20 @@ class BoundUploadTable(NamedTuple):
 
         n_matched = len(ids)
         if n_matched > 1:
+            if self._disambiguation_pick_first():
+                return Matched(id=ids[0], info=info)
             return MatchedMultiple(ids=ids, key=repr(cache_key), info=info)
         elif n_matched == 1:
             return Matched(id=ids[0], info=info)
         else:
             return None
+
+    def _disambiguation_pick_first(self) -> bool:
+        """Disambiguate by picking the first record if any field uses 'pickFirst'."""
+        for p in self.parsedFields:
+            if p.filter_on and p.disambiguation_behavior == "pickFirst":
+                return True
+        return False
 
     def _check_missing_required(self) -> ParseFailures | None:
         missing_requireds = [
@@ -696,7 +706,7 @@ class BoundUploadTable(NamedTuple):
 
     def _do_upload(
         self,
-        model: models.ModelWithTable,
+        model: ModelWithTable,
         to_one_results: dict[str, UploadResult],
         info: ReportInfo,
     ) -> UploadResult:
@@ -743,6 +753,7 @@ class BoundUploadTable(NamedTuple):
             **(
                 {"createdbyagent_id": self.uploadingAgentId}
                 if model.specify_model.get_field("createdbyagent")
+                and "createdbyagent" not in to_one_ids
                 else {}
             ),
         }
@@ -769,7 +780,7 @@ class BoundUploadTable(NamedTuple):
         return UploadResult(record, to_one_results, to_many_results)
 
     def _handle_to_many(
-        self, update: bool, parent_id: int, model: models.ModelWithTable
+        self, update: bool, parent_id: int, model: ModelWithTable
     ):
         return {
             fieldname: _upload_to_manys(
@@ -968,10 +979,25 @@ class BoundUpdateTable(BoundUploadTable):
         return super()._handle_row(skip_match=True, allow_null=allow_null)
 
     def _process_to_ones(self) -> dict[str, UploadResult]:
+        needs_reference_record = any(
+            not uploadable.is_one_to_one()
+            and hasattr(uploadable, "process_with_exising")
+            for uploadable in self.toOne.values()
+        )
+        reference_record = (self._get_reference(should_cache=False)
+                            if needs_reference_record else None)
         return {
             field_name: (
                 to_one_def.save_row(force=(not self.auditor.props.allow_delete_dependents))
                 if to_one_def.is_one_to_one()
+                else
+                # REFACTOR: Clean this up
+                to_one_def.process_with_exising(
+                    getattr(reference_record, field_name + "_id")
+                )
+                if hasattr(to_one_def, "process_with_exising")
+                and reference_record
+                and hasattr(reference_record, field_name + "_id")
                 else to_one_def.process_row()
             )
             for field_name, to_one_def in Func.sort_by_key(self.toOne)

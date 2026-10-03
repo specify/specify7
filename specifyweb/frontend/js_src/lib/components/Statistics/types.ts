@@ -51,6 +51,7 @@ export type QuerySpec = {
   readonly tableName: keyof Tables;
   readonly fields: RA<PartialQueryFieldWithPath>;
   readonly isDistinct?: boolean | null;
+  readonly searchSynonymy?: boolean | null;
 };
 
 export type StatCategoryReturn = IR<{

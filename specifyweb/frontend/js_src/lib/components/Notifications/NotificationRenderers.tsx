@@ -6,6 +6,7 @@ import { backupText } from '../../localization/backup';
 import { localityText } from '../../localization/locality';
 import { mergingText } from '../../localization/merging';
 import { notificationsText } from '../../localization/notifications';
+import { setupToolText } from '../../localization/setupTool';
 import { treeText } from '../../localization/tree';
 import { StringToJsx } from '../../localization/utils';
 import type { IR, RA } from '../../utils/types';
@@ -114,6 +115,48 @@ export const notificationRenderers: IR<
       </>
     );
   },
+  'query-export-to-csv-failed'(notification) {
+    const errorPayload = notification.payload.error as unknown as
+      | { readonly error: string; readonly traceback: string }
+      | undefined;
+    return (
+      <>
+        {notificationsText.queryExportToCsvFailed()}
+        {errorPayload !== undefined && (
+          <Link.Success
+            className="w-fit"
+            download
+            href={`data:text/plain,${encodeURIComponent(
+              `Error: ${errorPayload.error}\n\nTraceback:\n${errorPayload.traceback}`
+            )}`}
+          >
+            {notificationsText.exception()}
+          </Link.Success>
+        )}
+      </>
+    );
+  },
+  'query-export-to-kml-failed'(notification) {
+    const errorPayload = notification.payload.error as unknown as
+      | { readonly error: string; readonly traceback: string }
+      | undefined;
+    return (
+      <>
+        {notificationsText.queryExportToKmlFailed()}
+        {errorPayload !== undefined && (
+          <Link.Success
+            className="w-fit"
+            download
+            href={`data:text/plain,${encodeURIComponent(
+              `Error: ${errorPayload.error}\n\nTraceback:\n${errorPayload.traceback}`
+            )}`}
+          >
+            {notificationsText.exception()}
+          </Link.Success>
+        )}
+      </>
+    );
+  },
   'query-export-to-kml-complete'(notification) {
     return (
       <>
@@ -127,6 +170,43 @@ export const notificationRenderers: IR<
         >
           {notificationsText.download()}
         </Link.Success>
+      </>
+    );
+  },
+  'query-export-to-webportal-complete'(notification) {
+    return (
+      <>
+        {notificationsText.queryExportToWebPortalCompleted()}
+        <Link.Success
+          className="w-fit"
+          download
+          href={`/static/depository/${encodeURIComponent(
+            notification.payload.file
+          )}`}
+        >
+          {notificationsText.download()}
+        </Link.Success>
+      </>
+    );
+  },
+  'query-export-to-webportal-failed'(notification) {
+    const errorPayload = notification.payload.error as unknown as
+      | { readonly error: string; readonly traceback: string }
+      | undefined;
+    return (
+      <>
+        {notificationsText.queryExportToWebPortalFailed()}
+        {errorPayload !== undefined && (
+          <Link.Success
+            className="w-fit"
+            download
+            href={`data:text/plain,${encodeURIComponent(
+              `Error: ${errorPayload.error}\n\nTraceback:\n${errorPayload.traceback}`
+            )}`}
+          >
+            {notificationsText.exception()}
+          </Link.Success>
+        )}
       </>
     );
   },
@@ -392,6 +472,9 @@ export const notificationRenderers: IR<
         {notification.payload.name}
       </>
     );
+  },
+  'collection-creation-starting'() {
+    return <p>{setupToolText.collectionCreationStarted()}</p>;
   },
   default(notification) {
     console.error('Unknown notification type', { notification });

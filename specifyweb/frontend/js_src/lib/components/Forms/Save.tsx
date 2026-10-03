@@ -177,9 +177,9 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
                 ? undefined
                 : error(error_)
             )
+            .then(handleSaved)
             .finally(() => {
               unsetUnloadProtect();
-              handleSaved?.();
               setIsSaving(false);
             });
         }
@@ -407,7 +407,12 @@ function useEnabledButtons<SCHEMA extends AnySchema = AnySchema>(
     !NO_CLONE.has(tableName) &&
     !isDisabledCloneAppResource;
   const showAdd =
-    !disableAdd.includes(tableName) && !FORBID_ADDING.has(tableName);
+    !disableAdd.includes(tableName) &&
+    !FORBID_ADDING.has(tableName) &&
+    !(
+      tableName === 'SpAppResource' &&
+      appResourceName === 'CollectionPreferences'
+    );
 
   return {
     showClone,

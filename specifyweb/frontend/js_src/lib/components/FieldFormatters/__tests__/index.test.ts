@@ -1,7 +1,12 @@
 import { mockTime, requireContext } from '../../../tests/helpers';
 import { getField } from '../../DataModel/helpers';
 import { tables } from '../../DataModel/tables';
-import { UiFormatter, fetchContext, fieldFormatterTypeMapper, getUiFormatters } from '..';
+import {
+  UiFormatter,
+  fetchContext,
+  fieldFormatterTypeMapper,
+  getUiFormatters,
+} from '..';
 import { localized } from '../../../utils/types';
 
 mockTime();

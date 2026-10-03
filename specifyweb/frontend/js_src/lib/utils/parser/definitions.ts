@@ -120,7 +120,6 @@ export const parsers = f.store(
           : Boolean(value)
             ? queryText.yes()
             : commonText.no(),
-      value: false,
     },
 
     'java.lang.Byte': {

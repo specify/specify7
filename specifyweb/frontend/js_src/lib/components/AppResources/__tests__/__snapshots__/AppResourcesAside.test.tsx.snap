@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`AppResourcesAside (expanded case) expanded case 1`] = `
 <DocumentFragment>
@@ -817,7 +817,7 @@ exports[`Missing Collection Preferences Permission simple no conformation test 1
           <span
             class="pl-2 text-neutral-500"
           >
-            (4)
+            (3)
           </span>
         </button>
       </li>

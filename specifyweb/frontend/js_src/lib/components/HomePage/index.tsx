@@ -9,13 +9,21 @@ import { SearchForm } from '../Header/ExpressSearchTask';
 import { useDarkMode } from '../Preferences/Hooks';
 import { getDefaultWelcomePageImage } from '../Preferences/Renderers';
 import { userPreferences } from '../Preferences/userPreferences';
+import { icons } from '../Atoms/Icons';
+import { Button } from '../Atoms/Button';
 import { ReactLazy } from '../Router/ReactLazy';
+import { ExpressSearchConfigDialog } from '../ExpressSearchConfig/ExpressSearchConfigDialog';
+import { hasToolPermission } from '../Permissions/helpers';
 
 const TaxonTiles = ReactLazy(async () =>
   import('./TaxonTiles').then(({ TaxonTiles }) => TaxonTiles)
 );
 
-export function WelcomeView(): JSX.Element {
+export function WelcomeView({
+  hideSearchBar = false,
+}: {
+  readonly hideSearchBar?: boolean;
+}): JSX.Element {
   const [mode] = userPreferences.use('welcomePage', 'general', 'mode');
   const formId = useId('express-search')('form');
 
@@ -24,16 +32,36 @@ export function WelcomeView(): JSX.Element {
     'general',
     'addSearchBar'
   );
+  const [isConfigOpen, setIsConfigOpen] = React.useState(false);
+  const canEditExpressSearchConfig =
+    hasToolPermission('resources', 'read') &&
+    hasToolPermission('resources', 'create') &&
+    hasToolPermission('resources', 'update');
 
   return (
     <div className="flex h-full flex-col">
-      {displaySearchBar && (
-        <div className="flex justify-end gap-2 pr-4 pt-4">
+      {!hideSearchBar && displaySearchBar && (
+        <div className="flex justify-end gap-2 pr-4 pt-4 items-center">
+          {canEditExpressSearchConfig && (
+            <Button.BorderedGray
+              title={commonText.configureExpressSearch()}
+              onClick={() => setIsConfigOpen(true)}
+              className="!px-2"
+            >
+              {icons.cog}
+            </Button.BorderedGray>
+          )}
           <SearchForm formId={formId} />
           <Submit.Secondary form={formId}>
             {commonText.search()}
           </Submit.Secondary>
         </div>
+      )}
+      {canEditExpressSearchConfig && (
+        <ExpressSearchConfigDialog
+          isOpen={isConfigOpen}
+          onClose={() => setIsConfigOpen(false)}
+        />
       )}
       <div
         className={`
