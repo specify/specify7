@@ -43,9 +43,23 @@ export function Toasts({
   readonly children: JSX.Element;
 }): JSX.Element {
   const [toasts, setToasts] = React.useState<RA<ToastMessage>>([]);
+  const [announcement, setAnnouncement] = React.useState('');
+  const previousToasts = React.useRef(toasts);
+  React.useEffect(() => {
+    const addedNotification = toasts.find(
+      (toast) =>
+        toast.type === 'Notification' && !previousToasts.current.includes(toast)
+    );
+    previousToasts.current = toasts;
+    if (addedNotification !== undefined)
+      setAnnouncement(addedNotification.message);
+  }, [toasts]);
   return (
     <SetToastsContext.Provider value={setToasts}>
       {children}
+      <span aria-live="polite" aria-atomic="true" className="sr-only">
+        {announcement}
+      </span>
       {toasts.length > 0 && (
         <div
           className={`
@@ -125,7 +139,6 @@ function Toast({
       onFocus={(): void => setIsTimerPaused(true)}
     >
       <Button.LikeLink
-        aria-live={isError ? 'assertive' : 'polite'}
         className={`
           flex-1 p-4 !text-black hover:!text-black
           dark:!text-gray-100 dark:hover:!text-gray-100

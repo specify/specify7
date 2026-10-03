@@ -99,7 +99,6 @@ export function Notifications({
         isActive={isOpen}
         isCollapsed={isCollapsed}
         props={{
-          'aria-live': 'polite',
           className:
             unreadCount > 0 && !isOpen
               ? '[&:not(:hover)]:!text-brand-200 [&:not(:hover)]:dark:!text-brand-400'

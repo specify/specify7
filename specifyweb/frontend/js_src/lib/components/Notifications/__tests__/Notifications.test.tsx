@@ -81,6 +81,23 @@ test('notification toasts disappear after ten seconds', () => {
   }
 });
 
+test('notification toast headings are announced', async () => {
+  const view = mount(
+    <Toasts>
+      <NotificationToastHarness />
+    </Toasts>
+  );
+  const liveRegion = view.container.querySelector('[aria-live="polite"]');
+  expect(liveRegion).toBeInTheDocument();
+  expect(liveRegion).toHaveTextContent('Timed notification');
+  expect(
+    view.getByRole('button', { name: /Timed notification/i })
+  ).not.toHaveAttribute('aria-live');
+  expect(view.getByRole('button', { name: 'Dismiss' })).toBeInTheDocument();
+  await view.user.click(view.getByRole('button', { name: 'Dismiss' }));
+  expect(liveRegion).toBeInTheDocument();
+});
+
 test('new notification toasts open the dialog with current notifications', async () => {
   mockedPing.mockResolvedValue(200);
   let handleIncoming:
@@ -123,7 +140,7 @@ test('new notification toasts open the dialog with current notifications', async
   const csvToast = view.getByRole('button', {
     name: /Query export to CSV completed/i,
   });
-  expect(csvToast).toHaveAttribute('aria-live', 'polite');
+  expect(csvToast).not.toHaveAttribute('aria-live');
   expect(csvToast.parentElement).toHaveClass(
     'bg-gray-200',
     'hover:bg-gray-300',
