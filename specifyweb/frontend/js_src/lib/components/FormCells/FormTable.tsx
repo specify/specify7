@@ -188,17 +188,20 @@ export function FormTable<SCHEMA extends AnySchema>({
         }
   );
 
-  const resources =
-    sortConfig === undefined
-      ? // Note, resources might be sorted by the back-end
-        unsortedResources
-      : Array.from(unsortedResources).sort(
-          sortFunction(
-            // FEATURE: handle related fields
-            (resource) => resource.get(sortConfig.sortField),
-            !sortConfig.ascending
-          )
-        );
+  const resources = React.useMemo(
+    () =>
+      sortConfig === undefined
+        ? // Note, resources might be sorted by the back-end
+          unsortedResources
+        : Array.from(unsortedResources).sort(
+            sortFunction(
+              // FEATURE: handle related fields
+              (resource) => resource.get(sortConfig.sortField),
+              !sortConfig.ascending
+            )
+          ),
+    [sortConfig, unsortedResources]
+  );
 
   // When added a new resource, focus that row
   const addedResource = React.useRef<SpecifyResource<SCHEMA> | undefined>(
@@ -332,7 +335,7 @@ export function FormTable<SCHEMA extends AnySchema>({
     });
     observer.observe(tableElement);
     return (): void => observer.disconnect();
-  }, [collapsedViewDefinition]);
+  }, [collapsedViewDefinition, resources.length > 0]);
   React.useEffect(() => {
     if (collapsedViewDefinition === undefined) return;
     const frame = requestAnimationFrame(() => {
