@@ -696,9 +696,9 @@ export function FormTable<SCHEMA extends AnySchema>({
                         contentColumnWidths[columnIndex] ??
                         minSubviewColumnWidth
                     )}
-                    className="absolute inset-y-0 z-20 w-2 cursor-col-resize touch-none before:absolute before:inset-y-0 before:right-1 before:w-px before:bg-gray-500 before:content-['']"
+                    className="absolute inset-y-0 z-20 w-4 cursor-col-resize touch-none before:absolute before:inset-y-0 before:right-2 before:w-px before:bg-gray-500 before:content-['']"
                     role="separator"
-                    style={{ right: -4 }}
+                    style={{ right: -8 }}
                     tabIndex={0}
                     onKeyDown={(event): void => {
                       if (
