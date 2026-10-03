@@ -128,7 +128,7 @@ function Toast({
         ${
           isError
             ? 'border-red-500 bg-red-200 hover:bg-red-300 dark:bg-red-900 dark:hover:bg-red-800'
-            : `border-gray-400 bg-gray-200 hover:bg-gray-300
+            : `border-gray-400 bg-gray-100 hover:bg-gray-200
               dark:border-gray-600 dark:bg-neutral-800 dark:hover:bg-neutral-700`
         }
       `}

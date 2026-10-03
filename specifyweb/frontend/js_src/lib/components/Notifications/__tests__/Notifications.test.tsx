@@ -142,8 +142,8 @@ test('new notification toasts open the dialog with current notifications', async
   });
   expect(csvToast).not.toHaveAttribute('aria-live');
   expect(csvToast.parentElement).toHaveClass(
-    'bg-gray-200',
-    'hover:bg-gray-300',
+    'bg-gray-100',
+    'hover:bg-gray-200',
     'dark:bg-neutral-800'
   );
   expect(csvToast).toHaveClass(
