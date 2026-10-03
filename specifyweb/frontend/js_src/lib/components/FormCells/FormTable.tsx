@@ -362,6 +362,9 @@ export function FormTable<SCHEMA extends AnySchema>({
           const header = tableElement.querySelector<HTMLElement>(
             `[data-subview-header-col="${columnIndex}"]`
           );
+          const headerLabel = header?.querySelector<HTMLElement>(
+            '[data-subview-header-label]'
+          );
           const cells = Array.from(
             tableElement.querySelectorAll<HTMLElement>(
               `[data-subview-cell-col="${columnIndex}"]`
@@ -371,11 +374,11 @@ export function FormTable<SCHEMA extends AnySchema>({
             maxSubviewColumnWidth,
             Math.max(
               minSubviewColumnWidth,
-              header === null
+              headerLabel === null || headerLabel === undefined
                 ? 0
                 : measureSubviewHeader(
-                    header.textContent ?? '',
-                    getComputedStyle(header).font,
+                    headerLabel.textContent ?? '',
+                    getComputedStyle(headerLabel).font,
                     context
                   ) + 32,
               ...cells.map((cell) => measureSubviewCell(cell, context))
@@ -600,6 +603,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                     WebkitBoxOrient: 'vertical',
                     WebkitLineClamp: 2,
                   }}
+                  data-subview-header-label
                   title={text}
                 >
                   {text}
