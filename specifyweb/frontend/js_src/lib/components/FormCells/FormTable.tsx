@@ -390,7 +390,7 @@ export function FormTable<SCHEMA extends AnySchema>({
     return (): void => cancelAnimationFrame(frame);
   }, [collapsedViewDefinition, resources]);
   const resizeColumn = React.useCallback(
-    (columnIndex: number, event: React.MouseEvent<HTMLDivElement>): void => {
+    (columnIndex: number, event: React.PointerEvent<HTMLDivElement>): void => {
       event.preventDefault();
       event.stopPropagation();
       const tableElement = scrollerRef.current;
@@ -401,6 +401,7 @@ export function FormTable<SCHEMA extends AnySchema>({
       const initialWidth =
         columnWidths[columnIndex] ?? header?.getBoundingClientRect().width ?? 0;
       const startX = event.clientX;
+      const pointerId = event.pointerId;
       let latestX = startX;
       let frame: number | undefined;
       const updateWidth = (clientX: number): void =>
@@ -414,7 +415,8 @@ export function FormTable<SCHEMA extends AnySchema>({
             )
           ),
         }));
-      const handleMove = (moveEvent: MouseEvent): void => {
+      const handleMove = (moveEvent: PointerEvent): void => {
+        if (moveEvent.pointerId !== pointerId) return;
         latestX = moveEvent.clientX;
         if (frame !== undefined) return;
         frame = requestAnimationFrame(() => {
@@ -422,14 +424,17 @@ export function FormTable<SCHEMA extends AnySchema>({
           updateWidth(latestX);
         });
       };
-      const handleUp = (): void => {
+      const handleUp = (upEvent: PointerEvent): void => {
+        if (upEvent.pointerId !== pointerId) return;
         if (frame !== undefined) cancelAnimationFrame(frame);
         updateWidth(latestX);
-        globalThis.removeEventListener('mousemove', handleMove);
-        globalThis.removeEventListener('mouseup', handleUp);
+        globalThis.removeEventListener('pointermove', handleMove);
+        globalThis.removeEventListener('pointerup', handleUp);
+        globalThis.removeEventListener('pointercancel', handleUp);
       };
-      globalThis.addEventListener('mousemove', handleMove);
-      globalThis.addEventListener('mouseup', handleUp);
+      globalThis.addEventListener('pointermove', handleMove);
+      globalThis.addEventListener('pointerup', handleUp);
+      globalThis.addEventListener('pointercancel', handleUp);
     },
     [columnWidths]
   );
@@ -616,10 +621,46 @@ export function FormTable<SCHEMA extends AnySchema>({
                   )}
                   <div
                     aria-label="Resize column"
+                    aria-orientation="vertical"
+                    aria-valuemax={maxSubviewColumnWidth}
+                    aria-valuemin={60}
+                    aria-valuenow={Math.round(
+                      columnWidths[columnIndex] ??
+                        contentColumnWidths[columnIndex] ??
+                        minSubviewColumnWidth
+                    )}
                     className="absolute inset-y-0 z-20 w-2 cursor-col-resize touch-none before:absolute before:inset-y-0 before:right-1 before:w-px before:bg-gray-500 before:content-['']"
                     role="separator"
                     style={{ right: -4 }}
-                    onMouseDown={(event): void =>
+                    tabIndex={0}
+                    onKeyDown={(event): void => {
+                      if (
+                        event.key !== 'ArrowLeft' &&
+                        event.key !== 'ArrowRight'
+                      )
+                        return;
+                      event.preventDefault();
+                      const header =
+                        scrollerRef.current?.querySelector<HTMLElement>(
+                          `[data-subview-header-col="${columnIndex}"]`
+                        );
+                      const currentWidth =
+                        columnWidths[columnIndex] ??
+                        header?.getBoundingClientRect().width ??
+                        minSubviewColumnWidth;
+                      setColumnWidths((widths) => ({
+                        ...widths,
+                        [columnIndex]: Math.max(
+                          60,
+                          Math.min(
+                            maxSubviewColumnWidth,
+                            currentWidth +
+                              (event.key === 'ArrowRight' ? 10 : -10)
+                          )
+                        ),
+                      }));
+                    }}
+                    onPointerDown={(event): void =>
                       resizeColumn(columnIndex, event)
                     }
                   />
