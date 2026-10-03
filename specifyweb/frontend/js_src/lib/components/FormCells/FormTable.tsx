@@ -9,7 +9,7 @@ import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
-import { columnDefinitionsToCss, DataEntry } from '../Atoms/DataEntry';
+import { DataEntry } from '../Atoms/DataEntry';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { useAttachment } from '../Attachments/Plugin';
@@ -59,7 +59,104 @@ const cellToLabel = (
 });
 
 const cellClassName =
-  'sticky top-0 bg-[color:var(--form-foreground)] z-10 h-full -mx-1 pl-1 pt-1';
+  'sticky top-0 bg-[color:var(--form-foreground)] z-10 h-full -mx-1 px-1 py-1 border-b border-gray-500';
+
+const minSubviewColumnWidth = 80;
+const maxSubviewColumnWidth = 600;
+
+function measureSubviewText(
+  text: string,
+  font: string,
+  context: CanvasRenderingContext2D
+): number {
+  context.font = font;
+  return Math.ceil(
+    Math.max(
+      0,
+      ...text.split(/\r?\n/u).map((line) => context.measureText(line).width)
+    )
+  );
+}
+
+function measureSubviewHeader(
+  text: string,
+  font: string,
+  context: CanvasRenderingContext2D
+): number {
+  const words = text.trim().split(/\s+/u);
+  const middle = Math.ceil(words.length / 2);
+  return measureSubviewText(
+    `${words.slice(0, middle).join(' ')}\n${words.slice(middle).join(' ')}`,
+    font,
+    context
+  );
+}
+
+function measureSubviewCell(
+  cell: HTMLElement,
+  context: CanvasRenderingContext2D
+): number {
+  const controls = Array.from(
+    cell.querySelectorAll<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >('input, textarea, select')
+  );
+  if (controls.length === 0)
+    return measureSubviewText(
+      cell.textContent ?? '',
+      getComputedStyle(cell).font,
+      context
+    );
+
+  return controls.reduce((total, control) => {
+    const style = getComputedStyle(control);
+    const horizontalPadding =
+      Number.parseFloat(style.paddingLeft) +
+      Number.parseFloat(style.paddingRight) +
+      Number.parseFloat(style.borderLeftWidth) +
+      Number.parseFloat(style.borderRightWidth);
+    if (control instanceof HTMLInputElement && control.type === 'checkbox')
+      return Math.max(total, 48);
+    if (control instanceof HTMLInputElement && control.type === 'date')
+      return Math.max(total, 136);
+    const value =
+      control instanceof HTMLSelectElement
+        ? (control.selectedOptions[0]?.textContent ?? '')
+        : control.value || control.getAttribute('placeholder') || '';
+    const width =
+      measureSubviewText(value, style.font, context) +
+      horizontalPadding +
+      (control instanceof HTMLSelectElement
+        ? 28
+        : control instanceof HTMLInputElement && control.type === 'number'
+          ? 30
+          : 8);
+    return Math.max(total, width);
+  }, minSubviewColumnWidth);
+}
+
+function fitSubviewColumnWidths(
+  widths: Array<number>,
+  availableWidth: number,
+  minimumWidths: Array<number>
+): Array<number> {
+  const minimumTotal = minimumWidths.reduce((total, width) => total + width, 0);
+  const preferredWidths = widths.map((width, index) =>
+    Math.max(width, minimumWidths[index] ?? minSubviewColumnWidth)
+  );
+  const totalWidth = preferredWidths.reduce((total, width) => total + width, 0);
+  if (totalWidth <= availableWidth) return preferredWidths;
+  if (availableWidth <= 0) return minimumWidths;
+  if (availableWidth <= minimumTotal)
+    return minimumWidths.map(
+      (width) => (width * availableWidth) / minimumTotal
+    );
+  const scale = (availableWidth - minimumTotal) / (totalWidth - minimumTotal);
+  return preferredWidths.map((width, index) => {
+    const minimum = minimumWidths[index] ?? minSubviewColumnWidth;
+    return minimum + (width - minimum) * scale;
+  });
+}
 
 // REFACTOR: split this component into smaller
 /**
@@ -111,17 +208,20 @@ export function FormTable<SCHEMA extends AnySchema>({
         }
   );
 
-  const resources =
-    sortConfig === undefined
-      ? // Note, resources might be sorted by the back-end
-        unsortedResources
-      : Array.from(unsortedResources).sort(
-          sortFunction(
-            // FEATURE: handle related fields
-            (resource) => resource.get(sortConfig.sortField),
-            !sortConfig.ascending
-          )
-        );
+  const resources = React.useMemo(
+    () =>
+      sortConfig === undefined
+        ? // Note, resources might be sorted by the back-end
+          unsortedResources
+        : Array.from(unsortedResources).sort(
+            sortFunction(
+              // FEATURE: handle related fields
+              (resource) => resource.get(sortConfig.sortField),
+              !sortConfig.ascending
+            )
+          ),
+    [sortConfig, unsortedResources]
+  );
 
   // When added a new resource, focus that row
   const addedResource = React.useRef<SpecifyResource<SCHEMA> | undefined>(
@@ -233,20 +333,228 @@ export function FormTable<SCHEMA extends AnySchema>({
     'flexibleColumnWidth'
   );
 
-  const [flexibleSubGridColumnWidth] = userPreferences.use(
-    'form',
-    'definition',
-    'flexibleSubGridColumnWidth'
-  );
-
   const displayDeleteButton =
     mode !== 'view' && typeof handleDelete === 'function';
   const displayViewButton = !isDependent;
 
   const scrollerRef = React.useRef<HTMLDivElement | null>(null);
+  const scrollContainerRef = React.useRef<HTMLDivElement | null>(null);
+  const [tableWidth, setTableWidth] = React.useState(0);
+  const [contentColumnWidths, setContentColumnWidths] = React.useState<
+    Array<number>
+  >([]);
+  const [headerColumnWidths, setHeaderColumnWidths] = React.useState<
+    Array<number>
+  >([]);
+  const [tableChromeWidth, setTableChromeWidth] = React.useState(0);
+  const [columnWidths, setColumnWidths] = React.useState<
+    Record<number, number>
+  >({});
+  React.useEffect(() => {
+    const scrollContainer = scrollContainerRef.current;
+    if (scrollContainer === null) return;
+    const observer = new ResizeObserver(([entry]) => {
+      setTableWidth(Math.floor(entry.contentRect.width));
+    });
+    observer.observe(scrollContainer);
+    return (): void => observer.disconnect();
+  }, [collapsedViewDefinition, resources.length > 0]);
+  React.useEffect(() => {
+    if (collapsedViewDefinition === undefined) return;
+    const frame = requestAnimationFrame(() => {
+      const tableElement = scrollerRef.current;
+      if (tableElement === null) return;
+      const context = document.createElement('canvas').getContext('2d');
+      if (context === null) return;
+      const measuredColumns = collapsedViewDefinition.rows[0].map(
+        (_, columnIndex) => {
+          const header = tableElement.querySelector<HTMLElement>(
+            `[data-subview-header-col="${columnIndex}"]`
+          );
+          const headerLabel = header?.querySelector<HTMLElement>(
+            '[data-subview-header-label]'
+          );
+          const cells = Array.from(
+            tableElement.querySelectorAll<HTMLElement>(
+              `[data-subview-cell-col="${columnIndex}"]`
+            )
+          );
+          const labelWidth =
+            headerLabel === null || headerLabel === undefined
+              ? 0
+              : measureSubviewHeader(
+                  headerLabel.textContent ?? '',
+                  getComputedStyle(headerLabel).font,
+                  context
+                ) + 32;
+          const indicator = header?.querySelector(
+            '[data-subview-sort-indicator]'
+          );
+          const headerWidth =
+            labelWidth +
+            (indicator === undefined || indicator === null ? 0 : 28);
+          return {
+            headerWidth: Math.min(maxSubviewColumnWidth, headerWidth),
+            contentWidth: Math.min(
+              maxSubviewColumnWidth,
+              Math.max(
+                minSubviewColumnWidth,
+                labelWidth,
+                ...cells.map((cell) => measureSubviewCell(cell, context))
+              )
+            ),
+          };
+        }
+      );
+      const measuredWidths = measuredColumns.map(
+        ({ contentWidth }) => contentWidth
+      );
+      setHeaderColumnWidths(
+        measuredColumns.map(({ headerWidth }) =>
+          Math.max(minSubviewColumnWidth, headerWidth)
+        )
+      );
+      const headers = tableElement.querySelectorAll<HTMLElement>(
+        '[role="columnheader"]'
+      );
+      const actionButton = tableElement.querySelector<HTMLElement>(
+        '[role="rowgroup"] [role="row"] [role="cell"]:last-child button'
+      );
+      const buttonColumnsWidth =
+        (headers[0]?.getBoundingClientRect().width ?? 40) +
+        Math.max(40, actionButton?.getBoundingClientRect().width ?? 0);
+      const style = getComputedStyle(tableElement);
+      const horizontalPadding =
+        Number.parseFloat(style.paddingLeft) +
+        Number.parseFloat(style.paddingRight);
+      const gap = Number.parseFloat(style.columnGap) || 0;
+      setTableChromeWidth(
+        buttonColumnsWidth +
+          horizontalPadding +
+          gap * (collapsedViewDefinition.columns.length + 2)
+      );
+      setContentColumnWidths(measuredWidths);
+    });
+    return (): void => cancelAnimationFrame(frame);
+  }, [collapsedViewDefinition, unsortedResources]);
+  const resizeColumn = React.useCallback(
+    (columnIndex: number, event: React.PointerEvent<HTMLDivElement>): void => {
+      event.preventDefault();
+      event.stopPropagation();
+      const tableElement = scrollerRef.current;
+      if (tableElement === null) return;
+      const header = tableElement.querySelector<HTMLElement>(
+        `[data-subview-header-col="${columnIndex}"]`
+      );
+      const initialWidth =
+        columnWidths[columnIndex] ?? header?.getBoundingClientRect().width ?? 0;
+      const startX = event.clientX;
+      const pointerId = event.pointerId;
+      let latestX = startX;
+      let frame: number | undefined;
+      const updateWidth = (clientX: number): void =>
+        setColumnWidths((widths) => ({
+          ...widths,
+          [columnIndex]: Math.max(
+            60,
+            Math.min(
+              maxSubviewColumnWidth,
+              Math.ceil(initialWidth + clientX - startX)
+            )
+          ),
+        }));
+      const handleMove = (moveEvent: PointerEvent): void => {
+        if (moveEvent.pointerId !== pointerId) return;
+        latestX = moveEvent.clientX;
+        if (frame !== undefined) return;
+        frame = requestAnimationFrame(() => {
+          frame = undefined;
+          updateWidth(latestX);
+        });
+      };
+      const handleUp = (upEvent: PointerEvent): void => {
+        if (upEvent.pointerId !== pointerId) return;
+        if (frame !== undefined) cancelAnimationFrame(frame);
+        updateWidth(latestX);
+        globalThis.removeEventListener('pointermove', handleMove);
+        globalThis.removeEventListener('pointerup', handleUp);
+        globalThis.removeEventListener('pointercancel', handleUp);
+      };
+      globalThis.addEventListener('pointermove', handleMove);
+      globalThis.addEventListener('pointerup', handleUp);
+      globalThis.addEventListener('pointercancel', handleUp);
+    },
+    [columnWidths]
+  );
+  const gridTemplateColumns = React.useMemo(() => {
+    const autoColumns = contentColumnWidths
+      .map((width, index) => ({ width, index }))
+      .filter(({ index }) => columnWidths[index] === undefined);
+    const fixedWidth = Object.values(columnWidths).reduce(
+      (total, width) => total + width,
+      0
+    );
+    const minimumWidths = autoColumns.map(({ index }) => {
+      const definition = collapsedViewDefinition?.rows[0]?.[index];
+      const fieldName =
+        definition !== undefined && 'fieldNames' in definition
+          ? definition.fieldNames?.join(backboneFieldSeparator)
+          : undefined;
+      return sortConfig?.sortField === fieldName
+        ? Math.max(
+            minSubviewColumnWidth,
+            headerColumnWidths[index] ?? minSubviewColumnWidth
+          )
+        : minSubviewColumnWidth;
+    });
+    const widths = fitSubviewColumnWidths(
+      autoColumns.map(({ width }) => width),
+      tableWidth - tableChromeWidth - fixedWidth,
+      minimumWidths
+    );
+    let autoIndex = 0;
+    const cells = collapsedViewDefinition?.rows[0] ?? [];
+    const cellColumns = cells.reduce((total, cell) => total + cell.colSpan, 0);
+    return [
+      'min-content',
+      ...cells.flatMap((cell, index) => {
+        const span = cell.colSpan;
+        if (columnWidths[index] !== undefined)
+          return Array.from(
+            { length: span },
+            () => `${columnWidths[index] / span}px`
+          );
+        const minimumWidth = widths[autoIndex] ?? minSubviewColumnWidth;
+        const flex = autoColumns[autoIndex]?.width ?? minSubviewColumnWidth;
+        autoIndex += 1;
+        return Array.from(
+          { length: span },
+          () => `minmax(${minimumWidth / span}px, ${flex / span}fr)`
+        );
+      }),
+      ...(collapsedViewDefinition?.columns.slice(cellColumns) ?? []).map(
+        (width) =>
+          typeof width === 'number'
+            ? `${width}${flexibleColumnWidth ? 'fr' : 'px'}`
+            : 'minmax(0, 1fr)'
+      ),
+      autoColumns.length === 0 ? 'minmax(0, 1fr)' : '0px',
+      'min-content',
+    ].join(' ');
+  }, [
+    collapsedViewDefinition?.columns,
+    collapsedViewDefinition?.rows,
+    columnWidths,
+    contentColumnWidths,
+    headerColumnWidths,
+    sortConfig,
+    flexibleColumnWidth,
+    tableChromeWidth,
+    tableWidth,
+  ]);
   const { isFetching, handleScroll } = useInfiniteScroll(
     handleFetchMore,
-    scrollerRef
+    scrollContainerRef
   );
 
   const [maxHeight] = userPreferences.use('form', 'formTable', 'maxHeight');
@@ -290,23 +598,22 @@ export function FormTable<SCHEMA extends AnySchema>({
           isCollapsed
             ? 'hidden'
             : showSubviewBorders
-              ? 'overflow-x-auto border border-gray-500 border-t-0 rounded-b pl-1 pr-1 pb-1'
-              : 'overflow-x-auto pl-1 pr-1 pb-1'
+              ? 'overflow-auto border border-gray-500 border-t-0 rounded-b pl-1 pr-1 pb-1'
+              : 'overflow-auto pl-1 pr-1 pb-1'
         }
+        ref={scrollContainerRef}
+        style={{ maxHeight: `${maxHeight}px` }}
         onScroll={handleScroll}
       >
         <DataEntry.Grid
-          className="sticky w-fit"
+          className="w-full gap-1 pt-0"
           display="inline"
           flexibleColumnWidth={flexibleColumnWidth}
           forwardRef={scrollerRef}
           role="table"
           style={{
-            gridTemplateColumns: `min-content ${columnDefinitionsToCss(
-              collapsedViewDefinition.columns,
-              flexibleSubGridColumnWidth
-            )} min-content`,
-            maxHeight: `${maxHeight}px`,
+            gridTemplateColumns,
+            width: '100%',
           }}
           viewDefinition={collapsedViewDefinition}
         >
@@ -322,6 +629,7 @@ export function FormTable<SCHEMA extends AnySchema>({
               <span className="sr-only">{commonText.expand()}</span>
             </div>
             {collapsedViewDefinition.rows[0].map((cell, index) => {
+              const columnIndex = index;
               const { text, title } = cellToLabel(
                 relationship.relatedTable,
                 cell
@@ -331,12 +639,27 @@ export function FormTable<SCHEMA extends AnySchema>({
               const fieldName = isSortable
                 ? cell.fieldNames?.join(backboneFieldSeparator)
                 : undefined;
+              const label = (
+                <span
+                  className="block min-w-0 overflow-hidden whitespace-normal break-normal text-center"
+                  style={{
+                    display: '-webkit-box',
+                    WebkitBoxOrient: 'vertical',
+                    WebkitLineClamp: 2,
+                  }}
+                  data-subview-header-label
+                  title={text}
+                >
+                  {text}
+                </span>
+              );
               return (
                 <DataEntry.Cell
                   align="center"
-                  className={cellClassName}
+                  className={`${cellClassName} relative min-w-0 justify-center`}
                   colSpan={cell.colSpan}
                   key={index}
+                  data-subview-header-col={columnIndex}
                   role="columnheader"
                   title={title}
                   verticalAlign={cell.verticalAlign}
@@ -344,6 +667,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                 >
                   {isSortable && typeof fieldName === 'string' ? (
                     <Button.LikeLink
+                      className="flex w-full min-w-0 items-center justify-center gap-1 overflow-hidden"
                       onClick={(): void =>
                         setSortConfig({
                           sortField: fieldName,
@@ -351,18 +675,70 @@ export function FormTable<SCHEMA extends AnySchema>({
                         })
                       }
                     >
-                      {text}
-                      <SortIndicator
-                        fieldName={fieldName}
-                        sortConfig={sortConfig}
-                      />
+                      {label}
+                      <span className="shrink-0" data-subview-sort-indicator>
+                        <SortIndicator
+                          fieldName={fieldName}
+                          sortConfig={sortConfig}
+                        />
+                      </span>
                     </Button.LikeLink>
                   ) : (
-                    text
+                    label
                   )}
+                  <div
+                    aria-label="Resize column"
+                    aria-orientation="vertical"
+                    aria-valuemax={maxSubviewColumnWidth}
+                    aria-valuemin={60}
+                    aria-valuenow={Math.round(
+                      columnWidths[columnIndex] ??
+                        contentColumnWidths[columnIndex] ??
+                        minSubviewColumnWidth
+                    )}
+                    className="absolute inset-y-0 z-20 w-4 cursor-col-resize touch-none before:absolute before:inset-y-0 before:right-2 before:w-px before:bg-gray-500 before:content-['']"
+                    role="separator"
+                    style={{ right: -8 }}
+                    tabIndex={0}
+                    onKeyDown={(event): void => {
+                      if (
+                        event.key !== 'ArrowLeft' &&
+                        event.key !== 'ArrowRight'
+                      )
+                        return;
+                      event.preventDefault();
+                      const header =
+                        scrollerRef.current?.querySelector<HTMLElement>(
+                          `[data-subview-header-col="${columnIndex}"]`
+                        );
+                      const currentWidth =
+                        columnWidths[columnIndex] ??
+                        header?.getBoundingClientRect().width ??
+                        minSubviewColumnWidth;
+                      setColumnWidths((widths) => ({
+                        ...widths,
+                        [columnIndex]: Math.max(
+                          60,
+                          Math.min(
+                            maxSubviewColumnWidth,
+                            currentWidth +
+                              (event.key === 'ArrowRight' ? 10 : -10)
+                          )
+                        ),
+                      }));
+                    }}
+                    onPointerDown={(event): void =>
+                      resizeColumn(columnIndex, event)
+                    }
+                  />
                 </DataEntry.Cell>
               );
             })}
+            <div
+              aria-hidden="true"
+              className={cellClassName}
+              role="columnheader"
+            />
             <div className={cellClassName} role="columnheader">
               <span className="sr-only">{commonText.actions()}</span>
             </div>
@@ -373,7 +749,11 @@ export function FormTable<SCHEMA extends AnySchema>({
                 <div className="contents" role="row">
                   {isExpanded[resource.cid] === true ? (
                     <>
-                      <div className="h-full" role="cell">
+                      <div
+                        className="h-full"
+                        role="cell"
+                        style={{ gridColumn: '1 / 2' }}
+                      >
                         <Button.Small
                           aria-label={commonText.collapse()}
                           className="h-full"
@@ -390,8 +770,12 @@ export function FormTable<SCHEMA extends AnySchema>({
                       </div>
                       <DataEntry.Cell
                         align="left"
-                        colSpan={collapsedViewDefinition.columns.length}
+                        className="border-y border-gray-400 py-1"
+                        colSpan={collapsedViewDefinition.columns.length + 1}
                         role="cell"
+                        style={{
+                          gridColumn: `2 / span ${collapsedViewDefinition.columns.length + 1}`,
+                        }}
                         tabIndex={-1}
                         verticalAlign="stretch"
                         visible
@@ -443,7 +827,13 @@ export function FormTable<SCHEMA extends AnySchema>({
                           }
                         >
                           {collapsedViewDefinition.isAttachmentPlugin ? (
-                            <div className="flex gap-8" role="cell">
+                            <div
+                              className="flex gap-8"
+                              role="cell"
+                              style={{
+                                gridColumn: `span ${collapsedViewDefinition.columns.length} / span ${collapsedViewDefinition.columns.length}`,
+                              }}
+                            >
                               <Attachment resource={resource} />
                             </div>
                           ) : (
@@ -461,8 +851,10 @@ export function FormTable<SCHEMA extends AnySchema>({
                               ) => (
                                 <DataEntry.Cell
                                   align={align}
+                                  className="min-w-0 [&_input]:min-w-0 [&_input]:max-w-full [&_input]:text-ellipsis [&_select]:min-w-0 [&_select]:max-w-full [&_textarea]:min-w-0 [&_textarea]:max-w-full"
                                   colSpan={colSpan}
                                   key={index}
+                                  data-subview-cell-col={index}
                                   role="cell"
                                   verticalAlign={verticalAlign}
                                   visible={visible}
@@ -486,7 +878,18 @@ export function FormTable<SCHEMA extends AnySchema>({
                       </ReadOnlyContext.Provider>
                     </>
                   )}
-                  <div className="flex h-full flex-col gap-2" role="cell">
+                  {isExpanded[resource.cid] !== true && (
+                    <div
+                      aria-hidden="true"
+                      className="border-b border-gray-200"
+                      role="cell"
+                    />
+                  )}
+                  <div
+                    className="flex h-full flex-col gap-2"
+                    role="cell"
+                    style={{ gridColumn: '-2 / -1' }}
+                  >
                     {displayViewButton &&
                     isExpanded[resource.cid] === true &&
                     !resource.isNew() ? (
