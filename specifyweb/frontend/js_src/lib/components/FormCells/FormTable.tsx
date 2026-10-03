@@ -146,7 +146,11 @@ function fitSubviewColumnWidths(
   );
   const totalWidth = preferredWidths.reduce((total, width) => total + width, 0);
   if (totalWidth <= availableWidth) return preferredWidths;
-  if (availableWidth <= minimumTotal) return minimumWidths;
+  if (availableWidth <= 0) return minimumWidths;
+  if (availableWidth <= minimumTotal)
+    return minimumWidths.map(
+      (width) => (width * availableWidth) / minimumTotal
+    );
   const scale = (availableWidth - minimumTotal) / (totalWidth - minimumTotal);
   return preferredWidths.map((width, index) => {
     const minimum = minimumWidths[index] ?? minSubviewColumnWidth;
@@ -347,12 +351,12 @@ export function FormTable<SCHEMA extends AnySchema>({
     Record<number, number>
   >({});
   React.useEffect(() => {
-    const tableElement = scrollerRef.current;
-    if (tableElement === null) return;
+    const scrollContainer = scrollContainerRef.current;
+    if (scrollContainer === null) return;
     const observer = new ResizeObserver(([entry]) => {
       setTableWidth(Math.floor(entry.contentRect.width));
     });
-    observer.observe(tableElement);
+    observer.observe(scrollContainer);
     return (): void => observer.disconnect();
   }, [collapsedViewDefinition, resources.length > 0]);
   React.useEffect(() => {
