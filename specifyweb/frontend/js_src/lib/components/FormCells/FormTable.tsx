@@ -137,19 +137,21 @@ function measureSubviewCell(
 
 function fitSubviewColumnWidths(
   widths: Array<number>,
-  availableWidth: number
+  availableWidth: number,
+  minimumWidths: Array<number>
 ): Array<number> {
-  const totalWidth = widths.reduce((total, width) => total + width, 0);
-  const minimumTotal = widths.length * minSubviewColumnWidth;
-  if (totalWidth <= availableWidth || totalWidth === minimumTotal)
-    return widths;
-  const scale = Math.max(
-    0,
-    (availableWidth - minimumTotal) / (totalWidth - minimumTotal)
+  const minimumTotal = minimumWidths.reduce((total, width) => total + width, 0);
+  const preferredWidths = widths.map((width, index) =>
+    Math.max(width, minimumWidths[index] ?? minSubviewColumnWidth)
   );
-  return widths.map(
-    (width) => minSubviewColumnWidth + (width - minSubviewColumnWidth) * scale
-  );
+  const totalWidth = preferredWidths.reduce((total, width) => total + width, 0);
+  if (totalWidth <= availableWidth) return preferredWidths;
+  if (availableWidth <= minimumTotal) return minimumWidths;
+  const scale = (availableWidth - minimumTotal) / (totalWidth - minimumTotal);
+  return preferredWidths.map((width, index) => {
+    const minimum = minimumWidths[index] ?? minSubviewColumnWidth;
+    return minimum + (width - minimum) * scale;
+  });
 }
 
 // REFACTOR: split this component into smaller
@@ -337,6 +339,9 @@ export function FormTable<SCHEMA extends AnySchema>({
   const [contentColumnWidths, setContentColumnWidths] = React.useState<
     Array<number>
   >([]);
+  const [headerColumnWidths, setHeaderColumnWidths] = React.useState<
+    Array<number>
+  >([]);
   const [tableChromeWidth, setTableChromeWidth] = React.useState(0);
   const [columnWidths, setColumnWidths] = React.useState<
     Record<number, number>
@@ -408,7 +413,43 @@ export function FormTable<SCHEMA extends AnySchema>({
       setContentColumnWidths(measuredWidths);
     });
     return (): void => cancelAnimationFrame(frame);
-  }, [collapsedViewDefinition, resources]);
+  }, [collapsedViewDefinition, unsortedResources]);
+  React.useEffect(() => {
+    const frame = requestAnimationFrame(() => {
+      const tableElement = scrollerRef.current;
+      if (tableElement === null) return;
+      const context = document.createElement('canvas').getContext('2d');
+      if (context === null) return;
+      const measuredWidths = (collapsedViewDefinition?.rows[0] ?? []).map(
+        (_, columnIndex) => {
+          const header = tableElement.querySelector<HTMLElement>(
+            `[data-subview-header-col="${columnIndex}"]`
+          );
+          const label = header?.querySelector<HTMLElement>(
+            '[data-subview-header-label]'
+          );
+          const icon = header?.querySelector<HTMLElement>(
+            '[data-subview-sort-indicator]'
+          );
+          return label === null || label === undefined
+            ? minSubviewColumnWidth
+            : Math.min(
+                maxSubviewColumnWidth,
+                measureSubviewHeader(
+                  label.textContent ?? '',
+                  getComputedStyle(label).font,
+                  context
+                ) +
+                  32 +
+                  (icon?.getBoundingClientRect().width ?? 0) +
+                  (icon === null || icon === undefined ? 0 : 8)
+              );
+        }
+      );
+      setHeaderColumnWidths(measuredWidths);
+    });
+    return (): void => cancelAnimationFrame(frame);
+  }, [collapsedViewDefinition, sortConfig]);
   const resizeColumn = React.useCallback(
     (columnIndex: number, event: React.PointerEvent<HTMLDivElement>): void => {
       event.preventDefault();
@@ -466,9 +507,23 @@ export function FormTable<SCHEMA extends AnySchema>({
       (total, width) => total + width,
       0
     );
+    const minimumWidths = autoColumns.map(({ index }) => {
+      const definition = collapsedViewDefinition?.rows[0]?.[index];
+      const fieldName =
+        definition !== undefined && 'fieldNames' in definition
+          ? definition.fieldNames?.join(backboneFieldSeparator)
+          : undefined;
+      return sortConfig?.sortField === fieldName
+        ? Math.max(
+            minSubviewColumnWidth,
+            headerColumnWidths[index] ?? minSubviewColumnWidth
+          )
+        : minSubviewColumnWidth;
+    });
     const widths = fitSubviewColumnWidths(
       autoColumns.map(({ width }) => width),
-      tableWidth - tableChromeWidth - fixedWidth
+      tableWidth - tableChromeWidth - fixedWidth,
+      minimumWidths
     );
     let autoIndex = 0;
     const cells = collapsedViewDefinition?.rows[0] ?? [];
@@ -504,6 +559,8 @@ export function FormTable<SCHEMA extends AnySchema>({
     collapsedViewDefinition?.rows,
     columnWidths,
     contentColumnWidths,
+    headerColumnWidths,
+    sortConfig,
     flexibleColumnWidth,
     tableChromeWidth,
     tableWidth,
@@ -632,10 +689,12 @@ export function FormTable<SCHEMA extends AnySchema>({
                       }
                     >
                       {label}
-                      <SortIndicator
-                        fieldName={fieldName}
-                        sortConfig={sortConfig}
-                      />
+                      <span className="shrink-0" data-subview-sort-indicator>
+                        <SortIndicator
+                          fieldName={fieldName}
+                          sortConfig={sortConfig}
+                        />
+                      </span>
                     </Button.LikeLink>
                   ) : (
                     label
