@@ -594,7 +594,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                 : undefined;
               const label = (
                 <span
-                  className="block min-w-0 overflow-hidden whitespace-normal break-normal"
+                  className="block min-w-0 overflow-hidden whitespace-normal break-normal text-center"
                   style={{
                     display: '-webkit-box',
                     WebkitBoxOrient: 'vertical',
