@@ -446,23 +446,40 @@ export function FormTable<SCHEMA extends AnySchema>({
       tableWidth - tableChromeWidth - fixedWidth
     );
     let autoIndex = 0;
+    const cells = collapsedViewDefinition?.rows[0] ?? [];
+    const cellColumns = cells.reduce((total, cell) => total + cell.colSpan, 0);
     return [
       'min-content',
-      ...(collapsedViewDefinition?.rows[0] ?? []).map((_, index) => {
+      ...cells.flatMap((cell, index) => {
+        const span = cell.colSpan;
         if (columnWidths[index] !== undefined)
-          return `${columnWidths[index]}px`;
+          return Array.from(
+            { length: span },
+            () => `${columnWidths[index] / span}px`
+          );
         const minimumWidth = widths[autoIndex] ?? minSubviewColumnWidth;
         const flex = autoColumns[autoIndex]?.width ?? minSubviewColumnWidth;
         autoIndex += 1;
-        return `minmax(${Math.floor(minimumWidth)}px, ${flex}fr)`;
+        return Array.from(
+          { length: span },
+          () => `minmax(${minimumWidth / span}px, ${flex / span}fr)`
+        );
       }),
+      ...(collapsedViewDefinition?.columns.slice(cellColumns) ?? []).map(
+        (width) =>
+          typeof width === 'number'
+            ? `${width}${flexibleColumnWidth ? 'fr' : 'px'}`
+            : 'minmax(0, 1fr)'
+      ),
       autoColumns.length === 0 ? 'minmax(0, 1fr)' : '0px',
       'min-content',
     ].join(' ');
   }, [
+    collapsedViewDefinition?.columns,
     collapsedViewDefinition?.rows,
     columnWidths,
     contentColumnWidths,
+    flexibleColumnWidth,
     tableChromeWidth,
     tableWidth,
   ]);
@@ -570,7 +587,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                 <DataEntry.Cell
                   align="center"
                   className={`${cellClassName} relative min-w-0 justify-center pr-3`}
-                  colSpan={1}
+                  colSpan={cell.colSpan}
                   key={index}
                   data-subview-header-col={columnIndex}
                   role="columnheader"
@@ -646,10 +663,10 @@ export function FormTable<SCHEMA extends AnySchema>({
                       <DataEntry.Cell
                         align="left"
                         className="border-y border-gray-400 py-1"
-                        colSpan={collapsedViewDefinition.rows[0].length + 1}
+                        colSpan={collapsedViewDefinition.columns.length + 1}
                         role="cell"
                         style={{
-                          gridColumn: `2 / span ${collapsedViewDefinition.rows[0].length + 1}`,
+                          gridColumn: `2 / span ${collapsedViewDefinition.columns.length + 1}`,
                         }}
                         tabIndex={-1}
                         verticalAlign="stretch"
@@ -706,7 +723,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                               className="flex gap-8"
                               role="cell"
                               style={{
-                                gridColumn: `span ${collapsedViewDefinition.rows[0].length} / span ${collapsedViewDefinition.rows[0].length}`,
+                                gridColumn: `span ${collapsedViewDefinition.columns.length} / span ${collapsedViewDefinition.columns.length}`,
                               }}
                             >
                               <Attachment resource={resource} />
@@ -715,6 +732,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                             collapsedViewDefinition.rows[0].map(
                               (
                                 {
+                                  colSpan,
                                   align,
                                   verticalAlign,
                                   visible,
@@ -726,7 +744,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                                 <DataEntry.Cell
                                   align={align}
                                   className="min-w-0 [&_input]:min-w-0 [&_input]:max-w-full [&_input]:text-ellipsis [&_select]:min-w-0 [&_select]:max-w-full [&_textarea]:min-w-0 [&_textarea]:max-w-full"
-                                  colSpan={1}
+                                  colSpan={colSpan}
                                   key={index}
                                   data-subview-cell-col={index}
                                   role="cell"
