@@ -548,6 +548,19 @@ export function FormTable<SCHEMA extends AnySchema>({
               const fieldName = isSortable
                 ? cell.fieldNames?.join(backboneFieldSeparator)
                 : undefined;
+              const label = (
+                <span
+                  className="block min-w-0 overflow-hidden whitespace-normal break-normal"
+                  style={{
+                    display: '-webkit-box',
+                    WebkitBoxOrient: 'vertical',
+                    WebkitLineClamp: 2,
+                  }}
+                  title={text}
+                >
+                  {text}
+                </span>
+              );
               return (
                 <DataEntry.Cell
                   align="center"
@@ -570,34 +583,14 @@ export function FormTable<SCHEMA extends AnySchema>({
                         })
                       }
                     >
-                      <span
-                        className="block min-w-0 overflow-hidden whitespace-normal break-normal"
-                        style={{
-                          display: '-webkit-box',
-                          WebkitBoxOrient: 'vertical',
-                          WebkitLineClamp: 2,
-                        }}
-                        title={text}
-                      >
-                        {text}
-                      </span>
+                      {label}
                       <SortIndicator
                         fieldName={fieldName}
                         sortConfig={sortConfig}
                       />
                     </Button.LikeLink>
                   ) : (
-                    <span
-                      className="block min-w-0 overflow-hidden whitespace-normal break-normal"
-                      style={{
-                        display: '-webkit-box',
-                        WebkitBoxOrient: 'vertical',
-                        WebkitLineClamp: 2,
-                      }}
-                      title={text}
-                    >
-                      {text}
-                    </span>
+                    label
                   )}
                   <div
                     aria-label="Resize column"
