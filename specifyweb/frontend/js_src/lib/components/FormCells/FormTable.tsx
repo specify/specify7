@@ -362,7 +362,7 @@ export function FormTable<SCHEMA extends AnySchema>({
       if (tableElement === null) return;
       const context = document.createElement('canvas').getContext('2d');
       if (context === null) return;
-      const measuredWidths = collapsedViewDefinition.rows[0].map(
+      const measuredColumns = collapsedViewDefinition.rows[0].map(
         (_, columnIndex) => {
           const header = tableElement.querySelector<HTMLElement>(
             `[data-subview-header-col="${columnIndex}"]`
@@ -375,21 +375,40 @@ export function FormTable<SCHEMA extends AnySchema>({
               `[data-subview-cell-col="${columnIndex}"]`
             )
           );
-          return Math.min(
-            maxSubviewColumnWidth,
-            Math.max(
-              minSubviewColumnWidth,
-              headerLabel === null || headerLabel === undefined
-                ? 0
-                : measureSubviewHeader(
-                    headerLabel.textContent ?? '',
-                    getComputedStyle(headerLabel).font,
-                    context
-                  ) + 32,
-              ...cells.map((cell) => measureSubviewCell(cell, context))
-            )
+          const labelWidth =
+            headerLabel === null || headerLabel === undefined
+              ? 0
+              : measureSubviewHeader(
+                  headerLabel.textContent ?? '',
+                  getComputedStyle(headerLabel).font,
+                  context
+                ) + 32;
+          const indicator = header?.querySelector(
+            '[data-subview-sort-indicator]'
           );
+          const headerWidth =
+            labelWidth +
+            (indicator === undefined || indicator === null ? 0 : 28);
+          return {
+            headerWidth: Math.min(maxSubviewColumnWidth, headerWidth),
+            contentWidth: Math.min(
+              maxSubviewColumnWidth,
+              Math.max(
+                minSubviewColumnWidth,
+                labelWidth,
+                ...cells.map((cell) => measureSubviewCell(cell, context))
+              )
+            ),
+          };
         }
+      );
+      const measuredWidths = measuredColumns.map(
+        ({ contentWidth }) => contentWidth
+      );
+      setHeaderColumnWidths(
+        measuredColumns.map(({ headerWidth }) =>
+          Math.max(minSubviewColumnWidth, headerWidth)
+        )
       );
       const headers = tableElement.querySelectorAll<HTMLElement>(
         '[role="columnheader"]'
@@ -414,42 +433,6 @@ export function FormTable<SCHEMA extends AnySchema>({
     });
     return (): void => cancelAnimationFrame(frame);
   }, [collapsedViewDefinition, unsortedResources]);
-  React.useEffect(() => {
-    const frame = requestAnimationFrame(() => {
-      const tableElement = scrollerRef.current;
-      if (tableElement === null) return;
-      const context = document.createElement('canvas').getContext('2d');
-      if (context === null) return;
-      const measuredWidths = (collapsedViewDefinition?.rows[0] ?? []).map(
-        (_, columnIndex) => {
-          const header = tableElement.querySelector<HTMLElement>(
-            `[data-subview-header-col="${columnIndex}"]`
-          );
-          const label = header?.querySelector<HTMLElement>(
-            '[data-subview-header-label]'
-          );
-          const icon = header?.querySelector<HTMLElement>(
-            '[data-subview-sort-indicator]'
-          );
-          return label === null || label === undefined
-            ? minSubviewColumnWidth
-            : Math.min(
-                maxSubviewColumnWidth,
-                measureSubviewHeader(
-                  label.textContent ?? '',
-                  getComputedStyle(label).font,
-                  context
-                ) +
-                  32 +
-                  (icon?.getBoundingClientRect().width ?? 0) +
-                  (icon === null || icon === undefined ? 0 : 8)
-              );
-        }
-      );
-      setHeaderColumnWidths(measuredWidths);
-    });
-    return (): void => cancelAnimationFrame(frame);
-  }, [collapsedViewDefinition, sortConfig]);
   const resizeColumn = React.useCallback(
     (columnIndex: number, event: React.PointerEvent<HTMLDivElement>): void => {
       event.preventDefault();
