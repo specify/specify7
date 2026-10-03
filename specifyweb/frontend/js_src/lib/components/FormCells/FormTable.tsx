@@ -652,7 +652,7 @@ export function FormTable<SCHEMA extends AnySchema>({
               return (
                 <DataEntry.Cell
                   align="center"
-                  className={`${cellClassName} relative min-w-0 justify-center pr-3`}
+                  className={`${cellClassName} relative min-w-0 justify-center`}
                   colSpan={cell.colSpan}
                   key={index}
                   data-subview-header-col={columnIndex}
