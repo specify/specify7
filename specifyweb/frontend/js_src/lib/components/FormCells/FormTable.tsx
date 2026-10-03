@@ -9,7 +9,7 @@ import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
-import { DataEntry } from '../Atoms/DataEntry';
+import { columnDefinitionsToCss, DataEntry } from '../Atoms/DataEntry';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { useAttachment } from '../Attachments/Plugin';
@@ -333,6 +333,12 @@ export function FormTable<SCHEMA extends AnySchema>({
     'flexibleColumnWidth'
   );
 
+  const [flexibleSubGridColumnWidth] = userPreferences.use(
+    'form',
+    'definition',
+    'flexibleSubGridColumnWidth'
+  );
+
   const displayDeleteButton =
     mode !== 'view' && typeof handleDelete === 'function';
   const displayViewButton = !isDependent;
@@ -487,15 +493,46 @@ export function FormTable<SCHEMA extends AnySchema>({
     [columnWidths]
   );
   const gridTemplateColumns = React.useMemo(() => {
-    const autoColumns = contentColumnWidths
-      .map((width, index) => ({ width, index }))
-      .filter(({ index }) => columnWidths[index] === undefined);
+    const cells = collapsedViewDefinition?.rows[0] ?? [];
+    const definitions = collapsedViewDefinition?.columns ?? [];
+    let trackIndex = 0;
+    const tracks = cells.flatMap((cell, cellIndex) => {
+      const span = cell.colSpan;
+      return Array.from({ length: span }, () => {
+        const index = trackIndex++;
+        const customWidth = definitions[index];
+        return {
+          cellIndex,
+          index,
+          width:
+            columnWidths[cellIndex] === undefined ? customWidth : undefined,
+        };
+      });
+    });
+    const autoColumns = tracks
+      .filter(
+        ({ width, cellIndex }) =>
+          typeof width !== 'number' && columnWidths[cellIndex] === undefined
+      )
+      .map(({ cellIndex, index }) => ({
+        cellIndex,
+        index,
+        width:
+          (contentColumnWidths[cellIndex] ?? minSubviewColumnWidth) /
+          (cells[cellIndex]?.colSpan ?? 1),
+      }));
     const fixedWidth = Object.values(columnWidths).reduce(
       (total, width) => total + width,
       0
     );
-    const minimumWidths = autoColumns.map(({ index }) => {
-      const definition = collapsedViewDefinition?.rows[0]?.[index];
+    const customFixedWidth = flexibleSubGridColumnWidth
+      ? 0
+      : tracks.reduce(
+          (total, { width }) => total + (typeof width === 'number' ? width : 0),
+          0
+        );
+    const minimumWidths = autoColumns.map(({ cellIndex }) => {
+      const definition = cells[cellIndex];
       const fieldName =
         definition !== undefined && 'fieldNames' in definition
           ? definition.fieldNames?.join(backboneFieldSeparator)
@@ -503,39 +540,35 @@ export function FormTable<SCHEMA extends AnySchema>({
       return sortConfig?.sortField === fieldName
         ? Math.max(
             minSubviewColumnWidth,
-            headerColumnWidths[index] ?? minSubviewColumnWidth
+            (headerColumnWidths[cellIndex] ?? minSubviewColumnWidth) /
+              (definition?.colSpan ?? 1)
           )
         : minSubviewColumnWidth;
     });
     const widths = fitSubviewColumnWidths(
       autoColumns.map(({ width }) => width),
-      tableWidth - tableChromeWidth - fixedWidth,
+      tableWidth - tableChromeWidth - fixedWidth - customFixedWidth,
       minimumWidths
     );
-    let autoIndex = 0;
-    const cells = collapsedViewDefinition?.rows[0] ?? [];
     const cellColumns = cells.reduce((total, cell) => total + cell.colSpan, 0);
+    let autoIndex = 0;
     return [
       'min-content',
-      ...cells.flatMap((cell, index) => {
-        const span = cell.colSpan;
-        if (columnWidths[index] !== undefined)
-          return Array.from(
-            { length: span },
-            () => `${columnWidths[index] / span}px`
-          );
+      ...tracks.map(({ cellIndex, width }) => {
+        const cell = cells[cellIndex];
+        if (columnWidths[cellIndex] !== undefined)
+          return `${columnWidths[cellIndex] / (cell?.colSpan ?? 1)}px`;
+        if (typeof width === 'number')
+          return columnDefinitionsToCss([width], flexibleSubGridColumnWidth);
         const minimumWidth = widths[autoIndex] ?? minSubviewColumnWidth;
         const flex = autoColumns[autoIndex]?.width ?? minSubviewColumnWidth;
         autoIndex += 1;
-        return Array.from(
-          { length: span },
-          () => `minmax(${minimumWidth / span}px, ${flex / span}fr)`
-        );
+        return `minmax(${minimumWidth}px, ${flex}fr)`;
       }),
       ...(collapsedViewDefinition?.columns.slice(cellColumns) ?? []).map(
         (width) =>
           typeof width === 'number'
-            ? `${width}${flexibleColumnWidth ? 'fr' : 'px'}`
+            ? columnDefinitionsToCss([width], flexibleSubGridColumnWidth)
             : 'minmax(0, 1fr)'
       ),
       autoColumns.length === 0 ? 'minmax(0, 1fr)' : '0px',
@@ -548,7 +581,7 @@ export function FormTable<SCHEMA extends AnySchema>({
     contentColumnWidths,
     headerColumnWidths,
     sortConfig,
-    flexibleColumnWidth,
+    flexibleSubGridColumnWidth,
     tableChromeWidth,
     tableWidth,
   ]);
