@@ -315,6 +315,7 @@ export function FormTable<SCHEMA extends AnySchema>({
   const displayViewButton = !isDependent;
 
   const scrollerRef = React.useRef<HTMLDivElement | null>(null);
+  const scrollContainerRef = React.useRef<HTMLDivElement | null>(null);
   const [tableWidth, setTableWidth] = React.useState(0);
   const [contentColumnWidths, setContentColumnWidths] = React.useState<
     Array<number>
@@ -464,7 +465,7 @@ export function FormTable<SCHEMA extends AnySchema>({
   ]);
   const { isFetching, handleScroll } = useInfiniteScroll(
     handleFetchMore,
-    scrollerRef
+    scrollContainerRef
   );
 
   const [maxHeight] = userPreferences.use('form', 'formTable', 'maxHeight');
@@ -508,13 +509,15 @@ export function FormTable<SCHEMA extends AnySchema>({
           isCollapsed
             ? 'hidden'
             : showSubviewBorders
-              ? 'overflow-x-auto border border-gray-500 border-t-0 rounded-b pl-1 pr-1 pb-1'
-              : 'overflow-x-auto pl-1 pr-1 pb-1'
+              ? 'overflow-auto border border-gray-500 border-t-0 rounded-b pl-1 pr-1 pb-1'
+              : 'overflow-auto pl-1 pr-1 pb-1'
         }
+        ref={scrollContainerRef}
+        style={{ maxHeight: `${maxHeight}px` }}
         onScroll={handleScroll}
       >
         <DataEntry.Grid
-          className="sticky w-full gap-1 pt-0"
+          className="w-full gap-1 pt-0"
           display="inline"
           flexibleColumnWidth={flexibleColumnWidth}
           forwardRef={scrollerRef}
@@ -522,7 +525,6 @@ export function FormTable<SCHEMA extends AnySchema>({
           style={{
             gridTemplateColumns,
             width: '100%',
-            maxHeight: `${maxHeight}px`,
           }}
           viewDefinition={collapsedViewDefinition}
         >
