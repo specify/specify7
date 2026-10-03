@@ -372,9 +372,12 @@ export function FormTable<SCHEMA extends AnySchema>({
       const headers = tableElement.querySelectorAll<HTMLElement>(
         '[role="columnheader"]'
       );
+      const actionButton = tableElement.querySelector<HTMLElement>(
+        '[role="rowgroup"] [role="row"] [role="cell"]:last-child button'
+      );
       const buttonColumnsWidth =
         (headers[0]?.getBoundingClientRect().width ?? 40) +
-        (headers[headers.length - 1]?.getBoundingClientRect().width ?? 40);
+        Math.max(40, actionButton?.getBoundingClientRect().width ?? 0);
       const style = getComputedStyle(tableElement);
       const horizontalPadding =
         Number.parseFloat(style.paddingLeft) +
@@ -383,7 +386,7 @@ export function FormTable<SCHEMA extends AnySchema>({
       setTableChromeWidth(
         buttonColumnsWidth +
           horizontalPadding +
-          gap * (measuredWidths.length + 2)
+          gap * (collapsedViewDefinition.columns.length + 2)
       );
       setContentColumnWidths(measuredWidths);
     });
