@@ -9,17 +9,22 @@ from specifyweb.specify.models_utils.model_extras import ModelWithTable
 from specifyweb.specify.models import protect_with_blockers
 from specifyweb.specify.api.crud import strict_get_model
 from specifyweb.backend.stored_queries import models as sqlmodels
+from specifyweb.backend.cache.redis.connect import RedisConnection, RedisString
+
 
 def field_is_remote(field: Field | ForeignObjectRel) -> TypeIs[ForeignObjectRel]:
     # TODO: Check whether there are any concrete fields that SHOULD be
     # included here, like some ToOne fields that acts as blockers
     return field.is_relation and not getattr(field, "concrete", True)
 
+
 def relationship_blocks_deletion(relationship: ForeignObjectRel):
     return relationship.on_delete is protect_with_blockers or relationship.on_delete is PROTECT
 
+
 def relationship_cascades_delete(relationship: ForeignObjectRel):
     return relationship.on_delete is CASCADE
+
 
 def blocker_relationships_for_obj(obj: ModelWithTable) -> tuple[list[ForeignObjectRel], list[ForeignObjectRel]]:
     protect, cascade = [], []
@@ -36,26 +41,76 @@ def blocker_relationships_for_obj(obj: ModelWithTable) -> tuple[list[ForeignObje
 
     return protect, cascade
 
-# FIXME: add redis cache here. This can move a lot of pages into and out of the
-# buffer pool. Make sure to invalidate the cache on tree renumbering
 # REFACTOR: If we need to speed this up even more, consider using the DB cursor
 # directly and skip SQLAlchemy constructs (like validate_tree_numbering)
+# REFACTOR: Maybe we can try to renumber the tree before this check.
+# That might need to be cached as well to prevent renumbering the tree for
+# every request
 def node_numbers_valid_for_tree(tree_name: str, definition_id: int) -> bool:
+    cached_value = _cached_node_numbers_valid(tree_name, definition_id)
+    if cached_value is not None:
+        return cached_value
+
     tree_model = strict_get_model(tree_name)
     tree_table = tree_model.specify_model
     canonical_tree_name = tree_table.name
     tree_node = sqlmodels.models_by_tableid[tree_table.tableId]
     with sqlmodels.session_context() as session:
-        invalid_nodes_exist = _individual_nodes_invalid(tree_node, canonical_tree_name, definition_id)
-        nodes_in_acceptable_ranges = _node_numbers_within_parent_ranges(tree_node, canonical_tree_name, definition_id)
+        invalid_nodes_exist = _individual_nodes_invalid(
+            tree_node, canonical_tree_name, definition_id
+        )
+        nodes_in_acceptable_ranges = _node_numbers_within_parent_ranges(
+            tree_node, canonical_tree_name, definition_id
+        )
         final_query = (
             union_all(invalid_nodes_exist, nodes_in_acceptable_ranges)
             .limit(1)
         )
         result = session.execute(final_query).scalar_one_or_none()
-        return result is None
+        tree_is_valid = result is None
+        _set_cached_node_numbers_valid(tree_name, definition_id, tree_is_valid)
+        return tree_is_valid
 
-# REFACTOR: It might be better here to validate all NodeNumbers and
+
+def _node_number_cache_key(tree_name: str, definition_id: int) -> str:
+    return f"{tree_name}:{definition_id}:nodenumbers:valid"
+
+
+# The node number validation queries can push a lot of pages into the InnoDB
+# Buffer Pool, potentially evicting other hot entries which would need to be
+# read from disk.
+# This cache helps alleviate the problem by caching the result of the node
+# number validation queries to give the buffer pool some breathing room between
+# validations
+def _cached_node_numbers_valid(tree_name: str, definition_id: int) -> bool | None:
+    redis_string = RedisString(RedisConnection())
+    key = _node_number_cache_key(tree_name, definition_id)
+    cached_value = redis_string.get(key)
+    if cached_value is None:
+        return None
+    return cached_value == "1"
+
+
+# REFACTOR: We can be smarter here and update the cache when the tree is
+# renumbered. This would let us set a much longer TTL.
+def _set_cached_node_numbers_valid(tree_name: str, definition_id: int, is_valid: bool, time_to_live: int | None = None):
+    redis_string = RedisString(RedisConnection())
+    key = _node_number_cache_key(tree_name, definition_id)
+    cache_value = "1" if is_valid else "0"
+    if time_to_live is None:
+        # If the node numbers are already valid, it's very unlikely for them to
+        # become invalid.
+        # If the node numbers are invalid, then they won't become valid until
+        # the tree is renumbered (through a tree operation in Specify).
+        # However, running the validation queries on an invalid tree can be far
+        # more performant than on a valid tree.
+        ttl = 900 if is_valid else 600
+    else:
+        ttl = time_to_live
+    redis_string.set(key, cache_value, time_to_live=ttl)
+
+
+# REFACTOR: It might be better here to validate that all NodeNumbers and
 # HighestChildNodeNumbers are distinct here instead.
 # e.g., COUNT(*) == COUNT(DISTINCT NodeNumber) == COUNT(DISTINCT HighestChildNodeNumber)
 def _individual_nodes_invalid(tree_model, tree_name: str, definition_id: int):
@@ -76,6 +131,7 @@ def _individual_nodes_invalid(tree_model, tree_name: str, definition_id: int):
         .limit(1)
     )
     return invalid_nodes_exist_query
+
 
 def _node_numbers_within_parent_ranges(tree_model, tree_name: str, definition_id: int):
     # This is one of two generally efficient ways i've found to validate nodes

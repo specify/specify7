@@ -19,7 +19,7 @@ from specifyweb.specify.models_utils.model_extras import ModelWithTable
 from  specifyweb.backend.workbench.upload.auditcodes import TREE_BULK_MOVE, TREE_MERGE, TREE_SYNONYMIZE, TREE_DESYNONYMIZE
 
 @contextmanager
-def validate_node_numbers(table, revalidate_after=True):
+def validate_node_numbers(table: str, revalidate_after=True):
     try:
         validate_tree_numbering(table)
     except AssertionError:
