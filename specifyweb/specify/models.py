@@ -1,5 +1,6 @@
 from functools import partialmethod
 from django.db import models
+from django.db.models.signals import pre_delete
 from django.db.models import Q, CheckConstraint
 from django.utils import timezone
 from specifyweb.backend.businessrules.exceptions import AbortSave
@@ -41,31 +42,42 @@ def delete_taxon_rank_parent_with_context(collector, field, sub_objs, using):
     """
     Use CASCADE while deleting an entire TaxonTreeDef.
 
-    For single-rank deletion, reparent child ranks before deleting so
-    ParentItemID remains valid.
+    For single-rank deletion, leave children in place during collection and
+    reparent them when the rank is actually deleted.
     """
     deleting_models = getattr(collector, 'data', {})
     is_tree_delete = any(
         getattr(model, '__name__', '').lower() == 'taxontreedef'
         for model in deleting_models.keys()
     )
+    ranks_to_delete = _get_collector_model_instances(collector, 'taxontreedefitem')
+
     if is_tree_delete:
+        for rank in ranks_to_delete:
+            rank._taxon_rank_delete_from_tree = True
         return models.CASCADE(collector, field, sub_objs, using)
 
-    processed_ids = getattr(collector, '_taxon_rank_delete_prepared_ids', set())
-    ranks_to_delete = [
-        rank
-        for rank in _get_collector_model_instances(collector, 'taxontreedefitem')
-        if rank.id not in processed_ids
-    ]
-    _reparent_taxon_rank_children(ranks_to_delete)
-
-    if ranks_to_delete:
-        collector._taxon_rank_delete_prepared_ids = processed_ids.union(
-            {rank.id for rank in ranks_to_delete}
-        )
+    deleting_rank_ids = {rank.id for rank in ranks_to_delete}
+    for rank in ranks_to_delete:
+        rank._taxon_rank_deleting_ids = deleting_rank_ids
 
     return None
+
+
+def reparent_taxon_rank_children_before_delete(sender, instance, using, **kwargs):
+    if getattr(instance, '_taxon_rank_delete_from_tree', False):
+        return
+
+    deleting_rank_ids = getattr(instance, '_taxon_rank_deleting_ids', {instance.id})
+    _reparent_taxon_rank_children([instance], using, deleting_rank_ids)
+
+
+def _reparent_taxon_rank_children(ranks, using, deleting_rank_ids):
+    for rank in ranks:
+        Taxontreedefitem.objects.using(using).filter(parent_id=rank.id)\
+            .exclude(id__in=deleting_rank_ids)\
+            .update(parent_id=rank.parent_id)
+
 
 def custom_save(self, *args, **kwargs):
     try:
@@ -7401,6 +7413,12 @@ class Taxontreedefitem(model_extras.Taxontreedefitem):
 
     
     save = partialmethod(custom_save)
+
+pre_delete.connect(
+    reparent_taxon_rank_children_before_delete,
+    sender=Taxontreedefitem,
+    dispatch_uid='specify.reparent_taxon_rank_children_before_delete',
+)
 
 class Treatmentevent(models.Model):
     specify_model = datamodel.get_table_strict('treatmentevent')
