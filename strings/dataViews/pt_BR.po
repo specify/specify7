@@ -3,71 +3,71 @@ msgstr ""
 "Content-Type: text/plain\n"
 "PO-Revision-Date: 2026-10-01 15:51+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
-"specify-7/dataViews/pt_BR/>\n"
+"Language-Team: Portuguese (Brazil) "
+"<https://hosted.weblate.org/projects/specify-7/dataViews/pt_BR/>\n"
 "Language: pt_BR\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 2026.10\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 
-#. 🟥The name of the component. Used in: Components > Data Views > Data View Tables ⬤ Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes
 #: components/DataViews/DataViewTables.tsx:107
 #: components/DataViews/DataViewTables.tsx:115
 #: components/Header/menuItemDefinitions.ts:78
 #: components/Preferences/UserDefinitions.tsx:1951
 #: components/Router/OverlayRoutes.tsx:147
+#. 🟥The name of the component. Used in: Components > Data Views > Data View Tables ⬤ Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes
 #, fuzzy
 msgid "dataViewsTitle"
 msgstr "Visualizações de dados"
 
+#: components/DataViews/index.tsx:349
+#: components/DataViews/index.tsx:371
 #. 🟥Used as a dialog header within the Data Views component. Used in: Components > Data Views > Index
-#: components/DataViews/index.tsx:335
-#: components/DataViews/index.tsx:357
 #, fuzzy
 msgid "tableRecords"
 msgstr "{tableLabel:string} Registros"
 
-#. Used in: Components > Data Views > Data View Tables
 #: components/DataViews/DataViewTables.tsx:106
+#. Used in: Components > Data Views > Data View Tables
 #, fuzzy
 msgid "configureDataViews"
 msgstr "Configurar tabelas {dataViews:string}"
 
-#. 🟥The name of the Data View query app resource type. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:111
+#. 🟥The name of the Data View query app resource type. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "dataViewQueries"
 msgstr "Consultas de visualização de dados"
 
-#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1800
 #: components/Preferences/UserDefinitions.tsx:1957
+#. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "splitViewByDefault"
 msgstr "Ativar {splitView:string} por padrão"
 
-#. Used in: Components > Data Views > Data View Tables ⬤ Components > Data Views > Query Editor ⬤ Components > Data Views > Index
 #: components/DataViews/DataViewTables.tsx:89
 #: components/DataViews/QueryEditor.tsx:174
-#: components/DataViews/index.tsx:265
+#: components/DataViews/index.tsx:274
+#. Used in: Components > Data Views > Data View Tables ⬤ Components > Data Views > Query Editor ⬤ Components > Data Views > Index
 #, fuzzy
 msgid "configureQuery"
 msgstr "Configurar consulta"
 
-#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1803
 #: components/Preferences/UserDefinitions.tsx:1960
+#. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "splitViewDescription"
 msgstr ""
-"{splitView:string} exibe os resultados da consulta juntamente com uma pré-"
-"visualização do registro, permitindo que você revise os registros sem sair "
-"da lista de resultados."
+"{splitView:string} exibe os resultados da consulta juntamente com uma "
+"pré-visualização do registro, permitindo que você revise os registros sem "
+"sair da lista de resultados."
 
-#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1812
 #: components/Preferences/UserDefinitions.tsx:1969
+#. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "splitViewOrientation"
 msgstr "Orientação padrão {splitView:string}"

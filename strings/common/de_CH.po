@@ -34,7 +34,7 @@ msgstr "Nein"
 #: components/BatchIdentify/index.tsx:834
 #: components/DataEntryTables/index.tsx:41
 #: components/DataViews/DataViewTables.tsx:71
-#: components/DataViews/index.tsx:244
+#: components/DataViews/index.tsx:253
 #: components/ExportFeed/ForceUpdate.tsx:33
 #: components/ExpressSearchConfig/ExpressSearchConfigDialog.tsx:58
 #: components/FormCells/COJODialog.tsx:92
@@ -399,7 +399,7 @@ msgstr "Nicht zugeordnete Spalten löschen"
 #: components/AttachmentsBulkImport/Datasets.tsx:271
 #: components/AttachmentsBulkImport/Import.tsx:441
 #: components/DataViews/DataViewTables.tsx:85
-#: components/DataViews/index.tsx:261
+#: components/DataViews/index.tsx:270
 #: components/ExpressSearchConfig/ExpressSearchConfigDialog.tsx:59
 #: components/Forms/Save.tsx:55
 #: components/Preferences/index.tsx:154
@@ -548,8 +548,8 @@ msgstr "Tools"
 #: components/Preferences/Renderers.tsx:119
 #: components/QueryBuilder/Formatter.tsx:178
 #: components/QueryBuilder/QueryLineFilter.tsx:90
-#: components/QueryBuilder/Results.tsx:469
-#: components/QueryBuilder/Results.tsx:470
+#: components/QueryBuilder/Results.tsx:473
+#: components/QueryBuilder/Results.tsx:474
 #: components/QueryComboBox/index.tsx:451
 #: components/SchemaConfig/Fields.tsx:181
 #: components/SchemaConfig/index.tsx:98
@@ -974,7 +974,7 @@ msgstr "ID"
 msgid "filter"
 msgstr "Filter"
 
-#: components/QueryBuilder/Results.tsx:105
+#: components/QueryBuilder/Results.tsx:107
 #: components/WbActions/index.tsx:130
 #. Used in: Components > Query Builder > Results ⬤ Components > Wb Actions > Index
 msgid "results"
@@ -1049,7 +1049,7 @@ msgstr "Zurücksetzen"
 #: components/AttachmentsBulkImport/MappingFileSetup.tsx:281
 #: components/AttachmentsBulkImport/MappingFileSetup.tsx:310
 #: components/BatchIdentify/index.tsx:932
-#: components/DataViews/index.tsx:324
+#: components/DataViews/index.tsx:338
 #: components/FormEditor/Create.tsx:210
 #: components/QueryBuilder/QueryBuilderResults.tsx:77
 #: components/QueryBuilder/ResultsTable.tsx:194
@@ -1146,7 +1146,7 @@ msgstr "{header:string}:"
 #: components/Merging/Header.tsx:213
 #: components/Molecules/FilePicker.tsx:113
 #: components/QueryBuilder/Header.tsx:107
-#: components/QueryBuilder/Results.tsx:465
+#: components/QueryBuilder/Results.tsx:469
 #: components/QueryBuilder/ResultsTable.tsx:235
 #: components/QueryBuilder/ToForms.tsx:55
 #: components/QueryComboBox/spec.ts:72

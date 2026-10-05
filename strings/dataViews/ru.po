@@ -3,8 +3,8 @@ msgstr ""
 "Content-Type: text/plain\n"
 "PO-Revision-Date: 2026-10-01 15:51+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/"
-"dataViews/ru/>\n"
+"Language-Team: Russian "
+"<https://hosted.weblate.org/projects/specify-7/dataViews/ru/>\n"
 "Language: ru\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
@@ -12,53 +12,53 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 
-#. 🟥The name of the component. Used in: Components > Data Views > Data View Tables ⬤ Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes
 #: components/DataViews/DataViewTables.tsx:107
 #: components/DataViews/DataViewTables.tsx:115
 #: components/Header/menuItemDefinitions.ts:78
 #: components/Preferences/UserDefinitions.tsx:1951
 #: components/Router/OverlayRoutes.tsx:147
+#. 🟥The name of the component. Used in: Components > Data Views > Data View Tables ⬤ Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes
 #, fuzzy
 msgid "dataViewsTitle"
 msgstr "Представления данных"
 
+#: components/DataViews/index.tsx:349
+#: components/DataViews/index.tsx:371
 #. 🟥Used as a dialog header within the Data Views component. Used in: Components > Data Views > Index
-#: components/DataViews/index.tsx:335
-#: components/DataViews/index.tsx:357
 #, fuzzy
 msgid "tableRecords"
 msgstr "{tableLabel:string} Записи"
 
-#. Used in: Components > Data Views > Data View Tables
 #: components/DataViews/DataViewTables.tsx:106
+#. Used in: Components > Data Views > Data View Tables
 #, fuzzy
 msgid "configureDataViews"
 msgstr "Настройка таблиц {dataViews:string}"
 
-#. 🟥The name of the Data View query app resource type. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:111
+#. 🟥The name of the Data View query app resource type. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "dataViewQueries"
 msgstr "Запросы для просмотра данных"
 
-#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1800
 #: components/Preferences/UserDefinitions.tsx:1957
+#. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "splitViewByDefault"
 msgstr "Включить {splitView:string} по умолчанию"
 
-#. Used in: Components > Data Views > Data View Tables ⬤ Components > Data Views > Query Editor ⬤ Components > Data Views > Index
 #: components/DataViews/DataViewTables.tsx:89
 #: components/DataViews/QueryEditor.tsx:174
-#: components/DataViews/index.tsx:265
+#: components/DataViews/index.tsx:274
+#. Used in: Components > Data Views > Data View Tables ⬤ Components > Data Views > Query Editor ⬤ Components > Data Views > Index
 #, fuzzy
 msgid "configureQuery"
 msgstr "Настроить запрос"
 
-#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1803
 #: components/Preferences/UserDefinitions.tsx:1960
+#. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "splitViewDescription"
 msgstr ""
@@ -66,9 +66,9 @@ msgstr ""
 "просмотром записей, позволяя просматривать записи, не покидая список "
 "результатов."
 
-#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1812
 #: components/Preferences/UserDefinitions.tsx:1969
+#. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "splitViewOrientation"
 msgstr "Ориентация по умолчанию {splitView:string}"
