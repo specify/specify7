@@ -252,3 +252,46 @@ class TestAccessionNumber(SQLAlchemySetup):
         self.assertEqual(json.loads(response.content.decode()),{"results": [[self.collectionobjects[0].id, accessionnumber]]},)
 
         
+class TestGiftNumber(SQLAlchemySetup):
+    @patch("specifyweb.backend.stored_queries.execution.models.session_context")
+    def test_match_gift_by_gift_number(self, session_context):
+        session_context.return_value = TestAccessionNumber.test_session_context()
+
+        giftnumber = "gift 1"
+        gift = models.Gift.objects.create(
+            giftnumber= giftnumber,
+            discipline=self.discipline,
+
+        )
+
+        self._create_prep_type()
+        preparation = self._create_prep(self.collectionobjects[0], None)
+        models.Giftpreparation.objects.create(
+            gift=gift,
+            preparation=preparation,
+            discipline=self.discipline,
+        )
+
+        c = Client()
+        c.force_login(self.specifyuser)
+               
+        query = get_simple_query(self.specifyuser)
+        query["fields"][0].update({
+            "tablelist": "1,63-preparations,132-giftPreparations,131",
+            "stringid": "1,63-preparations,132-giftPreparations,131.gift.giftNumber",
+            "fieldname": "giftNumber",
+            "operstart": 1,
+            "startvalue": giftnumber,
+            "isrelfld": False,
+            "isnot": False,
+            "isdisplay": True,
+        })
+
+        response = c.post("/stored_query/ephemeral/",query,content_type="application/json",)
+        self.assertEqual(response.status_code, 200, response.content.decode())
+        self.assertEqual(json.loads(response.content.decode()),{"results": [[self.collectionobjects[0].id, giftnumber]]},)
+
+
+
+
+        
