@@ -74,9 +74,17 @@ def reparent_taxon_rank_children_before_delete(sender, instance, using, **kwargs
 
 def _reparent_taxon_rank_children(ranks, using, deleting_rank_ids):
     for rank in ranks:
+        parent_id = rank.parent_id
+        while parent_id in deleting_rank_ids:
+            parent_id = (
+                Taxontreedefitem.objects.using(using)
+                .filter(id=parent_id)
+                .values_list('parent_id', flat=True)
+                .first()
+            )
         Taxontreedefitem.objects.using(using).filter(parent_id=rank.id)\
             .exclude(id__in=deleting_rank_ids)\
-            .update(parent_id=rank.parent_id)
+            .update(parent_id=parent_id)
 
 
 def custom_save(self, *args, **kwargs):
