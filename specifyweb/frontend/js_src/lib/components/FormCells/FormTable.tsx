@@ -364,7 +364,7 @@ export function FormTable<SCHEMA extends AnySchema>({
     });
     observer.observe(scrollContainer);
     return (): void => observer.disconnect();
-  }, [collapsedViewDefinition, resources.length > 0]);
+  }, [collapsedViewDefinition, isCollapsed, resources.length > 0]);
   React.useEffect(() => {
     if (collapsedViewDefinition === undefined) return;
     const frame = requestAnimationFrame(() => {
