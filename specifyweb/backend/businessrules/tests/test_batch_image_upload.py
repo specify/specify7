@@ -177,4 +177,46 @@ class TestCollecitngEventFieldNumber(SQLAlchemySetup):
     
             self.assertEqual(response.status_code, 200, response.content.decode())
             self.assertEqual(json.loads(response.content.decode()),{"results": [[collectionobject.id, stationfieldnumber]]},)
+
+   
+class TestCollecitngEventLoanNumber(SQLAlchemySetup):
+    @patch("specifyweb.backend.stored_queries.execution.models.session_context")
+    def test_match_collecting_event_by_loan_number(self, session_context):
+        session_context.return_value = TestCollecitngEventLoanNumber.test_session_context()
+
+        loannumber = "Inerred_Loan"
+        loan = models.Loan.objects.create(
+                    loannumber = loannumber,
+                    division=self.division,
+                    discipline=self.discipline,
+                )
+
+        self._create_prep_type()
+        preparation = self._create_prep(self.collectionobjects[0], None)
+        loan.loanpreparations.create(
+            discipline=self.discipline,
+            preparation=preparation,
+        )
+
+       
+        c = Client()
+        c.force_login(self.specifyuser)
+           
+        query = get_simple_query(self.specifyuser)
+        query["fields"][0].update({
+            "tablelist": "1,63-preparations,54-loanpreparations,52",
+            "stringid": "1,63-preparations,54-loanpreparations,52.loan.loanNumber",
+            "fieldname": "loanNumber",
+            "operstart": 1,
+            "startvalue": loannumber,
+            "isrelfld": False,
+        })
+
+        response = c.post("/stored_query/ephemeral/",query,content_type="application/json",) 
+        
+        self.assertEqual(response.status_code, 200, response.content.decode())
+        self.assertEqual(
+            json.loads(response.content.decode()),
+            {"results": [[self.collectionobjects[0].id, loannumber]]},
+        )
         
