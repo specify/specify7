@@ -1,6 +1,7 @@
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
+import { commonText } from '../../localization/common';
 import type { IR, RA, RR } from '../../utils/types';
 import { className } from './className';
 import type { IconProps } from './Icons';
@@ -46,7 +47,15 @@ export const Link = {
       children: (
         <>
           {props.children}
-          <span aria-hidden>{icons.externalLink}</span>
+          <span
+            title={
+              (props.children === undefined ? props.title : undefined) ??
+              commonText.opensInNewTab()
+            }
+          >
+            <span className="sr-only">{commonText.opensInNewTab()}</span>
+            {icons.externalLink}
+          </span>
         </>
       ),
     };

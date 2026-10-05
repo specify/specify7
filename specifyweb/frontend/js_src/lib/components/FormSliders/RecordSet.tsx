@@ -181,6 +181,7 @@ function RecordSet<SCHEMA extends AnySchema>({
 }: Omit<
   RecordSelectorProps<SCHEMA>,
   | 'defaultIndex'
+  | 'enableKeyboardShortcuts'
   | 'field'
   | 'index'
   | 'onDelete'

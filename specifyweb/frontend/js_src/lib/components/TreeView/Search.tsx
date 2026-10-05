@@ -35,7 +35,7 @@ export function TreeViewSearch<SCHEMA extends AnyTree>({
   readonly treeDefinitionItems: RA<
     SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>
   >;
-  readonly forwardRef: React.RefObject<HTMLInputElement | null>;
+  readonly forwardRef: React.MutableRefObject<HTMLInputElement | null>;
   readonly biostratFilter?: 'all' | 'bio' | 'chrono';
   readonly onFocusPath: (focusPath: RA<number>) => void;
 }): JSX.Element {
@@ -62,16 +62,27 @@ export function TreeViewSearch<SCHEMA extends AnyTree>({
     searchAlgorithm
   );
 
+  const searchBoxRef = React.useRef<HTMLInputElement | null>(null);
+  const keyboardShortcut = userPreferences.useKeyboardShortcut(
+    'treeEditor',
+    'actions',
+    'search',
+    (): void => searchBoxRef.current?.focus()
+  );
+
   return (
     <div>
       {/* A React component that is also a TypeScript generic */}
       <AutoComplete<SerializedResource<SCHEMA>>
         filterItems={false}
-        forwardRef={forwardRef}
+        forwardRef={(element): void => {
+          forwardRef.current = element;
+          searchBoxRef.current = element;
+        }}
         inputProps={{
           'aria-label': treeText.searchTreePlaceholder(),
           placeholder: treeText.searchTreePlaceholder(),
-          title: treeText.searchTreePlaceholder(),
+          title: `${treeText.searchTreePlaceholder()}${keyboardShortcut}`,
         }}
         source={async (value) =>
           fetchCollection(
@@ -81,7 +92,6 @@ export function TreeViewSearch<SCHEMA extends AnyTree>({
               definition: treeDefinitionId,
               limit: DEFAULT_FETCH_SEARCH_LIMIT,
               orderBy: 'name',
-              // Tree search already scopes by the selected definition; allow shared trees.
               domainFilter: false,
             },
             {
@@ -93,30 +103,27 @@ export function TreeViewSearch<SCHEMA extends AnyTree>({
                 : {}),
             }
           ).then(({ records }) =>
-            records
-              .filter((node) => {
-                if (
-                  tableName !== 'GeologicTimePeriod' ||
-                  biostratFilter === 'all'
-                )
-                  return true;
-                // isBioStrat is a nullable boolean field
-                const isBioStrat = (node as any).isBioStrat;
-                if (biostratFilter === 'bio') return isBioStrat === true;
-                // show nodes where isBioStrat is false or null
-                return isBioStrat !== true;
-              })
-              .map((node) => {
-                const rankDefinition = treeDefinitionItems.find(
-                  ({ rankId }) => rankId === node.rankId
-                );
-                const rankName = rankDefinition?.title || rankDefinition?.name;
-                return {
-                  label: node.fullName ?? node.name,
-                  subLabel: rankName,
-                  data: node as SerializedResource<SCHEMA>,
-                };
-              })
+            records.filter((node) => {
+              if (
+                tableName !== 'GeologicTimePeriod' ||
+                biostratFilter === 'all'
+              )
+                return true;
+              const isBioStrat = (node as any).isBioStrat;
+              return biostratFilter === 'bio'
+                ? isBioStrat === true
+                : isBioStrat !== true;
+            }).map((node) => {
+              const rankDefinition = treeDefinitionItems.find(
+                ({ rankId }) => rankId === node.rankId
+              );
+              const rankName = rankDefinition?.title || rankDefinition?.name;
+              return {
+                label: node.fullName ?? node.name,
+                subLabel: rankName,
+                data: node as SerializedResource<SCHEMA>,
+              };
+            })
           )
         }
         value={searchValue}

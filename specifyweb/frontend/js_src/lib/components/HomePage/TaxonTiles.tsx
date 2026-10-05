@@ -49,7 +49,7 @@ export function TaxonTiles(): JSX.Element {
         .attr('title', titleGenerator)
         .on('mouseover', (_event, node) => setTitle(titleGenerator(node)))
         .on('click', (_event, node) =>
-          window.open(
+          globalThis.open(
             `/specify/query/fromtree/taxon/${node.data.id}/`,
             '_blank'
           )

@@ -69,7 +69,7 @@ export function ExpressSearchOverlay(): JSX.Element {
         icon={icons.search}
         onClose={handleClose}
       >
-        <SearchForm formId={formId}>
+        <SearchForm autoFocus formId={formId}>
           {canEditExpressSearchConfig && (
             <Button.BorderedGray
               className="!px-2"
@@ -94,9 +94,11 @@ export function ExpressSearchOverlay(): JSX.Element {
 
 export function SearchForm({
   formId,
+  autoFocus,
   children,
 }: {
   readonly formId: string;
+  readonly autoFocus: boolean;
   readonly children?: React.ReactNode;
 }): JSX.Element {
   const navigate = useNavigate();
@@ -111,7 +113,7 @@ export function SearchForm({
       }
     >
       <div className="flex items-center gap-2">
-        <SearchField value={value} />
+        <SearchField autoFocus={autoFocus} value={value} />
         {children}
       </div>
     </Form>
@@ -120,13 +122,16 @@ export function SearchForm({
 
 function SearchField({
   value: [value, setValue],
+  autoFocus,
 }: {
   readonly value: GetSet<string>;
+  readonly autoFocus: boolean;
 }): JSX.Element {
   return (
     <Input.Generic
       aria-label={commonText.search()}
       autoComplete="on"
+      autoFocus={autoFocus}
       className="flex-1 bg-[color:var(--field-background)] py-2"
       // Name is for autocomplete purposes only
       name="searchQuery"
@@ -213,7 +218,7 @@ export function ExpressSearchView(): JSX.Element {
         )}
         <Form onSubmit={(): void => setQuery(pendingQuery)}>
           <div className="flex items-center gap-2">
-            <SearchField value={value} />
+            <SearchField autoFocus value={value} />
             {canEditExpressSearchConfig && (
               <Button.BorderedGray
                 className="!px-2"
