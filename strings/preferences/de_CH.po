@@ -1376,14 +1376,14 @@ msgstr ""
 "Ermöglicht die Anwendung der folgenden Filter auf Textfelder: Größer als, "
 "Kleiner als, Größer oder gleich und Kleiner oder gleich"
 
-#: components/QueryBuilder/Header.tsx:155
+#: components/QueryBuilder/Header.tsx:151
 #: components/Reports/Parameters.tsx:98
 #. Used in: Components > Query Builder > Header ⬤ Components > Reports > Parameters
 #, fuzzy
 msgid "basicView"
 msgstr "Grundansicht"
 
-#: components/QueryBuilder/Header.tsx:154
+#: components/QueryBuilder/Header.tsx:150
 #: components/Reports/Parameters.tsx:97
 #. Used in: Components > Query Builder > Header ⬤ Components > Reports > Parameters
 #, fuzzy

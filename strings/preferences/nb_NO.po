@@ -1222,13 +1222,13 @@ msgstr ""
 "Tillater at følgende filtre brukes på tekstfelt: Større enn, Mindre enn, "
 "Større enn eller lik og Mindre enn eller lik"
 
-#: components/QueryBuilder/Header.tsx:155
+#: components/QueryBuilder/Header.tsx:151
 #: components/Reports/Parameters.tsx:98
 #. Used in: Components > Query Builder > Header ⬤ Components > Reports > Parameters
 msgid "basicView"
 msgstr "Basis-visning"
 
-#: components/QueryBuilder/Header.tsx:154
+#: components/QueryBuilder/Header.tsx:150
 #: components/Reports/Parameters.tsx:97
 #. Used in: Components > Query Builder > Header ⬤ Components > Reports > Parameters
 msgid "detailedView"

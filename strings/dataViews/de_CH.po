@@ -21,8 +21,8 @@ msgstr ""
 msgid "dataViewsTitle"
 msgstr "Datenansichten"
 
-#: components/DataViews/index.tsx:349
-#: components/DataViews/index.tsx:371
+#: components/DataViews/index.tsx:343
+#: components/DataViews/index.tsx:365
 #. 🟥Used as a dialog header within the Data Views component. Used in: Components > Data Views > Index
 #, fuzzy
 msgid "tableRecords"
@@ -49,7 +49,7 @@ msgstr "{splitView:string} standardmäßig aktivieren"
 
 #: components/DataViews/DataViewTables.tsx:89
 #: components/DataViews/QueryEditor.tsx:174
-#: components/DataViews/index.tsx:274
+#: components/DataViews/index.tsx:268
 #. Used in: Components > Data Views > Data View Tables ⬤ Components > Data Views > Query Editor ⬤ Components > Data Views > Index
 #, fuzzy
 msgid "configureQuery"

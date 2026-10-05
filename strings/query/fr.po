@@ -167,7 +167,7 @@ msgstr ""
 msgid "treeQueryName"
 msgstr "{tableName:string} utilisant \"{nodeFullName:string}\""
 
-#: components/QueryBuilder/Wrapped.tsx:479
+#: components/QueryBuilder/Wrapped.tsx:481
 #. Used in: Components > Query Builder > Wrapped
 msgid "newButtonDescription"
 msgstr "Ajouter un nouveau champ"
