@@ -53,6 +53,7 @@ const primaryPane = <div />;
 const secondaryPane = <div />;
 
 test('clears the dragged pane size when the orientation changes', () => {
+  mockSetState.mockClear();
   const { rerender } = render(
     <SplitView
       isHorizontal
@@ -67,6 +68,33 @@ test('clears the dragged pane size when the orientation changes', () => {
   rerender(
     <SplitView
       isHorizontal={false}
+      primaryPane={primaryPane}
+      primaryPaneKey="primary"
+      secondaryPane={secondaryPane}
+      secondaryPaneKey="secondary"
+    />
+  );
+  expect(mockSetState).toHaveBeenCalledWith({ primaryPane: undefined });
+});
+
+test('clears the dragged pane size when the split view is hidden', () => {
+  mockSetState.mockClear();
+  const { rerender } = render(
+    <SplitView
+      isHorizontal
+      isSplit
+      primaryPane={primaryPane}
+      primaryPaneKey="primary"
+      secondaryPane={secondaryPane}
+      secondaryPaneKey="secondary"
+    />
+  );
+  expect(mockSetState).not.toHaveBeenCalled();
+
+  rerender(
+    <SplitView
+      isHorizontal
+      isSplit={false}
       primaryPane={primaryPane}
       primaryPaneKey="primary"
       secondaryPane={secondaryPane}

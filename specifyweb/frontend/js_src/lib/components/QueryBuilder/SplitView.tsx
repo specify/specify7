@@ -77,11 +77,16 @@ export function SplitView({
     null
   );
   const previousIsHorizontal = React.useRef(isHorizontal);
+  const previousIsSplit = React.useRef(isSplit);
   React.useLayoutEffect(() => {
-    if (previousIsHorizontal.current !== isHorizontal)
+    if (
+      previousIsHorizontal.current !== isHorizontal ||
+      (previousIsSplit.current && !isSplit)
+    )
       splitterRef.current?.setState({ primaryPane: undefined });
     previousIsHorizontal.current = isHorizontal;
-  }, [isHorizontal]);
+    previousIsSplit.current = isSplit;
+  }, [isHorizontal, isSplit]);
 
   return (
     <Splitter
