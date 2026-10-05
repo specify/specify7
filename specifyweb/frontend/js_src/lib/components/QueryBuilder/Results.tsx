@@ -96,6 +96,8 @@ export type QueryResultsProps = {
   readonly isSplit?: boolean;
   readonly splitHorizontal?: boolean;
   readonly splitPrimaryPaneMaxWidth?: string;
+  readonly onDeleted?: (recordId: number) => void;
+  readonly onMerged?: () => void;
   readonly scrollRef?: React.MutableRefObject<HTMLDivElement | null>;
   readonly restoreScrollTopRef?: React.MutableRefObject<number | undefined>;
   readonly refreshToken?: number;
@@ -128,6 +130,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     onSelected: handleSelected,
     onSortChange: handleSortChange,
     onReRun: handleReRun,
+    onMerged: handleMerged,
     createRecordSet,
     extraButtons,
     containerClassName = '',
@@ -138,6 +141,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     isSplit,
     splitHorizontal,
     splitPrimaryPaneMaxWidth,
+    onDeleted: handleDeleted,
     scrollRef,
     restoreScrollTopRef,
     refreshToken,
@@ -516,8 +520,11 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
               <RecordMergingLink
                 selectedRows={selectedRows}
                 table={table}
-                onDeleted={handleDelete}
-                onMerged={handleReRun}
+                onDeleted={(recordId): void => {
+                  handleDelete(recordId);
+                  handleDeleted?.(recordId);
+                }}
+                onMerged={handleMerged ?? handleReRun}
               />
             ) : undefined}
             {hasToolPermission('recordSets', 'create') && totalCount !== 0 ? (

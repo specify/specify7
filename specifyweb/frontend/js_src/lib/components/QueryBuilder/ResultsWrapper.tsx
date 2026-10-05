@@ -34,8 +34,10 @@ export function QueryResultsWrapper({
   extraButtons,
   onSelected: handleSelected,
   onResults: handleResults,
+  onDeleted: handleDeleted,
   onReRun: handleReRun,
   renderSplitPane,
+  onMerged: handleMerged,
   refreshToken,
   splitPane,
   splitContainerRef,
@@ -75,6 +77,7 @@ export function QueryResultsWrapper({
         <QueryResults
           {...newProps}
           onResults={handleResults}
+          onDeleted={handleDeleted}
           createRecordSet={createRecordSet}
           extraButtons={extraButtons}
           onReRun={handleReRun}
@@ -82,6 +85,7 @@ export function QueryResultsWrapper({
           isSplit={isSplit}
           splitHorizontal={splitHorizontal}
           splitPrimaryPaneMaxWidth={splitPrimaryPaneMaxWidth}
+          onMerged={handleMerged}
           onSelected={handleSelected}
           refreshToken={refreshToken}
         />
@@ -128,6 +132,8 @@ type ResultsProps = {
   readonly containerClassName?: string;
   readonly tableClassName?: string;
   readonly onResults?: (results: RA<QueryResultRow | undefined>) => void;
+  readonly onDeleted?: (recordId: number) => void;
+  readonly onMerged?: () => void;
   readonly scrollRef?: React.MutableRefObject<HTMLDivElement | null>;
   readonly restoreScrollTopRef?: React.MutableRefObject<number | undefined>;
   readonly resultsRef?: React.MutableRefObject<
@@ -196,6 +202,7 @@ export function useQueryResultsWrapper({
   tableClassName,
   onSortChange: handleSortChange,
   onResults: handleResults,
+  onMerged: handleMerged,
   selectedRows: [selectedRows, setSelectedRows],
   scrollRef,
   restoreScrollTopRef,
@@ -279,6 +286,7 @@ export function useQueryResultsWrapper({
           fieldSpecs,
           initialData,
           onResults: handleResults,
+          onMerged: handleMerged,
           scrollRef,
           restoreScrollTopRef,
           sortConfig: queryFields
@@ -316,6 +324,7 @@ export function useQueryResultsWrapper({
     queryResource,
     queryRunCount,
     recordSetId,
+    handleMerged,
   ]);
 
   return props === undefined
