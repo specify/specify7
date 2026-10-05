@@ -1,9 +1,9 @@
-import React from 'react';
 import Splitter from 'm-react-splitters';
+import React from 'react';
 
-import { Button } from '../Atoms/Button';
-import { treeText } from '../../localization/tree';
 import { useTriggerState } from '../../hooks/useTriggerState';
+import { treeText } from '../../localization/tree';
+import { Button } from '../Atoms/Button';
 
 export function useSplitViewOrientation(defaultHorizontal = true): {
   readonly isHorizontal: boolean;
@@ -60,6 +60,7 @@ export function SplitView({
   primaryPane,
   secondaryPane,
   primaryPaneKey,
+  primaryPaneMaxWidth,
   secondaryPaneKey,
   isHorizontal,
   isSplit = true,
@@ -67,10 +68,21 @@ export function SplitView({
   readonly primaryPane: JSX.Element;
   readonly secondaryPane: JSX.Element;
   readonly primaryPaneKey: string;
+  readonly primaryPaneMaxWidth?: string;
   readonly secondaryPaneKey: string;
   readonly isHorizontal: boolean;
   readonly isSplit?: boolean;
 }): JSX.Element {
+  const splitterRef = React.useRef<React.ElementRef<typeof Splitter> | null>(
+    null
+  );
+  const previousIsHorizontal = React.useRef(isHorizontal);
+  React.useLayoutEffect(() => {
+    if (previousIsHorizontal.current !== isHorizontal)
+      splitterRef.current?.setState({ primaryPane: undefined });
+    previousIsHorizontal.current = isHorizontal;
+  }, [isHorizontal]);
+
   return (
     <Splitter
       className={`h-full max-h-full min-h-0 min-w-0 w-full flex-1 overflow-hidden ${
@@ -79,10 +91,11 @@ export function SplitView({
       position={isHorizontal ? 'vertical' : 'horizontal'}
       primaryPaneHeight={isSplit ? '50%' : '100%'}
       primaryPaneMaxHeight={isSplit ? '80%' : '100%'}
-      primaryPaneMaxWidth={isSplit ? '80%' : '100%'}
+      primaryPaneMaxWidth={isSplit ? (primaryPaneMaxWidth ?? '80%') : '100%'}
       primaryPaneMinHeight={1}
       primaryPaneMinWidth={1}
       primaryPaneWidth={isSplit ? '50%' : '100%'}
+      ref={splitterRef}
     >
       <div
         className="flex h-full min-h-0 min-w-0 overflow-auto"

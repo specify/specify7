@@ -39,7 +39,9 @@ export function QueryResultsWrapper({
   onMerged: handleMerged,
   refreshToken,
   splitPane,
+  splitContainerRef,
   splitHorizontal,
+  splitPrimaryPaneMaxWidth,
   isSplit,
   ...props
 }: ResultsProps & {
@@ -51,7 +53,9 @@ export function QueryResultsWrapper({
   readonly restoreScrollTopRef?: React.MutableRefObject<number | undefined>;
   readonly refreshToken?: number;
   readonly splitPane?: JSX.Element;
+  readonly splitContainerRef?: React.RefCallback<HTMLDivElement>;
   readonly splitHorizontal?: boolean;
+  readonly splitPrimaryPaneMaxWidth?: string;
   readonly isSplit?: boolean;
   readonly onReRun: () => void;
 }): JSX.Element | null {
@@ -83,14 +87,20 @@ export function QueryResultsWrapper({
   return splitPane === undefined ? (
     queryResults
   ) : (
-    <SplitView
-      isHorizontal={splitHorizontal ?? true}
-      isSplit={isSplit}
-      primaryPane={queryResults}
-      primaryPaneKey="query-results"
-      secondaryPane={splitPane}
-      secondaryPaneKey="split-pane"
-    />
+    <div
+      className="flex h-full max-h-full min-h-0 min-w-0 flex-1 overflow-hidden"
+      ref={splitContainerRef}
+    >
+      <SplitView
+        isHorizontal={splitHorizontal ?? true}
+        isSplit={isSplit}
+        primaryPane={queryResults}
+        primaryPaneKey="query-results"
+        primaryPaneMaxWidth={splitPrimaryPaneMaxWidth}
+        secondaryPane={splitPane}
+        secondaryPaneKey="split-pane"
+      />
+    </div>
   );
 }
 
