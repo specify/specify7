@@ -97,6 +97,7 @@ class TestTaxonFullname(SQLAlchemySetup):
             "fieldname": "fullname",
             "operstart": 1,
             "startvalue": "John Doe",
+
         })
 
         response = c.post( "/stored_query/ephemeral/",query,content_type="application/json",)
@@ -109,17 +110,28 @@ class TestCollectingEventGUID(SQLAlchemySetup):
     def test_match_collecting_event_by_guid(self, session_context):
         session_context.return_value = TestCollectingEventGUID.test_session_context()
 
+        guid="test-guid-123"
         collectingevent = models.Collectingevent.objects.create(
-
+            discipline=self.discipline,
+            guid=guid,
         )
-
-        
+        collectionobject = self.collectionobjects[0]
+        collectionobject.collectingevent = collectingevent
+        collectionobject.save()
 
         c = Client()
         c.force_login(self.specifyuser)
 
         query = get_simple_query(self.specifyuser)
-
+        query["fields"][0].update({
+            "tablelist": "1,10",
+            "stringid": "1,10.collectingevent.guid",
+            "fieldname": "guid",
+            "operstart": 1,
+            "startvalue": guid,
+            "isrelfld": False,
+        })
+        
         response = c.post(
             "/stored_query/ephemeral/",
             query,
@@ -127,6 +139,6 @@ class TestCollectingEventGUID(SQLAlchemySetup):
         )
 
         self.assertEqual(response.status_code, 200, response.content.decode())
-        self.assertEqual(json.loads(response.content.decode()),{"results": [[self.collectionobjects[0].id, "John Doe"]]},)
+        self.assertEqual(json.loads(response.content.decode()),{"results": [[collectionobject.id, guid]]},)
     
     
