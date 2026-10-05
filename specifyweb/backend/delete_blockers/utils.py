@@ -55,6 +55,9 @@ def node_numbers_valid_for_tree(tree_name: str, definition_id: int) -> bool:
         result = session.execute(final_query).scalar_one_or_none()
         return result is None
 
+# REFACTOR: It might be better here to validate all NodeNumbers and
+# HighestChildNodeNumbers are distinct here instead.
+# e.g., COUNT(*) == COUNT(DISTINCT NodeNumber) == COUNT(DISTINCT HighestChildNodeNumber)
 def _individual_nodes_invalid(tree_model, tree_name: str, definition_id: int):
     tree_def = getattr(tree_model, tree_name + "TreeDefID")
     invalid_nodes_exist_query = (
