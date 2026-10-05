@@ -293,5 +293,39 @@ class TestGiftNumber(SQLAlchemySetup):
 
 
 
+class TestBorrowInvoiceNumber(SQLAlchemySetup):
+    @patch("specifyweb.backend.stored_queries.execution.models.session_context")
+    def test_match_borrow_by_invoice_number(self, session_context):
+        session_context.return_value = TestBorrowInvoiceNumber.test_session_context()
+
+        invoicenumber = "BORROW-1234-567"
+        borrow = models.Borrow.objects.create(
+                    collectionmemberid=self.collection.id,
+                    invoicenumber= invoicenumber,
+        )
+       
+        c = Client()
+        c.force_login(self.specifyuser)
+               
+        query = get_simple_query(self.specifyuser)
+        query["fields"][0].update({
+            "tablelist": "1,18.borrow.invoiceNumber",
+            "stringid": "1,18.borrow.invoiceNumber",
+            "fieldname": "invoiceNumber",
+            "operstart": 1,
+            "startvalue": invoicenumber,
+            "isrelfld": False,
+            "isnot": False,
+            "isdisplay": True,
+        })
+
+
+        response = c.post("/stored_query/ephemeral/",query,content_type="application/json",)
+        self.assertEqual(response.status_code, 200, response.content.decode())
+        self.assertEqual(json.loads(response.content.decode()),{"results": [[self.collectionobjects[0].id, invoicenumber]]},)
+
+
+
+
 
         
