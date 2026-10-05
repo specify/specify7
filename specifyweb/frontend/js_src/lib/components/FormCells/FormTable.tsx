@@ -442,7 +442,7 @@ export function FormTable<SCHEMA extends AnySchema>({
       setContentColumnWidths(measuredWidths);
     });
     return (): void => cancelAnimationFrame(frame);
-  }, [collapsedViewDefinition, unsortedResources]);
+  }, [collapsedViewDefinition, isCollapsed, unsortedResources]);
   const resizeColumn = React.useCallback(
     (columnIndex: number, event: React.PointerEvent<HTMLDivElement>): void => {
       event.preventDefault();
@@ -771,6 +771,7 @@ export function FormTable<SCHEMA extends AnySchema>({
               aria-hidden="true"
               className={cellClassName}
               role="columnheader"
+              style={{ gridColumn: '-3 / -2' }}
             />
             <div className={cellClassName} role="columnheader">
               <span className="sr-only">{commonText.actions()}</span>
@@ -916,6 +917,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                       aria-hidden="true"
                       className="border-b border-gray-200"
                       role="cell"
+                      style={{ gridColumn: '-3 / -2' }}
                     />
                   )}
                   <div
