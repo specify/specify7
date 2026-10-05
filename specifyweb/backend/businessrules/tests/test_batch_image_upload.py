@@ -179,10 +179,10 @@ class TestCollecitngEventFieldNumber(SQLAlchemySetup):
             self.assertEqual(json.loads(response.content.decode()),{"results": [[collectionobject.id, stationfieldnumber]]},)
 
    
-class TestCollecitngEventLoanNumber(SQLAlchemySetup):
+class TestLoanNumber(SQLAlchemySetup):
     @patch("specifyweb.backend.stored_queries.execution.models.session_context")
-    def test_match_collecting_event_by_loan_number(self, session_context):
-        session_context.return_value = TestCollecitngEventLoanNumber.test_session_context()
+    def test_match_loan_by_loan_number(self, session_context):
+        session_context.return_value = TestLoanNumber.test_session_context()
 
         loannumber = "Inerred_Loan"
         loan = models.Loan.objects.create(
@@ -215,8 +215,40 @@ class TestCollecitngEventLoanNumber(SQLAlchemySetup):
         response = c.post("/stored_query/ephemeral/",query,content_type="application/json",) 
         
         self.assertEqual(response.status_code, 200, response.content.decode())
-        self.assertEqual(
-            json.loads(response.content.decode()),
-            {"results": [[self.collectionobjects[0].id, loannumber]]},
+        self.assertEqual(json.loads(response.content.decode()),{"results": [[self.collectionobjects[0].id, loannumber]]},)
+        
+   
+class TestAccessionNumber(SQLAlchemySetup):
+    @patch("specifyweb.backend.stored_queries.execution.models.session_context")
+    def test_match_accession_by_accession_number(self, session_context):
+        session_context.return_value = TestAccessionNumber.test_session_context()
+
+        accessionnumber = "a"
+        accession = models.Accession.objects.create(
+           accessionnumber = accessionnumber,
+            division=self.division
         )
+
+        collectionobject = self.collectionobjects[0]
+        collectionobject.accession = accession
+        collectionobject.save()
+
+        c = Client()
+        c.force_login(self.specifyuser)
+               
+        query = get_simple_query(self.specifyuser)
+        query["fields"][0].update({
+            "tablelist": "1,7",
+            "stringid": "1,7.accession.accessionNumber",
+            "fieldname": "accessionNumber",
+            "operstart": 1,
+            "startvalue": accessionnumber,
+            "isrelfld": False,
+            "isnot": False,
+            "isdisplay": True,
+        })
+
+        response = c.post("/stored_query/ephemeral/",query,content_type="application/json",)
+        self.assertEqual(json.loads(response.content.decode()),{"results": [[self.collectionobjects[0].id, accessionnumber]]},)
+
         
