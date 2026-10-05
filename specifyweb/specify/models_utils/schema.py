@@ -556,6 +556,49 @@ def table_to_endpoint(table: Table) -> list[tuple[str, dict]]:
             }
         ),
         (
+            f"/bulk_copy/bulk_delete/{table.django_name}/",
+            {
+                "post": {
+                    "tags": [table.django_name],
+                    "summary": f"Delete multiple records from the {table.django_name} table",
+                    "description": f"Delete multiple records from the {table.django_name} table",
+                    "parameters": [],
+                    "requestBody": {
+                        "required": True,
+                        "description": "IDs and/or query used to select records to delete",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "ids": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                            },
+                                            "description": "List of record IDs to delete",
+                                        },
+                                        "query": {
+                                            "type": "object",
+                                            "description": "Query resource used to select records to delete",
+                                            "additionalProperties": True,
+                                        },
+                                    },
+                                    "additionalProperties": False,
+                                }
+                            }
+                        }
+                    },
+                    "responses": {
+                        "204": {
+                            "description": "Empty response",
+                        }
+                    },
+                },
+            }
+        ),
+        (
             f"/api/specify/{table.django_name}/{{id}}/",
             {
                 "parameters": [
