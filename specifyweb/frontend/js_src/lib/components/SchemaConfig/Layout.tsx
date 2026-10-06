@@ -100,11 +100,12 @@ function SchemaConfigLayoutContent(): JSX.Element {
         .then(
           (response) => {
 		    setImportStatus(response.status);
-			if (response.status != 200)
+			if (response.status !== 200)
 				raise({name: schemaText.importSchemaError({schemaConfig: schemaText.schemaConfig()}), message: 
 					  response.status === 504 ? schemaText.importSchemaErrorTimeout({schemaConfig: schemaText.schemaConfig()}) : schemaText.importSchemaErrorBadRequest({schemaConfig: schemaText.schemaConfig()})
 				})
-		  }
+		  },
+		  (err) => raise(err)
         )
     );
   };
