@@ -489,7 +489,7 @@ msgid "yes"
 msgstr "Ja"
 
 #: components/QueryBuilder/ResultsTable.tsx:236
-#: components/QueryBuilder/ToForms.tsx:56
+#: components/QueryBuilder/ToForms.tsx:57
 #. Used in: Components > Query Builder > Results Table ⬤ Components > Query Builder > To Forms
 #, fuzzy
 msgid "queryResults"
@@ -497,7 +497,7 @@ msgstr "Suchergebnisse"
 
 #: components/BatchIdentify/index.tsx:778
 #: components/LocalityUpdate/Status.tsx:325
-#: components/QueryBuilder/ToForms.tsx:43
+#: components/QueryBuilder/ToForms.tsx:44
 #. Used in: Components > Batch Identify > Index ⬤ Components > Locality Update > Status ⬤ Components > Query Builder > To Forms
 #, fuzzy
 msgid "browseInForms"

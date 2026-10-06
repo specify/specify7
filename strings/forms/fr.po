@@ -426,19 +426,19 @@ msgstr "Type de cellule non pris en charge"
 msgid "additionalResultsOmitted"
 msgstr "Résultats supplémentaires masqués"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:289
+#: components/FormSliders/RecordSelectorFromIds.tsx:286
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "recordSelectorUnloadProtect"
 msgstr "Continuer sans enregistrer ?"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:292
+#: components/FormSliders/RecordSelectorFromIds.tsx:289
 #. 🟥When in record set and current record is unsaved and try to navigate to another record. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "recordSelectorUnloadProtectDescription"
 msgstr ""
 "Vous voudrez peut-être sauvegarder cet enregistrement avant de quitter la "
 "page."
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:228
+#: components/FormSliders/RecordSelectorFromIds.tsx:225
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "creatingNewRecord"
 msgstr "Création d'un nouvel enregistrement"
@@ -475,12 +475,12 @@ msgstr "Dupliquer {recordSetItemTable:string}"
 msgid "duplicateRecordSetItemDescription"
 msgstr "Cet enregistrement est déjà présent dans le {recordSetTable:string} actuel"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:177
+#: components/FormSliders/RecordSelectorFromIds.tsx:174
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "addToRecordSet"
 msgstr "Ajouter à {recordSetTable:string}"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:182
+#: components/FormSliders/RecordSelectorFromIds.tsx:179
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "removeFromRecordSet"
 msgstr "Retirer de {recordSetTable:string}"

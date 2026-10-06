@@ -35,13 +35,13 @@ msgstr "Não"
 #: components/BatchIdentify/index.tsx:834
 #: components/DataEntryTables/index.tsx:41
 #: components/DataViews/DataViewTables.tsx:71
-#: components/DataViews/index.tsx:247
+#: components/DataViews/index.tsx:234
 #: components/ExportFeed/ForceUpdate.tsx:33
 #: components/ExpressSearchConfig/ExpressSearchConfigDialog.tsx:58
 #: components/FormCells/COJODialog.tsx:92
 #: components/FormEditor/Create.tsx:67
 #: components/FormEditor/Create.tsx:261
-#: components/FormSliders/RecordSelectorFromIds.tsx:276
+#: components/FormSliders/RecordSelectorFromIds.tsx:273
 #: components/Forms/DeleteButton.tsx:122
 #: components/Forms/DeleteButton.tsx:134
 #: components/Forms/DeleteButton.tsx:159
@@ -406,7 +406,7 @@ msgstr "Excluir colunas não mapeadas"
 #: components/AttachmentsBulkImport/Datasets.tsx:271
 #: components/AttachmentsBulkImport/Import.tsx:441
 #: components/DataViews/DataViewTables.tsx:85
-#: components/DataViews/index.tsx:264
+#: components/DataViews/index.tsx:251
 #: components/ExpressSearchConfig/ExpressSearchConfigDialog.tsx:59
 #: components/Forms/Save.tsx:55
 #: components/Preferences/index.tsx:154
@@ -433,7 +433,7 @@ msgstr "Salvar"
 
 #: components/Atoms/DataEntry.tsx:148
 #: components/ExportFeed/Editor.tsx:137
-#: components/FormSliders/RecordSelectorFromIds.tsx:180
+#: components/FormSliders/RecordSelectorFromIds.tsx:177
 #: components/Formatters/List.tsx:149
 #: components/Forms/Save.tsx:279
 #: components/Forms/__tests__/Save.test.tsx:26
@@ -469,7 +469,7 @@ msgstr "Adicionar"
 msgid "open"
 msgstr "Abrir"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:185
+#: components/FormSliders/RecordSelectorFromIds.tsx:182
 #: components/Formatters/Element.tsx:82
 #: components/Forms/DeleteButton.tsx:96
 #: components/Forms/DeleteButton.tsx:111
@@ -563,8 +563,8 @@ msgstr "Ferramentas"
 #: components/Preferences/Renderers.tsx:119
 #: components/QueryBuilder/Formatter.tsx:178
 #: components/QueryBuilder/QueryLineFilter.tsx:90
-#: components/QueryBuilder/Results.tsx:473
-#: components/QueryBuilder/Results.tsx:474
+#: components/QueryBuilder/Results.tsx:494
+#: components/QueryBuilder/Results.tsx:495
 #: components/QueryComboBox/index.tsx:451
 #: components/SchemaConfig/Fields.tsx:181
 #: components/SchemaConfig/index.tsx:98
@@ -737,7 +737,7 @@ msgid "ignore"
 msgstr "Ignorar"
 
 #: components/AttachmentsBulkImport/MatchingModeDialog.tsx:58
-#: components/FormSliders/RecordSelectorFromIds.tsx:285
+#: components/FormSliders/RecordSelectorFromIds.tsx:282
 #: components/Merging/index.tsx:400
 #: components/Toolbar/Language.tsx:108
 #: components/WbActions/WbUpload.tsx:124
@@ -1032,7 +1032,7 @@ msgstr "EU IA"
 msgid "filter"
 msgstr "Filtro"
 
-#: components/QueryBuilder/Results.tsx:107
+#: components/QueryBuilder/Results.tsx:123
 #: components/WbActions/index.tsx:130
 #. Used in: Components > Query Builder > Results ⬤ Components > Wb Actions > Index
 #, fuzzy
@@ -1117,13 +1117,11 @@ msgstr "Reiniciar"
 #: components/AttachmentsBulkImport/MappingFileSetup.tsx:281
 #: components/AttachmentsBulkImport/MappingFileSetup.tsx:310
 #: components/BatchIdentify/index.tsx:932
-#: components/DataViews/index.tsx:332
 #: components/FormEditor/Create.tsx:210
-#: components/QueryBuilder/QueryBuilderResults.tsx:83
 #: components/QueryBuilder/ResultsTable.tsx:194
 #: components/SearchDialog/index.tsx:379
 #: components/SetupTool/SetupForm.tsx:219
-#. Used in: Components > Attachments Bulk Import > Mapping File Setup ⬤ Components > Batch Identify > Index ⬤ Components > Data Views > Index ⬤ Components > Form Editor > Create ⬤ Components > Query Builder > Query Builder Results ⬤ Components > Query Builder > Results Table ⬤ Components > Search Dialog > Index ⬤ Components > Setup Tool > Setup Form
+#. Used in: Components > Attachments Bulk Import > Mapping File Setup ⬤ Components > Batch Identify > Index ⬤ Components > Form Editor > Create ⬤ Components > Query Builder > Results Table ⬤ Components > Search Dialog > Index ⬤ Components > Setup Tool > Setup Form
 #, fuzzy
 msgid "select"
 msgstr "Selecione"
@@ -1220,9 +1218,9 @@ msgstr "{header:string}:"
 #: components/Merging/Header.tsx:213
 #: components/Molecules/FilePicker.tsx:113
 #: components/QueryBuilder/Header.tsx:107
-#: components/QueryBuilder/Results.tsx:469
+#: components/QueryBuilder/Results.tsx:490
 #: components/QueryBuilder/ResultsTable.tsx:235
-#: components/QueryBuilder/ToForms.tsx:55
+#: components/QueryBuilder/ToForms.tsx:56
 #: components/QueryComboBox/spec.ts:72
 #: components/SchemaConfig/Field.tsx:42
 #: components/SchemaConfig/Table.tsx:50

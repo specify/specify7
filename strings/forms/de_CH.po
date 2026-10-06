@@ -488,19 +488,19 @@ msgstr "Nicht unterstützter Zelltyp"
 msgid "additionalResultsOmitted"
 msgstr "Weitere Ergebnisse wurden ausgelassen."
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:289
+#: components/FormSliders/RecordSelectorFromIds.tsx:286
 #. Used in: Components > Form Sliders > Record Selector From Ids
 #, fuzzy
 msgid "recordSelectorUnloadProtect"
 msgstr "Fortfahren ohne Speichern?"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:292
+#: components/FormSliders/RecordSelectorFromIds.tsx:289
 #. 🟥When in record set and current record is unsaved and try to navigate to another record. Used in: Components > Form Sliders > Record Selector From Ids
 #, fuzzy
 msgid "recordSelectorUnloadProtectDescription"
 msgstr "Sie sollten diesen Eintrag speichern, bevor Sie die Seite verlassen."
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:228
+#: components/FormSliders/RecordSelectorFromIds.tsx:225
 #. Used in: Components > Form Sliders > Record Selector From Ids
 #, fuzzy
 msgid "creatingNewRecord"
@@ -543,13 +543,13 @@ msgstr "Duplikat {recordSetItemTable:string}"
 msgid "duplicateRecordSetItemDescription"
 msgstr "Dieser Datensatz ist bereits im aktuellen {recordSetTable:string} vorhanden."
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:177
+#: components/FormSliders/RecordSelectorFromIds.tsx:174
 #. Used in: Components > Form Sliders > Record Selector From Ids
 #, fuzzy
 msgid "addToRecordSet"
 msgstr "Zu {recordSetTable:string} hinzufügen"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:182
+#: components/FormSliders/RecordSelectorFromIds.tsx:179
 #. Used in: Components > Form Sliders > Record Selector From Ids
 #, fuzzy
 msgid "removeFromRecordSet"

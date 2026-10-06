@@ -409,14 +409,14 @@ msgid "yes"
 msgstr "Yes"
 
 #: components/QueryBuilder/ResultsTable.tsx:236
-#: components/QueryBuilder/ToForms.tsx:56
+#: components/QueryBuilder/ToForms.tsx:57
 #. Used in: Components > Query Builder > Results Table ⬤ Components > Query Builder > To Forms
 msgid "queryResults"
 msgstr "Query Results"
 
 #: components/BatchIdentify/index.tsx:778
 #: components/LocalityUpdate/Status.tsx:325
-#: components/QueryBuilder/ToForms.tsx:43
+#: components/QueryBuilder/ToForms.tsx:44
 #. Used in: Components > Batch Identify > Index ⬤ Components > Locality Update > Status ⬤ Components > Query Builder > To Forms
 msgid "browseInForms"
 msgstr "Browse in Forms"

@@ -489,19 +489,19 @@ msgstr "Nepodržana vrsta ćelije"
 msgid "additionalResultsOmitted"
 msgstr "Dodatni rezultati izostavljeni"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:289
+#: components/FormSliders/RecordSelectorFromIds.tsx:286
 #. Used in: Components > Form Sliders > Record Selector From Ids
 #, fuzzy
 msgid "recordSelectorUnloadProtect"
 msgstr "Nastaviti bez spremanja?"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:292
+#: components/FormSliders/RecordSelectorFromIds.tsx:289
 #. 🟥When in record set and current record is unsaved and try to navigate to another record. Used in: Components > Form Sliders > Record Selector From Ids
 #, fuzzy
 msgid "recordSelectorUnloadProtectDescription"
 msgstr "Možda biste željeli spremiti ovaj zapis prije nego što napustite stranicu."
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:228
+#: components/FormSliders/RecordSelectorFromIds.tsx:225
 #. Used in: Components > Form Sliders > Record Selector From Ids
 #, fuzzy
 msgid "creatingNewRecord"
@@ -545,13 +545,13 @@ msgstr "Duplikat {recordSetItemTable:string}"
 msgid "duplicateRecordSetItemDescription"
 msgstr "Ovaj zapis je već prisutan u trenutnom {recordSetTable:string}"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:177
+#: components/FormSliders/RecordSelectorFromIds.tsx:174
 #. Used in: Components > Form Sliders > Record Selector From Ids
 #, fuzzy
 msgid "addToRecordSet"
 msgstr "Dodaj u {recordSetTable:string}"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:182
+#: components/FormSliders/RecordSelectorFromIds.tsx:179
 #. Used in: Components > Form Sliders > Record Selector From Ids
 #, fuzzy
 msgid "removeFromRecordSet"
