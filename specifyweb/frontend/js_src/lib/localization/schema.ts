@@ -115,7 +115,7 @@ export const schemaText = createDictionary({
   },
   importSchemaErrorTimeout: {
     'en-us':
-      'Network request timed out, Specify is still importing the {schemaConfig:string} export in the background.',
+      'Network request timed out, Specify may or may not still import the {schemaConfig:string} export in the background. Please check back in later to see if your changes have been applied.',
     'de-ch': '',
     'es-es': '',
     'fr-fr': '',
