@@ -232,6 +232,14 @@ export function useQueryResultsWrapper({
 
   const previousQueryRunCount = React.useRef(0);
   const requestGeneration = React.useRef(0);
+
+  React.useEffect(
+    () => (): void => {
+      requestGeneration.current++;
+      previousQueryRunCount.current = 0;
+    },
+    []
+  );
   React.useEffect(() => {
     if (queryRunCount === previousQueryRunCount.current) return;
     previousQueryRunCount.current = queryRunCount;
@@ -339,9 +347,6 @@ export function useQueryResultsWrapper({
         if (generation === requestGeneration.current) setIsLoading(false);
         raise(error);
       });
-    return (): void => {
-      requestGeneration.current++;
-    };
   }, [
     fields,
     table,
