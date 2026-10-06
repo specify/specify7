@@ -237,6 +237,7 @@ export function useQueryResultsWrapper({
     previousQueryRunCount.current = queryRunCount;
     const generation = ++requestGeneration.current;
     setIsLoading(true);
+    setTotalCount(undefined);
 
     const isDistinct = queryResource.get('selectDistinct') === true;
     const allFields = augmentQueryFields(
