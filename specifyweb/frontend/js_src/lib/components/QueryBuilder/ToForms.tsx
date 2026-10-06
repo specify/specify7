@@ -123,7 +123,7 @@ export function QueryFormView({
   readonly onSlide: (index: number) => void;
 }): JSX.Element | null {
   const ids = useSelectedResults(results, selectedRows, true, totalCount);
-  if (totalCount === undefined || ids.length === 0) return null;
+  if (!hasFetchableRecordIds(results) || ids.length === 0) return null;
 
   return (
     <div className="flex h-full min-h-0 min-w-0 flex-1 items-center justify-center overflow-auto bg-[color:var(--form-background)]">
@@ -185,6 +185,15 @@ export function getSelectedResults(
         : (results.map((row) => row?.[queryIdField]) as RA<number | undefined>)
       : Array.from(selectedRows)
     : [];
+}
+
+export function hasFetchableRecordIds(
+  results: RA<QueryResultRow | undefined>
+): boolean {
+  return results.some((row) => {
+    const id = row?.[queryIdField];
+    return typeof id === 'number' && Number.isFinite(id);
+  });
 }
 
 function useSelectedResults(

@@ -14,7 +14,7 @@ import type { QueryField } from './helpers';
 import type { MainState } from './reducer';
 import type { QueryResultRow } from './Results';
 import { QueryResultsWrapper } from './ResultsWrapper';
-import { QueryFormView } from './ToForms';
+import { hasFetchableRecordIds, QueryFormView } from './ToForms';
 
 export function QueryBuilderResults({
   table,
@@ -131,22 +131,28 @@ export function QueryBuilderResults({
         onFetchMore,
         onDelete,
       }) => (
-        <QueryFormView
-          results={results}
-          selectedRows={resultSelection}
-          selectedIndex={selectedIndex}
-          table={table}
-          title={localized(query.name)}
-          totalCount={totalCount}
-          onClose={(): void => {
-            setSelectedRows(new Set());
-            setSelectedIndex(0);
-          }}
-          onDelete={onDelete}
-          onFetchMore={onFetchMore}
-          onSaved={(): void => setRefreshToken((token) => token + 1)}
-          onSlide={setSelectedIndex}
-        />
+        <>
+          {query.selectDistinct !== true &&
+          !isCountOnly &&
+          hasFetchableRecordIds(results) ? (
+            <QueryFormView
+              results={results}
+              selectedRows={resultSelection}
+              selectedIndex={selectedIndex}
+              table={table}
+              title={localized(query.name)}
+              totalCount={totalCount}
+              onClose={(): void => {
+                setSelectedRows(new Set());
+                setSelectedIndex(0);
+              }}
+              onDelete={onDelete}
+              onFetchMore={onFetchMore}
+              onSaved={(): void => setRefreshToken((token) => token + 1)}
+              onSlide={setSelectedIndex}
+            />
+          ) : null}
+        </>
       )}
       table={table}
       onReRun={handleReRun}
