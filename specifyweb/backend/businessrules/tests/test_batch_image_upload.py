@@ -276,6 +276,7 @@ class TestGiftNumber(SQLAlchemySetup):
         c.force_login(self.specifyuser)
                
         query = get_simple_query(self.specifyuser)
+        
         query["fields"][0].update({
             "tablelist": "1,63-preparations,132-giftPreparations,131",
             "stringid": "1,63-preparations,132-giftPreparations,131.gift.giftNumber",
@@ -327,5 +328,30 @@ class TestBorrowInvoiceNumber(SQLAlchemySetup):
 
 
 
+class TestStorageFullName(SQLAlchemySetup):
+    @patch("specifyweb.backend.stored_queries.execution.models.session_context")
+    def test_match_storage_by_full_name(self, session_context):
+        session_context.return_value = TestBorrowInvoiceNumber.test_session_context()
 
-        
+        fullname = "John Doe"
+        storage.model_extras.Storage.objects.create(
+            fullname = fullname,
+
+        )
+
+        c = Client()
+        c.force_login(self.specifyuser)
+
+
+        query = get_simple_query(self.specifyuser)
+        query["contexttableid"] = 18
+        query["fields"][0].update({
+            "tablelist": "18",
+            "stringid": "18.borrow.invoiceNumber",
+            "fieldname": "invoiceNumber",
+            "operstart": 1,
+            "startvalue": invoicenumber,
+            "isRelfld": False,
+        })
+
+
