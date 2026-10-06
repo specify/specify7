@@ -104,6 +104,7 @@ export type QueryResultsProps = {
   readonly resultsRef?: React.MutableRefObject<
     RA<QueryResultRow | undefined> | undefined
   >;
+  readonly isLoading?: boolean;
 };
 
 export type QueryResultsSplitPaneProps = {
@@ -147,6 +148,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     refreshToken,
     resultsRef,
     displayedFields,
+    isLoading = false,
   } = props;
 
   const {
@@ -705,7 +707,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
               }}
             />
           ) : undefined}
-          {isFetching || (!showResults && Array.isArray(results)) ? (
+          {isLoading || isFetching || (!showResults && Array.isArray(results)) ? (
             <div className="col-span-full" role="cell">
               {loadingGif}
             </div>

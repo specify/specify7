@@ -61,12 +61,13 @@ export function QueryResultsWrapper({
   readonly onReRun: () => void;
   readonly renderSplitPane?: (props: QueryResultsSplitPaneProps) => JSX.Element;
 }): JSX.Element | null {
-  const newProps = useQueryResultsWrapper(props);
+  const wrappedProps = useQueryResultsWrapper(props);
 
-  if (newProps === undefined)
+  if (wrappedProps === undefined)
     return props.queryRunCount === 0 ? null : (
       <div className="flex-1 snap-start">{loadingGif}</div>
     );
+  const { isLoading, ...newProps } = wrappedProps;
 
   const queryResults = (
     <div
@@ -88,6 +89,7 @@ export function QueryResultsWrapper({
           onMerged={handleMerged}
           onSelected={handleSelected}
           refreshToken={refreshToken}
+          isLoading={isLoading}
         />
       </ErrorBoundary>
     </div>
@@ -144,7 +146,12 @@ type ResultsProps = {
 
 type PartialProps = Omit<
   Parameters<typeof QueryResults>[0],
-  'createRecordSet' | 'extraButtons' | 'model' | 'onReRun' | 'onSelected'
+  | 'createRecordSet'
+  | 'extraButtons'
+  | 'isLoading'
+  | 'model'
+  | 'onReRun'
+  | 'onSelected'
 >;
 
 export const runQuery = async <ROW_TYPE extends QueryResultRow>(
@@ -209,7 +216,7 @@ export function useQueryResultsWrapper({
   scrollRef,
   restoreScrollTopRef,
   resultsRef,
-}: ResultsProps): PartialProps | undefined {
+}: ResultsProps): (PartialProps & { readonly isLoading: boolean }) | undefined {
   /*
    * Need to store all props in a state so that query field edits do not affect
    * the query results until query is reRun
@@ -218,16 +225,18 @@ export function useQueryResultsWrapper({
     Omit<PartialProps, 'resultsRef' | 'selectedRows' | 'totalCount'> | undefined
   >(undefined);
 
+  const [isLoading, setIsLoading] = React.useState(false);
   const [totalCount, setTotalCount] = React.useState<number | undefined>(
     undefined
   );
 
   const previousQueryRunCount = React.useRef(0);
+  const requestGeneration = React.useRef(0);
   React.useEffect(() => {
     if (queryRunCount === previousQueryRunCount.current) return;
     previousQueryRunCount.current = queryRunCount;
-    // Display the loading GIF
-    setProps(undefined);
+    const generation = ++requestGeneration.current;
+    setIsLoading(true);
 
     const isDistinct = queryResource.get('selectDistinct') === true;
     const allFields = augmentQueryFields(
@@ -256,10 +265,13 @@ export function useQueryResultsWrapper({
       countOnly: isCountOnly,
     };
 
-    setTotalCount(undefined);
     const fetchCount = async (): Promise<number> =>
       runQueryCount(query, fetchPayload);
-    fetchCount().then(setTotalCount).catch(raise);
+    fetchCount()
+      .then((count) => {
+        if (generation === requestGeneration.current) setTotalCount(count);
+      })
+      .catch(raise);
 
     const initialData = isCountOnly
       ? Promise.resolve(undefined)
@@ -274,7 +286,8 @@ export function useQueryResultsWrapper({
     const queryFields = fieldSpecsAndFields.map(([field]) => field);
 
     initialData
-      .then((initialData) =>
+      .then((initialData) => {
+        if (generation !== requestGeneration.current) return;
         setProps({
           queryResource,
           containerClassName,
@@ -318,9 +331,13 @@ export function useQueryResultsWrapper({
                   );
                 }
               : undefined,
-        })
-      )
+        });
+        setIsLoading(false);
+      })
       .catch(raise);
+    return (): void => {
+      requestGeneration.current++;
+    };
   }, [
     fields,
     table,
@@ -339,5 +356,6 @@ export function useQueryResultsWrapper({
         totalCount,
         selectedRows: [selectedRows, setSelectedRows],
         resultsRef,
+        isLoading,
       };
 }
