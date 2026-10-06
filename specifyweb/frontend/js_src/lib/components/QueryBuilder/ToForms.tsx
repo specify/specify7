@@ -176,11 +176,8 @@ export function getSelectedResults(
   if (!isOpen) return [];
   if (selectedRows.size > 0) return Array.from(selectedRows);
 
-  const ids = results.map(
-    (row) => row?.[queryIdField] as number | undefined
-  );
-  if (totalCount !== undefined)
-    ids.length = Math.max(ids.length, totalCount);
+  const ids = results.map((row) => row?.[queryIdField] as number | undefined);
+  if (totalCount !== undefined) ids.length = Math.max(ids.length, totalCount);
   return ids;
 }
 
