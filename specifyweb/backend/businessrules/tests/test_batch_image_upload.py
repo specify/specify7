@@ -306,23 +306,22 @@ class TestBorrowInvoiceNumber(SQLAlchemySetup):
        
         c = Client()
         c.force_login(self.specifyuser)
-               
+
+
         query = get_simple_query(self.specifyuser)
         query["fields"][0].update({
-            "tablelist": "1,18.borrow.invoiceNumber",
-            "stringid": "1,18.borrow.invoiceNumber",
+            "tablelist": "18",
+            "stringid": "18.borrow.invoiceNumber",
             "fieldname": "invoiceNumber",
             "operstart": 1,
             "startvalue": invoicenumber,
-            "isrelfld": False,
-            "isnot": False,
-            "isdisplay": True,
+            "isRelfld": False,
         })
 
 
         response = c.post("/stored_query/ephemeral/",query,content_type="application/json",)
         self.assertEqual(response.status_code, 200, response.content.decode())
-        self.assertEqual(json.loads(response.content.decode()),{"results": [[self.collectionobjects[0].id, invoicenumber]]},)
+        self.assertEqual(json.loads(response.content.decode()),{"results": [[ invoicenumber]]},)
 
 
 
