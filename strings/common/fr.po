@@ -425,7 +425,7 @@ msgstr "Sauvegarder"
 #: components/Merging/CompareSubView.tsx:184
 #: components/Molecules/AutoComplete.tsx:631
 #: components/PickLists/index.tsx:280
-#: components/QueryBuilder/Wrapped.tsx:478
+#: components/QueryBuilder/Wrapped.tsx:474
 #: components/SchemaConfig/Format.tsx:299
 #: components/SchemaConfig/Format.tsx:349
 #: components/SchemaConfig/Format.tsx:394
@@ -1044,7 +1044,7 @@ msgstr "Réinitialiser"
 #: components/BatchIdentify/index.tsx:932
 #: components/DataViews/index.tsx:332
 #: components/FormEditor/Create.tsx:210
-#: components/QueryBuilder/QueryBuilderResults.tsx:81
+#: components/QueryBuilder/QueryBuilderResults.tsx:83
 #: components/QueryBuilder/ResultsTable.tsx:194
 #: components/SearchDialog/index.tsx:379
 #: components/SetupTool/SetupForm.tsx:219
