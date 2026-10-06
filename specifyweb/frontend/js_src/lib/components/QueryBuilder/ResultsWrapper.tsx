@@ -22,7 +22,7 @@ import {
   queryFieldsToFieldSpecs,
   unParseQueryFields,
 } from './helpers';
-import type { QueryResultRow } from './Results';
+import type { QueryResultRow, QueryResultsSplitPaneProps } from './Results';
 import { QueryResults } from './Results';
 import { SplitView } from './SplitView';
 
@@ -36,6 +36,7 @@ export function QueryResultsWrapper({
   onResults: handleResults,
   onDeleted: handleDeleted,
   onReRun: handleReRun,
+  renderSplitPane,
   onMerged: handleMerged,
   refreshToken,
   splitPane,
@@ -58,16 +59,21 @@ export function QueryResultsWrapper({
   readonly splitPrimaryPaneMaxWidth?: string;
   readonly isSplit?: boolean;
   readonly onReRun: () => void;
+  readonly renderSplitPane?: (props: QueryResultsSplitPaneProps) => JSX.Element;
 }): JSX.Element | null {
-  const newProps = useQueryResultsWrapper(props);
+  const wrappedProps = useQueryResultsWrapper(props);
 
-  if (newProps === undefined)
+  if (wrappedProps === undefined)
     return props.queryRunCount === 0 ? null : (
       <div className="flex-1 snap-start">{loadingGif}</div>
     );
+  const { isLoading, ...newProps } = wrappedProps;
 
   const queryResults = (
-    <div className="flex flex-1 snap-start overflow-hidden">
+    <div
+      className="flex flex-1 snap-start overflow-hidden"
+      ref={renderSplitPane === undefined ? undefined : splitContainerRef}
+    >
       <ErrorBoundary dismissible>
         <QueryResults
           {...newProps}
@@ -76,9 +82,14 @@ export function QueryResultsWrapper({
           createRecordSet={createRecordSet}
           extraButtons={extraButtons}
           onReRun={handleReRun}
+          renderSplitPane={renderSplitPane}
+          isSplit={isSplit}
+          splitHorizontal={splitHorizontal}
+          splitPrimaryPaneMaxWidth={splitPrimaryPaneMaxWidth}
           onMerged={handleMerged}
           onSelected={handleSelected}
           refreshToken={refreshToken}
+          isLoading={isLoading}
         />
       </ErrorBoundary>
     </div>
@@ -135,7 +146,12 @@ type ResultsProps = {
 
 type PartialProps = Omit<
   Parameters<typeof QueryResults>[0],
-  'createRecordSet' | 'extraButtons' | 'model' | 'onReRun' | 'onSelected'
+  | 'createRecordSet'
+  | 'extraButtons'
+  | 'isLoading'
+  | 'model'
+  | 'onReRun'
+  | 'onSelected'
 >;
 
 export const runQuery = async <ROW_TYPE extends QueryResultRow>(
@@ -200,7 +216,7 @@ export function useQueryResultsWrapper({
   scrollRef,
   restoreScrollTopRef,
   resultsRef,
-}: ResultsProps): PartialProps | undefined {
+}: ResultsProps): (PartialProps & { readonly isLoading: boolean }) | undefined {
   /*
    * Need to store all props in a state so that query field edits do not affect
    * the query results until query is reRun
@@ -209,16 +225,27 @@ export function useQueryResultsWrapper({
     Omit<PartialProps, 'resultsRef' | 'selectedRows' | 'totalCount'> | undefined
   >(undefined);
 
+  const [isLoading, setIsLoading] = React.useState(false);
   const [totalCount, setTotalCount] = React.useState<number | undefined>(
     undefined
   );
 
   const previousQueryRunCount = React.useRef(0);
+  const requestGeneration = React.useRef(0);
+
+  React.useEffect(
+    () => (): void => {
+      requestGeneration.current++;
+      previousQueryRunCount.current = 0;
+    },
+    []
+  );
   React.useEffect(() => {
     if (queryRunCount === previousQueryRunCount.current) return;
     previousQueryRunCount.current = queryRunCount;
-    // Display the loading GIF
-    setProps(undefined);
+    const generation = ++requestGeneration.current;
+    setIsLoading(true);
+    setTotalCount(undefined);
 
     const isDistinct = queryResource.get('selectDistinct') === true;
     const allFields = augmentQueryFields(
@@ -247,10 +274,13 @@ export function useQueryResultsWrapper({
       countOnly: isCountOnly,
     };
 
-    setTotalCount(undefined);
     const fetchCount = async (): Promise<number> =>
       runQueryCount(query, fetchPayload);
-    fetchCount().then(setTotalCount).catch(raise);
+    fetchCount()
+      .then((count) => {
+        if (generation === requestGeneration.current) setTotalCount(count);
+      })
+      .catch(raise);
 
     const initialData = isCountOnly
       ? Promise.resolve(undefined)
@@ -265,7 +295,8 @@ export function useQueryResultsWrapper({
     const queryFields = fieldSpecsAndFields.map(([field]) => field);
 
     initialData
-      .then((initialData) =>
+      .then((initialData) => {
+        if (generation !== requestGeneration.current) return;
         setProps({
           queryResource,
           containerClassName,
@@ -309,9 +340,13 @@ export function useQueryResultsWrapper({
                   );
                 }
               : undefined,
-        })
-      )
-      .catch(raise);
+        });
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        if (generation === requestGeneration.current) setIsLoading(false);
+        raise(error);
+      });
   }, [
     fields,
     table,
@@ -330,5 +365,6 @@ export function useQueryResultsWrapper({
         totalCount,
         selectedRows: [selectedRows, setSelectedRows],
         resultsRef,
+        isLoading,
       };
 }

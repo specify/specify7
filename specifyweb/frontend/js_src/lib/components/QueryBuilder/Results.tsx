@@ -35,6 +35,7 @@ import { sortTypes } from './helpers';
 import { QueryResultsTable } from './ResultsTable';
 import { QueryToForms } from './ToForms';
 import { QueryToMap } from './ToMap';
+import { SplitView } from './SplitView';
 
 export type QueryResultRow = RA<number | string | null>;
 
@@ -91,6 +92,10 @@ export type QueryResultsProps = {
   readonly tableClassName?: string;
   readonly selectedRows: GetSet<ReadonlySet<number>>;
   readonly onResults?: (results: RA<QueryResultRow | undefined>) => void;
+  readonly renderSplitPane?: (props: QueryResultsSplitPaneProps) => JSX.Element;
+  readonly isSplit?: boolean;
+  readonly splitHorizontal?: boolean;
+  readonly splitPrimaryPaneMaxWidth?: string;
   readonly onDeleted?: (recordId: number) => void;
   readonly onMerged?: () => void;
   readonly scrollRef?: React.MutableRefObject<HTMLDivElement | null>;
@@ -99,6 +104,17 @@ export type QueryResultsProps = {
   readonly resultsRef?: React.MutableRefObject<
     RA<QueryResultRow | undefined> | undefined
   >;
+  readonly isLoading?: boolean;
+};
+
+export type QueryResultsSplitPaneProps = {
+  readonly results: RA<QueryResultRow | undefined>;
+  readonly selectedRows: ReadonlySet<number>;
+  readonly totalCount: number | undefined;
+  readonly onFetchMore:
+    | ((index?: number) => Promise<RA<QueryResultRow | undefined> | undefined>)
+    | undefined;
+  readonly onDelete: (id: number) => void;
 };
 
 export function QueryResults(props: QueryResultsProps): JSX.Element {
@@ -122,12 +138,17 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     tableClassName = '',
     selectedRows: [selectedRows, setSelectedRows],
     onResults: handleResults,
+    renderSplitPane,
+    isSplit,
+    splitHorizontal,
+    splitPrimaryPaneMaxWidth,
     onDeleted: handleDeleted,
     scrollRef,
     restoreScrollTopRef,
     refreshToken,
     resultsRef,
     displayedFields,
+    isLoading = false,
   } = props;
 
   const {
@@ -460,7 +481,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     typeof loadedResults?.[0]?.[0] === 'string' && loadedResults !== undefined;
   const metaColumns = (showLineNumber ? 1 : 0) + 2;
 
-  return (
+  const queryResults = (
     <Container.Base
       className={`w-full !bg-[color:var(--form-background)] ${containerClassName}`}
     >
@@ -686,7 +707,9 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
               }}
             />
           ) : undefined}
-          {isFetching || (!showResults && Array.isArray(results)) ? (
+          {isLoading ||
+          isFetching ||
+          (!showResults && Array.isArray(results)) ? (
             <div className="col-span-full" role="cell">
               {loadingGif}
             </div>
@@ -694,6 +717,32 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
         </div>
       </div>
     </Container.Base>
+  );
+
+  return renderSplitPane === undefined ? (
+    queryResults
+  ) : (
+    <SplitView
+      isHorizontal={splitHorizontal ?? true}
+      isSplit={isSplit}
+      primaryPane={queryResults}
+      primaryPaneKey="query-results"
+      primaryPaneMaxWidth={splitPrimaryPaneMaxWidth}
+      secondaryPane={
+        isSplit !== false ? (
+          renderSplitPane({
+            results: results ?? [],
+            selectedRows,
+            totalCount,
+            onFetchMore: canFetchMore ? handleFetchMore : undefined,
+            onDelete: handleDelete,
+          })
+        ) : (
+          <></>
+        )
+      }
+      secondaryPaneKey="split-pane"
+    />
   );
 }
 
