@@ -92,7 +92,31 @@ export const schemaText = createDictionary({
   },
   importSchemaError: {
     'en-us':
-      'The {schemaConfig:string} export is invalid or was exported for a different language and cannot be imported.',
+      '{schemaConfig:string} import failed:',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'hr-hr': '',
+    nb: '',
+    'pt-br': '',
+    'ru-ru': '',
+    'uk-ua': '',
+  },
+  importSchemaErrorBadRequest: {
+    'en-us':
+	  "The {schemaConfig:string} export is invalid or was exported for a different language and cannot be imported.",
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'hr-hr': '',
+    nb: '',
+    'pt-br': '',
+    'ru-ru': '',
+    'uk-ua': '',
+  },
+  importSchemaErrorTimeout: {
+    'en-us':
+      'Network request timed out, Specify is still importing the {schemaConfig:string} export in the background.',
     'de-ch': '',
     'es-es': '',
     'fr-fr': '',
