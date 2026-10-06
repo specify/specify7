@@ -85,20 +85,17 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
     ids.map((id) => (id === undefined ? undefined : new table.Resource({ id })))
   );
 
-  const previousIds = React.useRef(ids);
-
   React.useEffect(() => {
     setRecords((records) =>
-      ids.map((id, index) => {
+      ids.map((id) => {
         if (id === undefined) return undefined;
-        else if (records[index]?.id === id) return records[index];
-        else return new table.Resource({ id });
+        else
+          return (
+            records.find((record) => record?.id === id) ??
+            new table.Resource({ id })
+          );
       })
     );
-
-    return (): void => {
-      previousIds.current = ids;
-    };
   }, [ids, table]);
 
   const [rawIndex, setIndex] = useTriggerState(

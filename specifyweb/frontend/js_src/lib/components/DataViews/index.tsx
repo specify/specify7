@@ -3,29 +3,32 @@ import { useParams } from 'react-router-dom';
 
 import { commonText } from '../../localization/common';
 import { dataViewsText } from '../../localization/dataViews';
+import { useResponsiveSplitView } from '../../hooks/useResponsiveSplitView';
+import { H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
-import { H2 } from '../Atoms';
-import type { Tables } from '../DataModel/types';
 import { getTable } from '../DataModel/tables';
+import type { Tables } from '../DataModel/types';
+import { raise } from '../Errors/Crash';
+import { Dialog } from '../Molecules/Dialog';
+import { TableIcon } from '../Molecules/TableIcon';
+import { hasPermission } from '../Permissions/helpers';
 import {
   PermissionDenied,
   ProtectedTable,
 } from '../Permissions/PermissionDenied';
-import { hasPermission } from '../Permissions/helpers';
-import { RecordSelectorFromIds } from '../FormSliders/RecordSelectorFromIds';
-import { QueryResultsWrapper } from '../QueryBuilder/ResultsWrapper';
+import { userPreferences } from '../Preferences/userPreferences';
 import { parseQueryFields, unParseQueryFields } from '../QueryBuilder/helpers';
 import { queryIdField } from '../QueryBuilder/Results';
+import { QueryResultsWrapper } from '../QueryBuilder/ResultsWrapper';
 import {
-  SplitView,
   SplitViewOrientationButton,
   SplitViewToggleButton,
   useSplitViewOrientation,
 } from '../QueryBuilder/SplitView';
+import { QueryFormView } from '../QueryBuilder/ToForms';
 import { NotFoundView } from '../Router/NotFoundView';
-import { Dialog } from '../Molecules/Dialog';
-import { raise } from '../Errors/Crash';
+import type { DataViewQueriesFile } from './queries';
 import {
   getDataViewQueryDefinition,
   makeDataViewQuery,
@@ -33,13 +36,7 @@ import {
   serializeDataViewQueries,
   useDataViewQueries,
 } from './queries';
-import type { DataViewQueriesFile } from './queries';
 import { DataViewQueryEditorContent } from './QueryEditor';
-import { TableIcon } from '../Molecules/TableIcon';
-import { userPreferences } from '../Preferences/userPreferences';
-import { listen } from '../../utils/events';
-
-const SMALL_SCREEN_WIDTH = 768;
 
 export function TableDataView(): JSX.Element {
   const { tableName = '' } = useParams();
@@ -105,7 +102,6 @@ function LoadedDataViewFromTable({
   const selectedIdsRef = React.useRef(selectedIds);
   selectedIdsRef.current = selectedIds;
   const resultOrderRef = React.useRef<ReadonlyArray<number>>([]);
-  const hasSeenNonEmptyResultsRef = React.useRef(false);
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const selectedIndexRef = React.useRef(selectedIndex);
   selectedIndexRef.current = selectedIndex;
@@ -122,19 +118,15 @@ function LoadedDataViewFromTable({
     'splitViewOrientation'
   );
   const [rawIsSplit, setIsSplit] = React.useState(splitViewByDefault);
-  const [canSplit, setCanSplit] = React.useState(
-    window.innerWidth >= SMALL_SCREEN_WIDTH
-  );
-  React.useEffect(() => {
-    const handleResize = (): void =>
-      setCanSplit(window.innerWidth >= SMALL_SCREEN_WIDTH);
-    handleResize();
-    return listen(window, 'resize', handleResize);
-  }, []);
-  const isSplit = rawIsSplit && canSplit;
-  const { isHorizontal, toggleOrientation } = useSplitViewOrientation(
-    splitViewOrientation === 'horizontal'
-  );
+  const isSplit = rawIsSplit;
+  const { isHorizontal: preferredIsHorizontal, toggleOrientation } =
+    useSplitViewOrientation(splitViewOrientation === 'horizontal');
+  const {
+    canUseHorizontalSplit,
+    containerRef: splitViewRef,
+    isHorizontal,
+    maximumPrimaryPaneWidth,
+  } = useResponsiveSplitView(preferredIsHorizontal);
   const [refreshToken, setRefreshToken] = React.useState(0);
   const [queryRunCount, setQueryRunCount] = React.useState(1);
   const [queryData, setQueryData] = React.useState<string | undefined>();
@@ -159,20 +151,9 @@ function LoadedDataViewFromTable({
         const id = getNumericResultId(row?.[queryIdField]);
         return id === undefined ? [] : [id];
       });
-      const isInitialResults =
-        !hasSeenNonEmptyResultsRef.current && orderedIds.length > 0;
-      if (orderedIds.length > 0) hasSeenNonEmptyResultsRef.current = true;
       resultOrderRef.current = orderedIds;
 
-      if (selectedIdsRef.current.length === 0) {
-        if (!isInitialResults) return;
-        const firstId = orderedIds[0];
-        if (firstId !== undefined) {
-          setSelectedIds([firstId]);
-          setSelectedIndex(0);
-        }
-        return;
-      }
+      if (selectedIdsRef.current.length === 0) return;
 
       const positions = new Map(
         orderedIds.map((id, index) => [id, index] as const)
@@ -200,6 +181,15 @@ function LoadedDataViewFromTable({
       restoreScrollTopRef.current = resultsScrollRef.current.scrollTop;
     setRefreshToken((token) => token + 1);
   }, []);
+  const handleMerged = React.useCallback((): void => {
+    /*
+     * Merging removes the selected records. Clear the preview before the
+     * refreshed results arrive so it does not try to load deleted records.
+     */
+    setSelectedIds([]);
+    setSelectedIndex(0);
+    handleRefresh();
+  }, [handleRefresh]);
   const handleCloseQueryEditor = (): void => setQueryData(undefined);
   const handleOpenQueryEditor = (): void => {
     setIsQueryDirty(false);
@@ -282,6 +272,11 @@ function LoadedDataViewFromTable({
       createRecordSet={undefined}
       extraButtons={undefined}
       onReRun={handleRefresh}
+      onDeleted={(): void => {
+        setSelectedIds([]);
+        setSelectedIndex(0);
+      }}
+      onMerged={handleMerged}
       onSortChange={(newFields): void => {
         setRuntimeFields(unParseQueryFields(table.name, newFields));
         setQueryRunCount((count) => count + 1);
@@ -314,38 +309,36 @@ function LoadedDataViewFromTable({
       table={table}
       onResults={handleResults}
       refreshToken={refreshToken}
-      restoreScrollTopRef={restoreScrollTopRef}
-      scrollRef={resultsScrollRef}
-    />
-  );
-  const form = (
-    <div className="flex min-h-0 min-w-0 flex-1 items-center justify-center overflow-auto bg-[color:var(--form-background)]">
-      {selectedIds.length === 0 ? (
-        <p className="m-auto text-neutral-500">{commonText.select()}</p>
-      ) : (
-        <RecordSelectorFromIds
-          canRemove={false}
-          defaultIndex={selectedIndex}
-          dialog={false}
-          ids={[...selectedIds]}
-          isDependent={false}
-          isInRecordSet={false}
-          newResource={undefined}
+      isSplit={isSplit}
+      splitHorizontal={isHorizontal}
+      splitPrimaryPaneMaxWidth={`${maximumPrimaryPaneWidth}px`}
+      renderSplitPane={({
+        results,
+        selectedRows: resultSelection,
+        totalCount,
+        onFetchMore,
+        onDelete,
+      }) => (
+        <QueryFormView
+          results={results}
+          selectedRows={resultSelection}
+          selectedIndex={selectedIndex}
           table={table}
           title={dataViewsText.tableRecords({ tableLabel: table.label })}
-          totalCount={selectedIds.length}
-          onAdd={undefined}
-          onClone={undefined}
+          totalCount={totalCount}
           onClose={(): void => {
             setSelectedIds([]);
             setSelectedIndex(0);
           }}
-          onDelete={undefined}
+          onDelete={onDelete}
+          onFetchMore={onFetchMore}
           onSaved={handleRefresh}
-          onSlide={(index): void => setSelectedIndex(index)}
+          onSlide={setSelectedIndex}
         />
       )}
-    </div>
+      restoreScrollTopRef={restoreScrollTopRef}
+      scrollRef={resultsScrollRef}
+    />
   );
 
   return (
@@ -359,26 +352,21 @@ function LoadedDataViewFromTable({
           <DataEntry.Edit onClick={handleOpenQueryEditor} />
         </div>
         <SplitViewToggleButton
-          disabled={!canSplit}
           isSplit={isSplit}
           onToggle={(): void => setIsSplit((split) => !split)}
         />
         <SplitViewOrientationButton
-          disabled={!isSplit}
+          disabled={!isSplit || !canUseHorizontalSplit}
           isHorizontal={isHorizontal}
           onToggle={toggleOrientation}
         />
         <span className="-ml-2 flex-1" />
       </header>
-      <div className="flex h-full max-h-full min-h-0 min-w-0 flex-1 overflow-hidden">
-        <SplitView
-          isHorizontal={isHorizontal}
-          isSplit={isSplit}
-          primaryPane={results}
-          primaryPaneKey="query-results"
-          secondaryPane={form}
-          secondaryPaneKey="record-preview"
-        />
+      <div
+        className="flex h-full max-h-full min-h-0 min-w-0 flex-1 overflow-hidden"
+        ref={splitViewRef}
+      >
+        {results}
       </div>
     </div>
   );
