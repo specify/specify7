@@ -708,7 +708,11 @@ def schema_localization_import(request):
                         model.__name__, data
                     )
     except (ValueError, json.JSONDecodeError) as err:
-        return HttpResponseBadRequest(f"{{\"original error\": \"{err}\" }}", content_type="text/json")
+        logger.warning("Schema import validation failed", exc_info=True)
+        return JsonResponse(
+            {"error": "Invalid schema localization import payload."},
+            status=400
+        )
     except (AttributeError, KeyError, TypeError) as err:
         logger.warning(f"Schema Import failed: {err}")
         return HttpResponseServerError(err, content_type="text/plain")
