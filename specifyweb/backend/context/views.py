@@ -707,13 +707,13 @@ def schema_localization_import(request):
                         request.specify_collection, request.specify_user_agent,
                         model.__name__, data
                     )
-    except (ValueError, json.JSONDecodeError) as err:
+    except (AttributeError, ValueError, json.JSONDecodeError) as err:
         logger.warning("Schema import validation failed", exc_info=True)
         return JsonResponse(
             {"error": "Invalid schema localization import payload."},
             status=400
         )
-    except (AttributeError, KeyError, TypeError) as err:
+    except (KeyError, TypeError) as err:
         logger.warning(f"Schema Import failed: {err}")
         return HttpResponseServerError("An internal error has occurred.", content_type="text/plain")
 
