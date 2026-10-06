@@ -45,7 +45,10 @@ export function usePaginatedCollection<COLLECTION_TYPE>({
   );
   const previousInitialRecords = React.useRef(initialRecords);
   React.useLayoutEffect(() => {
-    if (previousInitialRecords.current === initialRecords) return;
+    if (previousInitialRecords.current === initialRecords) {
+      setTotalCount(initialTotalCount);
+      return;
+    }
     previousInitialRecords.current = initialRecords;
     collectionGeneration.current++;
     fetchersRef.current = {};
