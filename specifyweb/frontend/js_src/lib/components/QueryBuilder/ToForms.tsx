@@ -173,18 +173,15 @@ export function getSelectedResults(
   isOpen: boolean,
   totalCount: number | undefined
 ): RA<number | undefined> {
-  return isOpen
-    ? selectedRows.size === 0
-      ? totalCount
-        ? ([
-            ...results.map((row) => row?.[queryIdField]),
-            ...Array.from({ length: totalCount - results.length }).fill(
-              undefined
-            ),
-          ] as RA<number | undefined>)
-        : (results.map((row) => row?.[queryIdField]) as RA<number | undefined>)
-      : Array.from(selectedRows)
-    : [];
+  if (!isOpen) return [];
+  if (selectedRows.size > 0) return Array.from(selectedRows);
+
+  const ids = results.map(
+    (row) => row?.[queryIdField] as number | undefined
+  );
+  if (totalCount !== undefined)
+    ids.length = Math.max(ids.length, totalCount);
+  return ids;
 }
 
 export function hasFetchableRecordIds(
