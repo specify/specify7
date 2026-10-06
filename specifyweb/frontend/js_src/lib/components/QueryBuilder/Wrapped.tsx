@@ -216,12 +216,8 @@ function Wrapped({
    */
   const getQueryFieldRecords = saveRequired ? serializeQueryFields : undefined;
 
-  // runQuery must always serialize the fields it is given, not just when saveRequired
-  const { runQuery, scheduleQueryRun } = useQueryExecution({
+  const { isCountOnly, runQuery, scheduleQueryRun } = useQueryExecution({
     query,
-    fields: state.fields,
-    getQueryFieldRecords: serializeQueryFields,
-    setQuery,
     onRun: (): void => dispatch({ type: 'RunQueryAction' }),
   });
 
@@ -606,6 +602,7 @@ function Wrapped({
             <QueryBuilderResults
               forceCollection={forceCollection}
               getQueryFieldRecords={getQueryFieldRecords}
+              isCountOnly={isCountOnly}
               isHorizontal={isHorizontal}
               isReadOnly={isReadOnly}
               isSplit={isSplit}
@@ -630,7 +627,7 @@ function Wrapped({
               }}
               onSortChange={(fields): void => {
                 dispatch({ type: 'ChangeFieldsAction', fields });
-                runQuery('regular', fields);
+                runQuery('regular');
               }}
             />
           </Form>
