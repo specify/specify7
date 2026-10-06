@@ -715,7 +715,7 @@ def schema_localization_import(request):
         )
     except (AttributeError, KeyError, TypeError) as err:
         logger.warning(f"Schema Import failed: {err}")
-        return HttpResponseServerError(err, content_type="text/plain")
+        return HttpResponseServerError("An internal error has occurred.", content_type="text/plain")
 
     return JsonResponse({'updated': len(operations)})
 
