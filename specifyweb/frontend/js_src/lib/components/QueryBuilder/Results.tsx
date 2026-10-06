@@ -707,7 +707,9 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
               }}
             />
           ) : undefined}
-          {isLoading || isFetching || (!showResults && Array.isArray(results)) ? (
+          {isLoading ||
+          isFetching ||
+          (!showResults && Array.isArray(results)) ? (
             <div className="col-span-full" role="cell">
               {loadingGif}
             </div>
@@ -727,7 +729,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
       primaryPaneKey="query-results"
       primaryPaneMaxWidth={splitPrimaryPaneMaxWidth}
       secondaryPane={
-        isSplit ? (
+        isSplit !== false ? (
           renderSplitPane({
             results: results ?? [],
             selectedRows,
