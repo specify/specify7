@@ -25,6 +25,7 @@ export function QueryBuilderResults({
   state,
   isReadOnly,
   saveRequired,
+  isCountOnly,
   getQueryFieldRecords,
   selectedRows,
   setSelectedRows,
@@ -48,6 +49,7 @@ export function QueryBuilderResults({
   readonly state: MainState;
   readonly isReadOnly: boolean;
   readonly saveRequired: boolean;
+  readonly isCountOnly: boolean;
   readonly getQueryFieldRecords:
     | (() => RA<SerializedResource<SpQueryField>>)
     | undefined;
@@ -96,7 +98,7 @@ export function QueryBuilderResults({
               saveRequired={saveRequired}
             />
           )}
-          {query.countOnly ? undefined : (
+          {isCountOnly ? undefined : (
             <QueryExportButtons
               baseTableName={state.baseTableName}
               fields={state.fields}
@@ -111,6 +113,7 @@ export function QueryBuilderResults({
       }
       fields={state.fields}
       forceCollection={forceCollection}
+      countOnly={isCountOnly}
       queryResource={queryResource}
       queryRunCount={state.queryRunCount}
       refreshToken={refreshToken}

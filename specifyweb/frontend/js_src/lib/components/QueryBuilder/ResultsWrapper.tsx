@@ -116,6 +116,7 @@ export function QueryResultsWrapper({
 type ResultsProps = {
   readonly table: SpecifyTable;
   readonly queryRunCount: number;
+  readonly countOnly?: boolean;
   readonly queryResource: SpecifyResource<SpQuery>;
   readonly fields: RA<QueryField>;
   readonly recordSetId: number | undefined;
@@ -194,6 +195,7 @@ const runQueryCount = async (
 export function useQueryResultsWrapper({
   table,
   queryRunCount,
+  countOnly,
   queryResource,
   fields,
   recordSetId,
@@ -240,22 +242,24 @@ export function useQueryResultsWrapper({
       limit: fetchSize,
     };
 
+    const displayedFields = allFields.filter((field) => field.isDisplay);
+    const isCountOnly =
+      countOnly === undefined
+        ? queryResource.get('countOnly') === true ||
+          // Run as "count only" if there are no visible fields
+          displayedFields.length === 0
+        : countOnly || displayedFields.length === 0;
+
     const query: SerializedResource<SpQuery> = {
       ...serializeResource(queryResource),
       fields: unParseQueryFields(table.name, allFields),
+      countOnly: isCountOnly,
     };
 
     setTotalCount(undefined);
     const fetchCount = async (): Promise<number> =>
       runQueryCount(query, fetchPayload);
     fetchCount().then(setTotalCount).catch(raise);
-
-    const displayedFields = allFields.filter((field) => field.isDisplay);
-    const countOnly = queryResource.get('countOnly') === true;
-    const isCountOnly =
-      countOnly ||
-      // Run as "count only" if there are no visible fields
-      displayedFields.length === 0;
 
     const initialData = isCountOnly
       ? Promise.resolve(undefined)
@@ -325,6 +329,7 @@ export function useQueryResultsWrapper({
     queryRunCount,
     recordSetId,
     handleMerged,
+    countOnly,
   ]);
 
   return props === undefined
