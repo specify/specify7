@@ -334,7 +334,10 @@ export function useQueryResultsWrapper({
         });
         setIsLoading(false);
       })
-      .catch(raise);
+      .catch((error) => {
+        if (generation === requestGeneration.current) setIsLoading(false);
+        raise(error);
+      });
     return (): void => {
       requestGeneration.current++;
     };
