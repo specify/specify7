@@ -125,6 +125,18 @@ export const schemaText = createDictionary({
     'ru-ru': '',
     'uk-ua': '',
   },
+  importSchemaErrorInternalError: {
+    'en-us':
+      'Specify experienced an error, please clear your cache and try again.',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'hr-hr': '',
+    nb: '',
+    'pt-br': '',
+    'ru-ru': '',
+    'uk-ua': '',
+  },
   importSchemaSuccess: {
     'en-us': '{schemaConfig:string} imported successfully',
     'de-ch': '',

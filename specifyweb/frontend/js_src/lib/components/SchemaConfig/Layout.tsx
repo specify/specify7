@@ -94,7 +94,7 @@ function SchemaConfigLayoutContent(): JSX.Element {
             method: 'POST',
             headers: { Accept: 'application/json' },
             body: { schema, language: rawLanguage },
-			expectedErrors: [400, 504]
+			expectedErrors: [400, 500, 504]
           })
         )
         .then(
@@ -102,7 +102,9 @@ function SchemaConfigLayoutContent(): JSX.Element {
 		    setImportStatus(response.status);
 			if (response.status !== 200)
 				raise({name: schemaText.importSchemaError({schemaConfig: schemaText.schemaConfig()}), message: 
-					  response.status === 504 ? schemaText.importSchemaErrorTimeout({schemaConfig: schemaText.schemaConfig()}) : schemaText.importSchemaErrorBadRequest({schemaConfig: schemaText.schemaConfig()})
+					  response.status === 504 ? schemaText.importSchemaErrorTimeout({schemaConfig: schemaText.schemaConfig()}) :
+				      response.status === 400 ? schemaText.importSchemaErrorBadRequest({schemaConfig: schemaText.schemaConfig()}) :
+				      schemaText.importSchemaErrorInternalError()
 				})
 		  },
 		  (err) => raise(err)
