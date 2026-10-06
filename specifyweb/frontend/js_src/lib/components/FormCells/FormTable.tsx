@@ -146,7 +146,7 @@ function fitSubviewColumnWidths(
   );
   const totalWidth = preferredWidths.reduce((total, width) => total + width, 0);
   if (totalWidth <= availableWidth) return preferredWidths;
-  if (availableWidth <= 0) return minimumWidths;
+  if (minimumTotal === 0) return minimumWidths;
   if (availableWidth <= minimumTotal)
     return minimumWidths.map(
       (width) => (width * availableWidth) / minimumTotal
@@ -443,10 +443,14 @@ export function FormTable<SCHEMA extends AnySchema>({
     });
     return (): void => cancelAnimationFrame(frame);
   }, [collapsedViewDefinition, isCollapsed, unsortedResources]);
+  const resizeCleanupRef = React.useRef<(() => void) | undefined>(undefined);
+  React.useEffect(() => (): void => resizeCleanupRef.current?.(), []);
   const resizeColumn = React.useCallback(
     (columnIndex: number, event: React.PointerEvent<HTMLDivElement>): void => {
       event.preventDefault();
       event.stopPropagation();
+      resizeCleanupRef.current?.();
+      resizeCleanupRef.current = undefined;
       const tableElement = scrollerRef.current;
       if (tableElement === null) return;
       const header = tableElement.querySelector<HTMLElement>(
@@ -480,15 +484,21 @@ export function FormTable<SCHEMA extends AnySchema>({
       };
       const handleUp = (upEvent: PointerEvent): void => {
         if (upEvent.pointerId !== pointerId) return;
-        if (frame !== undefined) cancelAnimationFrame(frame);
+        cleanup();
         updateWidth(latestX);
+      };
+      const cleanup = (): void => {
+        if (frame !== undefined) cancelAnimationFrame(frame);
         globalThis.removeEventListener('pointermove', handleMove);
         globalThis.removeEventListener('pointerup', handleUp);
         globalThis.removeEventListener('pointercancel', handleUp);
+        if (resizeCleanupRef.current === cleanup)
+          resizeCleanupRef.current = undefined;
       };
       globalThis.addEventListener('pointermove', handleMove);
       globalThis.addEventListener('pointerup', handleUp);
       globalThis.addEventListener('pointercancel', handleUp);
+      resizeCleanupRef.current = cleanup;
     },
     [columnWidths]
   );
@@ -525,12 +535,17 @@ export function FormTable<SCHEMA extends AnySchema>({
       (total, width) => total + width,
       0
     );
-    const customFixedWidth = flexibleSubGridColumnWidth
-      ? 0
-      : tracks.reduce(
-          (total, { width }) => total + (typeof width === 'number' ? width : 0),
-          0
-        );
+    const customFixedWidth = tracks.reduce(
+      (total, { cellIndex, width }) =>
+        total +
+        (typeof width !== 'number'
+          ? 0
+          : flexibleSubGridColumnWidth
+            ? (contentColumnWidths[cellIndex] ?? minSubviewColumnWidth) /
+              (cells[cellIndex]?.colSpan ?? 1)
+            : width),
+      0
+    );
     const minimumWidths = autoColumns.map(({ cellIndex }) => {
       const definition = cells[cellIndex];
       const fieldName =
@@ -547,7 +562,10 @@ export function FormTable<SCHEMA extends AnySchema>({
     });
     const widths = fitSubviewColumnWidths(
       autoColumns.map(({ width }) => width),
-      tableWidth - tableChromeWidth - fixedWidth - customFixedWidth,
+      Math.max(
+        0,
+        tableWidth - tableChromeWidth - fixedWidth - customFixedWidth
+      ),
       minimumWidths
     );
     const cellColumns = cells.reduce((total, cell) => total + cell.colSpan, 0);
