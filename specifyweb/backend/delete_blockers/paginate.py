@@ -75,10 +75,23 @@ class TreeTableReferencePaginator(ReferencePaginator):
         # Essentially node numbers can "flatten" any subtree within the
         # tree so we don't have to worry about expensive or complicated
         # Parent self-joins to traverse the subtree structure
-        node_number_filter = {
+        node_number_filters = {
             f"{self.relationship.field.name}__nodenumber__range": (node_number, highest_node_number)
+            # We shouldn't need a filter on definition, as NodeNumbers should
+            # be unique even across trees of the same type
+            # TEST: Make sure we have tests for the above assumption in case
+            # the behavior is ever changed
         }
-        return other_side_model.objects.filter(**node_number_filter)
+        return other_side_model.objects.filter(**node_number_filters)
+
+    def fetch_page(self) -> list[int]:
+        # With the above node number optimization, we should be able to exclude
+        # pages for the parent relationship for delete blockers
+        # REFACTOR: This might not be the best place this for this.
+        # Consider moving this to DeleteBlockerFilter
+        if self.relationship.field is self.obj._meta.get_field("parent"):
+            return []
+        return super().fetch_page()
 
 def resolve_reference_paginator(obj: Model) -> type[ReferencePaginator]:
     if isinstance(obj, Tree):
