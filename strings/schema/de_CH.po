@@ -299,7 +299,7 @@ msgstr "Datum"
 msgid "decimal"
 msgstr "Dezimal"
 
-#: components/FormMeta/index.tsx:75
+#: components/FormMeta/index.tsx:76
 #: components/SchemaViewer/Fields.tsx:60
 #: components/SchemaViewer/Relationships.tsx:97
 #: components/SchemaViewer/schemaToTsv.tsx:23

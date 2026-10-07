@@ -10,8 +10,8 @@ msgstr "Content-Type: text/plain\n"
 msgid "dataViewsTitle"
 msgstr "Data Views"
 
-#: components/DataViews/index.tsx:327
-#: components/DataViews/index.tsx:350
+#: components/DataViews/index.tsx:320
+#: components/DataViews/index.tsx:343
 #. 🟥Used as a dialog header within the Data Views component. Used in: Components > Data Views > Index
 msgid "tableRecords"
 msgstr "{tableLabel:string} Records"
@@ -34,7 +34,7 @@ msgstr "Enable {splitView:string} by default"
 
 #: components/DataViews/DataViewTables.tsx:89
 #: components/DataViews/QueryEditor.tsx:174
-#: components/DataViews/index.tsx:255
+#: components/DataViews/index.tsx:249
 #. Used in: Components > Data Views > Data View Tables ⬤ Components > Data Views > Query Editor ⬤ Components > Data Views > Index
 msgid "configureQuery"
 msgstr "Configure query"

@@ -109,13 +109,13 @@ msgstr ""
 "Não foi possível encontrar um registro SpReport para este recurso do "
 "aplicativo."
 
-#: components/FormMeta/index.tsx:175
+#: components/FormMeta/index.tsx:177
 #. Used in: Components > Form Meta > Index
 #, fuzzy
 msgid "generateLabel"
 msgstr "Gerar etiqueta"
 
-#: components/FormMeta/index.tsx:193
+#: components/FormMeta/index.tsx:195
 #: components/FormParse/fields.ts:134
 #: components/FormParse/__tests__/fields.test.ts:147
 #: components/FormParse/__tests__/fields.test.ts:161
@@ -124,13 +124,13 @@ msgstr "Gerar etiqueta"
 msgid "generateLabelOnSave"
 msgstr "Gerar etiqueta ao salvar"
 
-#: components/FormMeta/index.tsx:174
+#: components/FormMeta/index.tsx:176
 #. Used in: Components > Form Meta > Index
 #, fuzzy
 msgid "generateReport"
 msgstr "Gerar relatório"
 
-#: components/FormMeta/index.tsx:192
+#: components/FormMeta/index.tsx:194
 #. Used in: Components > Form Meta > Index
 #, fuzzy
 msgid "generateReportOnSave"

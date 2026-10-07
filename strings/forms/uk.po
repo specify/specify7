@@ -643,17 +643,17 @@ msgstr "Історія редагування"
 msgid "editHistoryQueryName"
 msgstr "Історія редагувань для \"{formattedRecord:string}\""
 
-#: components/FormMeta/index.tsx:149
+#: components/FormMeta/index.tsx:151
 #. Used in: Components > Form Meta > Index
 msgid "formConfiguration"
 msgstr "Конфігурація форми"
 
-#: components/FormMeta/index.tsx:181
+#: components/FormMeta/index.tsx:183
 #. Used in: Components > Form Meta > Index
 msgid "formState"
 msgstr "Стан форми"
 
-#: components/FormMeta/index.tsx:230
+#: components/FormMeta/index.tsx:232
 #. Used in: Components > Form Meta > Index
 msgid "recordInformation"
 msgstr "Інформація про запис"
@@ -685,7 +685,7 @@ msgstr "Підформа"
 msgid "formTable"
 msgstr "Сітка"
 
-#: components/FormMeta/index.tsx:199
+#: components/FormMeta/index.tsx:201
 #. Used in: Components > Form Meta > Index
 msgid "subviewConfiguration"
 msgstr "Підвид"
@@ -711,9 +711,11 @@ msgstr "Налаштування таблиць для введення дани
 msgid "configureInteractionTables"
 msgstr "Налаштування таблиць взаємодії"
 
-#: components/FormMeta/index.tsx:68
-#: components/FormMeta/index.tsx:70
-#. Used in: Components > Form Meta > Index
+#: components/FormMeta/index.tsx:69
+#: components/FormMeta/index.tsx:71
+#: components/QueryBuilder/__tests__/RecordMergingAvailability.test.tsx:122
+#: components/QueryBuilder/__tests__/RecordMergingAvailability.test.tsx:135
+#. Used in: Components > Form Meta > Index ⬤ Query Builder > __tests__ > Record Merging Availability
 msgid "formMeta"
 msgstr "Метадані форми"
 
