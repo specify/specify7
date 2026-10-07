@@ -126,22 +126,39 @@ export function QueryFormView({
   readonly onSlide: (index: number) => void;
 }): JSX.Element | null {
   const ids = useSelectedResults(results, selectedRows, true, totalCount);
-  if (suspended || !hasFetchableRecordIds(results) || ids.length === 0)
-    return null;
+  const previewRef = React.useRef({
+    ids,
+    selectedIndex,
+    totalCount: selectedRows.size === 0 ? totalCount : selectedRows.size,
+    hasRecords: !suspended && hasFetchableRecordIds(results) && ids.length > 0,
+  });
+  if (!suspended)
+    previewRef.current = {
+      ids,
+      selectedIndex,
+      totalCount: selectedRows.size === 0 ? totalCount : selectedRows.size,
+      hasRecords: hasFetchableRecordIds(results) && ids.length > 0,
+    };
+  const preview = previewRef.current;
+  if (!preview.hasRecords) return null;
 
   return (
-    <div className="flex h-full min-h-0 min-w-0 flex-1 items-center justify-center overflow-auto bg-[color:var(--form-background)]">
+    <div
+      aria-hidden={suspended}
+      className={`${suspended ? 'hidden' : 'flex'} h-full min-h-0 min-w-0 flex-1 items-center justify-center overflow-auto bg-[color:var(--form-background)]`}
+    >
       <RecordSelectorFromIds
+        suspended={suspended}
         canRemove={false}
-        defaultIndex={selectedIndex}
+        defaultIndex={preview.selectedIndex}
         dialog={false}
-        ids={ids}
+        ids={preview.ids}
         isDependent={false}
         isInRecordSet={false}
         newResource={undefined}
         table={table}
         title={title}
-        totalCount={selectedRows.size === 0 ? totalCount : selectedRows.size}
+        totalCount={preview.totalCount}
         onAdd={undefined}
         onClone={undefined}
         onClose={handleClose}
@@ -153,7 +170,7 @@ export function QueryFormView({
           if (typeof id === 'number') handleDelete(id);
         }}
         onFetch={
-          handleFetchMore === undefined
+          suspended || handleFetchMore === undefined
             ? undefined
             : async (index) => {
                 await handleFetchMore(index);
@@ -162,6 +179,7 @@ export function QueryFormView({
         }
         onSaved={handleSaved}
         onSlide={(index): void => {
+          if (suspended) return;
           handleSlide(index);
           if (selectedRows.size === 0 && results[index] === undefined)
             void handleFetchMore?.(index);

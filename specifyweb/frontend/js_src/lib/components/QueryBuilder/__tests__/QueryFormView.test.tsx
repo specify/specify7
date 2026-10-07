@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 
 import { commonText } from '../../../localization/common';
@@ -9,11 +9,23 @@ import { QueryFormView } from '../ToForms';
 
 requireContext();
 
-jest.mock('../../FormSliders/RecordSelectorFromIds', () => ({
-  RecordSelectorFromIds: jest.fn(() => <div data-testid="record-preview" />),
-}));
+jest.mock('../../FormSliders/RecordSelectorFromIds', () => {
+  const actualReact = jest.requireActual<typeof React>('react');
+  return {
+    RecordSelectorFromIds: jest.fn(function Preview() {
+      const [value, setValue] = actualReact.useState('');
+      return (
+        <input
+          aria-label="Record preview"
+          value={value}
+          onChange={(event) => setValue(event.target.value)}
+        />
+      );
+    }),
+  };
+});
 
-test('unmounts the record preview during merging and restores surviving records', () => {
+test('preserves unsaved preview edits when merging is cancelled', () => {
   const props = {
     table: tables.Agent,
     title: commonText.view(),
@@ -21,19 +33,41 @@ test('unmounts the record preview during merging and restores surviving records'
     selectedRows: new Set([38665, 38666]),
     selectedIndex: 1,
     totalCount: 2,
-    onFetchMore: undefined,
+    onFetchMore: jest.fn(),
     onDelete: jest.fn(),
     onClose: jest.fn(),
     onSaved: jest.fn(),
     onSlide: jest.fn(),
   };
   const { rerender } = render(<QueryFormView {...props} />);
-  expect(screen.getByTestId('record-preview')).toBeInTheDocument();
+  const input = screen.getByRole('textbox', { name: 'Record preview' });
+  fireEvent.change(input, { target: { value: 'Unsaved agent name' } });
 
-  jest.mocked(RecordSelectorFromIds).mockClear();
-  rerender(<QueryFormView {...props} suspended />);
-  expect(screen.queryByTestId('record-preview')).not.toBeInTheDocument();
-  expect(RecordSelectorFromIds).not.toHaveBeenCalled();
+  rerender(
+    <QueryFormView
+      {...props}
+      results={[]}
+      selectedRows={new Set()}
+      selectedIndex={0}
+      suspended
+    />
+  );
+  expect(input).toBeInTheDocument();
+  expect(input).toHaveValue('Unsaved agent name');
+  expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
+  expect(RecordSelectorFromIds).toHaveBeenLastCalledWith(
+    expect.objectContaining({
+      ids: [38665, 38666],
+      defaultIndex: 1,
+      suspended: true,
+      onFetch: undefined,
+    }),
+    expect.anything()
+  );
+
+  rerender(<QueryFormView {...props} suspended={false} />);
+  expect(screen.getByRole('textbox')).toBe(input);
+  expect(input).toHaveValue('Unsaved agent name');
 
   rerender(
     <QueryFormView
@@ -45,7 +79,7 @@ test('unmounts the record preview during merging and restores surviving records'
       suspended={false}
     />
   );
-  expect(screen.getByTestId('record-preview')).toBeInTheDocument();
+  expect(screen.getByRole('textbox')).toBeInTheDocument();
   expect(RecordSelectorFromIds).toHaveBeenLastCalledWith(
     expect.objectContaining({ ids: [38665] }),
     expect.anything()
