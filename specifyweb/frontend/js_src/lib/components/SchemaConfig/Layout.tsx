@@ -24,6 +24,7 @@ import {
   useSchemaConfig,
 } from './Store';
 import { dialogIcons } from '../Atoms/Icons';
+import { raise } from '../Errors/Crash'; 
 
 export function SchemaConfigLayout(): JSX.Element {
   const schemaData = useOutletContext<SchemaData>();
@@ -55,8 +56,7 @@ function SchemaConfigLayoutContent(): JSX.Element {
   const setSingleResource = React.useContext(SetSingleResourceContext);
   const loading = React.useContext(LoadingContext);
   const [importFile, setImportFile] = React.useState<File | undefined>();
-  const [importError, setImportError] = React.useState(false);
-  const [importSuccessful, setImportSuccessful] = React.useState(false);
+  const [importStatus, setImportStatus] = React.useState(0);
   const [importRefreshError, setImportRefreshError] = React.useState(false);
 
   React.useEffect(() => {
@@ -80,7 +80,6 @@ function SchemaConfigLayoutContent(): JSX.Element {
     );
   };
   const handleImport = (file: File): void => {
-    setImportError(false);
     setImportFile(file);
   };
   const confirmImport = (): void => {
@@ -95,17 +94,25 @@ function SchemaConfigLayoutContent(): JSX.Element {
             method: 'POST',
             headers: { Accept: 'application/json' },
             body: { schema, language: rawLanguage },
-            errorMode: 'silent',
+			expectedErrors: [400, 500, 504]
           })
         )
         .then(
-          () => setImportSuccessful(true),
-          () => setImportError(true)
+          (response) => {
+		    setImportStatus(response.status);
+			if (response.status !== 200)
+				raise({name: schemaText.importSchemaError({schemaConfig: schemaText.schemaConfig()}), message: 
+					  response.status === 504 ? schemaText.importSchemaErrorTimeout({schemaConfig: schemaText.schemaConfig()}) :
+				      response.status === 400 ? schemaText.importSchemaErrorBadRequest({schemaConfig: schemaText.schemaConfig()}) :
+				      schemaText.importSchemaErrorInternalError()
+				})
+		  },
+		  (err) => raise(err)
         )
     );
   };
   const closeImportSuccess = (): void => {
-    setImportSuccessful(false);
+    setImportStatus(0);
     loading(
       handleSchemaSaved(rawLanguage, tableName).catch(() =>
         setImportRefreshError(true)
@@ -170,25 +177,7 @@ function SchemaConfigLayoutContent(): JSX.Element {
           </p>
         </Dialog>
       )}
-      {importError && (
-        <Dialog
-          buttons={
-            <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-          }
-          icon={dialogIcons.error}
-          header={schemaText.importSchema({
-            schemaConfig: schemaText.schemaConfig(),
-          })}
-          onClose={(): void => setImportError(false)}
-        >
-          <p>
-            {schemaText.importSchemaError({
-              schemaConfig: schemaText.schemaConfig(),
-            })}
-          </p>
-        </Dialog>
-      )}
-      {importSuccessful && (
+      {importStatus == 200 && (
         <Dialog
           buttons={
             <Button.DialogClose>{commonText.close()}</Button.DialogClose>
