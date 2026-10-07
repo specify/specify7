@@ -69,6 +69,7 @@ export class PromiseQueue<K, V> {
       return;
     }
     const [key, promiseGen] = firstItem;
+    this.queue.delete(key);
     this.activatePromise(key, promiseGen);
   }
 }
