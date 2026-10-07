@@ -671,3 +671,11 @@ class PermissionsApiTest(ApiTests):
         c.cookies['collection'] = str(other_collection.id)
         response = c.get('/api/specify/collectionobject/')
         self.assertEqual(response.status_code, 403)
+        self.assertEqual(json.loads(response.content), {
+            'NoMatchingRuleException': [{
+                'collectionid': other_collection.id,
+                'userid': user2.id,
+                'resource': permissions.CollectionAccessPT.resource,
+                'action': 'access',
+            }]
+        })
