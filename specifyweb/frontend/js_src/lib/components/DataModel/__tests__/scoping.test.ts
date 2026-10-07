@@ -48,4 +48,16 @@ describe('CO_CREATE remote prefs applied on new CollectionObject', () => {
       collectionObject.getDependentResource('determinations')
     ).toHaveLength(1);
   });
+
+  test('does not create them when prefs are absent', () => {
+    const collectionObject = new tables.CollectionObject.Resource();
+
+    expect(collectionObject.get('collectionObjectAttribute')).toBeUndefined();
+    expect(
+      collectionObject.getDependentResource('preparations') ?? []
+    ).toHaveLength(0);
+    expect(
+      collectionObject.getDependentResource('determinations') ?? []
+    ).toHaveLength(0);
+  });
 });
