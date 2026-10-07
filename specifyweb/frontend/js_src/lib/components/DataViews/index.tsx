@@ -7,6 +7,7 @@ import { useResponsiveSplitView } from '../../hooks/useResponsiveSplitView';
 import { H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
+import { RecordMergingContext } from '../Core/Contexts';
 import { getTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
@@ -45,13 +46,15 @@ export function TableDataView(): JSX.Element {
   return table === undefined ? (
     <NotFoundView />
   ) : (
-    <ProtectedTable tableName={table.name} action="read">
-      {hasPermission('/querybuilder/query', 'execute') ? (
-        <DataViewFromTable tableName={table.name} />
-      ) : (
-        <PermissionDenied resource="/querybuilder/query" action="execute" />
-      )}
-    </ProtectedTable>
+    <RecordMergingContext.Provider value={false}>
+      <ProtectedTable tableName={table.name} action="read">
+        {hasPermission('/querybuilder/query', 'execute') ? (
+          <DataViewFromTable tableName={table.name} />
+        ) : (
+          <PermissionDenied resource="/querybuilder/query" action="execute" />
+        )}
+      </ProtectedTable>
+    </RecordMergingContext.Provider>
   );
 }
 
@@ -181,15 +184,6 @@ function LoadedDataViewFromTable({
       restoreScrollTopRef.current = resultsScrollRef.current.scrollTop;
     setRefreshToken((token) => token + 1);
   }, []);
-  const handleMerged = React.useCallback((): void => {
-    /*
-     * Merging removes the selected records. Clear the preview before the
-     * refreshed results arrive so it does not try to load deleted records.
-     */
-    setSelectedIds([]);
-    setSelectedIndex(0);
-    handleRefresh();
-  }, [handleRefresh]);
   const handleCloseQueryEditor = (): void => setQueryData(undefined);
   const handleOpenQueryEditor = (): void => {
     setIsQueryDirty(false);
@@ -276,7 +270,6 @@ function LoadedDataViewFromTable({
         setSelectedIds([]);
         setSelectedIndex(0);
       }}
-      onMerged={handleMerged}
       onSortChange={(newFields): void => {
         setRuntimeFields(unParseQueryFields(table.name, newFields));
         setQueryRunCount((count) => count + 1);
