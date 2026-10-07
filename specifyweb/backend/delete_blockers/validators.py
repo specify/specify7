@@ -5,6 +5,7 @@ from django.core.exceptions import ValidationError
 
 DELETE_BLOCKER_LIMIT = 40
 
+
 class DeleteBlockerFilterJSON(TypedDict):
     table: str
     field: str
@@ -21,6 +22,7 @@ class DeleteBlockerFilterJSON(TypedDict):
     anchor: NotRequired[int | None]
     limit: NotRequired[int]
 
+
 class CleanedDeleteBlockerFilter(TypedDict):
     table: str
     field: str
@@ -28,9 +30,11 @@ class CleanedDeleteBlockerFilter(TypedDict):
     anchor: int | None
     limit: int
 
+
 class CleanedDeleteBlockerRequestForm(TypedDict):
     limit: int
     filters: None | list[CleanedDeleteBlockerFilter]
+
 
 class DeleteBlockerRequestForm(forms.Form):
     limit = forms.IntegerField(required=False)
@@ -64,7 +68,7 @@ class DeleteBlockerRequestForm(forms.Form):
             if not isinstance(filter, dict):
                 raise ValidationError(
                     "Filter at index '%(filter_idx)d' is not a dict",
-                    params={"filter_idx":filter_idx}
+                    params={"filter_idx": filter_idx}
                 )
             required_keys = {'table', 'field'}
             if not required_keys.issubset(filter.keys()):

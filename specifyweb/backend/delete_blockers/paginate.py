@@ -1,14 +1,14 @@
-from django.db.models import Model, ForeignObjectRel, ForeignKey
+from django.db.models import Model, ForeignObjectRel, ForeignKey, QuerySet, Field
 
 from specifyweb.backend.trees.extras import Tree
 from specifyweb.backend.stored_queries.utils import log_sqlalchemy_query
 from specifyweb.backend.delete_blockers.validators import DELETE_BLOCKER_LIMIT
-from specifyweb.backend.delete_blockers.utils import relationship_cascades_delete, node_numbers_valid_for_tree
+from specifyweb.backend.delete_blockers.utils import relationship_cascades_delete, node_numbers_valid_for_tree, field_is_remote
 
 class ReferencePaginator:
     def __init__(self,
                  obj: Model,
-                 relationship: ForeignObjectRel,
+                 relationship: ForeignObjectRel | ForeignKey,
                  limit: int = DELETE_BLOCKER_LIMIT,
                  anchor_id: int | None = None,
                  backwards: bool = False):
@@ -17,6 +17,17 @@ class ReferencePaginator:
         self.limit = limit
         self.anchor_id = anchor_id
         self.backwards = backwards
+
+    def _get_base_queryset(self) -> QuerySet:
+        raise NotImplementedError(f"_get_base_queryset needs implemented on {self.__class__}")
+
+    @property
+    def table_name(self) -> str:
+        raise NotImplementedError(f"table_name needs implemented on {self.__class__}")
+
+    @property
+    def field_name(self) -> str:
+        raise NotImplementedError(f"field_name needs implemented on {self.__class__}")
 
     def count(self) -> int:
         queryset = self._get_base_queryset()
@@ -44,13 +55,26 @@ class ReferencePaginator:
             queryset = queryset[:self.limit]
         return queryset
 
+class RemoteReferencePaginator(ReferencePaginator):
+    def __init__(self, obj: Model, relationship: ForeignObjectRel, limit: int = DELETE_BLOCKER_LIMIT, anchor_id: int | None = None, backwards: bool = False):
+        super().__init__(obj, relationship, limit, anchor_id, backwards)
+        self.relationship = relationship
+
     def _get_base_queryset(self):
         other_side_model = self.relationship.related_model
         return other_side_model.objects.filter(
-            **{self.relationship.field.name: self.obj.pk}
+            **{self.field_name: self.obj.pk}
         )
 
-class TreeTableReferencePaginator(ReferencePaginator):
+    @property
+    def table_name(self) -> str:
+        return self.relationship.related_model._meta.db_table
+
+    @property
+    def field_name(self) -> str:
+        return self.relationship.field.name
+
+class TreeTableReferencePaginator(RemoteReferencePaginator):
     """
     This paginator should be used for objects that are Tree Tables
     (Taxon, Geography, Storage, Lithostrat, etc.).
@@ -93,10 +117,33 @@ class TreeTableReferencePaginator(ReferencePaginator):
             return []
         return super().fetch_page()
 
-def resolve_reference_paginator(obj: Model) -> type[ReferencePaginator]:
+class ForeignKeyPaginator(ReferencePaginator):
+    def __init__(self, obj: Model, relationship: ForeignKey, limit: int = DELETE_BLOCKER_LIMIT, anchor_id: int | None = None, backwards: bool = False):
+        super().__init__(obj, relationship, limit, anchor_id, backwards)
+        self.relationship = relationship
+
+    def _get_base_queryset(self) -> QuerySet:
+        model = self.relationship.model
+        return model.objects.filter(
+            **{self.field_name: self.obj.pk}
+        )
+
+    @property
+    def table_name(self) -> str:
+        return self.relationship.model._meta.db_table
+
+    @property
+    def field_name(self) -> str:
+        return self.relationship.name
+
+def resolve_reference_paginator(obj: Model, field: Field | ForeignObjectRel) -> type[ReferencePaginator]:
     if isinstance(obj, Tree):
         return _resolve_tree_paginator(obj)
-    return ReferencePaginator
+    elif field_is_remote(field):
+        return RemoteReferencePaginator
+    elif isinstance(field, ForeignKey):
+        return ForeignKeyPaginator
+    raise TypeError(f"Not able to resolve paginator for field: {field}")
 
 def _resolve_tree_paginator(obj: Tree) -> type[ReferencePaginator]:
     # This is first because it is far cheaper than checking for NodeNumber validity

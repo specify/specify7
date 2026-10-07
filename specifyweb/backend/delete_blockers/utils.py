@@ -1,6 +1,6 @@
 from typing_extensions import TypeIs
 
-from django.db.models import Field, ForeignObjectRel
+from django.db.models import Field, ForeignObjectRel, ForeignKey
 from django.db.models.deletion import PROTECT, CASCADE
 from sqlalchemy import select, and_, or_, not_, union_all
 from sqlalchemy.orm import aliased
@@ -18,13 +18,19 @@ def field_is_remote(field: Field | ForeignObjectRel) -> TypeIs[ForeignObjectRel]
     return field.is_relation and not getattr(field, "concrete", True)
 
 
-def relationship_blocks_deletion(relationship: ForeignObjectRel):
-    return relationship.on_delete is protect_with_blockers or relationship.on_delete is PROTECT
+def relationship_blocks_deletion(relationship: ForeignObjectRel | ForeignKey):
+    remote = ensure_remote(relationship)
+    return remote.on_delete is protect_with_blockers or remote.on_delete is PROTECT
 
 
-def relationship_cascades_delete(relationship: ForeignObjectRel):
-    return relationship.on_delete is CASCADE
+def relationship_cascades_delete(relationship: ForeignObjectRel | ForeignKey):
+    remote = ensure_remote(relationship)
+    return remote.on_delete is CASCADE
 
+def ensure_remote(field: ForeignObjectRel | ForeignKey) -> ForeignObjectRel:
+    if isinstance(field, ForeignKey):
+        return field.remote_field
+    return field
 
 def blocker_relationships_for_obj(obj: ModelWithTable) -> tuple[list[ForeignObjectRel], list[ForeignObjectRel]]:
     protect, cascade = [], []

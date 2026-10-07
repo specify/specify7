@@ -8,7 +8,7 @@ from specifyweb.specify.models_utils.load_datamodel import TableDoesNotExistErro
 
 from specifyweb.backend.delete_blockers.validators import DELETE_BLOCKER_LIMIT, CleanedDeleteBlockerFilter, CleanedDeleteBlockerRequestForm
 from specifyweb.backend.delete_blockers.utils import field_is_remote, relationship_blocks_deletion, relationship_cascades_delete, blocker_relationships_for_obj
-from specifyweb.backend.delete_blockers.paginate import resolve_reference_paginator, ReferencePaginator
+from specifyweb.backend.delete_blockers.paginate import resolve_reference_paginator, ReferencePaginator, RemoteReferencePaginator
 
 class DeleteBlocker(TypedDict):
     table: str
@@ -42,10 +42,11 @@ class DeleteBlockerFilter:
 
     @property
     def table_name(self):
-        table_name = self.relationship.related_model._meta.model_name
-        if table_name is None:
-            raise ValueError(f"Unable to get related table name for {self.relationship}")
-        return table_name
+        return self.paginator.table_name
+
+    @property
+    def field_name(self):
+        return self.paginator.field_name
 
     def cascades(self):
         return relationship_cascades_delete(self.relationship)
@@ -58,10 +59,7 @@ class DeleteBlockerFilter:
             raise TableDoesNotExistError(f"Unable to find {table_name}")
         field_name = json["field"]
         field = model._meta.get_field(field_name)
-        if (not field_is_remote(field)
-            or not (relationship_blocks_deletion(field) or relationship_cascades_delete(field))):
-            raise ValueError(f"Can not use field {table_name}.{field_name} for delete blockers")
-        Paginator = resolve_reference_paginator(obj)
+        Paginator = resolve_reference_paginator(obj, field)
         return cls(
             paginator=Paginator(
                 obj=obj,
@@ -80,7 +78,7 @@ class DeleteBlockerFilter:
         record_count = self.paginator.count()
         return {
             "table": self.table_name,
-            "field": self.relationship.field.name,
+            "field": self.field_name,
             "count": record_count
         }
 
@@ -90,7 +88,7 @@ class DeleteBlockerFilter:
         cascades = self.cascades()
         return cascades, {
             "table": self.table_name,
-            "field": self.relationship.field.name,
+            "field": self.field_name,
             "ids": fetched_ids,
             "limit": self.paginator.limit,
             "complete": complete,
@@ -101,8 +99,9 @@ class DeleteBlockerFilter:
 def default_filters(obj: Model, limit=DELETE_BLOCKER_LIMIT, count_only=False) -> list[DeleteBlockerFilter]:
     filters = []
     protect_rels, cascade_rels = blocker_relationships_for_obj(obj)
-    Paginator = resolve_reference_paginator(obj)
     for rel in protect_rels:
+        # FIXME: optimize this, shouldn't need new reference for every relaitonship
+        Paginator = resolve_reference_paginator(obj, rel)
         filters.append(
             DeleteBlockerFilter(
                 Paginator(
@@ -115,6 +114,7 @@ def default_filters(obj: Model, limit=DELETE_BLOCKER_LIMIT, count_only=False) ->
     # REFACTOR: clean this up a little
     if not count_only:
         for rel in cascade_rels:
+            Paginator = resolve_reference_paginator(obj, rel)
             filters.append(
                 DeleteBlockerFilter(
                     Paginator(
