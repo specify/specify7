@@ -61,11 +61,17 @@ const processFields = <FIELD_TYPE extends LiteralField | Relationship>(
 let schemaLocalization: IR<SchemaLocalization> = undefined!;
 const fetchSchemaLocalization = f.store(async () =>
   import('../Preferences/userPreferences').then(async ({ userPreferences }) =>
-    load<IR<SchemaLocalization>>(
-      formatUrl('/context/schema_localization.json', {
-        lang: userPreferences.get('form', 'schema', 'language'),
-      }),
-      'application/json'
+    // Preferences are fetched independently of the initial context. Reading
+    // the schema language before that fetch completes can request the default
+    // language, and f.store() would then keep that localization for the life
+    // of the page.
+    userPreferences.fetch().then(() =>
+      load<IR<SchemaLocalization>>(
+        formatUrl('/context/schema_localization.json', {
+          lang: userPreferences.get('form', 'schema', 'language'),
+        }),
+        'application/json'
+      )
     )
   )
 );
