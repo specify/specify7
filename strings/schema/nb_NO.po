@@ -11,64 +11,78 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 2026.9\n"
 
-#: components/SchemaConfig/Layout.tsx:154
-#: components/SchemaConfig/Layout.tsx:179
+#: components/SchemaConfig/Layout.tsx:161
 #. Used in: Components > Schema Config > Layout
 msgid "importSchema"
 msgstr ""
 
-#: components/SchemaConfig/Layout.tsx:160
+#: components/SchemaConfig/Layout.tsx:167
 #. Used in: Components > Schema Config > Layout
 msgid "importSchemaWarning"
 msgstr ""
 
-#: components/SchemaConfig/Layout.tsx:164
+#: components/SchemaConfig/Layout.tsx:171
 #. Used in: Components > Schema Config > Layout
 msgid "importSchemaLanguageWarning"
 msgstr ""
 
-#: components/SchemaConfig/Layout.tsx:167
+#: components/SchemaConfig/Layout.tsx:174
 #. Used in: Components > Schema Config > Layout
 msgid "importSchemaBackupPrompt"
 msgstr ""
 
-#: components/SchemaConfig/Layout.tsx:165
+#: components/SchemaConfig/Layout.tsx:172
 #. Used in: Components > Schema Config > Layout
 msgid "importSchemaLimitations"
 msgstr ""
 
-#: components/SchemaConfig/Layout.tsx:142
+#: components/SchemaConfig/Layout.tsx:149
 #. Used in: Components > Schema Config > Layout
 msgid "downloadSchemaBackup"
 msgstr ""
 
-#: components/SchemaConfig/Layout.tsx:149
+#: components/SchemaConfig/Layout.tsx:156
 #. Used in: Components > Schema Config > Layout
 msgid "importSchemaContinue"
 msgstr ""
 
-#: components/SchemaConfig/Layout.tsx:185
+#: components/SchemaConfig/Layout.tsx:104
 #. Used in: Components > Schema Config > Layout
 msgid "importSchemaError"
 msgstr ""
 
-#: components/SchemaConfig/Layout.tsx:197
-#: components/SchemaConfig/Layout.tsx:217
+#: components/SchemaConfig/Layout.tsx:106
+#. Used in: Components > Schema Config > Layout
+msgid "importSchemaErrorBadRequest"
+msgstr ""
+
+#: components/SchemaConfig/Layout.tsx:105
+#. Used in: Components > Schema Config > Layout
+msgid "importSchemaErrorTimeout"
+msgstr ""
+
+#: components/SchemaConfig/Layout.tsx:107
+#. Used in: Components > Schema Config > Layout
+msgid "importSchemaErrorInternalError"
+msgstr ""
+
+#: components/SchemaConfig/Layout.tsx:186
+#: components/SchemaConfig/Layout.tsx:206
 #. Used in: Components > Schema Config > Layout
 msgid "importSchemaSuccess"
 msgstr ""
 
-#: components/SchemaConfig/Layout.tsx:203
+#: components/SchemaConfig/Layout.tsx:192
 #. Used in: Components > Schema Config > Layout
 msgid "importSchemaSuccessDescription"
 msgstr ""
 
-#: components/SchemaConfig/Layout.tsx:222
+#: components/SchemaConfig/Layout.tsx:211
 #. Used in: Components > Schema Config > Layout
 msgid "importSchemaRefreshError"
 msgstr ""
 
-#: components/SchemaConfig/Layout.tsx:213
+#: components/SchemaConfig/Layout.tsx:202
 #. Used in: Components > Schema Config > Layout
 msgid "reloadSchemaConfig"
 msgstr ""
@@ -108,15 +122,16 @@ msgstr "Uten tabell"
 #: components/Router/Routes.tsx:409
 #: components/SchemaConfig/Components.tsx:36
 #: components/SchemaConfig/Languages.tsx:36
-#: components/SchemaConfig/Layout.tsx:143
-#: components/SchemaConfig/Layout.tsx:155
-#: components/SchemaConfig/Layout.tsx:161
+#: components/SchemaConfig/Layout.tsx:104
+#: components/SchemaConfig/Layout.tsx:105
+#: components/SchemaConfig/Layout.tsx:106
+#: components/SchemaConfig/Layout.tsx:150
+#: components/SchemaConfig/Layout.tsx:162
 #: components/SchemaConfig/Layout.tsx:168
-#: components/SchemaConfig/Layout.tsx:180
-#: components/SchemaConfig/Layout.tsx:186
-#: components/SchemaConfig/Layout.tsx:198
-#: components/SchemaConfig/Layout.tsx:204
-#: components/SchemaConfig/Layout.tsx:218
+#: components/SchemaConfig/Layout.tsx:175
+#: components/SchemaConfig/Layout.tsx:187
+#: components/SchemaConfig/Layout.tsx:193
+#: components/SchemaConfig/Layout.tsx:207
 #: components/Security/registry.ts:206
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Languages ⬤ Components > Schema Config > Layout ⬤ Components > Security > Registry
 msgid "schemaConfig"

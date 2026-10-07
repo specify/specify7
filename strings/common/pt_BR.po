@@ -72,7 +72,7 @@ msgstr "Não"
 #: components/Reports/Report.tsx:312
 #: components/Reports/index.tsx:142
 #: components/Router/UnloadProtect.tsx:26
-#: components/SchemaConfig/Layout.tsx:147
+#: components/SchemaConfig/Layout.tsx:154
 #: components/SearchDialog/SelectRecordSet.tsx:130
 #: components/SearchDialog/index.tsx:240
 #: components/Security/ImportExport.tsx:81
@@ -273,8 +273,7 @@ msgstr "Criar"
 #: components/Reports/Report.tsx:60
 #: components/Router/RouterUtils.tsx:193
 #: components/SchemaConfig/Languages.tsx:33
-#: components/SchemaConfig/Layout.tsx:176
-#: components/SchemaConfig/Layout.tsx:194
+#: components/SchemaConfig/Layout.tsx:183
 #: components/SchemaConfig/TableUniquenessRules.tsx:139
 #: components/SchemaConfig/UniquenessRuleRow.tsx:236
 #: components/SearchDialog/index.tsx:370
