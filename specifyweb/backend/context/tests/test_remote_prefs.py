@@ -46,3 +46,7 @@ class RemotePrefsTests(ApiTests):
     def test_get_pref_from_database_unknown_type(self):
         with self.assertRaises(ValueError):
             get_pref_from_database("a", "bogus")
+
+    def test_get_remote_pref(self):
+        self._create_preferences("Prefs", "auditing.do_audits=false")
+        self.assertEqual(get_remote_pref("auditing.do_audits"), "false")
