@@ -1,6 +1,7 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 
+import { useSearchParameter } from '../../hooks/navigation';
 import { commonText } from '../../localization/common';
 import { dataViewsText } from '../../localization/dataViews';
 import { useResponsiveSplitView } from '../../hooks/useResponsiveSplitView';
@@ -10,6 +11,7 @@ import { DataEntry } from '../Atoms/DataEntry';
 import { getTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
+import { mergingQueryParameter } from '../Merging/queryString';
 import { Dialog } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasPermission } from '../Permissions/helpers';
@@ -28,6 +30,7 @@ import {
 } from '../QueryBuilder/SplitView';
 import { QueryFormView } from '../QueryBuilder/ToForms';
 import { NotFoundView } from '../Router/NotFoundView';
+import { OverlayLocation } from '../Router/Router';
 import type { DataViewQueriesFile } from './queries';
 import {
   getDataViewQueryDefinition,
@@ -95,6 +98,11 @@ function LoadedDataViewFromTable({
   readonly queries: DataViewQueriesFile;
   readonly reloadQueries: () => void;
 }): JSX.Element | null {
+  const overlayLocation = React.useContext(OverlayLocation);
+  const [mergingRecords] = useSearchParameter(
+    mergingQueryParameter,
+    overlayLocation
+  );
   const table = getTable(tableName);
   const [selectedIds, setSelectedIds] = React.useState<ReadonlyArray<number>>(
     []
@@ -320,6 +328,7 @@ function LoadedDataViewFromTable({
         onDelete,
       }) => (
         <QueryFormView
+          suspended={mergingRecords !== undefined}
           results={results}
           selectedRows={resultSelection}
           selectedIndex={selectedIndex}

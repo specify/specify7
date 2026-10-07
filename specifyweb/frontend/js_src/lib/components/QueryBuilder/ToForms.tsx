@@ -96,6 +96,7 @@ export function QueryToForms({
 }
 
 export function QueryFormView({
+  suspended = false,
   table,
   title,
   results,
@@ -108,6 +109,8 @@ export function QueryFormView({
   onSaved: handleSaved,
   onSlide: handleSlide,
 }: {
+  // Merge tasks can delete previewed records before query results are refreshed.
+  readonly suspended?: boolean;
   readonly table: SpecifyTable;
   readonly title: LocalizedString;
   readonly results: RA<QueryResultRow | undefined>;
@@ -123,7 +126,8 @@ export function QueryFormView({
   readonly onSlide: (index: number) => void;
 }): JSX.Element | null {
   const ids = useSelectedResults(results, selectedRows, true, totalCount);
-  if (!hasFetchableRecordIds(results) || ids.length === 0) return null;
+  if (suspended || !hasFetchableRecordIds(results) || ids.length === 0)
+    return null;
 
   return (
     <div className="flex h-full min-h-0 min-w-0 flex-1 items-center justify-center overflow-auto bg-[color:var(--form-background)]">
