@@ -29,7 +29,6 @@ import { useRecordSelector } from './RecordSelector';
  * IDs
  */
 export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
-  suspended = false,
   ids,
   newResource,
   onSlide: handleSlide,
@@ -59,8 +58,6 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
    * sets or query results with thousands of items)
    */
   readonly ids: RA<number | undefined>;
-  // Keep the current form and resource intact while a merge overlay is open.
-  readonly suspended?: boolean;
   readonly newResource: SpecifyResource<SCHEMA> | undefined;
   readonly title: LocalizedString | undefined;
   readonly headerButtons?: JSX.Element;
@@ -89,7 +86,6 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   );
 
   React.useEffect(() => {
-    if (suspended) return;
     setRecords((records) =>
       ids.map((id) => {
         if (id === undefined) return undefined;
@@ -100,14 +96,11 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
           );
       })
     );
-  }, [ids, table, suspended]);
+  }, [ids, table]);
 
-  const defaultIndexRef = React.useRef(
+  const [rawIndex, setIndex] = useTriggerState(
     Math.max(0, defaultIndex ?? ids.length - 1)
   );
-  if (!suspended)
-    defaultIndexRef.current = Math.max(0, defaultIndex ?? ids.length - 1);
-  const [rawIndex, setIndex] = useTriggerState(defaultIndexRef.current);
   const index =
     typeof newResource === 'object'
       ? totalCount - 1
@@ -124,7 +117,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   const {
     dialogs,
     slider,
-    resource: selectedResource,
+    resource,
     onAdd: handleAdding,
     onRemove: handleRemove,
     isLoading,
@@ -157,7 +150,6 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
           }
         : undefined,
     onSlide: (index, replace, callback): void => {
-      if (suspended) return;
       function doSlide(): void {
         setIndex(index);
         handleSlide?.(index, replace);
@@ -177,9 +169,6 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
       else doSlide();
     },
   });
-  const resourceRef = React.useRef(selectedResource);
-  if (!suspended) resourceRef.current = selectedResource;
-  const resource = resourceRef.current;
 
   const addLabel = isInRecordSet
     ? formsText.addToRecordSet({

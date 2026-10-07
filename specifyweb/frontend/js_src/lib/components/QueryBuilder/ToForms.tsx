@@ -96,7 +96,6 @@ export function QueryToForms({
 }
 
 export function QueryFormView({
-  suspended = false,
   table,
   title,
   results,
@@ -109,8 +108,6 @@ export function QueryFormView({
   onSaved: handleSaved,
   onSlide: handleSlide,
 }: {
-  // Merge tasks can delete previewed records before query results are refreshed.
-  readonly suspended?: boolean;
   readonly table: SpecifyTable;
   readonly title: LocalizedString;
   readonly results: RA<QueryResultRow | undefined>;
@@ -126,39 +123,21 @@ export function QueryFormView({
   readonly onSlide: (index: number) => void;
 }): JSX.Element | null {
   const ids = useSelectedResults(results, selectedRows, true, totalCount);
-  const previewRef = React.useRef({
-    ids,
-    selectedIndex,
-    totalCount: selectedRows.size === 0 ? totalCount : selectedRows.size,
-    hasRecords: !suspended && hasFetchableRecordIds(results) && ids.length > 0,
-  });
-  if (!suspended)
-    previewRef.current = {
-      ids,
-      selectedIndex,
-      totalCount: selectedRows.size === 0 ? totalCount : selectedRows.size,
-      hasRecords: hasFetchableRecordIds(results) && ids.length > 0,
-    };
-  const preview = previewRef.current;
-  if (!preview.hasRecords) return null;
+  if (!hasFetchableRecordIds(results) || ids.length === 0) return null;
 
   return (
-    <div
-      aria-hidden={suspended}
-      className={`${suspended ? 'hidden' : 'flex'} h-full min-h-0 min-w-0 flex-1 items-center justify-center overflow-auto bg-[color:var(--form-background)]`}
-    >
+    <div className="flex h-full min-h-0 min-w-0 flex-1 items-center justify-center overflow-auto bg-[color:var(--form-background)]">
       <RecordSelectorFromIds
-        suspended={suspended}
         canRemove={false}
-        defaultIndex={preview.selectedIndex}
+        defaultIndex={selectedIndex}
         dialog={false}
-        ids={preview.ids}
+        ids={ids}
         isDependent={false}
         isInRecordSet={false}
         newResource={undefined}
         table={table}
         title={title}
-        totalCount={preview.totalCount}
+        totalCount={selectedRows.size === 0 ? totalCount : selectedRows.size}
         onAdd={undefined}
         onClone={undefined}
         onClose={handleClose}
@@ -170,7 +149,7 @@ export function QueryFormView({
           if (typeof id === 'number') handleDelete(id);
         }}
         onFetch={
-          suspended || handleFetchMore === undefined
+          handleFetchMore === undefined
             ? undefined
             : async (index) => {
                 await handleFetchMore(index);
@@ -179,7 +158,6 @@ export function QueryFormView({
         }
         onSaved={handleSaved}
         onSlide={(index): void => {
-          if (suspended) return;
           handleSlide(index);
           if (selectedRows.size === 0 && results[index] === undefined)
             void handleFetchMore?.(index);

@@ -1,17 +1,16 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 
-import { useSearchParameter } from '../../hooks/navigation';
 import { commonText } from '../../localization/common';
 import { dataViewsText } from '../../localization/dataViews';
 import { useResponsiveSplitView } from '../../hooks/useResponsiveSplitView';
 import { H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
+import { RecordMergingContext } from '../Core/Contexts';
 import { getTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
-import { mergingQueryParameter } from '../Merging/queryString';
 import { Dialog } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasPermission } from '../Permissions/helpers';
@@ -30,7 +29,6 @@ import {
 } from '../QueryBuilder/SplitView';
 import { QueryFormView } from '../QueryBuilder/ToForms';
 import { NotFoundView } from '../Router/NotFoundView';
-import { OverlayLocation } from '../Router/Router';
 import type { DataViewQueriesFile } from './queries';
 import {
   getDataViewQueryDefinition,
@@ -48,13 +46,15 @@ export function TableDataView(): JSX.Element {
   return table === undefined ? (
     <NotFoundView />
   ) : (
-    <ProtectedTable tableName={table.name} action="read">
-      {hasPermission('/querybuilder/query', 'execute') ? (
-        <DataViewFromTable tableName={table.name} />
-      ) : (
-        <PermissionDenied resource="/querybuilder/query" action="execute" />
-      )}
-    </ProtectedTable>
+    <RecordMergingContext.Provider value={false}>
+      <ProtectedTable tableName={table.name} action="read">
+        {hasPermission('/querybuilder/query', 'execute') ? (
+          <DataViewFromTable tableName={table.name} />
+        ) : (
+          <PermissionDenied resource="/querybuilder/query" action="execute" />
+        )}
+      </ProtectedTable>
+    </RecordMergingContext.Provider>
   );
 }
 
@@ -98,11 +98,6 @@ function LoadedDataViewFromTable({
   readonly queries: DataViewQueriesFile;
   readonly reloadQueries: () => void;
 }): JSX.Element | null {
-  const overlayLocation = React.useContext(OverlayLocation);
-  const [mergingRecords] = useSearchParameter(
-    mergingQueryParameter,
-    overlayLocation
-  );
   const table = getTable(tableName);
   const [selectedIds, setSelectedIds] = React.useState<ReadonlyArray<number>>(
     []
@@ -189,15 +184,6 @@ function LoadedDataViewFromTable({
       restoreScrollTopRef.current = resultsScrollRef.current.scrollTop;
     setRefreshToken((token) => token + 1);
   }, []);
-  const handleMerged = React.useCallback((): void => {
-    /*
-     * Merging removes the selected records. Clear the preview before the
-     * refreshed results arrive so it does not try to load deleted records.
-     */
-    setSelectedIds([]);
-    setSelectedIndex(0);
-    handleRefresh();
-  }, [handleRefresh]);
   const handleCloseQueryEditor = (): void => setQueryData(undefined);
   const handleOpenQueryEditor = (): void => {
     setIsQueryDirty(false);
@@ -284,7 +270,6 @@ function LoadedDataViewFromTable({
         setSelectedIds([]);
         setSelectedIndex(0);
       }}
-      onMerged={handleMerged}
       onSortChange={(newFields): void => {
         setRuntimeFields(unParseQueryFields(table.name, newFields));
         setQueryRunCount((count) => count + 1);
@@ -328,7 +313,6 @@ function LoadedDataViewFromTable({
         onDelete,
       }) => (
         <QueryFormView
-          suspended={mergingRecords !== undefined}
           results={results}
           selectedRows={resultSelection}
           selectedIndex={selectedIndex}
