@@ -65,14 +65,17 @@ const fetchSchemaLocalization = f.store(async () =>
     // the schema language before that fetch completes can request the default
     // language, and f.store() would then keep that localization for the life
     // of the page.
-    userPreferences.fetch().then(() =>
-      load<IR<SchemaLocalization>>(
-        formatUrl('/context/schema_localization.json', {
-          lang: userPreferences.get('form', 'schema', 'language'),
-        }),
-        'application/json'
+    userPreferences
+      .fetch()
+      .catch(() => undefined)
+      .then(() =>
+        load<IR<SchemaLocalization>>(
+          formatUrl('/context/schema_localization.json', {
+            lang: userPreferences.get('form', 'schema', 'language'),
+          }),
+          'application/json'
+        )
       )
-    )
   )
 );
 export const getSchemaLocalization = (): IR<SchemaLocalization> =>
