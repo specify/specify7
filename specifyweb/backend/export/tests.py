@@ -119,9 +119,12 @@ class ExportFeedTests(SQLAlchemySetup):
             self.assertIn('collection_objects.csv', names)
 
             # the user gets a notification that the feed item was updated
-            messages = Message.objects.filter(user=self.specifyuser)
-            self.assertTrue(messages.exists())
-            self.assertIn('test_export.zip', messages[0].content)
+            self.assertTrue(
+                Message.objects.filter(
+                    user=self.specifyuser,
+                    content__contains='test_export.zip',
+                ).exists()
+            )
 
     def test_rss_feed_lists_published_items(self):
         with tempfile.TemporaryDirectory() as tmp:
