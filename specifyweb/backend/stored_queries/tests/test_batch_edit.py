@@ -349,7 +349,7 @@ class QueryConstructionTests(SQLAlchemySetup):
             BatchEditPack._query_field(
                 full_date._replace(date_part=date_part),
                 0,
-            )
+            )._replace(value="")
             for date_part in ("Full Date", "Year", "Month", "Day")
         ]
 
