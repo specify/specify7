@@ -54,3 +54,11 @@ class RemotePrefsTests(ApiTests):
     def test_get_global_pref(self):
         self._create_preferences("Global Prefs", "AUDIT_LIFESPAN_MONTHS=12")
         self.assertEqual(get_global_pref("AUDIT_LIFESPAN_MONTHS"), "12")
+
+    def test_remote_pref_caching(self):
+        self._create_preferences("Prefs", "auditing.do_audits=false")
+        with cache_remote_preferences():
+            self.assertEqual(get_remote_pref("auditing.do_audits"), "false")
+            Spappresourcedata.objects.all().update(data=b"auditing.do_audits=true")
+            # the cached value is returned even after the database changed
+            self.assertEqual(get_remote_pref("auditing.do_audits"), "false")
