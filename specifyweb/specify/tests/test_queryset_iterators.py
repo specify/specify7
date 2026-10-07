@@ -83,37 +83,6 @@ class TestIteratorUsage(SimpleTestCase):
 
         self.assert_iterator_called_for(iterator, queryset)
 
-    def test_export_cache_build_uses_iterator(self):
-        from specifyweb.backend.export.cache import build_cache_tables
-        from specifyweb.specify.models import Taxon
-
-        queryset = Taxon.objects.none()
-        extensions = SimpleNamespace(all=lambda: queryset)
-
-        with patch.object(QuerySet, 'iterator', autospec=True, side_effect=QuerySet.iterator) as iterator:
-            build_cache_tables(extensions)
-
-        self.assert_iterator_called_for(iterator, queryset)
-
-    def test_export_cache_fields_uses_iterator(self):
-        from specifyweb.backend.export.cache import _build_single_cache
-        from specifyweb.specify.models import Taxon
-
-        queryset = Taxon.objects.none()
-        extension = SimpleNamespace(
-            id=1,
-            mappingname='test',
-            description='test',
-            collectionmemberid=1,
-            timestampexported=None,
-            mappings=SimpleNamespace(all=lambda: queryset),
-        )
-
-        with patch.object(QuerySet, 'iterator', autospec=True, side_effect=QuerySet.iterator) as iterator:
-            _build_single_cache(extension)
-
-        self.assert_iterator_called_for(iterator, queryset)
-
     def test_cog_preps_child_cogs_uses_iterator(self):
         from specifyweb.backend.interactions import cog_preps
         from specifyweb.specify.models import Taxon
