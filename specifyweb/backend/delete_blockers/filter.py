@@ -16,6 +16,8 @@ class DeleteBlocker(TypedDict):
     ids: list[int]
     limit: int
     complete: bool
+    anchor: int | None
+    backwards: bool
 
 class DeleteBlockerCount(TypedDict):
     table: str
@@ -91,7 +93,9 @@ class DeleteBlockerFilter:
             "field": self.relationship.field.name,
             "ids": fetched_ids,
             "limit": self.paginator.limit,
-            "complete": complete
+            "complete": complete,
+            "anchor": self.paginator.anchor_id,
+            "backwards": self.paginator.backwards
         }
 
 def default_filters(obj: Model, limit=DELETE_BLOCKER_LIMIT, count_only=False) -> list[DeleteBlockerFilter]:
