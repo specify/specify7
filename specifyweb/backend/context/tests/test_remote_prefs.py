@@ -50,3 +50,7 @@ class RemotePrefsTests(ApiTests):
     def test_get_remote_pref(self):
         self._create_preferences("Prefs", "auditing.do_audits=false")
         self.assertEqual(get_remote_pref("auditing.do_audits"), "false")
+
+    def test_get_global_pref(self):
+        self._create_preferences("Global Prefs", "AUDIT_LIFESPAN_MONTHS=12")
+        self.assertEqual(get_global_pref("AUDIT_LIFESPAN_MONTHS"), "12")
