@@ -62,3 +62,13 @@ class RemotePrefsTests(ApiTests):
             Spappresourcedata.objects.all().update(data=b"auditing.do_audits=true")
             # the cached value is returned even after the database changed
             self.assertEqual(get_remote_pref("auditing.do_audits"), "false")
+
+    def test_remoteprefs_endpoint(self):
+        self._create_preferences("Prefs", "CO_CREATE_COA_4=true")
+
+        c = Client()
+        c.force_login(self.specifyuser)
+        response = c.get("/context/remoteprefs.properties")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content.decode(), "CO_CREATE_COA_4=true")
