@@ -62,16 +62,28 @@ export function generateUploadSpec(
   const field = queryFieldSpec.getField();
   const queryResultsFormatter = (
     value: number | string | null | undefined
-  ): string | undefined =>
-    value === undefined || value === null || field?.isRelationship === true
-      ? undefined
-      : syncFieldFormat(
-          field,
-          value.toString(),
-          queryFieldSpec.parser,
-          undefined,
-          true
-        );
+  ): string | undefined => {
+    if (value === undefined || value === null || field?.isRelationship === true)
+      return undefined;
+
+    const rawValue = value.toString();
+    const fieldFormatter = field?.getUiFormatter();
+    if (fieldFormatter !== undefined)
+      // Catalog number formatting can vary by Collection Object Type. The
+      // query field only has the schema-level formatter, so preserve database
+      // values that do not match that formatter instead of dropping them.
+      return fieldFormatter.format(rawValue) ?? rawValue;
+
+    return (
+      syncFieldFormat(
+        field,
+        rawValue,
+        queryFieldSpec.parser,
+        undefined,
+        true
+      ) ?? rawValue
+    );
+  };
   return {
     staticPathKey,
     formatQueryResults: queryResultsFormatter,
