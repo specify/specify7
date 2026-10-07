@@ -7,7 +7,7 @@ import { APIDeleteBlockerPage, BlockerPageCacheKey } from './types';
 
 type DeleteBlockerLRUPage = RA<number>;
 
-function blockerPageToCacheKey(
+export function blockerPageToCacheKey(
   owner: SpecifyResource<AnySchema>,
   page: APIDeleteBlockerPage
 ): BlockerPageCacheKey {
