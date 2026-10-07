@@ -39,6 +39,33 @@ class TestIteratorUsage(SimpleTestCase):
 
         self.assert_iterator_called_for(iterator, queryset)
 
+    def test_serializers_to_many_uses_prefetched_objects(self):
+        from specifyweb.specify.api import serializers
+        from specifyweb.specify.models import Taxon
+
+        prefetched_object = SimpleNamespace(id=1)
+        queryset = Taxon.objects.none()
+        queryset._result_cache = [prefetched_object]
+        relation = MagicMock()
+        relation.all.return_value = queryset
+        obj = SimpleNamespace(
+            children=relation,
+            _prefetched_objects_cache={'children': queryset},
+        )
+        rel = SimpleNamespace(
+            model=SimpleNamespace(
+                specify_model=SimpleNamespace(
+                    get_field=lambda name: SimpleNamespace(dependent=True))),
+            get_accessor_name=lambda: 'children',
+        )
+
+        with patch.object(serializers, '_obj_to_data', return_value={'id': 1}), \
+             patch.object(QuerySet, 'iterator', autospec=True, side_effect=QuerySet.iterator) as iterator:
+            result = serializers.to_many_to_data(obj, rel, lambda value: None)
+
+        self.assertEqual(result, [{'id': 1}])
+        self.assertFalse(iterator.called)
+
     def test_calculated_fields_deaccession_uses_iterator(self):
         from specifyweb.specify.api.calculated_fields import calculate_totals_deaccession
         from specifyweb.specify.models import Taxon
