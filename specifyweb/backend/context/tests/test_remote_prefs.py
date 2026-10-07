@@ -42,3 +42,7 @@ class RemotePrefsTests(ApiTests):
     def test_get_all_remote_prefs_database(self):
         self._create_preferences("Prefs", "CO_CREATE_COA_4=true")
         self.assertEqual(get_all_remote_prefs_database(), "CO_CREATE_COA_4=true")
+
+    def test_get_pref_from_database_unknown_type(self):
+        with self.assertRaises(ValueError):
+            get_pref_from_database("a", "bogus")
