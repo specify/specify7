@@ -8,6 +8,15 @@ from .raw_query import get_simple_query
 
 
 class TestExportWebPortal(SQLAlchemySetup):
+    def test_clean_cell_preserves_literal_java_escape_sequences(self):
+        from specifyweb.backend.stored_queries.web_portal_export import _clean_cell
+
+        self.assertEqual(
+            _clean_cell(r"literal \r, \b, \f and \\"),
+            r"literal \\r, \\b, \\f and \\\\",
+        )
+        self.assertEqual(_clean_cell("line\nbreak\r"), "line break ")
+
     @patch("specifyweb.backend.stored_queries.views.Thread")
     def test_export(self, thread: Mock):
         c = Client()
