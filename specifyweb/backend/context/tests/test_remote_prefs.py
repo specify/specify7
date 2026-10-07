@@ -38,3 +38,7 @@ class RemotePrefsTests(ApiTests):
         prefs = "a=1\nb=2"
         self.assertEqual(get_preference(prefs, "b"), "2")
         self.assertIsNone(get_preference(prefs, "missing"))
+
+    def test_get_all_remote_prefs_database(self):
+        self._create_preferences("Prefs", "CO_CREATE_COA_4=true")
+        self.assertEqual(get_all_remote_prefs_database(), "CO_CREATE_COA_4=true")
