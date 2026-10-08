@@ -5,6 +5,8 @@ import { SpecifyResource } from '../DataModel/legacyTypes';
 import { AnySchema } from '../DataModel/helperTypes';
 import { DeleteBlockerResource, DeleteBlockerStore } from './store';
 import { RA } from '../../utils/types';
+import { Relationship } from '../DataModel/specifyField';
+import { DeleteBlockerLRUPage } from './pageCache';
 
 const DeleteBlockerContext = React.createContext<DeleteBlockerStore | null>(
   null
@@ -75,7 +77,39 @@ export function useDeleteBlockersForResource(
   return records;
 }
 
-export function useDeleteBlockerPaginator(
-  parentResource: SpecifyResource<AnySchema>,
-  paginatorKey: string
-) {}
+export function useDeleteBlockerPages(
+  resource: SpecifyResource<AnySchema>,
+  relationship: Relationship
+) {
+  const store = useDeleteBlockerStore();
+
+  const [anchor, setAnchor] = React.useState<number | null>(null);
+
+  React.useEffect(() => {
+    store.filterBlockers(resource, relationship, anchor);
+  }, [store, resource, relationship]);
+
+  async function handleNextPageFetch(
+    previousPage: DeleteBlockerLRUPage,
+    direction: 'next' | 'previous' | 'first' | 'last'
+  ) {
+    const backwards = direction === 'previous' || direction === 'last';
+    const anchor =
+      direction === 'next'
+        ? previousPage.ids.at(-1)
+        : direction === 'previous'
+          ? previousPage.ids.at(0)
+          : null;
+    setAnchor(anchor ?? null);
+    store.filterBlockers(resource, relationship, anchor, backwards);
+  }
+
+  const deleteBlockerPage = React.useSyncExternalStore(store.subscribe, () =>
+    store.getCachedPage(resource, relationship, anchor)
+  );
+
+  return {
+    page: deleteBlockerPage,
+    onNextPageFetch: handleNextPageFetch,
+  };
+}

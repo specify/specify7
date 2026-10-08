@@ -24,13 +24,13 @@ import {
 
 export type ResourceIdentifier = string;
 
-function recordToBlockerCacheKey(
+export function recordToBlockerCacheKey(
   resource: SpecifyResource<AnySchema>,
   relationshipInfo?: {
     readonly relatedTable: string;
     readonly relationshipName: string;
   },
-  anchorId: number = 0
+  anchorId: number | null = null
 ): BlockerPageCacheKey {
   const tableName = resource.specifyTable.name.toLowerCase();
   const recordId = resource.id;
@@ -81,7 +81,7 @@ export class DeleteBlockerState {
   private readonly countPromiseQueue: PromiseQueue<string, unknown>;
   private readonly pagePromiseQueue: PromiseQueue<
     BlockerPageCacheKey,
-    APIDeleteBlockers
+    RA<DeleteBlockerLRUPage>
   >;
   private readonly nodes: Map<string, BlockerNode>;
   private readonly cascadeParents: Map<string, Set<string>>;
@@ -202,22 +202,20 @@ export class DeleteBlockerState {
   private handleDeleteBlockerPage(
     resource: SpecifyResource<AnySchema>,
     blockers: APIDeleteBlockers
-  ) {
+  ): RA<DeleteBlockerLRUPage> {
     const node = this.getOrCreateNode(resource);
-    this.applyBlockerPages(node, blockers.results);
+    const cachedPages = this.applyBlockerPages(node, blockers.results);
     this.updateAncestors(node.key);
     this.queueNextBlockers(resource, blockers.next);
     this.onChange?.();
-    return blockers;
+    return cachedPages;
   }
 
   private applyBlockerPages(
     node: BlockerNode,
     blockerPages: RA<APIDeleteBlockerPage>
-  ) {
-    blockerPages.forEach((page) => {
-      this.applyBlockerPage(node, page);
-    });
+  ): RA<DeleteBlockerLRUPage> {
+    return blockerPages.map((page) => this.applyBlockerPage(node, page));
   }
 
   private applyBlockerPage(
@@ -230,8 +228,9 @@ export class DeleteBlockerState {
     if (existingPage !== undefined) {
       this.unindexBlockerPage(blockerKey, existingPage);
     }
-    this.pageCache.cachePage(node.resource, blockerPage);
+    const cachedPage = this.pageCache.cachePage(node.resource, blockerPage);
     this.indexBlockerPage(node.resource, blockerPage);
+    return cachedPage;
   }
 
   private indexBlockerPage(
@@ -379,18 +378,30 @@ export class DeleteBlockerState {
     this.graphIterator(changedKey, 'ancestors', this.updateNode);
   }
 
+  public getBlockerPage(cacheKey: string) {
+    return this.pageCache.getPage(cacheKey);
+  }
+
   public async filterBlockers(
     resource: SpecifyResource<AnySchema>,
     relatedTable: keyof Tables | Lowercase<keyof Tables>,
     relationshipName: string,
-    anchor: number | undefined = undefined
+    anchor: number | null = null,
+    backwards: boolean = false
   ) {
-    const cacheKey = recordToBlockerCacheKey(resource, {
-      relatedTable,
-      relationshipName,
-    });
-    if (this.pageIsFetching(cacheKey) || this.pageIsCached(cacheKey)) {
-      return;
+    const cacheKey = recordToBlockerCacheKey(
+      resource,
+      {
+        relatedTable,
+        relationshipName,
+      },
+      anchor
+    );
+    if (this.pageIsCached(cacheKey)) {
+      return this.getBlockerPage(cacheKey);
+    }
+    if (this.pageIsFetching(cacheKey)) {
+      return undefined;
     }
     const fetchBlockers = () =>
       filterDeleteBlockers(resource.specifyTable.name, resource.id, [
@@ -398,10 +409,24 @@ export class DeleteBlockerState {
           table: relatedTable,
           field: relationshipName,
           anchor,
+          backwards,
           limit: this.recordsPerPage,
         },
-      ]).then((blockers) => this.handleDeleteBlockerPage(resource, blockers));
-    this.pagePromiseQueue.enqueue(cacheKey, fetchBlockers);
+      ])
+        .then((blockers) => {
+          return backwards === true
+            ? {
+                ...blockers,
+                results: blockers.results.map((page) => ({
+                  ...page,
+                  ids: [...page.ids].reverse(),
+                  backwards: false,
+                })),
+              }
+            : blockers;
+        })
+        .then((blockers) => this.handleDeleteBlockerPage(resource, blockers));
+    return this.pagePromiseQueue.enqueue(cacheKey, fetchBlockers);
   }
 
   private async handleNextPage(

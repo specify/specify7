@@ -22,7 +22,7 @@ type APIDeleteBlockerCounts = {
 type DeleteBlockerFilter = {
   readonly table: keyof Tables | Lowercase<keyof Tables>;
   readonly field: string;
-  readonly anchor?: number;
+  readonly anchor?: number | null;
   readonly limit?: number;
   readonly backwards?: boolean;
 };

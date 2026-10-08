@@ -9,6 +9,8 @@ import { APIDeleteBlockerPage, BlockerPageCacheKey } from './types';
 export type DeleteBlockerLRUPage = {
   readonly table: Lowercase<keyof Tables>;
   readonly ids: RA<number>;
+  readonly anchor: number | null;
+  readonly backwards: boolean;
 };
 
 export function blockerPageToCacheKey(
@@ -22,7 +24,7 @@ export function blockerPageToCacheKey(
   }
   const tableName = page.table;
   const relationshipName = page.field;
-  const anchorId = page.anchor ?? 0;
+  const anchorId = page.anchor;
   const keyParts = [ownerTable, ownerId, tableName, relationshipName, anchorId];
   return keyParts.join('_');
 }
@@ -61,8 +63,11 @@ export class DeleteBlockerLRU {
     const cachedPage: DeleteBlockerLRUPage = {
       ids: blockerPage.ids,
       table: blockerPage.table,
+      anchor: blockerPage.anchor,
+      backwards: blockerPage.backwards,
     };
     this.pageCache.set(cacheKey, cachedPage);
+    return cachedPage;
   }
 
   public getPage(

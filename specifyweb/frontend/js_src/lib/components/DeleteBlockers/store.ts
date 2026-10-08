@@ -1,11 +1,14 @@
 import { RA, RR, Writable, WritableArray } from '../../utils/types';
 import { AnySchema } from '../DataModel/helperTypes';
 import { SpecifyResource } from '../DataModel/legacyTypes';
+import { Relationship } from '../DataModel/specifyField';
 import { Tables } from '../DataModel/types';
+import { DeleteBlockerLRUPage } from './pageCache';
 import {
   BlockerNode,
   DeleteBlockerState,
   makeBlockerKey,
+  recordToBlockerCacheKey,
   ResourceIdentifier,
   resourceToStringIdentifier,
 } from './state';
@@ -70,6 +73,52 @@ export class DeleteBlockerStore {
 
   public async seedBlockers(resource: SpecifyResource<AnySchema>) {
     return this.state.seedBlockers(resource);
+  }
+
+  public fetchDeleteBlockerPage(
+    resource: SpecifyResource<AnySchema>,
+    relationship: Relationship,
+    anchor: number | null = null,
+    backwards: boolean = false
+  ) {
+    return this.state.filterBlockers(
+      resource,
+      relationship.table.name,
+      relationship.name,
+      anchor,
+      backwards
+    );
+  }
+
+  public filterBlockers(
+    resource: SpecifyResource<AnySchema>,
+    relationship: Relationship,
+    anchor: number | null = null,
+    backwards: boolean = false
+  ) {
+    return this.state.filterBlockers(
+      resource,
+      relationship.table.name,
+      relationship.name,
+      anchor,
+      backwards
+    );
+  }
+
+  public getCachedPage(
+    resource: SpecifyResource<AnySchema>,
+    relationship: Relationship,
+    anchor: number | null = null
+  ): DeleteBlockerLRUPage | undefined {
+    const cacheKey = recordToBlockerCacheKey(
+      resource,
+      {
+        relatedTable: relationship.table.name,
+        relationshipName: relationship.name,
+      },
+      anchor
+    );
+    return this.state.getBlockerPage(cacheKey);
   }
 
   public getBlockerGraph(
