@@ -51,14 +51,13 @@ def blocker_relationships_for_obj(obj: ModelWithTable) -> tuple[list[ForeignKey]
 
     return protect, cascade
 
-# REFACTOR: If we need to speed this up even more, consider using the DB cursor
-# directly and skip SQLAlchemy constructs (like validate_tree_numbering)
-# REFACTOR: Maybe we can try to renumber the tree before this check.
-# That might need to be cached as well to prevent renumbering the tree for
-# every request
-
 
 def node_numbers_valid_for_tree(tree_name: str, definition_id: int) -> bool:
+    # REFACTOR: If we need to speed this up even more, consider using the DB cursor
+    # directly and skip SQLAlchemy constructs (like validate_tree_numbering)
+    # REFACTOR: Maybe we can try to renumber the tree before this check.
+    # That might need to be cached as well to prevent renumbering the tree for
+    # every request
     cached_value = _cached_node_numbers_valid(tree_name, definition_id)
     if cached_value is not None:
         return cached_value
