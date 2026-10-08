@@ -8,7 +8,8 @@ from specifyweb.specify.models_utils.load_datamodel import TableDoesNotExistErro
 
 from specifyweb.backend.delete_blockers.validators import DELETE_BLOCKER_LIMIT, CleanedDeleteBlockerFilter, CleanedDeleteBlockerRequestForm
 from specifyweb.backend.delete_blockers.utils import field_is_remote, relationship_blocks_deletion, relationship_cascades_delete, blocker_relationships_for_obj
-from specifyweb.backend.delete_blockers.paginate import resolve_reference_paginator, ReferencePaginator, RemoteReferencePaginator
+from specifyweb.backend.delete_blockers.paginate import resolve_reference_paginator, ReferencePaginator
+
 
 class DeleteBlocker(TypedDict):
     table: str
@@ -19,14 +20,17 @@ class DeleteBlocker(TypedDict):
     anchor: int | None
     backwards: bool
 
+
 class DeleteBlockerCount(TypedDict):
     table: str
     field: str
     count: int
 
+
 class DeleteBlockerCounts(TypedDict):
     results: list[DeleteBlockerCount]
     total_count: int
+
 
 class DeleteBlockerFilter:
     def __init__(self, paginator: ReferencePaginator) -> None:
@@ -96,6 +100,7 @@ class DeleteBlockerFilter:
             "backwards": self.paginator.backwards
         }
 
+
 def default_filters(obj: Model, limit=DELETE_BLOCKER_LIMIT, count_only=False) -> list[DeleteBlockerFilter]:
     filters = []
     protect_rels, cascade_rels = blocker_relationships_for_obj(obj)
@@ -126,6 +131,7 @@ def default_filters(obj: Model, limit=DELETE_BLOCKER_LIMIT, count_only=False) ->
             )
     return filters
 
+
 def merge_delete_blocker_counts(aggregated: DeleteBlockerCounts, current_count: DeleteBlockerCount | None) -> DeleteBlockerCounts:
     if current_count is None or current_count["count"] == 0:
         return aggregated
@@ -135,15 +141,15 @@ def merge_delete_blocker_counts(aggregated: DeleteBlockerCounts, current_count: 
         "results": new_results,
         "total_count": new_count
     }
-    
+
 
 class DeleteBlockerFilters:
     def __init__(self,
                  obj: Model,
                  limit=DELETE_BLOCKER_LIMIT,
                  filters: list[DeleteBlockerFilter] | None = None,
-                 count_only = False
-                ) -> None:
+                 count_only=False
+                 ) -> None:
         self.obj = obj
         if filters is None:
             self.filters = default_filters(obj, limit, count_only)
@@ -155,7 +161,8 @@ class DeleteBlockerFilters:
         if json["filters"] is None:
             filters = None
         else:
-            filters = [DeleteBlockerFilter.from_json(obj=obj, json=blocker_filter) for blocker_filter in json["filters"]]
+            filters = [DeleteBlockerFilter.from_json(
+                obj=obj, json=blocker_filter) for blocker_filter in json["filters"]]
         limit = json["limit"]
         return cls(obj=obj, limit=limit, filters=filters, count_only=count_only)
 

@@ -27,12 +27,14 @@ def relationship_cascades_delete(relationship: ForeignObjectRel | ForeignKey):
     remote = ensure_remote(relationship)
     return remote.on_delete is CASCADE
 
+
 def ensure_remote(field: ForeignObjectRel | ForeignKey) -> ForeignObjectRel:
     if isinstance(field, ForeignKey):
         return field.remote_field
     return field
 
-def blocker_relationships_for_obj(obj: ModelWithTable) -> tuple[list[ForeignObjectRel], list[ForeignObjectRel]]:
+
+def blocker_relationships_for_obj(obj: ModelWithTable) -> tuple[list[ForeignKey], list[ForeignKey]]:
     protect, cascade = [], []
     all_fields = obj._meta.get_fields(include_hidden=True)
     remote_relationships = filter(
@@ -40,10 +42,12 @@ def blocker_relationships_for_obj(obj: ModelWithTable) -> tuple[list[ForeignObje
         all_fields
     )
     for relationship in remote_relationships:
+        if not isinstance(relationship.field, ForeignKey):
+            continue
         if relationship_blocks_deletion(relationship):
-            protect.append(relationship)
+            protect.append(relationship.field)
         elif relationship_cascades_delete(relationship):
-            cascade.append(relationship)
+            cascade.append(relationship.field)
 
     return protect, cascade
 
@@ -52,6 +56,8 @@ def blocker_relationships_for_obj(obj: ModelWithTable) -> tuple[list[ForeignObje
 # REFACTOR: Maybe we can try to renumber the tree before this check.
 # That might need to be cached as well to prevent renumbering the tree for
 # every request
+
+
 def node_numbers_valid_for_tree(tree_name: str, definition_id: int) -> bool:
     cached_value = _cached_node_numbers_valid(tree_name, definition_id)
     if cached_value is not None:
