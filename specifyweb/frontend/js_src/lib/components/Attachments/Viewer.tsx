@@ -35,12 +35,12 @@ import {
   reportAttachmentServerFailure,
   useAttachmentServerStatus,
 } from './attachments';
-import { AttachmentRecordLink, getAttachmentTable } from './Cell';
+import { AttachmentRecordLinks, getAttachmentTable } from './Cell';
 import { Thumbnail } from './Preview';
 
 export function AttachmentViewer({
   attachment,
-  related: [related, setRelated],
+  related: [related],
   showMeta,
   onToggleSidebar,
   onViewRecord: handleViewRecord,
@@ -138,7 +138,6 @@ export function AttachmentViewer({
     'behavior',
     'showControls'
   );
-  const table = f.maybe(serialized.tableID ?? undefined, getAttachmentTable);
   const areControlsVisible = controlsVisiblePreference;
   const defaultCollapsed = collapseFormByDefault && areControlsVisible;
   const shouldShowMeta = showMeta ?? !defaultCollapsed;
@@ -249,41 +248,38 @@ export function AttachmentViewer({
             />
             <span className="flex-1" />
             {typeof originalUrl === 'string' && (
-              <div className="flex flex-wrap gap-2">
-                {attachmentServerStatus !== 'unavailable' && (
-                  <>
-                    <Component
-                      className="flex-1 whitespace-nowrap"
-                      download={new URL(originalUrl).searchParams.get(
-                        'downloadname'
-                      )}
-                      href={`/attachment_gw/proxy/${new URL(originalUrl).search}`}
-                      target="_blank"
-                      onClick={undefined}
-                    >
-                      {notificationsText.download()}
-                    </Component>
-                    <Component
-                      className="flex-1 whitespace-nowrap"
-                      href={originalUrl}
-                      target="_blank"
-                      onClick={undefined}
-                    >
-                      {commonText.openInNewTab()}
-                    </Component>
-                  </>
-                )}
-                {typeof table === 'object' &&
-                typeof handleViewRecord === 'function' ? (
-                  <AttachmentRecordLink
+              <div className="flex flex-col gap-2">
+                <div className="flex flex-wrap gap-2">
+                  {attachmentServerStatus !== 'unavailable' && (
+                    <>
+                      <Component
+                        className="flex-1 whitespace-nowrap"
+                        download={new URL(originalUrl).searchParams.get(
+                          'downloadname'
+                        )}
+                        href={`/attachment_gw/proxy/${new URL(originalUrl).search}`}
+                        target="_blank"
+                        onClick={undefined}
+                      >
+                        {notificationsText.download()}
+                      </Component>
+                      <Component
+                        className="flex-1 whitespace-nowrap"
+                        href={originalUrl}
+                        target="_blank"
+                        onClick={undefined}
+                      >
+                        {commonText.openInNewTab()}
+                      </Component>
+                    </>
+                  )}
+                </div>
+                {typeof handleViewRecord === 'function' && (
+                  <AttachmentRecordLinks
                     attachment={serialized}
-                    className="flex-1"
-                    related={[related, setRelated]}
-                    table={table}
-                    variant="button"
                     onViewRecord={handleViewRecord}
                   />
-                ) : undefined}
+                )}
               </div>
             )}
           </div>

@@ -38,6 +38,11 @@ export type CollectionFetchFilters<SCHEMA extends AnySchema> = Partial<
 
 export const DEFAULT_FETCH_LIMIT = 20;
 
+type FetchRelatedOptions = {
+  readonly limit?: number;
+  readonly offset?: number;
+};
+
 export type SerializedCollection<SCHEMA extends AnySchema> = {
   readonly records: RA<SerializedResource<SCHEMA>>;
   readonly totalCount: number;
@@ -129,7 +134,7 @@ export async function fetchRelated<
 >(
   resource: SerializedResource<SCHEMA>,
   relationshipName: RELATIONSHIP,
-  limit = DEFAULT_FETCH_LIMIT
+  limitOrOptions: number | FetchRelatedOptions = DEFAULT_FETCH_LIMIT
 ): Promise<{
   readonly records: RA<
     SerializedResource<SCHEMA['toManyIndependent'][RELATIONSHIP][number]>
@@ -145,8 +150,16 @@ export async function fetchRelated<
     relationship.getReverse(),
     `Trying to fetch related resource, but no reverse relationship exists for ${relationship.name} in ${tableName}`
   ).name;
+  const { limit, offset } =
+    typeof limitOrOptions === 'number'
+      ? { limit: limitOrOptions, offset: 0 }
+      : {
+          limit: limitOrOptions.limit ?? DEFAULT_FETCH_LIMIT,
+          offset: limitOrOptions.offset ?? 0,
+        };
   const response = fetchCollection(relationship.relatedTable.name, {
     limit,
+    offset,
     [reverseName]: id,
     domainFilter: false,
   });

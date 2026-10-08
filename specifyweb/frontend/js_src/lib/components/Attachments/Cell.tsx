@@ -6,19 +6,21 @@ import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import { notificationsText } from '../../localization/notifications';
 import { f } from '../../utils/functools';
-import type { GetSet } from '../../utils/types';
+import type { GetSet, RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
 import { fetchRelated } from '../DataModel/collection';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { idFromUrl } from '../DataModel/resource';
+import { fetchResource, idFromUrl } from '../DataModel/resource';
 import { deserializeResource } from '../DataModel/serializers';
 import type { SpecifyTable } from '../DataModel/specifyTable';
-import { getTableById } from '../DataModel/tables';
+import { getTableById, tables } from '../DataModel/tables';
 import type { Attachment } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
+import { format } from '../Formatters/formatters';
+import { loadingBar } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasTablePermission } from '../Permissions/helpers';
@@ -45,9 +47,9 @@ export function AttachmentCell({
   const [originalUrl] = useAsyncState(
     React.useCallback(
       async () =>
-        attachmentServerStatus !== 'unavailable'
-          ? fetchOriginalUrl(attachment)
-          : undefined,
+        attachmentServerStatus === 'unavailable'
+          ? undefined
+          : fetchOriginalUrl(attachment),
       [attachment, attachmentServerStatus]
     ),
     false
@@ -95,6 +97,120 @@ export function AttachmentCell({
 export function getAttachmentTable(tableId: number): SpecifyTable | undefined {
   const table = getTableById(tableId);
   return tablesWithAttachments().includes(table) ? table : undefined;
+}
+
+type AttachmentParent = {
+  readonly table: SpecifyTable;
+  readonly id: number;
+  readonly formatted: NonNullable<Awaited<ReturnType<typeof format>>>;
+};
+
+export async function fetchAttachmentParents(
+  attachment: SerializedResource<Attachment>
+): Promise<RA<AttachmentParent>> {
+  const groups = await Promise.all(
+    tablesWithAttachments().map(async (table) => {
+      const relationship = getAttachmentRelationship(table);
+      if (relationship === undefined) return [];
+      if (!hasTablePermission(relationship.relatedTable.name, 'read'))
+        return [];
+      const attachmentRelationship = tables.Attachment.relationships.find(
+        ({ relatedTable }) =>
+          relatedTable.name === relationship.relatedTable.name
+      );
+      if (attachmentRelationship === undefined) return [];
+
+      const pageSize = 100;
+      const fetchAllRelatedRecords = async (
+        offset = 0,
+        previousTotalCount = Number.POSITIVE_INFINITY,
+        previousRecords: RA<SerializedResource<AnySchema>> = []
+      ): Promise<RA<SerializedResource<AnySchema>>> => {
+        if (offset >= previousTotalCount) return previousRecords;
+        const page = await fetchRelated(
+          attachment,
+          attachmentRelationship.name as never,
+          { limit: pageSize, offset }
+        );
+        const records = [...previousRecords, ...page.records];
+        return records.length >= page.totalCount
+          ? records
+          : fetchAllRelatedRecords(records.length, page.totalCount, records);
+      };
+      const relatedRecords = await fetchAllRelatedRecords();
+
+      return Promise.all(
+        relatedRecords.map(async (record) => {
+          const related = deserializeResource(record);
+          const parentUrl = related.get(table.name as never);
+          const id =
+            typeof parentUrl === 'string' ? idFromUrl(parentUrl) : undefined;
+          if (id === undefined) return undefined;
+          const serialized = await fetchResource(
+            table.name as never,
+            id,
+            false
+          );
+          if (serialized === undefined) return undefined;
+          const resource = deserializeResource(serialized);
+          return {
+            table,
+            id,
+            formatted: await format(resource, undefined, true),
+          };
+        })
+      ).then((parents) =>
+        parents.filter(
+          (parent): parent is AttachmentParent => parent !== undefined
+        )
+      );
+    })
+  );
+  const uniqueParents = new Map<string, AttachmentParent>();
+  groups
+    .flat()
+    .forEach((parent) =>
+      uniqueParents.set(`${parent.table.name}:${parent.id}`, parent)
+    );
+  return Array.from(uniqueParents.values());
+}
+
+export function AttachmentRecordLinks({
+  attachment,
+  onViewRecord: handleViewRecord,
+}: {
+  readonly attachment: SerializedResource<Attachment>;
+  readonly onViewRecord: (table: SpecifyTable, recordId: number) => void;
+}): JSX.Element | null {
+  const [parents] = useAsyncState(
+    React.useCallback(
+      async () => fetchAttachmentParents(attachment),
+      [attachment]
+    ),
+    false
+  );
+
+  if (parents !== undefined && parents.length === 0) return null;
+
+  return (
+    <div className="max-h-40 overflow-y-auto rounded border border-gray-500">
+      {parents === undefined ? (
+        <div className="p-2">{loadingBar}</div>
+      ) : (
+        parents.map(({ table, id, formatted }) => (
+          <Button.Info
+            className="flex w-full items-center justify-start gap-2 !text-left"
+            key={`${table.name}:${id}`}
+            title={formatted}
+            onClick={(): void => handleViewRecord(table, id)}
+          >
+            <TableIcon label={false} name={table.name} />
+            <span className="truncate">{formatted}</span>
+          </Button.Info>
+        ))
+      )}
+    </div>
+  );
 }
 
 /**
