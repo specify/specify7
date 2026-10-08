@@ -3,7 +3,8 @@ import { DeleteBlockerState, resourceToStringIdentifier } from './state';
 import { error } from '../Errors/assert';
 import { SpecifyResource } from '../DataModel/legacyTypes';
 import { AnySchema } from '../DataModel/helperTypes';
-import { DeleteBlockerStore } from './store';
+import { DeleteBlockerResource, DeleteBlockerStore } from './store';
+import { RA } from '../../utils/types';
 
 const DeleteBlockerContext = React.createContext<DeleteBlockerStore | null>(
   null
@@ -53,19 +54,28 @@ function useDeleteBlockerStore(): DeleteBlockerStore {
 
 export function useDeleteBlockersForResource(
   resource: SpecifyResource<AnySchema>
-) {
+): RA<DeleteBlockerResource> | undefined {
   const store = useDeleteBlockerStore();
   const blockerKey = resourceToStringIdentifier(resource);
 
   React.useEffect(() => {
     void store.seedBlockers(resource);
-  }, [store, resource]);
+  }, [store, blockerKey]);
 
-  React.useSyncExternalStore(store.subscribe, () =>
-    React.useMemo(
-      () => store.getNode(blockerKey)?.version ?? 0,
-      [store, blockerKey]
-    )
+  const nodeVersion = React.useSyncExternalStore(
+    store.subscribe,
+    () => store.getNode(blockerKey)?.version ?? 0
   );
-  return store.getBlockerGraph(resource);
+
+  const records = React.useMemo(
+    () => store.getBlockerGraph(resource),
+    [store, nodeVersion, blockerKey]
+  );
+
+  return records;
 }
+
+export function useDeleteBlockerPaginator(
+  parentResource: SpecifyResource<AnySchema>,
+  paginatorKey: string
+) {}

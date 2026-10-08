@@ -49,7 +49,7 @@ function recordToBlockerCacheKey(
   return keyParts.join('_');
 }
 
-type BlockerRelationship = {
+export type BlockerRelationship = {
   readonly key: BlockerPageCacheKey;
   readonly table: Lowercase<keyof Tables>;
   readonly field: string;
@@ -71,7 +71,7 @@ export function resourceToStringIdentifier(
   return makeBlockerKey(resource.specifyTable.name.toLowerCase(), resource.id);
 }
 
-function makeBlockerKey(...components: RA<unknown>) {
+export function makeBlockerKey(...components: RA<unknown>) {
   return components.join('_');
 }
 
@@ -275,16 +275,6 @@ export class DeleteBlockerState {
     }
   }
 
-  public getBlockerGraph(
-    resource: SpecifyResource<AnySchema>
-  ): RA<BlockerNode> {
-    const resourceKey = resourceToStringIdentifier(resource);
-    const result: WritableArray<BlockerNode> = [];
-
-    this.graphIterator(resourceKey, 'children', (node) => result.push(node));
-    return result;
-  }
-
   private async queueNextBlockers(
     resource: SpecifyResource<AnySchema>,
     nextBlockers: RA<APIDeleteBlockerPage>
@@ -356,7 +346,7 @@ export class DeleteBlockerState {
     node.version += 1;
   }
 
-  private graphIterator(
+  public graphIterator(
     rootKey: ResourceIdentifier,
     direction: 'children' | 'ancestors',
     nodeFunction: (node: BlockerNode) => void
