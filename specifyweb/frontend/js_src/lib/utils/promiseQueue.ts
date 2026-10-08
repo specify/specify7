@@ -48,6 +48,13 @@ export class PromiseQueue<K, V> {
     return undefined;
   }
 
+  /**
+   * Removes all promises from the queue
+   */
+  public clear() {
+    this.queue.clear();
+  }
+
   private activatePromise(key: K, promiseGen: PromiseGenerator<V>): Promise<V> {
     const activePromise = promiseGen();
     const wrapped = this.wrapPromise(key, activePromise);

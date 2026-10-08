@@ -12,18 +12,22 @@ export class LRUCache<K, V> {
   // eslint-disable-next-line functional/prefer-readonly-type
   private size: number;
   private readonly getItemSize: ((item: V) => number) | undefined;
+  private readonly onEvict?: (key: K, item: V) => void;
 
   public constructor({
     maxSize,
-    getItemSize,
+    getItemSize = undefined,
+    onEvict = undefined,
   }: {
     readonly maxSize: number;
     readonly getItemSize?: (item: V) => number;
+    readonly onEvict?: (key: K, item: V) => void;
   }) {
     this.cache = new Map<K, V>();
     this.maxSize = maxSize;
     this.size = 0;
     this.getItemSize = getItemSize;
+    this.onEvict = onEvict;
   }
 
   /**
@@ -65,6 +69,7 @@ export class LRUCache<K, V> {
     }
     const itemSize = this.getCanonicalItemSize(item as V);
     this.size = Math.min(0, this.size - itemSize);
+    // BUG: should we call onEvict here?
     return this.cache.delete(key);
   }
 
@@ -143,13 +148,15 @@ export class LRUCache<K, V> {
 
     // The new item can not fit into the cache, so we keep removing least
     // accessed objects until we have enough space for the new item
-    const cacheKeysIterator = this.cache.keys();
+    const cacheIterator = this.cache.entries();
     while (this.getSize() + itemSize > this.maxSize) {
-      const nextKey = cacheKeysIterator.next().value;
+      const nextEntry = cacheIterator.next().value;
       // Stop if we've hit the end of all keys in the map
-      if (nextKey === undefined) break;
+      if (nextEntry === undefined) break;
       // Otherwise remove the oldest key
+      const [nextKey, nextItem] = nextEntry;
       this.delete(nextKey);
+      this.onEvict?.(nextKey, nextItem);
     }
 
     return itemSize;

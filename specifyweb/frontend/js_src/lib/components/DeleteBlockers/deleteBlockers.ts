@@ -6,7 +6,7 @@ import { Tables } from '../DataModel/types';
 import { formatUrl } from '../Router/queryString';
 import { APIDeleteBlockerPage, APIDeleteBlockers } from './types';
 
-const DELETE_BLOCKER_LIMIT = 40;
+export const DELETE_BLOCKER_LIMIT = 40;
 
 type APIDeleteBlockerCount = {
   readonly table: Lowercase<keyof Tables>;
@@ -66,11 +66,13 @@ export async function filterDeleteBlockers(
     {
       method: 'POST',
       headers: { Accept: 'application/json' },
-      body: filters.map((filter) => ({
-        ...filter,
-        table: filter.table.toLowerCase(),
-        field: filter.field.toLowerCase(),
-      })),
+      body: {
+        filters: filters.map((filter) => ({
+          ...filter,
+          table: filter.table.toLowerCase(),
+          field: filter.field.toLowerCase(),
+        })),
+      },
     }
   ).then(({ data }) => data);
 }

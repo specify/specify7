@@ -1,11 +1,15 @@
-import { LRUCache } from '../../utils/lrucache';
+import { LRUCache } from '../../utils/lruCache';
 import { RA } from '../../utils/types';
 import { AnySchema } from '../DataModel/helperTypes';
 import { SpecifyResource } from '../DataModel/legacyTypes';
+import { Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import { APIDeleteBlockerPage, BlockerPageCacheKey } from './types';
 
-type DeleteBlockerLRUPage = RA<number>;
+export type DeleteBlockerLRUPage = {
+  readonly table: Lowercase<keyof Tables>;
+  readonly ids: RA<number>;
+};
 
 export function blockerPageToCacheKey(
   owner: SpecifyResource<AnySchema>,
@@ -29,8 +33,17 @@ export class DeleteBlockerLRU {
     BlockerPageCacheKey,
     DeleteBlockerLRUPage
   >;
-  public constructor({ maxPages = 200 }: { readonly maxPages?: number }) {
-    this.pageCache = new LRUCache({ maxSize: maxPages });
+  public constructor({
+    maxPages = 200,
+    onEvict = undefined,
+  }: {
+    readonly maxPages?: number;
+    readonly onEvict?: (
+      key: BlockerPageCacheKey,
+      page: DeleteBlockerLRUPage
+    ) => void;
+  }) {
+    this.pageCache = new LRUCache({ maxSize: maxPages, onEvict });
   }
 
   public cachePages(
@@ -40,17 +53,31 @@ export class DeleteBlockerLRU {
     blockerPages.forEach((page) => this.cachePage(resource, page));
   }
 
-  private cachePage(
+  public cachePage(
     resource: SpecifyResource<AnySchema>,
     blockerPage: APIDeleteBlockerPage
   ) {
     const cacheKey = blockerPageToCacheKey(resource, blockerPage);
-    this.pageCache.set(cacheKey, blockerPage.ids);
+    const cachedPage: DeleteBlockerLRUPage = {
+      ids: blockerPage.ids,
+      table: blockerPage.table,
+    };
+    this.pageCache.set(cacheKey, cachedPage);
   }
 
   public getPage(
     cacheKey: BlockerPageCacheKey
   ): DeleteBlockerLRUPage | undefined {
     return this.pageCache.get(cacheKey);
+  }
+
+  public peekPage(
+    cacheKey: BlockerPageCacheKey
+  ): DeleteBlockerLRUPage | undefined {
+    return this.pageCache.peek(cacheKey);
+  }
+
+  public clear() {
+    return this.pageCache.clear();
   }
 }
