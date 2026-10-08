@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { attachmentsText } from '../../localization/attachments';
@@ -19,6 +20,7 @@ import type {
   Attachment,
   CollectionObjectAttachment,
 } from '../DataModel/types';
+import { fetchResource, parseResourceUrl } from '../DataModel/resource';
 import { Dialog } from '../Molecules/Dialog';
 
 export function AttachmentsCollection({
@@ -37,24 +39,36 @@ export function AttachmentsCollection({
   const attachmentHasChanged =
     collection.models.length > 0 && collection.models.at(-1)?.needsSaved;
 
-  const attachments: RA<SerializedResource<Attachment>> = React.useMemo(
-    () =>
-      filterArray(
-        Array.from(collection.models, (model) => {
-          if (model.specifyTable.name.includes('Attachment')) {
-            const record = serializeResource(
-              model
-            ) as SerializedResource<CollectionObjectAttachment>;
-            // eslint-disable-next-line
-            return serializeResource(
-              record.attachment
-            ) as SerializedResource<Attachment>;
-          }
-          return undefined;
-        })
-      ),
-    [collection.models, attachmentHasChanged]
+  const [loadedAttachments] = useAsyncState(
+    React.useCallback(
+      async () =>
+        filterArray(
+          await Promise.all(
+            Array.from(collection.models, async (model) => {
+              if (!model.specifyTable.name.includes('Attachment'))
+                return undefined;
+              const record = serializeResource(
+                model
+              ) as SerializedResource<CollectionObjectAttachment>;
+              const attachment = record.attachment;
+              if (typeof attachment !== 'string')
+                return serializeResource(
+                  attachment
+                ) as SerializedResource<Attachment>;
+              const parsed = parseResourceUrl(attachment);
+              return parsed?.[0] === 'Attachment' &&
+                typeof parsed[1] === 'number'
+                ? fetchResource('Attachment', parsed[1], false)
+                : undefined;
+            })
+          )
+        ),
+      [collection.models, attachmentHasChanged]
+    ),
+    false
   );
+  const attachments: RA<SerializedResource<Attachment>> =
+    loadedAttachments ?? [];
 
   const isAttachmentsNotLoaded = attachments.some(
     (attachment) => attachment.attachmentLocation === null

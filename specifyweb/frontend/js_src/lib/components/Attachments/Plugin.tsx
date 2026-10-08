@@ -11,13 +11,15 @@ import { useTriggerState } from '../../hooks/useTriggerState';
 import { attachmentsText } from '../../localization/attachments';
 import { formsText } from '../../localization/forms';
 import { f } from '../../utils/functools';
+import { localized } from '../../utils/types';
 import type { GetOrSet } from '../../utils/types';
 import { Progress } from '../Atoms';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { toTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { getTable } from '../DataModel/tables';
+import { resourceOn } from '../DataModel/resource';
+import { getTable, tables } from '../DataModel/tables';
 import type { Attachment } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
 import { loadingBar } from '../Molecules';
@@ -27,8 +29,22 @@ import { ProtectedTable } from '../Permissions/PermissionDenied';
 import { collectionPreferences } from '../Preferences/collectionPreferences';
 import { userPreferences } from '../Preferences/userPreferences';
 import { AttachmentPluginSkeleton } from '../SkeletonLoaders/AttachmentPlugin';
+import { QueryComboBox } from '../QueryComboBox';
+import type { TypeSearch } from '../QueryComboBox/spec';
 import { attachmentSettingsPromise, uploadFile } from './attachments';
 import { AttachmentViewer } from './Viewer';
+
+const attachmentTypeSearch: TypeSearch = {
+  displayFields: undefined,
+  format: localized('%s'),
+  formatter: localized(''),
+  name: localized('Attachment'),
+  searchFields: ['title', 'attachmentLocation'].map(
+    (field) => tables.Attachment.getFields(field) ?? []
+  ),
+  table: tables.Attachment,
+  title: attachmentsText.attachments(),
+};
 
 export function AttachmentsPlugin(
   props: Parameters<typeof ProtectedAttachmentsPlugin>[0]
@@ -65,6 +81,27 @@ function ProtectedAttachmentsPlugin({
   readonly resource: SpecifyResource<AnySchema> | undefined;
 }): JSX.Element | null {
   const [attachment, setAttachment] = useAttachment(resource);
+  React.useEffect(
+    () =>
+      typeof resource !== 'object'
+        ? undefined
+        : resourceOn(
+            resource,
+            'change:attachment',
+            () => {
+              const getAttachment = resource.rgetPromise as unknown as (
+                fieldName: string,
+                prePopulate: boolean,
+                strict: boolean
+              ) => Promise<SpecifyResource<Attachment> | null>;
+              void getAttachment('attachment', true, false).then((next) =>
+                setAttachment(next ?? false)
+              );
+            },
+            false
+          ),
+    [resource, setAttachment]
+  );
   const isReadOnly = React.useContext(ReadOnlyContext);
 
   useErrorContext('attachment', attachment);
@@ -137,6 +174,7 @@ function ProtectedAttachmentsPlugin({
             resource?.set('attachment', attachment as never);
             setAttachment(attachment);
           }}
+          resource={resource}
         />
       )}
     </div>
@@ -145,8 +183,10 @@ function ProtectedAttachmentsPlugin({
 
 export function UploadAttachment({
   onUploaded: handleUploaded,
+  resource,
 }: {
   readonly onUploaded: (attachment: SpecifyResource<Attachment>) => void;
+  readonly resource?: SpecifyResource<AnySchema>;
 }): JSX.Element {
   const [uploadProgress, setUploadProgress] = React.useState<
     number | true | undefined
@@ -159,6 +199,8 @@ export function UploadAttachment({
     'attachments',
     'attachment.is_public_default'
   );
+  const attachmentRelationship =
+    resource?.specifyTable.getRelationship('attachment');
 
   return isFailed ? (
     <p>{attachmentsText.attachmentServerUnavailable()}</p>
@@ -177,27 +219,46 @@ export function UploadAttachment({
       </div>
     </Dialog>
   ) : (
-    <FilePicker
-      acceptedFormats={undefined}
-      onFileSelected={(file): void =>
-        loading(
-          uploadFile({
-            file,
-            handleProgress: setUploadProgress,
-            attachmentIsPublicDefault,
-          })
-            .then((attachment) =>
-              attachment === undefined
-                ? handleFailed()
-                : handleUploaded(attachment)
-            )
-            .catch((error) => {
-              handleFailed();
-              raise(error);
+    <div className="flex flex-col gap-2">
+      {typeof resource === 'object' && attachmentRelationship !== undefined ? (
+        <QueryComboBox
+          defaultRecord={undefined}
+          field={attachmentRelationship}
+          forceCollection={undefined}
+          formType="form"
+          hasCloneButton={false}
+          hasEditButton={false}
+          hasNewButton={false}
+          hasSearchButton={false}
+          hasViewButton={false}
+          id={undefined}
+          isRequired={false}
+          resource={resource}
+          typeSearch={attachmentTypeSearch}
+        />
+      ) : undefined}
+      <FilePicker
+        acceptedFormats={undefined}
+        onFileSelected={(file): void =>
+          loading(
+            uploadFile({
+              file,
+              handleProgress: setUploadProgress,
+              attachmentIsPublicDefault,
             })
-            .finally(() => setUploadProgress(undefined))
-        )
-      }
-    />
+              .then((attachment) =>
+                attachment === undefined
+                  ? handleFailed()
+                  : handleUploaded(attachment)
+              )
+              .catch((error) => {
+                handleFailed();
+                raise(error);
+              })
+              .finally(() => setUploadProgress(undefined))
+          )
+        }
+      />
+    </div>
   );
 }
