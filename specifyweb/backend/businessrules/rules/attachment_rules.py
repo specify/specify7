@@ -52,6 +52,13 @@ def attachment_jointable_deletion(sender, obj):
                 obj.attachment.tableid = Spdataset.specify_model.tableId
                 obj.attachment.save()
                 return
+        # An attachment may now be linked to more than one record. Deleting
+        # one join row must not delete the shared Attachment instance.
+        if any(
+            table.objects.filter(attachment_id=obj.attachment_id).exists()
+            for table in attachment_tables
+        ):
+            return
         obj.attachment.delete()
 
 
