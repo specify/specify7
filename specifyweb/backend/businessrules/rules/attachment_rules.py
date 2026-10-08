@@ -8,6 +8,7 @@ from specifyweb.specify.models_utils.models_by_table_id import get_model_by_tabl
 from specifyweb.backend.workbench.models import Spdataset, Spdatasetattachment
 from django.db import transaction
 from django.apps import apps
+from django.db.models import ProtectedError
 
 from specifyweb.backend.businessrules.exceptions import AbortSave
 
@@ -38,28 +39,45 @@ def attachment_jointable_save(sender, obj):
 @orm_signal_handler('post_delete')
 def attachment_jointable_deletion(sender, obj):
     if sender in attachment_tables:
-        # Uploaded data sets have attachments that are also referenced by the uploaded records.
-        # Do not delete the attachment if it being referenced by a dataset.
-        # And do not delete the attachment if it is being referenced by an attachment table.
-        if sender == Spdatasetattachment:
-            if obj.attachment.tableid != Spdataset.specify_model.tableId:
-                parent_model = get_model_by_table_id(obj.attachment.tableid)
-                jointable_model = get_jointable_model(parent_model)
-                if jointable_model.objects.filter(attachment_id=obj.attachment_id).count() > 0:
-                    return
-        else:
-            if Spdatasetattachment.objects.filter(attachment_id=obj.attachment_id).count() > 0:
-                obj.attachment.tableid = Spdataset.specify_model.tableId
-                obj.attachment.save()
+        # Relationship updates may delete several join rows while saving their
+        # parent. Wait until all those changes are committed before deciding
+        # whether this attachment has become unused.
+        transaction.on_commit(
+            lambda: delete_attachment_if_unused(sender, obj.attachment_id),
+            using=obj._state.db,
+        )
+
+
+def delete_attachment_if_unused(sender, attachment_id):
+    attachment = models.Attachment.objects.filter(id=attachment_id).first()
+    if attachment is None:
+        return
+
+    # Uploaded data sets have attachments that are also referenced by the
+    # uploaded records. Preserve the attachment when either side still uses it.
+    if sender == Spdatasetattachment:
+        if attachment.tableid != Spdataset.specify_model.tableId:
+            parent_model = get_model_by_table_id(attachment.tableid)
+            jointable_model = get_jointable_model(parent_model)
+            if jointable_model.objects.filter(attachment_id=attachment_id).exists():
                 return
-        # An attachment may now be linked to more than one record. Deleting
-        # one join row must not delete the shared Attachment instance.
-        if any(
-            table.objects.filter(attachment_id=obj.attachment_id).exists()
-            for table in attachment_tables
-        ):
-            return
-        obj.attachment.delete()
+    elif Spdatasetattachment.objects.filter(attachment_id=attachment_id).exists():
+        attachment.tableid = Spdataset.specify_model.tableId
+        attachment.save()
+        return
+
+    if any(
+        table.objects.filter(attachment_id=attachment_id).exists()
+        for table in attachment_tables
+    ):
+        return
+
+    try:
+        attachment.delete()
+    except ProtectedError:
+        # Another protected reference may exist outside the known attachment
+        # join tables. Keep the file record instead of failing the parent save.
+        return
 
 
 @orm_signal_handler('pre_save', 'Attachment')

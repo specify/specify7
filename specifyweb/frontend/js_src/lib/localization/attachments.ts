@@ -9,6 +9,28 @@ import { createDictionary } from './utils';
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
 export const attachmentsText = createDictionary({
+  unlinkAttachment: {
+    'en-us': 'Unlink attachment',
+    'de-ch': 'Anhang entfernen',
+    'es-es': 'Desvincular archivo adjunto',
+    'fr-fr': 'Délier la pièce jointe',
+    'ru-ru': 'Отвязать вложение',
+    'uk-ua': 'Від’єднати вкладення',
+    'pt-br': 'Desvincular anexo',
+    'hr-hr': 'Odveži privitak',
+    nb: 'Koble fra vedlegg',
+  },
+  unlinkAttachmentWarning: {
+    'en-us': 'Do you want to unlink this attachment?',
+    'de-ch': 'Möchten Sie diesen Anhang entfernen?',
+    'es-es': '¿Quieres desvincular este archivo adjunto?',
+    'fr-fr': 'Voulez-vous délier cette pièce jointe ?',
+    'ru-ru': 'Отвязать это вложение?',
+    'uk-ua': 'Від’єднати це вкладення?',
+    'pt-br': 'Deseja desvincular este anexo?',
+    'hr-hr': 'Želite li odvojiti ovaj privitak?',
+    nb: 'Vil du koble fra dette vedlegget?',
+  },
   searchAttachments: {
     'en-us': 'Search existing attachments',
     'de-ch': 'Vorhandene Anhänge durchsuchen',

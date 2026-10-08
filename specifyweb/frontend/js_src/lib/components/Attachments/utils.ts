@@ -6,8 +6,9 @@ import { genericTables, getTable } from '../DataModel/tables';
 import { hasTablePermission } from '../Permissions/helpers';
 
 export const attachmentRelatedTables = f.store(() =>
-  Object.keys(genericTables).filter((tableName) =>
-    tableName.endsWith('Attachment')
+  Object.keys(genericTables).filter(
+    (tableName) =>
+      tableName !== 'Attachment' && tableName.endsWith('Attachment')
   )
 );
 
