@@ -9,6 +9,42 @@ import { createDictionary } from './utils';
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
 export const attachmentsText = createDictionary({
+  searchAttachments: {
+    'en-us': 'Search existing attachments',
+    'de-ch': 'Vorhandene Anhänge durchsuchen',
+    'es-es': 'Buscar archivos adjuntos existentes',
+    'fr-fr': 'Rechercher des pièces jointes existantes',
+    'ru-ru': 'Поиск существующих вложений',
+    'uk-ua': 'Пошук наявних вкладень',
+    'pt-br': 'Pesquisar anexos existentes',
+    'hr-hr': 'Pretražite postojeće privitke',
+    nb: 'Søk i eksisterende vedlegg',
+  },
+  searchAttachmentsHint: {
+    'en-us': 'Enter a title or attachment location to find an attachment.',
+    'de-ch':
+      'Geben Sie einen Titel oder Speicherort ein, um einen Anhang zu finden.',
+    'es-es':
+      'Ingrese un título o una ubicación para encontrar un archivo adjunto.',
+    'fr-fr':
+      'Saisissez un titre ou un emplacement pour trouver une pièce jointe.',
+    'ru-ru': 'Введите название или расположение вложения для поиска.',
+    'uk-ua': 'Введіть назву або розташування вкладення для пошуку.',
+    'pt-br': 'Digite um título ou local do anexo para encontrá-lo.',
+    'hr-hr': 'Unesite naslov ili lokaciju privitka da biste ga pronašli.',
+    nb: 'Skriv inn en tittel eller plassering for å finne et vedlegg.',
+  },
+  noMatchingAttachments: {
+    'en-us': 'No matching attachments',
+    'de-ch': 'Keine passenden Anhänge gefunden',
+    'es-es': 'No se encontraron archivos adjuntos',
+    'fr-fr': 'Aucune pièce jointe correspondante',
+    'ru-ru': 'Подходящие вложения не найдены',
+    'uk-ua': 'Відповідних вкладень не знайдено',
+    'pt-br': 'Nenhum anexo correspondente',
+    'hr-hr': 'Nema odgovarajućih privitaka',
+    nb: 'Ingen samsvarende vedlegg',
+  },
   attachments: {
     'en-us': 'Attachments',
     'ru-ru': 'Вложения',

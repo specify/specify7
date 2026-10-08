@@ -11,15 +11,18 @@ import { useTriggerState } from '../../hooks/useTriggerState';
 import { attachmentsText } from '../../localization/attachments';
 import { formsText } from '../../localization/forms';
 import { f } from '../../utils/functools';
-import { localized } from '../../utils/types';
 import type { GetOrSet } from '../../utils/types';
+import type { RA } from '../../utils/types';
 import { Progress } from '../Atoms';
+import { Input, Label } from '../Atoms/Form';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
+import { fetchCollection } from '../DataModel/collection';
 import { toTable } from '../DataModel/helpers';
-import type { AnySchema } from '../DataModel/helperTypes';
+import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
-import { getTable, tables } from '../DataModel/tables';
+import { deserializeResource } from '../DataModel/serializers';
+import { getTable } from '../DataModel/tables';
 import type { Attachment } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
 import { loadingBar } from '../Molecules';
@@ -29,22 +32,9 @@ import { ProtectedTable } from '../Permissions/PermissionDenied';
 import { collectionPreferences } from '../Preferences/collectionPreferences';
 import { userPreferences } from '../Preferences/userPreferences';
 import { AttachmentPluginSkeleton } from '../SkeletonLoaders/AttachmentPlugin';
-import { QueryComboBox } from '../QueryComboBox';
-import type { TypeSearch } from '../QueryComboBox/spec';
 import { attachmentSettingsPromise, uploadFile } from './attachments';
+import { AttachmentGallery } from './Gallery';
 import { AttachmentViewer } from './Viewer';
-
-const attachmentTypeSearch: TypeSearch = {
-  displayFields: undefined,
-  format: localized('%s'),
-  formatter: localized(''),
-  name: localized('Attachment'),
-  searchFields: ['title', 'attachmentLocation'].map(
-    (field) => tables.Attachment.getFields(field) ?? []
-  ),
-  table: tables.Attachment,
-  title: attachmentsText.attachments(),
-};
 
 export function AttachmentsPlugin(
   props: Parameters<typeof ProtectedAttachmentsPlugin>[0]
@@ -174,6 +164,10 @@ function ProtectedAttachmentsPlugin({
             resource?.set('attachment', attachment as never);
             setAttachment(attachment);
           }}
+          onExistingSelected={(attachment): void => {
+            resource?.set('attachment', attachment.resource_uri as never);
+            setAttachment(deserializeResource(attachment));
+          }}
           resource={resource}
         />
       )}
@@ -183,9 +177,13 @@ function ProtectedAttachmentsPlugin({
 
 export function UploadAttachment({
   onUploaded: handleUploaded,
+  onExistingSelected: handleExistingSelected,
   resource,
 }: {
   readonly onUploaded: (attachment: SpecifyResource<Attachment>) => void;
+  readonly onExistingSelected?: (
+    attachment: SerializedResource<Attachment>
+  ) => void;
   readonly resource?: SpecifyResource<AnySchema>;
 }): JSX.Element {
   const [uploadProgress, setUploadProgress] = React.useState<
@@ -220,22 +218,10 @@ export function UploadAttachment({
     </Dialog>
   ) : (
     <div className="flex flex-col gap-2">
-      {typeof resource === 'object' && attachmentRelationship !== undefined ? (
-        <QueryComboBox
-          defaultRecord={undefined}
-          field={attachmentRelationship}
-          forceCollection={undefined}
-          formType="form"
-          hasCloneButton={false}
-          hasEditButton={false}
-          hasNewButton={false}
-          hasSearchButton={false}
-          hasViewButton={false}
-          id={undefined}
-          isRequired={false}
-          resource={resource}
-          typeSearch={attachmentTypeSearch}
-        />
+      {typeof resource === 'object' &&
+      attachmentRelationship !== undefined &&
+      typeof handleExistingSelected === 'function' ? (
+        <ExistingAttachmentPicker onSelect={handleExistingSelected} />
       ) : undefined}
       <FilePicker
         acceptedFormats={undefined}
@@ -259,6 +245,92 @@ export function UploadAttachment({
           )
         }
       />
+    </div>
+  );
+}
+
+function ExistingAttachmentPicker({
+  onSelect: handleSelect,
+}: {
+  readonly onSelect: (attachment: SerializedResource<Attachment>) => void;
+}): JSX.Element {
+  const [search, setSearch] = React.useState('');
+  const [attachments, setAttachments] = React.useState<
+    RA<SerializedResource<Attachment>>
+  >([]);
+  const [isLoading, setIsLoading] = React.useState(false);
+
+  React.useEffect(() => {
+    const value = search.trim();
+    let wasCancelled = false;
+    if (value.length === 0) {
+      setAttachments([]);
+      setIsLoading(false);
+      return (): void => {
+        wasCancelled = true;
+      };
+    }
+
+    setIsLoading(true);
+    const timeout = setTimeout(() => {
+      void Promise.all([
+        fetchCollection(
+          'Attachment',
+          { domainFilter: true, limit: 100, orderBy: '-timestampCreated' },
+          { title__icontains: value }
+        ),
+        fetchCollection(
+          'Attachment',
+          { domainFilter: true, limit: 100, orderBy: '-timestampCreated' },
+          { attachmentLocation__icontains: value }
+        ),
+      ])
+        .then((results) => {
+          if (wasCancelled) return;
+          const unique = new Map<number, SerializedResource<Attachment>>();
+          results
+            .flatMap(({ records }) => records)
+            .forEach((attachment) => {
+              unique.set(attachment.id, attachment);
+            });
+          setAttachments([...unique.values()]);
+        })
+        .catch(raise)
+        .finally(() => {
+          if (!wasCancelled) setIsLoading(false);
+        });
+    }, 300);
+
+    return (): void => {
+      wasCancelled = true;
+      clearTimeout(timeout);
+    };
+  }, [search]);
+
+  return (
+    <div className="flex min-h-0 flex-1 flex-col gap-2">
+      <Label.Block>
+        {attachmentsText.searchAttachments()}
+        <Input.Text autoFocus value={search} onValueChange={setSearch} />
+      </Label.Block>
+      {isLoading ? (
+        loadingBar
+      ) : attachments.length > 0 ? (
+        <div className="min-h-0 flex-1">
+          <AttachmentGallery
+            attachments={attachments}
+            isComplete
+            onFetchMore={undefined}
+            scale={10}
+            onChange={() => undefined}
+            onClick={handleSelect}
+          />
+        </div>
+      ) : search.trim().length > 0 ? (
+        <p>{attachmentsText.noMatchingAttachments()}</p>
+      ) : (
+        <p>{attachmentsText.searchAttachmentsHint()}</p>
+      )}
     </div>
   );
 }
