@@ -69,8 +69,6 @@ function DeleteButton<SCHEMA extends AnySchema>({
   const { blockers, onBlockersRequested: handleBlockersRequested } =
     useDeleteBlockersForResource(resource, deferred);
 
-  const blockerCount = useDeleteBlockerCount(resource);
-
   const isBlocked = Array.isArray(blockers);
 
   const iconName = resource.specifyTable.name;
