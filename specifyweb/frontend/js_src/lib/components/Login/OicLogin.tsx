@@ -9,13 +9,19 @@ import { useSearchParameter } from '../../hooks/navigation';
 import { userText } from '../../localization/user';
 import type { Language } from '../../localization/utils/config';
 import type { RA } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Form } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
+import { displayError } from '../Core/Contexts';
 import { SplashScreen } from '../Core/SplashScreen';
+import { ErrorDialog } from '../Errors/ErrorDialog';
 import { formatUrl } from '../Router/queryString';
 import { LoginLanguageChooser } from './index';
+
+/** Same wording as the former HttpResponseBadRequest from use_invite_link. */
+const inviteExpiredMessage = localized('Token expired.');
 
 export type OicProvider = {
   readonly provider: string;
@@ -37,6 +43,23 @@ export function OicLogin({
   const providerRef = React.useRef<HTMLInputElement | null>(null);
   const formRef = React.useRef<HTMLFormElement | null>(null);
   const [next = ''] = useSearchParameter('next');
+  const [inviteExpired, setInviteExpired] = useSearchParameter('invite_expired');
+
+  React.useEffect(() => {
+    if (inviteExpired !== '1') return;
+    setInviteExpired(undefined);
+    displayError(({ onClose: handleClose }) => (
+      <ErrorDialog
+        copiableMessage={inviteExpiredMessage}
+        dismissible
+        header={inviteExpiredMessage}
+        onClose={handleClose}
+      >
+        {inviteExpiredMessage}
+      </ErrorDialog>
+    ));
+  }, [inviteExpired, setInviteExpired]);
+
   return (
     <SplashScreen>
       <LoginLanguageChooser languages={data.languages} />
