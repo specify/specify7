@@ -2,9 +2,8 @@ import React from 'react';
 
 import { formsText } from '../../localization/forms';
 import { clamp } from '../../utils/utils';
-import { Button } from '../Atoms/Button';
 import { Input } from '../Atoms/Form';
-import { icons } from '../Atoms/Icons';
+import { SlideDirection, useSliderButtons } from './useSliderButtons';
 
 export function Slider({
   value,
@@ -26,25 +25,36 @@ export function Slider({
   );
   const max = Math.max(1, count);
   const resolvedValue = Number.isNaN(pendingValue) ? '' : pendingValue + 1;
+
+  const handleSlide = React.useCallback(
+    (direction: SlideDirection) => {
+      if (direction === 'first') handleChange?.(0);
+      if (direction === 'previous') handleChange?.(value - 1);
+      if (direction === 'next') handleChange?.(value + 1);
+      if (direction === 'last') handleChange?.(count - 1);
+    },
+    [value, handleChange]
+  );
+
+  const {
+    navigateToFirst,
+    navigateToPrevious,
+    navigateToNext,
+    navigateToLast,
+  } = useSliderButtons({
+    buttonsDisabled: {
+      first: value === 0,
+      previous: value === 0,
+      next: value + 1 === count,
+      last: value + 1 == count,
+    },
+    onChange: handleSlide,
+  });
+
   return count > 0 ? (
     <nav className="flex justify-center gap-2 print:hidden">
-      <Button.Small
-        aria-label={formsText.firstRecord()}
-        disabled={value === 0 || handleChange === undefined}
-        title={formsText.firstRecord()}
-        onClick={(): void => handleChange?.(0)}
-      >
-        {icons.chevronDoubleLeft}
-      </Button.Small>
-      <Button.Small
-        aria-label={formsText.previousRecord()}
-        className="px-4 dark:bg-neutral-500"
-        disabled={value === 0 || handleChange === undefined}
-        title={formsText.previousRecord()}
-        onClick={(): void => handleChange?.(value - 1)}
-      >
-        {icons.chevronLeft}
-      </Button.Small>
+      {navigateToFirst}
+      {navigateToPrevious}
       <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-1 font-bold">
         <label
           className={`
@@ -83,23 +93,8 @@ export function Slider({
         <span>/</span>
         <span>{count}</span>
       </div>
-      <Button.Small
-        aria-label={formsText.nextRecord()}
-        className="px-4 dark:bg-neutral-500"
-        disabled={value + 1 === count || handleChange === undefined}
-        title={formsText.nextRecord()}
-        onClick={(): void => handleChange?.(value + 1)}
-      >
-        {icons.chevronRight}
-      </Button.Small>
-      <Button.Small
-        aria-label={formsText.lastRecord()}
-        disabled={value + 1 === count || handleChange === undefined}
-        title={formsText.lastRecord()}
-        onClick={(): void => handleChange?.(count - 1)}
-      >
-        {icons.chevronDoubleRight}
-      </Button.Small>
+      {navigateToNext}
+      {navigateToLast}
     </nav>
   ) : null;
 }

@@ -9,7 +9,7 @@ import { LocalizedString } from 'typesafe-i18n';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { ReadOnlyContext } from '../Core/Contexts';
 import { hasTablePermission } from '../Permissions/helpers';
-import { LazySlider } from './LazySlider';
+import { BasicSlider } from './BasicSlider';
 import { DataEntry } from '../Atoms/DataEntry';
 import { commonText } from '../../localization/common';
 import { clamp } from '../../utils/utils';
@@ -44,7 +44,7 @@ function usePagedRecordSelector<SCHEMA extends AnySchema>({
 
   return {
     slider: (
-      <LazySlider
+      <BasicSlider
         onChange={handleSlide}
         buttonsDisabled={{
           first: disablePreviousButtons,
