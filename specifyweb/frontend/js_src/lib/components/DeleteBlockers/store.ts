@@ -202,7 +202,11 @@ export class DeleteBlockerStore {
         tableName: relationship.table,
         relationships: new Map(),
       };
-      const table = tables.getOrInsert(relationship.table, defaultTable);
+      const foundTable = tables.get(relationship.table);
+      if (foundTable === undefined) {
+        tables.set(relationship.table, defaultTable);
+      }
+      const table = tables.get(relationship.table)!;
 
       const relationshipKey = makeBlockerKey(
         relationship.table,

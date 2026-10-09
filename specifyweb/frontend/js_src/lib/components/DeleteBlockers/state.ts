@@ -4,7 +4,6 @@ import { AnySchema } from '../DataModel/helperTypes';
 import { SpecifyResource } from '../DataModel/legacyTypes';
 import { getTable } from '../DataModel/tables';
 import { Tables } from '../DataModel/types';
-import { softFail } from '../Errors/Crash';
 import {
   APIDeleteBlockerCount,
   APIDeleteBlockerCounts,
@@ -24,6 +23,7 @@ import {
 } from './pageCache';
 import { APIDeleteBlockerPage, APIDeleteBlockers } from './deleteBlockers';
 import { f } from '../../utils/functools';
+import { softFail } from '../Errors/Crash';
 
 export type ResourceIdentifier = string;
 
@@ -124,7 +124,6 @@ export class DeleteBlockerState {
 
   private getOrCreateNode(resource: SpecifyResource<AnySchema>): BlockerNode {
     const resourceKey = resourceToStringIdentifier(resource);
-    // REFACTOR: We could replace the following with getOrInsert
     const existingNode = this.getNode(resourceKey);
     if (existingNode !== undefined) {
       return existingNode;
@@ -231,9 +230,14 @@ export class DeleteBlockerState {
   ) {
     for (const id of blockerPage.ids) {
       const resourceKey = makeBlockerKey(blockerPage.table.toLowerCase(), id);
-      this.recordLocations
-        .getOrInsert(resourceKey, new Set())
-        .add(blockerPageCacheKey);
+      const pageKeys = this.recordLocations.get(resourceKey);
+
+      if (pageKeys === undefined) {
+        const newSet = new Set([blockerPageCacheKey]);
+        this.recordLocations.set(resourceKey, newSet);
+      } else {
+        pageKeys.add(blockerPageCacheKey);
+      }
     }
   }
 
@@ -254,7 +258,10 @@ export class DeleteBlockerState {
 
     const affectedParents = this.removeIndexesFor(resourceKey);
 
-    const allAffectedRecords = otherRecordsWithPage.union(affectedParents);
+    const allAffectedRecords = new Set([
+      ...otherRecordsWithPage,
+      ...affectedParents,
+    ]);
 
     for (const key of allAffectedRecords) {
       if (this.nodes.has(key)) this.updateAncestors(key);
@@ -460,7 +467,9 @@ export class DeleteBlockerState {
 
     const table = getTable(nextBlocker.table);
     if (table === undefined) {
-      softFail('Unknown table for Delete Blocker');
+      softFail(new Error('Unknown table when fetching delete blocker'), {
+        tableName: nextBlocker.table,
+      });
       return;
     }
     for (const id of nextBlocker.ids) {
@@ -493,9 +502,13 @@ export class DeleteBlockerState {
 
     parentNode.cascadeChildren.add(childNode.key);
 
-    this.cascadeParents
-      .getOrInsert(childNode.key, new Set())
-      .add(parentNode.key);
+    const childParents = this.cascadeParents.get(childNode.key);
+    if (childParents === undefined) {
+      const newChildParents = new Set([parentNode.key]);
+      this.cascadeParents.set(childNode.key, newChildParents);
+    } else {
+      childParents.add(parentNode.key);
+    }
 
     return true;
   }
@@ -612,7 +625,7 @@ export class DeleteBlockerState {
 
     if (newAnchor === undefined) {
       // A blocker page with no IDs should be considered complete
-      softFail('Empty blocker with no IDs not marked complete');
+      console.warn('Empty blocker with no IDs not marked complete');
       return;
     }
     const newPage = {

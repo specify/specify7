@@ -82,7 +82,6 @@ export function RecordSelectorFromPage<
   isLoading: isExternalLoading = false,
   table,
   title,
-  totalCount,
   viewName,
   onNextPageFetch: handleNextPageFetch,
   onClose: handleClose,
@@ -99,7 +98,6 @@ export function RecordSelectorFromPage<
   readonly isDependent?: boolean;
   readonly table: SpecifyTable<SCHEMA>;
   readonly title: LocalizedString | undefined;
-  readonly totalCount?: number;
   readonly viewName?: string;
   readonly onNextPageFetch: (
     previousPage: PAGE_TYPE,

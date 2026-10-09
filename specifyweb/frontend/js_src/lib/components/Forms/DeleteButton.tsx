@@ -17,7 +17,6 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { DeleteBlockerProvider } from '../DeleteBlockers/Context';
 import { DeleteBlockers } from '../DeleteBlockers';
 import { useDeleteBlockersForResource } from '../DeleteBlockers/useDeleteBlockersForResource';
-import { useDeleteBlockerCount } from '../DeleteBlockers/useReferenceCount';
 import { mergingText } from '../../localization/merging';
 import { loadingBar } from '../Molecules';
 
