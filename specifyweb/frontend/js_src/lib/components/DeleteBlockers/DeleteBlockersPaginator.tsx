@@ -24,6 +24,7 @@ export function DeleteBlockersPaginator({
     pageMetaData,
     pageSize,
     onNextPageFetch: handleNextPageFetch,
+    onResourceDeletion: handleResourceDeletion,
   } = useDeleteBlockerPages(parentResource, relationship);
 
   const referenceCount = useReferenceCount(parentResource, relationship);
@@ -48,7 +49,7 @@ export function DeleteBlockersPaginator({
       totalCount={referenceCount}
       onNextPageFetch={handleNextPageFetch}
       onClose={handleClose}
-      onDelete={f.void}
+      onDelete={handleResourceDeletion}
       onSaved={f.void}
     />
   );

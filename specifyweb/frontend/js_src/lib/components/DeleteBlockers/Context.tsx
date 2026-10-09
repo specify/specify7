@@ -1,13 +1,7 @@
 import React from 'react';
-import { DeleteBlockerState, resourceToStringIdentifier } from './state';
+import { DeleteBlockerState } from './state';
 import { error } from '../Errors/assert';
-import { SpecifyResource } from '../DataModel/legacyTypes';
-import { AnySchema } from '../DataModel/helperTypes';
-import { DeleteBlockerResource, DeleteBlockerStore } from './store';
-import { RA } from '../../utils/types';
-import { Relationship } from '../DataModel/specifyField';
-import { DeleteBlockerLRUPage } from './pageCache';
-import { PageMetaData } from '../FormSliders/RecordSelectorFromPage';
+import { DeleteBlockerStore } from './store';
 
 const DeleteBlockerContext = React.createContext<DeleteBlockerStore | null>(
   null

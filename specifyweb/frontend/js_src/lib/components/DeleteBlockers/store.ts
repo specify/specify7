@@ -2,6 +2,7 @@ import { RA, Writable, WritableArray } from '../../utils/types';
 import { AnySchema } from '../DataModel/helperTypes';
 import { SpecifyResource } from '../DataModel/legacyTypes';
 import { Relationship } from '../DataModel/specifyField';
+import { Tables } from '../DataModel/types';
 import {
   BlockerPageCacheKey,
   buildPageCacheKey,
@@ -125,6 +126,11 @@ export class DeleteBlockerStore {
       anchor
     );
     return this.state.getBlockerPage(cacheKey);
+  }
+
+  public removeResource(table: Lowercase<keyof Tables>, recordId: number) {
+    const resourceKey = makeBlockerKey(table.toLowerCase(), recordId);
+    this.state.removeDeletedResource(resourceKey);
   }
 
   public getBlockerGraph(

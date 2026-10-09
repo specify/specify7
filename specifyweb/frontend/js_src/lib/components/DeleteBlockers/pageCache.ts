@@ -104,6 +104,18 @@ export class DeleteBlockerLRU {
     return cachedPage;
   }
 
+  // BUG:? This marks the page as recently used
+  public replacePage(
+    cacheKey: BlockerPageCacheKey,
+    newPage: DeleteBlockerLRUPage
+  ) {
+    this.pageCache.set(cacheKey, newPage);
+  }
+
+  public deletePage(cacheKey: BlockerPageCacheKey) {
+    this.pageCache.delete(cacheKey);
+  }
+
   public getPage(
     cacheKey: BlockerPageCacheKey
   ): DeleteBlockerLRUPage | undefined {
@@ -119,7 +131,10 @@ export class DeleteBlockerLRU {
   // Given a specific resource identifier (table + id), this removes all pages
   // owned by that resource
   public removePagesOwnedBy(identifer: ResourceIdentifier) {
-    for (const [cacheKey, page] of this.pageCache.entries()) {
+    for (const cacheKey of this.pageCache.keys()) {
+      if (cacheKey.startsWith(identifer)) {
+        this.deletePage(cacheKey);
+      }
     }
   }
 

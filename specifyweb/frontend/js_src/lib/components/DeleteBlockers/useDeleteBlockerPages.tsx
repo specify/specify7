@@ -6,6 +6,8 @@ import { DeleteBlockerLRUPage } from './pageCache';
 import { PageMetaData } from '../FormSliders/RecordSelectorFromPage';
 import { useDeleteBlockerStore } from './Context';
 import { useLiveState } from '../../hooks/useLiveState';
+import { error } from '../Errors/assert';
+import { softFail } from '../Errors/Crash';
 
 export function useDeleteBlockerPages(
   resource: SpecifyResource<AnySchema>,
@@ -93,8 +95,15 @@ export function useDeleteBlockerPages(
 
   // FIXME: TODO
   const handleResourceDeletion = React.useCallback(
-    (page: DeleteBlockerLRUPage, index: number) => {},
-    []
+    (page: DeleteBlockerLRUPage, index: number) => {
+      const table = page.table;
+      const recordId = page.ids.at(index);
+      if (recordId === undefined) {
+        error(`Record at index ${index} does not exist in page`, { page });
+      }
+      store.removeResource(table, recordId);
+    },
+    [store]
   );
 
   const isFirstPage =
@@ -116,6 +125,6 @@ export function useDeleteBlockerPages(
             : undefined,
     pageSize: store.pageSize(),
     onNextPageFetch: handleNextPageFetch,
-    // onResourceDeletion: handleResourceDeletion,
+    onResourceDeletion: handleResourceDeletion,
   };
 }

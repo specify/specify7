@@ -23,6 +23,7 @@ import {
   pageAnchorToFilter,
 } from './pageCache';
 import { APIDeleteBlockerPage, APIDeleteBlockers } from './deleteBlockers';
+import { f } from '../../utils/functools';
 
 export type ResourceIdentifier = string;
 
@@ -49,6 +50,16 @@ export function resourceToStringIdentifier(
   resource: SpecifyResource<AnySchema>
 ): ResourceIdentifier {
   return makeBlockerKey(resource.specifyTable.name.toLowerCase(), resource.id);
+}
+
+function identifierToParts(
+  resourceKey: ResourceIdentifier
+): readonly [Lowercase<keyof Tables>, number] {
+  const [tableName, recordId] = resourceKey.split('_', 2);
+  return [
+    tableName.toLowerCase() as Lowercase<keyof Tables>,
+    f.fastParseInt(recordId),
+  ];
 }
 
 // eslint-disable-next-line functional/no-class
@@ -187,7 +198,7 @@ export class DeleteBlockerState {
     const cachedPages = this.applyBlockerPages(node, blockers.results);
     this.updateAncestors(node.key);
     this.queueNextBlockers(resource, blockers.next);
-    this.queueBlockerCounts(resource);
+    this.fetchCountsForResource(resource);
     this.onChange?.();
     return cachedPages;
   }
@@ -210,19 +221,19 @@ export class DeleteBlockerState {
       this.unindexBlockerPage(blockerKey, existingPage);
     }
     const cachedPage = this.pageCache.cachePage(node.resource, blockerPage);
-    this.indexBlockerPage(node.resource, blockerPage);
+    this.indexBlockerPage(blockerKey, blockerPage);
     return cachedPage;
   }
 
   private indexBlockerPage(
-    resource: SpecifyResource<AnySchema>,
-    blockerPage: APIDeleteBlockerPage
+    blockerPageCacheKey: BlockerPageCacheKey,
+    blockerPage: APIDeleteBlockerPage | DeleteBlockerLRUPage
   ) {
     for (const id of blockerPage.ids) {
       const resourceKey = makeBlockerKey(blockerPage.table.toLowerCase(), id);
       this.recordLocations
         .getOrInsert(resourceKey, new Set())
-        .add(blockerPageToCacheKey(resource, blockerPage));
+        .add(blockerPageCacheKey);
     }
   }
 
@@ -232,28 +243,127 @@ export class DeleteBlockerState {
   ) {
     for (const id of blockerPage.ids) {
       const resourceKey = makeBlockerKey(blockerPage.table.toLowerCase(), id);
-      const locations = this.recordLocations.get(resourceKey);
-      if (locations === undefined) {
-        continue;
-      }
-      locations.delete(pageKey);
-      if (locations.size <= 0) {
-        this.recordLocations.delete(resourceKey);
-      }
+      this.removeRecordLocation(resourceKey, pageKey);
     }
   }
 
   public removeDeletedResource(resourceKey: ResourceIdentifier) {
+    const otherRecordsWithPage = this.removeRecordFromPages(resourceKey);
+
+    this.pageCache.removePagesOwnedBy(resourceKey);
+
+    const affectedParents = this.removeIndexesFor(resourceKey);
+
+    const allAffectedRecords = otherRecordsWithPage.union(affectedParents);
+
+    for (const key of allAffectedRecords) {
+      if (this.nodes.has(key)) this.updateAncestors(key);
+      this.queueBlockerCount(key);
+    }
     this.onChange?.();
   }
 
-  private removeRecordFromPages(resourceKey: ResourceIdentifier) {}
-  private deletePagesOwnedBy(resourceKey: ResourceIdentifier) {}
-  private removeIndexesFor(resourceKey: ResourceIdentifier) {}
+  private removeRecordFromPages(resourceKey: ResourceIdentifier) {
+    const otherRecordsWithPage = new Set<ResourceIdentifier>(resourceKey);
+    const blockerCacheKeys = [...(this.recordLocations.get(resourceKey) ?? [])];
+    for (const cacheKey of blockerCacheKeys) {
+      const blockerPage = this.pageCache.peekPage(cacheKey);
 
-  public async queueBlockerCounts(resource: SpecifyResource<AnySchema>) {
+      if (blockerPage === undefined) {
+        this.removeRecordLocation(resourceKey, cacheKey);
+        continue;
+      }
+
+      const table = blockerPage.table.toLowerCase();
+      const remainingRecordIds = blockerPage.ids.filter(
+        (id) => makeBlockerKey(table, id) !== resourceKey
+      );
+      if (remainingRecordIds.length === blockerPage.ids.length) {
+        this.removeRecordLocation(resourceKey, cacheKey);
+        continue;
+      }
+      const ownerIdentifier: ResourceIdentifier = makeBlockerKey(
+        blockerPage.ownerTable.toLowerCase(),
+        blockerPage.ownerId
+      );
+      otherRecordsWithPage.add(ownerIdentifier);
+      const updatedPage: DeleteBlockerLRUPage = {
+        ...blockerPage,
+        ids: remainingRecordIds,
+      };
+      // We probably don't need to re-index the page here, but just to be safe
+      this.unindexBlockerPage(cacheKey, blockerPage);
+      this.pageCache.replacePage(cacheKey, updatedPage);
+      this.indexBlockerPage(cacheKey, updatedPage);
+      this.invalidateCounts(ownerIdentifier);
+    }
+    return otherRecordsWithPage;
+  }
+  private removeRecordLocation(
+    resourceKey: ResourceIdentifier,
+    blockerCacheKey: BlockerPageCacheKey
+  ) {
+    const pageKeys = this.recordLocations.get(resourceKey);
+    if (pageKeys === undefined) {
+      return;
+    }
+    pageKeys.delete(blockerCacheKey);
+    if (pageKeys.size === 0) {
+      this.recordLocations.delete(resourceKey);
+    }
+  }
+  private removeIndexesFor(resourceKey: ResourceIdentifier) {
+    const affectedParents = this.removeRecordFromParents(resourceKey);
+    this.removeChildrenFrom(resourceKey);
+    this.nodes.delete(resourceKey);
+    return affectedParents;
+  }
+
+  private removeRecordFromParents(resourceKey: ResourceIdentifier) {
+    const affectedParents = new Set<ResourceIdentifier>();
+    const parentKeys = this.cascadeParents.get(resourceKey);
+
+    if (parentKeys === undefined) {
+      return affectedParents;
+    }
+
+    for (const parentKey of parentKeys) {
+      const parent = this.getNode(parentKey);
+      if (parent === undefined) continue;
+      parent.cascadeChildren.delete(resourceKey);
+      affectedParents.add(parentKey);
+    }
+
+    this.cascadeParents.delete(resourceKey);
+    return affectedParents;
+  }
+
+  private removeChildrenFrom(resourceKey: ResourceIdentifier) {
+    const node = this.getNode(resourceKey);
+    if (node === undefined) {
+      return;
+    }
+    for (const childKey of node.cascadeChildren) {
+      const childParents = this.cascadeParents.get(childKey);
+      if (childParents === undefined) continue;
+
+      childParents.delete(resourceKey);
+
+      if (childParents.size === 0) {
+        this.cascadeParents.delete(childKey);
+      }
+    }
+    node.cascadeChildren.clear();
+  }
+
+  public async fetchCountsForResource(resource: SpecifyResource<AnySchema>) {
     const countKey = resourceToStringIdentifier(resource);
-    const alreadyQueued = this.countPromiseQueue.get(countKey);
+    return this.queueBlockerCount(countKey);
+  }
+
+  private queueBlockerCount(resourceKey: ResourceIdentifier) {
+    const alreadyQueued = this.countPromiseQueue.get(resourceKey);
+    const [tableName, resourceId] = identifierToParts(resourceKey);
     if (alreadyQueued === false) {
       return false;
     }
@@ -262,26 +372,33 @@ export class DeleteBlockerState {
     }
 
     const fetchCounts = () =>
-      fetchReferenceCounts(resource.specifyTable.name, resource.id).then(
-        (counts) => this.handleDeleteBlockerCounts(resource, counts)
+      fetchReferenceCounts(tableName, resourceId).then((counts) =>
+        this.handleDeleteBlockerCounts(resourceKey, counts)
       );
 
-    return this.countPromiseQueue.enqueue(countKey, fetchCounts);
+    return this.countPromiseQueue.enqueue(resourceKey, fetchCounts);
   }
 
+  private invalidateCounts(resourceKey: ResourceIdentifier) {
+    const node = this.getNode(resourceKey);
+    if (node === undefined) return;
+    node.count = undefined;
+    node.relationshipMetaData.forEach((blockerRelationship) => {
+      blockerRelationship.count = undefined;
+    });
+  }
   private handleDeleteBlockerCounts(
-    resource: SpecifyResource<AnySchema>,
+    resourceKey: ResourceIdentifier,
     counts: APIDeleteBlockerCounts
   ) {
-    const cacheKey = resourceToStringIdentifier(resource);
-    const node = this.getNode(cacheKey);
+    const node = this.getNode(resourceKey);
     if (node === undefined) {
       // We're expecting the node to exist at this point, but maybe the
       // resource was deleted between the time the count request was made and
       // this is executing?
       console.warn(
         'Trying to handle counts for record not in DeleteBlocker state',
-        { resource: resource }
+        { resource: resourceKey }
       );
       return;
     }

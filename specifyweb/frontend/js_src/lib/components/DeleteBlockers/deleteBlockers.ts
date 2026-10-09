@@ -82,7 +82,7 @@ export async function filterDeleteBlockers(
 }
 
 export async function fetchReferenceCounts(
-  table: keyof Tables,
+  table: keyof Tables | Lowercase<keyof Tables>,
   recordId: number,
   expectFailure = false
 ): Promise<APIDeleteBlockerCounts> {
