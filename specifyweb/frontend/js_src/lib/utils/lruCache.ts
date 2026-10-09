@@ -114,6 +114,18 @@ export class LRUCache<K, V> {
     this.maxSize = newSize;
   }
 
+  public entries() {
+    return this.cache.entries();
+  }
+
+  public keys() {
+    return this.cache.keys();
+  }
+
+  public values() {
+    return this.cache.values();
+  }
+
   private _get(key: K, updateRecency: boolean = true) {
     if (!this.cache.has(key)) {
       return MISSING;

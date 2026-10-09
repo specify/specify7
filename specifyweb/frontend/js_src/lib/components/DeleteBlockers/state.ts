@@ -243,6 +243,14 @@ export class DeleteBlockerState {
     }
   }
 
+  public removeDeletedResource(resourceKey: ResourceIdentifier) {
+    this.onChange?.();
+  }
+
+  private removeRecordFromPages(resourceKey: ResourceIdentifier) {}
+  private deletePagesOwnedBy(resourceKey: ResourceIdentifier) {}
+  private removeIndexesFor(resourceKey: ResourceIdentifier) {}
+
   public async queueBlockerCounts(resource: SpecifyResource<AnySchema>) {
     const countKey = resourceToStringIdentifier(resource);
     const alreadyQueued = this.countPromiseQueue.get(countKey);

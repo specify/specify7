@@ -1,14 +1,17 @@
 import { LRUCache } from '../../utils/lruCache';
-import { filterArray, RA } from '../../utils/types';
+import { RA } from '../../utils/types';
 import { AnySchema } from '../DataModel/helperTypes';
 import { SpecifyResource } from '../DataModel/legacyTypes';
 import { Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import { APIDeleteBlockerPage } from './deleteBlockers';
+import { ResourceIdentifier } from './state';
 
 export type BlockerPageCacheKey = string;
 
 export type DeleteBlockerLRUPage = {
+  readonly ownerTable: string;
+  readonly ownerId: number;
   readonly table: Lowercase<keyof Tables>;
   readonly ids: RA<number>;
   readonly anchor: 'last' | number | null;
@@ -21,7 +24,7 @@ export function pageAnchorToFilter(anchor: number | null | 'last') {
 }
 
 export function makeBlockerKey(...components: RA<unknown>) {
-  return filterArray(components).join('_');
+  return components.join('_');
 }
 
 export function buildPageCacheKey(
@@ -89,6 +92,8 @@ export class DeleteBlockerLRU {
   ) {
     const cacheKey = blockerPageToCacheKey(resource, blockerPage);
     const cachedPage: DeleteBlockerLRUPage = {
+      ownerTable: resource.specifyTable.name.toLowerCase(),
+      ownerId: resource.id,
       ids: blockerPage.ids,
       table: blockerPage.table,
       anchor: blockerPage.anchor,
@@ -109,6 +114,13 @@ export class DeleteBlockerLRU {
     cacheKey: BlockerPageCacheKey
   ): DeleteBlockerLRUPage | undefined {
     return this.pageCache.peek(cacheKey);
+  }
+
+  // Given a specific resource identifier (table + id), this removes all pages
+  // owned by that resource
+  public removePagesOwnedBy(identifer: ResourceIdentifier) {
+    for (const [cacheKey, page] of this.pageCache.entries()) {
+    }
   }
 
   public clear() {

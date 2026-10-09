@@ -5,6 +5,7 @@ import { Relationship } from '../DataModel/specifyField';
 import { DeleteBlockerLRUPage } from './pageCache';
 import { PageMetaData } from '../FormSliders/RecordSelectorFromPage';
 import { useDeleteBlockerStore } from './Context';
+import { useLiveState } from '../../hooks/useLiveState';
 
 export function useDeleteBlockerPages(
   resource: SpecifyResource<AnySchema>,
@@ -16,17 +17,26 @@ export function useDeleteBlockerPages(
   readonly onNextPageFetch: (
     previous: DeleteBlockerLRUPage,
     direction: 'next' | 'previous' | 'first' | 'last'
-  ) => Promise<void>;
+  ) => void;
+  readonly onResourceDeletion: (
+    page: DeleteBlockerLRUPage,
+    index: number
+  ) => void;
 } {
   const store = useDeleteBlockerStore();
 
-  const [pageCursor, setPageCursor] = React.useState<{
+  const [pageCursor, setPageCursor] = useLiveState<{
     readonly anchor: number | null | 'last';
     readonly backwards: boolean;
-  }>({
-    anchor: null,
-    backwards: false,
-  });
+  }>(
+    React.useCallback(
+      () => ({
+        anchor: null,
+        backwards: false,
+      }),
+      [resource, relationship]
+    )
+  );
 
   const deleteBlockerPage = React.useSyncExternalStore(store.subscribe, () =>
     store.getCachedPage(resource, relationship, pageCursor.anchor)
@@ -45,38 +55,47 @@ export function useDeleteBlockerPages(
     );
   }, [store, resource, relationship, pageCursor]);
 
-  async function handleNextPageFetch(
-    previousPage: DeleteBlockerLRUPage,
-    direction: 'next' | 'previous' | 'first' | 'last'
-  ) {
-    const backwards = direction === 'previous' || direction === 'last';
+  const handleNextPageFetch = React.useCallback(
+    (
+      previousPage: DeleteBlockerLRUPage,
+      direction: 'next' | 'previous' | 'first' | 'last'
+    ) => {
+      const backwards = direction === 'previous' || direction === 'last';
 
-    if (direction === 'last') {
+      if (direction === 'last') {
+        setPageCursor(() => ({
+          anchor: 'last',
+          backwards: true,
+        }));
+        return;
+      }
+      if (direction === 'first') {
+        setPageCursor(() => ({
+          anchor: null,
+          backwards: false,
+        }));
+        return;
+      }
+      if (previousPage.ids.length === 0) {
+        setPageCursor(() => ({
+          anchor: previousPage.anchor,
+          backwards,
+        }));
+        return;
+      }
       setPageCursor(() => ({
-        anchor: 'last',
-        backwards: true,
-      }));
-      return;
-    }
-    if (direction === 'first') {
-      setPageCursor(() => ({
-        anchor: null,
-        backwards: false,
-      }));
-      return;
-    }
-    if (previousPage.ids.length === 0) {
-      setPageCursor(() => ({
-        anchor: previousPage.anchor,
+        anchor: previousPage.ids.at(-1) ?? null,
         backwards,
       }));
-      return;
-    }
-    setPageCursor(() => ({
-      anchor: previousPage.ids.at(-1) ?? null,
-      backwards,
-    }));
-  }
+    },
+    [setPageCursor]
+  );
+
+  // FIXME: TODO
+  const handleResourceDeletion = React.useCallback(
+    (page: DeleteBlockerLRUPage, index: number) => {},
+    []
+  );
 
   const isFirstPage =
     deleteBlockerPage?.anchor === null && !pageCursor.backwards;
@@ -97,5 +116,6 @@ export function useDeleteBlockerPages(
             : undefined,
     pageSize: store.pageSize(),
     onNextPageFetch: handleNextPageFetch,
+    // onResourceDeletion: handleResourceDeletion,
   };
 }

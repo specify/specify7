@@ -6,6 +6,7 @@ import { f } from '../../utils/functools';
 import { Relationship } from '../DataModel/specifyField';
 import { useDeleteBlockerPages } from './useDeleteBlockerPages';
 import { useReferenceCount } from './useReferenceCount';
+import { blockerPageToCacheKey, buildPageCacheKey } from './pageCache';
 
 export function DeleteBlockersPaginator({
   parentResource,
@@ -30,6 +31,15 @@ export function DeleteBlockersPaginator({
   return (
     <RecordSelectorFromPage
       page={page}
+      pageKey={React.useMemo(
+        () =>
+          buildPageCacheKey(
+            parentResource,
+            relationship.table.name,
+            relationship.name
+          ),
+        [parentResource, relationship]
+      )}
       pageSize={pageSize}
       pageMetaData={pageMetaData}
       dialog={dialog}
