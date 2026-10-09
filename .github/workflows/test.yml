@@ -228,7 +228,7 @@ jobs:
         env:
           WEBLATE_API_TOKEN: ${{ secrets.WEBLATE_API_TOKEN }}
         run: |
-          curl -i \
+          curl --fail-with-body --show-error \
             -H "Authorization: Token $WEBLATE_API_TOKEN" \
             https://hosted.weblate.org/api/addons/34603/
       # This step must be run after pushing to github or else it will fail in
