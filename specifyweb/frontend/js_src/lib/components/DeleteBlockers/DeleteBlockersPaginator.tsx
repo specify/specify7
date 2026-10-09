@@ -5,7 +5,7 @@ import { RecordSelectorFromPage } from '../FormSliders/RecordSelectorFromPage';
 import { f } from '../../utils/functools';
 import { Relationship } from '../DataModel/specifyField';
 import { useDeleteBlockerPages } from './useDeleteBlockerPages';
-import { useReferenceCount } from './useReferenceCount';
+import { useRelationshipReferenceCount } from './useReferenceCount';
 import { blockerPageToCacheKey, buildPageCacheKey } from './pageCache';
 
 export function DeleteBlockersPaginator({
@@ -27,7 +27,10 @@ export function DeleteBlockersPaginator({
     onResourceDeletion: handleResourceDeletion,
   } = useDeleteBlockerPages(parentResource, relationship);
 
-  const referenceCount = useReferenceCount(parentResource, relationship);
+  const referenceCount = useRelationshipReferenceCount(
+    parentResource,
+    relationship
+  );
 
   return (
     <RecordSelectorFromPage

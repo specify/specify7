@@ -16,7 +16,7 @@ import type { AnySchema, AnyTree } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { genericTables } from '../DataModel/tables';
-import { DeleteButton } from '../Forms/DeleteButton';
+import { DeleteButtonWrapped } from '../Forms/DeleteButton';
 import { Dialog } from '../Molecules/Dialog';
 import { ResourceLink } from '../Molecules/ResourceLink';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
@@ -507,7 +507,7 @@ function NodeDeleteButton({
   return disabled || resource === undefined ? (
     <Button.Icon icon="trash" title={commonText.delete()} onClick={undefined} />
   ) : (
-    <DeleteButton
+    <DeleteButtonWrapped
       component={Button.Small}
       deferred
       isIcon

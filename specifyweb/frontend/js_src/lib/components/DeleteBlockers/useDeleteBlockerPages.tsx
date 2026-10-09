@@ -7,7 +7,6 @@ import { PageMetaData } from '../FormSliders/RecordSelectorFromPage';
 import { useDeleteBlockerStore } from './Context';
 import { useLiveState } from '../../hooks/useLiveState';
 import { error } from '../Errors/assert';
-import { softFail } from '../Errors/Crash';
 
 export function useDeleteBlockerPages(
   resource: SpecifyResource<AnySchema>,
@@ -93,7 +92,6 @@ export function useDeleteBlockerPages(
     [setPageCursor]
   );
 
-  // FIXME: TODO
   const handleResourceDeletion = React.useCallback(
     (page: DeleteBlockerLRUPage, index: number) => {
       const table = page.table;

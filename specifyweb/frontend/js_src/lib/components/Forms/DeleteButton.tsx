@@ -1,37 +1,25 @@
 import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
-import { useDeleteBlockers } from '../../hooks/useDeleteBlockers';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
-import { mergingText } from '../../localization/merging';
 import { treeText } from '../../localization/tree';
 import { StringToJsx } from '../../localization/utils';
-import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/definitions';
-import type { RA } from '../../utils/types';
 import { overwriteReadOnly } from '../../utils/types';
-import { group } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
 import { LoadingContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { serializeResource } from '../DataModel/serializers';
-import type { Relationship } from '../DataModel/specifyField';
-import { strictGetTable } from '../DataModel/tables';
-import type { Tables } from '../DataModel/types';
-import { loadingBar } from '../Molecules';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { FormattedResource } from '../Molecules/FormattedResource';
 import { TableIcon } from '../Molecules/TableIcon';
-import { createQuery } from '../QueryBuilder';
-import { queryFieldFilterSpecs } from '../QueryBuilder/FieldFilterSpec';
-import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
-import { runQuery } from '../QueryBuilder/ResultsWrapper';
-import type { DeleteBlocker } from './DeleteBlocked';
-import { DeleteBlockers } from './DeleteBlocked';
-import { parentTableRelationship } from './parentTables';
+import { DeleteBlockerProvider } from '../DeleteBlockers/Context';
+import { DeleteBlockers } from '../DeleteBlockers';
+import { useDeleteBlockersForResource } from '../DeleteBlockers/useDeleteBlockersForResource';
+import { useDeleteBlockerCount } from '../DeleteBlockers/useReferenceCount';
+import { mergingText } from '../../localization/merging';
+import { loadingBar } from '../Molecules';
 
 export type DeleteButtonProps<SCHEMA extends AnySchema> = {
   readonly resource: SpecifyResource<SCHEMA>;
@@ -43,13 +31,23 @@ export type DeleteButtonProps<SCHEMA extends AnySchema> = {
   readonly deferred?: boolean;
 };
 
+export function DeleteButtonWrapped<SCHEMA extends AnySchema>(
+  deleteBlockerProps: Parameters<typeof DeleteButton>[0]
+): JSX.Element {
+  return (
+    <DeleteBlockerProvider>
+      <DeleteButton<SCHEMA> {...deleteBlockerProps} />
+    </DeleteBlockerProvider>
+  );
+}
+
 /**
  * A button to delele a resorce
  * Prompts before deletion
  * Checks for delete blockers (other resources depending on this one) before
  * deletion
  */
-export function DeleteButton<SCHEMA extends AnySchema>({
+function DeleteButton<SCHEMA extends AnySchema>({
   resource,
   deletionMessage = formsText.deleteConfirmationDescription(),
   deferred = false,
@@ -65,22 +63,22 @@ export function DeleteButton<SCHEMA extends AnySchema>({
   // A render prop to render custom children inside the delete dialog
   readonly children?: (onClick: () => void, disabled: boolean) => JSX.Element;
 }): JSX.Element {
-  const { blockers, setBlockers, fetchBlockers } = useDeleteBlockers(
-    resource,
-    deferred
-  );
-
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   const loading = React.useContext(LoadingContext);
 
-  const isBlocked = Array.isArray(blockers) && blockers.length > 0;
+  const { blockers, onBlockersRequested: handleBlockersRequested } =
+    useDeleteBlockersForResource(resource, deferred);
+
+  const blockerCount = useDeleteBlockerCount(resource);
+
+  const isBlocked = Array.isArray(blockers);
 
   const iconName = resource.specifyTable.name;
 
   // Callback for button click
   const handleClick = (): void => {
     handleOpen();
-    fetchBlockers();
+    handleBlockersRequested();
   };
 
   const isDisabled = blockers === undefined || isBlocked;
@@ -94,37 +92,31 @@ export function DeleteButton<SCHEMA extends AnySchema>({
         <Button.Icon
           icon="trash"
           title={isBlocked ? formsText.deleteBlocked() : commonText.delete()}
-          onClick={(): void => {
-            handleOpen();
-            fetchBlockers();
-          }}
+          onClick={handleClick}
         />
       ) : (
         <ButtonComponent
           title={isBlocked ? formsText.deleteBlocked() : undefined}
-          onClick={(): void => {
-            handleOpen();
-            fetchBlockers();
-          }}
+          onClick={handleClick}
         >
           {isBlocked ? icons.exclamation : undefined}
           {commonText.delete()}
         </ButtonComponent>
       )}
       {isOpen ? (
-        /**
-         * This would be shown if the blockers aren't being fetched and aren't
-         * fetched.
-         * This branch should never be accessed, but just in case
-         */
         blockers === false ? (
+          /**
+           * This would be shown if the blockers aren't being fetched and aren't
+           * fetched. i.e., the dialog is open but blockers are still deferred.
+           * This branch should never be accessed, but just in case
+           */
           <Dialog
             buttons={commonText.cancel()}
             className={{ container: dialogClassNames.narrowContainer }}
             header={mergingText.linkedRecords()}
             onClose={handleClose}
           >
-            <Button.Secondary onClick={() => fetchBlockers(true)}>
+            <Button.Secondary onClick={handleBlockersRequested}>
               {mergingText.linkedRecords()}
             </Button.Secondary>
           </Dialog>
@@ -139,8 +131,8 @@ export function DeleteButton<SCHEMA extends AnySchema>({
             {formsText.checkingIfResourceCanBeDeleted()}
             {loadingBar}
           </Dialog>
-        ) : // Blockers have finished fetching, and there are no blockers
-        blockers.length === 0 ? (
+        ) : // Blockers have finished fetching and there are no blockers
+        !isBlocked ? (
           <Dialog
             buttons={
               <>
@@ -194,121 +186,10 @@ export function DeleteButton<SCHEMA extends AnySchema>({
             header={formsText.deleteBlocked()}
             onClose={handleClose}
           >
-            {formsText.deleteBlockedDescription()}
-            <DeleteBlockers
-              blockers={[blockers, setBlockers]}
-              resource={resource}
-            />
+            <DeleteBlockers blockers={blockers} />
           </Dialog>
         )
       ) : undefined}
     </>
   );
-}
-
-function resolveParentViaOtherside(
-  parentRelationship: Relationship,
-  directRelationship: Relationship,
-  id: number
-) {
-  const baseTable = parentRelationship.relatedTable;
-  return createQuery('Delete blockers', baseTable).set('fields', [
-    QueryFieldSpec.fromPath(baseTable.name, [
-      baseTable.idField.name,
-    ]).toSpQueryField(),
-    QueryFieldSpec.fromPath(baseTable.name, [
-      parentRelationship.otherSideName!,
-      directRelationship.name,
-      directRelationship.relatedTable.idField.name,
-    ])
-      .toSpQueryField()
-      .set('isDisplay', false)
-      .set('operStart', queryFieldFilterSpecs.equal.id)
-      .set('startValue', id.toString()),
-  ]);
-}
-
-export async function fetchDeleteBlockers(
-  resource: SpecifyResource<AnySchema>,
-  expectFailure: boolean = false
-): Promise<RA<DeleteBlocker>> {
-  const { data, status } = await ajax<
-    RA<{
-      readonly table: keyof Tables;
-      readonly field: string;
-      readonly ids: RA<number>;
-    }>
-  >(
-    `/delete_blockers/delete_blockers/${resource.specifyTable.name.toLowerCase()}/${
-      resource.id
-    }/`,
-    {
-      headers: { Accept: 'application/json' },
-      expectedErrors: expectFailure ? [Http.NOT_FOUND] : [],
-    }
-  );
-  if (status === Http.NOT_FOUND) return [];
-
-  const blockersPromise = data.map(async ({ ids, field, table: tableName }) => {
-    const table = strictGetTable(tableName);
-    const directRelationship = table.strictGetRelationship(field);
-    const parentRelationship =
-      parentTableRelationship()[directRelationship.table.name];
-    return [
-      parentRelationship?.relatedTable ?? directRelationship.table,
-      {
-        directRelationship,
-        parentRelationship,
-        ids:
-          parentRelationship === undefined
-            ? ids.map((id) => ({
-                direct: id,
-                parent: undefined,
-              }))
-            : await runQuery<readonly [number, number]>(
-                serializeResource(
-                  /*
-                   * TODO: Check if this is possible.
-                   */
-                  parentRelationship.otherSideName === undefined
-                    ? createQuery(
-                        'Delete blockers',
-                        directRelationship.table
-                      ).set('fields', [
-                        QueryFieldSpec.fromPath(directRelationship.table.name, [
-                          directRelationship.table.idField.name,
-                        ])
-                          .toSpQueryField()
-                          .set('isDisplay', false)
-                          .set('operStart', queryFieldFilterSpecs.in.id)
-                          .set('startValue', ids.join(',')),
-                        /*
-                         * TODO: ParentRelationship.table.name should always be directRelationship.model.name.
-                         * Check if that can never be the case
-                         */
-                        QueryFieldSpec.fromPath(parentRelationship.table.name, [
-                          parentRelationship.name,
-                          parentRelationship.relatedTable.idField.name,
-                        ]).toSpQueryField(),
-                      ])
-                    : resolveParentViaOtherside(
-                        parentRelationship,
-                        directRelationship,
-                        resource.id
-                      )
-                ),
-                {
-                  limit: 0,
-                }
-              ).then((rows) =>
-                rows.map(([direct, parent]) => ({
-                  direct,
-                  parent,
-                }))
-              ),
-      },
-    ] as const;
-  });
-  const blockers = await Promise.all(blockersPromise);
-  return group(blockers).map(([table, blockers]) => ({ table, blockers }));
 }

@@ -39,7 +39,7 @@ import { tables } from '../DataModel/tables';
 import type { SpecifyUser } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { useResourceView } from '../Forms/BaseResourceView';
-import { DeleteButton } from '../Forms/DeleteButton';
+import { DeleteButtonWrapped } from '../Forms/DeleteButton';
 import { useAvailableCollections } from '../Forms/OtherCollectionView';
 import { augmentMode } from '../Forms/ResourceView';
 import { SaveButton } from '../Forms/Save';
@@ -452,7 +452,10 @@ function UserView({
           {!userResource.isNew() &&
           hasTablePermission('SpecifyUser', 'delete') &&
           userResource.id !== userInformation.id ? (
-            <DeleteButton resource={userResource} onDeleted={handleDeleted} />
+            <DeleteButtonWrapped
+              resource={userResource}
+              onDeleted={handleDeleted}
+            />
           ) : undefined}
           <span className="-ml-2 flex-1" />
           {changesMade ? (

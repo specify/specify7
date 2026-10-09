@@ -2,18 +2,17 @@ import React from 'react';
 import { SpecifyResource } from '../DataModel/legacyTypes';
 import { AnySchema } from '../DataModel/helperTypes';
 import { Relationship } from '../DataModel/specifyField';
-import { useDeleteBlockersForResource } from './useDeleteBlockersForResource';
 import { useScreenSize } from '../../hooks/useScreenSize';
 import { DeleteBlockersAside } from './DeleteBlockersAside';
 import { DeleteBlockersPaginator } from './DeleteBlockersPaginator';
+import { DeleteBlockerResource } from './store';
+import { RA } from '../../utils/types';
 
-export function NewDeleteBlockers({
-  resource,
+export function DeleteBlockers({
+  blockers,
 }: {
-  readonly resource: SpecifyResource<AnySchema>;
+  readonly blockers: RA<DeleteBlockerResource> | undefined;
 }) {
-  const records = useDeleteBlockersForResource(resource);
-
   const [paginatorKey, setPaginatorKey] = React.useState<
     | undefined
     | {
@@ -44,11 +43,11 @@ export function NewDeleteBlockers({
     []
   );
 
-  return records === undefined ? null : (
+  return blockers === undefined ? null : (
     <>
       <div className="relative flex flex-1 gap-4 overflow-hidden md:flex-row">
         <DeleteBlockersAside
-          records={records}
+          records={blockers}
           activeRelationshipKey={paginatorKey?.relationshipKey}
           onRelationshipActive={handleSetPaginatorKey}
         />

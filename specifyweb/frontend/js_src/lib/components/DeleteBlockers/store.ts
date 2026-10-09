@@ -81,7 +81,23 @@ export class DeleteBlockerStore {
     return this.state.seedBlockers(resource);
   }
 
-  public getReferenceCount(
+  public getAllBlockerCounts(resource: SpecifyResource<AnySchema>) {
+    const blockerKey = resourceToStringIdentifier(resource);
+    const node = this.getNode(blockerKey);
+    if (node === undefined) {
+      return undefined;
+    }
+    const blockerGraph = this.getBlockerGraph(resource);
+    if (blockerGraph === undefined) {
+      return undefined;
+    }
+    return blockerGraph.reduce(
+      (previousSum, blockerRecord) => previousSum + (blockerRecord.count ?? 0),
+      0
+    );
+  }
+
+  public getReferenceCountForRelationship(
     resource: SpecifyResource<AnySchema>,
     relationship: Relationship
   ) {
@@ -131,6 +147,17 @@ export class DeleteBlockerStore {
   public removeResource(table: Lowercase<keyof Tables>, recordId: number) {
     const resourceKey = makeBlockerKey(table.toLowerCase(), recordId);
     this.state.removeDeletedResource(resourceKey);
+  }
+
+  public getDirectBlockers(
+    resource: SpecifyResource<AnySchema>
+  ): DeleteBlockerResource | undefined {
+    const identifier = resourceToStringIdentifier(resource);
+    const node = this.getNode(identifier);
+    if (node === undefined) {
+      return undefined;
+    }
+    return this.blockerNodeToResource(node);
   }
 
   public getBlockerGraph(
