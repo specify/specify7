@@ -48,14 +48,12 @@ export function NewDeleteBlockers({
           }))
         }
       />
-      <div className="ml-2">
-        {paginatorKey !== undefined && (
-          <DeleteBlockersPaginator
-            parentResource={paginatorKey.resource}
-            relationship={paginatorKey.relationship}
-          />
-        )}
-      </div>
+      {paginatorKey !== undefined && (
+        <DeleteBlockersPaginator
+          parentResource={paginatorKey.resource}
+          relationship={paginatorKey.relationship}
+        />
+      )}
     </div>
   );
 }
@@ -102,6 +100,9 @@ function BlockerResource({
 
   const [isOpen, _, __, handleToggleOpen] = useBooleanState(false);
 
+  const resourceLabel =
+    formatted === undefined ? commonText.loading() : formatted;
+
   return (
     <div className="w-full">
       <Button.BorderedGray
@@ -111,7 +112,13 @@ function BlockerResource({
       >
         <TableIcon name={record.resource.specifyTable.name} label={false} />
         <span>
-          {formatted === undefined ? commonText.loading() : formatted}
+          {record.count !== undefined
+            ? commonText.countLine({
+                resource: resourceLabel,
+                count: record.count,
+              })
+            : // FIXME: Localize this?
+              `${resourceLabel} (${commonText.loading()})`}
         </span>
       </Button.BorderedGray>
       {isOpen && (
@@ -149,7 +156,15 @@ function DeleteBlockersTable({
     <>
       <Button.BorderedGray aria-pressed={isOpen} onClick={handleToggleOpen}>
         <TableIcon name={tableName} label={false} />
-        {localized(tableLabel)}
+        <span>
+          {blockerTable.count !== undefined
+            ? commonText.countLine({
+                resource: localized(tableLabel),
+                count: blockerTable.count,
+              })
+            : // FIXME: Localize this?
+              `${localized(tableLabel)} (${commonText.loading()})`}
+        </span>
       </Button.BorderedGray>
       {isOpen && (
         <div className="flex flex-col ml-2 w-fit py-2 gap-1">
@@ -188,7 +203,15 @@ function DeleteBlockersRelationship({
         handleRelationshipActive(relationship);
       }}
     >
-      {relationship.label}
+      <span>
+        {blockerRelationship.count !== undefined
+          ? commonText.countLine({
+              resource: relationship.label,
+              count: blockerRelationship.count,
+            })
+          : // FIXME: Localize this?
+            `${relationship.label} (${commonText.loading()})`}
+      </span>
     </Button.BorderedGray>
   );
 }

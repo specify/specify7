@@ -6,8 +6,11 @@ import { getTable } from '../DataModel/tables';
 import { Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import {
+  APIDeleteBlockerCount,
+  APIDeleteBlockerCounts,
   DELETE_BLOCKER_LIMIT,
   fetchInitialBlockers,
+  fetchReferenceCounts,
   filterDeleteBlockers,
 } from './deleteBlockers';
 import {
@@ -27,15 +30,18 @@ export type BlockerRelationship = {
   readonly key: BlockerPageCacheKey;
   readonly table: Lowercase<keyof Tables>;
   readonly field: string;
-  readonly count?: number;
+  // eslint-disable-next-line functional/prefer-readonly-type
+  count?: number;
 };
 
 export type BlockerNode = {
   readonly key: ResourceIdentifier;
   readonly resource: SpecifyResource<AnySchema>;
-  readonly count?: number;
   readonly relationshipMetaData: Map<string, BlockerRelationship>;
   readonly cascadeChildren: Set<string>;
+  // eslint-disable-next-line functional/prefer-readonly-type
+  count?: number;
+  // eslint-disable-next-line functional/prefer-readonly-type
   version: number;
 };
 
@@ -108,7 +114,7 @@ export class DeleteBlockerState {
   private getOrCreateNode(resource: SpecifyResource<AnySchema>): BlockerNode {
     const resourceKey = resourceToStringIdentifier(resource);
     // REFACTOR: We could replace the following with getOrInsert
-    const existingNode = this.nodes.get(resourceKey);
+    const existingNode = this.getNode(resourceKey);
     if (existingNode !== undefined) {
       return existingNode;
     }
@@ -149,7 +155,7 @@ export class DeleteBlockerState {
     table: Lowercase<keyof Tables>,
     field: string
   ) {
-    return makeBlockerKey(node.key, table, field);
+    return makeBlockerKey(node.key, table.toLowerCase(), field.toLowerCase());
   }
 
   public async seedBlockers(resource: SpecifyResource<AnySchema>) {
@@ -181,6 +187,7 @@ export class DeleteBlockerState {
     const cachedPages = this.applyBlockerPages(node, blockers.results);
     this.updateAncestors(node.key);
     this.queueNextBlockers(resource, blockers.next);
+    this.queueBlockerCounts(resource);
     this.onChange?.();
     return cachedPages;
   }
@@ -236,7 +243,6 @@ export class DeleteBlockerState {
     }
   }
 
-  // FIXME: add count support
   public async queueBlockerCounts(resource: SpecifyResource<AnySchema>) {
     const countKey = resourceToStringIdentifier(resource);
     const alreadyQueued = this.countPromiseQueue.get(countKey);
@@ -246,6 +252,60 @@ export class DeleteBlockerState {
     if (alreadyQueued !== undefined) {
       return undefined;
     }
+
+    const fetchCounts = () =>
+      fetchReferenceCounts(resource.specifyTable.name, resource.id).then(
+        (counts) => this.handleDeleteBlockerCounts(resource, counts)
+      );
+
+    return this.countPromiseQueue.enqueue(countKey, fetchCounts);
+  }
+
+  private handleDeleteBlockerCounts(
+    resource: SpecifyResource<AnySchema>,
+    counts: APIDeleteBlockerCounts
+  ) {
+    const cacheKey = resourceToStringIdentifier(resource);
+    const node = this.getNode(cacheKey);
+    if (node === undefined) {
+      // We're expecting the node to exist at this point, but maybe the
+      // resource was deleted between the time the count request was made and
+      // this is executing?
+      console.warn(
+        'Trying to handle counts for record not in DeleteBlocker state',
+        { resource: resource }
+      );
+      return;
+    }
+    node.count = counts.total_count;
+    node.relationshipMetaData.forEach((blockerRelationship) => {
+      blockerRelationship.count = 0;
+    });
+    counts.results.forEach((relationshipCount) =>
+      this.addCountsToRelationship(node, relationshipCount)
+    );
+    this.updateNode(node);
+    this.onChange?.();
+  }
+
+  private addCountsToRelationship(
+    node: BlockerNode,
+    referenceCounts: APIDeleteBlockerCount
+  ) {
+    const { table, field, count } = referenceCounts;
+    const relationshipKey = this.nodeRelationshipKey(node, table, field);
+    const relationship = node.relationshipMetaData.get(relationshipKey);
+    if (relationship === undefined) {
+      // We're expecting this relationship to already exist on the node.
+      // Maybe all records in the relationship were deleted and it was removed?
+      console.warn('Trying to handle counts for missing relationship', {
+        resource: resourceToStringIdentifier(node.resource),
+        table,
+        field,
+      });
+      return;
+    }
+    relationship.count = count;
   }
 
   private async queueNextBlockers(
@@ -333,7 +393,7 @@ export class DeleteBlockerState {
         continue;
       }
       visitedRecords.add(currentKey);
-      const node = this.nodes.get(currentKey);
+      const node = this.getNode(currentKey);
       if (node === undefined) {
         continue;
       }

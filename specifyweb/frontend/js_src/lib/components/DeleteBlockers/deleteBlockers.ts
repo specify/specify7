@@ -21,13 +21,13 @@ export type APIDeleteBlockers = {
   readonly next: RA<APIDeleteBlockerPage>;
 };
 
-type APIDeleteBlockerCount = {
+export type APIDeleteBlockerCount = {
   readonly table: Lowercase<keyof Tables>;
   readonly field: string;
   readonly count: number;
 };
 
-type APIDeleteBlockerCounts = {
+export type APIDeleteBlockerCounts = {
   readonly results: RA<APIDeleteBlockerCount>;
   readonly total_count: number;
 };
@@ -81,7 +81,7 @@ export async function filterDeleteBlockers(
   ).then(({ data }) => data);
 }
 
-export async function fetchCounts(
+export async function fetchReferenceCounts(
   table: keyof Tables,
   recordId: number,
   expectFailure = false
