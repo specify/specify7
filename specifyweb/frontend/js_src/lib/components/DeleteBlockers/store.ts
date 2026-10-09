@@ -1,18 +1,19 @@
-import { RA, RR, Writable, WritableArray } from '../../utils/types';
+import { RA, Writable, WritableArray } from '../../utils/types';
 import { AnySchema } from '../DataModel/helperTypes';
 import { SpecifyResource } from '../DataModel/legacyTypes';
 import { Relationship } from '../DataModel/specifyField';
-import { Tables } from '../DataModel/types';
-import { DeleteBlockerLRUPage } from './pageCache';
+import {
+  BlockerPageCacheKey,
+  buildPageCacheKey,
+  DeleteBlockerLRUPage,
+  makeBlockerKey,
+} from './pageCache';
 import {
   BlockerNode,
   DeleteBlockerState,
-  makeBlockerKey,
-  recordToBlockerCacheKey,
   ResourceIdentifier,
   resourceToStringIdentifier,
 } from './state';
-import { BlockerPageCacheKey } from './types';
 
 export type DeleteBlockerRelationship = {
   readonly key: BlockerPageCacheKey;
@@ -71,29 +72,18 @@ export class DeleteBlockerStore {
     this.listeners.forEach((listener) => listener());
   }
 
-  public async seedBlockers(resource: SpecifyResource<AnySchema>) {
-    return this.state.seedBlockers(resource);
+  public pageSize(): number {
+    return this.state.pageSize();
   }
 
-  public fetchDeleteBlockerPage(
-    resource: SpecifyResource<AnySchema>,
-    relationship: Relationship,
-    anchor: number | null = null,
-    backwards: boolean = false
-  ) {
-    return this.state.filterBlockers(
-      resource,
-      relationship.table.name,
-      relationship.name,
-      anchor,
-      backwards
-    );
+  public async seedBlockers(resource: SpecifyResource<AnySchema>) {
+    return this.state.seedBlockers(resource);
   }
 
   public filterBlockers(
     resource: SpecifyResource<AnySchema>,
     relationship: Relationship,
-    anchor: number | null = null,
+    anchor: number | null | 'last' = null,
     backwards: boolean = false
   ) {
     return this.state.filterBlockers(
@@ -108,14 +98,12 @@ export class DeleteBlockerStore {
   public getCachedPage(
     resource: SpecifyResource<AnySchema>,
     relationship: Relationship,
-    anchor: number | null = null
+    anchor: number | null | 'last' = null
   ): DeleteBlockerLRUPage | undefined {
-    const cacheKey = recordToBlockerCacheKey(
+    const cacheKey = buildPageCacheKey(
       resource,
-      {
-        relatedTable: relationship.table.name,
-        relationshipName: relationship.name,
-      },
+      relationship.table.name,
+      relationship.name,
       anchor
     );
     return this.state.getBlockerPage(cacheKey);

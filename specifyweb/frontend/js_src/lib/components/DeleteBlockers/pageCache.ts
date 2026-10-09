@@ -1,32 +1,60 @@
 import { LRUCache } from '../../utils/lruCache';
-import { RA } from '../../utils/types';
+import { filterArray, RA } from '../../utils/types';
 import { AnySchema } from '../DataModel/helperTypes';
 import { SpecifyResource } from '../DataModel/legacyTypes';
 import { Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
-import { APIDeleteBlockerPage, BlockerPageCacheKey } from './types';
+import { APIDeleteBlockerPage } from './deleteBlockers';
+
+export type BlockerPageCacheKey = string;
 
 export type DeleteBlockerLRUPage = {
   readonly table: Lowercase<keyof Tables>;
   readonly ids: RA<number>;
-  readonly anchor: number | null;
+  readonly anchor: 'last' | number | null;
   readonly backwards: boolean;
+  readonly complete: boolean;
 };
 
-export function blockerPageToCacheKey(
+export function pageAnchorToFilter(anchor: number | null | 'last') {
+  return anchor === undefined || anchor === 'last' ? null : anchor;
+}
+
+export function makeBlockerKey(...components: RA<unknown>) {
+  return filterArray(components).join('_');
+}
+
+export function buildPageCacheKey(
   owner: SpecifyResource<AnySchema>,
-  page: APIDeleteBlockerPage
-): BlockerPageCacheKey {
+  relatedTable?: string,
+  relationshipName?: string,
+  anchor: number | null | 'last' = null
+) {
   const ownerTable = owner.specifyTable.name.toLowerCase();
   const ownerId = owner.id;
   if (ownerId === undefined) {
     softFail('Attempting to get DeleteBlockers for record without ID');
   }
+  const keyParts = [
+    ownerTable,
+    ownerId,
+    relatedTable?.toLowerCase(),
+    relationshipName?.toLowerCase(),
+    anchor,
+  ];
+  return makeBlockerKey(...keyParts);
+}
+
+export function blockerPageToCacheKey(
+  owner: SpecifyResource<AnySchema>,
+  page: APIDeleteBlockerPage
+): BlockerPageCacheKey {
   const tableName = page.table;
   const relationshipName = page.field;
+  const backwards = page.backwards;
   const anchorId = page.anchor;
-  const keyParts = [ownerTable, ownerId, tableName, relationshipName, anchorId];
-  return keyParts.join('_');
+  const resolvedAnchor = anchorId === null && backwards ? 'last' : anchorId;
+  return buildPageCacheKey(owner, tableName, relationshipName, resolvedAnchor);
 }
 
 // eslint-disable-next-line functional/no-class
@@ -65,6 +93,7 @@ export class DeleteBlockerLRU {
       table: blockerPage.table,
       anchor: blockerPage.anchor,
       backwards: blockerPage.backwards,
+      complete: blockerPage.complete,
     };
     this.pageCache.set(cacheKey, cachedPage);
     return cachedPage;

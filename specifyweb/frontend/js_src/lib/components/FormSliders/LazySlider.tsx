@@ -37,7 +37,7 @@ export function LazySlider({
       <Button.Small
         aria-label={formsText.previousRecord()}
         className="px-4 dark:bg-neutral-500"
-        disabled={buttonsDisabled.next || handleChange === undefined}
+        disabled={buttonsDisabled.previous || handleChange === undefined}
         title={formsText.previousRecord()}
         onClick={(): void => handleChange?.('previous')}
       >

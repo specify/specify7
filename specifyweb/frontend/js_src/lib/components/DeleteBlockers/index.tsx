@@ -3,7 +3,7 @@ import { Button } from '../Atoms/Button';
 import { SpecifyResource } from '../DataModel/legacyTypes';
 import { AnySchema } from '../DataModel/helperTypes';
 import { useDeleteBlockerPages, useDeleteBlockersForResource } from './Context';
-import { ResourceIdentifier, resourceToStringIdentifier } from './state';
+import { resourceToStringIdentifier } from './state';
 import { RA } from '../../utils/types';
 import { format } from '../Formatters/formatters';
 import { useAsyncState } from '../../hooks/useAsyncState';
@@ -199,15 +199,20 @@ function DeleteBlockersPaginator({
   readonly parentResource: SpecifyResource<AnySchema>;
   readonly relationship: Relationship;
 }): JSX.Element {
-  const { page, onNextPageFetch: handleNextPageFetch } = useDeleteBlockerPages(
-    parentResource,
-    relationship
-  );
+  const {
+    page,
+    pageMetaData,
+    pageSize,
+    onNextPageFetch: handleNextPageFetch,
+  } = useDeleteBlockerPages(parentResource, relationship);
+
   return (
     <RecordSelectorFromPage
       page={page}
+      pageSize={pageSize}
+      pageMetaData={pageMetaData}
       dialog={false}
-      table={parentResource.specifyTable}
+      table={relationship.table}
       title={undefined}
       onNextPageFetch={handleNextPageFetch}
       onClose={f.void}

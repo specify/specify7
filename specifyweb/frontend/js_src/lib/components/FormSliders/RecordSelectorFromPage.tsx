@@ -12,31 +12,35 @@ import { hasTablePermission } from '../Permissions/helpers';
 import { LazySlider } from './LazySlider';
 import { DataEntry } from '../Atoms/DataEntry';
 import { commonText } from '../../localization/common';
+import { clamp } from '../../utils/utils';
 
 type Page = {
   readonly ids: RA<number>;
   readonly complete: boolean;
 };
 
+export type PageMetaData = 'single' | 'first' | 'last' | undefined;
+
 function usePagedRecordSelector<SCHEMA extends AnySchema>({
-  firstPage,
-  lastPage,
+  pageMetaData,
   index,
   records,
   onSlide: handleSlide,
   onDelete: handleDelete,
 }: {
-  readonly firstPage: boolean;
-  readonly lastPage: boolean;
+  readonly pageMetaData: PageMetaData;
   readonly index: number;
   readonly records: RA<SpecifyResource<SCHEMA>> | undefined;
   readonly onSlide: (direction: 'next' | 'previous' | 'first' | 'last') => void;
   readonly onDelete: (index: number) => void;
 }) {
   const disableNextButtons =
-    records !== undefined && lastPage && index === records.length - 1;
+    records !== undefined &&
+    index === records.length - 1 &&
+    (pageMetaData === 'last' || pageMetaData === 'single');
 
-  const disablePreviousButtons = firstPage && index === 0;
+  const disablePreviousButtons =
+    (pageMetaData === 'single' || pageMetaData === 'first') && index === 0;
 
   return {
     slider: (
@@ -64,7 +68,8 @@ export function RecordSelectorFromPage<
   PAGE_TYPE extends Page,
 >({
   page: initialPage,
-  firstPage,
+  pageMetaData,
+  pageSize,
   dialog,
   headerButtons,
   isDependent = false,
@@ -79,7 +84,8 @@ export function RecordSelectorFromPage<
   onSaved: handleSaved,
 }: {
   readonly page: PAGE_TYPE | undefined;
-  readonly firstPage: boolean;
+  readonly pageSize: number;
+  readonly pageMetaData: PageMetaData;
   readonly dialog: false | 'modal' | 'nonModal';
   readonly headerButtons?: JSX.Element;
   readonly isLoading?: boolean;
@@ -106,36 +112,35 @@ export function RecordSelectorFromPage<
       [page]
     )
   );
-  const [index, setIndex] = React.useState(0);
+  const [indexInPage, setIndexInPage] = React.useState(0);
 
-  const currentResource = records?.[index];
+  const currentResource = records?.[indexInPage];
 
   const isReadOnly = React.useContext(ReadOnlyContext);
 
   function handleSlide(direction: 'next' | 'previous' | 'first' | 'last') {
-    if (page === undefined) {
+    if (page === undefined || records === undefined) {
       return;
     }
     if (direction === 'first') {
-      setIndex(0);
+      setIndexInPage(0);
       return handleNextPageFetch(page, 'first');
     }
     if (direction === 'last') {
-      setIndex(page.ids.length - 1);
+      setIndexInPage(pageSize - 1);
       return handleNextPageFetch(page, 'last');
     }
-
-    if (index === 0 && direction === 'previous') {
-      setIndex(page.ids.length - 1);
+    if (indexInPage === 0 && direction === 'previous') {
+      setIndexInPage(pageSize - 1);
       return handleNextPageFetch(page, 'previous');
     }
 
-    if (index === records!.length - 1 && direction === 'next') {
-      setIndex(0);
+    if (indexInPage === records.length - 1 && direction === 'next') {
+      setIndexInPage(0);
       return handleNextPageFetch(page, 'next');
     }
-    setIndex((oldIndex) =>
-      direction === 'next' ? oldIndex + 1 : oldIndex - 1
+    setIndexInPage((oldIndex) =>
+      clamp(0, direction === 'next' ? oldIndex + 1 : oldIndex - 1, pageSize - 1)
     );
     return;
   }
@@ -146,10 +151,9 @@ export function RecordSelectorFromPage<
     isLoading,
     onRemove: handleRemove,
   } = usePagedRecordSelector({
-    index,
+    index: indexInPage,
+    pageMetaData,
     records,
-    firstPage,
-    lastPage: page?.complete ?? false,
     onDelete: handleDelete,
     onSlide: handleSlide,
   });

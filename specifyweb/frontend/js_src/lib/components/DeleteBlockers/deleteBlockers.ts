@@ -1,12 +1,25 @@
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { RA } from '../../utils/types';
-import { group } from '../../utils/utils';
 import { Tables } from '../DataModel/types';
 import { formatUrl } from '../Router/queryString';
-import { APIDeleteBlockerPage, APIDeleteBlockers } from './types';
 
 export const DELETE_BLOCKER_LIMIT = 40;
+
+export type APIDeleteBlockerPage = {
+  readonly table: Lowercase<keyof Tables>;
+  readonly field: string;
+  readonly ids: RA<number>;
+  readonly limit: number;
+  readonly complete: boolean;
+  readonly anchor: null | number;
+  readonly backwards: boolean;
+};
+
+export type APIDeleteBlockers = {
+  readonly results: RA<APIDeleteBlockerPage>;
+  readonly next: RA<APIDeleteBlockerPage>;
+};
 
 type APIDeleteBlockerCount = {
   readonly table: Lowercase<keyof Tables>;
@@ -26,15 +39,6 @@ type DeleteBlockerFilter = {
   readonly limit?: number;
   readonly backwards?: boolean;
 };
-
-export function groupBlockers(blockers: RA<APIDeleteBlockerPage>): RA<{
-  readonly table: Lowercase<keyof Tables>;
-  readonly blockers: RA<APIDeleteBlockerPage>;
-}> {
-  return group(blockers.map((blocker) => [blocker.table, blocker])).map(
-    ([table, blockers]) => ({ table, blockers })
-  );
-}
 
 export async function fetchInitialBlockers(
   table: keyof Tables,

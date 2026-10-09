@@ -1,5 +1,5 @@
 import { PromiseQueue } from '../../utils/promiseQueue';
-import { filterArray, RA, WritableArray } from '../../utils/types';
+import { RA, WritableArray } from '../../utils/types';
 import { AnySchema } from '../DataModel/helperTypes';
 import { SpecifyResource } from '../DataModel/legacyTypes';
 import { getTable } from '../DataModel/tables';
@@ -9,45 +9,19 @@ import {
   DELETE_BLOCKER_LIMIT,
   fetchInitialBlockers,
   filterDeleteBlockers,
-  groupBlockers,
 } from './deleteBlockers';
 import {
+  BlockerPageCacheKey,
   blockerPageToCacheKey,
+  buildPageCacheKey,
   DeleteBlockerLRU,
   DeleteBlockerLRUPage,
+  makeBlockerKey,
+  pageAnchorToFilter,
 } from './pageCache';
-import {
-  APIDeleteBlockerPage,
-  APIDeleteBlockers,
-  BlockerPageCacheKey,
-} from './types';
+import { APIDeleteBlockerPage, APIDeleteBlockers } from './deleteBlockers';
 
 export type ResourceIdentifier = string;
-
-export function recordToBlockerCacheKey(
-  resource: SpecifyResource<AnySchema>,
-  relationshipInfo?: {
-    readonly relatedTable: string;
-    readonly relationshipName: string;
-  },
-  anchorId: number | null = null
-): BlockerPageCacheKey {
-  const tableName = resource.specifyTable.name.toLowerCase();
-  const recordId = resource.id;
-  if (recordId === undefined) {
-    softFail('Attempting to get DeleteBlockers for record without ID');
-  }
-  const relationshipTable = relationshipInfo?.relatedTable.toLowerCase();
-  const relationshipName = relationshipInfo?.relationshipName.toLowerCase();
-  const keyParts = filterArray([
-    tableName,
-    recordId,
-    relationshipTable,
-    relationshipName,
-    anchorId,
-  ]);
-  return keyParts.join('_');
-}
 
 export type BlockerRelationship = {
   readonly key: BlockerPageCacheKey;
@@ -71,10 +45,6 @@ export function resourceToStringIdentifier(
   return makeBlockerKey(resource.specifyTable.name.toLowerCase(), resource.id);
 }
 
-export function makeBlockerKey(...components: RA<unknown>) {
-  return components.join('_');
-}
-
 // eslint-disable-next-line functional/no-class
 export class DeleteBlockerState {
   private readonly pageCache: DeleteBlockerLRU;
@@ -93,7 +63,7 @@ export class DeleteBlockerState {
   private readonly onChange?: () => void;
 
   public constructor({
-    maxPages = 400,
+    maxPages = 200,
     recordsPerPage = DELETE_BLOCKER_LIMIT,
     onChange = undefined,
   }: {
@@ -120,6 +90,10 @@ export class DeleteBlockerState {
 
   public getNode(nodeKey: ResourceIdentifier) {
     return this.nodes.get(nodeKey);
+  }
+
+  public pageSize(): number {
+    return this.recordsPerPage;
   }
 
   public destroy() {
@@ -179,7 +153,7 @@ export class DeleteBlockerState {
   }
 
   public async seedBlockers(resource: SpecifyResource<AnySchema>) {
-    const queueKey = recordToBlockerCacheKey(resource);
+    const queueKey = buildPageCacheKey(resource);
     const promiseInQueue = this.pagePromiseQueue.get(queueKey);
     if (promiseInQueue === false || promiseInQueue !== undefined) {
       return promiseInQueue;
@@ -386,15 +360,13 @@ export class DeleteBlockerState {
     resource: SpecifyResource<AnySchema>,
     relatedTable: keyof Tables | Lowercase<keyof Tables>,
     relationshipName: string,
-    anchor: number | null = null,
+    anchor: number | null | 'last' = null,
     backwards: boolean = false
   ) {
-    const cacheKey = recordToBlockerCacheKey(
+    const cacheKey = buildPageCacheKey(
       resource,
-      {
-        relatedTable,
-        relationshipName,
-      },
+      relatedTable,
+      relationshipName,
       anchor
     );
     if (this.pageIsCached(cacheKey)) {
@@ -408,19 +380,32 @@ export class DeleteBlockerState {
         {
           table: relatedTable,
           field: relationshipName,
-          anchor,
-          backwards,
+          anchor: pageAnchorToFilter(anchor),
+          // This is needed to fetch the last page
+          // A null anchor depends on the direction of the request
+          backwards: anchor === 'last' ? true : backwards,
           limit: this.recordsPerPage,
         },
       ])
         .then((blockers) => {
-          return backwards === true
+          return anchor === 'last' || backwards === true
             ? {
                 ...blockers,
                 results: blockers.results.map((page) => ({
                   ...page,
                   ids: [...page.ids].reverse(),
-                  backwards: false,
+                  // We normally treat backwards requests the same as forwards
+                  // and transform them accordingly.
+                  // However when the last page is requested then it's
+                  // important to include indication of backwards as that's the
+                  // only way to know the last page was requested.
+                  // See blockerPageToCacheKey
+                  // REFACTOR: Maybe we can define a modified type of the API
+                  // response and pass those to the cache that allows anchor to
+                  // be 'false'.
+                  // That would decouple the anchor + backwards pairing to make
+                  // working with cached pages easier
+                  backwards: anchor === 'last',
                 })),
               }
             : blockers;
