@@ -91,6 +91,9 @@ export class DeleteBlockerStore {
     if (blockerGraph === undefined) {
       return undefined;
     }
+    if (blockerGraph.some((resource) => resource.count === undefined)) {
+      return undefined;
+    }
     return blockerGraph.reduce(
       (previousSum, blockerRecord) => previousSum + (blockerRecord.count ?? 0),
       0
@@ -146,7 +149,7 @@ export class DeleteBlockerStore {
 
   public removeResource(table: Lowercase<keyof Tables>, recordId: number) {
     const resourceKey = makeBlockerKey(table.toLowerCase(), recordId);
-    this.state.removeDeletedResource(resourceKey);
+    this.state.removeResource(resourceKey);
   }
 
   public getDirectBlockers(
@@ -189,8 +192,8 @@ export class DeleteBlockerStore {
   private blockerNodeToResource(
     node: BlockerNode
   ): DeleteBlockerResource | undefined {
-    // The node is still be initialized
-    if (node.relationshipMetaData.size === 0) {
+    // The node is still being initialized
+    if (node.version === 0) {
       return undefined;
     }
     const tables = new Map<string, MutableDeleteBlockerTable>();

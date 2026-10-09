@@ -194,6 +194,12 @@ export class DeleteBlockerState {
     blockers: APIDeleteBlockers
   ): RA<DeleteBlockerLRUPage> {
     const node = this.getOrCreateNode(resource);
+    if (blockers.next.length === 0 && blockers.results.length === 0) {
+      // We don't want to delete the node as that can still carry count
+      // information, but we can notify the parents that they don't have to
+      // worry about this node
+      this.removeRecordFromParents(node.key);
+    }
     const cachedPages = this.applyBlockerPages(node, blockers.results);
     this.updateAncestors(node.key);
     this.queueNextBlockers(resource, blockers.next);
@@ -251,12 +257,13 @@ export class DeleteBlockerState {
     }
   }
 
-  public removeDeletedResource(resourceKey: ResourceIdentifier) {
+  public removeResource(resourceKey: ResourceIdentifier) {
     const otherRecordsWithPage = this.removeRecordFromPages(resourceKey);
 
     this.pageCache.removePagesOwnedBy(resourceKey);
 
-    const affectedParents = this.removeIndexesFor(resourceKey);
+    const affectedParents = this.removeRelationshipIndexes(resourceKey);
+    this.nodes.delete(resourceKey);
 
     const allAffectedRecords = new Set([
       ...otherRecordsWithPage,
@@ -319,10 +326,9 @@ export class DeleteBlockerState {
       this.recordLocations.delete(resourceKey);
     }
   }
-  private removeIndexesFor(resourceKey: ResourceIdentifier) {
+  private removeRelationshipIndexes(resourceKey: ResourceIdentifier) {
     const affectedParents = this.removeRecordFromParents(resourceKey);
     this.removeChildrenFrom(resourceKey);
-    this.nodes.delete(resourceKey);
     return affectedParents;
   }
 

@@ -19,6 +19,7 @@ import { DeleteBlockers } from '../DeleteBlockers';
 import { useDeleteBlockersForResource } from '../DeleteBlockers/useDeleteBlockersForResource';
 import { mergingText } from '../../localization/merging';
 import { loadingBar } from '../Molecules';
+import { useDeleteBlockerCount } from '../DeleteBlockers/useReferenceCount';
 
 export type DeleteButtonProps<SCHEMA extends AnySchema> = {
   readonly resource: SpecifyResource<SCHEMA>;
@@ -68,7 +69,9 @@ function DeleteButton<SCHEMA extends AnySchema>({
   const { blockers, onBlockersRequested: handleBlockersRequested } =
     useDeleteBlockersForResource(resource, deferred);
 
-  const isBlocked = Array.isArray(blockers);
+  const blockerCount = useDeleteBlockerCount(resource);
+
+  const isBlocked = blockerCount !== undefined && blockerCount > 0;
 
   const iconName = resource.specifyTable.name;
 
@@ -129,7 +132,7 @@ function DeleteButton<SCHEMA extends AnySchema>({
             {loadingBar}
           </Dialog>
         ) : // Blockers have finished fetching and there are no blockers
-        !isBlocked ? (
+        blockerCount !== undefined && blockerCount === 0 ? (
           <Dialog
             buttons={
               <>
