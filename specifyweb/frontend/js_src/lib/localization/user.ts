@@ -178,6 +178,9 @@ export const userText = createDictionary({
     'hr-hr': 'Pozdrav, {userName:string}!',
     nb: 'Hallo, {userName:string}!',
   },
+  inviteLinkExpired: {
+    'en-us': 'Token expired.',
+  },
   oicWelcomeMessage: {
     'en-us':
       "You've been invited to associate an external login to your Specify user account. This will enable you to log in to Specify with your chosen provider going forward.",
