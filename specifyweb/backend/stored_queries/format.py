@@ -194,6 +194,13 @@ class ObjectFormatter:
                   do_blank_null = True
                   ) -> tuple[
         QueryConstruct, blank_nulls, QueryFieldSpec]:
+        if path is None:
+            # A field without a mapped field is static text. The editor uses
+            # ``sep`` for these entries so that the text is retained when
+            # neighbouring fields are null.
+            static_text = fieldNodeAttrib.get('format', fieldNodeAttrib.get('sep', ''))
+            return query, blank_nulls(literal(static_text)), None
+
         path = path.split('.')
         path = [inspect(orm_table).class_.__name__, *path]
         formatter_field_spec = QueryFieldSpec.from_path(path)

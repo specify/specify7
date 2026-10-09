@@ -3,17 +3,18 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useInfiniteScroll } from '../../hooks/useInfiniteScroll';
+import { usePaginatedCollection } from '../../hooks/usePaginatedCollection';
 import { commonText } from '../../localization/common';
 import { interactionsText } from '../../localization/interactions';
 import { f } from '../../utils/functools';
 import { type GetSet, type RA } from '../../utils/types';
 import { Container, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
+import { RecordMergingContext } from '../Core/Contexts';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { SpQuery } from '../DataModel/types';
-import { usePaginatedRecords } from '../FormSliders/hooks';
 import { treeRanksPromise } from '../InitialContext/treeRanks';
 import { RecordMergingLink } from '../Merging';
 import { loadingGif } from '../Molecules';
@@ -35,6 +36,7 @@ import { sortTypes } from './helpers';
 import { QueryResultsTable } from './ResultsTable';
 import { QueryToForms } from './ToForms';
 import { QueryToMap } from './ToMap';
+import { SplitView } from './SplitView';
 
 export type QueryResultRow = RA<number | string | null>;
 
@@ -71,6 +73,7 @@ export type QueryResultsProps = {
   readonly fetchResults:
     | ((offset: number) => Promise<RA<QueryResultRow>>)
     | undefined;
+  readonly fetchCount: (() => Promise<number>) | undefined;
   readonly totalCount: number | undefined;
   readonly fieldSpecs: RA<QueryFieldSpec>;
   readonly displayedFields: RA<QueryField>;
@@ -86,11 +89,33 @@ export type QueryResultsProps = {
   readonly onReRun: () => void;
   readonly createRecordSet: JSX.Element | undefined;
   readonly extraButtons: JSX.Element | undefined;
+  readonly containerClassName?: string;
   readonly tableClassName?: string;
   readonly selectedRows: GetSet<ReadonlySet<number>>;
+  readonly onResults?: (results: RA<QueryResultRow | undefined>) => void;
+  readonly renderSplitPane?: (props: QueryResultsSplitPaneProps) => JSX.Element;
+  readonly isSplit?: boolean;
+  readonly splitHorizontal?: boolean;
+  readonly splitPrimaryPaneMaxWidth?: string;
+  readonly onDeleted?: (recordId: number) => void;
+  readonly onMerged?: () => void;
+  readonly scrollRef?: React.MutableRefObject<HTMLDivElement | null>;
+  readonly restoreScrollTopRef?: React.MutableRefObject<number | undefined>;
+  readonly refreshToken?: number;
   readonly resultsRef?: React.MutableRefObject<
     RA<QueryResultRow | undefined> | undefined
   >;
+  readonly isLoading?: boolean;
+};
+
+export type QueryResultsSplitPaneProps = {
+  readonly results: RA<QueryResultRow | undefined>;
+  readonly selectedRows: ReadonlySet<number>;
+  readonly totalCount: number | undefined;
+  readonly onFetchMore:
+    | ((index?: number) => Promise<RA<QueryResultRow | undefined> | undefined>)
+    | undefined;
+  readonly onDelete: (id: number) => void;
 };
 
 export function QueryResults(props: QueryResultsProps): JSX.Element {
@@ -98,6 +123,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     table,
     label = commonText.results(),
     queryResource,
+    fetchCount,
     fetchResults,
     fieldSpecs,
     allFields,
@@ -106,12 +132,24 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     onSelected: handleSelected,
     onSortChange: handleSortChange,
     onReRun: handleReRun,
+    onMerged: handleMerged,
     createRecordSet,
     extraButtons,
+    containerClassName = '',
     tableClassName = '',
     selectedRows: [selectedRows, setSelectedRows],
+    onResults: handleResults,
+    renderSplitPane,
+    isSplit,
+    splitHorizontal,
+    splitPrimaryPaneMaxWidth,
+    onDeleted: handleDeleted,
+    scrollRef,
+    restoreScrollTopRef,
+    refreshToken,
     resultsRef,
     displayedFields,
+    isLoading = false,
   } = props;
 
   const {
@@ -119,9 +157,87 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     onFetchMore: handleFetchMore,
     totalCount: [totalCount, setTotalCount],
     canFetchMore,
-  } = usePaginatedRecords(props);
+  } = usePaginatedCollection({
+    initialRecords: initialData,
+    fetchMore: fetchResults,
+    fetchSize: props.fetchSize,
+    totalCount: props.totalCount,
+  });
+  const currentResultsRef = React.useRef(results);
+  currentResultsRef.current = results;
+  const previousRefreshToken = React.useRef(refreshToken);
+  const refreshGenerationRef = React.useRef(0);
 
-  const canMergeTable = canMerge(table);
+  React.useEffect(() => {
+    if (
+      refreshToken === undefined ||
+      refreshToken === previousRefreshToken.current
+    )
+      return;
+    previousRefreshToken.current = refreshToken;
+    const currentResults = currentResultsRef.current;
+    if (
+      !Array.isArray(currentResults) ||
+      fetchCount === undefined ||
+      fetchResults === undefined
+    )
+      return;
+
+    const generation = ++refreshGenerationRef.current;
+    fetchCount()
+      .then(async (refreshedTotalCount) => {
+        if (generation !== refreshGenerationRef.current) return;
+        const offsets = Array.from(
+          {
+            length: Math.min(
+              Math.ceil(currentResults.length / props.fetchSize),
+              Math.ceil(refreshedTotalCount / props.fetchSize)
+            ),
+          },
+          (_, index) => index * props.fetchSize
+        ).filter((offset) =>
+          currentResults
+            .slice(offset, offset + props.fetchSize)
+            .some((result) => result !== undefined)
+        );
+        const pages = await Promise.all(
+          offsets.map((offset) => fetchResults(offset))
+        );
+        if (generation !== refreshGenerationRef.current) return;
+        const refreshedResults = (
+          currentResultsRef.current ?? currentResults
+        ).slice();
+        let refreshedResultCount = refreshedTotalCount;
+        // Stop applying pages once a short page is hit, so a later full page
+        // can't re-extend the array past the earliest known end of data
+        for (let pageIndex = 0; pageIndex < pages.length; pageIndex++) {
+          const page = pages[pageIndex];
+          const offset = offsets[pageIndex];
+          refreshedResults.splice(offset, page.length, ...page);
+          if (page.length < props.fetchSize) {
+            refreshedResultCount = offset + page.length;
+            break;
+          }
+        }
+        refreshedResults.length = Math.min(
+          refreshedResults.length,
+          refreshedResultCount
+        );
+        setTotalCount(refreshedResultCount);
+        setResults(refreshedResults);
+      })
+      .catch(() => undefined);
+  }, [
+    fetchCount,
+    fetchResults,
+    props.fetchSize,
+    refreshToken,
+    setResults,
+    setTotalCount,
+  ]);
+
+  const canMergeTable =
+    React.useContext(RecordMergingContext) && canMerge(table);
 
   const visibleColumns = React.useMemo(
     () =>
@@ -133,6 +249,25 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     [fieldSpecs]
   );
   if (resultsRef !== undefined) resultsRef.current = results;
+
+  React.useEffect(() => {
+    if (results !== undefined) handleResults?.(results);
+  }, [handleResults, results]);
+
+  React.useEffect(() => {
+    const scrollTop = restoreScrollTopRef?.current;
+    if (
+      scrollTop === undefined ||
+      results === undefined ||
+      restoreScrollTopRef === undefined
+    )
+      return;
+    restoreScrollTopRef.current = undefined;
+    requestAnimationFrame(() => {
+      if (scrollRef?.current !== null && scrollRef?.current !== undefined)
+        scrollRef.current.scrollTop = scrollTop;
+    });
+  }, [results, restoreScrollTopRef, scrollRef]);
 
   const [pickListsLoaded = false] = useAsyncState(
     React.useCallback(
@@ -165,8 +300,15 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
   const [showCellEllipsis, setShowCellEllipsis] = React.useState(false);
 
   const lastSelectedRow = React.useRef<number | undefined>(undefined);
-  // Unselect all rows when query is reRun
-  React.useEffect(() => setSelectedRows(new Set()), [fieldSpecs]);
+  // Unselect all rows when the query fields change, but do not clear the
+  // parent-owned selection when this component is remounted while changing
+  // split-view orientation.
+  const previousFieldSpecs = React.useRef(fieldSpecs);
+  React.useEffect(() => {
+    if (previousFieldSpecs.current === fieldSpecs) return;
+    previousFieldSpecs.current = fieldSpecs;
+    setSelectedRows(new Set());
+  }, [fieldSpecs, setSelectedRows]);
 
   const showResults =
     Array.isArray(results) &&
@@ -341,8 +483,10 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     typeof loadedResults?.[0]?.[0] === 'string' && loadedResults !== undefined;
   const metaColumns = (showLineNumber ? 1 : 0) + 2;
 
-  return (
-    <Container.Base className="w-full !bg-[color:var(--form-background)]">
+  const queryResults = (
+    <Container.Base
+      className={`w-full !bg-[color:var(--form-background)] ${containerClassName}`}
+    >
       <div className="flex items-center items-stretch gap-2">
         <H3>
           {commonText.colonLine({
@@ -380,8 +524,11 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
               <RecordMergingLink
                 selectedRows={selectedRows}
                 table={table}
-                onDeleted={handleDelete}
-                onMerged={handleReRun}
+                onDeleted={(recordId): void => {
+                  handleDelete(recordId);
+                  handleDeleted?.(recordId);
+                }}
+                onMerged={handleMerged ?? handleReRun}
               />
             ) : undefined}
             {hasToolPermission('recordSets', 'create') && totalCount !== 0 ? (
@@ -419,7 +566,11 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
               table={table}
               totalCount={totalCount}
               onFetchMore={
-                canFetchMore && !isFetching ? handleFetchMore : undefined
+                canFetchMore && !isFetching
+                  ? async (): Promise<void> => {
+                      await handleFetchMore();
+                    }
+                  : undefined
               }
             />
             {isDistinct ? null : (
@@ -443,7 +594,10 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
           ${tableClassName}
           ${showResults ? 'border-b border-gray-500' : ''}
         `}
-        ref={scrollerRef}
+        ref={(element): void => {
+          scrollerRef.current = element;
+          if (scrollRef !== undefined) scrollRef.current = element;
+        }}
         role="table"
         style={{
           gridTemplateColumns: [
@@ -542,9 +696,22 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
 
                 lastSelectedRow.current = rowIndex;
               }}
+              onRowSelected={(rowIndex): void => {
+                const rawId = loadedResults[rowIndex][queryIdField];
+                if (typeof rawId !== 'number') return;
+                const id = rawId;
+                if (typeof id !== 'number' || !Number.isFinite(id)) return;
+
+                const newSelectedRows = new Set([id]);
+                setSelectedRows(newSelectedRows);
+                handleSelected?.(Array.from(newSelectedRows));
+                lastSelectedRow.current = rowIndex;
+              }}
             />
           ) : undefined}
-          {isFetching || (!showResults && Array.isArray(results)) ? (
+          {isLoading ||
+          isFetching ||
+          (!showResults && Array.isArray(results)) ? (
             <div className="col-span-full" role="cell">
               {loadingGif}
             </div>
@@ -552,6 +719,32 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
         </div>
       </div>
     </Container.Base>
+  );
+
+  return renderSplitPane === undefined ? (
+    queryResults
+  ) : (
+    <SplitView
+      isHorizontal={splitHorizontal ?? true}
+      isSplit={isSplit}
+      primaryPane={queryResults}
+      primaryPaneKey="query-results"
+      primaryPaneMaxWidth={splitPrimaryPaneMaxWidth}
+      secondaryPane={
+        isSplit !== false ? (
+          renderSplitPane({
+            results: results ?? [],
+            selectedRows,
+            totalCount,
+            onFetchMore: canFetchMore ? handleFetchMore : undefined,
+            onDelete: handleDelete,
+          })
+        ) : (
+          <></>
+        )
+      }
+      secondaryPaneKey="split-pane"
+    />
   );
 }
 

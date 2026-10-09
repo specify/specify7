@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { commonText } from '../../localization/common';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
@@ -41,15 +43,128 @@ type AttachmentSettings = {
 };
 
 let settings: AttachmentSettings | undefined;
+export type AttachmentServerStatus = 'unknown' | 'available' | 'unavailable';
+
+let serverStatus: AttachmentServerStatus = 'unknown';
+const serverStatusListeners = new Set<() => void>();
+let healthCheckTimer: ReturnType<typeof setInterval> | undefined;
+
+const attachmentSettingsPath = '/context/attachment_settings.json';
+
+const setAttachmentServerStatus = (newStatus: AttachmentServerStatus): void => {
+  if (serverStatus === newStatus) return;
+  const previousStatus = serverStatus;
+  serverStatus = newStatus;
+  // Only log actual connection loss/restoration, not the initial unknown state
+  if (previousStatus === 'available' && newStatus === 'unavailable')
+    console.error(
+      `[${new Date().toISOString()}] Attachment server connection lost`
+    );
+  else if (previousStatus === 'unavailable' && newStatus === 'available')
+    console.warn(
+      `[${new Date().toISOString()}] Attachment server connection restored`
+    );
+  serverStatusListeners.forEach((listener) => listener());
+};
+
 export const attachmentSettingsPromise = load<AttachmentSettings | IR<never>>(
-  '/context/attachment_settings.json',
+  attachmentSettingsPath,
   'application/json'
-).then((data) => {
-  if (Object.keys(data).length > 0) settings = data as AttachmentSettings;
-  return attachmentsAvailable();
+).then(async (data) => {
+  if (Object.keys(data).length > 0) {
+    settings = data as AttachmentSettings;
+    checkAttachmentServer().catch(() => {
+      setAttachmentServerStatus('unavailable');
+    });
+    return true;
+  } else {
+    settings = undefined;
+    const status = await checkAttachmentServer().catch(() => Http.SERVER_ERROR);
+    return status !== Http.NOT_FOUND;
+  }
 });
 
 export const attachmentsAvailable = (): boolean => typeof settings === 'object';
+
+const checkAttachmentServer = async (): Promise<number> => {
+  const { status } = await ajax('/attachment_gw/health/', {
+    cache: 'no-store',
+    errorMode: 'silent',
+    expectedErrors: Object.values(Http),
+    headers: { Accept: 'text/plain' },
+  });
+  if (status === Http.NO_CONTENT && settings === undefined) {
+    const { data } = await ajax<AttachmentSettings | IR<never>>(
+      attachmentSettingsPath,
+      {
+        cache: 'no-store',
+        errorMode: 'silent',
+        expectedErrors: Object.values(Http),
+        headers: { Accept: 'application/json' },
+      }
+    );
+    if (Object.keys(data).length > 0) settings = data as AttachmentSettings;
+  }
+  setAttachmentServerStatus(
+    status === Http.NO_CONTENT && settings !== undefined
+      ? 'available'
+      : 'unavailable'
+  );
+  return status;
+};
+
+/*
+ * A single caller error (e.g. a missing or corrupt attachment) doesn't mean
+ * the server is down, so confirm with a health check before marking it unavailable
+ */
+export const reportAttachmentServerFailure = (): void => {
+  checkAttachmentServer().catch(() => setAttachmentServerStatus('unavailable'));
+};
+
+const stopAttachmentServerHealthPolling = (): void => {
+  if (serverStatusListeners.size === 0 && healthCheckTimer !== undefined) {
+    clearInterval(healthCheckTimer);
+    healthCheckTimer = undefined;
+  }
+};
+
+const startAttachmentServerHealthPolling = (): (() => void) => {
+  const poll = (): void => {
+    checkAttachmentServer().catch(() =>
+      setAttachmentServerStatus('unavailable')
+    );
+  };
+  if (healthCheckTimer === undefined) {
+    poll();
+
+    healthCheckTimer = setInterval(() => {
+      poll();
+    }, 30_000);
+  }
+  return stopAttachmentServerHealthPolling;
+};
+
+export const useAttachmentServerStatus = (): AttachmentServerStatus => {
+  const subscribe = React.useCallback((listener: () => void) => {
+    serverStatusListeners.add(listener);
+    const stopPolling = startAttachmentServerHealthPolling();
+    return () => {
+      serverStatusListeners.delete(listener);
+      stopPolling();
+    };
+  }, []);
+  const getSnapshot = React.useCallback(() => serverStatus, []);
+  return React.useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
+};
+
+/*
+ * This function is only used in automated tests.
+ */
+export const overrideAttachmentServerStatus = (
+  newStatus: AttachmentServerStatus
+): void => {
+  serverStatus = newStatus;
+};
 const uploadTimeoutMilliseconds = 30 * 60 * 1000;
 
 /*
@@ -150,6 +265,7 @@ export type AttachmentThumbnail = {
   readonly alt: string | undefined;
   readonly width: number;
   readonly height: number;
+  readonly isServerBacked?: boolean;
 };
 
 export async function fetchThumbnail(
@@ -185,6 +301,7 @@ export async function fetchThumbnail(
     alt: attachment.attachmentLocation ?? undefined,
     width: scale,
     height: scale,
+    isServerBacked: true,
   };
 }
 

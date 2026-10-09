@@ -65,7 +65,6 @@ def get_readonly_fields(table: Table):
         rel.name
         for rel in table.relationships
         if rel.relatedModelName.lower() in BATCH_EDIT_READONLY_TABLES
-        or "attachment" in rel.relatedModelName.lower()
     ]
     if table.name.lower() == "determination":
         relationships = ["preferredtaxon"]
@@ -721,17 +720,22 @@ class RowPlanCanonical(NamedTuple):
             ]  # Need to go off by 1, bc we added 1 to account for id fields
             # It could happen that the field we saw doesn't exist.
             # Plus, the default options get chosen in the cases of
-            table_name, field_name = _get_table_and_field(field)
+            table_name, _ = _get_table_and_field(field)
+            # Use date-part-aware field name for localization lookup so that
+            # different date components (Full Date, Day, Month, Year) are
+            # matched to their correct captions rather than consuming labels
+            # in insertion order.
+            date_part_field_name = _get_date_part_field_name(field)
             field_caption = query_field_caption_lookup.get(field, None)
             table_field_labels = batch_edit_meta_tables.get_table_field_labels(table_name)
             if (
                 table_field_labels is None
-                or not table_field_labels.has_field_label(field_name)
+                or not table_field_labels.has_field_label(date_part_field_name)
                 or field.fieldspec.contains_tree_rank()
             ):
                 localized_label = naive_field_format(field.fieldspec)
             else:
-                field_label = table_field_labels.use_field_label(field_name, field_caption)
+                field_label = table_field_labels.use_field_label(date_part_field_name, field_caption)
                 localized_label = (
                     field_label.caption if field_label is not None else naive_field_format(field.fieldspec)
                 )
@@ -837,6 +841,7 @@ class RowPlanCanonical(NamedTuple):
                 overrideScope=None,
                 wbcols=wb_cols,
                 static={},
+                preserveIdentity=(base_table.name.lower() == "attachment"),
                 # FEAT: Remove this restriction to allow adding brand new data anywhere
                 # that's about the best we can do, to make relationships readonly. we can't really omit them during headers finding, because they are "still" there
                 toOne=Func.remove_keys(to_one_upload_tables, _relationship_is_editable),
@@ -858,7 +863,10 @@ def naive_field_format(fieldspec: QueryFieldSpec):
         return f"{prefix}{fieldspec.table.name} (formatted)"
     if field.is_relationship:
         return f"{prefix}{fieldspec.table.name} ({'formatted' if field.type.endswith('to-one') else 'aggregatd'})"
-    return f"{prefix}{fieldspec.table.name} {field.name}"
+    date_suffix = ""
+    if fieldspec.is_temporal() and fieldspec.date_part is not None and fieldspec.date_part != "Full Date":
+        date_suffix = f" ({fieldspec.date_part})"
+    return f"{prefix}{fieldspec.table.name} {field.name}{date_suffix}"
 
 
 # @transaction.atomic <--- we DONT do this because the query logic could take up possibly multiple minutes
@@ -897,7 +905,26 @@ def _get_table_and_field(field: QueryField):
     field_name = None if field.fieldspec.get_field() is None else field.fieldspec.get_field().name
     return (table_name, field_name)
 
-def rewrite_coordinate_fields(row, _mapped_rows: dict[tuple[tuple[str, ...], ...], Any], join_paths: tuple[tuple[str, ...], ...]) -> tuple: 
+def _get_date_part_field_name(field: QueryField) -> str | None:
+    """Return a field name that includes the date part suffix for temporal fields.
+
+    This ensures that different date components (e.g., catalogedDate Full Date,
+    catalogedDate Day, catalogedDate Month, catalogedDate Year) are treated as
+    distinct fields in the localization lookup, preventing mislabeled headers.
+    """
+    base_name = None if field.fieldspec.get_field() is None else field.fieldspec.get_field().name
+    if base_name is None:
+        return None
+    date_part = field.fieldspec.date_part
+    if date_part is not None:
+        return f"{base_name}__{date_part}"
+    return base_name
+
+def rewrite_coordinate_fields(
+    row: tuple[Any, ...],
+    mapped_rows: dict[tuple[tuple[str, ...], str | None], Any],
+    field_keys: tuple[tuple[tuple[str, ...], str | None], ...],
+) -> tuple:
     """
         In the QueryResults we want to replace any instances of the decimal
         coordinate fields (latitude1, longitude1, latitude2, longitude2) with
@@ -917,8 +944,6 @@ def rewrite_coordinate_fields(row, _mapped_rows: dict[tuple[tuple[str, ...], ...
         running he query, and then replacing the represented field before 
         parsing.
     """
-    mapped_rows = _mapped_rows
-
     field_replacement_map = {
         'latitude1': 'lat1text',
         'longitude1': 'long1text',
@@ -926,27 +951,35 @@ def rewrite_coordinate_fields(row, _mapped_rows: dict[tuple[tuple[str, ...], ...
         'longitude2': 'long2text'
     }
 
-    for join_path in join_paths:
+    for field_key in field_keys:
+        join_path, date_part = field_key
         if len(join_path) == 0:
             continue
         field_name = join_path[-1]
         replacement_field = field_replacement_map.get(field_name, None)
         replace_join_path = tuple((*join_path[:-1], replacement_field))
-        if replacement_field is None or not replace_join_path in mapped_rows.keys():
+        replacement_key = (replace_join_path, date_part)
+        if replacement_field is None or replacement_key not in mapped_rows:
             continue
 
-        mapped_rows[join_path] = mapped_rows[replace_join_path]
+        mapped_rows[field_key] = mapped_rows[replacement_key]
 
-    result = tuple(mapped_rows[join_path] for join_path in join_paths)
+    result = tuple(mapped_rows[field_key] for field_key in field_keys)
     return (row[0], *result)
 
 def rewrite_row(row, query_fields: list[QueryField]) -> tuple:
     """
         Rewrite the query result row to an "expected form" for batch edit
     """
-    join_paths = tuple(tuple(field.name for field in query_field.fieldspec.join_path) for query_field in query_fields)
-    mapped_rows = dict(zip(join_paths, row[1:]))
-    return rewrite_coordinate_fields(row, mapped_rows, join_paths)
+    field_keys = tuple(
+        (
+            tuple(field.name for field in query_field.fieldspec.join_path),
+            query_field.fieldspec.date_part,
+        )
+        for query_field in query_fields
+    )
+    mapped_rows = dict(zip(field_keys, row[1:]))
+    return rewrite_coordinate_fields(row, mapped_rows, field_keys)
 
 def run_batch_edit_query(props: BatchEditProps):
 
@@ -983,7 +1016,8 @@ def run_batch_edit_query(props: BatchEditProps):
 
     localization_dump: dict[str, list[tuple[str, str, bool]]] = {}
     for field, caption in field_caption_pairs:
-        table_name, field_name = _get_table_and_field(field)
+        table_name, _ = _get_table_and_field(field)
+        field_name = _get_date_part_field_name(field)
         field_labels = localization_dump.get(table_name, [])
         new_field_label = (field_name, caption, False)
         field_labels.append(new_field_label)

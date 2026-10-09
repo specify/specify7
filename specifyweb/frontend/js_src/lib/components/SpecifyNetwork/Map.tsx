@@ -3,6 +3,7 @@ import React from 'react';
 
 import { useResource } from '../../hooks/resource';
 import { useAsyncState } from '../../hooks/useAsyncState';
+import { usePaginatedCollection } from '../../hooks/usePaginatedCollection';
 import { developmentText } from '../../localization/development';
 import { specifyNetworkText } from '../../localization/specifyNetwork';
 import { f } from '../../utils/functools';
@@ -13,7 +14,6 @@ import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { genericTables, getTableById, tables } from '../DataModel/tables';
 import type { SpQuery, Tables } from '../DataModel/types';
-import { usePaginatedRecords } from '../FormSliders/hooks';
 import type { LeafletInstance } from '../Leaflet/addOns';
 import { LoadingScreen } from '../Molecules/Dialog';
 import { queryFromTree } from '../QueryBuilder/fromTree';
@@ -144,7 +144,12 @@ function Map({
     results: [results],
     canFetchMore,
     onFetchMore: handleFetchMore,
-  } = usePaginatedRecords(props);
+  } = usePaginatedCollection({
+    fetchMore: props.fetchResults,
+    fetchSize: props.fetchSize,
+    totalCount: props.totalCount,
+    initialRecords: props.initialData,
+  });
 
   const undefinedResult = results?.indexOf(undefined);
   const loadedResults = (
@@ -165,7 +170,13 @@ function Map({
       tableName={tableName}
       totalCount={props.totalCount}
       onClose={handleClose}
-      onFetchMore={canFetchMore ? handleFetchMore : undefined}
+      onFetchMore={
+        canFetchMore
+          ? async (): Promise<void> => {
+              await handleFetchMore();
+            }
+          : undefined
+      }
     />
   );
 }

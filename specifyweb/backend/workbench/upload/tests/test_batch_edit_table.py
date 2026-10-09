@@ -1,8 +1,9 @@
+import json
 from typing import Literal
 from functools import partial
 from specifyweb.specify.utils.func import Func
 from specifyweb.specify.tests.test_api import get_table
-from specifyweb.backend.stored_queries.batch_edit import run_batch_edit_query  # type: ignore
+from specifyweb.backend.stored_queries.batch_edit import make_dataset, run_batch_edit_query  # type: ignore
 from specifyweb.backend.stored_queries.queryfield import QueryField, fields_from_json
 from specifyweb.backend.stored_queries.queryfieldspec import QueryFieldSpec
 from specifyweb.backend.stored_queries.tests.test_batch_edit import props_builder
@@ -13,7 +14,7 @@ from specifyweb.backend.workbench.upload.auditor import (
     BatchEditPrefs,
 )
 from specifyweb.backend.workbench.upload.tests.base import UploadTestsBase
-from specifyweb.backend.workbench.upload.upload import do_upload
+from specifyweb.backend.workbench.upload.upload import do_upload, do_upload_dataset
 from specifyweb.backend.workbench.upload import auditcodes
 from specifyweb.backend.workbench.upload.upload_result import (
     Deleted,
@@ -30,6 +31,7 @@ from specifyweb.backend.workbench.upload.upload_result import (
 from specifyweb.backend.workbench.upload.treerecord import RANK_KEY_DELIMITER
 from specifyweb.backend.workbench.upload.upload_table import UploadTable
 from specifyweb.backend.workbench.views import regularize_rows
+from specifyweb.backend.workbench.models import Spdataset
 from ..upload_plan_schema import parse_column_options, parse_plan, schema
 
 from jsonschema import validate  # type: ignore
@@ -38,6 +40,7 @@ from specifyweb.specify.models import (
     Spauditlogfield,
     Collectionobject,
     Agent,
+    Attachment,
     Preptype,
     Preparation,
     Collectingeventattribute,
@@ -45,6 +48,7 @@ from specifyweb.specify.models import (
     Address,
     Agentspecialty,
     Collector,
+    Collectionobjectattachment,
 )
 
 lookup_in_auditlog = lambda model, _id: get_table("Spauditlog").objects.filter(
@@ -764,6 +768,41 @@ class SQLUploadTests(SQLAlchemySetup, UploadTestsBase):
             preptype=self.preptype,
         )
 
+        self.co_1_attachment = Attachment.objects.create(
+            origfilename="co_1.jpg",
+            attachmentlocation="co_1.jpg",
+            title="CO 1 Attachment",
+        )
+        self.co_2_attachment = Attachment.objects.create(
+            origfilename="co_2.jpg",
+            attachmentlocation="co_2.jpg",
+            title="CO 2 Attachment",
+        )
+        self.co_3_attachment = Attachment.objects.create(
+            origfilename="co_3.jpg",
+            attachmentlocation="co_3.jpg",
+            title="CO 3 Attachment",
+        )
+
+        self.co_1_attachment_link = Collectionobjectattachment.objects.create(
+            collectionmemberid=self.collection.id,
+            collectionobject=self.co_1,
+            attachment=self.co_1_attachment,
+            ordinal=0,
+        )
+        self.co_2_attachment_link = Collectionobjectattachment.objects.create(
+            collectionmemberid=self.collection.id,
+            collectionobject=self.co_2,
+            attachment=self.co_2_attachment,
+            ordinal=0,
+        )
+        self.co_3_attachment_link = Collectionobjectattachment.objects.create(
+            collectionmemberid=self.collection.id,
+            collectionobject=self.co_3,
+            attachment=self.co_3_attachment,
+            ordinal=0,
+        )
+
     def _build_props(self, query_fields, base_table):
         raw = self.build_props(query_fields, base_table)
         raw["session_maker"] = self.__class__.test_session_context
@@ -827,6 +866,340 @@ class SQLUploadTests(SQLAlchemySetup, UploadTestsBase):
 
         # We didn't change anything, nothing should change. verify just that
         list([self.enforcer(result) for result in results])
+
+    def test_batch_edit_attachment_updates_existing_record(self):
+        query_paths = [
+            ["catalognumber"],
+            ["collectionobjectattachments", "attachment", "title"],
+        ]
+
+        (headers, rows, pack, plan) = self.query_to_results(
+            *self.make_query_fields("collectionobject", query_paths)
+        )
+
+        self.assertEqual(
+            pack[0]["to_many"]["collectionobjectattachments"][0]["to_one"]["attachment"]["self"]["id"],
+            self.co_1_attachment.id,
+        )
+        self.assertIn(
+            "attachment",
+            plan.toMany["collectionobjectattachments"][0].toOne,
+        )
+        self.assertTrue(plan.toMany["collectionobjectattachments"][0].toOne["attachment"].preserveIdentity)
+
+        data = [dict(zip(headers, row)) for row in rows]
+        data[0]["Attachment title"] = "Updated CO 1 Attachment"
+
+        initial_attachment_count = Attachment.objects.count()
+
+        results = do_upload(
+            self.collection,
+            data,
+            plan,
+            self.agent.id,
+            batch_edit_packs=pack,
+        )
+
+        self.assertIsInstance(results[0].record_result, NoChange)
+
+        co_attachment_result = results[0].toMany["collectionobjectattachments"][0]
+        self.assertIsInstance(co_attachment_result.record_result, NoChange)
+
+        attachment_result = co_attachment_result.toOne["attachment"].record_result
+        self.assertIsInstance(attachment_result, Updated)
+        self.assertEqual(attachment_result.get_id(), self.co_1_attachment.id)
+
+        self.co_1_attachment.refresh_from_db()
+        self.co_1_attachment_link.refresh_from_db()
+
+        self.assertEqual(self.co_1_attachment.title, "Updated CO 1 Attachment")
+        self.assertEqual(
+            self.co_1_attachment_link.attachment_id, self.co_1_attachment.id
+        )
+        self.assertEqual(Attachment.objects.count(), initial_attachment_count)
+        self.enforce_in_log(self.co_1_attachment.id, "attachment", "UPDATE")
+
+    def test_batch_edit_attachment_table_updates_existing_record(self):
+        query_paths = [
+            ["title"],
+            ["origfilename"],
+        ]
+
+        (headers, rows, pack, plan) = self.query_to_results(
+            *self.make_query_fields("attachment", query_paths)
+        )
+
+        attachment_ids = [row_pack["self"]["id"] for row_pack in pack]
+        self.assertIn(self.co_1_attachment.id, attachment_ids)
+        self.assertTrue(plan.preserveIdentity)
+
+        row_index = attachment_ids.index(self.co_1_attachment.id)
+        data = [dict(zip(headers, row)) for row in rows]
+        data[row_index]["Attachment title"] = "Updated via Attachment Query"
+
+        initial_attachment_count = Attachment.objects.count()
+
+        results = do_upload(
+            self.collection,
+            data,
+            plan,
+            self.agent.id,
+            batch_edit_packs=pack,
+        )
+
+        attachment_result = results[row_index].record_result
+        self.assertIsInstance(attachment_result, Updated)
+        self.assertEqual(attachment_result.get_id(), self.co_1_attachment.id)
+
+        self.co_1_attachment.refresh_from_db()
+
+        self.assertEqual(self.co_1_attachment.title, "Updated via Attachment Query")
+        self.assertEqual(Attachment.objects.count(), initial_attachment_count)
+        self.enforce_in_log(self.co_1_attachment.id, "attachment", "UPDATE")
+
+    def test_batch_edit_attachment_dataset_commit_updates_original_record(self):
+        query_paths = [
+            ["catalognumber"],
+            ["collectionobjectattachments", "attachment", "title"],
+        ]
+
+        query_fields = [
+            self.make_query(QueryFieldSpec.from_path(path), 0)
+            for path in [("Collectionobject", *path) for path in query_paths]
+        ]
+        props = self._build_props(query_fields, "Collectionobject")
+
+        (headers, rows, packs, plan_json, visual_order) = run_batch_edit_query(props)
+
+        mapped_rows = [
+            [*row, json.dumps({"batch_edit": pack})] for (row, pack) in zip(rows, packs)
+        ]
+        regularized_rows = regularize_rows(len(headers), mapped_rows, skip_empty=False)
+        row_index = next(
+            index
+            for index, pack in enumerate(packs)
+            if pack["self"]["id"] == self.co_1.id
+        )
+
+        dataset_rows = [row[:] for row in regularized_rows]
+        attachment_title_index = headers.index("Attachment title")
+        dataset_rows[row_index][attachment_title_index] = "Updated CO 1 Attachment"
+
+        dataset_id, _ = make_dataset(
+            user=self.specifyuser,
+            collection=self.collection,
+            name="attachment-batch-edit",
+            headers=headers,
+            regularized_rows=dataset_rows,
+            agent=self.agent,
+            json_upload_plan=plan_json,
+            visual_order=visual_order,
+        )
+
+        dataset = Spdataset.objects.get(id=dataset_id)
+
+        initial_attachment_count = Attachment.objects.count()
+        results = do_upload_dataset(
+            self.collection,
+            self.agent.id,
+            dataset,
+            no_commit=False,
+            allow_partial=False,
+        )
+
+        attachment_result = results[row_index].toMany["collectionobjectattachments"][0].toOne["attachment"].record_result
+        self.assertIsInstance(attachment_result, Updated)
+        self.assertEqual(attachment_result.get_id(), self.co_1_attachment.id)
+
+        self.co_1_attachment.refresh_from_db()
+        self.co_1_attachment_link.refresh_from_db()
+
+        self.assertEqual(self.co_1_attachment.title, "Updated CO 1 Attachment")
+        self.assertEqual(self.co_1_attachment_link.attachment_id, self.co_1_attachment.id)
+        self.assertEqual(Attachment.objects.count(), initial_attachment_count)
+        self.enforce_in_log(self.co_1_attachment.id, "attachment", "UPDATE")
+
+    def _dataset_editing_a_preparation(self):
+        query_paths = [
+            ["catalognumber"],
+            ["preparations", "countamt"],
+            ["preparations", "text1"],
+        ]
+        query_fields = [
+            self.make_query(QueryFieldSpec.from_path(("Collectionobject", *path)), 0)
+            for path in query_paths
+        ]
+        props = self._build_props(query_fields, "Collectionobject")
+
+        (headers, rows, packs, plan_json, visual_order) = run_batch_edit_query(props)
+
+        mapped_rows = [
+            [*row, json.dumps({"batch_edit": pack})] for (row, pack) in zip(rows, packs)
+        ]
+        regularized_rows = regularize_rows(len(headers), mapped_rows, skip_empty=False)
+        row_index = next(
+            index
+            for index, pack in enumerate(packs)
+            if pack["self"]["id"] == self.co_1.id
+        )
+
+        dataset_rows = [row[:] for row in regularized_rows]
+        dataset_rows[row_index][headers.index("Preparation text1")] = "Edited by batch edit"
+
+        dataset_id, _ = make_dataset(
+            user=self.specifyuser,
+            collection=self.collection,
+            name="validate-batch-edit",
+            headers=headers,
+            regularized_rows=dataset_rows,
+            agent=self.agent,
+            json_upload_plan=plan_json,
+            visual_order=visual_order,
+        )
+        return Spdataset.objects.get(id=dataset_id), row_index
+
+    def test_validating_reports_changes_to_related_records(self):
+        dataset, row_index = self._dataset_editing_a_preparation()
+
+        results = do_upload_dataset(
+            self.collection, self.agent.id, dataset, no_commit=True, allow_partial=False
+        )
+
+        self.assertIsInstance(
+            results[row_index].toMany["preparations"][0].record_result, Updated
+        )
+
+    def test_validating_does_not_save_changes(self):
+        dataset, _ = self._dataset_editing_a_preparation()
+
+        do_upload_dataset(
+            self.collection, self.agent.id, dataset, no_commit=True, allow_partial=False
+        )
+
+        self.co_1_prep_1.refresh_from_db()
+        self.assertEqual(self.co_1_prep_1.text1, "Value for preparation")
+
+    def test_validating_does_not_mark_the_data_set_uploaded(self):
+        dataset, _ = self._dataset_editing_a_preparation()
+
+        do_upload_dataset(
+            self.collection, self.agent.id, dataset, no_commit=True, allow_partial=False
+        )
+
+        dataset.refresh_from_db()
+        self.assertIsNotNone(dataset.rowresults)
+        self.assertIsNone(dataset.uploadresult)
+        self.assertFalse(dataset.was_uploaded())
+
+    def test_a_validated_data_set_can_be_committed(self):
+        dataset, _ = self._dataset_editing_a_preparation()
+
+        do_upload_dataset(
+            self.collection, self.agent.id, dataset, no_commit=True, allow_partial=False
+        )
+        do_upload_dataset(
+            self.collection, self.agent.id, dataset, no_commit=False, allow_partial=False
+        )
+
+        self.co_1_prep_1.refresh_from_db()
+        self.assertEqual(self.co_1_prep_1.text1, "Edited by batch edit")
+
+
+    def _make_plant_tree(self):
+        plant_tree = get_table("Taxontreedef").objects.create(
+            name="Plant ttd", discipline=self.discipline
+        )
+        plant_tree.treedefitems.create(name="Taxonomy Root", rankid=0)
+        plant_tree.treedefitems.create(name="Kingdom", rankid=10)
+        plant_tree.treedefitems.create(name="Genus", rankid=180)
+        plant_tree.treedefitems.create(name="Species", rankid=220)
+        plant_tree.treedefitems.create(name="Variety", rankid=240)
+        return plant_tree
+
+    def _tree_ranks_for_genus_query(self, treedefsfilter):
+        query_fields = fields_from_json(
+            [
+                {
+                    "tablelist": "1",
+                    "stringid": "1.collectionobject.catalogNumber",
+                    "fieldname": "catalogNumber",
+                    "isrelfld": False,
+                    "sorttype": 0,
+                    "position": 0,
+                    "isdisplay": True,
+                    "operstart": 8,
+                    "startvalue": "",
+                    "isnot": False,
+                },
+                {
+                    "tablelist": "1,9-determinations,4",
+                    "stringid": "1,9-determinations,4.taxon.Genus",
+                    "fieldname": "Genus",
+                    "isrelfld": False,
+                    "sorttype": 0,
+                    "position": 1,
+                    "isdisplay": True,
+                    "operstart": 8,
+                    "startvalue": "",
+                    "isnot": False,
+                },
+            ]
+        )
+        get_table("Determination").objects.create(
+            collectionobject=self.co_1, remarks="A determination"
+        )
+        props = self._build_props(query_fields, "Collectionobject")
+        props["treedefsfilter"] = treedefsfilter
+
+        (headers, rows, packs, plan_json, visual_order) = run_batch_edit_query(props)
+
+        found = set()
+
+        def collect(node):
+            if isinstance(node, dict):
+                for rank_key in node.get("treeRecord", {}).get("ranks", {}):
+                    tree_name, rank_name = rank_key.split(RANK_KEY_DELIMITER)[:2]
+                    found.add((tree_name, rank_name))
+                for value in node.values():
+                    collect(value)
+            elif isinstance(node, list):
+                for value in node:
+                    collect(value)
+
+        collect(plan_json)
+        return found
+
+    def _default_tree_ranks(self):
+        return {
+            (self.taxontreedef.name, rank)
+            for rank in ["Genus", "Subgenus", "Species", "Subspecies"]
+        }
+
+    def _plant_tree_ranks(self):
+        return {("Plant ttd", rank) for rank in ["Genus", "Species", "Variety"]}
+
+    def test_only_the_selected_trees_ranks_are_added(self):
+        plant_tree = self._make_plant_tree()
+
+        ranks = self._tree_ranks_for_genus_query({"taxon": [plant_tree.id]})
+
+        self.assertEqual(ranks, self._plant_tree_ranks())
+
+    def test_every_selected_trees_ranks_are_added(self):
+        plant_tree = self._make_plant_tree()
+
+        ranks = self._tree_ranks_for_genus_query(
+            {"taxon": [self.taxontreedef.id, plant_tree.id]}
+        )
+
+        self.assertEqual(ranks, self._default_tree_ranks() | self._plant_tree_ranks())
+
+    def test_no_trees_selected_adds_every_tree(self):
+        self._make_plant_tree()
+
+        ranks = self._tree_ranks_for_genus_query({})
+
+        self.assertEqual(ranks, self._default_tree_ranks() | self._plant_tree_ranks())
 
     def enforce_in_log(
         self,

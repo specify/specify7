@@ -15,6 +15,7 @@ logger = logging.getLogger(__name__)
 # TODO: Use this everywhere
 class ModelWithTable(models.Model):
     specify_model: Table
+    objects: models.Manager["ModelWithTable"]
     class Meta:
         abstract = True
 

@@ -27,7 +27,7 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
   [userText.userAccount()]: {
     logOut: {
       title: userText.logOut(),
-      url: '/accounts/logout/',
+      url: '/specify/command/logout/',
       icon: icons.logout,
       enabled: () => userInformation.isauthenticated,
       onClick: async () =>

@@ -214,7 +214,9 @@ export function TreeRow<SCHEMA extends AnyTree>({
     descendantCount === 0;
 
   const hasNoChildrenNodes =
-    nodeStats?.directCount === 0 && nodeStats.childCount === 0;
+    nodeStats?.directCount === 0 &&
+    nodeStats.childCount === 0 &&
+    (nodeStats.synonymCount ?? 0) === 0;
 
   return (hideEmptyNodes && hasNoChildrenNodes) || isHiddenInFilter ? null : (
     <li role="treeitem row">

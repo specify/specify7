@@ -193,7 +193,7 @@ def oic_callback(request: http.HttpRequest) -> http.HttpResponse:
     spuserexternalid.save()
 
     login(request,
-          cast(AbstractBaseUser, spuserexternalid.specifyuser),
+          cast(Specifyuser, spuserexternalid.specifyuser),
           backend='django.contrib.auth.backends.ModelBackend')
     return http.HttpResponseRedirect('/accounts/choose_collection')
 

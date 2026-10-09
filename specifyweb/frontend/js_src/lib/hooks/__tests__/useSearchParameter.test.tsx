@@ -63,8 +63,8 @@ describe('useSearchParameter', () => {
 
     mount(
       <Router.MemoryRouter
-        future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
         initialEntries={[initialEntry]}
+        useTransitions={true}
       >
         <TestSearchParameter
           rawName="records"
@@ -85,8 +85,8 @@ describe('useSearchParameter', () => {
 
     mount(
       <Router.MemoryRouter
-        future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
         initialEntries={[initialEntry]}
+        useTransitions={true}
       >
         <TestSearchParameter
           rawName="records"
@@ -129,8 +129,8 @@ describe('useSearchParameter', () => {
 
     mount(
       <Router.MemoryRouter
-        future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
         initialEntries={[initialEntry]}
+        useTransitions={true}
       >
         <TestSearchParameter
           rawName={undefined}
@@ -155,8 +155,8 @@ describe('useSearchParameter', () => {
 
     mount(
       <Router.MemoryRouter
-        future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
         initialEntries={[initialEntry]}
+        useTransitions={true}
       >
         <TestSearchParameter
           rawName="records"

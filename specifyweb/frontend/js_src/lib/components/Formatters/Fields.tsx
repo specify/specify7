@@ -64,8 +64,8 @@ export function Fields({
             [&_td]:!items-stretch
             ${
               displayFormatter
-                ? 'grid-cols-[min-content_1fr_auto_min-content]'
-                : 'grid-cols-[min-content_1fr_min-content]'
+                ? 'grid-cols-[min-content_1fr_auto_auto_min-content]'
+                : 'grid-cols-[min-content_1fr_auto_min-content]'
             }
           `}
         >
@@ -73,7 +73,8 @@ export function Fields({
             <tr>
               <th>{resourcesText.separator()}</th>
               <th>{schemaText.field()}</th>
-              {displayFormatter && <th>{schemaText.customFieldFormat()}</th>}
+              <th>{resourcesText.displayFormat()}</th>
+              {displayFormatter && <th>{schemaText.fieldFormat()}</th>}
               <th />
             </tr>
           </thead>
@@ -115,6 +116,7 @@ export function Fields({
                   separator: localized(' '),
                   aggregator: undefined,
                   formatter: undefined,
+                  format: undefined,
                   fieldFormatter: undefined,
                   field: undefined,
                   trimZeros: false,
@@ -203,6 +205,25 @@ function Field({
           <CustomSelectElement {...fieldOptionsSelectProps} />
         </div>
       </td>
+      <td>
+        {field.field === undefined ? (
+          <Input.Text
+            aria-label={resourcesText.displayFormat()}
+            className="w-full min-w-0"
+            isReadOnly={isReadOnly}
+            placeholder="Static text"
+            value={field.format ?? ''}
+            onValueChange={(format): void =>
+              handleChange({
+                ...field,
+                format: format.length === 0 ? undefined : format,
+              })
+            }
+          />
+        ) : (
+          <FieldFormat field={[field, handleChange]} />
+        )}
+      </td>
       {displayFormatter && (
         <td>
           <FieldFormatter field={[field, handleChange]} />
@@ -237,6 +258,59 @@ function Field({
         )}
       </td>
     </tr>
+  );
+}
+
+function FieldFormat({
+  field: [field, handleChange],
+}: {
+  readonly field: GetSet<
+    Formatter['definition']['fields'][number]['fields'][number]
+  >;
+}): JSX.Element {
+  const isReadOnly = React.useContext(ReadOnlyContext);
+  const format = field.format ?? '';
+  const substitution = field.format?.match(/%[sd]/)?.[0] ?? '%s';
+  const [prefix, suffix] = format.includes(substitution)
+    ? format.split(substitution, 2)
+    : [format, ''];
+  const updateFormat = (newPrefix: string, newSuffix: string): void => {
+    const format = `${newPrefix}${substitution}${newSuffix}`;
+    handleChange({
+      ...field,
+      format: format === '%s' ? undefined : localized(format),
+    });
+  };
+
+  return (
+    <div
+      aria-label={resourcesText.displayFormat()}
+      className="inline-flex w-56 max-w-full items-center gap-1"
+    >
+      <Input.Text
+        aria-label="Text Before"
+        className="w-0 min-w-0 flex-1"
+        isReadOnly={isReadOnly}
+        placeholder="Text Before"
+        value={prefix}
+        onValueChange={(value): void => updateFormat(value, suffix)}
+      />
+      <span
+        aria-label="Selected field value"
+        className="cursor-not-allowed select-none px-1 font-mono text-sm text-gray-500"
+        title="Selected field value"
+      >
+        …
+      </span>
+      <Input.Text
+        aria-label="Text After"
+        className="w-0 min-w-0 flex-1"
+        isReadOnly={isReadOnly}
+        placeholder="Text After"
+        value={suffix}
+        onValueChange={(value): void => updateFormat(prefix, value)}
+      />
+    </div>
   );
 }
 

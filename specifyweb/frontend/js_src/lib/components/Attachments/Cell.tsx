@@ -22,7 +22,7 @@ import { softFail } from '../Errors/Crash';
 import { Dialog } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasTablePermission } from '../Permissions/helpers';
-import { fetchOriginalUrl } from './attachments';
+import { fetchOriginalUrl, useAttachmentServerStatus } from './attachments';
 import { AttachmentPreview } from './Preview';
 import { getAttachmentRelationship, tablesWithAttachments } from './utils';
 
@@ -39,10 +39,17 @@ export function AttachmentCell({
     | ((table: SpecifyTable, recordId: number) => void)
     | undefined;
 }): JSX.Element {
+  const attachmentServerStatus = useAttachmentServerStatus();
   const table = f.maybe(attachment.tableID ?? undefined, getAttachmentTable);
 
   const [originalUrl] = useAsyncState(
-    React.useCallback(async () => fetchOriginalUrl(attachment), [attachment]),
+    React.useCallback(
+      async () =>
+        attachmentServerStatus !== 'unavailable'
+          ? fetchOriginalUrl(attachment)
+          : undefined,
+      [attachment, attachmentServerStatus]
+    ),
     false
   );
 

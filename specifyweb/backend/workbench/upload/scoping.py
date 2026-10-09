@@ -123,7 +123,9 @@ def extend_columnoptions(
     picklists, schemaitem = get_picklists(collection, tablename, fieldname)
 
     # Picklists are already scoped by collection in get_picklists if possible
-    picklist = None if picklists is None else picklists[0]
+    picklist = None
+    if picklists is not None and len(picklists) > 0:
+        picklist = picklists[0]
 
     ui_formatter = get_or_defer_formatter(collection, tablename, fieldname, row, toOne, context)
     scoped_formatter = (
@@ -319,6 +321,7 @@ def apply_scoping_to_uploadtable(
         static=ut.static,
         toOne=to_ones,
         toMany=to_many,  # type: ignore
+        preserveIdentity=ut.preserveIdentity,
         scopingAttrs=scoping_relationships(collection, table),
         disambiguation=None,
         # Often, we'll need to recur down to clone (nested one-to-ones). Having this entire is handy in such a case

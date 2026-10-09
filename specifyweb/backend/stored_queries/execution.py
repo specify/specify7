@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import csv
 import json
 import logging
@@ -5,7 +7,7 @@ import os
 import re
 import traceback
 
-from typing import Callable, Literal, NamedTuple, Iterable
+from typing import TYPE_CHECKING, Callable, Literal, NamedTuple, Iterable
 import xml.dom.minidom
 from collections import namedtuple, defaultdict
 from functools import reduce
@@ -28,7 +30,6 @@ from .format import ObjectFormatter, ObjectFormatterProps
 from .query_construct import QueryConstruct
 from .field_spec_maps import transform_field_specs
 from .web_portal_export import query_to_web_portal_zip as _query_to_web_portal_zip, WebportalQueryResultProcessors
-from specifyweb.backend.stored_queries.queryfield import QueryField
 from specifyweb.backend.notifications.models import Message
 from specifyweb.backend.permissions.permissions import check_table_permissions
 from specifyweb.specify.models import Loan, Loanpreparation, Loanreturnpreparation, Taxontreedef
@@ -39,6 +40,12 @@ from specifyweb.backend.stored_queries.synonomy import synonymize_tree_query
 
 from specifyweb.specify.datamodel import datamodel, is_tree_table
 from specifyweb.specify.models_utils.load_datamodel import Table
+
+# This likely isn't entirely needed, but there is little harm in this as
+# QueryField is only needed as a type, so in the case there would be a cyclical
+# import it would already be handled.
+if TYPE_CHECKING:
+    from specifyweb.backend.stored_queries.queryfield import QueryField
 
 logger = logging.getLogger(__name__)
 
@@ -973,8 +980,6 @@ def build_query_construct_base(
     elif props.distinct:
         query_construct_query = session.query(
             func.group_concat(id_field.distinct(), separator=','))
-    else:
-        query_construct_query = session.query(id_field)
 
     query = QueryConstruct(
         collection=collection,
@@ -1082,6 +1087,10 @@ def add_fields_to_query(
         )
 
         if field is None:
+            # Keep the result column in place when a displayed tree rank is
+            # missing, while omitting its filter and sort behavior.
+            if query_field.display:
+                query = query.add_columns(sql.null())
             continue
 
         formatted_field = None

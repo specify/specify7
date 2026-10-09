@@ -35,20 +35,43 @@ import { fieldFormat } from './fieldFormat';
 import type { Aggregator, Formatter } from './spec';
 import { formattersSpec } from './spec';
 
-export const fetchFormatters: Promise<{
+const loadFormatters = (
+  refresh = false
+): Promise<{
   readonly formatters: RA<Formatter>;
   readonly aggregators: RA<Aggregator>;
-}> = contextUnlockedPromise.then(async (entrypoint) =>
-  entrypoint === 'main'
-    ? Promise.all([
-        ajax<Element>(cacheableUrl(getAppResourceUrl('DataObjFormatters')), {
-          headers: { Accept: 'text/xml' },
-        }).then(({ data }) => data),
-        fetchSchema,
-        fetchDomain,
-      ]).then(([definitions]) => xmlToSpec(definitions, formattersSpec()))
-    : foreverFetch()
-);
+}> =>
+  contextUnlockedPromise.then(async (entrypoint) =>
+    entrypoint === 'main'
+      ? Promise.all([
+          ajax<Element>(cacheableUrl(getAppResourceUrl('DataObjFormatters')), {
+            headers: { Accept: 'text/xml' },
+            cache: refresh ? 'no-cache' : undefined,
+          }).then(({ data }) => data),
+          fetchSchema,
+          fetchDomain,
+        ]).then(([definitions]) => xmlToSpec(definitions, formattersSpec()))
+      : foreverFetch()
+  );
+
+export let fetchFormatters = loadFormatters();
+
+// Re-fetch formatters and aggregators after the app resource is edited
+export const refreshFormatters = async (): Promise<
+  Awaited<typeof fetchFormatters>
+> => {
+  const previous = fetchFormatters;
+  const refreshed = loadFormatters(true);
+  try {
+    const result = await refreshed;
+    fetchFormatters = refreshed;
+    return result;
+  } catch (error) {
+    // Keep the previous formatters on failure rather than a rejected promise
+    fetchFormatters = previous;
+    throw error;
+  }
+};
 
 export const naiveFormatter = (
   tableLabel: string,
@@ -146,6 +169,7 @@ async function formatField(
     fieldFormatter,
     formatFieldValue = true,
     trimZeros = false,
+    format: displayFormat,
   }: Formatter['definition']['fields'][number]['fields'][number] & {
     readonly formatFieldValue?: boolean;
   },
@@ -161,6 +185,14 @@ async function formatField(
   const cycleDetector = [...cycleDetection, parentResource];
 
   let formatted: string | undefined = undefined;
+  if (fields === undefined) {
+    // An unmapped field is a static formatter entry. Its separator is the
+    // text to emit, rather than a separator for another value.
+    return {
+      formatted: displayFormat ?? separator ?? '',
+      separator: localized(''),
+    };
+  }
   const hasPermission = hasPathPermission(fields ?? [], 'read');
 
   if (hasPermission) {
@@ -206,6 +238,20 @@ async function formatField(
         : num.toString();
   }
 
+  if (displayFormat !== undefined) {
+    const substitution = displayFormat.includes('%s')
+      ? '%s'
+      : displayFormat.includes('%d')
+        ? '%d'
+        : undefined;
+    formatted =
+      substitution === undefined
+        ? displayFormat
+        : formatted === undefined || formatted === ''
+          ? undefined
+          : displayFormat.replace(substitution, formatted);
+  }
+
   return {
     formatted: formatted?.toString() ?? '',
     separator: (formatted ?? '') === '' ? '' : separator,
@@ -228,6 +274,7 @@ export async function fetchPathAsString(
       separator: localized(''),
       aggregator: undefined,
       fieldFormatter: undefined,
+      format: undefined,
       formatFieldValue,
       trimZeros: false,
     },
@@ -278,6 +325,7 @@ const autoGenerateFormatter = (table: SpecifyTable): Formatter => ({
             formatter: undefined,
             aggregator: undefined,
             fieldFormatter: undefined,
+            format: undefined,
             trimZeros: false,
           })),
       },

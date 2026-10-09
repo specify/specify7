@@ -4,6 +4,8 @@ import json
 import unittest
 from jsonschema import validate, Draft7Validator # type: ignore
 
+from specifyweb.backend.businessrules.exceptions import BusinessRuleException
+
 from ..upload_result import *
 from ..upload_results_schema import schema
 
@@ -35,6 +37,114 @@ class UploadResultsTests(unittest.TestCase):
     def testFailedBusinessRule(self, failedBusinessRule: FailedBusinessRule):
         j = json.dumps(failedBusinessRule.to_json())
         self.assertEqual(failedBusinessRule, FailedBusinessRule.from_json(json.loads(j)))
+
+    def testBusinessRuleExceptionPayload(self):
+        info = ReportInfo(
+            tableName="Collectionobject",
+            columns=["catalogNumber"],
+            treeInfo=None,
+        )
+        payload = {
+            "localizationKey": "childFieldNotUnique",
+            "table": "Collectionobject",
+            "fieldName": "catalognumber",
+            "fieldData": {"catalognumber": "0037481"},
+            "parentField": "collection",
+            "parentData": {"collection": "Collection object (360449)"},
+            "conflicting": [3347460],
+        }
+
+        self.assertEqual(
+            to_failed_business_rule(
+                BusinessRuleException(
+                    "Collectionobject must have unique catalognumber in collection",
+                    payload,
+                ),
+                info,
+            ),
+            FailedBusinessRule(
+                "Collectionobject must have unique catalognumber in collection",
+                payload,
+                info,
+            ),
+        )
+
+    def testBusinessRuleExceptionPayloadSanitization(self):
+        info = ReportInfo(
+            tableName="Collectionobject",
+            columns=["catalogNumber"],
+            treeInfo=None,
+        )
+
+        payload = {
+            "localizationKey": "childFieldNotUnique",
+            "table": "Collectionobject",
+            "fieldName": "catalognumber",
+            "goodNested": {"a": "b", "n": 1, "ok": True, "null": None},
+            "badNested": {"bad": info},
+            "goodList": [1, 2, 3],
+            "badList": [1, info],
+        }
+
+        failed_business_rule = to_failed_business_rule(
+            Exception(
+                "Collectionobject must have unique catalognumber in collection",
+                payload,
+            ),
+            info,
+        )
+
+        self.assertEqual(
+            failed_business_rule.payload,
+            {
+                "localizationKey": "childFieldNotUnique",
+                "table": "Collectionobject",
+                "fieldName": "catalognumber",
+                "goodNested": {"a": "b", "n": 1, "ok": True, "null": None},
+                "goodList": [1, 2, 3],
+            },
+        )
+
+        # Ensure sanitized payload always serializes in upload results.
+        json.dumps(failed_business_rule.to_json())
+
+    def testWrapperFallbackDoesNotMatchGenericTwoArgException(self):
+        info = ReportInfo(
+            tableName="Collectionobject",
+            columns=["catalogNumber"],
+            treeInfo=None,
+        )
+
+        exception = Exception(
+            "connection failed",
+            {"table": "Collectionobject", "reason": "timeout"},
+        )
+        failed_business_rule = to_failed_business_rule(exception, info)
+
+        self.assertEqual(failed_business_rule.payload, {})
+        self.assertEqual(failed_business_rule.message, str(exception))
+
+    def testBusinessRulePayloadPreservesTopLevelNone(self):
+        info = ReportInfo(
+            tableName="Collectionobject",
+            columns=["catalogNumber"],
+            treeInfo=None,
+        )
+
+        payload = {
+            "localizationKey": "childFieldNotUnique",
+            "table": "Collectionobject",
+            "fieldName": None,
+            "parentField": "collection",
+        }
+
+        failed_business_rule = to_failed_business_rule(
+            Exception("Business rule failed", payload),
+            info,
+        )
+
+        self.assertIn("fieldName", failed_business_rule.payload)
+        self.assertIsNone(failed_business_rule.payload["fieldName"])
 
     @given(noMatch=infer)
     def testNoMatch(self, noMatch: NoMatch):

@@ -93,7 +93,6 @@ jobs:
           # There might be some Git command to do this, will need to look into
           # that if we want to somewhat speed up the backend tests
           fetch-depth: 0
-        
 
       - name: Install ubuntu dependencies
         run: |
@@ -225,6 +224,13 @@ jobs:
             git push
           fi
 
+      - name: Test Weblate API addon access
+        env:
+          WEBLATE_API_TOKEN: ${{ secrets.WEBLATE_API_TOKEN }}
+        run: |
+          curl --fail-with-body --show-error \
+            -H "Authorization: Token $WEBLATE_API_TOKEN" \
+            https://hosted.weblate.org/api/addons/34603/
       # This step must be run after pushing to github or else it will fail in
       # cases when new components are to be created (Weblate requires files to
       # be pushed before component can be created)
