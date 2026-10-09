@@ -21,16 +21,17 @@ import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { InFormEditorContext } from '../FormEditor/Context';
 import { AppTitle } from '../Molecules/AppTitle';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { LinkedRecords } from '../Molecules/LinkedRecords';
+import { LinkedRecordsWrapped } from '../Molecules/LinkedRecords';
 import { IsNotReadOnly } from '../Molecules/ResourceLink';
 import { hasTablePermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
 import { reportEvents } from '../Reports/events';
 import { UnloadProtectDialog } from '../Router/UnloadProtect';
 import { useResourceView } from './BaseResourceView';
-import { DeleteButton } from './DeleteButton';
+import { DeleteButtonWrapped } from './DeleteButton';
 import { SaveButton } from './Save';
 import { propsToFormMode } from './useViewDefinition';
+import { DeleteBlockerProvider } from '../DeleteBlockers/Context';
 
 /**
  * There is special behavior required when creating one of these resources,
@@ -271,7 +272,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
     !isReadOnly &&
     hasTablePermission(resource.specifyTable.name, 'delete') ? (
       <ErrorBoundary dismissible>
-        <DeleteButton
+        <DeleteButtonWrapped
           deletionMessage={deletionMessage}
           resource={resource}
           onDeleted={handleDelete}
@@ -283,7 +284,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
     showResourceReferenceButtons &&
     hasTablePermission(resource.specifyTable.name, 'read') ? (
       <ErrorBoundary dismissible>
-        <LinkedRecords resource={resource} />
+        <LinkedRecordsWrapped resource={resource} />
       </ErrorBoundary>
     ) : undefined;
 
@@ -315,8 +316,12 @@ export function ResourceView<SCHEMA extends AnySchema>({
         typeof saveButtonElement === 'object' ||
         typeof extraButtons === 'object' ? (
           <DataEntry.Footer>
-            {deleteButton}
-            {referencingRecordsButton}
+            <DeleteBlockerProvider>
+              <>
+                {deleteButton}
+                {referencingRecordsButton}
+              </>
+            </DeleteBlockerProvider>
             {extraButtons ?? <span className="-ml-2 md:flex-1" />}
             {saveButtonElement}
           </DataEntry.Footer>
@@ -381,8 +386,12 @@ export function ResourceView<SCHEMA extends AnySchema>({
       buttons={
         isSubForm ? undefined : (
           <>
-            {deleteButton}
-            {referencingRecordsButton}
+            <DeleteBlockerProvider>
+              <>
+                {deleteButton}
+                {referencingRecordsButton}
+              </>
+            </DeleteBlockerProvider>
             {extraButtons ?? <span className="-ml-2 flex-1" />}
             {isModified && !isDependent ? (
               <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>

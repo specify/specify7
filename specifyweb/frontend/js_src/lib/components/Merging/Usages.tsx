@@ -1,14 +1,15 @@
 import React from 'react';
 
-import { useDeleteBlockers } from '../../hooks/useDeleteBlockers';
 import { commonText } from '../../localization/common';
 import { mergingText } from '../../localization/merging';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { DeleteBlockers } from '../Forms/DeleteBlocked';
 import { MergeRow } from './Header';
+import { useDeleteBlockersForResource } from '../DeleteBlockers/useDeleteBlockersForResource';
+import { DeleteBlockers } from '../DeleteBlockers';
+import { DeleteBlockerProvider } from '../DeleteBlockers/Context';
 
 export function UsagesSection({
   resources,
@@ -16,12 +17,14 @@ export function UsagesSection({
   readonly resources: RA<SpecifyResource<AnySchema>>;
 }): JSX.Element {
   return (
-    <MergeRow className="!items-start" header={mergingText.linkedRecords()}>
-      <td className="!items-start">{commonText.notApplicable()}</td>
-      {resources.map((resource, index) => (
-        <Usages key={index} resource={resource} />
-      ))}
-    </MergeRow>
+    <DeleteBlockerProvider>
+      <MergeRow className="!items-start" header={mergingText.linkedRecords()}>
+        <td className="!items-start">{commonText.notApplicable()}</td>
+        {resources.map((resource, index) => (
+          <Usages key={index} resource={resource} />
+        ))}
+      </MergeRow>
+    </DeleteBlockerProvider>
   );
 }
 
@@ -31,10 +34,8 @@ function Usages({
 }: {
   readonly resource: SpecifyResource<AnySchema>;
 }): JSX.Element {
-  const { blockers, setBlockers, fetchBlockers } = useDeleteBlockers(
-    resource,
-    true
-  );
+  const { blockers, onBlockersRequested: handleBlockersRequested } =
+    useDeleteBlockersForResource(resource);
 
   const hasBlockers = Array.isArray(blockers) && blockers.length > 0;
 
@@ -48,14 +49,11 @@ function Usages({
       {blockers === undefined ? (
         commonText.loading()
       ) : blockers === false ? (
-        <Button.Small className="w-full" onClick={(): void => fetchBlockers()}>
+        <Button.Small className="w-full" onClick={handleBlockersRequested}>
           {mergingText.linkedRecords()}
         </Button.Small>
       ) : (
-        <DeleteBlockers
-          blockers={[blockers, setBlockers]}
-          resource={resource}
-        />
+        <DeleteBlockers blockers={blockers} />
       )}
     </td>
   );

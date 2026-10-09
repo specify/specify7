@@ -1,6 +1,3 @@
-
-
-
 import logging
 from typing import Any, Dict
 from collections.abc import Callable
@@ -462,6 +459,8 @@ def strict_get_model(name: str, apps = apps):
             for model in app.get_models():
                 if model._meta.model_name == name:
                     return model
+        # REFACTOR: consider raising a Table/Model DoesNotExist Error here
+        # instead?
         raise e
 
 def get_model(name: str, apps=apps): 

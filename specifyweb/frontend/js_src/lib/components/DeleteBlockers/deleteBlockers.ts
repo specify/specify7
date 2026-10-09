@@ -1,0 +1,96 @@
+import { ajax } from '../../utils/ajax';
+import { Http } from '../../utils/ajax/definitions';
+import { RA } from '../../utils/types';
+import { Tables } from '../DataModel/types';
+import { formatUrl } from '../Router/queryString';
+
+export const DELETE_BLOCKER_LIMIT = 40;
+
+export type APIDeleteBlockerPage = {
+  readonly table: Lowercase<keyof Tables>;
+  readonly field: string;
+  readonly ids: RA<number>;
+  readonly limit: number;
+  readonly complete: boolean;
+  readonly anchor: null | number;
+  readonly backwards: boolean;
+};
+
+export type APIDeleteBlockers = {
+  readonly results: RA<APIDeleteBlockerPage>;
+  readonly next: RA<APIDeleteBlockerPage>;
+};
+
+export type APIDeleteBlockerCount = {
+  readonly table: Lowercase<keyof Tables>;
+  readonly field: string;
+  readonly count: number;
+};
+
+export type APIDeleteBlockerCounts = {
+  readonly results: RA<APIDeleteBlockerCount>;
+  readonly total_count: number;
+};
+
+type DeleteBlockerFilter = {
+  readonly table: keyof Tables | Lowercase<keyof Tables>;
+  readonly field: string;
+  readonly anchor?: number | null;
+  readonly limit?: number;
+  readonly backwards?: boolean;
+};
+
+export async function fetchInitialBlockers(
+  table: keyof Tables,
+  recordId: number,
+  limit: number = DELETE_BLOCKER_LIMIT,
+  expectFailure = false
+): Promise<APIDeleteBlockers> {
+  return ajax<APIDeleteBlockers>(
+    formatUrl(
+      `/delete_blockers/delete_blockers/${table.toLowerCase()}/${recordId}/`,
+      {
+        limit,
+      }
+    ),
+    {
+      headers: { Accept: 'application/json' },
+      expectedErrors: expectFailure ? [Http.NOT_FOUND] : [],
+    }
+  ).then(({ data }) => data);
+}
+
+export async function filterDeleteBlockers(
+  table: keyof Tables,
+  recordId: number,
+  filters: RA<DeleteBlockerFilter>
+): Promise<APIDeleteBlockers> {
+  return ajax<APIDeleteBlockers>(
+    `/delete_blockers/delete_blockers/${table.toLowerCase()}/${recordId}/`,
+    {
+      method: 'POST',
+      headers: { Accept: 'application/json' },
+      body: {
+        filters: filters.map((filter) => ({
+          ...filter,
+          table: filter.table.toLowerCase(),
+          field: filter.field.toLowerCase(),
+        })),
+      },
+    }
+  ).then(({ data }) => data);
+}
+
+export async function fetchReferenceCounts(
+  table: keyof Tables | Lowercase<keyof Tables>,
+  recordId: number,
+  expectFailure = false
+): Promise<APIDeleteBlockerCounts> {
+  return ajax<APIDeleteBlockerCounts>(
+    `/delete_blockers/count/${table.toLowerCase()}/${recordId}/`,
+    {
+      headers: { Accept: 'application/json' },
+      expectedErrors: expectFailure ? [Http.NOT_FOUND] : [],
+    }
+  ).then(({ data }) => data);
+}
