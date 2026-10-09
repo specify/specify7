@@ -179,7 +179,7 @@ export const userText = createDictionary({
     nb: 'Hallo, {userName:string}!',
   },
   inviteLinkExpired: {
-    'en-us': 'Token expired.',
+    'en-us': 'This invite link has already been used or has expired.',
   },
   oicWelcomeMessage: {
     'en-us':
