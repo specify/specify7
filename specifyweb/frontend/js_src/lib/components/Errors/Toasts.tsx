@@ -5,10 +5,11 @@ import type { State } from 'typesafe-reducer';
 import { commonText } from '../../localization/common';
 import { mainText } from '../../localization/main';
 import type { GetOrSet, RA } from '../../utils/types';
-import { removeItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
-import { dialogIcons } from '../Atoms/Icons';
+import { dialogIcons, icons } from '../Atoms/Icons';
 import { error } from './assert';
+
+export const NOTIFICATION_TOAST_DURATION = 10_000;
 
 type ErrorToast = State<
   'Error',
@@ -24,16 +25,17 @@ type ErrorToast = State<
   }
 >;
 
-/**
- * Toasts are only used for errors at the moment. The biggest reason is this
- * simplifies focus management: we just auto-focus the toast when it appears
- * and revert the focus back once dismissed.
- *
- * If extending toasts in the future, need to consider:
- * - a keyboard shortcut to focus the toast
- * - auto-dismissal of toasts after 6s and a way to disable auto dismissal
- */
-export type ToastMessage = ErrorToast;
+type NotificationToast = State<
+  'Notification',
+  {
+    readonly messageId: string;
+    readonly message: LocalizedString;
+    readonly onClick: () => void;
+    readonly onDismiss: () => void;
+  }
+>;
+
+export type ToastMessage = ErrorToast | NotificationToast;
 
 export function Toasts({
   children,
@@ -41,9 +43,23 @@ export function Toasts({
   readonly children: JSX.Element;
 }): JSX.Element {
   const [toasts, setToasts] = React.useState<RA<ToastMessage>>([]);
+  const [announcement, setAnnouncement] = React.useState('');
+  const previousToasts = React.useRef(toasts);
+  React.useEffect(() => {
+    const addedNotification = toasts.find(
+      (toast) =>
+        toast.type === 'Notification' && !previousToasts.current.includes(toast)
+    );
+    previousToasts.current = toasts;
+    if (addedNotification !== undefined)
+      setAnnouncement(addedNotification.message);
+  }, [toasts]);
   return (
     <SetToastsContext.Provider value={setToasts}>
       {children}
+      <span aria-live="polite" aria-atomic="true" className="sr-only">
+        {announcement}
+      </span>
       {toasts.length > 0 && (
         <div
           className={`
@@ -53,9 +69,17 @@ export function Toasts({
         >
           {toasts.map((toast, index) => (
             <Toast
-              key={index}
+              key={
+                toast.type === 'Notification'
+                  ? `notification-${toast.messageId}`
+                  : index
+              }
               toast={toast}
-              onClose={(): void => setToasts(removeItem(toasts, index))}
+              onClose={(): void =>
+                setToasts((toasts) =>
+                  toasts.filter((currentToast) => currentToast !== toast)
+                )
+              }
             />
           ))}
         </div>
@@ -78,19 +102,64 @@ function Toast({
   readonly onClose: () => void;
 }): JSX.Element {
   const previousFocused = React.useRef(document.activeElement);
+  const isError = toast.type === 'Error';
+  const handleCloseRef = React.useRef(handleClose);
+  handleCloseRef.current = handleClose;
+  const remainingTime = React.useRef(NOTIFICATION_TOAST_DURATION);
+  const [isTimerPaused, setIsTimerPaused] = React.useState(false);
+
+  React.useEffect(() => {
+    if (isError || isTimerPaused) return undefined;
+    const startedAt = Date.now();
+    const timeout = globalThis.setTimeout(() => {
+      toast.onDismiss();
+      handleCloseRef.current();
+    }, remainingTime.current);
+    return (): void => {
+      globalThis.clearTimeout(timeout);
+      remainingTime.current -= Date.now() - startedAt;
+    };
+  }, [isError, isTimerPaused, toast]);
+
   return (
-    <div className="hover:brightness-80 flex gap-2 rounded border border-red-500 bg-red-200 shadow dark:bg-red-900">
+    <div
+      className={`
+        relative flex gap-2 overflow-hidden rounded border shadow
+        ${
+          isError
+            ? 'border-red-500 bg-red-200 hover:bg-red-300 dark:bg-red-900 dark:hover:bg-red-800'
+            : `border-gray-400 bg-gray-100 hover:bg-gray-200
+              dark:border-gray-600 dark:bg-neutral-800 dark:hover:bg-neutral-700`
+        }
+      `}
+      onBlur={(event): void => {
+        if (!event.currentTarget.contains(event.relatedTarget))
+          setIsTimerPaused(false);
+      }}
+      onFocus={(): void => setIsTimerPaused(true)}
+    >
       <Button.LikeLink
-        aria-live={toast.type === 'Error' ? 'assertive' : 'polite'}
-        className="flex-1 p-4 hover:text-black dark:hover:text-gray-200"
+        className={`
+          flex-1 p-4 !text-black hover:!text-black
+          dark:!text-gray-100 dark:hover:!text-gray-100
+        `}
         forwardRef={(element): void => {
-          if (element === null) return;
+          if (element === null || !isError) return;
           previousFocused.current = document.activeElement;
           element.focus();
         }}
-        onClick={toast.onClick}
+        onClick={(): void => {
+          toast.onClick();
+          handleClose();
+        }}
       >
-        {dialogIcons.error}
+        {isError ? (
+          dialogIcons.error
+        ) : (
+          <span className="text-brand-300 dark:text-brand-400">
+            {icons.bell}
+          </span>
+        )}
         <div className="flex flex-col gap-2">
           {toast.message}
           <br />
@@ -102,11 +171,24 @@ function Toast({
         icon="x"
         title={commonText.dismiss()}
         onClick={(): void => {
-          (previousFocused.current as HTMLElement | null)?.focus();
+          if (isError) (previousFocused.current as HTMLElement | null)?.focus();
           toast.onDismiss();
           handleClose();
         }}
       />
+      {!isError && (
+        <span
+          aria-hidden
+          className={`
+            notification-toast-progress absolute inset-x-0 bottom-0 h-1
+            origin-left bg-brand-300 dark:bg-brand-400
+          `}
+          style={{
+            animation: `notification-toast-progress ${NOTIFICATION_TOAST_DURATION}ms linear forwards`,
+            animationPlayState: isTimerPaused ? 'paused' : 'running',
+          }}
+        />
+      )}
     </div>
   );
 }
