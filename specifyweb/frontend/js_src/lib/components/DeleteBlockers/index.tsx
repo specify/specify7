@@ -2,7 +2,6 @@ import React from 'react';
 import { Button } from '../Atoms/Button';
 import { SpecifyResource } from '../DataModel/legacyTypes';
 import { AnySchema } from '../DataModel/helperTypes';
-import { useDeleteBlockerPages, useDeleteBlockersForResource } from './Context';
 import { resourceToStringIdentifier } from './state';
 import { RA } from '../../utils/types';
 import { format } from '../Formatters/formatters';
@@ -20,6 +19,8 @@ import {
 import { RecordSelectorFromPage } from '../FormSliders/RecordSelectorFromPage';
 import { f } from '../../utils/functools';
 import { Relationship } from '../DataModel/specifyField';
+import { useDeleteBlockersForResource } from './useDeleteBlockersForResource';
+import { useDeleteBlockerPages } from './useDeleteBlockerPages';
 
 export function NewDeleteBlockers({
   resource,
