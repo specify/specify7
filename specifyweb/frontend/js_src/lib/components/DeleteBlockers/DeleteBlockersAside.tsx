@@ -33,14 +33,30 @@ export function DeleteBlockersAside({
 }): JSX.Element {
   return (
     <aside className="flex flex-1 flex-col min-h-0 w-full min-w-0 gap-1 overflow-y-auto md:w-1/3 md:flex-none md:pr-3">
-      {records.map((record, index) => (
-        <BlockerResource
-          activeRelationshipKey={activeRelationshipKey}
-          record={record}
-          key={index}
-          onRelationshipActive={handleRelationshipActive}
-        />
-      ))}
+      {records.length === 1
+        ? records
+            .at(0)
+            ?.tables.map((blockerTable) => (
+              <DeleteBlockersTable
+                activeRelationshipKey={activeRelationshipKey}
+                blockerTable={blockerTable}
+                onRelationshipActive={(relationship, relationshipKey) =>
+                  handleRelationshipActive(
+                    records.at(0)!.resource,
+                    relationship,
+                    relationshipKey
+                  )
+                }
+              />
+            ))
+        : records.map((record, index) => (
+            <BlockerResource
+              activeRelationshipKey={activeRelationshipKey}
+              record={record}
+              key={index}
+              onRelationshipActive={handleRelationshipActive}
+            />
+          ))}
     </aside>
   );
 }
