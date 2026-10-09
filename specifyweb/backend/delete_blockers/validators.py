@@ -98,7 +98,7 @@ class DeleteBlockerRequestForm(forms.Form):
                 "table": str,
                 "field": str,
                 "backwards": bool,
-                "anchor": (int, None),
+                "anchor": (int, type(None)),
                 "limit": int
             }
             for key, types in expected_types.items():
