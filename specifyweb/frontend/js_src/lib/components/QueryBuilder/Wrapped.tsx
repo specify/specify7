@@ -46,6 +46,7 @@ import { QueryFields } from './Fields';
 import { QueryFromMap } from './FromMap';
 import { QueryHeader } from './Header';
 import { unParseQueryFields } from './helpers';
+import type { QueryField } from './helpers';
 import { getInitialState, reducer } from './reducer';
 import type { QueryResultRow } from './Results';
 import { QueryBuilderResults } from './QueryBuilderResults';
@@ -80,15 +81,20 @@ function Wrapped({
   forceCollection,
   isEmbedded = false,
   autoRun = false,
+  defaultBasicView = false,
   // If present, this callback is called when query results are selected
   onSelected: handleSelected,
   onChange: handleChange,
+  renderFieldPrefix,
+  canRemoveField,
+  isFieldReadOnly,
 }: {
   readonly query: SpecifyResource<SpQuery>;
   readonly recordSet?: SpecifyResource<RecordSet>;
   readonly forceCollection: number | undefined;
   readonly isEmbedded?: boolean;
   readonly autoRun?: boolean;
+  readonly defaultBasicView?: boolean;
   readonly onSelected?: (selected: RA<number>) => void;
   readonly onChange?: (props: {
     readonly fields: RA<SerializedResource<SpQueryField>>;
@@ -96,6 +102,9 @@ function Wrapped({
     readonly searchSynonymy: boolean | null;
     readonly isSeries: boolean | null;
   }) => void;
+  readonly renderFieldPrefix?: (field: QueryField, line: number) => JSX.Element;
+  readonly canRemoveField?: (field: QueryField, line: number) => boolean;
+  readonly isFieldReadOnly?: (field: QueryField, line: number) => boolean;
 }): JSX.Element {
   const [query, setQuery] = useResource(queryResource);
   useErrorContext('query', query);
@@ -266,7 +275,7 @@ function Wrapped({
   );
   const resultsShown = state.queryRunCount !== 0;
 
-  const [isBasic] = useQueryViewPref(query.id);
+  const [isBasic] = useQueryViewPref(query.id, defaultBasicView);
 
   const resultsRef = React.useRef<RA<QueryResultRow | undefined> | undefined>(
     undefined
@@ -343,6 +352,7 @@ function Wrapped({
           <QueryHeader
             form={form}
             getQueryFieldRecords={getQueryFieldRecords}
+            defaultBasicView={defaultBasicView}
             isEmbedded={isEmbedded}
             isScrolledTop={isScrolledTop}
             query={query}
@@ -508,6 +518,9 @@ function Wrapped({
                           fields,
                         })
                 }
+                renderFieldPrefix={renderFieldPrefix}
+                canRemoveField={canRemoveField}
+                isFieldReadOnly={isFieldReadOnly}
                 onClose={(): void =>
                   dispatch({
                     type: 'ChangeOpenedElementAction',

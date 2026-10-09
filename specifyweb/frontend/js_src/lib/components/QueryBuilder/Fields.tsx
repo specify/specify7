@@ -15,6 +15,30 @@ import type { QueryField } from './helpers';
 import { queryFieldsToFieldSpecs } from './helpers';
 import { QueryLine } from './Line';
 
+export function canMoveField(
+  fields: RA<QueryField>,
+  line: number,
+  direction: 'down' | 'up',
+  isFieldReadOnly: ((field: QueryField, line: number) => boolean) | undefined
+): boolean {
+  const destination = direction === 'up' ? line - 1 : line + 1;
+  return (
+    destination >= 0 &&
+    destination < fields.length &&
+    isFieldReadOnly?.(fields[line]!, line) !== true &&
+    isFieldReadOnly?.(fields[destination]!, destination) !== true
+  );
+}
+
+export const isReadOnlyFieldIndex = (
+  fields: RA<QueryField>,
+  index: number,
+  isFieldReadOnly: ((field: QueryField, line: number) => boolean) | undefined
+): boolean =>
+  index >= 0 &&
+  index < fields.length &&
+  isFieldReadOnly?.(fields[index]!, index) === true;
+
 export function QueryFields({
   baseTableName,
   fields,
@@ -25,12 +49,15 @@ export function QueryFields({
   onChangeField: handleChangeField,
   onMappingChange: handleMappingChange,
   onRemoveField: handleRemoveField,
+  canRemoveField,
+  isFieldReadOnly,
   onOpen: handleOpen,
   onClose: handleClose,
   onLineFocus: handleLineFocus,
   onLineMove: handleLineMove,
   onOpenMap: handleOpenMap,
   onChangeFields: handleChangeFields,
+  renderFieldPrefix,
 }: {
   readonly baseTableName: keyof Tables;
   readonly fields: RA<QueryField>;
@@ -59,6 +86,12 @@ export function QueryFields({
       ) => void)
     | undefined;
   readonly onRemoveField: ((line: number) => void) | undefined;
+  readonly canRemoveField?:
+    | ((field: QueryField, line: number) => boolean)
+    | undefined;
+  readonly isFieldReadOnly?:
+    | ((field: QueryField, line: number) => boolean)
+    | undefined;
   readonly onOpen: ((line: number, index: number) => void) | undefined;
   readonly onClose: (() => void) | undefined;
   readonly onLineFocus: ((line: number) => void) | undefined;
@@ -67,11 +100,17 @@ export function QueryFields({
     | undefined;
   readonly onOpenMap: ((line: number) => void) | undefined;
   readonly onChangeFields?: ((fields: RA<QueryField>) => void) | undefined;
+  readonly renderFieldPrefix?:
+    | ((field: QueryField, line: number) => JSX.Element)
+    | undefined;
 }): JSX.Element {
   const fieldsContainerRef = React.useRef<HTMLUListElement | null>(null);
 
   const fieldsRef = React.useRef(fields);
   fieldsRef.current = fields;
+
+  const isFieldReadOnlyRef = React.useRef(isFieldReadOnly);
+  isFieldReadOnlyRef.current = isFieldReadOnly;
 
   const handleChangeFieldRef = React.useRef(handleChangeFields);
   handleChangeFieldRef.current = handleChangeFields;
@@ -105,12 +144,39 @@ export function QueryFields({
         interactiveElements.some((element) => target.closest(element) !== null)
       )
         event.cancel();
+
+      const sourceIndex = event.startIndex;
+      if (
+        sourceIndex !== undefined &&
+        isFieldReadOnlyRef.current?.(
+          fieldsRef.current[sourceIndex]!,
+          sourceIndex
+        )
+      )
+        event.cancel();
     });
 
     sortable.on('mirror:created', (event) => {
       const parentZIndex = findClosestZIndex(event.source);
       if (parentZIndex !== undefined)
         event.mirror.style.zIndex = (parentZIndex + 1).toString();
+    });
+
+    sortable.on('sortable:sort', (event) => {
+      // `over` is available at runtime, but is not included in the bundled
+      // SortableSortEvent type yet.
+      const over = (event as unknown as { readonly over: HTMLElement }).over;
+      const parent = over.parentElement;
+      const overIndex =
+        parent === null ? -1 : Array.from(parent.children).indexOf(over);
+      if (
+        isReadOnlyFieldIndex(
+          fieldsRef.current,
+          overIndex,
+          isFieldReadOnlyRef.current
+        )
+      )
+        event.cancel();
     });
 
     sortable.on('sortable:stop', (event) => {
@@ -126,6 +192,12 @@ export function QueryFields({
         newItems.splice(newIndex, 0, fieldsRef.current[oldIndex]);
         newItems.splice(oldIndex + 1, 1);
       }
+
+      const readOnlyFieldMoved = fieldsRef.current.some((field, index) => {
+        if (isFieldReadOnlyRef.current?.(field, index) !== true) return false;
+        return newItems.indexOf(field) !== index;
+      });
+      if (readOnlyFieldMoved) return;
 
       handleChangeFieldRef.current?.(newItems);
       handleLineFocus?.(newIndex);
@@ -183,7 +255,9 @@ export function QueryFields({
           items-center overflow-y-auto sm:flex-1
           ${
             isBasic
-              ? 'grid grid-cols-[auto,auto,1fr,auto] content-start items-start gap-x-2 gap-y-2'
+              ? renderFieldPrefix === undefined
+                ? 'grid grid-cols-[4rem,minmax(0,18rem),minmax(0,1fr),auto] content-start items-start gap-x-2 gap-y-2'
+                : 'grid grid-cols-[4rem,minmax(0,18rem),minmax(0,1fr),auto,auto] content-start items-start gap-x-2 gap-y-2'
               : ''
           }
         `}
@@ -205,7 +279,11 @@ export function QueryFields({
                 openedElement?.line === line ? openedElement?.index : undefined
               }
               showHiddenFields={showHiddenFields}
-              onChange={handleChangeField?.bind(undefined, line)}
+              onChange={
+                isFieldReadOnly?.(field, line)
+                  ? undefined
+                  : handleChangeField?.bind(undefined, line)
+              }
               onClose={handleClose}
               onLineFocus={(target): void =>
                 (target === 'previous' && line === 0) ||
@@ -219,20 +297,45 @@ export function QueryFields({
                           : line + 1
                     )
               }
-              onMappingChange={handleMappingChange?.bind(undefined, line)}
+              onMappingChange={
+                isFieldReadOnly?.(field, line)
+                  ? undefined
+                  : handleMappingChange?.bind(undefined, line)
+              }
               onMoveDown={
-                line + 1 === length || handleLineMove === undefined
+                !canMoveField(fields, line, 'down', isFieldReadOnly) ||
+                handleLineMove === undefined
                   ? undefined
                   : (): void => handleLineMove?.(line, 'down')
               }
               onMoveUp={
-                line === 0 || handleLineMove === undefined
+                !canMoveField(fields, line, 'up', isFieldReadOnly) ||
+                handleLineMove === undefined
                   ? undefined
                   : (): void => handleLineMove?.(line, 'up')
               }
-              onOpen={handleOpen?.bind(undefined, line)}
-              onOpenMap={handleOpenMap?.bind(undefined, line)}
-              onRemove={handleRemoveField?.bind(undefined, line)}
+              onOpen={
+                isFieldReadOnly?.(field, line)
+                  ? undefined
+                  : handleOpen?.bind(undefined, line)
+              }
+              onOpenMap={
+                isFieldReadOnly?.(field, line)
+                  ? undefined
+                  : handleOpenMap?.bind(undefined, line)
+              }
+              onRemove={
+                handleRemoveField !== undefined &&
+                isFieldReadOnly?.(field, line) !== true &&
+                (canRemoveField?.(field, line) ?? true)
+                  ? handleRemoveField.bind(undefined, line)
+                  : undefined
+              }
+              renderFieldPrefix={
+                renderFieldPrefix === undefined
+                  ? undefined
+                  : (): JSX.Element => renderFieldPrefix(field, line)
+              }
             />
           </li>
         </ErrorBoundary>
