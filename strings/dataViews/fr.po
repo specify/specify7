@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain\n"
-"PO-Revision-Date: 2026-10-07 18:51+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-10-09 16:51+0000\n"
+"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "dataViews/fr/>\n"
 "Language: fr\n"
@@ -24,13 +24,11 @@ msgstr "Vues de données"
 #. 🟥Used as a dialog header within the Data Views component. Used in: Components > Data Views > Index
 #: components/DataViews/index.tsx:320
 #: components/DataViews/index.tsx:343
-#, fuzzy
 msgid "tableRecords"
-msgstr "{tableLabel:string} Disques"
+msgstr "{tableLabel:string} Enregistrements"
 
 #. Used in: Components > Data Views > Data View Tables
 #: components/DataViews/DataViewTables.tsx:106
-#, fuzzy
 msgid "configureDataViews"
 msgstr "Configurer les tables {dataViews:string}"
 
@@ -43,7 +41,6 @@ msgstr "Requêtes de visualisation de données"
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1800
 #: components/Preferences/UserDefinitions.tsx:1957
-#, fuzzy
 msgid "splitViewByDefault"
 msgstr "Activer {splitView:string} par défaut"
 
@@ -51,14 +48,12 @@ msgstr "Activer {splitView:string} par défaut"
 #: components/DataViews/DataViewTables.tsx:89
 #: components/DataViews/QueryEditor.tsx:174
 #: components/DataViews/index.tsx:249
-#, fuzzy
 msgid "configureQuery"
 msgstr "Configurer la requête"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1803
 #: components/Preferences/UserDefinitions.tsx:1960
-#, fuzzy
 msgid "splitViewDescription"
 msgstr ""
 "{splitView:string} affiche les résultats de la requête ainsi qu'un aperçu de "
@@ -68,6 +63,5 @@ msgstr ""
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1812
 #: components/Preferences/UserDefinitions.tsx:1969
-#, fuzzy
 msgid "splitViewOrientation"
 msgstr "Orientation par défaut {splitView:string}"
