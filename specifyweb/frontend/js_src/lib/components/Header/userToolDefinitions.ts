@@ -65,6 +65,12 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
       enabled: () =>
         hasPermission('/preferences/collection', 'edit_collection'),
     },
+    globalPreferences: {
+      title: resourcesText.globalPreferences(),
+      url: '/specify/global-preferences/',
+      icon: icons.library,
+      enabled: () => hasPermission('/preferences/global', 'update'),
+    },
     schemaConfig: {
       title: schemaText.schemaConfig(),
       url: '/specify/schema-config/',
