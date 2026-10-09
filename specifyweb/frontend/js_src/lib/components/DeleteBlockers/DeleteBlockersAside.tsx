@@ -73,7 +73,7 @@ function BlockerResource({
     relationship: Relationship,
     relationshipKey: string
   ) => void;
-}): JSX.Element {
+}): JSX.Element | null {
   const [formatted] = useAsyncState(
     React.useCallback(() => format(record.resource), [record.resource]),
     false
@@ -84,7 +84,7 @@ function BlockerResource({
   const resourceLabel =
     formatted === undefined ? commonText.loading() : formatted;
 
-  return (
+  return record.tables.length === 0 ? null : (
     <div className="w-full">
       <Button.BorderedGray
         onClick={handleToggleOpen}

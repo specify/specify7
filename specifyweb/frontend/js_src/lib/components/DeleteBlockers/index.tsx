@@ -25,7 +25,7 @@ export function DeleteBlockers({
   const [isPaginatorDialogOpen, setPaginatorDialogOpen] =
     React.useState<boolean>(false);
 
-  const isMediumScreen = useScreenSize('md');
+  const isLargeScreen = useScreenSize('lg');
 
   const handleSetPaginatorKey = React.useCallback(
     (
@@ -38,7 +38,7 @@ export function DeleteBlockers({
         relationship,
         relationshipKey,
       }));
-      setPaginatorDialogOpen(!isMediumScreen);
+      setPaginatorDialogOpen(!isLargeScreen);
     },
     []
   );
@@ -51,7 +51,7 @@ export function DeleteBlockers({
           activeRelationshipKey={paginatorKey?.relationshipKey}
           onRelationshipActive={handleSetPaginatorKey}
         />
-        {isMediumScreen && paginatorKey !== undefined && (
+        {isLargeScreen && paginatorKey !== undefined && (
           <DeleteBlockersPaginator
             dialog={false}
             onClose={() => setPaginatorDialogOpen(false)}
@@ -60,7 +60,7 @@ export function DeleteBlockers({
           />
         )}
       </div>
-      {!isMediumScreen &&
+      {!isLargeScreen &&
         paginatorKey !== undefined &&
         isPaginatorDialogOpen && (
           <DeleteBlockersPaginator
