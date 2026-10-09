@@ -12,6 +12,7 @@ from specifyweb.specify.datamodel import datamodel
 from . import build_models
 
 engine = sqlalchemy.create_engine(settings.SA_DATABASE_URL, pool_recycle=settings.SA_POOL_RECYCLE,
+                                  pool_pre_ping=settings.SA_POOL_PRE_PING,
                                   connect_args={'cursorclass': SSCursor})
 Session = sessionmaker(bind=engine)
 
