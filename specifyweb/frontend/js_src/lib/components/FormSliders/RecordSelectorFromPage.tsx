@@ -167,12 +167,6 @@ export function RecordSelectorFromPage<
             <div className="flex items-center gap-2 md:contents">
               {headerButtons}
               <DataEntry.Visit resource={resource} />
-              <DataEntry.Remove
-                aria-label={commonText.delete()}
-                title={commonText.delete()}
-                disabled={resource === undefined || isReadOnly}
-                onClick={() => handleRemove()}
-              />
               <span
                 className={`flex-1 ${dialog === false ? '-ml-2' : '-ml-4'}`}
               />

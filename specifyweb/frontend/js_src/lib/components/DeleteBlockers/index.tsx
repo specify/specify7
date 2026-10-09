@@ -21,6 +21,7 @@ import { f } from '../../utils/functools';
 import { Relationship } from '../DataModel/specifyField';
 import { useDeleteBlockersForResource } from './useDeleteBlockersForResource';
 import { useDeleteBlockerPages } from './useDeleteBlockerPages';
+import { useReferenceCount } from './useReferenceCount';
 
 export function NewDeleteBlockers({
   resource,
@@ -34,6 +35,7 @@ export function NewDeleteBlockers({
     | {
         readonly resource: SpecifyResource<AnySchema>;
         readonly relationship: Relationship;
+        readonly relationshipKey: string | undefined;
       }
   >(undefined);
 
@@ -41,10 +43,12 @@ export function NewDeleteBlockers({
     <div className="relative flex flex-1 gap-4 overflow-hidden md:flex-row">
       <DeleteBlockersAside
         records={records}
-        onRelationshipActive={(resource, relationship) =>
+        activeRelationshipKey={paginatorKey?.relationshipKey}
+        onRelationshipActive={(resource, relationship, relationshipKey) =>
           setPaginatorKey(() => ({
             resource,
             relationship,
+            relationshipKey,
           }))
         }
       />
@@ -60,22 +64,24 @@ export function NewDeleteBlockers({
 
 function DeleteBlockersAside({
   records,
+  activeRelationshipKey,
   onRelationshipActive: handleRelationshipActive,
 }: {
   readonly records: RA<DeleteBlockerResource>;
+  readonly activeRelationshipKey: string | undefined;
   readonly onRelationshipActive: (
     resource: SpecifyResource<AnySchema>,
-    relationship: Relationship
+    relationship: Relationship,
+    relationshipKey: string
   ) => void;
 }): JSX.Element {
   return (
-    <aside
-      className="left-0 hidden min-w-fit flex-1 flex-col divide-y-4
-        divide-[color:var(--form-background)] overflow-y-auto md:flex"
-    >
-      {records.map((record) => (
+    <aside className="flex flex-1 flex-col min-h-0 w-full min-w-0 gap-1 overflow-y-auto md:w-1/3 md:flex-none md:pr-3">
+      {records.map((record, index) => (
         <BlockerResource
+          activeRelationshipKey={activeRelationshipKey}
           record={record}
+          key={index}
           onRelationshipActive={handleRelationshipActive}
         />
       ))}
@@ -85,12 +91,15 @@ function DeleteBlockersAside({
 
 function BlockerResource({
   record,
+  activeRelationshipKey,
   onRelationshipActive: handleRelationshipActive,
 }: {
   readonly record: DeleteBlockerResource;
+  readonly activeRelationshipKey: string | undefined;
   readonly onRelationshipActive: (
     resource: SpecifyResource<AnySchema>,
-    relationship: Relationship
+    relationship: Relationship,
+    relationshipKey: string
   ) => void;
 }): JSX.Element {
   const [formatted] = useAsyncState(
@@ -107,11 +116,11 @@ function BlockerResource({
     <div className="w-full">
       <Button.BorderedGray
         onClick={handleToggleOpen}
-        key={resourceToStringIdentifier(record.resource)}
-        aria-pressed={isOpen}
+        aria-expanded={isOpen}
+        className="flex min-h-10 w-full min-w-0 items-center justify-start gap-2 rounded-md border-0 px-2 py-2 text-left"
       >
         <TableIcon name={record.resource.specifyTable.name} label={false} />
-        <span>
+        <span className="min-w-0 flex-1 truncate">
           {record.count !== undefined
             ? commonText.countLine({
                 resource: resourceLabel,
@@ -122,12 +131,18 @@ function BlockerResource({
         </span>
       </Button.BorderedGray>
       {isOpen && (
-        <div className="flex flex-col ml-2 w-fit py-2 gap-1">
-          {record.tables.map((blockerTable) => (
+        <div className="ml-3 flex w-full min-w-0 flex-col gap-1 py-1 pl-2">
+          {record.tables.map((blockerTable, index) => (
             <DeleteBlockersTable
+              key={`${resourceToStringIdentifier(record.resource)}_${blockerTable.tableName}_${index}`}
+              activeRelationshipKey={activeRelationshipKey}
               blockerTable={blockerTable}
-              onRelationshipActive={(relationship) =>
-                handleRelationshipActive(record.resource, relationship)
+              onRelationshipActive={(relationship, relationshipKey) =>
+                handleRelationshipActive(
+                  record.resource,
+                  relationship,
+                  relationshipKey
+                )
               }
             />
           ))}
@@ -139,10 +154,15 @@ function BlockerResource({
 
 function DeleteBlockersTable({
   blockerTable,
+  activeRelationshipKey,
   onRelationshipActive: handleRelationshipActive,
 }: {
   readonly blockerTable: DeleteBlockerTable;
-  readonly onRelationshipActive: (relationship: Relationship) => void;
+  readonly activeRelationshipKey: string | undefined;
+  readonly onRelationshipActive: (
+    relationship: Relationship,
+    relationshipKey: string
+  ) => void;
 }) {
   const [tableName, tableLabel] = React.useMemo(() => {
     const table = getTable(blockerTable.tableName);
@@ -167,10 +187,12 @@ function DeleteBlockersTable({
         </span>
       </Button.BorderedGray>
       {isOpen && (
-        <div className="flex flex-col ml-2 w-fit py-2 gap-1">
-          {blockerTable.relationships.map((blockerRel) => (
+        <div className="ml-3 flex w-full min-w-0 flex-col gap-1 py-1 pl-2">
+          {blockerTable.relationships.map((blockerRel, index) => (
             <DeleteBlockersRelationship
               tableName={tableName}
+              key={`${blockerRel.key}_${index}`}
+              isActive={blockerRel.key === activeRelationshipKey}
               blockerRelationship={blockerRel}
               onRelationshipActive={handleRelationshipActive}
             />
@@ -184,11 +206,16 @@ function DeleteBlockersTable({
 function DeleteBlockersRelationship({
   tableName,
   blockerRelationship,
+  isActive,
   onRelationshipActive: handleRelationshipActive,
 }: {
   readonly tableName: string;
   readonly blockerRelationship: DeleteBlockerRelationship;
-  readonly onRelationshipActive: (relationship: Relationship) => void;
+  readonly isActive: boolean;
+  readonly onRelationshipActive: (
+    relationship: Relationship,
+    relationshipKey: string
+  ) => void;
 }) {
   const relationship = React.useMemo(() => {
     const table = strictGetTable(tableName);
@@ -199,11 +226,13 @@ function DeleteBlockersRelationship({
   }, [tableName, blockerRelationship]);
   return (
     <Button.BorderedGray
+      className="flex min-h-9 w-full min-w-0 items-center justify-start text-left"
+      aria-pressed={isActive}
       onClick={() => {
-        handleRelationshipActive(relationship);
+        handleRelationshipActive(relationship, blockerRelationship.key);
       }}
     >
-      <span>
+      <span className="flex-1 min-w-0 truncate">
         {blockerRelationship.count !== undefined
           ? commonText.countLine({
               resource: relationship.label,
@@ -230,6 +259,8 @@ function DeleteBlockersPaginator({
     onNextPageFetch: handleNextPageFetch,
   } = useDeleteBlockerPages(parentResource, relationship);
 
+  const referenceCount = useReferenceCount(parentResource, relationship);
+
   return (
     <RecordSelectorFromPage
       page={page}
@@ -238,6 +269,7 @@ function DeleteBlockersPaginator({
       dialog={false}
       table={relationship.table}
       title={undefined}
+      totalCount={referenceCount}
       onNextPageFetch={handleNextPageFetch}
       onClose={f.void}
       onDelete={f.void}

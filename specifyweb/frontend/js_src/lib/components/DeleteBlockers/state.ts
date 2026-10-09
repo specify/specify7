@@ -150,9 +150,9 @@ export class DeleteBlockerState {
     return newRelationship;
   }
 
-  private nodeRelationshipKey(
+  public nodeRelationshipKey(
     node: BlockerNode,
-    table: Lowercase<keyof Tables>,
+    table: keyof Tables | Lowercase<keyof Tables>,
     field: string
   ) {
     return makeBlockerKey(node.key, table.toLowerCase(), field.toLowerCase());
@@ -284,7 +284,7 @@ export class DeleteBlockerState {
     counts.results.forEach((relationshipCount) =>
       this.addCountsToRelationship(node, relationshipCount)
     );
-    this.updateNode(node);
+    this.updateAncestors(node.key);
     this.onChange?.();
   }
 

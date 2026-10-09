@@ -80,6 +80,24 @@ export class DeleteBlockerStore {
     return this.state.seedBlockers(resource);
   }
 
+  public getReferenceCount(
+    resource: SpecifyResource<AnySchema>,
+    relationship: Relationship
+  ) {
+    const blockerKey = resourceToStringIdentifier(resource);
+    const node = this.getNode(blockerKey);
+    if (node === undefined) {
+      return undefined;
+    }
+    const relationshipKey = this.state.nodeRelationshipKey(
+      node,
+      relationship.table.name,
+      relationship.name
+    );
+    const blockerRelationship = node.relationshipMetaData.get(relationshipKey);
+    return blockerRelationship?.count;
+  }
+
   public filterBlockers(
     resource: SpecifyResource<AnySchema>,
     relationship: Relationship,
