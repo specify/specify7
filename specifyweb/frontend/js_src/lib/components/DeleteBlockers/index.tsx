@@ -22,6 +22,7 @@ import { Relationship } from '../DataModel/specifyField';
 import { useDeleteBlockersForResource } from './useDeleteBlockersForResource';
 import { useDeleteBlockerPages } from './useDeleteBlockerPages';
 import { useReferenceCount } from './useReferenceCount';
+import { useScreenSize } from '../../hooks/useScreenSize';
 
 export function NewDeleteBlockers({
   resource,
@@ -39,26 +40,55 @@ export function NewDeleteBlockers({
       }
   >(undefined);
 
+  const [isPaginatorDialogOpen, setPaginatorDialogOpen] =
+    React.useState<boolean>(false);
+
+  const isMediumScreen = useScreenSize('md');
+
+  const handleSetPaginatorKey = React.useCallback(
+    (
+      resource: SpecifyResource<AnySchema>,
+      relationship: Relationship,
+      relationshipKey: string
+    ) => {
+      setPaginatorKey(() => ({
+        resource,
+        relationship,
+        relationshipKey,
+      }));
+      setPaginatorDialogOpen(!isMediumScreen);
+    },
+    []
+  );
+
   return records === undefined ? null : (
-    <div className="relative flex flex-1 gap-4 overflow-hidden md:flex-row">
-      <DeleteBlockersAside
-        records={records}
-        activeRelationshipKey={paginatorKey?.relationshipKey}
-        onRelationshipActive={(resource, relationship, relationshipKey) =>
-          setPaginatorKey(() => ({
-            resource,
-            relationship,
-            relationshipKey,
-          }))
-        }
-      />
-      {paginatorKey !== undefined && (
-        <DeleteBlockersPaginator
-          parentResource={paginatorKey.resource}
-          relationship={paginatorKey.relationship}
+    <>
+      <div className="relative flex flex-1 gap-4 overflow-hidden md:flex-row">
+        <DeleteBlockersAside
+          records={records}
+          activeRelationshipKey={paginatorKey?.relationshipKey}
+          onRelationshipActive={handleSetPaginatorKey}
         />
-      )}
-    </div>
+        {isMediumScreen && paginatorKey !== undefined && (
+          <DeleteBlockersPaginator
+            dialog={false}
+            onClose={() => setPaginatorDialogOpen(false)}
+            parentResource={paginatorKey.resource}
+            relationship={paginatorKey.relationship}
+          />
+        )}
+      </div>
+      {!isMediumScreen &&
+        paginatorKey !== undefined &&
+        isPaginatorDialogOpen && (
+          <DeleteBlockersPaginator
+            dialog={'nonModal'}
+            onClose={() => setPaginatorDialogOpen(false)}
+            parentResource={paginatorKey.resource}
+            relationship={paginatorKey.relationship}
+          />
+        )}
+    </>
   );
 }
 
@@ -174,7 +204,7 @@ function DeleteBlockersTable({
   const [isOpen, _, __, handleToggleOpen] = useBooleanState(false);
   return (
     <>
-      <Button.BorderedGray aria-pressed={isOpen} onClick={handleToggleOpen}>
+      <Button.BorderedGray aria-expanded={isOpen} onClick={handleToggleOpen}>
         <TableIcon name={tableName} label={false} />
         <span>
           {blockerTable.count !== undefined
@@ -248,9 +278,13 @@ function DeleteBlockersRelationship({
 function DeleteBlockersPaginator({
   parentResource,
   relationship,
+  dialog,
+  onClose: handleClose,
 }: {
   readonly parentResource: SpecifyResource<AnySchema>;
   readonly relationship: Relationship;
+  readonly dialog: false | 'modal' | 'nonModal';
+  readonly onClose: () => void;
 }): JSX.Element {
   const {
     page,
@@ -266,12 +300,12 @@ function DeleteBlockersPaginator({
       page={page}
       pageSize={pageSize}
       pageMetaData={pageMetaData}
-      dialog={false}
+      dialog={dialog}
       table={relationship.table}
       title={undefined}
       totalCount={referenceCount}
       onNextPageFetch={handleNextPageFetch}
-      onClose={f.void}
+      onClose={handleClose}
       onDelete={f.void}
       onSaved={f.void}
     />
