@@ -121,6 +121,7 @@ function ReportDialog({
         appResource={appResource}
         definition={definition}
         query={query}
+        reportId={report?.id}
         resourceId={resourceId}
         table={table}
         onClose={handleClose}
@@ -247,6 +248,7 @@ function ParametersDialog({
   definition,
   query,
   appResource,
+  reportId,
   resourceId,
   table,
   onClose: handleClose,
@@ -254,6 +256,7 @@ function ParametersDialog({
   readonly definition: Element;
   readonly query: SerializedResource<SpQuery> | false | undefined;
   readonly appResource: SerializedResource<SpAppResource>;
+  readonly reportId: number | undefined;
   readonly resourceId: number | undefined;
   readonly table: SpecifyTable | undefined;
   readonly onClose: () => void;
@@ -289,6 +292,7 @@ function ParametersDialog({
           definition={definition}
           parameters={parameters}
           query={query}
+          reportId={reportId}
           resourceId={resourceId}
           table={table}
           onClose={handleClose}
@@ -299,6 +303,7 @@ function ParametersDialog({
           definition={definition}
           parameters={parameters}
           query={query}
+          reportId={reportId}
           onClose={handleClose}
         />
       )

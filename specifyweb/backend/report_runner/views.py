@@ -1,4 +1,5 @@
 import json
+import xml.etree.ElementTree as ET
 
 import requests
 from django.conf import settings
@@ -25,6 +26,124 @@ from specifyweb.backend.stored_queries.queryfield import QueryField
 class ReportException(Exception):
     pass
 
+
+_JASPER_NS = 'http://jasperreports.sourceforge.net/jasperreports'
+# jrxml property that opts a report into per-row label repetition.
+# Set its value to the field name whose integer value controls how many
+# times each row should be repeated, e.g.:
+#   <property name="specify.repeat.count.field"
+#             value="1,63-preparations.preparation.countAmt"/>
+_REPEAT_COUNT_PROPERTY = 'specify.repeat.count.field'
+
+
+def _expand_rows_by_field(report_data, repeat_field):
+    """Duplicate each row by the integer value of the named result field.
+
+    Rows whose value is null, zero, or non-numeric default to a single copy.
+    If the field is not present in the result set, the data is unchanged.
+    """
+    fields = report_data['fields']
+    if not repeat_field or repeat_field not in fields:
+        return report_data
+
+    idx = fields.index(repeat_field)
+    expanded = []
+    for row in report_data['rows']:
+        try:
+            count = max(1, int(row[idx]))
+        except (TypeError, ValueError):
+            count = 1
+        expanded.extend([row] * count)
+
+    return {'fields': fields, 'rows': expanded}
+
+
+def _expand_rows_by_count(report_data, repeat_count):
+    """Duplicate every row a fixed number of times (Specify 6 RepeatCount)."""
+    try:
+        count = max(1, int(repeat_count))
+    except (TypeError, ValueError):
+        return report_data
+
+    if count == 1:
+        return report_data
+
+    expanded = [row for row in report_data['rows'] for _ in range(count)]
+    return {'fields': report_data['fields'], 'rows': expanded}
+
+
+def _repeat_field_from_jrxml(report_jrxml):
+    """Return the field named by the jrxml repeat-count property, or None."""
+    try:
+        root = ET.fromstring(report_jrxml)
+    except ET.ParseError:
+        return None
+
+    return next(
+        (p.get('value') for p in root.findall('{%s}property' % _JASPER_NS)
+         if p.get('name') == _REPEAT_COUNT_PROPERTY),
+        None,
+    )
+
+
+def _expand_rows_for_repeat_count(report_jrxml, report_data):
+    """Duplicate rows according to a repeat-count field declared in the jrxml.
+
+    If the jrxml does not declare the ``specify.repeat.count.field`` property,
+    or the named field is not present in the result set, the data is returned
+    unchanged.  This restores the Specify 6 behaviour where a label could be
+    printed N times based on an integer preparation field (e.g. countAmt).
+    """
+    return _expand_rows_by_field(
+        report_data, _repeat_field_from_jrxml(report_jrxml)
+    )
+
+
+def _expand_rows_for_repeat(report_jrxml, report_data, report=None):
+    """Expand rows for label repetition, mirroring Specify 6.
+
+    Precedence:
+      1. ``spreport.RepeatField`` — repeat each row by the integer value of the
+         named result field (e.g. preparation.countAmt).
+      2. ``spreport.RepeatCount`` — repeat every row a fixed number of times.
+      3. ``specify.repeat.count.field`` jrxml property — for self-contained
+         labels that carry the setting in their own XML.
+
+    The first two mirror how Specify 6 stores this configuration on the report
+    record, so labels migrated from Specify 6 repeat without editing the jrxml.
+    """
+    if report is not None:
+        if report.repeatfield:
+            return _expand_rows_by_field(report_data, report.repeatfield)
+        if report.repeatcount is not None:
+            return _expand_rows_by_count(report_data, report.repeatcount)
+
+    return _expand_rows_for_repeat_count(report_jrxml, report_data)
+
+
+def _get_report_for_repeat(report_id, query_json, collection, user):
+    if report_id in (None, ''):
+        return None
+
+    try:
+        query_id = int(json.loads(query_json).get('id'))
+        report_id = int(report_id)
+    except (AttributeError, TypeError, ValueError):
+        return None
+
+    return Spreport.objects.filter(
+        id=report_id,
+        query_id=query_id,
+        appresource__spappresourcedir__discipline=collection.discipline,
+    ).filter(
+        Q(appresource__spappresourcedir__collection=None) |
+        Q(appresource__spappresourcedir__collection=collection)
+    ).filter(
+        Q(appresource__spappresourcedir__specifyuser=user) |
+        Q(appresource__spappresourcedir__ispersonal=False)
+    ).first()
+
+
 class ReportsPT(PermissionTarget):
     resource = "/report"
     execute = PermissionTargetAction()
@@ -50,9 +169,21 @@ def run(request):
     port = settings.REPORT_RUNNER_PORT
     if port == '': port = 80
 
-    report_data = run_query(request.specify_collection, request.specify_user, request.POST['query'])
+    query_json = request.POST['query']
+    report_data = run_query(request.specify_collection, request.specify_user, query_json)
     if len(report_data['rows']) < 1:
         return HttpResponse(_("The report query returned no results."), content_type="text/plain")
+
+    report_data = _expand_rows_for_repeat(
+        request.POST['report'],
+        report_data,
+        _get_report_for_repeat(
+            request.POST.get('reportId'),
+            query_json,
+            request.specify_collection,
+            request.specify_user,
+        ),
+    )
 
     r = requests.post("http://%s:%s/report" %
                       (settings.REPORT_RUNNER_HOST, port),
