@@ -26,7 +26,7 @@ export const dataViewsText = createDictionary({
     'en-us': '{tableLabel:string} Records',
     'de-ch': '{tableLabel:string} Aufzeichnungen',
     'es-es': '{tableLabel:string} Registros',
-    'fr-fr': '{tableLabel:string} Disques',
+    'fr-fr': '{tableLabel:string} Enregistrements',
     'hr-hr': '{tableLabel:string} Zapisi',
     nb: '{tableLabel:string} Records',
     'pt-br': '{tableLabel:string} Registros',
