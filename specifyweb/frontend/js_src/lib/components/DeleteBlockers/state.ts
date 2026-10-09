@@ -194,12 +194,6 @@ export class DeleteBlockerState {
     blockers: APIDeleteBlockers
   ): RA<DeleteBlockerLRUPage> {
     const node = this.getOrCreateNode(resource);
-    if (blockers.next.length === 0 && blockers.results.length === 0) {
-      // We don't want to delete the node as that can still carry count
-      // information, but we can notify the parents that they don't have to
-      // worry about this node
-      this.removeRecordFromParents(node.key);
-    }
     const cachedPages = this.applyBlockerPages(node, blockers.results);
     this.updateAncestors(node.key);
     this.queueNextBlockers(resource, blockers.next);
@@ -278,7 +272,7 @@ export class DeleteBlockerState {
   }
 
   private removeRecordFromPages(resourceKey: ResourceIdentifier) {
-    const otherRecordsWithPage = new Set<ResourceIdentifier>(resourceKey);
+    const otherRecordsWithPage = new Set<ResourceIdentifier>();
     const blockerCacheKeys = [...(this.recordLocations.get(resourceKey) ?? [])];
     for (const cacheKey of blockerCacheKeys) {
       const blockerPage = this.pageCache.peekPage(cacheKey);

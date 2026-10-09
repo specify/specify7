@@ -36,8 +36,9 @@ export function DeleteBlockersAside({
       {records.length === 1
         ? records
             .at(0)
-            ?.tables.map((blockerTable) => (
+            ?.tables.map((blockerTable, index) => (
               <DeleteBlockersTable
+                key={`${resourceToStringIdentifier(records.at(0)!.resource)}_${blockerTable.tableName}_${index}`}
                 activeRelationshipKey={activeRelationshipKey}
                 blockerTable={blockerTable}
                 onRelationshipActive={(relationship, relationshipKey) =>

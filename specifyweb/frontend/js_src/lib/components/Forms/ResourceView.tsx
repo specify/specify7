@@ -31,6 +31,7 @@ import { useResourceView } from './BaseResourceView';
 import { DeleteButtonWrapped } from './DeleteButton';
 import { SaveButton } from './Save';
 import { propsToFormMode } from './useViewDefinition';
+import { DeleteBlockerProvider } from '../DeleteBlockers/Context';
 
 /**
  * There is special behavior required when creating one of these resources,
@@ -315,8 +316,12 @@ export function ResourceView<SCHEMA extends AnySchema>({
         typeof saveButtonElement === 'object' ||
         typeof extraButtons === 'object' ? (
           <DataEntry.Footer>
-            {deleteButton}
-            {referencingRecordsButton}
+            <DeleteBlockerProvider>
+              <>
+                {deleteButton}
+                {referencingRecordsButton}
+              </>
+            </DeleteBlockerProvider>
             {extraButtons ?? <span className="-ml-2 md:flex-1" />}
             {saveButtonElement}
           </DataEntry.Footer>
@@ -381,8 +386,12 @@ export function ResourceView<SCHEMA extends AnySchema>({
       buttons={
         isSubForm ? undefined : (
           <>
-            {deleteButton}
-            {referencingRecordsButton}
+            <DeleteBlockerProvider>
+              <>
+                {deleteButton}
+                {referencingRecordsButton}
+              </>
+            </DeleteBlockerProvider>
             {extraButtons ?? <span className="-ml-2 flex-1" />}
             {isModified && !isDependent ? (
               <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
