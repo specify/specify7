@@ -7,12 +7,17 @@ import { SpecifyResource } from '../DataModel/legacyTypes';
 import { AnySchema } from '../DataModel/helperTypes';
 import { LocalizedString } from 'typesafe-i18n';
 import { useTriggerState } from '../../hooks/useTriggerState';
-import { ReadOnlyContext } from '../Core/Contexts';
 import { hasTablePermission } from '../Permissions/helpers';
 import { BasicSlider } from './BasicSlider';
 import { DataEntry } from '../Atoms/DataEntry';
 import { commonText } from '../../localization/common';
 import { clamp } from '../../utils/utils';
+import { SetUnloadProtectsContext } from '../Router/UnloadProtect';
+import { Dialog } from '../Molecules/Dialog';
+import { Button } from '../Atoms/Button';
+import { unsetUnloadProtect } from '../../hooks/navigation';
+import { saveFormUnloadProtect } from '../Forms/Save';
+import { formsText } from '../../localization/forms';
 
 type Page = {
   readonly ids: RA<number>;
@@ -116,7 +121,11 @@ export function RecordSelectorFromPage<
 
   const currentResource = records?.[indexInPage];
 
-  const isReadOnly = React.useContext(ReadOnlyContext);
+  // Show a warning dialog if navigating away before saving the record
+  const [unloadProtect, setUnloadProtect] = React.useState<
+    (() => void) | undefined
+  >(undefined);
+  const setUnloadProtects = React.useContext(SetUnloadProtectsContext)!;
 
   function handleSlide(direction: 'next' | 'previous' | 'first' | 'last') {
     if (page === undefined || records === undefined) {
@@ -155,7 +164,13 @@ export function RecordSelectorFromPage<
     pageMetaData,
     records,
     onDelete: handleDelete,
-    onSlide: handleSlide,
+    onSlide: (direction) => {
+      const doSlide = () => handleSlide(direction);
+
+      if (currentResource?.needsSaved === true) {
+        setUnloadProtect(() => doSlide);
+      } else doSlide();
+    },
   });
 
   return (
@@ -188,6 +203,29 @@ export function RecordSelectorFromPage<
         onSaved={() => handleSaved(currentResource!)}
         onAdd={undefined}
       />
+      {typeof unloadProtect === 'function' && (
+        <Dialog
+          buttons={
+            <>
+              <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+              <Button.Warning
+                onClick={(): void => {
+                  unsetUnloadProtect(setUnloadProtects, saveFormUnloadProtect);
+                  setUnloadProtects([]);
+                  unloadProtect();
+                  setUnloadProtect(undefined);
+                }}
+              >
+                {commonText.proceed()}
+              </Button.Warning>
+            </>
+          }
+          header={formsText.recordSelectorUnloadProtect()}
+          onClose={(): void => setUnloadProtect(undefined)}
+        >
+          {formsText.recordSelectorUnloadProtectDescription()}
+        </Dialog>
+      )}
     </>
   );
 }
