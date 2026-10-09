@@ -9,6 +9,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { MergeRow } from './Header';
 import { useDeleteBlockersForResource } from '../DeleteBlockers/useDeleteBlockersForResource';
 import { DeleteBlockers } from '../DeleteBlockers';
+import { DeleteBlockerProvider } from '../DeleteBlockers/Context';
 
 export function UsagesSection({
   resources,
@@ -16,12 +17,14 @@ export function UsagesSection({
   readonly resources: RA<SpecifyResource<AnySchema>>;
 }): JSX.Element {
   return (
-    <MergeRow className="!items-start" header={mergingText.linkedRecords()}>
-      <td className="!items-start">{commonText.notApplicable()}</td>
-      {resources.map((resource, index) => (
-        <Usages key={index} resource={resource} />
-      ))}
-    </MergeRow>
+    <DeleteBlockerProvider>
+      <MergeRow className="!items-start" header={mergingText.linkedRecords()}>
+        <td className="!items-start">{commonText.notApplicable()}</td>
+        {resources.map((resource, index) => (
+          <Usages key={index} resource={resource} />
+        ))}
+      </MergeRow>
+    </DeleteBlockerProvider>
   );
 }
 
