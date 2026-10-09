@@ -13,7 +13,9 @@ import { Button } from '../Atoms/Button';
 import { Form } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
+import { displayError } from '../Core/Contexts';
 import { SplashScreen } from '../Core/SplashScreen';
+import { ErrorDialog } from '../Errors/ErrorDialog';
 import { formatUrl } from '../Router/queryString';
 import { LoginLanguageChooser } from './index';
 
@@ -37,6 +39,24 @@ export function OicLogin({
   const providerRef = React.useRef<HTMLInputElement | null>(null);
   const formRef = React.useRef<HTMLFormElement | null>(null);
   const [next = ''] = useSearchParameter('next');
+  const [inviteExpired, setInviteExpired] = useSearchParameter('invite_expired');
+
+  React.useEffect(() => {
+    if (inviteExpired !== '1') return;
+    setInviteExpired(undefined);
+    const message = userText.inviteLinkExpired();
+    displayError(({ onClose: handleClose }) => (
+      <ErrorDialog
+        copiableMessage={message}
+        dismissible
+        header={message}
+        onClose={handleClose}
+      >
+        {message}
+      </ErrorDialog>
+    ));
+  }, [inviteExpired, setInviteExpired]);
+
   return (
     <SplashScreen>
       <LoginLanguageChooser languages={data.languages} />

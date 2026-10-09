@@ -156,19 +156,18 @@ def oic_callback(request: http.HttpRequest) -> http.HttpResponse:
     if 'invite_token' in request.session:
         # We are in the invite link workflow.
         token: InviteToken = request.session['invite_token']
+        del request.session['invite_token']
         user = Specifyuser.objects.annotate(token_seq=Max('spuserexternalid__id')).get(id=token['userid'])
 
-        if time.time() > token['expires'] or user.token_seq != token['sequence']:
-            return http.HttpResponseBadRequest("Token expired.", content_type="text/plain")
-
-        user.spuserexternalid_set.create(
-            provider=provider,
-            providerid=str(ext_user['sub']),
-            idtoken=ext_user,
-        )
-        del request.session['invite_token']
-        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-        return http.HttpResponseRedirect('/accounts/choose_collection/')
+        if time.time() <= token['expires'] and user.token_seq == token['sequence']:
+            user.spuserexternalid_set.create(
+                provider=provider,
+                providerid=str(ext_user['sub']),
+                idtoken=ext_user,
+            )
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+            return http.HttpResponseRedirect('/accounts/choose_collection/')
+        # Invite already used or expired: fall through to normal SSO login.
 
     try:
         spuserexternalid = Spuserexternalid.objects.get(provider=provider, providerid=str(ext_user['sub']))
@@ -228,6 +227,9 @@ def use_invite_link(request) -> http.HttpResponse:
     it in a server side session variable, then redirect to the regular
     OIC login process which will retrieve the token after the user
     authenticates with their chosen IdP.
+
+    Expired or already-used invite links redirect to the normal login
+    page so users who bookmark/reuse the invite URL can still sign in.
     """
     message = request.GET['token'].encode('utf-8')
     mac = base64.urlsafe_b64decode(request.GET['mac'])
@@ -239,7 +241,10 @@ def use_invite_link(request) -> http.HttpResponse:
     user = Specifyuser.objects.annotate(token_seq=Max('spuserexternalid__id')).get(id=token['userid'])
 
     if time.time() > token['expires'] or user.token_seq != token['sequence']:
-        return http.HttpResponseBadRequest("Token expired.", content_type="text/plain")
+        # Do not clear an existing session invite_token here: the user may
+        # still have a valid invite in progress from a newer link.
+        # invite_expired=1 lets the login UI show a non-blocking notice.
+        return http.HttpResponseRedirect('/accounts/login/?invite_expired=1')
 
     token['username'] = user.name # Just in case it has changed.
     request.session['invite_token'] = token
