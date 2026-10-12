@@ -117,6 +117,8 @@ class RedisSet(RedisDataType):
     def add(self, key: str, *values: str, format_key=True) -> int:
         if format_key:
             key = _format_key(key)
+        if len(values) == 0:
+            return 0
         return self.connection.sadd(key, *values)
 
     def is_member(self, key: str, value: str, format_key=True) -> bool:
