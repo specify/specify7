@@ -301,6 +301,9 @@ export class DeleteBlockerState {
       };
       // We probably don't need to re-index the page here, but just to be safe
       this.unindexBlockerPage(cacheKey, blockerPage);
+      // REFACTOR:? This keeps the page in the cache even if all IDs are now
+      // removed. Do we want to explicitly remove the cached page if that's the
+      // case?
       this.pageCache.replacePage(cacheKey, updatedPage);
       this.indexBlockerPage(cacheKey, updatedPage);
       this.invalidateCounts(ownerIdentifier);

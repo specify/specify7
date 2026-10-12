@@ -159,7 +159,7 @@ function DeleteBlockersTable({
   }, [blockerTable]);
 
   const [isOpen, _, __, handleToggleOpen] = useBooleanState(false);
-  return (
+  return blockerTable.count === 0 ? undefined : (
     <>
       <Button.BorderedGray
         aria-expanded={isOpen}

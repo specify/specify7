@@ -66,6 +66,7 @@ export function DeleteBlockers({
           <DeleteBlockersPaginator
             dialog={false}
             onClose={() => setPaginatorDialogOpen(false)}
+            onAllBlockersDeleted={() => setPaginatorKey(undefined)}
             parentResource={paginatorKey.resource}
             relationship={paginatorKey.relationship}
           />
@@ -77,6 +78,7 @@ export function DeleteBlockers({
           <DeleteBlockersPaginator
             dialog={'nonModal'}
             onClose={() => setPaginatorKey(undefined)}
+            onAllBlockersDeleted={() => setPaginatorKey(undefined)}
             parentResource={paginatorKey.resource}
             relationship={paginatorKey.relationship}
           />

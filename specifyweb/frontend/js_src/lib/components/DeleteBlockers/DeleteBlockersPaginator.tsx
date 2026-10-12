@@ -12,11 +12,13 @@ export function DeleteBlockersPaginator({
   relationship,
   dialog,
   onClose: handleClose,
+  onAllBlockersDeleted: handleAllBlockersDeleted,
 }: {
   readonly parentResource: SpecifyResource<AnySchema>;
   readonly relationship: Relationship;
   readonly dialog: false | 'modal' | 'nonModal';
   readonly onClose: () => void;
+  readonly onAllBlockersDeleted: () => void;
 }): JSX.Element {
   const {
     page,
@@ -24,7 +26,11 @@ export function DeleteBlockersPaginator({
     pageSize,
     onNextPageFetch: handleNextPageFetch,
     onResourceDeletion: handleResourceDeletion,
-  } = useDeleteBlockerPages(parentResource, relationship);
+  } = useDeleteBlockerPages(
+    parentResource,
+    relationship,
+    handleAllBlockersDeleted
+  );
 
   // FEAT: use the Relationships reference count in the paginator?
   // const referenceCount = useRelationshipReferenceCount(

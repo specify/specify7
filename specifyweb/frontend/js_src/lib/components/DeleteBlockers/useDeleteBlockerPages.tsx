@@ -10,7 +10,8 @@ import { error } from '../Errors/assert';
 
 export function useDeleteBlockerPages(
   resource: SpecifyResource<AnySchema>,
-  relationship: Relationship
+  relationship: Relationship,
+  handleAllBlockersDeleted: () => void
 ): {
   readonly page: DeleteBlockerLRUPage | undefined;
   readonly pageMetaData: PageMetaData;
@@ -100,6 +101,9 @@ export function useDeleteBlockerPages(
         error(`Record at index ${index} does not exist in page`, { page });
       }
       store.removeResource(table, recordId);
+      if (page.ids.length <= 1) {
+        handleAllBlockersDeleted();
+      }
     },
     [store]
   );
