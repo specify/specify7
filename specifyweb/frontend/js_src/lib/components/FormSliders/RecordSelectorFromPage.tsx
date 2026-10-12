@@ -108,14 +108,14 @@ export function RecordSelectorFromPage<
   readonly onSaved: (resource: SpecifyResource<SCHEMA>) => void;
 }): JSX.Element | null {
   const [page] = useTriggerState(initialPage);
+  const [indexInPage, setIndexInPage] = React.useState(0);
 
   const [records] = useLiveState<RA<SpecifyResource<SCHEMA>> | undefined>(
     React.useCallback(
       () => page?.ids.map((id) => new table.Resource({ id })),
-      [page]
+      [page, indexInPage, page?.ids.length]
     )
   );
-  const [indexInPage, setIndexInPage] = React.useState(0);
 
   React.useEffect(() => {
     setIndexInPage(0);
@@ -155,7 +155,12 @@ export function RecordSelectorFromPage<
       setIndexInPage(pageSize - 1);
       return handleNextPageFetch(page, 'last');
     }
-    if (indexInPage === 0 && direction === 'previous') {
+    if (
+      indexInPage === 0 &&
+      direction === 'previous' &&
+      pageMetaData !== 'single' &&
+      pageMetaData !== 'first'
+    ) {
       setIndexInPage(pageSize - 1);
       return handleNextPageFetch(page, 'previous');
     }
