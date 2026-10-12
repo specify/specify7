@@ -7,11 +7,19 @@ import { DeleteBlockersAside } from './DeleteBlockersAside';
 import { DeleteBlockersPaginator } from './DeleteBlockersPaginator';
 import { DeleteBlockerResource } from './store';
 import { RA } from '../../utils/types';
+import { useLiveState } from '../../hooks/useLiveState';
+
+// BUG: For formatted records which have a lot of text but little/no word
+// wrapping (like Attachment records which format to their file path), this is
+// still inadequate as the navigation controls can render far "off-screen"
+export const MIN_DELETEBLOCKER_CONTAINER_WIDTH = 768;
 
 export function DeleteBlockers({
   blockers,
+  useSmallLayout: initialUseSmallLayout = false,
 }: {
   readonly blockers: RA<DeleteBlockerResource> | undefined;
+  readonly useSmallLayout?: boolean;
 }) {
   const [paginatorKey, setPaginatorKey] = React.useState<
     | undefined
@@ -22,10 +30,13 @@ export function DeleteBlockers({
       }
   >(undefined);
 
-  const [isPaginatorDialogOpen, setPaginatorDialogOpen] =
-    React.useState<boolean>(false);
-
   const isLargeScreen = useScreenSize('lg');
+
+  const useSmallLayout = initialUseSmallLayout || !isLargeScreen;
+
+  const [isPaginatorDialogOpen, setPaginatorDialogOpen] = useLiveState(
+    React.useCallback(() => useSmallLayout, [useSmallLayout])
+  );
 
   const handleSetPaginatorKey = React.useCallback(
     (
@@ -38,9 +49,8 @@ export function DeleteBlockers({
         relationship,
         relationshipKey,
       }));
-      setPaginatorDialogOpen(!isLargeScreen);
     },
-    []
+    [useSmallLayout]
   );
 
   return blockers === undefined ? null : (
@@ -49,9 +59,10 @@ export function DeleteBlockers({
         <DeleteBlockersAside
           records={blockers}
           activeRelationshipKey={paginatorKey?.relationshipKey}
+          useSmallLayout={useSmallLayout}
           onRelationshipActive={handleSetPaginatorKey}
         />
-        {isLargeScreen && paginatorKey !== undefined && (
+        {!useSmallLayout && paginatorKey !== undefined && (
           <DeleteBlockersPaginator
             dialog={false}
             onClose={() => setPaginatorDialogOpen(false)}
@@ -60,12 +71,12 @@ export function DeleteBlockers({
           />
         )}
       </div>
-      {!isLargeScreen &&
+      {useSmallLayout &&
         paginatorKey !== undefined &&
         isPaginatorDialogOpen && (
           <DeleteBlockersPaginator
             dialog={'nonModal'}
-            onClose={() => setPaginatorDialogOpen(false)}
+            onClose={() => setPaginatorKey(undefined)}
             parentResource={paginatorKey.resource}
             relationship={paginatorKey.relationship}
           />

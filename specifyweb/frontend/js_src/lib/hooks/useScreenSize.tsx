@@ -1,7 +1,6 @@
 import React from 'react';
 import resolveConfig from 'tailwindcss/resolveConfig';
 import tailwindConfig from '../../tailwind.config';
-import { useLiveState } from './useLiveState';
 
 const resolvedConfig = resolveConfig(tailwindConfig);
 
@@ -25,12 +24,20 @@ export function useScreenSize(screenSize: keyof typeof breakPoints) {
 
   const mediaQuery = `(min-width: ${breakPointSize})`;
 
-  const [isMatch] = useLiveState(
-    React.useCallback(() => {
-      if (typeof window === undefined) return false;
-      return window.matchMedia(mediaQuery).matches;
-    }, [mediaQuery])
-  );
+  const windowMatchesBreakpoint = React.useCallback(() => {
+    if (typeof window === undefined) return false;
+    return window.matchMedia(mediaQuery).matches;
+  }, [mediaQuery]);
+
+  const [isMatch, setIsMatch] = React.useState(windowMatchesBreakpoint);
+
+  React.useEffect(() => {
+    function handleWindowResize() {
+      setIsMatch(() => windowMatchesBreakpoint());
+    }
+    window.addEventListener('resize', handleWindowResize);
+    return () => window.removeEventListener('resize', handleWindowResize);
+  }, []);
 
   return isMatch;
 }

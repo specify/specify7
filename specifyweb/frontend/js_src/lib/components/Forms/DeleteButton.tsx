@@ -15,11 +15,15 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { FormattedResource } from '../Molecules/FormattedResource';
 import { TableIcon } from '../Molecules/TableIcon';
 import { DeleteBlockerProvider } from '../DeleteBlockers/Context';
-import { DeleteBlockers } from '../DeleteBlockers';
+import {
+  DeleteBlockers,
+  MIN_DELETEBLOCKER_CONTAINER_WIDTH,
+} from '../DeleteBlockers';
 import { useDeleteBlockersForResource } from '../DeleteBlockers/useDeleteBlockersForResource';
 import { mergingText } from '../../localization/merging';
 import { loadingBar } from '../Molecules';
 import { useDeleteBlockerCount } from '../DeleteBlockers/useReferenceCount';
+import { useElementSize } from '../../hooks/useElementSize';
 
 export type DeleteButtonProps<SCHEMA extends AnySchema> = {
   readonly resource: SpecifyResource<SCHEMA>;
@@ -68,6 +72,9 @@ function DeleteButton<SCHEMA extends AnySchema>({
 
   const { blockers, onBlockersRequested: handleBlockersRequested } =
     useDeleteBlockersForResource(resource, deferred);
+
+  const { elementRef: deleteBlockedRef, elementWidth: deleteBlockedWidth } =
+    useElementSize();
 
   const blockerCount = useDeleteBlockerCount(resource);
 
@@ -180,6 +187,7 @@ function DeleteButton<SCHEMA extends AnySchema>({
           // There's one or more DeleteBlockers for the resource
           <Dialog
             buttons={commonText.close()}
+            forwardRef={{ container: deleteBlockedRef }}
             className={{
               container: dialogClassNames.wideContainer,
             }}
@@ -187,7 +195,12 @@ function DeleteButton<SCHEMA extends AnySchema>({
             onClose={handleClose}
           >
             {formsText.deleteBlockedDescription()}
-            <DeleteBlockers blockers={blockers} />
+            <DeleteBlockers
+              blockers={blockers}
+              useSmallLayout={
+                deleteBlockedWidth <= MIN_DELETEBLOCKER_CONTAINER_WIDTH
+              }
+            />
           </Dialog>
         )
       ) : undefined}

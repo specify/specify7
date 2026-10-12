@@ -21,10 +21,12 @@ import { Relationship } from '../DataModel/specifyField';
 export function DeleteBlockersAside({
   records,
   activeRelationshipKey,
+  useSmallLayout = false,
   onRelationshipActive: handleRelationshipActive,
 }: {
   readonly records: RA<DeleteBlockerResource>;
   readonly activeRelationshipKey: string | undefined;
+  readonly useSmallLayout?: boolean;
   readonly onRelationshipActive: (
     resource: SpecifyResource<AnySchema>,
     relationship: Relationship,
@@ -32,7 +34,9 @@ export function DeleteBlockersAside({
   ) => void;
 }): JSX.Element {
   return (
-    <aside className="flex flex-1 flex-col min-h-0 w-full min-w-0 gap-1 overflow-y-auto md:w-1/3 md:flex-none md:pr-3">
+    <aside
+      className={`flex flex-1 flex-col min-h-0 w-full min-w-0 gap-1 overflow-y-auto ${useSmallLayout ? '' : 'lg:w-1/3 lg:flex-none lg:pr-3'}`}
+    >
       {records.length === 1
         ? records
             .at(0)
