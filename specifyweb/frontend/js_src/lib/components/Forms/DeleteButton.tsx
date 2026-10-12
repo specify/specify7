@@ -186,6 +186,7 @@ function DeleteButton<SCHEMA extends AnySchema>({
             header={formsText.deleteBlocked()}
             onClose={handleClose}
           >
+            {formsText.deleteBlockedDescription()}
             <DeleteBlockers blockers={blockers} />
           </Dialog>
         )
