@@ -37,31 +37,41 @@ export function DeleteBlockersAside({
     <aside
       className={`flex flex-1 flex-col min-h-0 w-full min-w-0 gap-1 overflow-y-auto ${useSmallLayout ? '' : 'lg:w-1/3 lg:flex-none lg:pr-3'}`}
     >
-      {records.length === 1
-        ? records
-            .at(0)
-            ?.tables.map((blockerTable, index) => (
-              <DeleteBlockersTable
-                key={`${resourceToStringIdentifier(records.at(0)!.resource)}_${blockerTable.tableName}_${index}`}
+      {
+        // There's only one "blocking resource", which means there are no
+        // blocking references from CASCADE/dependent records
+        // i.e., all blocking references point to one record
+        records.length === 1
+          ? records
+              .at(0)
+              ?.tables.map((blockerTable, index) => (
+                <DeleteBlockersTable
+                  key={`${resourceToStringIdentifier(records.at(0)!.resource)}_${blockerTable.tableName}_${index}`}
+                  activeRelationshipKey={activeRelationshipKey}
+                  blockerTable={blockerTable}
+                  onRelationshipActive={(relationship, relationshipKey) =>
+                    handleRelationshipActive(
+                      records.at(0)!.resource,
+                      relationship,
+                      relationshipKey
+                    )
+                  }
+                />
+              ))
+          : // In this case, there are at least two blocking references that
+            // point to different records.
+            // This should only be in the case where at least one of the
+            // blocking references point to a CASCADE/dependent record that
+            // would be deleted when the parent is deleted
+            records.map((record, index) => (
+              <BlockerResource
                 activeRelationshipKey={activeRelationshipKey}
-                blockerTable={blockerTable}
-                onRelationshipActive={(relationship, relationshipKey) =>
-                  handleRelationshipActive(
-                    records.at(0)!.resource,
-                    relationship,
-                    relationshipKey
-                  )
-                }
+                record={record}
+                key={index}
+                onRelationshipActive={handleRelationshipActive}
               />
             ))
-        : records.map((record, index) => (
-            <BlockerResource
-              activeRelationshipKey={activeRelationshipKey}
-              record={record}
-              key={index}
-              onRelationshipActive={handleRelationshipActive}
-            />
-          ))}
+      }
     </aside>
   );
 }
@@ -151,7 +161,15 @@ function DeleteBlockersTable({
   const [isOpen, _, __, handleToggleOpen] = useBooleanState(false);
   return (
     <>
-      <Button.BorderedGray aria-expanded={isOpen} onClick={handleToggleOpen}>
+      <Button.BorderedGray
+        aria-expanded={isOpen}
+        // BUG:? It might not make sense to mark this as both expanded and
+        // pressed. Semantically, it's probably better to keep this as
+        // expanded and add a tailwind class to show the button is
+        // selected/expanded
+        aria-pressed={isOpen}
+        onClick={handleToggleOpen}
+      >
         <TableIcon name={tableName} label={false} />
         <span>
           {blockerTable.count !== undefined
