@@ -357,6 +357,7 @@ export function searchFields({
         // through them or the search could revisit the same table forever.
         if (current.tablePath.includes(relationship.relatedTable.name)) return;
 
+        if (queue.length >= fieldSearchVisitedStateLimit) return;
         queue.push({
           table: relationship.relatedTable,
           mappingPath: relationshipPath,
