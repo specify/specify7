@@ -195,9 +195,12 @@ export function searchFields({
       });
     });
 
+    const treePermission = spec.hasActionPermission()
+      ? spec.ensurePermission()
+      : undefined;
     if (
       isTreeTable(current.table.name) &&
-      hasTreeAccess(current.table.name, 'read')
+      hasTreeAccess(current.table.name, treePermission ?? 'read')
     ) {
       const definitions = getTreeDefinitions(current.table.name, 'all') ?? [];
       definitions.forEach(({ definition, ranks }) => {
