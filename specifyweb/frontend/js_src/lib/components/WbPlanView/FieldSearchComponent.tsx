@@ -13,6 +13,14 @@ import type { NavigatorSpec } from './navigatorSpecs';
 
 const fieldSearchDebounceRate = 200;
 const fieldSearchPageSize = 10;
+/*
+ * Searching for a single character matches almost every field, which makes the
+ * traversal walk the entire relationship graph for results that are not useful.
+ */
+const fieldSearchMinLength = 2;
+
+const isSearchLongEnough = (search: string): boolean =>
+  search.trim().length >= fieldSearchMinLength;
 
 export function FieldSearch({
   baseTableName,
@@ -46,7 +54,7 @@ export function FieldSearch({
   }, [search]);
   const searchResults = React.useMemo(
     () =>
-      baseTableName === undefined
+      baseTableName === undefined || !isSearchLongEnough(debouncedSearch)
         ? []
         : searchFields({
             baseTableName,
@@ -62,7 +70,7 @@ export function FieldSearch({
     setIsDismissed(false);
   }, [baseTableName, search, searchSpec, showHiddenFields]);
   const visibleResults = searchResults.slice(0, visibleResultCount);
-  const isExpanded = search.length > 0 && !isDismissed;
+  const isExpanded = isSearchLongEnough(search) && !isDismissed;
   React.useEffect(() => {
     if (activeResultIndex === undefined || !isExpanded) return;
     const activeResult = document.getElementById(
@@ -92,7 +100,7 @@ export function FieldSearch({
   const handleKeyDown = (
     event: React.KeyboardEvent<HTMLInputElement>
   ): void => {
-    if (event.key === 'Escape' && search.length > 0) {
+    if (event.key === 'Escape' && isExpanded) {
       event.preventDefault();
       event.stopPropagation();
       setIsDismissed(true);
