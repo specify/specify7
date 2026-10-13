@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 
 import { commonText } from '../../../localization/common';
@@ -7,6 +7,15 @@ import { mount } from '../../../tests/reactUtils';
 import { FieldSearch } from '../FieldSearchComponent';
 import { searchFields } from '../fieldSearch';
 import { navigatorSpecs } from '../navigatorSpecs';
+
+jest.mock('../fieldSearch', () => {
+  const actual = jest.requireActual('../fieldSearch');
+  return { ...actual, searchFields: jest.fn(actual.searchFields) };
+});
+
+const searchFieldsSpy = searchFields as jest.MockedFunction<
+  typeof searchFields
+>;
 
 requireContext();
 
@@ -36,6 +45,34 @@ const waitForResults = async (): Promise<void> => {
 };
 
 const getSearchInput = (): HTMLElement => screen.getByRole('combobox');
+
+test('does not search until the query is long enough', async () => {
+  const { user } = renderFieldSearch();
+  const input = getSearchInput();
+  await user.type(input, 'c');
+
+  // Wait out the search debounce to make sure no search is dispatched
+  await act(async () => {
+    await new Promise((resolve) => {
+      setTimeout(resolve, 300);
+    });
+  });
+
+  expect(searchFieldsSpy).not.toHaveBeenCalled();
+  expect(input).toHaveAttribute('aria-expanded', 'false');
+  expect(screen.queryByRole('listbox')).toBeNull();
+  expect(screen.queryByText(commonText.noResults())).toBeNull();
+});
+
+test('searches once the query is long enough', async () => {
+  const { user } = renderFieldSearch();
+  const input = getSearchInput();
+  await user.type(input, 'ca');
+  await waitForResults();
+
+  expect(searchFieldsSpy).toHaveBeenCalled();
+  expect(input).toHaveAttribute('aria-expanded', 'true');
+});
 
 test('shows a "show more" button when more results are available', async () => {
   const { user } = renderFieldSearch();
