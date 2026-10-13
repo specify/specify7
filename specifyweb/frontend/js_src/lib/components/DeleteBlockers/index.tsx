@@ -9,9 +9,6 @@ import { DeleteBlockerResource } from './store';
 import { RA } from '../../utils/types';
 import { useLiveState } from '../../hooks/useLiveState';
 
-// BUG: For formatted records which have a lot of text but little/no word
-// wrapping (like Attachment records which format to their file path), this is
-// still inadequate as the navigation controls can render far "off-screen"
 export const MIN_DELETEBLOCKER_CONTAINER_WIDTH = 768;
 
 export function DeleteBlockers({
@@ -55,7 +52,7 @@ export function DeleteBlockers({
 
   return blockers === undefined ? null : (
     <>
-      <div className="relative flex flex-1 gap-4 overflow-hidden md:flex-row">
+      <div className="relative flex flex-1 gap-4 overflow-x-auto md:flex-row">
         <DeleteBlockersAside
           records={blockers}
           activeRelationshipKey={paginatorKey?.relationshipKey}
