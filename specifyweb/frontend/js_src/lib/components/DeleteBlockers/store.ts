@@ -174,11 +174,14 @@ export class DeleteBlockerStore {
     const results: WritableArray<DeleteBlockerResource> = [];
     this.state.graphIterator(identifier, 'children', (node) => {
       const blockerResource = this.blockerNodeToResource(node);
-      if (blockerResource !== undefined) {
+      if (
+        blockerResource !== undefined &&
+        (blockerResource.count === undefined || blockerResource.count > 0)
+      ) {
         results.push(blockerResource);
       }
     });
-    return results.length <= 0 ? undefined : results;
+    return results;
   }
 
   public getNode(nodeKey: ResourceIdentifier) {
@@ -211,6 +214,15 @@ export class DeleteBlockerStore {
       }
       const table = tables.get(relationship.table)!;
 
+      if (relationship.count === undefined) {
+        hasUndefinedCounts = true;
+      } else if (relationship.count > 0) {
+        table.count = table.count ?? 0 + relationship.count;
+        resourceCount += relationship.count;
+      } else {
+        continue;
+      }
+
       const relationshipKey = makeBlockerKey(
         relationship.table,
         relationship.field
@@ -220,12 +232,6 @@ export class DeleteBlockerStore {
         relationshipName: relationship.field,
         count: relationship.count,
       });
-      if (relationship.count !== undefined) {
-        table.count = table.count ?? 0 + relationship.count;
-        resourceCount += relationship.count;
-      } else {
-        hasUndefinedCounts = true;
-      }
     }
     return {
       resource: node.resource,

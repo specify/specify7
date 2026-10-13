@@ -25,7 +25,7 @@ export function useScreenSize(screenSize: keyof typeof breakPoints) {
   const mediaQuery = `(min-width: ${breakPointSize})`;
 
   const windowMatchesBreakpoint = React.useCallback(() => {
-    if (typeof window === undefined) return false;
+    if (window === undefined) return false;
     return window.matchMedia(mediaQuery).matches;
   }, [mediaQuery]);
 

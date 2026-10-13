@@ -1,9 +1,8 @@
 from django.db.models import Model, ForeignObjectRel, ForeignKey, QuerySet
 
 from specifyweb.backend.trees.extras import Tree, TreeRank
-from specifyweb.backend.stored_queries.utils import log_sqlalchemy_query
 from specifyweb.backend.delete_blockers.validators import DELETE_BLOCKER_LIMIT
-from specifyweb.backend.delete_blockers.utils import relationship_cascades_delete, node_numbers_valid_for_tree, field_is_remote
+from specifyweb.backend.delete_blockers.utils import relationship_cascades_delete, node_numbers_valid_for_tree
 
 
 class ReferencePaginator:

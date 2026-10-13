@@ -7,7 +7,7 @@ from specifyweb.specify.api.crud import get_model
 from specifyweb.specify.models_utils.load_datamodel import TableDoesNotExistError
 
 from specifyweb.backend.delete_blockers.validators import DELETE_BLOCKER_LIMIT, CleanedDeleteBlockerFilter, CleanedDeleteBlockerRequestForm
-from specifyweb.backend.delete_blockers.utils import field_is_remote, relationship_blocks_deletion, relationship_cascades_delete, blocker_relationships_for_obj
+from specifyweb.backend.delete_blockers.utils import relationship_blocks_deletion, relationship_cascades_delete, blocker_relationships_for_obj
 from specifyweb.backend.delete_blockers.paginate import resolve_reference_paginator, ReferencePaginator
 
 
