@@ -70,7 +70,8 @@ export function FieldSearch({
     setIsDismissed(false);
   }, [baseTableName, search, searchSpec, showHiddenFields]);
   const visibleResults = searchResults.slice(0, visibleResultCount);
-  const isExpanded = isSearchLongEnough(search) && !isDismissed;
+  const isExpanded =
+    search === debouncedSearch && isSearchLongEnough(search) && !isDismissed;
   React.useEffect(() => {
     if (activeResultIndex === undefined || !isExpanded) return;
     const activeResult = document.getElementById(
