@@ -3,6 +3,7 @@ import React from 'react';
 import { commonText } from '../../localization/common';
 import { expressSearchConfigText } from '../../localization/expressSearchConfig';
 import type { Tables } from '../DataModel/types';
+import { Button } from '../Atoms/Button';
 import { Input } from '../Atoms/Form';
 import { TableIcon } from '../Molecules/TableIcon';
 import type { MappingPath } from './Mapper';
@@ -10,6 +11,7 @@ import { searchFields } from './fieldSearch';
 import type { NavigatorSpec } from './navigatorSpecs';
 
 const fieldSearchDebounceRate = 200;
+const fieldSearchPageSize = 10;
 
 export function FieldSearch({
   baseTableName,
@@ -26,7 +28,8 @@ export function FieldSearch({
 }): JSX.Element | null {
   const [search, setSearch] = React.useState('');
   const [debouncedSearch, setDebouncedSearch] = React.useState('');
-  const [visibleResultCount, setVisibleResultCount] = React.useState(10);
+  const [visibleResultCount, setVisibleResultCount] =
+    React.useState(fieldSearchPageSize);
   React.useEffect(() => {
     const timeout = globalThis.setTimeout(
       () => setDebouncedSearch(search),
@@ -47,7 +50,7 @@ export function FieldSearch({
     [baseTableName, debouncedSearch, searchSpec, showHiddenFields]
   );
   React.useEffect(() => {
-    setVisibleResultCount(10);
+    setVisibleResultCount(fieldSearchPageSize);
   }, [baseTableName, search, searchSpec, showHiddenFields]);
 
   if (
@@ -55,6 +58,12 @@ export function FieldSearch({
     typeof handleSelectSearchResult !== 'function'
   )
     return null;
+
+  const hasMoreResults = searchResults.length > visibleResultCount;
+  const handleShowMore = (): void =>
+    setVisibleResultCount((count) =>
+      Math.min(count + fieldSearchPageSize, searchResults.length)
+    );
 
   return (
     <div
@@ -81,28 +90,36 @@ export function FieldSearch({
               element.scrollTop + element.clientHeight >=
               element.scrollHeight - 8
             )
-              setVisibleResultCount((count) =>
-                Math.min(count + 10, searchResults.length)
-              );
+              handleShowMore();
           }}
         >
           {searchResults.length === 0 ? (
             <div className="p-2">{commonText.noResults()}</div>
           ) : (
-            searchResults.slice(0, visibleResultCount).map((result) => (
-              <button
-                className="flex w-full items-center gap-2 p-2 text-left hover:bg-gray-200 dark:hover:bg-neutral-700"
-                key={result.mappingPath.join('.')}
-                type="button"
-                onClick={(): void => {
-                  handleSelectSearchResult(result.mappingPath);
-                  setSearch('');
-                }}
-              >
-                <TableIcon label={false} name={result.tableName} />
-                {result.label}
-              </button>
-            ))
+            <>
+              {searchResults.slice(0, visibleResultCount).map((result) => (
+                <button
+                  className="flex w-full items-center gap-2 p-2 text-left hover:bg-gray-200 dark:hover:bg-neutral-700"
+                  key={result.mappingPath.join('.')}
+                  type="button"
+                  onClick={(): void => {
+                    handleSelectSearchResult(result.mappingPath);
+                    setSearch('');
+                  }}
+                >
+                  <TableIcon label={false} name={result.tableName} />
+                  {result.label}
+                </button>
+              ))}
+              {hasMoreResults && (
+                <Button.LikeLink
+                  className="w-full justify-center p-2"
+                  onClick={handleShowMore}
+                >
+                  {commonText.showMore()}
+                </Button.LikeLink>
+              )}
+            </>
           )}
         </div>
       )}
