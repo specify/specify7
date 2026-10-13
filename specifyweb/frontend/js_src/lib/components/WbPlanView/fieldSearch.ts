@@ -289,18 +289,14 @@ export function searchFields({
           relationship.overrides.isReadOnly
         )
           return false;
+        const permission = spec.ensurePermission();
+        const relatedName = relationship.relatedTable.name;
         if (
           spec.hasActionPermission() &&
-          spec.ensurePermission() !== undefined &&
-          (isTreeTable(current.table.name)
-            ? !hasTreeAccess(
-                current.table.name as AnyTree['tableName'],
-                spec.ensurePermission()!
-              )
-            : !hasTablePermission(
-                relationship.relatedTable.name,
-                spec.ensurePermission()!
-              ))
+          permission !== undefined &&
+          (isTreeTable(relatedName)
+            ? !hasTreeAccess(relatedName, permission)
+            : !hasTablePermission(relatedName, permission))
         )
           return false;
         if (
