@@ -45,7 +45,7 @@ export async function fetchInitialBlockers(
   recordId: number,
   limit: number = DELETE_BLOCKER_LIMIT,
   expectFailure = false
-): Promise<APIDeleteBlockers> {
+): Promise<APIDeleteBlockers | undefined> {
   return ajax<APIDeleteBlockers>(
     formatUrl(
       `/delete_blockers/delete_blockers/${table.toLowerCase()}/${recordId}/`,
@@ -63,13 +63,15 @@ export async function fetchInitialBlockers(
 export async function filterDeleteBlockers(
   table: keyof Tables,
   recordId: number,
-  filters: RA<DeleteBlockerFilter>
-): Promise<APIDeleteBlockers> {
+  filters: RA<DeleteBlockerFilter>,
+  expectFailure = false
+): Promise<APIDeleteBlockers | undefined> {
   return ajax<APIDeleteBlockers>(
     `/delete_blockers/delete_blockers/${table.toLowerCase()}/${recordId}/`,
     {
       method: 'POST',
       headers: { Accept: 'application/json' },
+      expectedErrors: expectFailure ? [Http.NOT_FOUND] : [],
       body: {
         filters: filters.map((filter) => ({
           ...filter,
@@ -78,19 +80,23 @@ export async function filterDeleteBlockers(
         })),
       },
     }
-  ).then(({ data }) => data);
+  ).then((result) =>
+    result.status === Http.NOT_FOUND ? undefined : result.data
+  );
 }
 
 export async function fetchReferenceCounts(
   table: keyof Tables | Lowercase<keyof Tables>,
   recordId: number,
   expectFailure = false
-): Promise<APIDeleteBlockerCounts> {
+): Promise<APIDeleteBlockerCounts | undefined> {
   return ajax<APIDeleteBlockerCounts>(
     `/delete_blockers/count/${table.toLowerCase()}/${recordId}/`,
     {
       headers: { Accept: 'application/json' },
       expectedErrors: expectFailure ? [Http.NOT_FOUND] : [],
     }
-  ).then(({ data }) => data);
+  ).then((result) => {
+    return result.status === Http.NOT_FOUND ? undefined : result.data;
+  });
 }

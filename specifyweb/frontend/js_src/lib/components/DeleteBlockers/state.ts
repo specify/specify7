@@ -68,7 +68,7 @@ export class DeleteBlockerState {
   private readonly countPromiseQueue: PromiseQueue<string, unknown>;
   private readonly pagePromiseQueue: PromiseQueue<
     BlockerPageCacheKey,
-    RA<DeleteBlockerLRUPage>
+    RA<DeleteBlockerLRUPage> | undefined
   >;
   private readonly nodes: Map<string, BlockerNode>;
   private readonly cascadeParents: Map<string, Set<string>>;
@@ -184,9 +184,20 @@ export class DeleteBlockerState {
       resource.specifyTable.name,
       resource.id,
       this.recordsPerPage
-    ).then((blockers) => {
-      return this.handleDeleteBlockerPage(resource, blockers);
-    });
+    ).then((blockers) =>
+      // This branch should only mean that the resource was deleted while the
+      // request was in-flight.
+      // If that happens, just clean it up as if it were deleted
+      blockers === undefined
+        ? this.removeResource(
+            makeBlockerKey(
+              resource.specifyTable.name.toLowerCase(),
+              resource.id
+            )
+          )
+        : // Otherwise we can treat the response as normal
+          this.handleDeleteBlockerPage(resource, blockers)
+    );
   }
 
   private handleDeleteBlockerPage(
@@ -269,6 +280,7 @@ export class DeleteBlockerState {
       this.queueBlockerCount(key);
     }
     this.onChange?.();
+    return undefined;
   }
 
   private removeRecordFromPages(resourceKey: ResourceIdentifier) {
@@ -382,8 +394,14 @@ export class DeleteBlockerState {
     }
 
     const fetchCounts = () =>
-      fetchReferenceCounts(tableName, resourceId).then((counts) =>
-        this.handleDeleteBlockerCounts(resourceKey, counts)
+      fetchReferenceCounts(tableName, resourceId, true).then((counts) =>
+        counts === undefined
+          ? // This branch should only mean that the resource was deleted while
+            // the request was in-flight.
+            // If that happens, just clean it up as if it were deleted
+            this.removeResource(resourceKey)
+          : // Otherwise we can treat the counts as normal
+            this.handleDeleteBlockerCounts(resourceKey, counts)
       );
 
     return this.countPromiseQueue.enqueue(resourceKey, fetchCounts);
@@ -577,19 +595,36 @@ export class DeleteBlockerState {
       return undefined;
     }
     const fetchBlockers = () =>
-      filterDeleteBlockers(resource.specifyTable.name, resource.id, [
-        {
-          table: relatedTable,
-          field: relationshipName,
-          anchor: pageAnchorToFilter(anchor),
-          // This is needed to fetch the last page
-          // A null anchor depends on the direction of the request
-          backwards: anchor === 'last' ? true : backwards,
-          limit: this.recordsPerPage,
-        },
-      ])
-        .then((blockers) => {
-          return anchor === 'last' || backwards === true
+      filterDeleteBlockers(
+        resource.specifyTable.name,
+        resource.id,
+        [
+          {
+            table: relatedTable,
+            field: relationshipName,
+            anchor: pageAnchorToFilter(anchor),
+            // This is needed to fetch the last page
+            // A null anchor depends on the direction of the request
+            backwards: anchor === 'last' ? true : backwards,
+            limit: this.recordsPerPage,
+          },
+        ],
+        true
+      ).then((blockers) => {
+        // This branch should only mean that the resource was deleted while the
+        // request was in-flight.
+        // If that happens, just clean it up as if it were deleted
+        if (blockers === undefined) {
+          const resourceKey = makeBlockerKey(
+            resource.specifyTable.name.toLowerCase(),
+            resource.id
+          );
+          this.removeResource(resourceKey);
+          return;
+        }
+        // Othwerwise we treat the response as normal
+        const formattedBlockers =
+          anchor === 'last' || backwards === true
             ? {
                 ...blockers,
                 results: blockers.results.map((page) => ({
@@ -610,8 +645,8 @@ export class DeleteBlockerState {
                 })),
               }
             : blockers;
-        })
-        .then((blockers) => this.handleDeleteBlockerPage(resource, blockers));
+        return this.handleDeleteBlockerPage(resource, formattedBlockers);
+      });
     return this.pagePromiseQueue.enqueue(cacheKey, fetchBlockers);
   }
 
