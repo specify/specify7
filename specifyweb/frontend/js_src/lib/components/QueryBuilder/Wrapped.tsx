@@ -471,9 +471,17 @@ function Wrapped({
                   })}
                   showHiddenFields={showHiddenFields}
                   searchSpec={navigatorSpecs.queryBuilder}
-                  onSelectSearchResult={(mappingPath): void =>
-                    dispatch({ type: 'SetMappingViewAction', mappingPath })
-                  }
+                  onSelectSearchResult={(mappingPath): void => {
+                    dispatch({ type: 'SetMappingViewAction', mappingPath });
+                    if (
+                      !isReadOnly &&
+                      mappingPathIsComplete(mappingPath) &&
+                      !getMappedFieldsBind(mappingPath.slice(0, -1)).includes(
+                        mappingPath.at(-1)!
+                      )
+                    )
+                      handleAddField(mappingPath);
+                  }}
                 >
                   {isReadOnly ? undefined : (
                     <Button.Small
