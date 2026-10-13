@@ -6,7 +6,6 @@ import { useCachedState } from '../../hooks/useCachedState';
 import { useId } from '../../hooks/useId';
 import { batchEditText } from '../../localization/batchEdit';
 import { commonText } from '../../localization/common';
-import { expressSearchConfigText } from '../../localization/expressSearchConfig';
 import { headerText } from '../../localization/header';
 import { schemaText } from '../../localization/schema';
 import { wbPlanText } from '../../localization/wbPlan';
@@ -24,6 +23,7 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { userPreferences } from '../Preferences/userPreferences';
 import { ButtonWithConfirmation } from './Components';
+import { FieldSearch } from './FieldSearchComponent';
 import type {
   MapperComponentData,
   MappingElementProps,
@@ -34,7 +34,7 @@ import {
   type MappingPath,
   DEFAULT_BATCH_EDIT_PREFS,
 } from './Mapper';
-import { getMappingLineData, searchFields } from './navigator';
+import { getMappingLineData } from './navigator';
 import type { NavigatorSpec } from './navigatorSpecs';
 import { navigatorSpecs } from './navigatorSpecs';
 import type {
@@ -152,7 +152,6 @@ export function ValidationResults(props: {
 }
 
 const defaultValue = 300;
-const fieldSearchDebounceRate = 200;
 
 export function MappingView({
   mappingElementProps,
@@ -176,31 +175,6 @@ export function MappingView({
   const [mappingView, setMappingView] = React.useState<HTMLElement | null>(
     null
   );
-  const [search, setSearch] = React.useState('');
-  const [debouncedSearch, setDebouncedSearch] = React.useState('');
-  const [visibleResultCount, setVisibleResultCount] = React.useState(10);
-  React.useEffect(() => {
-    const timeout = globalThis.setTimeout(
-      () => setDebouncedSearch(search),
-      fieldSearchDebounceRate
-    );
-    return (): void => globalThis.clearTimeout(timeout);
-  }, [search]);
-  const searchResults = React.useMemo(
-    () =>
-      baseTableName === undefined
-        ? []
-        : searchFields({
-            baseTableName,
-            search: debouncedSearch,
-            showHiddenFields,
-            spec: searchSpec,
-          }),
-    [baseTableName, debouncedSearch, searchSpec, showHiddenFields]
-  );
-  React.useEffect(() => {
-    setVisibleResultCount(10);
-  }, [baseTableName, search, searchSpec, showHiddenFields]);
   React.useEffect(() => {
     if (globalThis.ResizeObserver === undefined || mappingView === null)
       return undefined;
@@ -216,64 +190,18 @@ export function MappingView({
     return (): void => resizeObserver.disconnect();
   }, [mappingView, setMappingViewHeight]);
 
-  const fieldSearch =
-    baseTableName !== undefined &&
-    typeof handleSelectSearchResult === 'function' ? (
-      <div
-        className="
-          relative flex w-full flex-col border border-brand-300
-          bg-white dark:bg-neutral-800
-        "
-      >
-        <Input.Text
-          aria-label={commonText.search()}
-          className="w-full rounded-none border-0 !ring-0 !shadow-none focus:border-0 focus:!ring-0"
-          id="field-search"
-          placeholder={expressSearchConfigText.searchFieldsTab()}
-          value={search}
-          onValueChange={setSearch}
-        />
-        {search.length > 0 && (
-          <div
-            aria-label={commonText.search()}
-            className="absolute left-0 top-full z-20 max-h-48 w-full overflow-y-auto border border-gray-500 bg-white dark:bg-neutral-600"
-            onScroll={(event): void => {
-              const element = event.currentTarget;
-              if (
-                element.scrollTop + element.clientHeight >=
-                element.scrollHeight - 8
-              )
-                setVisibleResultCount((count) =>
-                  Math.min(count + 10, searchResults.length)
-                );
-            }}
-          >
-            {searchResults.length === 0 ? (
-              <div className="p-2">{commonText.noResults()}</div>
-            ) : (
-              searchResults.slice(0, visibleResultCount).map((result) => (
-                <button
-                  className="flex w-full items-center gap-2 p-2 text-left hover:bg-gray-200 dark:hover:bg-neutral-700"
-                  key={result.mappingPath.join('.')}
-                  type="button"
-                  onClick={(): void => {
-                    handleSelectSearchResult(result.mappingPath);
-                    setSearch('');
-                  }}
-                >
-                  <TableIcon label={false} name={result.tableName} />
-                  {result.label}
-                </button>
-              ))
-            )}
-          </div>
-        )}
-      </div>
-    ) : undefined;
+  const fieldSearch = (
+    <FieldSearch
+      baseTableName={baseTableName}
+      searchSpec={searchSpec}
+      showHiddenFields={showHiddenFields}
+      onSelectSearchResult={handleSelectSearchResult}
+    />
+  );
 
   const mappingElementPropsWithSearch = mappingElementProps.map(
     (mappingElement, index) =>
-      index === 0 && fieldSearch !== undefined
+      index === 0 && fieldSearch !== null
         ? { ...mappingElement, fieldSearch }
         : mappingElement
   );
