@@ -1,7 +1,6 @@
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import type { RA } from '../../utils/types';
-import type { AnyTree } from '../DataModel/helperTypes';
 import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { strictGetTable } from '../DataModel/tables';
