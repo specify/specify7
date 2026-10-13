@@ -70,6 +70,31 @@ class TestDeleteBlockers(GeographyTree):
         for node in self._node_list:
             self._assertSame(self._get_blockers(node), [])
 
+    def test_taxon_rank_blockers_do_not_reparent_children(self):
+        tree = models.Taxontreedef.objects.create(name='Delete blocker taxon tree')
+        root_rank = models.Taxontreedefitem.objects.create(
+            name='Root',
+            rankid=0,
+            treedef=tree,
+        )
+        rank = models.Taxontreedefitem.objects.create(
+            name='Order',
+            rankid=100,
+            parent=root_rank,
+            treedef=tree,
+        )
+        child_rank = models.Taxontreedefitem.objects.create(
+            name='Family',
+            rankid=200,
+            parent=rank,
+            treedef=tree,
+        )
+
+        self.assertEqual(self._get_blockers(rank), [])
+
+        child_rank.refresh_from_db()
+        self.assertEqual(child_rank.parent_id, rank.id)
+
     def test_many_to_many_join_blockers_are_normalized(self):
         export_schema = models.Spexportschema.objects.create(
             discipline=self.discipline
