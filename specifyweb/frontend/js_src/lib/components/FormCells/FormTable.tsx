@@ -9,7 +9,7 @@ import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
-import { columnDefinitionsToCss, DataEntry } from '../Atoms/DataEntry';
+import { DataEntry } from '../Atoms/DataEntry';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { useAttachment } from '../Attachments/Plugin';
@@ -41,6 +41,10 @@ import { AttachmentPluginSkeleton } from '../SkeletonLoaders/AttachmentPlugin';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { COJODialog } from './COJODialog';
 import { FormCell } from './index';
+import {
+  FormTableColumnResizeHandle,
+  useFormTableColumns,
+} from './useFormTableColumns';
 
 const cellToLabel = (
   table: SpecifyTable,
@@ -60,103 +64,6 @@ const cellToLabel = (
 
 const cellClassName =
   'sticky top-0 bg-[color:var(--form-foreground)] z-10 h-full -mx-1 px-1 py-1 border-b border-gray-500';
-
-const minSubviewColumnWidth = 80;
-const maxSubviewColumnWidth = 600;
-
-function measureSubviewText(
-  text: string,
-  font: string,
-  context: CanvasRenderingContext2D
-): number {
-  context.font = font;
-  return Math.ceil(
-    Math.max(
-      0,
-      ...text.split(/\r?\n/u).map((line) => context.measureText(line).width)
-    )
-  );
-}
-
-function measureSubviewHeader(
-  text: string,
-  font: string,
-  context: CanvasRenderingContext2D
-): number {
-  const words = text.trim().split(/\s+/u);
-  const middle = Math.ceil(words.length / 2);
-  return measureSubviewText(
-    `${words.slice(0, middle).join(' ')}\n${words.slice(middle).join(' ')}`,
-    font,
-    context
-  );
-}
-
-function measureSubviewCell(
-  cell: HTMLElement,
-  context: CanvasRenderingContext2D
-): number {
-  const controls = Array.from(
-    cell.querySelectorAll<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >('input, textarea, select')
-  );
-  if (controls.length === 0)
-    return measureSubviewText(
-      cell.textContent ?? '',
-      getComputedStyle(cell).font,
-      context
-    );
-
-  return controls.reduce((total, control) => {
-    const style = getComputedStyle(control);
-    const horizontalPadding =
-      Number.parseFloat(style.paddingLeft) +
-      Number.parseFloat(style.paddingRight) +
-      Number.parseFloat(style.borderLeftWidth) +
-      Number.parseFloat(style.borderRightWidth);
-    if (control instanceof HTMLInputElement && control.type === 'checkbox')
-      return Math.max(total, 48);
-    if (control instanceof HTMLInputElement && control.type === 'date')
-      return Math.max(total, 136);
-    const value =
-      control instanceof HTMLSelectElement
-        ? (control.selectedOptions[0]?.textContent ?? '')
-        : control.value || control.getAttribute('placeholder') || '';
-    const width =
-      measureSubviewText(value, style.font, context) +
-      horizontalPadding +
-      (control instanceof HTMLSelectElement
-        ? 28
-        : control instanceof HTMLInputElement && control.type === 'number'
-          ? 30
-          : 8);
-    return Math.max(total, width);
-  }, minSubviewColumnWidth);
-}
-
-function fitSubviewColumnWidths(
-  widths: Array<number>,
-  availableWidth: number,
-  minimumWidths: Array<number>
-): Array<number> {
-  const minimumTotal = minimumWidths.reduce((total, width) => total + width, 0);
-  const preferredWidths = widths.map((width, index) =>
-    Math.max(width, minimumWidths[index] ?? minSubviewColumnWidth)
-  );
-  const totalWidth = preferredWidths.reduce((total, width) => total + width, 0);
-  if (totalWidth <= availableWidth) return preferredWidths;
-  if (minimumTotal === 0) return minimumWidths;
-  if (availableWidth <= minimumTotal)
-    return minimumWidths.map(
-      (width) => (width * availableWidth) / minimumTotal
-    );
-  const scale = (availableWidth - minimumTotal) / (totalWidth - minimumTotal);
-  return preferredWidths.map((width, index) => {
-    const minimum = minimumWidths[index] ?? minSubviewColumnWidth;
-    return minimum + (width - minimum) * scale;
-  });
-}
 
 // REFACTOR: split this component into smaller
 /**
@@ -343,266 +250,19 @@ export function FormTable<SCHEMA extends AnySchema>({
     mode !== 'view' && typeof handleDelete === 'function';
   const displayViewButton = !isDependent;
 
-  const scrollerRef = React.useRef<HTMLDivElement | null>(null);
-  const scrollContainerRef = React.useRef<HTMLDivElement | null>(null);
-  const [tableWidth, setTableWidth] = React.useState(0);
-  const [contentColumnWidths, setContentColumnWidths] = React.useState<
-    Array<number>
-  >([]);
-  const [headerColumnWidths, setHeaderColumnWidths] = React.useState<
-    Array<number>
-  >([]);
-  const [tableChromeWidth, setTableChromeWidth] = React.useState(0);
-  const [columnWidths, setColumnWidths] = React.useState<
-    Record<number, number>
-  >({});
-  React.useEffect(() => {
-    const scrollContainer = scrollContainerRef.current;
-    if (scrollContainer === null) return;
-    const observer = new ResizeObserver(([entry]) => {
-      setTableWidth(Math.floor(entry.contentRect.width));
-    });
-    observer.observe(scrollContainer);
-    return (): void => observer.disconnect();
-  }, [collapsedViewDefinition, isCollapsed, resources.length > 0]);
-  React.useEffect(() => {
-    if (collapsedViewDefinition === undefined) return;
-    const frame = requestAnimationFrame(() => {
-      const tableElement = scrollerRef.current;
-      if (tableElement === null) return;
-      const context = document.createElement('canvas').getContext('2d');
-      if (context === null) return;
-      const measuredColumns = collapsedViewDefinition.rows[0].map(
-        (_, columnIndex) => {
-          const header = tableElement.querySelector<HTMLElement>(
-            `[data-subview-header-col="${columnIndex}"]`
-          );
-          const headerLabel = header?.querySelector<HTMLElement>(
-            '[data-subview-header-label]'
-          );
-          const cells = Array.from(
-            tableElement.querySelectorAll<HTMLElement>(
-              `[data-subview-cell-col="${columnIndex}"]`
-            )
-          );
-          const labelWidth =
-            headerLabel === null || headerLabel === undefined
-              ? 0
-              : measureSubviewHeader(
-                  headerLabel.textContent ?? '',
-                  getComputedStyle(headerLabel).font,
-                  context
-                ) + 32;
-          const indicator = header?.querySelector(
-            '[data-subview-sort-indicator]'
-          );
-          const headerWidth =
-            labelWidth +
-            (indicator === undefined || indicator === null ? 0 : 28);
-          return {
-            headerWidth: Math.min(maxSubviewColumnWidth, headerWidth),
-            contentWidth: Math.min(
-              maxSubviewColumnWidth,
-              Math.max(
-                minSubviewColumnWidth,
-                labelWidth,
-                ...cells.map((cell) => measureSubviewCell(cell, context))
-              )
-            ),
-          };
-        }
-      );
-      const measuredWidths = measuredColumns.map(
-        ({ contentWidth }) => contentWidth
-      );
-      setHeaderColumnWidths(
-        measuredColumns.map(({ headerWidth }) =>
-          Math.max(minSubviewColumnWidth, headerWidth)
-        )
-      );
-      const headers = tableElement.querySelectorAll<HTMLElement>(
-        '[role="columnheader"]'
-      );
-      const actionButton = tableElement.querySelector<HTMLElement>(
-        '[role="rowgroup"] [role="row"] [role="cell"]:last-child button'
-      );
-      const buttonColumnsWidth =
-        (headers[0]?.getBoundingClientRect().width ?? 40) +
-        Math.max(40, actionButton?.getBoundingClientRect().width ?? 0);
-      const style = getComputedStyle(tableElement);
-      const horizontalPadding =
-        Number.parseFloat(style.paddingLeft) +
-        Number.parseFloat(style.paddingRight);
-      const gap = Number.parseFloat(style.columnGap) || 0;
-      setTableChromeWidth(
-        buttonColumnsWidth +
-          horizontalPadding +
-          gap * (collapsedViewDefinition.columns.length + 2)
-      );
-      setContentColumnWidths(measuredWidths);
-    });
-    return (): void => cancelAnimationFrame(frame);
-  }, [collapsedViewDefinition, isCollapsed, unsortedResources]);
-  const resizeCleanupRef = React.useRef<(() => void) | undefined>(undefined);
-  React.useEffect(() => (): void => resizeCleanupRef.current?.(), []);
-  const resizeColumn = React.useCallback(
-    (columnIndex: number, event: React.PointerEvent<HTMLDivElement>): void => {
-      event.preventDefault();
-      event.stopPropagation();
-      resizeCleanupRef.current?.();
-      resizeCleanupRef.current = undefined;
-      const tableElement = scrollerRef.current;
-      if (tableElement === null) return;
-      const header = tableElement.querySelector<HTMLElement>(
-        `[data-subview-header-col="${columnIndex}"]`
-      );
-      const initialWidth =
-        columnWidths[columnIndex] ?? header?.getBoundingClientRect().width ?? 0;
-      const startX = event.clientX;
-      const pointerId = event.pointerId;
-      let latestX = startX;
-      let frame: number | undefined;
-      const updateWidth = (clientX: number): void =>
-        setColumnWidths((widths) => ({
-          ...widths,
-          [columnIndex]: Math.max(
-            60,
-            Math.min(
-              maxSubviewColumnWidth,
-              Math.ceil(initialWidth + clientX - startX)
-            )
-          ),
-        }));
-      const handleMove = (moveEvent: PointerEvent): void => {
-        if (moveEvent.pointerId !== pointerId) return;
-        latestX = moveEvent.clientX;
-        if (frame !== undefined) return;
-        frame = requestAnimationFrame(() => {
-          frame = undefined;
-          updateWidth(latestX);
-        });
-      };
-      const handleUp = (upEvent: PointerEvent): void => {
-        if (upEvent.pointerId !== pointerId) return;
-        cleanup();
-        updateWidth(latestX);
-      };
-      const cleanup = (): void => {
-        if (frame !== undefined) cancelAnimationFrame(frame);
-        globalThis.removeEventListener('pointermove', handleMove);
-        globalThis.removeEventListener('pointerup', handleUp);
-        globalThis.removeEventListener('pointercancel', handleUp);
-        if (resizeCleanupRef.current === cleanup)
-          resizeCleanupRef.current = undefined;
-      };
-      globalThis.addEventListener('pointermove', handleMove);
-      globalThis.addEventListener('pointerup', handleUp);
-      globalThis.addEventListener('pointercancel', handleUp);
-      resizeCleanupRef.current = cleanup;
-    },
-    [columnWidths]
-  );
-  const gridTemplateColumns = React.useMemo(() => {
-    const cells = collapsedViewDefinition?.rows[0] ?? [];
-    const definitions = collapsedViewDefinition?.columns ?? [];
-    let trackIndex = 0;
-    const tracks = cells.flatMap((cell, cellIndex) => {
-      const span = cell.colSpan;
-      return Array.from({ length: span }, () => {
-        const index = trackIndex++;
-        const customWidth = definitions[index];
-        return {
-          cellIndex,
-          index,
-          width:
-            columnWidths[cellIndex] === undefined ? customWidth : undefined,
-        };
-      });
-    });
-    const autoColumns = tracks
-      .filter(
-        ({ width, cellIndex }) =>
-          typeof width !== 'number' && columnWidths[cellIndex] === undefined
-      )
-      .map(({ cellIndex, index }) => ({
-        cellIndex,
-        index,
-        width:
-          (contentColumnWidths[cellIndex] ?? minSubviewColumnWidth) /
-          (cells[cellIndex]?.colSpan ?? 1),
-      }));
-    const fixedWidth = Object.values(columnWidths).reduce(
-      (total, width) => total + width,
-      0
-    );
-    const customFixedWidth = tracks.reduce(
-      (total, { cellIndex, width }) =>
-        total +
-        (typeof width !== 'number'
-          ? 0
-          : flexibleSubGridColumnWidth
-            ? (contentColumnWidths[cellIndex] ?? minSubviewColumnWidth) /
-              (cells[cellIndex]?.colSpan ?? 1)
-            : width),
-      0
-    );
-    const minimumWidths = autoColumns.map(({ cellIndex }) => {
-      const definition = cells[cellIndex];
-      const fieldName =
-        definition !== undefined && 'fieldNames' in definition
-          ? definition.fieldNames?.join(backboneFieldSeparator)
-          : undefined;
-      return sortConfig?.sortField === fieldName
-        ? Math.max(
-            minSubviewColumnWidth,
-            (headerColumnWidths[cellIndex] ?? minSubviewColumnWidth) /
-              (definition?.colSpan ?? 1)
-          )
-        : minSubviewColumnWidth;
-    });
-    const widths = fitSubviewColumnWidths(
-      autoColumns.map(({ width }) => width),
-      Math.max(
-        0,
-        tableWidth - tableChromeWidth - fixedWidth - customFixedWidth
-      ),
-      minimumWidths
-    );
-    const cellColumns = cells.reduce((total, cell) => total + cell.colSpan, 0);
-    let autoIndex = 0;
-    return [
-      'min-content',
-      ...tracks.map(({ cellIndex, width }) => {
-        const cell = cells[cellIndex];
-        if (columnWidths[cellIndex] !== undefined)
-          return `${columnWidths[cellIndex] / (cell?.colSpan ?? 1)}px`;
-        if (typeof width === 'number')
-          return columnDefinitionsToCss([width], flexibleSubGridColumnWidth);
-        const minimumWidth = widths[autoIndex] ?? minSubviewColumnWidth;
-        const flex = autoColumns[autoIndex]?.width ?? minSubviewColumnWidth;
-        autoIndex += 1;
-        return `minmax(${minimumWidth}px, ${flex}fr)`;
-      }),
-      ...(collapsedViewDefinition?.columns.slice(cellColumns) ?? []).map(
-        (width) =>
-          typeof width === 'number'
-            ? columnDefinitionsToCss([width], flexibleSubGridColumnWidth)
-            : 'minmax(0, 1fr)'
-      ),
-      autoColumns.length === 0 ? 'minmax(0, 1fr)' : '0px',
-      'min-content',
-    ].join(' ');
-  }, [
-    collapsedViewDefinition?.columns,
-    collapsedViewDefinition?.rows,
-    columnWidths,
-    contentColumnWidths,
-    headerColumnWidths,
-    sortConfig,
+  const columnSizing = useFormTableColumns({
     flexibleSubGridColumnWidth,
-    tableChromeWidth,
-    tableWidth,
-  ]);
+    hasResources: resources.length > 0,
+    isCollapsed,
+    measurementKey: unsortedResources,
+    sortConfig,
+    viewDefinition: collapsedViewDefinition,
+  });
+  const {
+    gridRef: scrollerRef,
+    gridTemplateColumns,
+    scrollContainerRef,
+  } = columnSizing;
   const { isFetching, handleScroll } = useInfiniteScroll(
     handleFetchMore,
     scrollContainerRef
@@ -737,50 +397,9 @@ export function FormTable<SCHEMA extends AnySchema>({
                   ) : (
                     label
                   )}
-                  <div
-                    aria-label="Resize column"
-                    aria-orientation="vertical"
-                    aria-valuemax={maxSubviewColumnWidth}
-                    aria-valuemin={60}
-                    aria-valuenow={Math.round(
-                      columnWidths[columnIndex] ??
-                        contentColumnWidths[columnIndex] ??
-                        minSubviewColumnWidth
-                    )}
-                    className="absolute inset-y-0 z-20 w-4 cursor-col-resize touch-none before:absolute before:inset-y-0 before:right-2 before:w-px before:bg-gray-500 before:content-['']"
-                    role="separator"
-                    style={{ right: -8 }}
-                    tabIndex={0}
-                    onKeyDown={(event): void => {
-                      if (
-                        event.key !== 'ArrowLeft' &&
-                        event.key !== 'ArrowRight'
-                      )
-                        return;
-                      event.preventDefault();
-                      const header =
-                        scrollerRef.current?.querySelector<HTMLElement>(
-                          `[data-subview-header-col="${columnIndex}"]`
-                        );
-                      const currentWidth =
-                        columnWidths[columnIndex] ??
-                        header?.getBoundingClientRect().width ??
-                        minSubviewColumnWidth;
-                      setColumnWidths((widths) => ({
-                        ...widths,
-                        [columnIndex]: Math.max(
-                          60,
-                          Math.min(
-                            maxSubviewColumnWidth,
-                            currentWidth +
-                              (event.key === 'ArrowRight' ? 10 : -10)
-                          )
-                        ),
-                      }));
-                    }}
-                    onPointerDown={(event): void =>
-                      resizeColumn(columnIndex, event)
-                    }
+                  <FormTableColumnResizeHandle
+                    columnIndex={columnIndex}
+                    columnSizing={columnSizing}
                   />
                 </DataEntry.Cell>
               );
