@@ -18,9 +18,6 @@ import { unsetUnloadProtect } from '../../hooks/navigation';
 import { saveFormUnloadProtect } from '../Forms/Save';
 import { formsText } from '../../localization/forms';
 import { useTriggerState } from '../../hooks/useTriggerState';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { useParentResource } from '../../hooks/useParentResource';
-import { f } from '../../utils/functools';
 
 type Page = {
   readonly ids: RA<number>;
