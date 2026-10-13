@@ -201,7 +201,7 @@ export function MappingView({
 
   const mappingElementPropsWithSearch = mappingElementProps.map(
     (mappingElement, index) =>
-      index === 0 && fieldSearch !== null
+      index === 0
         ? { ...mappingElement, fieldSearch }
         : mappingElement
   );
