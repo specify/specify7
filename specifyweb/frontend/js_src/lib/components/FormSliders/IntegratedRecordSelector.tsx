@@ -243,7 +243,10 @@ export function IntegratedRecordSelector({
                 <ResourceView
                   containerRef={containerRef}
                   dialog={dialog}
-                  headerButtons={(specifyNetworkBadge): JSX.Element => (
+                  headerButtons={(
+                    specifyNetworkBadge,
+                    showParentResource
+                  ): JSX.Element => (
                     <>
                       <DataEntry.Visit
                         /*
@@ -365,6 +368,7 @@ export function IntegratedRecordSelector({
                           />
                         )
                       ) : undefined}
+                      {showParentResource}
                       <span
                         className={`flex-1 ${
                           dialog === false ? '-ml-2' : '-ml-4'

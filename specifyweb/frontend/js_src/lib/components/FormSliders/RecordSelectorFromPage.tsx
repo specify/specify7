@@ -18,6 +18,9 @@ import { unsetUnloadProtect } from '../../hooks/navigation';
 import { saveFormUnloadProtect } from '../Forms/Save';
 import { formsText } from '../../localization/forms';
 import { useTriggerState } from '../../hooks/useTriggerState';
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { useParentResource } from '../../hooks/useParentResource';
+import { f } from '../../utils/functools';
 
 type Page = {
   readonly ids: RA<number>;
@@ -199,11 +202,15 @@ export function RecordSelectorFromPage<
     <>
       <ResourceView
         dialog={dialog}
-        headerButtons={(specifyNetworkBadge): JSX.Element => (
+        headerButtons={(
+          specifyNetworkBadge,
+          showParentResource
+        ): JSX.Element => (
           <div className="flex flex-col items-center gap-2 md:contents md:flex-row md:gap-8">
             <div className="flex items-center gap-2 md:contents">
               {headerButtons}
               <DataEntry.Visit resource={resource} />
+              {showParentResource}
               <span
                 className={`flex-1 ${dialog === false ? '-ml-2' : '-ml-4'}`}
               />
