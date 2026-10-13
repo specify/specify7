@@ -549,9 +549,16 @@ export function Mapper(props: {
             },
           })}
           showHiddenFields={state.showHiddenFields}
-          onSelectSearchResult={(mappingPath): void =>
+          onSelectSearchResult={(mappingPath): void => {
             dispatch({ type: 'SetMappingViewAction', mappingPath })
-          }
+            if (
+              !isReadOnly &&
+              state.lines.length > 0 &&
+              mappingPathIsComplete(mappingPath) &&
+              getMappedFieldsBind(mappingPath).length === 0
+            )
+              dispatch({ type: 'MappingViewMapAction' })
+          }}
         >
           <Button.Small
             className="flex-col justify-center p-2"
