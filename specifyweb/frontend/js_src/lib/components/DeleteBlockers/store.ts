@@ -220,6 +220,7 @@ export class DeleteBlockerStore {
         table.count = table.count ?? 0 + relationship.count;
         resourceCount += relationship.count;
       } else {
+        table.count = 0;
         continue;
       }
 
