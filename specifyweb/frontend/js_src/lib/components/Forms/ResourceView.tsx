@@ -227,7 +227,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
   );
 
   const { showParentResourceButton, parentResourceForm } = useShowParentButton({
-    resource,
+    resource: isSubForm ? undefined : resource,
     onLoading: setIsLoading,
     onDelete: handleDelete,
     onParentSaved: handleParentSaved,

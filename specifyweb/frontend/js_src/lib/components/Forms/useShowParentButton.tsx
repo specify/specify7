@@ -62,7 +62,6 @@ export function useShowParentButton({
                 handleParentDeleted?.();
                 handleCheckChildExists?.().then((childExists) => {
                   if (!childExists) {
-                    debugger;
                     handleDelete();
                   }
                   handleLoading(false);

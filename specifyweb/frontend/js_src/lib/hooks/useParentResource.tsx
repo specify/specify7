@@ -21,20 +21,43 @@ export function useParentResource(
   readonly parentResource: false | undefined | SpecifyResource<AnySchema>;
   readonly onCheckChildExists?: () => Promise<boolean>;
 } {
-  const parentRelationship = React.useMemo(
+  const directParentRelationship = React.useMemo(
     () =>
       resource === undefined
         ? undefined
         : parentTableRelationship()[resource.specifyTable.name],
     [resource?.specifyTable.name]
   );
+
+  const parentRelationship = React.useMemo(() => {
+    if (directParentRelationship !== undefined) return directParentRelationship;
+    const dependentRelationships = resource?.specifyTable.relationships.filter(
+      (relationship) =>
+        relationship.isRequired &&
+        relationship.otherSideName !== undefined &&
+        relationship.relatedTable
+          .getRelationship(relationship.otherSideName)
+          ?.isDependent()
+    );
+    // If there's exactly one relationship that's required and the otherside is
+    // dependent, we should be able to safely assume that relationship is the
+    // parent.
+    // If needed, we could broaden the filtering criteria to either required or
+    // otherside is dependent, as they should mean the same thing but might
+    // have some discrepancies (e.g., #8583)
+    if (dependentRelationships?.length === 1) {
+      return dependentRelationships.at(0);
+    }
+    return directParentRelationship;
+  }, [resource, directParentRelationship]);
+
   const [parentResource] = useAsyncState<false | SpecifyResource<AnySchema>>(
     React.useCallback(
       () =>
         parentRelationship === undefined || resource === undefined
           ? false
           : resource.rgetPromise(parentRelationship.name),
-      [resource, parentRelationship]
+      [resource, directParentRelationship]
     ),
     false
   );
