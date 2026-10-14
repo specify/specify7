@@ -365,6 +365,9 @@ export const commonText = createDictionary({
     'hr-hr': 'Nema rezultata',
     nb: 'Ingen resultater',
   },
+  showMore: {
+    'en-us': 'Show More',
+  },
   notApplicable: {
     'en-us': 'N/A',
     'ru-ru': 'Н/Д',
