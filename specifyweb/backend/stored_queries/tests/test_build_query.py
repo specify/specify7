@@ -106,33 +106,32 @@ class TestBuildQuery(SQLAlchemySetup):
                 series=props.series,
                 formatauditobjs=props.formatauditobjs
             )
-            # There should be 4 objects in the join cache
+            # There should be 5 objects in the join cache
             # CollectionObject -> Determinations
             # Determination -> taxon
-            # Taxon Ranks for Determination -> taxon
+            # Taxon Ranks for Determination -> taxon and preferredTaxon
             # Determination -> preferredTaxon
             self.assertEqual(
                 len(query.join_cache),
-                4
+                5
             )
-            # BUG: This is technically undesirable, as it causes #8650
-            # In the underlying query, the Preferred Taxon currently uses the
-            # JOIN for Determination -> taxon. Specifically, it uses the cached
-            # JOINs for the tree ranks.
             taxon_table = datamodel.get_table_strict("taxon")
-            cache_key = (taxon_table, 'TreeRanks')
-            tree_ranks_in_cache = list(filter(lambda cache_key: 'TreeRanks' in cache_key, query.join_cache.keys()))
+            tree_rank_cache_keys = [
+                cache_key
+                for cache_key in query.join_cache
+                if cache_key[-1] == "TreeRanks"
+            ]
             self.assertEqual(
-                tree_ranks_in_cache,
-                [cache_key]
+                len(tree_rank_cache_keys),
+                2,
             )
-            tree_join_information = query.join_cache[cache_key]
-            tree_ranks = tree_join_information[0]
-
-            self.assertEqual(
-                len(tree_ranks),
-                len(self.taxontreedef.treedefitems.all())
-            )
+            for cache_key in tree_rank_cache_keys:
+                self.assertEqual(cache_key[1], taxon_table)
+                ancestors, _treedefs = query.join_cache[cache_key]
+                self.assertEqual(
+                    len(ancestors),
+                    len(self.taxontreedef.treedefitems.all()),
+                )
 
     def _make_distinct_taxon_relationships(self):
         phylum_rank = self.taxontreedef.treedefitems.get(name="Phylum")
@@ -161,12 +160,16 @@ class TestBuildQuery(SQLAlchemySetup):
                 )
             species.append(parent)
 
-        Determination.objects.create(
+        self._update(species[0], {"acceptedtaxon": species[1]})
+        determination = Determination.objects.create(
             collectionobject=self.collectionobjects[0],
             taxon=species[0],
             preferredtaxon=species[1],
             iscurrent=True,
         )
+        determination.refresh_from_db()
+        self.assertEqual(determination.taxon.name, "Taxon Species")
+        self.assertEqual(determination.preferredtaxon.name, "Preferred Species")
         attribute = Collectingeventattribute.objects.create(
             discipline=self.discipline,
             hosttaxon=species[2],
