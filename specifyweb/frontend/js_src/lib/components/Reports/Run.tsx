@@ -79,7 +79,11 @@ export function RunReport({
         type="hidden"
       />
       {typeof reportId === 'number' ? (
-        <input defaultValue={reportId.toString()} name="reportId" type="hidden" />
+        <input
+          defaultValue={reportId.toString()}
+          name="reportId"
+          type="hidden"
+        />
       ) : undefined}
       <input type="submit" />
     </form>
