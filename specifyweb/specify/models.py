@@ -592,6 +592,7 @@ class Attachment(models.Model):
     mimetype = models.CharField(blank=True, max_length=1024, null=True, unique=False, db_column='MimeType', db_index=False)
     origfilename = models.TextField(blank=False, null=False, unique=False, db_column='OrigFilename', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
+    resourceurl = models.CharField(blank=True, max_length=1024, null=True, unique=False, db_column='ResourceURL', db_index=False)
     scopeid = models.IntegerField(blank=True, null=True, unique=False, db_column='ScopeID', db_index=False)
     scopetype = models.SmallIntegerField(blank=True, null=True, unique=False, db_column='ScopeType', db_index=False)
     subjectorientation = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='SubjectOrientation', db_index=False)
