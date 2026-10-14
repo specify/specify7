@@ -75,6 +75,9 @@ export const attachmentsText = createDictionary({
     'hr-hr': 'Unesite valjan HTTP ili HTTPS URL.',
     nb: 'Skriv inn en gyldig HTTP- eller HTTPS-URL.',
   },
+  externalResourceUrlTooLong: {
+    'en-us': 'URL must be 1,024 characters or fewer.',
+  },
   openExternalResource: {
     'en-us': 'Open external resource',
     'ru-ru': 'Открыть внешний ресурс',

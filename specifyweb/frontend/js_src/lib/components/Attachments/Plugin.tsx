@@ -30,8 +30,9 @@ import { collectionPreferences } from '../Preferences/collectionPreferences';
 import { userPreferences } from '../Preferences/userPreferences';
 import { AttachmentPluginSkeleton } from '../SkeletonLoaders/AttachmentPlugin';
 import {
+  MAX_EXTERNAL_RESOURCE_URL_LENGTH,
   attachmentSettingsPromise,
-  normalizeExternalResourceURL,
+  validateExternalResourceURL,
   uploadFile,
 } from './attachments';
 import { AttachmentViewer } from './Viewer';
@@ -163,7 +164,9 @@ export function UploadAttachment({
   readonly attachmentServerAvailable?: boolean;
 }): JSX.Element {
   const [externalUrl, setExternalUrl] = React.useState('');
-  const [urlError, setUrlError] = React.useState(false);
+  const [urlError, setUrlError] = React.useState<
+    'invalid' | 'tooLong' | undefined
+  >(undefined);
   const [uploadProgress, setUploadProgress] = React.useState<
     number | true | undefined
   >(undefined);
@@ -178,12 +181,13 @@ export function UploadAttachment({
   const canUploadFile = attachmentServerAvailable ?? true;
 
   const addExternalAttachment = (): void => {
-    const normalizedUrl = normalizeExternalResourceURL(externalUrl);
-    if (normalizedUrl === undefined) {
-      setUrlError(true);
+    const result = validateExternalResourceURL(externalUrl);
+    if ('error' in result) {
+      setUrlError(result.error);
       return;
     }
-    setUrlError(false);
+    setUrlError(undefined);
+    const { normalizedUrl } = result;
     const attachment = new tables.Attachment.Resource({
       resourceurl: normalizedUrl,
       origfilename: normalizedUrl,
@@ -238,10 +242,12 @@ export function UploadAttachment({
         <Label.Block>
           {attachmentsText.externalResourceUrl()}
           <Input.Generic
-            aria-describedby={urlError ? 'external-resource-url-error' : undefined}
-            aria-invalid={urlError}
+            aria-describedby={
+              urlError ? 'external-resource-url-error' : undefined
+            }
+            aria-invalid={urlError !== undefined}
             autoComplete="url"
-            maxLength={1024}
+            maxLength={MAX_EXTERNAL_RESOURCE_URL_LENGTH}
             type="url"
             value={externalUrl}
             onKeyDown={(event): void => {
@@ -252,13 +258,15 @@ export function UploadAttachment({
             }}
             onValueChange={(value): void => {
               setExternalUrl(value);
-              setUrlError(false);
+              setUrlError(undefined);
             }}
           />
         </Label.Block>
         {urlError && (
           <p id="external-resource-url-error" role="alert">
-            {attachmentsText.invalidExternalResourceUrl()}
+            {urlError === 'tooLong'
+              ? attachmentsText.externalResourceUrlTooLong()
+              : attachmentsText.invalidExternalResourceUrl()}
           </p>
         )}
         <Button.Info onClick={addExternalAttachment}>

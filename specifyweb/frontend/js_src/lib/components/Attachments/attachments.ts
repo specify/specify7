@@ -86,17 +86,32 @@ export const attachmentSettingsPromise = load<AttachmentSettings | IR<never>>(
 
 export const attachmentsAvailable = (): boolean => typeof settings === 'object';
 
+export const MAX_EXTERNAL_RESOURCE_URL_LENGTH = 1024;
+
+type ExternalResourceURLValidation =
+  | { readonly normalizedUrl: string }
+  | { readonly error: 'invalid' | 'tooLong' };
+
+export function validateExternalResourceURL(
+  value: string
+): ExternalResourceURLValidation {
+  try {
+    const url = new URL(value.trim());
+    if (url.protocol !== 'http:' && url.protocol !== 'https:')
+      return { error: 'invalid' };
+    if (url.href.length > MAX_EXTERNAL_RESOURCE_URL_LENGTH)
+      return { error: 'tooLong' };
+    return { normalizedUrl: url.href };
+  } catch {
+    return { error: 'invalid' };
+  }
+}
+
 export function normalizeExternalResourceURL(
   value: string
 ): string | undefined {
-  try {
-    const url = new URL(value.trim());
-    return url.protocol === 'http:' || url.protocol === 'https:'
-      ? url.href
-      : undefined;
-  } catch {
-    return undefined;
-  }
+  const result = validateExternalResourceURL(value);
+  return 'normalizedUrl' in result ? result.normalizedUrl : undefined;
 }
 
 const checkAttachmentServer = async (): Promise<number> => {
