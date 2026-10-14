@@ -13,11 +13,13 @@ import { formsText } from '../../localization/forms';
 import { f } from '../../utils/functools';
 import type { GetOrSet } from '../../utils/types';
 import { Progress } from '../Atoms';
+import { Button } from '../Atoms/Button';
+import { Input, Label } from '../Atoms/Form';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { toTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { getTable } from '../DataModel/tables';
+import { getTable, tables } from '../DataModel/tables';
 import type { Attachment } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
 import { loadingBar } from '../Molecules';
@@ -27,19 +29,26 @@ import { ProtectedTable } from '../Permissions/PermissionDenied';
 import { collectionPreferences } from '../Preferences/collectionPreferences';
 import { userPreferences } from '../Preferences/userPreferences';
 import { AttachmentPluginSkeleton } from '../SkeletonLoaders/AttachmentPlugin';
-import { attachmentSettingsPromise, uploadFile } from './attachments';
+import {
+  attachmentSettingsPromise,
+  normalizeExternalResourceURL,
+  uploadFile,
+} from './attachments';
 import { AttachmentViewer } from './Viewer';
 
 export function AttachmentsPlugin(
-  props: Parameters<typeof ProtectedAttachmentsPlugin>[0]
+  props: {
+    readonly resource: SpecifyResource<AnySchema> | undefined;
+  }
 ): JSX.Element | null {
   const [available] = usePromise(attachmentSettingsPromise, true);
-  return available === undefined ? null : available ? (
+  return available === undefined ? null : (
     <ProtectedTable action="read" tableName="Attachment">
-      <ProtectedAttachmentsPlugin {...props} />
+      <ProtectedAttachmentsPlugin
+        {...props}
+        attachmentServerAvailable={available}
+      />
     </ProtectedTable>
-  ) : (
-    <p>{attachmentsText.attachmentServerUnavailable()}</p>
   );
 }
 
@@ -61,8 +70,10 @@ export function useAttachment(
 
 function ProtectedAttachmentsPlugin({
   resource,
+  attachmentServerAvailable,
 }: {
   readonly resource: SpecifyResource<AnySchema> | undefined;
+  readonly attachmentServerAvailable: boolean;
 }): JSX.Element | null {
   const [attachment, setAttachment] = useAttachment(resource);
   const isReadOnly = React.useContext(ReadOnlyContext);
@@ -117,6 +128,7 @@ function ProtectedAttachmentsPlugin({
         <p>{formsText.noData()}</p>
       ) : (
         <UploadAttachment
+          attachmentServerAvailable={attachmentServerAvailable}
           onUploaded={(attachment): void => {
             // Fix focus loss when <FilePicker would be removed from DOM
             filePickerContainer.current?.focus();
@@ -145,9 +157,13 @@ function ProtectedAttachmentsPlugin({
 
 export function UploadAttachment({
   onUploaded: handleUploaded,
+  attachmentServerAvailable,
 }: {
   readonly onUploaded: (attachment: SpecifyResource<Attachment>) => void;
+  readonly attachmentServerAvailable?: boolean;
 }): JSX.Element {
+  const [externalUrl, setExternalUrl] = React.useState('');
+  const [urlError, setUrlError] = React.useState(false);
   const [uploadProgress, setUploadProgress] = React.useState<
     number | true | undefined
   >(undefined);
@@ -159,10 +175,25 @@ export function UploadAttachment({
     'attachments',
     'attachment.is_public_default'
   );
+  const canUploadFile = attachmentServerAvailable ?? true;
 
-  return isFailed ? (
-    <p>{attachmentsText.attachmentServerUnavailable()}</p>
-  ) : typeof uploadProgress === 'object' ? (
+  const addExternalAttachment = (): void => {
+    const normalizedUrl = normalizeExternalResourceURL(externalUrl);
+    if (normalizedUrl === undefined) {
+      setUrlError(true);
+      return;
+    }
+    setUrlError(false);
+    const attachment = new tables.Attachment.Resource({
+      resourceurl: normalizedUrl,
+      origfilename: normalizedUrl,
+      title: new URL(normalizedUrl).hostname,
+      isPublic: attachmentIsPublicDefault,
+    });
+    handleUploaded(attachment);
+  };
+
+  return typeof uploadProgress === 'object' ? (
     <Dialog
       buttons={undefined}
       header={attachmentsText.uploadingInline()}
@@ -177,27 +208,63 @@ export function UploadAttachment({
       </div>
     </Dialog>
   ) : (
-    <FilePicker
-      acceptedFormats={undefined}
-      onFileSelected={(file): void =>
-        loading(
-          uploadFile({
-            file,
-            handleProgress: setUploadProgress,
-            attachmentIsPublicDefault,
-          })
-            .then((attachment) =>
-              attachment === undefined
-                ? handleFailed()
-                : handleUploaded(attachment)
+    <div className="flex flex-col gap-4">
+      {isFailed && <p>{attachmentsText.attachmentServerUnavailable()}</p>}
+      {canUploadFile && (
+        <FilePicker
+          acceptedFormats={undefined}
+          onFileSelected={(file): void =>
+            loading(
+              uploadFile({
+                file,
+                handleProgress: setUploadProgress,
+                attachmentIsPublicDefault,
+              })
+                .then((attachment) =>
+                  attachment === undefined
+                    ? handleFailed()
+                    : handleUploaded(attachment)
+                )
+                .catch((error) => {
+                  handleFailed();
+                  raise(error);
+                })
+                .finally(() => setUploadProgress(undefined))
             )
-            .catch((error) => {
-              handleFailed();
-              raise(error);
-            })
-            .finally(() => setUploadProgress(undefined))
-        )
-      }
-    />
+          }
+        />
+      )}
+      <div className="flex max-w-prose flex-col gap-4">
+        <Label.Block>
+          {attachmentsText.externalResourceUrl()}
+          <Input.Generic
+            aria-describedby={urlError ? 'external-resource-url-error' : undefined}
+            aria-invalid={urlError}
+            autoComplete="url"
+            maxLength={1024}
+            type="url"
+            value={externalUrl}
+            onKeyDown={(event): void => {
+              if (event.key === 'Enter') {
+                event.preventDefault();
+                addExternalAttachment();
+              }
+            }}
+            onValueChange={(value): void => {
+              setExternalUrl(value);
+              setUrlError(false);
+            }}
+          />
+        </Label.Block>
+        {urlError && (
+          <p id="external-resource-url-error" role="alert">
+            {attachmentsText.invalidExternalResourceUrl()}
+          </p>
+        )}
+        <Button.Info onClick={addExternalAttachment}>
+          {attachmentsText.addExternalResource()}
+        </Button.Info>
+      </div>
+    </div>
   );
 }
