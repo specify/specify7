@@ -86,6 +86,19 @@ export const attachmentSettingsPromise = load<AttachmentSettings | IR<never>>(
 
 export const attachmentsAvailable = (): boolean => typeof settings === 'object';
 
+export function normalizeExternalResourceURL(
+  value: string
+): string | undefined {
+  try {
+    const url = new URL(value.trim());
+    return url.protocol === 'http:' || url.protocol === 'https:'
+      ? url.href
+      : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 const checkAttachmentServer = async (): Promise<number> => {
   const { status } = await ajax('/attachment_gw/health/', {
     cache: 'no-store',
@@ -272,6 +285,13 @@ export async function fetchThumbnail(
   attachment: SerializedResource<Attachment>,
   scale = getPref('attachment.preview_size')
 ): Promise<AttachmentThumbnail | undefined> {
+  if (normalizeExternalResourceURL(attachment.resourceURL ?? '') !== undefined)
+    return {
+      ...iconForMimeType('text/html'),
+      width: scale,
+      height: scale,
+    };
+
   const mimeType = attachment.mimeType ?? undefined;
   const thumbnail =
     mimeType === undefined || thumbnailable.has(mimeType)
