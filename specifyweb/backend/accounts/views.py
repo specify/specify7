@@ -179,7 +179,7 @@ def oic_callback(request: http.HttpRequest) -> http.HttpResponse:
             'id': str(ext_user['sub']),
             'provider': provider,
             'provider_title': provider_info['title'],
-            'name': ext_user.get('name', ext_user.get('email', None)),
+            'name': ext_user.get('name') or ext_user.get('email') or '',
             'idtoken': ext_user,
         }
         request.session['external_user'] = external_user
