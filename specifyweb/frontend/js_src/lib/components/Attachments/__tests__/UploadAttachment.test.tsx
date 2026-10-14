@@ -42,12 +42,18 @@ describe('UploadAttachment', () => {
     const handleUploaded = jest.fn();
 
     overrideAttachmentSettings(attachmentSettings);
-    const { asFragment, container, user } = mount(
+    const { container, getByRole, user } = mount(
       <LoadingContext.Provider value={f.void}>
-        <UploadAttachment onUploaded={handleUploaded} />
+        <UploadAttachment
+          attachmentServerAvailable
+          onUploaded={handleUploaded}
+        />
       </LoadingContext.Provider>
     );
-    expect(asFragment()).toMatchSnapshot();
+    expect(container.querySelector('input[type="file"]')).not.toBeNull();
+    expect(
+      getByRole('textbox', { name: 'External resource URL' })
+    ).toBeInTheDocument();
 
     const input = Array.from(container.getElementsByTagName('input'))[0];
     const testFile = new File(['Some Text Contents'], 'testName', {
@@ -60,5 +66,55 @@ describe('UploadAttachment', () => {
     await waitFor(() => {
       expect(handleUploaded).toHaveBeenCalled();
     });
+  });
+
+  test('creates external URL attachments without the asset server', async () => {
+    const handleUploaded = jest.fn();
+    const { getByRole, user } = mount(
+      <LoadingContext.Provider value={f.void}>
+        <UploadAttachment
+          attachmentServerAvailable={false}
+          onUploaded={handleUploaded}
+        />
+      </LoadingContext.Provider>
+    );
+
+    await user.type(
+      getByRole('textbox', { name: 'External resource URL' }),
+      'https://example.org/specimen/123'
+    );
+    await user.click(getByRole('button', { name: 'Add external URL' }));
+
+    expect(handleUploaded).toHaveBeenCalledTimes(1);
+    const [attachment] = handleUploaded.mock.calls[0];
+    expect(attachment.get('resourceURL')).toBe(
+      'https://example.org/specimen/123'
+    );
+    expect(attachment.get('origFilename')).toBe(
+      'https://example.org/specimen/123'
+    );
+  });
+
+  test('rejects non-HTTP external URLs', async () => {
+    const handleUploaded = jest.fn();
+    const { getByRole, user } = mount(
+      <LoadingContext.Provider value={f.void}>
+        <UploadAttachment
+          attachmentServerAvailable={false}
+          onUploaded={handleUploaded}
+        />
+      </LoadingContext.Provider>
+    );
+
+    await user.type(
+      getByRole('textbox', { name: 'External resource URL' }),
+      'javascript:alert(1)'
+    );
+    await user.click(getByRole('button', { name: 'Add external URL' }));
+
+    expect(handleUploaded).not.toHaveBeenCalled();
+    expect(getByRole('alert')).toHaveTextContent(
+      'Enter a valid HTTP or HTTPS URL.'
+    );
   });
 });
