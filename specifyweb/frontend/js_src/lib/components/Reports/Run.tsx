@@ -13,12 +13,14 @@ export function RunReport({
   recordSetId,
   definition,
   parameters,
+  reportId,
   onClose: handleClose,
 }: {
   readonly query: SerializedResource<SpQuery>;
   readonly recordSetId: number | undefined;
   readonly definition: Element;
   readonly parameters: IR<string>;
+  readonly reportId: number | undefined;
   readonly onClose: () => void;
 }): JSX.Element {
   const reportWindowContext = useId('report-window')('');
@@ -76,6 +78,9 @@ export function RunReport({
         readOnly
         type="hidden"
       />
+      {typeof reportId === 'number' ? (
+        <input defaultValue={reportId.toString()} name="reportId" type="hidden" />
+      ) : undefined}
       <input type="submit" />
     </form>
   );

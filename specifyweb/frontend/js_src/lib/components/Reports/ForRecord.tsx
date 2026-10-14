@@ -18,6 +18,7 @@ export function ReportForRecord({
   definition,
   table,
   resourceId,
+  reportId,
   onClose: handleClose,
 }: {
   readonly query: SerializedResource<SpQuery>;
@@ -25,6 +26,7 @@ export function ReportForRecord({
   readonly parameters: IR<string>;
   readonly table: SpecifyTable;
   readonly resourceId: number;
+  readonly reportId: number | undefined;
   readonly onClose: () => void;
 }): JSX.Element {
   const queryFieldFilterSpecs = useQueryFieldFilterSpecs();
@@ -79,6 +81,7 @@ export function ReportForRecord({
       parameters={parameters}
       query={query}
       recordSetId={undefined}
+      reportId={reportId}
       onClose={handleClose}
     />
   ) : (
@@ -87,6 +90,7 @@ export function ReportForRecord({
       parameters={parameters}
       query={query}
       recordSetId={undefined}
+      reportId={reportId}
       onClose={handleClose}
     />
   );
