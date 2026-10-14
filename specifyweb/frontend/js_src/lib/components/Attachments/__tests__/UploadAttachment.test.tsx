@@ -117,4 +117,26 @@ describe('UploadAttachment', () => {
       'Enter a valid HTTP or HTTPS URL.'
     );
   });
+
+  test('rejects normalized URLs that exceed the field limit', async () => {
+    const handleUploaded = jest.fn();
+    const { getByRole, user } = mount(
+      <LoadingContext.Provider value={f.void}>
+        <UploadAttachment
+          attachmentServerAvailable={false}
+          onUploaded={handleUploaded}
+        />
+      </LoadingContext.Provider>
+    );
+
+    const input = `https://example.org/${'a '.repeat(502)}`;
+    const urlInput = getByRole('textbox', { name: 'External resource URL' });
+    fireEvent.change(urlInput, { target: { value: input } });
+    await user.click(getByRole('button', { name: 'Add external URL' }));
+
+    expect(handleUploaded).not.toHaveBeenCalled();
+    expect(getByRole('alert')).toHaveTextContent(
+      'URL must be 1,024 characters or fewer.'
+    );
+  });
 });
