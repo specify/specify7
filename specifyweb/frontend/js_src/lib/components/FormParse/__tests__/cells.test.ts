@@ -117,6 +117,7 @@ describe('parseFormCell', () => {
         fieldDefinition: {
           defaultValue: undefined,
           isReadOnly: false,
+          isSeries: false,
           max: undefined,
           min: undefined,
           step: undefined,
@@ -145,6 +146,7 @@ describe('parseFormCell', () => {
         fieldDefinition: {
           defaultValue: undefined,
           isReadOnly: false,
+          isSeries: false,
           max: undefined,
           min: undefined,
           step: undefined,
@@ -170,6 +172,7 @@ describe('parseFormCell', () => {
         fieldDefinition: {
           defaultValue: undefined,
           isReadOnly: false,
+          isSeries: false,
           max: undefined,
           maxLength: undefined,
           min: undefined,
@@ -203,6 +206,7 @@ describe('parseFormCell', () => {
         fieldDefinition: {
           defaultValue: undefined,
           isReadOnly: false,
+          isSeries: false,
           max: undefined,
           maxLength: undefined,
           min: undefined,
@@ -253,6 +257,7 @@ describe('parseFormCell', () => {
         fieldDefinition: {
           defaultValue: 'A',
           isReadOnly: false,
+          isSeries: false,
           max: undefined,
           min: undefined,
           step: undefined,
@@ -281,6 +286,7 @@ describe('parseFormCell', () => {
         fieldDefinition: {
           defaultValue: undefined,
           isReadOnly: false,
+          isSeries: false,
           max: undefined,
           min: undefined,
           step: undefined,
