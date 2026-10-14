@@ -40,7 +40,8 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
         treedefitem_column = table.name + 'TreeDefItemID'
         treedef_column = table.name + 'TreeDefID'
 
-        cache_key = (table, 'TreeRanks')
+        # A tree table can be reached through multiple relationships in one query.
+        cache_key = (node, table, 'TreeRanks')
         if cache_key in query.join_cache:
             logger.debug("using join cache for %r tree ranks.", node)
             ancestors, treedefs = query.join_cache[cache_key]
