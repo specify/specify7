@@ -209,7 +209,6 @@ def _handle_remote_fk_field(obj, field, value, read_checker):
 
     elif isinstance(value, field.related_model):
         # The related value was patched into the data by a parent object.
-        setattr(obj, field_name, value)
         rel_data = _obj_to_data(value, read_checker)
         new_related_id = value.id
 
@@ -218,7 +217,6 @@ def _handle_remote_fk_field(obj, field, value, read_checker):
         assert not dependent, f"didn't get inline data for dependent field {field_name} in {obj}: {value!r}"
         fk_model, fk_id = strict_uri_to_model(value, field.related_model.__name__)
         rel_obj = get_object_or_404(fk_model, id=fk_id)
-        setattr(obj, field_name, rel_obj)
         rel_data = _obj_to_data(rel_obj, read_checker)
         new_related_id = rel_obj.pk
 
@@ -234,7 +232,7 @@ def _handle_remote_fk_field(obj, field, value, read_checker):
     if str(old_related_id) != str(new_related_id):
         dirty.append(FieldChangeInfo(field_name=field_name, old_value=old_related_id, new_value=new_related_id))
 
-    if not rel_data is None: 
+    if rel_data is not None:
         remote_to_ones.append((field.remote_field, rel_data, dependent))
     return dependents_to_delete, dirty, remote_to_ones
 
