@@ -5,6 +5,18 @@ from specifyweb.specify.models import Recordset, Recordsetitem, Collectionobject
 
 class RecordSetCreationTests(ApiTests):
 
+    def test_create_new_record_set(self):
+        """Create a new record set"""
+        recordset = Recordset.objects.create(
+            dbtableid=Collectionobject.specify_model.tableId,
+            name="first_recordset_name",
+            type=0,
+            collectionmemberid=self.collection.id,
+            specifyuser=self.specifyuser,
+        )
+        saved = Recordset.objects.get(pk=recordset.pk)
+        self.assertEqual(saved.name, "first_recordset_name")
+
     def test_add_new_record_set(self):
         """Add a new recordset"""
         recordset = Recordset.objects.create(
@@ -14,6 +26,7 @@ class RecordSetCreationTests(ApiTests):
             collectionmemberid=self.collection.id,
             specifyuser=self.specifyuser,
             )
+      
         co_ids = [co.id for co in self.collectionobjects]
         
         Recordsetitem.objects.bulk_create([
