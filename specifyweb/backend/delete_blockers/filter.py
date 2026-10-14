@@ -88,7 +88,7 @@ class DeleteBlockerFilter:
 
     def fetch_page(self) -> tuple[bool, DeleteBlocker]:
         fetched_ids = self.paginator.fetch_page()
-        complete = len(fetched_ids) < self.paginator.limit
+        complete = self.paginator.limit == 0 or len(fetched_ids) < self.paginator.limit
         cascades = self.cascades()
         return cascades, {
             "table": self.table_name,
