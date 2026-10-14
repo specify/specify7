@@ -105,7 +105,7 @@ export function RecordSelectorFromPage<
     direction: 'next' | 'previous' | 'first' | 'last'
   ) => void;
   readonly onClose: () => void;
-  readonly onDelete: (page: PAGE_TYPE, index: number) => void;
+  readonly onDelete?: (page: PAGE_TYPE, index: number) => void;
   readonly onSaved: (resource: SpecifyResource<SCHEMA>) => void;
   readonly onParentDeleted?: () => void;
 }): JSX.Element | null {
@@ -187,7 +187,9 @@ export function RecordSelectorFromPage<
     pageMetaData,
     records,
     onDelete:
-      page === undefined ? undefined : (index) => handleDelete(page, index),
+      page === undefined || handleDelete === undefined
+        ? undefined
+        : (index) => handleDelete(page, index),
     onSlide: (direction) => {
       const doSlide = () => handleSlide(direction);
 

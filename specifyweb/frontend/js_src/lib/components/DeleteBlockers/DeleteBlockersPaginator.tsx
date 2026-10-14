@@ -25,7 +25,6 @@ export function DeleteBlockersPaginator({
     pageMetaData,
     pageSize,
     onNextPageFetch: handleNextPageFetch,
-    onResourceDeletion: handleResourceDeletion,
   } = useDeleteBlockerPages(
     parentResource,
     relationship,
@@ -59,7 +58,6 @@ export function DeleteBlockersPaginator({
       title={undefined}
       onNextPageFetch={handleNextPageFetch}
       onClose={handleClose}
-      onDelete={handleResourceDeletion}
       onSaved={f.void}
       // Deleting a parent might not actually remove all of the blockers for
       // this relationship, but this behavior is currently OK as it lets the

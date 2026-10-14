@@ -147,7 +147,10 @@ export class DeleteBlockerStore {
     return this.state.getBlockerPage(cacheKey);
   }
 
-  public removeResource(table: Lowercase<keyof Tables>, recordId: number) {
+  public removeResource(
+    table: keyof Tables | Lowercase<keyof Tables>,
+    recordId: number
+  ) {
     const resourceKey = makeBlockerKey(table.toLowerCase(), recordId);
     this.state.removeResource(resourceKey);
   }

@@ -6,7 +6,6 @@ import { DeleteBlockerLRUPage } from './pageCache';
 import { PageMetaData } from '../FormSliders/RecordSelectorFromPage';
 import { useDeleteBlockerStore } from './Context';
 import { useLiveState } from '../../hooks/useLiveState';
-import { error } from '../Errors/assert';
 import { useRelationshipReferenceCount } from './useReferenceCount';
 
 export function useDeleteBlockerPages(
@@ -20,10 +19,6 @@ export function useDeleteBlockerPages(
   readonly onNextPageFetch: (
     previous: DeleteBlockerLRUPage,
     direction: 'next' | 'previous' | 'first' | 'last'
-  ) => void;
-  readonly onResourceDeletion: (
-    page: DeleteBlockerLRUPage,
-    index: number
   ) => void;
 } {
   const store = useDeleteBlockerStore();
@@ -100,21 +95,6 @@ export function useDeleteBlockerPages(
     [setPageCursor]
   );
 
-  const handleResourceDeletion = React.useCallback(
-    (page: DeleteBlockerLRUPage, index: number) => {
-      const table = page.table;
-      const recordId = page.ids.at(index);
-      if (recordId === undefined) {
-        error(`Record at index ${index} does not exist in page`, { page });
-      }
-      store.removeResource(table, recordId);
-      if (page.ids.length <= 1) {
-        handleAllBlockersDeleted();
-      }
-    },
-    [store]
-  );
-
   const isFirstPage =
     deleteBlockerPage?.anchor === null && !pageCursor.backwards;
 
@@ -134,6 +114,5 @@ export function useDeleteBlockerPages(
             : undefined,
     pageSize: store.pageSize(),
     onNextPageFetch: handleNextPageFetch,
-    onResourceDeletion: handleResourceDeletion,
   };
 }

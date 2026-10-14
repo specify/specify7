@@ -2,6 +2,7 @@ import React from 'react';
 import { DeleteBlockerState } from './state';
 import { error } from '../Errors/assert';
 import { DeleteBlockerStore } from './store';
+import { resourceEvents } from '../DataModel/resource';
 
 const DeleteBlockerContext = React.createContext<DeleteBlockerStore | null>(
   null
@@ -46,5 +47,12 @@ export function useDeleteBlockerStore(): DeleteBlockerStore {
   if (store === null) {
     error('Attempting to access a delete blocker store that is not created');
   }
+  React.useEffect(
+    () =>
+      resourceEvents.on('deleted', (resource) =>
+        store.removeResource(resource.specifyTable.name, resource.id)
+      ),
+    [store]
+  );
   return store;
 }

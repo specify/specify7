@@ -46,6 +46,7 @@ export function useParentResource(
     // If needed, we could broaden the filtering criteria to either required or
     // otherside is dependent, as they should mean the same thing but might
     // have some discrepancies (e.g., #8583)
+    // FEAT: Handle returning all dependent relationships
     if (dependentRelationships?.length === 1) {
       return dependentRelationships.at(0);
     }
