@@ -117,6 +117,14 @@ def _parse(tablename: str, fieldname: str, colopts: ExtendedColumnOptions, value
                     },
                     colopts.column
                 )
+            if (
+                isinstance(result, ParseResult)
+                and table.name == 'Attachment'
+                and field.name.lower() == 'resourceurl'
+            ):
+                parsed_url = parse_field(tablename, fieldname, result.upload[fieldname])
+                if isinstance(parsed_url, ParseFailure):
+                    return WorkBenchParseFailure.from_parse_failure(parsed_url, colopts.column)
             return result
     
     parsed = parse_field(tablename, fieldname, value, colopts.uiformatter)

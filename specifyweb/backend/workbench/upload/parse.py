@@ -6,6 +6,9 @@ from typing import Any, NamedTuple, Literal
 from datetime import datetime
 from decimal import Decimal
 
+from django.core.exceptions import ValidationError
+from django.core.validators import URLValidator
+
 from specifyweb.specify.utils.agent_types import agent_types
 from specifyweb.backend.stored_queries.format import get_date_format, MYSQL_TO_YEAR, MYSQL_TO_MONTH
 from specifyweb.specify.datamodel import datamodel, Table, Field, Relationship
@@ -19,6 +22,7 @@ ParseFailureKey = Literal[
     'failedParsingFloat',
     'failedParsingBoolean',
     'failedParsingAgentType',
+    'failedParsingURL',
 
     'invalidYear',
     'badDateFormat',
@@ -43,6 +47,8 @@ class ParseSucess(NamedTuple):
 
 ParseResult = ParseSucess | ParseFailure
 
+validate_resource_url = URLValidator(schemes=['http', 'https'])
+
 
 def parse_field(
         table_name: str,
@@ -57,7 +63,14 @@ def parse_field(
         return parse_integer(field.name, raw_value)
 
     if formatter is not None:
-        return parse_formatted(formatter, table, field, raw_value)
+        result = parse_formatted(formatter, table, field, raw_value)
+        if (
+            table.name == 'Attachment'
+            and field.name.lower() == 'resourceurl'
+            and isinstance(result, ParseSucess)
+        ):
+            return parse_field(table_name, field_name, result.payload[field.name.lower()])
+        return result
 
     if is_latlong(table, field):
         return parse_latlong(field, raw_value)
@@ -84,6 +97,11 @@ def parse_field(
     if hasattr(field, 'length') and field.length is not None and len(raw_value) > field.length:
         return ParseFailure('valueTooLong', {'field': field_name, 'maxLength': field.length})
 
+    if table.name == 'Attachment' and field.name.lower() == 'resourceurl':
+        try:
+            validate_resource_url(raw_value)
+        except ValidationError:
+            return ParseFailure('failedParsingURL', {'value': raw_value})
 
     return ParseSucess({field_name.lower(): raw_value})
 
