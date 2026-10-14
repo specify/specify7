@@ -60,7 +60,7 @@ export function useShowParentButton({
               onDeleted={() => {
                 handleLoading(true);
                 handleParentDeleted?.();
-                handleCheckChildExists?.().then((childExists) => {
+                handleCheckChildExists().then((childExists) => {
                   if (!childExists) {
                     handleDelete();
                   }
@@ -73,7 +73,7 @@ export function useShowParentButton({
                 handleLoading(true);
                 if (parentResource !== undefined)
                   handleParentSaved?.(parentResource);
-                handleCheckChildExists?.().then((childExists) => {
+                handleCheckChildExists().then((childExists) => {
                   if (!childExists) {
                     handleDelete();
                   }

@@ -107,7 +107,7 @@ function BlockerResource({
         className="flex min-h-10 w-full min-w-0 items-center justify-start gap-2 rounded-md border-0 px-2 py-2 text-left"
       >
         <TableIcon name={record.resource.specifyTable.name} label={false} />
-        <span className="min-w-0 flex-1 truncate">
+        <span className="min-w-0 flex-1">
           {record.count !== undefined
             ? commonText.countLine({
                 resource: resourceLabel,
@@ -227,7 +227,7 @@ function DeleteBlockersRelationship({
         handleRelationshipActive(relationship, blockerRelationship.key);
       }}
     >
-      <span className="flex-1 min-w-0 truncate">
+      <span className="flex-1 min-w-0">
         {blockerRelationship.count !== undefined
           ? commonText.countLine({
               resource: relationship.label,

@@ -183,7 +183,8 @@ export class DeleteBlockerState {
     return fetchInitialBlockers(
       resource.specifyTable.name,
       resource.id,
-      this.recordsPerPage
+      this.recordsPerPage,
+      true
     ).then((blockers) =>
       // This branch should only mean that the resource was deleted while the
       // request was in-flight.

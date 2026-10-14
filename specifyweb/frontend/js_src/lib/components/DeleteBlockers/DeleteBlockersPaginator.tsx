@@ -32,6 +32,16 @@ export function DeleteBlockersPaginator({
     handleAllBlockersDeleted
   );
 
+  const pageKey = React.useMemo(
+    () =>
+      buildPageCacheKey(
+        parentResource,
+        relationship.table.name,
+        relationship.name
+      ),
+    [parentResource, relationship]
+  );
+
   // FEAT: use the Relationships reference count in the paginator?
   // const referenceCount = useRelationshipReferenceCount(
   //   parentResource,
@@ -41,15 +51,7 @@ export function DeleteBlockersPaginator({
   return (
     <RecordSelectorFromPage
       page={page}
-      pageKey={React.useMemo(
-        () =>
-          buildPageCacheKey(
-            parentResource,
-            relationship.table.name,
-            relationship.name
-          ),
-        [parentResource, relationship]
-      )}
+      pageKey={pageKey}
       pageSize={pageSize}
       pageMetaData={pageMetaData}
       dialog={dialog}
@@ -59,6 +61,13 @@ export function DeleteBlockersPaginator({
       onClose={handleClose}
       onDelete={handleResourceDeletion}
       onSaved={f.void}
+      // Deleting a parent might not actually remove all of the blockers for
+      // this relationship, but this behavior is currently OK as it lets the
+      // blockers be re-updated and handles unrendering the Paginator (don't
+      // have to worry about fetching and re-rendering the right page after
+      // resource deletion, and how to handle the case where all records are
+      // removed)
+      onParentDeleted={handleAllBlockersDeleted}
     />
   );
 }

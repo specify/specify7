@@ -6,6 +6,7 @@ import { useAsyncState } from './useAsyncState';
 import { Relationship } from '../components/DataModel/specifyField';
 import { fetchCollection } from '../components/DataModel/collection';
 import { backendFilter } from '../components/DataModel/helpers';
+import { resourceEvents } from '../components/DataModel/resource';
 
 /**
  * React hook to get basic parent information about a particular resource.
@@ -19,7 +20,7 @@ export function useParentResource(
 ): {
   readonly parentRelationship: undefined | Relationship;
   readonly parentResource: false | undefined | SpecifyResource<AnySchema>;
-  readonly onCheckChildExists?: () => Promise<boolean>;
+  readonly onCheckChildExists: () => Promise<boolean>;
 } {
   const directParentRelationship = React.useMemo(
     () =>
@@ -51,15 +52,49 @@ export function useParentResource(
     return directParentRelationship;
   }, [resource, directParentRelationship]);
 
-  const [parentResource] = useAsyncState<false | SpecifyResource<AnySchema>>(
+  const [parentResource, setParentResource] = useAsyncState<
+    false | SpecifyResource<AnySchema>
+  >(
     React.useCallback(
       () =>
-        parentRelationship === undefined || resource === undefined
+        parentRelationship === undefined ||
+        resource === undefined ||
+        // REFACTOR: We can probably use resourceEvents here to check for
+        // deletion instead?
+        resource.deleted
           ? false
-          : resource.rgetPromise(parentRelationship.name),
-      [resource, directParentRelationship]
+          : resource.fetch({ strict: false }).then(async (newResource) => {
+              const returned = await newResource.rgetPromise(
+                parentRelationship.name,
+                true,
+                false
+              );
+              return returned;
+            }),
+      [resource, resource?.deleted, parentRelationship]
     ),
     false
+  );
+
+  /**
+   * If the parent was deleted, the child should be deleted as well.
+   * We don't currently handle this case cleanly elsewhere in the frontend
+   * (such as ResourceView), so for now we just mark the record as having no
+   * parent if the parent is deleted.
+   */
+  React.useEffect(
+    () =>
+      resourceEvents.on('deleted', (deletedResource) => {
+        if (typeof parentResource !== 'object') return;
+        if (
+          deletedResource.specifyTable.name ===
+            parentResource.specifyTable.name &&
+          deletedResource.id === parentResource.id
+        ) {
+          setParentResource(false);
+        }
+      }),
+    [parentResource]
   );
 
   const handleCheckChildExists = React.useCallback(

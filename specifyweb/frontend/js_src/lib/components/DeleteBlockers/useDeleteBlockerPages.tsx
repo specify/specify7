@@ -7,6 +7,7 @@ import { PageMetaData } from '../FormSliders/RecordSelectorFromPage';
 import { useDeleteBlockerStore } from './Context';
 import { useLiveState } from '../../hooks/useLiveState';
 import { error } from '../Errors/assert';
+import { useRelationshipReferenceCount } from './useReferenceCount';
 
 export function useDeleteBlockerPages(
   resource: SpecifyResource<AnySchema>,
@@ -26,6 +27,8 @@ export function useDeleteBlockerPages(
   ) => void;
 } {
   const store = useDeleteBlockerStore();
+
+  const referenceCount = useRelationshipReferenceCount(resource, relationship);
 
   const [pageCursor, setPageCursor] = useLiveState<{
     readonly anchor: number | null | 'last';
@@ -56,6 +59,10 @@ export function useDeleteBlockerPages(
       pageCursor.backwards
     );
   }, [store, resource, relationship, pageCursor]);
+
+  React.useEffect(() => {
+    if (referenceCount === 0) handleAllBlockersDeleted();
+  }, [referenceCount]);
 
   const handleNextPageFetch = React.useCallback(
     (

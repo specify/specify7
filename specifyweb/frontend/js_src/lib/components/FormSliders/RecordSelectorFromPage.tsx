@@ -87,6 +87,7 @@ export function RecordSelectorFromPage<
   onClose: handleClose,
   onDelete: handleDelete,
   onSaved: handleSaved,
+  onParentDeleted: handleParentDeleted,
 }: {
   readonly page: PAGE_TYPE | undefined;
   readonly pageKey: string | undefined;
@@ -106,6 +107,7 @@ export function RecordSelectorFromPage<
   readonly onClose: () => void;
   readonly onDelete: (page: PAGE_TYPE, index: number) => void;
   readonly onSaved: (resource: SpecifyResource<SCHEMA>) => void;
+  readonly onParentDeleted?: () => void;
 }): JSX.Element | null {
   const [page] = useTriggerState(initialPage);
   const [indexInPage, setIndexInPage] = React.useState(0);
@@ -227,6 +229,7 @@ export function RecordSelectorFromPage<
           hasTablePermission(table.name, 'delete') ? handleRemove : undefined
         }
         onSaved={() => handleSaved(currentResource!)}
+        onParentDeleted={handleParentDeleted}
         onAdd={undefined}
       />
       {typeof unloadProtect === 'function' && (

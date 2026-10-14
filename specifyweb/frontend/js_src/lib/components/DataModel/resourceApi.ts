@@ -976,6 +976,7 @@ export const ResourceBase = Backbone.Model.extend({
     const promise = await Backbone.Model.prototype.destroy.apply(this, ...args);
     this.deleted = true;
     resourceEvents.trigger('deleted', this);
+    // BUG: We need to notify the resource's dependents that they were deleted
     return promise;
   },
   toJSON() {

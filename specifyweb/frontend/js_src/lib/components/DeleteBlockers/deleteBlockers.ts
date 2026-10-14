@@ -57,7 +57,9 @@ export async function fetchInitialBlockers(
       headers: { Accept: 'application/json' },
       expectedErrors: expectFailure ? [Http.NOT_FOUND] : [],
     }
-  ).then(({ data }) => data);
+  ).then((results) =>
+    results.status === Http.NOT_FOUND ? undefined : results.data
+  );
 }
 
 export async function filterDeleteBlockers(

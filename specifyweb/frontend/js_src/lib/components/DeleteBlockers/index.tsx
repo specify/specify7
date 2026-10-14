@@ -23,7 +23,7 @@ export function DeleteBlockers({
     | {
         readonly resource: SpecifyResource<AnySchema>;
         readonly relationship: Relationship;
-        readonly relationshipKey: string | undefined;
+        readonly relationshipKey: string;
       }
   >(undefined);
 
