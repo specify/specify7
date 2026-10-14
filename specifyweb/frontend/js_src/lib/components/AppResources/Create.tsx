@@ -259,17 +259,7 @@ function EditAppResource({
   readonly templateFile: string | undefined;
 }): JSX.Element {
   const resource = React.useMemo(
-    () =>
-      deserializeResource(
-        addMissingFields(type.tableName as 'SpAppResource', {
-          // I don't think this field is used anywhere
-          level: 0,
-          mimeType,
-          name: name.trim(),
-          specifyUser: userInformation.resource_uri,
-          spAppResourceDir: directory.resource_uri,
-        })
-      ),
+    () => buildNewAppResource(type, name, mimeType, directory),
     [directory, name, type, mimeType]
   );
 
@@ -321,6 +311,29 @@ function EditAppResource({
   );
 }
 
+/**
+ * S6 hard-fails when opening a label whose spappresource.Description is NULL,
+ * so default description to the resource name on creation. See ticket #824.
+ */
+const buildNewAppResource = (
+  type: AppResourceType,
+  name: string,
+  mimeType: string | undefined,
+  directory: SerializedResource<SpAppResourceDir>
+) =>
+  deserializeResource(
+    addMissingFields(type.tableName as 'SpAppResource', {
+      // I don't think this field is used anywhere
+      level: 0,
+      mimeType,
+      name: name.trim(),
+      description: name.trim(),
+      specifyUser: userInformation.resource_uri,
+      spAppResourceDir: directory.resource_uri,
+    })
+  );
+
 export const exportsForTests = {
   getUrl,
+  buildNewAppResource,
 };
