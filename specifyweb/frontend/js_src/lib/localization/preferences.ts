@@ -2253,6 +2253,42 @@ export const preferencesText = createDictionary({
     'hr-hr': 'Postavke kolekcije',
     nb: 'Samlingsinnstillinger',
   },
+  globalAuditing: {
+    'en-us': 'Auditing',
+  },
+  enableAuditLog: {
+    'en-us': 'Enable audit log',
+  },
+  enableAuditLogDescription: {
+    'en-us': 'Record record creation, deletion, and modification events.',
+  },
+  logFieldLevelChanges: {
+    'en-us': 'Log field-level changes',
+  },
+  logFieldLevelChangesDescription: {
+    'en-us': 'Record changes to individual field values in the audit log.',
+  },
+  formatting: {
+    'en-us': 'Date Formatting',
+  },
+  fullDateFormat: {
+    'en-us': 'Full date format',
+  },
+  fullDateFormatDescription: {
+    'en-us': 'Format used when displaying complete dates.',
+  },
+  monthYearDateFormat: {
+    'en-us': 'Month/year date format',
+  },
+  monthYearDateFormatDescription: {
+    'en-us': 'Format used when displaying dates with only a month and year.',
+  },
+  attachmentThumbnailSize: {
+    'en-us': 'Attachment thumbnail size',
+  },
+  attachmentThumbnailSizeDescription: {
+    'en-us': 'Size in pixels of generated attachment thumbnails.',
+  },
   rememberDialogSizes: {
     'en-us': 'Remember dialog window sizes',
     'ru-ru': 'Запомнить размеры диалоговых окон',

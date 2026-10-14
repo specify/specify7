@@ -124,6 +124,7 @@ export const frontEndPermissions = {
   '/preferences/user': ['edit_protected'],
   '/preferences/statistics': ['edit_shared'],
   '/preferences/collection': ['edit_collection'],
+  '/preferences/global': ['update'],
 } as const;
 
 /**
