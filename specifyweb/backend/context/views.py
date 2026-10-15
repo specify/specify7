@@ -38,7 +38,11 @@ from specifyweb.specify.models_utils.serialize_datamodel import datamodel_to_jso
 from specifyweb.specify.api.serializers import uri_for_model
 from specifyweb.specify.utils.specify_jar import specify_jar
 from specifyweb.specify.views import login_maybe_required, openapi
-from .app_resource import get_app_resource, FORM_RESOURCE_EXCLUDED_LST
+from .app_resource import (
+    FORM_RESOURCE_EXCLUDED_LST,
+    get_app_resource,
+    get_catalog_number_format_names_for_discipline,
+)
 from .schema_localization import get_schema_languages, get_schema_localization
 from .viewsets import get_views
 from specifyweb.backend.setup_tool.api import (
@@ -435,6 +439,65 @@ def app_resource(request):
     response = HttpResponse(resource, content_type=mimetype)
     response['X-Record-ID'] = id
     return  response
+
+
+@openapi(schema={
+    "get": {
+        "parameters": [
+            {
+                "name": "discipline",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "integer"},
+                "description": "Discipline id for which catalog-number format names should be listed.",
+            }
+        ],
+        "responses": {
+            "200": {
+                "description": "Catalog-number UIFormatter names for the discipline (+ global/backstop).",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "names": {
+                                    "type": "array",
+                                    "items": {"type": "string"},
+                                }
+                            },
+                            "required": ["names"],
+                        }
+                    }
+                },
+            },
+            "400": {"description": "Missing or invalid discipline id."},
+            "404": {"description": "Discipline not found."},
+        },
+    }
+})
+@login_maybe_required
+@require_http_methods(['GET', 'HEAD'])
+def catalog_number_format_names(request):
+    """List catalog-number format names relevant to a target discipline.
+
+    Used by System Configuration when creating/editing a Collection so the
+    Catalog Num Format Name pick list is not limited to the login collection's
+    UIFormatters (#8678).
+    """
+    raw = request.GET.get('discipline')
+    try:
+        discipline_id = int(raw)
+    except (TypeError, ValueError):
+        return HttpResponseBadRequest('discipline query parameter is required')
+
+    try:
+        discipline = Discipline.objects.get(id=discipline_id)
+    except Discipline.DoesNotExist:
+        raise Http404()
+
+    return JsonResponse({
+        'names': get_catalog_number_format_names_for_discipline(discipline),
+    })
 
 
 @login_maybe_required
