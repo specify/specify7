@@ -144,7 +144,7 @@ class TestAttachmentResourceURLResults(SQLAlchemySetup):
         )
 
     def test_query_results(self):
-        with self.test_session_context() as session:
+        with TestAttachmentResourceURLResults.test_session_context() as session:
             result = execute(
                 session, self.collection, self.specifyuser, self.table.tableId,
                 search_synonymy=False, distinct=False, series=False,
@@ -155,7 +155,7 @@ class TestAttachmentResourceURLResults(SQLAlchemySetup):
     def test_csv_export(self):
         with TemporaryDirectory() as directory:
             path = Path(directory) / "attachments.csv"
-            with self.test_session_context() as session:
+            with TestAttachmentResourceURLResults.test_session_context() as session:
                 query_to_csv(
                     session, self.collection, self.specifyuser,
                     self.table.tableId, self.fields, path,
