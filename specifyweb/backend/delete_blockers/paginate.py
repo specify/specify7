@@ -152,7 +152,9 @@ class SpLocaleContainerToDisciplinePaginator(ForeignKeyPaginator):
     SpExportSchemaItem to SpLocaleContainerItem on splocalecontaineritem.
     REFACTOR: Make this more generic. When resolving a paginator by field,
     recursively check the relationships CASCADEd relationships until a PROTECT
-    is found.
+    is found. We can even completely exclude the relationship from Delete
+    Blockers if there is no termimal PROTECT, i.e., all relationships CASCADE.
+    Reminder to be mindful and handle self JOINs for the above code
     """
     def __init__(self, obj, _relationship, limit = DELETE_BLOCKER_LIMIT, anchor_id = None, backwards = False):
         resolved_relationship = Spexportschemaitem._meta.get_field("splocalecontaineritem")
