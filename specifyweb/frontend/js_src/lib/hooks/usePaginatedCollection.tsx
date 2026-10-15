@@ -38,11 +38,23 @@ export function usePaginatedCollection<COLLECTION_TYPE>({
   const fetchersRef = React.useRef<R<Promise<RA<COLLECTION_TYPE> | undefined>>>(
     {}
   );
+  const collectionGeneration = React.useRef(0);
 
-  const getSetTotalCount = useTriggerState<number | undefined>(
+  const [totalCount, setTotalCount] = useTriggerState<number | undefined>(
     initialTotalCount
   );
-  const [totalCount] = getSetTotalCount;
+  const previousInitialRecords = React.useRef(initialRecords);
+  React.useLayoutEffect(() => {
+    if (previousInitialRecords.current === initialRecords) {
+      setTotalCount(initialTotalCount);
+      return;
+    }
+    previousInitialRecords.current = initialRecords;
+    collectionGeneration.current++;
+    fetchersRef.current = {};
+    handleSetResults(initialRecords);
+    setTotalCount(initialTotalCount);
+  }, [initialRecords, initialTotalCount, handleSetResults, setTotalCount]);
   const canFetchMore =
     !Array.isArray(results) ||
     totalCount === undefined ||
@@ -53,6 +65,7 @@ export function usePaginatedCollection<COLLECTION_TYPE>({
     async (index: number = 0): Promise<RA<COLLECTION_TYPE> | undefined> => {
       const currentResults = resultsRef.current ?? [];
       if (rawHandleFetchMore == undefined) return undefined;
+      const generation = collectionGeneration.current;
       // Prevent concurrent fetching in different places
       fetchersRef.current[index] ??= rawHandleFetchMore(index)
         .then(async (newResults) => {
@@ -65,6 +78,8 @@ export function usePaginatedCollection<COLLECTION_TYPE>({
                 `Returned ${newResults.length} results, when expected at most ${fetchSize}`
               )
             );
+
+          if (generation !== collectionGeneration.current) return undefined;
 
           // Results might have changed while fetching
           const newCurrentResults = resultsRef.current ?? currentResults;
@@ -90,10 +105,11 @@ export function usePaginatedCollection<COLLECTION_TYPE>({
           return newResults;
         })
         .catch((error) => {
-          fetchersRef.current = removeKey(
-            fetchersRef.current,
-            index.toString()
-          );
+          if (generation === collectionGeneration.current)
+            fetchersRef.current = removeKey(
+              fetchersRef.current,
+              index.toString()
+            );
           raise(error);
           return undefined;
         });
@@ -162,7 +178,7 @@ export function usePaginatedCollection<COLLECTION_TYPE>({
   return {
     results: [results, handleSetResults] as const,
     onFetchMore: handleFetchMore,
-    totalCount: getSetTotalCount,
+    totalCount: [totalCount, setTotalCount] as const,
     canFetchMore,
   };
 }
