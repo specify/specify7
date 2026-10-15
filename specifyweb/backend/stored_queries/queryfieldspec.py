@@ -3,7 +3,9 @@ import logging
 from datetime import datetime, timedelta
 import re
 from collections import namedtuple, deque
+from types import SimpleNamespace
 from typing import TypedDict, Iterable
+from urllib.parse import urlencode
 
 from specifyweb.backend.inheritance.utils import get_cat_num_inheritance_setting, get_parent_cat_num_inheritance_setting
 from specifyweb.specify.utils.uiformatters import get_uiformatter
@@ -553,6 +555,7 @@ class QueryFieldSpec(
     def add_spec_to_query(
         self, query, formatter=None, aggregator=None, cycle_detector=[]
     ):
+        """Build the shared field projection used by query results and exports."""
 
         if self.get_field() is None:
             return (
@@ -601,6 +604,21 @@ class QueryFieldSpec(
                         orm_field = orm_model._id
                     else:
                         raise
+
+                if table.name == "Attachment" and field_name == "resourceURL":
+                    from specifyweb.backend.attachment_gw import views as attachment_gw
+
+                    if attachment_gw.server_urls is not None:
+                        read_url = attachment_gw.server_urls["read"]
+                        collection_name = attachment_gw.get_collection(
+                            SimpleNamespace(specify_collection=query.collection)
+                        )
+                        params = urlencode({"coll": collection_name, "type": "O"})
+                        separator = "&" if "?" in read_url else "?"
+                        prefix = f"{read_url}{separator}{params}&filename="
+                        orm_field = sql.func.coalesce(
+                            orm_field, prefix + orm_model.attachmentLocation
+                        )
 
                 if field.is_temporal() and self.date_part != "Full Date":
                     precision_field_name = field.name + "Precision"
