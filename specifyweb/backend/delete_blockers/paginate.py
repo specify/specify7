@@ -1,5 +1,6 @@
 from django.db.models import Model, ForeignObjectRel, ForeignKey, QuerySet
 
+from specifyweb.specify.models import Spexportschemaitem
 from specifyweb.backend.trees.extras import Tree, TreeRank
 from specifyweb.backend.delete_blockers.validators import DELETE_BLOCKER_LIMIT
 from specifyweb.backend.delete_blockers.utils import relationship_cascades_delete, node_numbers_valid_for_tree
@@ -143,6 +144,24 @@ class TreeRankToDefinitionPaginator(ForeignKeyPaginator):
             parent__isnull=True
         )
 
+class SpLocaleContainerToDisciplinePaginator(ForeignKeyPaginator):
+    """
+    This optimized Paginator is only possible because the only relationship
+    that can block deletion in the chain of
+    SpLocaleContainer -> SpLocaleContainerItem -> SpLocaleItemStr, etc. is
+    SpExportSchemaItem to SpLocaleContainerItem on splocalecontaineritem.
+    REFACTOR: Make this more generic. When resolving a paginator by field,
+    recursively check the relationships CASCADEd relationships until a PROTECT
+    is found.
+    """
+    def __init__(self, obj, _relationship, limit = DELETE_BLOCKER_LIMIT, anchor_id = None, backwards = False):
+        resolved_relationship = Spexportschemaitem._meta.get_field("splocalecontaineritem")
+        super().__init__(obj, resolved_relationship, limit, anchor_id, backwards)
+    def _get_base_queryset(self):
+        return Spexportschemaitem.objects.filter(
+            splocalecontaineritem__container__discipline_id=self.obj.pk
+        )
+
 
 def _resolve_paginator_by_field(field: ForeignKey) -> type[ReferencePaginator] | None:
     if isinstance(field, ForeignKey):
@@ -161,6 +180,8 @@ def resolve_reference_paginator(obj: Model, field: ForeignKey) -> type[Reference
         Paginator = _resolve_tree_node_paginator(obj, field)
     elif is_tree_definition(obj):
         Paginator = _resolve_tree_definition_paginator(obj, field)
+    elif _is_discipline(obj):
+        Paginator = _resolve_paginator_for_discipline(obj, field)
 
     if Paginator is None:
         Paginator = _resolve_paginator_by_field(field)
@@ -219,3 +240,18 @@ def _tree_cascades_delete(obj: type[Tree]):
         return False
 
     return relationship_cascades_delete(other_side)
+
+def _is_discipline(obj: Model) -> bool:
+    table_name = obj._meta.db_table.lower()
+    return table_name == "discipline"
+
+def _resolve_paginator_for_discipline(obj: Model, field: ForeignKey):
+    """
+    We're only interested in custom paginator for the
+    SpLocaleContainer -> discipline field
+    """
+    if field.model._meta.db_table.lower() != "splocalecontainer":
+        return None
+    if field.name != "discipline" or not relationship_cascades_delete(field):
+        return None
+    return SpLocaleContainerToDisciplinePaginator

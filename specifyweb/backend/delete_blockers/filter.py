@@ -106,29 +106,21 @@ def default_filters(obj: Model, limit=DELETE_BLOCKER_LIMIT, count_only=False) ->
     protect_rels, cascade_rels = blocker_relationships_for_obj(obj)
     for rel in protect_rels:
         # FIXME: optimize this, shouldn't need new reference for every relaitonship
-        Paginator = resolve_reference_paginator(obj, rel)
-        filters.append(
-            DeleteBlockerFilter(
-                Paginator(
-                    obj,
-                    relationship=rel,
-                    limit=limit
-                )
-            )
-        )
-    # REFACTOR: clean this up a little
-    if not count_only:
-        for rel in cascade_rels:
-            Paginator = resolve_reference_paginator(obj, rel)
-            filters.append(
-                DeleteBlockerFilter(
-                    Paginator(
-                        obj,
-                        relationship=rel,
-                        limit=limit
-                    )
-                )
-            )
+        PaginatorClass = resolve_reference_paginator(obj, rel)
+        paginator = PaginatorClass(obj, relationship=rel, limit=limit)
+        delete_blocker_filter = DeleteBlockerFilter(paginator)
+        filters.append(delete_blocker_filter)
+
+    # If we're only worrying about counts, we don't need to resolve any of the
+    # CASCADE relationships, so we can stop here
+    if count_only:
+        return filters
+
+    for rel in cascade_rels:
+        PaginatorClass = resolve_reference_paginator(obj, rel)
+        paginator = PaginatorClass(obj, relationship=rel, limit=limit)
+        delete_blocker_filter = DeleteBlockerFilter(paginator)
+        filters.append(delete_blocker_filter)
     return filters
 
 
