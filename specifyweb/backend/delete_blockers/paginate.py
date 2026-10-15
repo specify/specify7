@@ -156,7 +156,7 @@ class SpLocaleContainerToDisciplinePaginator(ForeignKeyPaginator):
     Blockers if there is no termimal PROTECT, i.e., all relationships CASCADE.
     Reminder to be mindful and handle self JOINs for the above code
     """
-    def __init__(self, obj, _relationship, limit = DELETE_BLOCKER_LIMIT, anchor_id = None, backwards = False):
+    def __init__(self, obj, relationship, limit = DELETE_BLOCKER_LIMIT, anchor_id = None, backwards = False):
         resolved_relationship = Spexportschemaitem._meta.get_field("splocalecontaineritem")
         super().__init__(obj, resolved_relationship, limit, anchor_id, backwards)
     def _get_base_queryset(self):
