@@ -1,12 +1,43 @@
+from xml.etree import ElementTree
+
 from django.test import Client
 
 from specifyweb.specify.tests.test_api import ApiTests
 from unittest.mock import Mock, patch
 
-from specifyweb.backend.context.app_resource import get_data_view_queries_resource
+from specifyweb.backend.context.app_resource import (
+    get_app_resource,
+    get_data_view_queries_resource,
+    merge_ui_formatters,
+)
 
 
 FOUND_RESOURCE = ('<resource><text>"Value"</text></resource>', "text/xml", 4)
+
+CUSTOM_UI_FORMATTERS = """<?xml version="1.0" encoding="UTF-8"?>
+<formats>
+  <format system="false" name="GridRefMGRS" class="edu.ku.brc.specify.datamodel.Locality" fieldname="text3" default="false">
+    <field type="regex" value="[A-Z]+" pattern="AA" />
+  </format>
+  <format system="false" name="CatalogNumber" class="edu.ku.brc.specify.datamodel.CollectionObject" fieldname="catalogNumber" default="true">
+    <field type="numeric" size="6" inc="true"/>
+  </format>
+</formats>
+"""
+
+BACKSTOP_UI_FORMATTERS = """<?xml version="1.0" encoding="UTF-8"?>
+<formats>
+  <format system="false" name="CatalogNumber" class="edu.ku.brc.specify.datamodel.CollectionObject" fieldname="catalogNumber" default="true">
+    <field type="year" size="4" value="YEAR"/>
+  </format>
+  <format system="true" name="CatalogNumberNumeric" class="edu.ku.brc.specify.datamodel.CollectionObject" fieldname="catalogNumber" default="false">
+    <external>edu.ku.brc.specify.ui.CatalogNumberUIFieldFormatter</external>
+  </format>
+  <format system="true" name="CatalogNumberString" class="edu.ku.brc.specify.datamodel.CollectionObject" fieldname="catalogNumber" default="false">
+    <external>edu.ku.brc.specify.ui.CatalogNumberStringUIFieldFormatter</external>
+  </format>
+</formats>
+"""
 
 
 class TestAppResource(ApiTests):
@@ -90,3 +121,51 @@ class TestAppResource(ApiTests):
 
         response = c.get("/context/app.resource?name='simple'&quiet='true'")
         self._assertStatusCodeEqual(response, 204)
+
+    def test_merge_ui_formatters_by_name(self):
+        merged = merge_ui_formatters(CUSTOM_UI_FORMATTERS, BACKSTOP_UI_FORMATTERS)
+        root = ElementTree.fromstring(merged)
+        names = [fmt.get('name') for fmt in root.findall('format')]
+
+        self.assertEqual(
+            names,
+            ['GridRefMGRS', 'CatalogNumber', 'CatalogNumberNumeric', 'CatalogNumberString'],
+        )
+        # Custom CatalogNumber wins over backstop (keeps numeric part, not year).
+        catalog_number = root.find("./format[@name='CatalogNumber']")
+        self.assertIsNotNone(catalog_number)
+        self.assertIsNotNone(catalog_number.find("./field[@type='numeric']"))
+        self.assertIsNone(catalog_number.find("./field[@type='year']"))
+
+    @patch("specifyweb.backend.context.app_resource.load_resource_at_level")
+    @patch("specifyweb.backend.context.app_resource.get_app_resource_from_db")
+    def test_uiformatters_merge_custom_with_backstop(
+        self, get_from_db: Mock, load_from_filesystem: Mock
+    ):
+        get_from_db.side_effect = lambda _collection, _user, level, _name: (
+            (CUSTOM_UI_FORMATTERS, 'text/xml', 23) if level == 'Collection' else None
+        )
+        load_from_filesystem.side_effect = lambda _collection, _user, level, _name: (
+            (BACKSTOP_UI_FORMATTERS, 'text/xml', None) if level == 'Backstop' else None
+        )
+
+        result = get_app_resource(self.collection, self.specifyuser, 'UIFormatters')
+
+        self.assertIsNotNone(result)
+        data, mimetype, resource_id = result
+        self.assertEqual(mimetype, 'text/xml')
+        self.assertEqual(resource_id, 23)
+
+        names = {
+            fmt.get('name')
+            for fmt in ElementTree.fromstring(data).findall('format')
+        }
+        self.assertEqual(
+            names,
+            {
+                'GridRefMGRS',
+                'CatalogNumber',
+                'CatalogNumberNumeric',
+                'CatalogNumberString',
+            },
+        )
