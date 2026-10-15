@@ -32,6 +32,7 @@ import { userPreferences } from '../Preferences/userPreferences';
 import {
   fetchOriginalUrl,
   fetchThumbnail,
+  normalizeExternalResourceURL,
   reportAttachmentServerFailure,
   useAttachmentServerStatus,
 } from './attachments';
@@ -58,13 +59,17 @@ export function AttachmentViewer({
     () => serializeResource(attachment),
     [attachment]
   );
+  const externalResourceURL = normalizeExternalResourceURL(
+    attachment.get('resourceURL') ?? ''
+  );
   const [originalUrl] = useAsyncState(
     React.useCallback(
       async () =>
+        externalResourceURL === undefined &&
         attachmentServerStatus !== 'unavailable'
           ? fetchOriginalUrl(serialized)
           : undefined,
-      [attachmentServerStatus, serialized]
+      [attachmentServerStatus, externalResourceURL, serialized]
     ),
     false
   );
@@ -118,10 +123,11 @@ export function AttachmentViewer({
   const [thumbnail] = useAsyncState(
     React.useCallback(
       async () =>
+        externalResourceURL === undefined &&
         attachmentServerStatus !== 'unavailable'
           ? fetchThumbnail(serialized)
           : undefined,
-      [attachmentServerStatus, serialized]
+      [attachmentServerStatus, externalResourceURL, serialized]
     ),
     false
   );
@@ -154,7 +160,11 @@ export function AttachmentViewer({
   return (
     <>
       <div className="flex min-h-[theme(spacing.60)] w-full min-w-[theme(spacing.60)] flex-1 items-center justify-center">
-        {attachmentServerStatus === 'unavailable' ? (
+        {externalResourceURL !== undefined ? (
+          <Link.NewTab href={externalResourceURL}>
+            {attachmentsText.openExternalResource()}
+          </Link.NewTab>
+        ) : attachmentServerStatus === 'unavailable' ? (
           <AttachmentServerUnavailable />
         ) : displayOriginal === 'full' && !isTiffImage ? (
           originalUrl === undefined ? (

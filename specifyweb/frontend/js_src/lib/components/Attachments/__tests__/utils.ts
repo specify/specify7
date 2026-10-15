@@ -16,6 +16,7 @@ export const testAttachment = {
   mimeType: 'image/jpeg',
   origFilename: 'topbrc4.jpg',
   remarks: null,
+  resourceURL: null,
   scopeID: null,
   scopeType: null,
   subjectOrientation: null,

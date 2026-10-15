@@ -1,9 +1,16 @@
+import { attachmentsText } from '../../../localization/attachments';
 import { backEndText } from '../../../localization/backEnd';
 import { requireContext } from '../../../tests/helpers';
 
 import { resolveValidationMessage } from '../resultsParser';
 
 requireContext();
+
+test('resolves invalid attachment URLs to the form validation message', () => {
+  expect(
+    resolveValidationMessage('failedParsingURL', { value: 'javascript:alert(1)' })
+  ).toBe(attachmentsText.invalidExternalResourceUrl());
+});
 
 describe('resolveValidationMessage business-rule handling', () => {
   test('formats childFieldNotUnique and appends conflicting record ids', () => {
