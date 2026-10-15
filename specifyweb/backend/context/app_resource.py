@@ -347,3 +347,99 @@ def merge_formatters(custom_xml, default_xml):
     
     # Convert the merged XML tree back to a string
     return ElementTree.tostring(custom_root, encoding='utf-8').decode('utf-8')
+
+
+def merge_ui_formatters_by_name(*xml_documents):
+    """Merge UIFormatters XML documents by format ``name`` (first wins).
+
+    Used when listing catalog-number formats for a target discipline so that
+    collection/discipline/common/backstop definitions combine without the
+    login-collection session scope (#8678).
+    """
+    merged_root = None
+    seen_names = set()
+    for xml in xml_documents:
+        if not xml:
+            continue
+        root = ElementTree.fromstring(xml)
+        if merged_root is None:
+            merged_root = ElementTree.Element(root.tag, root.attrib)
+        for format_elem in root.findall('format'):
+            name = format_elem.get('name')
+            if not name or name in seen_names:
+                continue
+            merged_root.append(format_elem)
+            seen_names.add(name)
+    if merged_root is None:
+        return None
+    return ElementTree.tostring(merged_root, encoding='utf-8').decode('utf-8')
+
+
+def _uiformatters_xml_from_dirs(dirs):
+    resources = Spappresourcedata.objects.filter(
+        spappresource__name='UIFormatters',
+        spappresource__spappresourcedir__in=dirs,
+    )
+    return [resource.data for resource in resources if resource.data]
+
+
+def get_catalog_number_format_names_for_discipline(discipline):
+    """Catalog-number UIFormatter names visible for creating a collection under *discipline*.
+
+    Includes formats from:
+    - collections already in that discipline,
+    - the discipline itself,
+    - common/global,
+    - backstop defaults.
+
+    Does **not** use the logged-in collection's unrelated UIFormatters.
+    """
+    from specifyweb.specify.models import Collection
+
+    xml_documents = []
+
+    # Sibling collection-level UIFormatters (most specific within the discipline).
+    for collection in Collection.objects.filter(discipline=discipline):
+        dirs = Spappresourcedir.objects.filter(
+            ispersonal=False,
+            usertype__isnull=True,
+            collection=collection,
+            discipline=discipline,
+        )
+        xml_documents.extend(_uiformatters_xml_from_dirs(dirs))
+
+    # Discipline-level.
+    discipline_dirs = Spappresourcedir.objects.filter(
+        ispersonal=False,
+        usertype__isnull=True,
+        collection__isnull=True,
+        discipline=discipline,
+    )
+    xml_documents.extend(_uiformatters_xml_from_dirs(discipline_dirs))
+
+    # Common / global.
+    common_dirs = Spappresourcedir.objects.filter(
+        ispersonal=False,
+        usertype__isnull=True,
+        collection__isnull=True,
+        discipline__isnull=True,
+    )
+    xml_documents.extend(_uiformatters_xml_from_dirs(common_dirs))
+
+    # Backstop filesystem defaults.
+    backstop = load_resource_at_level(None, None, 'Backstop', 'UIFormatters')
+    if backstop is not None:
+        xml_documents.append(backstop[0])
+
+    merged = merge_ui_formatters_by_name(*xml_documents)
+    if not merged:
+        return []
+
+    names = []
+    for format_elem in ElementTree.fromstring(merged).findall('format'):
+        if format_elem.get('fieldname') != 'catalogNumber':
+            continue
+        name = format_elem.get('name')
+        if name:
+            names.append(name)
+    return names
