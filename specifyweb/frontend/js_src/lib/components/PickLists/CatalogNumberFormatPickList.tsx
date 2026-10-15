@@ -20,16 +20,16 @@ import type {
 } from '../FormFields/ComboBox';
 import { PickListComboBox } from './index';
 
-const catalogNumberField =
-  tables.CollectionObject.strictGetLiteralField('catalogNumber');
-
-const sessionCatalogNumberFormatItems = (): RA<PickListItemSimple> =>
-  Object.entries(getUiFormatters())
+const sessionCatalogNumberFormatItems = (): RA<PickListItemSimple> => {
+  const catalogNumberField =
+    tables.CollectionObject.strictGetLiteralField('catalogNumber');
+  return Object.entries(getUiFormatters())
     .filter(([_, formatter]) => formatter.field === catalogNumberField)
     .map(([formatterName]) => ({
       value: formatterName,
       title: formatterName,
     }));
+};
 
 async function fetchCatalogNumberFormatItems(
   disciplineId: number | undefined
