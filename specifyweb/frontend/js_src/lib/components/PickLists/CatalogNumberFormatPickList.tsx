@@ -7,7 +7,6 @@
 
 import React from 'react';
 
-import { useAsyncState } from '../../hooks/useAsyncState';
 import { ajax } from '../../utils/ajax';
 import type { RA } from '../../utils/types';
 import { idFromUrl, resourceOn } from '../DataModel/resource';
@@ -31,66 +30,90 @@ const sessionCatalogNumberFormatItems = (): RA<PickListItemSimple> => {
     }));
 };
 
-async function fetchCatalogNumberFormatItems(
-  disciplineId: number | undefined
-): Promise<RA<PickListItemSimple>> {
-  if (typeof disciplineId !== 'number') {
-    return sessionCatalogNumberFormatItems();
+/**
+ * Stable key for the formats we intend to show. Used to ignore stale responses
+ * when discipline changes while a request is in flight.
+ */
+function catalogNumberFormatRequestKey(
+  resource: DefaultComboBoxProps['resource']
+): string {
+  if (resource?.specifyTable.name === 'Collection') {
+    const discipline = resource.get('discipline');
+    return typeof discipline === 'string'
+      ? `collection:${discipline}`
+      : 'collection:none';
   }
-
-  const { data } = await ajax<{ readonly names: RA<string> }>(
-    `/context/catalog_number_format_names.json?discipline=${disciplineId}`,
-    {
-      headers: { Accept: 'application/json' },
-    }
-  );
-
-  return data.names.map((name) => ({ value: name, title: name }));
+  return 'session';
 }
 
-function disciplineIdFromResource(
+async function fetchCatalogNumberFormatItems(
   resource: DefaultComboBoxProps['resource']
-): number | undefined {
-  if (resource === undefined) return undefined;
-  if (resource.specifyTable.name === 'Collection') {
+): Promise<RA<PickListItemSimple>> {
+  // Collection: only show formats for its target discipline (never login session).
+  if (resource?.specifyTable.name === 'Collection') {
     const discipline = resource.get('discipline');
-    return typeof discipline === 'string' ? idFromUrl(discipline) : undefined;
+    const disciplineId =
+      typeof discipline === 'string' ? idFromUrl(discipline) : undefined;
+    if (typeof disciplineId !== 'number') {
+      return [];
+    }
+
+    const { data } = await ajax<{ readonly names: RA<string> }>(
+      `/context/catalog_number_format_names.json?discipline=${disciplineId}`,
+      {
+        headers: { Accept: 'application/json' },
+      }
+    );
+
+    return data.names.map((name) => ({ value: name, title: name }));
   }
-  return undefined;
+
+  // Other tables (e.g. CollectionObjectType) keep session UIFormatters.
+  return sessionCatalogNumberFormatItems();
 }
 
 export function CatalogNumberFormatPickList(
   props: DefaultComboBoxProps
 ): JSX.Element {
-  const fetchItems = React.useCallback(
-    async () => fetchCatalogNumberFormatItems(disciplineIdFromResource(props.resource)),
-    [props.resource]
-  );
+  const [items, setItems] = React.useState<
+    RA<PickListItemSimple> | undefined
+  >(undefined);
+  const requestIdRef = React.useRef(0);
 
-  const [items, setItems] = useAsyncState<RA<PickListItemSimple>>(
-    fetchItems,
-    false
-  );
+  const loadItems = React.useCallback(() => {
+    const resource = props.resource;
+    const requestId = ++requestIdRef.current;
+    const expectedKey = catalogNumberFormatRequestKey(resource);
 
-  React.useEffect(
-    () =>
-      props.resource === undefined
-        ? undefined
-        : resourceOn(
-            props.resource,
-            'change:discipline',
-            (): void => {
-              fetchItems()
-                .then(setItems)
-                .catch((error) => {
-                  setItems(undefined);
-                  raise(error);
-                });
-            },
-            true
-          ),
-    [props.resource, fetchItems, setItems]
-  );
+    void fetchCatalogNumberFormatItems(resource)
+      .then((nextItems) => {
+        if (requestId !== requestIdRef.current) return;
+        if (catalogNumberFormatRequestKey(resource) !== expectedKey) return;
+        setItems(nextItems);
+      })
+      .catch((error: unknown) => {
+        if (requestId !== requestIdRef.current) return;
+        setItems(undefined);
+        raise(error);
+      });
+  }, [props.resource]);
+
+  React.useEffect(() => {
+    setItems(undefined);
+    loadItems();
+
+    if (props.resource === undefined) return undefined;
+
+    return resourceOn(
+      props.resource,
+      'change:discipline',
+      (): void => {
+        setItems(undefined);
+        loadItems();
+      },
+      false
+    );
+  }, [props.resource, loadItems]);
 
   return (
     <PickListComboBox
