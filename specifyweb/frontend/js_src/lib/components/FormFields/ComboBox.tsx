@@ -15,6 +15,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { PickList, Tables } from '../DataModel/types';
 import { PickListComboBox } from '../PickLists';
+import { CatalogNumberFormatPickList } from '../PickLists/CatalogNumberFormatPickList';
 import { PickListTypes } from '../PickLists/definitions';
 import { fetchPickList, getPickListItems } from '../PickLists/fetch';
 import { FieldsPickList } from '../PickLists/FieldsPickList';
@@ -42,6 +43,8 @@ export const specialPickLists = {
   _fieldsPickList: FieldsPickList,
   _formattersPickList: FormattersPickList,
   _tableNamePickList: TablesPickList,
+  // Overrides session-scoped front-end pick list with discipline-scoped names (#8678).
+  _CatalogNumberUIFormatters: CatalogNumberFormatPickList,
 } as const;
 
 export const specialPickListMapping: RR<

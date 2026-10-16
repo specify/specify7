@@ -31,6 +31,7 @@ urlpatterns = [
     path('schema_localization.json', views.schema_localization),
     path('schema_localization_import.json', views.schema_localization_import),
     path('app.resource', views.app_resource),
+    path('catalog_number_format_names.json', views.catalog_number_format_names),
     path('available_related_searches.json', views.available_related_searches),
     path('remoteprefs.properties', views.remote_prefs),
 
