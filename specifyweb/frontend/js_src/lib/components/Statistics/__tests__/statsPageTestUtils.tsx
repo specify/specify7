@@ -1,12 +1,5 @@
-/**
- * Shared setup for tests that render the whole StatsPage.
- *
- * Not a test file itself (doesn't match Jest's testMatch).
- */
-
 import { waitFor } from '@testing-library/react';
 import React from 'react';
-
 import { overrideAjax } from '../../../tests/ajax';
 import { mount } from '../../../tests/reactUtils';
 import { f } from '../../../utils/functools';
@@ -29,10 +22,6 @@ import type { CustomStat, DefaultStat, StatLayout } from '../types';
 
 const preparationsUrl = '/stats/collection/preparations/';
 
-/**
- * Mock every endpoint the default layout hits. Call once at the top level of
- * a test file (it registers beforeAll/afterAll hooks).
- */
 export function mockStatsRequests(): void {
   const backendUrls = Array.from(
     new Set([
@@ -63,10 +52,6 @@ export function mockStatsRequests(): void {
     )
   );
 
-  /*
-   * The same endpoint serves count queries (QueryStat items) and the distinct
-   * value queries that populate dynamic categories (e.g., type specimens)
-   */
   overrideAjax(
     '/stored_query/ephemeral/',
     {
@@ -80,7 +65,6 @@ export function mockStatsRequests(): void {
   );
 }
 
-/** Fresh, empty preferences that never sync to the back-end */
 const makeEmptyPreferences = <DEFINITIONS extends object>(
   definitions: DEFINITIONS
 ) =>
@@ -104,10 +88,6 @@ const getLayout = (
 const isQueryStat = (item: CustomStat | DefaultStat): boolean =>
   item.type === 'CustomStat' || item.itemType === 'QueryStat';
 
-/**
- * Wait until the default shared page has finished loading, so that no state
- * updates happen after the test's assertions
- */
 async function waitForInitialLoad(
   getSharedLayout: () => RA<StatLayout> | undefined
 ): Promise<RA<StatLayout>> {
@@ -124,11 +104,6 @@ async function waitForInitialLoad(
   });
   return getSharedLayout()!;
 }
-
-/**
- * Render StatsPage as if statistics had never been used, and wait for the
- * initial load of the default shared page to finish
- */
 export async function renderEmptyStatsPage() {
   const collection = makeEmptyPreferences(collectionPreferenceDefinitions);
   const user = makeEmptyPreferences(userPreferenceDefinitions);
