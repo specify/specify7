@@ -1596,4 +1596,10 @@ export const formsText = createDictionary({
     'hr-hr': 'Dodajte djecu COG-a',
     nb: 'Legg til COG-underelementer',
   },
+  viewParentResource: {
+    'en-us': 'View Parent Resource',
+  },
+  noParentFound: {
+    'en-us': 'Could not find parent resource',
+  },
 } as const);

@@ -25,7 +25,7 @@ import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getFieldBlockerKey, useSaveBlockers } from '../DataModel/saveBlockers';
 import type { SpAppResource, SpViewSetObj } from '../DataModel/types';
-import { DeleteButton } from '../Forms/DeleteButton';
+import { DeleteButtonWrapped } from '../Forms/DeleteButton';
 import { Dialog } from '../Molecules/Dialog';
 import { downloadFile, FilePicker, fileToText } from '../Molecules/FilePicker';
 import { hasToolPermission } from '../Permissions/helpers';
@@ -81,7 +81,7 @@ export function AppResourceEditButton({
               {!appResource.isNew() &&
               hasToolPermission('resources', 'delete') &&
               typeof handleDeleted === 'function' ? (
-                <DeleteButton
+                <DeleteButtonWrapped
                   resource={appResource}
                   onDeleted={handleDeleted}
                 />

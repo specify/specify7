@@ -393,6 +393,10 @@ LIBRARY_ROLES: dict[str, DefaultRole] = {
     }
 }
 
+class DefaultRole(TypedDict):
+    description: str
+    policies: dict[str, tuple[str, ...]]
+
 def _create_role_and_policies(role_model, role_policy_model, role_name: str, role_filters: dict = dict()):
     resolved_role: DefaultRole = LIBRARY_ROLES[role_name]
     role = role_model.objects.filter(
