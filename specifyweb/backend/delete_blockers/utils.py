@@ -1,53 +1,24 @@
-from typing_extensions import TypeIs
-
-from django.db.models import Field, ForeignObjectRel, ForeignKey
-from django.db.models.deletion import PROTECT, CASCADE
 from sqlalchemy import select, and_, or_, not_, union_all
 from sqlalchemy.orm import aliased
 
 from specifyweb.specify.models_utils.model_extras import ModelWithTable
-from specifyweb.specify.models import protect_with_blockers
+from specifyweb.backend.delete_blockers.field import valid_blocker_field, django_field_to_blocker_field, DeleteBlockerField
 from specifyweb.specify.api.crud import strict_get_model
 from specifyweb.backend.stored_queries import models as sqlmodels
 from specifyweb.backend.cache.redis.connect import RedisConnection, RedisString
 
 
-def field_is_remote(field: Field | ForeignObjectRel) -> TypeIs[ForeignObjectRel]:
-    # TODO: Check whether there are any concrete fields that SHOULD be
-    # included here, like some ToOne fields that acts as blockers
-    return field.is_relation and not getattr(field, "concrete", True)
-
-
-def relationship_blocks_deletion(relationship: ForeignObjectRel | ForeignKey):
-    remote = ensure_remote(relationship)
-    return remote.on_delete is protect_with_blockers or remote.on_delete is PROTECT
-
-
-def relationship_cascades_delete(relationship: ForeignObjectRel | ForeignKey):
-    remote = ensure_remote(relationship)
-    return remote.on_delete is CASCADE
-
-
-def ensure_remote(field: ForeignObjectRel | ForeignKey) -> ForeignObjectRel:
-    if isinstance(field, ForeignKey):
-        return field.remote_field
-    return field
-
-
-def blocker_relationships_for_obj(obj: ModelWithTable) -> tuple[list[ForeignKey], list[ForeignKey]]:
+def blocker_relationships_for_obj(obj: ModelWithTable | type[ModelWithTable]) -> tuple[list[DeleteBlockerField], list[DeleteBlockerField]]:
     protect, cascade = [], []
     all_fields = obj._meta.get_fields(include_hidden=True)
-    remote_relationships = filter(
-        field_is_remote,
+    blocker_relationships = filter(
+        valid_blocker_field,
         all_fields
     )
-    for relationship in remote_relationships:
-        if not isinstance(relationship.field, ForeignKey):
-            continue
-        if relationship_blocks_deletion(relationship):
-            protect.append(relationship.field)
-        elif relationship_cascades_delete(relationship):
-            cascade.append(relationship.field)
+    for relationship in blocker_relationships:
+        blocker_field = django_field_to_blocker_field(relationship)
+        target_list = cascade if blocker_field.cascades else protect
+        target_list.append(blocker_field)
 
     return protect, cascade
 

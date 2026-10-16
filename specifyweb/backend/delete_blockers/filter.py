@@ -7,7 +7,8 @@ from specifyweb.specify.api.crud import get_model
 from specifyweb.specify.models_utils.load_datamodel import TableDoesNotExistError
 
 from specifyweb.backend.delete_blockers.validators import DELETE_BLOCKER_LIMIT, CleanedDeleteBlockerFilter, CleanedDeleteBlockerRequestForm
-from specifyweb.backend.delete_blockers.utils import relationship_blocks_deletion, relationship_cascades_delete, blocker_relationships_for_obj
+from specifyweb.backend.delete_blockers.utils import blocker_relationships_for_obj
+from specifyweb.backend.delete_blockers.field import django_field_to_blocker_field
 from specifyweb.backend.delete_blockers.paginate import resolve_reference_paginator, ReferencePaginator
 
 
@@ -41,19 +42,12 @@ class DeleteBlockerFilter:
         return self.paginator.obj
 
     @property
-    def relationship(self):
-        return self.paginator.relationship
-
-    @property
     def table_name(self):
         return self.paginator.table_name
 
     @property
     def field_name(self):
         return self.paginator.field_name
-
-    def cascades(self):
-        return relationship_cascades_delete(self.relationship)
 
     @classmethod
     def from_json(cls, obj: Model, json: CleanedDeleteBlockerFilter):
@@ -63,20 +57,20 @@ class DeleteBlockerFilter:
             raise TableDoesNotExistError(f"Unable to find {table_name}")
         field_name = json["field"]
         field = model._meta.get_field(field_name)
-        Paginator = resolve_reference_paginator(obj, field)
-        return cls(
-            paginator=Paginator(
-                obj=obj,
-                relationship=field,
-                limit=json["limit"],
-                anchor_id=json["anchor"],
-                backwards=json["backwards"]
-            )
+        blocker_field = django_field_to_blocker_field(field)
+        Paginator = resolve_reference_paginator(obj, blocker_field)
+        paginator_instance = Paginator(
+            obj=obj,
+            blocker_field=blocker_field,
+            limit=json["limit"],
+            anchor_id=json["anchor"],
+            backwards=json["backwards"]
         )
+        return cls(paginator=paginator_instance)
 
     def count(self) -> None | DeleteBlockerCount:
         # We're only collecting counts for direct blockers
-        if not relationship_blocks_deletion(self.relationship):
+        if self.paginator.blocker_field.cascades:
             return None
 
         record_count = self.paginator.count()
@@ -88,8 +82,9 @@ class DeleteBlockerFilter:
 
     def fetch_page(self) -> tuple[bool, DeleteBlocker]:
         fetched_ids = self.paginator.fetch_page()
-        complete = self.paginator.limit == 0 or len(fetched_ids) < self.paginator.limit
-        cascades = self.cascades()
+        complete = self.paginator.limit == 0 or len(
+            fetched_ids) < self.paginator.limit
+        cascades = self.paginator.blocker_field.cascades
         return cascades, {
             "table": self.table_name,
             "field": self.field_name,
@@ -103,11 +98,11 @@ class DeleteBlockerFilter:
 
 def default_filters(obj: Model, limit=DELETE_BLOCKER_LIMIT, count_only=False) -> list[DeleteBlockerFilter]:
     filters = []
-    protect_rels, cascade_rels = blocker_relationships_for_obj(obj)
-    for rel in protect_rels:
+    protect_fields, cascade_fields = blocker_relationships_for_obj(obj)
+    for blocker_field in protect_fields:
         # FIXME: optimize this, shouldn't need new reference for every relaitonship
-        PaginatorClass = resolve_reference_paginator(obj, rel)
-        paginator = PaginatorClass(obj, relationship=rel, limit=limit)
+        PaginatorClass = resolve_reference_paginator(obj, blocker_field)
+        paginator = PaginatorClass(obj, blocker_field=blocker_field, limit=limit)
         delete_blocker_filter = DeleteBlockerFilter(paginator)
         filters.append(delete_blocker_filter)
 
@@ -116,9 +111,9 @@ def default_filters(obj: Model, limit=DELETE_BLOCKER_LIMIT, count_only=False) ->
     if count_only:
         return filters
 
-    for rel in cascade_rels:
-        PaginatorClass = resolve_reference_paginator(obj, rel)
-        paginator = PaginatorClass(obj, relationship=rel, limit=limit)
+    for blocker_field in cascade_fields:
+        PaginatorClass = resolve_reference_paginator(obj, blocker_field)
+        paginator = PaginatorClass(obj, blocker_field=blocker_field, limit=limit)
         delete_blocker_filter = DeleteBlockerFilter(paginator)
         filters.append(delete_blocker_filter)
     return filters

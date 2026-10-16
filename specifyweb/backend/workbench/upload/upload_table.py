@@ -898,7 +898,7 @@ class BoundUploadTable(NamedTuple):
         if field_name in self.toOne and self.toOne[field_name].is_one_to_one():
             return True
         
-        return django_model.specify_model.get_relationship(field_name).dependent
+        return django_model.specify_model.get_relationship_strict(field_name).dependent
 
 
 class BoundOneToOneTable(BoundUploadTable):

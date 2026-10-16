@@ -66,7 +66,7 @@ def clone_record(
             field,
             (
                 field.is_relation
-                and specify_model.get_relationship(field.name).dependent
+                and specify_model.get_relationship_strict(field.name).dependent
                 or field.name.lower() in one_to_ones.get(model_name.lower(), [])
                 and field.name is not None
             ),
