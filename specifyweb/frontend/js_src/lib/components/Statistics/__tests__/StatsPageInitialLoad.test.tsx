@@ -75,6 +75,19 @@ describe('Statistics initial load with no saved layout', () => {
     expect(screen.getByText('826 / 430')).toBeInTheDocument();
   });
 
+  test('fills backend percentage stats from the backend response', async () => {
+    const { sharedLayout } = await renderEmptyStatsPage();
+    const values = Object.fromEntries(
+      sharedLayout[0].categories
+        .flatMap(({ items }) => items)
+        .map((item) => [item.label, item.itemValue])
+    );
+    expect(values[statsText.percentGeoReferenced()]).toBe('42%');
+    expect(values[statsText.percentImaged()]).toBe('17%');
+    expect(screen.getByText('42%')).toBeInTheDocument();
+    expect(screen.getByText('17%')).toBeInTheDocument();
+  });
+
   test('fills dynamic categories from the query results', async () => {
     const { sharedLayout } = await renderEmptyStatsPage();
     const typeSpecimens = findCategory(

@@ -3,7 +3,7 @@ import React from 'react';
 import { overrideAjax } from '../../../tests/ajax';
 import { mount } from '../../../tests/reactUtils';
 import { f } from '../../../utils/functools';
-import type { RA } from '../../../utils/types';
+import type { IR, RA } from '../../../utils/types';
 import { SetMenuContext } from '../../Header/MenuContext';
 import { BasePreferences } from '../../Preferences/BasePreferences';
 import { collectionPreferenceDefinitions } from '../../Preferences/CollectionDefinitions';
@@ -20,7 +20,19 @@ import { StatsPage } from '../index';
 import { defaultLayoutGenerated } from '../StatsSpec';
 import type { CustomStat, DefaultStat, StatLayout } from '../types';
 
-const preparationsUrl = '/stats/collection/preparations/';
+// Responses for backend stats on the default shared page. Others return {}
+const backendResponses: IR<IR<unknown>> = {
+  '/stats/collection/preparations/': {
+    'C&S': { lots: 826, total: 430 },
+    EtOH: { lots: 176, total: 985 },
+  },
+  '/stats/collection/locality_geography/percentGeoReferenced/': {
+    percentGeoReferenced: 42,
+  },
+  '/stats/collection/attachments/percentCoImaged/': {
+    percentCoImaged: 17,
+  },
+};
 
 export function mockStatsRequests(): void {
   const backendUrls = Array.from(
@@ -40,17 +52,7 @@ export function mockStatsRequests(): void {
     ])
   );
 
-  backendUrls.forEach((url) =>
-    overrideAjax(
-      url,
-      url === preparationsUrl
-        ? {
-            'C&S': { lots: 826, total: 430 },
-            EtOH: { lots: 176, total: 985 },
-          }
-        : {}
-    )
-  );
+  backendUrls.forEach((url) => overrideAjax(url, backendResponses[url] ?? {}));
 
   overrideAjax(
     '/stored_query/ephemeral/',
