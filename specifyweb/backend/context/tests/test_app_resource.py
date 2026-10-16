@@ -6,6 +6,7 @@ from specifyweb.specify.tests.test_api import ApiTests
 from unittest.mock import Mock, patch
 
 from specifyweb.backend.context.app_resource import (
+    _catalog_number_uiformatters_only,
     get_catalog_number_format_names_for_discipline,
     get_data_view_queries_resource,
     merge_ui_formatters_by_name,
@@ -121,16 +122,50 @@ class TestAppResource(ApiTests):
             names, ['BirdsCatalog', 'GridRefMGRS', 'CatalogNumber', 'CatalogNumberNumeric']
         )
 
+    def test_catalog_number_filter_before_name_dedupe(self):
+        """A non-catalog format must not block a same-named catalogNumber format."""
+        non_catalog_first = """<?xml version="1.0" encoding="UTF-8"?>
+<formats>
+  <format name="SharedName" class="edu.ku.brc.specify.datamodel.Locality" fieldname="text3"/>
+</formats>
+"""
+        catalog_later = """<?xml version="1.0" encoding="UTF-8"?>
+<formats>
+  <format name="SharedName" class="edu.ku.brc.specify.datamodel.CollectionObject" fieldname="catalogNumber"/>
+</formats>
+"""
+        # Unfiltered merge would keep only the Locality format.
+        unfiltered = merge_ui_formatters_by_name(non_catalog_first, catalog_later)
+        self.assertEqual(
+            [
+                (f.get('name'), f.get('fieldname'))
+                for f in ElementTree.fromstring(unfiltered).findall('format')
+            ],
+            [('SharedName', 'text3')],
+        )
+
+        filtered = merge_ui_formatters_by_name(
+            _catalog_number_uiformatters_only(non_catalog_first),
+            _catalog_number_uiformatters_only(catalog_later),
+        )
+        self.assertEqual(
+            [
+                (f.get('name'), f.get('fieldname'))
+                for f in ElementTree.fromstring(filtered).findall('format')
+            ],
+            [('SharedName', 'catalogNumber')],
+        )
+
     @patch("specifyweb.backend.context.app_resource.load_resource_at_level")
     @patch("specifyweb.backend.context.app_resource._uiformatters_xml_from_dirs")
     def test_catalog_number_format_names_for_discipline(
         self, xml_from_dirs: Mock, load_from_filesystem: Mock
     ):
         xml_from_dirs.return_value = [DISCIPLINE_UI_FORMATTERS]
-        load_from_filesystem.return_value = (
-            BACKSTOP_UI_FORMATTERS,
-            'text/xml',
-            None,
+        load_from_filesystem.side_effect = lambda _collection, _user, level, _name: (
+            (BACKSTOP_UI_FORMATTERS, 'text/xml', None)
+            if level == 'Backstop'
+            else None
         )
 
         names = get_catalog_number_format_names_for_discipline(self.discipline)
@@ -139,6 +174,11 @@ class TestAppResource(ApiTests):
             ['BirdsCatalog', 'CatalogNumber', 'CatalogNumberNumeric'],
         )
         self.assertNotIn('GridRefMGRS', names)
+        # Discipline + Common + Backstop filesystem levels are consulted.
+        self.assertEqual(
+            [call.args[2] for call in load_from_filesystem.call_args_list],
+            ['Discipline', 'Common', 'Backstop'],
+        )
 
     def test_catalog_number_format_names_endpoint(self):
         c = Client()
