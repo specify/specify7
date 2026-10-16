@@ -45,6 +45,9 @@ BACKSTOP_UI_FORMATTERS = """<?xml version="1.0" encoding="UTF-8"?>
   <format system="false" name="CatalogNumber" class="edu.ku.brc.specify.datamodel.CollectionObject" fieldname="catalogNumber" default="true">
     <field type="year" size="4" value="YEAR"/>
   </format>
+  <format system="false" name="AccessionNumber" class="edu.ku.brc.specify.datamodel.Accession" fieldname="accessionNumber" default="true">
+    <field type="regex" value="BACKSTOP" pattern="BACKSTOP" />
+  </format>
   <format system="true" name="CatalogNumberNumeric" class="edu.ku.brc.specify.datamodel.CollectionObject" fieldname="catalogNumber" default="false">
     <external>edu.ku.brc.specify.ui.CatalogNumberUIFieldFormatter</external>
   </format>
@@ -144,7 +147,13 @@ class TestAppResource(ApiTests):
 
         self.assertEqual(
             names,
-            ['GridRefMGRS', 'CatalogNumber', 'CatalogNumberNumeric', 'CatalogNumberString'],
+            [
+                'GridRefMGRS',
+                'CatalogNumber',
+                'AccessionNumber',
+                'CatalogNumberNumeric',
+                'CatalogNumberString',
+            ],
         )
         # Custom CatalogNumber wins over backstop (keeps numeric part, not year).
         catalog_number = root.find("./format[@name='CatalogNumber']")
@@ -180,6 +189,7 @@ class TestAppResource(ApiTests):
             {
                 'GridRefMGRS',
                 'CatalogNumber',
+                'AccessionNumber',
                 'CatalogNumberNumeric',
                 'CatalogNumberString',
             },
@@ -222,6 +232,10 @@ class TestAppResource(ApiTests):
         self.assertIsNotNone(catalog_number.find("./field[@type='numeric']"))
         self.assertIsNone(catalog_number.find("./field[@type='regex']"))
         self.assertIsNone(catalog_number.find("./field[@type='year']"))
+        # AccessionNumber is only in Common/Backstop: Common wins over Backstop.
+        accession_number = root.find("./format[@name='AccessionNumber']")
+        self.assertIsNotNone(accession_number.find("./field[@type='year']"))
+        self.assertIsNone(accession_number.find("./field[@type='regex']"))
 
     @patch("specifyweb.backend.context.app_resource.load_resource_at_level")
     @patch("specifyweb.backend.context.app_resource.get_app_resource_from_db")
@@ -254,6 +268,7 @@ class TestAppResource(ApiTests):
             names,
             {
                 'CatalogNumber',
+                'AccessionNumber',
                 'CatalogNumberNumeric',
                 'CatalogNumberString',
             },
