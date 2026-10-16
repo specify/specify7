@@ -25,6 +25,21 @@ CUSTOM_UI_FORMATTERS = """<?xml version="1.0" encoding="UTF-8"?>
 </formats>
 """
 
+COMMON_UI_FORMATTERS = """<?xml version="1.0" encoding="UTF-8"?>
+<formats>
+  <format system="false" name="AccessionNumber" class="edu.ku.brc.specify.datamodel.Accession" fieldname="accessionNumber" default="true">
+    <field type="year" size="4" value="YEAR"/>
+    <field type="separator" value="-"/>
+    <field type="alphanumeric" size="2" value="AA"/>
+    <field type="separator" value="-"/>
+    <field type="numeric" size="3" inc="true"/>
+  </format>
+  <format system="false" name="CatalogNumber" class="edu.ku.brc.specify.datamodel.CollectionObject" fieldname="catalogNumber" default="true">
+    <field type="regex" value="COMMON" pattern="COMMON" />
+  </format>
+</formats>
+"""
+
 BACKSTOP_UI_FORMATTERS = """<?xml version="1.0" encoding="UTF-8"?>
 <formats>
   <format system="false" name="CatalogNumber" class="edu.ku.brc.specify.datamodel.CollectionObject" fieldname="catalogNumber" default="true">
@@ -168,4 +183,83 @@ class TestAppResource(ApiTests):
                 'CatalogNumberNumeric',
                 'CatalogNumberString',
             },
+        )
+
+    @patch("specifyweb.backend.context.app_resource.load_resource_at_level")
+    @patch("specifyweb.backend.context.app_resource.get_app_resource_from_db")
+    def test_uiformatters_merge_common_before_backstop(
+        self, get_from_db: Mock, load_from_filesystem: Mock
+    ):
+        get_from_db.side_effect = lambda _collection, _user, level, _name: {
+            'Collection': (CUSTOM_UI_FORMATTERS, 'text/xml', 23),
+            'Common': (COMMON_UI_FORMATTERS, 'text/xml', 11),
+        }.get(level)
+        load_from_filesystem.side_effect = lambda _collection, _user, level, _name: (
+            (BACKSTOP_UI_FORMATTERS, 'text/xml', None) if level == 'Backstop' else None
+        )
+
+        result = get_app_resource(self.collection, self.specifyuser, 'UIFormatters')
+
+        self.assertIsNotNone(result)
+        data, mimetype, resource_id = result
+        self.assertEqual(mimetype, 'text/xml')
+        self.assertEqual(resource_id, 23)
+
+        root = ElementTree.fromstring(data)
+        names = [fmt.get('name') for fmt in root.findall('format')]
+        self.assertEqual(
+            names,
+            [
+                'GridRefMGRS',
+                'CatalogNumber',
+                'AccessionNumber',
+                'CatalogNumberNumeric',
+                'CatalogNumberString',
+            ],
+        )
+        # Collection CatalogNumber wins over Common and Backstop.
+        catalog_number = root.find("./format[@name='CatalogNumber']")
+        self.assertIsNotNone(catalog_number.find("./field[@type='numeric']"))
+        self.assertIsNone(catalog_number.find("./field[@type='regex']"))
+        self.assertIsNone(catalog_number.find("./field[@type='year']"))
+
+    @patch("specifyweb.backend.context.app_resource.load_resource_at_level")
+    @patch("specifyweb.backend.context.app_resource.get_app_resource_from_db")
+    def test_uiformatters_additional_default_skips_custom(
+        self, get_from_db: Mock, load_from_filesystem: Mock
+    ):
+        get_from_db.return_value = (CUSTOM_UI_FORMATTERS, 'text/xml', 23)
+        load_from_filesystem.return_value = (
+            BACKSTOP_UI_FORMATTERS,
+            'text/xml',
+            None,
+        )
+
+        result = get_app_resource(
+            self.collection,
+            self.specifyuser,
+            'UIFormatters',
+            additional_default=True,
+        )
+
+        self.assertIsNotNone(result)
+        data, mimetype, resource_id = result
+        self.assertEqual(mimetype, 'text/xml')
+        self.assertIsNone(resource_id)
+        names = {
+            fmt.get('name')
+            for fmt in ElementTree.fromstring(data).findall('format')
+        }
+        self.assertEqual(
+            names,
+            {
+                'CatalogNumber',
+                'CatalogNumberNumeric',
+                'CatalogNumberString',
+            },
+        )
+        self.assertNotIn('GridRefMGRS', names)
+        get_from_db.assert_not_called()
+        load_from_filesystem.assert_called_once_with(
+            self.collection, self.specifyuser, 'Backstop', 'UIFormatters'
         )
