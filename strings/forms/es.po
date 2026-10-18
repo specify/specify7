@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-10-07 18:51+0000\n"
+"PO-Revision-Date: 2026-10-18 13:51+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/forms/"
 "es/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2026.10.1.dev0\n"
+"X-Generator: Weblate 2026.11.dev0\n"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:812
@@ -264,7 +264,7 @@ msgstr "Guardar bloqueado"
 #: components/Forms/Save.tsx:342
 #, fuzzy
 msgid "saveBlockedDescription"
-msgstr "No se puede guardar el formulario debido al siguiente error:"
+msgstr "El formulario no se puede guardar debido al siguiente error:"
 
 #. Used in: Components > Form Commands > Index
 #: components/FormCommands/index.tsx:115
@@ -550,7 +550,7 @@ msgstr "Configurar los campos que se transferirán"
 #: components/FormMeta/CarryForward.tsx:225
 #, fuzzy
 msgid "bulkCarryForwardSettingsDescription"
-msgstr "Configure los campos para transferir masivamente."
+msgstr "Configure los campos para transferirlos masivamente."
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:394
