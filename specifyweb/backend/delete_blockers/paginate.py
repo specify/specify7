@@ -75,7 +75,7 @@ class TreeTableReferencePaginator(ReferencePaginator):
     def _get_base_queryset(self):
         node_number = self.obj.nodenumber
         highest_node_number = self.obj.highestchildnodenumber
-        model = self.relationship.model
+        model = self.blocker_field.model
         # With the assumption that nodenumbers are up-to-date and correctly
         # formed for the tree, we can use their properties to optimize fetching
         # references.
@@ -85,7 +85,7 @@ class TreeTableReferencePaginator(ReferencePaginator):
         # tree so we don't have to worry about expensive or complicated
         # Parent self-joins to traverse the subtree structure
         node_number_filters = {
-            f"{self.relationship.name}__nodenumber__range": (node_number, highest_node_number)
+            f"{self.blocker_field.django_field_name}__nodenumber__range": (node_number, highest_node_number)
             # We shouldn't need a filter on definition, as NodeNumbers should
             # be unique even across trees of the same type
             # TEST: Make sure we have tests for the above assumption in case
