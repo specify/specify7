@@ -95,6 +95,8 @@ class MainSetupTearDown:
             name='paleobotany'
         )
 
+        # BUG: Don't we need to set the TaxonTreeDef -> Discipline here?
+
         apply_default_uniqueness_rules(self.discipline)
 
         self.collection = Collection.objects.create(

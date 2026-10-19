@@ -194,7 +194,7 @@ def _resolve_tree_definition_paginator(obj: Model, blocker_field: DeleteBlockerF
     django_field_name = blocker_field.field.name
     field_name = django_field_name.lower()
 
-    if field_name.lower() not in ("definition", "treedef"):
+    if field_name not in ("definition", "treedef"):
         return None
 
     tree_is_valid = node_numbers_valid_for_tree(tree_name, obj.pk)
