@@ -18,52 +18,6 @@ def _safe_filter(query):
     raise Exception(f"Got more than one matching: {list(query)}")
 
 
-def _validate_rank_query_numbering(table, treedef_ids):
-    """Check ranges against parent links in one ordered, read-only scan."""
-    from specifyweb.backend.businessrules.exceptions import TreeBusinessRuleException
-
-    model = getattr(spmodels, table.django_name)
-    nodes = (
-        model.objects.filter(definition_id__in=treedef_ids)
-        .order_by("definition_id", "nodenumber", "id")
-        .values_list("id", "parent_id", "definition_id", "nodenumber", "highestchildnodenumber")
-    )
-    ancestors: list[tuple[int, int]] = []
-    previous_definition = None
-    previous_number = None
-    for node_id, parent_id, definition_id, number, highest in nodes.iterator():
-        if definition_id != previous_definition:
-            ancestors = []
-            previous_number = None
-            previous_definition = definition_id
-
-        # An isolated root does not need ranges for ancestor/self lookups.
-        if parent_id is None and number is None and highest is None:
-            continue
-
-        valid = False
-        if number is not None and highest is not None:
-            valid = highest >= number and number != previous_number
-            while ancestors and number > ancestors[-1][1]:
-                ancestors.pop()
-            valid = valid and (
-                parent_id == (ancestors[-1][0] if ancestors else None)
-                and (not ancestors or highest <= ancestors[-1][1])
-            )
-        if number is None or highest is None or not valid:
-            message = (
-                f"Invalid {table.name} tree numbering in definition {definition_id} "
-                f"at node {node_id}. Repair the tree numbering before querying ranks."
-            )
-            logger.error(message)
-            raise TreeBusinessRuleException(
-                message,
-                {"tree": table.name, "treeDefId": definition_id, "nodeId": node_id},
-            )
-        ancestors.append((node_id, highest))
-        previous_number = number
-
-
 class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter query join_cache tree_rank_count internal_filters')):
 
     def __new__(cls, *args, **kwargs):
@@ -79,7 +33,7 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
 
         Each relationship/rank gets one outer join, shared by its selected fields.
         Tree definitions are matched explicitly because numbering can overlap.
-        Numbering is checked once per definition per query; invalid trees require repair.
+        Numbering is maintained by tree operations, not validated during queries.
         """
         query = self
         if query.collection is None:  # Not sure it makes sense to query across collections
@@ -115,14 +69,6 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
             treedefitem_id for (_, treedefitem_id) in treedefs_with_ranks
         ))
         defs_to_filter_on = [def_id for (def_id, _) in treedefs_with_ranks]
-        numbering_keys = [
-            (table, def_id, 'TreeNumbering') for def_id in defs_to_filter_on
-            if (table, def_id, 'TreeNumbering') not in query.join_cache
-        ]
-        if numbering_keys:
-            _validate_rank_query_numbering(table, [key[1] for key in numbering_keys])
-            query = query._replace(join_cache=query.join_cache.copy())
-            query.join_cache.update((key, True) for key in numbering_keys)
         cache_key = (node, table, treedefitem_params, 'TreeRank')
         if cache_key in query.join_cache:
             ancestor = query.join_cache[cache_key]

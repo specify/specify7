@@ -1,12 +1,9 @@
-import json
 import re
-from unittest.mock import patch
 
-from django.test import Client, override_settings
+from django.db import connection
+from django.test.utils import CaptureQueriesContext
 from sqlalchemy.dialects import mysql
 
-from specifyweb.backend.businessrules.exceptions import TreeBusinessRuleException
-from specifyweb.backend.stored_queries.query_construct import _validate_rank_query_numbering
 from specifyweb.specify.models import (
     Collectingeventattribute,
     Collectionobjecttype,
@@ -485,80 +482,33 @@ class TestBuildQuery(SQLAlchemySetup):
                         [(self.collectionobjects[1].id, "num-1", None)],
                     )
 
-    def test_ancestor_rank_with_incomplete_node_numbering(self):
+    def test_rank_query_construction_does_not_read_tree_nodes(self):
         self._make_distinct_taxon_relationships()
-        Taxon.objects.filter(name="Taxon Species").update(nodenumber=None)
-        self._assert_invalid_numbering_rejected()
-
-    def test_ancestor_rank_with_malformed_node_numbering(self):
-        self._make_distinct_taxon_relationships()
-        # A stale range from another branch must not replace the actual parent.
-        Taxon.objects.filter(name="Host Genus").update(
-            nodenumber=1, highestchildnodenumber=21
-        )
-        self._assert_invalid_numbering_rejected()
-
-    def _assert_invalid_numbering_rejected(self):
-        def numbering():
-            return list(Taxon.objects.order_by("id").values_list(
-                "id", "parent_id", "nodenumber", "highestchildnodenumber"
-            ))
-
-        before = numbering()
-        with self.assertLogs(
-            "specifyweb.backend.stored_queries.query_construct", level="ERROR"
-        ):
-            with self.assertRaisesRegex(
-                TreeBusinessRuleException, "Repair the tree numbering"
-            ):
-                self._assert_taxon_relationship_values([
-                    ("1,9-determinations,4.taxon.Genus", "Taxon Genus"),
-                ], max_joins=3)
-        self.assertEqual(numbering(), before)
-
-    def test_invalid_ranges_and_parent_links_are_rejected(self):
-        self._make_distinct_taxon_relationships()
-        genus = Taxon.objects.get(name="Taxon Genus")
-        for changes in (
-            {"highestchildnodenumber": None},
-            {"highestchildnodenumber": genus.nodenumber - 1},
-            {"highestchildnodenumber": 21},
-            {"nodenumber": 5},
-            {"parent_id": None},
-        ):
-            with self.subTest(changes=changes):
-                Taxon.objects.filter(id=genus.id).update(**changes)
-                self._assert_invalid_numbering_rejected()
-                Taxon.objects.filter(id=genus.id).update(
-                    nodenumber=genus.nodenumber,
-                    highestchildnodenumber=genus.highestchildnodenumber,
-                    parent_id=genus.parent_id,
+        query_fields = self._taxon_relationship_query_fields([
+            ("1,9-determinations,4.taxon.Genus", "Taxon Genus"),
+            ("1,9-determinations,4.taxon.Species", "Taxon Species"),
+            ("1,9-determinations,4-preferredTaxon.taxon.Genus", "Preferred Genus"),
+        ])
+        with self.__class__.test_session_context() as session:
+            with CaptureQueriesContext(connection) as captured:
+                query, _ = build_query(
+                    session, self.collection, self.specifyuser,
+                    datamodel.get_table_strict("CollectionObject").tableId,
+                    query_fields,
                 )
-
-    def test_numbering_is_validated_once_per_definition_per_query(self):
-        self._make_distinct_taxon_relationships()
-        with patch(
-            "specifyweb.backend.stored_queries.query_construct._validate_rank_query_numbering",
-            wraps=_validate_rank_query_numbering,
-        ) as validate:
-            self._assert_taxon_relationship_values([
-                ("1,9-determinations,4.taxon.Genus", "Taxon Genus"),
-                ("1,9-determinations,4.taxon.Species", "Taxon Species"),
-                ("1,9-determinations,4-preferredTaxon.taxon.Genus", "Preferred Genus"),
-            ], max_joins=6)
-            validate.assert_called_once_with(
-                datamodel.get_table_strict("Taxon"), [self.taxontreedef.id]
+                self._assert_join_budget(query, 6)
+            for statement in captured.captured_queries:
+                self.assertNotRegex(
+                    statement["sql"],
+                    r"(?i)\b(?:FROM|JOIN)\s+`?taxon`?(?=\s|$)",
+                )
+            self.assertEqual(
+                [tuple(row) for row in query],
+                [(self.collectionobjects[0].id, "num-0",
+                  "Taxon Genus", "Taxon Species", "Preferred Genus")],
             )
 
-    def test_numbering_is_rechecked_for_a_new_query(self):
-        self._make_distinct_taxon_relationships()
-        self._assert_taxon_relationship_values([
-            ("1,9-determinations,4.taxon.Genus", "Taxon Genus"),
-        ], max_joins=3)
-        Taxon.objects.filter(name="Taxon Species").update(nodenumber=None)
-        self._assert_invalid_numbering_rejected()
-
-    def test_explicit_tree_definition_does_not_validate_other_trees(self):
+    def test_explicit_tree_definition_ignores_other_trees(self):
         self._make_distinct_taxon_relationships()
         second_treedef, second_species = self._make_second_taxon_tree()
         Taxon.objects.filter(id=second_species.id).update(nodenumber=None)
@@ -588,46 +538,6 @@ class TestBuildQuery(SQLAlchemySetup):
         self.assertTrue(Taxon.objects.filter(
             id=second_species.id, definition=second_treedef, nodenumber__isnull=True
         ).exists())
-
-    @override_settings(DEBUG=False)
-    @patch("specifyweb.backend.stored_queries.execution.models.session_context")
-    def test_invalid_numbering_error_is_returned_by_query_endpoint(self, context):
-        self._make_distinct_taxon_relationships()
-        Taxon.objects.filter(name="Taxon Species").update(nodenumber=None)
-        context.return_value = self.__class__.test_session_context()
-        client = Client(raise_request_exception=False)
-        client.force_login(self.specifyuser)
-        with self.assertLogs(
-            "specifyweb.backend.stored_queries.query_construct", level="ERROR"
-        ):
-            response = client.post("/stored_query/ephemeral/", {
-                "contexttableid": datamodel.get_table_strict("CollectionObject").tableId,
-                "selectdistinct": False,
-                "countonly": False,
-                "fields": [{
-                    "position": 0,
-                    "stringid": "1,9-determinations,4.taxon.Genus",
-                    "isrelfld": False,
-                    "isdisplay": True,
-                    "isnot": False,
-                    "isstrict": False,
-                    "operstart": 8,
-                    "startvalue": "",
-                    "sorttype": QuerySort.NONE,
-                    "formatname": None,
-                }],
-            }, content_type="application/json")
-        self._assertStatusCodeEqual(response, 500)
-        error = json.loads(response.content)
-        self.assertEqual(error["exception"], "TreeBusinessRuleException")
-        self.assertIn("Repair the tree numbering", error["message"])
-        species = Taxon.objects.get(name="Taxon Species")
-        self.assertEqual(error["data"], str({
-            "tree": "Taxon",
-            "treeDefId": self.taxontreedef.id,
-            "nodeId": species.id,
-        }))
-        self.assertNotIn("results", error)
 
     def test_explicit_ranks_share_the_same_relationship(self):
         self._make_distinct_taxon_relationships()
