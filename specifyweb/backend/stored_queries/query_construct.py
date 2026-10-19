@@ -4,7 +4,6 @@ from collections import namedtuple, deque
 from sqlalchemy import orm, sql, or_
 
 import specifyweb.specify.models as spmodels
-from specifyweb.backend.businessrules.exceptions import TreeBusinessRuleException
 from specifyweb.backend.trees.utils import get_treedefs
 
 from .queryfieldspec import TreeRankQuery, QueryFieldSpec
@@ -21,6 +20,8 @@ def _safe_filter(query):
 
 def _validate_rank_query_numbering(table, treedef_ids):
     """Check ranges against parent links in one ordered, read-only scan."""
+    from specifyweb.backend.businessrules.exceptions import TreeBusinessRuleException
+
     model = getattr(spmodels, table.django_name)
     nodes = (
         model.objects.filter(definition_id__in=treedef_ids)
