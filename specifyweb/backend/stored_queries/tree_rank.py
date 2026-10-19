@@ -19,9 +19,9 @@ from .queryfieldspec import TreeRankQuery
 
 if TYPE_CHECKING:
     from specifyweb.specify.models_utils.load_datamodel import Table
-    from .format import ObjectFormatter
     from .queryfield import QueryField
 
+    ObjectFormatter = object
     Rank = tuple[object, Table, tuple[int, ...]]
 
 
