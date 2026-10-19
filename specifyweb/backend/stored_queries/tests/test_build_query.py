@@ -621,6 +621,12 @@ class TestBuildQuery(SQLAlchemySetup):
         error = json.loads(response.content)
         self.assertEqual(error["exception"], "TreeBusinessRuleException")
         self.assertIn("Repair the tree numbering", error["message"])
+        species = Taxon.objects.get(name="Taxon Species")
+        self.assertEqual(error["data"], str({
+            "tree": "Taxon",
+            "treeDefId": self.taxontreedef.id,
+            "nodeId": species.id,
+        }))
         self.assertNotIn("results", error)
 
     def test_explicit_ranks_share_the_same_relationship(self):
