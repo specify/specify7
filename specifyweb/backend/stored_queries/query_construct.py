@@ -8,6 +8,7 @@ from specifyweb.backend.trees.utils import get_treedefs
 
 from .queryfieldspec import TreeRankQuery, QueryFieldSpec
 from specifyweb.backend.stored_queries import models
+from .tree_rank import TreeRanks
 
 logger = logging.getLogger(__name__)
 
@@ -29,11 +30,10 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
         return super().__new__(cls, *args, **kwargs)
 
     def handle_tree_field(self, node, table, tree_rank: TreeRankQuery, next_join_path, current_field_spec: QueryFieldSpec):
-        """Resolve a rank using maintained nested-set numbering, not tree depth.
+        """Resolve a rank by indexed parent traversal, not reverse range scans.
 
         Each relationship/rank gets one outer join, shared by its selected fields.
-        Tree definitions are matched explicitly because numbering can overlap.
-        Numbering is maintained by tree operations, not validated during queries.
+        Ancestors are shared only for identical tree node IDs and definitions.
         """
         query = self
         if query.collection is None:  # Not sure it makes sense to query across collections
@@ -43,7 +43,6 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
             )
         logger.info('handling treefield %s rank: %s field: %s', table, tree_rank.name, next_join_path)
 
-        treedefitem_column = table.name + 'TreeDefItemID'
         treedef_column = table.name + 'TreeDefID'
 
         treedefs = get_treedefs(query.collection, table.name)
@@ -70,25 +69,13 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
         ))
         defs_to_filter_on = [def_id for (def_id, _) in treedefs_with_ranks]
         cache_key = (node, table, treedefitem_params, 'TreeRank')
+        ranks = query.join_cache.setdefault("tree_ranks", TreeRanks())
+        ranks.current_rank = (node, table, treedefitem_params)
         if cache_key in query.join_cache:
             ancestor = query.join_cache[cache_key]
         else:
             ancestor = orm.aliased(getattr(models, table.name))
-            # Nested-set ranges find the requested ancestor without walking every rank.
-            # Match self explicitly because a standalone root can have NULL numbering.
-            query = query.outerjoin(
-                ancestor,
-                sql.and_(
-                    getattr(ancestor, treedef_column) == getattr(node, treedef_column),
-                    getattr(ancestor, treedefitem_column).in_(treedefitem_params),
-                    or_(
-                        ancestor._id == node._id,
-                        node.nodeNumber.between(
-                            ancestor.nodeNumber, ancestor.highestChildNodeNumber
-                        ),
-                    ),
-                ),
-            )
+            query = ranks.join(query, node, ancestor, table, treedefitem_params)
             query = query._replace(join_cache=query.join_cache.copy())
             query.join_cache[cache_key] = ancestor
 
