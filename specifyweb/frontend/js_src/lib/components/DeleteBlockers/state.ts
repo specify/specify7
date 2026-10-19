@@ -122,11 +122,13 @@ export class DeleteBlockerState {
     this.cascadeParents.clear();
   }
 
-  private getOrCreateNode(resource: SpecifyResource<AnySchema>): BlockerNode {
+  private getOrCreateNode(
+    resource: SpecifyResource<AnySchema>
+  ): readonly [boolean, BlockerNode] {
     const resourceKey = resourceToStringIdentifier(resource);
     const existingNode = this.getNode(resourceKey);
     if (existingNode !== undefined) {
-      return existingNode;
+      return [true, existingNode];
     }
     const newNode: BlockerNode = {
       key: resourceKey,
@@ -136,7 +138,7 @@ export class DeleteBlockerState {
       version: 0,
     };
     this.nodes.set(resourceKey, newNode);
-    return newNode;
+    return [false, newNode];
   }
 
   private getOrCreateRelationship(
@@ -170,9 +172,8 @@ export class DeleteBlockerState {
 
   public async seedBlockers(resource: SpecifyResource<AnySchema>) {
     const queueKey = buildPageCacheKey(resource);
-    const promiseInQueue = this.pagePromiseQueue.get(queueKey);
-    if (promiseInQueue === false || promiseInQueue !== undefined) {
-      return promiseInQueue;
+    if (this.pageIsCached(queueKey) || this.pageIsFetching(queueKey)) {
+      return;
     }
     return this.pagePromiseQueue.enqueue(queueKey, () =>
       this.handleMainBlockers(resource)
@@ -205,7 +206,7 @@ export class DeleteBlockerState {
     resource: SpecifyResource<AnySchema>,
     blockers: APIDeleteBlockers
   ): RA<DeleteBlockerLRUPage> {
-    const node = this.getOrCreateNode(resource);
+    const [_, node] = this.getOrCreateNode(resource);
     const cachedPages = this.applyBlockerPages(node, blockers.results);
     this.updateAncestors(node.key);
     this.queueNextBlockers(resource, blockers.next);
@@ -485,7 +486,7 @@ export class DeleteBlockerState {
     resource: SpecifyResource<AnySchema>,
     nextBlocker: APIDeleteBlockerPage
   ) {
-    const parentNode = this.getOrCreateNode(resource);
+    const [parentCreated, parentNode] = this.getOrCreateNode(resource);
 
     const table = getTable(nextBlocker.table);
     if (table === undefined) {
@@ -499,12 +500,17 @@ export class DeleteBlockerState {
         { id },
         { noBusinessRules: true }
       );
-      const childNode = this.getOrCreateNode(childResource);
+      const [childCreated, childNode] = this.getOrCreateNode(childResource);
       const marked = this.addCascadeRelationship(parentNode, childNode);
       if (marked) {
         this.updateAncestors(parentNode.key);
       }
-      this.seedBlockers(childResource);
+      // This is to try and prevent cycles when fetching CASCADE relationships
+      // when both tables have relationships set to CASCADE:
+      // e.g., Collection -> autoNumberingSchemes and
+      // AutoNumberingScheme -> collections
+      if (marked && (parentCreated || childCreated))
+        this.seedBlockers(childResource);
     }
     // We need to handle queuing up the rest of the next blockers
     if (nextBlocker.complete === false) {
@@ -672,7 +678,7 @@ export class DeleteBlockerState {
       anchor: newAnchor,
     };
     const cacheKey = blockerPageToCacheKey(resource, newPage);
-    if (this.pageIsFetching(cacheKey)) {
+    if (this.pageIsFetching(cacheKey) || this.pageIsCached(cacheKey)) {
       return;
     }
     this.filterBlockers(resource, newPage.table, newPage.field, newAnchor);

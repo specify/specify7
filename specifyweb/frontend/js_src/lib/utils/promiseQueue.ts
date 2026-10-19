@@ -22,6 +22,8 @@ export class PromiseQueue<K, V> {
    * the queue.
    */
   public enqueue(key: K, promiseGen: PromiseGenerator<V>): Promise<V> | false {
+    const currentlyActive = this.get(key);
+    if (currentlyActive !== undefined) return currentlyActive;
     if (this.activePromises.size >= this.maxConcurrentPromises) {
       // Add the promise to the queue
       this.queue.set(key, promiseGen);
