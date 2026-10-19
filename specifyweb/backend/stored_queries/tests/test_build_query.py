@@ -1,16 +1,27 @@
+import json
 import re
+from unittest.mock import patch
 
+from django.test import Client, override_settings
 from sqlalchemy.dialects import mysql
 
+from specifyweb.backend.businessrules.exceptions import TreeBusinessRuleException
+from specifyweb.backend.stored_queries.query_construct import _validate_rank_query_numbering
 from specifyweb.specify.models import (
     Collectingeventattribute,
+    Collectionobjecttype,
     Determination,
+    Geography,
+    Geographytreedefitem,
+    Locality,
     Taxon,
+    Taxontreedef,
     Taxontreedefitem,
     datamodel,
 )
 from specifyweb.backend.stored_queries import models as models
 from specifyweb.backend.stored_queries.queryfield import fields_from_json
+from specifyweb.backend.stored_queries.queryfieldspec import TreeRankQuery
 from specifyweb.backend.stored_queries.execution import (
     QuerySort,
     BuildQueryProps,
@@ -195,8 +206,8 @@ class TestBuildQuery(SQLAlchemySetup):
             self.collectionobjects[0], {"collectingevent": self.collectingevent}
         )
 
-    def _assert_taxon_relationship_values(self, fields, max_joins=None):
-        query_fields = fields_from_json([
+    def _taxon_relationship_query_fields(self, fields):
+        return fields_from_json([
             {
                 "position": position,
                 "stringid": stringid,
@@ -214,6 +225,9 @@ class TestBuildQuery(SQLAlchemySetup):
                 *fields,
             ])
         ])
+
+    def _assert_taxon_relationship_values(self, fields, max_joins=None):
+        query_fields = self._taxon_relationship_query_fields(fields)
         with self.__class__.test_session_context() as session:
             query, _ = build_query(
                 session,
@@ -234,6 +248,380 @@ class TestBuildQuery(SQLAlchemySetup):
                 *(expected for _, expected in fields),
             )],
         )
+
+    def _make_second_taxon_tree(self):
+        treedef = Taxontreedef.objects.create(name="Second taxonomy")
+        Collectionobjecttype.objects.create(
+            name="Second type", collection=self.collection, taxontreedef=treedef
+        )
+        parent = None
+        # Deliberately reuse the first tree's node numbers and rank names.
+        for rank_index, (name, rankid) in enumerate(
+            (("Root", 0), ("Genus", 180), ("Species", 220))
+        ):
+            rank = Taxontreedefitem.objects.create(
+                name=name,
+                title=name,
+                rankid=rankid,
+                treedef=treedef,
+                parent=parent.definitionitem if parent else None,
+            )
+            parent = Taxon(
+                name=f"Second {name}",
+                fullname=f"Second {name}",
+                parent=parent,
+                definition=treedef,
+                definitionitem=rank,
+                rankid=rankid,
+                nodenumber=rank_index + 1,
+                highestchildnodenumber=7,
+            )
+            parent.save(skip_tree_extras=True)
+        return treedef, parent
+
+    def test_rank_joins_isolate_tree_definitions_with_overlapping_numbers(self):
+        self._make_distinct_taxon_relationships()
+        _treedef, second_species = self._make_second_taxon_tree()
+        Determination.objects.filter(
+            collectionobject=self.collectionobjects[0]
+        ).update(preferredtaxon=second_species)
+        fields = [
+            ("1,9-determinations,4.taxon.Genus", "Taxon Genus"),
+            ("1,9-determinations,4-preferredTaxon.taxon.Genus", "Second Genus"),
+            ("1,9-determinations,4-preferredTaxon.taxon.Species", "Second Species"),
+        ]
+        for ordered_fields in (fields, list(reversed(fields))):
+            with self.subTest(first_field=ordered_fields[0][0]):
+                self._assert_taxon_relationship_values(ordered_fields, max_joins=6)
+
+    def test_explicit_tree_definition_ranks_do_not_share_aliases(self):
+        self._make_distinct_taxon_relationships()
+        second_treedef, _second_species = self._make_second_taxon_tree()
+        fields = [("1,9-determinations,4.taxon.Genus", "Taxon Genus")]
+        query_fields = self._taxon_relationship_query_fields(fields)
+        genus_field = query_fields[-1]
+        for definitions in (
+            (self.taxontreedef, second_treedef),
+            (second_treedef, self.taxontreedef),
+        ):
+            with self.subTest(first_definition=definitions[0].name):
+                restricted_fields = []
+                for treedef in definitions:
+                    spec = genus_field.fieldspec
+                    restricted_rank = TreeRankQuery.create(
+                        "Genus", "Taxon", treedef.id, treedef.name
+                    )
+                    restricted_fields.append(genus_field._replace(
+                        fieldspec=spec._replace(join_path=tuple(
+                            restricted_rank if isinstance(part, TreeRankQuery) else part
+                            for part in spec.join_path
+                        ))
+                    ))
+                with self.__class__.test_session_context() as session:
+                    query, _ = build_query(
+                        session, self.collection, self.specifyuser,
+                        datamodel.get_table_strict("CollectionObject").tableId,
+                        [query_fields[0], *restricted_fields],
+                    )
+                    self._assert_join_budget(query, 4)
+                    self.assertEqual(
+                        [tuple(row) for row in query],
+                        [(
+                            self.collectionobjects[0].id, "num-0",
+                            *("Taxon Genus" if treedef == self.taxontreedef else None
+                              for treedef in definitions),
+                        )],
+                    )
+
+    def test_skipped_rank_keeps_null_without_matching_another_branch(self):
+        self._make_distinct_taxon_relationships()
+        species = Taxon.objects.get(name="Taxon Species")
+        Taxon.objects.filter(id=species.id).update(parent=species.parent.parent)
+        # The skipped genus is a sibling of this species, not its ancestor.
+        Taxon.objects.filter(id=species.parent_id).update(
+            highestchildnodenumber=species.parent.nodenumber
+        )
+        self._assert_taxon_relationship_values([
+            ("1,9-determinations,4.taxon.Family", "Taxon Family"),
+            ("1,9-determinations,4.taxon.Genus", None),
+            ("1,9-determinations,4.taxon.Species", "Taxon Species"),
+            ("1,9-determinations,4-preferredTaxon.taxon.Genus", "Preferred Genus"),
+        ], max_joins=7)
+
+    def test_geography_rank_fields_preserve_values(self):
+        root_rank = self.geographytreedef.treedefitems.get(rankid=0)
+        country_rank = Geographytreedefitem.objects.create(
+            name="Country", rankid=200, treedef=self.geographytreedef, parent=root_rank
+        )
+        state_rank = Geographytreedefitem.objects.create(
+            name="State", rankid=300, treedef=self.geographytreedef, parent=country_rank
+        )
+        parent = None
+        for rank, name in (
+            (root_rank, "Earth"), (country_rank, "Country A"), (state_rank, "State A")
+        ):
+            parent = Geography.objects.create(
+                name=name, fullname=name, definition=self.geographytreedef,
+                definitionitem=rank, rankid=rank.rankid, parent=parent,
+            )
+        locality = Locality.objects.create(
+            localityname="Locality A", discipline=self.discipline, geography=parent
+        )
+        self._update(self.collectingevent, {"locality": locality})
+        self._update(self.collectionobjects[0], {"collectingevent": self.collectingevent})
+        self._assert_taxon_relationship_values([
+            ("1,10,2,3.geography.Country", "Country A"),
+            ("1,10,2,3.geography.State", "State A"),
+        ], max_joins=5)
+
+    def test_missing_rank_omits_filter_and_sort_but_preserves_column(self):
+        self._make_distinct_taxon_relationships()
+        fields = [
+            ("1,9-determinations,4.taxon.Unmapped rank", None),
+            ("1,9-determinations,4-preferredTaxon.taxon.Species", "Preferred Species"),
+        ]
+        query_fields = self._taxon_relationship_query_fields(fields)
+        query_fields[1] = query_fields[1]._replace(
+            op_num=1, value="No match", sort_type=QuerySort.ASC
+        )
+        with self.assertLogs(
+            "specifyweb.backend.stored_queries.query_construct", level="WARNING"
+        ):
+            with self.__class__.test_session_context() as session:
+                query, order_by = build_query(
+                    session, self.collection, self.specifyuser,
+                    datamodel.get_table_strict("CollectionObject").tableId,
+                    query_fields,
+                )
+                self._assert_join_budget(query, 4)
+                self.assertEqual(order_by, [])
+                self.assertEqual(
+                    [tuple(row) for row in query],
+                    [(self.collectionobjects[0].id, "num-0", None, "Preferred Species")],
+                )
+
+    def test_rank_filters_and_sorting_use_the_selected_relationship(self):
+        self._make_distinct_taxon_relationships()
+        taxon_species = Taxon.objects.get(name="Taxon Species")
+        host_species = Taxon.objects.get(name="Host Species")
+        Determination.objects.create(
+            collectionobject=self.collectionobjects[1],
+            taxon=taxon_species,
+            preferredtaxon=host_species,
+            iscurrent=True,
+        )
+        Determination.objects.filter(
+            collectionobject=self.collectionobjects[1]
+        ).update(preferredtaxon=host_species)
+        fields = [
+            ("1,9-determinations,4.taxon.Genus", "Taxon Genus"),
+            ("1,9-determinations,4-preferredTaxon.taxon.Genus", "Preferred Genus"),
+        ]
+        base_fields = self._taxon_relationship_query_fields(fields)
+        base_fields[0] = base_fields[0]._replace(op_num=10, value="num-0,num-1")
+        cases = (
+            ("equals", 1, "Preferred Genus", False, QuerySort.ASC, [0]),
+            ("not-equals", 1, "Preferred Genus", True, QuerySort.ASC, [1]),
+            ("contains", 11, "Genus", False, QuerySort.ASC, [1, 0]),
+            ("descending", 8, "", False, QuerySort.DESC, [0, 1]),
+        )
+        for name, op_num, value, negate, sort_type, indexes in cases:
+            with self.subTest(operation=name):
+                query_fields = [
+                    *base_fields[:2],
+                    base_fields[2]._replace(
+                        op_num=op_num, value=value, negate=negate, sort_type=sort_type
+                    ),
+                ]
+                with self.__class__.test_session_context() as session:
+                    query, order_by = build_query(
+                        session, self.collection, self.specifyuser,
+                        datamodel.get_table_strict("CollectionObject").tableId,
+                        query_fields,
+                    )
+                    self._assert_join_budget(query, 5)
+                    self.assertEqual(len(order_by), 1)
+                    self.assertEqual(
+                        [tuple(row) for row in query.order_by(*order_by)],
+                        [(
+                            self.collectionobjects[index].id, f"num-{index}",
+                            "Taxon Genus", "Preferred Genus" if index == 0 else "Host Genus",
+                        ) for index in indexes],
+                    )
+
+    def test_negated_rank_filter_includes_missing_relationships(self):
+        self._make_distinct_taxon_relationships()
+        taxon_species = Taxon.objects.get(name="Taxon Species")
+        Determination.objects.create(
+            collectionobject=self.collectionobjects[1],
+            taxon=taxon_species,
+            iscurrent=True,
+        )
+        Determination.objects.filter(
+            collectionobject=self.collectionobjects[1]
+        ).update(preferredtaxon=None)
+        query_fields = self._taxon_relationship_query_fields([
+            ("1,9-determinations,4-preferredTaxon.taxon.Genus", None),
+        ])
+        query_fields[0] = query_fields[0]._replace(op_num=10, value="num-0,num-1")
+        for op_num, value, negate in (
+            (1, "Preferred Genus", True),
+            (12, "", False),
+        ):
+            with self.subTest(op_num=op_num, negate=negate):
+                fields = [
+                    query_fields[0],
+                    query_fields[1]._replace(op_num=op_num, value=value, negate=negate),
+                ]
+                with self.__class__.test_session_context() as session:
+                    query, _ = build_query(
+                        session, self.collection, self.specifyuser,
+                        datamodel.get_table_strict("CollectionObject").tableId,
+                        fields,
+                    )
+                    self._assert_join_budget(query, 3)
+                    self.assertEqual(
+                        [tuple(row) for row in query],
+                        [(self.collectionobjects[1].id, "num-1", None)],
+                    )
+
+    def test_ancestor_rank_with_incomplete_node_numbering(self):
+        self._make_distinct_taxon_relationships()
+        Taxon.objects.filter(name="Taxon Species").update(nodenumber=None)
+        self._assert_invalid_numbering_rejected()
+
+    def test_ancestor_rank_with_malformed_node_numbering(self):
+        self._make_distinct_taxon_relationships()
+        # A stale range from another branch must not replace the actual parent.
+        Taxon.objects.filter(name="Host Genus").update(
+            nodenumber=1, highestchildnodenumber=21
+        )
+        self._assert_invalid_numbering_rejected()
+
+    def _assert_invalid_numbering_rejected(self):
+        def numbering():
+            return list(Taxon.objects.order_by("id").values_list(
+                "id", "parent_id", "nodenumber", "highestchildnodenumber"
+            ))
+
+        before = numbering()
+        with self.assertLogs(
+            "specifyweb.backend.stored_queries.query_construct", level="ERROR"
+        ):
+            with self.assertRaisesRegex(
+                TreeBusinessRuleException, "Repair the tree numbering"
+            ):
+                self._assert_taxon_relationship_values([
+                    ("1,9-determinations,4.taxon.Genus", "Taxon Genus"),
+                ], max_joins=3)
+        self.assertEqual(numbering(), before)
+
+    def test_invalid_ranges_and_parent_links_are_rejected(self):
+        self._make_distinct_taxon_relationships()
+        genus = Taxon.objects.get(name="Taxon Genus")
+        for changes in (
+            {"highestchildnodenumber": None},
+            {"highestchildnodenumber": genus.nodenumber - 1},
+            {"highestchildnodenumber": 21},
+            {"nodenumber": 5},
+            {"parent_id": None},
+        ):
+            with self.subTest(changes=changes):
+                Taxon.objects.filter(id=genus.id).update(**changes)
+                self._assert_invalid_numbering_rejected()
+                Taxon.objects.filter(id=genus.id).update(
+                    nodenumber=genus.nodenumber,
+                    highestchildnodenumber=genus.highestchildnodenumber,
+                    parent_id=genus.parent_id,
+                )
+
+    def test_numbering_is_validated_once_per_definition_per_query(self):
+        self._make_distinct_taxon_relationships()
+        with patch(
+            "specifyweb.backend.stored_queries.query_construct._validate_rank_query_numbering",
+            wraps=_validate_rank_query_numbering,
+        ) as validate:
+            self._assert_taxon_relationship_values([
+                ("1,9-determinations,4.taxon.Genus", "Taxon Genus"),
+                ("1,9-determinations,4.taxon.Species", "Taxon Species"),
+                ("1,9-determinations,4-preferredTaxon.taxon.Genus", "Preferred Genus"),
+            ], max_joins=6)
+            validate.assert_called_once_with(
+                datamodel.get_table_strict("Taxon"), [self.taxontreedef.id]
+            )
+
+    def test_numbering_is_rechecked_for_a_new_query(self):
+        self._make_distinct_taxon_relationships()
+        self._assert_taxon_relationship_values([
+            ("1,9-determinations,4.taxon.Genus", "Taxon Genus"),
+        ], max_joins=3)
+        Taxon.objects.filter(name="Taxon Species").update(nodenumber=None)
+        self._assert_invalid_numbering_rejected()
+
+    def test_explicit_tree_definition_does_not_validate_other_trees(self):
+        self._make_distinct_taxon_relationships()
+        second_treedef, second_species = self._make_second_taxon_tree()
+        Taxon.objects.filter(id=second_species.id).update(nodenumber=None)
+        query_fields = self._taxon_relationship_query_fields([
+            ("1,9-determinations,4.taxon.Genus", "Taxon Genus"),
+        ])
+        spec = query_fields[-1].fieldspec
+        restricted_rank = TreeRankQuery.create(
+            "Genus", "Taxon", self.taxontreedef.id, self.taxontreedef.name
+        )
+        query_fields[-1] = query_fields[-1]._replace(fieldspec=spec._replace(
+            join_path=tuple(
+                restricted_rank if isinstance(part, TreeRankQuery) else part
+                for part in spec.join_path
+            )
+        ))
+        with self.__class__.test_session_context() as session:
+            query, _ = build_query(
+                session, self.collection, self.specifyuser,
+                datamodel.get_table_strict("CollectionObject").tableId,
+                query_fields,
+            )
+            self.assertEqual(
+                [tuple(row) for row in query],
+                [(self.collectionobjects[0].id, "num-0", "Taxon Genus")],
+            )
+        self.assertTrue(Taxon.objects.filter(
+            id=second_species.id, definition=second_treedef, nodenumber__isnull=True
+        ).exists())
+
+    @override_settings(DEBUG=False)
+    @patch("specifyweb.backend.stored_queries.execution.models.session_context")
+    def test_invalid_numbering_error_is_returned_by_query_endpoint(self, context):
+        self._make_distinct_taxon_relationships()
+        Taxon.objects.filter(name="Taxon Species").update(nodenumber=None)
+        context.return_value = self.__class__.test_session_context()
+        client = Client(raise_request_exception=False)
+        client.force_login(self.specifyuser)
+        with self.assertLogs(
+            "specifyweb.backend.stored_queries.query_construct", level="ERROR"
+        ):
+            response = client.post("/stored_query/ephemeral/", {
+                "contexttableid": datamodel.get_table_strict("CollectionObject").tableId,
+                "selectdistinct": False,
+                "countonly": False,
+                "fields": [{
+                    "position": 0,
+                    "stringid": "1,9-determinations,4.taxon.Genus",
+                    "isrelfld": False,
+                    "isdisplay": True,
+                    "isnot": False,
+                    "isstrict": False,
+                    "operstart": 8,
+                    "startvalue": "",
+                    "sorttype": QuerySort.NONE,
+                    "formatname": None,
+                }],
+            }, content_type="application/json")
+        self._assertStatusCodeEqual(response, 500)
+        error = json.loads(response.content)
+        self.assertEqual(error["exception"], "TreeBusinessRuleException")
+        self.assertIn("Repair the tree numbering", error["message"])
+        self.assertNotIn("results", error)
 
     def test_explicit_ranks_share_the_same_relationship(self):
         self._make_distinct_taxon_relationships()
