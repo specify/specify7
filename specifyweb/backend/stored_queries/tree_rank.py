@@ -15,7 +15,6 @@ from typing import TYPE_CHECKING
 from sqlalchemy import orm, sql
 
 from . import models
-from .queryfieldspec import TreeRankQuery
 
 if TYPE_CHECKING:
     from specifyweb.specify.models_utils.load_datamodel import Table
@@ -27,7 +26,11 @@ if TYPE_CHECKING:
 
 def rank_path(spec):
     for index, part in enumerate(spec.join_path):
-        if isinstance(part, TreeRankQuery):
+        if (
+            hasattr(part, "relatedModelName")
+            and hasattr(part, "name")
+            and hasattr(part, "treedef_id")
+        ):
             return spec.join_path[:index], part, spec.join_path[index + 1:]
     return None
 
