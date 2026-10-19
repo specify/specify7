@@ -1,3 +1,7 @@
+import re
+
+from sqlalchemy.dialects import mysql
+
 from specifyweb.specify.models import (
     Collectingeventattribute,
     Determination,
@@ -7,7 +11,13 @@ from specifyweb.specify.models import (
 )
 from specifyweb.backend.stored_queries import models as models
 from specifyweb.backend.stored_queries.queryfield import fields_from_json
-from specifyweb.backend.stored_queries.execution import QuerySort, BuildQueryProps, build_query_construct_base, add_fields_to_query
+from specifyweb.backend.stored_queries.execution import (
+    QuerySort,
+    BuildQueryProps,
+    build_query,
+    build_query_construct_base,
+    add_fields_to_query,
+)
 from specifyweb.backend.stored_queries.tests.tests import SQLAlchemySetup
 
 class TestBuildQuery(SQLAlchemySetup):
@@ -106,34 +116,19 @@ class TestBuildQuery(SQLAlchemySetup):
                 series=props.series,
                 formatauditobjs=props.formatauditobjs
             )
-            # There should be 5 objects in the join cache
-            # CollectionObject -> Determinations
-            # Determination -> taxon
-            # Taxon Ranks for Determination -> taxon and preferredTaxon
-            # Determination -> preferredTaxon
-            self.assertEqual(
-                len(query.join_cache),
-                5
-            )
-            taxon_table = datamodel.get_table_strict("taxon")
-            tree_rank_cache_keys = [
-                cache_key
-                for cache_key in query.join_cache
-                if cache_key[-1] == "TreeRanks"
-            ]
-            self.assertEqual(
-                len(tree_rank_cache_keys),
-                2,
-            )
-            for cache_key in tree_rank_cache_keys:
-                self.assertEqual(cache_key[1], taxon_table)
-                ancestors, _treedefs = query.join_cache[cache_key]
-                self.assertEqual(
-                    len(ancestors),
-                    len(self.taxontreedef.treedefitems.all()),
-                )
+            # Three relationship joins and at most one join per requested rank.
+            self._assert_join_budget(query.query, 5)
 
-    def _make_distinct_taxon_relationships(self):
+    def _assert_join_budget(self, query, max_joins):
+        statement = str(query.statement.compile(dialect=mysql.dialect()))
+        join_count = len(re.findall(r"\bJOIN\b", statement, flags=re.IGNORECASE))
+        self.assertLessEqual(
+            join_count,
+            max_joins,
+            f"Generated {join_count} JOINs; expected at most {max_joins}:\n{statement}",
+        )
+
+    def _make_distinct_taxon_relationships(self, depth=7):
         phylum_rank = self.taxontreedef.treedefitems.get(name="Phylum")
         order_rank = Taxontreedefitem.objects.create(
             rankid=100,
@@ -142,22 +137,41 @@ class TestBuildQuery(SQLAlchemySetup):
             name="Order",
             title="Order",
         )
+        # Build deep fixtures without invoking the unrelated full-name join generator.
+        intermediate_ranks = Taxontreedefitem.objects.bulk_create([
+            Taxontreedefitem(
+                rankid=101 + index,
+                treedef=self.taxontreedef,
+                name=f"Intermediate {index}",
+                title=f"Intermediate {index}",
+            )
+            for index in range(depth - 7)
+        ])
+        parent_rank = order_rank
+        for rank in intermediate_ranks:
+            rank.parent = parent_rank
+            parent_rank = rank
         family_rank = self.taxontreedef.treedefitems.get(name="Family")
-        self._update(family_rank, {"parent": order_rank})
+        family_rank.parent = parent_rank
+        Taxontreedefitem.objects.bulk_update([*intermediate_ranks, family_rank], ["parent"])
         ranks = list(self.taxontreedef.treedefitems.order_by("rankid"))
+        self.assertEqual(len(ranks), depth)
 
         species = []
-        for relationship in ("Taxon", "Preferred", "Host"):
+        for relationship_index, relationship in enumerate(("Taxon", "Preferred", "Host")):
             parent = None
-            for rank in ranks:
-                parent = Taxon.objects.create(
+            for rank_index, rank in enumerate(ranks):
+                parent = Taxon(
                     name=f"{relationship} {rank.name}",
                     fullname=f"{relationship} {rank.name}",
                     parent=parent,
                     definition=self.taxontreedef,
                     definitionitem=rank,
                     rankid=rank.rankid,
+                    nodenumber=relationship_index * depth + rank_index + 1,
+                    highestchildnodenumber=(relationship_index + 1) * depth,
                 )
+                parent.save(skip_tree_extras=True)
             species.append(parent)
 
         self._update(species[0], {"acceptedtaxon": species[1]})
@@ -181,7 +195,7 @@ class TestBuildQuery(SQLAlchemySetup):
             self.collectionobjects[0], {"collectingevent": self.collectingevent}
         )
 
-    def _assert_taxon_relationship_values(self, fields):
+    def _assert_taxon_relationship_values(self, fields, max_joins=None):
         query_fields = fields_from_json([
             {
                 "position": position,
@@ -200,9 +214,18 @@ class TestBuildQuery(SQLAlchemySetup):
                 *fields,
             ])
         ])
-        results = self._get_results(
-            datamodel.get_table_strict("CollectionObject"), query_fields
-        )
+        with self.__class__.test_session_context() as session:
+            query, _ = build_query(
+                session,
+                self.collection,
+                self.specifyuser,
+                datamodel.get_table_strict("CollectionObject").tableId,
+                query_fields,
+            )
+            # Check before execution so deep-tree regressions cannot hit MySQL's table limit.
+            if max_joins is not None:
+                self._assert_join_budget(query, max_joins)
+            results = list(query)
         self.assertEqual(
             [tuple(row) for row in results],
             [(
@@ -218,6 +241,50 @@ class TestBuildQuery(SQLAlchemySetup):
             ("1,9-determinations,4.taxon.Order", "Taxon Order"),
             ("1,9-determinations,4.taxon.Species", "Taxon Species"),
         ])
+
+    def test_rank_fields_share_one_join(self):
+        self._make_distinct_taxon_relationships()
+        genus = Taxon.objects.get(name="Taxon Genus")
+        Taxon.objects.filter(id=genus.id).update(author="Genus author")
+        self._assert_taxon_relationship_values([
+            ("1,9-determinations,4.taxon.Genus", "Taxon Genus"),
+            ("1,9-determinations,4.taxon.Genus Author", "Genus author"),
+            ("1,9-determinations,4.taxon.Genus ID", genus.id),
+        ], max_joins=3)
+
+    def test_standalone_root_rank_without_node_numbers(self):
+        root_rank = self.taxontreedef.treedefitems.get(name="Root")
+        root = Taxon.objects.create(
+            name="Standalone root",
+            fullname="Standalone root",
+            definition=self.taxontreedef,
+            definitionitem=root_rank,
+            rankid=root_rank.rankid,
+        )
+        self.assertIsNone(root.nodenumber)
+        self.assertIsNone(root.highestchildnodenumber)
+        Determination.objects.create(
+            collectionobject=self.collectionobjects[0],
+            taxon=root,
+            preferredtaxon=root,
+            iscurrent=True,
+        )
+        self._assert_taxon_relationship_values([
+            ("1,9-determinations,4.taxon.Root", root.name),
+            ("1,9-determinations,4.taxon.Root ID", root.id),
+            ("1,9-determinations,4.taxon.Genus", None),
+        ], max_joins=4)
+
+    def test_missing_taxon_relationship_keeps_null_rank_values(self):
+        self._make_distinct_taxon_relationships()
+        Determination.objects.filter(
+            collectionobject=self.collectionobjects[0]
+        ).update(preferredtaxon=None)
+        self._assert_taxon_relationship_values([
+            ("1,9-determinations,4.taxon.Genus", "Taxon Genus"),
+            ("1,9-determinations,4-preferredTaxon.taxon.Genus", None),
+            ("1,9-determinations,4-preferredTaxon.taxon.Species", None),
+        ], max_joins=6)
 
     def test_any_rank_values_use_distinct_relationships(self):
         self._make_distinct_taxon_relationships()
@@ -266,3 +333,51 @@ class TestBuildQuery(SQLAlchemySetup):
         for ordered_fields in (fields, list(reversed(fields))):
             with self.subTest(first_relationship=ordered_fields[0][0]):
                 self._assert_taxon_relationship_values(ordered_fields)
+
+    def _assert_genus_species_relationships(
+        self, depth, include_host=False, max_joins=None
+    ):
+        self._make_distinct_taxon_relationships(depth=depth)
+        relationships = [
+            ("1,9-determinations,4", "Taxon"),
+            ("1,9-determinations,4-preferredTaxon", "Preferred"),
+        ]
+        if include_host:
+            relationships.append(("1,10,92,4-hostTaxon", "Host"))
+        fields = [
+            (f"{path}.taxon.{rank}", f"{relationship} {rank}")
+            for path, relationship in relationships
+            for rank in ("Genus", "Species")
+        ]
+        for ordering, ordered_fields in (
+            ("taxon-first", fields),
+            ("reversed", list(reversed(fields))),
+            ("repeated-ranks", [*fields, fields[0], fields[-1]]),
+        ):
+            with self.subTest(
+                depth=depth, ordering=ordering, relationships=len(relationships)
+            ):
+                self._assert_taxon_relationship_values(
+                    ordered_fields, max_joins=max_joins
+                )
+
+    def test_genus_species_values_use_distinct_relationships(self):
+        self._assert_genus_species_relationships(depth=11)
+
+    def test_genus_species_join_budget(self):
+        # Three relationship joins plus two requested ranks for each relationship.
+        self._assert_genus_species_relationships(depth=11, max_joins=7)
+
+    def test_genus_species_join_budget_with_sixteen_ranks(self):
+        self._assert_genus_species_relationships(depth=16, max_joins=7)
+
+    def test_three_relationship_join_budget_with_sixteen_ranks(self):
+        # Six relationship joins plus two requested ranks for each relationship.
+        self._assert_genus_species_relationships(
+            depth=16, include_host=True, max_joins=12
+        )
+
+    def test_three_relationship_join_budget_with_thirty_two_ranks(self):
+        self._assert_genus_species_relationships(
+            depth=32, include_host=True, max_joins=12
+        )
