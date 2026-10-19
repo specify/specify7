@@ -1,8 +1,12 @@
 import re
+import warnings
+from types import SimpleNamespace
 
 from django.db import connection
 from django.test.utils import CaptureQueriesContext
 from sqlalchemy.dialects import mysql
+from sqlalchemy.exc import SAWarning
+from sqlalchemy.sql.selectable import Join
 
 from specifyweb.specify.models import (
     Collectingeventattribute,
@@ -19,6 +23,7 @@ from specifyweb.specify.models import (
 from specifyweb.backend.stored_queries import models as models
 from specifyweb.backend.stored_queries.queryfield import fields_from_json
 from specifyweb.backend.stored_queries.queryfieldspec import TreeRankQuery
+from specifyweb.backend.stored_queries.tree_rank import resolve_page
 from specifyweb.backend.stored_queries.execution import (
     QuerySort,
     BuildQueryProps,
@@ -130,10 +135,16 @@ class TestBuildQuery(SQLAlchemySetup):
     def _assert_join_budget(self, query, max_joins):
         statement = str(query.statement.compile(dialect=mysql.dialect()))
         join_count = len(re.findall(r"\bJOIN\b", statement, flags=re.IGNORECASE))
+        def joins(source):
+            return 1 + joins(source.left) + joins(source.right) if isinstance(source, Join) else 0
+        final_joins = sum(joins(source) for source in query.statement.get_final_froms())
+        self.assertLessEqual(final_joins, max_joins, statement)
+        # At most six relationship joins, one unpivot and two indexed traversal
+        # joins in the shared seed CTE. This allowance never grows with depth.
         self.assertLessEqual(
             join_count,
-            max_joins,
-            f"Generated {join_count} JOINs; expected at most {max_joins}:\n{statement}",
+            max_joins + 9,
+            f"Generated {join_count} JOINs including seed traversal:\n{statement}",
         )
 
     def _make_distinct_taxon_relationships(self, depth=7):
@@ -685,3 +696,191 @@ class TestBuildQuery(SQLAlchemySetup):
         self._assert_genus_species_relationships(
             depth=32, include_host=True, max_joins=12
         )
+
+    def test_three_relationship_join_budget_with_sixty_four_ranks(self):
+        self._assert_genus_species_relationships(
+            depth=64, include_host=True, max_joins=12
+        )
+
+    def test_page_rank_resolution_preserves_relationships_and_duplicates(self):
+        self._make_distinct_taxon_relationships(depth=32)
+        determination = Determination.objects.get(collectionobject=self.collectionobjects[0])
+        Determination.objects.bulk_create([Determination(
+            collectionobject=self.collectionobjects[0],
+            collectionmemberid=determination.collectionmemberid,
+            taxon=determination.taxon,
+            preferredtaxon=determination.preferredtaxon,
+            iscurrent=False,
+        )])
+        fields = self._taxon_relationship_query_fields([
+            ("1,9-determinations,4.taxon.Genus", "Taxon Genus"),
+            ("1,9-determinations,4-preferredTaxon.taxon.Genus", "Preferred Genus"),
+            ("1,9-determinations,4-preferredTaxon.taxon.Species", "Preferred Species"),
+        ])
+        for offset in (0, 1, 2):
+            with self.subTest(offset=offset), self.__class__.test_session_context() as session:
+                query, order = build_query(
+                    session, self.collection, self.specifyuser, 1, fields,
+                    BuildQueryProps(defer_tree_display=True))
+                ranks = query.get_execution_options()["specify_tree_ranks"]
+                with warnings.catch_warnings():
+                    warnings.simplefilter("error", SAWarning)
+                    page = resolve_page(
+                        query, [*order, models.CollectionObject._id], ranks, 1, offset)
+                    if offset == 2:
+                        # The SQLAlchemy test adapter cannot wrap an empty result.
+                        self.assertEqual(page.count(), 0)
+                        continue
+                    rows = list(page)
+                expected = [(self.collectionobjects[0].id, "num-0", "Taxon Genus",
+                             "Preferred Genus", "Preferred Species")] if offset < 2 else []
+                self.assertEqual([tuple(row) for row in rows], expected)
+
+    def test_sorted_page_resolves_only_required_relationship_before_pagination(self):
+        self._make_distinct_taxon_relationships()
+        fields = self._taxon_relationship_query_fields([
+            ("1,9-determinations,4.taxon.Genus", "Taxon Genus"),
+            ("1,9-determinations,4-preferredTaxon.taxon.Genus", "Preferred Genus"),
+            ("1,9-determinations,4-preferredTaxon.taxon.Species", "Preferred Species"),
+        ])
+        fields[2] = fields[2]._replace(sort_type=QuerySort.ASC)
+        with self.__class__.test_session_context() as session:
+            query, order = build_query(
+                session, self.collection, self.specifyuser, 1, fields,
+                BuildQueryProps(defer_tree_display=True))
+            ranks = query.get_execution_options()["specify_tree_ranks"]
+            self.assertEqual(set(ranks.displays), {2, 4})
+            with warnings.catch_warnings():
+                warnings.simplefilter("error", SAWarning)
+                rows = list(resolve_page(query, order, ranks, 20, 0))
+            self.assertEqual([tuple(row) for row in rows], [(
+                self.collectionobjects[0].id, "num-0", "Taxon Genus",
+                "Preferred Genus", "Preferred Species")])
+
+    def test_display_ranks_do_not_require_ancestor_mapping_for_counts(self):
+        self._make_distinct_taxon_relationships()
+        fields = self._taxon_relationship_query_fields([
+            ("1,9-determinations,4.taxon.Genus", "Taxon Genus"),
+            ("1,9-determinations,4-preferredTaxon.taxon.Species", "Preferred Species"),
+        ])
+        with self.__class__.test_session_context() as session:
+            query, _ = build_query(
+                session, self.collection, self.specifyuser, 1, fields,
+                BuildQueryProps(defer_tree_display=True))
+            self.assertNotIn("WITH RECURSIVE", str(query.statement))
+            self.assertEqual(query.count(), 1)
+
+    def test_grouped_rank_queries_use_eager_resolution(self):
+        self._make_distinct_taxon_relationships()
+        fields = self._taxon_relationship_query_fields([
+            ("1,9-determinations,4.taxon.Genus", "Taxon Genus"),
+            ("1,9-determinations,4-preferredTaxon.taxon.Species", "Preferred Species"),
+        ])
+        with self.__class__.test_session_context() as session:
+            query, _ = build_query(
+                session, self.collection, self.specifyuser, 1, fields,
+                BuildQueryProps(distinct=True, defer_tree_display=True))
+            self.assertFalse(query.get_execution_options()["specify_tree_ranks"].displays)
+            rows = list(query)
+            self.assertEqual(tuple(rows[0])[1:], ("num-0", "Taxon Genus", "Preferred Species"))
+
+    def test_count_does_not_resolve_display_only_sort_ranks(self):
+        self._make_distinct_taxon_relationships()
+        fields = self._taxon_relationship_query_fields([
+            ("1,9-determinations,4.taxon.Genus", "Taxon Genus"),
+        ])
+        fields[1] = fields[1]._replace(sort_type=QuerySort.ASC)
+        with self.__class__.test_session_context() as session:
+            query, _ = build_query(
+                session, self.collection, self.specifyuser, 1, fields,
+                BuildQueryProps(defer_tree_display=True, count_only=True))
+            self.assertNotIn("WITH RECURSIVE", str(query.statement))
+            self.assertEqual(query.count(), 1)
+
+    def test_page_resolution_preserves_null_preferred_taxon(self):
+        self._make_distinct_taxon_relationships()
+        Determination.objects.filter(
+            collectionobject=self.collectionobjects[0]).update(preferredtaxon=None)
+        fields = self._taxon_relationship_query_fields([
+            ("1,9-determinations,4.taxon.Genus", "Taxon Genus"),
+            ("1,9-determinations,4-preferredTaxon.taxon.Species", None),
+        ])
+        with self.__class__.test_session_context() as session:
+            query, order = build_query(
+                session, self.collection, self.specifyuser, 1, fields,
+                BuildQueryProps(defer_tree_display=True))
+            page = resolve_page(query, order, query.get_execution_options()["specify_tree_ranks"], 20, 0)
+            self.assertEqual([tuple(row) for row in page], [(
+                self.collectionobjects[0].id, "num-0", "Taxon Genus", None)])
+
+    def test_mixed_tree_tables_use_eager_resolution(self):
+        self._make_distinct_taxon_relationships()
+        rank = self.geographytreedef.treedefitems.get(rankid=0)
+        geography = Geography.objects.create(
+            name="World", fullname="World", definition=self.geographytreedef,
+            definitionitem=rank, rankid=rank.rankid)
+        locality = Locality.objects.create(
+            localityname="Here", discipline=self.discipline, geography=geography)
+        self._update(self.collectingevent, {"locality": locality})
+        self._update(self.collectionobjects[0], {"collectingevent": self.collectingevent})
+        fields = self._taxon_relationship_query_fields([
+            ("1,9-determinations,4.taxon.Genus", "Taxon Genus"),
+            (f"1,10,2,3.geography.{rank.name}", "World"),
+        ])
+        with self.__class__.test_session_context() as session:
+            query, _ = build_query(
+                session, self.collection, self.specifyuser, 1, fields,
+                BuildQueryProps(defer_tree_display=True))
+            self.assertFalse(query.get_execution_options()["specify_tree_ranks"].displays)
+            self.assertEqual([tuple(row) for row in query], [(
+                self.collectionobjects[0].id, "num-0", "Taxon Genus", "World")])
+
+    def test_recursion_override_is_statement_scoped(self):
+        statement = "WITH RECURSIVE ancestors AS (...) SELECT * FROM ancestors"
+        parameters = (1,)
+        context = SimpleNamespace(execution_options={"specify_tree_ranks": object()})
+        changed, unchanged = models.tree_query_recursion_limit(
+            None, None, statement, parameters, context, False)
+        self.assertEqual(
+            changed, "SET STATEMENT max_recursive_iterations=4294967295 FOR " + statement)
+        self.assertIs(unchanged, parameters)
+        context.execution_options = {}
+        self.assertEqual(models.tree_query_recursion_limit(
+            None, None, statement, parameters, context, False), (statement, parameters))
+
+    def test_tree_seed_preserves_implicit_or_between_ordinary_filters(self):
+        self._make_distinct_taxon_relationships()
+        determination = Determination.objects.get(collectionobject=self.collectionobjects[0])
+        Determination.objects.create(
+            collectionobject=self.collectionobjects[1], taxon=determination.taxon,
+            preferredtaxon=determination.preferredtaxon, iscurrent=True)
+        fields = self._taxon_relationship_query_fields([
+            ("1,9-determinations,4.taxon.Genus", "Taxon Genus"),
+        ])
+        fields.insert(1, fields[0]._replace(value="num-1", display=False))
+        for deferred in (False, True):
+            with self.subTest(deferred=deferred), self.__class__.test_session_context() as session:
+                query, order = build_query(
+                    session, self.collection, self.specifyuser, 1, fields,
+                    BuildQueryProps(defer_tree_display=deferred))
+                ranks = query.get_execution_options()["specify_tree_ranks"]
+                result = resolve_page(query, order, ranks, 20, 0) if deferred else query
+                self.assertCountEqual([tuple(row) for row in result], [
+                    (self.collectionobjects[index].id, f"num-{index}", "Taxon Genus")
+                    for index in (0, 1)])
+
+    def test_temporal_rank_field_keeps_its_shared_rank_eager(self):
+        self._make_distinct_taxon_relationships()
+        fields = self._taxon_relationship_query_fields([
+            ("1,9-determinations,4.taxon.Genus", "Taxon Genus"),
+            ("1,9-determinations,4.taxon.Genus timestampCreatedNumericYear", None),
+        ])
+        results = []
+        for deferred in (False, True):
+            with self.__class__.test_session_context() as session:
+                query, _ = build_query(
+                    session, self.collection, self.specifyuser, 1, fields,
+                    BuildQueryProps(defer_tree_display=deferred))
+                self.assertFalse(query.get_execution_options()["specify_tree_ranks"].displays)
+                results.append([tuple(row) for row in query])
+        self.assertEqual(results[0], results[1])
