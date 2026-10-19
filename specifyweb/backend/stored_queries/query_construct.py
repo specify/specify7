@@ -8,7 +8,6 @@ from specifyweb.backend.trees.utils import get_treedefs
 
 from .queryfieldspec import TreeRankQuery, QueryFieldSpec
 from specifyweb.backend.stored_queries import models
-from .tree_rank import TreeRanks
 
 logger = logging.getLogger(__name__)
 
