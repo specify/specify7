@@ -421,17 +421,17 @@ msgstr "Unsupported cell type"
 msgid "additionalResultsOmitted"
 msgstr "Additional results omitted"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:286
+#: components/FormSliders/RecordSelectorFromIds.tsx:289
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "recordSelectorUnloadProtect"
 msgstr "Proceed without saving?"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:289
+#: components/FormSliders/RecordSelectorFromIds.tsx:292
 #. 🟥When in record set and current record is unsaved and try to navigate to another record. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "recordSelectorUnloadProtectDescription"
 msgstr "You might want to save this record before navigating away."
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:225
+#: components/FormSliders/RecordSelectorFromIds.tsx:228
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "creatingNewRecord"
 msgstr "Creating new record"
@@ -468,12 +468,12 @@ msgstr "Duplicate {recordSetItemTable:string}"
 msgid "duplicateRecordSetItemDescription"
 msgstr "This record is already present in the current {recordSetTable:string}"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:174
+#: components/FormSliders/RecordSelectorFromIds.tsx:177
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "addToRecordSet"
 msgstr "Add to {recordSetTable:string}"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:179
+#: components/FormSliders/RecordSelectorFromIds.tsx:182
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "removeFromRecordSet"
 msgstr "Remove from {recordSetTable:string}"
@@ -644,17 +644,17 @@ msgstr "Edit history"
 msgid "editHistoryQueryName"
 msgstr "Edit history for \"{formattedRecord:string}\""
 
-#: components/FormMeta/index.tsx:151
+#: components/FormMeta/index.tsx:149
 #. Used in: Components > Form Meta > Index
 msgid "formConfiguration"
 msgstr "Form Configuration"
 
-#: components/FormMeta/index.tsx:183
+#: components/FormMeta/index.tsx:181
 #. Used in: Components > Form Meta > Index
 msgid "formState"
 msgstr "Form State"
 
-#: components/FormMeta/index.tsx:232
+#: components/FormMeta/index.tsx:230
 #. Used in: Components > Form Meta > Index
 msgid "recordInformation"
 msgstr "Record Information"
@@ -686,7 +686,7 @@ msgstr "Subform"
 msgid "formTable"
 msgstr "Grid"
 
-#: components/FormMeta/index.tsx:201
+#: components/FormMeta/index.tsx:199
 #. Used in: Components > Form Meta > Index
 msgid "subviewConfiguration"
 msgstr "Subview"
@@ -712,11 +712,9 @@ msgstr "Configure data entry tables"
 msgid "configureInteractionTables"
 msgstr "Configure interaction tables"
 
-#: components/FormMeta/index.tsx:69
-#: components/FormMeta/index.tsx:71
-#: components/QueryBuilder/__tests__/RecordMergingAvailability.test.tsx:122
-#: components/QueryBuilder/__tests__/RecordMergingAvailability.test.tsx:135
-#. Used in: Components > Form Meta > Index ⬤ Query Builder > __tests__ > Record Merging Availability
+#: components/FormMeta/index.tsx:68
+#: components/FormMeta/index.tsx:70
+#. Used in: Components > Form Meta > Index
 msgid "formMeta"
 msgstr "Form Meta"
 
