@@ -58,7 +58,7 @@ def _validate_rank_query_numbering(table, treedef_ids):
             logger.error(message)
             raise TreeBusinessRuleException(
                 message,
-                {"table": table.name, "treeDefId": definition_id, "nodeId": node_id},
+                {"tree": table.name, "treeDefId": definition_id, "nodeId": node_id},
             )
         ancestors.append((node_id, highest))
         previous_number = number
