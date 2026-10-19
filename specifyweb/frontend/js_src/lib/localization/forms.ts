@@ -509,7 +509,7 @@ export const formsText = createDictionary({
     'en-us':
       'The data shown on this page has been changed by another user or in another browser tab and is out of date. The page must be reloaded to prevent inconsistent data from being saved.',
     'ru-ru':
-      'Данные, отображаемые на этой странице, были изменены другим пользователем или в другой вкладке браузера и устарели. Для предотвращения сохранения несогласованных данных необходимо перезагрузить страницу.',
+      'Данные, отображаемые на этой странице, были изменены другим пользователем или в другой вкладке браузера и устарели. Для предотвращения сохранения некорректных данных необходимо перезагрузить страницу.',
     'es-es':
       'Los datos que se muestran en esta página han sido modificados por otro usuario o en otra pestaña del navegador y están desactualizados. Es necesario recargar la página para evitar que se guarden datos inconsistentes.',
     'fr-fr':
@@ -538,7 +538,7 @@ export const formsText = createDictionary({
   saveBlockedDescription: {
     'en-us': 'Form cannot be saved because of the following error:',
     'ru-ru': 'Сохранение формы невозможно из-за следующей ошибки:',
-    'es-es': 'El formulario no se puede guardar debido al siguiente error:',
+    'es-es': 'No se puede guardar el formulario debido al siguiente error:',
     'fr-fr':
       "Le formulaire ne peut pas être enregistré en raison de l'erreur suivante :",
     'uk-ua': 'Форму неможливо зберегти через таку помилку:',
@@ -594,7 +594,7 @@ export const formsText = createDictionary({
     'uk-ua':
       'Ймовірно, це було включено до цієї форми з Specify 6 і може бути підтримано в майбутньому.',
     'de-ch':
-      'Es wurde wahrscheinlich in Specify 6 in dieses Formular aufgenommen und wird möglicherweise auch in Zukunft unterstützt.',
+      'Es wurde wahrscheinlich in dieser Version von Specify 6 übernommen und wird möglicherweise auch in Zukunft unterstützt.',
     'pt-br':
       'Provavelmente foi incluído neste formulário a partir da versão 6 do Specify e poderá ser suportado no futuro.',
     'hr-hr':
@@ -1076,7 +1076,7 @@ export const formsText = createDictionary({
   bulkCarryForwardSettingsDescription: {
     'en-us': 'Configure fields to bulk carry forward',
     'de-ch': 'Felder für den Massenübertrag konfigurieren',
-    'es-es': 'Configure los campos para transferirlos masivamente.',
+    'es-es': 'Configure los campos para transferir masivamente.',
     'fr-fr': 'Configurer les champs pour un report en masse',
     'pt-br': 'Configure os campos para transferência em massa.',
     'ru-ru': 'Настройте поля для массового переноса.',
@@ -1119,7 +1119,7 @@ export const formsText = createDictionary({
     'uk-ua': 'Це поле має бути унікальним. Його не можна переносити',
     'de-ch':
       'Dieses Feld muss eindeutig sein. Es kann nicht übertragen werden.',
-    'pt-br': 'Este campo deve ser único. Ele não pode ser repetido.',
+    'pt-br': 'Este campo deve ser único. Não pode ser repetido.',
     'hr-hr': 'Ovo polje mora biti jedinstveno. Ne može se prenijeti.',
     nb: 'Dette feltet må være unikt. Det kan ikke tas med videre',
   },
@@ -1155,7 +1155,7 @@ export const formsText = createDictionary({
     'fr-fr':
       "Impossible de reporter l'enregistrement sur la plage {field:string} spécifiée.",
     'pt-br':
-      'Não é possível prosseguir com o registro através do intervalo especificado {field:string}.',
+      'Não é possível prosseguir com o registro através do intervalo {field:string} especificado.',
     'ru-ru':
       'Невозможно перенести запись через указанный диапазон {field:string}.',
     'uk-ua': 'Неможливо перенести запис у вказаний діапазон {field:string}.',
@@ -1235,7 +1235,7 @@ export const formsText = createDictionary({
     'es-es': 'Mostrar botón Agregar',
     'fr-fr': 'Afficher le bouton Ajouter',
     'uk-ua': 'Показати кнопку «Додати»',
-    'de-ch': 'Schaltfläche „Hinzufügen“ anzeigen',
+    'de-ch': 'Schaltfläche "Hinzufügen" anzeigen',
     'pt-br': 'Mostrar botão Adicionar',
     'hr-hr': 'Prikaži gumb Dodaj',
     nb: 'Vis Legg til-knappen',
@@ -1456,7 +1456,7 @@ export const formsText = createDictionary({
     'uk-ua': 'Підвид',
     'de-ch': 'Unteransicht',
     'fr-fr': 'Sous-vue',
-    'pt-br': 'Subvisualização',
+    'pt-br': 'Subvista',
     'hr-hr': 'Podprikaz',
     nb: 'Delvisning',
   },
@@ -1478,7 +1478,7 @@ export const formsText = createDictionary({
     'fr-fr': 'Activer le mode lecture seule',
     'uk-ua': 'Увімкнути режим лише для читання',
     'de-ch': 'Nur-Lese-Modus aktivieren',
-    'pt-br': 'Ativar modo somente leitura',
+    'pt-br': 'Ativar o modo somente leitura',
     'hr-hr': 'Omogući način samo za čitanje',
     nb: 'Aktiver skrivebeskyttet modus',
   },
@@ -1593,7 +1593,7 @@ export const formsText = createDictionary({
     'pt-br': 'Adicionar COG Children',
     'ru-ru': 'Добавить детей COG',
     'uk-ua': 'Додати дочірні елементи COG',
-    'hr-hr': 'Dodajte COG djecu',
+    'hr-hr': 'Dodajte djecu COG-a',
     nb: 'Legg til COG-underelementer',
   },
 } as const);

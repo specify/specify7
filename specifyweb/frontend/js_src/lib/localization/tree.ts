@@ -558,7 +558,7 @@ export const treeText = createDictionary({
     `,
     'en-us': 'Synonymized {collectionObjectTable:string} Count',
     'de-ch': 'Synonymisiert {collectionObjectTable:string} Zählung',
-    'es-es': 'Conteo de sinónimos {collectionObjectTable:string}',
+    'es-es': 'Conteo {collectionObjectTable:string} Sinonimizado',
     'fr-fr': 'Compte synonymisé {collectionObjectTable:string}',
     'hr-hr': 'Sinonimizirani {collectionObjectTable:string} broj',
     nb: 'Synonymisert {collectionObjectTable:string}-antall',
@@ -1078,7 +1078,8 @@ export const treeText = createDictionary({
   },
   defaultTreeCreationLoadingMessage: {
     'en-us': 'Default tree creation is in progress, please wait...',
-    'de-ch': 'Die Erstellung der Standardbaumstruktur läuft, bitte warten...',
+    'de-ch':
+      'Die Erstellung der Standardbaumstruktur läuft, bitte warten Sie...',
     'es-es':
       'La creación del árbol predeterminado está en curso, por favor espere...',
     'fr-fr':
