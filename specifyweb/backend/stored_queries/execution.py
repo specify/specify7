@@ -28,7 +28,6 @@ from specifyweb.backend.trees.utils import get_search_filters
 from . import models
 from .format import ObjectFormatter, ObjectFormatterProps
 from .query_construct import QueryConstruct
-from .tree_rank import prepare_tree_ranks, rank_path, path_key, resolve_page
 from .field_spec_maps import transform_field_specs
 from .web_portal_export import query_to_web_portal_zip as _query_to_web_portal_zip, WebportalQueryResultProcessors
 from specifyweb.backend.notifications.models import Message
@@ -51,6 +50,11 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 SERIES_MAX_ROWS = 10000
+
+
+def _get_tree_rank_functions():
+    from .tree_rank import prepare_tree_ranks, rank_path, path_key, resolve_page
+    return prepare_tree_ranks, rank_path, path_key, resolve_page
 
 
 class QuerySort:
