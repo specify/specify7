@@ -68,7 +68,7 @@ export class LRUCache<K, V> {
       return this.cache.delete(key);
     }
     const itemSize = this.getCanonicalItemSize(item as V);
-    this.size = Math.min(0, this.size - itemSize);
+    this.size = Math.max(0, this.size - itemSize);
     // BUG: should we call onEvict here?
     return this.cache.delete(key);
   }
