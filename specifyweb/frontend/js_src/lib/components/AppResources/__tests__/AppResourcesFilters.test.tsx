@@ -63,6 +63,7 @@ describe('AppResourcesFilters', () => {
         'dataViewQueries',
         'defaultUserPreferences',
         'expressSearchConfig',
+        'globalPreferences',
         'interactionsTables',
         'label',
         'leafletLayers',
