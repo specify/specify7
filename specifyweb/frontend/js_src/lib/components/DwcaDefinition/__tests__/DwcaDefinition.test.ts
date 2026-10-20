@@ -7,6 +7,7 @@ import {
   getMappingTerm,
   getMappingTabValue,
   getMappingTabValues,
+  getMappingTabIndex,
   getSerializedMappingTerm,
   ensureIdentifierTerm,
   defaultRowTypes,
@@ -222,6 +223,16 @@ describe('DwCA query field term mapping', () => {
         },
       ])
     ).toEqual(['multimedia', 'multimedia-2']);
+  });
+
+  test('keeps the extension tab selected when its type changes', () => {
+    const mappings = [
+      { extension: false, rowType: 'Occurrence' },
+      { extension: true, rowType: 'MeasurementOrFact' },
+    ];
+    const tabValues = getMappingTabValues(mappings);
+    expect(getMappingTabIndex(mappings, tabValues, 'multimedia', 1)).toBe(1);
+    expect(getMappingTabIndex(mappings, tabValues, undefined, 1)).toBe(0);
   });
 
   test('creates readable default filenames from definition names', () => {
