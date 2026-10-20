@@ -1758,7 +1758,15 @@ export function DwcaDefinitionEditor(props: AppResourceTabProps): JSX.Element {
     false
   );
   return !isDefinitionXmlValid(props.data) ? (
-    <ErrorMessage>{dwcaText.dwcaInvalidDefinition()}</ErrorMessage>
+    <ErrorMessage>
+      {dwcaText.dwcaInvalidDefinition()}
+      <Button.LikeLink
+        className="w-fit !text-white underline"
+        onClick={props.onSwitchToXmlEditor}
+      >
+        {dwcaText.dwcaOpenXmlEditor()}
+      </Button.LikeLink>
+    </ErrorMessage>
   ) : isDataModelLoaded ? (
     <DwcaDefinitionEditorLoaded {...props} />
   ) : (

@@ -31,7 +31,10 @@ export const dwcaText = createDictionary({
   },
   dwcaInvalidDefinition: {
     'en-us':
-      'This Darwin Core definition contains invalid XML. Fix it in the XML editor before using the visual editor.',
+      'This definition contains invalid XML. Please fix it in the XML editor before using the visual editor.',
+  },
+  dwcaOpenXmlEditor: {
+    'en-us': 'Open XML Editor',
   },
   dwcaMismatchedExtensionContext: {
     'en-us': 'An extension query uses a different context table',

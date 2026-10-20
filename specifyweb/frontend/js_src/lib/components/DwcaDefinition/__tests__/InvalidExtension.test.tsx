@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 import { MemoryRouter } from 'react-router';
 
@@ -14,6 +14,23 @@ jest.mock('../../QueryBuilder/Wrapped', () => ({
 }));
 
 requireContext();
+
+test('offers the XML editor when the definition is invalid', async () => {
+  const onSwitchToXmlEditor = jest.fn();
+  await act(async () => {
+    render(
+      <DwcaDefinitionEditor
+        {...({
+          data: '<archive><core></archive>',
+          onSwitchToXmlEditor,
+        } as unknown as Parameters<typeof DwcaDefinitionEditor>[0])}
+      />
+    );
+  });
+  expect(screen.getByRole('alert')).toHaveTextContent('invalid XML');
+  fireEvent.click(screen.getByRole('button', { name: 'Open XML Editor' }));
+  expect(onSwitchToXmlEditor).toHaveBeenCalledTimes(1);
+});
 
 test('hides a mismatched extension and lets the user remove it', async () => {
   jest

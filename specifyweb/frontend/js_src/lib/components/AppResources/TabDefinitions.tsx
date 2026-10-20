@@ -49,6 +49,7 @@ export type AppResourceTabProps = {
   readonly appResource: SpecifyResource<SpAppResource | SpViewSetObj>;
   readonly directory: SerializedResource<SpAppResourceDir>;
   readonly data: string | null;
+  readonly onSwitchToXmlEditor?: () => void;
   /**
    * Instead of returning a string value on change, you return a function
    * that returns a string value. This way, if new value is stored in an

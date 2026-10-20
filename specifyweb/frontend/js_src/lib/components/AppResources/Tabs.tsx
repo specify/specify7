@@ -41,6 +41,7 @@ export function AppResourcesTab({
   data,
   isFullScreen: [isFullScreen, _],
   onChange: handleChange,
+  onSwitchToXmlEditor,
   onSetCleanup: setCleanup,
   footer,
 }: {
@@ -55,6 +56,7 @@ export function AppResourcesTab({
   readonly onChange: (
     data: string | (() => string | null | undefined) | null
   ) => void;
+  readonly onSwitchToXmlEditor?: () => void;
   readonly onSetCleanup: (callback: () => Promise<void>) => void;
   readonly footer: JSX.Element;
 }): JSX.Element {
@@ -66,6 +68,7 @@ export function AppResourcesTab({
         directory={directory}
         resource={resource}
         onChange={handleChange}
+        onSwitchToXmlEditor={onSwitchToXmlEditor}
         onSetCleanup={setCleanup}
       />
     </ErrorBoundary>

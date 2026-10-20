@@ -379,6 +379,7 @@ export function AppResourceEditor({
             if (typeof data === 'function') setLastData(() => data);
             else setResourceData({ ...resourceData, data });
           }}
+          onSwitchToXmlEditor={(): void => handleChangeTab(1)}
           onSetCleanup={handleSetCleanup}
         />
       </AppResourceContext.Provider>
