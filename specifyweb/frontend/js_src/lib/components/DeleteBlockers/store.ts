@@ -87,17 +87,17 @@ export class DeleteBlockerStore {
     if (node === undefined) {
       return undefined;
     }
-    const blockerGraph = this.getBlockerGraph(resource);
-    if (blockerGraph === undefined) {
-      return undefined;
-    }
-    if (blockerGraph.some((resource) => resource.count === undefined)) {
-      return undefined;
-    }
-    return blockerGraph.reduce(
-      (previousSum, blockerRecord) => previousSum + (blockerRecord.count ?? 0),
-      0
-    );
+    let countsPending = true;
+    let totalCount = 0;
+    this.state.graphIterator(blockerKey, 'children', (node) => {
+      if (node.version === 0 || node.count === undefined) {
+        countsPending = true;
+        return true;
+      }
+      totalCount += node.count;
+      return false;
+    });
+    return countsPending ? undefined : totalCount;
   }
 
   public getReferenceCountForRelationship(
@@ -183,6 +183,7 @@ export class DeleteBlockerStore {
       ) {
         results.push(blockerResource);
       }
+      return false;
     });
     return results;
   }

@@ -543,12 +543,13 @@ export class DeleteBlockerState {
 
   private updateNode(node: BlockerNode) {
     node.version += 1;
+    return undefined;
   }
 
   public graphIterator(
     rootKey: ResourceIdentifier,
     direction: 'children' | 'ancestors',
-    nodeFunction: (node: BlockerNode) => void
+    nodeFunction: (node: BlockerNode) => boolean | undefined
   ) {
     const visitedRecords = new Set<ResourceIdentifier>();
     const stack: WritableArray<ResourceIdentifier> = [rootKey];
@@ -563,7 +564,7 @@ export class DeleteBlockerState {
       if (node === undefined) {
         continue;
       }
-      nodeFunction(node);
+      if (nodeFunction(node) === true) break;
       const collection =
         direction === 'ancestors'
           ? this.cascadeParents.get(currentKey)
