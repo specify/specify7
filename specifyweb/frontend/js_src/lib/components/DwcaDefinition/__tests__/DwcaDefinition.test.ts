@@ -1,3 +1,6 @@
+import { createElement } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
+
 import {
   parseQueryFields,
   unParseQueryFields,
@@ -18,6 +21,8 @@ import {
   getDefaultMappingFileName,
   formatTermExampleText,
   hasEmptyRequiredMappingValues,
+  getMissingRequiredTerms,
+  MissingRequiredTermsError,
   isExtensionApplicableToCore,
   isTemplateApplicableToCore,
   isDefinitionXmlValid,
@@ -243,6 +248,129 @@ describe('DwCA query field term mapping', () => {
       throw new Error('Expected the Occurrence core definition');
 
     expect(getDefaultMappingFileName(occurrence)).toBe('Occurrence.csv');
+  });
+
+  test('identifies the displayed extension title for missing required terms', () => {
+    const [core, extension] = parseDefinition(`<archive>
+      <core rowType="http://rs.tdwg.org/dwc/terms/Occurrence">
+        <queries><query name="occurrence.csv" contextTableId="1" /></queries>
+      </core>
+      <extension rowType="http://rs.tdwg.org/ac/terms/Multimedia">
+        <queries><query name="images.csv" contextTableId="1" /></queries>
+      </extension>
+    </archive>`);
+    if (core === undefined || extension === undefined)
+      throw new Error('Expected core and extension mappings');
+
+    const missing = getMissingRequiredTerms([
+      { ...core, terms: [] },
+      extension,
+    ]);
+    expect(missing).toContainEqual({
+      mappingName: 'Core',
+      term: `occurrenceID (${occurrenceId})`,
+    });
+    expect(
+      getMissingRequiredTerms([
+        {
+          ...core,
+          fields: core.fields.map((field) => ({ ...field, isDisplay: false })),
+        },
+      ])
+    ).toContainEqual({
+      mappingName: 'Core',
+      term: `occurrenceID (${occurrenceId})`,
+    });
+    expect(
+      missing.some(
+        ({ mappingName }) => mappingName === 'Audiovisual Media Description'
+      )
+    ).toBe(true);
+    expect(getMissingRequiredTerms([{ ...extension, fileName: '' }])).toEqual(
+      getMissingRequiredTerms([extension])
+    );
+
+    const requiredTerm = 'http://purl.org/dc/terms/identifier';
+    const mapped = {
+      ...extension,
+      fields: [
+        ...extension.fields,
+        {
+          ...extension.fields[0]!,
+          stringId: '1.collectionobject.catalogNumber',
+          isDisplay: true,
+        },
+      ],
+      terms: [...extension.terms, requiredTerm],
+    };
+    const requiredMessage = {
+      mappingName: 'Audiovisual Media Description',
+      term: `Identifier (${requiredTerm})`,
+    };
+    expect(getMissingRequiredTerms([mapped])).not.toContainEqual(
+      requiredMessage
+    );
+    expect(
+      getMissingRequiredTerms([
+        {
+          ...mapped,
+          fields: [
+            mapped.fields[0]!,
+            { ...mapped.fields[0]!, isDisplay: true },
+          ],
+        },
+      ])
+    ).toContainEqual(requiredMessage);
+    expect(
+      getMissingRequiredTerms([
+        {
+          ...mapped,
+          fields: mapped.fields.map((field, index) =>
+            index === mapped.fields.length - 1
+              ? { ...field, isDisplay: false }
+              : field
+          ),
+        },
+      ])
+    ).toContainEqual(requiredMessage);
+
+    const [preparation] = parseDefinition(`<archive>
+      <extension rowType="http://data.ggbn.org/schemas/ggbn/terms/Preparation">
+        <queries><query name="preparation.csv" contextTableId="1" /></queries>
+      </extension>
+    </archive>`);
+    expect(
+      getMissingRequiredTerms(preparation === undefined ? [] : [preparation])
+    ).toContainEqual({
+      mappingName: 'GGBN Preparation Extension',
+      term: 'preparationDate (http://data.ggbn.org/schemas/ggbn/terms/preparationDate)',
+    });
+  });
+
+  test('renders each missing term as a bullet with a bold extension title', () => {
+    const html = renderToStaticMarkup(
+      createElement(MissingRequiredTermsError, {
+        terms: [
+          {
+            mappingName: 'GGBN Preparation Extension',
+            term: 'preparationDate',
+          },
+          {
+            mappingName: 'Darwin Core Resource Relationship',
+            term: 'Resource ID',
+          },
+        ],
+      })
+    );
+    const document = new DOMParser().parseFromString(html, 'text/html');
+    const items = document.querySelectorAll('[role="alert"] ul.list-disc > li');
+    expect(items).toHaveLength(2);
+    expect(
+      Array.from(items, (item) => item.querySelector('strong')?.textContent)
+    ).toEqual([
+      'GGBN Preparation Extension',
+      'Darwin Core Resource Relationship',
+    ]);
   });
 
   test('adds the GUID occurrenceID field to empty mappings', () => {

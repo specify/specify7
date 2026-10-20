@@ -695,6 +695,74 @@ export const hasEmptyRequiredMappingValues = (
     ({ fileName, rowType }) => fileName.trim() === '' || rowType.trim() === ''
   );
 
+type MissingRequiredTerm = {
+  readonly mappingName: string;
+  readonly term: string;
+};
+
+export function getMissingRequiredTerms(
+  mappings: RA<Mapping>
+): RA<MissingRequiredTerm> {
+  return mappings.flatMap((mapping) => {
+    const mappingName =
+      (mapping.extension
+        ? mapping.extensionDefinition?.title
+        : dwcaText.dwcaCore()) ||
+      mapping.rowType.split(/[\/#]/).filter(Boolean).at(-1) ||
+      (mapping.extension ? dwcaText.dwcaExtension() : dwcaText.dwcaCore());
+    const identifierTerm = getCoreIdentifierTerm(mapping.coreRowType);
+    const hasDisplayedTerm = (name: string): boolean =>
+      mapping.fields.some(
+        (field, index) =>
+          field.isDisplay === true &&
+          getSerializedMappingTerm(mapping, field, index) === name
+      );
+    const missingIdentifier = hasDisplayedTerm(identifierTerm)
+      ? []
+      : [
+          {
+            mappingName,
+            term: dwcaText.dwcaRequiredTerm({
+              title: identifierTerm.split(/[\/#]/).at(-1) ?? identifierTerm,
+              name: identifierTerm,
+            }),
+          },
+        ];
+    if (!mapping.extension) return missingIdentifier;
+    const required = (mapping.extensionDefinition?.fields ?? []).filter(
+      ({ required }) => required === true
+    );
+    return [
+      ...missingIdentifier,
+      ...required
+        .filter(({ name }) => !hasDisplayedTerm(name))
+        .map(({ title, name }) => ({
+          mappingName,
+          term: dwcaText.dwcaRequiredTerm({ title: title ?? name, name }),
+        })),
+    ];
+  });
+}
+
+export function MissingRequiredTermsError({
+  terms,
+}: {
+  readonly terms: RA<MissingRequiredTerm>;
+}): JSX.Element {
+  return (
+    <ErrorMessage>
+      {dwcaText.dwcaMapRequiredTermsHeading()}
+      <ul className="list-disc space-y-1 pl-6">
+        {terms.map(({ mappingName, term }, index) => (
+          <li key={index}>
+            <strong>{mappingName}</strong>: {term}
+          </li>
+        ))}
+      </ul>
+    </ErrorMessage>
+  );
+}
+
 function mappingFromQuery(
   mapping: Mapping,
   query: SpecifyResource<SpQuery>
@@ -1629,30 +1697,7 @@ function DwcaDefinitionEditorLoaded({
     appResourceDataField
   );
   const missingRequiredTerms = React.useMemo(
-    () =>
-      mappings.flatMap((mapping) => {
-        const identifierTerm = getCoreIdentifierTerm(mapping.coreRowType);
-        const missingIdentifier = mapping.terms.includes(identifierTerm)
-          ? []
-          : [
-              dwcaText.dwcaRequiredTerm({
-                title: identifierTerm.split(/[\/#]/).at(-1) ?? identifierTerm,
-                name: identifierTerm,
-              }),
-            ];
-        if (!mapping.extension) return missingIdentifier;
-        const required = (mapping.extensionDefinition?.fields ?? []).filter(
-          ({ required }) => required === true
-        );
-        return [
-          ...missingIdentifier,
-          ...required
-            .filter(({ name }) => !mapping.terms.includes(name))
-            .map(({ title, name }) =>
-              dwcaText.dwcaRequiredTerm({ title: title ?? name, name })
-            ),
-        ];
-      }),
+    () => getMissingRequiredTerms(mappings),
     [mappings]
   );
   React.useEffect(() => {
@@ -1661,7 +1706,9 @@ function DwcaDefinitionEditorLoaded({
         ? []
         : [
             dwcaText.dwcaMapRequiredTerms({
-              terms: missingRequiredTerms.join(', '),
+              terms: missingRequiredTerms
+                .map(({ mappingName, term }) => `${mappingName}: ${term}`)
+                .join(', '),
             }),
           ],
       getFieldBlockerKey(appResourceDataField, 'dwca-required-terms')
@@ -1788,11 +1835,7 @@ function DwcaDefinitionEditorLoaded({
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-hidden">
       {missingRequiredTerms.length > 0 && (
-        <ErrorMessage>
-          {dwcaText.dwcaMapRequiredTerms({
-            terms: missingRequiredTerms.join(', '),
-          })}
-        </ErrorMessage>
+        <MissingRequiredTermsError terms={missingRequiredTerms} />
       )}
       <div className="flex flex-wrap gap-2 border-b pb-2">
         {mappings.map((mapping, index) => (
