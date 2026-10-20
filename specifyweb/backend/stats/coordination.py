@@ -6,6 +6,7 @@ from functools import wraps
 
 from django.conf import settings
 from django.http import HttpResponse, JsonResponse
+from redis.exceptions import RedisError
 
 from specifyweb.backend.cache.redis.utils import format_key, redis_connection
 from specifyweb.backend.permissions.permissions import check_table_permissions
@@ -37,14 +38,27 @@ def statistics_result(
     calculate: Callable[[], str],
     validate_cached: Callable[[], None],
 ) -> str:
+    """Reuse cached statistics when Redis is available; always gate calculations."""
     digest = hashlib.sha256(query_key.encode()).hexdigest()
     cache_key = format_key(
         f"specify:{{database}}:statistics:{collection.id}:{user.id}:{digest}"
     )
-    cache = redis_connection()
+    try:
+        cache = redis_connection()
+    except (ValueError, RedisError):
+        logger.warning("Statistics cache unavailable; calculating without caching.", exc_info=True)
+        cache = None
 
     def cached_result() -> str | None:
-        result = cache.get(cache_key)
+        nonlocal cache
+        if cache is None:
+            return None
+        try:
+            result = cache.get(cache_key)
+        except RedisError:
+            logger.warning("Statistics cache read failed; calculating without caching.", exc_info=True)
+            cache = None
+            return None
         if result is not None:
             validate_cached()
         return result
@@ -66,7 +80,11 @@ def statistics_result(
         result = cached_result()
         if result is None:
             result = calculate()
-            cache.set(cache_key, result, ex=STATISTICS_CACHE_SECONDS)
+            if cache is not None:
+                try:
+                    cache.set(cache_key, result, ex=STATISTICS_CACHE_SECONDS)
+                except RedisError:
+                    logger.warning("Statistics cache write failed; returning uncached result.", exc_info=True)
         return result
     finally:
         lock.release()

@@ -5,6 +5,7 @@ from unittest.mock import Mock, patch
 from django.core.exceptions import PermissionDenied
 from django.http import JsonResponse
 from django.test import RequestFactory, SimpleTestCase, override_settings
+from redis.exceptions import ConnectionError as RedisConnectionError, TimeoutError as RedisTimeoutError
 
 from .coordination import (
     STATISTICS_CACHE_SECONDS,
@@ -29,7 +30,7 @@ class StatisticsCoordinationTests(SimpleTestCase):
             return_value=self.cache,
         )
         lock_patch = patch("specifyweb.backend.stats.coordination.Lock")
-        cache_patch.start()
+        self.redis_connection = cache_patch.start()
         self.lock_class = lock_patch.start()
         self.addCleanup(cache_patch.stop)
         self.addCleanup(lock_patch.stop)
@@ -53,6 +54,55 @@ class StatisticsCoordinationTests(SimpleTestCase):
             ex=STATISTICS_CACHE_SECONDS,
         )
         self.assertEqual(STATISTICS_CACHE_SECONDS, 300)
+
+    def assert_uncached_calculation(self):
+        self.assertEqual(self.run_statistic(), '{"count": 12}')
+        self.calculate.assert_called_once_with()
+        self.lock.acquire.assert_called_once_with()
+        self.lock.release.assert_called_once_with()
+        self.validate.assert_not_called()
+
+    def test_unconfigured_redis_still_calculates_under_lock(self):
+        self.redis_connection.side_effect = ValueError("Redis is not correctly configured")
+        with self.assertLogs("specifyweb.backend.stats.coordination", level="WARNING"):
+            self.assert_uncached_calculation()
+        self.cache.get.assert_not_called()
+        self.cache.set.assert_not_called()
+
+    def test_redis_connection_failure_still_calculates_under_lock(self):
+        self.redis_connection.side_effect = RedisConnectionError("unavailable")
+        with self.assertLogs("specifyweb.backend.stats.coordination", level="WARNING"):
+            self.assert_uncached_calculation()
+        self.cache.set.assert_not_called()
+
+    def test_cache_read_failure_disables_cache_for_request(self):
+        self.cache.get.side_effect = RedisConnectionError("unavailable")
+        with self.assertLogs("specifyweb.backend.stats.coordination", level="WARNING"):
+            self.assert_uncached_calculation()
+        self.cache.get.assert_called_once()
+        self.cache.set.assert_not_called()
+
+    def test_second_cache_read_failure_still_releases_lock_and_returns_result(self):
+        self.cache.get.side_effect = [None, RedisTimeoutError("timed out")]
+        with self.assertLogs("specifyweb.backend.stats.coordination", level="WARNING"):
+            self.assert_uncached_calculation()
+        self.assertEqual(self.cache.get.call_count, 2)
+        self.cache.set.assert_not_called()
+
+    def test_cache_write_failure_returns_calculated_result_and_releases_lock(self):
+        self.cache.set.side_effect = RedisTimeoutError("timed out")
+        with self.assertLogs("specifyweb.backend.stats.coordination", level="WARNING"):
+            self.assert_uncached_calculation()
+        self.cache.set.assert_called_once()
+
+    def test_unavailable_cache_does_not_bypass_busy_database_lock(self):
+        self.cache.get.side_effect = RedisConnectionError("unavailable")
+        self.lock.acquire.side_effect = TimeoutError
+        with self.assertLogs("specifyweb.backend.stats.coordination", level="WARNING"):
+            with self.assertRaises(StatisticsBusy):
+                self.run_statistic()
+        self.calculate.assert_not_called()
+        self.lock.release.assert_not_called()
 
     def test_cached_result_rechecks_permissions_without_running_query(self):
         self.cache.get.return_value = '{"count": 12}'
