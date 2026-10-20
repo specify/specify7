@@ -24,7 +24,8 @@ if TYPE_CHECKING:
 
 class RankField(Protocol):
     @property
-    def fieldspec(self) -> object: ...
+    def fieldspec(self) -> object:
+        raise NotImplementedError
 
 
 def rank_path(spec):
