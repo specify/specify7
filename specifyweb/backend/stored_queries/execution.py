@@ -1069,8 +1069,9 @@ def apply_where_condition_to_query(
             where = reduce(sql.and_, implicit_ors)
             query = query.filter(where)
     else:
-        where = reduce(sql.and_, (p for ps in predicates_by_fieldspec.values() for p in ps))
-        query = query.filter(where)
+        predicates = [p for ps in predicates_by_fieldspec.values() for p in ps]
+        if predicates:
+            query = query.filter(reduce(sql.and_, predicates))
     return query
 
 # REFACTOR: Clean up this and the other QueryConstruct functions
