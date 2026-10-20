@@ -155,13 +155,13 @@ class DeleteBlockerField(Protocol):
         equivalent to:
             CollectionObject.objects.filter(accession_id=obj.pk)
         """
-        ...
+        raise NotImplementedError
 
     def get_queryset_filters(self, obj: Model) -> dict[str, Any]:
         """
-        REFACTOR: Might be better to make this a Q object
+        REFACTOR: Might be better to make this a Q object rather than dict
         """
-        return {self.field.name: obj.pk}
+        raise NotImplementedError
 
 
 class ForeignKeyBlockerField:
