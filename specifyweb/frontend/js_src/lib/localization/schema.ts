@@ -91,7 +91,8 @@ export const schemaText = createDictionary({
     'uk-ua': '',
   },
   importSchemaError: {
-    'en-us': '{schemaConfig:string} import failed:',
+    'en-us':
+      'The {schemaConfig:string} export is invalid or was exported for a different language and cannot be imported.',
     'de-ch': '',
     'es-es': '',
     'fr-fr': '',
