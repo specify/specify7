@@ -84,6 +84,18 @@ export const dwcaText = createDictionary({
   dwcaChooseTemplateOrQuery: {
     'en-us': 'Choose Template or Query',
   },
+  dwcaMappingSettings: {
+    'en-us': 'Mapping settings',
+  },
+  dwcaCheckFileNameInSettings: {
+    'en-us': 'Check file name in settings',
+  },
+  dwcaRequiredTermsUnmapped: {
+    'en-us': '{count:number} required terms unmapped',
+  },
+  dwcaRequiredTermUnmapped: {
+    'en-us': '1 required term unmapped',
+  },
   dwcaTemplates: {
     'en-us': 'Templates',
   },

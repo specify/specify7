@@ -1,5 +1,6 @@
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
+import { fireEvent, render, screen } from '@testing-library/react';
 
 import {
   parseQueryFields,
@@ -350,6 +351,8 @@ describe('DwCA query field term mapping', () => {
   test('renders each missing term as a bullet with a bold extension title', () => {
     const html = renderToStaticMarkup(
       createElement(MissingRequiredTermsError, {
+        expanded: true,
+        onToggle: jest.fn(),
         terms: [
           {
             mappingName: 'GGBN Preparation Extension',
@@ -371,6 +374,38 @@ describe('DwCA query field term mapping', () => {
       'GGBN Preparation Extension',
       'Darwin Core Resource Relationship',
     ]);
+  });
+
+  test('summarizes required terms until expanded', () => {
+    const terms = [
+      { mappingName: 'GGBN Preparation Extension', term: 'preparationDate' },
+      { mappingName: 'Darwin Core Resource Relationship', term: 'Resource ID' },
+    ];
+    const onToggle = jest.fn();
+    const { rerender } = render(
+      createElement(MissingRequiredTermsError, {
+        expanded: false,
+        onToggle,
+        terms,
+      })
+    );
+    const summary = screen.getByRole('button', {
+      name: '2 required terms unmapped Show details',
+    });
+    expect(summary).toHaveAttribute('aria-expanded', 'false');
+    expect(screen.queryByText('preparationDate')).not.toBeInTheDocument();
+    fireEvent.click(summary);
+    expect(onToggle).toHaveBeenCalledTimes(1);
+    rerender(
+      createElement(MissingRequiredTermsError, {
+        expanded: true,
+        onToggle,
+        terms,
+      })
+    );
+    expect(summary).toHaveAttribute('aria-expanded', 'true');
+    expect(summary).toHaveTextContent('Hide details');
+    expect(screen.getAllByRole('listitem')).toHaveLength(2);
   });
 
   test('adds the GUID occurrenceID field to empty mappings', () => {

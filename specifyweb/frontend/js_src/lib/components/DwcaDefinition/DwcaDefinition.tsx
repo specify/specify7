@@ -31,12 +31,17 @@ import type { SpQuery, SpQueryField } from '../DataModel/types';
 import { getField } from '../DataModel/helpers';
 import { getSystemInfo } from '../InitialContext/systemInfo';
 import { userInformation } from '../InitialContext/userInformation';
-import { getFieldBlockerKey, useSaveBlockers } from '../DataModel/saveBlockers';
+import {
+  getFieldBlockerKey,
+  useBlockerHandler,
+  useSaveBlockers,
+} from '../DataModel/saveBlockers';
 import { createQuery } from '../QueryBuilder';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
 import { parseQueryFields } from '../QueryBuilder/helpers';
 import type { QueryField } from '../QueryBuilder/helpers';
 import { Dialog, dialogClassNames, LoadingScreen } from '../Molecules/Dialog';
+import { CollapsibleAlert } from '../Molecules/CollapsibleAlert';
 import gbifCores from './data/gbifCores.json';
 import { defaultTemplates, type DwcaTemplate } from './data/defaultTemplates';
 import { getCoreTermPatterns, occurrenceIdTerm } from './data/coreTermPatterns';
@@ -746,11 +751,24 @@ export function getMissingRequiredTerms(
 
 export function MissingRequiredTermsError({
   terms,
+  expanded,
+  onToggle,
 }: {
   readonly terms: RA<MissingRequiredTerm>;
+  readonly expanded: boolean;
+  readonly onToggle: () => void;
 }): JSX.Element {
   return (
-    <ErrorMessage>
+    <CollapsibleAlert
+      expanded={expanded}
+      summary={
+        terms.length === 1
+          ? dwcaText.dwcaRequiredTermUnmapped()
+          : dwcaText.dwcaRequiredTermsUnmapped({ count: terms.length })
+      }
+      variant="error"
+      onToggle={onToggle}
+    >
       {dwcaText.dwcaMapRequiredTermsHeading()}
       <ul className="list-disc space-y-1 pl-6">
         {terms.map(({ mappingName, term }, index) => (
@@ -759,7 +777,7 @@ export function MissingRequiredTermsError({
           </li>
         ))}
       </ul>
-    </ErrorMessage>
+    </CollapsibleAlert>
   );
 }
 
@@ -1345,9 +1363,10 @@ function TermPicker({
   );
 }
 
-function QueryMapping({
+export function QueryMapping({
   mapping,
   hasMappingsToReset,
+  hasFileNameError,
   onCoreChange,
   onChange: handleChange,
   onRemove,
@@ -1355,6 +1374,7 @@ function QueryMapping({
 }: {
   readonly mapping: Mapping;
   readonly hasMappingsToReset: boolean;
+  readonly hasFileNameError: boolean;
   readonly onCoreChange: (rowType: string) => void;
   readonly onChange: (mapping: Mapping) => void;
   readonly onRemove?: () => void;
@@ -1391,6 +1411,7 @@ function QueryMapping({
   const [pendingCoreRowType, setPendingCoreRowType] = React.useState<
     string | undefined
   >();
+  const [showSettings, setShowSettings] = React.useState(false);
   const isIdentifierField = (field: QueryField): boolean =>
     getMappingFieldIndex(mapping, field) === 0;
   const handleRowTypeChange = (rowType: string): void => {
@@ -1429,17 +1450,7 @@ function QueryMapping({
   );
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-auto">
-      <div className="flex flex-wrap gap-3">
-        <Label.Block>
-          {resourcesText.fileName()}
-          <Input.Text
-            required
-            value={mapping.fileName}
-            onValueChange={(fileName): void =>
-              handleChange({ ...mapping, fileName })
-            }
-          />
-        </Label.Block>
+      <div className="flex flex-wrap items-end gap-3">
         <Label.Block>
           {mapping.extension
             ? dwcaText.dwcaExtension()
@@ -1504,59 +1515,18 @@ function QueryMapping({
             </Select>
           )}
         </Label.Block>
-        {(onTemplate !== undefined || queries !== undefined) && (
-          <Label.Block>
-            {dwcaText.dwcaChooseTemplateOrQuery()}
-            <Select
-              disabled={
-                availableTemplates.length === 0 &&
-                collectionObjectQueries.length === 0
-              }
-              value={localized('')}
-              onValueChange={(value): void => {
-                if (value.startsWith('template:')) {
-                  const template = defaultTemplates.find(
-                    (candidate) => `template:${candidate.name}` === value
-                  );
-                  if (template !== undefined) onTemplate?.(template);
-                  return;
-                }
-                if (!value.startsWith('query:')) return;
-                const id = Number(value.slice('query:'.length));
-                if (!Number.isInteger(id)) return;
-                void fetchResource('SpQuery', id).then((resource) => {
-                  if (resource === undefined) return;
-                  const query = deserializeResource(
-                    resource as SerializedResource<SpQuery>
-                  );
-                  handleChange(mappingFromQuery(mapping, query));
-                });
-              }}
-            >
-              <option value="">{dwcaText.dwcaChooseQuery()}</option>
-              {availableTemplates.length > 0 && (
-                <optgroup label={dwcaText.dwcaTemplates()}>
-                  {availableTemplates.map((template) => (
-                    <option
-                      key={`template:${template.name}`}
-                      value={`template:${template.name}`}
-                    >
-                      {template.name}
-                    </option>
-                  ))}
-                </optgroup>
-              )}
-              {collectionObjectQueries.length > 0 && (
-                <optgroup label={dwcaText.dwcaSavedQueries()}>
-                  {collectionObjectQueries.map((query) => (
-                    <option key={query.id} value={`query:${query.id}`}>
-                      {query.name}
-                    </option>
-                  ))}
-                </optgroup>
-              )}
-            </Select>
-          </Label.Block>
+        <Button.Small
+          aria-label={dwcaText.dwcaMappingSettings()}
+          className={`self-end ${hasFileNameError ? 'ring-2 ring-red-500' : ''}`}
+          title={dwcaText.dwcaMappingSettings()}
+          onClick={(): void => setShowSettings(true)}
+        >
+          {icons.cog}
+        </Button.Small>
+        {hasFileNameError && (
+          <span className="self-end text-red-700 dark:text-red-400">
+            {dwcaText.dwcaCheckFileNameInSettings()}
+          </span>
         )}
         {onRemove !== undefined && (
           <Button.Danger className="ml-auto self-end" onClick={onRemove}>
@@ -1564,6 +1534,80 @@ function QueryMapping({
           </Button.Danger>
         )}
       </div>
+      {showSettings && (
+        <Dialog
+          buttons={commonText.close()}
+          header={dwcaText.dwcaMappingSettings()}
+          onClose={(): void => setShowSettings(false)}
+        >
+          <div className="flex flex-col gap-3">
+            <Label.Block>
+              {resourcesText.fileName()}
+              <Input.Text
+                required
+                value={mapping.fileName}
+                onValueChange={(fileName): void =>
+                  handleChange({ ...mapping, fileName })
+                }
+              />
+            </Label.Block>
+            {(onTemplate !== undefined || queries !== undefined) && (
+              <Label.Block>
+                {dwcaText.dwcaChooseTemplateOrQuery()}
+                <Select
+                  disabled={
+                    availableTemplates.length === 0 &&
+                    collectionObjectQueries.length === 0
+                  }
+                  value={localized('')}
+                  onValueChange={(value): void => {
+                    if (value.startsWith('template:')) {
+                      const template = defaultTemplates.find(
+                        (candidate) => `template:${candidate.name}` === value
+                      );
+                      if (template !== undefined) onTemplate?.(template);
+                      return;
+                    }
+                    if (!value.startsWith('query:')) return;
+                    const id = Number(value.slice('query:'.length));
+                    if (!Number.isInteger(id)) return;
+                    void fetchResource('SpQuery', id).then((resource) => {
+                      if (resource === undefined) return;
+                      const query = deserializeResource(
+                        resource as SerializedResource<SpQuery>
+                      );
+                      handleChange(mappingFromQuery(mapping, query));
+                    });
+                  }}
+                >
+                  <option value="">{dwcaText.dwcaChooseQuery()}</option>
+                  {availableTemplates.length > 0 && (
+                    <optgroup label={dwcaText.dwcaTemplates()}>
+                      {availableTemplates.map((template) => (
+                        <option
+                          key={`template:${template.name}`}
+                          value={`template:${template.name}`}
+                        >
+                          {template.name}
+                        </option>
+                      ))}
+                    </optgroup>
+                  )}
+                  {collectionObjectQueries.length > 0 && (
+                    <optgroup label={dwcaText.dwcaSavedQueries()}>
+                      {collectionObjectQueries.map((query) => (
+                        <option key={query.id} value={`query:${query.id}`}>
+                          {query.name}
+                        </option>
+                      ))}
+                    </optgroup>
+                  )}
+                </Select>
+              </Label.Block>
+            )}
+          </div>
+        </Dialog>
+      )}
       <QueryBuilder
         key={mapping.query.cid}
         defaultBasicView
@@ -1700,26 +1744,54 @@ function DwcaDefinitionEditorLoaded({
     () => getMissingRequiredTerms(mappings),
     [mappings]
   );
+  const [showRequiredTerms, setShowRequiredTerms] = React.useState(false);
+  const tabButtons = React.useRef<(HTMLButtonElement | null)[]>([]);
+  const requiredTermsMessage = dwcaText.dwcaMapRequiredTerms({
+    terms: missingRequiredTerms
+      .map(({ mappingName, term }) => `${mappingName}: ${term}`)
+      .join(', '),
+  });
+  useBlockerHandler(
+    appResource,
+    appResourceDataField,
+    React.useCallback(
+      ({ message }): boolean => {
+        if (message !== requiredTermsMessage) return false;
+        setShowRequiredTerms(true);
+        const firstAffectedTab = mappings.findIndex(
+          (mapping) => getMissingRequiredTerms([mapping]).length > 0
+        );
+        if (firstAffectedTab >= 0) {
+          setTabValue(tabValues[firstAffectedTab]);
+          tabButtons.current[firstAffectedTab]?.focus();
+        }
+        return true;
+      },
+      [mappings, requiredTermsMessage, setTabValue, tabValues]
+    )
+  );
   React.useEffect(() => {
     setSaveBlockers(
-      missingRequiredTerms.length === 0
-        ? []
-        : [
-            dwcaText.dwcaMapRequiredTerms({
-              terms: missingRequiredTerms
-                .map(({ mappingName, term }) => `${mappingName}: ${term}`)
-                .join(', '),
-            }),
-          ],
+      missingRequiredTerms.length === 0 ? [] : [requiredTermsMessage],
       getFieldBlockerKey(appResourceDataField, 'dwca-required-terms')
     );
-  }, [appResourceDataField, missingRequiredTerms, setSaveBlockers]);
-  const hasDuplicateFileNames = React.useMemo(() => {
+  }, [
+    appResourceDataField,
+    missingRequiredTerms,
+    requiredTermsMessage,
+    setSaveBlockers,
+  ]);
+  const duplicateFileNames = React.useMemo(() => {
     const fileNames = mappings
       .map(({ fileName }) => fileName.trim().toLowerCase())
       .filter((fileName) => fileName !== '');
-    return new Set(fileNames).size !== fileNames.length;
+    return new Set(
+      fileNames.filter(
+        (fileName, index) => fileNames.indexOf(fileName) !== index
+      )
+    );
   }, [mappings]);
+  const hasDuplicateFileNames = duplicateFileNames.size > 0;
   React.useEffect(() => {
     setSaveBlockers(
       hasDuplicateFileNames ? [dwcaText.dwcaFileNamesMustBeUnique()] : [],
@@ -1835,12 +1907,19 @@ function DwcaDefinitionEditorLoaded({
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-hidden">
       {missingRequiredTerms.length > 0 && (
-        <MissingRequiredTermsError terms={missingRequiredTerms} />
+        <MissingRequiredTermsError
+          expanded={showRequiredTerms}
+          terms={missingRequiredTerms}
+          onToggle={(): void => setShowRequiredTerms((shown) => !shown)}
+        />
       )}
       <div className="flex flex-wrap gap-2 border-b pb-2">
         {mappings.map((mapping, index) => (
           <Button.Small
             key={index}
+            forwardRef={(button): void => {
+              tabButtons.current[index] = button;
+            }}
             aria-pressed={tab === index}
             className={`${className.ariaHandled} transition-colors`}
             variant={
@@ -1888,6 +1967,10 @@ function DwcaDefinitionEditorLoaded({
         key={tab}
         mapping={active}
         hasMappingsToReset={hasMappingsToReset}
+        hasFileNameError={
+          active.fileName.trim() === '' ||
+          duplicateFileNames.has(active.fileName.trim().toLowerCase())
+        }
         onCoreChange={handleCoreChange}
         onChange={(next): void => update(replaceItem(mappings, tab, next))}
         onRemove={

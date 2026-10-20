@@ -6,7 +6,7 @@ import { resourcesText } from '../../localization/resources';
 import { f } from '../../utils/functools';
 import type { GetSet, IR, RA, RR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import { WarningMessage } from '../Atoms';
+import { CollapsibleAlert } from '../Molecules/CollapsibleAlert';
 import { toResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -122,6 +122,13 @@ export function useEditorTabs(
               ? {
                   label: labels[type],
                   component(props): JSX.Element {
+                    if (type === 'visual' && subType === 'dwcaDefinition')
+                      return (
+                        <div className="flex min-h-0 flex-1 flex-col gap-1">
+                          <OtherCollectionWarning directory={props.directory} />
+                          <Editor {...props} />
+                        </div>
+                      );
                     return (
                       <>
                         {type === 'visual' && (
@@ -151,6 +158,7 @@ function OtherCollectionWarning({
 }: {
   readonly directory: SerializedResource<SpAppResourceDir>;
 }): JSX.Element | null {
+  const [expanded, setExpanded] = React.useState(false);
   const isOtherScope = React.useMemo(
     () =>
       (typeof directory.collection === 'string' &&
@@ -162,7 +170,14 @@ function OtherCollectionWarning({
     [directory]
   );
   return isOtherScope ? (
-    <WarningMessage>{resourcesText.wrongScopeWarning()}</WarningMessage>
+    <CollapsibleAlert
+      expanded={expanded}
+      summary={resourcesText.wrongScopeWarningSummary()}
+      variant="warning"
+      onToggle={(): void => setExpanded((current) => !current)}
+    >
+      {resourcesText.wrongScopeWarningDetails()}
+    </CollapsibleAlert>
   ) : null;
 }
 
