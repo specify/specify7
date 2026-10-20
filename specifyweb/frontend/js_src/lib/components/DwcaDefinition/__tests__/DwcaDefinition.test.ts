@@ -44,6 +44,29 @@ import {
 const occurrenceId = 'http://rs.tdwg.org/dwc/terms/occurrenceID';
 const kingdom = 'http://rs.tdwg.org/dwc/terms/kingdom';
 
+test('preserves an extension with a different query context table', () => {
+  const xml =
+    '<archive><core><queries><query contextTableId="1" /></queries></core><extension rowType="custom"><queries><query contextTableId="121"><field stringId="121.dnasequence.boldBarcodeId" /></query></queries></extension></archive>';
+  const [core, extension] = parseDefinition(xml);
+  expect(extension?.invalidExtensionXml).toContain('contextTableId="121"');
+  const saved = new DOMParser().parseFromString(
+    serializeDefinition([{ ...core!, fileName: 'changed.csv' }, extension!]),
+    'text/xml'
+  );
+  expect(
+    saved.querySelector('extension query')?.getAttribute('contextTableId')
+  ).toBe('121');
+  expect(saved.querySelectorAll('extension query field')).toHaveLength(1);
+  expect(
+    parseDefinition(xml.replace('121', '1'))[1]?.invalidExtensionXml
+  ).toBeUndefined();
+  expect(
+    parseDefinition(
+      xml.replace('contextTableId="1"', 'contextTableId="121"')
+    )[1]?.invalidExtensionXml
+  ).toBeDefined();
+});
+
 test('parses documented term examples into values and descriptions', () => {
   expect(
     parseTermExamples('`1971` (in the year 1971); `1900/1909` (a range)')

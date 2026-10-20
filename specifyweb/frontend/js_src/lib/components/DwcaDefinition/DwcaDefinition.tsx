@@ -52,6 +52,7 @@ type CoreDefinition = (typeof gbifCores)[number];
 type Definition = CoreDefinition | ExtensionDefinition;
 type Mapping = {
   readonly extension: boolean;
+  readonly invalidExtensionXml?: string;
   readonly coreRowType: string;
   readonly baseTable: SpecifyTable;
   readonly extensionDefinition: Definition | undefined;
@@ -709,6 +710,7 @@ export function getMissingRequiredTerms(
   mappings: RA<Mapping>
 ): RA<MissingRequiredTerm> {
   return mappings.flatMap((mapping) => {
+    if (mapping.invalidExtensionXml) return [];
     const mappingName =
       (mapping.extension
         ? mapping.extensionDefinition?.title
@@ -1041,6 +1043,7 @@ export function parseDefinition(data: string | null): RA<Mapping> {
   );
   const coreRowType = core?.getAttribute('rowType') ?? occurrenceCoreRowType;
   const baseTable = getBaseTableForCore(coreRowType);
+  const coreContextId = String(baseTable.tableId);
   return [core, ...extensions]
     .filter((stanza): stanza is Element => stanza !== undefined)
     .map((stanza, index) => {
@@ -1052,6 +1055,14 @@ export function parseDefinition(data: string | null): RA<Mapping> {
       );
       const queryNode = queryNodes[0];
       const extension = stanza.tagName === 'extension';
+      const invalidExtensionXml =
+        extension &&
+        queryNodes.some((node) => {
+          const id = node.getAttribute('contextTableId');
+          return id !== null && id !== coreContextId;
+        })
+          ? new XMLSerializer().serializeToString(stanza)
+          : undefined;
       const table = baseTable;
       const fieldNodes = Array.from(queryNode?.children ?? []).filter(
         ({ tagName }) => tagName === 'field' || tagName === 'id'
@@ -1098,6 +1109,7 @@ export function parseDefinition(data: string | null): RA<Mapping> {
       );
       return ensureIdentifierTerm({
         extension,
+        invalidExtensionXml,
         coreRowType,
         baseTable,
         extensionDefinition,
@@ -1165,6 +1177,18 @@ export function serializeDefinition(mappings: RA<Mapping>): string {
   const document = new DOMParser().parseFromString('<archive />', 'text/xml');
   const root = document.documentElement;
   mappings.forEach((mapping) => {
+    if (mapping.invalidExtensionXml) {
+      root.append(
+        document.importNode(
+          new DOMParser().parseFromString(
+            mapping.invalidExtensionXml,
+            'text/xml'
+          ).documentElement,
+          true
+        )
+      );
+      return;
+    }
     const stanza = document.createElement(
       mapping.extension ? 'extension' : 'core'
     );
@@ -1748,13 +1772,22 @@ function DwcaDefinitionEditorLoaded({
     [mappings]
   );
   const previousTabIndex = React.useRef(0);
-  const tab = getMappingTabIndex(
+  const selectedTab = getMappingTabIndex(
     mappings,
     tabValues,
     tabValue,
     previousTabIndex.current
   );
+  const tab = mappings[selectedTab]?.invalidExtensionXml ? 0 : selectedTab;
   previousTabIndex.current = tab;
+  const invalidExtensions = mappings.flatMap((mapping, index) =>
+    mapping.invalidExtensionXml ? [{ mapping, index }] : []
+  );
+  const visibleTabs = mappings.flatMap((mapping, index) =>
+    mapping.invalidExtensionXml ? [] : [{ mapping, index }]
+  );
+  const [showInvalidExtensions, setShowInvalidExtensions] =
+    React.useState(false);
   const coreRowType =
     mappings.find(({ extension }) => !extension)?.rowType ??
     occurrenceCoreRowType;
@@ -1840,7 +1873,10 @@ function DwcaDefinitionEditorLoaded({
     );
   }, [appResourceDataField, hasDuplicateFileNames, setSaveBlockers]);
   const hasEmptyRequiredValues = React.useMemo(
-    () => hasEmptyRequiredMappingValues(mappings),
+    () =>
+      hasEmptyRequiredMappingValues(
+        mappings.filter((mapping) => !mapping.invalidExtensionXml)
+      ),
     [mappings]
   );
   React.useEffect(() => {
@@ -1874,7 +1910,10 @@ function DwcaDefinitionEditorLoaded({
     );
     setMappings(normalized);
     if (tabValue !== undefined) {
-      const nextActive = normalized[tab] ?? normalized[0];
+      const nextActive =
+        normalized.find((mapping) => mapping === mappings[tab]) ??
+        normalized[tab] ??
+        normalized[0];
       const nextTabValue =
         getMappingTabValues(normalized)[
           nextActive === undefined ? -1 : normalized.indexOf(nextActive)
@@ -1947,6 +1986,30 @@ function DwcaDefinitionEditorLoaded({
   };
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-hidden">
+      {invalidExtensions.length > 0 && (
+        <CollapsibleAlert
+          expanded={showInvalidExtensions}
+          summary={dwcaText.dwcaMismatchedExtensionContext()}
+          variant="error"
+          onToggle={(): void => setShowInvalidExtensions((shown) => !shown)}
+        >
+          {dwcaText.dwcaMismatchedExtensionContextDescription()}
+          {invalidExtensions.map(({ mapping, index }) => (
+            <div key={index} className="flex items-center gap-2">
+              <strong>
+                {mapping.extensionDefinition?.title ?? mapping.rowType}
+              </strong>
+              <Button.Danger
+                onClick={(): void =>
+                  update(mappings.filter((_, i) => i !== index))
+                }
+              >
+                {commonText.remove()}
+              </Button.Danger>
+            </div>
+          ))}
+        </CollapsibleAlert>
+      )}
       {missingRequiredTerms.length > 0 && (
         <MissingRequiredTermsError
           expanded={showRequiredTerms}
@@ -1955,7 +2018,7 @@ function DwcaDefinitionEditorLoaded({
         />
       )}
       <div className="flex flex-wrap gap-2 border-b pb-2">
-        {mappings.map((mapping, index) => (
+        {visibleTabs.map(({ mapping, index }) => (
           <Button.Small
             key={index}
             forwardRef={(button): void => {
