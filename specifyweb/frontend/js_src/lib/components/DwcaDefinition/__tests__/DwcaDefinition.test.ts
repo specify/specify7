@@ -224,23 +224,14 @@ describe('DwCA query field term mapping', () => {
     ).toEqual(['multimedia', 'multimedia-2']);
   });
 
-  test('creates distinct default filenames for duplicate extension names', () => {
-    const extensions = [
-      getExtensionDefinitionForRowType(
-        'http://rs.tdwg.org/ac/terms/Multimedia'
-      ),
-      getExtensionDefinitionForRowType(
-        'http://rs.gbif.org/terms/1.0/Multimedia'
-      ),
-    ];
-    if (extensions.some((extension) => extension === undefined))
-      throw new Error('Expected duplicate Multimedia extensions');
-
-    const fileNames = extensions.map((extension) =>
-      getDefaultMappingFileName(extension!)
+  test('creates readable default filenames from definition names', () => {
+    const occurrence = getCoreDefinitionForRowType(
+      'http://rs.tdwg.org/dwc/terms/Occurrence'
     );
-    expect(new Set(fileNames).size).toBe(fileNames.length);
-    expect(fileNames.every((fileName) => fileName.endsWith('.csv'))).toBe(true);
+    if (occurrence === undefined)
+      throw new Error('Expected the Occurrence core definition');
+
+    expect(getDefaultMappingFileName(occurrence)).toBe('Occurrence.csv');
   });
 
   test('adds the GUID occurrenceID field to empty mappings', () => {

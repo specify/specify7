@@ -680,8 +680,8 @@ function newMapping(
 }
 
 export const getDefaultMappingFileName = (
-  definition: Pick<Definition, 'rowType'>
-): string => `${encodeURIComponent(definition.rowType)}.csv`;
+  definition: Pick<Definition, 'name'>
+): string => `${definition.name}.csv`;
 
 export const hasEmptyRequiredMappingValues = (
   mappings: RA<Pick<Mapping, 'fileName' | 'rowType'>>
