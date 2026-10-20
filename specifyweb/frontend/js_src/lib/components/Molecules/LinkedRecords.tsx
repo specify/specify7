@@ -132,7 +132,7 @@ function LinkedRecords<SCHEMA extends AnySchema>({
             onClose={handleClose}
           >
             {formsText.recordUsedDescription()}
-            <DeleteBlockers blockers={[blockers]} />
+            <DeleteBlockers resource={resource} blockers={[blockers]} />
           </Dialog>
         )
       ) : undefined}

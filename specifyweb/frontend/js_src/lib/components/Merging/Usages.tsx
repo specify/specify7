@@ -53,7 +53,7 @@ function Usages({
           {mergingText.linkedRecords()}
         </Button.Small>
       ) : (
-        <DeleteBlockers blockers={blockers} />
+        <DeleteBlockers blockers={blockers} resource={resource} />
       )}
     </td>
   );

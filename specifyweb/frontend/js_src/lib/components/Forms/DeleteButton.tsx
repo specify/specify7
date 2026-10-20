@@ -197,6 +197,7 @@ function DeleteButton<SCHEMA extends AnySchema>({
             {formsText.deleteBlockedDescription()}
             <DeleteBlockers
               blockers={blockers}
+              resource={resource}
               useSmallLayout={
                 deleteBlockedWidth <= MIN_DELETEBLOCKER_CONTAINER_WIDTH
               }

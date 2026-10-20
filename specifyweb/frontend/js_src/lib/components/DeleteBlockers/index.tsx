@@ -13,9 +13,11 @@ export const MIN_DELETEBLOCKER_CONTAINER_WIDTH = 768;
 
 export function DeleteBlockers({
   blockers,
+  resource,
   useSmallLayout: initialUseSmallLayout = false,
 }: {
   readonly blockers: RA<DeleteBlockerResource> | undefined;
+  readonly resource: SpecifyResource<AnySchema>;
   readonly useSmallLayout?: boolean;
 }) {
   const [paginatorKey, setPaginatorKey] = React.useState<
@@ -54,6 +56,7 @@ export function DeleteBlockers({
     <>
       <div className="relative flex flex-1 gap-4 overflow-x-auto md:flex-row">
         <DeleteBlockersAside
+          resource={resource}
           records={blockers}
           activeRelationshipKey={paginatorKey?.relationshipKey}
           useSmallLayout={useSmallLayout}

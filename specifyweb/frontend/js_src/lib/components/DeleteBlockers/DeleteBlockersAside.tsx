@@ -19,11 +19,13 @@ import {
 import { Relationship } from '../DataModel/specifyField';
 
 export function DeleteBlockersAside({
+  resource,
   records,
   activeRelationshipKey,
   useSmallLayout = false,
   onRelationshipActive: handleRelationshipActive,
 }: {
+  readonly resource: SpecifyResource<AnySchema>;
   readonly records: RA<DeleteBlockerResource>;
   readonly activeRelationshipKey: string | undefined;
   readonly useSmallLayout?: boolean;
@@ -38,10 +40,12 @@ export function DeleteBlockersAside({
       className={`flex flex-1 flex-col min-h-0 w-full min-w-0 gap-1 overflow-y-auto ${useSmallLayout ? '' : 'lg:w-1/3 lg:flex-none lg:pr-3'}`}
     >
       {
-        // There's only one "blocking resource", which means there are no
-        // blocking references from CASCADE/dependent records
-        // i.e., all blocking references point to one record
-        records.length === 1
+        // There's only one "blocking resource" and the blocking resource is
+        // the one we're getting blockers for, so skip showing the resource and
+        // go straight to blocking resources referencing the resource
+        records.length === 1 &&
+        resourceToStringIdentifier(resource) ===
+          resourceToStringIdentifier(records.at(0)!.resource)
           ? records
               .at(0)
               ?.tables.map((blockerTable, index) => (
