@@ -10,7 +10,7 @@ Mappings live only in the SQL statement: there is no tree cache to invalidate.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Protocol
 
 from sqlalchemy import orm, sql
 
@@ -18,10 +18,13 @@ from . import models
 
 if TYPE_CHECKING:
     from specifyweb.specify.models_utils.load_datamodel import Table
-    from .queryfield import QueryField
-
     ObjectFormatter = object
     Rank = tuple[object, Table, tuple[int, ...]]
+
+
+class RankField(Protocol):
+    @property
+    def fieldspec(self) -> object: ...
 
 
 def rank_path(spec):
@@ -78,8 +81,8 @@ def ancestor_id(mapping, node_id, item_ids, definition_id, distinct=False):
 class TreeRanks:
     deferred: set = field(default_factory=set)
     mappings: dict = field(default_factory=dict)
-    displays: dict[int, tuple[QueryField, Rank, ObjectFormatter]] = field(default_factory=dict)
-    current_field: QueryField | None = None
+    displays: dict[int, tuple[RankField, Rank, ObjectFormatter]] = field(default_factory=dict)
+    current_field: RankField | None = None
     current_rank: Rank | None = None
     mapped_nodes: set = field(default_factory=set)
     row_ids: list = field(default_factory=list)
