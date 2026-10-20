@@ -420,17 +420,17 @@ msgstr "Непідтримуваний тип клітинки"
 msgid "additionalResultsOmitted"
 msgstr "Додаткові результати пропущені"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:289
+#: components/FormSliders/RecordSelectorFromIds.tsx:286
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "recordSelectorUnloadProtect"
 msgstr "Продовжити без збереження?"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:292
+#: components/FormSliders/RecordSelectorFromIds.tsx:289
 #. 🟥When in record set and current record is unsaved and try to navigate to another record. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "recordSelectorUnloadProtectDescription"
 msgstr "Можливо, ви захочете зберегти цей запис, перш ніж залишати сторінку."
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:228
+#: components/FormSliders/RecordSelectorFromIds.tsx:225
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "creatingNewRecord"
 msgstr "Створення нового запису"
@@ -467,12 +467,12 @@ msgstr "Дублікат {recordSetItemTable:string}"
 msgid "duplicateRecordSetItemDescription"
 msgstr "Цей запис вже присутній у поточному {recordSetTable:string}"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:177
+#: components/FormSliders/RecordSelectorFromIds.tsx:174
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "addToRecordSet"
 msgstr "Додати до {recordSetTable:string}"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:182
+#: components/FormSliders/RecordSelectorFromIds.tsx:179
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "removeFromRecordSet"
 msgstr "Видалити з {recordSetTable:string}"
@@ -643,17 +643,17 @@ msgstr "Історія редагування"
 msgid "editHistoryQueryName"
 msgstr "Історія редагувань для \"{formattedRecord:string}\""
 
-#: components/FormMeta/index.tsx:149
+#: components/FormMeta/index.tsx:151
 #. Used in: Components > Form Meta > Index
 msgid "formConfiguration"
 msgstr "Конфігурація форми"
 
-#: components/FormMeta/index.tsx:181
+#: components/FormMeta/index.tsx:183
 #. Used in: Components > Form Meta > Index
 msgid "formState"
 msgstr "Стан форми"
 
-#: components/FormMeta/index.tsx:230
+#: components/FormMeta/index.tsx:232
 #. Used in: Components > Form Meta > Index
 msgid "recordInformation"
 msgstr "Інформація про запис"
@@ -685,7 +685,7 @@ msgstr "Підформа"
 msgid "formTable"
 msgstr "Сітка"
 
-#: components/FormMeta/index.tsx:199
+#: components/FormMeta/index.tsx:201
 #. Used in: Components > Form Meta > Index
 msgid "subviewConfiguration"
 msgstr "Підвид"
@@ -711,9 +711,11 @@ msgstr "Налаштування таблиць для введення дани
 msgid "configureInteractionTables"
 msgstr "Налаштування таблиць взаємодії"
 
-#: components/FormMeta/index.tsx:68
-#: components/FormMeta/index.tsx:70
-#. Used in: Components > Form Meta > Index
+#: components/FormMeta/index.tsx:69
+#: components/FormMeta/index.tsx:71
+#: components/QueryBuilder/__tests__/RecordMergingAvailability.test.tsx:122
+#: components/QueryBuilder/__tests__/RecordMergingAvailability.test.tsx:135
+#. Used in: Components > Form Meta > Index ⬤ Query Builder > __tests__ > Record Merging Availability
 msgid "formMeta"
 msgstr "Метадані форми"
 

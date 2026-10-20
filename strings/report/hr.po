@@ -109,13 +109,13 @@ msgstr "Nedostaje izvješće"
 msgid "missingReportDescription"
 msgstr "Nije moguće pronaći SpReport zapis za ovaj resurs aplikacije"
 
-#: components/FormMeta/index.tsx:175
+#: components/FormMeta/index.tsx:177
 #. Used in: Components > Form Meta > Index
 #, fuzzy
 msgid "generateLabel"
 msgstr "Generiraj oznaku"
 
-#: components/FormMeta/index.tsx:193
+#: components/FormMeta/index.tsx:195
 #: components/FormParse/fields.ts:134
 #: components/FormParse/__tests__/fields.test.ts:147
 #: components/FormParse/__tests__/fields.test.ts:161
@@ -124,13 +124,13 @@ msgstr "Generiraj oznaku"
 msgid "generateLabelOnSave"
 msgstr "Generiraj oznaku prilikom spremanja"
 
-#: components/FormMeta/index.tsx:174
+#: components/FormMeta/index.tsx:176
 #. Used in: Components > Form Meta > Index
 #, fuzzy
 msgid "generateReport"
 msgstr "Generiraj izvješće"
 
-#: components/FormMeta/index.tsx:192
+#: components/FormMeta/index.tsx:194
 #. Used in: Components > Form Meta > Index
 #, fuzzy
 msgid "generateReportOnSave"

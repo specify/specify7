@@ -82,12 +82,12 @@ msgstr "Отсутствует отчет"
 msgid "missingReportDescription"
 msgstr "Не удалось найти запись SpReport для этого ресурса приложения"
 
-#: components/FormMeta/index.tsx:175
+#: components/FormMeta/index.tsx:177
 #. Used in: Components > Form Meta > Index
 msgid "generateLabel"
 msgstr "Сгенерировать метку"
 
-#: components/FormMeta/index.tsx:193
+#: components/FormMeta/index.tsx:195
 #: components/FormParse/fields.ts:134
 #: components/FormParse/__tests__/fields.test.ts:147
 #: components/FormParse/__tests__/fields.test.ts:161
@@ -95,12 +95,12 @@ msgstr "Сгенерировать метку"
 msgid "generateLabelOnSave"
 msgstr "Генерировать метку при сохранении"
 
-#: components/FormMeta/index.tsx:174
+#: components/FormMeta/index.tsx:176
 #. Used in: Components > Form Meta > Index
 msgid "generateReport"
 msgstr "Сгенерировать отчет"
 
-#: components/FormMeta/index.tsx:192
+#: components/FormMeta/index.tsx:194
 #. Used in: Components > Form Meta > Index
 msgid "generateReportOnSave"
 msgstr "Генерировать отчет при сохранении"

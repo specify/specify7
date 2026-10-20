@@ -567,13 +567,13 @@ msgstr "Скопировать определение представления
 msgid "copyDefaultForms"
 msgstr "Скопировать формы по умолчанию"
 
-#: components/FormMeta/index.tsx:114
+#: components/FormMeta/index.tsx:115
 #. Used in: Components > Form Meta > Index
 #, fuzzy
 msgid "saveFormFirst"
 msgstr "Сначала сохраните форму."
 
-#: components/FormMeta/index.tsx:117
+#: components/FormMeta/index.tsx:118
 #. Used in: Components > Form Meta > Index
 #, fuzzy
 msgid "saveFormFirstDescription"

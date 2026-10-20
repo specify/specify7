@@ -419,17 +419,17 @@ msgstr "Ugyldig celletype"
 msgid "additionalResultsOmitted"
 msgstr "Ytterligere resultater utelatt"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:289
+#: components/FormSliders/RecordSelectorFromIds.tsx:286
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "recordSelectorUnloadProtect"
 msgstr "Fortsette uten å lagre?"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:292
+#: components/FormSliders/RecordSelectorFromIds.tsx:289
 #. 🟥When in record set and current record is unsaved and try to navigate to another record. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "recordSelectorUnloadProtectDescription"
 msgstr "Du bør kanskje lagre denne databasepost før du navigerer videre."
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:228
+#: components/FormSliders/RecordSelectorFromIds.tsx:225
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "creatingNewRecord"
 msgstr "Oppretter ny post"
@@ -466,12 +466,12 @@ msgstr "Duplikat {recordSetItemTable:string}"
 msgid "duplicateRecordSetItemDescription"
 msgstr "Denne databaseposten finnes allerede i gjeldende {recordSetTable:string}"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:177
+#: components/FormSliders/RecordSelectorFromIds.tsx:174
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "addToRecordSet"
 msgstr "Legg til i {recordSetTable:string}"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:182
+#: components/FormSliders/RecordSelectorFromIds.tsx:179
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "removeFromRecordSet"
 msgstr "Fjern fra {recordSetTable:string}"
@@ -642,17 +642,17 @@ msgstr "Rediger historikk"
 msgid "editHistoryQueryName"
 msgstr "Rediger historikk for «{formattedRecord:string}»"
 
-#: components/FormMeta/index.tsx:149
+#: components/FormMeta/index.tsx:151
 #. Used in: Components > Form Meta > Index
 msgid "formConfiguration"
 msgstr "Skjemakonfigurasjon"
 
-#: components/FormMeta/index.tsx:181
+#: components/FormMeta/index.tsx:183
 #. Used in: Components > Form Meta > Index
 msgid "formState"
 msgstr "Skjemastatus"
 
-#: components/FormMeta/index.tsx:230
+#: components/FormMeta/index.tsx:232
 #. Used in: Components > Form Meta > Index
 msgid "recordInformation"
 msgstr "Databasepost informasjon"
@@ -684,7 +684,7 @@ msgstr "Delskjema"
 msgid "formTable"
 msgstr "Rutenett"
 
-#: components/FormMeta/index.tsx:199
+#: components/FormMeta/index.tsx:201
 #. Used in: Components > Form Meta > Index
 msgid "subviewConfiguration"
 msgstr "Delvisning"
@@ -710,9 +710,11 @@ msgstr "Konfigurer datainntastingstabeller"
 msgid "configureInteractionTables"
 msgstr "Konfigurer interaksjonstabeller"
 
-#: components/FormMeta/index.tsx:68
-#: components/FormMeta/index.tsx:70
-#. Used in: Components > Form Meta > Index
+#: components/FormMeta/index.tsx:69
+#: components/FormMeta/index.tsx:71
+#: components/QueryBuilder/__tests__/RecordMergingAvailability.test.tsx:122
+#: components/QueryBuilder/__tests__/RecordMergingAvailability.test.tsx:135
+#. Used in: Components > Form Meta > Index ⬤ Query Builder > __tests__ > Record Merging Availability
 msgid "formMeta"
 msgstr "Metadata for skjem"
 
