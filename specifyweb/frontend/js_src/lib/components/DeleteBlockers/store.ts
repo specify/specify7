@@ -87,7 +87,7 @@ export class DeleteBlockerStore {
     if (node === undefined) {
       return undefined;
     }
-    let countsPending = true;
+    let countsPending = false;
     let totalCount = 0;
     this.state.graphIterator(blockerKey, 'children', (node) => {
       if (node.version === 0 || node.count === undefined) {
