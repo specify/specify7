@@ -48,9 +48,9 @@ class PaginatorTestMixin:
 
     def test_custom_limit(self):
         custom_limit = 5
-        paginator = self.make_paginator()
+        paginator = self.make_paginator(limit=custom_limit)
         count = paginator.count()
-        self.assertEqual(count, custom_limit)
+        self.assertEqual(count, len(self.record_ids))
         fetched_page = paginator.fetch_page()
         self.assertEqual(fetched_page, self.record_ids[:custom_limit])
 
@@ -120,9 +120,13 @@ class TreeTableReferencePaginatorTests(PaginatorTestMixin, TestTreeSetup):
         super().setUp()
         # Create the taxon tree and get a list of IDs for all descendents of a
         # node we're testing: the class Actinopterygii
-        self.record_ids = self.populate_taxon_tree()
+        taxon_ids = self.populate_taxon_tree()
         renumber_tree("taxon")
         self.populate_determinations()
+        determination_ids = models.Determination.objects.filter(
+            taxon__id__in=taxon_ids
+        ).order_by("pk").values_list("pk", flat=True)
+        self.record_ids = list(determination_ids)
 
     def populate_taxon_tree(self):
         treedef_items = self.taxontreedef.treedefitems.order_by("rankid").all()
@@ -310,21 +314,21 @@ class TreeNodeToDefinitionPaginatorTests(PaginatorTestMixin, TestTreeSetup):
             name="Life",
             fullname="Life",
             parent=None,
-            definition=self.taxontreedef,
+            definition=treedef,
             definitionitem=get_rank(0)
         )
         kingdom = models.Taxon.objects.create(
             name="Animalia",
             fullname="Animalia",
             parent=root,
-            definition=self.taxontreedef,
+            definition=treedef,
             definitionitem=get_rank(10)
         )
         models.Taxon.objects.create(
             name="Chordata",
             fullname="Chordata",
             parent=kingdom,
-            definition=self.taxontreedef,
+            definition=treedef,
             definitionitem=get_rank(30)
         )
         return [root.pk]
@@ -356,7 +360,12 @@ class TreeRankToDefinitionPaginatorTests(PaginatorTestMixin, TestTreeSetup):
         self.populate_tree(other_definition)
         self.populate_tree(self.taxontreedef)
         renumber_tree("Taxon")
-        self.record_ids = [self.taxon_root.pk]
+        first_rank = models.Taxontreedefitem.objects.get(
+            treedef=self.taxontreedef,
+            rankid=0,
+            parent__isnull=True
+        )
+        self.record_ids = [first_rank.pk]
 
     def populate_tree(self, treedef):
         # This isn't strictly needed for this test, but keeping it here in case
@@ -393,7 +402,7 @@ class TreeRankToDefinitionPaginatorTests(PaginatorTestMixin, TestTreeSetup):
 
     def make_paginator(self, limit = DELETE_BLOCKER_LIMIT, anchor_id = None, backwards = False):
         blocker_field = self._get_blocker_field()
-        return TreeNodeToDefinitionPaginator(
+        return TreeRankToDefinitionPaginator(
             self.taxontreedef,
             blocker_field,
             limit=limit,
