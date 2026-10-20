@@ -29,11 +29,12 @@ class RankField(Protocol):
 
 
 def rank_path(spec):
+    from .queryfieldspec import TreeRankQuery
+    from specifyweb.specify.datamodel import datamodel, is_tree_table
     for index, part in enumerate(spec.join_path):
         if (
-            hasattr(part, "relatedModelName")
-            and hasattr(part, "name")
-            and hasattr(part, "treedef_id")
+            isinstance(part, TreeRankQuery)
+            and is_tree_table(datamodel.get_table_strict(part.relatedModelName))
         ):
             return spec.join_path[:index], part, spec.join_path[index + 1:]
     return None
