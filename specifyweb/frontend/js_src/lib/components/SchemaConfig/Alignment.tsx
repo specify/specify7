@@ -83,42 +83,34 @@ export function SchemaConfigAlignment({
             <h3 className="font-semibold">
               {localized(vocabulary.title ?? vocabulary.name)}
             </h3>
-            <table className="grid-table grid-cols-[minmax(12rem,auto)_1fr] gap-2 rounded-md border border-gray-400 p-2">
-              <thead>
-                <tr>
-                  <th scope="col">{schemaText.term()}</th>
-                  <th scope="col">{schemaText.description()}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {terms.map((term) => {
-                  const alignment = alignments.find(
-                    (candidate) =>
-                      candidate.vocabulary === vocabulary &&
-                      candidate.term === term
-                  );
-                  return (
-                    <tr key={term.name}>
-                      <td>
-                        <Button.LikeLink
-                          onClick={(): void => {
-                            if (alignment !== undefined)
-                              setSelectedAlignment(alignment);
-                          }}
-                        >
-                          {localized(term.title ?? term.name)}
-                        </Button.LikeLink>
-                      </td>
-                      <td>
-                        {formatTermExampleText(
-                          localized(term.description ?? '')
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+            <ul className="divide-y divide-gray-300 rounded-md border border-gray-400">
+              {terms.map((term) => {
+                const alignment = alignments.find(
+                  (candidate) =>
+                    candidate.vocabulary === vocabulary &&
+                    candidate.term === term
+                );
+                return (
+                  <li
+                    className="flex flex-col gap-1 p-2 [overflow-wrap:anywhere]"
+                    key={term.name}
+                  >
+                    <Button.LikeLink
+                      className="font-semibold"
+                      onClick={(): void => {
+                        if (alignment !== undefined)
+                          setSelectedAlignment(alignment);
+                      }}
+                    >
+                      {localized(term.title ?? term.name)}
+                    </Button.LikeLink>
+                    <p>
+                      {formatTermExampleText(localized(term.description ?? ''))}
+                    </p>
+                  </li>
+                );
+              })}
+            </ul>
           </section>
         ))
       )}

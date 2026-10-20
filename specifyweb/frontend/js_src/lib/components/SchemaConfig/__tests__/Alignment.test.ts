@@ -1,10 +1,27 @@
+import { createElement } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
+
 import type { LiteralField } from '../../DataModel/specifyField';
-import { getFieldAlignments } from '../Alignment';
+import { getFieldAlignments, SchemaConfigAlignment } from '../Alignment';
 
 const field = (table: string, name: string): LiteralField =>
   ({ table: { name: table }, name }) as unknown as LiteralField;
 
 describe('data model vocabulary alignments', () => {
+  test('shows each term above its description', () => {
+    const html = renderToStaticMarkup(
+      createElement(SchemaConfigAlignment, {
+        field: field('CollectingEvent', 'StartDate'),
+      })
+    );
+    const item = new DOMParser()
+      .parseFromString(html, 'text/html')
+      .querySelector('li');
+    expect(item?.firstElementChild?.tagName).toBe('BUTTON');
+    expect(item?.lastElementChild?.tagName).toBe('P');
+    expect(item?.lastElementChild?.textContent).not.toBe('');
+  });
+
   test('matches field identities case-insensitively', () => {
     const [alignment] = getFieldAlignments(
       field('CollectingEvent', 'StartDate')
