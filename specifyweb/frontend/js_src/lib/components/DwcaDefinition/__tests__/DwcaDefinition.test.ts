@@ -291,6 +291,7 @@ describe('DwCA query field term mapping', () => {
       extension,
     ]);
     expect(missing).toContainEqual({
+      mappingIndex: 0,
       mappingName: 'Core',
       term: `occurrenceID (${occurrenceId})`,
     });
@@ -302,12 +303,14 @@ describe('DwCA query field term mapping', () => {
         },
       ])
     ).toContainEqual({
+      mappingIndex: 0,
       mappingName: 'Core',
       term: `occurrenceID (${occurrenceId})`,
     });
     expect(
       missing.some(
-        ({ mappingName }) => mappingName === 'Audiovisual Media Description'
+        ({ mappingIndex, mappingName }) =>
+          mappingIndex === 1 && mappingName === 'Audiovisual Media Description'
       )
     ).toBe(true);
     expect(getMissingRequiredTerms([{ ...extension, fileName: '' }])).toEqual(
@@ -328,6 +331,7 @@ describe('DwCA query field term mapping', () => {
       terms: [...extension.terms, requiredTerm],
     };
     const requiredMessage = {
+      mappingIndex: 0,
       mappingName: 'Audiovisual Media Description',
       term: `Identifier (${requiredTerm})`,
     };
@@ -366,22 +370,26 @@ describe('DwCA query field term mapping', () => {
     expect(
       getMissingRequiredTerms(preparation === undefined ? [] : [preparation])
     ).toContainEqual({
+      mappingIndex: 0,
       mappingName: 'GGBN Preparation Extension',
       term: 'preparationDate (http://data.ggbn.org/schemas/ggbn/terms/preparationDate)',
     });
   });
 
-  test('renders each missing term as a bullet with a bold extension title', () => {
+  test('renders each missing term as a bullet with a clickable extension title', () => {
     const html = renderToStaticMarkup(
       createElement(MissingRequiredTermsError, {
         expanded: true,
         onToggle: jest.fn(),
+        onSelectMapping: jest.fn(),
         terms: [
           {
+            mappingIndex: 1,
             mappingName: 'GGBN Preparation Extension',
             term: 'preparationDate',
           },
           {
+            mappingIndex: 2,
             mappingName: 'Darwin Core Resource Relationship',
             term: 'Resource ID',
           },
@@ -392,7 +400,7 @@ describe('DwCA query field term mapping', () => {
     const items = document.querySelectorAll('[role="alert"] ul.list-disc > li');
     expect(items).toHaveLength(2);
     expect(
-      Array.from(items, (item) => item.querySelector('strong')?.textContent)
+      Array.from(items, (item) => item.querySelector('button')?.textContent)
     ).toEqual([
       'GGBN Preparation Extension',
       'Darwin Core Resource Relationship',
@@ -401,14 +409,24 @@ describe('DwCA query field term mapping', () => {
 
   test('summarizes required terms until expanded', () => {
     const terms = [
-      { mappingName: 'GGBN Preparation Extension', term: 'preparationDate' },
-      { mappingName: 'Darwin Core Resource Relationship', term: 'Resource ID' },
+      {
+        mappingIndex: 1,
+        mappingName: 'GGBN Preparation Extension',
+        term: 'preparationDate',
+      },
+      {
+        mappingIndex: 2,
+        mappingName: 'Darwin Core Resource Relationship',
+        term: 'Resource ID',
+      },
     ];
     const onToggle = jest.fn();
+    const onSelectMapping = jest.fn();
     const { rerender } = render(
       createElement(MissingRequiredTermsError, {
         expanded: false,
         onToggle,
+        onSelectMapping,
         terms,
       })
     );
@@ -423,12 +441,17 @@ describe('DwCA query field term mapping', () => {
       createElement(MissingRequiredTermsError, {
         expanded: true,
         onToggle,
+        onSelectMapping,
         terms,
       })
     );
     expect(summary).toHaveAttribute('aria-expanded', 'true');
     expect(summary).toHaveTextContent('Hide details');
     expect(screen.getAllByRole('listitem')).toHaveLength(2);
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Darwin Core Resource Relationship' })
+    );
+    expect(onSelectMapping).toHaveBeenCalledWith(2);
   });
 
   test('adds the GUID occurrenceID field to empty mappings', () => {

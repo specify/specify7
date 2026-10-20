@@ -702,6 +702,7 @@ export const hasEmptyRequiredMappingValues = (
   );
 
 type MissingRequiredTerm = {
+  readonly mappingIndex: number;
   readonly mappingName: string;
   readonly term: string;
 };
@@ -709,7 +710,7 @@ type MissingRequiredTerm = {
 export function getMissingRequiredTerms(
   mappings: RA<Mapping>
 ): RA<MissingRequiredTerm> {
-  return mappings.flatMap((mapping) => {
+  return mappings.flatMap((mapping, mappingIndex) => {
     if (mapping.invalidExtensionXml) return [];
     const mappingName =
       (mapping.extension
@@ -728,6 +729,7 @@ export function getMissingRequiredTerms(
       ? []
       : [
           {
+            mappingIndex,
             mappingName,
             term: dwcaText.dwcaRequiredTerm({
               title: identifierTerm.split(/[\/#]/).at(-1) ?? identifierTerm,
@@ -744,6 +746,7 @@ export function getMissingRequiredTerms(
       ...required
         .filter(({ name }) => !hasDisplayedTerm(name))
         .map(({ title, name }) => ({
+          mappingIndex,
           mappingName,
           term: dwcaText.dwcaRequiredTerm({ title: title ?? name, name }),
         })),
@@ -755,10 +758,12 @@ export function MissingRequiredTermsError({
   terms,
   expanded,
   onToggle,
+  onSelectMapping,
 }: {
   readonly terms: RA<MissingRequiredTerm>;
   readonly expanded: boolean;
   readonly onToggle: () => void;
+  readonly onSelectMapping: (mappingIndex: number) => void;
 }): JSX.Element {
   return (
     <CollapsibleAlert
@@ -773,9 +778,15 @@ export function MissingRequiredTermsError({
     >
       {dwcaText.dwcaMapRequiredTermsHeading()}
       <ul className="list-disc space-y-1 pl-6">
-        {terms.map(({ mappingName, term }, index) => (
+        {terms.map(({ mappingIndex, mappingName, term }, index) => (
           <li key={index}>
-            <strong>{mappingName}</strong>: {term}
+            <Button.LikeLink
+              className="font-bold !text-white underline"
+              onClick={(): void => onSelectMapping(mappingIndex)}
+            >
+              {localized(mappingName)}
+            </Button.LikeLink>
+            : {term}
           </li>
         ))}
       </ul>
@@ -2015,6 +2026,10 @@ function DwcaDefinitionEditorLoaded({
           expanded={showRequiredTerms}
           terms={missingRequiredTerms}
           onToggle={(): void => setShowRequiredTerms((shown) => !shown)}
+          onSelectMapping={(index): void => {
+            setTabValue(tabValues[index]);
+            tabButtons.current[index]?.focus();
+          }}
         />
       )}
       <div className="flex flex-wrap gap-2 border-b pb-2">
