@@ -38,9 +38,10 @@ class DeleteBlockerFilterTests(ApiTests):
 
     def test_fetch_page_reports_cursor_metadata_and_completion(self):
         deferred, page = self.filter.fetch_page()
+        page_limit = self.filter.paginator.limit
         self.assertFalse(deferred)
-        self.assertEqual(page["ids"], [obj.id for obj in self.collectionobjects[:self.cos_to_test + 1]])
-        self.assertEqual(page["limit"], 2)
+        self.assertEqual(page["ids"], [obj.id for obj in self.collectionobjects[:page_limit]])
+        self.assertEqual(page["limit"], page_limit)
         self.assertFalse(page["complete"])
         self.assertIsNone(page["anchor"])
         self.assertFalse(page["backwards"])
