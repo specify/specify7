@@ -70,7 +70,7 @@ export function useParentResource(
                 true,
                 false
               );
-              return returned;
+              return returned ?? false;
             }),
       [resource, resource?.deleted, parentRelationship]
     ),
