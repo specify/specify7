@@ -10,8 +10,10 @@ import logging
 
 logger = logging.getLogger(__name__)
 from django.db import connection
+from .coordination import statistics_response
 
 @login_maybe_required
+@statistics_response(Preparation)
 @openapi(schema={
     'get': {
         'responses': {
@@ -53,6 +55,7 @@ def collection_preparations(request) -> HttpResponse:
 
 
 @login_maybe_required
+@statistics_response(Discipline, Locality)
 @openapi(schema={
     'get': {
         'responses': {
@@ -82,6 +85,7 @@ def collection_locality_geography(request, stat) -> HttpResponse:
     return http.JsonResponse(geography_dict)
 
 @login_maybe_required
+@statistics_response(Determination)
 @openapi(schema={
     'get': {
         'responses': {
@@ -145,6 +149,7 @@ def get_percent_georeferenced(request):
     return percent_georeferenced
 
 @login_maybe_required
+@statistics_response(Collectionobject, Collectionobjectattachment, Attachment)
 @openapi(schema={
     'get': {
         'responses': {
