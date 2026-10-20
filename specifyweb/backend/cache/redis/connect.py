@@ -8,10 +8,14 @@ Redis_Type = Literal["none", "string", "list", "set", "hash", "stream", "vectors
 
 # REFACTOR: It might make more sense to move this to a setting on
 # RedisConnection, rather than having it as a flag on each adapter
-def _format_key(key: str):
+def _format_key(key: str | bytes):
     db_name = getattr(settings, "DATABASE_NAME")
-    key_parts = ["specify", db_name, key]
-    return ":".join(key_parts)
+    prefix = f"specify:{db_name}:"
+    if isinstance(key, bytes):
+        final_key = prefix.encode() + key
+    else:
+        final_key = prefix + key
+    return final_key
 
 class RedisConnection:
     def __init__(self,
@@ -164,7 +168,7 @@ class RedisString(RedisDataType):
     See https://redis.io/docs/latest/develop/data-types/strings/
     """
 
-    def set(self, key, value, time_to_live=None, override_existing=True, format_key=True):
+    def set(self, key: str | bytes, value, time_to_live=None, override_existing=True, format_key=True):
         if format_key:
             key = _format_key(key)
         flags = {
@@ -173,7 +177,7 @@ class RedisString(RedisDataType):
         }
         self.connection.set(key, value, **flags)
 
-    def get(self, key, delete_key=False, format_key=True) -> str | bytes | None:
+    def get(self, key: str | bytes, delete_key=False, format_key=True) -> str | bytes | None:
         if format_key:
             key = _format_key(key)
         if delete_key:
