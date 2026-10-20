@@ -31,6 +31,7 @@ import { FormEditor } from '../FormEditor';
 import { viewSetsSpec } from '../FormEditor/spec';
 import {
   CollectionPreferencesEditor,
+  GlobalPreferencesEditor,
   UserPreferencesEditor,
 } from '../Preferences/Editor';
 import { useDarkMode } from '../Preferences/Hooks';
@@ -168,6 +169,10 @@ export const visualAppResourceEditors = f.store<
   },
   collectionPreferences: {
     visual: CollectionPreferencesEditor,
+    json: AppResourceTextEditor,
+  },
+  globalPreferences: {
+    visual: GlobalPreferencesEditor,
     json: AppResourceTextEditor,
   },
   leafletLayers: undefined,

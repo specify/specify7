@@ -64,6 +64,7 @@ describe('AppResourcesFilters', () => {
         'defaultUserPreferences',
         'dwcaDefinition',
         'expressSearchConfig',
+        'globalPreferences',
         'interactionsTables',
         'label',
         'leafletLayers',

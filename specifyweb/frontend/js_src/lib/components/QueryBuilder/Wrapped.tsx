@@ -225,12 +225,8 @@ function Wrapped({
    */
   const getQueryFieldRecords = saveRequired ? serializeQueryFields : undefined;
 
-  // runQuery must always serialize the fields it is given, not just when saveRequired
-  const { runQuery, scheduleQueryRun } = useQueryExecution({
+  const { isCountOnly, runQuery, scheduleQueryRun } = useQueryExecution({
     query,
-    fields: state.fields,
-    getQueryFieldRecords: serializeQueryFields,
-    setQuery,
     onRun: (): void => dispatch({ type: 'RunQueryAction' }),
   });
 
@@ -290,12 +286,14 @@ function Wrapped({
     selectedIndex,
     setSelectedIndex,
     isSplit,
-    canSplit,
+    canUseHorizontalSplit,
     isHorizontal,
+    maximumPrimaryPaneWidth,
+    splitViewRef,
     toggleSplit,
     toggleOrientation,
     onResults: handleSplitViewResults,
-  } = useQuerySplitView(resultsRef, state.queryRunCount);
+  } = useQuerySplitView(state.queryRunCount);
 
   const showSeries = React.useMemo(
     () =>
@@ -370,7 +368,7 @@ function Wrapped({
             }}
             onTriedToSave={handleTriedToSave}
             isSplit={isSplit}
-            canSplit={canSplit}
+            canUseHorizontalSplit={canUseHorizontalSplit}
             isHorizontal={isHorizontal}
             onToggleSplit={toggleSplit}
             onToggleOrientation={toggleOrientation}
@@ -617,9 +615,11 @@ function Wrapped({
             <QueryBuilderResults
               forceCollection={forceCollection}
               getQueryFieldRecords={getQueryFieldRecords}
+              isCountOnly={isCountOnly}
               isHorizontal={isHorizontal}
               isReadOnly={isReadOnly}
               isSplit={isSplit}
+              maximumPrimaryPaneWidth={maximumPrimaryPaneWidth}
               query={query}
               queryResource={queryResource}
               recordSet={recordSet}
@@ -629,6 +629,7 @@ function Wrapped({
               selectedRows={selectedRows}
               setSelectedIndex={setSelectedIndex}
               setSelectedRows={setSelectedRows}
+              splitViewRef={splitViewRef}
               state={state}
               table={table}
               onReRun={(): void => dispatch({ type: 'RunQueryAction' })}
@@ -639,7 +640,7 @@ function Wrapped({
               }}
               onSortChange={(fields): void => {
                 dispatch({ type: 'ChangeFieldsAction', fields });
-                runQuery('regular', fields);
+                runQuery('regular');
               }}
             />
           </Form>

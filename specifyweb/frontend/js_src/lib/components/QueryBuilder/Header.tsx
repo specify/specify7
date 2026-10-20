@@ -48,7 +48,7 @@ export function QueryHeader({
   onSaved: handleSaved,
   defaultBasicView = false,
   isSplit,
-  canSplit,
+  canUseHorizontalSplit,
   isHorizontal,
   onToggleSplit,
   onToggleOrientation,
@@ -69,7 +69,7 @@ export function QueryHeader({
   readonly onTriedToSave: () => void;
   readonly onSaved: () => void;
   readonly isSplit: boolean;
-  readonly canSplit: boolean;
+  readonly canUseHorizontalSplit: boolean;
   readonly isHorizontal: boolean;
   readonly onToggleSplit: () => void;
   readonly onToggleOrientation: () => void;
@@ -137,13 +137,9 @@ export function QueryHeader({
       ) : undefined}
       {hasPermission('/querybuilder/query', 'execute') && (
         <>
-          <SplitViewToggleButton
-            disabled={!canSplit}
-            isSplit={isSplit}
-            onToggle={onToggleSplit}
-          />
+          <SplitViewToggleButton isSplit={isSplit} onToggle={onToggleSplit} />
           <SplitViewOrientationButton
-            disabled={!isSplit}
+            disabled={!isSplit || !canUseHorizontalSplit}
             isHorizontal={isHorizontal}
             onToggle={onToggleOrientation}
           />

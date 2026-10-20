@@ -11,6 +11,7 @@ test('defaultAppResourceFilters', () => {
         "defaultUserPreferences",
         "dwcaDefinition",
         "expressSearchConfig",
+        "globalPreferences",
         "interactionsTables",
         "label",
         "leafletLayers",

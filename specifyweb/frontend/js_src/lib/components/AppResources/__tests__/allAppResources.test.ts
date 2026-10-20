@@ -10,6 +10,7 @@ test('allAppResources', () => {
   "defaultUserPreferences",
   "dwcaDefinition",
   "expressSearchConfig",
+  "globalPreferences",
   "interactionsTables",
   "label",
   "leafletLayers",

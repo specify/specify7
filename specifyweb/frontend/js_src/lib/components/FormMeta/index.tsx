@@ -12,6 +12,7 @@ import { H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
+import { RecordMergingContext } from '../Core/Contexts';
 import { toTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -131,7 +132,8 @@ function MetaDialog({
   readonly onClose: () => void;
 }): JSX.Element {
   const subView = React.useContext(SubViewContext);
-  const canMergeTable = canMerge(resource.specifyTable);
+  const canMergeTable =
+    React.useContext(RecordMergingContext) && canMerge(resource.specifyTable);
   return (
     <Dialog
       buttons={commonText.close()}
