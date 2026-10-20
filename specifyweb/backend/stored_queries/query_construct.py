@@ -79,8 +79,7 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
         cache_key = (node, table, treedefitem_params, 'TreeRank')
         ranks = query.join_cache.get("tree_ranks")
         if ranks is None:
-            from .tree_rank import TreeRanks
-            ranks = TreeRanks()
+            ranks = _TreeRanksProxy()
             query.join_cache["tree_ranks"] = ranks        
         ranks.current_rank = (node, table, treedefitem_params)
         if cache_key in query.join_cache:
