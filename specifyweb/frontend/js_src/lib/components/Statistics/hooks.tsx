@@ -2,7 +2,7 @@ import React from 'react';
 
 import { useMultipleAsyncState } from '../../hooks/useAsyncState';
 import { statsText } from '../../localization/stats';
-import type { AjaxResponseObject } from '../../utils/ajax';
+import type { AjaxProps, AjaxResponseObject } from '../../utils/ajax';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { throttledPromise } from '../../utils/ajax/throttledPromise';
@@ -19,7 +19,9 @@ import {
 } from '../DataModel/serializers';
 import { genericTables } from '../DataModel/tables';
 import type { SpQuery, SpQueryField, Tables } from '../DataModel/types';
+import { raise } from '../Errors/Crash';
 import { makeQueryField } from '../QueryBuilder/fromTree';
+import { statisticsAjax } from './requests';
 import { backEndStatsSpec, dynamicStatsSpec, statsSpec } from './StatsSpec';
 import type {
   BackEndStatResolve,
@@ -81,14 +83,14 @@ function backEndStatPromiseGenerator(
         throttledPromise<BackendStatsResult | undefined>(
           'backendStats',
           async () =>
-            ajax<BackendStatsResult>(key, {
+            statisticsAjax<BackendStatsResult>(key, {
               method: 'GET',
               headers: {
                 Accept: 'application/json',
               },
               expectedErrors: [Http.FORBIDDEN],
-            }).then(({ data, status }) =>
-              status === Http.FORBIDDEN ? undefined : data
+            }).then((response) =>
+              response?.status === Http.OK ? response.data : undefined
             ),
           key
         ),
@@ -106,27 +108,30 @@ function dynamicEphermeralPromiseGenerator(
         throttledPromise<RA<string> | undefined>(
           'queryStats',
           async () =>
-            ajax<{ readonly results: RA<RA<number | string | null>> }>(
-              '/stored_query/ephemeral/',
-              {
-                method: 'POST',
-                headers: {
-                  Accept: 'application/json',
-                },
-                body: keysToLowerCase({
-                  ...serializeResource(
-                    querySpecToResource(statsText.statistics(), spec)
-                  ),
-                  limit: 0,
-                }),
-                expectedErrors: Object.values(Http),
-              }
-            ).then(({ data }) =>
-              filterArray(
-                data.results.map(([_id, distinctGroup]) =>
-                  distinctGroup === null ? undefined : distinctGroup.toString()
-                )
-              )
+            statisticsAjax<{
+              readonly results: RA<RA<number | string | null>>;
+            }>('/stored_query/ephemeral/', {
+              method: 'POST',
+              headers: {
+                Accept: 'application/json',
+              },
+              body: keysToLowerCase({
+                ...serializeResource(
+                  querySpecToResource(statsText.statistics(), spec)
+                ),
+                limit: 0,
+              }),
+              expectedErrors: [Http.FORBIDDEN],
+            }).then((response) =>
+              response?.status === Http.OK
+                ? filterArray(
+                    response.data.results.map(([_id, distinctGroup]) =>
+                      distinctGroup === null
+                        ? undefined
+                        : distinctGroup.toString()
+                    )
+                  )
+                : undefined
             ),
           key
         ),
@@ -195,19 +200,27 @@ export function queryCountPromiseGenerator(
   return async () =>
     ajax<{
       readonly count: number;
-    }>('/stored_query/ephemeral/', {
-      method: 'POST',
-      headers: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        Accept: 'application/json',
-      },
-      body: keysToLowerCase({
-        ...query,
-        countOnly: true,
-      }),
-      expectedErrors: Object.values(Http),
-    });
+    }>('/stored_query/ephemeral/', countRequestOptions(query));
 }
+
+export function statisticsCountPromiseGenerator(
+  query: SerializedResource<SpQuery>
+): () => Promise<AjaxResponseObject<{ readonly count: number }> | undefined> {
+  return async () =>
+    statisticsAjax<{ readonly count: number }>(
+      '/stored_query/ephemeral/',
+      countRequestOptions(query)
+    );
+}
+
+const countRequestOptions = (
+  query: SerializedResource<SpQuery>
+): AjaxProps => ({
+  method: 'POST',
+  headers: { Accept: 'application/json' },
+  body: keysToLowerCase({ ...query, countOnly: true }),
+  expectedErrors: Object.values(Http),
+});
 
 export const makeSerializedFieldsFromPaths = (
   tableName: keyof Tables,
@@ -411,10 +424,12 @@ export function useStatValueLoad<
   React.useEffect(() => {
     if (!shouldFetch) return undefined;
     let destructorCalled = false;
-    promiseGenerator().then((value) => {
-      if (destructorCalled || value === undefined) return;
-      handleLoad?.(value);
-    });
+    promiseGenerator()
+      .then((value) => {
+        if (destructorCalled || value === undefined) return;
+        handleLoad?.(value);
+      })
+      .catch(raise);
     return (): void => {
       destructorCalled = true;
     };

@@ -6,23 +6,31 @@ export type PromiseWithSpec<T> = Promise<T> & {
 };
 
 type KillablePromise<T> = PromiseWithSpec<T> & {
+  readonly group: string;
   // eslint-disable-next-line functional/prefer-readonly-type
   killPromise: () => void;
 };
 const currentRequestsGenerator = <T>(): WritableArray<PromiseWithSpec<T>> => [];
 
 let maybeFulfilled: WritableArray<KillablePromise<any>> = [];
+const pendingPromises = new Set<Promise<unknown>>();
+const listeners = new Set<() => void>();
+
+export const throttledPromisesAreLoading = (): boolean =>
+  pendingPromises.size > 0;
+
+export function subscribeThrottledPromises(listener: () => void): () => void {
+  listeners.add(listener);
+  return () => {
+    listeners.delete(listener);
+  };
+}
+
+const notify = (): void => listeners.forEach((listener) => listener());
 
 export const cleanThrottledPromises = (killPromises = true): void => {
   if (killPromises) maybeFulfilled.forEach((promise) => promise.killPromise());
   maybeFulfilled = [];
-  /*
-   * Since the kill promise is already supplied, the promises will resolve within a work loop.
-   * So, it is sufficient to directly empty the currentRequests for future requests.
-   */
-  Object.entries(networkRequestsSpec).forEach(([key, _]) => {
-    networkRequestsSpec[key].currentRequests = [];
-  });
 };
 
 export const networkRequestsSpec: RR<
@@ -49,34 +57,46 @@ export async function throttledPromise<T>(
   promiseSpec: number | string
 ): Promise<T | undefined> {
   const { maxFetchCount, currentRequests } = networkRequestsSpec[key];
-  while (currentRequests.length > maxFetchCount)
-    await Promise.any(currentRequests);
   const promiseInFulfilled = maybeFulfilled.find(
-    (fulfilledPromise) => fulfilledPromise.spec === promiseSpec
+    (fulfilledPromise) =>
+      fulfilledPromise.group === key && fulfilledPromise.spec === promiseSpec
   );
   if (promiseInFulfilled !== undefined) return promiseInFulfilled;
   let promiseKilled = false;
-  const returnPromise: KillablePromise<T | undefined> = new Promise(
-    async (resolve) => {
-      while (currentRequests.length >= maxFetchCount && !promiseKilled) {
-        await Promise.any(currentRequests);
-      }
-      if (promiseKilled) {
-        resolve(undefined);
-        return;
-      }
-      const promiseToAdd = promiseGenerator().then((result) => {
-        currentRequests.splice(currentRequests.indexOf(promiseToAdd), 1);
-        resolve(result);
-      });
-      currentRequests.push(promiseToAdd);
+  const run = async (): Promise<T | undefined> => {
+    while (currentRequests.length >= maxFetchCount && !promiseKilled) {
+      await Promise.race(
+        currentRequests.map((promise) =>
+          promise.then(
+            () => undefined,
+            () => undefined
+          )
+        )
+      );
     }
-  ) as KillablePromise<T | undefined>;
-  returnPromise.spec = promiseSpec;
-
-  returnPromise.killPromise = () => {
-    promiseKilled = true;
+    if (promiseKilled) return undefined;
+    const promiseToAdd = promiseGenerator();
+    currentRequests.push(promiseToAdd);
+    try {
+      return await promiseToAdd;
+    } finally {
+      currentRequests.splice(currentRequests.indexOf(promiseToAdd), 1);
+    }
   };
+  const returnPromise: KillablePromise<T | undefined> = Object.assign(run(), {
+    spec: promiseSpec,
+    group: key,
+    killPromise: () => {
+      promiseKilled = true;
+    },
+  });
   maybeFulfilled.push(returnPromise);
+  pendingPromises.add(returnPromise);
+  notify();
+  const settled = (): void => {
+    pendingPromises.delete(returnPromise);
+    notify();
+  };
+  returnPromise.then(settled, settled);
   return returnPromise;
 }
