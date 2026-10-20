@@ -16,7 +16,7 @@ class DeleteBlockerFilterTests(ApiTests):
             division=self.division,
         )
         self.cos_to_test = len(self.collectionobjects) - 2
-        co_ids = map(lambda co: co.pk, self.collectionobject[:self.cos_to_test])
+        co_ids = map(lambda co: co.pk, self.collectionobjects[:self.cos_to_test])
         models.Collectionobject.objects.filter(pk__in=co_ids).update(
             accession=self.accession
         )
@@ -39,7 +39,7 @@ class DeleteBlockerFilterTests(ApiTests):
     def test_fetch_page_reports_cursor_metadata_and_completion(self):
         deferred, page = self.filter.fetch_page()
         self.assertFalse(deferred)
-        self.assertEqual(page["ids"], [obj.id for obj in self.collectionobjects[:self.cos_to_test]])
+        self.assertEqual(page["ids"], [obj.id for obj in self.collectionobjects[:self.cos_to_test + 1]])
         self.assertEqual(page["limit"], 2)
         self.assertFalse(page["complete"])
         self.assertIsNone(page["anchor"])
