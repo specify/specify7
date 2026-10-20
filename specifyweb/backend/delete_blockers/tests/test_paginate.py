@@ -122,6 +122,10 @@ class TreeTableReferencePaginatorTests(PaginatorTestMixin, TestTreeSetup):
         # node we're testing: the class Actinopterygii
         taxon_ids = self.populate_taxon_tree()
         renumber_tree("taxon")
+        # The paginator will use the in memory version of Actinopterygii, so
+        # this will update the instance and fetch the nodeNumber and
+        # highestChildNodeNumber
+        self.initial_parent.refresh_from_db()
         self.populate_determinations()
         determination_ids = models.Determination.objects.filter(
             taxon__id__in=taxon_ids
