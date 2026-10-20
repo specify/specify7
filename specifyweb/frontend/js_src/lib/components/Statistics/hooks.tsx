@@ -121,7 +121,7 @@ function dynamicEphermeralPromiseGenerator(
                 ),
                 limit: 0,
               }),
-              expectedErrors: [Http.FORBIDDEN],
+              expectedErrors: Object.values(Http),
             }).then((response) =>
               response?.status === Http.OK
                 ? filterArray(
