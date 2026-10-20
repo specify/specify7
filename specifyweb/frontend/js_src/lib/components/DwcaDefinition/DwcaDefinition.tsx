@@ -1412,6 +1412,11 @@ export function QueryMapping({
     string | undefined
   >();
   const [showSettings, setShowSettings] = React.useState(false);
+  const [pendingReplacement, setPendingReplacement] = React.useState<
+    | { readonly type: 'template'; readonly template: DwcaTemplate }
+    | { readonly type: 'query'; readonly id: number }
+    | undefined
+  >();
   const isIdentifierField = (field: QueryField): boolean =>
     getMappingFieldIndex(mapping, field) === 0;
   const handleRowTypeChange = (rowType: string): void => {
@@ -1448,6 +1453,29 @@ export function QueryMapping({
           extension === mapping.extension && rowType === mapping.rowType
       )
   );
+  const applyReplacement = (
+    replacement: NonNullable<typeof pendingReplacement>
+  ): void => {
+    setPendingReplacement(undefined);
+    setShowSettings(false);
+    if (replacement.type === 'template') {
+      onTemplate?.(replacement.template);
+      return;
+    }
+    void fetchResource('SpQuery', replacement.id).then((resource) => {
+      if (resource === undefined) return;
+      const query = deserializeResource(
+        resource as SerializedResource<SpQuery>
+      );
+      handleChange(mappingFromQuery(mapping, query));
+    });
+  };
+  const requestReplacement = (
+    replacement: NonNullable<typeof pendingReplacement>
+  ): void => {
+    setShowSettings(false);
+    setPendingReplacement(replacement);
+  };
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-auto">
       <div className="flex flex-wrap items-end gap-3">
@@ -1565,19 +1593,14 @@ export function QueryMapping({
                       const template = defaultTemplates.find(
                         (candidate) => `template:${candidate.name}` === value
                       );
-                      if (template !== undefined) onTemplate?.(template);
+                      if (template !== undefined)
+                        requestReplacement({ type: 'template', template });
                       return;
                     }
                     if (!value.startsWith('query:')) return;
                     const id = Number(value.slice('query:'.length));
                     if (!Number.isInteger(id)) return;
-                    void fetchResource('SpQuery', id).then((resource) => {
-                      if (resource === undefined) return;
-                      const query = deserializeResource(
-                        resource as SerializedResource<SpQuery>
-                      );
-                      handleChange(mappingFromQuery(mapping, query));
-                    });
+                    requestReplacement({ type: 'query', id });
                   }}
                 >
                   <option value="">{dwcaText.dwcaChooseQuery()}</option>
@@ -1670,6 +1693,24 @@ export function QueryMapping({
           onClose={(): void => setPendingCoreRowType(undefined)}
         >
           {dwcaText.dwcaChangeCoreConfirmationDescription()}
+        </Dialog>
+      )}
+      {pendingReplacement !== undefined && (
+        <Dialog
+          buttons={
+            <>
+              <Button.Warning
+                onClick={(): void => applyReplacement(pendingReplacement)}
+              >
+                {dwcaText.dwcaReplaceMapping()}
+              </Button.Warning>
+              <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+            </>
+          }
+          header={dwcaText.dwcaReplaceMappingConfirmation()}
+          onClose={(): void => setPendingReplacement(undefined)}
+        >
+          {dwcaText.dwcaReplaceMappingConfirmationDescription()}
         </Dialog>
       )}
     </div>

@@ -16,6 +16,16 @@ export const dwcaText = createDictionary({
     'en-us':
       'Changing the core changes the query base table and will erase the current core and extension mappings.',
   },
+  dwcaReplaceMappingConfirmation: {
+    'en-us': 'Replace the current mapping?',
+  },
+  dwcaReplaceMappingConfirmationDescription: {
+    'en-us':
+      'The selected template or query will replace the current field mappings and filters. A template may also replace the file name.',
+  },
+  dwcaReplaceMapping: {
+    'en-us': 'Replace mapping',
+  },
   dwcaDefinition: {
     'en-us': 'Darwin Core definition',
   },
