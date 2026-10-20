@@ -148,7 +148,7 @@ class MainSetupTearDown:
         for _ in range(num):
             new_co = models.Collectionobject.objects.create(
                 collection=self.collection,
-                catalognumber="num-%d" % self._current_co_count + num,
+                catalognumber="num-%d" % self._current_co_count,
                 collectionobjecttype=self.collectionobjecttype,
             )
             self._current_co_count += 1
