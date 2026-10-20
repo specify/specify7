@@ -168,6 +168,7 @@ class TreeTableReferencePaginatorTests(PaginatorTestMixin, TestTreeSetup):
             definition=self.taxontreedef,
             definitionitem=get_rank(60)
         )
+        records.append(actinopterygii.id)
 
         # order under Actinopterygii
         amiiformes = models.Taxon.objects.create(
