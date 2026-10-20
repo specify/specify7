@@ -63,7 +63,7 @@ msgstr "Repeat new password"
 
 #: components/Core/Main.tsx:97
 #: components/Header/userToolDefinitions.ts:29
-#: components/Router/Routes.tsx:483
+#: components/Router/Routes.tsx:491
 #. Used in: Components > Core > Main ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes
 msgid "logOut"
 msgstr "Log Out"
@@ -111,7 +111,7 @@ msgstr ""
 "password, you can enter them below to associate that user with your "
 "{providerName:string} account for future logins."
 
-#: components/Header/userToolDefinitions.ts:111
+#: components/Header/userToolDefinitions.ts:117
 #: components/Router/OverlayRoutes.tsx:192
 #: components/Toolbar/MasterKey.tsx:43
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Master Key
@@ -298,7 +298,7 @@ msgstr "Collections"
 msgid "configureCollectionAccess"
 msgstr "Select user collection access"
 
-#: components/Header/userToolDefinitions.ts:86
+#: components/Header/userToolDefinitions.ts:92
 #: components/Router/Routes.tsx:73
 #: components/Router/Routes.tsx:179
 #: components/Toolbar/Security.tsx:102
@@ -623,7 +623,7 @@ msgstr "Add User"
 msgid "systemConfigurationTool"
 msgstr "System Configuration Tool"
 
-#: components/Header/userToolDefinitions.ts:91
+#: components/Header/userToolDefinitions.ts:97
 #. Used in: Components > Header > User Tool Definitions
 msgid "systemConfig"
 msgstr "System Config"

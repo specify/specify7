@@ -41,7 +41,7 @@ msgstr "(У порядку від останнього до найстарішо
 msgid "exception"
 msgstr "Помилка"
 
-#: components/AppResources/EditorComponents.tsx:159
+#: components/AppResources/EditorComponents.tsx:161
 #: components/Attachments/Cell.tsx:87
 #: components/Attachments/Viewer.tsx:264
 #: components/LocalityUpdate/Status.tsx:400

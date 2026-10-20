@@ -34,7 +34,7 @@ msgstr "Requête"
 msgid "queries"
 msgstr "Requêtes"
 
-#: components/Preferences/CollectionDefinitions.tsx:291
+#: components/Preferences/CollectionDefinitions.tsx:317
 #: components/Preferences/UserDefinitions.tsx:1794
 #: components/SearchDialog/index.tsx:243
 #: components/SearchDialog/index.tsx:387
@@ -1049177,17 +1049177,17 @@ msgstr "Strict"
 msgid "nonStrict"
 msgstr "Non strict"
 
-#: components/Preferences/CollectionDefinitions.tsx:187
+#: components/Preferences/CollectionDefinitions.tsx:213
 #. Used in: Components > Preferences > Collection Definitions
 msgid "primaryCatalogNumberInheritance"
 msgstr "{collectionObjectTableName: chaîne}"
 
-#: components/Preferences/CollectionDefinitions.tsx:227
+#: components/Preferences/CollectionDefinitions.tsx:253
 #. Used in: Components > Preferences > Collection Definitions
 msgid "parentCatalogNumberInheritance"
 msgstr "{componentTableName: chaîne}"
 
-#: components/Preferences/CollectionDefinitions.tsx:263
+#: components/Preferences/CollectionDefinitions.tsx:289
 #. Used in: Components > Preferences > Collection Definitions
 msgid "uniqueCatalogNumberAcrossComponentAndCoTitle"
 msgstr "{componentTableName: chaîne} et {collectionObjectTableName: chaîne}"

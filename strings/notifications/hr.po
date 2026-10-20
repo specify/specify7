@@ -47,7 +47,7 @@ msgstr "(Poređano od najnovijeg do najstarijeg.)"
 msgid "exception"
 msgstr "Pogreška"
 
-#: components/AppResources/EditorComponents.tsx:159
+#: components/AppResources/EditorComponents.tsx:161
 #: components/Attachments/Cell.tsx:87
 #: components/Attachments/Viewer.tsx:264
 #: components/LocalityUpdate/Status.tsx:400

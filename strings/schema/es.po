@@ -99,7 +99,7 @@ msgstr "Mesa"
 
 #: components/Attachments/index.tsx:202
 #: components/FormEditor/Table.tsx:49
-#: components/Router/Routes.tsx:439
+#: components/Router/Routes.tsx:447
 #: components/SchemaConfig/Tables.tsx:206
 #: components/SchemaConfig/Tables.tsx:219
 #: components/SchemaConfig/Tables.tsx:222
@@ -121,9 +121,9 @@ msgstr "Nombre de la tabla"
 msgid "withoutTable"
 msgstr "Sin mesa"
 
-#: components/Header/userToolDefinitions.ts:69
+#: components/Header/userToolDefinitions.ts:75
 #: components/Preferences/UserDefinitions.tsx:828
-#: components/Router/Routes.tsx:409
+#: components/Router/Routes.tsx:417
 #: components/SchemaConfig/Components.tsx:36
 #: components/SchemaConfig/Languages.tsx:36
 #: components/SchemaConfig/Layout.tsx:106
@@ -375,7 +375,7 @@ msgstr "Enlace web"
 msgid "userDefined"
 msgstr "Definido por el usuario"
 
-#: components/Router/Routes.tsx:424
+#: components/Router/Routes.tsx:432
 #: components/SchemaConfig/Languages.tsx:29
 #: components/SchemaConfig/Languages.tsx:78
 #. Used in: Components > Router > Routes ⬤ Components > Schema Config > Languages
@@ -450,7 +450,7 @@ msgstr "Recuento de campos"
 msgid "relationshipCount"
 msgstr "Recuento de relaciones"
 
-#: components/Header/userToolDefinitions.ts:171
+#: components/Header/userToolDefinitions.ts:177
 #: components/Router/Routes.tsx:45
 #: components/Router/Routes.tsx:49
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes

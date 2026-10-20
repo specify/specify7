@@ -37,7 +37,7 @@ msgstr "Запрос"
 msgid "queries"
 msgstr "Запросы"
 
-#: components/Preferences/CollectionDefinitions.tsx:291
+#: components/Preferences/CollectionDefinitions.tsx:317
 #: components/Preferences/UserDefinitions.tsx:1794
 #: components/SearchDialog/index.tsx:243
 #: components/SearchDialog/index.tsx:387
@@ -700,19 +700,19 @@ msgstr "Строгий"
 msgid "nonStrict"
 msgstr "Нестрогий"
 
-#: components/Preferences/CollectionDefinitions.tsx:187
+#: components/Preferences/CollectionDefinitions.tsx:213
 #. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "primaryCatalogNumberInheritance"
 msgstr "{collectionObjectTableName: string}"
 
-#: components/Preferences/CollectionDefinitions.tsx:227
+#: components/Preferences/CollectionDefinitions.tsx:253
 #. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "parentCatalogNumberInheritance"
 msgstr "{componentTableName: string}"
 
-#: components/Preferences/CollectionDefinitions.tsx:263
+#: components/Preferences/CollectionDefinitions.tsx:289
 #. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "uniqueCatalogNumberAcrossComponentAndCoTitle"

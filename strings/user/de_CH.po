@@ -74,7 +74,7 @@ msgstr "Wiederhole das neue Kennwort"
 
 #: components/Core/Main.tsx:97
 #: components/Header/userToolDefinitions.ts:29
-#: components/Router/Routes.tsx:483
+#: components/Router/Routes.tsx:491
 #. Used in: Components > Core > Main ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes
 msgid "logOut"
 msgstr "Ausloggen"
@@ -131,7 +131,7 @@ msgstr ""
 "unten eingeben, um den Benutzer für zukünftige Anmeldungen Ihrem "
 "{providerName:string}-Konto zuzuordnen."
 
-#: components/Header/userToolDefinitions.ts:111
+#: components/Header/userToolDefinitions.ts:117
 #: components/Router/OverlayRoutes.tsx:192
 #: components/Toolbar/MasterKey.tsx:43
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Master Key
@@ -348,7 +348,7 @@ msgstr "Sammlungen"
 msgid "configureCollectionAccess"
 msgstr "Benutzerzugriff auswählen"
 
-#: components/Header/userToolDefinitions.ts:86
+#: components/Header/userToolDefinitions.ts:92
 #: components/Router/Routes.tsx:73
 #: components/Router/Routes.tsx:179
 #: components/Toolbar/Security.tsx:102
@@ -738,7 +738,7 @@ msgstr "Benutzer hinzufügen"
 msgid "systemConfigurationTool"
 msgstr "Systemkonfigurationstool"
 
-#: components/Header/userToolDefinitions.ts:91
+#: components/Header/userToolDefinitions.ts:97
 #. Used in: Components > Header > User Tool Definitions
 #, fuzzy
 msgid "systemConfig"

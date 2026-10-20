@@ -14,7 +14,7 @@ msgstr ""
 
 #: components/AppResources/Filters.tsx:87
 #: components/AppResources/Filters.tsx:134
-#: components/Header/userToolDefinitions.ts:76
+#: components/Header/userToolDefinitions.ts:82
 #: components/Preferences/UserDefinitions.tsx:2230
 #: components/Router/Routes.tsx:259
 #: components/Security/registry.ts:218
@@ -45,8 +45,8 @@ msgstr "Formulardefinition"
 msgid "newViewDefinition"
 msgstr "Neue Ansichtsdefinition"
 
-#: components/AppResources/EditorComponents.tsx:114
-#: components/AppResources/EditorComponents.tsx:119
+#: components/AppResources/EditorComponents.tsx:116
+#: components/AppResources/EditorComponents.tsx:121
 #. Used in: Components > App Resources > Editor Components
 msgid "loadFile"
 msgstr "Datei Laden"
@@ -96,7 +96,7 @@ msgstr "Ressource hinzufügen"
 msgid "appResource"
 msgstr "App Ressource"
 
-#: components/AppResources/types.tsx:138
+#: components/AppResources/types.tsx:149
 #. Used in: Components > App Resources > Types
 msgid "rssExportFeed"
 msgstr "RSS-Export-Feed"
@@ -107,23 +107,23 @@ msgstr "RSS-Export-Feed"
 msgid "exports"
 msgstr "Exporte"
 
-#: components/AppResources/types.tsx:145
+#: components/AppResources/types.tsx:156
 #. Used in: Components > App Resources > Types
 msgid "expressSearchConfig"
 msgstr "Express Suche Konfigurieren"
 
-#: components/AppResources/types.tsx:153
+#: components/AppResources/types.tsx:164
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "typeSearches"
 msgstr "Suchtypen"
 
-#: components/AppResources/types.tsx:161
+#: components/AppResources/types.tsx:172
 #. Used in: Components > App Resources > Types
 msgid "webLinks"
 msgstr "Weblinks"
 
-#: components/AppResources/types.tsx:169
+#: components/AppResources/types.tsx:180
 #: components/FieldFormatters/Element.tsx:16
 #: components/SchemaConfig/Format.tsx:108
 #. Used in: Components > App Resources > Types ⬤ Components > Field Formatters > Element ⬤ Components > Schema Config > Format
@@ -141,7 +141,7 @@ msgstr ""
 "die automatische Nummerierung und die Zusammensetzung der verschiedenen "
 "Bestandteile, die das Feld definieren."
 
-#: components/AppResources/types.tsx:177
+#: components/AppResources/types.tsx:188
 #. Used in: Components > App Resources > Types
 msgid "dataObjectFormatters"
 msgstr "Datensatz-Formatierer"
@@ -223,32 +223,32 @@ msgstr "Bitte legen Sie einen der Formatierer als Standard fest."
 msgid "duplicateFormatters"
 msgstr "Die Namen der Datensatzformatierer müssen eindeutig sein."
 
-#: components/AppResources/types.tsx:185
+#: components/AppResources/types.tsx:196
 #. Used in: Components > App Resources > Types
 msgid "dataEntryTables"
 msgstr "Dateneingabetabellen"
 
-#: components/AppResources/types.tsx:193
+#: components/AppResources/types.tsx:204
 #. Used in: Components > App Resources > Types
 msgid "interactionsTables"
 msgstr "Interaktionstabellen"
 
-#: components/AppResources/types.tsx:200
+#: components/AppResources/types.tsx:211
 #. Used in: Components > App Resources > Types
 msgid "otherXmlResource"
 msgstr "Andere XML-Ressource"
 
-#: components/AppResources/types.tsx:207
+#: components/AppResources/types.tsx:218
 #. Used in: Components > App Resources > Types
 msgid "otherJsonResource"
 msgstr "Andere JSON-Ressource"
 
-#: components/AppResources/types.tsx:214
+#: components/AppResources/types.tsx:225
 #. Used in: Components > App Resources > Types
 msgid "otherPropertiesResource"
 msgstr "Andere Eigenschaften Ressource"
 
-#: components/AppResources/types.tsx:221
+#: components/AppResources/types.tsx:232
 #. Used in: Components > App Resources > Types
 msgid "otherAppResource"
 msgstr "Andere Ressource"
@@ -265,7 +265,7 @@ msgstr "Filter"
 msgid "custom"
 msgstr "Individuell"
 
-#: components/AppResources/types.tsx:130
+#: components/AppResources/types.tsx:141
 #. Used in: Components > App Resources > Types
 msgid "leafletLayers"
 msgstr "Leaflet-Layer"
@@ -299,9 +299,13 @@ msgid "selectResourceType"
 msgstr "Ressourcentyp auswählen"
 
 #: components/AppResources/tree.ts:122
+#: components/AppResources/types.tsx:105
 #: components/AppResources/__tests__/disambiguateGlobalPrefs.test.ts:32
 #: components/AppResources/__tests__/getGlobalAllResources.test.ts:38
-#. Used in: Components > App Resources > Tree ⬤ App Resources > __tests__ > Disambiguate Global Prefs ⬤ App Resources > __tests__ > Get Global All Resources
+#: components/Header/userToolDefinitions.ts:69
+#: components/Preferences/index.tsx:110
+#: components/Router/Routes.tsx:409
+#. Used in: Components > App Resources > Tree ⬤ Components > App Resources > Types ⬤ App Resources > __tests__ > Disambiguate Global Prefs ⬤ App Resources > __tests__ > Get Global All Resources ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > Index ⬤ Components > Router > Routes
 msgid "globalPreferences"
 msgstr "Globale Einstellungen"
 

@@ -45,7 +45,7 @@ msgstr "(Ordenado do mais recente para o mais antigo.)"
 msgid "exception"
 msgstr "Erro"
 
-#: components/AppResources/EditorComponents.tsx:159
+#: components/AppResources/EditorComponents.tsx:161
 #: components/Attachments/Cell.tsx:87
 #: components/Attachments/Viewer.tsx:264
 #: components/LocalityUpdate/Status.tsx:400

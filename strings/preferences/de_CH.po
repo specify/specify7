@@ -12,7 +12,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 2026.10.dev0\n"
 
-#: components/Preferences/index.tsx:103
+#: components/Preferences/index.tsx:111
 #: components/Router/Routes.tsx:393
 #. Used in: Components > Preferences > Index ⬤ Components > Router > Routes
 msgid "preferences"
@@ -29,12 +29,13 @@ msgstr "Anpassung"
 msgid "userPreferences"
 msgstr "Benutzereinstellungen"
 
-#: components/AppResources/types.tsx:104
+#: components/AppResources/types.tsx:115
 #. Used in: Components > App Resources > Types
 msgid "defaultUserPreferences"
 msgstr "Standardbenutzereinstellungen"
 
 #: components/Preferences/CollectionDefinitions.tsx:31
+#: components/Preferences/GlobalDefinitions.tsx:56
 #: components/Preferences/UserDefinitions.tsx:172
 #: components/Preferences/UserDefinitions.tsx:612
 #: components/Preferences/UserDefinitions.tsx:699
@@ -44,7 +45,7 @@ msgstr "Standardbenutzereinstellungen"
 #: components/Preferences/UserDefinitions.tsx:1954
 #: components/Preferences/UserDefinitions.tsx:2058
 #: components/Preferences/UserDefinitions.tsx:2373
-#. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
+#. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > Global Definitions ⬤ Components > Preferences > User Definitions
 msgid "general"
 msgstr "Allgemein"
 
@@ -241,8 +242,8 @@ msgstr "Feldhintergrund erforderlich (Dunkles Thema)"
 msgid "dialogs"
 msgstr "Dialoge"
 
-#: components/Preferences/CollectionDefinitions.tsx:124
-#: components/Preferences/CollectionDefinitions.tsx:294
+#: components/Preferences/CollectionDefinitions.tsx:150
+#: components/Preferences/CollectionDefinitions.tsx:320
 #: components/Preferences/UserDefinitions.tsx:327
 #: components/Preferences/UserDefinitions.tsx:651
 #: components/Preferences/UserDefinitions.tsx:1078
@@ -564,8 +565,8 @@ msgstr "Eine URL zu einer Seite, die auf der Startseite eingebettet werden soll:
 msgid "behavior"
 msgstr "Verhalten"
 
-#: components/Preferences/CollectionDefinitions.tsx:192
-#: components/Preferences/CollectionDefinitions.tsx:232
+#: components/Preferences/CollectionDefinitions.tsx:218
+#: components/Preferences/CollectionDefinitions.tsx:258
 #. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "inheritance"
@@ -601,7 +602,7 @@ msgstr ""
 "Beschädigung der Datenbank führen. Bitte stellen Sie sicher, dass Sie "
 "wissen, was Sie tun."
 
-#: components/Preferences/index.tsx:306
+#: components/Preferences/index.tsx:314
 #. Used in: Components > Preferences > Index
 #, fuzzy
 msgid "adminsOnlyPreference"
@@ -1109,7 +1110,7 @@ msgstr ""
 msgid "detectAutomaticallyDescription"
 msgstr "Automatische Erkennung anhand des Katalognummernformats."
 
-#: components/Preferences/CollectionDefinitions.tsx:269
+#: components/Preferences/CollectionDefinitions.tsx:295
 #. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "uniqueness"
@@ -1199,14 +1200,74 @@ msgstr ""
 "{agentVariantTable:string}-Datensätze auf Basis der Varianten von Vor- und "
 "Nachnamen erstellt."
 
-#: components/AppResources/types.tsx:121
+#: components/AppResources/types.tsx:132
 #: components/Header/userToolDefinitions.ts:62
-#: components/Preferences/index.tsx:102
+#: components/Preferences/index.tsx:108
 #: components/Router/Routes.tsx:401
 #. Used in: Components > App Resources > Types ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > Index ⬤ Components > Router > Routes
 #, fuzzy
 msgid "collectionPreferences"
 msgstr "Sammlungspräferenzen"
+
+#: components/Preferences/GlobalDefinitions.tsx:59
+#. Used in: Components > Preferences > Global Definitions
+msgid "globalAuditing"
+msgstr ""
+
+#: components/Preferences/GlobalDefinitions.tsx:62
+#. Used in: Components > Preferences > Global Definitions
+msgid "enableAuditLog"
+msgstr ""
+
+#: components/Preferences/GlobalDefinitions.tsx:63
+#. Used in: Components > Preferences > Global Definitions
+msgid "enableAuditLogDescription"
+msgstr ""
+
+#: components/Preferences/GlobalDefinitions.tsx:70
+#. Used in: Components > Preferences > Global Definitions
+msgid "logFieldLevelChanges"
+msgstr ""
+
+#: components/Preferences/GlobalDefinitions.tsx:71
+#. Used in: Components > Preferences > Global Definitions
+msgid "logFieldLevelChangesDescription"
+msgstr ""
+
+#: components/Preferences/GlobalDefinitions.tsx:80
+#. Used in: Components > Preferences > Global Definitions
+msgid "formatting"
+msgstr ""
+
+#: components/Preferences/GlobalDefinitions.tsx:83
+#. Used in: Components > Preferences > Global Definitions
+msgid "fullDateFormat"
+msgstr ""
+
+#: components/Preferences/GlobalDefinitions.tsx:84
+#. Used in: Components > Preferences > Global Definitions
+msgid "fullDateFormatDescription"
+msgstr ""
+
+#: components/Preferences/GlobalDefinitions.tsx:94
+#. Used in: Components > Preferences > Global Definitions
+msgid "monthYearDateFormat"
+msgstr ""
+
+#: components/Preferences/GlobalDefinitions.tsx:95
+#. Used in: Components > Preferences > Global Definitions
+msgid "monthYearDateFormatDescription"
+msgstr ""
+
+#: components/Preferences/GlobalDefinitions.tsx:110
+#. Used in: Components > Preferences > Global Definitions
+msgid "attachmentThumbnailSize"
+msgstr ""
+
+#: components/Preferences/GlobalDefinitions.tsx:111
+#. Used in: Components > Preferences > Global Definitions
+msgid "attachmentThumbnailSizeDescription"
+msgstr ""
 
 #: components/Preferences/UserDefinitions.tsx:575
 #. Used in: Components > Preferences > User Definitions
@@ -1355,7 +1416,7 @@ msgstr "Farbe der Erfolgsschaltfläche"
 msgid "openAsReadOnly"
 msgstr "Alle Datensätze im Nur-Lese-Modus öffnen"
 
-#: components/Preferences/CollectionDefinitions.tsx:297
+#: components/Preferences/CollectionDefinitions.tsx:323
 #: components/Preferences/UserDefinitions.tsx:1906
 #. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
 #, fuzzy
@@ -1414,7 +1475,7 @@ msgstr "Miniaturansicht"
 msgid "addSearchBarHomePage"
 msgstr "Suchleiste auf der Startseite hinzufügen"
 
-#: components/Preferences/CollectionDefinitions.tsx:206
+#: components/Preferences/CollectionDefinitions.tsx:232
 #. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "inheritanceCatNumberPrefDescription"
@@ -1424,7 +1485,7 @@ msgstr ""
 "{collectionObjectTableName: string} in einer "
 "{collectionObjectGroupTableName: string}."
 
-#: components/Preferences/CollectionDefinitions.tsx:196
+#: components/Preferences/CollectionDefinitions.tsx:222
 #. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "inheritanceCatNumberPref"
@@ -1432,7 +1493,7 @@ msgstr ""
 "Aktivieren Sie die Vererbung von {catalogNumberFieldName: string} für die "
 "Geschwistertabellen {collectionObjectGroupTableName: string}."
 
-#: components/Preferences/CollectionDefinitions.tsx:236
+#: components/Preferences/CollectionDefinitions.tsx:262
 #. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "inheritanceCatNumberParentCOPref"
@@ -1440,7 +1501,7 @@ msgstr ""
 "Aktivieren Sie die Vererbung von {catalogNumberFieldName: string} für "
 "{componentTableName: string}-Datensätze."
 
-#: components/Preferences/CollectionDefinitions.tsx:273
+#: components/Preferences/CollectionDefinitions.tsx:299
 #. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "uniqueCatNumberAcrossCompAndCo"
@@ -1464,7 +1525,7 @@ msgstr ""
 "Tabelle“ nur Elemente angezeigt, die in der aktuellen Sammlung verwendet "
 "werden."
 
-#: components/Preferences/CollectionDefinitions.tsx:244
+#: components/Preferences/CollectionDefinitions.tsx:270
 #. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "inheritanceCatNumberParentCOPrefDescription"

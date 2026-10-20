@@ -14,7 +14,7 @@ msgstr ""
 
 #: components/AppResources/Filters.tsx:87
 #: components/AppResources/Filters.tsx:134
-#: components/Header/userToolDefinitions.ts:76
+#: components/Header/userToolDefinitions.ts:82
 #: components/Preferences/UserDefinitions.tsx:2230
 #: components/Router/Routes.tsx:259
 #: components/Security/registry.ts:218
@@ -43,8 +43,8 @@ msgstr "Визначення форми"
 msgid "newViewDefinition"
 msgstr "Нове визначення подання"
 
-#: components/AppResources/EditorComponents.tsx:114
-#: components/AppResources/EditorComponents.tsx:119
+#: components/AppResources/EditorComponents.tsx:116
+#: components/AppResources/EditorComponents.tsx:121
 #. Used in: Components > App Resources > Editor Components
 msgid "loadFile"
 msgstr "Завантажити файл"
@@ -94,7 +94,7 @@ msgstr "Додати ресурс"
 msgid "appResource"
 msgstr "Підкатегорії"
 
-#: components/AppResources/types.tsx:138
+#: components/AppResources/types.tsx:149
 #. Used in: Components > App Resources > Types
 msgid "rssExportFeed"
 msgstr "Канал експорту RSS"
@@ -104,22 +104,22 @@ msgstr "Канал експорту RSS"
 msgid "exports"
 msgstr "Експорт"
 
-#: components/AppResources/types.tsx:145
+#: components/AppResources/types.tsx:156
 #. Used in: Components > App Resources > Types
 msgid "expressSearchConfig"
 msgstr "Конфігурація експрес-пошуку"
 
-#: components/AppResources/types.tsx:153
+#: components/AppResources/types.tsx:164
 #. Used in: Components > App Resources > Types
 msgid "typeSearches"
 msgstr "Пошук типів"
 
-#: components/AppResources/types.tsx:161
+#: components/AppResources/types.tsx:172
 #. Used in: Components > App Resources > Types
 msgid "webLinks"
 msgstr "Веб-посилання"
 
-#: components/AppResources/types.tsx:169
+#: components/AppResources/types.tsx:180
 #: components/FieldFormatters/Element.tsx:16
 #: components/SchemaConfig/Format.tsx:108
 #. Used in: Components > App Resources > Types ⬤ Components > Field Formatters > Element ⬤ Components > Schema Config > Format
@@ -134,7 +134,7 @@ msgstr ""
 "результатах запиту, експорті та формах. Він керує автонумерацією та "
 "композицією різних частин, що визначають поле."
 
-#: components/AppResources/types.tsx:177
+#: components/AppResources/types.tsx:188
 #. Used in: Components > App Resources > Types
 msgid "dataObjectFormatters"
 msgstr "Форматувальники записів"
@@ -204,32 +204,32 @@ msgstr "Будь ласка, призначте один із форматува
 msgid "duplicateFormatters"
 msgstr "Імена форматування записів мають бути унікальними"
 
-#: components/AppResources/types.tsx:185
+#: components/AppResources/types.tsx:196
 #. Used in: Components > App Resources > Types
 msgid "dataEntryTables"
 msgstr "Таблиці введення даних"
 
-#: components/AppResources/types.tsx:193
+#: components/AppResources/types.tsx:204
 #. Used in: Components > App Resources > Types
 msgid "interactionsTables"
 msgstr "Таблиці взаємодій"
 
-#: components/AppResources/types.tsx:200
+#: components/AppResources/types.tsx:211
 #. Used in: Components > App Resources > Types
 msgid "otherXmlResource"
 msgstr "Інший XML-ресурс"
 
-#: components/AppResources/types.tsx:207
+#: components/AppResources/types.tsx:218
 #. Used in: Components > App Resources > Types
 msgid "otherJsonResource"
 msgstr "Інший JSON-ресурс"
 
-#: components/AppResources/types.tsx:214
+#: components/AppResources/types.tsx:225
 #. Used in: Components > App Resources > Types
 msgid "otherPropertiesResource"
 msgstr "Ресурс інших властивостей"
 
-#: components/AppResources/types.tsx:221
+#: components/AppResources/types.tsx:232
 #. Used in: Components > App Resources > Types
 msgid "otherAppResource"
 msgstr "Інший ресурс"
@@ -246,7 +246,7 @@ msgstr "Фільтри"
 msgid "custom"
 msgstr "Спеціальні"
 
-#: components/AppResources/types.tsx:130
+#: components/AppResources/types.tsx:141
 #. Used in: Components > App Resources > Types
 msgid "leafletLayers"
 msgstr "Шари листівок"
@@ -278,9 +278,13 @@ msgid "selectResourceType"
 msgstr "Виберіть тип ресурсу"
 
 #: components/AppResources/tree.ts:122
+#: components/AppResources/types.tsx:105
 #: components/AppResources/__tests__/disambiguateGlobalPrefs.test.ts:32
 #: components/AppResources/__tests__/getGlobalAllResources.test.ts:38
-#. Used in: Components > App Resources > Tree ⬤ App Resources > __tests__ > Disambiguate Global Prefs ⬤ App Resources > __tests__ > Get Global All Resources
+#: components/Header/userToolDefinitions.ts:69
+#: components/Preferences/index.tsx:110
+#: components/Router/Routes.tsx:409
+#. Used in: Components > App Resources > Tree ⬤ Components > App Resources > Types ⬤ App Resources > __tests__ > Disambiguate Global Prefs ⬤ App Resources > __tests__ > Get Global All Resources ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > Index ⬤ Components > Router > Routes
 msgid "globalPreferences"
 msgstr "Глобальні налаштування"
 

@@ -82,7 +82,7 @@ msgstr "Repita a nova senha"
 
 #: components/Core/Main.tsx:97
 #: components/Header/userToolDefinitions.ts:29
-#: components/Router/Routes.tsx:483
+#: components/Router/Routes.tsx:491
 #. Used in: Components > Core > Main ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes
 #, fuzzy
 msgid "logOut"
@@ -138,7 +138,7 @@ msgstr ""
 "\"Especifique\", poderá inseri-los abaixo para associar esse usuário à sua "
 "conta {providerName:string} para logins futuros."
 
-#: components/Header/userToolDefinitions.ts:111
+#: components/Header/userToolDefinitions.ts:117
 #: components/Router/OverlayRoutes.tsx:192
 #: components/Toolbar/MasterKey.tsx:43
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Master Key
@@ -357,7 +357,7 @@ msgstr "Coleções"
 msgid "configureCollectionAccess"
 msgstr "Selecione o acesso à coleção de usuários"
 
-#: components/Header/userToolDefinitions.ts:86
+#: components/Header/userToolDefinitions.ts:92
 #: components/Router/Routes.tsx:73
 #: components/Router/Routes.tsx:179
 #: components/Toolbar/Security.tsx:102
@@ -747,7 +747,7 @@ msgstr "Adicionar usuário"
 msgid "systemConfigurationTool"
 msgstr "Ferramenta de Configuração do Sistema"
 
-#: components/Header/userToolDefinitions.ts:91
+#: components/Header/userToolDefinitions.ts:97
 #. Used in: Components > Header > User Tool Definitions
 #, fuzzy
 msgid "systemConfig"

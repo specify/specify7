@@ -531,17 +531,17 @@ msgstr "Source"
 msgid "initializeEmptyTree"
 msgstr "Initialize an empty tree"
 
-#: components/Preferences/CollectionDefinitions.tsx:62
+#: components/Preferences/CollectionDefinitions.tsx:88
 #. Used in: Components > Preferences > Collection Definitions
 msgid "treeManagement"
 msgstr "Tree Management"
 
-#: components/Preferences/CollectionDefinitions.tsx:65
+#: components/Preferences/CollectionDefinitions.tsx:91
 #. Used in: Components > Preferences > Collection Definitions
 msgid "synonymizedNodes"
 msgstr "Expand Synonym Behavior"
 
-#: components/Preferences/CollectionDefinitions.tsx:66
+#: components/Preferences/CollectionDefinitions.tsx:92
 #. Used in: Components > Preferences > Collection Definitions
 msgid "synonymizedNodesDescription"
 msgstr ""

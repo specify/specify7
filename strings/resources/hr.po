@@ -15,7 +15,7 @@ msgstr ""
 
 #: components/AppResources/Filters.tsx:87
 #: components/AppResources/Filters.tsx:134
-#: components/Header/userToolDefinitions.ts:76
+#: components/Header/userToolDefinitions.ts:82
 #: components/Preferences/UserDefinitions.tsx:2230
 #: components/Router/Routes.tsx:259
 #: components/Security/registry.ts:218
@@ -48,8 +48,8 @@ msgstr "Definicija obrasca"
 msgid "newViewDefinition"
 msgstr "Nova definicija prikaza"
 
-#: components/AppResources/EditorComponents.tsx:114
-#: components/AppResources/EditorComponents.tsx:119
+#: components/AppResources/EditorComponents.tsx:116
+#: components/AppResources/EditorComponents.tsx:121
 #. Used in: Components > App Resources > Editor Components
 #, fuzzy
 msgid "loadFile"
@@ -108,7 +108,7 @@ msgstr "Dodaj resurs"
 msgid "appResource"
 msgstr "Resurs aplikacije"
 
-#: components/AppResources/types.tsx:138
+#: components/AppResources/types.tsx:149
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "rssExportFeed"
@@ -120,25 +120,25 @@ msgstr "Izvoz RSS feeda"
 msgid "exports"
 msgstr "Izvoz"
 
-#: components/AppResources/types.tsx:145
+#: components/AppResources/types.tsx:156
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "expressSearchConfig"
 msgstr "Konfiguracija brzog pretraživanja"
 
-#: components/AppResources/types.tsx:153
+#: components/AppResources/types.tsx:164
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "typeSearches"
 msgstr "Pretraživanja tipova"
 
-#: components/AppResources/types.tsx:161
+#: components/AppResources/types.tsx:172
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "webLinks"
 msgstr "Web poveznice"
 
-#: components/AppResources/types.tsx:169
+#: components/AppResources/types.tsx:180
 #: components/FieldFormatters/Element.tsx:16
 #: components/SchemaConfig/Format.tsx:108
 #. Used in: Components > App Resources > Types ⬤ Components > Field Formatters > Element ⬤ Components > Schema Config > Format
@@ -155,7 +155,7 @@ msgstr ""
 "prikazuju u rezultatima upita, izvozima i obrascima. Upravlja automatskim "
 "numeriranjem i sastavom različitih dijelova koji definiraju polje."
 
-#: components/AppResources/types.tsx:177
+#: components/AppResources/types.tsx:188
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "dataObjectFormatters"
@@ -237,37 +237,37 @@ msgstr "Molimo označite jedan od formatera kao zadani"
 msgid "duplicateFormatters"
 msgstr "Imena formatera zapisa moraju biti jedinstvena"
 
-#: components/AppResources/types.tsx:185
+#: components/AppResources/types.tsx:196
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "dataEntryTables"
 msgstr "Tablice za unos podataka"
 
-#: components/AppResources/types.tsx:193
+#: components/AppResources/types.tsx:204
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "interactionsTables"
 msgstr "Tablice interakcija"
 
-#: components/AppResources/types.tsx:200
+#: components/AppResources/types.tsx:211
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "otherXmlResource"
 msgstr "Drugi XML resurs"
 
-#: components/AppResources/types.tsx:207
+#: components/AppResources/types.tsx:218
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "otherJsonResource"
 msgstr "Drugi JSON resurs"
 
-#: components/AppResources/types.tsx:214
+#: components/AppResources/types.tsx:225
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "otherPropertiesResource"
 msgstr "Drugi resursi za nekretnine"
 
-#: components/AppResources/types.tsx:221
+#: components/AppResources/types.tsx:232
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "otherAppResource"
@@ -287,7 +287,7 @@ msgstr "Filtri"
 msgid "custom"
 msgstr "Običaj"
 
-#: components/AppResources/types.tsx:130
+#: components/AppResources/types.tsx:141
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "leafletLayers"
@@ -325,9 +325,13 @@ msgid "selectResourceType"
 msgstr "Odaberite vrstu resursa"
 
 #: components/AppResources/tree.ts:122
+#: components/AppResources/types.tsx:105
 #: components/AppResources/__tests__/disambiguateGlobalPrefs.test.ts:32
 #: components/AppResources/__tests__/getGlobalAllResources.test.ts:38
-#. Used in: Components > App Resources > Tree ⬤ App Resources > __tests__ > Disambiguate Global Prefs ⬤ App Resources > __tests__ > Get Global All Resources
+#: components/Header/userToolDefinitions.ts:69
+#: components/Preferences/index.tsx:110
+#: components/Router/Routes.tsx:409
+#. Used in: Components > App Resources > Tree ⬤ Components > App Resources > Types ⬤ App Resources > __tests__ > Disambiguate Global Prefs ⬤ App Resources > __tests__ > Get Global All Resources ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > Index ⬤ Components > Router > Routes
 #, fuzzy
 msgid "globalPreferences"
 msgstr "Globalne postavke"

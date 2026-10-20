@@ -35,7 +35,7 @@ msgstr "{tableLabel:string} Записи"
 msgid "configureDataViews"
 msgstr "Настройка таблиц {dataViews:string}"
 
-#: components/AppResources/types.tsx:111
+#: components/AppResources/types.tsx:122
 #. 🟥The name of the Data View query app resource type. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "dataViewQueries"

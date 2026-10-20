@@ -34,7 +34,7 @@ msgstr "Utvidet søk"
 msgid "queries"
 msgstr "Utvidede søk"
 
-#: components/Preferences/CollectionDefinitions.tsx:291
+#: components/Preferences/CollectionDefinitions.tsx:317
 #: components/Preferences/UserDefinitions.tsx:1794
 #: components/SearchDialog/index.tsx:243
 #: components/SearchDialog/index.tsx:387
@@ -590,17 +590,17 @@ msgstr "Streng"
 msgid "nonStrict"
 msgstr "Ikke streng"
 
-#: components/Preferences/CollectionDefinitions.tsx:187
+#: components/Preferences/CollectionDefinitions.tsx:213
 #. Used in: Components > Preferences > Collection Definitions
 msgid "primaryCatalogNumberInheritance"
 msgstr "{samlingObjektTabellNavn: streng}"
 
-#: components/Preferences/CollectionDefinitions.tsx:227
+#: components/Preferences/CollectionDefinitions.tsx:253
 #. Used in: Components > Preferences > Collection Definitions
 msgid "parentCatalogNumberInheritance"
 msgstr "{komponentTabellnavn: streng}"
 
-#: components/Preferences/CollectionDefinitions.tsx:263
+#: components/Preferences/CollectionDefinitions.tsx:289
 #. Used in: Components > Preferences > Collection Definitions
 msgid "uniqueCatalogNumberAcrossComponentAndCoTitle"
 msgstr "{komponenttabellnavn: streng} og {samlingObjekttabellnavn: streng}"

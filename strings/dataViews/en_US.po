@@ -21,7 +21,7 @@ msgstr "{tableLabel:string} Records"
 msgid "configureDataViews"
 msgstr "Configure {dataViews:string} tables"
 
-#: components/AppResources/types.tsx:111
+#: components/AppResources/types.tsx:122
 #. 🟥The name of the Data View query app resource type. Used in: Components > App Resources > Types
 msgid "dataViewQueries"
 msgstr "Data View Queries"

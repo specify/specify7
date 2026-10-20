@@ -12,7 +12,7 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 2026.10.dev0\n"
 
-#: components/Preferences/CollectionDefinitions.tsx:162
+#: components/Preferences/CollectionDefinitions.tsx:188
 #: components/SpecifyNetwork/index.tsx:81
 #: components/SpecifyNetwork/index.tsx:89
 #: components/SpecifyNetwork/index.tsx:98
@@ -142,13 +142,13 @@ msgstr "Начало года"
 msgid "endYear"
 msgstr "Конец года"
 
-#: components/Preferences/CollectionDefinitions.tsx:165
+#: components/Preferences/CollectionDefinitions.tsx:191
 #. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "publishingOrganizationKey"
 msgstr "Ключ к издательской организации GBIF"
 
-#: components/Preferences/CollectionDefinitions.tsx:167
+#: components/Preferences/CollectionDefinitions.tsx:193
 #. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "publishingOrganizationKeyDescription"
@@ -156,13 +156,13 @@ msgstr ""
 "Ключ публикации GBIF \"publishingOrgKey\" (UUID) для этой коллекции, "
 "используемый для интеграции с Specify Network."
 
-#: components/Preferences/CollectionDefinitions.tsx:174
+#: components/Preferences/CollectionDefinitions.tsx:200
 #. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "collectionKey"
 msgstr "Ключ набора данных GBIF"
 
-#: components/Preferences/CollectionDefinitions.tsx:175
+#: components/Preferences/CollectionDefinitions.tsx:201
 #. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "collectionKeyDescription"

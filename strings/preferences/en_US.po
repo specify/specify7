@@ -11,7 +11,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 4.16-dev\n"
 
-#: components/Preferences/index.tsx:103
+#: components/Preferences/index.tsx:111
 #: components/Router/Routes.tsx:393
 #. Used in: Components > Preferences > Index ⬤ Components > Router > Routes
 msgid "preferences"
@@ -28,12 +28,13 @@ msgstr "Customization"
 msgid "userPreferences"
 msgstr "User Preferences"
 
-#: components/AppResources/types.tsx:104
+#: components/AppResources/types.tsx:115
 #. Used in: Components > App Resources > Types
 msgid "defaultUserPreferences"
 msgstr "Default User Preferences"
 
 #: components/Preferences/CollectionDefinitions.tsx:31
+#: components/Preferences/GlobalDefinitions.tsx:56
 #: components/Preferences/UserDefinitions.tsx:172
 #: components/Preferences/UserDefinitions.tsx:612
 #: components/Preferences/UserDefinitions.tsx:699
@@ -43,7 +44,7 @@ msgstr "Default User Preferences"
 #: components/Preferences/UserDefinitions.tsx:1954
 #: components/Preferences/UserDefinitions.tsx:2058
 #: components/Preferences/UserDefinitions.tsx:2373
-#. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
+#. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > Global Definitions ⬤ Components > Preferences > User Definitions
 msgid "general"
 msgstr "General"
 
@@ -236,8 +237,8 @@ msgstr "Required field background (dark theme)"
 msgid "dialogs"
 msgstr "Dialogs"
 
-#: components/Preferences/CollectionDefinitions.tsx:124
-#: components/Preferences/CollectionDefinitions.tsx:294
+#: components/Preferences/CollectionDefinitions.tsx:150
+#: components/Preferences/CollectionDefinitions.tsx:320
 #: components/Preferences/UserDefinitions.tsx:327
 #: components/Preferences/UserDefinitions.tsx:651
 #: components/Preferences/UserDefinitions.tsx:1078
@@ -522,8 +523,8 @@ msgstr "A URL to a page that would be embedded on the home page:"
 msgid "behavior"
 msgstr "Behavior"
 
-#: components/Preferences/CollectionDefinitions.tsx:192
-#: components/Preferences/CollectionDefinitions.tsx:232
+#: components/Preferences/CollectionDefinitions.tsx:218
+#: components/Preferences/CollectionDefinitions.tsx:258
 #. Used in: Components > Preferences > Collection Definitions
 msgid "inheritance"
 msgstr "Inheritance"
@@ -551,7 +552,7 @@ msgstr ""
 "WARNING: enabling this may lead to data loss or database corruption. Please "
 "make sure you know what you are doing."
 
-#: components/Preferences/index.tsx:306
+#: components/Preferences/index.tsx:314
 #. Used in: Components > Preferences > Index
 msgid "adminsOnlyPreference"
 msgstr "You don't have permission to change this option"
@@ -979,7 +980,7 @@ msgstr ""
 msgid "detectAutomaticallyDescription"
 msgstr "Detect automatically based on catalog number format."
 
-#: components/Preferences/CollectionDefinitions.tsx:269
+#: components/Preferences/CollectionDefinitions.tsx:295
 #. Used in: Components > Preferences > Collection Definitions
 msgid "uniqueness"
 msgstr "Uniqueness"
@@ -1055,13 +1056,73 @@ msgstr ""
 "When merging agents, automatically create {agentVariantTable:string} "
 "records based on the variations of first name/last name."
 
-#: components/AppResources/types.tsx:121
+#: components/AppResources/types.tsx:132
 #: components/Header/userToolDefinitions.ts:62
-#: components/Preferences/index.tsx:102
+#: components/Preferences/index.tsx:108
 #: components/Router/Routes.tsx:401
 #. Used in: Components > App Resources > Types ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > Index ⬤ Components > Router > Routes
 msgid "collectionPreferences"
 msgstr "Collection Preferences"
+
+#: components/Preferences/GlobalDefinitions.tsx:59
+#. Used in: Components > Preferences > Global Definitions
+msgid "globalAuditing"
+msgstr "Auditing"
+
+#: components/Preferences/GlobalDefinitions.tsx:62
+#. Used in: Components > Preferences > Global Definitions
+msgid "enableAuditLog"
+msgstr "Enable audit log"
+
+#: components/Preferences/GlobalDefinitions.tsx:63
+#. Used in: Components > Preferences > Global Definitions
+msgid "enableAuditLogDescription"
+msgstr "Record record creation, deletion, and modification events."
+
+#: components/Preferences/GlobalDefinitions.tsx:70
+#. Used in: Components > Preferences > Global Definitions
+msgid "logFieldLevelChanges"
+msgstr "Log field-level changes"
+
+#: components/Preferences/GlobalDefinitions.tsx:71
+#. Used in: Components > Preferences > Global Definitions
+msgid "logFieldLevelChangesDescription"
+msgstr "Record changes to individual field values in the audit log."
+
+#: components/Preferences/GlobalDefinitions.tsx:80
+#. Used in: Components > Preferences > Global Definitions
+msgid "formatting"
+msgstr "Date Formatting"
+
+#: components/Preferences/GlobalDefinitions.tsx:83
+#. Used in: Components > Preferences > Global Definitions
+msgid "fullDateFormat"
+msgstr "Full date format"
+
+#: components/Preferences/GlobalDefinitions.tsx:84
+#. Used in: Components > Preferences > Global Definitions
+msgid "fullDateFormatDescription"
+msgstr "Format used when displaying complete dates."
+
+#: components/Preferences/GlobalDefinitions.tsx:94
+#. Used in: Components > Preferences > Global Definitions
+msgid "monthYearDateFormat"
+msgstr "Month/year date format"
+
+#: components/Preferences/GlobalDefinitions.tsx:95
+#. Used in: Components > Preferences > Global Definitions
+msgid "monthYearDateFormatDescription"
+msgstr "Format used when displaying dates with only a month and year."
+
+#: components/Preferences/GlobalDefinitions.tsx:110
+#. Used in: Components > Preferences > Global Definitions
+msgid "attachmentThumbnailSize"
+msgstr "Attachment thumbnail size"
+
+#: components/Preferences/GlobalDefinitions.tsx:111
+#. Used in: Components > Preferences > Global Definitions
+msgid "attachmentThumbnailSizeDescription"
+msgstr "Size in pixels of generated attachment thumbnails."
 
 #: components/Preferences/UserDefinitions.tsx:575
 #. Used in: Components > Preferences > User Definitions
@@ -1187,7 +1248,7 @@ msgstr "Success button color"
 msgid "openAsReadOnly"
 msgstr "Open all records in read-only mode"
 
-#: components/Preferences/CollectionDefinitions.tsx:297
+#: components/Preferences/CollectionDefinitions.tsx:323
 #: components/Preferences/UserDefinitions.tsx:1906
 #. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
 msgid "displayBasicView"
@@ -1237,7 +1298,7 @@ msgstr "Thumbnail"
 msgid "addSearchBarHomePage"
 msgstr "Add Search Bar on home page"
 
-#: components/Preferences/CollectionDefinitions.tsx:206
+#: components/Preferences/CollectionDefinitions.tsx:232
 #. Used in: Components > Preferences > Collection Definitions
 msgid "inheritanceCatNumberPrefDescription"
 msgstr ""
@@ -1246,21 +1307,21 @@ msgstr ""
 "{collectionObjectTableName: string} in a {collectionObjectGroupTableName: "
 "string}."
 
-#: components/Preferences/CollectionDefinitions.tsx:196
+#: components/Preferences/CollectionDefinitions.tsx:222
 #. Used in: Components > Preferences > Collection Definitions
 msgid "inheritanceCatNumberPref"
 msgstr ""
 "Enable {catalogNumberFieldName: string} inheritance for "
 "{collectionObjectGroupTableName: string} siblings"
 
-#: components/Preferences/CollectionDefinitions.tsx:236
+#: components/Preferences/CollectionDefinitions.tsx:262
 #. Used in: Components > Preferences > Collection Definitions
 msgid "inheritanceCatNumberParentCOPref"
 msgstr ""
 "Enable {catalogNumberFieldName: string} inheritance for "
 "{componentTableName: string} records"
 
-#: components/Preferences/CollectionDefinitions.tsx:273
+#: components/Preferences/CollectionDefinitions.tsx:299
 #. Used in: Components > Preferences > Collection Definitions
 msgid "uniqueCatNumberAcrossCompAndCo"
 msgstr ""
@@ -1279,7 +1340,7 @@ msgstr ""
 "If enabled, picklists of type \"Entire Table\" will only show items that "
 "are in use within the current collection."
 
-#: components/Preferences/CollectionDefinitions.tsx:244
+#: components/Preferences/CollectionDefinitions.tsx:270
 #. Used in: Components > Preferences > Collection Definitions
 msgid "inheritanceCatNumberParentCOPrefDescription"
 msgstr ""

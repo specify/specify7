@@ -40,14 +40,14 @@ msgstr "Trenutni {collectionTable:string}"
 msgid "dataEntry"
 msgstr "Unos podataka"
 
-#: components/Header/userToolDefinitions.ts:124
+#: components/Header/userToolDefinitions.ts:130
 #: components/Router/OverlayRoutes.tsx:208
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 #, fuzzy
 msgid "makeDwca"
 msgstr "Izradi DwC arhivu"
 
-#: components/Header/userToolDefinitions.ts:116
+#: components/Header/userToolDefinitions.ts:122
 #: components/Router/OverlayRoutes.tsx:200
 #: components/Router/OverlayRoutes.tsx:280
 #: components/Toolbar/BackupDatabase.tsx:84
@@ -57,7 +57,7 @@ msgstr "Izradi DwC arhivu"
 msgid "backupDatabase"
 msgstr "Sigurnosna kopija baze podataka"
 
-#: components/Header/userToolDefinitions.ts:130
+#: components/Header/userToolDefinitions.ts:136
 #: components/Router/OverlayRoutes.tsx:216
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 #, fuzzy
@@ -102,7 +102,7 @@ msgstr "Izvoz DwCA-a je započeo"
 msgid "dwcaExportStartedDescription"
 msgstr "Izvoz je započeo. Primit ćete obavijest kada izvoz bude dovršen."
 
-#: components/Header/userToolDefinitions.ts:138
+#: components/Header/userToolDefinitions.ts:144
 #: components/LocalityUpdate/index.tsx:83
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Locality Update > Index
 #, fuzzy
@@ -137,7 +137,7 @@ msgstr "Izradi novu oznaku"
 msgid "createReport"
 msgstr "Izradi novo izvješće"
 
-#: components/Header/userToolDefinitions.ts:102
+#: components/Header/userToolDefinitions.ts:108
 #: components/Router/OverlayRoutes.tsx:184
 #: components/Toolbar/TreeRepair.tsx:173
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Tree Repair
@@ -261,13 +261,13 @@ msgstr ""
 "lokalizacija ili je lokalizacija netočna. Ako ste zainteresirani da nam "
 "pomognete dovršiti lokalizaciju, molimo <link>slijedite upute.</link>"
 
-#: components/Header/userToolDefinitions.ts:181
+#: components/Header/userToolDefinitions.ts:187
 #. Used in: Components > Header > User Tool Definitions
 #, fuzzy
 msgid "tableApi"
 msgstr "API za tablice"
 
-#: components/Header/userToolDefinitions.ts:186
+#: components/Header/userToolDefinitions.ts:192
 #. Used in: Components > Header > User Tool Definitions
 #, fuzzy
 msgid "operationsApi"
@@ -278,10 +278,10 @@ msgstr "API za operacije"
 #: components/AppResources/Filters.tsx:171
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:271
 #: components/Header/ExpressSearchTask.tsx:156
-#: components/Header/userToolDefinitions.ts:152
+#: components/Header/userToolDefinitions.ts:158
 #: components/Preferences/UserDefinitions.tsx:625
-#: components/Preferences/index.tsx:65
-#: components/Preferences/index.tsx:71
+#: components/Preferences/index.tsx:70
+#: components/Preferences/index.tsx:76
 #: components/SetupTool/index.tsx:285
 #: components/Toolbar/WbsDialog.tsx:227
 #: components/WbPlanView/MapperComponents.tsx:87
@@ -290,27 +290,27 @@ msgstr "API za operacije"
 msgid "documentation"
 msgstr "Dokumentacija"
 
-#: components/Header/userToolDefinitions.ts:74
+#: components/Header/userToolDefinitions.ts:80
 #. Used in: Components > Header > User Tool Definitions
 #, fuzzy
 msgid "administration"
 msgstr "Administrativni alati"
 
-#: components/Header/userToolDefinitions.ts:169
+#: components/Header/userToolDefinitions.ts:175
 #. Used in: Components > Header > User Tool Definitions
 #, fuzzy
 msgid "developers"
 msgstr "Resursi za razvojne programere"
 
-#: components/Header/userToolDefinitions.ts:159
+#: components/Header/userToolDefinitions.ts:165
 #. Used in: Components > Header > User Tool Definitions
 #, fuzzy
 msgid "forum"
 msgstr "Forum zajednice"
 
 #: components/Errors/ErrorDialog.tsx:150
-#: components/Header/userToolDefinitions.ts:176
-#: components/Router/Routes.tsx:475
+#: components/Header/userToolDefinitions.ts:182
+#: components/Router/Routes.tsx:483
 #: components/RouterCommands/CacheBuster.tsx:39
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Router Commands > Cache Buster
 #, fuzzy
@@ -323,7 +323,7 @@ msgstr "Obriši predmemoriju preglednika"
 msgid "cacheCleared"
 msgstr "Predmemorija je izbrisana. Molimo vas da ponovno učitate stranicu."
 
-#: components/Header/userToolDefinitions.ts:164
+#: components/Header/userToolDefinitions.ts:170
 #. Used in: Components > Header > User Tool Definitions
 #, fuzzy
 msgid "technicalDocumentation"

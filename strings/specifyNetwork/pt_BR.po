@@ -11,7 +11,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 2026.10.dev0\n"
 
-#: components/Preferences/CollectionDefinitions.tsx:162
+#: components/Preferences/CollectionDefinitions.tsx:188
 #: components/SpecifyNetwork/index.tsx:81
 #: components/SpecifyNetwork/index.tsx:89
 #: components/SpecifyNetwork/index.tsx:98
@@ -142,13 +142,13 @@ msgstr "Ano de início"
 msgid "endYear"
 msgstr "Fim do ano"
 
-#: components/Preferences/CollectionDefinitions.tsx:165
+#: components/Preferences/CollectionDefinitions.tsx:191
 #. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "publishingOrganizationKey"
 msgstr "Chave da Organização de Publicação do GBIF"
 
-#: components/Preferences/CollectionDefinitions.tsx:167
+#: components/Preferences/CollectionDefinitions.tsx:193
 #. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "publishingOrganizationKeyDescription"
@@ -156,13 +156,13 @@ msgstr ""
 "A chave \"publishingOrgKey\" (um UUID) do GBIF para esta coleção, usada "
 "para a integração com a rede Specify."
 
-#: components/Preferences/CollectionDefinitions.tsx:174
+#: components/Preferences/CollectionDefinitions.tsx:200
 #. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "collectionKey"
 msgstr "Chave do conjunto de dados GBIF"
 
-#: components/Preferences/CollectionDefinitions.tsx:175
+#: components/Preferences/CollectionDefinitions.tsx:201
 #. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "collectionKeyDescription"

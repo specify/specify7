@@ -719,7 +719,7 @@ msgid "formMeta"
 msgstr "Metadata for skjem"
 
 #: components/AppResources/Create.tsx:287
-#: components/AppResources/Editor.tsx:277
+#: components/AppResources/Editor.tsx:282
 #: components/Formatters/formatters.ts:81
 #: components/Forms/BaseResourceView.tsx:124
 #: components/Forms/dataObjFormatters.ts:160

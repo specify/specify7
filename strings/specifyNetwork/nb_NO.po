@@ -11,7 +11,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 2026.10.dev0\n"
 
-#: components/Preferences/CollectionDefinitions.tsx:162
+#: components/Preferences/CollectionDefinitions.tsx:188
 #: components/SpecifyNetwork/index.tsx:81
 #: components/SpecifyNetwork/index.tsx:89
 #: components/SpecifyNetwork/index.tsx:98
@@ -120,24 +120,24 @@ msgstr "Startår"
 msgid "endYear"
 msgstr "Sluttår"
 
-#: components/Preferences/CollectionDefinitions.tsx:165
+#: components/Preferences/CollectionDefinitions.tsx:191
 #. Used in: Components > Preferences > Collection Definitions
 msgid "publishingOrganizationKey"
 msgstr "GBIF Publishing Organization Key"
 
-#: components/Preferences/CollectionDefinitions.tsx:167
+#: components/Preferences/CollectionDefinitions.tsx:193
 #. Used in: Components > Preferences > Collection Definitions
 msgid "publishingOrganizationKeyDescription"
 msgstr ""
 "GBIF «publishingOrgKey» (en UUID) for denne samlingen, brukt for Specify "
 "Network integrasjon."
 
-#: components/Preferences/CollectionDefinitions.tsx:174
+#: components/Preferences/CollectionDefinitions.tsx:200
 #. Used in: Components > Preferences > Collection Definitions
 msgid "collectionKey"
 msgstr "GBIF-datasettnøkkel"
 
-#: components/Preferences/CollectionDefinitions.tsx:175
+#: components/Preferences/CollectionDefinitions.tsx:201
 #. Used in: Components > Preferences > Collection Definitions
 msgid "collectionKeyDescription"
 msgstr ""

@@ -214,9 +214,9 @@ msgid "shared"
 msgstr "Dijeljeno"
 
 #: components/Header/menuItemDefinitions.ts:111
-#: components/Preferences/CollectionDefinitions.tsx:121
+#: components/Preferences/CollectionDefinitions.tsx:147
 #: components/Preferences/UserDefinitions.tsx:2285
-#: components/Router/Routes.tsx:490
+#: components/Router/Routes.tsx:498
 #: components/Statistics/hooks.tsx:118
 #: components/Statistics/index.tsx:512
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Statistics > Hooks ⬤ Components > Statistics > Index
@@ -311,19 +311,19 @@ msgstr "Jeste li sigurni da želite izbrisati kategoriju?"
 msgid "categoryToDelete"
 msgstr "Ovim će se trajno izbrisati sljedeća kategorija"
 
-#: components/Preferences/CollectionDefinitions.tsx:127
+#: components/Preferences/CollectionDefinitions.tsx:153
 #. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "layoutPreference"
 msgstr "Definira izgled stranice sa statistikom"
 
-#: components/Preferences/CollectionDefinitions.tsx:136
+#: components/Preferences/CollectionDefinitions.tsx:162
 #. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "showPreparationsTotal"
 msgstr "Prikaži {preparationTableName:string} ukupne iznose"
 
-#: components/Preferences/CollectionDefinitions.tsx:140
+#: components/Preferences/CollectionDefinitions.tsx:166
 #. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "showPreparationsTotalDescription"
@@ -333,13 +333,13 @@ msgstr ""
 "određenog {prepTypeTableName:string} uz ukupan zbroj. Ovo je korisno za "
 "kolekcije temeljene na lotovima."
 
-#: components/Preferences/CollectionDefinitions.tsx:152
+#: components/Preferences/CollectionDefinitions.tsx:178
 #. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "autoRefreshRate"
 msgstr "Brzina automatskog osvježavanja (sati)"
 
-#: components/Preferences/CollectionDefinitions.tsx:153
+#: components/Preferences/CollectionDefinitions.tsx:179
 #. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "autoRefreshRateDescription"
