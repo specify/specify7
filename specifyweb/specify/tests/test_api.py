@@ -145,10 +145,10 @@ class MainSetupTearDown:
         # REFACTOR: Performance. This can very easily be made into a
         # bulk_create call. Though keep in mind that signals and custom save
         # methods don't get called if we do
-        for _ in range(self._current_co_count, num):
+        for _ in range(num):
             new_co = models.Collectionobject.objects.create(
                 collection=self.collection,
-                catalognumber="num-%d" % self._current_co_count,
+                catalognumber="num-%d" % self._current_co_count + num,
                 collectionobjecttype=self.collectionobjecttype,
             )
             self._current_co_count += 1
