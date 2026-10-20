@@ -147,6 +147,49 @@ class TestBuildQuery(SQLAlchemySetup):
             f"Generated {join_count} JOINs including seed traversal:\n{statement}",
         )
 
+    def test_direct_rank_fields_resolve_without_preparation(self):
+        self._make_distinct_taxon_relationships()
+        fields = [
+            ("1,9-determinations,4.taxon.Genus", "Taxon Genus"),
+            ("1,9-determinations,4-preferredTaxon.taxon.Species", "Preferred Species"),
+        ]
+        for missing_preferred in (False, True):
+            if missing_preferred:
+                Determination.objects.filter(
+                    collectionobject=self.collectionobjects[0]
+                ).update(preferredtaxon=None)
+            for ordered_fields in (fields, list(reversed(fields))):
+                with self.subTest(
+                    missing_preferred=missing_preferred,
+                    first_field=ordered_fields[0][0],
+                ), self.__class__.test_session_context() as session:
+                    query = build_query_construct_base(
+                        session, self.collection, self.specifyuser,
+                        models.CollectionObject, BuildQueryProps(),
+                    )
+                    self.assertNotIn("tree_ranks", query.join_cache)
+                    query_fields = self._taxon_relationship_query_fields(ordered_fields)
+                    for query_field in query_fields:
+                        query, column, predicate = query_field.add_to_query(
+                            query, collection=self.collection, user=self.specifyuser
+                        )
+                        query = query.add_columns(column)
+                        if predicate is not None:
+                            query = query.filter(predicate)
+                    query = query.filter(query.get_internal_filters())
+                    self.assertEqual(len(query.query.statement.get_final_froms()), 1)
+                    with warnings.catch_warnings():
+                        warnings.simplefilter("error", SAWarning)
+                        rows = list(query.query)
+                    self.assertEqual(
+                        [tuple(row) for row in rows],
+                        [(
+                            self.collectionobjects[0].id, "num-0",
+                            *(None if missing_preferred and "preferredTaxon" in path
+                              else value for path, value in ordered_fields),
+                        )],
+                    )
+
     def _make_distinct_taxon_relationships(self, depth=7):
         phylum_rank = self.taxontreedef.treedefitems.get(name="Phylum")
         order_rank = Taxontreedefitem.objects.create(
