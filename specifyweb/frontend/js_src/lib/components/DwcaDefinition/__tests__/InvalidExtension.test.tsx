@@ -49,7 +49,10 @@ test('hides a mismatched extension and lets the user remove it', async () => {
   expect(
     screen.getByText(/correct its Table ID in the XML editor/)
   ).toBeInTheDocument();
-  fireEvent.click(screen.getByRole('button', { name: 'Remove' }));
+  const remove = screen.getByRole('button', { name: 'Remove' });
+  expect(remove.closest('li')).toHaveTextContent('custom: Remove');
+  expect(remove).toHaveClass('underline');
+  fireEvent.click(remove);
   expect(screen.getByRole('button', { name: 'Extension' })).toHaveAttribute(
     'aria-pressed',
     'true'

@@ -22,7 +22,7 @@ export function CollapsibleAlert({
     <Message className="!gap-0 !p-0 text-sm leading-5">
       <button
         aria-expanded={expanded}
-        className="flex min-h-[1.75rem] w-full items-center gap-1 px-2 py-1 text-left hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] [&>svg]:h-4 [&>svg]:w-4"
+        className="flex min-h-6 w-full items-center gap-1 px-1.5 py-1 text-left hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] [&>svg]:h-4 [&>svg]:w-4"
         type="button"
         onClick={onToggle}
       >
@@ -33,7 +33,7 @@ export function CollapsibleAlert({
         </span>
       </button>
       {expanded && (
-        <div className="border-t border-white/30 px-2 py-1">{children}</div>
+        <div className="border-t border-white/30 px-1.5 py-1">{children}</div>
       )}
     </Message>
   );

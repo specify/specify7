@@ -1996,7 +1996,7 @@ function DwcaDefinitionEditorLoaded({
     }
   };
   return (
-    <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-hidden">
+    <div className="flex min-h-0 flex-1 flex-col gap-1 overflow-hidden">
       {invalidExtensions.length > 0 && (
         <CollapsibleAlert
           expanded={showInvalidExtensions}
@@ -2005,20 +2005,24 @@ function DwcaDefinitionEditorLoaded({
           onToggle={(): void => setShowInvalidExtensions((shown) => !shown)}
         >
           {dwcaText.dwcaMismatchedExtensionContextDescription()}
-          {invalidExtensions.map(({ mapping, index }) => (
-            <div key={index} className="flex items-center gap-2">
-              <strong>
-                {mapping.extensionDefinition?.title ?? mapping.rowType}
-              </strong>
-              <Button.Danger
-                onClick={(): void =>
-                  update(mappings.filter((_, i) => i !== index))
-                }
-              >
-                {commonText.remove()}
-              </Button.Danger>
-            </div>
-          ))}
+          <ul className="list-disc space-y-1 pl-6">
+            {invalidExtensions.map(({ mapping, index }) => (
+              <li key={index}>
+                <strong>
+                  {mapping.extensionDefinition?.title ?? mapping.rowType}
+                </strong>
+                :{' '}
+                <Button.LikeLink
+                  className="!text-white underline"
+                  onClick={(): void =>
+                    update(mappings.filter((_, i) => i !== index))
+                  }
+                >
+                  {commonText.remove()}
+                </Button.LikeLink>
+              </li>
+            ))}
+          </ul>
         </CollapsibleAlert>
       )}
       {missingRequiredTerms.length > 0 && (
