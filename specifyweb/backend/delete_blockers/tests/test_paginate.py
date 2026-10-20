@@ -1,17 +1,12 @@
 from functools import partial
-from unittest.mock import patch
 
-from specifyweb.backend.delete_blockers import paginate
 from specifyweb.backend.delete_blockers.validators import DELETE_BLOCKER_LIMIT
-from specifyweb.backend.delete_blockers.utils import blocker_relationships_for_obj
 from specifyweb.backend.delete_blockers.field import django_field_to_blocker_field
 from specifyweb.backend.delete_blockers.paginate import (
     ReferencePaginator,
-    SpLocaleContainerToDisciplinePaginator,
     TreeNodeToDefinitionPaginator,
     TreeRankToDefinitionPaginator,
     TreeTableReferencePaginator,
-    resolve_reference_paginator,
 )
 from specifyweb.specify import models
 from specifyweb.specify.tests.test_api import ApiTests
