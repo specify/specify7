@@ -338,7 +338,6 @@ def user(request):
         obj_to_data(c)
         for c in available_collections
     ]
-    data['isloggedin'] = request.user.isloggedin
     current_agent = (
         obj_to_data(request.specify_user_agent)
         if request.specify_user_agent is not None
