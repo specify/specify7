@@ -74,21 +74,29 @@ describe('AutoComplete remote contains results', () => {
     ]);
     const onChange = jest.fn();
     const onScrollEnd = jest.fn();
-    const renderAutoComplete = (
-      extraItems: ReadonlyArray<AutoCompleteItem<string>>
-    ) => (
-      <AutoComplete
-        delay={0}
-        extraItems={extraItems}
-        filterItems={false}
-        source={source}
-        value=""
-        onChange={onChange}
-        onScrollEnd={onScrollEnd}
-      />
-    );
+    function PaginatedAutoComplete({
+      extraItems,
+    }: {
+      readonly extraItems: ReadonlyArray<AutoCompleteItem<string>>;
+    }): JSX.Element {
+      const [value, setValue] = React.useState('');
+      return (
+        <AutoComplete
+          delay={0}
+          extraItems={extraItems}
+          filterItems={false}
+          source={source}
+          value={value}
+          onChange={(item) => {
+            setValue(item.label.toString());
+            onChange(item);
+          }}
+          onScrollEnd={onScrollEnd}
+        />
+      );
+    }
     const { getByRole, findByRole, rerender, user } = mount(
-      renderAutoComplete([])
+      <PaginatedAutoComplete extraItems={[]} />
     );
 
     await user.type(getByRole('combobox'), 'hydrolea');
@@ -97,7 +105,11 @@ describe('AutoComplete remote contains results', () => {
     fireEvent.scroll(getByRole('listbox'));
     expect(onScrollEnd).toHaveBeenCalledTimes(1);
 
-    rerender(renderAutoComplete([{ label: 'Bacopa hydrolea', data: '2' }]));
+    rerender(
+      <PaginatedAutoComplete
+        extraItems={[{ label: 'Bacopa hydrolea', data: '2' }]}
+      />
+    );
 
     await user.click(await findByRole('option', { name: 'Bacopa hydrolea' }));
 
@@ -107,5 +119,89 @@ describe('AutoComplete remote contains results', () => {
       data: '2',
     });
     expect(source).toHaveBeenLastCalledWith('hydrolea');
+  });
+
+  test.each([
+    ['startsWith', ['Hydrolea palustris', 'hydrolea ovata']],
+    ['startsWithCaseSensitive', ['hydrolea ovata']],
+    ['contains', ['Hydrolea palustris', 'hydrolea ovata', 'Bacopa hydrolea']],
+    ['containsCaseSensitive', ['hydrolea ovata', 'Bacopa hydrolea']],
+  ] as const)(
+    'applies %s filtering to initial and subsequent pages',
+    async (searchAlgorithm, expectedLabels) => {
+      userPreferences.setRaw({
+        form: { autoComplete: { searchAlgorithm } },
+      });
+      const source = jest.fn(async () => [
+        { label: 'Hydrolea palustris', data: '1' },
+        { label: 'Rosa canina', data: '2' },
+      ]);
+      const onChange = jest.fn();
+      const renderAutoComplete = (
+        extraItems: ReadonlyArray<AutoCompleteItem<string>>
+      ) => (
+        <AutoComplete
+          delay={0}
+          extraItems={extraItems}
+          filterItems
+          source={source}
+          value=""
+          onChange={onChange}
+        />
+      );
+      const { getByRole, findByRole, getAllByRole, rerender, user } = mount(
+        renderAutoComplete([])
+      );
+
+      await user.type(getByRole('combobox'), 'hydrolea');
+      rerender(
+        renderAutoComplete([
+          { label: 'hydrolea ovata', data: '3' },
+          { label: 'Bacopa hydrolea', data: '4' },
+          { label: 'Rosa rubiginosa', data: '5' },
+        ])
+      );
+
+      await findByRole('option', { name: 'hydrolea ovata' });
+
+      expect(
+        getAllByRole('option').map(({ textContent }) => textContent)
+      ).toEqual(expectedLabels);
+    }
+  );
+
+  test('does not offer to add a value already present on a subsequent page', async () => {
+    const source = jest.fn(async () => [
+      { label: 'Hydrolea palustris', data: '1' },
+    ]);
+    const { getByRole, findByRole, queryByRole, rerender, user } = mount(
+      <AutoComplete
+        delay={0}
+        filterItems={false}
+        source={source}
+        value=""
+        onChange={jest.fn()}
+        onNewValue={jest.fn()}
+      />
+    );
+
+    await user.type(getByRole('combobox'), 'hydrolea');
+    await findByRole('option', { name: 'Hydrolea palustris' });
+    expect(getByRole('option', { name: /add/i })).toBeInTheDocument();
+    rerender(
+      <AutoComplete
+        delay={0}
+        extraItems={[{ label: 'hydrolea', data: '2' }]}
+        filterItems={false}
+        source={source}
+        value=""
+        onChange={jest.fn()}
+        onNewValue={jest.fn()}
+      />
+    );
+
+    await findByRole('option', { name: 'hydrolea' });
+
+    expect(queryByRole('option', { name: /add/i })).not.toBeInTheDocument();
   });
 });
