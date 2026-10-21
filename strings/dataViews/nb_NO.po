@@ -34,14 +34,12 @@ msgstr "Konfigurer {dataViews:string}-tabeller"
 
 #. 🟥The name of the Data View query app resource type. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:122
-#, fuzzy
 msgid "dataViewQueries"
-msgstr "Datavisningsspørringer"
+msgstr "Søk i datavisning"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1800
 #: components/Preferences/UserDefinitions.tsx:1957
-#, fuzzy
 msgid "splitViewByDefault"
 msgstr "Aktiver {splitView:string} som standard"
 
@@ -49,22 +47,20 @@ msgstr "Aktiver {splitView:string} som standard"
 #: components/DataViews/DataViewTables.tsx:89
 #: components/DataViews/QueryEditor.tsx:174
 #: components/DataViews/index.tsx:249
-#, fuzzy
 msgid "configureQuery"
-msgstr "Konfigurer spørring"
+msgstr "Konfigurer avansert søk"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1803
 #: components/Preferences/UserDefinitions.tsx:1960
-#, fuzzy
 msgid "splitViewDescription"
 msgstr ""
-"{splitView:string} viser spørreresultater sammen med en forhåndsvisning av "
-"poster, slik at du kan se gjennom poster uten å forlate resultatlisten."
+"{splitView:string} Mottatt melding: visersøkeresultater sammen med en "
+"forhåndsvisning av posten, slik at du kan gjennomgå poster uten å forlate "
+"resultatlisten."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1812
 #: components/Preferences/UserDefinitions.tsx:1969
-#, fuzzy
 msgid "splitViewOrientation"
-msgstr "Standard {splitView:string}-retning"
+msgstr "Standard retning for {splitView:string}"
