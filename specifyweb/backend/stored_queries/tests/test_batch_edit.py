@@ -1,10 +1,14 @@
+from datetime import datetime
 import json
 from unittest.mock import patch
+
+from django.test import SimpleTestCase
 
 from specifyweb.backend.stored_queries.batch_edit import (
     BatchEditPack,
     BatchEditProps,
     RowPlanMap,
+    rewrite_row,
     run_batch_edit_query,
 )
 
@@ -50,6 +54,28 @@ def fake_obj_formatter(*args, **kwargs):
 
 
 OBJ_FORMATTER_PATH = "specifyweb.backend.context.app_resource.get_app_resource"
+
+
+class BatchEditRowRewriteTests(SimpleTestCase):
+    def test_date_parts_with_same_field_path_keep_distinct_values(self):
+        date_field = QueryFieldSpec.from_path(
+            ("Collectionobject", "catalogedDate")
+        )
+        query_fields = [
+            BatchEditPack._query_field(
+                date_field._replace(date_part=date_part),
+                0,
+            )
+            for date_part in ("Full Date", "Year", "Month", "Day")
+        ]
+
+        self.assertEqual(
+            rewrite_row(
+                (1, "2024-09-17", 2024, 9, 17),
+                query_fields,
+            ),
+            (1, "2024-09-17", 2024, 9, 17),
+        )
 
 
 # NOTES: Yes, it is more convenient to hard code ids (instead of defining variables.).
@@ -304,6 +330,43 @@ class QueryConstructionTests(SQLAlchemySetup):
         }
 
         self.assertDictEqual(correct_plan, plan)
+
+    @patch(OBJ_FORMATTER_PATH, new=fake_obj_formatter)
+    def test_cataloged_date_components_are_preserved_in_batch_edit(self):
+        self._update(
+            self.collectionobjects[0],
+            {
+                "catalogeddate": datetime(2024, 9, 17),
+                "catalogeddateprecision": 1,
+            },
+        )
+
+        base_table = "collectionobject"
+        full_date = QueryFieldSpec.from_path(
+            ("Collectionobject", "catalogedDate")
+        )
+        query_fields = [
+            BatchEditPack._query_field(
+                full_date._replace(date_part=date_part),
+                0,
+            )._replace(value="")
+            for date_part in ("Full Date", "Year", "Month", "Day")
+        ]
+
+        headers, rows, _, _, _ = run_batch_edit_query(
+            self.build_props(query_fields, base_table)
+        )
+
+        self.assertEqual(
+            headers,
+            [
+                "CollectionObject catalogedDate",
+                "CollectionObject catalogedDate (Year)",
+                "CollectionObject catalogedDate (Month)",
+                "CollectionObject catalogedDate (Day)",
+            ],
+        )
+        self.assertEqual(rows[0], ["2024-09-17", 2024, 9, 17])
 
     @patch(OBJ_FORMATTER_PATH, new=fake_obj_formatter)
     def test_duplicates_flattened(self):

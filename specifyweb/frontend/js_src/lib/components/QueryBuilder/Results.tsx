@@ -10,6 +10,7 @@ import { f } from '../../utils/functools';
 import { type GetSet, type RA } from '../../utils/types';
 import { Container, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
+import { RecordMergingContext } from '../Core/Contexts';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { SpecifyTable } from '../DataModel/specifyTable';
@@ -235,7 +236,8 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     setTotalCount,
   ]);
 
-  const canMergeTable = canMerge(table);
+  const canMergeTable =
+    React.useContext(RecordMergingContext) && canMerge(table);
 
   const visibleColumns = React.useMemo(
     () =>
