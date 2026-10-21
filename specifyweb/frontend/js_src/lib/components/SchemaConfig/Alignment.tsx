@@ -10,8 +10,9 @@ import {
   TermInfoDialog,
 } from '../DwcaDefinition/DwcaDefinition';
 import gbifCores from '../DwcaDefinition/data/gbifCores.json';
-import { coreTermPatterns } from '../DwcaDefinition/data/coreTermPatterns';
+import { getCoreTermPatterns } from '../DwcaDefinition/data/coreTermPatterns';
 import gbifExtensions from '../DwcaDefinition/data/gbifExtensions.json';
+import { getSystemInfo } from '../InitialContext/systemInfo';
 
 type Vocabulary = (typeof gbifCores)[number] | (typeof gbifExtensions)[number];
 type VocabularyField = Vocabulary['fields'][number];
@@ -33,17 +34,19 @@ export function getFieldAlignments(
   const alignments: FieldAlignment[] = [];
   const seen = new Set<string>();
 
-  Object.entries(coreTermPatterns).forEach(([termName, patterns]) => {
-    if (!patterns.some((pattern) => fieldIdentity.endsWith(pattern))) return;
-    vocabularies.forEach((vocabulary) => {
-      const term = vocabulary.fields.find(({ name }) => name === termName);
-      if (term === undefined) return;
-      const key = `${vocabulary.rowType}:${term.name}`;
-      if (seen.has(key)) return;
-      seen.add(key);
-      alignments.push({ term, vocabulary });
-    });
-  });
+  Object.entries(getCoreTermPatterns(getSystemInfo()?.discipline_type)).forEach(
+    ([termName, patterns]) => {
+      if (!patterns.some((pattern) => fieldIdentity.endsWith(pattern))) return;
+      vocabularies.forEach((vocabulary) => {
+        const term = vocabulary.fields.find(({ name }) => name === termName);
+        if (term === undefined) return;
+        const key = `${vocabulary.rowType}:${term.name}`;
+        if (seen.has(key)) return;
+        seen.add(key);
+        alignments.push({ term, vocabulary });
+      });
+    }
+  );
 
   return alignments;
 }

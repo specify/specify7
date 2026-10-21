@@ -2,12 +2,15 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 
 import type { LiteralField } from '../../DataModel/specifyField';
+import * as systemInfo from '../../InitialContext/systemInfo';
 import { getFieldAlignments, SchemaConfigAlignment } from '../Alignment';
 
 const field = (table: string, name: string): LiteralField =>
   ({ table: { name: table }, name }) as unknown as LiteralField;
 
 describe('data model vocabulary alignments', () => {
+  afterEach(() => jest.restoreAllMocks());
+
   test('shows each term above its description', () => {
     const html = renderToStaticMarkup(
       createElement(SchemaConfigAlignment, {
@@ -28,6 +31,18 @@ describe('data model vocabulary alignments', () => {
     );
 
     expect(alignment?.term.name).toBe('http://rs.tdwg.org/dwc/terms/eventDate');
+  });
+
+  test('includes discipline-specific patterns', () => {
+    jest.spyOn(systemInfo, 'getSystemInfo').mockReturnValue({
+      discipline_type: 'fish',
+    } as ReturnType<typeof systemInfo.getSystemInfo>);
+
+    expect(
+      getFieldAlignments(field('CollectingEventAttribute', 'Text9')).some(
+        ({ term }) => term.name === 'http://rs.tdwg.org/dwc/terms/habitat'
+      )
+    ).toBe(true);
   });
 
   test('does not match patterns inside longer field names', () => {
