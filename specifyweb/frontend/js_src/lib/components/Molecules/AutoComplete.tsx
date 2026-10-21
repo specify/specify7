@@ -518,7 +518,10 @@ export function AutoComplete<T>({
               ? (event: React.UIEvent<HTMLUListElement>): void => {
                   const target = event.currentTarget;
                   const nearBottom =
-                    target.scrollHeight - target.scrollTop - target.clientHeight < 40;
+                    target.scrollHeight -
+                      target.scrollTop -
+                      target.clientHeight <
+                    40;
                   if (nearBottom) onScrollEnd();
                 }
               : undefined
@@ -657,7 +660,9 @@ export function AutoComplete<T>({
             </Combobox.Option>
           )}
           {isLoadingMore && (
-            <li className={`${optionClassName(false, false)} cursor-auto text-gray-500`}>
+            <li
+              className={`${optionClassName(false, false)} cursor-auto text-gray-500`}
+            >
               {commonText.loading()}
             </li>
           )}
