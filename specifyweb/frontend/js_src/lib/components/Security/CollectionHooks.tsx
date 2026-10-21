@@ -85,14 +85,20 @@ export function useCollectionUserRoles(
   React.useEffect(() => {
     if (!hasPermission('/permissions/user/roles', 'read', collectionId))
       return undefined;
+    let isCancelled = false;
     const interval = globalThis.setInterval(() => {
       void fetchUserRoles()
-        .then(setUserRoles)
+        .then((roles) => {
+          if (!isCancelled) setUserRoles(roles);
+        })
         .catch((error: unknown) =>
           console.error('Unable to refresh collection user presence', error)
         );
     }, PRESENCE_REFRESH_INTERVAL);
-    return (): void => globalThis.clearInterval(interval);
+    return (): void => {
+      isCancelled = true;
+      globalThis.clearInterval(interval);
+    };
   }, [collectionId, fetchUserRoles, setUserRoles]);
 
   return [userRoles, setUserRoles];
