@@ -2,6 +2,13 @@ name: Update localization
 
 on: [push]
 
+# Weblate can push several commits close together. This queues sync runs so we
+# don't checkout the same main commit and race to push their changes.
+concurrency:
+  group: weblate-localization-sync
+  queue: max
+  cancel-in-progress: false
+
 jobs:
   pull-localization:
     name: Pull localization from Weblate
@@ -22,7 +29,7 @@ jobs:
           ref: main
           fetch-depth: 0
           # Using a Personal Access Token from an admin account to bypass branch
-          # protection rules and allow direct pushes to main. Inspirited
+          # protection rules and allow direct pushes to main. Inspired
           # by: https://github.com/community/community/discussions/13836
           token: ${{ secrets.WEBLATE_PUSH_TO_GITHUB }}
 
@@ -66,7 +73,10 @@ jobs:
               --author '${{ github.event.head_commit.author.name }} <${{ github.event.head_commit.author.email }}>' \
               -m 'Sync localization strings with Weblate' \
               -m "Triggered by ${{ github.sha }} on branch ${{ github.ref }}"
-            git push
+ 
+            git fetch origin main
+            git rebase FETCH_HEAD
+            git push origin HEAD:main
           fi
 
       - name: Notify Slack if it fails
