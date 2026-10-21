@@ -39,6 +39,6 @@ class TestGetAppModel(ApiTests):
     
     def test_model_not_found(self):
         self.assertIsNone(get_app_model("TableThatDoesNotExist"))
-
+        self.assertIsNone(get_app_model("UserPresence"))
 
 
