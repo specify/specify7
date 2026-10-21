@@ -8,7 +8,7 @@ import { statsText } from '../../localization/stats';
 import { treeText } from '../../localization/tree';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
-import { ensure } from '../../utils/types';
+import { ensure, localized } from '../../utils/types';
 import { camelToHuman } from '../../utils/utils';
 import { genericTables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
@@ -49,6 +49,32 @@ export const collectionPreferenceDefinitions = {
           'attachment.is_public_default': definePref<boolean>({
             title: attachmentsText.publicDefault(),
             description: attachmentsText.publicDefaultDescription(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+        },
+      },
+      collectionObjectCreation: {
+        title: localized('Collection Object Creation'),
+        items: {
+          createCollectionObjectAttributes: definePref<boolean>({
+            title: localized('Create Collection Object Attributes'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+          createPreparations: definePref<boolean>({
+            title: localized('Create Preparation'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+          createDeterminations: definePref<boolean>({
+            title: localized('Create Determination'),
             requiresReload: false,
             visible: true,
             defaultValue: false,

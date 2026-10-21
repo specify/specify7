@@ -4,7 +4,7 @@ Defines the urls for the app context subsystem
 
 from django.urls import path
 
-from . import views, user_resources, collection_resources
+from . import views, user_resources, collection_resources, global_resources
 from specifyweb.backend.attachment_gw.views import get_settings as attachment_settings
 from specifyweb.backend.report_runner.views import get_status as report_runner_status
 
@@ -42,5 +42,7 @@ urlpatterns = [
 
     path('collection_resource/', collection_resources.collection_resources),
     path('collection_resource/<int:resourceid>/', collection_resources.collection_resource),
+    path('global_resource/', global_resources.global_resources_view),
+    path('global_resource/<int:resourceid>/', global_resources.global_resource_view),
 
 ]

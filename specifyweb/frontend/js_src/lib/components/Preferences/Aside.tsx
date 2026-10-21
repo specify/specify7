@@ -25,18 +25,21 @@ export function PreferencesAside({
   const navigate = useNavigate();
   const location = useLocation();
   const isInOverlay = pathIsOverlay(location.pathname);
+  const preferencesPath =
+    prefType === 'collection'
+      ? '/specify/collection-preferences/'
+      : prefType === 'global'
+        ? '/specify/global-preferences/'
+        : '/specify/user-preferences/';
   // Don't call navigate while an overlay is open as that will close the overlay
   React.useEffect(
     () =>
       isInOverlay || activeCategory === undefined
         ? undefined
-        : navigate(
-            `/specify/user-preferences/#${definitions[activeCategory][0]}`,
-            {
-              replace: true,
-            }
-          ),
-    [isInOverlay, definitions, activeCategory]
+        : navigate(`${preferencesPath}#${definitions[activeCategory][0]}`, {
+            replace: true,
+          }),
+    [isInOverlay, definitions, activeCategory, preferencesPath]
   );
 
   const [freezeCategory, setFreezeCategory] = useFrozenCategory();
