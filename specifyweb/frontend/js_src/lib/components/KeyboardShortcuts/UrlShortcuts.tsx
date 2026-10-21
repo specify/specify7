@@ -520,7 +520,7 @@ function CustomRouteShortcut({
   );
 }
 
-function UrlField({
+export function UrlField({
   value,
   onChange: handleChange,
 }: {
@@ -537,9 +537,17 @@ function UrlField({
       required
       value={pendingValue}
       onBlur={({ target }): void => {
+        if (target.value === value) {
+          target.setCustomValidity('');
+          return;
+        }
         try {
           const trimmed = target.value.trim();
-          const url = new URL(trimmed, globalThis.location.href);
+          const isRelativePath = /^(?:\/|\.\.?\/|[?#])/u.test(trimmed);
+          const hasScheme = /^[a-z][a-z\d+.-]*:/iu.test(trimmed);
+          const destination =
+            isRelativePath || hasScheme ? trimmed : `https://${trimmed}`;
+          const url = new URL(destination, globalThis.location.href);
           const isSameOrigin = url.origin === globalThis.location.origin;
           const normalized = isSameOrigin
             ? `${url.pathname.endsWith('/') ? url.pathname.slice(0, -1) : url.pathname}${url.search}${url.hash}`
