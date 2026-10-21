@@ -14,7 +14,5 @@ APP_MODELS = [spmodels, acccounts_models, attachment_gw_models, businessrules_mo
 def get_app_model(model_name: str):
     for app in APP_MODELS:
         if hasattr(app, model_name):
-            model = getattr(app, model_name)
-            if hasattr(model, 'specify_model'):
-                return model
+            return getattr(app, model_name)
     return None
