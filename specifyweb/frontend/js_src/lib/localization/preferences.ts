@@ -1653,17 +1653,6 @@ export const preferencesText = createDictionary({
     'hr-hr': 'Fleksibilna širina stupca mreže podprikaza',
     nb: 'Fleksibel kolonnebredde for delvisnings-rutenett',
   },
-  closeOnEsc: {
-    'en-us': 'Close on <key>ESC</key> key press',
-    'ru-ru': 'Закрыть при нажатии клавиши <key>ESC</key>',
-    'es-es': 'Cerrar al pulsar la tecla <key>ESC</key>',
-    'fr-fr': 'Fermer quand <key>ESC</key> est sélectionné',
-    'uk-ua': 'Закрити натисканням клавіші <key>ESC</key>',
-    'de-ch': 'Schließen durch Drücken der Taste <key>ESC</key>.',
-    'pt-br': 'Fechar ao pressionar a tecla <key>ESC</key>',
-    'hr-hr': 'Zatvori pritiskom tipke <key>ESC</key>',
-    nb: 'Lukk ved å trykke på <key>ESC</key>-tasten',
-  },
   closeOnOutsideClick: {
     'en-us': 'Close on outside click',
     'ru-ru': 'Закрыть при внешнем щелчке',

@@ -77,7 +77,6 @@ export const specialKeyboardKeys = new Set([
   'Enter',
   'Tab',
   'Space',
-  'Escape',
   'Backspace',
 ]);
 
@@ -119,6 +118,7 @@ export const keyLocalizations: IR<string> = {
   Digit7: '7',
   Digit8: '8',
   Digit9: '9',
+  Escape: 'Esc',
   // "return" key is used over Enter on macOS keyboards
   Enter: keyboardPlatform === 'mac' ? '↵' : 'Enter',
   Equal: '=',

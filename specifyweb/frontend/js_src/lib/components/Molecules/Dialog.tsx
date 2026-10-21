@@ -217,7 +217,6 @@ export function Dialog({
   );
   const [showIcon] = userPreferences.use('general', 'dialog', 'showIcon');
 
-  const [closeOnEsc] = userPreferences.use('general', 'dialog', 'closeOnEsc');
   const [closeOnOutsideClick] = userPreferences.use(
     'general',
     'dialog',
@@ -497,9 +496,7 @@ export function Dialog({
       }}
       overlayElement={overlayElement}
       portalClassName=""
-      shouldCloseOnEsc={
-        modal && typeof handleClose === 'function' && closeOnEsc
-      }
+      shouldCloseOnEsc={false}
       /*
        * Adding aria-hidden to #root is a legacy solution. Modern solution
        * involves displaying an element with [role="dialog"][aria-modal="true"],

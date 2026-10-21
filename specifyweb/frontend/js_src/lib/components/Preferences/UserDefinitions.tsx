@@ -571,13 +571,6 @@ export const userPreferenceDefinitions = {
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
-          closeOnEsc: definePref<boolean>({
-            title: preferencesText.closeOnEsc(),
-            requiresReload: false,
-            visible: true,
-            defaultValue: true,
-            type: 'java.lang.Boolean',
-          }),
           closeOnOutsideClick: definePref<boolean>({
             title: preferencesText.closeOnOutsideClick(),
             requiresReload: false,
@@ -966,7 +959,7 @@ export const userPreferenceDefinitions = {
       dialogs: {
         title: preferencesText.dialogs(),
         items: {
-          close: defineKeyboardShortcut(commonText.close(), 'Alt+KeyW'),
+          close: defineKeyboardShortcut(commonText.close(), 'Escape'),
           save: defineKeyboardShortcut(commonText.save(), 'Ctrl+KeyS'),
           openRelatedRecordInNewTab: defineKeyboardShortcut(
             preferencesText.openRelatedRecordInNewTab(),

@@ -125,7 +125,10 @@ document.addEventListener('keydown', (event) => {
 
   const modifiers = resolveModifiers(event);
   const isEntering = isInInput(event);
-  const isPrintable = isPrintableModifier(modifiers);
+  const isPrintable =
+    event.code !== 'Escape' &&
+    !specialKeyboardKeys.has(event.code) &&
+    isPrintableModifier(modifiers);
   // Ignore shortcuts that result in printed characters when in an input field
   const ignore = isPrintable && isEntering;
   if (ignore) return;

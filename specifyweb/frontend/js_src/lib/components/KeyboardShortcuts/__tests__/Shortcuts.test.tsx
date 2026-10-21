@@ -31,6 +31,16 @@ test('accepts a complete chord on release without an inner Save button', async (
   cleanup();
 });
 
+test('records Escape as a configurable shortcut', async () => {
+  const onChange = jest.fn();
+  const { user } = mount(
+    <KeyboardShortcutPreferenceItem onChange={onChange} />
+  );
+  await user.click(screen.getByRole('button', { name: 'Add' }));
+  await user.keyboard('{Escape}');
+  expect(onChange).toHaveBeenCalledWith({ other: ['Escape'] });
+});
+
 test('cancels editing without changing the existing shortcut', async () => {
   const onChange = jest.fn();
   const { user } = mount(
