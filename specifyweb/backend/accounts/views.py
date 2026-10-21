@@ -50,6 +50,9 @@ def update_presence(request: http.HttpRequest) -> http.HttpResponse:
     if not isinstance(data, dict) or type(data.get('active')) is not bool:
         return http.HttpResponseBadRequest('Expected a boolean "active" value')
 
+    if not request.user.is_authenticated:
+        return http.HttpResponse(status=204)
+
     now = timezone.now()
     presence, created = UserPresence.objects.get_or_create(
         specifyuser=request.specify_user,
