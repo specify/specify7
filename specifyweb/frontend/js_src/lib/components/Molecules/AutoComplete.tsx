@@ -161,17 +161,16 @@ export function AutoComplete<T>({
   );
 
   const updateItems = React.useCallback(
-    (items: RA<AutoCompleteItem<T>>, pendingValue: string): void => {
+    (items: RA<AutoCompleteItem<T>>): void => {
       setResults(items);
       resultsRef.current = items;
-      setFilteredItems(filterItems(items, pendingValue));
     },
-    [filterItems]
+    []
   );
 
   // Update source array on changes if statically supplied
   React.useEffect(() => {
-    if (Array.isArray(source)) updateItems(source, '');
+    if (Array.isArray(source)) updateItems(source);
   }, [source, updateItems]);
 
   const [isLoading, handleLoading, handleLoaded] = useBooleanState();
@@ -199,7 +198,7 @@ export function AutoComplete<T>({
       handleLoading();
       void fetchItems(value)
         .then((items) => {
-          if (currentRequestId === requestId.current) updateItems(items, value);
+          if (currentRequestId === requestId.current) updateItems(items);
         })
         .catch(softFail)
         .finally(() => {
@@ -220,18 +219,21 @@ export function AutoComplete<T>({
     []
   );
 
-  const [filteredItems, setFilteredItems] = React.useState<
-    RA<AutoCompleteItem<T>>
-  >([]);
-
   const [pendingValue, setPendingValue] = useTriggerState<string>(currentValue);
   React.useEffect(() => {
     if (typeof pendingValueRef === 'object')
       pendingValueRef.current ??= currentValue;
   }, [currentValue, pendingValueRef]);
-  React.useEffect(
-    () => setFilteredItems(filterItems(results ?? [], pendingValue)),
-    [pendingValue, filterItems, results]
+  const allResults = React.useMemo(
+    () =>
+      extraItems !== undefined && extraItems.length > 0
+        ? [...(results ?? []), ...extraItems]
+        : results,
+    [results, extraItems]
+  );
+  const filteredItems = React.useMemo(
+    () => filterItems(allResults ?? [], pendingValue),
+    [allResults, pendingValue, filterItems]
   );
 
   /*
@@ -240,15 +242,6 @@ export function AutoComplete<T>({
    * only one element that starts with the current value (the current element),
    * thus the filtered list of items has only one item.
    */
-  // Append paginated extra items to the base results
-  const allResults = React.useMemo(
-    () =>
-      extraItems !== undefined && extraItems.length > 0
-        ? [...(results ?? []), ...extraItems]
-        : results,
-    [results, extraItems]
-  );
-
   const ignoreFilter = currentValue === pendingValue;
   const itemSource = ignoreFilter ? (allResults ?? []) : filteredItems;
   const [activeIndex, setActiveIndex] = React.useState(-1);
@@ -269,7 +262,7 @@ export function AutoComplete<T>({
           start: index * 32,
         }));
 
-  const pendingItem = results?.find(
+  const pendingItem = allResults?.find(
     ({ label, searchValue }) => (searchValue ?? label) === pendingValue
   );
   const showAdd =
