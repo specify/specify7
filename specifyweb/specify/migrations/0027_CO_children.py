@@ -2,7 +2,8 @@
 from django.apps import apps as specify_apps
 from django.db import migrations, models
 import django.db.models.deletion
-from specifyweb.specify.migration_utils import update_schema_config as usc
+from specifyweb.specify.migration_utils import migration_helpers as usc
+from specifyweb.specify.migration_utils.migration_helpers.helper_0027_CO_children import revert_co_children_fields, update_co_children_fields
 
 class Migration(migrations.Migration):
 
@@ -11,10 +12,10 @@ class Migration(migrations.Migration):
     ]
 
     def apply_migration(apps, schema_editor):
-        usc.update_co_children_fields(apps)
+        update_co_children_fields(apps)
 
     def revert_migration(apps, schema_editor):
-        usc.revert_co_children_fields(apps)
+        revert_co_children_fields(apps)
 
     operations = [
         migrations.AddField(

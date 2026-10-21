@@ -184,6 +184,26 @@ class ParsingTests(UploadTestsBase):
                 for a in r.picklistAdditions:
                     self.assertEqual(1, get_table('Spauditlog').objects.filter(recordid=a.id, action=auditcodes.INSERT, tablenum=get_table('Picklistitem').specify_model.tableId).count(), "New picklistitem recorded in audit log.")
 
+    def test_duplicate_picklist_titles_use_first_match(self) -> None:
+        habitat = get_table('Picklist').objects.get(name='Habitat')
+        habitat.picklistitems.create(title='Marsh', value='marsh-duplicate')
+        expected_value = habitat.picklistitems.filter(title='Marsh').first().value
+
+        plan = UploadTable(
+            name='Collectionobject',
+            wbcols={'catalognumber': parse_column_options('catno'), 'text1': parse_column_options('habitat')},
+            overrideScope=None,
+            static={},
+            toOne={},
+            toMany={}
+        )
+        results = do_upload(self.collection, [{'catno': '1', 'habitat': 'Marsh'}], plan, self.agent.id)
+
+        self.assertIsInstance(results[0].record_result, Uploaded)
+        result = results[0].record_result
+        assert isinstance(result, Uploaded)
+        self.assertEqual(expected_value, get_table('Collectionobject').objects.get(id=result.get_id()).text1)
+
     def test_uiformatter_match(self) -> None:
         plan = UploadTable(
             name='Collectionobject',
@@ -444,7 +464,7 @@ class MatchingBehaviorTests(UploadTestsBase):
             ranks=dict(
                 Genus=dict(name=parse_column_options('Genus')),
                 Species=dict(name=parse_column_options('Species'),
-                             author=ColumnOptions(column='Species Author', matchBehavior="ignoreWhenBlank", nullAllowed=True, default=None))
+                             author=ColumnOptions(column='Species Author', matchBehavior="ignoreWhenBlank", nullAllowed=True, default=None, disambiguationBehavior="ask"))
             )
         )
         data  = [
@@ -466,7 +486,7 @@ class MatchingBehaviorTests(UploadTestsBase):
             ranks=dict(
                 Genus=dict(name=parse_column_options('Genus')),
                 Species=dict(name=parse_column_options('Species'),
-                             author=ColumnOptions(column='Species Author', matchBehavior="ignoreWhenBlank", nullAllowed=True, default=None)),
+                             author=ColumnOptions(column='Species Author', matchBehavior="ignoreWhenBlank", nullAllowed=True, default=None, disambiguationBehavior="ask")),
                 Subspecies=dict(name=parse_column_options('Subspecies')),
             )
         )
@@ -488,7 +508,7 @@ class MatchingBehaviorTests(UploadTestsBase):
             ranks=dict(
                 Genus=dict(name=parse_column_options('Genus')),
                 Species=dict(name=parse_column_options('Species'),
-                             author=ColumnOptions(column='Species Author', matchBehavior="ignoreNever", nullAllowed=True, default=None))
+                             author=ColumnOptions(column='Species Author', matchBehavior="ignoreNever", nullAllowed=True, default=None, disambiguationBehavior="ask"))
             )
         )
         data  = [
@@ -508,7 +528,7 @@ class MatchingBehaviorTests(UploadTestsBase):
             ranks=dict(
                 Genus=dict(name=parse_column_options('Genus')),
                 Species=dict(name=parse_column_options('Species'),
-                             author=ColumnOptions(column='Species Author', matchBehavior="ignoreNever", nullAllowed=False, default=None))
+                             author=ColumnOptions(column='Species Author', matchBehavior="ignoreNever", nullAllowed=False, default=None, disambiguationBehavior="ask"))
             )
         )
         data  = [
@@ -530,7 +550,7 @@ class MatchingBehaviorTests(UploadTestsBase):
             ranks=dict(
                 Genus=dict(name=parse_column_options('Genus')),
                 Species=dict(name=parse_column_options('Species'),
-                             author=ColumnOptions(column='Species Author', matchBehavior="ignoreAlways", nullAllowed=True, default=None))
+                             author=ColumnOptions(column='Species Author', matchBehavior="ignoreAlways", nullAllowed=True, default=None, disambiguationBehavior="ask"))
             )
         )
         data  = [
@@ -551,7 +571,7 @@ class MatchingBehaviorTests(UploadTestsBase):
             name='Agent',
             wbcols={
                 'lastname': parse_column_options('lastname'),
-                'firstname': ColumnOptions(column='firstname', matchBehavior="ignoreWhenBlank", nullAllowed=True, default=None),
+                'firstname': ColumnOptions(column='firstname', matchBehavior="ignoreWhenBlank", nullAllowed=True, default=None, disambiguationBehavior="ask"),
             },
             overrideScope=None,
             static={},
@@ -577,7 +597,7 @@ class MatchingBehaviorTests(UploadTestsBase):
             name='Agent',
             wbcols={
                 'lastname': parse_column_options('lastname'),
-                'firstname': ColumnOptions(column='firstname', matchBehavior="ignoreWhenBlank", nullAllowed=True, default="John"),
+                'firstname': ColumnOptions(column='firstname', matchBehavior="ignoreWhenBlank", nullAllowed=True, default="John", disambiguationBehavior="ask"),
             },
             overrideScope=None,
             static={},
@@ -609,7 +629,7 @@ class MatchingBehaviorTests(UploadTestsBase):
             name='Agent',
             wbcols={
                 'lastname': parse_column_options('lastname'),
-                'firstname': ColumnOptions(column='firstname', matchBehavior="ignoreNever", nullAllowed=True, default=None),
+                'firstname': ColumnOptions(column='firstname', matchBehavior="ignoreNever", nullAllowed=True, default=None, disambiguationBehavior="ask"),
             },
             overrideScope=None,
             static={},
@@ -634,7 +654,7 @@ class MatchingBehaviorTests(UploadTestsBase):
             name='Agent',
             wbcols={
                 'lastname': parse_column_options('lastname'),
-                'firstname': ColumnOptions(column='firstname', matchBehavior="ignoreAlways", nullAllowed=True, default=None),
+                'firstname': ColumnOptions(column='firstname', matchBehavior="ignoreAlways", nullAllowed=True, default=None, disambiguationBehavior="ask"),
             },
             overrideScope=None,
             static={},
@@ -662,7 +682,7 @@ class DefaultTests(UploadTestsBase):
             name='Agent',
             wbcols={
                 'lastname': parse_column_options('lastname'),
-                'firstname': ColumnOptions(column='firstname', matchBehavior="ignoreNever", nullAllowed=True, default="John"),
+                'firstname': ColumnOptions(column='firstname', matchBehavior="ignoreNever", nullAllowed=True, default="John", disambiguationBehavior="ask"),
             },
             overrideScope=None,
             static={},
@@ -690,7 +710,7 @@ class DefaultTests(UploadTestsBase):
             name='Agent',
             wbcols={
                 'lastname': parse_column_options('lastname'),
-                'firstname': ColumnOptions(column='firstname', matchBehavior="ignoreNever", nullAllowed=True, default="John"),
+                'firstname': ColumnOptions(column='firstname', matchBehavior="ignoreNever", nullAllowed=True, default="John", disambiguationBehavior="ask"),
             },
             overrideScope=None,
             static={},
@@ -721,7 +741,7 @@ class DefaultTests(UploadTestsBase):
             name='Agent',
             wbcols={
                 'lastname': parse_column_options('lastname'),
-                'firstname': ColumnOptions(column='firstname', matchBehavior="ignoreNever", nullAllowed=False, default="John"),
+                'firstname': ColumnOptions(column='firstname', matchBehavior="ignoreNever", nullAllowed=False, default="John", disambiguationBehavior="ask"),
             },
             overrideScope=None,
             static={},
@@ -750,7 +770,7 @@ class DefaultTests(UploadTestsBase):
             name='Agent',
             wbcols={
                 'lastname': parse_column_options('lastname'),
-                'firstname': ColumnOptions(column='firstname', matchBehavior="ignoreNever", nullAllowed=False, default=""),
+                'firstname': ColumnOptions(column='firstname', matchBehavior="ignoreNever", nullAllowed=False, default="", disambiguationBehavior="ask"),
             },
             overrideScope=None,
             static={},
@@ -780,7 +800,7 @@ class NullAllowedTests(UploadTestsBase):
             name='Agent',
             wbcols={
                 'lastname': parse_column_options('lastname'),
-                'firstname': ColumnOptions(column='firstname', matchBehavior="ignoreNever", nullAllowed=False, default=None),
+                'firstname': ColumnOptions(column='firstname', matchBehavior="ignoreNever", nullAllowed=False, default=None, disambiguationBehavior="ask"),
             },
             overrideScope=None,
             static={},
@@ -805,7 +825,7 @@ class NullAllowedTests(UploadTestsBase):
             name='Agent',
             wbcols={
                 'lastname': parse_column_options('lastname'),
-                'firstname': ColumnOptions(column='firstname', matchBehavior="ignoreWhenBlank", nullAllowed=False, default=None),
+                'firstname': ColumnOptions(column='firstname', matchBehavior="ignoreWhenBlank", nullAllowed=False, default=None, disambiguationBehavior="ask"),
             },
             overrideScope=None,
             static={},
@@ -834,7 +854,7 @@ class NullAllowedTests(UploadTestsBase):
             name='Agent',
             wbcols={
                 'lastname': parse_column_options('lastname'),
-                'firstname': ColumnOptions(column='firstname', matchBehavior="ignoreAlways", nullAllowed=False, default=None),
+                'firstname': ColumnOptions(column='firstname', matchBehavior="ignoreAlways", nullAllowed=False, default=None, disambiguationBehavior="ask"),
             },
             overrideScope=None,
             static={},
@@ -857,3 +877,64 @@ class NullAllowedTests(UploadTestsBase):
         self.assertIsInstance(results[2].record_result, Uploaded)
         self.assertIsInstance(results[3].record_result, Matched)
         self.assertIsInstance(results[4].record_result, Matched)
+
+class DisambiguationBehaviorTests(UploadTestsBase):
+    def test_pickFirst_disambiguation_behavior(self) -> None:
+        # Upload some agents first
+        agent_plan = UploadTable(
+            name='Agent',
+            wbcols={
+                'firstname': parse_column_options('firstname'),
+                'lastname': parse_column_options('lastname'),
+                'email': parse_column_options('email'),
+            },
+            overrideScope=None,
+            static={},
+            toOne={},
+            toMany={}
+        )
+        agent_data = [
+            {'lastname': 'Doe', 'firstname': 'John', 'email': '0'},
+            {'lastname': 'Doe', 'firstname': 'John', 'email': '1'},
+        ]
+
+        results = do_upload(self.collection, agent_data, agent_plan, self.agent.id)
+        for result in results:
+            validate([result.to_json()], upload_results_schema, cls=Draft7Validator)
+
+        self.assertIsInstance(results[0].record_result, Uploaded)
+        self.assertIsInstance(results[1].record_result, Uploaded)
+        
+        # Try to add some Collection Objects with ambiguous catalogers
+        plan = UploadTable(
+            name='Collectionobject',
+            wbcols={
+                'catalognumber': parse_column_options('Cat #'),
+            },
+            overrideScope=None,
+            static={},
+            toOne={
+                'cataloger': UploadTable(
+                    name='Agent',
+                    wbcols={
+                        'lastname': parse_column_options('lastname'),
+                        'firstname': ColumnOptions(column='firstname', matchBehavior="ignoreNever", nullAllowed=True, default=None, disambiguationBehavior="pickFirst"),
+                    },
+                    overrideScope=None,
+                    static={},
+                    toOne={},
+                    toMany={},
+                )
+            },
+            toMany={}
+        )
+        data = [
+            {'Cat #': '124', 'lastname': 'Doe', 'firstname': 'John'},
+            {'Cat #': '125', 'lastname': 'Doe', 'firstname': 'Jane'}
+        ]
+        results = do_upload(self.collection, data, plan, self.agent.id)
+        for result in results:
+            validate([result.to_json()], upload_results_schema, cls=Draft7Validator)
+        
+        self.assertIsInstance(results[0].toOne['cataloger'].record_result, Matched, "Record was not disambiguated automatically despite having disambiguationBehavior='pickFirst'.")
+        self.assertIsInstance(results[1].toOne['cataloger'].record_result, Uploaded)

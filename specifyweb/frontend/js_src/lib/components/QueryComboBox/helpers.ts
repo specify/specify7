@@ -1,4 +1,5 @@
 import type { RA, WritableArray } from '../../utils/types';
+import type { LocalizedString } from 'typesafe-i18n';
 import { toTable, toTreeTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -21,6 +22,15 @@ import { flippedSortTypes } from '../QueryBuilder/helpers';
 import type { TypeSearch } from './spec';
 import type { CollectionRelationships } from './useCollectionRelationships';
 import type { QueryComboBoxTreeData } from './useTreeData';
+
+export function deduplicateQueryComboBoxResults(
+  responses: ReadonlyArray<ReadonlyArray<readonly [number, LocalizedString]>>
+): RA<readonly [number, LocalizedString]> {
+  const uniqueResults = new Map<number, readonly [number, LocalizedString]>();
+  for (const result of responses.flat())
+    if (!uniqueResults.has(result[0])) uniqueResults.set(result[0], result);
+  return Array.from(uniqueResults.values());
+}
 
 export function makeComboBoxQuery({
   fieldName,
@@ -81,6 +91,7 @@ export function getQueryComboBoxConditions({
   subViewRelationship,
   relatedTable,
   treeDefinition,
+  typeSearchName,
 }: {
   readonly resource: SpecifyResource<AnySchema>;
   readonly fieldName: string;
@@ -89,6 +100,7 @@ export function getQueryComboBoxConditions({
   readonly relatedTable: SpecifyTable;
   readonly subViewRelationship: Relationship | undefined;
   readonly treeDefinition: string | undefined;
+  readonly typeSearchName?: string | undefined;
 }): RA<SpecifyResource<SpQueryField>> {
   const fields: WritableArray<SpecifyResource<SpQueryField>> = [];
   const treeResource = toTreeTable(resource);
@@ -163,6 +175,22 @@ export function getQueryComboBoxConditions({
         .set('operStart', queryFieldFilterSpecs.equal.id)
     );
   }
+
+  /**
+   * When looking up BioStrat values for PaleoContext, only show
+   * GeologicTimePeriod nodes where isBioStrat is TRUE.
+   */
+  if (
+    typeSearchName === 'BioStrat' &&
+    relatedTable === tables.GeologicTimePeriod
+  )
+    fields.push(
+      QueryFieldSpec.fromPath(tables.GeologicTimePeriod.name, ['isBioStrat'])
+        .toSpQueryField()
+        .set('isDisplay', false)
+        .set('operStart', queryFieldFilterSpecs.true.id)
+        .set('startValue', 'true')
+    );
 
   if (
     typeof collectionRelationships === 'object' &&

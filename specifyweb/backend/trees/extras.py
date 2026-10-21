@@ -322,6 +322,35 @@ def mutation_log(action, node, agent, parent, dirty_flds: list[FieldChangeInfo])
     from specifyweb.backend.workbench.upload.auditlog import auditlog
     auditlog.log_action(action, node, agent, node.parent, dirty_flds)
 
+def _update_related_records(node, target, agent, related_model, field_name):
+    from specifyweb.backend.workbench.upload.auditlog import auditlog
+
+    field = related_model._meta.get_field(field_name)
+    records = related_model.objects.filter(
+        **{field.name: node}
+    ).select_for_update()
+    record_ids = []
+    for record in records:
+        record_ids.append(record.id)
+        # QuerySet.update() bypasses the normal auditing, so we have to log
+        # while the old foreign-key value is still available on the object.
+        auditlog.update(
+            record,
+            agent,
+            node.parent,
+            [FieldChangeInfo(
+                field_name=field.name,
+                old_value=getattr(record, field.attname),
+                new_value=target.id,
+            )],
+        )
+
+    # Apply the updates in bulk *after* the audit entries have been created.
+    if record_ids:
+        related_model.objects.filter(id__in=record_ids).update(
+            **{field.name: target}
+        )
+
 def merge(node, into, agent):
     from specifyweb.specify import models
     logger.info('merging %s into %s', node, into)
@@ -355,15 +384,18 @@ def merge(node, into, agent):
                 "children": list(into.children.values('id', 'fullname'))
              }})
     target_children = target.children.select_for_update()
+    children_to_reparent = []
     for child in node.children.select_for_update():
         matched = [target_child for target_child in target_children
                    if child.name == target_child.name and child.rankid == target_child.rankid]
         if len(matched) > 0:
             merge(child, matched[0], agent)
         else:
-            child.parent = target
-            child.save()
-   
+            children_to_reparent.append(child)
+
+    if children_to_reparent:
+        _batch_reparent_children(children_to_reparent, target, model)
+
     for retry in range(100):
         try:
             id = node.id
@@ -383,9 +415,59 @@ def merge(node, into, agent):
                 related_model_name, field_name = match.groups()
                 related_model = getattr(models, related_model_name)
                 assert related_model != model or field_name != 'parent', 'children were added during merge'
-                related_model.objects.filter(**{field_name: node}).update(**{field_name: target})
+                _update_related_records(
+                    node, target, agent, related_model, field_name
+                )
 
     assert False, "failed to move all referrences to merged tree node"
+
+
+def _batch_reparent_children(children, target, model):
+    """Batch-reparent multiple children to a new parent, avoiding O(N)
+    per-child overhead.
+    
+    This replaces the per-child pattern of:
+        child.parent = target
+        child.save()
+    which triggers moving_node() -> 5 interval UPDATEs + set_fullnames + validate
+    for each child individually.
+    
+    Instead, we:
+    1. Update parent_id for all children in a single UPDATE
+    2. Renumber the entire tree (fixes all node numbers at once)
+    3. Run set_fullnames once for the entire tree
+    4. Run validate_tree_numbering once
+    
+    The renumber_tree step is O(N) but runs in seconds even for large trees,
+    and is far faster than the O(N²) per-child approach.
+    """
+    if not children:
+        logger.info('batch reparenting 0 children to %s — skipping', target)
+        return
+    logger.info('batch reparenting %d children to %s', len(children), target)
+    
+    child_ids = [child.id for child in children]
+    
+    # Batch-update parent_id for all children in a single query
+    model.objects.filter(id__in=child_ids).update(parent=target)
+    
+    # Renumber the entire tree to fix all node numbers at once.
+    # This is O(N) but runs in seconds even for large trees.
+    renumber_tree(model._meta.db_table)
+    
+    # Run set_fullnames once for the entire tree
+    definition = target.definition
+    set_fullnames(definition)
+    
+    # Validate tree numbering once
+    validate_tree_numbering(model._meta.db_table)
+    
+    # Update the in-memory nodenumber/highestchildnodenumber for each child
+    # so they reflect the new positions (needed for subsequent operations)
+    for child in children:
+        refreshed = model.objects.get(id=child.id)
+        child.nodenumber = refreshed.nodenumber
+        child.highestchildnodenumber = refreshed.highestchildnodenumber
 
 def bulk_move(node, into, agent):
     from specifyweb.specify import models
@@ -817,13 +899,15 @@ def renumber_tree(table: str) -> None:
         return f"CONCAT_WS(',', {parts})"
 
     # Preorder numbering using ROW_NUMBER()
+    # Use existing nodenumber as a secondary tie-breaker so siblings
+    # keep their prior interval order unless explicitly moved.
     sql_preorder = (
         f"UPDATE {table} t\n"
         f"JOIN (\n"
         f"  SELECT id, rn FROM (\n"
         f"    SELECT\n"
         f"      t0.{table}id AS id,\n"
-        f"      ROW_NUMBER() OVER (ORDER BY {path_expr(table, depth)}, t0.{table}id) AS rn\n"
+        f"      ROW_NUMBER() OVER (ORDER BY {path_expr(table, depth)}, t0.nodenumber, t0.{table}id) AS rn\n"
         f"    FROM {table} t0\n"
         f"{parent_joins(table, depth)}\n"
         f"  ) ordered\n"

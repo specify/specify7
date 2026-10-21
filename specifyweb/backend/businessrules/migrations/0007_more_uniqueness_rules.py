@@ -46,7 +46,12 @@ def apply_migration(apps, schema_editor):
                     continue
                 # create the uniqueness rule if there are no violating duplicates
                 create_uniqueness_rule(
-                    table, discipline, False, fields, scopes, apps)
+                    model_name=table,
+                    discipline=discipline,
+                    is_database_constraint=False,
+                    fields=fields, scopes=scopes,
+                    registry=apps
+                )
 
 
 def revert_migration(apps, schema_editor):
@@ -57,7 +62,13 @@ def revert_migration(apps, schema_editor):
             for rule in rules:
                 fields, scopes = rule
                 remove_uniqueness_rule(
-                    table, discipline, False, fields, scopes, apps)
+                    model_name=table,
+                    discipline=discipline,
+                    is_database_constraint=False,
+                    fields=fields,
+                    scopes=scopes,
+                    registry=apps
+                )
 
 
 class Migration(migrations.Migration):

@@ -47,6 +47,7 @@ import {
   getQueryComboBoxConditions,
   getRelatedCollectionId,
   makeComboBoxQuery,
+  deduplicateQueryComboBoxResults,
   pendingValueToResource,
   scopeNewResourceToCollection,
   useQueryComboBoxDefaults,
@@ -77,6 +78,7 @@ export function QueryComboBox({
   searchView,
   defaultRecord,
   relatedTable: initialRelatedTable,
+  onSavingNewRecord: handleSavingNewRecord,
 }: {
   readonly id: string | undefined;
   readonly resource: SpecifyResource<AnySchema> | undefined;
@@ -93,6 +95,9 @@ export function QueryComboBox({
   readonly searchView?: string;
   readonly defaultRecord?: string | undefined;
   readonly relatedTable?: SpecifyTable | undefined;
+  readonly onSavingNewRecord?:
+    | ((resource: SpecifyResource<AnySchema>) => void)
+    | undefined;
 }): JSX.Element {
   React.useEffect(() => {
     useQueryComboBoxDefaults({ resource, field, defaultRecord });
@@ -344,6 +349,7 @@ export function QueryComboBox({
                   relatedTable,
                   subViewRelationship,
                   treeDefinition,
+                  typeSearchName: typeSearch.name,
                 }),
               })
             )
@@ -372,7 +378,7 @@ export function QueryComboBox({
     (
       responses: RA<RA<readonly [id: number, label: LocalizedString]>>
     ): RA<AutoCompleteItem<string>> =>
-      responses.flat().map(([id, label]) => ({
+      deduplicateQueryComboBoxResults(responses).map(([id, label]) => ({
         data: getResourceApiUrl(
           field.isRelationship
             ? field.relatedTable.name
@@ -474,7 +480,6 @@ export function QueryComboBox({
           disabled={
             !isLoaded ||
             isReadOnly ||
-            formType === 'formTable' ||
             typeSearch === undefined ||
             /**
              * Don't disable the input if it is currently focused
@@ -605,6 +610,10 @@ export function QueryComboBox({
                                 relatedTable,
                                 subViewRelationship,
                                 treeDefinition,
+                                typeSearchName:
+                                  typeof typeSearch === 'object'
+                                    ? typeSearch.name
+                                    : undefined,
                               })
                                 .map(serializeResource)
                                 .map(({ fieldName, startValue }) =>
@@ -645,13 +654,21 @@ export function QueryComboBox({
                                               isNot: false,
                                               value: startValue,
                                             }
-                                          : f.error(
-                                              `extended filter not created`,
-                                              {
-                                                fieldName,
-                                                startValue,
+                                          : fieldName === 'isBioStrat'
+                                            ? {
+                                                field: 'isBioStrat',
+                                                isRelationship: false,
+                                                operation: 'in',
+                                                isNot: false,
+                                                value: '1',
                                               }
-                                            )
+                                            : f.error(
+                                                `extended filter not created`,
+                                                {
+                                                  fieldName,
+                                                  startValue,
+                                                }
+                                              )
                                 )
                             ),
                           })
@@ -713,15 +730,16 @@ export function QueryComboBox({
               resource?.set(field.name, state.resource as never);
               setState({ type: 'MainState' });
             }}
-            onSaving={
-              field.isDependent()
-                ? (): false => {
-                    resource?.set(field.name, state.resource as never);
-                    setState({ type: 'MainState' });
-                    return false;
-                  }
-                : undefined
-            }
+            onSaving={(unsetUnloadProtect): false | void => {
+              handleSavingNewRecord?.(state.resource);
+              if (field.isDependent()) {
+                resource?.set(field.name, state.resource as never);
+                setState({ type: 'MainState' });
+                unsetUnloadProtect();
+                return false;
+              }
+              return undefined;
+            }}
           />
         ) : undefined}
         {state.type === 'SearchState' ? (

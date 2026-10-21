@@ -1,8 +1,7 @@
-from django.db import migrations, connection
+from django.db import migrations
 
 def reverse_faulty_end_start_period(apps, schema_editor):
-    from django.db import connection
-
+    connection = schema_editor.connection
     with connection.cursor() as cursor:
         # Check if the table geologictimeperiod exists
         cursor.execute("""
@@ -10,7 +9,8 @@ def reverse_faulty_end_start_period(apps, schema_editor):
             FROM information_schema.tables
             WHERE table_name = 'geologictimeperiod' AND table_schema = DATABASE();
         """)
-        if cursor.fetchone()[0] != 1:
+        result = cursor.fetchone()
+        if result is None or result[0] != 1:
             raise RuntimeError("Expected table 'geologictimeperiod' does not exist. Migration cannot proceed.")
 
         # Perform the update if the table exists

@@ -65,6 +65,7 @@ export const operationPolicies = {
     'execute',
     'export_csv',
     'export_kml',
+    'export_to_web_portal',
     'create_recordset',
   ],
   '/workbench/dataset': [
@@ -123,6 +124,7 @@ export const frontEndPermissions = {
   '/preferences/user': ['edit_protected'],
   '/preferences/statistics': ['edit_shared'],
   '/preferences/collection': ['edit_collection'],
+  '/preferences/global': ['update'],
 } as const;
 
 /**

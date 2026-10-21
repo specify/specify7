@@ -5,6 +5,7 @@
 import { attachmentsText } from '../../localization/attachments';
 import { batchEditText } from '../../localization/batchEdit';
 import { commonText } from '../../localization/common';
+import { dataViewsText } from '../../localization/dataViews';
 import { headerText } from '../../localization/header';
 import { interactionsText } from '../../localization/interactions';
 import { queryText } from '../../localization/query';
@@ -14,13 +15,9 @@ import { treeText } from '../../localization/tree';
 import { wbText } from '../../localization/workbench';
 import { getCache } from '../../utils/cache';
 import { f } from '../../utils/functools';
-import type { IR } from '../../utils/types';
+import { IR } from '../../utils/types';
 import { ensure } from '../../utils/types';
 import { icons } from '../Atoms/Icons';
-import {
-  attachmentsAvailable,
-  attachmentSettingsPromise,
-} from '../Attachments/attachments';
 import type { MenuItem } from '../Core/Main';
 import { schema } from '../DataModel/schema';
 import { getDisciplineTrees } from '../InitialContext/treeRanks';
@@ -76,6 +73,11 @@ const rawMenuItems = ensure<IR<Omit<MenuItem, 'name'>>>()({
       hasToolPermission('queryBuilder', 'read') ||
       hasPermission('/querybuilder/query', 'execute'),
   },
+  dataViews: {
+    url: '/specify/overlay/dataviews/',
+    title: dataViewsText.dataViewsTitle(),
+    icon: icons.eye,
+  },
   recordSets: {
     url: '/specify/overlay/record-sets/',
     title: commonText.recordSets(),
@@ -98,11 +100,11 @@ const rawMenuItems = ensure<IR<Omit<MenuItem, 'name'>>>()({
     url: '/specify/attachments/',
     title: attachmentsText.attachments(),
     icon: icons.photos,
-    async enabled(): Promise<boolean> {
-      if (!hasTablePermission('Attachment', 'read')) return false;
-      await attachmentSettingsPromise;
-      return attachmentsAvailable();
-    },
+    /*
+     * Asset server availability is checked at render time so the item can be
+     * disabled and re-enabled without a page reload. See useAttachmentServerStatus
+     */
+    enabled: () => hasTablePermission('Attachment', 'read'),
   },
   statistics: {
     url: '/specify/stats',

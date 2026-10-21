@@ -350,6 +350,28 @@ class PermissionsApiTest(ApiTests):
 
         data = json.loads(response.content)
 
+    def test_query_reflects_policy_changes_immediately(self) -> None:
+        models.UserPolicy.objects.all().delete()
+        request = (
+            self.collection.id,
+            self.specifyuser.id,
+            "/table/collectionobject",
+            "create",
+        )
+
+        self.assertFalse(permissions.query(*request).allowed)
+
+        policy = models.UserPolicy.objects.create(
+            collection=self.collection,
+            specifyuser=self.specifyuser,
+            resource="/table/collectionobject",
+            action="create",
+        )
+        self.assertTrue(permissions.query(*request).allowed)
+
+        policy.delete()
+        self.assertFalse(permissions.query(*request).allowed)
+
     def test_add_access_to_new_collection_exception(self) -> None:
         user2 = models.Specifyuser.objects.create( # type: ignore
             isloggedin=False,
@@ -518,3 +540,142 @@ class PermissionsApiTest(ApiTests):
             content_type='application/json',
         )
         self.assertEqual(response.status_code, 204)
+
+    def test_create_user_institution(self) -> None:
+        c = Client()
+        c.force_login(self.specifyuser)
+
+        response = c.post(
+            '/api/specify/specifyuser/',
+            data=json.dumps({'name': 'testuser2'}),
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 201)
+
+        user2 = spmodels.Specifyuser.objects.get(name='testuser2')
+        response = c.get(f'/api/specify/specifyuser/{user2.id}/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json.loads(response.content)['name'], 'testuser2')
+
+    def test_create_user_in_collection(self) -> None:
+        c = Client()
+        c.force_login(self.specifyuser)
+
+        response = c.post(
+            '/api/specify/specifyuser/',
+            data=json.dumps({'name': 'testuser2'}),
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 201)
+
+        user2 = spmodels.Specifyuser.objects.get(name='testuser2')
+        user2.set_password('testuser2password')
+        user2.save()
+
+        # a user needs an agent in the discipline before getting collection access
+        spmodels.Agent.objects.create( # type: ignore
+            agenttype=0,
+            firstname="Test",
+            lastname="User",
+            division=self.division,
+            specifyuser=user2)
+
+        response = c.put(
+            f'/permissions/user_policies/{self.collection.id}/{user2.id}/',
+            data={
+                permissions.CollectionAccessPT.resource: ["access"],
+                '/table/collectionobject': ["read"],
+                '/field/%': ["%"],
+            },
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 204)
+
+        # the new user can log in and read the collection's collection objects
+        c2 = Client()
+        self.assertTrue(c2.login(name='testuser2', password='testuser2password'))
+        response = c2.get('/api/specify/collectionobject/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_delete_user(self) -> None:
+        c = Client()
+        c.force_login(self.specifyuser)
+
+        user2 = spmodels.Specifyuser.objects.create( # type: ignore
+            isloggedin=False,
+            isloggedinreport=False,
+            name="testuser2",
+            password="")
+
+        models.UserPolicy.objects.create(
+            collection=self.collection,
+            specifyuser=user2,
+            resource="/table/%",
+            action="read",
+        )
+
+        response = c.delete(f'/api/specify/specifyuser/{user2.id}/')
+        self.assertEqual(response.status_code, 204)
+
+        self.assertFalse(spmodels.Specifyuser.objects.filter(id=user2.id).exists())
+        self.assertFalse(models.UserPolicy.objects.filter(specifyuser_id=user2.id).exists())
+
+
+    def test_no_access_to_other_collection(self) -> None:
+    # making a second collection
+        other_collection = spmodels.Collection.objects.create(
+            catalognumformatname="test",
+            collectionname="Other Test Collection",
+            isembeddedcollectingevent=False,
+            discipline=self.discipline
+        )
+
+        # creating a new user
+        user2 = spmodels.Specifyuser.objects.create( # type: ignore
+            isloggedin=False,
+            isloggedinreport=False,
+            name="testuser2",
+            password=""
+        )
+        user2.set_password('testuser2password')
+        user2.save()
+
+        spmodels.Agent.objects.create(
+            agenttype=0,
+            firstname="Test",
+            lastname="User",
+            division=self.division,
+            specifyuser=user2
+        )
+
+        models.UserPolicy.objects.create(
+            collection=self.collection,
+            specifyuser=user2,
+            resource=permissions.CollectionAccessPT.resource,
+            action="access")
+        models.UserPolicy.objects.create(
+            collection=self.collection,
+            specifyuser=user2,
+            resource="/table/collectionobject",
+            action="read")
+
+        c = Client()
+        self.assertTrue(c.login(name='testuser2', password='testuser2password'))
+
+        # the user has access to this collection
+        c.cookies['collection'] = str(self.collection.id)
+        response = c.get('/api/specify/collectionobject/')
+        self.assertEqual(response.status_code, 200)
+
+        # but not to another collection, even if the collection cookie is changed
+        c.cookies['collection'] = str(other_collection.id)
+        response = c.get('/api/specify/collectionobject/')
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(json.loads(response.content), {
+            'NoMatchingRuleException': [{
+                'collectionid': other_collection.id,
+                'userid': user2.id,
+                'resource': permissions.CollectionAccessPT.resource,
+                'action': 'access',
+            }]
+        })

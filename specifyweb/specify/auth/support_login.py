@@ -17,7 +17,7 @@ from django.core.exceptions import PermissionDenied
 
 from specifyweb.specify.models import Specifyuser
 from specifyweb.backend.workbench.upload.auditlog import str_to_bytes
-from specifyweb.backend.redis_cache import set_bytes, get_bytes
+from specifyweb.backend.cache.redis import set_bytes, get_bytes
 
 logger = logging.getLogger(__name__)
 

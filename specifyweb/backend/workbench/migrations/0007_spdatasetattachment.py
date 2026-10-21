@@ -6,8 +6,8 @@
 from django.db import migrations, models
 import django.db.models.deletion
 import django.utils.timezone
+from specifyweb.specify.migration_utils.schema_writer import revert_table_field_schema_config, revert_table_schema_config, update_table_field_schema_config_with_defaults, update_table_schema_config_with_defaults
 import specifyweb.specify.models
-from specifyweb.specify.migration_utils.update_schema_config import update_table_field_schema_config_with_defaults, update_table_schema_config_with_defaults, revert_table_field_schema_config, revert_table_schema_config 
 
 MIGRATION_0007_TABLES = [
     ('SpDataSetAttachment', 'An attachment temporarily associated with a Specify Data Set for use in a WorkBench upload.')
@@ -20,13 +20,26 @@ MIGRATION_0007_FIELDS = {
 def apply_migration(apps, schema_editor):
     # Update Schema config
     Discipline = apps.get_model('specify', 'Discipline')
-    for discipline in Discipline.objects.all(): # New SpDataSetAttachment table
+    for discipline_id, discipline_type in Discipline.objects.all().order_by('type').values_list('pk', 'type'): # New SpDataSetAttachment table
+
         for table, desc in MIGRATION_0007_TABLES:
-            update_table_schema_config_with_defaults(table, discipline.id, desc, apps)
-    for discipline in Discipline.objects.all(): # New relationship Spdataset -> SpDataSetAttachment
+            update_table_schema_config_with_defaults(
+                table_name=table,
+                discipline_id=discipline_id,
+                discipline_type=discipline_type,
+                apps=apps,
+                table_defaults={"desc": desc}
+            )
+
         for table, fields in MIGRATION_0007_FIELDS.items():
-            for field in fields: 
-                update_table_field_schema_config_with_defaults(table, discipline.id, field, apps)
+            for field in fields:
+                update_table_field_schema_config_with_defaults(
+                    table_name=table,
+                    discipline_id=discipline_id,
+                    discipline_type=discipline_type,
+                    field_name=field,
+                    apps=apps
+                )
 
 def revert_migration(apps, schema_editor):
     # Revert Schema config changes

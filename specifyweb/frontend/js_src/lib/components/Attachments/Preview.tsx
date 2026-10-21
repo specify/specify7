@@ -4,7 +4,11 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { Attachment } from '../DataModel/types';
 import type { AttachmentThumbnail } from './attachments';
-import { fetchThumbnail } from './attachments';
+import {
+  fetchThumbnail,
+  reportAttachmentServerFailure,
+  useAttachmentServerStatus,
+} from './attachments';
 
 export function AttachmentPreview({
   attachment,
@@ -13,8 +17,15 @@ export function AttachmentPreview({
   readonly attachment: SerializedResource<Attachment>;
   readonly onOpen: () => void;
 }): JSX.Element {
+  const attachmentServerStatus = useAttachmentServerStatus();
   const [thumbnail] = useAsyncState(
-    React.useCallback(async () => fetchThumbnail(attachment), [attachment]),
+    React.useCallback(
+      async () =>
+        attachmentServerStatus !== 'unavailable'
+          ? fetchThumbnail(attachment)
+          : undefined,
+      [attachment, attachmentServerStatus]
+    ),
     false
   );
 
@@ -56,6 +67,11 @@ export function Thumbnail({
         width: `${thumbnail.width}px`,
         height: `${thumbnail.height}px`,
       }}
+      onError={
+        thumbnail.isServerBacked === true
+          ? reportAttachmentServerFailure
+          : undefined
+      }
     />
   );
 }

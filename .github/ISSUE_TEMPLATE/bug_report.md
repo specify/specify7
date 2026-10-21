@@ -27,7 +27,7 @@ If applicable, add screenshots to help explain your problem.
 
 **Crash Report**
 
-If the bug resulted in an error message, please click on "Download Error Message" and attach it here. If there is no error, please follow [these instructions](https://discourse.specifysoftware.org/t/download-specify-7-system-information/1614) to download your System Information.
+If the bug resulted in an error message, please click on "Download Error Message" and attach it here. If there is no error, please follow [these instructions](https://speciforum.org/t/download-specify-7-system-information/1614) to download your System Information.
 
 Please fill out the following information manually:
 - OS: [e.g. Windows 10]

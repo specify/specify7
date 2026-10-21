@@ -30,7 +30,7 @@ export function QueryTablesEdit({
     <TablesListEdit
       defaultTables={defaultQueryTablesConfig}
       header={queryText.configureQueryTables()}
-      isNoRestrictionMode={isNoRestrictionMode}
+      showHiddenTables={isNoRestrictionMode}
       tables={tables}
       onChange={setTables}
       onClose={handleClose}
@@ -39,14 +39,14 @@ export function QueryTablesEdit({
 }
 
 export function TablesListEdit({
-  isNoRestrictionMode,
+  showHiddenTables = false,
   defaultTables,
   header,
   tables: selectedTables,
   onChange: handleChange,
   onClose: handleClose,
 }: {
-  readonly isNoRestrictionMode: boolean;
+  readonly showHiddenTables?: boolean;
   readonly defaultTables: RA<keyof Tables>;
   readonly header: LocalizedString;
   readonly tables: RA<SpecifyTable>;
@@ -56,7 +56,7 @@ export function TablesListEdit({
   const selectedValues = selectedTables.map(({ name }) => name);
   const allTables = Object.values(genericTables)
     .filter((table) =>
-      tablesFilter(isNoRestrictionMode, false, true, table, selectedValues)
+      tablesFilter(showHiddenTables, false, true, table, selectedValues)
     )
     .map(({ name, label }) => ({ name, label }));
 

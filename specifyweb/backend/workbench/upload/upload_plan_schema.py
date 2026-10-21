@@ -85,6 +85,11 @@ schema: dict = {
                 "static": {"$ref": "#/definitions/static"},
                 "toOne": {"$ref": "#/definitions/toOne"},
                 "toMany": {"$ref": "#/definitions/toManyRecords"},
+                "preserveIdentity": {
+                    "type": "boolean",
+                    "default": False,
+                    "description": "If true, batch edit should update the matched record in place rather than cloning it.",
+                },
             },
             "required": ["wbcols", "static", "toOne", "toMany"],
             "additionalProperties": False,
@@ -101,6 +106,11 @@ schema: dict = {
                 "static": {"$ref": "#/definitions/static"},
                 "toOne": {"$ref": "#/definitions/toOne"},
                 "toMany": {"$ref": "#/definitions/toManyRecords"},
+                "preserveIdentity": {
+                    "type": "boolean",
+                    "default": False,
+                    "description": "If true, batch edit should update the matched record in place rather than cloning it.",
+                },
             },
             # not making tomany required, to not choke on legacy upload plans
             "required": ["wbcols", "static", "toOne"],
@@ -274,6 +284,12 @@ this column will never be considered for matching purposes, only for uploading."
                     "default": None,
                     "description": "When set use this value for any cells that are empty in this column.",
                 },
+                "disambiguationBehavior": {
+                    "type": "string",
+                    "enum": ["ask", "pickFirst"],
+                    "default": "ask",
+                    "description": "How to disambiguate when multiple records are matched.",
+                },
             },
             "required": ["column"],
             "additionalProperties": False,
@@ -357,6 +373,7 @@ def parse_upload_table(table: Table, to_parse: dict) -> UploadTable:
         ),
         wbcols={k: parse_column_options(v) for k, v in to_parse["wbcols"].items()},
         static=to_parse["static"],
+        preserveIdentity=to_parse.get("preserveIdentity", False),
         toOne={
             key: parse_uploadable(rel_table(key), to_one)
             for key, to_one in to_parse["toOne"].items()
@@ -425,6 +442,7 @@ def parse_column_options(to_parse: str | dict) -> ColumnOptions:
             matchBehavior="ignoreNever",
             nullAllowed=True,
             default=None,
+            disambiguationBehavior="ask",
         )
     else:
         return ColumnOptions(
@@ -432,4 +450,5 @@ def parse_column_options(to_parse: str | dict) -> ColumnOptions:
             matchBehavior=to_parse.get("matchBehavior", "ignoreNever"),
             nullAllowed=to_parse.get("nullAllowed", True),
             default=to_parse.get("default", None),
+            disambiguationBehavior=to_parse.get("disambiguationBehavior", "ask")
         )

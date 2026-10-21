@@ -106121,7 +106121,7 @@
       "timestampcreated": "2012-11-09T14:03:40",
       "version": 0,
       "timestampmodified": "2012-11-09T14:03:40",
-      "text": "This holds meta data about the attachment. It is a set of named value pairs.",
+      "text": "This holds metadata about the attachment. It is a set of named value pairs.",
       "createdbyagent": null,
       "itemname": null
     }
@@ -106216,7 +106216,7 @@
       "timestampcreated": "2012-11-09T14:03:40",
       "version": 0,
       "timestampmodified": "2012-11-09T14:03:40",
-      "text": "The name of the meta data field.",
+      "text": "The name of the metadata field.",
       "createdbyagent": null,
       "itemname": null
     }
@@ -106330,7 +106330,7 @@
       "timestampcreated": "2012-11-09T14:03:40",
       "version": 0,
       "timestampmodified": "2012-11-09T14:03:40",
-      "text": "The value of the meta data field.",
+      "text": "The value of the metadata field.",
       "createdbyagent": null,
       "itemname": null
     }
@@ -119459,7 +119459,7 @@
       "timestampcreated": "2012-11-09T14:03:40",
       "version": 0,
       "timestampmodified": "2012-11-09T14:03:40",
-      "text": "Meta Data",
+      "text": "Metadata",
       "createdbyagent": null,
       "itemname": 768
     }
@@ -145755,7 +145755,7 @@
       "timestampcreated": "2012-11-09T14:03:40",
       "version": 0,
       "timestampmodified": "2012-11-09T14:03:40",
-      "text": "Meta Data",
+      "text": "Metadata",
       "createdbyagent": null,
       "itemname": 1426
     }
@@ -171861,7 +171861,7 @@
       "timestampcreated": "2012-11-09T14:03:40",
       "version": 0,
       "timestampmodified": "2012-11-09T14:03:40",
-      "text": "Meta Data",
+      "text": "Metadata",
       "createdbyagent": null,
       "itemname": 2080
     }
@@ -219456,7 +219456,7 @@
       "timestampcreated": "2012-11-09T14:03:40",
       "version": 0,
       "timestampmodified": "2012-11-09T14:03:40",
-      "text": "Is BioStratigraphy",
+      "text": "Is Biostratigraphy",
       "createdbyagent": null,
       "itemname": 3282
     }

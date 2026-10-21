@@ -61,6 +61,7 @@ export function Tree<
   searchBoxRef,
   baseUrl,
   setLastFocusedTree,
+  biostratFilter = 'all',
   onToggleEditingRanks: handleToggleEditingRanks,
 }: {
   readonly treeDefinitionItems: RA<
@@ -80,6 +81,7 @@ export function Tree<
   readonly searchBoxRef: React.RefObject<HTMLInputElement | null>;
   readonly baseUrl: string;
   readonly setLastFocusedTree: () => void;
+  readonly biostratFilter?: 'all' | 'bio' | 'chrono';
   readonly onToggleEditingRanks: () => void;
 }): JSX.Element {
   const highContrast = useHighContrast();
@@ -109,12 +111,23 @@ export function Tree<
     'rankThreshold'
   );
 
+  const [showSynonymCounts] = userPreferences.use(
+    'treeEditor',
+    'taxon',
+    'showSynonymCounts'
+  );
+  const includeSynonymCount = tableName === 'Taxon' && showSynonymCounts;
+
   const getStats = React.useCallback(
     async (nodeId: number | 'null', rankId: number): Promise<Stats> =>
       rankId >= statsThreshold
-        ? fetchStats(`${baseUrl}/${nodeId}/stats/`)
+        ? fetchStats(
+            `${baseUrl}/${nodeId}/stats/${
+              includeSynonymCount ? '?includeSynonymCount=true' : ''
+            }`
+          )
         : Promise.resolve({}),
-    [baseUrl, statsThreshold]
+    [baseUrl, statsThreshold, includeSynonymCount]
   );
 
   const treeDefinition = treeDefinitionItems[0].treeDef;
@@ -308,6 +321,7 @@ export function Tree<
             {rows.map((row, index) => (
               <TreeRow
                 actionRow={actionRow}
+                biostratFilter={biostratFilter}
                 collapsedRanks={collapsedRanks ?? []}
                 conformation={
                   conformation

@@ -1,8 +1,8 @@
 from django.db import migrations
-from specifyweb.specify.migration_utils import update_schema_config as usc
+from specifyweb.specify.migration_utils.migration_helpers.helper_0033_update_paleo_desc import update_paleo_desc
 
 def schemaconfig_fixes(apps, schema_editor):
-    usc.update_paleo_desc(apps)
+    update_paleo_desc(apps)
 
 class Migration(migrations.Migration):
     dependencies = [

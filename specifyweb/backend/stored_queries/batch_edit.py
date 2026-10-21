@@ -720,17 +720,22 @@ class RowPlanCanonical(NamedTuple):
             ]  # Need to go off by 1, bc we added 1 to account for id fields
             # It could happen that the field we saw doesn't exist.
             # Plus, the default options get chosen in the cases of
-            table_name, field_name = _get_table_and_field(field)
+            table_name, _ = _get_table_and_field(field)
+            # Use date-part-aware field name for localization lookup so that
+            # different date components (Full Date, Day, Month, Year) are
+            # matched to their correct captions rather than consuming labels
+            # in insertion order.
+            date_part_field_name = _get_date_part_field_name(field)
             field_caption = query_field_caption_lookup.get(field, None)
             table_field_labels = batch_edit_meta_tables.get_table_field_labels(table_name)
             if (
                 table_field_labels is None
-                or not table_field_labels.has_field_label(field_name)
+                or not table_field_labels.has_field_label(date_part_field_name)
                 or field.fieldspec.contains_tree_rank()
             ):
                 localized_label = naive_field_format(field.fieldspec)
             else:
-                field_label = table_field_labels.use_field_label(field_name, field_caption)
+                field_label = table_field_labels.use_field_label(date_part_field_name, field_caption)
                 localized_label = (
                     field_label.caption if field_label is not None else naive_field_format(field.fieldspec)
                 )
@@ -836,6 +841,7 @@ class RowPlanCanonical(NamedTuple):
                 overrideScope=None,
                 wbcols=wb_cols,
                 static={},
+                preserveIdentity=(base_table.name.lower() == "attachment"),
                 # FEAT: Remove this restriction to allow adding brand new data anywhere
                 # that's about the best we can do, to make relationships readonly. we can't really omit them during headers finding, because they are "still" there
                 toOne=Func.remove_keys(to_one_upload_tables, _relationship_is_editable),
@@ -857,7 +863,10 @@ def naive_field_format(fieldspec: QueryFieldSpec):
         return f"{prefix}{fieldspec.table.name} (formatted)"
     if field.is_relationship:
         return f"{prefix}{fieldspec.table.name} ({'formatted' if field.type.endswith('to-one') else 'aggregatd'})"
-    return f"{prefix}{fieldspec.table.name} {field.name}"
+    date_suffix = ""
+    if fieldspec.is_temporal() and fieldspec.date_part is not None and fieldspec.date_part != "Full Date":
+        date_suffix = f" ({fieldspec.date_part})"
+    return f"{prefix}{fieldspec.table.name} {field.name}{date_suffix}"
 
 
 # @transaction.atomic <--- we DONT do this because the query logic could take up possibly multiple minutes
@@ -896,7 +905,26 @@ def _get_table_and_field(field: QueryField):
     field_name = None if field.fieldspec.get_field() is None else field.fieldspec.get_field().name
     return (table_name, field_name)
 
-def rewrite_coordinate_fields(row, _mapped_rows: dict[tuple[tuple[str, ...], ...], Any], join_paths: tuple[tuple[str, ...], ...]) -> tuple: 
+def _get_date_part_field_name(field: QueryField) -> str | None:
+    """Return a field name that includes the date part suffix for temporal fields.
+
+    This ensures that different date components (e.g., catalogedDate Full Date,
+    catalogedDate Day, catalogedDate Month, catalogedDate Year) are treated as
+    distinct fields in the localization lookup, preventing mislabeled headers.
+    """
+    base_name = None if field.fieldspec.get_field() is None else field.fieldspec.get_field().name
+    if base_name is None:
+        return None
+    date_part = field.fieldspec.date_part
+    if date_part is not None:
+        return f"{base_name}__{date_part}"
+    return base_name
+
+def rewrite_coordinate_fields(
+    row: tuple[Any, ...],
+    mapped_rows: dict[tuple[tuple[str, ...], str | None], Any],
+    field_keys: tuple[tuple[tuple[str, ...], str | None], ...],
+) -> tuple:
     """
         In the QueryResults we want to replace any instances of the decimal
         coordinate fields (latitude1, longitude1, latitude2, longitude2) with
@@ -916,36 +944,42 @@ def rewrite_coordinate_fields(row, _mapped_rows: dict[tuple[tuple[str, ...], ...
         running he query, and then replacing the represented field before 
         parsing.
     """
-    mapped_rows = _mapped_rows
-
     field_replacement_map = {
         'latitude1': 'lat1text',
         'longitude1': 'long1text',
-        'latiude2': 'lat2text',
+        'latitude2': 'lat2text',
         'longitude2': 'long2text'
     }
 
-    for join_path in join_paths:
+    for field_key in field_keys:
+        join_path, date_part = field_key
         if len(join_path) == 0:
             continue
         field_name = join_path[-1]
         replacement_field = field_replacement_map.get(field_name, None)
         replace_join_path = tuple((*join_path[:-1], replacement_field))
-        if replacement_field is None or not replace_join_path in mapped_rows.keys():
+        replacement_key = (replace_join_path, date_part)
+        if replacement_field is None or replacement_key not in mapped_rows:
             continue
 
-        mapped_rows[join_path] = mapped_rows[replace_join_path]
+        mapped_rows[field_key] = mapped_rows[replacement_key]
 
-    result = tuple(mapped_rows[join_path] for join_path in join_paths)
+    result = tuple(mapped_rows[field_key] for field_key in field_keys)
     return (row[0], *result)
 
 def rewrite_row(row, query_fields: list[QueryField]) -> tuple:
     """
         Rewrite the query result row to an "expected form" for batch edit
     """
-    join_paths = tuple(tuple(field.name for field in query_field.fieldspec.join_path) for query_field in query_fields)
-    mapped_rows = dict(zip(join_paths, row[1:]))
-    return rewrite_coordinate_fields(row, mapped_rows, join_paths)
+    field_keys = tuple(
+        (
+            tuple(field.name for field in query_field.fieldspec.join_path),
+            query_field.fieldspec.date_part,
+        )
+        for query_field in query_fields
+    )
+    mapped_rows = dict(zip(field_keys, row[1:]))
+    return rewrite_coordinate_fields(row, mapped_rows, field_keys)
 
 def run_batch_edit_query(props: BatchEditProps):
 
@@ -982,7 +1016,8 @@ def run_batch_edit_query(props: BatchEditProps):
 
     localization_dump: dict[str, list[tuple[str, str, bool]]] = {}
     for field, caption in field_caption_pairs:
-        table_name, field_name = _get_table_and_field(field)
+        table_name, _ = _get_table_and_field(field)
+        field_name = _get_date_part_field_name(field)
         field_labels = localization_dump.get(table_name, [])
         new_field_label = (field_name, caption, False)
         field_labels.append(new_field_label)
@@ -1016,7 +1051,7 @@ def run_batch_edit_query(props: BatchEditProps):
             series=False,
             search_synonymy=False,
             count_only=False,
-            field_specs=query_with_hidden,
+            query_fields=query_with_hidden,
             limit=limit,
             offset=offset,
             recordsetid=recordsetid,
@@ -1091,11 +1126,9 @@ def run_batch_edit_query(props: BatchEditProps):
         omit_relationships,
     )
 
-    headers_enumerated = enumerate(key_and_headers)
-
     # We would have arbitarily sorted the columns, so our columns will not be correct.
     # Rather than sifting the data, we just add a default visual order.
-    visual_order = Func.first(headers_enumerated)
+    visual_order = reorder_batch_edit_columns(key_and_headers, visible_fields)
 
     headers = Func.second(key_and_headers)
 
@@ -1109,6 +1142,80 @@ def run_batch_edit_query(props: BatchEditProps):
         json_upload_plan,
         visual_order,
     )
+
+def reorder_batch_edit_columns(key_and_headers: list[tuple[tuple[int, int], str]], visible_fields: list[int]) -> list[int]:
+    """
+        Columns are usually not naturally in query-order. This function provides an order that matches the query-order as closely as possible.
+        Column keys: (original_position, duplicate_index)
+        To achieve query-order, these assumptions are made:
+        1. Duplicate columns are grouped by record: (0, 0), (1, 0), (0, 1), (1, 1), (0, 2), (1, 2), (2, 0)
+            - If duplicate_index goes back to 0 when looking at the columns in sequence, thats a sign you're on a different record.
+        2. New columns will have an original_position greater than the query's number of fields.
+    """
+    headers_enumerated = enumerate(key_and_headers)
+
+    # Multiple (duplicate) columns can exist in the same position. Group them, the final order will be determined later.
+    visual_order_groups: list[list[int]] = [[] for _ in visible_fields]
+    # Keep track of the record id of each group of columns in visual_order_groups
+    group_record_ids: list[int] = [[] for _ in visible_fields]
+    record_id = 0
+    prev_duplicate_index: int | None = None
+    for index, (key, _header) in headers_enumerated:
+        # Find the column's original position if it existed in the origin query
+        original_position = key[0]
+        duplicate_index = key[1]
+        if duplicate_index != prev_duplicate_index:
+            # (Assumption #1) Since duplicate_index has gone down, assume we are on a different record's fields.
+            record_id = record_id + 1
+
+        if original_position < len(visible_fields): # Assumption #2
+            # Field existed in original query, place it in its original position.
+            visual_order_groups[original_position].append(index)
+            group_record_ids[original_position] = record_id
+        else:
+            # New field/column. Add it to the end of the dataset.
+            visual_order_groups.append([index])
+            group_record_ids.append(record_id)
+
+        prev_duplicate_index = duplicate_index
+
+    # Determine final visual order. Flatten visual_order_groups into a single list.
+    # Visit duplicate columns within a record group in order. So (0, 0), (1, 0), (0, 1), (1, 1)
+    visual_order: list[int] = []
+    current_dup_index = 0 # Which duplicate index is currently being visited
+    record_start_index: int | None = None # The first group belonging to the current record
+    index = 0
+    while index < len(visual_order_groups):
+        group = visual_order_groups[index]
+        record_id = group_record_ids[index]
+
+        # Add this column to visual order
+        if current_dup_index < len(group):
+            visual_order.append(group[current_dup_index])
+        else:
+            logger.warning("Query field is missing a Batch Edit column. Falling back to default column order.")
+            break
+
+        # Check if we're on a different record, or at the end
+        next_group: int | None = None
+        next_record_id: int | None = None
+        if index+1 < len(visual_order_groups):
+            next_group = visual_order_groups[index+1]
+            next_record_id = group_record_ids[index+1]
+        if next_group is None or len(next_group) != len(group) or next_record_id != record_id:
+            if record_start_index is not None and record_start_index < len(visual_order_groups) and current_dup_index+1 < len(visual_order_groups[record_start_index]):
+                # Backtrack to group all fields belonging to the record with this duplicate_index together.
+                index = record_start_index
+                current_dup_index = current_dup_index + 1
+                continue
+            else:
+                # All duplicates have been visited. Continue and mark the start of this record.
+                record_start_index = index+1
+                current_dup_index = 0
+
+        index += 1
+    
+    return visual_order
 
 
 def make_dataset(

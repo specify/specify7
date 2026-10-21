@@ -5,19 +5,23 @@ Defines the resources that are provided by this subsystem
 import json
 import os
 import re
+import logging
 from typing import List
+from xml.etree import ElementTree
 
 from django.conf import settings
 from django.contrib.auth import authenticate, login as auth_login, \
     logout as auth_logout
 from django.db import connection, transaction
+from django.db.models import Q
 from django.http import Http404, HttpResponse, HttpResponseBadRequest, \
-    HttpResponseForbidden, JsonResponse
+    HttpResponseForbidden, HttpResponseServerError, JsonResponse
 from django.urls import URLPattern
 from django.utils.translation import get_language_info
 from django.utils.translation import gettext as _
 from django.utils import timezone
 from django.views.decorators.cache import cache_control, never_cache
+from django.utils.module_loading import import_string
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.i18n import LANGUAGE_QUERY_PARAMETER
 
@@ -25,23 +29,26 @@ from specifyweb.middleware.general import require_http_methods
 from specifyweb.backend.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, \
     check_permission_targets, skip_collection_access_check, query_pt, \
-    CollectionAccessPT
+    CollectionAccessPT, enforce
 from specifyweb.specify.models import Collection, Discipline, Division, Collectionobject, Institution, \
-    Specifyuser, Spprincipal, Spversion, Collectionobjecttype
+    Specifyuser, Spprincipal, Spversion, Collectionobjecttype, Picklist, Splocalecontainer, \
+    Splocalecontaineritem, Splocaleitemstr
 from specifyweb.specify.models_utils.schema import base_schema
 from specifyweb.specify.models_utils.serialize_datamodel import datamodel_to_json
 from specifyweb.specify.api.serializers import uri_for_model
 from specifyweb.specify.utils.specify_jar import specify_jar
 from specifyweb.specify.views import login_maybe_required, openapi
 from .app_resource import get_app_resource, FORM_RESOURCE_EXCLUDED_LST
-from .remote_prefs import get_remote_prefs
 from .schema_localization import get_schema_languages, get_schema_localization
 from .viewsets import get_views
 from specifyweb.backend.setup_tool.api import (
     get_config_progress,
-    filter_ready_collections_for_config_tasks,
     filter_ready_disciplines_for_config_tasks,
+    is_collection_available,
+    is_guided_setup_complete,
 )
+
+logger = logging.getLogger(__name__)
    
 def set_collection_cookie(response, collection_id): # pragma: no cover
     response.set_cookie('collection', str(collection_id), max_age=365*24*60*60)
@@ -302,7 +309,7 @@ def collection(request):
             return HttpResponseBadRequest('collection does not exist', content_type="text/plain")
         if collection.id not in [c.id for c in available_collections]:
             return HttpResponseBadRequest('access denied')
-        if get_config_progress(collection.id).get('busy'):
+        if get_config_progress(collection.discipline_id).get('busy'):
             return HttpResponseBadRequest('discipline creation is in progress')
         response = HttpResponse('ok')
         set_collection_cookie(response, collection.id)
@@ -323,8 +330,10 @@ def user(request):
     from specifyweb.specify.api.serializers import obj_to_data, toJson
     data = obj_to_data(request.specify_user)
     data['isauthenticated'] = request.user.is_authenticated
-    available_collections = users_collections_for_sp7(request.specify_user.id)
-    available_collections = _filter_collections_not_ready_for_config_task(available_collections)
+    available_collections = filter(
+        is_collection_available,
+        users_collections_for_sp7(request.specify_user.id)
+    )
     data['available_collections'] = [
         obj_to_data(c)
         for c in available_collections
@@ -470,8 +479,245 @@ def schema_localization(request):
     form ll[-cc] where ll is a language code and cc is an optional
     country code.
     """
-    lang = request.GET.get('lang', request.LANGUAGE_CODE)
-    return JsonResponse(get_schema_localization(request.specify_collection, 0, lang))
+    lang = request.GET.get('lang', request.LANGUAGE_CODE).lower()
+    schema = get_schema_localization(request.specify_collection, 0, lang)
+    return JsonResponse(
+        {'language': lang, 'schema': schema}
+        if request.GET.get('export') == 'true'
+        else schema
+    )
+
+
+SCHEMA_IMPORT_FIELDS = {
+    Splocalecontainer: {'format', 'aggregator', 'ishidden'},
+    Splocalecontaineritem: {
+        'format', 'ishidden', 'isrequired', 'picklistname', 'weblinkname',
+    },
+}
+SCHEMA_IMPORT_BOOLEAN_FIELDS = {'ishidden', 'isrequired'}
+SCHEMA_IMPORT_NULLABLE_BOOLEAN_FIELDS = {'isrequired'}
+SCHEMA_IMPORT_TABLE_KEYS = {
+    'items', 'name', 'desc', *SCHEMA_IMPORT_FIELDS[Splocalecontainer]
+}
+SCHEMA_IMPORT_REFERENCE_FIELDS = {
+    'format', 'aggregator', 'picklistname', 'weblinkname',
+}
+
+
+def _schema_import_resource_names(collection, user, resource, path):
+    result = get_app_resource(collection, user, resource)
+    if result is None:
+        return set()
+    try:
+        root = ElementTree.fromstring(result[0])
+    except ElementTree.ParseError:
+        return set()
+    return {
+        (element.get('name') or element.text or '').lower()
+        for element in root.findall(path)
+        if element.get('name') or element.text
+    }
+
+
+def _schema_import_values(data, fields, references):
+    if not isinstance(data, dict):
+        raise ValueError
+    values = {}
+    for key, value in data.items():
+        key = key.lower()
+        if key not in fields:
+            continue
+        if key in SCHEMA_IMPORT_BOOLEAN_FIELDS:
+            if type(value) is not bool and not (
+                value is None and key in SCHEMA_IMPORT_NULLABLE_BOOLEAN_FIELDS
+            ):
+                raise ValueError
+        elif value is not None and not isinstance(value, str):
+            raise ValueError
+        if key in SCHEMA_IMPORT_REFERENCE_FIELDS and value is not None \
+                and value.lower() not in references[key]:
+            continue
+        values[key] = value
+    return values
+
+
+def _schema_import_string(operations, parent, parent_field, text, language, country):
+    if text is None:
+        return
+    if not isinstance(text, str):
+        raise ValueError
+    country = country.lower() if country else None
+    country_filter = Q(country__isnull=True) | Q(country='')
+    if country is not None:
+        country_filter = Q(country__iexact=country)
+    with transaction.atomic():
+        locked_parent = parent.__class__.objects.select_for_update().get(pk=parent.pk)
+        string = Splocaleitemstr.objects.filter(
+            **{parent_field: locked_parent, 'language': language}
+        ).filter(country_filter).filter(
+            Q(variant='') | Q(variant__isnull=True)
+        ).order_by('-id').first()
+        if string is None:
+            operations.append((
+                'POST', Splocaleitemstr, None,
+                {
+                    'text': text,
+                    'language': language,
+                    'country': country,
+                    parent_field: uri_for_model(
+                        locked_parent.__class__, locked_parent.id
+                    ),
+                },
+            ))
+        elif string.text != text:
+            operations.append(('PUT', Splocaleitemstr, string, {'text': text}))
+
+
+def _schema_import_operations(collection, schema, language, references=None):
+    if not isinstance(schema, dict) or not schema:
+        raise ValueError
+    if not any(
+        isinstance(data, dict)
+        and {key.lower() for key in data}.intersection(SCHEMA_IMPORT_TABLE_KEYS)
+        for data in schema.values()
+    ):
+        raise ValueError
+    language, _, country = language.lower().partition('-')
+    references = references or {key: set() for key in SCHEMA_IMPORT_REFERENCE_FIELDS}
+    containers = {
+        container.name.lower(): container
+        for container in Splocalecontainer.objects.filter(
+            discipline_id=collection.discipline_id, schematype=0
+        )
+    }
+    operations = []
+    for table_name, table_data in schema.items():
+        container = containers.get(table_name.lower())
+        if container is None:
+            continue
+        if not isinstance(table_data, dict):
+            raise ValueError
+        values = _schema_import_values(
+            table_data, SCHEMA_IMPORT_FIELDS[Splocalecontainer], references
+        )
+        
+        if values:
+            operations.append(('PUT', Splocalecontainer, container, values))
+        _schema_import_string(
+            operations, container, 'containername', table_data.get('name'), language, country or None
+        )
+        _schema_import_string(
+            operations, container, 'containerdesc', table_data.get('desc'), language, country or None
+        )
+        items = table_data.get('items', {})
+        if not isinstance(items, dict):
+            raise ValueError
+        current_items = {item.name.lower(): item for item in container.items.all()}
+        for item_name, item_data in items.items():
+            item = current_items.get(item_name.lower())
+            if item is None:
+                continue
+            values = _schema_import_values(
+                item_data, SCHEMA_IMPORT_FIELDS[Splocalecontaineritem],
+                {**references, 'format': references['itemformat']}            )
+            if values:
+                operations.append(('PUT', Splocalecontaineritem, item, values))
+            _schema_import_string(
+                operations, item, 'itemname', item_data.get('name'), language, country or None
+            )
+            _schema_import_string(
+                operations, item, 'itemdesc', item_data.get('desc'), language, country or None
+            )
+    return operations
+
+
+@login_maybe_required
+@require_http_methods(['POST'])
+def schema_localization_import(request):
+    schema_config_tables = [
+        '/table/splocalecontainer',
+        '/table/splocalecontaineritem',
+        '/table/splocaleitemstr',
+    ]
+    enforce(
+        request.specify_collection,
+        request.specify_user_agent,
+        schema_config_tables,
+        'create',
+    )
+    enforce(
+        request.specify_collection,
+        request.specify_user_agent,
+        schema_config_tables,
+        'update',
+    )
+    try:
+        payload = json.loads(request.body)
+        schema = payload.get('schema', payload)
+        language = payload.get('language', request.LANGUAGE_CODE)
+        if not isinstance(language, str) or not re.fullmatch(
+            r'[A-Za-z]{2}(?:-[A-Za-z]{2})?', language
+        ):
+            raise ValueError(f"Invalid language string: {language}")
+        if isinstance(schema, dict) and {'language', 'schema'} <= schema.keys():
+            source_language = schema['language']
+            if not isinstance(source_language, str) or (
+                source_language.lower() != language.lower()
+            ):
+                raise ValueError(f"Invalid Localization (expected {source_language}, got {language}")
+            schema = schema['schema']
+        references = {
+            'format': _schema_import_resource_names(
+                request.specify_collection, request.specify_user,
+                'DataObjFormatters', './/format'
+            ),
+            'itemformat': _schema_import_resource_names(
+                request.specify_collection, request.specify_user,
+                'UIFormatters', './/format'
+            ),
+            'aggregator': _schema_import_resource_names(
+                request.specify_collection, request.specify_user,
+                'DataObjFormatters', './/aggregator'
+            ),
+            'picklistname': {
+                name.lower() for name in Picklist.objects.filter(
+                    collection=request.specify_collection
+                ).values_list('name', flat=True)
+            },
+            'weblinkname': _schema_import_resource_names(
+                request.specify_collection, request.specify_user,
+                'WebLinks', './/weblinkdef/name'
+            ),
+        }
+
+        from specifyweb.specify.api.crud import post_resource, put_resource
+
+        with transaction.atomic():
+            operations = _schema_import_operations(
+                request.specify_collection, schema, language, references
+            )
+            for method, model, resource, data in operations:
+                if method == 'PUT':
+                    put_resource(
+                        request.specify_collection, request.specify_user_agent,
+                        model.__name__, resource.id, resource.version, data
+                    )
+                else:
+                    post_resource(
+                        request.specify_collection, request.specify_user_agent,
+                        model.__name__, data
+                    )
+    except (AttributeError, ValueError, json.JSONDecodeError) as err:
+        logger.warning("Schema import validation failed", exc_info=True)
+        return JsonResponse(
+            {"error": "Invalid schema localization import payload."},
+            status=400
+        )
+    except (KeyError, TypeError) as err:
+        logger.warning(f"Schema Import failed: {err}")
+        return HttpResponseServerError("An internal error has occurred.", content_type="text/plain")
+
+    return JsonResponse({'updated': len(operations)})
 
 view_parameters_schema = [
     {
@@ -646,14 +892,20 @@ def view_helper(request, limit):
 @cache_control(max_age=86400, private=True)
 def remote_prefs(request):
     "Return the 'remoteprefs' java properties file from the database."
-    return HttpResponse(get_remote_prefs(), content_type='text/x-java-properties')
+
+    get_all_runtime_remote_prefs_database = import_string(
+        'specifyweb.backend.context.remote_prefs.get_all_runtime_remote_prefs_database'
+    )
+
+    return HttpResponse(
+        get_all_runtime_remote_prefs_database(request.specify_collection.id),
+        content_type='text/x-java-properties',
+    )
 
 @require_http_methods(['GET', 'HEAD'])
 def get_server_time(request):
     return JsonResponse({"server_time": timezone.now().isoformat()})
-  
-def _filter_collections_not_ready_for_config_task(collections):
-    return filter_ready_collections_for_config_tasks(collections)
+
   
 def _filter_disciplines_not_ready_for_config_task(disciplines):
     return filter_ready_disciplines_for_config_tasks(disciplines)
@@ -666,7 +918,6 @@ def _build_system_data(*, filter_not_ready_collections: bool):
 
     if filter_not_ready_collections:
         disciplines = _filter_disciplines_not_ready_for_config_task(disciplines)
-        collections = _filter_collections_not_ready_for_config_task(collections)
 
     discipline_map = {}
     for discipline in disciplines:
@@ -709,27 +960,53 @@ def _build_system_data(*, filter_not_ready_collections: bool):
 @skip_collection_access_check
 def system_info(request):
     "Return various information about this Specify instance."
-    spversion = Spversion.objects.get()
-    collection = request.specify_collection
-    discipline = collection.discipline if collection is not None else None
-    institution = Institution.objects.get()
+    setup_complete = is_guided_setup_complete()
+
+    spversion = Spversion.objects.first()
+    collection = None
+    discipline = None
+    if setup_complete:
+        try:
+            collection = request.specify_collection
+        except Collection.DoesNotExist:
+            collection = None
+        else:
+            discipline = collection.discipline if collection is not None else None
+    institution = Institution.objects.first()
+
+    database_version = spversion.appversion if spversion is not None else None
+    schema_version = spversion.schemaversion if spversion is not None else None
+
+    institution_name = institution.name if institution is not None else None
+    institution_guid = institution.guid if institution is not None else None
+    geography_is_global = (
+        institution.issinglegeographytree if institution is not None else None
+    )
+
+    if not setup_complete:
+        database_version = None
+        schema_version = None
+        institution_name = None
+        institution_guid = None
+        geography_is_global = None
 
     info = dict(
         version=settings.VERSION,
         specify6_version=re.findall(r'SPECIFY_VERSION=(.*)', specify_jar.read('resources_en.properties').decode('utf-8'))[0],
-        database_version=spversion.appversion,
-        schema_version=spversion.schemaversion,
+        setup_complete=setup_complete,
+        database_version=database_version,
+        schema_version=schema_version,
         stats_url=settings.STATS_URL,
         stats_2_url=settings.STATS_2_URL,
         database=settings.DATABASE_NAME,
-        institution=institution.name,
-        institution_guid=institution.guid,
-        discipline=discipline and discipline.name,
-        collection=collection and collection.collectionname,
-        collection_guid=collection and collection.guid,
-        isa_number=collection and collection.isanumber,
-        discipline_type=discipline and discipline.type,
-        geography_is_global=institution.issinglegeographytree
+        institution=institution_name,
+        institution_guid=institution_guid,
+        discipline=discipline.name if setup_complete and discipline is not None else None,
+        collection=collection.collectionname if setup_complete and collection is not None else None,
+        collection_guid=collection.guid if setup_complete and collection is not None else None,
+        isa_number=collection.isanumber if setup_complete and collection is not None else None,
+        discipline_type=discipline.type if setup_complete and discipline is not None else None,
+        geography_is_global=geography_is_global,
         )
     return HttpResponse(json.dumps(info), content_type='application/json')
 

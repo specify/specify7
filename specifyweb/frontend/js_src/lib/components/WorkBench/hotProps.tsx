@@ -152,7 +152,7 @@ function ColumnHeader({
   readonly tableName: string | undefined;
 }): JSX.Element {
   return (
-    <span className="inline-flex max-w-full items-center gap-1 whitespace-nowrap align-middle">
+    <span className="inline-flex w-full max-w-full min-w-0 items-center justify-center gap-1 overflow-hidden whitespace-nowrap text-clip align-middle border-0 bg-transparent p-0 text-inherit">
       {isMapped && tableName !== undefined ? (
         <TableIcon label={false} name={tableName} />
       ) : (

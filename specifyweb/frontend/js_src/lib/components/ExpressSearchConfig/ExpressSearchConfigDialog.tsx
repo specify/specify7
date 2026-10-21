@@ -14,7 +14,7 @@ type ExpressSearchConfigDialogProps = {
   readonly isOpen: boolean;
   readonly onClose: () => void;
   readonly onSave?: () => void;
-}
+};
 
 export function ExpressSearchConfigDialog({
   isOpen,
@@ -70,13 +70,13 @@ export function ExpressSearchConfigDialog({
   return (
     <Dialog
       buttons={buttons}
-      className={{ container: dialogClassNames.wideContainer }}
+      className={{ container: dialogClassNames.extraWideContainer }}
       header={expressSearchConfigText.expressSearchConfigTitle()}
       icon={icons.cog}
       isOpen={isOpen}
       onClose={onClose}
     >
-        <ExpressSearchConfigEditor
+      <ExpressSearchConfigEditor
         key={String(isOpen)}
         onChangeJSON={handleChangeJSON}
       />

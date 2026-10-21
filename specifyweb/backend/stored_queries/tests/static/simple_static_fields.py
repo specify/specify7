@@ -170,12 +170,12 @@ static_simple_field_spec = [
                         "cataloger"
                     ),
                 ),
-                "table": datamodel.get_table_strict("CollectionObject"),
+                "table": datamodel.get_table_strict("Agent"),
                 "date_part": None,
                 "tree_rank": None,
-                "tree_field": datamodel.get_table_strict(
-                    "CollectionObject"
-                ).get_field_strict("cataloger"),
+                "tree_field": datamodel.get_table_strict("CollectionObject").get_field_strict(
+                    "cataloger"
+                ),
             }
         ),
         op_num=8,
@@ -308,12 +308,12 @@ static_simple_field_spec = [
                         "determinations"
                     ),
                 ),
-                "table": datamodel.get_table_strict("CollectionObject"),
+                "table": datamodel.get_table_strict("Determination"),
                 "date_part": None,
                 "tree_rank": None,
-                "tree_field": datamodel.get_table_strict(
-                    "CollectionObject"
-                ).get_field_strict("determinations"),
+                "tree_field": datamodel.get_table_strict("CollectionObject").get_field_strict(
+                    "determinations"
+                ),
             }
         ),
         op_num=8,
@@ -334,12 +334,12 @@ static_simple_field_spec = [
                         "preparations"
                     ),
                 ),
-                "table": datamodel.get_table_strict("CollectionObject"),
+                "table": datamodel.get_table_strict("Preparation"),
                 "date_part": None,
                 "tree_rank": None,
-                "tree_field": datamodel.get_table_strict(
-                    "CollectionObject"
-                ).get_field_strict("preparations"),
+                "tree_field": datamodel.get_table_strict("CollectionObject").get_field_strict(
+                    "preparations"
+                ),
             }
         ),
         op_num=8,
@@ -387,12 +387,12 @@ static_simple_field_spec = [
                         "collectingEvent"
                     ),
                 ),
-                "table": datamodel.get_table_strict("CollectionObject"),
+                "table": datamodel.get_table_strict("CollectingEvent"),
                 "date_part": None,
                 "tree_rank": None,
-                "tree_field": datamodel.get_table_strict(
-                    "CollectionObject"
-                ).get_field_strict("collectingEvent"),
+                "tree_field": datamodel.get_table_strict("CollectionObject").get_field_strict(
+                    "collectingEvent"
+                ),
             }
         ),
         op_num=8,
@@ -415,19 +415,13 @@ static_simple_field_spec = [
                     datamodel.get_table_strict("CollectingEvent").get_field_strict(
                         "locality"
                     ),
-                    TreeRankQuery(
-                        **{
-                            "name": "locality",
-                            "relatedModelName": "Locality",
-                            "type": "many-to-one",
-                            "column": "localityId",
-                        }
-                    ),
                 ),
                 "table": datamodel.get_table_strict("Locality"),
                 "date_part": None,
-                "tree_rank": "locality",
-                "tree_field": None,
+                "tree_rank": None,
+                "tree_field": datamodel.get_table_strict("CollectingEvent").get_field_strict(
+                    "locality"
+                ),
             }
         ),
         op_num=8,

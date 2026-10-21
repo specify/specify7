@@ -117,7 +117,8 @@ async function fetchFromTable(
   pickList: SpecifyResource<PickList>,
   limit: number
 ): Promise<RA<PickListItemSimple>> {
-  const tableName = strictGetTable(pickList.get('tableName')).name;
+  const table = strictGetTable(pickList.get('tableName'));
+  const tableName = table.name;
 
   if (!hasTablePermission(tableName, 'read')) return [];
 
@@ -129,10 +130,15 @@ async function fetchFromTable(
     'sp7_scope_table_picklists'
   );
 
+  // REFACTOR: Prefer letting the backend work with the nitty-gritty scoping
+  // details. Frontend should just tell the backend it wants a result scoped.
+  // getScopingRelationship is to avoid HierarchyExceptions.
+  // See #4989
+  const canBeScoped =
+    scopeTablePicklistsPref && table.getScopingRelationship() !== undefined;
+
   const { records } = await fetchCollection(tableName, {
-    domainFilter: scopeTablePicklistsPref
-      ? true
-      : !f.includes(Object.keys(schema.domainLevelIds), toLowerCase(tableName)),
+    domainFilter: canBeScoped,
     limit,
   });
 
@@ -164,14 +170,15 @@ async function fetchFromField(
     'Unable to fetch pick list items as pick list field is not set'
   );
 
-  const caseInsensitiveTableKey = caseInsensitiveHash(
-    genericTables,
-    tableName
-  ) as SpecifyTable | undefined;
+  const table = caseInsensitiveHash(genericTables, tableName) as
+    | SpecifyTable
+    | undefined;
 
+  // REFACTOR: Prefer letting the backend work with the nitty-gritty scoping
+  // details. Frontend should just tell the backend it wants a result scoped.
   const canBeScoped =
     f.includes(Object.keys(schema.domainLevelIds), toLowerCase(tableName)) ||
-    caseInsensitiveTableKey?.getScopingRelationship() !== undefined;
+    table?.getScopingRelationship() !== undefined;
 
   return fetchRows(tableName as keyof Tables, {
     limit,

@@ -40,7 +40,7 @@ def objs_to_data_(
     limit=20
 ) -> CollectionPayload:
     """Return a collection structure with a list of the data of given objects
-    and collection meta data.
+    and collection metadata.
     """
     offset, limit = int(offset), int(limit)
 

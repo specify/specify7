@@ -33,6 +33,69 @@ export type GenericNotification = {
   readonly payload: IR<LocalizedString>;
 };
 
+const notificationHeadings: IR<
+  (notification: GenericNotification) => LocalizedString
+> = {
+  'feed-item-updated': () => notificationsText.feedItemUpdated(),
+  'update-feed-failed': () => notificationsText.updateFeedFailed(),
+  'dwca-export-complete': () => notificationsText.dwcaExportCompleted(),
+  'dwca-export-failed': () => notificationsText.dwcaExportFailed(),
+  'query-export-to-csv-complete': () =>
+    notificationsText.queryExportToCsvCompleted(),
+  'query-export-to-csv-failed': () =>
+    notificationsText.queryExportToCsvFailed(),
+  'query-export-to-kml-complete': () =>
+    notificationsText.queryExportToKmlCompleted(),
+  'query-export-to-kml-failed': () =>
+    notificationsText.queryExportToKmlFailed(),
+  'query-export-to-webportal-complete': () =>
+    notificationsText.queryExportToWebPortalCompleted(),
+  'query-export-to-webportal-failed': () =>
+    notificationsText.queryExportToWebPortalFailed(),
+  'dataset-ownership-transferred': (notification) =>
+    notificationsText
+      .dataSetOwnershipTransferred()
+      .replace(
+        '<userName />',
+        notification.payload['previous-owner-name'] ?? ''
+      )
+      .replace(
+        '<dataSetName />',
+        notification.payload['dataset-name'] ?? ''
+      ) as LocalizedString,
+  'record-merge-starting': () => mergingText.mergingHasStarted(),
+  'record-merge-failed': () => mergingText.mergingHasFailed(),
+  'record-merge-aborted': () => mergingText.mergingHasBeenCanceled(),
+  'record-merge-succeeded': () => mergingText.mergingHasSucceeded(),
+  'localityupdate-starting': () => localityText.localityUpdateStarted(),
+  'localityupdate-parse-failed': () =>
+    localityText.localityUpdateParseFailure(),
+  'localityupdate-failed': () => localityText.localityUpdateFailed(),
+  'localityupdate-aborted': () => localityText.localityUpdateCancelled(),
+  'localityupdate-parse-succeeded': () => localityText.localityUpdateParsed(),
+  'localityupdate-succeeded': () => localityText.localityUpdateSucceeded(),
+  'backup-succeeded': () => backupText.databaseBackupCompleted(),
+  'backup-failed': () => backupText.databaseBackupFailed(),
+  'create-default-tree-starting': () => treeText.defaultTreeTaskStarted(),
+  'create-default-tree-failed': () => treeText.defaultTreeTaskFailed(),
+  'create-default-tree-cancelled': () => treeText.defaultTreeTaskCancelled(),
+  'create-default-tree-completed': () => treeText.defaultTreeTaskCompleted(),
+  'collection-creation-starting': () =>
+    setupToolText.collectionCreationStarted(),
+};
+
+export const getNotificationHeading = (
+  notification: GenericNotification
+): LocalizedString => {
+  const heading = Object.prototype.hasOwnProperty.call(
+    notificationHeadings,
+    notification.type
+  )
+    ? notificationHeadings[notification.type]
+    : undefined;
+  return heading?.(notification) ?? notificationsText.notifications();
+};
+
 export const notificationRenderers: IR<
   (notification: GenericNotification) => React.ReactNode
 > = {
@@ -40,7 +103,7 @@ export const notificationRenderers: IR<
     const filename = notification.payload.file;
     return (
       <>
-        {notificationsText.feedItemUpdated()}
+        {getNotificationHeading(notification)}
         {filename !== null && (
           <Link.Success
             className="w-fit normal-case"
@@ -58,7 +121,7 @@ export const notificationRenderers: IR<
   'update-feed-failed'(notification) {
     return (
       <>
-        {notificationsText.updateFeedFailed()}
+        {getNotificationHeading(notification)}
         <Link.Success
           className="w-fit"
           download
@@ -72,7 +135,7 @@ export const notificationRenderers: IR<
   'dwca-export-complete'(notification) {
     return (
       <>
-        {notificationsText.dwcaExportCompleted()}
+        {getNotificationHeading(notification)}
         <Link.Success
           className="w-fit"
           download
@@ -88,7 +151,7 @@ export const notificationRenderers: IR<
   'dwca-export-failed'(notification) {
     return (
       <>
-        {notificationsText.dwcaExportFailed()}
+        {getNotificationHeading(notification)}
         <Link.Success
           className="w-fit"
           download
@@ -102,7 +165,7 @@ export const notificationRenderers: IR<
   'query-export-to-csv-complete'(notification) {
     return (
       <>
-        {notificationsText.queryExportToCsvCompleted()}
+        {getNotificationHeading(notification)}
         <Link.Success
           className="w-fit"
           download
@@ -115,10 +178,52 @@ export const notificationRenderers: IR<
       </>
     );
   },
+  'query-export-to-csv-failed'(notification) {
+    const errorPayload = notification.payload.error as unknown as
+      | { readonly error: string; readonly traceback: string }
+      | undefined;
+    return (
+      <>
+        {getNotificationHeading(notification)}
+        {errorPayload !== undefined && (
+          <Link.Success
+            className="w-fit"
+            download
+            href={`data:text/plain,${encodeURIComponent(
+              `Error: ${errorPayload.error}\n\nTraceback:\n${errorPayload.traceback}`
+            )}`}
+          >
+            {notificationsText.exception()}
+          </Link.Success>
+        )}
+      </>
+    );
+  },
+  'query-export-to-kml-failed'(notification) {
+    const errorPayload = notification.payload.error as unknown as
+      | { readonly error: string; readonly traceback: string }
+      | undefined;
+    return (
+      <>
+        {getNotificationHeading(notification)}
+        {errorPayload !== undefined && (
+          <Link.Success
+            className="w-fit"
+            download
+            href={`data:text/plain,${encodeURIComponent(
+              `Error: ${errorPayload.error}\n\nTraceback:\n${errorPayload.traceback}`
+            )}`}
+          >
+            {notificationsText.exception()}
+          </Link.Success>
+        )}
+      </>
+    );
+  },
   'query-export-to-kml-complete'(notification) {
     return (
       <>
-        {notificationsText.queryExportToKmlCompleted()}
+        {getNotificationHeading(notification)}
         <Link.Success
           className="w-fit"
           download
@@ -128,6 +233,43 @@ export const notificationRenderers: IR<
         >
           {notificationsText.download()}
         </Link.Success>
+      </>
+    );
+  },
+  'query-export-to-webportal-complete'(notification) {
+    return (
+      <>
+        {getNotificationHeading(notification)}
+        <Link.Success
+          className="w-fit"
+          download
+          href={`/static/depository/${encodeURIComponent(
+            notification.payload.file
+          )}`}
+        >
+          {notificationsText.download()}
+        </Link.Success>
+      </>
+    );
+  },
+  'query-export-to-webportal-failed'(notification) {
+    const errorPayload = notification.payload.error as unknown as
+      | { readonly error: string; readonly traceback: string }
+      | undefined;
+    return (
+      <>
+        {getNotificationHeading(notification)}
+        {errorPayload !== undefined && (
+          <Link.Success
+            className="w-fit"
+            download
+            href={`data:text/plain,${encodeURIComponent(
+              `Error: ${errorPayload.error}\n\nTraceback:\n${errorPayload.traceback}`
+            )}`}
+          >
+            {notificationsText.exception()}
+          </Link.Success>
+        )}
       </>
     );
   },
@@ -158,7 +300,7 @@ export const notificationRenderers: IR<
 
     return (
       <>
-        {mergingText.mergingHasStarted()}
+        {getNotificationHeading(notification)}
         <div className="flex items-center gap-2">
           <TableIcon label name={tableName} />
           <p>{`${collection?.collectionName} - ${mergeName}`}</p>
@@ -175,7 +317,7 @@ export const notificationRenderers: IR<
     });
     return (
       <>
-        {mergingText.mergingHasFailed()}
+        {getNotificationHeading(notification)}
         <div className="flex items-center gap-2">
           <TableIcon label name={tableName} />
           <Link.NewTab href={url}>{mergingText.retryMerge()}</Link.NewTab>
@@ -193,7 +335,7 @@ export const notificationRenderers: IR<
 
     return (
       <>
-        {mergingText.mergingHasBeenCanceled()}
+        {getNotificationHeading(notification)}
         <div className="flex items-center gap-2">
           <TableIcon label name={tableName} />
           <p>{`${collection?.collectionName} - ${mergeName}`}</p>
@@ -213,7 +355,7 @@ export const notificationRenderers: IR<
     return (
       resource !== undefined && (
         <>
-          {mergingText.mergingHasSucceeded()}
+          {getNotificationHeading(notification)}
           <div className="flex items-center gap-2">
             <TableIcon label name={tableName} />
             <FormattedResource asLink resource={resource} />
@@ -225,7 +367,7 @@ export const notificationRenderers: IR<
   'localityupdate-starting'(notification) {
     return (
       <>
-        <p>{localityText.localityUpdateStarted()}</p>
+        <p>{getNotificationHeading(notification)}</p>
         <details>
           <summary>{localityText.taskId()}</summary>
           {notification.payload.taskid}
@@ -237,7 +379,7 @@ export const notificationRenderers: IR<
     const [isOpen, handleOpen, handleClose] = useBooleanState();
     return (
       <>
-        <p>{localityText.localityUpdateParseFailure()}</p>
+        <p>{getNotificationHeading(notification)}</p>
         <Button.Small onClick={handleOpen}>
           {localityText.localityUpdateFailureResults()}
         </Button.Small>
@@ -261,7 +403,7 @@ export const notificationRenderers: IR<
     const [isOpen, handleOpen, handleClose] = useBooleanState();
     return (
       <>
-        <p>{localityText.localityUpdateFailed()}</p>
+        <p>{getNotificationHeading(notification)}</p>
         <Button.Small onClick={handleOpen}>
           {localityText.localityUpdateFailureResults()}
         </Button.Small>
@@ -282,7 +424,7 @@ export const notificationRenderers: IR<
   'localityupdate-aborted'(notification) {
     return (
       <>
-        <p>{localityText.localityUpdateCancelled()}</p>
+        <p>{getNotificationHeading(notification)}</p>
         <details>
           <summary>{localityText.taskId()}</summary>
           {notification.payload.taskid}
@@ -293,7 +435,7 @@ export const notificationRenderers: IR<
   'localityupdate-parse-succeeded'(notification) {
     return (
       <>
-        <p>{localityText.localityUpdateParsed()}</p>
+        <p>{getNotificationHeading(notification)}</p>
         <details>
           <summary>{localityText.taskId()}</summary>
           {notification.payload.taskid}
@@ -305,7 +447,7 @@ export const notificationRenderers: IR<
     const [isOpen, handleOpen, handleClose] = useBooleanState();
     return (
       <>
-        <p>{localityText.localityUpdateSucceeded()}</p>
+        <p>{getNotificationHeading(notification)}</p>
         <Button.Small onClick={handleOpen}>
           {localityText.localityUpdateResults()}
         </Button.Small>
@@ -334,7 +476,7 @@ export const notificationRenderers: IR<
     const filename = notification.payload.file as unknown as string | undefined;
     return (
       <>
-        {backupText.databaseBackupCompleted()}
+        {getNotificationHeading(notification)}
         {filename && (
           <Link.Success
             className="w-fit"
@@ -350,7 +492,7 @@ export const notificationRenderers: IR<
   'backup-failed'(notification) {
     return (
       <>
-        <p>{backupText.databaseBackupFailed()}</p>
+        <p>{getNotificationHeading(notification)}</p>
         {notification.payload.traceback && (
           <details>
             <summary>Traceback</summary>
@@ -365,7 +507,7 @@ export const notificationRenderers: IR<
   'create-default-tree-starting'(notification) {
     return (
       <>
-        <p>{treeText.defaultTreeTaskStarted()}</p>
+        <p>{getNotificationHeading(notification)}</p>
         {notification.payload.name}
       </>
     );
@@ -373,7 +515,7 @@ export const notificationRenderers: IR<
   'create-default-tree-failed'(notification) {
     return (
       <>
-        <p>{treeText.defaultTreeTaskFailed()}</p>
+        <p>{getNotificationHeading(notification)}</p>
         {notification.payload.name}
       </>
     );
@@ -381,7 +523,7 @@ export const notificationRenderers: IR<
   'create-default-tree-cancelled'(notification) {
     return (
       <>
-        <p>{treeText.defaultTreeTaskCancelled()}</p>
+        <p>{getNotificationHeading(notification)}</p>
         {notification.payload.name}
       </>
     );
@@ -389,15 +531,13 @@ export const notificationRenderers: IR<
   'create-default-tree-completed'(notification) {
     return (
       <>
-        <p>{treeText.defaultTreeTaskCompleted()}</p>
+        <p>{getNotificationHeading(notification)}</p>
         {notification.payload.name}
       </>
     );
   },
-  'collection-creation-starting'() {
-    return (
-      <p>{setupToolText.collectionCreationStarted()}</p>
-    );
+  'collection-creation-starting'(notification) {
+    return <p>{getNotificationHeading(notification)}</p>;
   },
   default(notification) {
     console.error('Unknown notification type', { notification });

@@ -1,7 +1,6 @@
 {
   "collectingevent": {
     "ishidden": false,
-    "desc": "Collecting Event",
     "items": [
       {"stationFieldNumber": {"ishidden": false, "name": "Field Number", "desc": "Field Number"}},
       {"method": {"ishidden": false, "name": "Method", "desc": "Method"}},
@@ -11,7 +10,6 @@
   },
   "collectionobjectattribute": {
     "ishidden": false,
-    "desc": "Collection Object Attribute",
     "items": [
       {"text5": {"ishidden": false, "name": "Stomach", "desc": "Stomach"}},
       {"text3": {"ishidden": false, "name": "ReproCondition", "desc": "ReproCondition"}},
@@ -25,7 +23,6 @@
   },
   "determination": {
     "ishidden": false,
-    "desc": "Determination",
     "items": [
       {"typeStatusName": {"ishidden": false, "name": "Type Status", "desc": "Type Status"}}
     ]

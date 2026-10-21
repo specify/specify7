@@ -19,6 +19,7 @@ import { reportsText } from '../../localization/report';
 import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
 import { statsText } from '../../localization/stats';
+import { treeText } from '../../localization/tree';
 import type { Language } from '../../localization/utils/config';
 import { LANGUAGE } from '../../localization/utils/config';
 import { wbPlanText } from '../../localization/wbPlan';
@@ -60,6 +61,7 @@ import type {
   PreferencesVisibilityContext,
 } from './types';
 import { definePref } from './types';
+import { dataViewsText } from '../../localization/dataViews';
 
 const isLightMode = ({
   isDarkMode,
@@ -619,7 +621,7 @@ export const userPreferenceDefinitions = {
           mode: definePref<WelcomePageMode>({
             title: preferencesText.content(),
             description: (
-              <Link.NewTab href="https://discourse.specifysoftware.org/t/customizing-the-splash-screen/2604">
+              <Link.NewTab href="https://speciforum.org/t/customizing-the-splash-screen/2604">
                 {headerText.documentation()}
               </Link.NewTab>
             ),
@@ -1615,6 +1617,31 @@ export const userPreferenceDefinitions = {
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
+          showSynonymCounts: definePref<boolean>({
+            title: preferencesText.showSynonymCounts(),
+            description: preferencesText.showSynonymCountsDescription(),
+            requiresReload: true,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+          queryField: definePref<'preferredTaxon' | 'taxon'>({
+            title: preferencesText.queryButtonTaxonField(),
+            description: preferencesText.queryButtonTaxonFieldDescription(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 'preferredTaxon',
+            values: [
+              {
+                value: 'preferredTaxon',
+                title: localized('_preferredTaxon'),
+              },
+              {
+                value: 'taxon',
+                title: localized('_taxon'),
+              },
+            ],
+          }),
           rankThreshold: definePref<number>({
             title: preferencesText.rankThreshold(),
             description: preferencesText.rankThresholdDescription(),
@@ -1676,6 +1703,13 @@ export const userPreferenceDefinitions = {
             defaultValue: '#dc2626',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
+          }),
+          displayChronoPeriods: definePref<boolean>({
+            title: preferencesText.displayChronoPeriods(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
           }),
           rankThreshold: definePref<number>({
             title: preferencesText.rankThreshold(),
@@ -1762,6 +1796,30 @@ export const userPreferenceDefinitions = {
       general: {
         title: preferencesText.general(),
         items: {
+          splitViewByDefault: definePref<boolean>({
+            title: dataViewsText.splitViewByDefault({
+              splitView: treeText.splitView(),
+            }),
+            description: dataViewsText.splitViewDescription({
+              splitView: treeText.splitView(),
+            }),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+          splitViewOrientation: definePref<'horizontal' | 'vertical'>({
+            title: dataViewsText.splitViewOrientation({
+              splitView: treeText.splitView(),
+            }),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 'horizontal',
+            values: [
+              { value: 'horizontal', title: treeText.horizontal() },
+              { value: 'vertical', title: treeText.vertical() },
+            ],
+          }),
           noRestrictionsMode: definePref<boolean>({
             title: preferencesText.noRestrictionsMode(),
             description: (
@@ -1889,6 +1947,48 @@ export const userPreferenceDefinitions = {
       },
     },
   },
+  dataViews: {
+    title: dataViewsText.dataViewsTitle(),
+    subCategories: {
+      general: {
+        title: preferencesText.general(),
+        items: {
+          splitViewByDefault: definePref<boolean>({
+            title: dataViewsText.splitViewByDefault({
+              splitView: treeText.splitView(),
+            }),
+            description: dataViewsText.splitViewDescription({
+              splitView: treeText.splitView(),
+            }),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
+          splitViewOrientation: definePref<'horizontal' | 'vertical'>({
+            title: dataViewsText.splitViewOrientation({
+              splitView: treeText.splitView(),
+            }),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 'horizontal',
+            values: [
+              { value: 'horizontal', title: treeText.horizontal() },
+              { value: 'vertical', title: treeText.vertical() },
+            ],
+          }),
+          shownTables: definePref<RA<number>>({
+            title: localized('_shownTables'),
+            requiresReload: false,
+            visible: false,
+            defaultValue: [],
+            renderer: f.never,
+            container: 'div',
+          }),
+        },
+      },
+    },
+  },
   recordMerging: {
     title: mergingText.recordMerging(),
     subCategories: {
@@ -1962,7 +2062,7 @@ export const userPreferenceDefinitions = {
             description: wbText.dataCheckDescription(),
             requiresReload: false,
             visible: true,
-            defaultValue: false,
+            defaultValue: true,
             type: 'java.lang.Boolean',
           }),
         },
@@ -2386,6 +2486,44 @@ import('../DataModel/tables')
       } else {
         softError(
           'Unable to replace the tree preferences item title for orderByField'
+        );
+      }
+
+      const taxonQueryField =
+        userPreferenceDefinitions.treeEditor.subCategories.taxon.items
+          .queryField;
+      if ('values' in taxonQueryField) {
+        const queryFieldValues = taxonQueryField.values as RA<{
+          readonly value: string;
+          readonly title: string;
+        }>;
+        const preferredTaxon = defined(
+          queryFieldValues.find(
+            (entry) =>
+              typeof entry === 'object' && entry.value === 'preferredTaxon'
+          ),
+          'Unable to find tree query preferredTaxon value'
+        );
+        const taxon = defined(
+          queryFieldValues.find(
+            (entry) => typeof entry === 'object' && entry.value === 'taxon'
+          ),
+          'Unable to find tree query taxon value'
+        );
+
+        overwriteReadOnly(
+          preferredTaxon,
+          'title',
+          getField(tables.Determination, 'preferredTaxon').label
+        );
+        overwriteReadOnly(
+          taxon,
+          'title',
+          getField(tables.Determination, 'taxon').label
+        );
+      } else {
+        softError(
+          'Unable to replace the tree preferences item title for queryField'
         );
       }
     })
