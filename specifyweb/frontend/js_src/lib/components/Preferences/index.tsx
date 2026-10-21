@@ -293,7 +293,7 @@ export function usePrefDefinitions(prefType: PreferenceType = 'user') {
                   `${category}.${subCategory}`,
                   {
                     ...subCategoryData,
-                    title: preferencesText.keyboardShortcuts(),
+                    title: preferencesText.navigationAndTools(),
                     items: urlShortcutItems,
                   },
                 ] as const,
@@ -463,6 +463,8 @@ export function PreferencesContent({
             </p>
           )}
           {items.map(([name, item]) => {
+            const isUrlShortcutEditor =
+              'renderer' in item && item.renderer.name === 'UrlShortcutsEditor';
             const canEdit =
               !isReadOnly &&
               (item.visible !== 'protected' ||
@@ -470,6 +472,7 @@ export function PreferencesContent({
             const props = {
               className: `
                 flex items-start gap-2 md:flex-row flex-col
+                ${isUrlShortcutEditor ? 'w-full' : ''}
                 ${canEdit ? '' : '!cursor-not-allowed'}
               `,
               key: name,
@@ -479,39 +482,41 @@ export function PreferencesContent({
             };
             const children = (
               <>
-                <div className="flex flex-col items-start gap-2 md:flex-1 md:items-stretch">
-                  <p
-                    className={`
+                {!isUrlShortcutEditor && (
+                  <div className="flex flex-col items-start gap-2 md:flex-1 md:items-stretch">
+                    <p
+                      className={`
                     flex min-h-[theme(spacing.8)] flex-1 items-center
                     justify-end md:text-right
                   `}
-                  >
-                    <FormatString
-                      text={
-                        typeof item.title === 'function'
-                          ? item.title()
-                          : item.title
-                      }
-                    />
-                  </p>
-                  {item.description !== undefined && (
-                    <p className="flex flex-1 text-gray-500 md:text-right justify-end">
-                      {item.description !== undefined && (
-                        <FormatString
-                          text={
-                            typeof item.description === 'function'
-                              ? item.description()
-                              : item.description
-                          }
-                        />
-                      )}
+                    >
+                      <FormatString
+                        text={
+                          typeof item.title === 'function'
+                            ? item.title()
+                            : item.title
+                        }
+                      />
                     </p>
-                  )}
-                </div>
+                    {item.description !== undefined && (
+                      <p className="flex flex-1 text-gray-500 md:text-right justify-end">
+                        {item.description !== undefined && (
+                          <FormatString
+                            text={
+                              typeof item.description === 'function'
+                                ? item.description()
+                                : item.description
+                            }
+                          />
+                        )}
+                      </p>
+                    )}
+                  </div>
+                )}
                 <div
                   className={`
                   flex min-h-[theme(spacing.8)] flex-1 flex-col justify-center
-                  gap-2
+                  gap-2 ${isUrlShortcutEditor ? 'w-full min-w-0' : ''}
                 `}
                 >
                   <ReadOnlyContext.Provider value={!canEdit}>

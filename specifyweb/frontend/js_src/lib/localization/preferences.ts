@@ -2789,6 +2789,14 @@ export const preferencesText = createDictionary({
     'en-us':
       'When enabled, keyboard shortcuts can be used to perform various actions in Specify. You can press and hold the <key>Ctrl</key> key (or <key>⌘</key> key on Mac) to see a list of available shortcuts. When disabled, all keyboard shortcuts are ignored.',
   },
+  navigationAndTools: { 'en-us': 'Navigation and User Tools' },
+  navigationShortcutsDescription: {
+    'en-us':
+      'Open the corresponding navigation menu or page, just as clicking its icon in the navigation bar would.',
+  },
+  userToolShortcutsDescription: {
+    'en-us': 'Run the corresponding action from the User Tools menu.',
+  },
   formActionsDescription: {
     'en-us': 'Shortcuts for actions in regular data entry forms.',
   },

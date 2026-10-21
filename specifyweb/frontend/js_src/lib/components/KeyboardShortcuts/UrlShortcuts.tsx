@@ -36,7 +36,7 @@ export const shortcutToolsPromise = f.store(
       rawUserToolsPromise(),
     ]);
     return {
-      [headerText.main()]: Object.fromEntries(
+      [preferencesText.header()]: Object.fromEntries(
         [expressSearchMenuItem, ...menuItems].map((item) => [item.name, item])
       ),
       ...userTools,
@@ -62,7 +62,9 @@ export function UrlShortcutsEditor(
         />
       )}
       <section className="mt-4 rounded border border-gray-300 p-3">
-        <H3>{preferencesText.urlShortcuts()}</H3>
+        <h5 className="text-lg font-semibold">
+          {preferencesText.urlShortcuts()}
+        </h5>
         <p className="mb-3 text-gray-500">
           {preferencesText.urlShortcutsDescription()}
         </p>
@@ -153,18 +155,43 @@ function UserToolBrowser({
   readonly groups: Record<string, Record<string, MenuItem>>;
   readonly value: GetSet<UrlShortcuts>;
 }): JSX.Element {
+  const navigationGroup = groups[preferencesText.header()];
+  const userToolGroups = Object.entries(groups).filter(
+    ([groupName]) => groupName !== preferencesText.header()
+  );
   return (
-    <div className="mb-4 flex flex-col gap-4">
-      {Object.entries(groups).map(([groupName, tools]) => (
-        <section className="rounded border border-gray-300 p-3" key={groupName}>
-          <h4 className="mb-2 font-semibold">{groupName}</h4>
-          <Ul className="flex flex-col gap-2">
-            {Object.values(tools).map((tool) => (
+    <div className="flex min-w-0 flex-col gap-4">
+      {navigationGroup !== undefined && (
+        <section className="rounded border border-gray-300 p-3">
+          <h5 className="text-lg font-semibold">{preferencesText.header()}</h5>
+          <p className="mb-3 text-gray-500">
+            {preferencesText.navigationShortcutsDescription()}
+          </p>
+          <Ul className="flex flex-col gap-3">
+            {Object.values(navigationGroup).map((tool) => (
               <UserToolShortcut key={tool.name} tool={tool} value={value} />
             ))}
           </Ul>
         </section>
-      ))}
+      )}
+      {userToolGroups.length > 0 && (
+        <section className="flex flex-col gap-3 rounded border border-gray-300 p-3">
+          <h5 className="text-lg font-semibold">{headerText.userTools()}</h5>
+          <p className="text-gray-500">
+            {preferencesText.userToolShortcutsDescription()}
+          </p>
+          {userToolGroups.map(([groupName, tools]) => (
+            <section key={groupName}>
+              <h6 className="mb-2 font-semibold">{groupName}</h6>
+              <Ul className="flex flex-col gap-3">
+                {Object.values(tools).map((tool) => (
+                  <UserToolShortcut key={tool.name} tool={tool} value={value} />
+                ))}
+              </Ul>
+            </section>
+          ))}
+        </section>
+      )}
     </div>
   );
 }
@@ -181,7 +208,7 @@ function UserToolShortcut({
       label={
         <div className="flex min-w-0 items-center gap-2">
           <span className="flex-shrink-0">{tool.icon}</span>
-          <span className="truncate">{tool.title}</span>
+          <span className="min-w-0">{tool.title}</span>
         </div>
       }
     >
@@ -333,9 +360,8 @@ function KeyboardShortcutContainer({
   readonly children: JSX.Element;
 }): JSX.Element {
   return (
-    <li className="flex gap-2 items-center">
+    <li className="flex flex-wrap items-center justify-between gap-2">
       {label}
-      <span className="flex-1 -ml-2" />
       {children}
     </li>
   );
