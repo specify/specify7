@@ -10,7 +10,7 @@ import { preferencesText } from '../../localization/preferences';
 import { f } from '../../utils/functools';
 import type { GetSet, RA, WritableArray } from '../../utils/types';
 import { GET, removeKey } from '../../utils/utils';
-import { H3, Ul } from '../Atoms';
+import { H3, Key, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Input } from '../Atoms/Form';
 import { ReadOnlyContext } from '../Core/Contexts';
@@ -25,6 +25,7 @@ import type { PreferenceRendererProps } from '../Preferences/types';
 import type { EnhancedRoute } from '../Router/RouterUtils';
 import type { KeyboardShortcuts } from './config';
 import { emptyShortcuts, KeyboardShortcutPreferenceItem } from './Shortcuts';
+import { localizeKeyboardShortcut, resolvePlatformShortcuts } from './utils';
 
 export type UrlShortcuts = Partial<Record<string, KeyboardShortcuts>>;
 export type ShortcutToolGroups = Record<string, Record<string, MenuItem>>;
@@ -68,6 +69,9 @@ export function UrlShortcutsEditor(
         <p className="mb-3 text-gray-500">
           {preferencesText.urlShortcutsDescription()}
         </p>
+        {userTools !== undefined && (
+          <AssignedUrlShortcuts groups={userTools} value={props.value} />
+        )}
         <Button.Small
           aria-current={isOpen ? true : undefined}
           onClick={handleToggle}
@@ -85,6 +89,52 @@ export function UrlShortcutsEditor(
         />
       )}
     </>
+  );
+}
+
+function AssignedUrlShortcuts({
+  groups,
+  value,
+}: {
+  readonly groups: ShortcutToolGroups;
+  readonly value: UrlShortcuts;
+}): JSX.Element | null {
+  const toolPaths = new Set(
+    Object.values(groups)
+      .flatMap((tools) => Object.values(tools))
+      .map(({ url }) => url)
+  );
+  const assigned = Object.entries(value).filter(
+    ([path, shortcuts]) =>
+      path.length > 0 &&
+      !isExcludedPath(path, toolPaths) &&
+      Object.values(shortcuts ?? {}).some((bindings) =>
+        bindings?.some((binding) => binding.length > 0)
+      )
+  );
+  return assigned.length === 0 ? null : (
+    <Ul className="mb-3 flex flex-col gap-3">
+      {assigned.map(([path, shortcuts]) => {
+        const bindings = (
+          resolvePlatformShortcuts(shortcuts ?? {}) ?? []
+        ).filter((binding) => binding.length > 0);
+        return (
+          <li
+            className="flex flex-wrap items-center justify-between gap-2"
+            key={path}
+          >
+            <span className="min-w-0 break-all">{path}</span>
+            <span className="flex flex-wrap gap-2">
+              {bindings.length === 0
+                ? preferencesText.noKeyAssigned()
+                : bindings.map((binding) => (
+                    <Key key={binding}>{localizeKeyboardShortcut(binding)}</Key>
+                  ))}
+            </span>
+          </li>
+        );
+      })}
+    </Ul>
   );
 }
 
