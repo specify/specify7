@@ -477,6 +477,7 @@ export function QueryComboBox({
     <div className="flex w-full min-w-[theme(spacing.40)] items-center sm:min-w-[unset]">
       <TreeDefinitionContext.Provider value={treeDefinition}>
         <AutoComplete<string>
+          delay={isTreeTable(field.relatedTable.name) ? 500 : undefined}
           disabled={
             !isLoaded ||
             isReadOnly ||

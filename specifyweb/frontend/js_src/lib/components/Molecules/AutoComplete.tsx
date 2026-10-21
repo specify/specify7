@@ -207,6 +207,10 @@ export function AutoComplete<T>({
     }, delay),
     []
   );
+  React.useEffect(
+    () => (): void => handleRefreshItems.cancel(),
+    [handleRefreshItems]
+  );
 
   const [input, setInput] = React.useState<HTMLInputElement | null>(null);
   const dataListRef = React.useRef<HTMLUListElement | null>(null);
