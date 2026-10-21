@@ -10,6 +10,17 @@ requireContext();
 const { keysToString } = exportsForTests;
 
 test('Validate default keyboard shortcuts in userPreferenceDefinitions', () => {
+  expect(
+    userPreferenceDefinitions.form.subCategories.actions.items.save.defaultValue
+  ).toEqual({ other: ['Alt+Ctrl+KeyS'] });
+  expect(
+    userPreferenceDefinitions.form.subCategories.actions.items.carryForward
+      .defaultValue
+  ).toEqual({ other: ['Alt+Ctrl+Shift+KeyC'] });
+  expect(
+    userPreferenceDefinitions.form.subCategories.dialogs.items.save.defaultValue
+  ).toEqual({ other: ['Alt+Ctrl+KeyS'] });
+
   Object.entries(userPreferenceDefinitions as GenericPreferences).forEach(
     ([category, definition]) =>
       Object.entries(definition.subCategories).forEach(

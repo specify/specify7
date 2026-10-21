@@ -948,10 +948,10 @@ export const userPreferenceDefinitions = {
             preferencesText.openFormMeta(),
             'KeyM'
           ),
-          save: defineKeyboardShortcut(commonText.save(), 'Ctrl+KeyS'),
+          save: defineKeyboardShortcut(commonText.save(), 'Alt+Ctrl+KeyS'),
           carryForward: defineKeyboardShortcut(
             formsText.carryForward(),
-            'Ctrl+Shift+KeyC'
+            'Alt+Ctrl+Shift+KeyC'
           ),
           clone: defineKeyboardShortcut(formsText.clone(), 'Ctrl+Shift+KeyL'),
         },
@@ -960,7 +960,7 @@ export const userPreferenceDefinitions = {
         title: preferencesText.dialogs(),
         items: {
           close: defineKeyboardShortcut(commonText.close(), 'Escape'),
-          save: defineKeyboardShortcut(commonText.save(), 'Ctrl+KeyS'),
+          save: defineKeyboardShortcut(commonText.save(), 'Alt+Ctrl+KeyS'),
           openRelatedRecordInNewTab: defineKeyboardShortcut(
             preferencesText.openRelatedRecordInNewTab(),
             'KeyO'
