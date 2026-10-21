@@ -83,6 +83,15 @@ export const userText = createDictionary({
     'hr-hr': 'Promjena lozinke',
     nb: 'Endre passord',
   },
+  presenceActive: {
+    'en-us': 'Active',
+  },
+  presenceInactive: {
+    'en-us': 'Inactive',
+  },
+  presenceOffline: {
+    'en-us': 'Offline',
+  },
   oldPassword: {
     'en-us': 'Old password',
     'ru-ru': 'Старый пароль',

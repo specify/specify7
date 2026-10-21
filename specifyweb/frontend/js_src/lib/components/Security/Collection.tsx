@@ -40,11 +40,13 @@ export type RoleBase = {
   readonly roleName: LocalizedString;
 };
 
+export type PresenceStatus = 'active' | 'inactive' | 'offline';
+
 export type UserRoles = RA<{
   readonly userId: number;
   readonly userName: LocalizedString;
   readonly roles: RA<RoleBase>;
-  readonly isLoggedIn: boolean
+  readonly presence: PresenceStatus | null;
 }>;
 
 export type SecurityCollectionOutlet = SecurityOutlet & {
@@ -159,10 +161,16 @@ export function CollectionView({
                 ) : (
                   <>
                     <Ul>
-                      {mergedUsers.map(({ userId, userName, roles, isLoggedIn }) => {
+                      {mergedUsers.map(({ userId, userName, roles, presence }) => {
                         const canRead =
                           userId === userInformation.id ||
                           hasTablePermission('SpecifyUser', 'read');
+                        const currentPresence = presence ?? 'offline';
+                        const presenceLabel = {
+                          active: userText.presenceActive(),
+                          inactive: userText.presenceInactive(),
+                          offline: userText.presenceOffline(),
+                        }[currentPresence];
                         const children = (
                           <>
                             {userName}
@@ -173,11 +181,18 @@ export function CollectionView({
                                 )})`}
                               </span>
                             )}
-                              <span
-                                className={`ml-2 inline-block w-2.5 h-2.5 rounded-full  
-                                  ${isLoggedIn ? 'bg-green-500' : 'bg-red-500'}
-                                `}
-                              />
+                            <span
+                              role="img"
+                              aria-label={presenceLabel}
+                              title={presenceLabel}
+                              className={`ml-2 inline-block w-2.5 h-2.5 rounded-full ${
+                                currentPresence === 'active'
+                                  ? 'bg-green-500'
+                                  : currentPresence === 'inactive'
+                                    ? 'bg-yellow-500'
+                                    : 'bg-red-500'
+                              }`}
+                            />
                           </>
                         );
                         return (
