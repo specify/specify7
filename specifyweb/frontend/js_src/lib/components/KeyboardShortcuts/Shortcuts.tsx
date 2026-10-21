@@ -130,6 +130,10 @@ export function KeyboardShortcutPreferenceItem({
   );
 }
 
+Object.defineProperty(KeyboardShortcutPreferenceItem, 'name', {
+  value: 'KeyboardShortcutPreferenceItem',
+});
+
 function EditKeyboardShortcut({
   shortcut,
   onSave: handleSave,
