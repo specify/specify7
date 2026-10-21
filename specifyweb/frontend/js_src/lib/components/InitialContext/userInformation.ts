@@ -18,7 +18,6 @@ export type UserInformation = SerializedRecord<SpecifyUser> & {
   readonly name: LocalizedString;
   readonly isauthenticated: boolean;
   readonly availableCollections: RA<SerializedResource<Collection>>;
-  readonly isloggedin: boolean;
   readonly currentCollectionAgent: SerializedRecord<Agent> | null;
   readonly agent: SerializedRecord<Agent> | null;
 };
