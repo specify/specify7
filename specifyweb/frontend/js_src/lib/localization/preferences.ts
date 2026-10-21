@@ -9,6 +9,10 @@ import { createDictionary } from './utils';
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
 export const preferencesText = createDictionary({
+  shortcutConflict: {
+    'en-us':
+      'Also assigned to the following actions. Only one action may run when they are available together.',
+  },
   preferences: {
     'en-us': 'Preferences',
     'ru-ru': 'Настройки',

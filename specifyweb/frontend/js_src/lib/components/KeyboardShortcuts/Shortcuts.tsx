@@ -14,6 +14,7 @@ import { removeItem, replaceItem, replaceKey } from '../../utils/utils';
 import { Key } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import type { PreferenceRendererProps } from '../Preferences/types';
+import { ShortcutConflictWarning } from './Conflicts';
 import type { KeyboardShortcuts } from './config';
 import { keyboardPlatform } from './config';
 import { keyJoinSymbol, setKeyboardEventInterceptor } from './context';
@@ -33,11 +34,18 @@ const editingEvent = eventListener<{ readonly change: undefined }>();
 
 export const emptyShortcuts = {};
 export function KeyboardShortcutPreferenceItem({
+  category,
+  subcategory,
+  item,
+  shortcutId,
   value = emptyShortcuts,
   onChange: handleChange,
 }: Partial<
-  Pick<PreferenceRendererProps<KeyboardShortcuts>, 'onChange' | 'value'>
->): JSX.Element {
+  Pick<
+    PreferenceRendererProps<KeyboardShortcuts>,
+    'onChange' | 'value' | 'category' | 'subcategory' | 'item'
+  >
+> & { readonly shortcutId?: string }): JSX.Element {
   const [localValue, setLocalValue] = useTriggerState(value);
 
   const key = React.useMemo<Record<never, never>>(() => ({}), []);
@@ -122,6 +130,15 @@ export function KeyboardShortcutPreferenceItem({
           }
         />
       ))}
+      <ShortcutConflictWarning
+        id={
+          shortcutId ??
+          (category === undefined
+            ? undefined
+            : `${category}.${subcategory}.${item}`)
+        }
+        value={localValue}
+      />
       {setShortcuts !== undefined && (
         <Button.Small
           disabled={isEditing}

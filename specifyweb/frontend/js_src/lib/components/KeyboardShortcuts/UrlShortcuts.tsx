@@ -23,6 +23,10 @@ import { rawUserToolsPromise } from '../Header/userToolDefinitions';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import type { PreferenceRendererProps } from '../Preferences/types';
 import type { EnhancedRoute } from '../Router/RouterUtils';
+import {
+  ShortcutConflictWarning,
+  UrlShortcutConflictProvider,
+} from './Conflicts';
 import type { KeyboardShortcuts } from './config';
 import { emptyShortcuts, KeyboardShortcutPreferenceItem } from './Shortcuts';
 import { localizeKeyboardShortcut, resolvePlatformShortcuts } from './utils';
@@ -53,7 +57,7 @@ export function UrlShortcutsEditor(
   const [userTools] = usePromise(shortcutToolsPromise(), false);
 
   return (
-    <>
+    <UrlShortcutConflictProvider value={props.value}>
       {userTools === undefined ? (
         <>{commonText.loading()}</>
       ) : (
@@ -88,7 +92,7 @@ export function UrlShortcutsEditor(
           }}
         />
       )}
-    </>
+    </UrlShortcutConflictProvider>
   );
 }
 
@@ -131,6 +135,7 @@ function AssignedUrlShortcuts({
                     <Key key={binding}>{localizeKeyboardShortcut(binding)}</Key>
                   ))}
             </span>
+            <ShortcutConflictWarning id={path} value={shortcuts ?? {}} />
           </li>
         );
       })}
@@ -164,37 +169,41 @@ function EditorDialog({
     [userTools]
   );
   return categorizedRoutes ? (
-    <Dialog
-      buttons={commonText.close()}
-      className={{
-        container: dialogClassNames.wideContainer,
-      }}
-      header={preferencesText.urlShortcuts()}
-      onClose={(): void =>
-        handleChange(
-          localValue[GET] === value ? value : cleanupShortcuts(localValue[GET])
-        )
-      }
-    >
-      <H3>{preferencesText.pages()}</H3>
-      <RouteBrowser
-        routes={categorizedRoutes.pages}
-        excludedPaths={shortcutToolPaths}
-        value={localValue}
-      />
-      <H3>{preferencesText.overlays()}</H3>
-      <RouteBrowser
-        routes={categorizedRoutes.overlays}
-        excludedPaths={shortcutToolPaths}
-        value={localValue}
-      />
-      <H3>{preferencesText.customPages()}</H3>
-      <CustomRouteBrowser
-        categorized={categorizedRoutes}
-        excludedPaths={shortcutToolPaths}
-        value={localValue}
-      />
-    </Dialog>
+    <UrlShortcutConflictProvider value={localValue[GET]}>
+      <Dialog
+        buttons={commonText.close()}
+        className={{
+          container: dialogClassNames.wideContainer,
+        }}
+        header={preferencesText.urlShortcuts()}
+        onClose={(): void =>
+          handleChange(
+            localValue[GET] === value
+              ? value
+              : cleanupShortcuts(localValue[GET])
+          )
+        }
+      >
+        <H3>{preferencesText.pages()}</H3>
+        <RouteBrowser
+          routes={categorizedRoutes.pages}
+          excludedPaths={shortcutToolPaths}
+          value={localValue}
+        />
+        <H3>{preferencesText.overlays()}</H3>
+        <RouteBrowser
+          routes={categorizedRoutes.overlays}
+          excludedPaths={shortcutToolPaths}
+          value={localValue}
+        />
+        <H3>{preferencesText.customPages()}</H3>
+        <CustomRouteBrowser
+          categorized={categorizedRoutes}
+          excludedPaths={shortcutToolPaths}
+          value={localValue}
+        />
+      </Dialog>
+    </UrlShortcutConflictProvider>
   ) : null;
 }
 
@@ -263,6 +272,7 @@ function UserToolShortcut({
       }
     >
       <KeyboardShortcutPreferenceItem
+        shortcutId={tool.url}
         value={value[tool.url]}
         onChange={(newValue): void =>
           setValue({ ...value, [tool.url]: newValue })
@@ -320,6 +330,23 @@ const getCategorizedRoutes = f.store(async (): Promise<CategorizedRoutes> => {
     overlays: Object.fromEntries(scoutTree(overlayRoutes, '/specify')),
   };
 });
+
+export const getShortcutLabels = f.store(
+  async (): Promise<Record<string, React.ReactNode>> => {
+    const [groups, routes] = await Promise.all([
+      shortcutToolsPromise(),
+      getCategorizedRoutes(),
+    ]);
+    return Object.fromEntries([
+      ...Object.entries({ ...routes.pages, ...routes.overlays }).filter(
+        ([_path, title]) => title !== undefined
+      ),
+      ...Object.values(groups).flatMap((tools) =>
+        Object.values(tools).map(({ url, title }) => [url, title])
+      ),
+    ]);
+  }
+);
 
 const scoutTree = (
   routes: RA<EnhancedRoute>,
@@ -395,6 +422,7 @@ function RouteShortcut({
       }
     >
       <KeyboardShortcutPreferenceItem
+        shortcutId={path}
         value={value[path]}
         onChange={(newValue): void => setValue({ ...value, [path]: newValue })}
       />
@@ -484,6 +512,7 @@ function CustomRouteShortcut({
       }
     >
       <KeyboardShortcutPreferenceItem
+        shortcutId={path}
         value={shortcuts}
         onChange={(shortcuts): void => handleChange(path, shortcuts)}
       />

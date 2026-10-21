@@ -25,6 +25,7 @@ import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
+import { ShortcutConflictProvider } from '../KeyboardShortcuts/Conflicts';
 import { hasPermission } from '../Permissions/helpers';
 import {
   ProtectedAction,
@@ -400,6 +401,10 @@ export function PreferencesContent({
   const definitions = passedDefinitions ?? hookDefinitions;
 
   const basePreferences = preferenceInstances[prefType];
+  const sectionRefs = React.useMemo(
+    () => definitions.map((_, index) => forwardRefs?.bind(undefined, index)),
+    [definitions, forwardRefs]
+  );
 
   const renderSubCategory = React.useCallback(
     (
@@ -568,36 +573,41 @@ export function PreferencesContent({
   );
 
   return (
-    <div className="flex h-fit min-w-0 flex-1 flex-col gap-6">
-      {definitions.map(
-        (
-          [category, { title, description = undefined, subCategories }],
-          index
-        ) => (
-          <ErrorBoundary dismissible key={category}>
-            <Container.Center
-              className="gap-8 overflow-y-visible"
-              forwardRef={forwardRefs?.bind(undefined, index)}
-              id={category}
-            >
-              <h3 className="text-2xl">
-                {typeof title === 'function' ? title() : title}
-              </h3>
-              {description !== undefined && (
-                <p>
-                  {typeof description === 'function'
-                    ? description()
-                    : description}
-                </p>
-              )}
-              {subCategories.map(([subcategory, data]) =>
-                renderSubCategory(category, subcategory, data)
-              )}
-            </Container.Center>
-          </ErrorBoundary>
-        )
-      )}
-    </div>
+    <ShortcutConflictProvider
+      preferences={basePreferences}
+      definitions={preferenceDefinitions[prefType]}
+    >
+      <div className="flex h-fit min-w-0 flex-1 flex-col gap-6">
+        {definitions.map(
+          (
+            [category, { title, description = undefined, subCategories }],
+            index
+          ) => (
+            <ErrorBoundary dismissible key={category}>
+              <Container.Center
+                className="gap-8 overflow-y-visible"
+                forwardRef={sectionRefs[index]}
+                id={category}
+              >
+                <h3 className="text-2xl">
+                  {typeof title === 'function' ? title() : title}
+                </h3>
+                {description !== undefined && (
+                  <p>
+                    {typeof description === 'function'
+                      ? description()
+                      : description}
+                  </p>
+                )}
+                {subCategories.map(([subcategory, data]) =>
+                  renderSubCategory(category, subcategory, data)
+                )}
+              </Container.Center>
+            </ErrorBoundary>
+          )
+        )}
+      </div>
+    </ShortcutConflictProvider>
   );
 }
 
