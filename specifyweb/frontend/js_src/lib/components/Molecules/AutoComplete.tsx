@@ -248,6 +248,19 @@ export function AutoComplete<T>({
    */
   const ignoreFilter = currentValue === pendingValue;
   const itemSource = ignoreFilter ? (allResults ?? []) : filteredItems;
+
+  React.useLayoutEffect(() => {
+    if (
+      typeof onScrollEnd !== 'function' ||
+      dataList === null ||
+      dataList.clientHeight === 0 ||
+      isLoadingMore ||
+      dataList.scrollHeight - dataList.clientHeight >= 40
+    )
+      return;
+    onScrollEnd();
+  }, [dataList, itemSource.length, isLoadingMore, onScrollEnd]);
+
   const [activeIndex, setActiveIndex] = React.useState(-1);
   const virtualizer = useVirtualizer({
     count: itemSource.length,
