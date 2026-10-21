@@ -1,13 +1,11 @@
 import React from 'react';
 
-import { commonText } from '../../localization/common';
-import { localized, type RA } from '../../utils/types';
+import { type RA, localized } from '../../utils/types';
 import { BatchEditFromQuery } from '../BatchEdit';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { RecordSet, SpQuery, SpQueryField } from '../DataModel/types';
-import { RecordSelectorFromIds } from '../FormSliders/RecordSelectorFromIds';
 import { hasPermission } from '../Permissions/helpers';
 import { datasetVariants } from '../WbUtils/datasetVariants';
 import { MakeRecordSetButton } from './Components';
@@ -16,6 +14,7 @@ import type { QueryField } from './helpers';
 import type { MainState } from './reducer';
 import type { QueryResultRow } from './Results';
 import { QueryResultsWrapper } from './ResultsWrapper';
+import { hasFetchableRecordIds, QueryFormView } from './ToForms';
 
 export function QueryBuilderResults({
   table,
@@ -26,6 +25,7 @@ export function QueryBuilderResults({
   state,
   isReadOnly,
   saveRequired,
+  isCountOnly,
   getQueryFieldRecords,
   selectedRows,
   setSelectedRows,
@@ -34,6 +34,8 @@ export function QueryBuilderResults({
   resultsRef,
   isSplit,
   isHorizontal,
+  maximumPrimaryPaneWidth,
+  splitViewRef,
   onReRun: handleReRun,
   onResults: handleResults,
   onSelected: handleSelected,
@@ -47,6 +49,7 @@ export function QueryBuilderResults({
   readonly state: MainState;
   readonly isReadOnly: boolean;
   readonly saveRequired: boolean;
+  readonly isCountOnly: boolean;
   readonly getQueryFieldRecords:
     | (() => RA<SerializedResource<SpQueryField>>)
     | undefined;
@@ -61,46 +64,14 @@ export function QueryBuilderResults({
   >;
   readonly isSplit: boolean;
   readonly isHorizontal: boolean;
+  readonly maximumPrimaryPaneWidth: number;
+  readonly splitViewRef: React.RefCallback<HTMLDivElement>;
   readonly onReRun: () => void;
   readonly onResults?: (results: RA<QueryResultRow | undefined>) => void;
   readonly onSelected: (ids: RA<number>) => void;
   readonly onSortChange: (fields: RA<QueryField>) => void;
 }): JSX.Element | null {
   const [refreshToken, setRefreshToken] = React.useState(0);
-  const selectedIds = React.useMemo(
-    () => Array.from(selectedRows),
-    [selectedRows]
-  );
-  const recordPreview = (
-    <div className="flex h-full min-h-0 min-w-0 flex-1 items-center justify-center overflow-auto bg-[color:var(--form-background)]">
-      {selectedIds.length === 0 ? (
-        <p className="m-auto text-neutral-500">{commonText.select()}</p>
-      ) : (
-        <RecordSelectorFromIds
-          canRemove={false}
-          defaultIndex={selectedIndex}
-          dialog={false}
-          ids={selectedIds}
-          isDependent={false}
-          isInRecordSet={false}
-          newResource={undefined}
-          table={table}
-          title={localized(query.name)}
-          totalCount={selectedIds.length}
-          onAdd={undefined}
-          onClone={undefined}
-          onClose={(): void => {
-            setSelectedRows(new Set());
-            setSelectedIndex(0);
-          }}
-          onDelete={undefined}
-          onSaved={(): void => setRefreshToken((token) => token + 1)}
-          onSlide={setSelectedIndex}
-        />
-      )}
-    </div>
-  );
-
   return hasPermission('/querybuilder/query', 'execute') ? (
     <QueryResultsWrapper
       createRecordSet={
@@ -127,7 +98,7 @@ export function QueryBuilderResults({
               saveRequired={saveRequired}
             />
           )}
-          {query.countOnly ? undefined : (
+          {isCountOnly ? undefined : (
             <QueryExportButtons
               baseTableName={state.baseTableName}
               fields={state.fields}
@@ -142,6 +113,7 @@ export function QueryBuilderResults({
       }
       fields={state.fields}
       forceCollection={forceCollection}
+      countOnly={isCountOnly}
       queryResource={queryResource}
       queryRunCount={state.queryRunCount}
       refreshToken={refreshToken}
@@ -149,8 +121,39 @@ export function QueryBuilderResults({
       resultsRef={resultsRef}
       selectedRows={[selectedRows, setSelectedRows]}
       isSplit={isSplit}
+      splitContainerRef={splitViewRef}
       splitHorizontal={isHorizontal}
-      splitPane={recordPreview}
+      splitPrimaryPaneMaxWidth={`${maximumPrimaryPaneWidth}px`}
+      renderSplitPane={({
+        results,
+        selectedRows: resultSelection,
+        totalCount,
+        onFetchMore,
+        onDelete,
+      }) => (
+        <>
+          {query.selectDistinct !== true &&
+          !isCountOnly &&
+          hasFetchableRecordIds(results) ? (
+            <QueryFormView
+              results={results}
+              selectedRows={resultSelection}
+              selectedIndex={selectedIndex}
+              table={table}
+              title={localized(query.name)}
+              totalCount={totalCount}
+              onClose={(): void => {
+                setSelectedRows(new Set());
+                setSelectedIndex(0);
+              }}
+              onDelete={onDelete}
+              onFetchMore={onFetchMore}
+              onSaved={(): void => setRefreshToken((token) => token + 1)}
+              onSlide={setSelectedIndex}
+            />
+          ) : null}
+        </>
+      )}
       table={table}
       onReRun={handleReRun}
       onResults={handleResults}

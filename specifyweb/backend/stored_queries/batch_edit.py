@@ -920,7 +920,11 @@ def _get_date_part_field_name(field: QueryField) -> str | None:
         return f"{base_name}__{date_part}"
     return base_name
 
-def rewrite_coordinate_fields(row, _mapped_rows: dict[tuple[tuple[str, ...], ...], Any], join_paths: tuple[tuple[str, ...], ...]) -> tuple: 
+def rewrite_coordinate_fields(
+    row: tuple[Any, ...],
+    mapped_rows: dict[tuple[tuple[str, ...], str | None], Any],
+    field_keys: tuple[tuple[tuple[str, ...], str | None], ...],
+) -> tuple:
     """
         In the QueryResults we want to replace any instances of the decimal
         coordinate fields (latitude1, longitude1, latitude2, longitude2) with
@@ -940,8 +944,6 @@ def rewrite_coordinate_fields(row, _mapped_rows: dict[tuple[tuple[str, ...], ...
         running he query, and then replacing the represented field before 
         parsing.
     """
-    mapped_rows = _mapped_rows
-
     field_replacement_map = {
         'latitude1': 'lat1text',
         'longitude1': 'long1text',
@@ -949,27 +951,35 @@ def rewrite_coordinate_fields(row, _mapped_rows: dict[tuple[tuple[str, ...], ...
         'longitude2': 'long2text'
     }
 
-    for join_path in join_paths:
+    for field_key in field_keys:
+        join_path, date_part = field_key
         if len(join_path) == 0:
             continue
         field_name = join_path[-1]
         replacement_field = field_replacement_map.get(field_name, None)
         replace_join_path = tuple((*join_path[:-1], replacement_field))
-        if replacement_field is None or not replace_join_path in mapped_rows.keys():
+        replacement_key = (replace_join_path, date_part)
+        if replacement_field is None or replacement_key not in mapped_rows:
             continue
 
-        mapped_rows[join_path] = mapped_rows[replace_join_path]
+        mapped_rows[field_key] = mapped_rows[replacement_key]
 
-    result = tuple(mapped_rows[join_path] for join_path in join_paths)
+    result = tuple(mapped_rows[field_key] for field_key in field_keys)
     return (row[0], *result)
 
 def rewrite_row(row, query_fields: list[QueryField]) -> tuple:
     """
         Rewrite the query result row to an "expected form" for batch edit
     """
-    join_paths = tuple(tuple(field.name for field in query_field.fieldspec.join_path) for query_field in query_fields)
-    mapped_rows = dict(zip(join_paths, row[1:]))
-    return rewrite_coordinate_fields(row, mapped_rows, join_paths)
+    field_keys = tuple(
+        (
+            tuple(field.name for field in query_field.fieldspec.join_path),
+            query_field.fieldspec.date_part,
+        )
+        for query_field in query_fields
+    )
+    mapped_rows = dict(zip(field_keys, row[1:]))
+    return rewrite_coordinate_fields(row, mapped_rows, field_keys)
 
 def run_batch_edit_query(props: BatchEditProps):
 
