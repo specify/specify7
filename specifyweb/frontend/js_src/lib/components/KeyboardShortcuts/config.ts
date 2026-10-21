@@ -24,15 +24,15 @@ export const keyboardPlatform: KeyboardPlatform =
   process.env.NODE_ENV === 'test'
     ? 'other'
     : navigator.platform.toLowerCase().includes('mac') ||
-      // Check for iphone || ipad || ipod
-      navigator.platform.toLowerCase().includes('ip')
-    ? 'mac'
-    : navigator.platform.toLowerCase().includes('win')
-    ? 'windows'
-    : 'other';
+        // Check for iphone || ipad || ipod
+        navigator.platform.toLowerCase().includes('ip')
+      ? 'mac'
+      : navigator.platform.toLowerCase().includes('win')
+        ? 'windows'
+        : 'other';
 
 export const modifierKeys = ['Alt', 'Ctrl', 'Meta', 'Shift'] as const;
-export type ModifierKey = typeof modifierKeys[number];
+export type ModifierKey = (typeof modifierKeys)[number];
 export const allModifierKeys = new Set([
   ...modifierKeys,
   'AltGraph',
