@@ -46,10 +46,7 @@ export function useUrlShortcuts(): void {
                   .then(() => globalThis.location.assign(path));
               else if (isExternalUrl(path))
                 globalThis.open(path, '_blank', 'noopener,noreferrer');
-              else if (
-                !path.startsWith('/specify/') &&
-                !path.startsWith('/accounts/')
-              )
+              else if (!path.startsWith('/specify/'))
                 globalThis.location.assign(path);
               else navigate(path);
             },
