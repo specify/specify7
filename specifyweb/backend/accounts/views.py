@@ -55,7 +55,7 @@ def update_presence(request: http.HttpRequest) -> http.HttpResponse:
 
     now = timezone.now()
     presence, created = UserPresence.objects.get_or_create(
-        specifyuser=request.specify_user,
+        specifyuser_id=request.user.pk,
         defaults={
             'last_heartbeat': now,
             'last_activity': now if data['active'] else None,

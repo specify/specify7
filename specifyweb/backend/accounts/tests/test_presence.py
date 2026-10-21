@@ -22,7 +22,7 @@ class PresenceApiTest(ApiTests):
         self.assertEqual(response.status_code, 204)
         presence = UserPresence.objects.get(specifyuser=self.specifyuser)
         first_activity = presence.last_activity
-        self.assertIsNotNone(first_activity)
+        assert first_activity is not None
 
         response = client.post(
             '/accounts/presence/',
