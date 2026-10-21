@@ -104,7 +104,7 @@ async function parseDictionary(
           kind === 'userInterface'
             ? '\nIf you indented to add a new language to Specify 7, see ' +
               'documentation: ' +
-              'https://github.com/specify/specify7/tree/production/specifyweb/' +
+              'https://github.com/specify/specify7/tree/main/specifyweb/' +
               'frontend/js_src/lib/localization#front-end-localization'
             : ''
         }`

@@ -1,6 +1,6 @@
-import type { SafeLocation } from 'history';
 import React from 'react';
-import { unstable_useBlocker as useBlocker } from 'react-router';
+import type { BlockerFunction, SafeLocation } from 'react-router';
+import { useBlocker } from 'react-router';
 
 import { commonText } from '../../localization/common';
 import { mainText } from '../../localization/main';
@@ -71,7 +71,7 @@ export function RouterUnloadProtect({
   const unloadProtectsRef = React.useContext(UnloadProtectsRefContext)!;
 
   const blocker = useBlocker(
-    React.useCallback<Exclude<Parameters<typeof useBlocker>[0], boolean>>(
+    React.useCallback<BlockerFunction>(
       ({ nextLocation, currentLocation }) =>
         unloadProtectsRef.current.length > 0 &&
         hasUnloadProtect(nextLocation, currentLocation, singleResource),

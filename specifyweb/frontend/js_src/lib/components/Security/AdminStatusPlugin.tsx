@@ -56,7 +56,7 @@ export function AdminStatusPlugin({
       }
       onClick={(): void =>
         loading(
-          ajax<'false' | 'true'>(`/api/set_admin_status/${user.id}/`, {
+          ajax<'false' | 'true'>(`/accounts/set_admin_status/${user.id}/`, {
             method: 'POST',
             body: formData({
               admin_status: !isAdmin,

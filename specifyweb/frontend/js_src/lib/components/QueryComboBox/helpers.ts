@@ -1,8 +1,14 @@
 import type { RA, WritableArray } from '../../utils/types';
+import type { LocalizedString } from 'typesafe-i18n';
 import { toTable, toTreeTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { idFromUrl, strictIdFromUrl } from '../DataModel/resource';
+import {
+  fetchResource,
+  getResourceApiUrl,
+  idFromUrl,
+  strictIdFromUrl,
+} from '../DataModel/resource';
 import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
@@ -10,12 +16,21 @@ import type { SpQuery, SpQueryField } from '../DataModel/types';
 import { getMainTableFields } from '../Formatters/formatters';
 import { userInformation } from '../InitialContext/userInformation';
 import { userPreferences } from '../Preferences/userPreferences';
-import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
+import { queryFieldFilterSpecs } from '../QueryBuilder/FieldFilterSpec';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { flippedSortTypes } from '../QueryBuilder/helpers';
 import type { TypeSearch } from './spec';
 import type { CollectionRelationships } from './useCollectionRelationships';
 import type { QueryComboBoxTreeData } from './useTreeData';
+
+export function deduplicateQueryComboBoxResults(
+  responses: ReadonlyArray<ReadonlyArray<readonly [number, LocalizedString]>>
+): RA<readonly [number, LocalizedString]> {
+  const uniqueResults = new Map<number, readonly [number, LocalizedString]>();
+  for (const result of responses.flat())
+    if (!uniqueResults.has(result[0])) uniqueResults.set(result[0], result);
+  return Array.from(uniqueResults.values());
+}
 
 export function makeComboBoxQuery({
   fieldName,
@@ -35,6 +50,8 @@ export function makeComboBoxQuery({
   query.set('contextName', table.name);
   query.set('contextTableId', table.tableId);
   query.set('selectDistinct', false);
+  query.set('searchSynonymy', false);
+  query.set('smushed', false);
   query.set('countOnly', false);
   query.set('specifyUser', userInformation.resource_uri);
   query.set('isFavorite', false);
@@ -52,8 +69,8 @@ export function makeComboBoxQuery({
     .set(
       'operStart',
       searchAlgorithm === 'contains'
-        ? queryFieldFilters.like.id
-        : queryFieldFilters.startsWith.id
+        ? queryFieldFilterSpecs.like.id
+        : queryFieldFilterSpecs.startsWith.id
     );
 
   const displayField = QueryFieldSpec.fromPath(table.name, [])
@@ -74,6 +91,7 @@ export function getQueryComboBoxConditions({
   subViewRelationship,
   relatedTable,
   treeDefinition,
+  typeSearchName,
 }: {
   readonly resource: SpecifyResource<AnySchema>;
   readonly fieldName: string;
@@ -82,6 +100,7 @@ export function getQueryComboBoxConditions({
   readonly relatedTable: SpecifyTable;
   readonly subViewRelationship: Relationship | undefined;
   readonly treeDefinition: string | undefined;
+  readonly typeSearchName?: string | undefined;
 }): RA<SpecifyResource<SpQueryField>> {
   const fields: WritableArray<SpecifyResource<SpQueryField>> = [];
   const treeResource = toTreeTable(resource);
@@ -94,7 +113,7 @@ export function getQueryComboBoxConditions({
           .toSpQueryField()
           .set('isDisplay', false)
           .set('isNot', true)
-          .set('operStart', queryFieldFilters.between.id)
+          .set('operStart', queryFieldFilterSpecs.between.id)
           .set(
             'startValue',
             [
@@ -134,7 +153,7 @@ export function getQueryComboBoxConditions({
             .toSpQueryField()
             .set('isDisplay', false)
             .set('startValue', lowestRankId.toString())
-            .set('operStart', queryFieldFilters.less.id)
+            .set('operStart', queryFieldFilterSpecs.less.id)
         );
     } else if (fieldName === 'acceptedParent') {
       // Nothing to do
@@ -153,9 +172,25 @@ export function getQueryComboBoxConditions({
         .toSpQueryField()
         .set('isDisplay', false)
         .set('startValue', strictIdFromUrl(treeDefinition).toString())
-        .set('operStart', queryFieldFilters.equal.id)
+        .set('operStart', queryFieldFilterSpecs.equal.id)
     );
   }
+
+  /**
+   * When looking up BioStrat values for PaleoContext, only show
+   * GeologicTimePeriod nodes where isBioStrat is TRUE.
+   */
+  if (
+    typeSearchName === 'BioStrat' &&
+    relatedTable === tables.GeologicTimePeriod
+  )
+    fields.push(
+      QueryFieldSpec.fromPath(tables.GeologicTimePeriod.name, ['isBioStrat'])
+        .toSpQueryField()
+        .set('isDisplay', false)
+        .set('operStart', queryFieldFilterSpecs.true.id)
+        .set('startValue', 'true')
+    );
 
   if (
     typeof collectionRelationships === 'object' &&
@@ -169,7 +204,7 @@ export function getQueryComboBoxConditions({
       )
         .toSpQueryField()
         .set('isDisplay', false)
-        .set('operStart', queryFieldFilters.in.id)
+        .set('operStart', queryFieldFilterSpecs.in.id)
         .set(
           'startValue',
           collectionRelationships[
@@ -229,4 +264,118 @@ export function pendingValueToResource(
   return new relationship.relatedTable.Resource(
     typeof fieldName === 'string' ? { [fieldName]: pendingValue } : {}
   );
+}
+
+/**
+ * QueryComboBox can be rendered for a collection other than the currently
+ * logged-in one, via forceCollection. New resources are initialized with the
+ * current domain by default, so override scope to the target collection
+ */
+export async function scopeNewResourceToCollection(
+  resource: SpecifyResource<AnySchema>,
+  collectionId: number | undefined
+): Promise<SpecifyResource<AnySchema>> {
+  if (!resource.isNew() || typeof collectionId !== 'number') return resource;
+
+  const scopingRelationship = resource.specifyTable.getScopingRelationship();
+  if (scopingRelationship === undefined) return resource;
+
+  const scopeTableName = scopingRelationship.relatedTable.name;
+  try {
+    const disciplineUrl =
+      userInformation.availableCollections.find(({ id }) => id === collectionId)
+        ?.discipline ??
+      (scopeTableName === 'Collection'
+        ? undefined
+        : (await fetchResource('Collection', collectionId)).discipline);
+    const discipline =
+      scopeTableName === 'Division' || scopeTableName === 'Institution'
+        ? typeof disciplineUrl === 'string'
+          ? await fetchResource('Discipline', strictIdFromUrl(disciplineUrl))
+          : undefined
+        : undefined;
+    const divisionUrl = discipline?.division;
+    const division =
+      scopeTableName === 'Institution'
+        ? typeof divisionUrl === 'string'
+          ? await fetchResource('Division', strictIdFromUrl(divisionUrl))
+          : undefined
+        : undefined;
+
+    const targetScopeUrl =
+      scopeTableName === 'Collection'
+        ? getResourceApiUrl('Collection', collectionId)
+        : scopeTableName === 'Discipline'
+          ? disciplineUrl
+          : scopeTableName === 'Division'
+            ? divisionUrl
+            : scopeTableName === 'Institution'
+              ? division?.institution
+              : undefined;
+
+    if (typeof targetScopeUrl === 'string')
+      resource.set(scopingRelationship.name, targetScopeUrl as never);
+  } catch {
+    // Fall back to default scoping if the lookup fails
+  }
+
+  return resource;
+}
+
+const DEFAULT_RECORD_PRESETS = {
+  CURRENT_AGENT: () =>
+    userInformation.currentCollectionAgent?.resource_uri ?? null,
+  CURRENT_USER: () => userInformation.resource_uri,
+  BLANK: () => null,
+} as const;
+type DefaultRecordPreset = keyof typeof DEFAULT_RECORD_PRESETS;
+
+export function useQueryComboBoxDefaults({
+  resource,
+  field,
+  defaultRecord,
+}: {
+  readonly resource: SpecifyResource<AnySchema> | undefined;
+  readonly field: Relationship;
+  readonly defaultRecord?: string | undefined;
+}): void {
+  if (resource === undefined || !resource.isNew()) return;
+
+  if (defaultRecord !== undefined) {
+    const defaultUri: string | null =
+      defaultRecord in DEFAULT_RECORD_PRESETS
+        ? DEFAULT_RECORD_PRESETS[defaultRecord as DefaultRecordPreset]()
+        : defaultRecord;
+
+    resource.set(field.name, resource.get(field.name) ?? defaultUri, {
+      silent: true,
+    });
+    // The following cases need to be kept for outdated forms that do not use the defaultRecord property.
+  } else if (field.name === 'cataloger') {
+    const record = toTable(resource, 'CollectionObject');
+    record?.set(
+      'cataloger',
+      record?.get('cataloger') ??
+        userInformation.currentCollectionAgent?.resource_uri,
+      {
+        silent: true,
+      }
+    );
+  } else if (field.name === 'specifyUser') {
+    const record = toTable(resource, 'RecordSet');
+    record?.set(
+      'specifyUser',
+      record?.get('specifyUser') ?? userInformation.resource_uri
+    );
+  } else if (field.name === 'receivedBy') {
+    const record = toTable(resource, 'LoanReturnPreparation');
+    record?.set(
+      'receivedBy',
+      record?.get('receivedBy') ??
+        userInformation.currentCollectionAgent?.resource_uri,
+      {
+        silent: true,
+      }
+    );
+  }
 }

@@ -5,6 +5,7 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
+import { ajax } from '../../utils/ajax';
 import { formData } from '../../utils/ajax/helpers';
 import { ping } from '../../utils/ajax/ping';
 import type { RA } from '../../utils/types';
@@ -12,10 +13,6 @@ import { Button } from '../Atoms/Button';
 import { Form, Label, Select } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
-import { fetchCollection } from '../DataModel/collection';
-import type { SerializedResource } from '../DataModel/helperTypes';
-import type { SpecifyUser } from '../DataModel/types';
-import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
 import { unsafeNavigate } from '../Router/Router';
 import type { Dataset } from '../WbPlanView/Wrapped';
@@ -47,12 +44,10 @@ export function WbChangeOwner({
   );
 }
 
-const fetchListOfUsers = async (): Promise<
-  RA<SerializedResource<SpecifyUser>>
-> =>
-  fetchCollection('SpecifyUser', { limit: 500, domainFilter: false }).then(
-    ({ records: users }) => users.filter(({ id }) => id !== userInformation.id)
-  );
+type TransferUser = {
+  readonly id: number;
+  readonly name: string;
+};
 
 function ChangeOwner({
   dataset,
@@ -61,8 +56,14 @@ function ChangeOwner({
   readonly dataset: Dataset;
   readonly onClose: () => void;
 }): JSX.Element | null {
-  const [users] = useAsyncState<RA<SerializedResource<SpecifyUser>>>(
-    fetchListOfUsers,
+  const [users] = useAsyncState<RA<TransferUser>>(
+    React.useCallback(
+      async () =>
+        ajax<RA<TransferUser>>(`/api/workbench/transfer/${dataset.id}/`, {
+          headers: { Accept: 'application/json' },
+        }).then(({ data }) => data),
+      [dataset.id]
+    ),
     true
   );
 

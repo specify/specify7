@@ -38,7 +38,9 @@ export function Main({
 }: {
   readonly menuItems: RA<MenuItem>;
 }): JSX.Element {
-  const [hasAgent] = React.useState(userInformation.agent !== null);
+  const [hasAgent] = React.useState(
+    userInformation.currentCollectionAgent !== null
+  );
 
   const mainRef = React.useRef<HTMLElement | null>(null);
   React.useEffect(() => {
@@ -100,7 +102,9 @@ function MissingAgent(): JSX.Element {
       }}
       forceToTop
       header={userText.noAgent()}
-      onClose={(): void => globalThis.location.assign('/accounts/logout/')}
+      onClose={(): void =>
+        globalThis.location.assign('/specify/command/logout/')
+      }
     >
       {userText.noAgentDescription()}
     </Dialog>

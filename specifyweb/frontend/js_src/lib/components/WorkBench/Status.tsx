@@ -18,6 +18,7 @@ import { softFail } from '../Errors/Crash';
 import { useTitle } from '../Molecules/AppTitle';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import type { Dataset, Status } from '../WbPlanView/Wrapped';
+import { resolveVariantFromDataset } from '../WbUtils/datasetVariants';
 import { RemainingLoadingTime } from './RemainingLoadingTime';
 
 // How often to query back-end
@@ -32,6 +33,9 @@ export function WbStatus({
 }): JSX.Element {
   if (!dataset.uploaderstatus)
     throw new Error('Initial Wb Status object is not defined');
+
+  const viewerLocalization =
+    resolveVariantFromDataset(dataset).localization.viewer;
 
   const [status, setStatus] = React.useState<Status>(dataset.uploaderstatus);
   const [aborted, setAborted] = React.useState<boolean | 'failed' | 'pending'>(
@@ -63,7 +67,7 @@ export function WbStatus({
 
   const title = {
     validating: wbText.wbStatusValidation(),
-    uploading: wbText.wbStatusUpload(),
+    uploading: viewerLocalization.doStatus,
     unuploading: wbText.wbStatusUnupload(),
   }[status.uploaderstatus.operation];
 
@@ -72,13 +76,13 @@ export function WbStatus({
 
   const mappedOperation = {
     validating: wbText.validation(),
-    uploading: wbText.upload(),
+    uploading: viewerLocalization.do,
     unuploading: wbText.rollback(),
   }[status.uploaderstatus.operation];
 
   const standardizedOperation = {
     validating: wbText.validating(),
-    uploading: wbText.uploading(),
+    uploading: viewerLocalization.doing,
     unuploading: wbText.rollingBack(),
   }[status.uploaderstatus.operation];
 

@@ -21,11 +21,18 @@ import type {
 } from '../DataModel/types';
 import { RssExportFeedEditor } from '../ExportFeed';
 import { exportFeedSpec } from '../ExportFeed/spec';
+import { ExpressSearchConfigResourceEditor } from '../ExpressSearchConfig/ExpressSearchConfigEditor';
+import { FieldFormattersEditor } from '../FieldFormatters/Editor';
+import { fieldFormattersSpec } from '../FieldFormatters/spec';
 import { DataObjectFormatter } from '../Formatters';
 import { formattersSpec } from '../Formatters/spec';
 import { FormEditor } from '../FormEditor';
 import { viewSetsSpec } from '../FormEditor/spec';
-import { UserPreferencesEditor } from '../Preferences/Editor';
+import {
+  CollectionPreferencesEditor,
+  GlobalPreferencesEditor,
+  UserPreferencesEditor,
+} from '../Preferences/Editor';
 import { useDarkMode } from '../Preferences/Hooks';
 import type { BaseSpec } from '../Syncer';
 import type { SimpleXmlNode } from '../Syncer/xmlToJson';
@@ -33,6 +40,7 @@ import { WebLinkEditor } from '../WebLinks/Editor';
 import { webLinksSpec } from '../WebLinks/spec';
 import { useCodeMirrorExtensions } from './EditorComponents';
 import type { appResourceSubTypes } from './types';
+import { DataViewQueryEditor } from '../DataViews/QueryEditor';
 
 export type AppResourceEditorType = 'generic' | 'json' | 'visual' | 'xml';
 
@@ -153,8 +161,16 @@ export const visualAppResourceEditors = f.store<
     visual: UserPreferencesEditor,
     json: AppResourceTextEditor,
   },
+  dataViewQueries: {
+    visual: DataViewQueryEditor,
+    json: AppResourceTextEditor,
+  },
   collectionPreferences: {
-    // FEATURE: add visual editor
+    visual: CollectionPreferencesEditor,
+    json: AppResourceTextEditor,
+  },
+  globalPreferences: {
+    visual: GlobalPreferencesEditor,
     json: AppResourceTextEditor,
   },
   leafletLayers: undefined,
@@ -162,13 +178,19 @@ export const visualAppResourceEditors = f.store<
     visual: RssExportFeedEditor,
     xml: generateXmlEditor(exportFeedSpec),
   },
-  expressSearchConfig: undefined,
+  expressSearchConfig: {
+    visual: ExpressSearchConfigResourceEditor,
+    xml: AppResourceTextEditor,
+  },
   typeSearches: undefined,
   webLinks: {
     visual: WebLinkEditor,
     xml: generateXmlEditor(webLinksSpec),
   },
-  uiFormatters: undefined,
+  uiFormatters: {
+    visual: FieldFormattersEditor,
+    xml: generateXmlEditor(fieldFormattersSpec),
+  },
   dataObjectFormatters: {
     visual: DataObjectFormatter,
     xml: generateXmlEditor(formattersSpec),

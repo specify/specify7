@@ -9,12 +9,12 @@ import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
 import type { Tables } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { DataSetsDialog } from '../Toolbar/WbsDialog';
+import { GenericDataSetsDialog } from '../Toolbar/WbsDialog';
 import { ListOfBaseTables } from './Components';
 import type { UploadPlan } from './uploadPlanParser';
 import type { Dataset } from './Wrapped';
 
-function TemplateSelection({
+export function TemplateSelection({
   headers,
   onClose: handleClose,
   onSelect: handleSelect,
@@ -38,8 +38,8 @@ function TemplateSelection({
           {wbPlanText.invalidTemplatePlan()}
         </Dialog>
       )}
-      <DataSetsDialog
-        showTemplates
+      <GenericDataSetsDialog
+        wbVariant="workbenchChoosePlan"
         onClose={handleClose}
         onDataSetSelect={(id: number): void =>
           loading(
@@ -67,6 +67,7 @@ export function BaseTableSelection({
   onSelectTemplate: handleSelectTemplate,
   onSelected: handleSelected,
   headers,
+  onlyAttachmentTables = false,
 }: {
   readonly onClose: () => void;
   readonly onSelectTemplate: (
@@ -75,6 +76,7 @@ export function BaseTableSelection({
   ) => void;
   readonly onSelected: (baseTableName: keyof Tables) => void;
   readonly headers: RA<string>;
+  readonly onlyAttachmentTables?: boolean;
 }): JSX.Element {
   const [useTemplate, handleUseTemplate, handleDontUseTemplate] =
     useBooleanState();
@@ -96,12 +98,24 @@ export function BaseTableSelection({
         </>
       }
       className={{
-        container: `${dialogClassNames.narrowContainer} h-1/2`,
+        container: `${dialogClassNames.normalContainer} !w-1/3 max-h-[90%]`,
       }}
-      header={wbPlanText.selectBaseTable()}
+      header={
+        onlyAttachmentTables
+          ? wbPlanText.selectBaseTableWithAttachments()
+          : wbPlanText.selectBaseTable()
+      }
       onClose={handleClose}
     >
-      <ListOfBaseTables onClick={handleSelected} />
+      <p className="text-wrap mb-4">
+        {onlyAttachmentTables
+          ? wbPlanText.baseTableWithAttachmentsDescription()
+          : wbPlanText.baseTableDescription()}
+      </p>
+      <ListOfBaseTables
+        onlyAttachmentTables={onlyAttachmentTables}
+        onClick={handleSelected}
+      />
     </Dialog>
   );
 }

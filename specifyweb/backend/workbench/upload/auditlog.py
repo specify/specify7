@@ -1,0 +1,176 @@
+import logging
+from time import time
+
+from specifyweb.specify.utils.field_change_info import FieldChangeInfo
+
+
+logger = logging.getLogger(__name__)
+import re
+
+from time import time
+from typing import Iterable
+
+from django.db import connection
+from django.conf import settings
+
+from specifyweb.specify.models import Spauditlog, Spauditlogfield
+from specifyweb.specify.models import datamodel
+
+logger = logging.getLogger(__name__)
+
+Collection = datamodel.get_table_strict('Collection')
+Discipline = datamodel.get_table_strict('Discipline')
+Division = datamodel.get_table_strict('Division')
+
+
+from . import auditcodes
+
+def str_to_bytes(string: str, max_length: int) -> bytes: 
+    str_as_bytes = string.encode()
+    return str_as_bytes[:max_length]
+
+def truncate_str_to_bytes(string: str, max_length: int) -> str:
+    str_as_bytes = str_to_bytes(string, max_length)
+    try:
+        return str_as_bytes.decode()
+    except UnicodeDecodeError as err:
+        return str_as_bytes[:err.start].decode()
+
+class AuditLog:
+
+    _auditingFlds = None
+    _auditing = None
+    _lastCheck = None
+    _checkInterval = 900
+    
+    def isAuditingFlds(self):
+        return self.isAuditing() and self._auditingFlds
+        
+    def isAuditing(self):
+
+        from specifyweb.backend.context.remote_prefs import get_remote_pref
+
+        if settings.DISABLE_AUDITING:
+            return False
+        if self._auditing is None or self._lastCheck is None or time() - self._lastCheck > self._checkInterval:
+            do_auditing_pref = get_remote_pref('auditing.do_audits')
+            if do_auditing_pref is None:
+                self._auditing = True
+            else:
+                self._auditing = False if do_auditing_pref.lower() == 'false' else True
+            do_audit_field_updates = get_remote_pref('auditing.audit_field_updates')
+            if do_audit_field_updates is None:
+                self._auditingFlds = True
+            else:
+                self._auditingFlds = False if do_audit_field_updates.lower() == 'false' else True
+            self.purge()
+            self._lastCheck = time()
+        return self._auditing;
+    
+    def update(self, obj, agent, parent_record, dirty_flds: Iterable[FieldChangeInfo]):
+        self.log_action(auditcodes.UPDATE, obj, agent, parent_record, dirty_flds)
+    
+    def log_action(self, action, obj, agent, parent_record, dirty_flds):
+        log_obj = self._log(action, obj, agent, parent_record)
+        if log_obj is not None and self.isAuditingFlds():
+            for vals in dirty_flds:
+                self._log_fld_update(vals, log_obj, agent)
+        return log_obj
+        
+    def insert(self, obj, agent=None, parent_record=None):
+        return self._log(auditcodes.INSERT, obj, agent, parent_record)
+
+    def remove(self, obj, agent, parent_record=None):
+        from specifyweb.specify.api.api_utils import parse_uri
+
+        log_obj = self._log(auditcodes.REMOVE, obj, agent, parent_record)
+        if log_obj is not None:
+            for spfld in obj.specify_model.fields:
+                fldattr = spfld.name.lower()
+                if fldattr != 'version' and hasattr(obj, fldattr):
+                    val = getattr(obj, fldattr)
+                    if val is not None:
+                        self._log_fld_update(FieldChangeInfo(field_name=fldattr, old_value=val, new_value=None), log_obj, agent)
+            for spfld in obj.specify_model.relationships:
+                if spfld.type.lower().endswith("many-to-one"):
+                    fldattr = spfld.name.lower()
+                    if hasattr(obj, fldattr):
+                        val = getattr(obj, fldattr)
+                        field = obj._meta.get_field(fldattr);
+                        if isinstance(val, field.related_model):
+                            self._log_fld_update(FieldChangeInfo(field_name=fldattr, old_value=val.id, new_value=None), log_obj, agent)
+                        elif isinstance(val, str) and not val.endswith('.None'):
+                            fk_model, fk_id = parse_uri(val)
+                            if fk_model == field.related_model.__name__.lower() and  fk_id is not None:
+                                self._log_fld_update(FieldChangeInfo(field_name=fldattr, old_value=fk_id, new_value=None), log_obj, agent)
+        return log_obj
+        
+    def _log(self, action, obj, agent, parent_record):
+        agent_id = agent if isinstance(agent, int) else (agent and agent.id)
+        if self.isAuditing():
+            logger.info("inserting into auditlog: %s", [action, obj, agent, parent_record])
+            assert obj.id is not None, "attempt to add object with null id to audit log"
+            parentId = parent_record and parent_record.id
+            parentTbl = parent_record and parent_record.specify_model.tableId
+            if not parent_record:
+                scoper, model = next(((s,m) for s,m in [
+                    ('collectionmemberid', Collection),
+                    ('collection_id', Collection),
+                    ('discipline_id', Discipline),
+                    ('division_id', Division),
+                ] if hasattr(obj, s)), (None, None))
+                scopeId = scoper and getattr(obj, scoper)
+                if scopeId is not None:
+                    parentId = scopeId
+                    parentTbl = model.tableId
+
+            return Spauditlog.objects.create(
+                action=action,
+                parentrecordid=parentId,
+                parenttablenum=parentTbl,
+                recordid=obj.id,
+                recordversion=obj.version if hasattr(obj, 'version') else 0,
+                tablenum=obj.specify_model.tableId if hasattr(obj, 'specify_model') else 0, # TODO: Checkout why LibraryRole has no specify_model during init migration
+                createdbyagent_id=agent_id,
+                modifiedbyagent_id=agent_id)
+    
+    def _log_fld_update(self, vals, log, agent):
+        agent_id = agent if isinstance(agent, int) else (agent and agent.id)
+        newval = vals['new_value']
+        max_value_length = 2**16 - 1
+        if newval is not None:
+            newval = truncate_str_to_bytes(str(vals['new_value']), max_value_length)
+        oldval = vals['old_value']
+        if oldval is not None:
+            oldval = truncate_str_to_bytes(str(vals['old_value']), max_value_length)
+        return Spauditlogfield.objects.create(
+            fieldname=vals['field_name'],
+            newvalue=newval,
+            oldvalue=oldval,
+            spauditlog=log,
+            createdbyagent_id=agent_id,
+            modifiedbyagent_id=agent_id)
+
+    def purge(self):
+        from specifyweb.backend.context.remote_prefs import get_global_pref
+
+        audit_lifespan = get_global_pref('AUDIT_LIFESPAN_MONTHS')
+        logger.info("checking to see if purge is required")
+        if audit_lifespan is not None:
+            try:
+                lifespan_months = int(audit_lifespan.strip())
+            except (TypeError, ValueError):
+                logger.warning("Invalid AUDIT_LIFESPAN_MONTHS value: %r", audit_lifespan)
+                return True
+
+            cursor = connection.cursor()
+            query_parameters = [lifespan_months]
+            sql = "delete from spauditlogfield where date_sub(curdate(), Interval %s month) > timestampcreated"
+            logger.info("purging audit log: %s", [sql])
+            cursor.execute(sql, query_parameters)
+            sql = "delete from spauditlog where date_sub(curdate(), Interval %s month) > timestampcreated"
+            logger.info("purging audit log: %s", [sql])
+            cursor.execute(sql, query_parameters)
+        return True
+    
+auditlog = AuditLog()

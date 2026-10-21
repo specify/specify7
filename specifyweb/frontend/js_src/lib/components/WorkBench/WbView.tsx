@@ -12,13 +12,15 @@
 
 import '../../../css/workbench.css';
 
-import type { HotTable } from '@handsontable/react';
+import type { HotTableRef } from '@handsontable/react-wrapper';
 import type Handsontable from 'handsontable';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { useUnloadProtect } from '../../hooks/navigation';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useErrorContext } from '../../hooks/useErrorContext';
+import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import { wbPlanText } from '../../localization/wbPlan';
 import { wbText } from '../../localization/workbench';
@@ -29,13 +31,15 @@ import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Link } from '../Atoms/Link';
 import { ReadOnlyContext } from '../Core/Contexts';
-import { hasPermission } from '../Permissions/helpers';
+import { resourceEvents } from '../DataModel/resource';
 import { WbActions } from '../WbActions';
 import { useResults } from '../WbActions/useResults';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { WbToolkit } from '../WbToolkit';
 import { WbUtilsComponent } from '../WbUtils';
+import { resolveVariantFromDataset } from '../WbUtils/datasetVariants';
 import { WbUtils } from '../WbUtils/Utils';
+import { usesAttachments } from './attachmentHelpers';
 import type { WbCellCounts } from './CellMeta';
 import { WbCellMeta } from './CellMeta';
 import { DataSetName } from './DataSetMeta';
@@ -44,6 +48,7 @@ import type { WbMapping } from './mapping';
 import { parseWbMappings } from './mapping';
 import { WbUploaded } from './Results';
 import { useDisambiguationDialog } from './useDisambiguationDialog';
+import { WbAttachmentsPreview } from './WbAttachmentsPreview';
 import { WbSpreadsheet } from './WbSpreadsheet';
 import { WbValidation } from './WbValidation';
 
@@ -82,9 +87,23 @@ export function WbView({
         : dataset.rows,
     [dataset]
   );
+  // Switch to home page on dataset deleted if current dataset is deleted
+  const navigate = useNavigate();
+  React.useEffect(
+    () =>
+      resourceEvents.on('deleted', (resource) => {
+        if (
+          resource.specifyTable.name === 'Spdataset' &&
+          resource.id === dataset.id
+        ) {
+          navigate('/specify/', { replace: true });
+        }
+      }),
+    [dataset.id]
+  );
 
   const spreadsheetContainerRef = React.useRef<HTMLElement>(null);
-  const [hotTable, setHotTable] = React.useState<HotTable | null>(null);
+  const [hotTable, setHotTable] = React.useState<HotTableRef | null>(null);
   const hot = hotTable?.hotInstance ?? undefined;
 
   const isUploaded =
@@ -109,6 +128,9 @@ export function WbView({
     invalidCells: 0,
     searchResults: 0,
     modifiedCells: 0,
+    updatedCells: 0,
+    deletedCells: 0,
+    matchedAndChangedCells: 0,
   });
 
   const workbench = React.useMemo<Workbench>(() => {
@@ -144,15 +166,30 @@ export function WbView({
   }, []);
 
   const isMapped = mappings !== undefined;
-  const canUpdate = hasPermission('/workbench/dataset', 'update');
+  const canUpdate = resolveVariantFromDataset(workbench.dataset).canEdit();
 
   const [showToolkit, _openToolkit, _closeToolkit, toggleToolkit] =
     useBooleanState();
+
+  const useAttachments = React.useMemo(
+    () => usesAttachments(dataset),
+    [dataset]
+  );
+  const [
+    showAttachments,
+    _openAttachments,
+    _closeAttachments,
+    toggleAttachments,
+  ] = useBooleanState(useAttachments);
+  React.useEffect(() => {
+    hot?.refreshDimensions();
+  }, [showAttachments]);
 
   const { showResults, closeResults, toggleResults } = useResults({
     hot,
     workbench,
     triggerDatasetRefresh,
+    cellCounts,
   });
 
   const { openDisambiguationDialog, disambiguationDialogs } =
@@ -164,14 +201,37 @@ export function WbView({
       disambiguation: workbench.disambiguation,
     });
 
+  React.useEffect(() => {
+    if (hot === undefined) return;
+    let canceled = false;
+    const refresh = (): void => {
+      if (canceled) return;
+      hot.refreshDimensions();
+      hot.render();
+    };
+    const frameId = requestAnimationFrame(() => requestAnimationFrame(refresh));
+    return () => {
+      canceled = true;
+      cancelAnimationFrame(frameId);
+    };
+  }, [hot, showAttachments, showResults, showToolkit]);
+
   const searchRef = React.useRef<HTMLInputElement | null>(null);
+
+  const hasBatchEditRolledBack = dataset.rolledback && dataset.isupdate;
 
   return (
     <ReadOnlyContext.Provider
-      value={isAlreadyReadOnly || isUploaded || showResults || !canUpdate}
+      value={
+        isAlreadyReadOnly ||
+        isUploaded ||
+        showResults ||
+        !canUpdate ||
+        hasBatchEditRolledBack
+      }
     >
       <section
-        className={`wbs-form ${className.containerFull}`}
+        className={`wbs-form ${className.containerFull} ${className.formStyles}`}
         ref={spreadsheetContainerRef}
       >
         <div
@@ -192,6 +252,15 @@ export function WbView({
               {wbPlanText.dataMapper()}
             </Link.Small>
           ) : undefined}
+          {useAttachments && (
+            <Button.Small
+              aria-haspopup="grid"
+              aria-pressed={showAttachments}
+              onClick={toggleAttachments}
+            >
+              {attachmentsText.attachments()}
+            </Button.Small>
+          )}
           <WbActions
             cellCounts={cellCounts}
             checkDeletedFail={checkDeletedFail}
@@ -225,6 +294,7 @@ export function WbView({
             checkDeletedFail={checkDeletedFail}
             data={data}
             dataset={dataset}
+            hasBatchEditRolledBack={hasBatchEditRolledBack}
             hot={hot}
             isResultsOpen={showResults}
             isUploaded={isUploaded}
@@ -234,23 +304,40 @@ export function WbView({
             workbench={workbench}
             onClickDisambiguate={openDisambiguationDialog}
           />
-          {showResults && (
+          {showResults ? (
             <aside aria-live="polite">
               <WbUploaded
                 datasetId={dataset.id}
                 datasetName={dataset.name}
+                isUpdate={dataset.isupdate}
                 isUploaded={isUploaded}
                 recordCounts={workbench.validation.uploadResults.recordCounts}
                 onClose={closeResults}
               />
             </aside>
-          )}
+          ) : null}
+          {useAttachments ? (
+            <aside aria-live="polite">
+              <WbAttachmentsPreview
+                checkDeletedFail={checkDeletedFail}
+                dataset={dataset}
+                hot={hot}
+                isUploaded={isUploaded}
+                searchRef={searchRef}
+                showPanel={showAttachments}
+                workbench={workbench}
+                onClose={toggleAttachments}
+                onSpreadsheetUpToDate={spreadsheetUpToDate}
+              />
+            </aside>
+          ) : null}
         </div>
         {disambiguationDialogs}
         <WbUtilsComponent
           cellCounts={cellCounts}
           cells={workbench.cells}
           debounceRate={throttleRate}
+          isUpdate={dataset.isupdate}
           isUploaded={isUploaded}
           searchRef={searchRef}
           utils={workbench.utils}

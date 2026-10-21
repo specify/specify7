@@ -1,0 +1,66 @@
+{
+  "all_columns": [
+    "Erathem/Era",
+    "System/Period",
+    "Series/Epoch",
+    "Stage/Age",
+    "Start Period",
+    "Start Uncertainty",
+    "End Period",
+    "End Uncertainty"
+  ],
+  "root": {
+    "name": "Time",
+    "fullnameseparator": ", "
+  },
+  "ranks": [
+    {
+      "name": "Erathem/Era",
+      "rank": 100,
+      "column": "Erathem/Era",
+      "fields": {
+        "name": "Erathem/Era",
+        "startperiod": "Start Period",
+        "startuncertainty": "Start Uncertainty",
+        "endperiod": "End Period",
+        "enduncertainty": "End Uncertainty"
+      }
+    },
+    {
+      "name": "System/Period",
+      "rank": 200,
+      "column": "System/Period",
+      "fields": {
+        "name": "System/Period",
+        "startperiod": "Start Period",
+        "startuncertainty": "Start Uncertainty",
+        "endperiod": "End Period",
+        "enduncertainty": "End Uncertainty"
+      }
+    },
+    {
+      "name": "Series/Epoch",
+      "rank": 300,
+      "column": "Series/Epoch",
+      "fields": {
+        "name": "Series/Epoch",
+        "startperiod": "Start Period",
+        "startuncertainty": "Start Uncertainty",
+        "endperiod": "End Period",
+        "enduncertainty": "End Uncertainty"
+      }
+    },
+    {
+      "name": "Stage/Age",
+      "rank": 400,
+      "column": "Stage/Age",
+      "fields": {
+        "name": "Stage/Age",
+        "startperiod": "Start Period",
+        "startuncertainty": "Start Uncertainty",
+        "endperiod": "End Period",
+        "enduncertainty": "End Uncertainty"
+      }
+    }
+  ]
+}

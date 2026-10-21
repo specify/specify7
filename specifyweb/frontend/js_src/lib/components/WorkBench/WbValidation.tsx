@@ -2,7 +2,7 @@ import { whitespaceSensitive } from '../../localization/utils';
 import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
 import type { RA, Writable, WritableArray } from '../../utils/types';
-import { capitalize, mappedFind, toLowerCase } from '../../utils/utils';
+import { capitalize, mappedFind } from '../../utils/utils';
 import type { Tables } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
 import { pathStartsWith } from '../WbPlanView/helpers';
@@ -11,10 +11,42 @@ import {
   formatToManyIndex,
   formatTreeRank,
 } from '../WbPlanView/mappingHelpers';
-import type { WbMeta } from './CellMeta';
+import { ATTACHMENTS_COLUMN } from './attachmentHelpers';
+import type { WbCellCounts, WbMeta } from './CellMeta';
 import type { UploadResult } from './resultsParser';
-import { resolveValidationMessage } from './resultsParser';
+import {
+  resolveAttachmentValidationMessage,
+  resolveValidationMessage,
+} from './resultsParser';
 import type { Workbench } from './WbView';
+
+type Records = WritableArray<
+  WritableArray<
+    WritableArray<
+      Readonly<
+        readonly [
+          tableName: Lowercase<keyof Tables>,
+          id: number,
+          alternativeLabel: string | '',
+        ]
+      >
+    >
+  >
+>;
+
+// Just to make things manageable
+type RecordCountsKey = 'Deleted' | 'MatchedAndChanged' | 'Updated' | 'Uploaded';
+
+export type RecordCounts = Partial<
+  Record<RecordCountsKey, Partial<Record<Lowercase<keyof Tables>, number>>>
+>;
+
+export const RecordCountPriority: RA<RecordCountsKey> = [
+  'Updated',
+  'Uploaded',
+  'MatchedAndChanged',
+  'Deleted',
+];
 
 type UploadResults = {
   readonly ambiguousMatches: WritableArray<
@@ -25,23 +57,33 @@ type UploadResults = {
       readonly key: string;
     }>
   >;
-  readonly recordCounts: Partial<Record<Lowercase<keyof Tables>, number>>;
-  readonly newRecords: Partial<
-    WritableArray<
-      WritableArray<
-        WritableArray<
-          Readonly<
-            readonly [
-              tableName: Lowercase<keyof Tables>,
-              id: number,
-              alternativeLabel: string | '',
-            ]
-          >
-        >
-      >
-    >
-  >;
+  readonly recordCounts: RecordCounts;
+  // Updated + MatchedAndChanged + New
+  readonly interestingRecords: Records;
 };
+
+type KeysOfUnion<T> = T extends unknown ? keyof T : never;
+
+type UploadStatus = Extract<
+  KeysOfUnion<UploadResult['UploadResult']['record_result']>,
+  string
+>;
+
+const getRecordResultEntry = (
+  recordResult: UploadResult['UploadResult']['record_result']
+): readonly [UploadStatus, unknown] | undefined =>
+  Object.entries(recordResult)[0] as [UploadStatus, unknown] | undefined;
+
+const hasUploadInfo = (
+  value: unknown
+): value is {
+  readonly info: {
+    readonly treeInfo: {
+      readonly rank: string;
+      readonly name: string;
+    } | null;
+  };
+} => typeof value === 'object' && value !== null && 'info' in value;
 
 /* eslint-disable functional/no-this-expression */
 export class WbValidation {
@@ -58,7 +100,7 @@ export class WbValidation {
   public uploadResults: UploadResults = {
     ambiguousMatches: [],
     recordCounts: {},
-    newRecords: [],
+    interestingRecords: [],
   };
 
   public constructor(private readonly workbench: Workbench) {
@@ -78,7 +120,7 @@ export class WbValidation {
     this.uploadResults = {
       ambiguousMatches: [],
       recordCounts: {},
-      newRecords: [],
+      interestingRecords: [],
     };
     this.workbench.cells.cellMeta = [];
 
@@ -89,8 +131,15 @@ export class WbValidation {
           (_, visualRow) => this.workbench.hot!.toPhysicalRow(visualRow)
         ).reverse();
         this.triggerLiveValidation();
-        this.workbench.utils?.toggleCellTypes('newCells', 'remove');
-        this.workbench.utils?.toggleCellTypes('invalidCells', 'remove');
+        const toRemove: RA<keyof WbCellCounts> = [
+          'newCells',
+          'updatedCells',
+          'deletedCells',
+          'matchedAndChangedCells',
+        ];
+        toRemove.forEach((key) =>
+          this.workbench.utils?.toggleCellTypes(key, 'remove')
+        );
         break;
       }
       case 'off': {
@@ -188,16 +237,36 @@ export class WbValidation {
     initialColumns: RA<string>,
     inferColumnsCallback: (() => RA<string>) | undefined = undefined
   ): RA<number> {
+    const resolvePhysicalColumns = (columns: RA<string>): RA<number> =>
+      columns
+        .map((column) => this.workbench.dataset.columns.indexOf(column))
+        .filter((physicalCol) => physicalCol !== -1);
+
+    const normalizeColumns = (columns: RA<string>): RA<string> =>
+      columns.map((column) =>
+        column.startsWith('_ATTACHMENT_') &&
+        this.workbench.dataset.columns.includes(ATTACHMENTS_COLUMN)
+          ? ATTACHMENTS_COLUMN
+          : column
+      );
+
     // See https://github.com/specify/specify7/issues/810
-    let columns: RA<string> = initialColumns.filter(Boolean);
-    if (typeof inferColumnsCallback === 'function') {
-      if (columns.length === 0) columns = inferColumnsCallback();
-      if (columns.length === 0) columns = this.workbench.dataset.columns;
+    let columns: RA<string> = normalizeColumns(initialColumns.filter(Boolean));
+    let physicalColumns = resolvePhysicalColumns(columns);
+
+    if (
+      typeof inferColumnsCallback === 'function' &&
+      physicalColumns.length === 0
+    ) {
+      columns = normalizeColumns(inferColumnsCallback());
+      physicalColumns = resolvePhysicalColumns(columns);
+      if (physicalColumns.length === 0)
+        physicalColumns = resolvePhysicalColumns(
+          this.workbench.dataset.columns
+        );
     }
-    // Convert to physicalCol and filter out unknown columns
-    return columns
-      .map((column) => this.workbench.dataset.columns.indexOf(column))
-      .filter((physicalCol) => physicalCol !== -1);
+
+    return physicalColumns;
   }
 
   private applyRowValidationResults(
@@ -244,7 +313,7 @@ export class WbValidation {
   }
 
   private resolveUploadStatus(
-    uploadStatus: keyof UploadResult['UploadResult']['record_result'],
+    uploadStatus: UploadStatus,
     recordResult: UploadResult['UploadResult']['record_result'],
     physicalRow: number,
     mappingPath: MappingPath,
@@ -261,8 +330,12 @@ export class WbValidation {
     );
 
     // Ignore these statuses
-    if (['NullRecord', 'PropagatedFailure', 'Matched'].includes(uploadStatus)) {
-    } else if (uploadStatus === 'ParseFailures')
+    if (
+      ['NullRecord', 'PropagatedFailure', 'Matched', 'NoChange'].includes(
+        uploadStatus
+      )
+    ) {
+    } else if ('ParseFailures' in recordResult)
       recordResult.ParseFailures.failures.forEach((line) => {
         const [issueMessage, payload, column] =
           line.length === 2 ? [line[0], {}, line[1]] : line;
@@ -275,14 +348,14 @@ export class WbValidation {
           resolveColumns
         );
       });
-    else if (uploadStatus === 'NoMatch')
+    else if ('NoMatch' in recordResult)
       setMetaCallback(
         'issues',
         wbText.noMatchErrorMessage(),
         recordResult.NoMatch.info.columns,
         resolveColumns
       );
-    else if (uploadStatus === 'FailedBusinessRule')
+    else if ('FailedBusinessRule' in recordResult)
       setMetaCallback(
         'issues',
         whitespaceSensitive(
@@ -294,7 +367,7 @@ export class WbValidation {
         recordResult.FailedBusinessRule.info.columns,
         resolveColumns
       );
-    else if (uploadStatus === 'MatchedMultiple') {
+    else if ('MatchedMultiple' in recordResult) {
       this.uploadResults.ambiguousMatches[physicalRow] ??= [];
       this.uploadResults.ambiguousMatches[physicalRow].push({
         physicalCols: this.resolveValidationColumns(
@@ -311,30 +384,62 @@ export class WbValidation {
         recordResult.MatchedMultiple.info.columns,
         resolveColumns
       );
-    } else if (uploadStatus === 'Uploaded') {
+    } else if ('AttachmentFailure' in recordResult)
       setMetaCallback(
-        'isNew',
-        true,
-        recordResult.Uploaded.info.columns,
-        undefined
+        'issues',
+        whitespaceSensitive(
+          resolveAttachmentValidationMessage(
+            recordResult.AttachmentFailure.message
+          )
+        ),
+        recordResult.AttachmentFailure.info.columns,
+        resolveColumns
       );
-      const tableName = toLowerCase(recordResult.Uploaded.info.tableName);
-      this.uploadResults.recordCounts[tableName] ??= 0;
-      this.uploadResults.recordCounts[tableName]! += 1;
-      this.uploadResults.newRecords[physicalRow] ??= [];
-      this.resolveValidationColumns(
-        recordResult.Uploaded.info.columns,
-        undefined
-      ).forEach((physicalCol) => {
-        this.uploadResults.newRecords[physicalRow]![physicalCol] ??= [];
-        this.uploadResults.newRecords[physicalRow]![physicalCol].push([
-          tableName,
-          recordResult.Uploaded.id,
-          recordResult.Uploaded.info?.treeInfo
-            ? `${recordResult.Uploaded.info.treeInfo.name} (${recordResult.Uploaded.info.treeInfo.rank})`
-            : '',
-        ]);
-      });
+    // TODO: Discuss if MatchedAndChanged needs to shown. or whatever.
+    else if (
+      'Uploaded' in recordResult ||
+      'Updated' in recordResult ||
+      'MatchedAndChanged' in recordResult ||
+      'Deleted' in recordResult
+    ) {
+      const [statusKey, statusData, metaKey] =
+        'Uploaded' in recordResult
+          ? (['Uploaded', recordResult.Uploaded, 'isNew'] as const)
+          : 'Updated' in recordResult
+            ? (['Updated', recordResult.Updated, 'isUpdated'] as const)
+            : 'MatchedAndChanged' in recordResult
+              ? ([
+                  'MatchedAndChanged',
+                  recordResult.MatchedAndChanged,
+                  'isMatchedAndChanged',
+                ] as const)
+              : (['Deleted', recordResult.Deleted, 'isDeleted'] as const);
+
+      setMetaCallback(metaKey, true, statusData.info.columns, undefined);
+
+      const tableName = statusData.info.tableName.toLowerCase() as Lowercase<
+        keyof Tables
+      >;
+      this.uploadResults.recordCounts[statusKey] ??= {};
+      this.uploadResults.recordCounts[statusKey]![tableName]! ??= 0;
+      this.uploadResults.recordCounts[statusKey]![tableName]! += 1;
+
+      if (statusKey === 'Deleted') return; // Not sure if there is any value in showing deleted id's itself, right?
+
+      const writable = this.uploadResults.interestingRecords;
+      writable[physicalRow] ??= [];
+      this.resolveValidationColumns(statusData.info.columns, undefined).forEach(
+        (physicalCol) => {
+          writable[physicalRow]![physicalCol] ??= [];
+          writable[physicalRow]![physicalCol].push([
+            tableName,
+            statusData.id,
+            statusData.info?.treeInfo
+              ? `${statusData.info.treeInfo!.name} (${statusData.info.treeInfo!.rank})`
+              : '',
+          ]);
+        }
+      );
     } else
       raise(
         new Error(
@@ -356,12 +461,16 @@ export class WbValidation {
     initialMappingPath: MappingPath | undefined = []
   ): void {
     const uploadResult = result.UploadResult;
-    const uploadStatus = Object.keys(uploadResult.record_result)[0];
-    const statusData = uploadResult.record_result[uploadStatus];
+    const recordResultEntry = getRecordResultEntry(uploadResult.record_result);
+    if (recordResultEntry === undefined) return;
 
-    const isTree = 'info' in statusData && statusData.info?.treeInfo !== null;
+    const [uploadStatus, statusData] = recordResultEntry;
+
+    const info = hasUploadInfo(statusData) ? statusData.info : undefined;
+
+    const isTree = info?.treeInfo !== null && info !== undefined;
     const mappingPath = isTree
-      ? [...initialMappingPath, formatTreeRank(statusData.info.treeInfo.rank)]
+      ? [...initialMappingPath, formatTreeRank(info.treeInfo!.rank)]
       : initialMappingPath;
 
     this.resolveUploadStatus(

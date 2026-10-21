@@ -17,12 +17,15 @@ import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { toTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { getTable } from '../DataModel/tables';
 import type { Attachment } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
 import { loadingBar } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
 import { FilePicker } from '../Molecules/FilePicker';
 import { ProtectedTable } from '../Permissions/PermissionDenied';
+import { collectionPreferences } from '../Preferences/collectionPreferences';
+import { userPreferences } from '../Preferences/userPreferences';
 import { AttachmentPluginSkeleton } from '../SkeletonLoaders/AttachmentPlugin';
 import { attachmentSettingsPromise, uploadFile } from './attachments';
 import { AttachmentViewer } from './Viewer';
@@ -70,11 +73,35 @@ function ProtectedAttachmentsPlugin({
   const related = useTriggerState(
     resource?.specifyTable.name === 'Attachment' ? undefined : resource
   );
+  const [collapseFormByDefault] = userPreferences.use(
+    'attachments',
+    'behavior',
+    'collapseFormByDefault'
+  );
+  const [controlsVisiblePreference] = userPreferences.use(
+    'attachments',
+    'behavior',
+    'showControls'
+  );
+  const areControlsVisible = controlsVisiblePreference;
+  const preferCollapsed = collapseFormByDefault && areControlsVisible;
+
+  const [showMeta, handleShowMeta, handleHideMeta, toggleShowMeta] =
+    useBooleanState(!preferCollapsed);
+
+  React.useEffect(() => {
+    if (typeof attachment !== 'object') return;
+    if (preferCollapsed) {
+      handleHideMeta();
+    } else {
+      handleShowMeta();
+    }
+  }, [attachment, handleHideMeta, handleShowMeta, preferCollapsed]);
   return attachment === undefined ? (
     <AttachmentPluginSkeleton />
   ) : (
     <div
-      className="flex h-full gap-8 overflow-x-auto"
+      className="flex h-full gap-4 overflow-x-auto"
       ref={filePickerContainer}
       tabIndex={-1}
     >
@@ -82,6 +109,8 @@ function ProtectedAttachmentsPlugin({
         <AttachmentViewer
           attachment={attachment}
           related={related}
+          showMeta={showMeta}
+          onToggleSidebar={toggleShowMeta}
           onViewRecord={undefined}
         />
       ) : isReadOnly ? (
@@ -91,8 +120,20 @@ function ProtectedAttachmentsPlugin({
           onUploaded={(attachment): void => {
             // Fix focus loss when <FilePicker would be removed from DOM
             filePickerContainer.current?.focus();
-            if (typeof resource === 'object')
-              attachment?.set('tableID', resource.specifyTable.tableId);
+            if (typeof resource === 'object') {
+              const tableName = resource.specifyTable.name;
+              const parentTableName = tableName.endsWith('Attachment')
+                ? tableName.slice(0, -'Attachment'.length)
+                : tableName;
+              const parentTable =
+                parentTableName.length > 0
+                  ? getTable(parentTableName)
+                  : undefined;
+              attachment?.set(
+                'tableID',
+                (parentTable ?? resource.specifyTable).tableId
+              );
+            }
             resource?.set('attachment', attachment as never);
             setAttachment(attachment);
           }}
@@ -112,6 +153,12 @@ export function UploadAttachment({
   >(undefined);
   const [isFailed, handleFailed] = useBooleanState();
   const loading = React.useContext(LoadingContext);
+
+  const [attachmentIsPublicDefault] = collectionPreferences.use(
+    'general',
+    'attachments',
+    'attachment.is_public_default'
+  );
 
   return isFailed ? (
     <p>{attachmentsText.attachmentServerUnavailable()}</p>
@@ -134,7 +181,11 @@ export function UploadAttachment({
       acceptedFormats={undefined}
       onFileSelected={(file): void =>
         loading(
-          uploadFile(file, setUploadProgress)
+          uploadFile({
+            file,
+            handleProgress: setUploadProgress,
+            attachmentIsPublicDefault,
+          })
             .then((attachment) =>
               attachment === undefined
                 ? handleFailed()

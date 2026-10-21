@@ -77,7 +77,7 @@ theories(parseClickEvent, {
     out: undefined,
   },
   'link to another entrypoing': {
-    in: [`<a href="/account/login" target="_blank">link</a>`],
+    in: [`<a href="/accounts/login" target="_blank">link</a>`],
     out: undefined,
   },
 });

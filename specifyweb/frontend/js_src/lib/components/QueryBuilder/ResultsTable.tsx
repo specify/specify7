@@ -20,22 +20,35 @@ import type { QueryFieldSpec } from './fieldSpec';
 import type { QueryResultRow } from './Results';
 import { queryIdField } from './Results';
 
+const toCellText = (
+  value: JSX.Element | number | string | null | undefined
+): string | undefined =>
+  typeof value === 'string' || typeof value === 'number'
+    ? value.toString()
+    : undefined;
+
 export function QueryResultsTable({
   table,
   fieldSpecs,
   results,
+  showCellEllipsis,
+  wrapQueryResults,
   selectedRows,
   onSelected: handleSelected,
+  onRowSelected: handleRowSelected,
 }: {
   readonly table: SpecifyTable;
   readonly fieldSpecs: RA<QueryFieldSpec>;
   readonly results: RA<QueryResultRow>;
+  readonly showCellEllipsis: boolean;
+  readonly wrapQueryResults: boolean;
   readonly selectedRows: ReadonlySet<number>;
   readonly onSelected: (
     index: number,
     isSelected: boolean,
     isShiftClick: boolean
   ) => void;
+  readonly onRowSelected: (index: number) => void;
 }): JSX.Element {
   const recordFormatter = React.useMemo(
     () => getAuditRecordFormatter(fieldSpecs),
@@ -57,10 +70,13 @@ export function QueryResultsTable({
           lineIndex={showLineNumber ? index : undefined}
           recordFormatter={recordFormatter}
           result={result}
+          showCellEllipsis={showCellEllipsis}
           table={table}
+          wrapQueryResults={wrapQueryResults}
           onSelected={(isSelected, isShiftClick): void =>
             handleSelected(index, isSelected, isShiftClick)
           }
+          onRowSelected={(): void => handleRowSelected(index)}
         />
       ))}
     </>
@@ -75,7 +91,10 @@ function Row({
   recordFormatter,
   isSelected,
   isLast,
+  showCellEllipsis,
+  wrapQueryResults,
   onSelected: handleSelected,
+  onRowSelected: handleRowSelected,
 }: {
   readonly table: SpecifyTable;
   readonly fieldSpecs: RA<QueryFieldSpec>;
@@ -86,7 +105,10 @@ function Row({
   ) => Promise<RA<JSX.Element | string>>;
   readonly isSelected: boolean;
   readonly isLast: boolean;
+  readonly showCellEllipsis: boolean;
+  readonly wrapQueryResults: boolean;
   readonly onSelected?: (isSelected: boolean, isShiftClick: boolean) => void;
+  readonly onRowSelected?: () => void;
 }): JSX.Element {
   // REFACTOR: replace this with getResourceViewUrl()
   const [resource] = useLiveState<
@@ -114,6 +136,9 @@ function Row({
   );
   const viewUrl = typeof resource === 'object' ? resource.viewUrl() : undefined;
 
+  const rawId = result[queryIdField];
+  const hasValidId = typeof rawId === 'number' && Number.isFinite(rawId);
+
   const splitRecords: RA<number> | undefined = React.useMemo(
     () =>
       typeof result[0] === 'string' && result[0].includes(',')
@@ -134,14 +159,14 @@ function Row({
       `}
       role="row"
       onClick={
-        typeof handleSelected === 'function'
-          ? ({ target, shiftKey }): void =>
+        typeof handleRowSelected === 'function'
+          ? ({ target }): void =>
               /*
-               * Ignore clicks on the "View" links and formatted audit log cell
-               * links
+               * Ignore clicks on the "View" links, formatted audit log cell
+               * links, and record-list controls (e.g., the split records button)
                */
-              (target as Element).closest('a') === null
-                ? handleSelected?.(!isSelected, shiftKey)
+              (target as Element).closest('a, button') === null
+                ? handleRowSelected?.()
                 : undefined
           : undefined
       }
@@ -164,11 +189,20 @@ function Row({
             className={`${getCellClassName(condenseQueryResults)} sticky`}
             role="cell"
           >
-            <Input.Checkbox
-              checked={isSelected}
-              /* Ignore click event, as click would be handled by onClick on row */
-              onChange={f.undefined}
-            />
+            <div onClick={(event): void => event.stopPropagation()}>
+              <Input.Checkbox
+                aria-label={commonText.select()}
+                checked={isSelected}
+                isReadOnly={!hasValidId}
+                onChange={(event): void => {
+                  if (!hasValidId) return;
+                  handleSelected?.(
+                    event.currentTarget.checked,
+                    (event.nativeEvent as MouseEvent).shiftKey
+                  );
+                }}
+              />
+            </div>
           </div>
           <div
             className={`${getCellClassName(condenseQueryResults)} sticky`}
@@ -214,22 +248,35 @@ function Row({
           </div>
         </div>
       )}
-      {result
-        .filter((_, index) => index !== queryIdField)
-        .map((value, index) =>
-          fieldSpecs[index].isPhantom ? undefined : (
-            <Cell
-              condenseQueryResults={condenseQueryResults}
-              fieldSpec={
-                formattedValues?.[index] === undefined
-                  ? fieldSpecs[index]
-                  : undefined
-              }
-              key={index}
-              value={formattedValues?.[index] ?? value}
-            />
-          )
-        )}
+      {(() => {
+        /*
+         * Keep the rendered column index contiguous across visible fields so
+         * it matches header indices used for width measuring/resizing.
+         */
+        let visibleColumnIndex = 0;
+        return result
+          .filter((_, index) => index !== queryIdField)
+          .flatMap((value, index) => {
+            if (fieldSpecs[index].isPhantom) return [];
+            const cell = (
+              <Cell
+                columnIndex={visibleColumnIndex}
+                condenseQueryResults={condenseQueryResults}
+                fieldSpec={
+                  formattedValues?.[index] === undefined
+                    ? fieldSpecs[index]
+                    : undefined
+                }
+                key={index}
+                showCellEllipsis={showCellEllipsis}
+                value={formattedValues?.[index] ?? value}
+                wrapQueryResults={wrapQueryResults}
+              />
+            );
+            visibleColumnIndex += 1;
+            return [cell];
+          });
+      })()}
     </div>
   );
 }
@@ -245,10 +292,16 @@ function Cell({
   fieldSpec,
   value,
   condenseQueryResults,
+  showCellEllipsis,
+  wrapQueryResults,
+  columnIndex,
 }: {
   readonly condenseQueryResults: boolean;
   readonly fieldSpec: QueryFieldSpec | undefined;
   readonly value: JSX.Element | number | string | null;
+  readonly showCellEllipsis: boolean;
+  readonly wrapQueryResults: boolean;
+  readonly columnIndex: number;
 }): JSX.Element {
   const field = fieldSpec?.getField();
 
@@ -265,26 +318,49 @@ function Cell({
     [field, fieldSpec, value]
   );
 
+  const renderedValue =
+    value === null
+      ? undefined
+      : fieldSpec === undefined || typeof value === 'object'
+        ? value
+        : formatted;
+
+  // Tooltip should preserve the original value when formatter changes display.
+  const titleText = toCellText(value) ?? toCellText(renderedValue);
+  const displayedValue =
+    !wrapQueryResults && typeof renderedValue === 'string'
+      ? renderedValue.split(/\r?\n/u)[0]
+      : renderedValue;
+
   return (
     <div
       className={`
         ${getCellClassName(condenseQueryResults)}
         ${value === null ? 'text-gray-700 dark:text-neutral-500' : ''}
-        ${fieldSpec?.parser.type === 'number' ? 'justify-end tabular-nums' : ''}
+        ${fieldSpec?.parser.type === 'number' ? 'tabular-nums' : ''}
+        ${
+          wrapQueryResults
+            ? 'overflow-hidden whitespace-pre-wrap break-words'
+            : showCellEllipsis
+              ? 'overflow-hidden'
+              : 'whitespace-nowrap'
+        }
       `}
+      data-query-results-cell-col={columnIndex}
       role="cell"
-      title={
-        (typeof value === 'string' || typeof value === 'number') &&
-        value !== formatted
-          ? value.toString()
-          : undefined
-      }
+      title={titleText}
     >
-      {value === null
-        ? undefined
-        : fieldSpec === undefined || typeof value === 'object'
-          ? value
-          : formatted}
+      {wrapQueryResults ? (
+        <span className="min-w-0 break-words whitespace-pre-wrap">
+          {displayedValue}
+        </span>
+      ) : showCellEllipsis ? (
+        <span className="min-w-0 overflow-hidden text-ellipsis whitespace-nowrap block">
+          {displayedValue}
+        </span>
+      ) : (
+        <span className="whitespace-nowrap">{displayedValue}</span>
+      )}
     </div>
   );
 }

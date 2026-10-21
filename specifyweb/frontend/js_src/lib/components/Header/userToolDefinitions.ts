@@ -1,3 +1,4 @@
+import { batchIdentifyText } from '../../localization/batchIdentify';
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { preferencesText } from '../../localization/preferences';
@@ -26,7 +27,7 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
   [userText.userAccount()]: {
     logOut: {
       title: userText.logOut(),
-      url: '/accounts/logout/',
+      url: '/specify/command/logout/',
       icon: icons.logout,
       enabled: () => userInformation.isauthenticated,
       onClick: async () =>
@@ -53,9 +54,22 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
   },
   [preferencesText.customization()]: {
     userPreferences: {
-      title: preferencesText.preferences(),
+      title: preferencesText.userPreferences(),
       url: '/specify/user-preferences/',
       icon: icons.cog,
+    },
+    collectionPreferences: {
+      title: preferencesText.collectionPreferences(),
+      url: '/specify/collection-preferences/',
+      icon: icons.office,
+      enabled: () =>
+        hasPermission('/preferences/collection', 'edit_collection'),
+    },
+    globalPreferences: {
+      title: resourcesText.globalPreferences(),
+      url: '/specify/global-preferences/',
+      icon: icons.library,
+      enabled: () => hasPermission('/preferences/global', 'update'),
     },
     schemaConfig: {
       title: schemaText.schemaConfig(),
@@ -79,6 +93,17 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
       url: '/specify/security/',
       icon: icons.fingerPrint,
     },
+    systemConfigurationTool: {
+      title: userText.systemConfig(),
+      enabled: () =>
+        userInformation.isadmin &&
+        hasToolPermission('resources', 'read') &&
+        hasTablePermission('Discipline', 'read') &&
+        hasTablePermission('Collection', 'read') &&
+        hasTablePermission('SpecifyUser', 'read'),
+      url: '/specify/system-configuration/',
+      icon: icons.library,
+    },
     repairTree: {
       title: headerText.repairTree(),
       url: '/specify/overlay/tree-repair/',
@@ -92,6 +117,12 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
       title: userText.generateMasterKey(),
       url: '/specify/overlay/master-key/',
       icon: icons.identification,
+    },
+    downloadDatabase: {
+      title: headerText.backupDatabase(),
+      enabled: () => hasPermission('/export/backup', 'execute'),
+      url: '/specify/overlay/backup-database/',
+      icon: icons.download,
     },
   },
   [commonText.export()]: {
@@ -108,12 +139,20 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
       icon: icons.rss,
     },
   },
-  [commonText.import()]: {
+  [commonText.tools()]: {
     localityUpdate: {
       title: headerText.localityUpdateTool(),
       enabled: () => userInformation.isadmin,
       url: '/specify/import/locality-dataset/',
       icon: icons.globe,
+    },
+    batchIdentify: {
+      title: batchIdentifyText.batchIdentify(),
+      url: '/specify/overlay/batch-identify/',
+      icon: icons.clipboardCopy,
+      enabled: () =>
+        hasTablePermission('CollectionObject', 'read') &&
+        hasTablePermission('Determination', 'create'),
     },
   },
   [headerText.documentation()]: {
@@ -124,12 +163,12 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
     },
     forum: {
       title: headerText.forum(),
-      url: 'https://discourse.specifysoftware.org/',
+      url: 'https://speciforum.org/',
       icon: icons.annotation,
     },
     technicalDocumentation: {
       title: headerText.technicalDocumentation(),
-      url: 'https://github.com/specify/specify7/wiki',
+      url: 'https://speciforum.org/c/docs/',
       icon: icons.bookOpen,
     },
   },

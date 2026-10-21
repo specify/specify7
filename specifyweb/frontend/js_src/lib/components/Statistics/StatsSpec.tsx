@@ -1,10 +1,12 @@
+import { attachmentsText } from '../../localization/attachments';
+import { interactionsText } from '../../localization/interactions';
 import { statsText } from '../../localization/stats';
 import { today } from '../../utils/relativeDate';
 import type { RA } from '../../utils/types';
 import { ensure, filterArray } from '../../utils/types';
 import { formatNumber } from '../Atoms/Internationalization';
 import { userInformation } from '../InitialContext/userInformation';
-import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
+import { queryFieldFilterSpecs } from '../QueryBuilder/FieldFilterSpec';
 import { flippedSortTypes } from '../QueryBuilder/helpers';
 import { formattedEntry, formatTreeRank } from '../WbPlanView/mappingHelpers';
 import { generateStatUrl } from './hooks';
@@ -36,14 +38,14 @@ export const statsSpec: StatsSpec = {
                   {
                     path: formattedEntry,
                     isDisplay: true,
-                    operStart: queryFieldFilters.any.id,
+                    operStart: queryFieldFilterSpecs.any.id,
                   },
                 ],
               },
             },
           },
           preparations: {
-            label: statsText.preparations(),
+            label: interactionsText.preparations(),
             spec: {
               type: 'QueryStat',
               querySpec: {
@@ -69,12 +71,12 @@ export const statsSpec: StatsSpec = {
                   },
                   {
                     path: 'determinations.typeStatusName',
-                    operStart: queryFieldFilters.empty.id,
+                    operStart: queryFieldFilterSpecs.empty.id,
                     isNot: true,
                   },
                   {
                     path: 'determinations.isCurrent',
-                    operStart: queryFieldFilters.trueOrNull.id,
+                    operStart: queryFieldFilterSpecs.trueOrNull.id,
                   },
                 ],
               },
@@ -83,10 +85,10 @@ export const statsSpec: StatsSpec = {
         },
       },
       preparations: {
-        label: statsText.preparations(),
+        label: interactionsText.preparations(),
         items: {
           phantomItem: {
-            label: statsText.preparations(),
+            label: interactionsText.preparations(),
             spec: {
               type: 'BackEndStat',
               pathToValue: undefined,
@@ -112,17 +114,17 @@ export const statsSpec: StatsSpec = {
                   {
                     path: formattedEntry,
                     isDisplay: true,
-                    operStart: queryFieldFilters.any.id,
+                    operStart: queryFieldFilterSpecs.any.id,
                   },
                   {
                     path: 'collectionobject.catalogNumber',
                     isDisplay: true,
-                    operStart: queryFieldFilters.any.id,
+                    operStart: queryFieldFilterSpecs.any.id,
                   },
                   {
                     path: 'preptype.name',
                     isDisplay: true,
-                    operStart: queryFieldFilters.equal.id,
+                    operStart: queryFieldFilterSpecs.equal.id,
                     startValue: dynamicResult.toString(),
                   },
                 ],
@@ -146,7 +148,7 @@ export const statsSpec: StatsSpec = {
                   },
                   {
                     path: 'loan.isClosed',
-                    operStart: queryFieldFilters.falseOrNull.id,
+                    operStart: queryFieldFilterSpecs.falseOrNull.id,
                     isDisplay: false,
                   },
                 ],
@@ -154,7 +156,7 @@ export const statsSpec: StatsSpec = {
             },
           },
           openLoansCount: {
-            label: statsText.openLoans(),
+            label: statsText.openLoansStat(),
             spec: {
               type: 'QueryStat',
               querySpec: {
@@ -165,7 +167,7 @@ export const statsSpec: StatsSpec = {
                   },
                   {
                     path: 'isClosed',
-                    operStart: queryFieldFilters.falseOrNull.id,
+                    operStart: queryFieldFilterSpecs.falseOrNull.id,
                     isDisplay: false,
                   },
                 ],
@@ -184,12 +186,12 @@ export const statsSpec: StatsSpec = {
                   },
                   {
                     path: 'currentDueDate',
-                    operStart: queryFieldFilters.lessOrEqual.id,
+                    operStart: queryFieldFilterSpecs.lessOrEqual.id,
                     startValue: `${today} + 0 day`,
                   },
                   {
                     path: 'isClosed',
-                    operStart: queryFieldFilters.false.id,
+                    operStart: queryFieldFilterSpecs.false.id,
                     isDisplay: false,
                   },
                 ],
@@ -210,7 +212,7 @@ export const statsSpec: StatsSpec = {
                 fields: [
                   {
                     path: 'rankId',
-                    operStart: queryFieldFilters.greater.id,
+                    operStart: queryFieldFilterSpecs.greater.id,
                     sortType: flippedSortTypes.ascending,
                     isDisplay: false,
                     startValue: '0',
@@ -218,7 +220,7 @@ export const statsSpec: StatsSpec = {
                   {
                     isNot: true,
                     path: 'name',
-                    operStart: queryFieldFilters.empty.id,
+                    operStart: queryFieldFilterSpecs.empty.id,
                   },
                 ],
                 isDistinct: true,
@@ -236,7 +238,7 @@ export const statsSpec: StatsSpec = {
                       taxonRankName
                     )}.fullName`,
                     isDisplay: true,
-                    operStart: queryFieldFilters.any.id,
+                    operStart: queryFieldFilterSpecs.any.id,
                   },
                   {
                     path: `preferredTaxon.${formatTreeRank(
@@ -244,12 +246,12 @@ export const statsSpec: StatsSpec = {
                     )}.taxonid`,
                     isNot: true,
                     isDisplay: true,
-                    operStart: queryFieldFilters.empty.id,
+                    operStart: queryFieldFilterSpecs.empty.id,
                   },
                   {
                     path: 'isCurrent',
                     isDisplay: false,
-                    operStart: queryFieldFilters.true.id,
+                    operStart: queryFieldFilterSpecs.true.id,
                   },
                 ],
                 isDistinct: true,
@@ -276,15 +278,15 @@ export const statsSpec: StatsSpec = {
                   },
                   {
                     path: 'localityName',
-                    operStart: queryFieldFilters.any.id,
+                    operStart: queryFieldFilterSpecs.any.id,
                   },
                   {
                     path: 'latitude1',
-                    operStart: queryFieldFilters.any.id,
+                    operStart: queryFieldFilterSpecs.any.id,
                   },
                   {
                     path: 'longitude1',
-                    operStart: queryFieldFilters.any.id,
+                    operStart: queryFieldFilterSpecs.any.id,
                   },
                 ],
               },
@@ -302,7 +304,7 @@ export const statsSpec: StatsSpec = {
                   },
                   {
                     path: 'geographyId',
-                    operStart: queryFieldFilters.any.id,
+                    operStart: queryFieldFilterSpecs.any.id,
                   },
                 ],
               },
@@ -320,7 +322,7 @@ export const statsSpec: StatsSpec = {
                   },
                   {
                     path: 'latitude1',
-                    operStart: queryFieldFilters.empty.id,
+                    operStart: queryFieldFilterSpecs.empty.id,
                     isNot: true,
                     isDisplay: false,
                   },
@@ -351,7 +353,7 @@ export const statsSpec: StatsSpec = {
                 fields: [
                   {
                     path: 'rankId',
-                    operStart: queryFieldFilters.greater.id,
+                    operStart: queryFieldFilterSpecs.greater.id,
                     sortType: flippedSortTypes.ascending,
                     isDisplay: false,
                     startValue: '0',
@@ -359,7 +361,7 @@ export const statsSpec: StatsSpec = {
                   {
                     isNot: true,
                     path: 'name',
-                    operStart: queryFieldFilters.empty.id,
+                    operStart: queryFieldFilterSpecs.empty.id,
                   },
                 ],
                 isDistinct: true,
@@ -373,7 +375,7 @@ export const statsSpec: StatsSpec = {
                       geographyRankName
                     )}.fullName`,
                     isDisplay: true,
-                    operStart: queryFieldFilters.any.id,
+                    operStart: queryFieldFilterSpecs.any.id,
                   },
                   {
                     path: `collectingevent.locality.geography.${formatTreeRank(
@@ -381,7 +383,7 @@ export const statsSpec: StatsSpec = {
                     )}.geographyid`,
                     isNot: true,
                     isDisplay: true,
-                    operStart: queryFieldFilters.empty.id,
+                    operStart: queryFieldFilterSpecs.empty.id,
                   },
                 ],
                 isDistinct: true,
@@ -404,13 +406,13 @@ export const statsSpec: StatsSpec = {
                 fields: [
                   {
                     path: 'determinations.isCurrent',
-                    operStart: queryFieldFilters.trueOrNull.id,
+                    operStart: queryFieldFilterSpecs.trueOrNull.id,
                     isDisplay: false,
                   },
                   {
                     isNot: true,
                     path: 'determinations.typeStatusName',
-                    operStart: queryFieldFilters.empty.id,
+                    operStart: queryFieldFilterSpecs.empty.id,
                   },
                 ],
                 isDistinct: true,
@@ -425,12 +427,12 @@ export const statsSpec: StatsSpec = {
 
                   {
                     path: 'determinations.isCurrent',
-                    operStart: queryFieldFilters.trueOrNull.id,
+                    operStart: queryFieldFilterSpecs.trueOrNull.id,
                     isDisplay: false,
                   },
                   {
                     path: 'determinations.typeStatusName',
-                    operStart: queryFieldFilters.equal.id,
+                    operStart: queryFieldFilterSpecs.equal.id,
                     startValue: dynamicResult,
                     isDisplay: false,
                   },
@@ -455,7 +457,7 @@ export const statsSpec: StatsSpec = {
                   },
                   {
                     path: 'timestampCreated',
-                    operStart: queryFieldFilters.greaterOrEqual.id,
+                    operStart: queryFieldFilterSpecs.greaterOrEqual.id,
                     startValue: `${today} - 1 week`,
                   },
                 ],
@@ -474,7 +476,7 @@ export const statsSpec: StatsSpec = {
                   },
                   {
                     path: 'timestampCreated',
-                    operStart: queryFieldFilters.greaterOrEqual.id,
+                    operStart: queryFieldFilterSpecs.greaterOrEqual.id,
                     startValue: `${today} - 1 month`,
                   },
                 ],
@@ -493,7 +495,7 @@ export const statsSpec: StatsSpec = {
                   },
                   {
                     path: 'timestampCreated',
-                    operStart: queryFieldFilters.greaterOrEqual.id,
+                    operStart: queryFieldFilterSpecs.greaterOrEqual.id,
                     startValue: `${today} - 1 year`,
                   },
                 ],
@@ -503,7 +505,7 @@ export const statsSpec: StatsSpec = {
         },
       },
       attachments: {
-        label: statsText.attachments(),
+        label: attachmentsText.attachments(),
         items: {
           collectionObjectsWithAttachments: {
             label: statsText.collectionObjectsWithAttachments(),
@@ -517,7 +519,7 @@ export const statsSpec: StatsSpec = {
                   },
                   {
                     path: 'collectionObjectAttachments.attachment.attachmentId',
-                    operStart: queryFieldFilters.empty.id,
+                    operStart: queryFieldFilterSpecs.empty.id,
                     isNot: true,
                     isDisplay: false,
                   },
@@ -538,7 +540,7 @@ export const statsSpec: StatsSpec = {
                   },
                   {
                     path: 'collectionObjectAttachments.attachment.mimeType',
-                    operStart: queryFieldFilters.contains.id,
+                    operStart: queryFieldFilterSpecs.contains.id,
                     startValue: 'image',
                     isDisplay: false,
                   },
@@ -576,7 +578,7 @@ export const statsSpec: StatsSpec = {
                   {
                     path: 'cataloger.specifyuser.name',
                     startValue: userInformation.name,
-                    operStart: queryFieldFilters.equal.id,
+                    operStart: queryFieldFilterSpecs.equal.id,
                   },
                 ],
               },
@@ -592,7 +594,7 @@ export const statsSpec: StatsSpec = {
                   {
                     path: 'determinations.determiner.specifyuser.name',
                     startValue: userInformation.name,
-                    operStart: queryFieldFilters.equal.id,
+                    operStart: queryFieldFilterSpecs.equal.id,
                   },
                 ],
               },

@@ -9,6 +9,7 @@ import { ensure, localized } from '../../utils/types';
 import { getUniqueName } from '../../utils/uniquifyName';
 import { ErrorMessage, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
+import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { ReadOnlyContext } from '../Core/Contexts';
 import type { SpecifyTable } from '../DataModel/specifyTable';
@@ -22,6 +23,7 @@ import type { FormatterTypesOutlet } from './Types';
 export function FormatterList(): JSX.Element {
   const { type, tableName } = useParams();
   const { items } = useOutletContext<FormatterTypesOutlet>();
+  const navigate = useNavigate();
 
   return (
     <XmlEntryList
@@ -68,6 +70,7 @@ export function FormatterList(): JSX.Element {
       }
       items={items}
       tableName={tableName}
+      onGoBack={(): void => navigate('../')}
     />
   );
 }
@@ -82,11 +85,13 @@ export function XmlEntryList<
   tableName,
   header,
   getNewItem,
+  onGoBack: handleGoBack,
 }: {
   readonly items: GetSet<RA<ITEM>>;
   readonly tableName: string | undefined;
   readonly header: string;
   readonly getNewItem: (currentItems: RA<ITEM>, table: SpecifyTable) => ITEM;
+  readonly onGoBack?: () => void;
 }): JSX.Element {
   const isReadOnly = React.useContext(ReadOnlyContext);
   const navigate = useNavigate();
@@ -104,6 +109,12 @@ export function XmlEntryList<
   );
   return (
     <div className="flex flex-col gap-2 overflow-auto">
+      {typeof handleGoBack === 'function' && (
+        <Button.LikeLink onClick={handleGoBack}>
+          {icons.chevronLeft}
+          {commonText.back()}
+        </Button.LikeLink>
+      )}
       <h4 className="text-xl">{table.label}</h4>
       <h5>{commonText.colonHeader({ header })}</h5>
       <Ul className="flex flex-1 flex-col gap-1 overflow-y-auto">

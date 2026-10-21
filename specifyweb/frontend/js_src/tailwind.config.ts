@@ -44,13 +44,19 @@ const config: Config = {
     },
     extend: {
       colors: {
-        // Specify brand colors
+        // User-defined brand colors
         brand: {
           100: 'var(--accent-color-100)',
           200: 'var(--accent-color-200)',
           300: 'var(--accent-color-300)',
           400: 'var(--accent-color-400)',
-          500: 'var(--accent-color-500)',
+        },
+        // Specify brand colors:
+        specify: {
+          100: '#E0E2B9',
+          200: '#a4af83',
+          300: '#86965e',
+          400: '#598137',
         },
         // Some in-between shades:
         gray: {
@@ -62,8 +68,17 @@ const config: Config = {
         indigo: {
           350: 'hsl(232deg 92% 79%)',
         },
+        peach: {
+          250: 'hsl(23deg, 92%, 75%)',
+        },
         neutral: {
           350: 'hsl(0deg 0% 73%)',
+        },
+        blue: {
+          100: '#0074B5',
+        },
+        brown: {
+          100: '#4e3f32',
         },
       },
       spacing: {

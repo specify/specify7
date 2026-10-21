@@ -42,8 +42,8 @@ export function SwitchCollectionCommand(): null {
           body: collectionId!.toString(),
           errorMode: 'dismissible',
         })
-        .then(clearAllCache)
-        .then(() => globalThis.location.replace(nextUrl)),
+          .then(clearAllCache)
+          .then(() => globalThis.location.replace(nextUrl)),
       [collectionId, nextUrl]
     ),
     true

@@ -1,6 +1,6 @@
 import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
-import type { RA, WritableArray } from '../../../utils/types';
+import type { DeepPartial, RA, WritableArray } from '../../../utils/types';
 import { removeKey, replaceItem } from '../../../utils/utils';
 import { formatUrl } from '../../Router/queryString';
 import { addMissingFields } from '../addMissingFields';
@@ -10,7 +10,12 @@ import { getResourceApiUrl } from '../resource';
 import { deserializeResource, serializeResource } from '../serializers';
 import type { Collection } from '../specifyTable';
 import { tables } from '../tables';
-import type { CollectionObjectAttribute, Determination } from '../types';
+import type {
+  CollectionObject,
+  CollectionObjectAttribute,
+  CollectionObjectType,
+  Determination,
+} from '../types';
 
 requireContext();
 
@@ -38,8 +43,24 @@ const determinationsResponse: RA<Partial<SerializedRecord<Determination>>> = [
     resource_uri: determinationUrl,
     id: 123,
     number1: null,
+    iscurrent: true,
   },
 ];
+
+const collectionObjectTypeResponse: Partial<
+  SerializedRecord<CollectionObjectType>
+> = {
+  id: 1,
+  name: 'TestType',
+  taxontreedef: getResourceApiUrl('TaxonTreeDef', 1),
+  collection: getResourceApiUrl('Collection', 4),
+  resource_uri: getResourceApiUrl('CollectionObjectType', 1),
+};
+
+overrideAjax(
+  getResourceApiUrl('CollectionObjectType', 1),
+  collectionObjectTypeResponse
+);
 
 const collectionObjectResponse = {
   id: collectionObjectId,
@@ -57,6 +78,50 @@ overrideAjax(
   '/api/specify/collectionobject/?domainfilter=false&catalognumber=000029432&collection=4&offset=0',
   {
     objects: [collectionObjectResponse],
+    meta: {
+      limit: 20,
+      offset: 0,
+      total_count: 1,
+    },
+  }
+);
+
+const emptyCollection = {
+  objects: [],
+  meta: {
+    limit: 20,
+    offset: 0,
+    total_count: 0,
+  },
+};
+
+overrideAjax(
+  '/api/specify/component/?catalognumber=000029432&domainfilter=true',
+  emptyCollection
+);
+
+overrideAjax(
+  '/api/specify/component/?catalognumber=000000001&domainfilter=true',
+  emptyCollection
+);
+
+overrideAjax(
+  '/api/specify/component/?catalognumber=%23%23%23%23%23%23%23%23%23&domainfilter=true',
+  emptyCollection
+);
+
+const firstCollectionObjectUrl = getResourceApiUrl('CollectionObject', 1);
+const firstCollectionObject = {
+  id: 1,
+  resource_uri: firstCollectionObjectUrl,
+  catalognumber: '000011111',
+  collection: getResourceApiUrl('Collection', 4),
+};
+overrideAjax(firstCollectionObjectUrl, firstCollectionObject);
+overrideAjax(
+  '/api/specify/collectionobject/?domainfilter=false&catalognumber=000011111&collection=4&offset=0',
+  {
+    objects: [],
     meta: {
       limit: 20,
       offset: 0,
@@ -230,6 +295,11 @@ describe('rgetCollection', () => {
 });
 
 describe('eventHandlerForToMany', () => {
+  overrideAjax(getResourceApiUrl('Taxon', 1), {
+    id: 1,
+    resource_uri: getResourceApiUrl('Taxon', 1),
+  });
+
   test('saverequired', () => {
     const resource = new tables.CollectionObject.Resource(
       addMissingFields('CollectionObject', {
@@ -251,7 +321,7 @@ describe('eventHandlerForToMany', () => {
 
     expect(resource.needsSaved).toBe(true);
     // Change to 2 in issue-6214
-    expect(testFunction).toHaveBeenCalledTimes(2);
+    expect(testFunction).toHaveBeenCalledTimes(3);
   });
   test('changing collection propagates to related', () => {
     const resource = new tables.CollectionObject.Resource(
@@ -300,14 +370,14 @@ describe('eventHandlerForToMany', () => {
       { index: 1 }
     );
 
-    expect(onResourceChange).toHaveBeenCalledTimes(3);
+    expect(onResourceChange).toHaveBeenCalledTimes(4);
 
     resource.set('determinations', [
       addMissingFields('Determination', {
         taxon: getResourceApiUrl('Taxon', 1),
       }),
     ]);
-    expect(onResourceChange).toHaveBeenCalledTimes(4);
+    expect(onResourceChange).toHaveBeenCalledTimes(5);
     expect(onPrepChange).toHaveBeenCalledTimes(1);
     expect(onPrepAdd).toHaveBeenCalledTimes(1);
     expect(onPrepRemoval).toHaveBeenCalledTimes(1);
@@ -397,6 +467,141 @@ test('save', async () => {
   const newDetermination =
     resource.getDependentResource('determinations')!.models[0];
   expect(newDetermination.get('number1')).toBe(2);
+});
+
+describe('independent resource change propagation', () => {
+  overrideAjax(
+    '/api/specify/collectionobject/?domainfilter=false&accession=11&offset=0',
+    emptyCollection
+  );
+  overrideAjax(accessionUrl, accessionResponse, { method: 'PUT' });
+
+  test('needsSaved propagates from independent collection to parent', async () => {
+    const parentResource = new tables.Accession.Resource({ id: accessionId });
+    expect(parentResource.needsSaved).toBe(false);
+
+    const collectionObjectRel =
+      tables.CollectionObject.strictGetRelationship('accession')!;
+
+    const independentCollection =
+      new tables.CollectionObject.IndependentCollection({
+        related: parentResource,
+        field: collectionObjectRel,
+      }) as Collection<CollectionObject>;
+
+    await independentCollection.fetch();
+
+    // Connect the collection to the parent's event system, as rgetCollection would do internally.
+    // storeIndependent is not in the public TS types so cast to any.
+    (parentResource as any).storeIndependent(
+      collectionObjectRel.getReverse(),
+      independentCollection
+    );
+
+    const newCollectionObject = new tables.CollectionObject.Resource({
+      id: 998,
+    });
+    independentCollection.add(newCollectionObject);
+
+    // Adding an existing resource to an independent collection does not mark the resource itself needsSaved;
+    // only the parent is notified via saverequired
+    expect(newCollectionObject.needsSaved).toBe(false);
+    expect(parentResource.needsSaved).toBe(true);
+
+    await parentResource.save();
+
+    expect(parentResource.needsSaved).toBe(false);
+  });
+});
+
+describe('save base record which has independent subviews', () => {
+  overrideAjax(
+    '/api/specify/collectionobject/?domainfilter=false&accession=11&offset=0',
+    {
+      objects: [collectionObjectResponse],
+      meta: { limit: 20, offset: 0, total_count: 1 },
+    }
+  );
+  overrideAjax(accessionUrl, accessionResponse, { method: 'PUT' });
+
+  async function setupParentWithIndependentCollection() {
+    const parentResource = new tables.Accession.Resource({ id: accessionId });
+    const collectionObjectRel =
+      tables.CollectionObject.strictGetRelationship('accession')!;
+    const independentCollection =
+      new tables.CollectionObject.IndependentCollection({
+        related: parentResource,
+        field: collectionObjectRel,
+      }) as Collection<CollectionObject>;
+    await independentCollection.fetch();
+    (parentResource as any).storeIndependent(
+      collectionObjectRel.getReverse(),
+      independentCollection
+    );
+    return { parentResource, independentCollection };
+  }
+
+  test('modifying a field on an independent resource marks base record as needsSaved and save applies the change', async () => {
+    const { parentResource, independentCollection } =
+      await setupParentWithIndependentCollection();
+
+    expect(parentResource.needsSaved).toBe(false);
+
+    const existingCollectionObject = independentCollection.models[0];
+    existingCollectionObject.set('text1', 'changed-value');
+
+    expect(parentResource.needsSaved).toBe(true);
+
+    await parentResource.save();
+
+    expect(parentResource.needsSaved).toBe(false);
+    // Change is preserved in memory after save
+    expect(existingCollectionObject.get('text1')).toBe('changed-value');
+  });
+
+  test('modifying a sub-record of an independent resource propagates needsSaved to base record and save completes', async () => {
+    const { parentResource, independentCollection } =
+      await setupParentWithIndependentCollection();
+
+    expect(parentResource.needsSaved).toBe(false);
+
+    const collectionObject = independentCollection.models[0];
+
+    const determinations =
+      collectionObject.getDependentResource('determinations');
+
+    const determination = determinations!.models[0];
+
+    determination.set('number1', 99);
+
+    // Change to sub-record propagates needsSaved all the way up to base record
+
+    expect(parentResource.needsSaved).toBe(true);
+
+    await parentResource.save();
+
+    expect(parentResource.needsSaved).toBe(false);
+
+    // Change to sub-record is preserved in memory after save
+
+    expect(determination.get('number1')).toBe(99);
+  });
+});
+
+describe('resource initialization', () => {
+  test('Initialization with dependent resources does not trigger saveRequired', () => {
+    const resource = new tables.CollectionObject.Resource({
+      determinations: [
+        {
+          id: 1,
+        },
+        {
+          id: 2,
+        },
+      ],
+    });
+    expect(resource.needsSaved).toBe(false);
+  });
 });
 
 describe('set', () => {
@@ -734,6 +939,65 @@ describe('set', () => {
     resource.set('accession', null);
     expect(resource.get('accession')).toBeNull();
     expect(resource.independentResources.accession).toBeNull();
+  });
+  test('bulk setting attributes', () => {
+    const resource = new tables.CollectionObject.Resource({ id: 1 });
+    const collectionObjectId = 1;
+    const catalogNumber = '000000001';
+    const options = undefined;
+    const accessionUrl = getResourceApiUrl('Accession', 1);
+    const attributeText1 = 'example text';
+    const serializedDeterminations: RA<
+      Partial<SerializedRecord<Determination>>
+    > = [
+      {
+        iscurrent: true,
+      },
+      {},
+    ];
+    const serializedAttributes: DeepPartial<
+      SerializedRecord<CollectionObject>
+    > = {
+      id: 1,
+      catalognumber: catalogNumber,
+      accession: accessionUrl,
+      determinations: Array.from(serializedDeterminations),
+      collectionobjectattribute: {
+        text1: attributeText1,
+      } as never,
+    };
+    resource.set(serializedAttributes as never, options as never);
+    expect(resource.id).toStrictEqual(collectionObjectId);
+    expect(resource.get('catalogNumber')).toEqual(catalogNumber);
+    expect(resource.get('accession')).toStrictEqual(accessionUrl);
+    expect(resource.get('determinations')).toBeUndefined();
+    expect(
+      resource.getDependentResource('determinations')?.models.length
+    ).toStrictEqual(serializedDeterminations.length);
+    expect(
+      resource.getDependentResource('collectionObjectAttribute')?.get('text1')
+    ).toStrictEqual(attributeText1);
+  });
+  test('silent respected on bulk set', () => {
+    // See https://github.com/specify/specify7/issues/6488
+    const resource = new tables.CollectionObject.Resource({ id: 1 });
+    const serializedDeterminations: RA<
+      Partial<SerializedRecord<Determination>>
+    > = [
+      {
+        iscurrent: true,
+      },
+      {},
+    ];
+    const serializedAttributes: DeepPartial<
+      SerializedRecord<CollectionObject>
+    > = {
+      determinations: serializedDeterminations,
+    };
+    resource.set(serializedAttributes as never, { silent: true } as never);
+    expect(resource.needsSaved).toBe(false);
+    resource.set(serializedAttributes as never, { silent: false } as never);
+    expect(resource.needsSaved).toBe(true);
   });
 });
 

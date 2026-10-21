@@ -98,7 +98,7 @@ function ModifyDataset({
 }
 
 const createEmpty = async (name: LocalizedString) =>
-  createEmptyDataSet<AttachmentDataSet>('/attachment_gw/dataset/', name, {
+  createEmptyDataSet<AttachmentDataSet>('bulkAttachment', name, {
     uploadplan: { staticPathKey: undefined },
     uploaderstatus: 'main',
   });
@@ -208,6 +208,11 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
                     />
                     {attachmentDataSet.name}
                   </Link.Default>
+                  {attachmentDataSet.matchingmode === 'mappingFile' && (
+                    <div className="text-xs text-gray-500">
+                      {attachmentsText.matchByMappingFile()}
+                    </div>
+                  )}
                 </td>
                 <td>
                   <DateElement date={attachmentDataSet.timestampcreated} />
@@ -241,7 +246,7 @@ const getNamePromise = async () =>
       date: new Date().toDateString(),
     }),
     undefined,
-    '/attachment_gw/dataset/'
+    'bulkAttachment'
   );
 
 function NewDataSet(): JSX.Element | null {

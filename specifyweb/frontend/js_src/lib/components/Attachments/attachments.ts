@@ -1,8 +1,11 @@
+import React from 'react';
+
 import { commonText } from '../../localization/common';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { handleAjaxResponse } from '../../utils/ajax/response';
 import type { IR, RA } from '../../utils/types';
+import { keysToLowerCase } from '../../utils/utils';
 import type { UploadAttachmentSpec } from '../AttachmentsBulkImport/types';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
@@ -10,9 +13,23 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { tables } from '../DataModel/tables';
 import type { Attachment } from '../DataModel/types';
 import { load } from '../InitialContext';
-import { getIcon, unknownIcon } from '../InitialContext/icons';
-import { getPref } from '../InitialContext/remotePrefs';
+import { globalPreferences } from '../Preferences/globalPreferences';
+import { downloadFile } from '../Molecules/FilePicker';
 import { formatUrl } from '../Router/queryString';
+// Import SVG icons, but better than in Icons.tsx
+import applicationJsonIcon from './MimetypeIcons/application-json.svg';
+import applicationPdfIcon from './MimetypeIcons/application-pdf.svg';
+import audioXGenericIcon from './MimetypeIcons/audio-x-generic.svg';
+import imageXGenericIcon from './MimetypeIcons/image-x-generic.svg';
+import modelIcon from './MimetypeIcons/model.svg';
+import packageXgeneric from './MimetypeIcons/package-x-generic.svg';
+import textHtmlIcon from './MimetypeIcons/text-html.svg';
+import textXGenericIcon from './MimetypeIcons/text-x-generic.svg';
+import textXMakefileIcon from './MimetypeIcons/text-x-makefile.svg';
+import videoXGenericIcon from './MimetypeIcons/video-x-generic.svg';
+import xOfficeDocumentIcon from './MimetypeIcons/x-office-document.svg';
+import xOfficePresentationIcon from './MimetypeIcons/x-office-presentation.svg';
+import xOfficeSpreadsheetIcon from './MimetypeIcons/x-office-spreadsheet.svg';
 
 type AttachmentSettings = {
   readonly collection: string;
@@ -26,21 +43,147 @@ type AttachmentSettings = {
 };
 
 let settings: AttachmentSettings | undefined;
+export type AttachmentServerStatus = 'unknown' | 'available' | 'unavailable';
+
+let serverStatus: AttachmentServerStatus = 'unknown';
+const serverStatusListeners = new Set<() => void>();
+let healthCheckTimer: ReturnType<typeof setInterval> | undefined;
+
+const attachmentSettingsPath = '/context/attachment_settings.json';
+
+const setAttachmentServerStatus = (newStatus: AttachmentServerStatus): void => {
+  if (serverStatus === newStatus) return;
+  const previousStatus = serverStatus;
+  serverStatus = newStatus;
+  // Only log actual connection loss/restoration, not the initial unknown state
+  if (previousStatus === 'available' && newStatus === 'unavailable')
+    console.error(
+      `[${new Date().toISOString()}] Attachment server connection lost`
+    );
+  else if (previousStatus === 'unavailable' && newStatus === 'available')
+    console.warn(
+      `[${new Date().toISOString()}] Attachment server connection restored`
+    );
+  serverStatusListeners.forEach((listener) => listener());
+};
+
 export const attachmentSettingsPromise = load<AttachmentSettings | IR<never>>(
-  '/context/attachment_settings.json',
+  attachmentSettingsPath,
   'application/json'
-).then((data) => {
-  if (Object.keys(data).length > 0) settings = data as AttachmentSettings;
-  return attachmentsAvailable();
+).then(async (data) => {
+  if (Object.keys(data).length > 0) {
+    settings = data as AttachmentSettings;
+    checkAttachmentServer().catch(() => {
+      setAttachmentServerStatus('unavailable');
+    });
+    return true;
+  } else {
+    settings = undefined;
+    const status = await checkAttachmentServer().catch(() => Http.SERVER_ERROR);
+    return status !== Http.NOT_FOUND;
+  }
 });
 
 export const attachmentsAvailable = (): boolean => typeof settings === 'object';
+
+const checkAttachmentServer = async (): Promise<number> => {
+  const { status } = await ajax('/attachment_gw/health/', {
+    cache: 'no-store',
+    errorMode: 'silent',
+    expectedErrors: Object.values(Http),
+    headers: { Accept: 'text/plain' },
+  });
+  if (status === Http.NO_CONTENT && settings === undefined) {
+    const { data } = await ajax<AttachmentSettings | IR<never>>(
+      attachmentSettingsPath,
+      {
+        cache: 'no-store',
+        errorMode: 'silent',
+        expectedErrors: Object.values(Http),
+        headers: { Accept: 'application/json' },
+      }
+    );
+    if (Object.keys(data).length > 0) settings = data as AttachmentSettings;
+  }
+  setAttachmentServerStatus(
+    status === Http.NO_CONTENT && settings !== undefined
+      ? 'available'
+      : 'unavailable'
+  );
+  return status;
+};
+
+/*
+ * A single caller error (e.g. a missing or corrupt attachment) doesn't mean
+ * the server is down, so confirm with a health check before marking it unavailable
+ */
+export const reportAttachmentServerFailure = (): void => {
+  checkAttachmentServer().catch(() => setAttachmentServerStatus('unavailable'));
+};
+
+const stopAttachmentServerHealthPolling = (): void => {
+  if (serverStatusListeners.size === 0 && healthCheckTimer !== undefined) {
+    clearInterval(healthCheckTimer);
+    healthCheckTimer = undefined;
+  }
+};
+
+const startAttachmentServerHealthPolling = (): (() => void) => {
+  const poll = (): void => {
+    checkAttachmentServer().catch(() =>
+      setAttachmentServerStatus('unavailable')
+    );
+  };
+  if (healthCheckTimer === undefined) {
+    poll();
+
+    healthCheckTimer = setInterval(() => {
+      poll();
+    }, 30_000);
+  }
+  return stopAttachmentServerHealthPolling;
+};
+
+export const useAttachmentServerStatus = (): AttachmentServerStatus => {
+  const subscribe = React.useCallback((listener: () => void) => {
+    serverStatusListeners.add(listener);
+    const stopPolling = startAttachmentServerHealthPolling();
+    return () => {
+      serverStatusListeners.delete(listener);
+      stopPolling();
+    };
+  }, []);
+  const getSnapshot = React.useCallback(() => serverStatus, []);
+  return React.useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
+};
+
+/*
+ * This function is only used in automated tests.
+ */
+export const overrideAttachmentServerStatus = (
+  newStatus: AttachmentServerStatus
+): void => {
+  serverStatus = newStatus;
+};
+const uploadTimeoutMilliseconds = 30 * 60 * 1000;
+
+/*
+ * This function is useful when testing functions that depend on the settings.
+ * This function is only used in automated tests.
+ */
+export const overrideAttachmentSettings = (
+  newSettings: AttachmentSettings | undefined
+): void => {
+  settings = newSettings;
+};
 
 const thumbnailable = new Set([
   'image/jpeg',
   'image/gif',
   'image/png',
   'image/tiff',
+  'image/heic',
+  'image/heif',
   'application/pdf',
 ]);
 
@@ -48,31 +191,56 @@ function iconForMimeType(mimeType: string): {
   readonly alt: string;
   readonly src: string;
 } {
-  if (mimeType === 'text/plain')
-    return { alt: 'text', src: getIcon('text') ?? unknownIcon };
-  if (mimeType === 'text/html')
-    return { alt: 'html', src: getIcon('html') ?? unknownIcon };
+  const iconMap: Record<
+    string,
+    { readonly alt: string; readonly src: string }
+  > = {
+    'application/json': { alt: 'json', src: applicationJsonIcon },
+    'application/pdf': { alt: 'pdf', src: applicationPdfIcon },
+    'audio/x-generic': { alt: 'audio', src: audioXGenericIcon },
+    'image/x-generic': { alt: 'image', src: imageXGenericIcon },
+    model: { alt: 'model', src: modelIcon },
+    'text/html': { alt: 'html', src: textHtmlIcon },
+    'text/xml': { alt: 'html', src: textHtmlIcon },
+    'text/plain': { alt: 'text', src: textXGenericIcon },
+    'text/x-makefile': { alt: 'makefile', src: textXMakefileIcon },
+    'application/x-yaml': { alt: 'yaml', src: textXMakefileIcon },
+    'video/x-generic': { alt: 'video', src: videoXGenericIcon },
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': {
+      alt: 'MSWord',
+      src: xOfficeDocumentIcon,
+    },
+    'application/vnd.openxmlformats-officedocument.presentationml.presentation':
+      { alt: 'MSPowerPoint', src: xOfficePresentationIcon },
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': {
+      alt: 'MSExcel',
+      src: xOfficeSpreadsheetIcon,
+    },
+    'application/zip': { alt: 'zip', src: packageXgeneric },
+  };
 
-  const parts = mimeType.split('/');
-  const type = parts[0];
-  const subtype = parts[1];
-
-  if (['audio', 'video', 'image', 'text'].includes(type))
-    return { alt: type, src: getIcon(type) ?? unknownIcon };
-
-  if (type === 'application') {
-    const iconName = {
-      pdf: 'pdf',
-      'vnd.ms-excel': 'MSExcel',
-      'vnd.ms-word': 'MSWord',
-      'vnd.ms-powerpoint': 'MSPowerPoint',
-    }[subtype];
-
-    if (typeof iconName === 'string')
-      return { alt: iconName, src: getIcon(iconName) ?? unknownIcon };
-  }
-
-  return { alt: commonText.unknown(), src: getIcon('unknown') ?? unknownIcon };
+  return (
+    iconMap[mimeType] ??
+    (mimeType.startsWith('video/')
+      ? { alt: 'video', src: videoXGenericIcon }
+      : null) ??
+    (mimeType.startsWith('audio/')
+      ? { alt: 'audio', src: audioXGenericIcon }
+      : null) ??
+    (mimeType.startsWith('image/')
+      ? { alt: 'image', src: imageXGenericIcon }
+      : null) ??
+    (mimeType.endsWith('presentation') || mimeType.includes('powerpoint')
+      ? { alt: 'presentation', src: xOfficePresentationIcon }
+      : null) ??
+    (mimeType.includes('wordprocessing') || mimeType.endsWith('word')
+      ? { alt: 'document', src: xOfficeDocumentIcon }
+      : null) ??
+    (mimeType == null ? { alt: 'image', src: textXGenericIcon } : null) ?? {
+      alt: commonText.unknown(),
+      src: textXGenericIcon,
+    }
+  );
 }
 
 export const fetchAssetToken = async (
@@ -85,7 +253,9 @@ export const fetchAssetToken = async (
     expectedErrors: silent ? Object.values(Http) : [Http.OK],
   }).then(({ data, status }) => (status === Http.OK ? data : undefined));
 
-const fetchToken = async (fileName: string): Promise<string | undefined> =>
+export const fetchToken = async (
+  fileName: string
+): Promise<string | undefined> =>
   settings?.token_required_for_get === true
     ? fetchAssetToken(fileName)
     : Promise.resolve(undefined);
@@ -95,11 +265,16 @@ export type AttachmentThumbnail = {
   readonly alt: string | undefined;
   readonly width: number;
   readonly height: number;
+  readonly isServerBacked?: boolean;
 };
 
 export async function fetchThumbnail(
   attachment: SerializedResource<Attachment>,
-  scale = getPref('attachment.preview_size')
+  scale = globalPreferences.get(
+    'general',
+    'attachments',
+    'attachmentThumbnailSize'
+  )
 ): Promise<AttachmentThumbnail | undefined> {
   const mimeType = attachment.mimeType ?? undefined;
   const thumbnail =
@@ -108,7 +283,7 @@ export async function fetchThumbnail(
       : iconForMimeType(mimeType);
 
   // Display an icon for resources that don't have a custom thumbnail
-  if (typeof thumbnail === 'object' && thumbnail?.src !== unknownIcon)
+  if (typeof thumbnail === 'object')
     return {
       ...thumbnail,
       width: scale,
@@ -130,8 +305,12 @@ export async function fetchThumbnail(
     alt: attachment.attachmentLocation ?? undefined,
     width: scale,
     height: scale,
+    isServerBacked: true,
   };
 }
+
+export const cleanAttachmentDownloadName = (origFilename: string): string =>
+  origFilename.replace(/^.*[/\\]/u, '');
 
 export const formatAttachmentUrl = (
   attachment: SerializedResource<Attachment>,
@@ -142,7 +321,9 @@ export const formatAttachmentUrl = (
         coll: settings.collection,
         type: 'O',
         fileName: attachment.attachmentLocation,
-        downloadName: attachment.origFilename?.replace(/^.*[/\\]/u, ''),
+        downloadName: attachment.origFilename
+          ? cleanAttachmentDownloadName(attachment.origFilename)
+          : undefined,
         token,
       })
     : undefined;
@@ -156,12 +337,19 @@ export const fetchOriginalUrl = async (
       )
     : Promise.resolve(undefined);
 
-export async function uploadFile(
-  file: File,
-  handleProgress: (percentage: number | true) => void,
-  uploadAttachmentSpec?: UploadAttachmentSpec,
-  strict = true
-): Promise<SpecifyResource<Attachment> | undefined> {
+export async function uploadFile({
+  file,
+  handleProgress,
+  uploadAttachmentSpec,
+  strict,
+  attachmentIsPublicDefault,
+}: {
+  readonly file: File;
+  readonly handleProgress?: (percentage: number | true) => void;
+  readonly uploadAttachmentSpec?: UploadAttachmentSpec;
+  readonly strict?: boolean;
+  readonly attachmentIsPublicDefault?: boolean;
+}): Promise<SpecifyResource<Attachment> | undefined> {
   if (settings === undefined) return undefined;
 
   const data =
@@ -195,42 +383,102 @@ export async function uploadFile(
    */
 
   const xhr = new XMLHttpRequest();
-  xhr.upload?.addEventListener('progress', (event) =>
-    handleProgress(event.lengthComputable ? event.loaded / event.total : true)
-  );
-  xhr.open('POST', settings.write);
-  xhr.send(formData);
+  if (handleProgress !== undefined) {
+    xhr.upload?.addEventListener('progress', (event) =>
+      handleProgress(event.lengthComputable ? event.loaded / event.total : true)
+    );
+  }
   const DONE = 4;
-  await new Promise((resolve, reject) =>
-    xhr.addEventListener('readystatechange', () => {
-      if (xhr.readyState === DONE)
-        try {
-          resolve(
-            handleAjaxResponse({
-              expectedErrors: [],
-              accept: undefined,
-              // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-              response: {
-                ok: xhr.status === Http.OK,
-                status: xhr.status,
-                url: settings!.write,
-              } as Response,
+  xhr.open('POST', settings.write);
+  xhr.timeout = uploadTimeoutMilliseconds;
+  await new Promise<void>((resolve, reject) => {
+    let settled = false;
 
-              errorMode: strict ? 'visible' : 'silent',
-              text: xhr.responseText,
-            })
-          );
+    const handleReadyStateChange = () => {
+      if (xhr.readyState !== DONE) return;
+      settle(() => {
+        try {
+          handleAjaxResponse({
+            expectedErrors: [],
+            accept: undefined,
+            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+            response: {
+              ok: xhr.status === Http.OK,
+              status: xhr.status,
+              url: settings!.write,
+            } as Response,
+            errorMode: strict ? 'visible' : 'silent',
+            text: xhr.responseText,
+          });
+          resolve();
         } catch (error) {
           reject(error);
         }
-    })
-  );
+      });
+    };
+
+    const handleFailureWithoutResponse = (message: string) => {
+      settle(() => {
+        try {
+          handleAjaxResponse({
+            expectedErrors: [],
+            accept: undefined,
+            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+            response: {
+              ok: false,
+              status: 0,
+              url: settings!.write,
+            } as Response,
+            errorMode: strict ? 'visible' : 'silent',
+            text: message,
+          });
+          reject(new Error(message));
+        } catch (error) {
+          reject(error);
+        }
+      });
+    };
+
+    const settle = (callback: () => void) => {
+      if (settled) return;
+      settled = true;
+      cleanup();
+      callback();
+    };
+
+    const handleError = () =>
+      handleFailureWithoutResponse(
+        'Upload failed before receiving a response.'
+      );
+    const handleAbort = () =>
+      handleFailureWithoutResponse(
+        'Upload was aborted before receiving a response.'
+      );
+    const handleTimeout = () =>
+      handleFailureWithoutResponse(
+        `Upload timed out after ${uploadTimeoutMilliseconds} milliseconds.`
+      );
+
+    const cleanup = () => {
+      xhr.removeEventListener('readystatechange', handleReadyStateChange);
+      xhr.removeEventListener('error', handleError);
+      xhr.removeEventListener('abort', handleAbort);
+      xhr.removeEventListener('timeout', handleTimeout);
+    };
+
+    xhr.addEventListener('readystatechange', handleReadyStateChange);
+    xhr.addEventListener('error', handleError);
+    xhr.addEventListener('abort', handleAbort);
+    xhr.addEventListener('timeout', handleTimeout);
+    xhr.send(formData);
+  });
+
   return new tables.Attachment.Resource({
     attachmentlocation: data.attachmentLocation,
     mimetype: fixMimeType(file.type),
     origfilename: file.name,
     title: file.name,
-    isPublic: getPref('attachment.is_public_default'),
+    isPublic: attachmentIsPublicDefault,
   });
 }
 
@@ -240,7 +488,7 @@ export async function uploadFile(
  * See: https://github.com/specify/specify7/issues/1141
  * REFACTOR: remove this once that issue is fixed
  */
-function fixMimeType(originalMimeType: string): string {
+export function fixMimeType(originalMimeType: string): string {
   const maxLength = getField(tables.Attachment, 'mimeType').length;
   if (maxLength === undefined || originalMimeType.length < maxLength)
     return originalMimeType;
@@ -251,5 +499,68 @@ function fixMimeType(originalMimeType: string): string {
         ` to "${mimeType}" due to length limit`
     );
     return mimeType;
+  }
+}
+
+export function downloadAttachment(
+  attachment: SerializedResource<Attachment>
+): void {
+  fetchOriginalUrl(attachment).then((url) => {
+    if (typeof url === 'string') {
+      const fileName = cleanAttachmentDownloadName(
+        attachment.origFilename ?? attachment.attachmentLocation
+      );
+      // Cannot use downloadFile because of iframe restrictions
+      const element = document.createElement('a');
+      element.href = `/attachment_gw/proxy/${new URL(url).search}`;
+      element.download = fileName;
+      document.body.append(element);
+      element.click();
+      element.remove();
+    }
+  });
+}
+
+export async function downloadAllAttachments(
+  attachments: RA<SerializedResource<Attachment>>,
+  archiveName?: string,
+  recordSetId?: number
+): Promise<void> {
+  if (attachments.length === 0 && recordSetId === undefined) return;
+  if (attachments.length === 1) {
+    downloadAttachment(attachments[0]);
+    return;
+  }
+
+  const attachmentLocations = attachments
+    .map((attachment) => attachment.attachmentLocation)
+    .filter((name): name is string => name !== null);
+  const origFilenames = attachments
+    .map((attachment) =>
+      cleanAttachmentDownloadName(
+        attachment.origFilename ?? attachment.attachmentLocation
+      )
+    )
+    .filter((name): name is string => name !== null);
+
+  const response = await ajax<Blob>('/attachment_gw/download_all/', {
+    method: 'POST',
+    body: keysToLowerCase({
+      attachmentLocations,
+      recordSetId: recordSetId ?? undefined,
+      origFilenames,
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/octet-stream',
+    },
+    errorMode: 'dismissible',
+  });
+
+  if (response.status === Http.OK) {
+    const fileName = `Attachments - ${(archiveName ?? new Date().toDateString()).replaceAll(':', '')}.zip`;
+    downloadFile(fileName, response.data);
+  } else {
+    throw new Error(`Attachment archive download failed: ${response}`);
   }
 }

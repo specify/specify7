@@ -65,7 +65,10 @@ function initialize(): void {
        */
       const parsedValue = JSON.parse(newValue);
       const [category, key] = parsedKey;
-      genericSet(category, key, parsedValue);
+      // Update in-memory cache and fire change event so React hooks
+      // in this tab update, but skip the localStorage write since
+      // the originating tab already committed the value.
+      genericSet(category, key, parsedValue, true, true);
     }
   );
   eventListenerIsInitialized = true;
@@ -139,7 +142,8 @@ function genericSet<T>(
   key: string,
   // Any serializable value
   value: T,
-  triggerChange = true
+  triggerChange = true,
+  skipStorageWrite = false
 ): T {
   if (!eventListenerIsInitialized) initialize();
 
@@ -155,14 +159,44 @@ function genericSet<T>(
 
   cache[formattedKey] = value;
 
-  globalThis.localStorage.setItem(
-    formatCacheKey(category, key),
-    JSON.stringify(value)
-  );
+  if (!skipStorageWrite)
+    globalThis.localStorage.setItem(
+      formatCacheKey(category, key),
+      JSON.stringify(value)
+    );
 
   if (triggerChange) cacheEvents.trigger('change', { category, key });
 
   return value;
+}
+
+export const removeCache = <
+  CATEGORY extends string & keyof CacheDefinitions,
+  KEY extends string & keyof CacheDefinitions[CATEGORY],
+>(
+  category: CATEGORY,
+  key: KEY,
+  triggerChange = true
+) =>
+  genericRemove<CacheDefinitions[CATEGORY][KEY]>(category, key, triggerChange);
+
+function genericRemove<TYPE>(
+  category: string,
+  key: string,
+  triggerChange = true
+): TYPE | undefined {
+  if (!eventListenerIsInitialized) initialize();
+
+  const previousValue = genericGet(category, key);
+
+  const formattedKey = formatCacheKey(category, key);
+
+  globalThis.localStorage.removeItem(formattedKey);
+  delete cache[formattedKey];
+
+  if (triggerChange) cacheEvents.trigger('change', { category, key });
+
+  return previousValue as TYPE | undefined;
 }
 
 export const exportsForTests = {

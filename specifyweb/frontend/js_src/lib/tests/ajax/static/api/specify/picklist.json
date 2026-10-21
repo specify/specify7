@@ -421,7 +421,7 @@
       "filtervalue": null,
       "formatter": null,
       "issystem": true,
-      "name": "BiologicalStage",
+      "name": "LifeStage",
       "readonly": false,
       "sizelimit": -1,
       "sorttype": 1,

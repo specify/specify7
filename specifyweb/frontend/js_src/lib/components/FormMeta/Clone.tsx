@@ -4,7 +4,7 @@ import { formsText } from '../../localization/forms';
 import { toggleItem } from '../../utils/utils';
 import { Input, Label } from '../Atoms/Form';
 import type { SpecifyTable } from '../DataModel/specifyTable';
-import { NO_CLONE } from '../Forms/ResourceView';
+import { FORBID_ADDING, NO_CLONE } from '../Forms/ResourceView';
 import { userPreferences } from '../Preferences/userPreferences';
 
 export function CloneConfig({
@@ -44,12 +44,12 @@ export function AddButtonConfig({
     'disableAdd'
   );
   const isEnabled = !globalDisabled.includes(table.name);
-  const canChange = !NO_CLONE.has(table.name);
+  const canChange = !FORBID_ADDING.has(table.name);
   return canChange ? (
     <Label.Inline>
       <Input.Checkbox
         checked={isEnabled}
-        disabled={NO_CLONE.has(table.name)}
+        disabled={FORBID_ADDING.has(table.name)}
         onChange={(): void =>
           setGlobalDisabled(toggleItem(globalDisabled, table.name))
         }

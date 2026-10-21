@@ -6,7 +6,7 @@ import { HOUR, MINUTE, SECOND } from '../Atoms/timeUnits';
 
 const longDate = new Intl.DateTimeFormat(LANGUAGE, {
   dateStyle: 'full',
-  timeStyle: 'long',
+  timeStyle: 'medium',
 });
 
 export function DateElement({

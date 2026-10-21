@@ -176,36 +176,48 @@ const globalFieldOverrides: {
   },
   TaxonTreeDefItem: {
     fullNameSeparator: { whiteSpaceSensitive: true },
+    textBefore: { whiteSpaceSensitive: true },
+    textAfter: { whiteSpaceSensitive: true },
   },
   GeographyTreeDef: {
     fullNameDirection: { visibility: 'readOnly' },
   },
   GeographyTreeDefItem: {
     fullNameSeparator: { whiteSpaceSensitive: true },
+    textBefore: { whiteSpaceSensitive: true },
+    textAfter: { whiteSpaceSensitive: true },
   },
   StorageTreeDef: {
     fullNameDirection: { visibility: 'readOnly' },
   },
   StorageTreeDefItem: {
     fullNameSeparator: { whiteSpaceSensitive: true },
+    textBefore: { whiteSpaceSensitive: true },
+    textAfter: { whiteSpaceSensitive: true },
   },
   GeologicTimePeriodTreeDef: {
     fullNameDirection: { visibility: 'readOnly' },
   },
   GeologicTimePeriodTreeDefItem: {
     fullNameSeparator: { whiteSpaceSensitive: true },
+    textBefore: { whiteSpaceSensitive: true },
+    textAfter: { whiteSpaceSensitive: true },
   },
   TectonicUnitTreeDef: {
     fullNameDirection: { visibility: 'readOnly' },
   },
   TectonicUnitTreeDefItem: {
     fullNameSeparator: { whiteSpaceSensitive: true },
+    textBefore: { whiteSpaceSensitive: true },
+    textAfter: { whiteSpaceSensitive: true },
   },
   LithoStratTreeDef: {
     fullNameDirection: { visibility: 'readOnly' },
   },
   LithoStratTreeDefItem: {
     fullNameSeparator: { whiteSpaceSensitive: true },
+    textBefore: { whiteSpaceSensitive: true },
+    textAfter: { whiteSpaceSensitive: true },
   },
 };
 

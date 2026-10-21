@@ -21,13 +21,18 @@ import {
 import { defaultColumnOptions, getLinesFromHeaders } from './linesGetter';
 import type {
   AutoMapperSuggestion,
+  BatchEditPrefs,
   MappingLine,
   MappingPath,
   MappingState,
   SelectElementPosition,
 } from './Mapper';
-import { emptyMapping } from './mappingHelpers';
-import type { MatchBehaviors } from './uploadPlanParser';
+import { emptyMapping, mappingPathToString } from './mappingHelpers';
+import type {
+  ColumnOptions,
+  DisambiguationBehaviors,
+  MatchBehaviors,
+} from './uploadPlanParser';
 
 const modifyLine = (
   state: MappingState,
@@ -120,8 +125,8 @@ type ValidationResultClickAction = Action<
   }
 >;
 
-type MustMatchPrefChangeAction = Action<
-  'MustMatchPrefChangeAction',
+type ChangMustMatchPrefAction = Action<
+  'ChangeMustMatchPrefAction',
   {
     readonly mustMatchPreferences: IR<boolean>;
   }
@@ -151,6 +156,14 @@ type ChangeDefaultValueAction = Action<
   }
 >;
 
+type ChangeDisambiguationBehaviorAction = Action<
+  'ChangeDisambiguationBehaviorAction',
+  {
+    readonly line: number;
+    readonly disambiguationBehavior: DisambiguationBehaviors;
+  }
+>;
+
 type UpdateLinesAction = Action<
   'UpdateLinesAction',
   { readonly lines: RA<MappingLine> }
@@ -163,19 +176,28 @@ type ReRunAutoMapperAction = Action<
   }
 >;
 
+type ChangeBatchEditPrefs = Action<
+  'ChangeBatchEditPrefs',
+  {
+    readonly prefs: BatchEditPrefs;
+  }
+>;
+
 export type MappingActions =
   | AddNewHeaderAction
   | AutoMapperSuggestionSelectedAction
   | AutoMapperSuggestionsLoadedAction
+  | ChangeBatchEditPrefs
   | ChangeDefaultValueAction
   | ChangeMatchBehaviorAction
+  | ChangeDisambiguationBehaviorAction
   | ChangeSelectElementValueAction
+  | ChangMustMatchPrefAction
   | ClearMappingLineAction
   | ClearValidationAction
   | CloseSelectElementAction
   | FocusLineAction
   | MappingViewMapAction
-  | MustMatchPrefChangeAction
   | OpenSelectElementAction
   | ReRunAutoMapperAction
   | ResetMappingsAction
@@ -187,6 +209,7 @@ export type MappingActions =
   | ValidationResultClickAction;
 
 export const reducer = generateReducer<MappingState, MappingActions>({
+  /* Workbench Actions (Shared with Batch-Edit) */
   ToggleMappingViewAction: ({ state, action }) => ({
     ...state,
     // REFACTOR: replace setState calls in reducers with useCachedState hooks
@@ -256,6 +279,7 @@ export const reducer = generateReducer<MappingState, MappingActions>({
       lines: replaceItem(state.lines, focusedLine, {
         ...state.lines[focusedLine],
         mappingPath: mappingViewMappingPath,
+        columnOptions: getCurrentColumnOptions(state, mappingViewMappingPath),
       }),
       changesMade: true,
       mappingsAreValidated: false,
@@ -271,7 +295,7 @@ export const reducer = generateReducer<MappingState, MappingActions>({
           [state.lines.length]
         ).at(-1)!,
         mappingPath: [emptyMapping],
-        columnOptions: defaultColumnOptions,
+        columnOptions: getCurrentColumnOptions(state, [emptyMapping]),
       },
     ],
     focusedLine: state.lines.length,
@@ -318,6 +342,7 @@ export const reducer = generateReducer<MappingState, MappingActions>({
       lines: deduplicateMappings(
         modifyLine(state, line, {
           mappingPath: newMappingPath,
+          columnOptions: getCurrentColumnOptions(state, newMappingPath),
         }),
         state.openSelectElement?.line ?? false
       ),
@@ -335,6 +360,10 @@ export const reducer = generateReducer<MappingState, MappingActions>({
     lines: modifyLine(state, state.openSelectElement!.line, {
       mappingPath:
         state.autoMapperSuggestions![Number(suggestion) - 1].mappingPath,
+      columnOptions: getCurrentColumnOptions(
+        state,
+        state.autoMapperSuggestions![Number(suggestion) - 1].mappingPath
+      ),
     }),
     openSelectElement: undefined,
     autoMapperSuggestions: undefined,
@@ -345,7 +374,7 @@ export const reducer = generateReducer<MappingState, MappingActions>({
     ...state,
     mappingView: mappingPath,
   }),
-  MustMatchPrefChangeAction: ({ state, action }) => ({
+  ChangeMustMatchPrefAction: ({ state, action }) => ({
     ...state,
     changesMade: true,
     mustMatchPreferences: action.mustMatchPreferences,
@@ -383,6 +412,25 @@ export const reducer = generateReducer<MappingState, MappingActions>({
     }),
     changesMade: true,
   }),
+  ChangeDisambiguationBehaviorAction: ({ state, action }) => {
+    const mappingPath = state.lines[action.line].mappingPath;
+    return {
+      ...state,
+      lines: state.lines.map((line) =>
+        isSameMappingPath(line.mappingPath, mappingPath) &&
+        mappingPathIsComplete(line.mappingPath)
+          ? {
+              ...line,
+              columnOptions: {
+                ...line.columnOptions,
+                disambiguationBehavior: action.disambiguationBehavior,
+              },
+            }
+          : line
+      ),
+      changesMade: true,
+    };
+  },
   UpdateLinesAction: ({ state, action: { lines } }) => ({
     ...state,
     lines,
@@ -401,4 +449,36 @@ export const reducer = generateReducer<MappingState, MappingActions>({
       lines,
     };
   },
+  /* Batch-Edit Specific Actions */
+  ChangeBatchEditPrefs: ({ state, action }) => ({
+    ...state,
+    changesMade: true,
+    batchEditPrefs: action.prefs,
+  }),
 });
+
+const isSameMappingPath = (pathA: MappingPath, pathB: MappingPath): boolean =>
+  mappingPathToString(pathA.slice(0, -1)) ===
+  mappingPathToString(pathB.slice(0, -1));
+
+const getCurrentColumnOptions = (
+  state: MappingState,
+  mappingPath: MappingPath
+): ColumnOptions => {
+  if (!mappingPathIsComplete(mappingPath)) return defaultColumnOptions;
+
+  // Share disambiguationBehavior with lines mapped to the same record
+  const matchingLine = state.lines.find(
+    (line) =>
+      mappingPathIsComplete(line.mappingPath) &&
+      isSameMappingPath(line.mappingPath, mappingPath)
+  );
+
+  return matchingLine === undefined
+    ? defaultColumnOptions
+    : {
+        ...defaultColumnOptions,
+        disambiguationBehavior:
+          matchingLine.columnOptions.disambiguationBehavior,
+      };
+};

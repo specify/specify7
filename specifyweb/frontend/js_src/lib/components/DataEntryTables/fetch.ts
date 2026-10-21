@@ -8,11 +8,11 @@ import type { SpecifyTable } from '../DataModel/specifyTable';
 import { fetchContext as fetchSchema, getTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { fetchView } from '../FormParse';
-import { cachableUrl } from '../InitialContext';
+import { cacheableUrl } from '../InitialContext';
 import { xmlToSpec } from '../Syncer/xmlUtils';
 import { dataEntryItems } from './spec';
 
-const url = cachableUrl(getAppResourceUrl('DataEntryTaskInit'));
+const url = cacheableUrl(getAppResourceUrl('DataEntryTaskInit'));
 
 export const fetchLegacyForms = f.store(
   async (): Promise<RA<SpecifyTable>> =>

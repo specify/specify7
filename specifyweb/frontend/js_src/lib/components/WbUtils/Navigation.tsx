@@ -2,6 +2,7 @@ import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { commonText } from '../../localization/common';
 import { StringToJsx } from '../../localization/utils';
 import { wbText } from '../../localization/workbench';
 import { localized } from '../../utils/types';
@@ -62,6 +63,15 @@ export function Navigation({
     if (totalCount === 0) setCurrentPosition(0);
   }, [totalCount]);
 
+  const isDisabled =
+    ![
+      'newCells',
+      'searchResults',
+      'updatedCells',
+      'deletedCells',
+      'matchedAndChangedCells',
+    ].includes(name) && isReadOnly;
+
   return (
     <span
       aria-atomic
@@ -69,9 +79,11 @@ export function Navigation({
       data-navigation-type={name}
     >
       <Button.Small
+        aria-label={commonText.previous()}
         className="brightness-80 hover:brightness-70 p-2 ring-0"
         data-navigation-direction="previous"
-        disabled={!['newCells', 'searchResults'].includes(name) && isReadOnly}
+        disabled={isDisabled}
+        title={commonText.previous()}
         variant="bg-inherit text-gray-800 dark:text-gray-100"
         onClick={handlePrevious}
       >
@@ -100,9 +112,11 @@ export function Navigation({
         />
       </Button.Small>
       <Button.Small
+        aria-label={commonText.next()}
         className="brightness-80 hover:brightness-70 p-2 ring-0"
         data-navigation-direction="next"
-        disabled={!['newCells', 'searchResults'].includes(name) && isReadOnly}
+        disabled={isDisabled}
+        title={commonText.next()}
         type="button"
         variant="bg-inherit text-gray-800 dark:text-gray-100"
         onClick={handleNext}

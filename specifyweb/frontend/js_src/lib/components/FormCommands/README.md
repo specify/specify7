@@ -1,5 +1,5 @@
 # Form Commands
 
-[Documentation](https://github.com/specify/specify7/wiki/Form-System#command)
+[Documentation](https://speciforum.org/t/editing-forms-in-specify/1557#p-2936-command-29)
 
 On any modifications, please check if documentation needs to be updated.

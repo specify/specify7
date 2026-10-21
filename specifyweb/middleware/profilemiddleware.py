@@ -5,7 +5,7 @@ import hotshot.stats
 from django.conf import settings
 from io import StringIO
 
-class ProfileMiddleware(object):
+class ProfileMiddleware:
     """
     Displays hotshot profiling for any view.
     https://yoursite.com/yourview/?prof

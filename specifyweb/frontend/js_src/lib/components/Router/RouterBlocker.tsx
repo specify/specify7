@@ -1,5 +1,5 @@
-import type { Location, SafeLocation } from 'history';
 import React from 'react';
+import type { Location, SafeLocation } from 'react-router';
 import type { Navigator as BaseNavigator } from 'react-router-dom';
 import { UNSAFE_NavigationContext as NavigationContext } from 'react-router-dom';
 

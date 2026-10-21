@@ -14,8 +14,10 @@ import { RecordSetSelection } from '../SearchDialog/SelectRecordSet';
 
 export function MergeRecordSets({
   recordSets,
+  closeParent,
 }: {
   readonly recordSets: RA<SerializedResource<RecordSet>> | undefined;
+  readonly closeParent: () => void;
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
 
@@ -67,9 +69,9 @@ export function MergeRecordSets({
       }).then(({ response }) => {
         if (!response.ok) return;
         handleClose();
+        closeParent();
       })
     );
-    globalThis.location.assign('/specify/overlay/record-sets/');
   };
 
   return (

@@ -18,7 +18,25 @@ import type { Attachment } from '../DataModel/types';
 import { Dialog } from './Dialog';
 import { Tabs } from './Tabs';
 
-const types = ['url', 'image', 'attachments', 'attachments'] as const;
+const types = ['url', 'image', 'attachments'] as const;
+
+function deriveAltFromUrl(source?: string, fallback = 'Image preview'): string {
+  if (!source) return fallback;
+
+  const { searchParams, pathname } = new URL(
+    source,
+    typeof window === 'undefined' ? 'http://localhost' : window.location.origin
+  );
+
+  const rawName =
+    searchParams.get('downloadname') ??
+    searchParams.get('filename') ??
+    pathname.split('/').pop();
+
+  return rawName
+    ? decodeURIComponent(rawName).replaceAll('+', ' ').trim()
+    : fallback;
+}
 
 export function SyncAttachmentPicker({
   url,
@@ -31,25 +49,24 @@ export function SyncAttachmentPicker({
   useErrorContext('attachment', attachment);
 
   const [isOpen, , , handleToggle] = useBooleanState();
-
   const loading = React.useContext(LoadingContext);
 
-  const [urlNotFound, setUrlNotFound] = React.useState(false);
+  const [isUrlNotFound, setIsUrlNotFound] = React.useState(false);
+  const [type, setType] = React.useState<(typeof types)[number]>('url');
 
-  const [type, setType] = React.useState<
-    'attachments' | 'attachments' | 'image' | 'url'
-  >('url');
-
-  function handleAttachment(attachment: SerializedResource<Attachment>): void {
+  function handleAttachment(
+    nextAttachment: SerializedResource<Attachment>
+  ): void {
     loading(
-      fetchOriginalUrl(attachment).then((url) => {
-        url === undefined ? setUrlNotFound(true) : handleChange(url);
+      fetchOriginalUrl(nextAttachment).then((nextUrl) => {
+        nextUrl === undefined ? setIsUrlNotFound(true) : handleChange(nextUrl);
       })
     );
     handleToggle();
   }
 
   const isReadOnly = React.useContext(ReadOnlyContext);
+
   return (
     <>
       {!isReadOnly && (
@@ -73,7 +90,7 @@ export function SyncAttachmentPicker({
 
       {url !== undefined && (
         <img
-          alt={url.slice(url.lastIndexOf('/') + 1) ?? url}
+          alt={(attachment as any)?.origName ?? deriveAltFromUrl(url)}
           className="h-40 max-h-full w-40 max-w-full object-contain"
           src={url}
         />
@@ -93,8 +110,8 @@ export function SyncAttachmentPicker({
               ),
               [wbText.upload()]: (
                 <UploadAttachment
-                  onUploaded={(attachment): void => {
-                    handleAttachment(serializeResource(attachment));
+                  onUploaded={(uploaded): void => {
+                    handleAttachment(serializeResource(uploaded));
                   }}
                 />
               ),
@@ -104,11 +121,11 @@ export function SyncAttachmentPicker({
             }}
           />
 
-          {urlNotFound && (
+          {isUrlNotFound && (
             <Dialog
               buttons={commonText.cancel()}
               header={attachmentsText.attachments()}
-              onClose={() => setUrlNotFound(false)}
+              onClose={() => setIsUrlNotFound(false)}
             >
               {preferencesText.attachmentFailed()}
             </Dialog>

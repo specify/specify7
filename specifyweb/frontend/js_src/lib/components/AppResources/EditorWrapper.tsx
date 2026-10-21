@@ -32,6 +32,7 @@ import type { AppResourcesOutlet } from './index';
 import { globalResourceKey } from './tree';
 import type { ScopedAppResourceDir } from './types';
 import { appResourceSubTypes } from './types';
+import { replaceViewsetNameInXml } from './xmlUtils';
 
 export function AppResourceView(): JSX.Element {
   return <Wrapper mode="appResources" />;
@@ -204,9 +205,14 @@ function useInitialData(
 ): string | false | undefined {
   return useAsyncState(
     React.useCallback(async () => {
+      const replaceViewsetName = (data: string | null | undefined): string => {
+        const resourceName = (resource as any)?.name ?? '';
+        return replaceViewsetNameInXml(data, resourceName);
+      };
+
       if (typeof initialDataFrom === 'number')
         return fetchResource('SpAppResourceData', initialDataFrom).then(
-          ({ data }) => data ?? ''
+          ({ data }) => replaceViewsetName(data ?? '')
         );
       else if (typeof templateFile === 'string') {
         if (templateFile.includes('..'))
@@ -217,7 +223,7 @@ function useInitialData(
           return ajax(`/static/config/${templateFile}`, {
             headers: {},
           })
-            .then(({ data }) => data ?? '')
+            .then(({ data }) => replaceViewsetName(data))
             .catch(() => '');
       }
       const subType = f.maybe(
@@ -232,11 +238,9 @@ function useInitialData(
         if (useTemplate)
           return ajax(getAppResourceUrl(type.name, 'quiet'), {
             headers: {},
-          }).then(({ data }) => data);
+          }).then(({ data }) => replaceViewsetName(data));
       }
       return false;
-      // Run this only once
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [initialDataFrom, templateFile]),
     false
   )[0];
@@ -259,3 +263,9 @@ function useDirectory(
     else return undefined;
   }, [resourcesTree, directoryKey, resource, resources]);
 }
+
+export const exportsForTests = {
+  useAppResource,
+  useInitialData,
+  useDirectory,
+};

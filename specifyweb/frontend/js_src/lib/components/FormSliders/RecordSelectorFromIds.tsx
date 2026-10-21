@@ -43,6 +43,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   totalCount = ids.length + (typeof newResource === 'object' ? 1 : 0),
   isLoading: isExternalLoading = false,
   isInRecordSet = false,
+  recordSetId,
   onClose: handleClose,
   onSaved: handleSaved,
   onAdd: handleAdd,
@@ -66,8 +67,8 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   readonly canRemove?: boolean;
   readonly totalCount?: number;
   readonly isLoading?: boolean;
-  // Record set ID, or false to not update the URL
   readonly isInRecordSet?: boolean;
+  readonly recordSetId?: number | undefined;
   readonly onClose: () => void;
   readonly onSaved: (resource: SpecifyResource<SCHEMA>) => void;
   readonly onClone:
@@ -84,20 +85,17 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
     ids.map((id) => (id === undefined ? undefined : new table.Resource({ id })))
   );
 
-  const previousIds = React.useRef(ids);
-
   React.useEffect(() => {
     setRecords((records) =>
-      ids.map((id, index) => {
+      ids.map((id) => {
         if (id === undefined) return undefined;
-        else if (records[index]?.id === id) return records[index];
-        else return new table.Resource({ id });
+        else
+          return (
+            records.find((record) => record?.id === id) ??
+            new table.Resource({ id })
+          );
       })
     );
-
-    return (): void => {
-      previousIds.current = ids;
-    };
   }, [ids, table]);
 
   const [rawIndex, setIndex] = useTriggerState(
@@ -233,7 +231,13 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
               {hasAttachments &&
               !hasSeveralResourceType &&
               !resource?.isNew() ? (
-                <RecordSetAttachments records={records} onFetch={handleFetch} />
+                <RecordSetAttachments
+                  name={title as string}
+                  recordCount={totalCount}
+                  records={records}
+                  recordSetId={isInRecordSet ? recordSetId : undefined}
+                  onFetch={handleFetch}
+                />
               ) : undefined}
               {table.view === 'GeologicTimePeriod' ? (
                 <ChronoChart />

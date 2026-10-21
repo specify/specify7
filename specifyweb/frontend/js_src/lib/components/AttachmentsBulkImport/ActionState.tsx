@@ -51,9 +51,9 @@ export function ActionState({
       buttons={
         <>
           <Button.Danger onClick={handleStop}>{wbText.stop()}</Button.Danger>
-          <Button.Fancy onClick={triggerNow}>
+          <Button.BorderedGray onClick={triggerNow}>
             {attachmentsText.tryNow()}
-          </Button.Fancy>
+          </Button.BorderedGray>
         </>
       }
       header={attachmentsText.interrupted()}

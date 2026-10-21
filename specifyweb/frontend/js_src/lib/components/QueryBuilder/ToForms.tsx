@@ -1,4 +1,5 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
@@ -27,7 +28,7 @@ export function QueryToForms({
   readonly totalCount: number | undefined;
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
-  const ids = useSelectedResults(results, selectedRows, isOpen);
+  const ids = useSelectedResults(results, selectedRows, isOpen, totalCount);
 
   const unParseIndex = (index: number): number =>
     selectedRows.size === 0
@@ -60,7 +61,25 @@ export function QueryToForms({
           onAdd={undefined}
           onClone={undefined}
           onClose={handleClose}
-          onDelete={(index): void => handleDelete(unParseIndex(index))}
+          onDelete={(index): void => {
+            if (
+              (selectedRows.size === 0 && results[index] === undefined) ||
+              (selectedRows.size > 0 &&
+                Array.from(selectedRows)[index] === undefined)
+            ) {
+              handleClose();
+            } else {
+              handleDelete(unParseIndex(index));
+            }
+          }}
+          onFetch={
+            handleFetchMore
+              ? async (index) => {
+                  handleFetchMore(index);
+                  return undefined;
+                }
+              : undefined
+          }
           onSaved={f.void}
           onSlide={
             typeof handleFetchMore === 'function'
@@ -76,18 +95,109 @@ export function QueryToForms({
   );
 }
 
+export function QueryFormView({
+  table,
+  title,
+  results,
+  selectedRows,
+  selectedIndex,
+  totalCount,
+  onFetchMore: handleFetchMore,
+  onDelete: handleDelete,
+  onClose: handleClose,
+  onSaved: handleSaved,
+  onSlide: handleSlide,
+}: {
+  readonly table: SpecifyTable;
+  readonly title: LocalizedString;
+  readonly results: RA<QueryResultRow | undefined>;
+  readonly selectedRows: ReadonlySet<number>;
+  readonly selectedIndex: number;
+  readonly totalCount: number | undefined;
+  readonly onFetchMore:
+    | ((index?: number) => Promise<RA<QueryResultRow | undefined> | undefined>)
+    | undefined;
+  readonly onDelete: (id: number) => void;
+  readonly onClose: () => void;
+  readonly onSaved: () => void;
+  readonly onSlide: (index: number) => void;
+}): JSX.Element | null {
+  const ids = useSelectedResults(results, selectedRows, true, totalCount);
+  if (!hasFetchableRecordIds(results) || ids.length === 0) return null;
+
+  return (
+    <div className="flex h-full min-h-0 min-w-0 flex-1 items-center justify-center overflow-auto bg-[color:var(--form-background)]">
+      <RecordSelectorFromIds
+        canRemove={false}
+        defaultIndex={selectedIndex}
+        dialog={false}
+        ids={ids}
+        isDependent={false}
+        isInRecordSet={false}
+        newResource={undefined}
+        table={table}
+        title={title}
+        totalCount={selectedRows.size === 0 ? totalCount : selectedRows.size}
+        onAdd={undefined}
+        onClone={undefined}
+        onClose={handleClose}
+        onDelete={(index): void => {
+          const id =
+            selectedRows.size === 0
+              ? results[index]?.[queryIdField]
+              : Array.from(selectedRows)[index];
+          if (typeof id === 'number') handleDelete(id);
+        }}
+        onFetch={
+          handleFetchMore === undefined
+            ? undefined
+            : async (index) => {
+                await handleFetchMore(index);
+                return undefined;
+              }
+        }
+        onSaved={handleSaved}
+        onSlide={(index): void => {
+          handleSlide(index);
+          if (selectedRows.size === 0 && results[index] === undefined)
+            void handleFetchMore?.(index);
+        }}
+      />
+    </div>
+  );
+}
+
+export function getSelectedResults(
+  results: RA<QueryResultRow | undefined>,
+  selectedRows: ReadonlySet<number>,
+  isOpen: boolean,
+  totalCount: number | undefined
+): RA<number | undefined> {
+  if (!isOpen) return [];
+  if (selectedRows.size > 0) return Array.from(selectedRows);
+
+  const ids = results.map((row) => row?.[queryIdField] as number | undefined);
+  if (totalCount !== undefined) ids.length = Math.max(ids.length, totalCount);
+  return ids;
+}
+
+export function hasFetchableRecordIds(
+  results: RA<QueryResultRow | undefined>
+): boolean {
+  return results.some((row) => {
+    const id = row?.[queryIdField];
+    return typeof id === 'number' && Number.isFinite(id);
+  });
+}
+
 function useSelectedResults(
   results: RA<QueryResultRow | undefined>,
   selectedRows: ReadonlySet<number>,
-  isOpen: boolean
+  isOpen: boolean,
+  totalCount: number | undefined
 ): RA<number | undefined> {
   return React.useMemo(
-    () =>
-      isOpen
-        ? selectedRows.size === 0
-          ? (results.map((row) => row?.[queryIdField]) as RA<number>)
-          : Array.from(selectedRows)
-        : [],
-    [results, isOpen, selectedRows]
+    () => getSelectedResults(results, selectedRows, isOpen, totalCount),
+    [results, isOpen, selectedRows, totalCount]
   );
 }

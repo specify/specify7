@@ -2,8 +2,8 @@
  * A wrapper for Backbone's routing API
  */
 
-import type { SafeLocation } from 'history';
 import React from 'react';
+import type { SafeLocation } from 'react-router';
 import { useLocation, useNavigate } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
 

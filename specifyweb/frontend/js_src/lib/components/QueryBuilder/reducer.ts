@@ -91,7 +91,13 @@ type Actions =
   | Action<'SavedQueryAction'>;
 
 export const reducer = generateReducer<MainState, Actions>({
-  ResetStateAction: ({ action: { state } }) => state,
+  ResetStateAction: ({ action: { state } }) => ({
+    ...state,
+    openedElement: {
+      line: state.fields.length - 1,
+      index: undefined,
+    },
+  }),
   RunQueryAction: ({ state }) => ({
     ...state,
     queryRunCount: state.queryRunCount + 1,
@@ -149,6 +155,10 @@ export const reducer = generateReducer<MainState, Actions>({
       return {
         ...state,
         mappingView: newMappingPath,
+        openedElement: {
+          line: state.fields.length,
+          index: undefined,
+        },
       };
 
     return {

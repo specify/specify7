@@ -1,15 +1,29 @@
 import { resourcesText } from '../../localization/resources';
+import { resolveParser } from '../../utils/parser/definitions';
+import type { RA, ValueOf } from '../../utils/types';
 import type { BusinessRuleResult } from './businessRules';
 import {
+  CATALOG_NUMBER_EXISTS,
   COG_PRIMARY_KEY,
   COG_TOITSELF,
+  COJO_PRIMARY_DELETE_KEY,
+  COMPONENT_NAME_TAXON_KEY,
   CURRENT_DETERMINATION_KEY,
   DETERMINATION_TAXON_KEY,
   ensureSingleCollectionObjectCheck,
+  fieldCheckBoolUniqueInCollection,
   hasNoCurrentDetermination,
+  onAddedEnsureBoolInCollection,
+  PREPARATION_DISPOSED_KEY,
+  PREPARATION_EXCHANGED_IN_KEY,
+  PREPARATION_EXCHANGED_OUT_KEY,
+  PREPARATION_GIFTED_KEY,
+  PREPARATION_LOANED_KEY,
+  PREPARATION_NEGATIVE_KEY,
 } from './businessRuleUtils';
-import { cogTypes } from './helpers';
-import type { AnySchema, TableFields } from './helperTypes';
+import { fetchCollection } from './collection';
+import { backendFilter, cogTypes } from './helpers';
+import type { AnySchema, CommonFields, TableFields } from './helperTypes';
 import {
   checkPrepAvailability,
   getTotalLoaned,
@@ -21,14 +35,15 @@ import {
 import type { SpecifyResource } from './legacyTypes';
 import { setSaveBlockers } from './saveBlockers';
 import { schema } from './schema';
+import type { LiteralField, Relationship } from './specifyField';
 import type { Collection } from './specifyTable';
 import { tables } from './tables';
 import type {
-  Address,
   BorrowMaterial,
   CollectionObject,
   CollectionObjectGroup,
   CollectionObjectGroupJoin,
+  Component,
   Determination,
   DNASequence,
   LoanPreparation,
@@ -49,7 +64,17 @@ export type BusinessRuleDefs<SCHEMA extends AnySchema> = {
   readonly customInit?: (resource: SpecifyResource<SCHEMA>) => void;
   readonly fieldChecks?: {
     readonly [FIELD_NAME in TableFields<SCHEMA>]?: (
-      resource: SpecifyResource<SCHEMA>
+      resource: SpecifyResource<SCHEMA>,
+      field: (CommonFields &
+        SCHEMA['fields'] &
+        SCHEMA['toManyDependent'] &
+        SCHEMA['toManyIndependent'] &
+        SCHEMA['toOneDependent'] &
+        SCHEMA['toOneIndependent'])[FIELD_NAME] extends ValueOf<
+        AnySchema['fields']
+      >
+        ? LiteralField
+        : Relationship
     ) => Promise<BusinessRuleResult | undefined> | void;
   };
 };
@@ -60,43 +85,10 @@ type MappedBusinessRuleDefs = {
 
 export const businessRuleDefs: MappedBusinessRuleDefs = {
   Address: {
-    customInit: (address) => {
-      if (address.isNew()) {
-        const setPrimary = (): void => {
-          address.set('isPrimary', true);
-          if (address.collection !== undefined) {
-            address.collection.models.forEach(
-              (other: SpecifyResource<Address>) => {
-                if (other.cid !== address.cid) other.set('isPrimary', false);
-              }
-            );
-          }
-        };
-        address.on('add', setPrimary);
-      }
-    },
     fieldChecks: {
-      isPrimary: async (address): Promise<BusinessRuleResult> => {
-        if (address.get('isPrimary') === true) {
-          address.collection?.models.forEach(
-            (other: SpecifyResource<Address>) => {
-              if (other.cid !== address.cid) {
-                other.set('isPrimary', false);
-              }
-            }
-          );
-        }
-        if (
-          address.collection !== undefined &&
-          !address.collection?.models.some((c: SpecifyResource<Address>) =>
-            c.get('isPrimary')
-          )
-        ) {
-          address.set('isPrimary', true);
-        }
-        return { isValid: true };
-      },
+      isPrimary: fieldCheckBoolUniqueInCollection('isPrimary'),
     },
+    onAdded: onAddedEnsureBoolInCollection('isPrimary'),
   },
   BorrowMaterial: {
     fieldChecks: {
@@ -169,6 +161,18 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
     },
     fieldChecks: {
       collectionObjectType: async (resource): Promise<undefined> => {
+        if (resource.isNew()) {
+          const parser = resolveParser(
+            resource.specifyTable.strictGetLiteralField('catalogNumber'),
+            undefined,
+            resource
+          );
+          // REFACTOR: non-silent set causes infinite loop and silent set still triggers save blocker when parser value is empty string
+          resource.set('catalogNumber', parser.value as never, {
+            silent: (parser.value ?? '') === '',
+          });
+        }
+
         const determinations = resource.getDependentResource('determinations');
         if (determinations === undefined || determinations.models.length === 0)
           return;
@@ -194,6 +198,74 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           );
         });
 
+        return undefined;
+      },
+      catalogNumber: async (resource): Promise<undefined> => {
+        const preferences =
+          await import('../Preferences/collectionPreferences').then(
+            ({ collectionPreferences }) => collectionPreferences
+          );
+
+        const uniqueCatalogNumberAccrossComponentAndCOPref = preferences.get(
+          'uniqueCatalogNumberAccrossComponentAndCO',
+          'behavior',
+          'uniqueness'
+        );
+
+        const catalogNumberValue = resource.get('catalogNumber');
+
+        if (
+          !uniqueCatalogNumberAccrossComponentAndCOPref ||
+          catalogNumberValue === null
+        ) {
+          setSaveBlockers(
+            resource,
+            resource.specifyTable.field.catalogNumber,
+            [],
+            CATALOG_NUMBER_EXISTS
+          );
+          return undefined;
+        }
+
+        const databaseContainsComponentDuplicates = await fetchCollection(
+          'Component',
+          {
+            catalogNumber: catalogNumberValue,
+            domainFilter: true,
+            limit: 1,
+          }
+        ).then(({ totalCount }) => totalCount !== 0);
+
+        // BUG: When a local Component is modified to have a catalogNumber that
+        // matches this CollectionObject, a change event is being triggered on
+        // the CO -> catalogNumber and triggering this rule as well
+        // Found out what is causing the change event...
+        const localCollectionContainsComponentDuplicates = resource
+          .getDependentResource('components')
+          ?.models.some(
+            (component) =>
+              catalogNumberValue !== null &&
+              component.get('catalogNumber') === catalogNumberValue
+          );
+
+        const isInvalid =
+          databaseContainsComponentDuplicates ||
+          localCollectionContainsComponentDuplicates;
+
+        setSaveBlockers(
+          resource,
+          resource.specifyTable.field.catalogNumber,
+          isInvalid
+            ? [
+                resourcesText.catalogNumberAlreadyUsed({
+                  catalogNumberFieldName:
+                    resource.specifyTable.field.catalogNumber.label,
+                  catalogNumber: catalogNumberValue!,
+                }),
+              ]
+            : [],
+          CATALOG_NUMBER_EXISTS
+        );
         return undefined;
       },
     },
@@ -300,13 +372,214 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         cog.businessRuleManager?.checkField('cogType');
       }
     },
-    onRemoved(_, collection) {
+    onRemoved(cojo, collection) {
       // Trigger Consolidated COGs field check when a child is deleted
+      if (cojo.get('isPrimary')) {
+        setSaveBlockers(
+          collection.related ?? cojo,
+          cojo.specifyTable.field.parentCog,
+          [resourcesText.deletePrimaryRecord()],
+          COJO_PRIMARY_DELETE_KEY
+        );
+      }
       if (collection?.related?.specifyTable === tables.CollectionObjectGroup) {
         const cog =
           collection.related as SpecifyResource<CollectionObjectGroup>;
         cog.businessRuleManager?.checkField('cogType');
       }
+    },
+  },
+
+  Collector: {
+    fieldChecks: {
+      isPrimary: fieldCheckBoolUniqueInCollection('isPrimary'),
+    },
+    onRemoved: (collector, collection): void => {
+      if (collector.get('isPrimary') && collection.models.length > 0) {
+        collection.models[0].set('isPrimary', true);
+      }
+    },
+    onAdded: onAddedEnsureBoolInCollection('isPrimary'),
+  },
+
+  Component: {
+    customInit: (component: SpecifyResource<Component>): void => {
+      if (
+        typeof schema.defaultCollectionObjectType === 'string' &&
+        typeof component.get('type') !== 'string'
+      )
+        component.set('type', schema.defaultCollectionObjectType);
+    },
+    fieldChecks: {
+      type: async (resource): Promise<undefined> => {
+        const name = await resource.rgetPromise('name');
+        if (name === null) return;
+
+        const coType = await resource.rgetPromise('type');
+        const coTypeTreeDef = coType.get('taxonTreeDef');
+
+        const taxonTreeDef = name?.get('definition');
+
+        const isValid =
+          typeof taxonTreeDef === 'string' && taxonTreeDef === coTypeTreeDef;
+
+        setSaveBlockers(
+          resource,
+          resource.specifyTable.field.name,
+          isValid
+            ? []
+            : [
+                resourcesText.invalidNameTaxon({
+                  taxonName: resource.specifyTable.field.name.label,
+                  taxonTableLabel: tables.Taxon.label,
+                  typeName: resource.specifyTable.label,
+                }),
+              ],
+          COMPONENT_NAME_TAXON_KEY
+        );
+
+        return undefined;
+      },
+      name: async (resource): Promise<undefined> => {
+        const name = await resource.rgetPromise('name');
+        if (name === null) {
+          setSaveBlockers(
+            resource,
+            resource.specifyTable.field.name,
+            [],
+            COMPONENT_NAME_TAXON_KEY
+          );
+        }
+        return undefined;
+      },
+      catalogNumber: async (resource): Promise<undefined> => {
+        const preferences =
+          await import('../Preferences/collectionPreferences').then(
+            ({ collectionPreferences }) => collectionPreferences
+          );
+
+        const uniqueCatalogNumberAccrossComponentAndCOPref = preferences.get(
+          'uniqueCatalogNumberAccrossComponentAndCO',
+          'behavior',
+          'uniqueness'
+        );
+
+        if (!uniqueCatalogNumberAccrossComponentAndCOPref) {
+          setSaveBlockers(
+            resource,
+            resource.specifyTable.field.catalogNumber,
+            [],
+            CATALOG_NUMBER_EXISTS
+          );
+          return undefined;
+        }
+
+        const catalogNumberValue = resource.get('catalogNumber');
+
+        // Check the Database for CollectionObject records that have the same
+        // catalogNumber
+        const containsCoDuplicates = () =>
+          fetchCollection('CollectionObject', {
+            domainFilter: true,
+            catalogNumber: catalogNumberValue,
+            limit: 1,
+          }).then(({ totalCount }) => totalCount !== 0);
+
+        // Check the Database for other existing Component records with the
+        // same catalogNumber
+        const containsComponentDuplicates = () =>
+          fetchCollection('Component', {
+            catalogNumber: catalogNumberValue,
+            domainFilter: true,
+            limit: 1,
+            ...(resource.id === undefined
+              ? {}
+              : backendFilter('id').not.equals(resource.id)),
+          }).then(({ totalCount }) => totalCount !== 0);
+
+        // If the Components are in a collection (such as when viewing the
+        // Components SubView from CollectionObject), then make sure that no
+        // unsaved Component in the collection has the same catalogNumber as
+        // this Component
+        // BUG: Consider the following case:
+        // - There's a Component collection with a saved Component (1) with
+        //   catalogNumber A
+        // - a Component (2) is added to the Collection with catalogNumber A
+        // - Component 1's catalogNumber is changed from A
+        // - a saveblocker will be set on Component 2, even though we know the
+        //   existing duplicate has been locally changed
+        const localComponentCollectionHasValue = () =>
+          Promise.resolve(
+            resource.collection === undefined || catalogNumberValue === null
+              ? false
+              : resource.collection.models
+                  .filter((component) =>
+                    resource.id === undefined
+                      ? component.cid !== resource.cid
+                      : resource.id !== component.id
+                  )
+                  .map((component) => component.get('catalogNumber'))
+                  .filter(
+                    (catalogNumber) => catalogNumber === catalogNumberValue
+                  ).length >= 1
+          );
+
+        // Finally, check whether the Component's CollectionObject has the same
+        // catalogNumber as the Component
+        const collectionObjectHasValue = () =>
+          resource.collection?.related?.specifyTable.name === 'CollectionObject'
+            ? Promise.resolve(
+                catalogNumberValue !== null &&
+                  (
+                    resource.collection
+                      .related as SpecifyResource<CollectionObject>
+                  ).get('catalogNumber') === catalogNumberValue
+              )
+            : // This case should be subsumed by the prior check in
+              // containsCoDuplicates, but leaving this here just in case
+              resource
+                .rgetPromise('collectionObject')
+                .then(
+                  (collectionObject) =>
+                    collectionObject !== null &&
+                    collectionObject.get('catalogNumber') === catalogNumberValue
+                );
+        // REFACTOR: Change this when we upgrade to HTTP 2+
+        // Aggregate all of the invalid checks into a singe array to be
+        // processed sequentially
+        // It would be slightly more performant to have these all executing at
+        // the same time, but don't want to overwhelm the browser with the 6
+        // in-flight request limit of HTTP 1.1
+        const invalidChecks: RA<() => Promise<boolean>> = [
+          containsCoDuplicates,
+          containsComponentDuplicates,
+          localComponentCollectionHasValue,
+          collectionObjectHasValue,
+        ];
+
+        let isInvalid = false;
+
+        for (const checkInvalid of invalidChecks) {
+          isInvalid = await checkInvalid();
+          if (isInvalid) break;
+        }
+
+        setSaveBlockers(
+          resource,
+          resource.specifyTable.field.catalogNumber,
+          isInvalid
+            ? [
+                resourcesText.catalogNumberAlreadyUsed({
+                  catalogNumberFieldName:
+                    resource.specifyTable.field.catalogNumber.label,
+                  catalogNumber: catalogNumberValue!,
+                }),
+              ]
+            : [],
+          CATALOG_NUMBER_EXISTS
+        );
+        return undefined;
+      },
     },
   },
 
@@ -341,9 +614,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
                     ),
                 };
           }),
-      isCurrent: async (
-        determination: SpecifyResource<Determination>
-      ): Promise<BusinessRuleResult> => {
+      isCurrent: async (determination): Promise<BusinessRuleResult> => {
         /*
          * Disallow multiple determinations being checked as current
          * Unchecks other determination when one of them gets checked
@@ -398,7 +669,19 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         );
     },
     onAdded: (determination, collection): void => {
-      determination.set('isCurrent', true);
+      /**
+       * BUG: Theoretically if the user adds an existing Determination to
+       * a (Backbone) Collection we would also want to make sure the existing
+       * Collection the Determination is leaving contains a current
+       * Determination and prevent the operation (via saveblocker?) if so.
+       */
+      if (determination.createdBy !== 'clone') {
+        determination.set('isCurrent', true);
+        collection.models.forEach((otherDetermination) => {
+          if (determination.cid !== otherDetermination.cid)
+            otherDetermination.set('isCurrent', false);
+        });
+      }
       // Clear any existing save blocker on adding a new current determination
       setSaveBlockers(
         collection.related ?? determination,
@@ -407,6 +690,12 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         CURRENT_DETERMINATION_KEY
       );
     },
+  },
+  Determiner: {
+    fieldChecks: {
+      isPrimary: fieldCheckBoolUniqueInCollection('isPrimary'),
+    },
+    onAdded: onAddedEnsureBoolInCollection('isPrimary'),
   },
   DisposalPreparation: {
     fieldChecks: {
@@ -418,33 +707,23 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
       geneSequence: (dnaSequence: SpecifyResource<DNASequence>): void => {
         const current = dnaSequence.get('geneSequence');
         if (current === null) return;
-        const countObject = { a: 0, t: 0, g: 0, c: 0, ambiguous: 0 };
-        for (let i = 0; i < current.length; i++) {
-          const char = current.at(i)?.toLowerCase().trim();
-          if (char !== '') {
-            switch (char) {
-              case 'a': {
-                countObject.a += 1;
-                break;
-              }
-              case 't': {
-                countObject.t += 1;
-                break;
-              }
-              case 'g': {
-                countObject.g += 1;
-                break;
-              }
-              case 'c': {
-                countObject.c += 1;
-                break;
-              }
-              default: {
-                countObject.ambiguous += 1;
-              }
-            }
-          }
-        }
+
+        const countObject = Array.from(current).reduce(
+          (accumulator, currentString) => {
+            const trimmed = currentString.toLowerCase().trim();
+            if (trimmed === '') return accumulator;
+            return trimmed === 'a'
+              ? { ...accumulator, a: accumulator.a + 1 }
+              : trimmed === 't'
+                ? { ...accumulator, t: accumulator.t + 1 }
+                : trimmed === 'g'
+                  ? { ...accumulator, g: accumulator.g + 1 }
+                  : trimmed === 'c'
+                    ? { ...accumulator, c: accumulator.c + 1 }
+                    : { ...accumulator, ambiguous: accumulator.ambiguous + 1 };
+          },
+          { a: 0, t: 0, g: 0, c: 0, ambiguous: 0 }
+        );
         dnaSequence.set('compA', countObject.a);
         dnaSequence.set('compT', countObject.t);
         dnaSequence.set('compG', countObject.g);
@@ -452,14 +731,19 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         dnaSequence.set('ambiguousResidues', countObject.ambiguous);
         dnaSequence.set(
           'totalResidues',
-          countObject.a +
-            countObject.t +
-            countObject.g +
-            countObject.c +
-            countObject.ambiguous
+          Object.values(countObject).reduce(
+            (previous, current) => previous + current,
+            0
+          )
         );
       },
     },
+  },
+  FundingAgent: {
+    fieldChecks: {
+      isPrimary: fieldCheckBoolUniqueInCollection('isPrimary'),
+    },
+    onAdded: onAddedEnsureBoolInCollection('isPrimary'),
   },
   GiftPreparation: {
     fieldChecks: {
@@ -561,6 +845,96 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           resolved;
         updateLoanPrep(loanReturnPrep.collection);
       },
+    },
+  },
+  Preparation: {
+    fieldChecks: {
+      countAmt: async (prep): Promise<BusinessRuleResult | undefined> => {
+        const loanPrep = await prep.rgetCollection('loanPreparations');
+        const totalPrep = prep.get('countAmt') ?? 0;
+        let totalPrepOnLoan = 0;
+
+        loanPrep.models.forEach((loan) => {
+          const quantity = loan.get('quantity') ?? 0;
+          const quantityResolved = loan.get('quantityResolved') ?? 0;
+          const unresolvedQuantity = loan.get('isResolved')
+            ? 0
+            : Math.max(quantity - quantityResolved, 0);
+          totalPrepOnLoan += unresolvedQuantity;
+        });
+
+        if (totalPrep < 0) {
+          setSaveBlockers(
+            prep,
+            prep.specifyTable.field.countAmt,
+            [resourcesText.preparationIsNegative()],
+            PREPARATION_NEGATIVE_KEY
+          );
+        } else if (totalPrep < totalPrepOnLoan) {
+          setSaveBlockers(
+            prep,
+            prep.specifyTable.field.countAmt,
+            [resourcesText.preparationUsedInLoan()],
+            PREPARATION_LOANED_KEY
+          );
+        } else {
+          setSaveBlockers(
+            prep,
+            prep.specifyTable.field.countAmt,
+            [],
+            PREPARATION_LOANED_KEY
+          );
+          setSaveBlockers(
+            prep,
+            prep.specifyTable.field.countAmt,
+            [],
+            PREPARATION_NEGATIVE_KEY
+          );
+        }
+        return undefined;
+      },
+    },
+    onRemoved: (preparation, collection): void => {
+      if (preparation.get('isOnLoan') === true) {
+        setSaveBlockers(
+          collection.related ?? preparation,
+          preparation.specifyTable.field.isOnLoan,
+          [resourcesText.deleteLoanedPrep()],
+          PREPARATION_LOANED_KEY
+        );
+      }
+      if (preparation.get('isOnGift') === true) {
+        setSaveBlockers(
+          collection.related ?? preparation,
+          preparation.specifyTable.field.isOnGift,
+          [resourcesText.deleteGiftedPrep()],
+          PREPARATION_GIFTED_KEY
+        );
+      }
+      if (preparation.get('isOnDisposal') === true) {
+        setSaveBlockers(
+          collection.related ?? preparation,
+          preparation.specifyTable.field.isOnDisposal,
+          [resourcesText.deleteDisposedPrep()],
+          PREPARATION_DISPOSED_KEY
+        );
+      }
+      if (preparation.get('isOnExchangeOut') === true) {
+        setSaveBlockers(
+          collection.related ?? preparation,
+          preparation.specifyTable.field.isOnExchangeOut,
+          [resourcesText.deleteExchangeOutPrep()],
+          PREPARATION_EXCHANGED_OUT_KEY
+        );
+      }
+      if (preparation.get('isOnExchangeIn') === true) {
+        setSaveBlockers(
+          collection.related ?? preparation,
+          preparation.specifyTable.field.isOnExchangeIn,
+          [resourcesText.deleteExchangeInPrep()],
+          PREPARATION_EXCHANGED_IN_KEY
+        );
+      }
     },
   },
 };

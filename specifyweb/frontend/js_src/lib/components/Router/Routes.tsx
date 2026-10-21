@@ -25,7 +25,7 @@ export const routes: RA<EnhancedRoute> = [
       ),
   },
   {
-    path: 'simple-search',
+    path: 'express-search',
     element: () =>
       import('../Header/ExpressSearchTask').then(
         ({ ExpressSearchView }) => ExpressSearchView
@@ -33,12 +33,12 @@ export const routes: RA<EnhancedRoute> = [
     title: headerText.simpleSearch(),
   },
   {
-    path: 'express_search',
-    element: <Redirect to="/specify/simple-search/" />,
+    path: 'simple_search',
+    element: <Redirect to="/specify/express-search/" />,
   },
   {
-    path: 'express-search',
-    element: <Redirect to="/specify/simple-search/" />,
+    path: 'simple-search',
+    element: <Redirect to="/specify/express-search/" />,
   },
   {
     path: 'data-model',
@@ -175,6 +175,14 @@ export const routes: RA<EnhancedRoute> = [
     ],
   },
   {
+    path: 'system-configuration',
+    title: userText.securityPanel(),
+    element: () =>
+      import('../SystemConfigurationTool/SystemConfigTool').then(
+        ({ SystemConfigurationTool }) => SystemConfigurationTool
+      ),
+  },
+  {
     path: 'attachments',
     children: [
       {
@@ -207,6 +215,14 @@ export const routes: RA<EnhancedRoute> = [
         title: wbText.importDataSet(),
         element: () =>
           import('../WbImport').then(({ WbImportView }) => WbImportView),
+      },
+      {
+        path: 'import-attachments',
+        title: attachmentsText.importAttachments(),
+        element: () =>
+          import('../WbImportAttachments').then(
+            ({ WbImportAttachmentsView }) => WbImportAttachmentsView
+          ),
       },
       {
         path: 'plan/:id',
@@ -361,11 +377,39 @@ export const routes: RA<EnhancedRoute> = [
     ],
   },
   {
+    path: 'dataviews',
+    children: [
+      {
+        path: ':tableName',
+        element: () =>
+          import('../DataViews/index').then(
+            ({ TableDataView }) => TableDataView
+          ),
+      },
+    ],
+  },
+  {
     path: 'user-preferences',
     title: preferencesText.preferences(),
     element: () =>
       import('../Preferences').then(
         ({ PreferencesWrapper }) => PreferencesWrapper
+      ),
+  },
+  {
+    path: 'collection-preferences',
+    title: preferencesText.collectionPreferences(),
+    element: () =>
+      import('../Preferences').then(
+        ({ CollectionPreferencesWrapper }) => CollectionPreferencesWrapper
+      ),
+  },
+  {
+    path: 'global-preferences',
+    title: resourcesText.globalPreferences(),
+    element: () =>
+      import('../Preferences').then(
+        ({ GlobalPreferencesWrapper }) => GlobalPreferencesWrapper
       ),
   },
   {
@@ -393,13 +437,17 @@ export const routes: RA<EnhancedRoute> = [
       },
       {
         path: ':language',
+        element: () =>
+          import('../SchemaConfig/Layout').then(
+            ({ SchemaConfigLayout }) => SchemaConfigLayout
+          ),
         children: [
           {
             index: true,
             title: schemaText.tables(),
             element: () =>
-              import('../SchemaConfig/Tables').then(
-                ({ SchemaConfigTables }) => SchemaConfigTables
+              import('../SchemaConfig/Redirect').then(
+                ({ SchemaConfigRedirect }) => SchemaConfigRedirect
               ),
           },
           {
@@ -438,6 +486,11 @@ export const routes: RA<EnhancedRoute> = [
             ({ CacheBuster }) => CacheBuster
           ),
       },
+      {
+        path: 'logout',
+        title: userText.logOut(),
+        element: () => import('../Logout').then(({ Logout }) => Logout),
+      },
     ],
   },
   {
@@ -463,6 +516,14 @@ export const routes: RA<EnhancedRoute> = [
     index: true,
     title: welcomeText.pageTitle(),
     element: () => import('../HomePage').then(({ WelcomeView }) => WelcomeView),
+  },
+  {
+    path: 'workbench-attachment',
+    title: attachmentsText.attachments(),
+    element: () =>
+      import('../WbAttachmentViewer/index').then(
+        ({ WbAttachmentViewerView }) => WbAttachmentViewerView
+      ),
   },
   /*
    * The "*" route (the 404 case) was not added, as otherwise it would be

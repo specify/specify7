@@ -857,16 +857,6 @@
         </viewdef>
     
         <viewdef
-            type="formtable"
-            name="CollectionRelationship Table"
-            class="edu.ku.brc.specify.datamodel.CollectionRelationship"
-            gettable="edu.ku.brc.af.ui.forms.DataGetterForObj"
-            settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
-            <desc><![CDATA[CollectionRelationship subform table for Collection Object form.]]></desc>
-            <definition>CollectionRelLeft</definition>
-        </viewdef>
-
-        <viewdef
             type="form"
             name="CollectionRelationship"
             class="edu.ku.brc.specify.datamodel.CollectionRelationship"

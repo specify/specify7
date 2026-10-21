@@ -5,6 +5,7 @@ export const Http = {
   // You may add other codes as needed
   OK: 200,
   CREATED: 201,
+  ACCEPTED: 202,
   NO_CONTENT: 204,
   BAD_REQUEST: 400,
   NOT_FOUND: 404,
@@ -29,6 +30,8 @@ export const httpCodeToErrorMessage: RR<ValueOf<typeof Http>, string> = {
   [Http.OK]:
     'This error is likely caused by a bug in Specify. Please report it.',
   [Http.CREATED]:
+    'This error is likely caused by a bug in Specify. Please report it.',
+  [Http.ACCEPTED]:
     'This error is likely caused by a bug in Specify. Please report it.',
   [Http.NO_CONTENT]:
     'This error is likely caused by a bug in Specify. Please report it.',

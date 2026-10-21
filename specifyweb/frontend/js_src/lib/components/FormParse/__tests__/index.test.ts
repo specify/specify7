@@ -7,7 +7,6 @@ import { ensure, localized } from '../../../utils/types';
 import { removeKey } from '../../../utils/utils';
 import { strictParseXml } from '../../AppResources/parseXml';
 import { tables } from '../../DataModel/tables';
-import { getPref } from '../../InitialContext/remotePrefs';
 import { formatUrl } from '../../Router/queryString';
 import type { SimpleXmlNode } from '../../Syncer/xmlToJson';
 import { toSimpleXmlNode, xmlToJson } from '../../Syncer/xmlToJson';
@@ -471,23 +470,30 @@ describe('parseFormDefinition', () => {
 
 describe('getColumnDefinitions', () => {
   requireContext();
-  test('can customize the column definition source', () =>
+
+  test('prefers linux definition over generic definition', () =>
     expect(
       getColumnDefinitions(
-        toSimpleXmlNode(
-          xmlToJson(
-            strictParseXml(
-              `<viewdef>
-            <columnDef os="abc">A</columnDef>
-            <columnDef os="${getPref(
-              'form.definition.columnSource'
-            )}">B</columnDef>
+        xml(
+          `<viewdef>
+            <columnDef>Generic</columnDef>
+            <columnDef os="lnx">Linux</columnDef>
           </viewdef>`
-            )
-          )
         )
       )
-    ).toBe('B'));
+    ).toBe('Linux'));
+
+  test('uses generic definition if linux definition is not available', () =>
+    expect(
+      getColumnDefinitions(
+        xml(
+          `<viewdef>
+            <columnDef os="mac">Mac</columnDef>
+            <columnDef>Generic</columnDef>
+          </viewdef>`
+        )
+      )
+    ).toBe('Generic'));
 
   test('fall back to first definition available', () =>
     expect(
@@ -528,7 +534,7 @@ theories(getColumnDefinition, [
       ),
       undefined,
     ],
-    out: 'B',
+    out: 'A',
   },
 ]);
 

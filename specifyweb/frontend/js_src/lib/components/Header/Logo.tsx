@@ -2,6 +2,7 @@ import React from 'react';
 
 import { useHueDifference } from '../../hooks/useHueDifference';
 import { commonText } from '../../localization/common';
+import { useDarkMode } from '../Preferences/Hooks';
 import { userPreferences } from '../Preferences/userPreferences';
 
 export function Logo({
@@ -17,6 +18,8 @@ export function Logo({
     'appearance',
     'customLogoCollapsed'
   );
+  const [isSideBarLight] = userPreferences.use('general', 'ui', 'sidebarTheme');
+  const isDarkMode = useDarkMode();
   const hueDifference = useHueDifference();
 
   return (
@@ -36,7 +39,11 @@ export function Logo({
         hover:animate-hue-rotate
         ${isCollapsed ? 'hidden' : ''}
       `}
-          src="/static/img/logo.svg"
+          src={
+            isDarkMode || isSideBarLight !== 'light'
+              ? '/static/img/logo.svg'
+              : '/static/img/logo_dark.svg'
+          }
           style={{ filter: `hue-rotate(${hueDifference}deg)` }}
         />
         <img
@@ -74,7 +81,7 @@ export function Logo({
             src={collapsedLogo}
           />
         )}
-        <span className="sr-only">{commonText.goToHomepage()}</span>
+        <span className="sr-only text-white">{commonText.goToHomepage()}</span>
       </a>
     </h1>
   );

@@ -4,6 +4,9 @@ import { cacheEvents, getCache, setCache } from '../utils/cache';
 import type { CacheDefinitions } from '../utils/cache/definitions';
 import type { GetOrSet } from '../utils/types';
 
+const isSameValue = (left: unknown, right: unknown): boolean =>
+  JSON.stringify(left) === JSON.stringify(right);
+
 /**
  * Like React.useState, but initial value is read from localStorage
  * and all changes are written back to localStorage
@@ -26,6 +29,11 @@ export function useCachedState<
   const [state, setState] = React.useState<
     CacheDefinitions[CATEGORY][KEY] | undefined
   >(() => getCache(category, key));
+  const stateRef = React.useRef(state);
+
+  React.useEffect(() => {
+    stateRef.current = state;
+  }, [state]);
 
   const setCachedState = React.useCallback<
     (
@@ -46,6 +54,7 @@ export function useCachedState<
             )(getCache(category, key))
           : newValue;
       if (resolvedValue === undefined) return;
+      stateRef.current = resolvedValue;
       setState(setCache(category, key, resolvedValue, triggerChange));
     },
     [category, key]
@@ -56,10 +65,10 @@ export function useCachedState<
       cacheEvents.on('change', (changed) => {
         if (changed.category !== category || changed.key !== key) return;
         const newValue = getCache(category, key);
-        if (JSON.stringify(state) === JSON.stringify(newValue)) return;
+        if (isSameValue(stateRef.current, newValue)) return;
         setCachedState(newValue, false);
       }),
-    [state, category, key, setCachedState]
+    [category, key, setCachedState]
   );
 
   return [state, setCachedState];

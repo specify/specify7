@@ -262,7 +262,7 @@ function ChooseName({
           <Submit.Info form={id}>{commonText.create()}</Submit.Info>
         </>
       }
-      header={resourcesText.formDefinition()}
+      header={resourcesText.newViewDefinition()}
       onClose={handleClose}
     >
       <Form

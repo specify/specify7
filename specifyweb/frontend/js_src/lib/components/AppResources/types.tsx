@@ -9,6 +9,7 @@ import { icons } from '../Atoms/Icons';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpAppResourceDir, Tables } from '../DataModel/types';
 import type { AppResourceMode } from './helpers';
+import { dataViewsText } from '../../localization/dataViews';
 
 export type AppResourceScope =
   | 'collection'
@@ -72,7 +73,7 @@ export const appResourceSubTypes = ensure<IR<AppResourceSubType>>()({
     mimeType: 'jrxml/label',
     name: undefined,
     documentationUrl:
-      'https://discourse.specifysoftware.org/t/creating-reports-labels-in-specify-7-jaspersoft-studio/628',
+      'https://speciforum.org/t/creating-reports-labels-in-specify-7-jaspersoft-studio/628',
     icon: icons.ticket,
     label: reportsText.label(),
   },
@@ -80,7 +81,7 @@ export const appResourceSubTypes = ensure<IR<AppResourceSubType>>()({
     mimeType: 'jrxml/report',
     name: undefined,
     documentationUrl:
-      'https://discourse.specifysoftware.org/t/creating-reports-labels-in-specify-7-jaspersoft-studio/628',
+      'https://speciforum.org/t/creating-reports-labels-in-specify-7-jaspersoft-studio/628',
     icon: icons.documentReport,
     label: reportsText.report(),
   },
@@ -88,20 +89,41 @@ export const appResourceSubTypes = ensure<IR<AppResourceSubType>>()({
     mimeType: 'application/json',
     name: 'UserPreferences',
     documentationUrl:
-      'https://discourse.specifysoftware.org/t/specify-7-user-preferences-webinar/861',
+      'https://speciforum.org/t/specify-7-user-preferences-webinar/861',
     icon: icons.cog,
     label: preferencesText.userPreferences(),
     useTemplate: false,
     scope: ['user'],
   },
+  globalPreferences: {
+    mimeType: 'application/json',
+    name: 'GlobalPreferences',
+    //TODO: Update the documentation URL
+    documentationUrl:
+      'https://discourse.specifysoftware.org/t/configure-database-date-format/1109',
+    icon: icons.library,
+    label: resourcesText.globalPreferences(),
+    useTemplate: false,
+    scope: ['global'],
+  },
   defaultUserPreferences: {
     mimeType: 'application/json',
     name: 'DefaultUserPreferences',
     documentationUrl:
-      'https://github.com/specify/specify7/wiki/Setting-default-user-preferences',
+      'https://speciforum.org/t/setting-default-user-preferences/1447',
     icon: icons.cog,
     label: preferencesText.defaultUserPreferences(),
   },
+  dataViewQueries: {
+    mimeType: 'application/json',
+    name: 'DataViewQueries',
+    documentationUrl: undefined,
+    icon: icons.eye,
+    label: dataViewsText.dataViewQueries(),
+    useTemplate: false,
+    scope: ['collection', 'discipline', 'user'],
+  },
+  // TODO: There should be useTemplate: false below? (like it is for userPreferences)
   collectionPreferences: {
     mimeType: 'application/json',
     name: 'CollectionPreferences',
@@ -114,7 +136,7 @@ export const appResourceSubTypes = ensure<IR<AppResourceSubType>>()({
     mimeType: 'application/json',
     name: 'leaflet-layers',
     documentationUrl:
-      'https://github.com/specify/specify7/wiki/Adding-Custom-Tile-Servers',
+      'https://speciforum.org/t/adding-custom-tile-servers-geomap/2593',
     icon: icons.locationMarker,
     label: resourcesText.leafletLayers(),
   },
@@ -122,15 +144,14 @@ export const appResourceSubTypes = ensure<IR<AppResourceSubType>>()({
     mimeType: 'text/xml',
     name: 'ExportFeed',
     documentationUrl:
-      'https://github.com/specify/specify7/wiki/Darwin-Core-Archive-Publishing',
+      'https://speciforum.org/t/dwca-data-exporting-in-specify-7/568',
     icon: icons.upload,
     label: resourcesText.rssExportFeed(),
   },
   expressSearchConfig: {
     mimeType: 'text/xml',
     name: 'ExpressSearchConfig',
-    documentationUrl:
-      'https://discourse.specifysoftware.org/t/simple-search-config/183',
+    documentationUrl: 'https://speciforum.org/t/simple-search-config/183',
     icon: icons.search,
     label: resourcesText.expressSearchConfig(),
   },
@@ -138,7 +159,7 @@ export const appResourceSubTypes = ensure<IR<AppResourceSubType>>()({
     mimeType: 'text/xml',
     name: 'TypeSearches',
     documentationUrl:
-      'https://discourse.specifysoftware.org/t/adding-a-non-native-query-combo-box/859#h-1-type-search-definition-typesearch_defxml-8',
+      'https://speciforum.org/t/adding-a-non-native-query-combo-box/859#h-1-type-search-definition-typesearch_defxml-8',
     icon: icons.documentSearch,
     label: resourcesText.typeSearches(),
   },
@@ -146,7 +167,7 @@ export const appResourceSubTypes = ensure<IR<AppResourceSubType>>()({
     mimeType: 'text/xml',
     name: 'WebLinks',
     documentationUrl:
-      'https://github.com/specify/specify6/blob/master/config/common/weblinks.xml',
+      'https://speciforum.org/t/editing-web-links-in-specify-7/1559',
     icon: icons.externalLink,
     label: resourcesText.webLinks(),
   },
@@ -162,7 +183,7 @@ export const appResourceSubTypes = ensure<IR<AppResourceSubType>>()({
     mimeType: 'text/xml',
     name: 'DataObjFormatters',
     documentationUrl:
-      'https://github.com/specify/specify6/blob/master/config/backstop/dataobj_formatters.xml',
+      'https://speciforum.org/t/editing-table-formats-and-aggregations-in-specify-7/1558',
     icon: icons.variable,
     label: resourcesText.dataObjectFormatters(),
   },

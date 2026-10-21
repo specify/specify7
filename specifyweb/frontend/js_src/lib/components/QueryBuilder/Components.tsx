@@ -188,6 +188,7 @@ export function MakeRecordSetButton({
   queryResource,
   fields,
   getQueryFieldRecords,
+  sourceRecordSetId,
 }: {
   readonly baseTableName: keyof Tables;
   readonly queryResource: SpecifyResource<SpQuery>;
@@ -195,6 +196,7 @@ export function MakeRecordSetButton({
   readonly getQueryFieldRecords:
     | (() => RA<SerializedResource<SpQueryField>>)
     | undefined;
+  readonly sourceRecordSetId: number | undefined;
 }): JSX.Element {
   const [state, setState] = React.useState<
     'editing' | 'saved' | 'saving' | undefined
@@ -222,7 +224,10 @@ export function MakeRecordSetButton({
 
           recordSet.set('dbTableId', strictGetTable(baseTableName).tableId);
           // @ts-expect-error Adding a non-datamodel field
-          recordSet.set('fromQuery', queryResource.toJSON());
+          recordSet.set('fromQuery', {
+            ...queryResource.toJSON(),
+            recordsetid: sourceRecordSetId,
+          });
           // @ts-expect-error Overwriting the resource back-end URL
           recordSet.url = '/stored_query/make_recordset/';
           setRecordSet(recordSet);

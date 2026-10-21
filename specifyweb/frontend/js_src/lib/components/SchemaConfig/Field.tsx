@@ -36,8 +36,7 @@ export function SchemaConfigField({
   readonly onFormatted: (format: ItemType, value: string | null) => void;
 }): JSX.Element {
   const isReadOnly = React.useContext(ReadOnlyContext);
-  const canChangeIsRequired =
-    !field.overrides.isRequired && !field.isRelationship;
+  const canChangeIsRequired = !field.isRequired && !field.isRelationship;
   return (
     <SchemaConfigColumn
       header={commonText.colonLine({
@@ -66,7 +65,7 @@ export function SchemaConfigField({
         />
       </Label.Block>
       <Label.Block>
-        {schemaText.fieldLength()}
+        {schemaText.characterLimit()}
         <Input.Integer isReadOnly value={field.length ?? ''} />
       </Label.Block>
       <Label.Block>

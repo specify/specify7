@@ -35,14 +35,13 @@
 
    `'es'` is the Weblate language code
 
-8. Open [/specifyweb/settings/**init**.py](/specifyweb/settings/__init__.py)
+8. Open [`/specifyweb/settings/__init__.py`](/specifyweb/settings/__init__.py)
 9. Add newly created language to `LANGUAGES` array.
-10. Push the changes to `production` branch (weblate is setup to only look at
-    that branch).
+10. Push the changes to `main` branch (weblate is setup to only look at that
+    branch).
 11. Weblate should do automatic translation for the language using Google
     Translate. If this did not happen automatically, you can trigger it
     manually:
-
     1. In
        [the list of language for the Specify 7 project](https://hosted.weblate.org/projects/specify-7/#languages),
        find the new language (it should be automatically added to the list once
@@ -67,12 +66,12 @@
 
 12. Weblate will commit the automated translation back to Specify 7 git
     repository within 3 hours as per our weblate configuration. After than, the
-    language is available in the `edge` docker build (and any subsequent tagged
+    language is available in the `main` docker build (and any subsequent tagged
     release).
 
 13. At this point, you should reach out to translators to go to Weblate, review
     the localization. Please send them
-    [this Discourse guide](https://discourse.specifysoftware.org/t/get-started-with-specify-7-localization/956).
+    [this Discourse guide](https://speciforum.org/t/get-started-with-specify-7-localization/956).
 
     When they review or edit a localization string, they should uncheck the
     "Needs editing" checkbox for a given string. This allows Weblate to keep
@@ -155,7 +154,6 @@ reasons:
   migration was made.
 
   Type safety provides awesome side effects:
-
   - Developers get autocomplete in the IDE
   - Developers can go to definition of the string with just one click
   - Developers get inline errors if they forget to pass parameter or use

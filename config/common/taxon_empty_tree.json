@@ -1,0 +1,15 @@
+{
+  "tree": {
+    "treedef": {
+      "levels": [
+        {
+          "name": "Root",
+          "enforced": true,
+          "infullname": false,
+          "rank": 0
+        }
+      ]
+    },
+    "nodes": []
+  }
+}

@@ -1,6 +1,7 @@
 import { Http } from '../../utils/ajax/definitions';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { rootSchemaLanguage } from '../schema-localization/parser';
 import { schemaLocalizationName } from '../schema-localization/toPoFile';
@@ -16,12 +17,12 @@ const componentsApiUrl = `https://hosted.weblate.org/api/projects/${projectName}
 
 const addOns = {
   'weblate.autotranslate.autotranslate': {
+    q: 'state:<translated',
     mode: 'fuzzy',
     engines: ['google-translate'],
     component: null,
     threshold: 20,
     auto_source: 'mt',
-    filter_type: 'todo',
   },
   'weblate.cleanup.generic': {},
 };
@@ -39,7 +40,7 @@ const commonSettings = (name: string): IR<unknown> => ({
   language_regex: '^[^.]+$',
   license: 'GPL-2.0-only',
   license_url: 'https://spdx.org/licenses/GPL-2.0-only.html',
-  merge_style: 'rebase',
+  merge_style: 'merge',
   name,
   new_lang: 'url',
   push_branch: weblateBranch,
@@ -53,7 +54,7 @@ export const localizationKinds = {
   userInterface: {
     getComponentSettings: (name: string): IR<unknown> => ({
       ...commonSettings(name),
-      check_flags: 'icu-message-format, icu-flags:xml, icu-flags:strict-xml',
+      effective_check_flags: 'icu-flags:strict-xml, icu-message-format',
       repo: 'https://github.com/specify/specify7/',
       push: 'git@github.com:specify/specify7.git',
       repoweb: `https://github.com/specify/specify7/tree/${syncBranch}/specifyweb/frontend/js_src/lib/{{filename}}#L{{line}}`,
@@ -91,10 +92,46 @@ function getToken(): string {
   return `Token ${key}`;
 }
 
-const doFetch = async (url: string): Promise<IR<unknown>> =>
+const fetchResponse = async (url: string): Promise<Response> =>
   fetch(url, {
     headers: { Authorization: getToken() },
-  }).then(async (response) => response.json());
+  });
+
+const readResponse = async (
+  url: string,
+  response: Response
+): Promise<IR<unknown>> => {
+  if (!response.ok)
+    throw new Error(
+      `Weblate API request failed (${response.status} ${response.statusText}) ` +
+        `for ${url}: ${await response.text()}`
+    );
+  return response.json();
+};
+
+const doFetch = async (url: string): Promise<IR<unknown>> =>
+  readResponse(url, await fetchResponse(url));
+
+/**
+ * Deleted addon references are validation errors, not traversal failures.
+ * Keep checking the component's settings and remaining addons after reporting.
+ */
+const fetchAddon = async (
+  url: string,
+  component: string
+): Promise<IR<unknown> | undefined> => {
+  const response = await fetchResponse(url);
+  if (response.status === Http.NOT_FOUND) {
+    error(
+      `Weblate component "${component}" references addon "${url}", which ` +
+        `no longer exists (404 Not Found). Remove or fix the stale addon ` +
+        `reference in Weblate.`
+    );
+    return undefined;
+  }
+  return readResponse(url, response);
+};
+
 const fetchComponents = async (
   url = componentsApiUrl
 ): Promise<RA<IR<unknown>>> =>
@@ -103,8 +140,15 @@ const fetchComponents = async (
     ...(await Promise.all(
       (results as RA<IR<unknown>>).map(async (component) => ({
         ...component,
-        addons: await Promise.all(
-          (component.addons as RA<string>).map(doFetch)
+        addons: filterArray(
+          await Promise.all(
+            (component.addons as RA<string>).map(async (url) => {
+              console.log(
+                `Fetching addon ${url} for component ${component.slug}`
+              );
+              return fetchAddon(url, component.slug as string);
+            })
+          )
         ),
       }))
     )),
@@ -161,7 +205,7 @@ const createMissingComponents = async (
 /**
  * Note, if this fails with "File not found error", it means the *.po file for
  * a given component is not on the weblate-localization branch. The test.yml
- * GitHub action on production branch is responsible for creating the *.po
+ * GitHub action on the `main` branch is responsible for creating the *.po
  * file.
  */
 async function createComponent(
@@ -171,20 +215,18 @@ async function createComponent(
   warn(`Creating a component for "${name}"`);
   const { addons, ...settings } =
     localizationKinds[kind].getComponentSettings(name);
-  fetch(componentsApiUrl, {
+  const response = await fetch(componentsApiUrl, {
     headers: {
       Authorization: getToken(),
       'Content-Type': 'application/json',
     },
     method: 'POST',
     body: JSON.stringify(settings),
-  })
-    .then(async (response) =>
-      response.status === Http.CREATED
-        ? f.void()
-        : Promise.reject(await response.text())
-    )
-    .then(console.log);
+  });
+  if (response.status === Http.CREATED) return;
+  error(
+    `Failed to create a Weblate component for "${name}": ${await response.text()}`
+  );
 }
 
 /**

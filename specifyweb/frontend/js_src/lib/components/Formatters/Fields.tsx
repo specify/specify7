@@ -4,7 +4,7 @@ import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
-import type { GetSet } from '../../utils/types';
+import type { GetSet, IR } from '../../utils/types';
 import { localized } from '../../utils/types';
 import { removeItem, replaceItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
@@ -14,6 +14,12 @@ import { icons } from '../Atoms/Icons';
 import { ReadOnlyContext } from '../Core/Contexts';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { fetchContext as fetchFieldFormatters } from '../FieldFormatters';
+import type {
+  CustomSelectElementPropsClosed,
+  CustomSelectElementPropsOpen,
+} from '../WbPlanView/CustomSelectElement';
+import { CustomSelectElement } from '../WbPlanView/CustomSelectElement';
+import type { MapperComponentData } from '../WbPlanView/LineComponents';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import {
   FormattersPickList,
@@ -47,7 +53,7 @@ export function Fields({
 
   return (
     <>
-      {fields.length === 0 ? null : (
+      {fields.length === 0 ? undefined : (
         <table
           /*
            * REFACTOR: replace min-w-[35rem] with a container query that replaces
@@ -58,8 +64,8 @@ export function Fields({
             [&_td]:!items-stretch
             ${
               displayFormatter
-                ? 'grid-cols-[min-content_1fr_auto_min-content]'
-                : 'grid-cols-[min-content_1fr_min-content]'
+                ? 'grid-cols-[min-content_1fr_auto_auto_min-content]'
+                : 'grid-cols-[min-content_1fr_auto_min-content]'
             }
           `}
         >
@@ -67,7 +73,8 @@ export function Fields({
             <tr>
               <th>{resourcesText.separator()}</th>
               <th>{schemaText.field()}</th>
-              {displayFormatter && <th>{schemaText.customFieldFormat()}</th>}
+              <th>{resourcesText.displayFormat()}</th>
+              {displayFormatter && <th>{schemaText.fieldFormat()}</th>}
               <th />
             </tr>
           </thead>
@@ -99,7 +106,7 @@ export function Fields({
           </tbody>
         </table>
       )}
-      {isReadOnly ? null : (
+      {isReadOnly ? undefined : (
         <div className="flex gap-2 pt-2">
           <Button.Secondary
             onClick={(): void =>
@@ -109,8 +116,10 @@ export function Fields({
                   separator: localized(' '),
                   aggregator: undefined,
                   formatter: undefined,
+                  format: undefined,
                   fieldFormatter: undefined,
                   field: undefined,
+                  trimZeros: false,
                 },
               ])
             }
@@ -156,6 +165,14 @@ function Field({
   const [openIndex, setOpenIndex] = React.useState<number | undefined>(
     undefined
   );
+
+  const [isConfigurationOpen, setConfigurationOpen] =
+    React.useState<boolean>(false);
+  const fieldOptionsSelectProps = fieldOptionsButtonProps({
+    field: [field, handleChange],
+    configurationOpen: [isConfigurationOpen, setConfigurationOpen],
+  });
+
   return (
     <tr>
       <td>
@@ -172,18 +189,40 @@ function Field({
         />
       </td>
       <td>
-        <ResourceMapping
-          mapping={[
-            field.field,
-            (fieldMapping): void =>
+        <div className="flex items-center gap-2">
+          <ResourceMapping
+            mapping={[
+              field.field,
+              (fieldMapping): void =>
+                handleChange({
+                  ...field,
+                  field: fieldMapping,
+                }),
+            ]}
+            openIndex={[openIndex, setOpenIndex]}
+            table={table}
+          />
+          <CustomSelectElement {...fieldOptionsSelectProps} />
+        </div>
+      </td>
+      <td>
+        {field.field === undefined ? (
+          <Input.Text
+            aria-label={resourcesText.displayFormat()}
+            className="w-full min-w-0"
+            isReadOnly={isReadOnly}
+            placeholder="Static text"
+            value={field.format ?? ''}
+            onValueChange={(format): void =>
               handleChange({
                 ...field,
-                field: fieldMapping,
-              }),
-          ]}
-          openIndex={[openIndex, setOpenIndex]}
-          table={table}
-        />
+                format: format.length === 0 ? undefined : format,
+              })
+            }
+          />
+        ) : (
+          <FieldFormat field={[field, handleChange]} />
+        )}
       </td>
       {displayFormatter && (
         <td>
@@ -191,7 +230,7 @@ function Field({
         </td>
       )}
       <td>
-        {isReadOnly ? null : (
+        {isReadOnly ? undefined : (
           <>
             <Button.Small
               aria-label={commonText.remove()}
@@ -219,6 +258,59 @@ function Field({
         )}
       </td>
     </tr>
+  );
+}
+
+function FieldFormat({
+  field: [field, handleChange],
+}: {
+  readonly field: GetSet<
+    Formatter['definition']['fields'][number]['fields'][number]
+  >;
+}): JSX.Element {
+  const isReadOnly = React.useContext(ReadOnlyContext);
+  const format = field.format ?? '';
+  const substitution = field.format?.match(/%[sd]/)?.[0] ?? '%s';
+  const [prefix, suffix] = format.includes(substitution)
+    ? format.split(substitution, 2)
+    : [format, ''];
+  const updateFormat = (newPrefix: string, newSuffix: string): void => {
+    const format = `${newPrefix}${substitution}${newSuffix}`;
+    handleChange({
+      ...field,
+      format: format === '%s' ? undefined : localized(format),
+    });
+  };
+
+  return (
+    <div
+      aria-label={resourcesText.displayFormat()}
+      className="inline-flex w-56 max-w-full items-center gap-1"
+    >
+      <Input.Text
+        aria-label="Text Before"
+        className="w-0 min-w-0 flex-1"
+        isReadOnly={isReadOnly}
+        placeholder="Text Before"
+        value={prefix}
+        onValueChange={(value): void => updateFormat(value, suffix)}
+      />
+      <span
+        aria-label="Selected field value"
+        className="cursor-not-allowed select-none px-1 font-mono text-sm text-gray-500"
+        title="Selected field value"
+      >
+        …
+      </span>
+      <Input.Text
+        aria-label="Text After"
+        className="w-0 min-w-0 flex-1"
+        isReadOnly={isReadOnly}
+        placeholder="Text After"
+        value={suffix}
+        onValueChange={(value): void => updateFormat(prefix, value)}
+      />
+    </div>
   );
 }
 
@@ -280,4 +372,89 @@ function FieldFormatter({
         />
       </Label.Inline>
     );
+}
+
+function fieldOptionsButtonProps({
+  field: [field, handleChange],
+  configurationOpen: [isConfigurationOpen, setConfigurationOpen],
+}: {
+  readonly field: GetSet<
+    Formatter['definition']['fields'][number]['fields'][number]
+  >;
+  readonly configurationOpen: GetSet<boolean>;
+}): CustomSelectElementPropsClosed | CustomSelectElementPropsOpen {
+  // Per-field configuration button using CustomSelectElement
+  return {
+    customSelectType: 'OPTIONS_LIST',
+    customSelectSubtype: 'simple',
+    customSelectOptionGroups: {
+      optionalFields: {
+        selectGroupLabel: undefined,
+        selectOptionsData: fieldOptionsMenu({
+          isReadOnly: false,
+          columnOptions: {
+            trimZeros: field.trimZeros,
+          },
+          onToggleTrimZeros: (trimZeros) => {
+            handleChange({
+              ...field,
+              trimZeros,
+            });
+          },
+        }),
+      },
+    },
+    previewOption: {
+      optionName: 'mappingOptions',
+      optionLabel: (
+        <span title={resourcesText.configureField()}>
+          <span className="sr-only">{resourcesText.configureField()}</span>
+          {icons.cog}
+        </span>
+      ),
+    },
+    selectLabel: resourcesText.configureField(),
+    ...(isConfigurationOpen
+      ? {
+          isOpen: true,
+          onClose: (): void => {
+            setConfigurationOpen(false);
+          },
+        }
+      : {
+          isOpen: false,
+          onOpen: (): void => {
+            setConfigurationOpen(true);
+          },
+        }),
+  };
+}
+
+export type FormatterFieldOptions = {
+  readonly trimZeros: boolean;
+};
+
+function fieldOptionsMenu({
+  columnOptions,
+  isReadOnly,
+  onToggleTrimZeros: handleToggleTrimZeros,
+}: {
+  readonly isReadOnly: boolean;
+  readonly columnOptions: FormatterFieldOptions;
+  readonly onToggleTrimZeros: (trimZeros: boolean) => void;
+}): IR<MapperComponentData> {
+  return {
+    trimZeros: {
+      optionLabel: (
+        <Label.Inline title={resourcesText.trimZerosDescription()}>
+          <Input.Checkbox
+            checked={columnOptions.trimZeros}
+            disabled={isReadOnly}
+            onValueChange={handleToggleTrimZeros}
+          />{' '}
+          {resourcesText.trimZeros()}
+        </Label.Inline>
+      ),
+    },
+  };
 }

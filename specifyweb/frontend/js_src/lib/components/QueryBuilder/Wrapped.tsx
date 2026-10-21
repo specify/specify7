@@ -41,17 +41,17 @@ import {
 import { getMappingLineData } from '../WbPlanView/navigator';
 import { navigatorSpecs } from '../WbPlanView/navigatorSpecs';
 import { CheckReadAccess } from './CheckReadAccess';
-import { MakeRecordSetButton } from './Components';
 import { IsQueryBasicContext, useQueryViewPref } from './Context';
-import { QueryExportButtons } from './Export';
 import { QueryFields } from './Fields';
 import { QueryFromMap } from './FromMap';
 import { QueryHeader } from './Header';
 import { unParseQueryFields } from './helpers';
 import { getInitialState, reducer } from './reducer';
 import type { QueryResultRow } from './Results';
-import { QueryResultsWrapper } from './ResultsWrapper';
+import { QueryBuilderResults } from './QueryBuilderResults';
 import { QueryToolbar } from './Toolbar';
+import { useQueryExecution } from './useQueryExecution';
+import { useQuerySplitView } from './useQuerySplitView';
 
 const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 
@@ -74,7 +74,6 @@ export function QueryBuilder(
   return treeRanksLoaded ? <Wrapped {...props} /> : <QueryBuilderSkeleton />;
 }
 
-// REFACTOR: split this component
 function Wrapped({
   query: queryResource,
   recordSet,
@@ -94,6 +93,8 @@ function Wrapped({
   readonly onChange?: (props: {
     readonly fields: RA<SerializedResource<SpQueryField>>;
     readonly isDistinct: boolean | null;
+    readonly searchSynonymy: boolean | null;
+    readonly isSeries: boolean | null;
   }) => void;
 }): JSX.Element {
   const [query, setQuery] = useResource(queryResource);
@@ -102,9 +103,6 @@ function Wrapped({
   const [treeRanksLoaded = false] = useAsyncState(fetchTreeRanks, false);
 
   const table = getTableById(query.contextTableId);
-  const [selectedRows, setSelectedRows] = React.useState<ReadonlySet<number>>(
-    new Set()
-  );
 
   const buildInitialState = React.useCallback(
     () =>
@@ -143,22 +141,26 @@ function Wrapped({
       throttle(
         () =>
           setSaveRequired(
-            state !== pendingState &&
-              initialFields.current !== JSON.stringify(state.fields)
+            (state !== pendingState &&
+              initialFields.current !== JSON.stringify(state.fields)) ||
+              autoRun
           ),
         200
       ),
-    [initialFields.current, state.fields]
+    [initialFields.current, state.fields, autoRun]
   );
 
   React.useEffect(checkForChanges, [state.fields]);
 
   React.useEffect(() => {
+    if (state === pendingState) return;
     handleChange?.({
       fields: unParseQueryFields(state.baseTableName, state.fields),
       isDistinct: query.selectDistinct,
+      searchSynonymy: query.searchSynonymy,
+      isSeries: query.smushed,
     });
-  }, [state, query.selectDistinct]);
+  }, [state, query.selectDistinct, query.searchSynonymy, query.smushed]);
 
   /**
    * If tried to save a query, enforce the field length limit for the
@@ -203,37 +205,21 @@ function Wrapped({
       ],
     });
 
+  const serializeQueryFields = (
+    fields: typeof state.fields = state.fields
+  ): ReturnType<typeof unParseQueryFields> =>
+    unParseQueryFields(state.baseTableName, fields);
+
   /*
    * That function does not need to be called most of the time if query
    * fields haven't changed yet. This avoids triggering needless save blocker
    */
-  const getQueryFieldRecords = saveRequired
-    ? (
-        fields: typeof state.fields = state.fields
-      ): ReturnType<typeof unParseQueryFields> =>
-        unParseQueryFields(state.baseTableName, fields)
-    : undefined;
+  const getQueryFieldRecords = saveRequired ? serializeQueryFields : undefined;
 
-  /*
-   * REFACTOR: simplify this (move "executed query" state into this component
-   *    and get rid of queryRunCount)
-   */
-  function runQuery(
-    mode: 'count' | 'regular',
-    fields: typeof state.fields = state.fields
-  ): void {
-    if (!hasPermission('/querybuilder/query', 'execute')) return;
-    setQuery({
-      ...query,
-      fields: getQueryFieldRecords?.(fields) ?? query.fields,
-      countOnly: mode === 'count',
-    });
-    /*
-     * Wait for new query to propagate before re running it
-     * TEST: check if this still works after updating to React 18
-     */
-    globalThis.setTimeout(() => dispatch({ type: 'RunQueryAction' }), 0);
-  }
+  const { isCountOnly, runQuery, scheduleQueryRun } = useQueryExecution({
+    query,
+    onRun: (): void => dispatch({ type: 'RunQueryAction' }),
+  });
 
   /*
    * Require only one of these permissions as query builder could be useful with
@@ -266,16 +252,6 @@ function Wrapped({
 
   useTitle(localized(query.name));
 
-  const [isQueryRunPending, handleQueryRunPending, handleNoQueryRunPending] =
-    useBooleanState();
-  React.useEffect(() => {
-    if (!isQueryRunPending) return;
-    handleNoQueryRunPending();
-    runQuery('regular');
-    // Only reRun when isQueryRunPending is true, not when runQuery changes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isQueryRunPending, handleNoQueryRunPending]);
-
   const [isScrolledTop, handleScrollTop, handleScrolledDown] =
     useBooleanState(true);
 
@@ -295,6 +271,37 @@ function Wrapped({
   const resultsRef = React.useRef<RA<QueryResultRow | undefined> | undefined>(
     undefined
   );
+  const {
+    selectedRows,
+    setSelectedRows,
+    selectedIndex,
+    setSelectedIndex,
+    isSplit,
+    canUseHorizontalSplit,
+    isHorizontal,
+    maximumPrimaryPaneWidth,
+    splitViewRef,
+    toggleSplit,
+    toggleOrientation,
+    onResults: handleSplitViewResults,
+  } = useQuerySplitView(state.queryRunCount);
+
+  const showSeries = React.useMemo(
+    () =>
+      table.name === 'CollectionObject' &&
+      state.fields.some(
+        (field) => field.mappingPath[0] === 'catalogNumber' && field.isDisplay
+      ),
+    [state, table.name]
+  );
+
+  React.useEffect(() => {
+    if (!showSeries)
+      setQuery({
+        ...query,
+        smushed: false,
+      });
+  }, [showSeries]);
 
   return treeRanksLoaded ? (
     <ReadOnlyContext.Provider value={isReadOnly}>
@@ -350,6 +357,11 @@ function Wrapped({
               dispatch({ type: 'SavedQueryAction' });
             }}
             onTriedToSave={handleTriedToSave}
+            isSplit={isSplit}
+            canUseHorizontalSplit={canUseHorizontalSplit}
+            isHorizontal={isHorizontal}
+            onToggleSplit={toggleSplit}
+            onToggleOrientation={toggleOrientation}
           />
           <CheckReadAccess query={query} />
           <Form
@@ -397,7 +409,7 @@ function Wrapped({
                 // Return focus back to the field
                 focusedInput.focus();
                 // ReRun the query after React propagates the change
-                handleQueryRunPending();
+                scheduleQueryRun();
               } else runQuery('regular');
             }}
           >
@@ -556,73 +568,68 @@ function Wrapped({
               />
               <QueryToolbar
                 isDistinct={query.selectDistinct ?? false}
+                isEmbedded={isEmbedded}
+                isSeries={query.smushed ?? false}
+                searchSynonymy={query.searchSynonymy ?? false}
                 showHiddenFields={showHiddenFields}
+                showSeries={showSeries}
                 tableName={table.name}
                 onRunCountOnly={(): void => runQuery('count')}
-                onSubmitClick={(): void =>
-                  form?.checkValidity() === false
-                    ? runQuery('regular')
-                    : undefined
-                }
-                onToggleDistinct={(): void =>
+                onSubmitClick={(): void => runQuery('regular')}
+                onToggleDistinct={(): void => {
                   setQuery({
                     ...query,
                     selectDistinct: !(query.selectDistinct ?? false),
-                  })
-                }
-                onToggleHidden={setShowHiddenFields}
-              />
-            </div>
-            {hasPermission('/querybuilder/query', 'execute') && (
-              <QueryResultsWrapper
-                createRecordSet={
-                  !isReadOnly &&
-                  hasPermission('/querybuilder/query', 'create_recordset') &&
-                  !queryResource.get('selectDistinct') ? (
-                    <MakeRecordSetButton
-                      baseTableName={state.baseTableName}
-                      fields={state.fields}
-                      getQueryFieldRecords={getQueryFieldRecords}
-                      queryResource={queryResource}
-                    />
-                  ) : undefined
-                }
-                extraButtons={
-                  query.countOnly ? undefined : (
-                    <QueryExportButtons
-                      baseTableName={state.baseTableName}
-                      fields={state.fields}
-                      getQueryFieldRecords={getQueryFieldRecords}
-                      queryResource={queryResource}
-                      recordSetId={recordSet?.id}
-                      results={resultsRef}
-                      selectedRows={selectedRows}
-                    />
-                  )
-                }
-                fields={state.fields}
-                forceCollection={forceCollection}
-                queryResource={queryResource}
-                queryRunCount={state.queryRunCount}
-                recordSetId={recordSet?.id}
-                resultsRef={resultsRef}
-                selectedRows={[selectedRows, setSelectedRows]}
-                table={table}
-                onReRun={(): void =>
-                  dispatch({
-                    type: 'RunQueryAction',
-                  })
-                }
-                onSelected={handleSelected}
-                onSortChange={(fields): void => {
-                  dispatch({
-                    type: 'ChangeFieldsAction',
-                    fields,
                   });
-                  runQuery('regular', fields);
+                  setSaveRequired(true);
+                }}
+                onToggleHidden={setShowHiddenFields}
+                onToggleSearchSynonymy={(): void => {
+                  setQuery({
+                    ...query,
+                    searchSynonymy: !(query.searchSynonymy ?? false),
+                  });
+                  setSaveRequired(true);
+                }}
+                onToggleSeries={(): void => {
+                  setQuery({
+                    ...query,
+                    smushed: !(query.smushed ?? false),
+                  });
                 }}
               />
-            )}
+            </div>
+            <QueryBuilderResults
+              forceCollection={forceCollection}
+              getQueryFieldRecords={getQueryFieldRecords}
+              isCountOnly={isCountOnly}
+              isHorizontal={isHorizontal}
+              isReadOnly={isReadOnly}
+              isSplit={isSplit}
+              maximumPrimaryPaneWidth={maximumPrimaryPaneWidth}
+              query={query}
+              queryResource={queryResource}
+              recordSet={recordSet}
+              resultsRef={resultsRef}
+              saveRequired={saveRequired}
+              selectedIndex={selectedIndex}
+              selectedRows={selectedRows}
+              setSelectedIndex={setSelectedIndex}
+              setSelectedRows={setSelectedRows}
+              splitViewRef={splitViewRef}
+              state={state}
+              table={table}
+              onReRun={(): void => dispatch({ type: 'RunQueryAction' })}
+              onResults={handleSplitViewResults}
+              onSelected={(ids): void => {
+                setSelectedIndex(Math.max(0, ids.length - 1));
+                handleSelected?.(ids);
+              }}
+              onSortChange={(fields): void => {
+                dispatch({ type: 'ChangeFieldsAction', fields });
+                runQuery('regular');
+              }}
+            />
           </Form>
         </Container.Full>
       </IsQueryBasicContext.Provider>

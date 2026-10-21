@@ -1,11 +1,11 @@
 import { requireContext } from '../../../tests/helpers';
-import { typeSearches } from '../useTypeSearch';
+import { typeSearchesCustom } from '../useTypeSearch';
 
 requireContext();
 
 test('type searches are fetched and parsed correctly', async () =>
   expect(
-    typeSearches.then((result) =>
+    typeSearchesCustom.then((result) =>
       // Remove symbols
       JSON.parse(JSON.stringify(result))
     )

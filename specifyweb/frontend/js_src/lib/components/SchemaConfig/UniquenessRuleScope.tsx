@@ -13,7 +13,7 @@ import type { SpecifyTable } from '../DataModel/specifyTable';
 import { strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import type { UniquenessRule } from '../DataModel/uniquenessRules';
-import type { HtmlGeneratorFieldData } from '../WbPlanView/LineComponents';
+import type { MapperComponentData } from '../WbPlanView/LineComponents';
 import { getMappingLineProps } from '../WbPlanView/LineComponents';
 import { MappingView } from '../WbPlanView/MapperComponents';
 import type { MappingLineData } from '../WbPlanView/navigator';
@@ -35,7 +35,7 @@ export function UniquenessRuleScope({
       : rule.scopes[0].split(djangoLookupSeparator)
   );
 
-  const databaseScopeData: Readonly<Record<string, HtmlGeneratorFieldData>> = {
+  const databaseScopeData: Readonly<Record<string, MapperComponentData>> = {
     database: {
       isDefault: true,
       isEnabled: true,
@@ -46,7 +46,7 @@ export function UniquenessRuleScope({
 
   const getValidScopeRelationships = (
     table: SpecifyTable
-  ): Readonly<Record<string, HtmlGeneratorFieldData>> =>
+  ): Readonly<Record<string, MapperComponentData>> =>
     Object.fromEntries(
       table.relationships
         .filter(

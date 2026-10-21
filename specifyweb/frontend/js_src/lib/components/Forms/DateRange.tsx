@@ -15,7 +15,7 @@ import type { SpecifyTable } from '../DataModel/specifyTable';
 import { genericTables } from '../DataModel/tables';
 import type { SpQueryField, Tables } from '../DataModel/types';
 import { createQuery } from '../QueryBuilder';
-import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
+import { queryFieldFilterSpecs } from '../QueryBuilder/FieldFilterSpec';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { flippedSortTypes } from '../QueryBuilder/helpers';
 import { runQuery } from '../QueryBuilder/ResultsWrapper';
@@ -77,7 +77,7 @@ function useRange(
                         .toSpQueryField()
                         .set('sortType', sortType)
                         .set('isNot', true)
-                        .set('operStart', queryFieldFilters.empty.id),
+                        .set('operStart', queryFieldFilterSpecs.empty.id),
                       filterQueryField,
                     ])
                   ),

@@ -6,16 +6,21 @@ import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
 import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
+import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
+import { dialogIcons } from '../Atoms/Icons';
 import { LoadingContext } from '../Core/Contexts';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { Dialog } from '../Molecules/Dialog';
-import { hasPermission } from '../Permissions/helpers';
+import type { WbVariantLocalization } from '../Toolbar/WbsDialog';
 import type { Dataset, Status } from '../WbPlanView/Wrapped';
+import { resolveVariantFromDataset } from '../WbUtils/datasetVariants';
 import type { WbCellCounts } from '../WorkBench/CellMeta';
 import type { WbMapping } from '../WorkBench/mapping';
 import { CreateRecordSetButton } from '../WorkBench/RecordSet';
+import { TableRecordCounts } from '../WorkBench/Results';
 import { WbStatus as WbStatusComponent } from '../WorkBench/Status';
+import { RecordCountPriority } from '../WorkBench/WbValidation';
 import type { WbStatus, Workbench } from '../WorkBench/WbView';
 import { WbNoUploadPlan } from './WbNoUploadPlan';
 import { WbRevert } from './WbRevert';
@@ -57,6 +62,7 @@ export function WbActions({
     useBooleanState();
   const [operationCompleted, openOperationCompleted, closeOperationCompleted] =
     useBooleanState();
+
   const { mode, refreshInitiatorAborted, startUpload, triggerStatusComponent } =
     useWbActions({
       datasetId: dataset.id,
@@ -66,9 +72,17 @@ export function WbActions({
       workbench,
     });
 
-  const message = mode === undefined ? undefined : getMessage(cellCounts, mode);
+  const variant = resolveVariantFromDataset(dataset);
+  const viewerLocalization: WbVariantLocalization = variant.localization.viewer;
+
+  const message =
+    mode === undefined
+      ? undefined
+      : getMessage(cellCounts, mode, viewerLocalization);
 
   const isMapped = mappings !== undefined;
+
+  const recordCounts = workbench.validation.uploadResults.recordCounts ?? {};
 
   const dataCheckInProgress = React.useMemo(
     () => workbench.validation.liveValidationStack.length > 0,
@@ -77,15 +91,17 @@ export function WbActions({
 
   return (
     <>
-      <WbNoUploadPlan
-        datasetId={dataset.id}
-        isUploaded={isUploaded}
-        mappings={mappings}
-        noUploadPlan={noUploadPlan}
-        onCloseNoUploadPlan={closeNoUploadPlan}
-        onOpenNoUploadPlan={openNoUploadPlan}
-      />
-      {!isUploaded && hasPermission('/workbench/dataset', 'validate') ? (
+      {!dataset.isupdate && (
+        <WbNoUploadPlan
+          datasetId={dataset.id}
+          isUploaded={isUploaded}
+          mappings={mappings}
+          noUploadPlan={noUploadPlan}
+          onCloseNoUploadPlan={closeNoUploadPlan}
+          onOpenNoUploadPlan={openNoUploadPlan}
+        />
+      )}
+      {!isUploaded && variant.canValidate() ? (
         <ErrorBoundary dismissible>
           <WbValidate
             hasUnsavedChanges={hasUnsavedChanges}
@@ -93,6 +109,7 @@ export function WbActions({
             isResultsOpen={isResultsOpen}
             startUpload={startUpload}
             validation={workbench.validation}
+            isInWorkBench={!dataset.isupdate}
           />
         </ErrorBoundary>
       ) : undefined}
@@ -113,26 +130,29 @@ export function WbActions({
           {commonText.results()}
         </Button.Small>
       </ErrorBoundary>
-      {isUploaded && hasPermission('/workbench/dataset', 'unupload') ? (
+      {isUploaded && variant.canUndo() ? (
         <ErrorBoundary dismissible>
           <WbRollback
             datasetId={dataset.id}
             triggerStatusComponent={triggerStatusComponent}
+            viewerLocalization={viewerLocalization}
           />
         </ErrorBoundary>
       ) : undefined}
-      {!isUploaded && hasPermission('/workbench/dataset', 'upload') ? (
+      {!isUploaded && variant.canDo() ? (
         <ErrorBoundary dismissible>
           <WbUpload
             cellCounts={cellCounts}
             hasUnsavedChanges={hasUnsavedChanges}
             mappings={mappings}
             openNoUploadPlan={openNoUploadPlan}
+            recordCounts={recordCounts}
             startUpload={startUpload}
+            viewerLocalization={viewerLocalization}
           />
         </ErrorBoundary>
       ) : undefined}
-      {!isUploaded && hasPermission('/workbench/dataset', 'update') ? (
+      {!isUploaded && variant.canEdit() ? (
         <>
           <ErrorBoundary dismissible>
             <WbRevert
@@ -183,12 +203,24 @@ export function WbActions({
       ) : undefined}
       {operationCompleted && (
         <Dialog
+          icon={
+            mode === 'validate'
+              ? cellCounts.invalidCells === 0
+                ? dialogIcons.success
+                : dialogIcons.error
+              : mode === 'upload'
+                ? cellCounts.invalidCells === 0
+                  ? dialogIcons.success
+                  : dialogIcons.error
+                : dialogIcons.success
+          }
           buttons={
             <>
               {cellCounts.invalidCells === 0 && mode === 'upload' && (
                 <CreateRecordSetButton
                   datasetId={dataset.id}
                   datasetName={dataset.name}
+                  isUpdate={dataset.isupdate}
                   small={false}
                   onClose={() => {
                     refreshInitiatorAborted.current = false;
@@ -196,24 +228,67 @@ export function WbActions({
                   }}
                 />
               )}
+              <span className="-ml-2 flex-1" />
               <Button.DialogClose>{commonText.close()}</Button.DialogClose>
             </>
           }
           header={message!.header}
           onClose={closeOperationCompleted}
         >
-          {message?.message}
+          <div className="flex flex-col gap-4">
+            <div>{message?.message}</div>
+            {cellCounts.invalidCells === 0 &&
+              (mode === 'validate' || mode === 'upload') &&
+              Object.keys(recordCounts).some(
+                (key) =>
+                  recordCounts[key as keyof typeof recordCounts] !==
+                    undefined &&
+                  Object.keys(
+                    recordCounts[key as keyof typeof recordCounts] ?? {}
+                  ).length > 0
+              ) && (
+                <div className="flex flex-col gap-2">
+                  {Object.entries(recordCounts)
+                    .sort(
+                      sortFunction(([value]) =>
+                        RecordCountPriority.indexOf(value)
+                      )
+                    )
+                    .map(([resultType, recordsPerType]) =>
+                      recordsPerType !== undefined &&
+                      Object.keys(recordsPerType).length > 0 ? (
+                        <div key={resultType}>
+                          <p className="text-sm font-medium">
+                            {resultType === 'Uploaded'
+                              ? wbText.recordsCreated()
+                              : resultType === 'Updated'
+                                ? wbText.recordsUpdated()
+                                : resultType === 'Deleted'
+                                  ? wbText.recordsDeleted()
+                                  : wbText.recordsMatchedAndChanged()}
+                          </p>
+                          <TableRecordCounts
+                            recordCounts={recordsPerType}
+                            sortFunction={([, recordCount]) => recordCount ?? 0}
+                          />
+                        </div>
+                      ) : null
+                    )}
+                </div>
+              )}
+          </div>
         </Dialog>
       )}
       {operationAborted && (
         <Dialog
+          icon={dialogIcons.failure}
           buttons={commonText.close()}
           header={
             mode === 'validate'
               ? wbText.validationCanceled()
               : mode === 'unupload'
                 ? wbText.rollbackCanceled()
-                : wbText.uploadCanceled()
+                : viewerLocalization.doCancelled
           }
           onClose={closeAbortedMessage}
         >
@@ -221,7 +296,7 @@ export function WbActions({
             ? wbText.validationCanceledDescription()
             : mode === 'unupload'
               ? wbText.rollbackCanceledDescription()
-              : wbText.uploadCanceledDescription()}
+              : viewerLocalization.doCancelledDescription}
         </Dialog>
       )}
     </>
@@ -250,6 +325,10 @@ function useWbActions({
   const refreshInitiatorAborted = React.useRef<boolean>(false);
   const loading = React.useContext(LoadingContext);
 
+  /**
+   * NOTE: Only validate and upload use startUpload
+   * For rollback, we directly call the API inside the RollbackConfirmation component
+   */
   const startUpload = (newMode: WbStatus): void => {
     workbench.validation.stopLiveValidation();
     loading(
@@ -289,7 +368,8 @@ function useWbActions({
 
 function getMessage(
   cellCounts: WbCellCounts,
-  mode: WbStatus
+  mode: WbStatus,
+  viewerLocalization: WbVariantLocalization
 ): {
   readonly header: LocalizedString;
   readonly message: JSX.Element | LocalizedString;
@@ -302,7 +382,6 @@ function getMessage(
             message: (
               <>
                 {wbText.validationNoErrorsDescription()}
-                <br />
                 <br />
                 {wbText.validationReEditWarning()}
               </>
@@ -322,23 +401,25 @@ function getMessage(
     upload:
       cellCounts.invalidCells === 0
         ? {
-            header: wbText.uploadSuccessful(),
-            message: wbText.uploadSuccessfulDescription(),
+            header: viewerLocalization.doSuccessful,
+            message: viewerLocalization.doSuccessfulDescription,
           }
         : {
-            header: wbText.uploadErrors(),
+            header: viewerLocalization.doErrors,
             message: (
               <>
-                {wbText.uploadErrorsDescription()}
+                {viewerLocalization.doErrorsDescription}
                 <br />
                 <br />
-                {wbText.uploadErrorsSecondDescription()}
+                {wbText.uploadErrorsSecondDescription({
+                  type: viewerLocalization.do,
+                })}
               </>
             ),
           },
     unupload: {
       header: wbText.dataSetRollback(),
-      message: wbText.dataSetRollbackDescription(),
+      message: viewerLocalization.undoFinishedDescription,
     },
   };
 

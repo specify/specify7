@@ -1,24 +1,21 @@
 export const tableActions = ['read', 'create', 'update', 'delete'] as const;
 export const collectionAccessResource = '/system/sp7/collection';
 export const operationPolicies = {
+  '/system/sp7/collection': ['access'],
+  '/admin/user/password': ['update'],
   '/admin/user/agents': ['update'],
+  '/admin/user/sp6/is_admin': ['update'],
+  '/record/merge': ['update', 'delete'],
   '/admin/user/invite_link': ['create'],
   '/admin/user/oic_providers': ['read'],
-  '/admin/user/password': ['update'],
   '/admin/user/sp6/collection_access': ['read', 'update'],
-  '/admin/user/sp6/is_admin': ['update'],
-  '/attachment_import/dataset': [
-    'create',
-    'update',
-    'delete',
-    'upload',
-    'rollback',
-  ],
+  '/report': ['execute'],
   '/export/dwca': ['execute'],
   '/export/feed': ['force_update'],
-  '/permissions/library/roles': ['read', 'create', 'update', 'delete'],
+  '/export/backup': ['execute'],
   '/permissions/list_admins': ['read'],
   '/permissions/policies/user': ['read', 'update'],
+  '/permissions/user/roles': ['read', 'update'],
   '/permissions/roles': [
     'read',
     'create',
@@ -26,19 +23,19 @@ export const operationPolicies = {
     'delete',
     'copy_from_library',
   ],
-  '/permissions/user/roles': ['read', 'update'],
-  '/querybuilder/query': [
-    'execute',
-    'export_csv',
-    'export_kml',
-    'create_recordset',
-  ],
-  '/record/merge': ['update', 'delete'],
-  '/report': ['execute'],
-  '/system/sp7/collection': ['access'],
+  '/permissions/library/roles': ['read', 'create', 'update', 'delete'],
+  '/tree/edit/taxon': ['merge', 'move', 'synonymize', 'desynonymize', 'repair'],
   '/tree/edit/geography': [
     'merge',
     'move',
+    'synonymize',
+    'desynonymize',
+    'repair',
+  ],
+  '/tree/edit/storage': [
+    'merge',
+    'move',
+    'bulk_move',
     'synonymize',
     'desynonymize',
     'repair',
@@ -57,21 +54,19 @@ export const operationPolicies = {
     'desynonymize',
     'repair',
   ],
-  '/tree/edit/storage': [
-    'merge',
-    'move',
-    'bulk_move',
-    'synonymize',
-    'desynonymize',
-    'repair',
-  ],
-  '/tree/edit/taxon': ['merge', 'move', 'synonymize', 'desynonymize', 'repair'],
   '/tree/edit/tectonicunit': [
     'merge',
     'move',
     'synonymize',
     'desynonymize',
     'repair',
+  ],
+  '/querybuilder/query': [
+    'execute',
+    'export_csv',
+    'export_kml',
+    'export_to_web_portal',
+    'create_recordset',
   ],
   '/workbench/dataset': [
     'create',
@@ -82,6 +77,25 @@ export const operationPolicies = {
     'validate',
     'transfer',
     'create_recordset',
+  ],
+  '/attachment_import/dataset': [
+    'create',
+    'update',
+    'delete',
+    'upload',
+    'rollback',
+  ],
+  '/batch_edit/dataset': [
+    'create',
+    'update',
+    'delete',
+    'commit',
+    'rollback',
+    'validate',
+    'transfer',
+    'create_recordset',
+    'delete_dependents',
+    'edit_multiple_tables',
   ],
 } as const;
 
@@ -100,6 +114,7 @@ export const institutionPermissions = new Set([
   '/permissions/library/roles',
   '/permissions/list_admins',
   '/report/record',
+  '/export/backup',
 ]);
 
 /**
@@ -108,6 +123,8 @@ export const institutionPermissions = new Set([
 export const frontEndPermissions = {
   '/preferences/user': ['edit_protected'],
   '/preferences/statistics': ['edit_shared'],
+  '/preferences/collection': ['edit_collection'],
+  '/preferences/global': ['update'],
 } as const;
 
 /**

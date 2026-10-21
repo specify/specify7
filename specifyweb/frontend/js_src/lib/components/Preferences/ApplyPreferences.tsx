@@ -105,11 +105,6 @@ export function SetCssVariables(): null {
         'appearance',
         'accentColor4'
       ),
-      accentColor5: userPreferences.get(
-        'general',
-        'appearance',
-        'accentColor5'
-      ),
       saveButtonColor: userPreferences.get(
         'general',
         darkMode ? 'buttonDark' : 'buttonLight',
@@ -262,12 +257,6 @@ export function SetCssVariables(): null {
     () =>
       document.body.style.setProperty('--accent-color-400', prefs.accentColor4),
     [prefs.accentColor4]
-  );
-
-  React.useEffect(
-    () =>
-      document.body.style.setProperty('--accent-color-500', prefs.accentColor5),
-    [prefs.accentColor5]
   );
 
   React.useEffect(

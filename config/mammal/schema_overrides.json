@@ -1,0 +1,22 @@
+{
+  "collectionobjectattribute": {
+    "ishidden": false,
+    "items": [
+      {"text1": {"ishidden": false, "picklistname": "BiologicalSex", "name": "Sex", "desc": "Sex"}},
+      {"text2": {"ishidden": false, "name": "Weight", "desc": "Weight"}},
+      {"text3": {"ishidden": false, "name": "ReproCondition", "desc": "ReproCondition"}},
+      {"text4": {"ishidden": false, "picklistname": "LifeStage", "name": "Stage", "desc": "Stage"}},
+      {"text5": {"ishidden": false, "name": "Head Length", "desc": "Head Length"}},
+      {"text6": {"ishidden": false, "name": "Body Length", "desc": "Body Length"}},
+      {"text7": {"ishidden": false, "name": "Total Length", "desc": "Total Length"}},
+      {"text8": {"ishidden": false, "name": "# Shark Attacks", "desc": "# Shark Attacks"}}
+    ]
+  },
+  "collectingevent": {
+    "ishidden": false,
+    "items": [
+      {"endtime": {"ishidden": false}},
+      {"starttime": {"ishidden": false}}
+    ]
+  }
+}

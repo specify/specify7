@@ -23,6 +23,7 @@ import { strictGetTable } from '../DataModel/tables';
 import type { Attachment, Tables } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import { hasPermission } from '../Permissions/helpers';
+import { collectionPreferences } from '../Preferences/collectionPreferences';
 import { ActionState } from './ActionState';
 import type { AttachmentUploadSpec, EagerDataSet } from './Import';
 import { PerformAttachmentTask } from './PerformAttachmentTask';
@@ -141,6 +142,11 @@ export function AttachmentUpload({
   >('main');
 
   const loading = React.useContext(LoadingContext);
+  const [attachmentIsPublicDefault] = collectionPreferences.use(
+    'general',
+    'attachments',
+    'attachment.is_public_default'
+  );
 
   React.useEffect(() => {
     if (upload !== 'confirmed' || baseTableName === undefined) return;
@@ -173,8 +179,9 @@ export function AttachmentUpload({
         uploadAttachmentSpec: uploadable.uploadTokenSpec,
         dryRun,
         triggerRetry,
+        attachmentIsPublicDefault,
       }),
-    [baseTableName]
+    [baseTableName, attachmentIsPublicDefault]
   );
   const [uploadedCount, setUploadedCount] = React.useState<number | undefined>(
     undefined
@@ -281,8 +288,10 @@ async function uploadFileWrapped<KEY extends keyof Tables>({
   uploadAttachmentSpec,
   dryRun,
   triggerRetry,
+  attachmentIsPublicDefault = false,
 }: WrappedActionProps<KEY> & {
   readonly uploadAttachmentSpec?: UploadAttachmentSpec;
+  readonly attachmentIsPublicDefault?: boolean;
 }): Promise<PartialUploadableFileSpec> {
   const getUploadableCommited = ({
     status,
@@ -347,15 +356,17 @@ async function uploadFileWrapped<KEY extends keyof Tables>({
          */
         token === undefined
           ? undefined
-          : uploadFile(
-              uploadableFile.uploadFile.file as File,
-              () => undefined,
-              token === undefined ||
+          : uploadFile({
+              file: uploadableFile.uploadFile.file as File,
+              handleProgress: () => undefined,
+              uploadAttachmentSpec:
+                token === undefined ||
                 uploadAttachmentSpec?.attachmentLocation === undefined
-                ? undefined
-                : { ...uploadAttachmentSpec, token },
-              false
-            )
+                  ? undefined
+                  : { ...uploadAttachmentSpec, token },
+              strict: false,
+              attachmentIsPublicDefault,
+            })
       )
       .catch(triggerRetry));
 

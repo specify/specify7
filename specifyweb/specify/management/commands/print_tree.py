@@ -15,8 +15,7 @@ class Command(BaseCommand):
         for r in tdis:
             rank_hhn[r.rankid] = None
 
-
-        for t in Taxon.objects.all().order_by('nodenumber'):
+        for t in Taxon.objects.all().order_by('nodenumber').iterator(chunk_size=2000):
             rank_hhn[t.rankid] = t.highestchildnodenumber
             nn = t.nodenumber
             line = ['*-' if t.rankid == r else

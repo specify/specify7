@@ -1,24 +1,30 @@
 import React from 'react';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
-import type { RA } from '../../utils/types';
-import type { BrokerRecord } from './fetchers';
+import type { BrokerFetchResult } from './fetchers';
 import { fetchName, fetchOccurrence } from './fetchers';
 
-export function useOccurrence(guid = ''): RA<BrokerRecord> | undefined {
+const emptyBrokerFetchResult: BrokerFetchResult = {
+  records: [],
+  isUnavailable: false,
+};
+
+export function useOccurrence(guid = ''): BrokerFetchResult | undefined {
   return useAsyncState(
     React.useCallback(
-      async () => (guid === '' ? [] : fetchOccurrence(guid)),
+      async () =>
+        guid === '' ? emptyBrokerFetchResult : fetchOccurrence(guid),
       [guid]
     ),
     false
   )[0];
 }
 
-export function useSpecies(speciesName = ''): RA<BrokerRecord> | undefined {
+export function useSpecies(speciesName = ''): BrokerFetchResult | undefined {
   return useAsyncState(
     React.useCallback(
-      async () => (speciesName === '' ? [] : fetchName(speciesName)),
+      async () =>
+        speciesName === '' ? emptyBrokerFetchResult : fetchName(speciesName),
       [speciesName]
     ),
     false

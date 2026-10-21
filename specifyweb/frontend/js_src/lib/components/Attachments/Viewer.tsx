@@ -1,6 +1,12 @@
 import React from 'react';
+import {
+  TransformComponent,
+  TransformWrapper,
+  useControls,
+} from 'react-zoom-pan-pinch';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
+import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import { notificationsText } from '../../localization/notifications';
 import { f } from '../../utils/functools';
@@ -23,29 +29,43 @@ import {
 } from '../Forms/useViewDefinition';
 import { loadingGif } from '../Molecules';
 import { userPreferences } from '../Preferences/userPreferences';
-import { fetchOriginalUrl, fetchThumbnail } from './attachments';
+import {
+  fetchOriginalUrl,
+  fetchThumbnail,
+  reportAttachmentServerFailure,
+  useAttachmentServerStatus,
+} from './attachments';
 import { AttachmentRecordLink, getAttachmentTable } from './Cell';
 import { Thumbnail } from './Preview';
 
 export function AttachmentViewer({
   attachment,
   related: [related, setRelated],
-  showMeta = true,
+  showMeta,
+  onToggleSidebar,
   onViewRecord: handleViewRecord,
 }: {
   readonly attachment: SpecifyResource<Attachment>;
   readonly related: GetSet<SpecifyResource<AnySchema> | undefined>;
   readonly showMeta?: boolean;
+  readonly onToggleSidebar?: (() => void) | undefined;
   readonly onViewRecord:
     | ((table: SpecifyTable, recordId: number) => void)
     | undefined;
 }): JSX.Element {
+  const attachmentServerStatus = useAttachmentServerStatus();
   const serialized = React.useMemo(
     () => serializeResource(attachment),
     [attachment]
   );
   const [originalUrl] = useAsyncState(
-    React.useCallback(async () => fetchOriginalUrl(serialized), [serialized]),
+    React.useCallback(
+      async () =>
+        attachmentServerStatus !== 'unavailable'
+          ? fetchOriginalUrl(serialized)
+          : undefined,
+      [attachmentServerStatus, serialized]
+    ),
     false
   );
 
@@ -96,26 +116,69 @@ export function AttachmentViewer({
   const type = mimeType?.split('/')[0];
 
   const [thumbnail] = useAsyncState(
-    React.useCallback(async () => fetchThumbnail(serialized), [serialized]),
+    React.useCallback(
+      async () =>
+        attachmentServerStatus !== 'unavailable'
+          ? fetchThumbnail(serialized)
+          : undefined,
+      [attachmentServerStatus, serialized]
+    ),
     false
   );
 
   const Component = typeof originalUrl === 'string' ? Link.Info : Button.Info;
   const [autoPlay] = userPreferences.use('attachments', 'behavior', 'autoPlay');
+  const [collapseFormByDefault] = userPreferences.use(
+    'attachments',
+    'behavior',
+    'collapseFormByDefault'
+  );
+  const [controlsVisiblePreference] = userPreferences.use(
+    'attachments',
+    'behavior',
+    'showControls'
+  );
   const table = f.maybe(serialized.tableID ?? undefined, getAttachmentTable);
+  const areControlsVisible = controlsVisiblePreference;
+  const defaultCollapsed = collapseFormByDefault && areControlsVisible;
+  const shouldShowMeta = showMeta ?? !defaultCollapsed;
+  const isSidebarExpanded = shouldShowMeta || attachment.isNew();
+  const canToggleSidebar =
+    typeof onToggleSidebar === 'function' && !attachment.isNew();
+  /*
+   * Tiff files cannot be shown by chrome or firefox,
+   * so fallback to the thumbnail regardless of user preference
+   */
+  const isTiffImage = mimeType === 'image/tiff' || mimeType === 'image/tif';
 
   return (
     <>
       <div className="flex min-h-[theme(spacing.60)] w-full min-w-[theme(spacing.60)] flex-1 items-center justify-center">
-        {displayOriginal === 'full' ? (
+        {attachmentServerStatus === 'unavailable' ? (
+          <AttachmentServerUnavailable />
+        ) : displayOriginal === 'full' && !isTiffImage ? (
           originalUrl === undefined ? (
             loadingGif
           ) : type === 'image' ? (
-            <img
-              alt={title}
-              className="max-h-full max-w-full object-contain"
-              src={originalUrl}
-            />
+            <div className="h-full w-full">
+              <TransformWrapper
+                centerOnInit
+                centerZoomedOut
+                maxScale={8}
+                minScale={0.5}
+                wheel={{ step: 0.15 }}
+              >
+                <ImageTransformContent
+                  alt={typeof title === 'string' ? title : ''}
+                  canToggleSidebar={canToggleSidebar}
+                  isSidebarExpanded={isSidebarExpanded}
+                  showControls={areControlsVisible}
+                  src={originalUrl}
+                  thumbnail={thumbnail?.src}
+                  onToggleSidebar={onToggleSidebar}
+                />
+              </TransformWrapper>
+            </div>
           ) : type === 'video' ? (
             /*
              * Subtitles for attachments not yet supported
@@ -149,14 +212,12 @@ export function AttachmentViewer({
                 alt={title}
                 className="h-full w-full object-scale-down"
                 src={thumbnail?.src}
+                onError={reportAttachmentServerFailure}
               />
             </object>
           )
         ) : (
-          <Thumbnail
-            attachment={serializeResource(attachment)}
-            thumbnail={thumbnail}
-          />
+          <Thumbnail attachment={serialized} thumbnail={thumbnail} />
         )}
       </div>
 
@@ -166,8 +227,8 @@ export function AttachmentViewer({
          * be displayed as otherwise, default values defined in form definition
          * won't be applied
          */
-        showMeta || attachment.isNew() ? (
-          <div className="flex flex-col gap-2">
+        isSidebarExpanded ? (
+          <div className="flex flex-col gap-0">
             <ResourceView
               dialog={false}
               isDependent={false}
@@ -189,25 +250,29 @@ export function AttachmentViewer({
             <span className="flex-1" />
             {typeof originalUrl === 'string' && (
               <div className="flex flex-wrap gap-2">
-                <Component
-                  className="flex-1 whitespace-nowrap"
-                  download={new URL(originalUrl).searchParams.get(
-                    'downloadname'
-                  )}
-                  href={`/attachment_gw/proxy/${new URL(originalUrl).search}`}
-                  target="_blank"
-                  onClick={undefined}
-                >
-                  {notificationsText.download()}
-                </Component>
-                <Component
-                  className="flex-1 whitespace-nowrap"
-                  href={originalUrl}
-                  target="_blank"
-                  onClick={undefined}
-                >
-                  {commonText.openInNewTab()}
-                </Component>
+                {attachmentServerStatus !== 'unavailable' && (
+                  <>
+                    <Component
+                      className="flex-1 whitespace-nowrap"
+                      download={new URL(originalUrl).searchParams.get(
+                        'downloadname'
+                      )}
+                      href={`/attachment_gw/proxy/${new URL(originalUrl).search}`}
+                      target="_blank"
+                      onClick={undefined}
+                    >
+                      {notificationsText.download()}
+                    </Component>
+                    <Component
+                      className="flex-1 whitespace-nowrap"
+                      href={originalUrl}
+                      target="_blank"
+                      onClick={undefined}
+                    >
+                      {commonText.openInNewTab()}
+                    </Component>
+                  </>
+                )}
                 {typeof table === 'object' &&
                 typeof handleViewRecord === 'function' ? (
                   <AttachmentRecordLink
@@ -224,6 +289,150 @@ export function AttachmentViewer({
           </div>
         ) : undefined
       }
+    </>
+  );
+}
+
+export function ImageTransformContent({
+  alt,
+  canToggleSidebar,
+  isSidebarExpanded,
+  onToggleSidebar,
+  showControls,
+  src,
+  thumbnail,
+}: {
+  readonly alt: string;
+  readonly canToggleSidebar: boolean;
+  readonly isSidebarExpanded: boolean;
+  readonly onToggleSidebar: (() => void) | undefined;
+  readonly showControls: boolean;
+  readonly src: string;
+  readonly thumbnail: string | undefined;
+}): JSX.Element {
+  const { resetTransform } = useControls();
+  const thumbnailFallbackAttempted = React.useRef(false);
+  const [imageFailed, setImageFailed] = React.useState(false);
+
+  React.useEffect(() => {
+    thumbnailFallbackAttempted.current = false;
+    setImageFailed(false);
+  }, [src]);
+
+  const handleError = React.useCallback(
+    (event: React.SyntheticEvent<HTMLImageElement>) => {
+      if (
+        !thumbnailFallbackAttempted.current &&
+        typeof thumbnail === 'string'
+      ) {
+        thumbnailFallbackAttempted.current = true;
+        const image = event.currentTarget;
+        image.src = thumbnail;
+      } else {
+        setImageFailed(true);
+        reportAttachmentServerFailure();
+      }
+    },
+    [thumbnail]
+  );
+
+  const handleLoad = React.useCallback(() => {
+    resetTransform(0);
+  }, [resetTransform]);
+  return (
+    <div
+      className="relative flex h-full w-full items-center justify-center"
+      style={{ '--transition-duration': 0 } as React.CSSProperties}
+    >
+      <TransformComponent
+        contentClass="h-full w-full max-h-full max-w-full"
+        wrapperClass="flex h-full w-full items-center justify-center"
+        wrapperStyle={{ height: '100%', width: '100%' }}
+      >
+        {imageFailed ? (
+          <AttachmentServerUnavailable />
+        ) : (
+          <img
+            alt={alt}
+            className="h-full w-full max-h-full max-w-full object-contain"
+            src={src}
+            onError={handleError}
+            onLoad={handleLoad}
+          />
+        )}
+      </TransformComponent>
+      {showControls ? (
+        <div
+          className="absolute right-2 top-2 flex items-center gap-2 rounded bg-white/60 p-1 text-white shadow-md dark:bg-black/60"
+          style={{ pointerEvents: 'auto' }}
+        >
+          <ZoomControls
+            canToggleSidebar={canToggleSidebar}
+            isSidebarExpanded={isSidebarExpanded}
+            onToggleSidebar={onToggleSidebar}
+          />
+        </div>
+      ) : undefined}
+    </div>
+  );
+}
+
+function AttachmentServerUnavailable(): JSX.Element {
+  return (
+    <div className="flex flex-col items-center gap-2 p-4 text-center">
+      <strong>{attachmentsText.attachmentServerUnavailable()}</strong>
+      <span>{attachmentsText.attachmentServerUnavailableDescription()}</span>
+    </div>
+  );
+}
+
+function ZoomControls({
+  canToggleSidebar,
+  isSidebarExpanded,
+  onToggleSidebar,
+}: {
+  readonly canToggleSidebar: boolean;
+  readonly isSidebarExpanded: boolean;
+  readonly onToggleSidebar: (() => void) | undefined;
+}): JSX.Element {
+  const { zoomIn, zoomOut, resetTransform } = useControls();
+
+  return (
+    <>
+      <Button.Icon
+        icon="zoomIn"
+        title={commonText.zoom()}
+        onClick={(): void => {
+          zoomIn();
+        }}
+      />
+      <Button.Icon
+        icon="zoomOut"
+        title={commonText.unzoom()}
+        onClick={(): void => {
+          zoomOut();
+        }}
+      />
+      <Button.Icon
+        icon="arrowPath"
+        title={commonText.reset()}
+        onClick={(): void => {
+          resetTransform(0);
+        }}
+      />
+      {canToggleSidebar && typeof onToggleSidebar === 'function' ? (
+        <Button.Icon
+          icon={isSidebarExpanded ? 'chevronDoubleRight' : 'chevronDoubleLeft'}
+          title={
+            isSidebarExpanded
+              ? attachmentsText.hideForm()
+              : attachmentsText.showForm()
+          }
+          onClick={(): void => {
+            onToggleSidebar();
+          }}
+        />
+      ) : undefined}
     </>
   );
 }

@@ -27,7 +27,6 @@ import type { SpecifyTable } from '../DataModel/specifyTable';
 import { genericTables, getTable } from '../DataModel/tables';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { useMenuItem } from '../Header/MenuContext';
-import { getPref } from '../InitialContext/remotePrefs';
 import type { TreeInformation } from '../InitialContext/treeRanks';
 import {
   getTreeDefinitions,
@@ -38,6 +37,7 @@ import { useTitle } from '../Molecules/AppTitle';
 import { ResourceEdit } from '../Molecules/ResourceLink';
 import { TableIcon } from '../Molecules/TableIcon';
 import { ProtectedTree } from '../Permissions/PermissionDenied';
+import { userPreferences } from '../Preferences/userPreferences';
 import { NotFoundView } from '../Router/NotFoundView';
 import { formatUrl } from '../Router/queryString';
 import { TreeViewActions } from './Actions';
@@ -142,35 +142,89 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
     `conformations${tableName}`
   );
 
-  React.useEffect(
-    () => setUrlConformation(serializeConformation(conformation)),
-    [conformation, setUrlConformation]
-  );
+  // On initial mount, restore conformation from URL or cache.
+  // The URL is the single source of truth during a session;
+  // the cache persists state for when the user closes and reopens the tab.
+  const isFirstRender = React.useRef(true);
   React.useEffect(() => {
-    if (typeof urlConformation !== 'string') return;
-    const parsed = deserializeConformation(urlConformation);
-    setConformation(parsed);
-  }, [setConformation]);
+    if (!isFirstRender.current) return;
+
+    if (typeof urlConformation === 'string') {
+      // URL has a conformation → use it as the initial state
+      const parsed = deserializeConformation(urlConformation);
+      setConformation(parsed);
+    } else if (conformation !== defaultConformation) {
+      // No URL conformation but cache has one → promote to URL
+      setUrlConformation(serializeConformation(conformation));
+    }
+    // If neither URL nor cache has a conformation, use the default (empty).
+  }, [conformation, urlConformation, setConformation, setUrlConformation]);
+
+  // When the user interacts with the tree, persist the conformation
+  // to both the URL (primary) and the cache (for session restoration).
+  React.useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    setUrlConformation(serializeConformation(conformation));
+  }, [conformation, setUrlConformation]);
 
   useTitle(treeText.treeViewTitle({ treeName: table.label }));
 
   // Node sort order
-  const sortField = getPref(`${tableName as 'Geography'}.treeview_sort_field`);
+  /**
+   * A new feature was implemented in PR https://github.com/specify/specify7/pull/6046 to
+   * allow defining the “sort by” field in user preferences. However, this new preference
+   * was not used when fetching rows (see formatUrl(\${baseUrl}/${parentId}/name/`
+   * below).
+   * Instead, the stale remote preference from the old XML configuration was still being
+   * used. As a result,name`—which was the default—was always applied.
+   *
+   */
+  /*
+   * For now, name is being hard-coded to preserve the behavior described in issue-6043.
+   * const sortField = userPreferences.get(
+   *   'treeEditor',
+   *   'behavior',
+   *   'orderByField'
+   * );
+   */
 
-  const includeAuthor = getPref(`TaxonTreeEditor.DisplayAuthor`);
+  const includeAuthor = userPreferences.get(
+    'treeEditor',
+    'taxon',
+    'displayAuthor'
+  );
 
-  const baseUrl = `/api/specify_tree/${tableName.toLowerCase()}/${
+  const includeStartEndPeriods = userPreferences.get(
+    'treeEditor',
+    'geologicTimePeriod',
+    'displayChronoPeriods'
+  );
+
+  const baseUrl = `/trees/specify_tree/${tableName.toLowerCase()}/${
     treeDefinition.id
   }`;
+
+  const [biostratFilter = 'all', setBiostratFilter] = useCachedState(
+    'tree',
+    'biostratFilter'
+  );
 
   const getRows = React.useCallback(
     async (parentId: number | 'null') =>
       fetchRows(
-        formatUrl(`${baseUrl}/${parentId}/${sortField}/`, {
-          includeAuthor: includeAuthor.toString(),
-        })
+        formatUrl(
+          `${baseUrl}/${parentId}/${tableName === 'GeologicTimePeriod' ? 'startPeriod' : 'name'}/`,
+          {
+            includeAuthor: includeAuthor.toString(),
+            includeStartEndPeriods: includeStartEndPeriods.toString(),
+            biostrat: biostratFilter,
+          }
+        )
       ),
-    [baseUrl, sortField]
+    [baseUrl, tableName, includeAuthor, includeStartEndPeriods, biostratFilter]
   );
 
   const [rows, setRows] = useAsyncState<RA<Row>>(
@@ -239,6 +293,7 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
       <Tree
         actionRow={actionRow}
         baseUrl={baseUrl}
+        biostratFilter={biostratFilter}
         conformation={[conformation, setConformation]}
         focusPath={states[type].focusPath}
         focusRef={toolbarButtonRef}
@@ -305,6 +360,7 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
           }}
         />
         <TreeViewSearch
+          biostratFilter={biostratFilter}
           forwardRef={searchBoxRef}
           tableName={tableName}
           treeDefinitionId={treeDefinition.id}
@@ -379,13 +435,31 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
       ) : (
         treeContainer('first')
       )}
-      <Label.Inline>
-        <Input.Checkbox
-          checked={hideEmptyNodes}
-          onValueChange={setHideEmptyNodes}
-        />
-        {treeText.associatedNodesOnly()}
-      </Label.Inline>
+      <div className="flex items-center justify-between">
+        <Label.Inline>
+          <Input.Checkbox
+            checked={hideEmptyNodes}
+            onValueChange={setHideEmptyNodes}
+          />
+          {treeText.associatedNodesOnly()}
+        </Label.Inline>
+        {tableName === 'GeologicTimePeriod' && (
+          <Select
+            className="w-max"
+            aria-label={treeText.biostratFilter()}
+            title={treeText.biostratFilter()}
+            value={biostratFilter}
+            onValueChange={(value: string): void => {
+              setBiostratFilter(value as 'all' | 'bio' | 'chrono');
+              setRows(undefined);
+            }}
+          >
+            <option value="all">{treeText.biostratAll()}</option>
+            <option value="chrono">{treeText.biostratChrono()}</option>
+            <option value="bio">{treeText.biostratBio()}</option>
+          </Select>
+        )}
+      </div>
     </Container.Full>
   );
 }

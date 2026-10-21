@@ -56,7 +56,7 @@ const wbPlanView: NavigatorSpec = {
    * Hide nested -to-many relationships as they are not
    * supported by the WorkBench
    */
-  allowNestedToMany: false,
+  allowNestedToMany: true,
   ensurePermission: () =>
     userPreferences.get('workBench', 'wbPlanView', 'showNoAccessTables')
       ? 'create'
@@ -96,7 +96,7 @@ const queryBuilder: NavigatorSpec = {
   allowTransientToMany: true,
   useSchemaOverrides: false,
   // All tree fields are only available for "any rank"
-  includeAllTreeFields: false,
+  includeAllTreeFields: true,
   allowNestedToMany: true,
   ensurePermission: () =>
     userPreferences.get('queryBuilder', 'general', 'showNoReadTables')

@@ -22,6 +22,7 @@ import type {
 import type { SortConfig } from '../../components/Molecules/Sorting';
 import type { PartialPreferences } from '../../components/Preferences/BasePreferences';
 import type { collectionPreferenceDefinitions } from '../../components/Preferences/CollectionDefinitions';
+import type { globalPreferenceDefinitions } from '../../components/Preferences/GlobalDefinitions';
 import type { userPreferenceDefinitions } from '../../components/Preferences/UserDefinitions';
 import type { Conformations } from '../../components/TreeView/helpers';
 import type { WbSearchPreferences } from '../../components/WorkBench/AdvancedSearch';
@@ -35,6 +36,9 @@ export type CacheDefinitions = {
   };
   readonly general: {
     readonly clearCacheOnException: boolean;
+  };
+  readonly expressSearch: {
+    readonly showSearchTips: boolean;
   };
   readonly forms: {
     readonly readOnlyMode: boolean;
@@ -86,6 +90,7 @@ export type CacheDefinitions = {
     readonly hideEmptyNodes: boolean;
     readonly isSplit: boolean;
     readonly isHorizontal: boolean;
+    readonly biostratFilter: 'all' | 'bio' | 'chrono';
   };
   readonly workBenchSortConfig: {
     /**
@@ -98,6 +103,7 @@ export type CacheDefinitions = {
       }
     >;
   };
+  readonly workBenchAttachmentViewer: Readonly<Record<string, RA<number>>>;
   readonly sortConfig: {
     readonly [KEY in keyof SortConfigs]: SortConfig<SortConfigs[KEY]>;
   };
@@ -140,6 +146,9 @@ export type CacheDefinitions = {
   readonly collectionPreferences: {
     readonly cached: PartialPreferences<typeof collectionPreferenceDefinitions>;
   };
+  readonly globalPreferences: {
+    readonly cached: PartialPreferences<typeof globalPreferenceDefinitions>;
+  };
   readonly securityTool: {
     readonly policiesLayout: 'horizontal' | 'vertical';
     readonly previewCollapsed: boolean;
@@ -150,6 +159,8 @@ export type CacheDefinitions = {
     readonly conformation: RA<AppResourcesConformation>;
     readonly filters: AppResourceFilters;
     readonly showHiddenTables: boolean;
+    /** Last table selected in the DataViewQueries visual editor */
+    readonly dataViewQueriesTable: keyof Tables;
   };
   readonly pageSizes: RR<Paginators, (typeof pageSizes)[number]>;
   readonly formEditor: {
@@ -164,6 +175,9 @@ export type CacheDefinitions = {
     readonly statsValue: RA<
       RA<RA<{ readonly itemName: string; readonly value: number | string }>>
     >;
+  };
+  readonly batchEdit: {
+    readonly warningBatchEditDialog: boolean;
   };
 };
 
@@ -213,6 +227,7 @@ export type SortConfigs = {
     | 'name'
     | 'timestampCreated'
     | 'timestampModified';
+  readonly listOfBatchEditDataSets: 'dateCreated' | 'dateUploaded' | 'name';
 };
 
 // Some circular types can't be expressed without interfaces

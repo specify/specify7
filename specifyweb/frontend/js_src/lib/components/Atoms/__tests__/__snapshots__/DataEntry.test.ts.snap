@@ -1,10 +1,10 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[` renders without errors 1`] = `
 <DocumentFragment>
   <button
     aria-label="Add"
-    class="icon link rounded !text-green-700 print:hidden "
+    class="icon link rounded !text-brand-400 print:hidden "
     title="Add"
     type="button"
   >
@@ -106,7 +106,7 @@ exports[` renders without errors 5`] = `
 <DocumentFragment>
   <button
     aria-label="Search"
-    class="icon link rounded !text-blue-500 print:hidden "
+    class="icon link rounded !text-blue-100 print:hidden "
     title="Search"
     type="button"
   >
@@ -265,20 +265,15 @@ exports[`DataEntry.visit no resource 2`] = `
 <DocumentFragment>
   <a
     aria-label="Open in New Tab"
-    class="link !text-blue-700 print:hidden "
+    class="link !text-brand-400 print:hidden "
     href="RESOURCE_VIEW_URL"
     rel="noopener"
     target="_blank"
     title="Open in New Tab"
   >
     <span
-      title="(opens in a new tab)"
+      aria-hidden="true"
     >
-      <span
-        class="sr-only"
-      >
-        (opens in a new tab)
-      </span>
       <svg
         aria-hidden="true"
         class="w-6 h-6 flex-shrink-0"
