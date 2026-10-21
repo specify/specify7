@@ -318,6 +318,9 @@ export function QueryComboBox({
 
   // Pagination state for batch-on-scroll loading
   const [isLoadingMore, setIsLoadingMore] = React.useState(false);
+  const loadingMoreRef = React.useRef<
+    RA<SerializedResource<SpQuery>> | undefined
+  >(undefined);
   const paginationRef = React.useRef({
     hasMore: true,
     offset: 0,
@@ -416,6 +419,8 @@ export function QueryComboBox({
 
       // Reset pagination on new search
       setExtraItems([]);
+      loadingMoreRef.current = undefined;
+      setIsLoadingMore(false);
       const queries = makeQueries(value);
       const state = { hasMore: true, offset: 0, queries };
       paginationRef.current = state;
@@ -434,11 +439,21 @@ export function QueryComboBox({
   );
 
   const handleScrollEnd = React.useCallback((): void => {
-    if (!paginationRef.current.hasMore || isLoadingMore) return;
+    if (!paginationRef.current.hasMore || loadingMoreRef.current !== undefined)
+      return;
+
+    const queries = paginationRef.current.queries;
+    const offset = paginationRef.current.offset;
+    loadingMoreRef.current = queries;
 
     setIsLoadingMore(true);
-    void runPage(paginationRef.current.offset)
+    void runPage(offset)
       .then((responses) => {
+        if (
+          paginationRef.current.queries !== queries ||
+          loadingMoreRef.current !== queries
+        )
+          return undefined;
         const newItems = rowsToItems(responses);
         paginationRef.current.offset += QUERY_COMBO_BOX_PAGE_SIZE;
         paginationRef.current.hasMore = responses.some(
@@ -447,11 +462,19 @@ export function QueryComboBox({
         return newItems;
       })
       .then((newItems) => {
+        if (newItems === undefined || loadingMoreRef.current !== queries)
+          return;
+        loadingMoreRef.current = undefined;
         setIsLoadingMore(false);
         setExtraItems((prev) => [...prev, ...newItems]);
       })
-      .catch(() => setIsLoadingMore(false));
-  }, [rowsToItems, runPage, isLoadingMore]);
+      .catch(() => {
+        if (loadingMoreRef.current === queries) {
+          loadingMoreRef.current = undefined;
+          setIsLoadingMore(false);
+        }
+      });
+  }, [rowsToItems, runPage]);
 
   // Extra items appended via scroll pagination
   const [extraItems, setExtraItems] = React.useState<
