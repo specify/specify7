@@ -1864,10 +1864,12 @@ function DwcaDefinitionEditorLoaded({
     )
   );
   React.useEffect(() => {
+    const key = getFieldBlockerKey(appResourceDataField, 'dwca-required-terms');
     setSaveBlockers(
       missingRequiredTerms.length === 0 ? [] : [requiredTermsMessage],
-      getFieldBlockerKey(appResourceDataField, 'dwca-required-terms')
+      key
     );
+    return (): void => setSaveBlockers([], key);
   }, [
     appResourceDataField,
     missingRequiredTerms,
@@ -1886,10 +1888,12 @@ function DwcaDefinitionEditorLoaded({
   }, [mappings]);
   const hasDuplicateFileNames = duplicateFileNames.size > 0;
   React.useEffect(() => {
+    const key = getFieldBlockerKey(appResourceDataField, 'dwca-file-names');
     setSaveBlockers(
       hasDuplicateFileNames ? [dwcaText.dwcaFileNamesMustBeUnique()] : [],
-      getFieldBlockerKey(appResourceDataField, 'dwca-file-names')
+      key
     );
+    return (): void => setSaveBlockers([], key);
   }, [appResourceDataField, hasDuplicateFileNames, setSaveBlockers]);
   const hasEmptyRequiredValues = React.useMemo(
     () =>
@@ -1899,10 +1903,15 @@ function DwcaDefinitionEditorLoaded({
     [mappings]
   );
   React.useEffect(() => {
+    const key = getFieldBlockerKey(
+      appResourceDataField,
+      'dwca-required-values'
+    );
     setSaveBlockers(
       hasEmptyRequiredValues ? [formsText.requiredField()] : [],
-      getFieldBlockerKey(appResourceDataField, 'dwca-required-values')
+      key
     );
+    return (): void => setSaveBlockers([], key);
   }, [appResourceDataField, hasEmptyRequiredValues, setSaveBlockers]);
   React.useEffect(() => {
     if (tabValue !== undefined && tabValues[tab] !== tabValue)

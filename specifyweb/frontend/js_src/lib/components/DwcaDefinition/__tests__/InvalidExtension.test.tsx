@@ -5,6 +5,8 @@ import { MemoryRouter } from 'react-router';
 import { requireContext } from '../../../tests/helpers';
 import { LoadingContext } from '../../Core/Contexts';
 import * as collectionModule from '../../DataModel/collection';
+import { getField } from '../../DataModel/helpers';
+import { getFieldBlockers } from '../../DataModel/saveBlockers';
 import { tables } from '../../DataModel/tables';
 import { UnloadProtectsContext } from '../../Router/UnloadProtect';
 import { DwcaDefinitionEditor } from '../DwcaDefinition';
@@ -30,6 +32,37 @@ test('offers the XML editor when the definition is invalid', async () => {
   expect(screen.getByRole('alert')).toHaveTextContent('invalid XML');
   fireEvent.click(screen.getByRole('button', { name: 'Open XML Editor' }));
   expect(onSwitchToXmlEditor).toHaveBeenCalledTimes(1);
+});
+
+test('clears visual editor save blockers when switching editors', async () => {
+  jest
+    .spyOn(collectionModule, 'fetchCollection')
+    .mockImplementation(() => new Promise(() => undefined));
+  const appResource = new tables.SpAppResource.Resource({ name: 'DwCA' });
+  const dataField = getField(appResource.specifyTable, 'spAppResourceDatas');
+  const { unmount } = render(
+    <MemoryRouter>
+      <LoadingContext.Provider value={() => undefined}>
+        <UnloadProtectsContext.Provider value={[]}>
+          <DwcaDefinitionEditor
+            {...({
+              appResource,
+              data: '<archive><core rowType="http://rs.tdwg.org/dwc/terms/Occurrence"><queries><query contextTableId="1" name=""><id stringId="1.collectionobject.guid" /></query></queries></core></archive>',
+              onChange: jest.fn(),
+            } as unknown as Parameters<typeof DwcaDefinitionEditor>[0])}
+          />
+        </UnloadProtectsContext.Provider>
+      </LoadingContext.Provider>
+    </MemoryRouter>
+  );
+  expect(
+    await screen.findByRole('button', { name: 'Core' })
+  ).toBeInTheDocument();
+  expect(getFieldBlockers(appResource, dataField)).toEqual([
+    'Field is required.',
+  ]);
+  unmount();
+  expect(getFieldBlockers(appResource, dataField)).toEqual([]);
 });
 
 test('hides a mismatched extension and lets the user remove it', async () => {
