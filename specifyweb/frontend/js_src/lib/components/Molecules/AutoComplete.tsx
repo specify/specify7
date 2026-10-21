@@ -438,16 +438,7 @@ export function AutoComplete<T>({
     const newCurrentItem = allResults?.find(
       ({ label, searchValue }) => (searchValue ?? label) === currentValue
     );
-    setCurrentItem(
-      newCurrentItem === undefined
-        ? currentValue
-        : (currentItem) =>
-            currentItem === undefined ||
-            typeof currentItem === 'string' ||
-            newCurrentItem.data !== currentItem.data
-              ? newCurrentItem
-              : currentItem
-    );
+    setCurrentItem(newCurrentItem ?? currentValue);
   }, [currentValue, allResults]);
 
   const handleOptionMouseDown = React.useCallback(

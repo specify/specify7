@@ -148,6 +148,11 @@ describe('AutoComplete remote contains results', () => {
         await findByRole('option', { name: 'Bacopa hydrolea' })
       ).toHaveAttribute('aria-selected', 'true');
 
+      rerender(renderAutoComplete([{ label: 'Bacopa hydrolea', data: '2' }]));
+      expect(
+        await findByRole('option', { name: 'Bacopa hydrolea' })
+      ).toHaveAttribute('aria-selected', 'true');
+
       rerender(renderAutoComplete([{ label: 'Bacopa hydrolea', data: '3' }]));
       expect(
         await findByRole('option', { name: 'Bacopa hydrolea' })
