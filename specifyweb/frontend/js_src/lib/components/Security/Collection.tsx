@@ -161,65 +161,67 @@ export function CollectionView({
                 ) : (
                   <>
                     <Ul>
-                      {mergedUsers.map(({ userId, userName, roles, presence }) => {
-                        const canRead =
-                          userId === userInformation.id ||
-                          hasTablePermission('SpecifyUser', 'read');
-                        const currentPresence = presence ?? 'offline';
-                        const presenceLabel = {
-                          active: userText.presenceActive(),
-                          inactive: userText.presenceInactive(),
-                          offline: userText.presenceOffline(),
-                        }[currentPresence];
-                        const children = (
-                          <>
-                            {userName}
-                            {roles.length > 0 && (
-                              <span className="text-gray-500">
-                                {`(${formatConjunction(
-                                  roles.map(({ roleName }) => roleName)
-                                )})`}
-                              </span>
-                            )}
-                            <span
-                              role="img"
-                              aria-label={presenceLabel}
-                              title={presenceLabel}
-                              className={`ml-2 inline-block w-2.5 h-2.5 rounded-full ${
-                                currentPresence === 'active'
-                                  ? 'bg-green-500'
-                                  : currentPresence === 'inactive'
-                                    ? 'bg-yellow-500'
-                                    : 'bg-red-500'
-                              }`}
-                            />
-                          </>
-                        );
-                        return (
-                          <li key={userId}>
-                            {canRead ? (
-                              <Link.Default
-                                href={`/specify/security/user/${userId}/`}
-                                onClick={(event): void => {
-                                  event.preventDefault();
-                                  navigate(
-                                    formatUrl(
-                                      `/specify/security/user/${userId}/`,
-                                      {
-                                        collection: collection.id,
-                                      }
-                                    )
-                                  );
-                                }}
-                              >
-                                {children}
-                              </Link.Default>
-                            ) : (
-                              children
-                            )}
-                          </li>
-                        );
-                      })}
+                      {mergedUsers.map(
+                        ({ userId, userName, roles, presence }) => {
+                          const canRead =
+                            userId === userInformation.id ||
+                            hasTablePermission('SpecifyUser', 'read');
+                          const currentPresence = presence ?? 'offline';
+                          const presenceLabel = {
+                            active: userText.presenceActive(),
+                            inactive: userText.presenceInactive(),
+                            offline: userText.presenceOffline(),
+                          }[currentPresence];
+                          const children = (
+                            <>
+                              {userName}
+                              {roles.length > 0 && (
+                                <span className="text-gray-500">
+                                  {`(${formatConjunction(
+                                    roles.map(({ roleName }) => roleName)
+                                  )})`}
+                                </span>
+                              )}
+                              <span
+                                role="img"
+                                aria-label={presenceLabel}
+                                title={presenceLabel}
+                                className={`ml-2 inline-block w-2.5 h-2.5 rounded-full ${
+                                  currentPresence === 'active'
+                                    ? 'bg-green-500'
+                                    : currentPresence === 'inactive'
+                                      ? 'bg-yellow-500'
+                                      : 'bg-red-500'
+                                }`}
+                              />
+                            </>
+                          );
+                          return (
+                            <li key={userId}>
+                              {canRead ? (
+                                <Link.Default
+                                  href={`/specify/security/user/${userId}/`}
+                                  onClick={(event): void => {
+                                    event.preventDefault();
+                                    navigate(
+                                      formatUrl(
+                                        `/specify/security/user/${userId}/`,
+                                        {
+                                          collection: collection.id,
+                                        }
+                                      )
+                                    );
+                                  }}
+                                >
+                                  {children}
+                                </Link.Default>
+                              ) : (
+                                children
+                              )}
+                            </li>
+                          );
+                        }
+                      )}
                     </Ul>
                     <div>
                       <Link.Success
