@@ -486,7 +486,7 @@ msgstr "Институциональная иерархия"
 msgid "emptyTaxonTree"
 msgstr "Будет создано пустое таксономическое дерево."
 
-#: components/Notifications/NotificationRenderers.tsx:477
+#: components/Notifications/NotificationRenderers.tsx:84
 #. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "collectionCreationStarted"

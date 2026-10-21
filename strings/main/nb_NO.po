@@ -53,7 +53,7 @@ msgstr "Gå tilbake til hjemmesiden"
 msgid "errorOccurred"
 msgstr "Beklager, noe har gått galt"
 
-#: components/Errors/Toasts.tsx:97
+#: components/Errors/Toasts.tsx:166
 #. Used in: Components > Errors > Toasts
 msgid "clickToSeeDetails"
 msgstr "Klikk for å se detaljer"

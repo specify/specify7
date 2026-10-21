@@ -479,22 +479,22 @@ msgstr "Standard oppretting av tre startet"
 msgid "defaultTreeCreationStartedDescription"
 msgstr "Treet opprettes i bakgrunnen. Du blir varslet når det er fullført."
 
-#: components/Notifications/NotificationRenderers.tsx:447
+#: components/Notifications/NotificationRenderers.tsx:79
 #. Used in: Components > Notifications > Notification Renderers
 msgid "defaultTreeTaskStarted"
 msgstr "Standardprosessen for opprettelse av trestruktur har startet."
 
-#: components/Notifications/NotificationRenderers.tsx:455
+#: components/Notifications/NotificationRenderers.tsx:80
 #. Used in: Components > Notifications > Notification Renderers
 msgid "defaultTreeTaskFailed"
 msgstr "Standardopprettelse av trestruktur mislyktes."
 
-#: components/Notifications/NotificationRenderers.tsx:463
+#: components/Notifications/NotificationRenderers.tsx:81
 #. Used in: Components > Notifications > Notification Renderers
 msgid "defaultTreeTaskCancelled"
 msgstr "Opprettelse av standardtrestrukturen ble avbrutt."
 
-#: components/Notifications/NotificationRenderers.tsx:471
+#: components/Notifications/NotificationRenderers.tsx:82
 #. Used in: Components > Notifications > Notification Renderers
 msgid "defaultTreeTaskCompleted"
 msgstr "Opprettelse av standardtrestrukturen ble fullført."

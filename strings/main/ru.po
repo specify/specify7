@@ -55,7 +55,7 @@ msgstr "Вернуться на главную страницу"
 msgid "errorOccurred"
 msgstr "Приносим свои извинения, произошла ошибка."
 
-#: components/Errors/Toasts.tsx:97
+#: components/Errors/Toasts.tsx:166
 #. Used in: Components > Errors > Toasts
 #, fuzzy
 msgid "clickToSeeDetails"

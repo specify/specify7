@@ -119,27 +119,27 @@ msgstr "Fusión exitosa"
 msgid "merging"
 msgstr "Fusionando"
 
-#: components/Notifications/NotificationRenderers.tsx:240
+#: components/Notifications/NotificationRenderers.tsx:66
 #. Used in: Components > Notifications > Notification Renderers
 msgid "mergingHasStarted"
 msgstr "El proceso de fusión ha comenzado."
 
-#: components/Notifications/NotificationRenderers.tsx:295
+#: components/Notifications/NotificationRenderers.tsx:69
 #. Used in: Components > Notifications > Notification Renderers
 msgid "mergingHasSucceeded"
 msgstr "El proceso de fusión ha sido exitoso."
 
-#: components/Notifications/NotificationRenderers.tsx:257
+#: components/Notifications/NotificationRenderers.tsx:67
 #. Used in: Components > Notifications > Notification Renderers
 msgid "mergingHasFailed"
 msgstr "El proceso de fusión ha fallado."
 
-#: components/Notifications/NotificationRenderers.tsx:275
+#: components/Notifications/NotificationRenderers.tsx:68
 #. Used in: Components > Notifications > Notification Renderers
 msgid "mergingHasBeenCanceled"
 msgstr "Se ha cancelado el proceso de fusión."
 
-#: components/Notifications/NotificationRenderers.tsx:260
+#: components/Notifications/NotificationRenderers.tsx:323
 #. Used in: Components > Notifications > Notification Renderers
 msgid "retryMerge"
 msgstr "Reintentar la fusión."

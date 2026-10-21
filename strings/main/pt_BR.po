@@ -58,7 +58,7 @@ msgstr "Voltar à página inicial"
 msgid "errorOccurred"
 msgstr "Pedimos desculpas, algo deu errado."
 
-#: components/Errors/Toasts.tsx:97
+#: components/Errors/Toasts.tsx:166
 #. Used in: Components > Errors > Toasts
 #, fuzzy
 msgid "clickToSeeDetails"

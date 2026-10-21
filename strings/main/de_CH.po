@@ -55,7 +55,7 @@ msgstr "Zurück zur Startseite"
 msgid "errorOccurred"
 msgstr "Es tut uns leid, da ist etwas schiefgelaufen."
 
-#: components/Errors/Toasts.tsx:97
+#: components/Errors/Toasts.tsx:166
 #. Used in: Components > Errors > Toasts
 #, fuzzy
 msgid "clickToSeeDetails"

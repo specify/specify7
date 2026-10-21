@@ -59,13 +59,13 @@ msgstr "Die Überprüfung der vorherigen Datensicherung ist fehlgeschlagen."
 msgid "startFailed"
 msgstr "Der Backup-Start ist fehlgeschlagen."
 
-#: components/Notifications/NotificationRenderers.tsx:416
+#: components/Notifications/NotificationRenderers.tsx:77
 #. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "databaseBackupCompleted"
 msgstr "Die Datensicherung wurde abgeschlossen."
 
-#: components/Notifications/NotificationRenderers.tsx:432
+#: components/Notifications/NotificationRenderers.tsx:78
 #. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "databaseBackupFailed"

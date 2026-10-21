@@ -61,13 +61,13 @@ msgstr "Provjera prethodne sigurnosne kopije nije uspjela."
 msgid "startFailed"
 msgstr "Pokretanje sigurnosne kopije nije uspjelo."
 
-#: components/Notifications/NotificationRenderers.tsx:416
+#: components/Notifications/NotificationRenderers.tsx:77
 #. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "databaseBackupCompleted"
 msgstr "Sigurnosna kopija baze podataka dovršena."
 
-#: components/Notifications/NotificationRenderers.tsx:432
+#: components/Notifications/NotificationRenderers.tsx:78
 #. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "databaseBackupFailed"

@@ -250,7 +250,7 @@ msgstr "Opprett"
 #: components/Molecules/LinkedRecords.tsx:116
 #: components/Molecules/LinkedRecords.tsx:125
 #: components/Molecules/SyncAttachmentPicker.tsx:101
-#: components/Notifications/Notifications.tsx:89
+#: components/Notifications/Notifications.tsx:121
 #: components/PickLists/index.tsx:251
 #: components/Preferences/index.tsx:165
 #: components/QueryBuilder/CheckReadAccess.tsx:42
@@ -373,7 +373,7 @@ msgstr "Anvend alle"
 
 #: components/Interactions/LoanReturn.tsx:186
 #: components/Interactions/PrepDialog.tsx:137
-#: components/Notifications/Notifications.tsx:85
+#: components/Notifications/Notifications.tsx:117
 #. Used in: Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Notifications > Notifications
 msgid "clearAll"
 msgstr "Fjern alle"
@@ -456,7 +456,7 @@ msgstr "Åpne"
 #: components/Forms/DeleteButton.tsx:111
 #: components/Forms/DeleteButton.tsx:156
 #: components/Molecules/SyncAttachmentPicker.tsx:87
-#: components/Notifications/Notifications.tsx:166
+#: components/Notifications/Notifications.tsx:199
 #: components/PickLists/definitions.ts:45
 #: components/SchemaConfig/UniquenessRuleRow.tsx:188
 #: components/Security/PreviewTables.tsx:68
@@ -945,7 +945,7 @@ msgid "import"
 msgstr "Import"
 
 #: components/Errors/ErrorDialog.tsx:175
-#: components/Errors/Toasts.tsx:103
+#: components/Errors/Toasts.tsx:172
 #: components/Permissions/PermissionDenied.tsx:218
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Errors > Toasts ⬤ Components > Permissions > Permission Denied
 msgid "dismiss"

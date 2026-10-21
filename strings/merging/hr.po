@@ -139,31 +139,31 @@ msgstr "Spajanje uspješno"
 msgid "merging"
 msgstr "Spajanje"
 
-#: components/Notifications/NotificationRenderers.tsx:240
+#: components/Notifications/NotificationRenderers.tsx:66
 #. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "mergingHasStarted"
 msgstr "Proces spajanja je započeo."
 
-#: components/Notifications/NotificationRenderers.tsx:295
+#: components/Notifications/NotificationRenderers.tsx:69
 #. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "mergingHasSucceeded"
 msgstr "Proces spajanja je uspio."
 
-#: components/Notifications/NotificationRenderers.tsx:257
+#: components/Notifications/NotificationRenderers.tsx:67
 #. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "mergingHasFailed"
 msgstr "Proces spajanja nije uspio."
 
-#: components/Notifications/NotificationRenderers.tsx:275
+#: components/Notifications/NotificationRenderers.tsx:68
 #. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "mergingHasBeenCanceled"
 msgstr "Proces spajanja je otkazan."
 
-#: components/Notifications/NotificationRenderers.tsx:260
+#: components/Notifications/NotificationRenderers.tsx:323
 #. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "retryMerge"

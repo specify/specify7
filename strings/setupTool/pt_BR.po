@@ -483,7 +483,7 @@ msgstr "Hierarquia Institucional"
 msgid "emptyTaxonTree"
 msgstr "Uma árvore taxonômica vazia será criada."
 
-#: components/Notifications/NotificationRenderers.tsx:477
+#: components/Notifications/NotificationRenderers.tsx:84
 #. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "collectionCreationStarted"

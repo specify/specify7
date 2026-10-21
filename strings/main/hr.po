@@ -62,7 +62,7 @@ msgstr "Povratak na početnu stranicu"
 msgid "errorOccurred"
 msgstr "Žao nam je, nešto je pošlo po zlu"
 
-#: components/Errors/Toasts.tsx:97
+#: components/Errors/Toasts.tsx:166
 #. Used in: Components > Errors > Toasts
 #, fuzzy
 msgid "clickToSeeDetails"

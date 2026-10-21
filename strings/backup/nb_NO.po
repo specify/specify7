@@ -51,12 +51,12 @@ msgstr "Kunne ikke sjekke forrige sikkerhetskopi."
 msgid "startFailed"
 msgstr "Sikkerhetskopieringsstart mislyktes."
 
-#: components/Notifications/NotificationRenderers.tsx:416
+#: components/Notifications/NotificationRenderers.tsx:77
 #. Used in: Components > Notifications > Notification Renderers
 msgid "databaseBackupCompleted"
 msgstr "Sikkerhetskopiering av databasen fullført."
 
-#: components/Notifications/NotificationRenderers.tsx:432
+#: components/Notifications/NotificationRenderers.tsx:78
 #. Used in: Components > Notifications > Notification Renderers
 msgid "databaseBackupFailed"
 msgstr "Sikkerhetskopiering av databasen mislyktes."

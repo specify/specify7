@@ -460,7 +460,7 @@ msgstr "Jerarquía institucional"
 msgid "emptyTaxonTree"
 msgstr "Se creará un árbol taxonómico vacío."
 
-#: components/Notifications/NotificationRenderers.tsx:477
+#: components/Notifications/NotificationRenderers.tsx:84
 #. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "collectionCreationStarted"

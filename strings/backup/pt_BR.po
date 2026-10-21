@@ -59,13 +59,13 @@ msgstr "Falha ao verificar o backup anterior."
 msgid "startFailed"
 msgstr "Falha ao iniciar o backup."
 
-#: components/Notifications/NotificationRenderers.tsx:416
+#: components/Notifications/NotificationRenderers.tsx:77
 #. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "databaseBackupCompleted"
 msgstr "Cópia de segurança do banco de dados concluída."
 
-#: components/Notifications/NotificationRenderers.tsx:432
+#: components/Notifications/NotificationRenderers.tsx:78
 #. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "databaseBackupFailed"
