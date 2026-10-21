@@ -417,12 +417,15 @@ export function QueryComboBox({
       // Reset pagination on new search
       setExtraItems([]);
       const queries = makeQueries(value);
-      paginationRef.current = { hasMore: true, offset: 0, queries };
+      const state = { hasMore: true, offset: 0, queries };
+      paginationRef.current = state;
 
       const responses = await runPage(0);
+      if (paginationRef.current !== state) return [];
+
       const items = rowsToItems(responses);
-      paginationRef.current.offset = QUERY_COMBO_BOX_PAGE_SIZE;
-      paginationRef.current.hasMore = responses.some(
+      state.offset = QUERY_COMBO_BOX_PAGE_SIZE;
+      state.hasMore = responses.some(
         (r) => r.length >= QUERY_COMBO_BOX_PAGE_SIZE
       );
       return items;
