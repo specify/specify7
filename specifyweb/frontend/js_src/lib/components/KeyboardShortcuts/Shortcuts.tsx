@@ -13,7 +13,6 @@ import type { RA } from '../../utils/types';
 import { removeItem, replaceItem, replaceKey } from '../../utils/utils';
 import { Key } from '../Atoms';
 import { Button } from '../Atoms/Button';
-import { className } from '../Atoms/className';
 import type { PreferenceRendererProps } from '../Preferences/types';
 import type { KeyboardShortcuts } from './config';
 import { keyboardPlatform } from './config';
@@ -54,26 +53,24 @@ export function KeyboardShortcutPreferenceItem({
       : (shortcuts: RA<string>): void =>
           setLocalValue(replaceKey(localValue, keyboardPlatform, shortcuts));
 
-  const valueRef = React.useRef(localValue);
-  valueRef.current = localValue;
-
   const [_, triggerReRender] = React.useState(false);
   React.useEffect(
     () => editingEvent.on('change', () => triggerReRender((flip) => !flip)),
     []
   );
 
-  // Cleanup empty when we finish editing
+  // Release the recorder when editing finishes or the component unmounts.
   React.useEffect(
     () =>
       isEditing
         ? (): void => {
-            currentlyEditingShortcut = undefined;
-            editingEvent.trigger('change');
-            handleChange?.(cleanupEmptyShortcuts(valueRef.current));
+            if (currentlyEditingShortcut === key) {
+              currentlyEditingShortcut = undefined;
+              editingEvent.trigger('change');
+            }
           }
         : undefined,
-    [isEditing, handleChange]
+    [isEditing, key]
   );
 
   return (
@@ -83,11 +80,21 @@ export function KeyboardShortcutPreferenceItem({
           key={index}
           shortcut={shortcut}
           onEditStart={
-            !isEditing && !globalIsEditingElsewhere
+            !isEditing &&
+            !globalIsEditingElsewhere &&
+            setShortcuts !== undefined
               ? (): void => {
                   currentlyEditingShortcut = key;
                   editingEvent.trigger('change');
                   setEditingIndex(index);
+                }
+              : undefined
+          }
+          onCancel={
+            editingIndex === index
+              ? (): void => {
+                  setLocalValue(cleanupEmptyShortcuts(localValue));
+                  setEditingIndex(false);
                 }
               : undefined
           }
@@ -96,13 +103,19 @@ export function KeyboardShortcutPreferenceItem({
             setShortcuts !== undefined &&
             !globalIsEditingElsewhere
               ? (shortcut): void => {
-                  setShortcuts(
-                    f.unique(
-                      shortcut === undefined
-                        ? removeItem(shortcuts, index)
-                        : replaceItem(shortcuts, index, shortcut)
+                  const newValue = cleanupEmptyShortcuts(
+                    replaceKey(
+                      localValue,
+                      keyboardPlatform,
+                      f.unique(
+                        shortcut === undefined
+                          ? removeItem(shortcuts, index)
+                          : replaceItem(shortcuts, index, shortcut)
+                      )
                     )
                   );
+                  setLocalValue(newValue);
+                  handleChange?.(newValue);
                   setEditingIndex(false);
                 }
               : undefined
@@ -138,30 +151,47 @@ function EditKeyboardShortcut({
   shortcut,
   onSave: handleSave,
   onEditStart: handleEditStart,
+  onCancel: handleCancel,
 }: {
   readonly shortcut: string;
   readonly onSave: ((shortcut: string | undefined) => void) | undefined;
   readonly onEditStart: (() => void) | undefined;
+  readonly onCancel: (() => void) | undefined;
 }): JSX.Element {
   const [localState, setLocalState] = useTriggerState(shortcut);
   const parts = localState.length === 0 ? [] : localState.split(keyJoinSymbol);
   const isEditing = typeof handleSave === 'function';
 
+  const handleSaveRef = React.useRef(handleSave);
+  handleSaveRef.current = handleSave;
+  const cancelButtonRef = React.useRef<HTMLButtonElement>(null);
+
   React.useEffect(() => {
-    if (isEditing) {
-      // Allows user to press Enter to finish setting keyboard shortcut.
-      saveButtonRef.current?.focus();
-      setLocalState('');
-      return setKeyboardEventInterceptor(setLocalState);
+    if (!isEditing) {
+      setLocalState(shortcut);
+      return undefined;
     }
-    return undefined;
-  }, [isEditing, setLocalState]);
+    cancelButtonRef.current?.focus();
+    setLocalState('');
+    let recordedShortcut = '';
+    const clearInterceptor = setKeyboardEventInterceptor((keys) => {
+      recordedShortcut = keys;
+      setLocalState(keys);
+    });
+    const handleKeyUp = (): void => {
+      if (recordedShortcut.length === 0) return;
+      const shortcut = recordedShortcut;
+      recordedShortcut = '';
+      handleSaveRef.current?.(shortcut);
+    };
+    document.addEventListener('keyup', handleKeyUp);
+    return (): void => {
+      clearInterceptor();
+      document.removeEventListener('keyup', handleKeyUp);
+    };
+  }, [isEditing, setLocalState, shortcut]);
 
   const isEmpty = parts.length === 0;
-  const activeValue = React.useRef(localState);
-  activeValue.current = isEmpty ? shortcut : localState;
-
-  const saveButtonRef = React.useRef<HTMLButtonElement>(null);
 
   const localizedParts = React.useMemo(
     () => localizeKeyboardShortcut(localState).split(localizedKeyJoinSymbol),
@@ -197,20 +227,10 @@ function EditKeyboardShortcut({
         </Button.Small>
       )}
       <Button.Small
-        forwardRef={saveButtonRef}
-        variant={isEditing ? className.saveButton : undefined}
-        onClick={
-          isEditing
-            ? (): void =>
-                handleSave(
-                  activeValue.current.length === 0
-                    ? shortcut
-                    : activeValue.current
-                )
-            : handleEditStart
-        }
+        forwardRef={cancelButtonRef}
+        onClick={isEditing ? handleCancel : handleEditStart}
       >
-        {isEditing ? commonText.save() : commonText.edit()}
+        {isEditing ? commonText.cancel() : commonText.edit()}
       </Button.Small>
     </div>
   );
