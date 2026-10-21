@@ -254,12 +254,13 @@ export function AutoComplete<T>({
       typeof onScrollEnd !== 'function' ||
       dataList === null ||
       dataList.clientHeight === 0 ||
+      isLoading ||
       isLoadingMore ||
       dataList.scrollHeight - dataList.clientHeight >= 40
     )
       return;
     onScrollEnd();
-  }, [dataList, itemSource.length, isLoadingMore, onScrollEnd]);
+  }, [dataList, itemSource.length, isLoading, isLoadingMore, onScrollEnd]);
 
   const [activeIndex, setActiveIndex] = React.useState(-1);
   const virtualizer = useVirtualizer({
