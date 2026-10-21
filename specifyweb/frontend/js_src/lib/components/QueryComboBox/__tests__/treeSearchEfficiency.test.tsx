@@ -9,6 +9,7 @@
 import { requireContext } from '../../../tests/helpers';
 import { serializeResource } from '../../DataModel/serializers';
 import { tables } from '../../DataModel/tables';
+import { userPreferences } from '../../Preferences/userPreferences';
 import { queryFieldFilterSpecs } from '../../QueryBuilder/FieldFilterSpec';
 import { localized } from '../../../utils/types';
 import { QUERY_COMBO_BOX_PAGE_SIZE } from '../constants';
@@ -17,6 +18,17 @@ import { makeComboBoxQuery } from '../helpers';
 requireContext();
 
 describe('Tree search efficiency', () => {
+  let originalPreferences: ReturnType<typeof userPreferences.getRaw>;
+
+  beforeEach(() => {
+    originalPreferences = userPreferences.getRaw();
+    userPreferences.setRaw({});
+  });
+
+  afterEach(() => {
+    userPreferences.setRaw(originalPreferences);
+  });
+
   test('makeComboBoxQuery for tree tables uses startsWith by default', () => {
     const query = makeComboBoxQuery({
       fieldName: 'fullName',
@@ -71,6 +83,72 @@ describe('Tree search efficiency', () => {
     expect(searchField?.operStart).toBe(queryFieldFilterSpecs.startsWith.id);
     expect(searchField?.startValue).toBe('smith');
   });
+
+  test.each(['contains', 'startsWith'] as const)(
+    'tree queries honor %s independently of other search preferences',
+    (treeSearchAlgorithm) => {
+      userPreferences.setRaw({
+        form: {
+          autoComplete: { searchAlgorithm: 'startsWith' },
+          queryComboBox: {
+            searchAlgorithm:
+              treeSearchAlgorithm === 'contains' ? 'startsWith' : 'contains',
+            treeSearchAlgorithm,
+          },
+        },
+      });
+
+      const makeQuery = () =>
+        serializeResource(
+          makeComboBoxQuery({
+            fieldName: 'fullName',
+            value: 'hydrolea',
+            isTreeTable: true,
+            typeSearch: {
+              table: tables.Taxon,
+              searchFields: [[tables.Taxon.strictGetLiteralField('fullName')]],
+              name: localized('Taxon'),
+              title: localized('Taxon'),
+              formatter: localized(''),
+              displayFields: undefined,
+              format: localized('%s'),
+            },
+            specialConditions: [],
+          })
+        ).fields.find(({ isDisplay }) => !isDisplay);
+
+      expect(makeQuery()).toEqual(
+        expect.objectContaining({
+          operStart:
+            treeSearchAlgorithm === 'contains'
+              ? queryFieldFilterSpecs.like.id
+              : queryFieldFilterSpecs.startsWith.id,
+          startValue:
+            treeSearchAlgorithm === 'contains' ? '%hydrolea%' : 'hydrolea',
+        })
+      );
+
+      userPreferences.setRaw({
+        form: {
+          queryComboBox: {
+            treeSearchAlgorithm:
+              treeSearchAlgorithm === 'contains' ? 'startsWith' : 'contains',
+          },
+        },
+      });
+
+      expect(makeQuery()).toEqual(
+        expect.objectContaining({
+          operStart:
+            treeSearchAlgorithm === 'contains'
+              ? queryFieldFilterSpecs.startsWith.id
+              : queryFieldFilterSpecs.like.id,
+          startValue:
+            treeSearchAlgorithm === 'contains' ? 'hydrolea' : '%hydrolea%',
+        })
+      );
+    }
+  );
 
   test('search limit is at most 50', () => {
     // The exported constant from index.tsx controls runQuery limit.
