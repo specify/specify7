@@ -122,6 +122,40 @@ describe('AutoComplete remote contains results', () => {
   });
 
   test.each([
+    ['initial page', false],
+    ['appended page', true],
+  ] as const)(
+    'updates selected-option state when %s results arrive or change',
+    async (_page, appended) => {
+      const renderAutoComplete = (
+        items: ReadonlyArray<AutoCompleteItem<string>>
+      ) => (
+        <AutoComplete
+          extraItems={appended ? items : undefined}
+          filterItems={false}
+          source={appended ? [] : items}
+          value="Bacopa hydrolea"
+          onChange={jest.fn()}
+        />
+      );
+      const { getByRole, findByRole, rerender, user } = mount(
+        renderAutoComplete([])
+      );
+
+      rerender(renderAutoComplete([{ label: 'Bacopa hydrolea', data: '2' }]));
+      await user.click(getByRole('button', { name: 'Expand' }));
+      expect(
+        await findByRole('option', { name: 'Bacopa hydrolea' })
+      ).toHaveAttribute('aria-selected', 'true');
+
+      rerender(renderAutoComplete([{ label: 'Bacopa hydrolea', data: '3' }]));
+      expect(
+        await findByRole('option', { name: 'Bacopa hydrolea' })
+      ).toHaveAttribute('aria-selected', 'true');
+    }
+  );
+
+  test.each([
     ['startsWith', ['Hydrolea palustris', 'hydrolea ovata']],
     ['startsWithCaseSensitive', ['hydrolea ovata']],
     ['contains', ['Hydrolea palustris', 'hydrolea ovata', 'Bacopa hydrolea']],

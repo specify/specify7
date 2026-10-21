@@ -115,7 +115,6 @@ export function AutoComplete<T>({
   const [results, setResults] = React.useState<
     RA<AutoCompleteItem<T>> | undefined
   >(undefined);
-  const resultsRef = React.useRef<RA<AutoCompleteItem<T>> | undefined>(results);
 
   const [searchAlgorithm] = userPreferences.use(
     'form',
@@ -163,7 +162,6 @@ export function AutoComplete<T>({
   const updateItems = React.useCallback(
     (items: RA<AutoCompleteItem<T>>): void => {
       setResults(items);
-      resultsRef.current = items;
     },
     []
   );
@@ -190,7 +188,6 @@ export function AutoComplete<T>({
 
       if (results === undefined) {
         setResults([]);
-        resultsRef.current = [];
       }
 
       if (value.length < minLength) return;
@@ -438,7 +435,7 @@ export function AutoComplete<T>({
     AutoCompleteItem<T> | string | undefined
   >(undefined);
   React.useLayoutEffect(() => {
-    const newCurrentItem = resultsRef.current?.find(
+    const newCurrentItem = allResults?.find(
       ({ label, searchValue }) => (searchValue ?? label) === currentValue
     );
     setCurrentItem(
@@ -451,7 +448,7 @@ export function AutoComplete<T>({
               ? newCurrentItem
               : currentItem
     );
-  }, [currentValue]);
+  }, [currentValue, allResults]);
 
   const handleOptionMouseDown = React.useCallback(
     (e: React.MouseEvent): void => {
