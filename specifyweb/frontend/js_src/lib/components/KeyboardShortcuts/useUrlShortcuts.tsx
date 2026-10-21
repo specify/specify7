@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { usePromise } from '../../hooks/useAsyncState';
 import { isExternalUrl } from '../../utils/ajax/helpers';
@@ -11,6 +11,8 @@ import {
 } from '../Header/menuItemDefinitions';
 import { rawUserToolsPromise } from '../Header/userToolDefinitions';
 import { userPreferences } from '../Preferences/userPreferences';
+import { pathIsOverlay } from '../Router/UnloadProtect';
+import { locationToState } from '../Router/RouterState';
 import { bindKeyboardShortcut, setKeyboardShortcutsEnabled } from './context';
 
 export function useUrlShortcuts(): void {
@@ -22,6 +24,7 @@ export function useUrlShortcuts(): void {
   );
   const [menuItems] = usePromise(rawMenuItemsPromise(), false);
   const [userTools] = usePromise(rawUserToolsPromise(), false);
+  const location = useLocation();
   const navigate = useNavigate();
   React.useEffect(() => {
     setKeyboardShortcutsEnabled(shortcutsEnabled);
@@ -33,6 +36,8 @@ export function useUrlShortcuts(): void {
     Object.values(userTools ?? {}).forEach((tools) =>
       Object.values(tools).forEach((tool) => userToolsByUrl.set(tool.url, tool))
     );
+    const backgroundLocation =
+      locationToState(location, 'BackgroundLocation')?.location ?? location;
     const cleanup = Object.entries(shortcuts).map(([path, shortcuts]) => {
       const userTool = userToolsByUrl.get(path);
       return shortcuts === undefined
@@ -48,6 +53,13 @@ export function useUrlShortcuts(): void {
                 globalThis.open(path, '_blank', 'noopener,noreferrer');
               else if (!path.startsWith('/specify/'))
                 globalThis.location.assign(path);
+              else if (pathIsOverlay(path))
+                navigate(path, {
+                  state: {
+                    type: 'BackgroundLocation',
+                    location: backgroundLocation,
+                  },
+                });
               else navigate(path);
             },
             userTool?.title ?? localized(path),
@@ -56,5 +68,5 @@ export function useUrlShortcuts(): void {
     });
     return (): void => cleanup.forEach((cleanup) => cleanup?.());
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [shortcuts, menuItems, userTools, navigate]);
+  }, [shortcuts, menuItems, userTools, location, navigate]);
 }
