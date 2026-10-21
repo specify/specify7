@@ -8,7 +8,7 @@ Replace this with more appropriate tests for your application.
 import os
 import tempfile
 from collections import namedtuple
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 from zipfile import ZipFile
 
 from django.test import Client, TestCase
@@ -23,7 +23,7 @@ from specifyweb.specify.models import (
     Spappresourcedir,
 )
 
-from .dwca import DwCAException, ExportField, validate_definition, validate_stanzas
+from .dwca import DwCAException, ExportField, Stanza, validate_definition, validate_stanzas
 
 class SimpleTest(TestCase):
     def test_basic_addition(self):
@@ -38,6 +38,17 @@ class DwcaValidationTest(TestCase):
         return namedtuple('TestStanza', 'is_core export_fields id_field_idx')(
             is_core, fields, index
         )
+
+    def test_conflicting_fields_do_not_echo_query_values(self):
+        queries = [
+            Mock(get_export_fields=Mock(return_value=('private first field',))),
+            Mock(get_export_fields=Mock(return_value=('private second field',))),
+        ]
+        with self.assertRaisesMessage(
+            DwCAException, 'Query definitions have conflicting fields.'
+        ) as caught:
+            Stanza.get_export_fields(queries)
+        self.assertNotIn('private', str(caught.exception))
 
     def test_requires_matching_extension_identifier(self):
         core = self.stanza(
