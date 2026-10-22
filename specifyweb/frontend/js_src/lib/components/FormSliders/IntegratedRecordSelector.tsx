@@ -24,7 +24,7 @@ import { COJODialog } from '../FormCells/COJODialog';
 import { FormTableCollection } from '../FormCells/FormTableCollection';
 import type { FormType } from '../FormParse';
 import type { SubViewSortField } from '../FormParse/cells';
-import { DeleteButton } from '../Forms/DeleteButton';
+import { DeleteButtonWrapped } from '../Forms/DeleteButton';
 import { augmentMode, ResourceView } from '../Forms/ResourceView';
 import { useFirstFocus } from '../Forms/SpecifyForm';
 import { SubViewContext } from '../Forms/SubView';
@@ -243,7 +243,10 @@ export function IntegratedRecordSelector({
                 <ResourceView
                   containerRef={containerRef}
                   dialog={dialog}
-                  headerButtons={(specifyNetworkBadge): JSX.Element => (
+                  headerButtons={(
+                    specifyNetworkBadge,
+                    showParentResource
+                  ): JSX.Element => (
                     <>
                       <DataEntry.Visit
                         /*
@@ -326,7 +329,7 @@ export function IntegratedRecordSelector({
                         isTreeTable &&
                         resource.id !== undefined &&
                         resource.id !== null ? (
-                          <DeleteButton
+                          <DeleteButtonWrapped
                             deferred={true}
                             isIcon={true}
                             resource={resource}
@@ -343,7 +346,7 @@ export function IntegratedRecordSelector({
                                 onClick={onClick}
                               />
                             )}
-                          </DeleteButton>
+                          </DeleteButtonWrapped>
                         ) : (
                           <DataEntry.Remove
                             disabled={
@@ -365,6 +368,7 @@ export function IntegratedRecordSelector({
                           />
                         )
                       ) : undefined}
+                      {showParentResource}
                       <span
                         className={`flex-1 ${
                           dialog === false ? '-ml-2' : '-ml-4'

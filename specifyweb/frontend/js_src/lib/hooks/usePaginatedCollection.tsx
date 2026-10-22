@@ -5,6 +5,8 @@ import { removeKey, SET } from '../utils/utils';
 import { DEFAULT_FETCH_LIMIT } from '../components/DataModel/collection';
 import { raise, softFail } from '../components/Errors/Crash';
 
+// REFACTOR: clean this up. See the changes in
+// 3c6eea450a0d64acde19574d66f0bdd5ed4731c1 for an exmaple
 export function usePaginatedCollection<COLLECTION_TYPE>({
   initialRecords,
   totalCount: initialTotalCount,
@@ -18,10 +20,18 @@ export function usePaginatedCollection<COLLECTION_TYPE>({
     | ((offset: number) => Promise<RA<COLLECTION_TYPE>>)
     | undefined;
 }) {
+  /*
+   * Warning:
+   * "results" can be a sparse array. Using sparse array to allow
+   * efficiently retrieving the last query result in a query that returns
+   * hundreds of thousands of results.
+   */
   const [results, setResults] = useTriggerState<
     RA<COLLECTION_TYPE | undefined> | undefined
   >(initialRecords);
+  
   const resultsRef = React.useRef(results);
+  
   const handleSetResults: GetOrSet<
     RA<COLLECTION_TYPE | undefined> | undefined
   >[typeof SET] = React.useCallback(
@@ -44,6 +54,7 @@ export function usePaginatedCollection<COLLECTION_TYPE>({
     initialTotalCount
   );
   const previousInitialRecords = React.useRef(initialRecords);
+
   React.useLayoutEffect(() => {
     if (previousInitialRecords.current === initialRecords) {
       setTotalCount(initialTotalCount);
@@ -55,6 +66,7 @@ export function usePaginatedCollection<COLLECTION_TYPE>({
     handleSetResults(initialRecords);
     setTotalCount(initialTotalCount);
   }, [initialRecords, initialTotalCount, handleSetResults, setTotalCount]);
+
   const canFetchMore =
     !Array.isArray(results) ||
     totalCount === undefined ||

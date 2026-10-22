@@ -65,7 +65,7 @@ class FormatterAggregatorTests(SQLAlchemySetup):
                                     'WHEN :param_2 THEN concat(IFNULL(agent."LastName", \'\'), IFNULL(concat(:concat_1, agent."FirstName"), \'\'), IFNULL(concat(:concat_2, agent."MiddleInitial"), \'\')) '
                                     'WHEN :param_3 THEN IFNULL(agent."LastName", \'\') '
                                     'WHEN :param_4 THEN IFNULL(agent."LastName", \'\') END, \'\')')
-            orm_field = object_formatter.aggregate(query, spmodels.datamodel.get_table('Accession').get_relationship('accessionagents'), models.Accession, None, [])
+            orm_field = object_formatter.aggregate(query, spmodels.datamodel.get_table('Accession').get_relationship_strict('accessionagents'), models.Accession, None, [])
             self.assertEqual(sqlparse.format(str(orm_field), reindent=True),
                              '\n  '
                              '(SELECT IFNULL(GROUP_CONCAT(IFNULL(concat(IFNULL(CASE IFNULL(agent_1."AgentType", \'\')'
