@@ -211,6 +211,28 @@ export function getTable(name: string): SpecifyTable | undefined {
 export const strictGetTable = (name: string): SpecifyTable =>
   defined(getTable(name), `Trying to get unknown table: ${name}`);
 
+/** Sort a table list by its caption or internal name. */
+export function sortTablesByCaption<T>(
+  values: RA<T>,
+  getName: (value: T) => string,
+  useCaption = true
+): RA<T> {
+  return [...values].sort((first, second) => {
+    const firstName = getName(first);
+    const secondName = getName(second);
+    const firstLabel = useCaption
+      ? (getTable(firstName)?.label ?? firstName)
+      : firstName;
+    const secondLabel = useCaption
+      ? (getTable(secondName)?.label ?? secondName)
+      : secondName;
+    return (
+      firstLabel.localeCompare(secondLabel) ||
+      firstName.localeCompare(secondName)
+    );
+  });
+}
+
 export function getTreeTable(name: string): SpecifyTable<AnyTree> | undefined {
   const table = getTable(name);
   if (typeof table === 'object' && !isTreeTable(table.name))
@@ -227,8 +249,8 @@ export const getTableById = <SCHEMA extends AnySchema>(
   tableId: number
 ): SpecifyTable<SCHEMA> =>
   (Object.values(genericTables).find((table) => table.tableId === tableId) as
-    | SpecifyTable<SCHEMA>
-    | undefined) ?? error(`Table with id ${tableId} does not exist`);
+    SpecifyTable<SCHEMA> | undefined) ??
+  error(`Table with id ${tableId} does not exist`);
 
 // If this is true, then you can use {domainfilter:true} when fetching that table
 export const hasHierarchyField = (table: SpecifyTable): boolean =>

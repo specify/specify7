@@ -777,7 +777,7 @@ class RowPlanCanonical(NamedTuple):
                 base_table
                 if intermediary_to_tree
                 else datamodel.get_table_strict(
-                    base_table.get_relationship(rel_name).relatedModelName
+                    base_table.get_relationship_strict(rel_name).relatedModelName
                 )
             )
             return _self.to_upload_plan(

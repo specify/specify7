@@ -525,6 +525,7 @@ export function Mapper(props: {
       )}
       {state.showMappingView && (
         <MappingView
+          baseTableName={props.baseTableName}
           mappingElementProps={getMappingLineProps({
             mappingLineData: getMappingLineData({
               baseTableName: props.baseTableName,
@@ -547,6 +548,20 @@ export function Mapper(props: {
                 });
             },
           })}
+          showHiddenFields={state.showHiddenFields}
+          onSelectSearchResult={(mappingPath): void => {
+            dispatch({ type: 'SetMappingViewAction', mappingPath });
+            if (
+              !isReadOnly &&
+              state.lines.length > 0 &&
+              !mappingPathIsComplete(
+                state.lines[state.focusedLine]?.mappingPath ?? [emptyMapping]
+              ) &&
+              mappingPathIsComplete(mappingPath) &&
+              getMappedFieldsBind(mappingPath).length === 0
+            )
+              dispatch({ type: 'MappingViewMapAction' });
+          }}
         >
           <Button.Small
             className="flex-col justify-center p-2"
