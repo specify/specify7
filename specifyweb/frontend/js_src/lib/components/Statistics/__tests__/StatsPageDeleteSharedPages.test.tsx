@@ -5,6 +5,7 @@ import { requireContext } from '../../../tests/helpers';
 import { defaultLayoutGenerated } from '../StatsSpec';
 import {
   addSharedPage,
+  getCurrentPageName,
   getPageButtons,
   getPageNames,
   mockStatsRequests,
@@ -24,11 +25,6 @@ async function deleteSharedPage(user: User, pageName: string): Promise<void> {
     within(dialog).getByRole('button', { name: commonText.remove() })
   );
 }
-
-const getCurrentPageName = () =>
-  getPageButtons(statsText.shared()).find(
-    (page) => page.getAttribute('aria-current') === 'page'
-  )?.textContent;
 
 describe('Deleting Shared pages', () => {
   test('the only Shared page cannot be deleted', async () => {

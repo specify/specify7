@@ -22,7 +22,6 @@ import { StatsPage } from '../index';
 import { defaultLayoutGenerated } from '../StatsSpec';
 import type { CustomStat, DefaultStat, StatLayout } from '../types';
 
-// Responses for backend stats on the default shared page. Others return {}
 const backendResponses: IR<IR<unknown>> = {
   '/stats/collection/preparations/': {
     'C&S': { lots: 826, total: 430 },
@@ -134,11 +133,9 @@ export async function renderEmptyStatsPage() {
 
 export type User = Awaited<ReturnType<typeof renderEmptyStatsPage>>['user'];
 
-// The <li> holding a section's heading, "+" button and page list
 const getSection = (sectionName: string): HTMLElement =>
   screen.getByRole('heading', { name: sectionName }).closest('li')!;
 
-// Each page's <li> holds its page button, then its pencil (rename) button
 const getPageItems = (sectionName: string): RA<HTMLElement> =>
   within(getSection(sectionName)).getAllByRole('listitem');
 
@@ -150,7 +147,11 @@ export const getPageButtons = (sectionName: string): RA<HTMLElement> =>
 export const getPageNames = (sectionName: string) =>
   getPageButtons(sectionName).map(({ textContent }) => textContent);
 
-// Undefined once in edit mode, where the header shows Cancel/Save instead
+export const getCurrentPageName = () =>
+  getPageButtons(statsText.shared()).find(
+    (page) => page.getAttribute('aria-current') === 'page'
+  )?.textContent;
+
 const findEditButton = (): HTMLElement | undefined =>
   screen
     .getAllByRole('button', { name: commonText.edit() })
@@ -179,7 +180,6 @@ export async function addSharedPage(user: User, name: string): Promise<void> {
   );
 }
 
-/** Open the "Edit Page" dialog for a Shared page using its pencil button */
 export async function openEditPageDialog(
   user: User,
   pageName: string
