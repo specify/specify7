@@ -9,6 +9,7 @@ import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { listen } from '../../utils/events';
+import { getListKeyboardNavigationIndex } from '../../utils/keyboardNavigation';
 import type { RA } from '../../utils/types';
 import { DialogContext } from '../Atoms/Button';
 import { className } from '../Atoms/className';
@@ -280,22 +281,21 @@ export function AutoComplete<T>({
     if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
       event.preventDefault();
       event.stopPropagation();
-      const direction = event.key === 'ArrowDown' ? 1 : -1;
-      const nextIndex =
-        activeIndex === -1
-          ? direction === 1
-            ? 0
-            : itemSource.length - 1
-          : Math.min(
-              itemSource.length - 1,
-              Math.max(0, activeIndex + direction)
-            );
+      const nextIndex = getListKeyboardNavigationIndex({
+        activeIndex,
+        itemCount: itemSource.length,
+        key: event.key,
+      });
       setActiveIndex(nextIndex);
       virtualizer.scrollToIndex(nextIndex);
     } else if (event.key === 'Home' || event.key === 'End') {
       event.preventDefault();
       event.stopPropagation();
-      const nextIndex = event.key === 'Home' ? 0 : itemSource.length - 1;
+      const nextIndex = getListKeyboardNavigationIndex({
+        activeIndex,
+        itemCount: itemSource.length,
+        key: event.key,
+      });
       setActiveIndex(nextIndex);
       virtualizer.scrollToIndex(nextIndex);
     } else if (event.key === 'Enter' && activeIndex >= 0) {
