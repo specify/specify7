@@ -1,16 +1,41 @@
-"""
-This file demonstrates writing tests using the unittest module. These will pass
-when you run "manage.py test".
+import json
 
-Replace this with more appropriate tests for your application.
-"""
+from django.test import Client
 
-from django.test import TestCase
+from specifyweb.backend.attachment_gw.models import Spattachmentdataset
+from specifyweb.specify.tests.test_api import ApiTests
 
 
-class SimpleTest(TestCase):
-    def test_basic_addition(self):
-        """
-        Tests that 1 + 1 always equals 2.
-        """
-        self.assertEqual(1 + 1, 2)
+class TestAttachmentDataset(ApiTests):
+    def setUp(self):
+        super().setUp()
+        self.client = Client()
+        self.client.force_login(self.specifyuser)
+
+    def test_create_attachment_dataset(self):
+        response = self.client.post(
+            "/attachment_gw/dataset/",
+            {
+                "name": "Batch upload test",
+                "rows": [],
+                "uploadplan": {
+                    "staticPathKey": "collectionObjectCatalogNumber"
+                },
+                "matchingmode": None,
+            },
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 201, response.content.decode())
+
+        dataset = Spattachmentdataset.objects.get(id=response.json()["id"])
+        self.assertEqual(dataset.name, "Batch upload test")
+        self.assertEqual(dataset.collection, self.collection)
+        self.assertEqual(dataset.specifyuser, self.specifyuser)
+        self.assertEqual(dataset.createdbyagent, self.agent)
+        self.assertEqual(dataset.uploaderstatus, "main")
+        self.assertEqual(dataset.data, [])
+        self.assertEqual(
+            json.loads(dataset.uploadplan),
+            {"staticPathKey": "collectionObjectCatalogNumber"},
+        )
