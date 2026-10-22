@@ -201,9 +201,9 @@ msgstr "Synonyms: {names:string}"
 msgid "treeViewTitle"
 msgstr "{treeName:string} Tree"
 
-#: components/TreeView/Search.tsx:72
 #: components/TreeView/Search.tsx:73
 #: components/TreeView/Search.tsx:74
+#: components/TreeView/Search.tsx:75
 #. Used in: Components > Tree View > Search
 msgid "searchTreePlaceholder"
 msgstr "Search Tree"

@@ -36,8 +36,8 @@ msgstr ""
 msgid "batchEdit"
 msgstr "Edición por lotes"
 
-#: components/WbPlanView/MapperComponents.tsx:654
-#: components/WbPlanView/MapperComponents.tsx:664
+#: components/WbPlanView/MapperComponents.tsx:652
+#: components/WbPlanView/MapperComponents.tsx:662
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "batchEditPrefs"
@@ -207,13 +207,13 @@ msgstr "Confirmación completada sin errores"
 msgid "batchEditRecordSetName"
 msgstr "Confirmación BE de \"{dataSet:string}\""
 
-#: components/WbPlanView/MapperComponents.tsx:622
+#: components/WbPlanView/MapperComponents.tsx:620
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "deferForMatch"
 msgstr "Utilice solo los campos visibles para la coincidencia."
 
-#: components/WbPlanView/MapperComponents.tsx:623
+#: components/WbPlanView/MapperComponents.tsx:621
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "deferForMatchDescription"
@@ -221,7 +221,7 @@ msgstr ""
 "Si es verdadero, los campos de base de datos invisibles no se utilizarán "
 "para la coincidencia. El valor predeterminado es {default:boolean}."
 
-#: components/WbPlanView/MapperComponents.tsx:628
+#: components/WbPlanView/MapperComponents.tsx:626
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "deferForNullCheck"
@@ -229,7 +229,7 @@ msgstr ""
 "Utilice únicamente los campos visibles para la comprobación de registros "
 "vacíos."
 
-#: components/WbPlanView/MapperComponents.tsx:629
+#: components/WbPlanView/MapperComponents.tsx:627
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "deferForNullCheckDescription"

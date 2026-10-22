@@ -65,7 +65,7 @@ msgstr "Ikke kartlagt"
 msgid "mapped"
 msgstr "Kartlagt"
 
-#: components/WbPlanView/MapperComponents.tsx:287
+#: components/WbPlanView/MapperComponents.tsx:285
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "matchBehavior"
 msgstr "Matchatferd:"
@@ -111,12 +111,12 @@ msgstr "Vis skjulte skjemafelt"
 msgid "mappingOptions"
 msgstr "Kartleggingsalternativer"
 
-#: components/WbPlanView/MapperComponents.tsx:291
+#: components/WbPlanView/MapperComponents.tsx:289
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "ignoreWhenBlank"
 msgstr "Ignorer når blank"
 
-#: components/WbPlanView/MapperComponents.tsx:292
+#: components/WbPlanView/MapperComponents.tsx:290
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "ignoreWhenBlankDescription"
 msgstr ""
@@ -124,44 +124,44 @@ msgstr ""
 "i matching. Tomme verdier ignoreres ved matching selv om en standardverdi "
 "er angitt."
 
-#: components/WbPlanView/MapperComponents.tsx:295
+#: components/WbPlanView/MapperComponents.tsx:293
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "ignoreAlways"
 msgstr "Ignorer alltid"
 
-#: components/WbPlanView/MapperComponents.tsx:296
+#: components/WbPlanView/MapperComponents.tsx:294
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "ignoreAlwaysDescription"
 msgstr ""
 "Når den er satt til «Ignorer alltid», vil verdien i denne kolonnen ikke bli "
 "brukt til matching, kun til opplasting."
 
-#: components/WbPlanView/MapperComponents.tsx:299
+#: components/WbPlanView/MapperComponents.tsx:297
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "ignoreNever"
 msgstr "Aldri ignorer"
 
-#: components/WbPlanView/MapperComponents.tsx:300
+#: components/WbPlanView/MapperComponents.tsx:298
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "ignoreNeverDescription"
 msgstr "Denne kolonnen vil alltid bli vurdert for matching, uavhengig av verdien."
 
-#: components/WbPlanView/MapperComponents.tsx:328
+#: components/WbPlanView/MapperComponents.tsx:326
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "allowNullValues"
 msgstr "Tillat nullverdier"
 
-#: components/WbPlanView/MapperComponents.tsx:345
+#: components/WbPlanView/MapperComponents.tsx:343
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "useDefaultValue"
 msgstr "Bruk standardverdi"
 
-#: components/WbPlanView/MapperComponents.tsx:354
+#: components/WbPlanView/MapperComponents.tsx:352
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "defaultValue"
 msgstr "Standardverdi"
 
-#: components/WbPlanView/MapperComponents.tsx:362
+#: components/WbPlanView/MapperComponents.tsx:360
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "defaultValueDescription"
 msgstr "Denne verdien vil bli brukt i stedet for tomme celler"
@@ -273,17 +273,17 @@ msgstr ""
 "et nytt datasett."
 
 #: components/WbPlanView/Mapper.tsx:491
-#: components/WbPlanView/MapperComponents.tsx:420
+#: components/WbPlanView/MapperComponents.tsx:418
 #. Used in: Components > Wb Plan View > Mapper ⬤ Components > Wb Plan View > Mapper Components
 msgid "baseTable"
 msgstr "Basistabell"
 
-#: components/WbPlanView/MapperComponents.tsx:416
+#: components/WbPlanView/MapperComponents.tsx:414
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "goToBaseTable"
 msgstr "Endre basistabell for mapping av datasettkolonner?"
 
-#: components/WbPlanView/MapperComponents.tsx:417
+#: components/WbPlanView/MapperComponents.tsx:415
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "goToBaseTableDescription"
 msgstr ""
@@ -298,29 +298,29 @@ msgstr ""
 msgid "clearMapping"
 msgstr "Tøm mapping"
 
-#: components/WbPlanView/MapperComponents.tsx:438
+#: components/WbPlanView/MapperComponents.tsx:436
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "reRunAutoMapper"
 msgstr "Kjør AutoMapper på nytt"
 
-#: components/WbPlanView/MapperComponents.tsx:447
+#: components/WbPlanView/MapperComponents.tsx:445
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "autoMapper"
 msgstr "AutoMapper"
 
-#: components/WbPlanView/MapperComponents.tsx:211
+#: components/WbPlanView/MapperComponents.tsx:209
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "mappingEditor"
 msgstr "Utforsker for mapping"
 
 #: components/QueryBuilder/Components.tsx:145
-#: components/WbPlanView/MapperComponents.tsx:489
+#: components/WbPlanView/MapperComponents.tsx:487
 #. Used in: Components > Query Builder > Components ⬤ Components > Wb Plan View > Mapper Components
 msgid "hideFieldMapper"
 msgstr "Skjul feltmapper"
 
 #: components/QueryBuilder/Components.tsx:146
-#: components/WbPlanView/MapperComponents.tsx:490
+#: components/WbPlanView/MapperComponents.tsx:488
 #. Used in: Components > Query Builder > Components ⬤ Components > Wb Plan View > Mapper Components
 msgid "showFieldMapper"
 msgstr "Vis feltmapper"
@@ -330,66 +330,66 @@ msgstr "Vis feltmapper"
 msgid "mappings"
 msgstr "Mappinger"
 
-#: components/WbPlanView/MapperComponents.tsx:465
-#: components/WbPlanView/MapperComponents.tsx:474
+#: components/WbPlanView/MapperComponents.tsx:463
+#: components/WbPlanView/MapperComponents.tsx:472
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "clearMappings"
 msgstr "Tøm mappinger"
 
-#: components/WbPlanView/MapperComponents.tsx:252
+#: components/WbPlanView/MapperComponents.tsx:250
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "emptyDataSet"
 msgstr "Tøm datasett"
 
-#: components/WbPlanView/MapperComponents.tsx:256
+#: components/WbPlanView/MapperComponents.tsx:254
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "emptyDataSetDescription"
 msgstr "Dette datasettet har ingen kolonner."
 
-#: components/WbPlanView/MapperComponents.tsx:259
+#: components/WbPlanView/MapperComponents.tsx:257
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "emptyDataSetSecondDescription"
 msgstr ""
 "Trykk på knappen «Legg til ny kolonne» under linjene for mapping for å "
 "legge til nye kolonner."
 
-#: components/WbPlanView/MapperComponents.tsx:442
+#: components/WbPlanView/MapperComponents.tsx:440
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "reRunAutoMapperConfirmation"
 msgstr "Start en ny kartlegging med Automap?"
 
-#: components/WbPlanView/MapperComponents.tsx:443
+#: components/WbPlanView/MapperComponents.tsx:441
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "reRunAutoMapperConfirmationDescription"
 msgstr "Dette vil slette eksisterende mappinger av datafelt."
 
-#: components/WbPlanView/MapperComponents.tsx:469
+#: components/WbPlanView/MapperComponents.tsx:467
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "clearMappingsConfirmation"
 msgstr "Fjern alle eksisterende mappinger?"
 
-#: components/WbPlanView/MapperComponents.tsx:470
+#: components/WbPlanView/MapperComponents.tsx:468
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "clearMappingsConfirmationDescription"
 msgstr "Dette vil slette eksisterende mappinger av datafelt."
 
-#: components/WbPlanView/MapperComponents.tsx:539
+#: components/WbPlanView/MapperComponents.tsx:537
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "changeMatchingLogic"
 msgstr "Endre samsvarslogikk"
 
-#: components/WbPlanView/MapperComponents.tsx:547
+#: components/WbPlanView/MapperComponents.tsx:545
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "matchingLogicDescription"
 msgstr "Krev at data samsvarer med eksisterende dataposter"
 
-#: components/WbPlanView/MapperComponents.tsx:543
+#: components/WbPlanView/MapperComponents.tsx:541
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "matchingLogicUnavailable"
 msgstr "Samsvarslogikk er ikke tilgjengelig for gjeldende mappinger"
 
-#: components/WbPlanView/MapperComponents.tsx:525
-#: components/WbPlanView/MapperComponents.tsx:559
+#: components/WbPlanView/MapperComponents.tsx:523
+#: components/WbPlanView/MapperComponents.tsx:557
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "mustMatch"
 msgstr "Må samsvare"
@@ -436,29 +436,29 @@ msgstr "Den valgte filen er ikke gyldig JSON."
 msgid "invalidJsonFileDescription"
 msgstr "Velg en gyldig JSON-fil for mapping av datasett."
 
-#: components/WbPlanView/MapperComponents.tsx:367
+#: components/WbPlanView/MapperComponents.tsx:365
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "disambiguationBehavior"
 msgstr "Hvordan tvetydighet skal håndteres:"
 
-#: components/WbPlanView/MapperComponents.tsx:371
+#: components/WbPlanView/MapperComponents.tsx:369
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "ask"
 msgstr "Spør"
 
-#: components/WbPlanView/MapperComponents.tsx:372
+#: components/WbPlanView/MapperComponents.tsx:370
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "askDescription"
 msgstr ""
 "Du vil bli bedt om å velge en datapost blant alle postene som samsvarer med "
 "dette feltet."
 
-#: components/WbPlanView/MapperComponents.tsx:375
+#: components/WbPlanView/MapperComponents.tsx:373
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "pickFirst"
 msgstr "Velg først"
 
-#: components/WbPlanView/MapperComponents.tsx:376
+#: components/WbPlanView/MapperComponents.tsx:374
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "pickFirstDescription"
 msgstr ""

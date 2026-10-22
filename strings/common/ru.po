@@ -104,9 +104,9 @@ msgstr "Нет"
 #: components/WbActions/WbRollback.tsx:65
 #: components/WbActions/WbUpload.tsx:108
 #: components/WbActions/WbUpload.tsx:144
-#: components/WbPlanView/MapperComponents.tsx:410
-#: components/WbPlanView/MapperComponents.tsx:436
-#: components/WbPlanView/MapperComponents.tsx:463
+#: components/WbPlanView/MapperComponents.tsx:408
+#: components/WbPlanView/MapperComponents.tsx:434
+#: components/WbPlanView/MapperComponents.tsx:461
 #: components/WbPlanView/State.tsx:94
 #: components/WbToolkit/ChangeOwner.tsx:87
 #: components/WbToolkit/CoordinateConverter.tsx:228
@@ -270,7 +270,7 @@ msgstr "Создавать"
 #: components/QueryBuilder/LoanReturn.tsx:156
 #: components/QueryBuilder/LoanReturn.tsx:222
 #: components/QueryBuilder/Save.tsx:66
-#: components/QueryComboBox/index.tsx:626
+#: components/QueryComboBox/index.tsx:714
 #: components/Reports/Report.tsx:51
 #: components/Reports/Report.tsx:60
 #: components/Router/RouterUtils.tsx:193
@@ -308,9 +308,9 @@ msgstr "Создавать"
 #: components/WbActions/index.tsx:232
 #: components/WbActions/index.tsx:285
 #: components/WbAttachmentViewer/index.tsx:151
-#: components/WbPlanView/MapperComponents.tsx:251
-#: components/WbPlanView/MapperComponents.tsx:532
-#: components/WbPlanView/MapperComponents.tsx:660
+#: components/WbPlanView/MapperComponents.tsx:249
+#: components/WbPlanView/MapperComponents.tsx:530
+#: components/WbPlanView/MapperComponents.tsx:658
 #: components/WbPlanView/State.tsx:34
 #: components/WbToolkit/ChangeOwner.tsx:77
 #: components/WbToolkit/DevShowPlan.tsx:138
@@ -370,8 +370,8 @@ msgstr ""
 #: components/Interactions/LoanReturn.tsx:203
 #: components/Interactions/PrepDialog.tsx:152
 #: components/Security/SetPassword.tsx:37
-#: components/WbPlanView/MapperComponents.tsx:533
-#: components/WbPlanView/MapperComponents.tsx:660
+#: components/WbPlanView/MapperComponents.tsx:531
+#: components/WbPlanView/MapperComponents.tsx:658
 #: components/WbToolkit/CoordinateConverter.tsx:229
 #: components/WorkBench/Disambiguation.tsx:48
 #. Used in: Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Security > Set Password ⬤ Components > Wb Plan View > Mapper Components ⬤ Components > Wb Toolkit > Coordinate Converter ⬤ Components > Work Bench > Disambiguation
@@ -439,7 +439,7 @@ msgstr "Сохранять"
 #: components/Forms/Save.tsx:279
 #: components/Forms/__tests__/Save.test.tsx:26
 #: components/Merging/CompareSubView.tsx:184
-#: components/Molecules/AutoComplete.tsx:631
+#: components/Molecules/AutoComplete.tsx:658
 #: components/PickLists/index.tsx:280
 #: components/QueryBuilder/Wrapped.tsx:488
 #: components/SchemaConfig/Format.tsx:299
@@ -552,7 +552,8 @@ msgstr "Инструменты"
 #: components/Interactions/PrepReturnRow.tsx:96
 #: components/Leaflet/index.ts:196
 #: components/Merging/Usages.tsx:49
-#: components/Molecules/AutoComplete.tsx:511
+#: components/Molecules/AutoComplete.tsx:538
+#: components/Molecules/AutoComplete.tsx:668
 #: components/Molecules/FormattedResource.tsx:16
 #: components/Molecules/FormattedResource.tsx:31
 #: components/Molecules/LinkedRecords.tsx:49
@@ -566,7 +567,7 @@ msgstr "Инструменты"
 #: components/QueryBuilder/QueryLineFilter.tsx:90
 #: components/QueryBuilder/Results.tsx:496
 #: components/QueryBuilder/Results.tsx:497
-#: components/QueryComboBox/index.tsx:451
+#: components/QueryComboBox/index.tsx:538
 #: components/SchemaConfig/Fields.tsx:181
 #: components/SchemaConfig/index.tsx:98
 #: components/SchemaConfig/index.tsx:99
@@ -1086,7 +1087,7 @@ msgstr "Избранные"
 #: components/FormSliders/IntegratedRecordSelector.tsx:112
 #: components/Formatters/Definitions.tsx:244
 #: components/Header/index.tsx:156
-#: components/Molecules/AutoComplete.tsx:650
+#: components/Molecules/AutoComplete.tsx:684
 #: components/SchemaConfig/Tables.tsx:206
 #. Used in: Components > Form Cells > Form Table ⬤ Components > Form Sliders > Integrated Record Selector ⬤ Components > Formatters > Definitions ⬤ Components > Header > Index ⬤ Components > Molecules > Auto Complete ⬤ Components > Schema Config > Tables
 #, fuzzy

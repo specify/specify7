@@ -37,8 +37,8 @@ msgstr ""
 msgid "batchEdit"
 msgstr "Пакетное редактирование"
 
-#: components/WbPlanView/MapperComponents.tsx:654
-#: components/WbPlanView/MapperComponents.tsx:664
+#: components/WbPlanView/MapperComponents.tsx:652
+#: components/WbPlanView/MapperComponents.tsx:662
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "batchEditPrefs"
@@ -210,13 +210,13 @@ msgstr "Фиксация изменений завершена без ошибо
 msgid "batchEditRecordSetName"
 msgstr "BE commit of \"{dataSet:string}\""
 
-#: components/WbPlanView/MapperComponents.tsx:622
+#: components/WbPlanView/MapperComponents.tsx:620
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "deferForMatch"
 msgstr "Для сопоставления используйте только видимые поля."
 
-#: components/WbPlanView/MapperComponents.tsx:623
+#: components/WbPlanView/MapperComponents.tsx:621
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "deferForMatchDescription"
@@ -224,13 +224,13 @@ msgstr ""
 "Если значение равно true, невидимые поля базы данных не будут "
 "использоваться для сопоставления. Значение по умолчанию — {default:boolean}"
 
-#: components/WbPlanView/MapperComponents.tsx:628
+#: components/WbPlanView/MapperComponents.tsx:626
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "deferForNullCheck"
 msgstr "Для проверки на пустую запись используйте только видимые поля."
 
-#: components/WbPlanView/MapperComponents.tsx:629
+#: components/WbPlanView/MapperComponents.tsx:627
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "deferForNullCheckDescription"

@@ -75,7 +75,7 @@ msgstr "Не нанесено на карту"
 msgid "mapped"
 msgstr "Нанесено на карту"
 
-#: components/WbPlanView/MapperComponents.tsx:287
+#: components/WbPlanView/MapperComponents.tsx:285
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "matchBehavior"
@@ -129,13 +129,13 @@ msgstr "Показати приховані поля форми"
 msgid "mappingOptions"
 msgstr "Параметри відображення"
 
-#: components/WbPlanView/MapperComponents.tsx:291
+#: components/WbPlanView/MapperComponents.tsx:289
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "ignoreWhenBlank"
 msgstr "Ігнорувати, коли пусто"
 
-#: components/WbPlanView/MapperComponents.tsx:292
+#: components/WbPlanView/MapperComponents.tsx:290
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "ignoreWhenBlankDescription"
@@ -144,13 +144,13 @@ msgstr ""
 "стовпці не враховуватимуться для зіставлення. Пусті значення ігноруються "
 "під час зіставлення, навіть якщо вказано значення за замовчуванням."
 
-#: components/WbPlanView/MapperComponents.tsx:295
+#: components/WbPlanView/MapperComponents.tsx:293
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "ignoreAlways"
 msgstr "Завжди ігнорувати"
 
-#: components/WbPlanView/MapperComponents.tsx:296
+#: components/WbPlanView/MapperComponents.tsx:294
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "ignoreAlwaysDescription"
@@ -158,13 +158,13 @@ msgstr ""
 "Якщо встановлено значення «Завжди ігнорувати», значення в цьому стовпці не "
 "використовуватиметься для зіставлення, а лише для завантаження."
 
-#: components/WbPlanView/MapperComponents.tsx:299
+#: components/WbPlanView/MapperComponents.tsx:297
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "ignoreNever"
 msgstr "Ніколи не ігноруйте"
 
-#: components/WbPlanView/MapperComponents.tsx:300
+#: components/WbPlanView/MapperComponents.tsx:298
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "ignoreNeverDescription"
@@ -172,25 +172,25 @@ msgstr ""
 "Цей стовпець завжди враховуватиметься для зіставлення, незалежно від його "
 "значення"
 
-#: components/WbPlanView/MapperComponents.tsx:328
+#: components/WbPlanView/MapperComponents.tsx:326
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "allowNullValues"
 msgstr "Дозволити нульові значення"
 
-#: components/WbPlanView/MapperComponents.tsx:345
+#: components/WbPlanView/MapperComponents.tsx:343
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "useDefaultValue"
 msgstr "Використовувати значення за замовчуванням"
 
-#: components/WbPlanView/MapperComponents.tsx:354
+#: components/WbPlanView/MapperComponents.tsx:352
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "defaultValue"
 msgstr "Значення за замовчуванням"
 
-#: components/WbPlanView/MapperComponents.tsx:362
+#: components/WbPlanView/MapperComponents.tsx:360
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "defaultValueDescription"
@@ -321,19 +321,19 @@ msgstr ""
 "набір даних."
 
 #: components/WbPlanView/Mapper.tsx:491
-#: components/WbPlanView/MapperComponents.tsx:420
+#: components/WbPlanView/MapperComponents.tsx:418
 #. Used in: Components > Wb Plan View > Mapper ⬤ Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "baseTable"
 msgstr "Базова таблиця"
 
-#: components/WbPlanView/MapperComponents.tsx:416
+#: components/WbPlanView/MapperComponents.tsx:414
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "goToBaseTable"
 msgstr "Змінити базову таблицю для зіставлення стовпців набору даних?"
 
-#: components/WbPlanView/MapperComponents.tsx:417
+#: components/WbPlanView/MapperComponents.tsx:415
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "goToBaseTableDescription"
@@ -350,33 +350,33 @@ msgstr ""
 msgid "clearMapping"
 msgstr "Очистити мапування"
 
-#: components/WbPlanView/MapperComponents.tsx:438
+#: components/WbPlanView/MapperComponents.tsx:436
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "reRunAutoMapper"
 msgstr "Перезапустіть AutoMapper"
 
-#: components/WbPlanView/MapperComponents.tsx:447
+#: components/WbPlanView/MapperComponents.tsx:445
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "autoMapper"
 msgstr "Автомаппер"
 
-#: components/WbPlanView/MapperComponents.tsx:211
+#: components/WbPlanView/MapperComponents.tsx:209
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "mappingEditor"
 msgstr "Оглядач карти"
 
 #: components/QueryBuilder/Components.tsx:145
-#: components/WbPlanView/MapperComponents.tsx:489
+#: components/WbPlanView/MapperComponents.tsx:487
 #. Used in: Components > Query Builder > Components ⬤ Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "hideFieldMapper"
 msgstr "Приховати картографа полів"
 
 #: components/QueryBuilder/Components.tsx:146
-#: components/WbPlanView/MapperComponents.tsx:490
+#: components/WbPlanView/MapperComponents.tsx:488
 #. Used in: Components > Query Builder > Components ⬤ Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "showFieldMapper"
@@ -388,26 +388,26 @@ msgstr "Показати картографічний пристрій для п
 msgid "mappings"
 msgstr "Відображення"
 
-#: components/WbPlanView/MapperComponents.tsx:465
-#: components/WbPlanView/MapperComponents.tsx:474
+#: components/WbPlanView/MapperComponents.tsx:463
+#: components/WbPlanView/MapperComponents.tsx:472
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "clearMappings"
 msgstr "Очистити зіставлення"
 
-#: components/WbPlanView/MapperComponents.tsx:252
+#: components/WbPlanView/MapperComponents.tsx:250
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "emptyDataSet"
 msgstr "Порожній набір даних"
 
-#: components/WbPlanView/MapperComponents.tsx:256
+#: components/WbPlanView/MapperComponents.tsx:254
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "emptyDataSetDescription"
 msgstr "Цей набір даних не містить жодних стовпців."
 
-#: components/WbPlanView/MapperComponents.tsx:259
+#: components/WbPlanView/MapperComponents.tsx:257
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "emptyDataSetSecondDescription"
@@ -415,50 +415,50 @@ msgstr ""
 "Натисніть кнопку «Додати новий стовпець» під лініями відображення, щоб "
 "додати нові стовпці."
 
-#: components/WbPlanView/MapperComponents.tsx:442
+#: components/WbPlanView/MapperComponents.tsx:440
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "reRunAutoMapperConfirmation"
 msgstr "Автоматичне створення карти, щоб розпочати нове відображення?"
 
-#: components/WbPlanView/MapperComponents.tsx:443
+#: components/WbPlanView/MapperComponents.tsx:441
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "reRunAutoMapperConfirmationDescription"
 msgstr "Це видалить існуючі зіставлення полів даних."
 
-#: components/WbPlanView/MapperComponents.tsx:469
+#: components/WbPlanView/MapperComponents.tsx:467
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "clearMappingsConfirmation"
 msgstr "Очистити всі наявні зіставлення?"
 
-#: components/WbPlanView/MapperComponents.tsx:470
+#: components/WbPlanView/MapperComponents.tsx:468
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "clearMappingsConfirmationDescription"
 msgstr "Це видалить існуючі зіставлення полів даних."
 
-#: components/WbPlanView/MapperComponents.tsx:539
+#: components/WbPlanView/MapperComponents.tsx:537
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "changeMatchingLogic"
 msgstr "Зміна логіки зіставлення"
 
-#: components/WbPlanView/MapperComponents.tsx:547
+#: components/WbPlanView/MapperComponents.tsx:545
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "matchingLogicDescription"
 msgstr "Вимагати збіг даних з існуючими записами"
 
-#: components/WbPlanView/MapperComponents.tsx:543
+#: components/WbPlanView/MapperComponents.tsx:541
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "matchingLogicUnavailable"
 msgstr "Логіка зіставлення недоступна для поточних зіставлень"
 
-#: components/WbPlanView/MapperComponents.tsx:525
-#: components/WbPlanView/MapperComponents.tsx:559
+#: components/WbPlanView/MapperComponents.tsx:523
+#: components/WbPlanView/MapperComponents.tsx:557
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "mustMatch"
@@ -512,19 +512,19 @@ msgstr "Вибраний файл не є дійсним JSON."
 msgid "invalidJsonFileDescription"
 msgstr "Будь ласка, виберіть дійсний файл зіставлення набору даних JSON."
 
-#: components/WbPlanView/MapperComponents.tsx:367
+#: components/WbPlanView/MapperComponents.tsx:365
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "disambiguationBehavior"
 msgstr "Поведінка у визначенні неоднозначностей:"
 
-#: components/WbPlanView/MapperComponents.tsx:371
+#: components/WbPlanView/MapperComponents.tsx:369
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "ask"
 msgstr "Запитайте"
 
-#: components/WbPlanView/MapperComponents.tsx:372
+#: components/WbPlanView/MapperComponents.tsx:370
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "askDescription"
@@ -532,13 +532,13 @@ msgstr ""
 "Вам буде запропоновано вибрати запис з усіх записів, що відповідають цьому "
 "полю."
 
-#: components/WbPlanView/MapperComponents.tsx:375
+#: components/WbPlanView/MapperComponents.tsx:373
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "pickFirst"
 msgstr "Виберіть перший"
 
-#: components/WbPlanView/MapperComponents.tsx:376
+#: components/WbPlanView/MapperComponents.tsx:374
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "pickFirstDescription"

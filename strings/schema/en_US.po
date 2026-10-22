@@ -114,7 +114,7 @@ msgid "tables"
 msgstr "Tables"
 
 #: components/Preferences/UserDefinitions.tsx:885
-#: components/WbPlanView/MapperComponents.tsx:556
+#: components/WbPlanView/MapperComponents.tsx:554
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Plan View > Mapper Components
 msgid "tableName"
 msgstr "Table Name"
@@ -155,7 +155,7 @@ msgstr "Schema changes have not been saved"
 msgid "unsavedChanges"
 msgstr "Unsaved changes"
 
-#: components/WbPlanView/MapperComponents.tsx:412
+#: components/WbPlanView/MapperComponents.tsx:410
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "changeBaseTable"
 msgstr "Change Base Table"

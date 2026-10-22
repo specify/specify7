@@ -76,7 +76,7 @@ msgstr "Bez plana"
 msgid "mapped"
 msgstr "Mapirano"
 
-#: components/WbPlanView/MapperComponents.tsx:287
+#: components/WbPlanView/MapperComponents.tsx:285
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "matchBehavior"
@@ -130,13 +130,13 @@ msgstr "Otkrij skrivena polja obrasca"
 msgid "mappingOptions"
 msgstr "Opcije mapiranja"
 
-#: components/WbPlanView/MapperComponents.tsx:291
+#: components/WbPlanView/MapperComponents.tsx:289
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "ignoreWhenBlank"
 msgstr "Zanemari kada je prazno"
 
-#: components/WbPlanView/MapperComponents.tsx:292
+#: components/WbPlanView/MapperComponents.tsx:290
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "ignoreWhenBlankDescription"
@@ -146,13 +146,13 @@ msgstr ""
 "vrijednosti se zanemaruju prilikom podudaranja čak i ako je navedena zadana "
 "vrijednost."
 
-#: components/WbPlanView/MapperComponents.tsx:295
+#: components/WbPlanView/MapperComponents.tsx:293
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "ignoreAlways"
 msgstr "Uvijek ignoriraj"
 
-#: components/WbPlanView/MapperComponents.tsx:296
+#: components/WbPlanView/MapperComponents.tsx:294
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "ignoreAlwaysDescription"
@@ -160,13 +160,13 @@ msgstr ""
 "Kada je postavljeno na \"Uvijek zanemari\", vrijednost u ovom stupcu neće "
 "se koristiti za potrebe podudaranja, već samo za prijenos."
 
-#: components/WbPlanView/MapperComponents.tsx:299
+#: components/WbPlanView/MapperComponents.tsx:297
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "ignoreNever"
 msgstr "Nikad ne ignoriraj"
 
-#: components/WbPlanView/MapperComponents.tsx:300
+#: components/WbPlanView/MapperComponents.tsx:298
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "ignoreNeverDescription"
@@ -174,25 +174,25 @@ msgstr ""
 "Ovaj stupac bi se uvijek uzimao u obzir za potrebe podudaranja, bez obzira "
 "na njegovu vrijednost"
 
-#: components/WbPlanView/MapperComponents.tsx:328
+#: components/WbPlanView/MapperComponents.tsx:326
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "allowNullValues"
 msgstr "Dopusti null vrijednosti"
 
-#: components/WbPlanView/MapperComponents.tsx:345
+#: components/WbPlanView/MapperComponents.tsx:343
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "useDefaultValue"
 msgstr "Koristi zadanu vrijednost"
 
-#: components/WbPlanView/MapperComponents.tsx:354
+#: components/WbPlanView/MapperComponents.tsx:352
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "defaultValue"
 msgstr "Zadana vrijednost"
 
-#: components/WbPlanView/MapperComponents.tsx:362
+#: components/WbPlanView/MapperComponents.tsx:360
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "defaultValueDescription"
@@ -324,19 +324,19 @@ msgstr ""
 "skup podataka."
 
 #: components/WbPlanView/Mapper.tsx:491
-#: components/WbPlanView/MapperComponents.tsx:420
+#: components/WbPlanView/MapperComponents.tsx:418
 #. Used in: Components > Wb Plan View > Mapper ⬤ Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "baseTable"
 msgstr "Osnovna tablica"
 
-#: components/WbPlanView/MapperComponents.tsx:416
+#: components/WbPlanView/MapperComponents.tsx:414
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "goToBaseTable"
 msgstr "Promijeniti osnovnu tablicu za stupce skupa podataka za mapiranje?"
 
-#: components/WbPlanView/MapperComponents.tsx:417
+#: components/WbPlanView/MapperComponents.tsx:415
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "goToBaseTableDescription"
@@ -353,33 +353,33 @@ msgstr ""
 msgid "clearMapping"
 msgstr "Očisti mapiranje"
 
-#: components/WbPlanView/MapperComponents.tsx:438
+#: components/WbPlanView/MapperComponents.tsx:436
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "reRunAutoMapper"
 msgstr "Ponovno pokrenite AutoMapper"
 
-#: components/WbPlanView/MapperComponents.tsx:447
+#: components/WbPlanView/MapperComponents.tsx:445
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "autoMapper"
 msgstr "AutoMapper"
 
-#: components/WbPlanView/MapperComponents.tsx:211
+#: components/WbPlanView/MapperComponents.tsx:209
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "mappingEditor"
 msgstr "Istraživač karte"
 
 #: components/QueryBuilder/Components.tsx:145
-#: components/WbPlanView/MapperComponents.tsx:489
+#: components/WbPlanView/MapperComponents.tsx:487
 #. Used in: Components > Query Builder > Components ⬤ Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "hideFieldMapper"
 msgstr "Sakrij alat za mapiranje polja"
 
 #: components/QueryBuilder/Components.tsx:146
-#: components/WbPlanView/MapperComponents.tsx:490
+#: components/WbPlanView/MapperComponents.tsx:488
 #. Used in: Components > Query Builder > Components ⬤ Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "showFieldMapper"
@@ -391,26 +391,26 @@ msgstr "Prikaži terenski maper"
 msgid "mappings"
 msgstr "Mapiranje"
 
-#: components/WbPlanView/MapperComponents.tsx:465
-#: components/WbPlanView/MapperComponents.tsx:474
+#: components/WbPlanView/MapperComponents.tsx:463
+#: components/WbPlanView/MapperComponents.tsx:472
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "clearMappings"
 msgstr "Očisti mapiranja"
 
-#: components/WbPlanView/MapperComponents.tsx:252
+#: components/WbPlanView/MapperComponents.tsx:250
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "emptyDataSet"
 msgstr "Prazan skup podataka"
 
-#: components/WbPlanView/MapperComponents.tsx:256
+#: components/WbPlanView/MapperComponents.tsx:254
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "emptyDataSetDescription"
 msgstr "Ovaj skup podataka nema stupaca."
 
-#: components/WbPlanView/MapperComponents.tsx:259
+#: components/WbPlanView/MapperComponents.tsx:257
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "emptyDataSetSecondDescription"
@@ -418,48 +418,48 @@ msgstr ""
 "Pritisnite gumb \"Dodaj novi stupac\" ispod linija mapiranja da biste "
 "dodali nove stupce."
 
-#: components/WbPlanView/MapperComponents.tsx:442
+#: components/WbPlanView/MapperComponents.tsx:440
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "reRunAutoMapperConfirmation"
 msgstr "Automatsko mapiranje za početak novog mapiranja?"
 
-#: components/WbPlanView/MapperComponents.tsx:443
+#: components/WbPlanView/MapperComponents.tsx:441
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "reRunAutoMapperConfirmationDescription"
 msgstr "Ovo će izbrisati postojeća mapiranja podatkovnih polja."
 
-#: components/WbPlanView/MapperComponents.tsx:469
+#: components/WbPlanView/MapperComponents.tsx:467
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "clearMappingsConfirmation"
 msgstr "Izbrisati sva postojeća mapiranja?"
 
-#: components/WbPlanView/MapperComponents.tsx:470
+#: components/WbPlanView/MapperComponents.tsx:468
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "clearMappingsConfirmationDescription"
 msgstr "Ovo će izbrisati postojeća mapiranja podatkovnih polja."
 
-#: components/WbPlanView/MapperComponents.tsx:539
+#: components/WbPlanView/MapperComponents.tsx:537
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "changeMatchingLogic"
 msgstr "Logika podudaranja promjena"
 
-#: components/WbPlanView/MapperComponents.tsx:547
+#: components/WbPlanView/MapperComponents.tsx:545
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "matchingLogicDescription"
 msgstr "Zahtijevajte podatke koji odgovaraju postojećim zapisima"
 
-#: components/WbPlanView/MapperComponents.tsx:543
+#: components/WbPlanView/MapperComponents.tsx:541
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "matchingLogicUnavailable"
 msgstr "Logika podudaranja nije dostupna za trenutna mapiranja"
 
-#: components/WbPlanView/MapperComponents.tsx:525
-#: components/WbPlanView/MapperComponents.tsx:559
+#: components/WbPlanView/MapperComponents.tsx:523
+#: components/WbPlanView/MapperComponents.tsx:557
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "mustMatch"
@@ -511,19 +511,19 @@ msgstr "Odabrana datoteka nije valjani JSON."
 msgid "invalidJsonFileDescription"
 msgstr "Odaberite valjani JSON file."
 
-#: components/WbPlanView/MapperComponents.tsx:367
+#: components/WbPlanView/MapperComponents.tsx:365
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "disambiguationBehavior"
 msgstr "Ponašanje pri razdvajanju:"
 
-#: components/WbPlanView/MapperComponents.tsx:371
+#: components/WbPlanView/MapperComponents.tsx:369
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "ask"
 msgstr "Pitajte"
 
-#: components/WbPlanView/MapperComponents.tsx:372
+#: components/WbPlanView/MapperComponents.tsx:370
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "askDescription"
@@ -531,13 +531,13 @@ msgstr ""
 "Bit ćete upitani da odaberete zapis između svih zapisa koji odgovaraju ovom "
 "polju."
 
-#: components/WbPlanView/MapperComponents.tsx:375
+#: components/WbPlanView/MapperComponents.tsx:373
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "pickFirst"
 msgstr "Prvo odaberi"
 
-#: components/WbPlanView/MapperComponents.tsx:376
+#: components/WbPlanView/MapperComponents.tsx:374
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "pickFirstDescription"

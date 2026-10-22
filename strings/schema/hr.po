@@ -111,7 +111,7 @@ msgid "tables"
 msgstr "Tablice"
 
 #: components/Preferences/UserDefinitions.tsx:885
-#: components/WbPlanView/MapperComponents.tsx:556
+#: components/WbPlanView/MapperComponents.tsx:554
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "tableName"
@@ -157,7 +157,7 @@ msgstr "Promjene sheme nisu spremljene"
 msgid "unsavedChanges"
 msgstr "Nespremljene promjene"
 
-#: components/WbPlanView/MapperComponents.tsx:412
+#: components/WbPlanView/MapperComponents.tsx:410
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "changeBaseTable"

@@ -35,8 +35,8 @@ msgstr ""
 msgid "batchEdit"
 msgstr "Batch-redigering"
 
-#: components/WbPlanView/MapperComponents.tsx:654
-#: components/WbPlanView/MapperComponents.tsx:664
+#: components/WbPlanView/MapperComponents.tsx:652
+#: components/WbPlanView/MapperComponents.tsx:662
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "batchEditPrefs"
 msgstr "Batch-redigering innstillinger"
@@ -179,24 +179,24 @@ msgstr "Prosessering fullført uten feil"
 msgid "batchEditRecordSetName"
 msgstr "BE-utøfring av \"{dataSet:string}\""
 
-#: components/WbPlanView/MapperComponents.tsx:622
+#: components/WbPlanView/MapperComponents.tsx:620
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "deferForMatch"
 msgstr "Bruk bare synlige felt for treff"
 
-#: components/WbPlanView/MapperComponents.tsx:623
+#: components/WbPlanView/MapperComponents.tsx:621
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "deferForMatchDescription"
 msgstr ""
 "Hvis dette er sant, vil ikke usynlige databasefelt brukes til matching. "
 "Standardverdien er {default:boolean}"
 
-#: components/WbPlanView/MapperComponents.tsx:628
+#: components/WbPlanView/MapperComponents.tsx:626
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "deferForNullCheck"
 msgstr "Bruk bare synlige felt for tøm-databasepost-sjekk"
 
-#: components/WbPlanView/MapperComponents.tsx:629
+#: components/WbPlanView/MapperComponents.tsx:627
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "deferForNullCheckDescription"
 msgstr ""
