@@ -56,3 +56,28 @@ class TestAttachmentRules(ApiTests):
 
         attachment.refresh_from_db()
         self.assertEqual(attachment.tableid, Spdataset.specify_model.tableId)
+
+    def test_delete_last_dataset_reference_deletes_attachment(self):
+        attachment = models.Attachment.objects.create(
+            origfilename="test.jpg",
+            attachmentlocation="test.jpg",
+        )
+        dataset = Spdataset.objects.create(
+            collection=self.collection,
+            specifyuser=self.specifyuser,
+            name="Test dataset",
+            columns=[],
+            data=[],
+        )
+        dataset_attachment = Spdatasetattachment.objects.create(
+            collectionmemberid=self.collection.id,
+            ordinal=0,
+            attachment=attachment,
+            spdataset=dataset,
+        )
+
+        dataset_attachment.delete()
+
+        self.assertFalse(
+            models.Attachment.objects.filter(id=attachment.id).exists()
+        )
