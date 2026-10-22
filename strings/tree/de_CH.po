@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-10-21 05:51+0000\n"
+"PO-Revision-Date: 2026-10-22 14:51+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/tree/de_CH/>\n"
@@ -603,8 +603,8 @@ msgstr ""
 #, fuzzy
 msgid "utf8EncodingWarning"
 msgstr ""
-"Diese Baumdaten können nicht in Ihre Datenbank importiert werden, da sie "
-"UTF-8-Zeichen enthalten und diese Datenbank {encoding:string} verwendet."
+"Diese Baumdaten können nicht in Ihre Datenbank importiert werden, da sie UTF-"
+"8-Zeichen enthalten und diese Datenbank {encoding:string} verwendet."
 
 #. Used in: Components > Tree View > Create Tree
 #: components/TreeView/CreateTree.tsx:507
