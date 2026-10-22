@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-10-21 05:51+0000\n"
+"PO-Revision-Date: 2026-10-22 14:51+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Croatian <https://hosted.weblate.org/projects/specify-7/tree/"
 "hr/>\n"
@@ -204,8 +204,8 @@ msgstr "Odaberite cilj za koji će se \"{nodeName:string}\" sinonimizirati"
 #, fuzzy
 msgid "synonymizeMessage"
 msgstr ""
-"Čvor {treeName:string} \"{nodeName:string}\" bit će sinonim za "
-"\"{synonymName:string}\"."
+"Čvor {treeName:string} \"{nodeName:string}\" bit će sinonim za \""
+"{synonymName:string}\"."
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:400 components/TreeView/Actions.tsx:437
