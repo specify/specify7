@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-10-21 05:51+0000\n"
+"PO-Revision-Date: 2026-10-22 13:42+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/forms/de_CH/>\n"
@@ -186,8 +186,8 @@ msgstr "Zu {pickListTable:string} hinzufügen?"
 #, fuzzy
 msgid "addToPickListConfirmationDescription"
 msgstr ""
-"Den Wert \"{value:string}\" zum {pickListTable:string} mit dem Namen "
-"\"{pickListName:string}\" hinzufügen?"
+"Den Wert \"{value:string}\" zum {pickListTable:string} mit dem Namen \""
+"{pickListName:string}\" hinzufügen?"
 
 #. Used in: Components > Pick Lists > Index
 #: components/PickLists/index.tsx:252
@@ -598,8 +598,7 @@ msgstr "Felder für den Massenübertrag konfigurieren"
 #: components/FormMeta/CarryForward.tsx:394
 #, fuzzy
 msgid "carryForwardTableSettingsDescription"
-msgstr ""
-"Felder konfigurieren, die übertragen werden sollen ({tableName:string})"
+msgstr "Felder konfigurieren, die übertragen werden sollen ({tableName:string})"
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:391
