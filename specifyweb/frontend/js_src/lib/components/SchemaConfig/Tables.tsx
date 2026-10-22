@@ -87,7 +87,7 @@ export function TableList({
     cacheKey,
     'showHiddenTables'
   );
-  const [showTableCaptions, setShowTableCaptions] =
+  const [useTableCaptions, setuseTableCaptions] =
     React.useState(localizeTableNames);
   const shouldShowHiddenTables = showAllTables || showHiddenTables;
 
@@ -98,9 +98,9 @@ export function TableList({
           filter(shouldShowHiddenTables, table)
         ),
         ({ name }) => name,
-        showTableCaptions
+        useTableCaptions
       ),
-    [filter, shouldShowHiddenTables, showTableCaptions]
+    [filter, shouldShowHiddenTables, useTableCaptions]
   );
 
   const listRef = React.useRef<HTMLUListElement | null>(null);
@@ -139,7 +139,7 @@ export function TableList({
           const content = (
             <>
               <TableIcon label={false} name={table.name} />
-              {showTableCaptions ? table.label : localized(table.name)}{' '}
+              {useTableCaptions ? table.label : localized(table.name)}{' '}
               {extraContent !== undefined && extraContent}
               {badgeContent}
             </>
@@ -171,10 +171,10 @@ export function TableList({
       {showTableCaptionToggle ? (
         <Label.Inline>
           <Input.Checkbox
-            checked={showTableCaptions}
-            onValueChange={setShowTableCaptions}
+            checked={useTableCaptions}
+            onValueChange={setuseTableCaptions}
           />
-          {schemaText.showTableCaptions()}
+          {schemaText.useTableCaptions()}
         </Label.Inline>
       ) : showAllTables ? undefined : (
         <Label.Inline>
