@@ -108,7 +108,7 @@ function BlockerResource({
       <Button.BorderedGray
         onClick={handleToggleOpen}
         aria-expanded={isOpen}
-        className="flex min-h-10 w-full min-w-0 items-center justify-start gap-2 rounded-md border-0 px-2 py-2 text-left"
+        className="flex min-h-10 w-full min-w-0 items-center !justify-start gap-2 rounded-md border-0 px-2 py-2 text-left"
       >
         <TableIcon name={record.resource.specifyTable.name} label={false} />
         <span className="min-w-0 flex-1">
@@ -167,6 +167,7 @@ function DeleteBlockersTable({
     <>
       <Button.BorderedGray
         aria-expanded={isOpen}
+        className="flex min-h-10 w-full min-w-0 items-center !justify-start gap-2 text-left"
         // BUG:? It might not make sense to mark this as both expanded and
         // pressed. Semantically, it's probably better to keep this as
         // expanded and add a tailwind class to show the button is
@@ -225,7 +226,7 @@ function DeleteBlockersRelationship({
   }, [tableName, blockerRelationship]);
   return (
     <Button.BorderedGray
-      className="flex min-h-9 w-full min-w-0 items-center justify-start text-left"
+      className="flex min-h-9 w-full min-w-0 items-center !justify-start text-left"
       aria-pressed={isActive}
       onClick={() => {
         handleRelationshipActive(relationship, blockerRelationship.key);
