@@ -75,3 +75,43 @@ class TestAttachmentDataset(ApiTests):
         self.assertEqual(dataset.collection, self.collection)
         self.assertEqual(dataset.specifyuser, self.specifyuser)
         self.assertEqual(dataset.createdbyagent, self.agent)
+
+    def test_attachment_dataset_metadata(self):
+        dataset = Spattachmentdataset.objects.create(
+            specifyuser=self.specifyuser,
+            collection=self.collection,
+            name="Metadata dataset",
+            remarks="Dataset remarks",
+            importedfilename="files.csv",
+            data=[{"name": "row-1"}],
+            uploaderstatus="main",
+            uploadplan=json.dumps(
+                {"staticPathKey": "collectionObjectCatalogNumber"}
+            ),
+            matchingmode="mappingFile",
+            createdbyagent=self.agent,
+            modifiedbyagent=self.agent,
+        )
+
+        response = self.client.get(f"/attachment_gw/dataset/{dataset.id}/")
+
+        self.assertEqual(response.status_code, 200, response.content.decode())
+        data = response.json()
+        self.assertEqual(data["name"], "Metadata dataset")
+        self.assertEqual(data["remarks"], "Dataset remarks")
+        self.assertEqual(data["importedfilename"], "files.csv")
+        self.assertEqual(data["matchingmode"], "mappingFile")
+        self.assertEqual(data["uploaderstatus"], "main")
+        self.assertEqual(
+            data["uploadplan"],
+            {"staticPathKey": "collectionObjectCatalogNumber"},
+        )
+        self.assertEqual(data["rows"], [{"name": "row-1"}])
+        self.assertEqual(
+            data["createdbyagent"], f"/api/specify/agent/{self.agent.id}/"
+        )
+        self.assertEqual(
+            data["modifiedbyagent"], f"/api/specify/agent/{self.agent.id}/"
+        )
+        self.assertIsNotNone(data["timestampcreated"])
+        self.assertIsNotNone(data["timestampmodified"])
