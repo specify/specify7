@@ -9,6 +9,7 @@ import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { listen } from '../../utils/events';
+import { getListKeyboardNavigationIndex } from '../../utils/keyboardNavigation';
 import type { RA } from '../../utils/types';
 import { DialogContext } from '../Atoms/Button';
 import { className } from '../Atoms/className';
@@ -71,6 +72,9 @@ export function AutoComplete<T>({
   inputProps = {},
   value: currentValue,
   pendingValueRef,
+  onScrollEnd,
+  isLoadingMore = false,
+  extraItems,
 }: {
   readonly source:
     | RA<AutoCompleteItem<T>>
@@ -105,11 +109,13 @@ export function AutoComplete<T>({
    * typing
    */
   readonly pendingValueRef?: React.MutableRefObject<string>;
+  readonly onScrollEnd?: () => void;
+  readonly isLoadingMore?: boolean;
+  readonly extraItems?: RA<AutoCompleteItem<T>>;
 }): JSX.Element {
   const [results, setResults] = React.useState<
     RA<AutoCompleteItem<T>> | undefined
   >(undefined);
-  const resultsRef = React.useRef<RA<AutoCompleteItem<T>> | undefined>(results);
 
   const [searchAlgorithm] = userPreferences.use(
     'form',
@@ -155,17 +161,15 @@ export function AutoComplete<T>({
   );
 
   const updateItems = React.useCallback(
-    (items: RA<AutoCompleteItem<T>>, pendingValue: string): void => {
+    (items: RA<AutoCompleteItem<T>>): void => {
       setResults(items);
-      resultsRef.current = items;
-      setFilteredItems(filterItems(items, pendingValue));
     },
-    [filterItems]
+    []
   );
 
   // Update source array on changes if statically supplied
   React.useEffect(() => {
-    if (Array.isArray(source)) updateItems(source, '');
+    if (Array.isArray(source)) updateItems(source);
   }, [source, updateItems]);
 
   const [isLoading, handleLoading, handleLoaded] = useBooleanState();
@@ -185,7 +189,6 @@ export function AutoComplete<T>({
 
       if (results === undefined) {
         setResults([]);
-        resultsRef.current = [];
       }
 
       if (value.length < minLength) return;
@@ -193,7 +196,7 @@ export function AutoComplete<T>({
       handleLoading();
       void fetchItems(value)
         .then((items) => {
-          if (currentRequestId === requestId.current) updateItems(items, value);
+          if (currentRequestId === requestId.current) updateItems(items);
         })
         .catch(softFail)
         .finally(() => {
@@ -201,6 +204,10 @@ export function AutoComplete<T>({
         });
     }, delay),
     []
+  );
+  React.useEffect(
+    () => (): void => handleRefreshItems.cancel(),
+    [handleRefreshItems]
   );
 
   const [input, setInput] = React.useState<HTMLInputElement | null>(null);
@@ -214,18 +221,21 @@ export function AutoComplete<T>({
     []
   );
 
-  const [filteredItems, setFilteredItems] = React.useState<
-    RA<AutoCompleteItem<T>>
-  >([]);
-
   const [pendingValue, setPendingValue] = useTriggerState<string>(currentValue);
   React.useEffect(() => {
     if (typeof pendingValueRef === 'object')
       pendingValueRef.current ??= currentValue;
   }, [currentValue, pendingValueRef]);
-  React.useEffect(
-    () => setFilteredItems(filterItems(results ?? [], pendingValue)),
-    [pendingValue, filterItems, results]
+  const allResults = React.useMemo(
+    () =>
+      extraItems !== undefined && extraItems.length > 0
+        ? [...(results ?? []), ...extraItems]
+        : results,
+    [results, extraItems]
+  );
+  const filteredItems = React.useMemo(
+    () => filterItems(allResults ?? [], pendingValue),
+    [allResults, pendingValue, filterItems]
   );
 
   /*
@@ -235,7 +245,21 @@ export function AutoComplete<T>({
    * thus the filtered list of items has only one item.
    */
   const ignoreFilter = currentValue === pendingValue;
-  const itemSource = ignoreFilter ? (results ?? []) : filteredItems;
+  const itemSource = ignoreFilter ? (allResults ?? []) : filteredItems;
+
+  React.useLayoutEffect(() => {
+    if (
+      typeof onScrollEnd !== 'function' ||
+      dataList === null ||
+      dataList.clientHeight === 0 ||
+      isLoading ||
+      isLoadingMore ||
+      dataList.scrollHeight - dataList.clientHeight >= 40
+    )
+      return;
+    onScrollEnd();
+  }, [dataList, itemSource.length, isLoading, isLoadingMore, onScrollEnd]);
+
   const [activeIndex, setActiveIndex] = React.useState(-1);
   const virtualizer = useVirtualizer({
     count: itemSource.length,
@@ -254,7 +278,7 @@ export function AutoComplete<T>({
           start: index * 32,
         }));
 
-  const pendingItem = results?.find(
+  const pendingItem = allResults?.find(
     ({ label, searchValue }) => (searchValue ?? label) === pendingValue
   );
   const showAdd =
@@ -280,22 +304,21 @@ export function AutoComplete<T>({
     if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
       event.preventDefault();
       event.stopPropagation();
-      const direction = event.key === 'ArrowDown' ? 1 : -1;
-      const nextIndex =
-        activeIndex === -1
-          ? direction === 1
-            ? 0
-            : itemSource.length - 1
-          : Math.min(
-              itemSource.length - 1,
-              Math.max(0, activeIndex + direction)
-            );
+      const nextIndex = getListKeyboardNavigationIndex({
+        activeIndex,
+        itemCount: itemSource.length,
+        key: event.key,
+      });
       setActiveIndex(nextIndex);
       virtualizer.scrollToIndex(nextIndex);
     } else if (event.key === 'Home' || event.key === 'End') {
       event.preventDefault();
       event.stopPropagation();
-      const nextIndex = event.key === 'Home' ? 0 : itemSource.length - 1;
+      const nextIndex = getListKeyboardNavigationIndex({
+        activeIndex,
+        itemCount: itemSource.length,
+        key: event.key,
+      });
       setActiveIndex(nextIndex);
       virtualizer.scrollToIndex(nextIndex);
     } else if (event.key === 'Enter' && activeIndex >= 0) {
@@ -412,20 +435,11 @@ export function AutoComplete<T>({
     AutoCompleteItem<T> | string | undefined
   >(undefined);
   React.useLayoutEffect(() => {
-    const newCurrentItem = resultsRef.current?.find(
+    const newCurrentItem = allResults?.find(
       ({ label, searchValue }) => (searchValue ?? label) === currentValue
     );
-    setCurrentItem(
-      newCurrentItem === undefined
-        ? currentValue
-        : (currentItem) =>
-            currentItem === undefined ||
-            typeof currentItem === 'string' ||
-            newCurrentItem.data !== currentItem.data
-              ? newCurrentItem
-              : currentItem
-    );
-  }, [currentValue]);
+    setCurrentItem(newCurrentItem ?? currentValue);
+  }, [currentValue, allResults]);
 
   const handleOptionMouseDown = React.useCallback(
     (e: React.MouseEvent): void => {
@@ -501,6 +515,19 @@ export function AutoComplete<T>({
             shadow-gray-400 dark:border dark:border-gray-500 dark:bg-neutral-900
           `}
           ref={dataListRefCallback}
+          onScroll={
+            typeof onScrollEnd === 'function'
+              ? (event: React.UIEvent<HTMLUListElement>): void => {
+                  const target = event.currentTarget;
+                  const nearBottom =
+                    target.scrollHeight -
+                      target.scrollTop -
+                      target.clientHeight <
+                    40;
+                  if (nearBottom) onScrollEnd();
+                }
+              : undefined
+          }
         >
           {isLoading && (
             <Combobox.Option
@@ -634,7 +661,14 @@ export function AutoComplete<T>({
               )}
             </Combobox.Option>
           )}
-          {!listHasItems && (
+          {isLoadingMore && (
+            <li
+              className={`${optionClassName(false, false)} cursor-auto text-gray-500`}
+            >
+              {commonText.loading()}
+            </li>
+          )}
+          {!listHasItems && !isLoadingMore && (
             <div className={`${optionClassName(false, false)} cursor-auto`}>
               {formsText.nothingFound()}
             </div>

@@ -63,18 +63,20 @@ export function AppResourceEditButton({
   children,
   appResource,
   onDeleted: handleDeleted,
+  readOnly,
 }: {
   readonly title: LocalizedString;
   readonly children: JSX.Element;
   readonly appResource: SpecifyResource<SpAppResource>;
   readonly onDeleted: (() => void) | undefined;
+  readonly readOnly?: boolean;
 }): JSX.Element {
   const [isEditingMeta, handleEditingMeta, handleEditedMeta] =
     useBooleanState();
   return (
     <>
-      <DataEntry.Edit onClick={handleEditingMeta} />
-      {isEditingMeta && (
+      {!readOnly && <DataEntry.Edit onClick={handleEditingMeta} />}
+      {isEditingMeta && !readOnly && (
         <Dialog
           buttons={
             <>
