@@ -367,6 +367,14 @@ export const commonText = createDictionary({
   },
   showMore: {
     'en-us': 'Show More',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'hr-hr': '',
+    nb: '',
+    'pt-br': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   notApplicable: {
     'en-us': 'N/A',
