@@ -216,12 +216,8 @@ function Wrapped({
    */
   const getQueryFieldRecords = saveRequired ? serializeQueryFields : undefined;
 
-  // runQuery must always serialize the fields it is given, not just when saveRequired
-  const { runQuery, scheduleQueryRun } = useQueryExecution({
+  const { isCountOnly, runQuery, scheduleQueryRun } = useQueryExecution({
     query,
-    fields: state.fields,
-    getQueryFieldRecords: serializeQueryFields,
-    setQuery,
     onRun: (): void => dispatch({ type: 'RunQueryAction' }),
   });
 
@@ -288,7 +284,7 @@ function Wrapped({
     toggleSplit,
     toggleOrientation,
     onResults: handleSplitViewResults,
-  } = useQuerySplitView(resultsRef, state.queryRunCount);
+  } = useQuerySplitView(state.queryRunCount);
 
   const showSeries = React.useMemo(
     () =>
@@ -420,6 +416,7 @@ function Wrapped({
             <div className="flex snap-start flex-col gap-4 overflow-y-auto">
               {showMappingView && (
                 <MappingView
+                  baseTableName={state.baseTableName}
                   mappingElementProps={getMappingLineProps({
                     mappingLineData: getMappingLineData({
                       baseTableName: state.baseTableName,
@@ -472,6 +469,19 @@ function Wrapped({
                         });
                     },
                   })}
+                  showHiddenFields={showHiddenFields}
+                  searchSpec={navigatorSpecs.queryBuilder}
+                  onSelectSearchResult={(mappingPath): void => {
+                    dispatch({ type: 'SetMappingViewAction', mappingPath });
+                    if (
+                      !isReadOnly &&
+                      mappingPathIsComplete(mappingPath) &&
+                      !getMappedFieldsBind(mappingPath.slice(0, -1)).includes(
+                        mappingPath.at(-1)!
+                      )
+                    )
+                      handleAddField(mappingPath);
+                  }}
                 >
                   {isReadOnly ? undefined : (
                     <Button.Small
@@ -606,6 +616,7 @@ function Wrapped({
             <QueryBuilderResults
               forceCollection={forceCollection}
               getQueryFieldRecords={getQueryFieldRecords}
+              isCountOnly={isCountOnly}
               isHorizontal={isHorizontal}
               isReadOnly={isReadOnly}
               isSplit={isSplit}
@@ -630,7 +641,7 @@ function Wrapped({
               }}
               onSortChange={(fields): void => {
                 dispatch({ type: 'ChangeFieldsAction', fields });
-                runQuery('regular', fields);
+                runQuery('regular');
               }}
             />
           </Form>

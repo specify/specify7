@@ -7,6 +7,32 @@ from specifyweb.backend.trees.ranks import *
 
 logger = logging.getLogger(__name__)
 
+@orm_signal_handler(
+    'pre_delete',
+    'Taxontreedefitem',
+    dispatch_uid='specify.reparent_taxon_rank_children_before_delete',
+)
+def reparent_taxon_rank_children_before_delete(rank):
+    """Reparent surviving children only when the rank is actually deleted."""
+    if getattr(rank, '_taxon_rank_delete_from_tree', False):
+        return
+
+    deleting_rank_ids = getattr(rank, '_taxon_rank_deleting_ids', {rank.id})
+    parent_id = rank.parent_id
+    while parent_id in deleting_rank_ids:
+        parent_id = (
+            rank.__class__.objects.using(rank._state.db)
+            .filter(id=parent_id)
+            .values_list('parent_id', flat=True)
+            .first()
+        )
+    if rank.parent_id in deleting_rank_ids:
+        rank.__class__.objects.using(rank._state.db).filter(id=rank.id)\
+            .update(parent_id=parent_id)
+    rank.__class__.objects.using(rank._state.db).filter(parent_id=rank.id)\
+        .exclude(id__in=deleting_rank_ids)\
+        .update(parent_id=parent_id)
+
 # @orm_signal_handler('pre_save')
 def pre_tree_rank_initiation_handler(sender, obj):
     if is_treedefitem(obj) and obj.pk is None: # is it a treedefitem? 
@@ -45,4 +71,3 @@ def post_tree_rank_deletion_handler(sender, obj):
 def set_is_accepted_if_preferred(sender, obj):
     if hasattr(obj, 'isaccepted') and hasattr(obj, 'accepted_id') :
         obj.isaccepted = obj.accepted_id == None
-

@@ -11,6 +11,8 @@ import { userPreferences } from '../Preferences/userPreferences';
 import { useTopChild } from '../Preferences/useTopChild';
 import { collectionPreferenceDefinitions } from './CollectionDefinitions';
 import { collectionPreferences } from './collectionPreferences';
+import { globalPreferenceDefinitions } from './GlobalDefinitions';
+import { globalPreferences } from './globalPreferences';
 import type { GenericPreferences } from './types';
 
 type EditorDependencies = Pick<AppResourceTabProps, 'data' | 'onChange'>;
@@ -122,5 +124,15 @@ export const CollectionPreferencesEditor = createPreferencesEditor({
   fetchUrl: '/context/collection_resource/',
   developmentGlobal: 'editingCollectionPreferences',
   prefType: 'collection',
+  dependencyResolver: ({ data, onChange }) => [data, onChange],
+});
+
+export const GlobalPreferencesEditor = createPreferencesEditor({
+  definitions: globalPreferenceDefinitions,
+  Context: globalPreferences.Context,
+  resourceName: 'GlobalPreferences',
+  fetchUrl: '/context/global_resource/',
+  developmentGlobal: 'editingGlobalPreferences',
+  prefType: 'global',
   dependencyResolver: ({ data, onChange }) => [data, onChange],
 });

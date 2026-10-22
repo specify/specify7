@@ -77,11 +77,16 @@ export function SplitView({
     null
   );
   const previousIsHorizontal = React.useRef(isHorizontal);
+  const previousIsSplit = React.useRef(isSplit);
   React.useLayoutEffect(() => {
-    if (previousIsHorizontal.current !== isHorizontal)
+    if (
+      previousIsHorizontal.current !== isHorizontal ||
+      (previousIsSplit.current && !isSplit)
+    )
       splitterRef.current?.setState({ primaryPane: undefined });
     previousIsHorizontal.current = isHorizontal;
-  }, [isHorizontal]);
+    previousIsSplit.current = isSplit;
+  }, [isHorizontal, isSplit]);
 
   return (
     <Splitter
@@ -89,12 +94,14 @@ export function SplitView({
         isSplit ? '' : '[&_.handle-bar]:hidden'
       }`}
       position={isHorizontal ? 'vertical' : 'horizontal'}
-      primaryPaneHeight={isSplit ? '50%' : '100%'}
+      primaryPaneHeight={isSplit && !isHorizontal ? '50%' : '100%'}
       primaryPaneMaxHeight={isSplit ? '80%' : '100%'}
-      primaryPaneMaxWidth={isSplit ? (primaryPaneMaxWidth ?? '80%') : '100%'}
+      primaryPaneMaxWidth={
+        isSplit && isHorizontal ? (primaryPaneMaxWidth ?? '80%') : '100%'
+      }
       primaryPaneMinHeight={1}
       primaryPaneMinWidth={1}
-      primaryPaneWidth={isSplit ? '50%' : '100%'}
+      primaryPaneWidth={isSplit && isHorizontal ? '50%' : '100%'}
       ref={splitterRef}
     >
       <div

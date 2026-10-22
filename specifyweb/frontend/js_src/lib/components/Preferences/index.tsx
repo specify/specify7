@@ -11,6 +11,7 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { preferencesText } from '../../localization/preferences';
+import { resourcesText } from '../../localization/resources';
 import { StringToJsx } from '../../localization/utils';
 import { f } from '../../utils/functools';
 import type { IR } from '../../utils/types';
@@ -31,6 +32,8 @@ import { PreferencesAside } from './Aside';
 import type { BasePreferences } from './BasePreferences';
 import { collectionPreferenceDefinitions } from './CollectionDefinitions';
 import { collectionPreferences } from './collectionPreferences';
+import { globalPreferenceDefinitions } from './GlobalDefinitions';
+import { globalPreferences } from './globalPreferences';
 import { useDarkMode } from './Hooks';
 import { DefaultPreferenceItemRender } from './Renderers';
 import type { GenericPreferences, PreferenceItem } from './types';
@@ -43,11 +46,13 @@ export type PreferenceType = keyof typeof preferenceInstances;
 const preferenceInstances: IR<BasePreferences<any>> = {
   user: userPreferences,
   collection: collectionPreferences,
+  global: globalPreferences,
 };
 
 const preferenceDefinitions: IR<GenericPreferences> = {
   user: userPreferenceDefinitions,
   collection: collectionPreferenceDefinitions,
+  global: globalPreferenceDefinitions,
 };
 
 type SubcategoryDocumentation = {
@@ -84,6 +89,7 @@ const preferencesPromise = Promise.all([
   userPreferences.fetch(),
   collectionPreferences.fetch(),
 ]).then(f.true);
+const globalPreferencesPromise = globalPreferences.fetch().then(f.true);
 
 function Preferences({
   prefType = 'user',
@@ -100,7 +106,9 @@ function Preferences({
   const heading =
     prefType === 'collection'
       ? preferencesText.collectionPreferences()
-      : preferencesText.preferences();
+      : prefType === 'global'
+        ? resourcesText.globalPreferences()
+        : preferencesText.preferences();
 
   React.useEffect(
     () =>
@@ -351,8 +359,15 @@ export function PreferencesContent({
                         name={name}
                         subcategory={subcategoryKey}
                       />
-                    ) : (
+                    ) : prefType === 'collection' ? (
                       <CollectionPrefItem
+                        category={categoryKey}
+                        item={item}
+                        name={name}
+                        subcategory={subcategoryKey}
+                      />
+                    ) : (
+                      <GlobalPrefItem
                         category={categoryKey}
                         item={item}
                         name={name}
@@ -492,6 +507,15 @@ function CollectionPrefItem<T>(props: PreferenceItemProps<T>) {
   return <ItemBase {...props} setValue={setValue} value={value} />;
 }
 
+function GlobalPrefItem<T>(props: PreferenceItemProps<T>) {
+  const [value, setValue] = globalPreferences.use(
+    props.category as any,
+    props.subcategory as any,
+    props.name as any
+  );
+  return <ItemBase {...props} setValue={setValue} value={value} />;
+}
+
 function CollectionPreferences(): JSX.Element {
   return (
     <ProtectedAction
@@ -505,14 +529,36 @@ function CollectionPreferences(): JSX.Element {
   );
 }
 
-function createPreferencesWrapper(Component: React.ComponentType) {
+function createPreferencesWrapper(
+  Component: React.ComponentType,
+  promise: Promise<boolean>
+) {
   return function Wrapper(): JSX.Element | null {
-    const [hasFetched] = usePromise(preferencesPromise, true);
+    const [hasFetched] = usePromise(promise, true);
     return hasFetched ? <Component /> : null;
   };
 }
 
-export const PreferencesWrapper = createPreferencesWrapper(Preferences);
+export const PreferencesWrapper = createPreferencesWrapper(
+  Preferences,
+  preferencesPromise
+);
 export const CollectionPreferencesWrapper = createPreferencesWrapper(
-  CollectionPreferences
+  CollectionPreferences,
+  preferencesPromise
+);
+
+function GlobalPreferences(): JSX.Element {
+  return (
+    <ProtectedAction action="update" resource="/preferences/global">
+      <ProtectedTool action="update" tool="resources">
+        <Preferences prefType="global" />
+      </ProtectedTool>
+    </ProtectedAction>
+  );
+}
+
+export const GlobalPreferencesWrapper = createPreferencesWrapper(
+  GlobalPreferences,
+  globalPreferencesPromise
 );
