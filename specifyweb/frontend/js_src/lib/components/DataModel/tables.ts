@@ -249,8 +249,8 @@ export const getTableById = <SCHEMA extends AnySchema>(
   tableId: number
 ): SpecifyTable<SCHEMA> =>
   (Object.values(genericTables).find((table) => table.tableId === tableId) as
-    SpecifyTable<SCHEMA> | undefined) ??
-  error(`Table with id ${tableId} does not exist`);
+    | SpecifyTable<SCHEMA>
+    | undefined) ?? error(`Table with id ${tableId} does not exist`);
 
 // If this is true, then you can use {domainfilter:true} when fetching that table
 export const hasHierarchyField = (table: SpecifyTable): boolean =>
