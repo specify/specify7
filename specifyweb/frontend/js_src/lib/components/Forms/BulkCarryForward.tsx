@@ -42,7 +42,7 @@ export function useBulkCarryForward<SCHEMA extends AnySchema = AnySchema>({
 }): {
   readonly BulkCarryForward: JSX.Element | null;
   readonly handleBulkCarryForward:
-    | (() => Promise<RA<SpecifyResource<SCHEMA>> | undefined>)
+    | ((saved?: boolean) => Promise<RA<SpecifyResource<SCHEMA>> | undefined>)
     | undefined;
   readonly dialogs: JSX.Element | null;
 } {
@@ -85,6 +85,10 @@ function useBulkCarryForwardRange<SCHEMA extends AnySchema>(
 
   const [carryForwardRangeEnd, setCarryForwardRangeEnd] =
     React.useState<string>('');
+  const { seriesEnd: seriesRangeEndValue } = React.useContext(SeriesFormContext);
+  React.useEffect(() => {
+      setCarryForwardRangeEnd(seriesRangeEndValue);
+    }, [seriesRangeEndValue]);
 
   const [bulkCarryRangeBlocked, setBulkCarryRangeBlocked] =
     React.useState<BulkCarryRangeError>(false);
@@ -93,7 +97,7 @@ function useBulkCarryForwardRange<SCHEMA extends AnySchema>(
 
   const handleBulkCarryForward =
     typeof formatter === 'object'
-      ? async (): Promise<RA<SpecifyResource<SCHEMA>> | undefined> => {
+      ? async (saved=false): Promise<RA<SpecifyResource<SCHEMA>> | undefined> => {
           const carryForwardRangeStart = resource.get(field.name);
           if (
             carryForwardRangeStart === null ||
@@ -142,6 +146,7 @@ function useBulkCarryForwardRange<SCHEMA extends AnySchema>(
             return undefined;
           }
 
+          let recordsToBeSaved: RA<SpecifyResource<SCHEMA>>;
           const clones = await Promise.all(
             response.map(async (value) => {
               const clonedResource = await resource.clone(false, true);
@@ -150,12 +155,18 @@ function useBulkCarryForwardRange<SCHEMA extends AnySchema>(
             })
           );
 
+          if (saved === false) {
+            recordsToBeSaved = [resource, ...clones];
+          } else {
+            recordsToBeSaved = clones;
+          }
+
           const backendClones = await ajax<RA<SerializedRecord<SCHEMA>>>(
             `/bulk_copy/bulk/${resource.specifyTable.name.toLowerCase()}/`,
             {
               method: 'POST',
               headers: { Accept: 'application/json' },
-              body: clones,
+              body: recordsToBeSaved,
             }
           ).then(({ data }) =>
             data.map((resource) =>
@@ -314,3 +325,15 @@ export function BulkCarryRangeBlockedDialog({
     </Dialog>
   );
 }
+
+export const SeriesFormContext = React.createContext<{
+  seriesEnd: string;
+  setSeriesEnd: (v: string) => void;
+  usingSeries: boolean;
+  setUsingSeries: (v: boolean) => void;
+}>({
+  seriesEnd: '',
+  setSeriesEnd: () => {},
+  usingSeries: false,
+  setUsingSeries: () => {},
+});
