@@ -9,7 +9,11 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { TableIcon } from '../Molecules/TableIcon';
-import { getTable, strictGetTable } from '../DataModel/tables';
+import {
+  getTable,
+  sortTablesByCaption,
+  strictGetTable,
+} from '../DataModel/tables';
 import { localized } from '../../utils/types';
 import {
   DeleteBlockerResource,
@@ -46,22 +50,23 @@ export function DeleteBlockersAside({
         records.length === 1 &&
         resourceToStringIdentifier(resource) ===
           resourceToStringIdentifier(records.at(0)!.resource)
-          ? records
-              .at(0)
-              ?.tables.map((blockerTable, index) => (
-                <DeleteBlockersTable
-                  key={`${resourceToStringIdentifier(records.at(0)!.resource)}_${blockerTable.tableName}_${index}`}
-                  activeRelationshipKey={activeRelationshipKey}
-                  blockerTable={blockerTable}
-                  onRelationshipActive={(relationship, relationshipKey) =>
-                    handleRelationshipActive(
-                      records.at(0)!.resource,
-                      relationship,
-                      relationshipKey
-                    )
-                  }
-                />
-              ))
+          ? sortTablesByCaption(
+              records.at(0)!.tables,
+              ({ tableName }) => tableName
+            ).map((blockerTable, index) => (
+              <DeleteBlockersTable
+                key={`${resourceToStringIdentifier(records.at(0)!.resource)}_${blockerTable.tableName}_${index}`}
+                activeRelationshipKey={activeRelationshipKey}
+                blockerTable={blockerTable}
+                onRelationshipActive={(relationship, relationshipKey) =>
+                  handleRelationshipActive(
+                    records.at(0)!.resource,
+                    relationship,
+                    relationshipKey
+                  )
+                }
+              />
+            ))
           : // In this case, there are at least two blocking references that
             // point to different records.
             // This should only be in the case where at least one of the
@@ -123,20 +128,22 @@ function BlockerResource({
       </Button.BorderedGray>
       {isOpen && (
         <div className="ml-3 flex w-full min-w-0 flex-col gap-1 py-1 pl-2">
-          {record.tables.map((blockerTable, index) => (
-            <DeleteBlockersTable
-              key={`${resourceToStringIdentifier(record.resource)}_${blockerTable.tableName}_${index}`}
-              activeRelationshipKey={activeRelationshipKey}
-              blockerTable={blockerTable}
-              onRelationshipActive={(relationship, relationshipKey) =>
-                handleRelationshipActive(
-                  record.resource,
-                  relationship,
-                  relationshipKey
-                )
-              }
-            />
-          ))}
+          {sortTablesByCaption(record.tables, ({ tableName }) => tableName).map(
+            (blockerTable, index) => (
+              <DeleteBlockersTable
+                key={`${resourceToStringIdentifier(record.resource)}_${blockerTable.tableName}_${index}`}
+                activeRelationshipKey={activeRelationshipKey}
+                blockerTable={blockerTable}
+                onRelationshipActive={(relationship, relationshipKey) =>
+                  handleRelationshipActive(
+                    record.resource,
+                    relationship,
+                    relationshipKey
+                  )
+                }
+              />
+            )
+          )}
         </div>
       )}
     </div>

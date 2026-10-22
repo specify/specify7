@@ -909,4 +909,15 @@ export const schemaText = createDictionary({
     'hr-hr': 'Vidljivo',
     nb: 'Synlig',
   },
+  showTableCaptions: {
+    'en-us': 'Show table captions',
+    'de-ch': 'Tabellenbeschriftungen anzeigen',
+    'es-es': 'Mostrar títulos de tablas',
+    'fr-fr': 'Afficher les légendes des tables',
+    'ru-ru': 'Показывать подписи таблиц',
+    'uk-ua': 'Показувати підписи таблиць',
+    'pt-br': 'Mostrar legendas das tabelas',
+    'hr-hr': 'Prikaži nazive tablica',
+    nb: 'Vis tabelltekster',
+  },
 } as const);
