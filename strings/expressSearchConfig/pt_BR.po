@@ -30,7 +30,8 @@ msgid "expressSearchConfigTitle"
 msgstr "Configuração de Busca Expressa"
 
 #: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:256
-#. Used in: Components > Express Search Config > Express Search Config Editor
+#: components/WbPlanView/FieldSearchComponent.tsx:164
+#. Used in: Components > Express Search Config > Express Search Config Editor ⬤ Components > Wb Plan View > Field Search Component
 #, fuzzy
 msgid "searchFieldsTab"
 msgstr "Campos de pesquisa"

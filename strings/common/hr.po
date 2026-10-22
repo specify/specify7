@@ -105,9 +105,9 @@ msgstr "Ne"
 #: components/WbActions/WbRollback.tsx:65
 #: components/WbActions/WbUpload.tsx:108
 #: components/WbActions/WbUpload.tsx:144
-#: components/WbPlanView/MapperComponents.tsx:382
-#: components/WbPlanView/MapperComponents.tsx:408
-#: components/WbPlanView/MapperComponents.tsx:435
+#: components/WbPlanView/MapperComponents.tsx:410
+#: components/WbPlanView/MapperComponents.tsx:436
+#: components/WbPlanView/MapperComponents.tsx:463
 #: components/WbPlanView/State.tsx:94
 #: components/WbToolkit/ChangeOwner.tsx:87
 #: components/WbToolkit/CoordinateConverter.tsx:228
@@ -309,9 +309,9 @@ msgstr "Stvoriti"
 #: components/WbActions/index.tsx:232
 #: components/WbActions/index.tsx:285
 #: components/WbAttachmentViewer/index.tsx:151
-#: components/WbPlanView/MapperComponents.tsx:223
-#: components/WbPlanView/MapperComponents.tsx:504
-#: components/WbPlanView/MapperComponents.tsx:632
+#: components/WbPlanView/MapperComponents.tsx:251
+#: components/WbPlanView/MapperComponents.tsx:532
+#: components/WbPlanView/MapperComponents.tsx:660
 #: components/WbPlanView/State.tsx:34
 #: components/WbToolkit/ChangeOwner.tsx:77
 #: components/WbToolkit/DevShowPlan.tsx:138
@@ -369,8 +369,8 @@ msgstr ""
 #: components/Interactions/LoanReturn.tsx:203
 #: components/Interactions/PrepDialog.tsx:152
 #: components/Security/SetPassword.tsx:37
-#: components/WbPlanView/MapperComponents.tsx:505
-#: components/WbPlanView/MapperComponents.tsx:632
+#: components/WbPlanView/MapperComponents.tsx:533
+#: components/WbPlanView/MapperComponents.tsx:660
 #: components/WbToolkit/CoordinateConverter.tsx:229
 #: components/WorkBench/Disambiguation.tsx:48
 #. Used in: Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Security > Set Password ⬤ Components > Wb Plan View > Mapper Components ⬤ Components > Wb Toolkit > Coordinate Converter ⬤ Components > Work Bench > Disambiguation
@@ -393,7 +393,7 @@ msgstr "Primijeni sve"
 msgid "clearAll"
 msgstr "Obriši sve"
 
-#: components/WbPlanView/MapperComponents.tsx:75
+#: components/WbPlanView/MapperComponents.tsx:77
 #: components/WbPlanView/__tests__/Mapper.test.tsx:72
 #: components/WbPlanView/__tests__/MapperComponents.test.tsx:20
 #: components/WbPlanView/__tests__/MapperComponents.test.tsx:37
@@ -440,7 +440,7 @@ msgstr "Uštedjeti"
 #: components/Merging/CompareSubView.tsx:184
 #: components/Molecules/AutoComplete.tsx:631
 #: components/PickLists/index.tsx:280
-#: components/QueryBuilder/Wrapped.tsx:474
+#: components/QueryBuilder/Wrapped.tsx:488
 #: components/SchemaConfig/Format.tsx:299
 #: components/SchemaConfig/Format.tsx:349
 #: components/SchemaConfig/Format.tsx:394
@@ -455,7 +455,7 @@ msgstr "Uštedjeti"
 #: components/Statistics/StatsPageEditing.tsx:48
 #: components/Statistics/index.tsx:636
 #: components/Toolbar/ListEdit.tsx:144
-#: components/WbPlanView/navigator.ts:354
+#: components/WbPlanView/navigator.ts:356
 #: components/WebLinks/Definition.tsx:116
 #: components/WebLinks/List.tsx:50
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Export Feed > Editor ⬤ Components > Form Sliders > Record Selector From Ids ⬤ Components > Formatters > List ⬤ Components > Forms > Save ⬤ Forms > __tests__ > Save ⬤ Components > Merging > Compare Sub View ⬤ Components > Molecules > Auto Complete ⬤ Components > Pick Lists > Index ⬤ Components > Query Builder > Wrapped ⬤ Components > Schema Config > Format ⬤ Components > Schema Config > Languages ⬤ Components > Schema Config > Table ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Search Dialog > Select Record Set ⬤ Components > Security > Collection Role ⬤ Components > Security > Policies ⬤ Components > Statistics > Categories ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Statistics > Index ⬤ Components > Toolbar > List Edit ⬤ Components > Wb Plan View > Navigator ⬤ Components > Web Links > Definition ⬤ Components > Web Links > List
@@ -653,8 +653,10 @@ msgstr "Ukloniti"
 #: components/SearchDialog/index.tsx:254
 #: components/SearchDialog/index.tsx:259
 #: components/SearchDialog/index.tsx:358
+#: components/WbPlanView/FieldSearchComponent.tsx:161
+#: components/WbPlanView/FieldSearchComponent.tsx:183
 #: components/WbUtils/index.tsx:60
-#. Used in: Components > Atoms > Data Entry ⬤ Components > Formatters > Preview ⬤ Components > Header > Express Search Task ⬤ Components > Header > Index ⬤ Header > __tests__ > Header ⬤ Components > Home Page > Index ⬤ Components > Schema Config > Tables ⬤ Components > Search Dialog > Index ⬤ Components > Wb Utils > Index
+#. Used in: Components > Atoms > Data Entry ⬤ Components > Formatters > Preview ⬤ Components > Header > Express Search Task ⬤ Components > Header > Index ⬤ Header > __tests__ > Header ⬤ Components > Home Page > Index ⬤ Components > Schema Config > Tables ⬤ Components > Search Dialog > Index ⬤ Components > Wb Plan View > Field Search Component ⬤ Components > Wb Utils > Index
 #, fuzzy
 msgid "search"
 msgstr "Pretraživanje"
@@ -668,11 +670,20 @@ msgstr "Traži {resource:string}"
 
 #: components/Reports/index.tsx:201
 #: components/SearchDialog/index.tsx:306
+#: components/WbPlanView/FieldSearchComponent.tsx:188
+#: components/WbPlanView/__tests__/FieldSearchComponent.test.tsx:64
 #: components/WorkBench/WbAttachmentsPreview.tsx:197
-#. Used in: Components > Reports > Index ⬤ Components > Search Dialog > Index ⬤ Components > Work Bench > Wb Attachments Preview
+#. Used in: Components > Reports > Index ⬤ Components > Search Dialog > Index ⬤ Components > Wb Plan View > Field Search Component ⬤ Wb Plan View > __tests__ > Field Search Component ⬤ Components > Work Bench > Wb Attachments Preview
 #, fuzzy
 msgid "noResults"
 msgstr "Nema rezultata"
+
+#: components/WbPlanView/FieldSearchComponent.tsx:221
+#: components/WbPlanView/__tests__/FieldSearchComponent.test.tsx:38
+#: components/WbPlanView/__tests__/FieldSearchComponent.test.tsx:113
+#. Used in: Components > Wb Plan View > Field Search Component ⬤ Wb Plan View > __tests__ > Field Search Component
+msgid "showMore"
+msgstr ""
 
 #: components/FormPlugins/LatLongUi.tsx:100
 #: components/FormPlugins/LatLongUi.tsx:170
@@ -769,7 +780,7 @@ msgid "update"
 msgstr "Ažurirati"
 
 #: components/FormPlugins/DatePrecisionPicker.tsx:46
-#: components/WbPlanView/navigator.ts:666
+#: components/WbPlanView/navigator.ts:668
 #. Used in: Components > Form Plugins > Date Precision Picker ⬤ Components > Wb Plan View > Navigator
 #, fuzzy
 msgid "fullDate"
@@ -1018,8 +1029,9 @@ msgstr "Odbaciti"
 
 #: components/DataModel/specifyTable.ts:281
 #: components/ExportFeed/Editor.tsx:194
-#: components/WbPlanView/navigator.ts:545
-#. Used in: Components > Data Model > Specify Table ⬤ Components > Export Feed > Editor ⬤ Components > Wb Plan View > Navigator
+#: components/WbPlanView/fieldSearch.ts:188
+#: components/WbPlanView/navigator.ts:547
+#. Used in: Components > Data Model > Specify Table ⬤ Components > Export Feed > Editor ⬤ Components > Wb Plan View > Field Search ⬤ Components > Wb Plan View > Navigator
 #, fuzzy
 msgid "id"
 msgstr "ID"
@@ -1061,7 +1073,7 @@ msgid "copyToClipboard"
 msgstr "Kopiraj u međuspremnik"
 
 #: components/Interactions/PrepDialog.tsx:269
-#: components/WbPlanView/CustomSelectElement.tsx:296
+#: components/WbPlanView/CustomSelectElement.tsx:297
 #. Used in: Components > Interactions > Prep Dialog ⬤ Components > Wb Plan View > Custom Select Element
 #, fuzzy
 msgid "selected"

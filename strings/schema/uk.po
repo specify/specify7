@@ -108,7 +108,7 @@ msgid "tables"
 msgstr "Столи"
 
 #: components/Preferences/UserDefinitions.tsx:885
-#: components/WbPlanView/MapperComponents.tsx:528
+#: components/WbPlanView/MapperComponents.tsx:556
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Plan View > Mapper Components
 msgid "tableName"
 msgstr "Назва таблиці"
@@ -150,7 +150,7 @@ msgstr "Зміни схеми не збережено"
 msgid "unsavedChanges"
 msgstr "Незбережені зміни"
 
-#: components/WbPlanView/MapperComponents.tsx:384
+#: components/WbPlanView/MapperComponents.tsx:412
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "changeBaseTable"
 msgstr "Змінити базову таблицю"

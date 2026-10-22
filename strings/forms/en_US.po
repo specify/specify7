@@ -86,7 +86,7 @@ msgstr ""
 "resources:"
 
 #: components/SchemaViewer/schemaToTsv.tsx:25
-#: components/WbPlanView/CustomSelectElement.tsx:295
+#: components/WbPlanView/CustomSelectElement.tsx:296
 #. Used in: Components > Schema Viewer > Schema To Tsv ⬤ Components > Wb Plan View > Custom Select Element
 msgid "relationship"
 msgstr "Relationship"

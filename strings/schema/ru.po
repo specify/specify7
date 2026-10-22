@@ -110,7 +110,7 @@ msgid "tables"
 msgstr "Таблицы"
 
 #: components/Preferences/UserDefinitions.tsx:885
-#: components/WbPlanView/MapperComponents.tsx:528
+#: components/WbPlanView/MapperComponents.tsx:556
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "tableName"
@@ -156,7 +156,7 @@ msgstr "Изменения в схеме не были сохранены."
 msgid "unsavedChanges"
 msgstr "Несохраненные изменения"
 
-#: components/WbPlanView/MapperComponents.tsx:384
+#: components/WbPlanView/MapperComponents.tsx:412
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "changeBaseTable"

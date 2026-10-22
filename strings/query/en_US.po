@@ -155,7 +155,7 @@ msgstr ""
 msgid "treeQueryName"
 msgstr "{tableName:string} using \"{nodeFullName:string}\""
 
-#: components/QueryBuilder/Wrapped.tsx:477
+#: components/QueryBuilder/Wrapped.tsx:491
 #. Used in: Components > Query Builder > Wrapped
 msgid "newButtonDescription"
 msgstr "Add New Field"
@@ -226,12 +226,12 @@ msgstr "Create {recordSetTable:string}"
 msgid "saveAs"
 msgstr "Save As"
 
-#: components/WbPlanView/navigator.ts:451
+#: components/WbPlanView/navigator.ts:453
 #. Used in: Components > Wb Plan View > Navigator
 msgid "anyRank"
 msgstr "(any rank)"
 
-#: components/WbPlanView/navigator.ts:403
+#: components/WbPlanView/navigator.ts:405
 #. Used in: Components > Wb Plan View > Navigator
 msgid "anyTree"
 msgstr "(any tree)"
@@ -284,13 +284,15 @@ msgstr "Negate"
 msgid "showButtonDescription"
 msgstr "Show in results"
 
-#: components/WbPlanView/navigator.ts:508
-#. Used in: Components > Wb Plan View > Navigator
+#: components/WbPlanView/fieldSearch.ts:350
+#: components/WbPlanView/navigator.ts:510
+#. Used in: Components > Wb Plan View > Field Search ⬤ Components > Wb Plan View > Navigator
 msgid "aggregatedInline"
 msgstr "(aggregated)"
 
-#: components/WbPlanView/navigator.ts:509
-#. Used in: Components > Wb Plan View > Navigator
+#: components/WbPlanView/fieldSearch.ts:351
+#: components/WbPlanView/navigator.ts:511
+#. Used in: Components > Wb Plan View > Field Search ⬤ Components > Wb Plan View > Navigator
 msgid "formattedInline"
 msgstr "(formatted)"
 
