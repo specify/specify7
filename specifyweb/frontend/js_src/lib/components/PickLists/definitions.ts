@@ -148,9 +148,9 @@ export const monthsPickList = f.store(() =>
  */
 export const getFrontEndPickLists = f.store<{
   readonly [TABLE_NAME in keyof Tables]?: {
-    readonly [
-      FIELD_NAME in TableFields<Tables[TABLE_NAME]>
-    ]?: SpecifyResource<PickList>;
+    readonly [FIELD_NAME in TableFields<
+      Tables[TABLE_NAME]
+    >]?: SpecifyResource<PickList>;
   };
 }>(() => {
   const fullNameDirection = definePicklist('_fullNameDirection', [
