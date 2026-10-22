@@ -29,20 +29,21 @@ const getAddPageButton = () =>
     name: commonText.add(),
   });
 
-const getEditButton = (): HTMLElement =>
+const findEditButton = (): HTMLElement | undefined =>
   screen
     .getAllByRole('button', { name: commonText.edit() })
-    .find(({ textContent }) => textContent === commonText.edit())!;
+    .find(({ textContent }) => textContent === commonText.edit());
 
 async function openAddPageDialog(user: User): Promise<HTMLElement> {
-  await user.click(getEditButton());
+  const editButton = findEditButton();
+  if (editButton !== undefined) await user.click(editButton);
   await user.click(getAddPageButton());
   return screen.getByRole('dialog', { name: statsText.addPage() });
 }
 
-async function addSharedPage(user: User): Promise<void> {
+async function addSharedPage(user: User, name = newPageName): Promise<void> {
   const dialog = await openAddPageDialog(user);
-  await user.type(within(dialog).getByRole('textbox'), newPageName);
+  await user.type(within(dialog).getByRole('textbox'), name);
   await user.click(
     within(dialog).getByRole('button', { name: commonText.add() })
   );
@@ -114,5 +115,50 @@ describe('Adding a new Shared page', () => {
 
     expect(getSharedLayout()).toHaveLength(1);
     expect(getPageNames(statsText.shared())).toEqual([defaultPageName]);
+  });
+});
+
+describe('Adding multiple Shared pages', () => {
+  const newPageNames = ['First Page', 'Second Page', 'Third Page'];
+
+  test('adds each page to the end of Shared and opens the newest one', async () => {
+    const { user, getSharedLayout } = await renderEmptyStatsPage();
+
+    for (const [index, name] of newPageNames.entries()) {
+      await addSharedPage(user, name);
+      const expectedNames = [
+        defaultPageName,
+        ...newPageNames.slice(0, index + 1),
+      ];
+      expect(getPageNames(statsText.shared())).toEqual(expectedNames);
+      expect(getSharedLayout()?.map(({ label }) => label)).toEqual(
+        expectedNames
+      );
+
+      const pages = getPageButtons(statsText.shared());
+      expect(pages.at(-1)).toHaveAttribute('aria-current', 'page');
+      pages
+        .slice(0, -1)
+        .forEach((page) => expect(page).not.toHaveAttribute('aria-current'));
+    }
+
+    getSharedLayout()!
+      .slice(1)
+      .forEach((page) => expect(page.categories).toEqual([]));
+  });
+
+  test('Cancel discards every page added in the edit session', async () => {
+    const { user, getSharedLayout } = await renderEmptyStatsPage();
+    for (const name of newPageNames) await addSharedPage(user, name);
+    await user.click(screen.getByRole('button', { name: commonText.cancel() }));
+
+    expect(getSharedLayout()?.map(({ label }) => label)).toEqual([
+      defaultPageName,
+    ]);
+    expect(getPageNames(statsText.shared())).toEqual([defaultPageName]);
+    expect(getPageButtons(statsText.shared())[0]).toHaveAttribute(
+      'aria-current',
+      'page'
+    );
   });
 });
