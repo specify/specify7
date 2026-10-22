@@ -1,5 +1,7 @@
-import { waitFor } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
 import React from 'react';
+import { commonText } from '../../../localization/common';
+import { statsText } from '../../../localization/stats';
 import { overrideAjax } from '../../../tests/ajax';
 import { mount } from '../../../tests/reactUtils';
 import { f } from '../../../utils/functools';
@@ -128,4 +130,66 @@ export async function renderEmptyStatsPage() {
     getSharedLayout,
     getPersonalLayout: () => getLayout(user),
   };
+}
+
+export type User = Awaited<ReturnType<typeof renderEmptyStatsPage>>['user'];
+
+// The <li> holding a section's heading, "+" button and page list
+const getSection = (sectionName: string): HTMLElement =>
+  screen.getByRole('heading', { name: sectionName }).closest('li')!;
+
+// Each page's <li> holds its page button, then its pencil (rename) button
+const getPageItems = (sectionName: string): RA<HTMLElement> =>
+  within(getSection(sectionName)).getAllByRole('listitem');
+
+export const getPageButtons = (sectionName: string): RA<HTMLElement> =>
+  getPageItems(sectionName).map(
+    (item) => within(item).getAllByRole('button')[0]
+  );
+
+export const getPageNames = (sectionName: string) =>
+  getPageButtons(sectionName).map(({ textContent }) => textContent);
+
+// Undefined once in edit mode, where the header shows Cancel/Save instead
+const findEditButton = (): HTMLElement | undefined =>
+  screen
+    .getAllByRole('button', { name: commonText.edit() })
+    .find(({ textContent }) => textContent === commonText.edit());
+
+async function enterEditMode(user: User): Promise<void> {
+  const editButton = findEditButton();
+  if (editButton !== undefined) await user.click(editButton);
+}
+
+export async function openAddPageDialog(user: User): Promise<HTMLElement> {
+  await enterEditMode(user);
+  await user.click(
+    within(getSection(statsText.shared())).getByRole('button', {
+      name: commonText.add(),
+    })
+  );
+  return screen.getByRole('dialog', { name: statsText.addPage() });
+}
+
+export async function addSharedPage(user: User, name: string): Promise<void> {
+  const dialog = await openAddPageDialog(user);
+  await user.type(within(dialog).getByRole('textbox'), name);
+  await user.click(
+    within(dialog).getByRole('button', { name: commonText.add() })
+  );
+}
+
+/** Open the "Edit Page" dialog for a Shared page using its pencil button */
+export async function openEditPageDialog(
+  user: User,
+  pageName: string
+): Promise<HTMLElement> {
+  await enterEditMode(user);
+  const pageItem = getPageItems(statsText.shared()).find(
+    (item) => within(item).getAllByRole('button')[0].textContent === pageName
+  )!;
+  await user.click(
+    within(pageItem).getByRole('button', { name: commonText.edit() })
+  );
+  return screen.getByRole('dialog', { name: statsText.editPage() });
 }
