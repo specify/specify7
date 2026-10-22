@@ -1,3 +1,4 @@
+from specifyweb.backend.workbench.models import Spdataset, Spdatasetattachment
 from specifyweb.specify import models
 from specifyweb.specify.tests.test_api import ApiTests
 from specifyweb.specify.utils.scoping import ScopeType
@@ -23,3 +24,35 @@ class TestAttachmentRules(ApiTests):
         )
         self.assertEqual(attachment.scopetype, ScopeType.COLLECTION.value)
         self.assertEqual(attachment.scopeid, self.collection.id)
+
+    def test_delete_join_keeps_attachment_while_dataset_references_it(self):
+        attachment = models.Attachment.objects.create(
+            origfilename="test.jpg",
+            attachmentlocation="test.jpg",
+        )
+        collectionobject_attachment = (
+            models.Collectionobjectattachment.objects.create(
+                collectionmemberid=self.collection.id,
+                ordinal=0,
+                attachment=attachment,
+                collectionobject=self.collectionobjects[0],
+            )
+        )
+        dataset = Spdataset.objects.create(
+            collection=self.collection,
+            specifyuser=self.specifyuser,
+            name="Test dataset",
+            columns=[],
+            data=[],
+        )
+        Spdatasetattachment.objects.create(
+            collectionmemberid=self.collection.id,
+            ordinal=0,
+            attachment=attachment,
+            spdataset=dataset,
+        )
+
+        collectionobject_attachment.delete()
+
+        attachment.refresh_from_db()
+        self.assertEqual(attachment.tableid, Spdataset.specify_model.tableId)
