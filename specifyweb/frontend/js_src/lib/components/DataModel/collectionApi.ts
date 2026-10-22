@@ -10,6 +10,7 @@ import { Backbone } from './backbone';
 import { DEFAULT_FETCH_LIMIT } from './collection';
 import type { AnySchema } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
+import { Collection } from './specifyTable';
 
 // REFACTOR: remove @ts-nocheck
 
@@ -20,7 +21,9 @@ const Base = Backbone.Collection.extend({
   },
 });
 
-export const isRelationshipCollection = (value: unknown): boolean =>
+export const isRelationshipCollection = (
+  value: unknown
+): value is Collection<AnySchema> =>
   value instanceof DependentCollection ||
   value instanceof IndependentCollection;
 
