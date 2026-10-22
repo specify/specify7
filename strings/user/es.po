@@ -575,12 +575,12 @@ msgstr ""
 "Políticas personalizadas a nivel de Institución (se aplican a todas las "
 "colecciones asignadas)"
 
-#: components/Security/User.tsx:682
+#: components/Security/User.tsx:685
 #. Used in: Components > Security > User
 msgid "cantRemoveLastAdmin"
 msgstr "No se puede eliminar el estatus de Administrador de la Institución"
 
-#: components/Security/User.tsx:685
+#: components/Security/User.tsx:688
 #. Used in: Components > Security > User
 msgid "cantRemoveLastAdminDescription"
 msgstr "En la Institución debe haber al menos un Administrador de la Institución"

@@ -430,7 +430,7 @@ msgstr ""
 "Denne ressursen tilhører en annen samling/disiplinen enn den du er i for "
 "øyeblikket. Det anbefales å bytte samling før du redigerer dette."
 
-#: components/WebLinks/Element.tsx:82
+#: components/WebLinks/Element.tsx:89
 #. Used in: Components > Web Links > Element
 msgid "thisFieldName"
 msgstr "Dette feltnavnet (kun for forhåndsvisning)"

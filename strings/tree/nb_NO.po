@@ -310,7 +310,7 @@ msgstr "Biostratigrafi"
 msgid "editRanks"
 msgstr "Rediger nivåer"
 
-#: components/Forms/DeleteButton.tsx:182
+#: components/Forms/DeleteButton.tsx:181
 #. Used in: Components > Forms > Delete Button
 msgid "resourceToDelete"
 msgstr "Dette vil permanent slette følgende ressurs"

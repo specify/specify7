@@ -502,7 +502,7 @@ msgstr ""
 "Ovaj resurs pripada drugoj zbirci/disciplini od one u kojoj se trenutno "
 "nalazite. Preporučuje se promjena zbirke prije uređivanja ovog resursa."
 
-#: components/WebLinks/Element.tsx:82
+#: components/WebLinks/Element.tsx:89
 #. Used in: Components > Web Links > Element
 #, fuzzy
 msgid "thisFieldName"

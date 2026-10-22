@@ -665,13 +665,13 @@ msgstr ""
 "Prilagođene politike na razini institucije (primjenjuju se na sve "
 "dodijeljene zbirke)"
 
-#: components/Security/User.tsx:682
+#: components/Security/User.tsx:685
 #. Used in: Components > Security > User
 #, fuzzy
 msgid "cantRemoveLastAdmin"
 msgstr "Ne mogu ukloniti status administratora ustanove"
 
-#: components/Security/User.tsx:685
+#: components/Security/User.tsx:688
 #. Used in: Components > Security > User
 #, fuzzy
 msgid "cantRemoveLastAdminDescription"

@@ -566,12 +566,12 @@ msgstr "Користувачів не буде видалено, але вони
 msgid "institutionPolicies"
 msgstr "Спеціальні правила на рівні установи (стосуються всіх призначених колекцій)"
 
-#: components/Security/User.tsx:682
+#: components/Security/User.tsx:685
 #. Used in: Components > Security > User
 msgid "cantRemoveLastAdmin"
 msgstr "Не вдається видалити статус адміністратора установи"
 
-#: components/Security/User.tsx:685
+#: components/Security/User.tsx:688
 #. Used in: Components > Security > User
 msgid "cantRemoveLastAdminDescription"
 msgstr "У закладі має бути принаймні один адміністратор закладу"

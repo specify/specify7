@@ -436,7 +436,7 @@ msgstr ""
 "dans laquelle vous vous trouvez actuellement. Il est recommandé de changer "
 "de collection avant de modifier cette ressource."
 
-#: components/WebLinks/Element.tsx:82
+#: components/WebLinks/Element.tsx:89
 #. Used in: Components > Web Links > Element
 msgid "thisFieldName"
 msgstr "Nom de ce champ (à des fins de prévisualisation uniquement)"

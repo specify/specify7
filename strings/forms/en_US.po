@@ -50,29 +50,29 @@ msgstr "Values of {values:string} must be unique to {fieldName:string}"
 msgid "valuesOfMustBeUniqueToDatabase"
 msgstr "Values of {values:string} must be unique to database"
 
-#: components/Forms/DeleteButton.tsx:139
+#: components/Forms/DeleteButton.tsx:138
 #. Used in: Components > Forms > Delete Button
 msgid "checkingIfResourceCanBeDeleted"
 msgstr "Checking if resource can be deleted…"
 
-#: components/Molecules/LinkedRecords.tsx:105
+#: components/Molecules/LinkedRecords.tsx:109
 #. Used in: Components > Molecules > Linked Records
 msgid "checkingIfResourceIsUsed"
 msgstr "Checking if this record is currently in use…"
 
-#: components/Molecules/LinkedRecords.tsx:51
-#: components/Molecules/LinkedRecords.tsx:119
+#: components/Molecules/LinkedRecords.tsx:66
+#: components/Molecules/LinkedRecords.tsx:123
 #. Used in: Components > Molecules > Linked Records
 msgid "noLinkedRecords"
 msgstr "No linked records"
 
-#: components/Molecules/LinkedRecords.tsx:133
+#: components/Molecules/LinkedRecords.tsx:138
 #. Used in: Components > Molecules > Linked Records
 msgid "recordUsedDescription"
 msgstr "This resource is currently linked to the following records:"
 
-#: components/Forms/DeleteButton.tsx:96
-#: components/Forms/DeleteButton.tsx:104
+#: components/Forms/DeleteButton.tsx:101
+#: components/Forms/DeleteButton.tsx:106
 #: components/Forms/DeleteButton.tsx:194
 #. Used in: Components > Forms > Delete Button
 msgid "deleteBlocked"
@@ -116,14 +116,14 @@ msgstr ""
 msgid "invalidDate"
 msgstr "Invalid Date"
 
-#: components/Forms/DeleteButton.tsx:165
+#: components/Forms/DeleteButton.tsx:164
 #. Used in: Components > Forms > Delete Button
 msgid "deleteConfirmation"
 msgstr ""
 "Are you sure you want to permanently delete this {tableName:string} from "
 "the database?"
 
-#: components/Forms/DeleteButton.tsx:54
+#: components/Forms/DeleteButton.tsx:56
 #. Used in: Components > Forms > Delete Button
 msgid "deleteConfirmationDescription"
 msgstr "This action cannot be undone."
@@ -197,39 +197,39 @@ msgstr ""
 msgid "saveRecordFirst"
 msgstr "Save record first"
 
-#: components/FormSliders/Slider.tsx:32
-#: components/FormSliders/Slider.tsx:34
+#: components/FormSliders/useSliderButtons.tsx:34
+#: components/FormSliders/useSliderButtons.tsx:36
 #: components/Preferences/UserDefinitions.tsx:1231
-#. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
+#. Used in: Components > Form Sliders > Use Slider Buttons ⬤ Components > Preferences > User Definitions
 msgid "firstRecord"
 msgstr "First Record"
 
-#: components/FormSliders/Slider.tsx:96
-#: components/FormSliders/Slider.tsx:98
+#: components/FormSliders/useSliderButtons.tsx:69
+#: components/FormSliders/useSliderButtons.tsx:71
 #: components/Preferences/UserDefinitions.tsx:1235
-#. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
+#. Used in: Components > Form Sliders > Use Slider Buttons ⬤ Components > Preferences > User Definitions
 msgid "lastRecord"
 msgstr "Last Record"
 
-#: components/FormSliders/Slider.tsx:40
-#: components/FormSliders/Slider.tsx:43
-#. Used in: Components > Form Sliders > Slider
+#: components/FormSliders/useSliderButtons.tsx:45
+#: components/FormSliders/useSliderButtons.tsx:48
+#. Used in: Components > Form Sliders > Use Slider Buttons
 msgid "previousRecord"
 msgstr "Previous Record"
 
-#: components/FormSliders/Slider.tsx:87
-#: components/FormSliders/Slider.tsx:90
-#. Used in: Components > Form Sliders > Slider
+#: components/FormSliders/useSliderButtons.tsx:57
+#: components/FormSliders/useSliderButtons.tsx:60
+#. Used in: Components > Form Sliders > Use Slider Buttons
 msgid "nextRecord"
 msgstr "Next Record"
 
-#: components/FormSliders/Slider.tsx:57
+#: components/FormSliders/Slider.tsx:67
 #. Used in: Components > Form Sliders > Slider
 msgid "currentRecord"
 msgstr "Current object (out of {total:number|formatted})"
 
 #: components/FormMeta/Definition.tsx:93
-#: components/Forms/ResourceView.tsx:431
+#: components/Forms/ResourceView.tsx:464
 #: components/Forms/Save.tsx:39
 #. Used in: Components > Form Meta > Definition ⬤ Components > Forms > Resource View ⬤ Components > Forms > Save
 msgid "unsavedFormUnloadProtect"
@@ -376,37 +376,37 @@ msgstr "Required Format: {format:string}."
 msgid "inputTypeNumber"
 msgstr "Value must be a number"
 
-#: components/PickLists/definitions.ts:30
+#: components/PickLists/definitions.ts:34
 #. Used in: Components > Pick Lists > Definitions
 msgid "organization"
 msgstr "Organization"
 
-#: components/PickLists/definitions.ts:31
+#: components/PickLists/definitions.ts:35
 #. Used in: Components > Pick Lists > Definitions
 msgid "person"
 msgstr "Person"
 
-#: components/PickLists/definitions.ts:32
+#: components/PickLists/definitions.ts:36
 #. Used in: Components > Pick Lists > Definitions
 msgid "other"
 msgstr "Other"
 
-#: components/PickLists/definitions.ts:33
+#: components/PickLists/definitions.ts:37
 #. Used in: Components > Pick Lists > Definitions
 msgid "group"
 msgstr "Group"
 
-#: components/PickLists/definitions.ts:37
+#: components/PickLists/definitions.ts:41
 #. Used in: Components > Pick Lists > Definitions
 msgid "userDefinedItems"
 msgstr "User Defined Items"
 
-#: components/PickLists/definitions.ts:38
+#: components/PickLists/definitions.ts:42
 #. Used in: Components > Pick Lists > Definitions
 msgid "entireTable"
 msgstr "Entire Table"
 
-#: components/PickLists/definitions.ts:39
+#: components/PickLists/definitions.ts:43
 #. Used in: Components > Pick Lists > Definitions
 msgid "fieldFromTable"
 msgstr "Field From Table"
@@ -421,17 +421,19 @@ msgstr "Unsupported cell type"
 msgid "additionalResultsOmitted"
 msgstr "Additional results omitted"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:286
-#. Used in: Components > Form Sliders > Record Selector From Ids
+#: components/FormSliders/RecordSelectorFromIds.tsx:290
+#: components/FormSliders/RecordSelectorFromPage.tsx:254
+#. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Form Sliders > Record Selector From Page
 msgid "recordSelectorUnloadProtect"
 msgstr "Proceed without saving?"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:289
-#. 🟥When in record set and current record is unsaved and try to navigate to another record. Used in: Components > Form Sliders > Record Selector From Ids
+#: components/FormSliders/RecordSelectorFromIds.tsx:293
+#: components/FormSliders/RecordSelectorFromPage.tsx:257
+#. 🟥When in record set and current record is unsaved and try to navigate to another record. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Form Sliders > Record Selector From Page
 msgid "recordSelectorUnloadProtectDescription"
 msgstr "You might want to save this record before navigating away."
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:225
+#: components/FormSliders/RecordSelectorFromIds.tsx:229
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "creatingNewRecord"
 msgstr "Creating new record"
@@ -441,13 +443,13 @@ msgstr "Creating new record"
 msgid "createNewRecordSet"
 msgstr "Create a new record set"
 
-#: components/PickLists/definitions.ts:154
+#: components/PickLists/definitions.ts:158
 #: components/SetupTool/setupResources.ts:97
 #. Used in: Components > Pick Lists > Definitions ⬤ Components > Setup Tool > Setup Resources
 msgid "forward"
 msgstr "Forward"
 
-#: components/PickLists/definitions.ts:153
+#: components/PickLists/definitions.ts:157
 #: components/SetupTool/setupResources.ts:98
 #. Used in: Components > Pick Lists > Definitions ⬤ Components > Setup Tool > Setup Resources
 msgid "reverse"
@@ -735,12 +737,12 @@ msgstr "New {tableName:string}"
 msgid "resourceFormatter"
 msgstr "{tableName:string} #{id:number}"
 
-#: components/Forms/ResourceView.tsx:225
+#: components/Forms/ResourceView.tsx:242
 #. Used in: Components > Forms > Resource View
 msgid "resourceDeleted"
 msgstr "Resource deleted"
 
-#: components/Forms/ResourceView.tsx:228
+#: components/Forms/ResourceView.tsx:245
 #. Used in: Components > Forms > Resource View
 msgid "resourceDeletedDescription"
 msgstr "Item was deleted successfully."
@@ -759,3 +761,14 @@ msgstr "Catalog Number Numeric"
 #. Used in: Components > Form Cells > COJODialog
 msgid "addCOGChildren"
 msgstr "Add COG Children"
+
+#: components/Forms/useShowParentButton.tsx:44
+#. Used in: Components > Forms > Use Show Parent Button
+msgid "viewParentResource"
+msgstr "View Parent Resource"
+
+#: components/Forms/useShowParentButton.tsx:90
+#: components/Forms/useShowParentButton.tsx:93
+#. Used in: Components > Forms > Use Show Parent Button
+msgid "noParentFound"
+msgstr "Could not find parent resource"

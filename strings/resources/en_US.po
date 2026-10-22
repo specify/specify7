@@ -421,7 +421,7 @@ msgstr ""
 "are currently in. It's recommended to switch collection before editing this "
 "resource"
 
-#: components/WebLinks/Element.tsx:82
+#: components/WebLinks/Element.tsx:89
 #. Used in: Components > Web Links > Element
 msgid "thisFieldName"
 msgstr "This field name (for preview purposes only)"

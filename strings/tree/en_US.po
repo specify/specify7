@@ -300,7 +300,7 @@ msgstr "Biostratigraphy"
 msgid "editRanks"
 msgstr "Edit Ranks"
 
-#: components/Forms/DeleteButton.tsx:182
+#: components/Forms/DeleteButton.tsx:181
 #. Used in: Components > Forms > Delete Button
 msgid "resourceToDelete"
 msgstr "This will permanently delete the following resource"

@@ -569,12 +569,12 @@ msgstr ""
 "Tilpassede retningslinjer på institusjonsnivå (gjelder alle tildelte "
 "samlinger)"
 
-#: components/Security/User.tsx:682
+#: components/Security/User.tsx:685
 #. Used in: Components > Security > User
 msgid "cantRemoveLastAdmin"
 msgstr "Kan ikke fjerne statusen som institusjonsadministrator"
 
-#: components/Security/User.tsx:685
+#: components/Security/User.tsx:688
 #. Used in: Components > Security > User
 msgid "cantRemoveLastAdminDescription"
 msgstr "Det må være minst én institusjonsadministrator i institusjonen"

@@ -149,15 +149,15 @@ msgstr "Prøv å slå sammen på nytt."
 msgid "mergingWentWrong"
 msgstr "Noe gikk galt under sammenslåingsprosessen."
 
-#: components/Forms/DeleteButton.tsx:124
-#: components/Forms/DeleteButton.tsx:128
-#: components/Merging/Usages.tsx:19
-#: components/Merging/Usages.tsx:52
-#: components/Molecules/LinkedRecords.tsx:44
-#: components/Molecules/LinkedRecords.tsx:52
-#: components/Molecules/LinkedRecords.tsx:90
+#: components/Forms/DeleteButton.tsx:123
+#: components/Forms/DeleteButton.tsx:127
+#: components/Merging/Usages.tsx:21
+#: components/Merging/Usages.tsx:53
+#: components/Molecules/LinkedRecords.tsx:56
+#: components/Molecules/LinkedRecords.tsx:65
 #: components/Molecules/LinkedRecords.tsx:94
-#: components/Molecules/LinkedRecords.tsx:129
+#: components/Molecules/LinkedRecords.tsx:98
+#: components/Molecules/LinkedRecords.tsx:134
 #. Used in: Components > Forms > Delete Button ⬤ Components > Merging > Usages ⬤ Components > Molecules > Linked Records
 msgid "linkedRecords"
 msgstr "Tilknyttede poster"

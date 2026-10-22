@@ -529,31 +529,31 @@ msgstr "Defina o relatório com base na consulta."
 msgid "exportQueryAsLabel"
 msgstr "Defina o rótulo com base na consulta."
 
-#: components/PickLists/definitions.ts:46
+#: components/PickLists/definitions.ts:50
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #, fuzzy
 msgid "treeMerge"
 msgstr "Fusão de árvores"
 
-#: components/PickLists/definitions.ts:47
+#: components/PickLists/definitions.ts:51
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #, fuzzy
 msgid "treeMove"
 msgstr "Movimentação da árvore"
 
-#: components/PickLists/definitions.ts:48
+#: components/PickLists/definitions.ts:52
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #, fuzzy
 msgid "treeSynonymize"
 msgstr "Sinônimos de árvore"
 
-#: components/PickLists/definitions.ts:49
+#: components/PickLists/definitions.ts:53
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #, fuzzy
 msgid "treeDesynonymize"
 msgstr "Dessinonizar árvore"
 
-#: components/PickLists/definitions.ts:50
+#: components/PickLists/definitions.ts:54
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #, fuzzy
 msgid "treeBulkMove"

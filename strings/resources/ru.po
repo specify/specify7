@@ -505,7 +505,7 @@ msgstr ""
 "вы сейчас находитесь. Рекомендуется переключиться на другую коллекцию перед "
 "редактированием этого ресурса."
 
-#: components/WebLinks/Element.tsx:82
+#: components/WebLinks/Element.tsx:89
 #. Used in: Components > Web Links > Element
 #, fuzzy
 msgid "thisFieldName"

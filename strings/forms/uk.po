@@ -51,29 +51,29 @@ msgstr "Значення {values:string} мають бути унікальни�
 msgid "valuesOfMustBeUniqueToDatabase"
 msgstr "Значення {values:string} мають бути унікальними для бази даних"
 
-#: components/Forms/DeleteButton.tsx:139
+#: components/Forms/DeleteButton.tsx:138
 #. Used in: Components > Forms > Delete Button
 msgid "checkingIfResourceCanBeDeleted"
 msgstr "Перевірка можливості видалення ресурсу…"
 
-#: components/Molecules/LinkedRecords.tsx:105
+#: components/Molecules/LinkedRecords.tsx:109
 #. Used in: Components > Molecules > Linked Records
 msgid "checkingIfResourceIsUsed"
 msgstr "Перевірка, чи цей запис зараз використовується…"
 
-#: components/Molecules/LinkedRecords.tsx:51
-#: components/Molecules/LinkedRecords.tsx:119
+#: components/Molecules/LinkedRecords.tsx:66
+#: components/Molecules/LinkedRecords.tsx:123
 #. Used in: Components > Molecules > Linked Records
 msgid "noLinkedRecords"
 msgstr "Немає пов'язаних записів"
 
-#: components/Molecules/LinkedRecords.tsx:133
+#: components/Molecules/LinkedRecords.tsx:138
 #. Used in: Components > Molecules > Linked Records
 msgid "recordUsedDescription"
 msgstr "Цей ресурс наразі пов’язаний з такими записами:"
 
-#: components/Forms/DeleteButton.tsx:96
-#: components/Forms/DeleteButton.tsx:104
+#: components/Forms/DeleteButton.tsx:101
+#: components/Forms/DeleteButton.tsx:106
 #: components/Forms/DeleteButton.tsx:194
 #. Used in: Components > Forms > Delete Button
 msgid "deleteBlocked"
@@ -115,14 +115,14 @@ msgstr ""
 msgid "invalidDate"
 msgstr "Недійсна дата"
 
-#: components/Forms/DeleteButton.tsx:165
+#: components/Forms/DeleteButton.tsx:164
 #. Used in: Components > Forms > Delete Button
 msgid "deleteConfirmation"
 msgstr ""
 "Ви впевнені, що хочете остаточно видалити цей {tableName:string} з бази "
 "даних?"
 
-#: components/Forms/DeleteButton.tsx:54
+#: components/Forms/DeleteButton.tsx:56
 #. Used in: Components > Forms > Delete Button
 msgid "deleteConfirmationDescription"
 msgstr "Цю дію не можна скасувати."
@@ -196,39 +196,39 @@ msgstr ""
 msgid "saveRecordFirst"
 msgstr "Спочатку збережіть запис"
 
-#: components/FormSliders/Slider.tsx:32
-#: components/FormSliders/Slider.tsx:34
+#: components/FormSliders/useSliderButtons.tsx:34
+#: components/FormSliders/useSliderButtons.tsx:36
 #: components/Preferences/UserDefinitions.tsx:1231
-#. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
+#. Used in: Components > Form Sliders > Use Slider Buttons ⬤ Components > Preferences > User Definitions
 msgid "firstRecord"
 msgstr "Перший запис"
 
-#: components/FormSliders/Slider.tsx:96
-#: components/FormSliders/Slider.tsx:98
+#: components/FormSliders/useSliderButtons.tsx:69
+#: components/FormSliders/useSliderButtons.tsx:71
 #: components/Preferences/UserDefinitions.tsx:1235
-#. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
+#. Used in: Components > Form Sliders > Use Slider Buttons ⬤ Components > Preferences > User Definitions
 msgid "lastRecord"
 msgstr "Останній запис"
 
-#: components/FormSliders/Slider.tsx:40
-#: components/FormSliders/Slider.tsx:43
-#. Used in: Components > Form Sliders > Slider
+#: components/FormSliders/useSliderButtons.tsx:45
+#: components/FormSliders/useSliderButtons.tsx:48
+#. Used in: Components > Form Sliders > Use Slider Buttons
 msgid "previousRecord"
 msgstr "Попередній запис"
 
-#: components/FormSliders/Slider.tsx:87
-#: components/FormSliders/Slider.tsx:90
-#. Used in: Components > Form Sliders > Slider
+#: components/FormSliders/useSliderButtons.tsx:57
+#: components/FormSliders/useSliderButtons.tsx:60
+#. Used in: Components > Form Sliders > Use Slider Buttons
 msgid "nextRecord"
 msgstr "Наступний запис"
 
-#: components/FormSliders/Slider.tsx:57
+#: components/FormSliders/Slider.tsx:67
 #. Used in: Components > Form Sliders > Slider
 msgid "currentRecord"
 msgstr "Поточний об'єкт (з {total:number|formatted})"
 
 #: components/FormMeta/Definition.tsx:93
-#: components/Forms/ResourceView.tsx:431
+#: components/Forms/ResourceView.tsx:464
 #: components/Forms/Save.tsx:39
 #. Used in: Components > Form Meta > Definition ⬤ Components > Forms > Resource View ⬤ Components > Forms > Save
 msgid "unsavedFormUnloadProtect"
@@ -375,37 +375,37 @@ msgstr "Необхідний формат: {format:string}."
 msgid "inputTypeNumber"
 msgstr "Значення має бути числом"
 
-#: components/PickLists/definitions.ts:30
+#: components/PickLists/definitions.ts:34
 #. Used in: Components > Pick Lists > Definitions
 msgid "organization"
 msgstr "Організація"
 
-#: components/PickLists/definitions.ts:31
+#: components/PickLists/definitions.ts:35
 #. Used in: Components > Pick Lists > Definitions
 msgid "person"
 msgstr "Людина"
 
-#: components/PickLists/definitions.ts:32
+#: components/PickLists/definitions.ts:36
 #. Used in: Components > Pick Lists > Definitions
 msgid "other"
 msgstr "Інше"
 
-#: components/PickLists/definitions.ts:33
+#: components/PickLists/definitions.ts:37
 #. Used in: Components > Pick Lists > Definitions
 msgid "group"
 msgstr "Група"
 
-#: components/PickLists/definitions.ts:37
+#: components/PickLists/definitions.ts:41
 #. Used in: Components > Pick Lists > Definitions
 msgid "userDefinedItems"
 msgstr "Елементи, визначені користувачем"
 
-#: components/PickLists/definitions.ts:38
+#: components/PickLists/definitions.ts:42
 #. Used in: Components > Pick Lists > Definitions
 msgid "entireTable"
 msgstr "Вся таблиця"
 
-#: components/PickLists/definitions.ts:39
+#: components/PickLists/definitions.ts:43
 #. Used in: Components > Pick Lists > Definitions
 msgid "fieldFromTable"
 msgstr "Поле з таблиці"
@@ -420,17 +420,19 @@ msgstr "Непідтримуваний тип клітинки"
 msgid "additionalResultsOmitted"
 msgstr "Додаткові результати пропущені"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:286
-#. Used in: Components > Form Sliders > Record Selector From Ids
+#: components/FormSliders/RecordSelectorFromIds.tsx:290
+#: components/FormSliders/RecordSelectorFromPage.tsx:254
+#. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Form Sliders > Record Selector From Page
 msgid "recordSelectorUnloadProtect"
 msgstr "Продовжити без збереження?"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:289
-#. 🟥When in record set and current record is unsaved and try to navigate to another record. Used in: Components > Form Sliders > Record Selector From Ids
+#: components/FormSliders/RecordSelectorFromIds.tsx:293
+#: components/FormSliders/RecordSelectorFromPage.tsx:257
+#. 🟥When in record set and current record is unsaved and try to navigate to another record. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Form Sliders > Record Selector From Page
 msgid "recordSelectorUnloadProtectDescription"
 msgstr "Можливо, ви захочете зберегти цей запис, перш ніж залишати сторінку."
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:225
+#: components/FormSliders/RecordSelectorFromIds.tsx:229
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "creatingNewRecord"
 msgstr "Створення нового запису"
@@ -440,13 +442,13 @@ msgstr "Створення нового запису"
 msgid "createNewRecordSet"
 msgstr "Створити новий набір записів"
 
-#: components/PickLists/definitions.ts:154
+#: components/PickLists/definitions.ts:158
 #: components/SetupTool/setupResources.ts:97
 #. Used in: Components > Pick Lists > Definitions ⬤ Components > Setup Tool > Setup Resources
 msgid "forward"
 msgstr "Вперед"
 
-#: components/PickLists/definitions.ts:153
+#: components/PickLists/definitions.ts:157
 #: components/SetupTool/setupResources.ts:98
 #. Used in: Components > Pick Lists > Definitions ⬤ Components > Setup Tool > Setup Resources
 msgid "reverse"
@@ -734,12 +736,12 @@ msgstr "Новий {tableName:string}"
 msgid "resourceFormatter"
 msgstr "{tableName:string} '#{id:number}"
 
-#: components/Forms/ResourceView.tsx:225
+#: components/Forms/ResourceView.tsx:242
 #. Used in: Components > Forms > Resource View
 msgid "resourceDeleted"
 msgstr "Ресурс видалено"
 
-#: components/Forms/ResourceView.tsx:228
+#: components/Forms/ResourceView.tsx:245
 #. Used in: Components > Forms > Resource View
 msgid "resourceDeletedDescription"
 msgstr "Елемент успішно видалено."
@@ -758,3 +760,14 @@ msgstr "Номер у каталозі (числовий)"
 #. Used in: Components > Form Cells > COJODialog
 msgid "addCOGChildren"
 msgstr "Додати дочірні елементи COG"
+
+#: components/Forms/useShowParentButton.tsx:44
+#. Used in: Components > Forms > Use Show Parent Button
+msgid "viewParentResource"
+msgstr ""
+
+#: components/Forms/useShowParentButton.tsx:90
+#: components/Forms/useShowParentButton.tsx:93
+#. Used in: Components > Forms > Use Show Parent Button
+msgid "noParentFound"
+msgstr ""

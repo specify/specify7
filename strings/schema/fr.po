@@ -91,7 +91,7 @@ msgstr ""
 #: components/SchemaViewer/schemaToTsv.tsx:14
 #: components/Security/PreviewTables.tsx:69
 #: components/Security/registry.ts:78
-#: components/WebLinks/Element.tsx:40
+#: components/WebLinks/Element.tsx:44
 #. Used in: Components > Schema Config > Table ⬤ Components > Schema Viewer > Schema To Tsv ⬤ Components > Security > Preview Tables ⬤ Components > Security > Registry ⬤ Components > Web Links > Element
 msgid "table"
 msgstr "Tableau"
@@ -99,9 +99,9 @@ msgstr "Tableau"
 #: components/Attachments/index.tsx:202
 #: components/FormEditor/Table.tsx:49
 #: components/Router/Routes.tsx:447
-#: components/SchemaConfig/Tables.tsx:206
-#: components/SchemaConfig/Tables.tsx:219
-#: components/SchemaConfig/Tables.tsx:222
+#: components/SchemaConfig/Tables.tsx:230
+#: components/SchemaConfig/Tables.tsx:243
+#: components/SchemaConfig/Tables.tsx:246
 #. Used in: Components > Attachments > Index ⬤ Components > Form Editor > Table ⬤ Components > Router > Routes ⬤ Components > Schema Config > Tables
 msgid "tables"
 msgstr "Tables"
@@ -112,7 +112,7 @@ msgstr "Tables"
 msgid "tableName"
 msgstr "Nom de la table"
 
-#: components/WebLinks/Element.tsx:52
+#: components/WebLinks/Element.tsx:56
 #. Used in: Components > Web Links > Element
 msgid "withoutTable"
 msgstr "Sans table"
@@ -225,7 +225,7 @@ msgstr "Légende de la table"
 #: components/SchemaViewer/Relationships.tsx:95
 #: components/SchemaViewer/schemaToTsv.tsx:21
 #: components/Security/Role.tsx:141
-#: components/WebLinks/Element.tsx:30
+#: components/WebLinks/Element.tsx:34
 #. Used in: Components > Export Feed > Editor ⬤ Components > Schema Config > Field ⬤ Components > Schema Config > Table ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv ⬤ Components > Security > Role ⬤ Components > Web Links > Element
 msgid "description"
 msgstr "Description"
@@ -329,7 +329,7 @@ msgid "formatted"
 msgstr "Formaté"
 
 #: components/SchemaConfig/Format.tsx:131
-#: components/WebLinks/Element.tsx:26
+#: components/WebLinks/Element.tsx:30
 #. Used in: Components > Schema Config > Format ⬤ Components > Web Links > Element
 msgid "webLink"
 msgstr "Lien Web"
@@ -410,12 +410,12 @@ msgstr "Nombre de relations"
 msgid "databaseSchema"
 msgstr "Schéma de base de données"
 
-#: components/Toolbar/QueryTablesEdit.tsx:83
+#: components/Toolbar/QueryTablesEdit.tsx:84
 #. Used in: Components > Toolbar > Query Tables Edit
 msgid "selectedTables"
 msgstr "Tables sélectionnées"
 
-#: components/Toolbar/QueryTablesEdit.tsx:81
+#: components/Toolbar/QueryTablesEdit.tsx:82
 #. Used in: Components > Toolbar > Query Tables Edit
 msgid "possibleTables"
 msgstr "Tables possibles"
@@ -500,3 +500,8 @@ msgstr "caché"
 #. Used in: Components > Schema Config > Fields
 msgid "visible"
 msgstr "Visible"
+
+#: components/SchemaConfig/Tables.tsx:177
+#. Used in: Components > Schema Config > Tables
+msgid "useTableCaptions"
+msgstr ""

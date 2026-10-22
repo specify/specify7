@@ -433,7 +433,7 @@ msgstr ""
 "Цей ресурс належить до іншої колекції/дисципліни, ніж та, у якій ви зараз "
 "перебуваєте. Рекомендовано змінити колекцію перед редагуванням цього ресурсу"
 
-#: components/WebLinks/Element.tsx:82
+#: components/WebLinks/Element.tsx:89
 #. Used in: Components > Web Links > Element
 msgid "thisFieldName"
 msgstr "Назва цього поля (лише для попереднього перегляду)"

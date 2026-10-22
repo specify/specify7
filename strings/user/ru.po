@@ -671,13 +671,13 @@ msgstr ""
 "Индивидуальные политики на уровне учреждения (применяются ко всем "
 "назначенным коллекциям)"
 
-#: components/Security/User.tsx:682
+#: components/Security/User.tsx:685
 #. Used in: Components > Security > User
 #, fuzzy
 msgid "cantRemoveLastAdmin"
 msgstr "Невозможно удалить статус администратора учреждения."
 
-#: components/Security/User.tsx:685
+#: components/Security/User.tsx:688
 #. Used in: Components > Security > User
 #, fuzzy
 msgid "cantRemoveLastAdminDescription"

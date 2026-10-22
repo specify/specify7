@@ -231,7 +231,7 @@ msgstr "Velg en basistabell"
 msgid "chooseExistingPlan"
 msgstr "Velg eksisterende mapping"
 
-#: components/SchemaConfig/Tables.tsx:166
+#: components/SchemaConfig/Tables.tsx:185
 #. Used in: Components > Schema Config > Tables
 msgid "showAllTables"
 msgstr "Vis alle tabeller"

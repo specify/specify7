@@ -452,27 +452,27 @@ msgstr "Definer rapport basert på søk"
 msgid "exportQueryAsLabel"
 msgstr "Definer etikett basert på søk"
 
-#: components/PickLists/definitions.ts:46
+#: components/PickLists/definitions.ts:50
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 msgid "treeMerge"
 msgstr "Tresammenslåing"
 
-#: components/PickLists/definitions.ts:47
+#: components/PickLists/definitions.ts:51
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 msgid "treeMove"
 msgstr "Treflytting"
 
-#: components/PickLists/definitions.ts:48
+#: components/PickLists/definitions.ts:52
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 msgid "treeSynonymize"
 msgstr "Tresynonymisering"
 
-#: components/PickLists/definitions.ts:49
+#: components/PickLists/definitions.ts:53
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 msgid "treeDesynonymize"
 msgstr "Tre-desynonymisering"
 
-#: components/PickLists/definitions.ts:50
+#: components/PickLists/definitions.ts:54
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 msgid "treeBulkMove"
 msgstr "Bulk-flytting av tre"

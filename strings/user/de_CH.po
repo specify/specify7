@@ -658,13 +658,13 @@ msgstr ""
 "Benutzerdefinierte institutionelle Richtlinien (gilt für alle zugewiesenen "
 "Sammlungen)"
 
-#: components/Security/User.tsx:682
+#: components/Security/User.tsx:685
 #. Used in: Components > Security > User
 #, fuzzy
 msgid "cantRemoveLastAdmin"
 msgstr "Institutionsadministratorstatus kann nicht entfernt werden"
 
-#: components/Security/User.tsx:685
+#: components/Security/User.tsx:688
 #. Used in: Components > Security > User
 #, fuzzy
 msgid "cantRemoveLastAdminDescription"
