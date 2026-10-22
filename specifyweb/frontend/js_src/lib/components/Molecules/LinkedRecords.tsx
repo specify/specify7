@@ -16,6 +16,8 @@ import { Dialog, dialogClassNames } from './Dialog';
 import { DeleteBlockerProvider } from '../DeleteBlockers/Context';
 import { useDirectDeleteBlockersForResource } from '../DeleteBlockers/useDeleteBlockersForResource';
 import { DeleteBlockers } from '../DeleteBlockers';
+import { MIN_DELETEBLOCKER_CONTAINER_WIDTH } from '../DeleteBlockers';
+import { useElementSize } from '../../hooks/useElementSize';
 
 const LOADING_TIMEOUT = 2 * SECOND;
 
@@ -36,6 +38,7 @@ function LinkedRecords<SCHEMA extends AnySchema>({
   deferred = false,
 }: DeleteButtonProps<SCHEMA>): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
+  const { elementRef, elementWidth } = useElementSize();
 
   const { blockers, onBlockersRequested: handleBlockersRequested } =
     useDirectDeleteBlockersForResource(resource, deferred);
@@ -124,6 +127,7 @@ function LinkedRecords<SCHEMA extends AnySchema>({
         ) : (
           <Dialog
             buttons={commonText.close()}
+            forwardRef={{ container: elementRef }}
             className={{
               container: dialogClassNames.wideContainer,
             }}
@@ -132,7 +136,11 @@ function LinkedRecords<SCHEMA extends AnySchema>({
             onClose={handleClose}
           >
             {formsText.recordUsedDescription()}
-            <DeleteBlockers resource={resource} blockers={[blockers]} />
+            <DeleteBlockers
+              blockers={[blockers]}
+              resource={resource}
+              useSmallLayout={elementWidth <= MIN_DELETEBLOCKER_CONTAINER_WIDTH}
+            />
           </Dialog>
         )
       ) : undefined}
