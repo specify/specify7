@@ -584,6 +584,26 @@
 			</fields>
 		</switch>
 	</format>
+	<format name="AgentIdentifier" title="Agent Identifier" class="edu.ku.brc.specify.datamodel.AgentIdentifier" default="true">
+		<switch single="false" field="identifierType">
+			<fields>
+				<field>identifier</field>
+			</fields>
+			<fields value="ORCID">
+				<field sep="https://orcid.org/">identifier</field>
+			</fields>
+			<fields value="Wikidata">
+				<field sep="https://www.wikidata.org/entity/">identifier</field>
+			</fields>
+		</switch>
+	</format>
+	<format name="CollectorID" title="CollectorID" class="edu.ku.brc.specify.datamodel.Collector" default="">
+		<switch single="true">
+			<fields>
+				<field sep=" ">agent.identifiers</field>
+			</fields>
+		</switch>
+	</format>
 	<aggregators>
 		<aggregator name="AccessionAgent" title="AccessionAgent" class="edu.ku.brc.specify.datamodel.AccessionAgent" default="true" separator="; " ending="" format="AccessionAgent"/>
 		<aggregator name="AccessionAttachment" title="AccessionAttachment" class="edu.ku.brc.specify.datamodel.AccessionAttachment" default="true" separator="; " ending="" format="identity" orderfieldname="ordinal"/>
@@ -636,5 +656,7 @@
 		<aggregator name="Taxon" title="Taxon" class="edu.ku.brc.specify.datamodel.Taxon" default="true" separator="; " ending="" format=""/>
 		<aggregator name="Geography" title="Geography" class="edu.ku.brc.specify.datamodel.Geography" default="true" separator="; " ending="" format=""/>
 		<aggregator name="Storage" title="Storage" class="edu.ku.brc.specify.datamodel.Storage" default="true" separator="; " ending="" format=""/>
-	</aggregators>
+		<aggregator name="AgentIdentifier" title="Agent Identifier" class="edu.ku.brc.specify.datamodel.AgentIdentifier" default="true" separator=" | " ending="" format=""/>
+		<aggregator name="CollectorID" title="CollectorID" class="edu.ku.brc.specify.datamodel.Collector" default="" separator=" | " ending="" format="CollectorID"/>
+  </aggregators>
 </formatters>
