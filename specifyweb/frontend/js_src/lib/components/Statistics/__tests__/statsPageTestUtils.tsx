@@ -68,6 +68,12 @@ export function mockStatsRequests(): void {
   );
 }
 
+export const mockSavedQueries = (): void =>
+  overrideAjax(
+    '/api/specify/spquery/?limit=10&specifyuser=2&offset=0&orderby=-name',
+    { objects: [], meta: { limit: 10, offset: 0, total_count: 0 } }
+  );
+
 const makeEmptyPreferences = <DEFINITIONS extends object>(
   definitions: DEFINITIONS
 ) =>
@@ -220,3 +226,26 @@ export const getCategoryInputs = (): RA<HTMLInputElement> =>
   screen
     .getAllByRole<HTMLInputElement>('textbox')
     .filter((input) => input.closest('ul') === null);
+
+export async function addPageWithCategory(user: User): Promise<void> {
+  await addSharedPage(user, 'Stats Page');
+  await user.click(
+    screen.getByRole('button', { name: statsText.addACategory() })
+  );
+  await user.type(getCategoryInputs()[0], 'My Stats');
+}
+
+export async function openChooseStatisticsDialog(
+  user: User
+): Promise<HTMLElement> {
+  await user.click(
+    within(getCategoryInputs()[0].closest('li')!).getByRole('button', {
+      name: commonText.add(),
+    })
+  );
+  return screen.findByRole('dialog', { name: statsText.chooseStatistics() });
+}
+
+export const getCategoryItems = (
+  getSharedLayout: () => RA<StatLayout> | undefined
+) => getSharedLayout()!.at(-1)!.categories[0].items;
