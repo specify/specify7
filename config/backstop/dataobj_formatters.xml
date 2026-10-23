@@ -549,13 +549,6 @@
 			</fields>
 		</switch>
 	</format>
-	<format name="AgentIdentifier" title="Agent Identifier" class="edu.ku.brc.specify.datamodel.AgentIdentifier" default="true">
-		<switch single="true">
-			<fields>
-				<field sep=" ">identifier</field>
-			</fields>
-		</switch>
-	</format>
 	<format name="TectonicUnit" title="Tectonic Unit" class="edu.ku.brc.specify.datamodel.TectonicUnit" default="true">
 		<switch single="true">
 			<fields>
@@ -598,6 +591,20 @@
 		</switch>
 	</format>
 	<format name="CollectorID" title="CollectorID" class="edu.ku.brc.specify.datamodel.Collector" default="">
+		<switch single="true">
+			<fields>
+				<field sep=" ">agent.identifiers</field>
+			</fields>
+		</switch>
+	</format>
+	<format name="Determiner" title="Determiner" class="edu.ku.brc.specify.datamodel.Determiner" default="true">
+		<switch single="true">
+			<fields>
+				<field sep=" ">agent</field>
+			</fields>
+		</switch>
+	</format>
+	<format name="DeterminerID" title="DeterminerID" class="edu.ku.brc.specify.datamodel.Determiner" default="">
 		<switch single="true">
 			<fields>
 				<field sep=" ">agent.identifiers</field>
@@ -649,7 +656,6 @@
 		<aggregator name="PcrPerson" title="PcrPerson" class="edu.ku.brc.specify.datamodel.PcrPerson" default="true" separator="; " ending="" format="PcrPerson" orderfieldname="orderNumber"/>
 		<aggregator name="TaxonAttachment" title="TaxonAttachment" class="edu.ku.brc.specify.datamodel.TaxonAttachment" default="true" separator="; " ending="" format="identity" orderfieldname="ordinal"/>
 		<aggregator name="CollectionObjectGroupJoin" title="Collection Object Group Join" class="edu.ku.brc.specify.datamodel.CollectionObjectGroupJoin" default="true" separator="; " ending="" format=""/>
-		<aggregator name="AgentIdentifier" title="Agent Identifier" class="edu.ku.brc.specify.datamodel.AgentIdentifier" default="true" separator="; " ending="" format=""/>
 		<aggregator name="Collection" title="Collection" class="edu.ku.brc.specify.datamodel.Collection" default="true" separator=" | " ending="" format=""/>
 		<aggregator name="Discipline" title="Discipline" class="edu.ku.brc.specify.datamodel.Discipline" default="true" separator=" | " ending="" format=""/>
 		<aggregator name="Division" title="Division" class="edu.ku.brc.specify.datamodel.Division" default="true" separator=" | " ending="" format=""/>
@@ -658,5 +664,5 @@
 		<aggregator name="Storage" title="Storage" class="edu.ku.brc.specify.datamodel.Storage" default="true" separator="; " ending="" format=""/>
 		<aggregator name="AgentIdentifier" title="Agent Identifier" class="edu.ku.brc.specify.datamodel.AgentIdentifier" default="true" separator=" | " ending="" format=""/>
 		<aggregator name="CollectorID" title="CollectorID" class="edu.ku.brc.specify.datamodel.Collector" default="" separator=" | " ending="" format="CollectorID"/>
-  </aggregators>
+	</aggregators>
 </formatters>
