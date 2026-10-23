@@ -9,7 +9,7 @@ import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
-import { columnDefinitionsToCss, DataEntry } from '../Atoms/DataEntry';
+import { DataEntry } from '../Atoms/DataEntry';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { useAttachment } from '../Attachments/Plugin';
@@ -41,6 +41,10 @@ import { AttachmentPluginSkeleton } from '../SkeletonLoaders/AttachmentPlugin';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { COJODialog } from './COJODialog';
 import { FormCell } from './index';
+import {
+  FormTableColumnResizeHandle,
+  useFormTableColumns,
+} from './useFormTableColumns';
 
 const cellToLabel = (
   table: SpecifyTable,
@@ -59,7 +63,7 @@ const cellToLabel = (
 });
 
 const cellClassName =
-  'sticky top-0 bg-[color:var(--form-foreground)] z-10 h-full -mx-1 pl-1 pt-1';
+  'sticky top-0 bg-[color:var(--form-foreground)] z-10 h-full -mx-1 px-1 py-1 border-b border-gray-500';
 
 // REFACTOR: split this component into smaller
 /**
@@ -111,17 +115,20 @@ export function FormTable<SCHEMA extends AnySchema>({
         }
   );
 
-  const resources =
-    sortConfig === undefined
-      ? // Note, resources might be sorted by the back-end
-        unsortedResources
-      : Array.from(unsortedResources).sort(
-          sortFunction(
-            // FEATURE: handle related fields
-            (resource) => resource.get(sortConfig.sortField),
-            !sortConfig.ascending
-          )
-        );
+  const resources = React.useMemo(
+    () =>
+      sortConfig === undefined
+        ? // Note, resources might be sorted by the back-end
+          unsortedResources
+        : Array.from(unsortedResources).sort(
+            sortFunction(
+              // FEATURE: handle related fields
+              (resource) => resource.get(sortConfig.sortField),
+              !sortConfig.ascending
+            )
+          ),
+    [sortConfig, unsortedResources]
+  );
 
   // When added a new resource, focus that row
   const addedResource = React.useRef<SpecifyResource<SCHEMA> | undefined>(
@@ -243,10 +250,22 @@ export function FormTable<SCHEMA extends AnySchema>({
     mode !== 'view' && typeof handleDelete === 'function';
   const displayViewButton = !isDependent;
 
-  const scrollerRef = React.useRef<HTMLDivElement | null>(null);
+  const columnSizing = useFormTableColumns({
+    flexibleSubGridColumnWidth,
+    hasResources: resources.length > 0,
+    isCollapsed,
+    measurementKey: unsortedResources,
+    sortConfig,
+    viewDefinition: collapsedViewDefinition,
+  });
+  const {
+    gridRef: scrollerRef,
+    gridTemplateColumns,
+    scrollContainerRef,
+  } = columnSizing;
   const { isFetching, handleScroll } = useInfiniteScroll(
     handleFetchMore,
-    scrollerRef
+    scrollContainerRef
   );
 
   const [maxHeight] = userPreferences.use('form', 'formTable', 'maxHeight');
@@ -290,23 +309,22 @@ export function FormTable<SCHEMA extends AnySchema>({
           isCollapsed
             ? 'hidden'
             : showSubviewBorders
-              ? 'overflow-x-auto border border-gray-500 border-t-0 rounded-b pl-1 pr-1 pb-1'
-              : 'overflow-x-auto pl-1 pr-1 pb-1'
+              ? 'overflow-auto border border-gray-500 border-t-0 rounded-b pl-1 pr-1 pb-1'
+              : 'overflow-auto pl-1 pr-1 pb-1'
         }
+        ref={scrollContainerRef}
+        style={{ maxHeight: `${maxHeight}px` }}
         onScroll={handleScroll}
       >
         <DataEntry.Grid
-          className="sticky w-fit"
+          className="w-full gap-1 pt-0"
           display="inline"
           flexibleColumnWidth={flexibleColumnWidth}
           forwardRef={scrollerRef}
           role="table"
           style={{
-            gridTemplateColumns: `min-content ${columnDefinitionsToCss(
-              collapsedViewDefinition.columns,
-              flexibleSubGridColumnWidth
-            )} min-content`,
-            maxHeight: `${maxHeight}px`,
+            gridTemplateColumns,
+            width: '100%',
           }}
           viewDefinition={collapsedViewDefinition}
         >
@@ -322,6 +340,7 @@ export function FormTable<SCHEMA extends AnySchema>({
               <span className="sr-only">{commonText.expand()}</span>
             </div>
             {collapsedViewDefinition.rows[0].map((cell, index) => {
+              const columnIndex = index;
               const { text, title } = cellToLabel(
                 relationship.relatedTable,
                 cell
@@ -331,12 +350,27 @@ export function FormTable<SCHEMA extends AnySchema>({
               const fieldName = isSortable
                 ? cell.fieldNames?.join(backboneFieldSeparator)
                 : undefined;
+              const label = (
+                <span
+                  className="block min-w-0 overflow-hidden whitespace-normal break-normal text-center"
+                  style={{
+                    display: '-webkit-box',
+                    WebkitBoxOrient: 'vertical',
+                    WebkitLineClamp: 2,
+                  }}
+                  data-subview-header-label
+                  title={text}
+                >
+                  {text}
+                </span>
+              );
               return (
                 <DataEntry.Cell
                   align="center"
-                  className={cellClassName}
+                  className={`${cellClassName} relative min-w-0 justify-center`}
                   colSpan={cell.colSpan}
                   key={index}
+                  data-subview-header-col={columnIndex}
                   role="columnheader"
                   title={title}
                   verticalAlign={cell.verticalAlign}
@@ -344,6 +378,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                 >
                   {isSortable && typeof fieldName === 'string' ? (
                     <Button.LikeLink
+                      className="flex w-full min-w-0 items-center justify-center gap-1 overflow-hidden"
                       onClick={(): void =>
                         setSortConfig({
                           sortField: fieldName,
@@ -351,18 +386,30 @@ export function FormTable<SCHEMA extends AnySchema>({
                         })
                       }
                     >
-                      {text}
-                      <SortIndicator
-                        fieldName={fieldName}
-                        sortConfig={sortConfig}
-                      />
+                      {label}
+                      <span className="shrink-0" data-subview-sort-indicator>
+                        <SortIndicator
+                          fieldName={fieldName}
+                          sortConfig={sortConfig}
+                        />
+                      </span>
                     </Button.LikeLink>
                   ) : (
-                    text
+                    label
                   )}
+                  <FormTableColumnResizeHandle
+                    columnIndex={columnIndex}
+                    columnSizing={columnSizing}
+                  />
                 </DataEntry.Cell>
               );
             })}
+            <div
+              aria-hidden="true"
+              className={cellClassName}
+              role="columnheader"
+              style={{ gridColumn: '-3 / -2' }}
+            />
             <div className={cellClassName} role="columnheader">
               <span className="sr-only">{commonText.actions()}</span>
             </div>
@@ -373,7 +420,11 @@ export function FormTable<SCHEMA extends AnySchema>({
                 <div className="contents" role="row">
                   {isExpanded[resource.cid] === true ? (
                     <>
-                      <div className="h-full" role="cell">
+                      <div
+                        className="h-full"
+                        role="cell"
+                        style={{ gridColumn: '1 / 2' }}
+                      >
                         <Button.Small
                           aria-label={commonText.collapse()}
                           className="h-full"
@@ -390,8 +441,12 @@ export function FormTable<SCHEMA extends AnySchema>({
                       </div>
                       <DataEntry.Cell
                         align="left"
-                        colSpan={collapsedViewDefinition.columns.length}
+                        className="border-y border-gray-400 py-1"
+                        colSpan={collapsedViewDefinition.columns.length + 1}
                         role="cell"
+                        style={{
+                          gridColumn: `2 / span ${collapsedViewDefinition.columns.length + 1}`,
+                        }}
                         tabIndex={-1}
                         verticalAlign="stretch"
                         visible
@@ -443,7 +498,13 @@ export function FormTable<SCHEMA extends AnySchema>({
                           }
                         >
                           {collapsedViewDefinition.isAttachmentPlugin ? (
-                            <div className="flex gap-8" role="cell">
+                            <div
+                              className="flex gap-8"
+                              role="cell"
+                              style={{
+                                gridColumn: `span ${collapsedViewDefinition.columns.length} / span ${collapsedViewDefinition.columns.length}`,
+                              }}
+                            >
                               <Attachment resource={resource} />
                             </div>
                           ) : (
@@ -461,8 +522,10 @@ export function FormTable<SCHEMA extends AnySchema>({
                               ) => (
                                 <DataEntry.Cell
                                   align={align}
+                                  className="min-w-0 [&_input]:min-w-0 [&_input]:max-w-full [&_input]:text-ellipsis [&_select]:min-w-0 [&_select]:max-w-full [&_textarea]:min-w-0 [&_textarea]:max-w-full"
                                   colSpan={colSpan}
                                   key={index}
+                                  data-subview-cell-col={index}
                                   role="cell"
                                   verticalAlign={verticalAlign}
                                   visible={visible}
@@ -486,7 +549,19 @@ export function FormTable<SCHEMA extends AnySchema>({
                       </ReadOnlyContext.Provider>
                     </>
                   )}
-                  <div className="flex h-full flex-col gap-2" role="cell">
+                  {isExpanded[resource.cid] !== true && (
+                    <div
+                      aria-hidden="true"
+                      className="border-b border-gray-200"
+                      role="cell"
+                      style={{ gridColumn: '-3 / -2' }}
+                    />
+                  )}
+                  <div
+                    className="flex h-full flex-col gap-2"
+                    role="cell"
+                    style={{ gridColumn: '-2 / -1' }}
+                  >
                     {displayViewButton &&
                     isExpanded[resource.cid] === true &&
                     !resource.isNew() ? (
