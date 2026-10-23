@@ -1524,14 +1524,17 @@ export function QueryMapping({
     };
     handleChange(updateMappingFields(next, mapping.fields));
   };
-  const availableTemplates = defaultTemplates.filter(
-    (template) =>
-      isTemplateApplicableToCore(template, mapping.coreRowType) &&
-      template.targets.some(
-        ({ extension, rowType }) =>
-          extension === mapping.extension && rowType === mapping.rowType
-      )
-  );
+  const availableTemplates =
+    onTemplate === undefined
+      ? []
+      : defaultTemplates.filter(
+          (template) =>
+            isTemplateApplicableToCore(template, mapping.coreRowType) &&
+            template.targets.some(
+              ({ extension, rowType }) =>
+                extension === mapping.extension && rowType === mapping.rowType
+            )
+        );
   const applyReplacement = (
     replacement: NonNullable<typeof pendingReplacement>
   ): void => {

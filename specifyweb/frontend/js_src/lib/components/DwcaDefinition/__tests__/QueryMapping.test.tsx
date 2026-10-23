@@ -239,6 +239,13 @@ test('confirms before fetching a replacement saved query', () => {
     );
   };
 
+  expect(
+    screen.getByRole('combobox', { name: 'Choose Template or Query' })
+  ).toHaveTextContent('Replacement query');
+  expect(
+    screen.queryByRole('group', { name: 'Templates' })
+  ).not.toBeInTheDocument();
+
   selectQuery();
   expect(fetchQuery).not.toHaveBeenCalled();
   fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
