@@ -663,8 +663,8 @@
 		<aggregator name="Geography" title="Geography" class="edu.ku.brc.specify.datamodel.Geography" default="true" separator="; " ending="" format=""/>
 		<aggregator name="Storage" title="Storage" class="edu.ku.brc.specify.datamodel.Storage" default="true" separator="; " ending="" format=""/>
 		<aggregator name="AgentIdentifier" title="Agent Identifier" class="edu.ku.brc.specify.datamodel.AgentIdentifier" default="true" separator=" | " ending="" format=""/>
-		<aggregator name="CollectorIDs" title="CollectorIDs" class="edu.ku.brc.specify.datamodel.Collector" default="" separator=" | " ending="" format="CollectorID" orderfieldname="orderNumber"/>
+		<aggregator name="Collector Identifiers" title="Collector Identifiers" class="edu.ku.brc.specify.datamodel.Collector" default="" separator=" | " ending="" format="CollectorID" orderfieldname="orderNumber"/>
 		<aggregator name="Determiner" title="Determiner" class="edu.ku.brc.specify.datamodel.Determiner" default="true" separator="; " ending="" format=""/>
-		<aggregator name="DeterminerIDs" title="DeterminerIDs" class="edu.ku.brc.specify.datamodel.Determiner" default="" separator=" | " ending="" format="DeterminerID" orderfieldname="orderNumber"/>
+		<aggregator name="Determiner Identifiers" title="Determiner Identifiers" class="edu.ku.brc.specify.datamodel.Determiner" default="" separator=" | " ending="" format="DeterminerID" orderfieldname="orderNumber"/>
 	</aggregators>
 </formatters>

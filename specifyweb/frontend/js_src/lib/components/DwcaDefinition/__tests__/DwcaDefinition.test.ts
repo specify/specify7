@@ -203,7 +203,7 @@ describe('DwCA query field term mapping', () => {
         template: occurrence!,
         term: 'recordedByID',
         stringId: '1,10,30-collectors.collector.collectors',
-        formatName: 'CollectorIDs',
+        formatName: 'Collector Identifiers',
       },
       {
         template: occurrence!,
@@ -223,13 +223,13 @@ describe('DwCA query field term mapping', () => {
         template: pluralOccurrence!,
         term: 'identifiedByID',
         stringId: '1,9-determinations,167-determiners.determiner.determiners',
-        formatName: 'DeterminerIDs',
+        formatName: 'Determiner Identifiers',
       },
       {
         template: pluralHistory!,
         term: 'identifiedByID',
         stringId: '1,9-determinations,167-determiners.determiner.determiners',
-        formatName: 'DeterminerIDs',
+        formatName: 'Determiner Identifiers',
       },
     ] as const;
 
@@ -276,14 +276,14 @@ describe('DwCA query field term mapping', () => {
     );
     expect(collectorFields.map(({ formatName }) => formatName)).toEqual([
       '',
-      'CollectorIDs',
+      'Collector Identifiers',
     ]);
     expect(
       unParseQueryFields(
         'CollectionObject',
         parseQueryFields(collectorFields)
       ).map(({ formatName }) => formatName)
-    ).toEqual(['', 'CollectorIDs']);
+    ).toEqual(['', 'Collector Identifiers']);
   });
 
   test('provides an Event core default mapping', () => {

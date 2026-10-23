@@ -43,13 +43,17 @@ const formatters = {
   ],
   aggregators: [
     { table: { name: 'Collector' }, name: 'Collector', isDefault: true },
-    { table: { name: 'Collector' }, name: 'CollectorID', isDefault: false },
+    {
+      table: { name: 'Collector' },
+      name: 'Collector Identifiers',
+      isDefault: false,
+    },
   ],
 };
 
 test('names an additional visible aggregation while keeping the default heading plain', () => {
   const original = makeField(collectorPath, 'Collector');
-  const additional = makeField(collectorPath, 'CollectorID');
+  const additional = makeField(collectorPath, 'Collector Identifiers');
   const fields = [original, additional];
   const preview = generateMappingPathPreview(
     'CollectionObject',
@@ -62,7 +66,7 @@ test('names an additional visible aggregation while keeping the default heading 
   ).toBe('Collectors');
   expect(
     `${preview}${getResultHeaderFormatSuffix(additional, fields, 'Collector', formatters)}`
-  ).toBe('Collectors (CollectorID)');
+  ).toBe('Collectors (Collector Identifiers)');
   expect(
     getResultHeaderFormatSuffix(
       additional,

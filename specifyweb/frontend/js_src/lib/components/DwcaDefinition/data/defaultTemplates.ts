@@ -60,7 +60,7 @@ const occurrenceTemplate: DwcaTemplate = {
         <field stringId="1,10.collectingevent.verbatimLocality" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/verbatimLocality"/>
         <field stringId="1,10.collectingevent.remarks" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/eventRemarks"/>
         <field stringId="1,10,30-collectors.collector.collectors" oper="8" value="" isNot="false" isRelFld="true" formatName="" term="http://rs.tdwg.org/dwc/terms/recordedBy"/>
-        <field stringId="1,10,30-collectors.collector.collectors" oper="8" value="" isNot="false" isRelFld="true" formatName="CollectorIDs" term="http://rs.tdwg.org/dwc/terms/recordedByID"/>
+        <field stringId="1,10,30-collectors.collector.collectors" oper="8" value="" isNot="false" isRelFld="true" formatName="Collector Identifiers" term="http://rs.tdwg.org/dwc/terms/recordedByID"/>
         <field stringId="1,10,2,3.geography.Continent" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/continent"/>
         <field stringId="1,10,2,3.geography.Country" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/country"/>
         <field stringId="1,10,2,3.geography.State" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/stateProvince"/>
@@ -330,7 +330,7 @@ function withPluralDeterminers(template: DwcaTemplate): DwcaTemplate {
       )
       .replace(
         'formatName="AgentIdentifier" term="http://rs.tdwg.org/dwc/terms/identifiedByID"',
-        'formatName="DeterminerIDs" term="http://rs.tdwg.org/dwc/terms/identifiedByID"'
+        'formatName="Determiner Identifiers" term="http://rs.tdwg.org/dwc/terms/identifiedByID"'
       ),
   };
 }

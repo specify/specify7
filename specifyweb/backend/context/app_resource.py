@@ -331,7 +331,7 @@ def merge_formatters(custom_xml, default_xml):
     # Custom resources override a table's ordinary formats. The named ID
     # formats are also needed by the shipped DwC-A templates for that table.
     required_formats = {'AgentIdentifier', 'CollectorID', 'DeterminerID'}
-    required_aggregators = {'AgentIdentifier', 'CollectorIDs', 'DeterminerIDs'}
+    required_aggregators = {'AgentIdentifier', 'Collector Identifiers', 'Determiner Identifiers'}
     custom_formats = custom_root.findall('format')
     custom_classes = {element.get('class') for element in custom_formats}
     custom_keys = {

@@ -29,7 +29,7 @@ class TestMergeFormatters(SimpleTestCase):
           <format class="Collector" name="Other" default="false"/>
           <aggregators>
             <aggregator class="Collector" name="Collector" default="true" title="Default"/>
-            <aggregator class="Collector" name="CollectorIDs" default="false" format="CollectorID"/>
+            <aggregator class="Collector" name="Collector Identifiers" default="false" format="CollectorID"/>
             <aggregator class="Collector" name="Other" default="false"/>
           </aggregators>
         </formatters>'''
@@ -44,7 +44,7 @@ class TestMergeFormatters(SimpleTestCase):
                 (node.get('name'), node.get('title'))
                 for node in merged.findall('aggregators/aggregator')
             ],
-            [('Collector', 'Custom'), ('CollectorIDs', None)],
+            [('Collector', 'Custom'), ('Collector Identifiers', None)],
         )
         self.assertEqual(
             [node.get('name') for node in merged.findall('format[@default="true"]')],
@@ -57,7 +57,7 @@ class TestMergeFormatters(SimpleTestCase):
             merge_formatters(without_aggregators, defaults)
         )
         self.assertIsNotNone(
-            inherited.find('aggregators/aggregator[@name="CollectorIDs"]')
+            inherited.find('aggregators/aggregator[@name="Collector Identifiers"]')
         )
 
     def test_backstop_id_formats_survive_custom_formatters(self):
@@ -77,7 +77,7 @@ class TestMergeFormatters(SimpleTestCase):
 
         for name in ('AgentIdentifier', 'CollectorID', 'DeterminerID'):
             self.assertIsNotNone(merged.find(f'format[@name="{name}"]'))
-        for name in ('AgentIdentifier', 'CollectorIDs', 'DeterminerIDs'):
+        for name in ('AgentIdentifier', 'Collector Identifiers', 'Determiner Identifiers'):
             self.assertIsNotNone(merged.find(f'aggregators/aggregator[@name="{name}"]'))
 
 

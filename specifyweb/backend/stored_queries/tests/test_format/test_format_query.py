@@ -129,13 +129,13 @@ class FormatterAggregatorTests(SQLAlchemySetup):
                 query,
                 spmodels.datamodel.get_table('CollectingEvent').get_relationship_strict('collectors'),
                 models.CollectingEvent,
-                'CollectorIDs',
+                'Collector Identifiers',
             )
             determiner_ids = formatter.aggregate(
                 query,
                 spmodels.datamodel.get_table('Determination').get_relationship_strict('determiners'),
                 models.Determination,
-                'DeterminerIDs',
+                'Determiner Identifiers',
             )
             singular_determiner_id = formatter.aggregate(
                 query,
