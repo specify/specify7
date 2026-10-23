@@ -221,7 +221,7 @@ function FormatSelect({
             className={customSelectElementBackground}
             disabled={handleChange === undefined}
             id={id('list')}
-            value={currentFormat}
+            value={currentFormat ?? ''}
             onValueChange={handleChange}
           >
             <option
@@ -247,6 +247,7 @@ function FormatSelect({
               </option>
             ))}
             {currentFormat !== undefined &&
+            currentFormat !== '' &&
             !availableFormatters
               .map(({ name }) => name)
               .includes(currentFormat) ? (

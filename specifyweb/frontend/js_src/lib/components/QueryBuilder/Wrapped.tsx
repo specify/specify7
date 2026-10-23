@@ -269,6 +269,7 @@ function Wrapped({
 
   const handleAddField = (mappingPath = state.mappingView): void => {
     const id = Math.max(-1, ...state.fields.map(({ id }) => id)) + 1;
+    const hasExistingFormat = usedFormats(mappingPath).size > 0;
     dispatch({
       type: 'ChangeFieldsAction',
       fields: [
@@ -290,8 +291,10 @@ function Wrapped({
         },
       ],
     });
-    if (queryFieldFormatType(mappingPath) !== undefined)
-      openFormatSelection(id);
+    if (queryFieldFormatType(mappingPath) !== undefined) {
+      if (hasExistingFormat) openFormatSelection(id);
+      else setFormatSelectionRequest(undefined);
+    }
   };
 
   const serializeQueryFields = (
@@ -659,11 +662,8 @@ function Wrapped({
                             JSON.stringify(state.fields[line].mappingPath)
                         ) {
                           const format = nextFormat(path);
-                          if (
-                            usedFormats(path).size > 0 &&
-                            format === undefined
-                          )
-                            return;
+                          const hasExistingFormat = usedFormats(path).size > 0;
+                          if (hasExistingFormat && format === undefined) return;
                           dispatch({
                             type: 'ChangeFieldAction',
                             line,
@@ -678,7 +678,9 @@ function Wrapped({
                               ),
                             },
                           });
-                          openFormatSelection(state.fields[line].id);
+                          if (hasExistingFormat)
+                            openFormatSelection(state.fields[line].id);
+                          else setFormatSelectionRequest(undefined);
                           return;
                         }
                         dispatch({

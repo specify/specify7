@@ -1,4 +1,4 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 
 import { requireContext } from '../../../tests/helpers';
@@ -94,3 +94,31 @@ test('does not show a format selection when there is only one choice', async () 
     screen.queryByRole('button', { name: queryText.chooseFormatter() })
   ).not.toBeInTheDocument();
 });
+
+test.each(['formatter', 'aggregator'] as const)(
+  'keeps the first %s selection closed and accepts an empty default format',
+  async (type) => {
+    render(
+      <QueryFieldRecordFormatter
+        formatter=""
+        tableName="Agent"
+        type={type}
+        usedFormats={new Set()}
+        onChange={jest.fn()}
+      />
+    );
+
+    const button = await screen.findByRole('button', {
+      name: queryText.chooseFormatter(),
+    });
+    expect(screen.queryByRole('combobox')).not.toBeInTheDocument();
+
+    fireEvent.click(button);
+    expect(
+      screen.getByRole('combobox', { name: queryText.chooseFormatter() })
+    ).toHaveValue('');
+    expect(
+      screen.queryByText(queryText.invalidPicklistValue({ value: '' }))
+    ).not.toBeInTheDocument();
+  }
+);
