@@ -18,9 +18,12 @@ export function usePaginatedCollection<COLLECTION_TYPE>({
     | ((offset: number) => Promise<RA<COLLECTION_TYPE>>)
     | undefined;
 }) {
-  const [results, setResults] = useTriggerState<
+  const [cachedResults, setResults] = useTriggerState<
     RA<COLLECTION_TYPE | undefined> | undefined
   >(initialRecords);
+  const previousInitialRecords = React.useRef(initialRecords);
+  const recordsChanged = previousInitialRecords.current !== initialRecords;
+  const results = recordsChanged ? initialRecords : cachedResults;
   const resultsRef = React.useRef(results);
   const handleSetResults: GetOrSet<
     RA<COLLECTION_TYPE | undefined> | undefined
@@ -40,10 +43,10 @@ export function usePaginatedCollection<COLLECTION_TYPE>({
   );
   const collectionGeneration = React.useRef(0);
 
-  const [totalCount, setTotalCount] = useTriggerState<number | undefined>(
+  const [cachedTotalCount, setTotalCount] = useTriggerState<number | undefined>(
     initialTotalCount
   );
-  const previousInitialRecords = React.useRef(initialRecords);
+  const totalCount = recordsChanged ? initialTotalCount : cachedTotalCount;
   React.useLayoutEffect(() => {
     if (previousInitialRecords.current === initialRecords) {
       setTotalCount(initialTotalCount);
