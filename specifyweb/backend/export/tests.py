@@ -7,20 +7,23 @@ Replace this with more appropriate tests for your application.
 
 import os
 import tempfile
-from unittest.mock import patch
+from collections import namedtuple
+from unittest.mock import Mock, patch
 from zipfile import ZipFile
 
 from django.test import Client, TestCase
 
+from specifyweb.backend.export.feed import update_feed
+from specifyweb.backend.notifications.models import Message
+from specifyweb.backend.stored_queries.tests.tests import SQLAlchemySetup
+from specifyweb.specify.datamodel import datamodel
 from specifyweb.specify.models import (
     Spappresource,
     Spappresourcedata,
     Spappresourcedir,
 )
-from specifyweb.backend.stored_queries.tests.tests import SQLAlchemySetup
-from specifyweb.backend.notifications.models import Message
-from specifyweb.backend.export.feed import update_feed
 
+from .dwca import DwCAException, ExportField, Stanza, validate_definition, validate_stanzas
 
 class SimpleTest(TestCase):
     def test_basic_addition(self):
@@ -28,6 +31,98 @@ class SimpleTest(TestCase):
         Tests that 1 + 1 always equals 2.
         """
         self.assertEqual(1 + 1, 2)
+
+class DwcaValidationTest(TestCase):
+    @staticmethod
+    def stanza(is_core, fields, index=0):
+        return namedtuple('TestStanza', 'is_core export_fields id_field_idx')(
+            is_core, fields, index
+        )
+
+    def test_conflicting_fields_do_not_echo_query_values(self):
+        queries = [
+            Mock(get_export_fields=Mock(return_value=('private first field',))),
+            Mock(get_export_fields=Mock(return_value=('private second field',))),
+        ]
+        with self.assertRaisesMessage(
+            DwCAException, 'Query definitions have conflicting fields.'
+        ) as caught:
+            Stanza.get_export_fields(queries)
+        self.assertNotIn('private', str(caught.exception))
+
+    def test_requires_matching_extension_identifier(self):
+        core = self.stanza(
+            True,
+            [ExportField(0, 'http://rs.tdwg.org/dwc/terms/occurrenceID', True)],
+        )
+        extension = self.stanza(False, [ExportField(0, 'eventID', True)])
+        with self.assertRaises(DwCAException):
+            validate_stanzas(core, [extension])
+
+    def test_allows_multiple_extensions(self):
+        occurrence_id = 'http://rs.tdwg.org/dwc/terms/occurrenceID'
+        core = self.stanza(True, [ExportField(0, occurrence_id, True)])
+        extension = self.stanza(False, [ExportField(0, occurrence_id, True)])
+        validate_stanzas(core, [extension, extension])
+
+    def test_uses_core_row_type_base_table(self):
+        collecting_event_id = datamodel.get_table_strict('collectingevent').tableId
+        collection_object_id = datamodel.get_table_strict('collectionobject').tableId
+        definition = f'''
+            <archive>
+              <core rowType="http://rs.tdwg.org/dwc/terms/Event">
+                <queries>
+                  <query contextTableId="{collecting_event_id}" name="event.csv">
+                    <id stringId="1.collectingevent.guid" isRelFld="false"
+                        oper="11" value="" isNot="false"
+                        term="http://rs.tdwg.org/dwc/terms/eventID" />
+                  </query>
+                </queries>
+              </core>
+            </archive>
+        '''
+        validate_definition(definition)
+
+        invalid_definition = definition.replace(
+            f'contextTableId="{collecting_event_id}"',
+            f'contextTableId="{collection_object_id}"',
+        )
+        with self.assertRaises(DwCAException):
+            validate_definition(invalid_definition)
+
+    def test_translates_missing_query_field_attributes(self):
+        definition = '''
+            <archive>
+              <core rowType="http://rs.tdwg.org/dwc/terms/Occurrence">
+                <queries>
+                  <query contextTableId="1" name="occurrence.csv">
+                    <id isRelFld="false" oper="11" value="" isNot="false"
+                        term="http://rs.tdwg.org/dwc/terms/occurrenceID" />
+                  </query>
+                </queries>
+              </core>
+            </archive>
+        '''
+        with self.assertRaises(DwCAException):
+            validate_definition(definition)
+
+    def test_translates_missing_constant_field_attributes(self):
+        definition = '''
+            <archive>
+              <core rowType="http://rs.tdwg.org/dwc/terms/Occurrence">
+                <queries>
+                  <query contextTableId="1" name="occurrence.csv">
+                    <id stringId="1.collectionobject.guid" isRelFld="false"
+                        oper="11" value="" isNot="false"
+                        term="http://rs.tdwg.org/dwc/terms/occurrenceID" />
+                  </query>
+                </queries>
+                <field value="PreservedSpecimen" />
+              </core>
+            </archive>
+        '''
+        with self.assertRaises(DwCAException):
+            validate_definition(definition)
 
 
 FEED_XML = """<feed>
@@ -58,7 +153,7 @@ DWCA_DEFINITION = """<definition>
   <core rowType="http://rs.tdwg.org/dwc/terms/Occurrence">
     <queries>
       <query contextTableId="1" name="collection_objects.csv">
-        <id stringId="1.collectionobject.collectionobjectid" isRelFld="false" oper="1" value="" isNot="false"/>
+        <id stringId="1.collectionobject.collectionobjectid" isRelFld="false" oper="1" value="" isNot="false" term="http://rs.tdwg.org/dwc/terms/occurrenceID"/>
         <field stringId="1.collectionobject.catalognumber" isRelFld="false" oper="1" value="" isNot="false" term="dwc:catalogNumber"/>
       </query>
     </queries>
@@ -143,4 +238,4 @@ class ExportFeedTests(SQLAlchemySetup):
             self.assertNotIn('unpublished_export.zip', content)
             self.assertNotIn('Unpublished Item', content)
             self.assertNotIn('missing_archive_export.zip', content)
-            self.assertNotIn('Missing Archive Item', content)
+        self.assertNotIn('Missing Archive Item', content)

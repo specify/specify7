@@ -1,13 +1,11 @@
 from specifyweb.backend.stored_queries.format import ObjectFormatter
+from specifyweb.backend.context.app_resource import merge_formatters
 from specifyweb.backend.stored_queries.query_construct import QueryConstruct
 from specifyweb.backend.stored_queries.tests.base_format import SIMPLE_DEF
 from specifyweb.backend.stored_queries.tests.tests import SQLAlchemySetup
 from xml.etree import ElementTree
 import specifyweb.specify.models as spmodels
 import specifyweb.backend.stored_queries.models as models
-
-# Used for pretty-formatting sql code for testing
-import sqlparse
 
 class FormatterAggregatorTests(SQLAlchemySetup):
 
@@ -38,6 +36,13 @@ class FormatterAggregatorTests(SQLAlchemySetup):
             division=self.division,
             specifyuser=self.specifyuser
         )
+        agent_3 = spmodels.Agent.objects.create(
+            agenttype=1,
+            firstname="",
+            lastname="Smith",
+            division=self.division,
+            specifyuser=self.specifyuser
+        )
 
         accession_agent_1 = spmodels.Accessionagent.objects.create(
             agent=self.agent,
@@ -59,29 +64,153 @@ class FormatterAggregatorTests(SQLAlchemySetup):
             _, accession_expr = object_formatter.objformat(query, models.Accession, None)
             self.assertEqual(str(accession_expr), 'IFNULL(accession."AccessionNumber", \'\')')
             _, agent_expr = object_formatter.objformat(query, models.Agent, None)
-            self.assertEqual(str(agent_expr),
-                             'IFNULL(CASE IFNULL(agent."AgentType", \'\') '
-                                    'WHEN :param_1 THEN IFNULL(agent."LastName", \'\') '
-                                    'WHEN :param_2 THEN concat(IFNULL(agent."LastName", \'\'), IFNULL(concat(:concat_1, agent."FirstName"), \'\'), IFNULL(concat(:concat_2, agent."MiddleInitial"), \'\')) '
-                                    'WHEN :param_3 THEN IFNULL(agent."LastName", \'\') '
-                                    'WHEN :param_4 THEN IFNULL(agent."LastName", \'\') END, \'\')')
+            agent_results = session.query(models.Agent._id, agent_expr).filter(
+                models.Agent._id.in_([self.agent.id, agent_2.id, agent_3.id])
+            ).all()
+            self.assertCountEqual(agent_results, [
+                (self.agent.id, 'User'),
+                (agent_2.id, 'User, Test MiddleInitial'),
+                (agent_3.id, 'Smith'),
+            ])
             orm_field = object_formatter.aggregate(query, spmodels.datamodel.get_table('Accession').get_relationship_strict('accessionagents'), models.Accession, None, [])
-            self.assertEqual(sqlparse.format(str(orm_field), reindent=True),
-                             '\n  '
-                             '(SELECT IFNULL(GROUP_CONCAT(IFNULL(concat(IFNULL(CASE IFNULL(agent_1."AgentType", \'\')'
-                             '\n                                                       WHEN :param_1 THEN IFNULL(agent_1."LastName", \'\')'
-                             '\n                                                       WHEN :param_2 THEN concat(IFNULL(agent_1."LastName", \'\'), IFNULL(concat(:concat_1, agent_1."FirstName"), \'\'), IFNULL(concat(:concat_2, agent_1."MiddleInitial"), \'\'))'
-                             '\n                                                       WHEN :param_3 THEN IFNULL(agent_1."LastName", \'\')'
-                             '\n                                                       WHEN :param_4 THEN IFNULL(agent_1."LastName", \'\')'
-                             '\n                                                   END, \'\'), IFNULL(concat(:concat_3, accessionagent."Role"), \'\')), \'\') SEPARATOR :sep), \'\') AS blank_nulls_1'
-                             '\n   FROM accession,'
-                             '\n        accessionagent'
-                             '\n   LEFT OUTER JOIN agent AS agent_1 ON agent_1."AgentID" = accessionagent."AgentID"'
-                             '\n   WHERE accessionagent."AccessionID" = accession."AccessionID"'
-                             '\n   LIMIT :param_5)')
+            aggregated = session.query(orm_field).select_from(models.Accession).filter(
+                models.Accession._id == accession_1.id
+            ).scalar()
+            self.assertCountEqual(
+                aggregated.split('; '),
+                ['User - role1', 'User, Test MiddleInitial - role2']
+            )
             query, expr = object_formatter.objformat(query, models.AccessionAgent, None)
             query = query.query.add_column(expr)
             self.assertCountEqual(list(query), [('User - role1',), ('User, Test MiddleInitial - role2',)])
+
+    def test_default_agent_id_aggregators(self):
+        formatter = ObjectFormatter(self.collection, self.specifyuser, False)
+        custom = '''<formatters>
+          <format name="Collector" class="edu.ku.brc.specify.datamodel.Collector" default="true"/>
+          <format name="Determiner" class="edu.ku.brc.specify.datamodel.Determiner" default="true"/>
+        </formatters>'''
+        formatter.formattersDom = ElementTree.fromstring(
+            merge_formatters(custom, ElementTree.tostring(formatter.formattersDom))
+        )
+        event = spmodels.Collectingevent.objects.create(
+            discipline=self.discipline, stationfieldnumber='id-aggregations'
+        )
+        determination = spmodels.Determination.objects.create(
+            collectionobject=self.collectionobjects[0],
+            collectionmemberid=self.collection.id,
+            iscurrent=True,
+        )
+        agents = []
+        for index in range(2):
+            agent = spmodels.Agent.objects.create(
+                agenttype=1,
+                lastname=f'Person {index}',
+                division=self.division,
+            )
+            agents.append(agent)
+            spmodels.Agentidentifier.objects.create(
+                agent=agent, identifiertype='ORCID', identifier=f'id-{index}'
+            )
+            spmodels.Collector.objects.create(
+                collectingevent=event, agent=agent, ordernumber=1 - index
+            )
+            spmodels.Determiner.objects.create(
+                determination=determination, agent=agent, ordernumber=1 - index
+            )
+
+        with FormatterAggregatorTests.test_session_context() as session:
+            query = QueryConstruct(
+                collection=self.collection,
+                objectformatter=formatter,
+                query=session.query(),
+            )
+            collector_ids = formatter.aggregate(
+                query,
+                spmodels.datamodel.get_table('CollectingEvent').get_relationship_strict('collectors'),
+                models.CollectingEvent,
+                'Collector Identifiers',
+            )
+            determiner_ids = formatter.aggregate(
+                query,
+                spmodels.datamodel.get_table('Determination').get_relationship_strict('determiners'),
+                models.Determination,
+                'Determiner Identifiers',
+            )
+            singular_determiner_id = formatter.aggregate(
+                query,
+                spmodels.datamodel.get_table('Agent').get_relationship_strict('identifiers'),
+                models.Agent,
+                'AgentIdentifier',
+            )
+            expected = 'https://orcid.org/id-1 | https://orcid.org/id-0'
+            for model, identifier, expression in [
+                (models.CollectingEvent, event.id, collector_ids),
+                (models.Determination, determination.id, determiner_ids),
+            ]:
+                result = session.query(expression).select_from(model).filter(
+                    model._id == identifier
+                ).scalar()
+                self.assertEqual(result, expected)
+            self.assertEqual(
+                session.query(singular_determiner_id)
+                .select_from(models.Agent)
+                .filter(models.Agent._id == agents[0].id)
+                .scalar(),
+                'https://orcid.org/id-0',
+            )
+
+    def test_aggregator_skips_empty_nested_formatter_values(self):
+        object_formatter = self.get_formatter("""
+            <formatters>
+              <format name="CollectorID" class="edu.ku.brc.specify.datamodel.Collector">
+                <switch single="true"><fields>
+                  <field sep=" ">agent.identifiers</field>
+                </fields></switch>
+              </format>
+              <format name="AgentIdentifier" class="edu.ku.brc.specify.datamodel.AgentIdentifier">
+                <switch single="true"><fields><field>identifier</field></fields></switch>
+              </format>
+              <aggregators>
+                <aggregator name="CollectorID" class="edu.ku.brc.specify.datamodel.Collector"
+                    separator=" | " format="CollectorID" />
+                <aggregator name="AgentIdentifier" class="edu.ku.brc.specify.datamodel.AgentIdentifier"
+                    default="true" separator="; " format="AgentIdentifier" />
+              </aggregators>
+            </formatters>
+        """)
+        event = spmodels.Collectingevent.objects.create(
+            discipline=self.discipline, stationfieldnumber="empty-collector-ids"
+        )
+        agents = [
+            spmodels.Agent.objects.create(
+                agenttype=1, lastname=f"Collector {index}", division=self.division
+            )
+            for index in range(3)
+        ]
+        for index, agent in enumerate(agents):
+            spmodels.Collector.objects.create(
+                collectingevent=event, agent=agent, ordernumber=index
+            )
+        spmodels.Agentidentifier.objects.create(agent=agents[1], identifier="ID-1")
+
+        with FormatterAggregatorTests.test_session_context() as session:
+            query = QueryConstruct(
+                collection=self.collection,
+                objectformatter=object_formatter,
+                query=session.query(),
+            )
+            formatted = object_formatter.aggregate(
+                query,
+                spmodels.datamodel.get_table('CollectingEvent').get_relationship_strict('collectors'),
+                models.CollectingEvent,
+                'CollectorID',
+                [],
+            )
+            result = session.query(formatted).select_from(models.CollectingEvent).filter(
+                models.CollectingEvent._id == event.id
+            ).scalar()
+            self.assertEqual(result, ' ID-1')
 
 
     def test_aggregation_in_formatters(self):
@@ -161,13 +290,6 @@ class FormatterAggregatorTests(SQLAlchemySetup):
                 query=session.query()
             )
             query, expr = object_formatter.objformat(query, models.Accession, None)
-            self.assertEqual(sqlparse.format(str(expr), reindent=True),
-                             'IFNULL('
-                             '\n         (SELECT IFNULL(GROUP_CONCAT(IFNULL(accessionagent."Role", \'\')'
-                             '\n                                     ORDER BY accessionagent."TimestampCreated" SEPARATOR :sep), \'\') AS blank_nulls_1'
-                             '\n          FROM accessionagent, accession'
-                             '\n          WHERE accessionagent."AccessionID" = accession."AccessionID"), \'\')'
-                             )
             query = query.query.add_columns(models.Accession.accessionNumber, expr)
             self.assertCountEqual(list(query), [('a', 'role2; role1'), ('b', 'role3; role4')])
 

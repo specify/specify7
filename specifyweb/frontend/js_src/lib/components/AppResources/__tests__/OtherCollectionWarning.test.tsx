@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 
 import { requireContext } from '../../../tests/helpers';
@@ -34,7 +34,7 @@ describe('OtherCollectionWarning', () => {
   });
 
   test('(different collection, same discipline)', () => {
-    const { asFragment } = render(
+    render(
       <OtherCollectionWarning
         directory={{
           ...testAppResources.directories[2],
@@ -42,20 +42,27 @@ describe('OtherCollectionWarning', () => {
         }}
       />
     );
-    expect(asFragment()).toMatchInlineSnapshot(`
-          <DocumentFragment>
-            <div
-              class="flex flex-col gap-2 p-2 text-white bg-orange-500 dark:bg-transparent border border-orange-500 rounded"
-              role="alert"
-            >
-              This resource belongs to a different collection/discipline than the one you are currently in. It's recommended to switch collection before editing this resource
-            </div>
-          </DocumentFragment>
-        `);
+    const summary = screen.getByRole('button', {
+      name: 'Different collection or discipline Show details',
+    });
+    expect(summary).toHaveAttribute('aria-expanded', 'false');
+    expect(
+      screen.queryByText(
+        'Switch to that collection before editing this resource.'
+      )
+    ).not.toBeInTheDocument();
+    fireEvent.click(summary);
+    expect(summary).toHaveAttribute('aria-expanded', 'true');
+    expect(summary).toHaveTextContent('Hide details');
+    expect(
+      screen.getByText(
+        'Switch to that collection before editing this resource.'
+      )
+    ).toBeVisible();
   });
 
   test('(no collection, different discipline)', () => {
-    const { asFragment } = render(
+    render(
       <OtherCollectionWarning
         directory={{
           ...testAppResources.directories[2],
@@ -64,15 +71,8 @@ describe('OtherCollectionWarning', () => {
         }}
       />
     );
-    expect(asFragment()).toMatchInlineSnapshot(`
-          <DocumentFragment>
-            <div
-              class="flex flex-col gap-2 p-2 text-white bg-orange-500 dark:bg-transparent border border-orange-500 rounded"
-              role="alert"
-            >
-              This resource belongs to a different collection/discipline than the one you are currently in. It's recommended to switch collection before editing this resource
-            </div>
-          </DocumentFragment>
-        `);
+    expect(
+      screen.getByText('Different collection or discipline')
+    ).toBeInTheDocument();
   });
 });

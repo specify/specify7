@@ -549,13 +549,6 @@
 			</fields>
 		</switch>
 	</format>
-	<format name="AgentIdentifier" title="Agent Identifier" class="edu.ku.brc.specify.datamodel.AgentIdentifier" default="true">
-		<switch single="true">
-			<fields>
-				<field sep=" ">identifier</field>
-			</fields>
-		</switch>
-	</format>
 	<format name="TectonicUnit" title="Tectonic Unit" class="edu.ku.brc.specify.datamodel.TectonicUnit" default="true">
 		<switch single="true">
 			<fields>
@@ -581,6 +574,40 @@
 		<switch single="true">
 			<fields>
 				<field sep=" ">name</field>
+			</fields>
+		</switch>
+	</format>
+	<format name="AgentIdentifier" title="Agent Identifier" class="edu.ku.brc.specify.datamodel.AgentIdentifier" default="true">
+		<switch single="false" field="identifierType">
+			<fields>
+				<field>identifier</field>
+			</fields>
+			<fields value="ORCID">
+				<field sep="https://orcid.org/">identifier</field>
+			</fields>
+			<fields value="Wikidata">
+				<field sep="https://www.wikidata.org/entity/">identifier</field>
+			</fields>
+		</switch>
+	</format>
+	<format name="CollectorID" title="CollectorID" class="edu.ku.brc.specify.datamodel.Collector" default="">
+		<switch single="true">
+			<fields>
+				<field>agent.identifiers</field>
+			</fields>
+		</switch>
+	</format>
+	<format name="Determiner" title="Determiner" class="edu.ku.brc.specify.datamodel.Determiner" default="true">
+		<switch single="true">
+			<fields>
+				<field sep=" ">agent</field>
+			</fields>
+		</switch>
+	</format>
+	<format name="DeterminerID" title="DeterminerID" class="edu.ku.brc.specify.datamodel.Determiner" default="">
+		<switch single="true">
+			<fields>
+				<field>agent.identifiers</field>
 			</fields>
 		</switch>
 	</format>
@@ -629,12 +656,15 @@
 		<aggregator name="PcrPerson" title="PcrPerson" class="edu.ku.brc.specify.datamodel.PcrPerson" default="true" separator="; " ending="" format="PcrPerson" orderfieldname="orderNumber"/>
 		<aggregator name="TaxonAttachment" title="TaxonAttachment" class="edu.ku.brc.specify.datamodel.TaxonAttachment" default="true" separator="; " ending="" format="identity" orderfieldname="ordinal"/>
 		<aggregator name="CollectionObjectGroupJoin" title="Collection Object Group Join" class="edu.ku.brc.specify.datamodel.CollectionObjectGroupJoin" default="true" separator="; " ending="" format=""/>
-		<aggregator name="AgentIdentifier" title="Agent Identifier" class="edu.ku.brc.specify.datamodel.AgentIdentifier" default="true" separator="; " ending="" format=""/>
 		<aggregator name="Collection" title="Collection" class="edu.ku.brc.specify.datamodel.Collection" default="true" separator=" | " ending="" format=""/>
 		<aggregator name="Discipline" title="Discipline" class="edu.ku.brc.specify.datamodel.Discipline" default="true" separator=" | " ending="" format=""/>
 		<aggregator name="Division" title="Division" class="edu.ku.brc.specify.datamodel.Division" default="true" separator=" | " ending="" format=""/>
 		<aggregator name="Taxon" title="Taxon" class="edu.ku.brc.specify.datamodel.Taxon" default="true" separator="; " ending="" format=""/>
 		<aggregator name="Geography" title="Geography" class="edu.ku.brc.specify.datamodel.Geography" default="true" separator="; " ending="" format=""/>
 		<aggregator name="Storage" title="Storage" class="edu.ku.brc.specify.datamodel.Storage" default="true" separator="; " ending="" format=""/>
+		<aggregator name="AgentIdentifier" title="Agent Identifier" class="edu.ku.brc.specify.datamodel.AgentIdentifier" default="true" separator=" | " ending="" format=""/>
+		<aggregator name="Collector Identifiers" title="Collector Identifiers" class="edu.ku.brc.specify.datamodel.Collector" default="" separator=" | " ending="" format="CollectorID" orderfieldname="orderNumber"/>
+		<aggregator name="Determiner" title="Determiner" class="edu.ku.brc.specify.datamodel.Determiner" default="true" separator="; " ending="" format=""/>
+		<aggregator name="Determiner Identifiers" title="Determiner Identifiers" class="edu.ku.brc.specify.datamodel.Determiner" default="" separator=" | " ending="" format="DeterminerID" orderfieldname="orderNumber"/>
 	</aggregators>
 </formatters>

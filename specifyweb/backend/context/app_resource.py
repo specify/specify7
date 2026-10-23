@@ -323,27 +323,48 @@ def get_app_resource_dirs_for_level(collection, user, level):
     return Spappresourcedir.objects.filter(**filters)
 
 def merge_formatters(custom_xml, default_xml):
-    """Merge custom and default XML formatters.
-    This function takes two XML strings, one for custom formatters and one for default formatters,
-    and merges them by adding any formatters from the default XML that are not already present in
-    the custom XML. It returns the merged XML as a string.
-    """
+    """Keep custom definitions while supplying required backstop ID formats."""
     
     custom_root = ElementTree.fromstring(custom_xml)
     default_root = ElementTree.fromstring(default_xml)
     
-    # Create a set of existing classes in the custom XML to avoid duplicates
-    custom_classes = set()
-    for format_elem in custom_root.findall('format'):
-        class_attr = format_elem.get('class')
-        if class_attr:
-            custom_classes.add(class_attr)
+    # Custom resources override a table's ordinary formats. The named ID
+    # formats are also needed by the shipped DwC-A templates for that table.
+    required_formats = {'AgentIdentifier', 'CollectorID', 'DeterminerID'}
+    required_aggregators = {'AgentIdentifier', 'Collector Identifiers', 'Determiner Identifiers'}
+    custom_formats = custom_root.findall('format')
+    custom_classes = {element.get('class') for element in custom_formats}
+    custom_keys = {
+        (element.get('class'), element.get('name')) for element in custom_formats
+    }
+    for element in default_root.findall('format'):
+        class_name = element.get('class')
+        key = (class_name, element.get('name'))
+        if class_name and key not in custom_keys and (
+            class_name not in custom_classes or element.get('name') in required_formats
+        ):
+            custom_root.append(element)
+            custom_keys.add(key)
 
-    # Add formatters from default that don't exist in custom
-    for format_elem in default_root.findall('format'):
-        class_attr = format_elem.get('class')
-        if class_attr and class_attr not in custom_classes:
-            custom_root.append(format_elem)
+    default_aggregators = default_root.find('aggregators')
+    if default_aggregators is not None:
+        custom_aggregators = custom_root.find('aggregators')
+        existing = (
+            {
+                (element.get('class'), element.get('name'))
+                for element in custom_aggregators.findall('aggregator')
+            }
+            if custom_aggregators is not None else set()
+        )
+        for element in default_aggregators.findall('aggregator'):
+            if element.get('name') not in required_aggregators or (
+                element.get('class'), element.get('name')
+            ) in existing:
+                continue
+            if custom_aggregators is None:
+                custom_aggregators = ElementTree.SubElement(custom_root, 'aggregators')
+            custom_aggregators.append(element)
+            existing.add((element.get('class'), element.get('name')))
     
     # Convert the merged XML tree back to a string
     return ElementTree.tostring(custom_root, encoding='utf-8').decode('utf-8')
