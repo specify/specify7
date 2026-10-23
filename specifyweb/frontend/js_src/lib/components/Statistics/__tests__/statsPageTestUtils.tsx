@@ -215,3 +215,8 @@ export async function deletePage(
     within(dialog).getByRole('button', { name: commonText.remove() })
   );
 }
+
+export const getCategoryInputs = (): RA<HTMLInputElement> =>
+  screen
+    .getAllByRole<HTMLInputElement>('textbox')
+    .filter((input) => input.closest('ul') === null);

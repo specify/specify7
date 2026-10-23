@@ -1,9 +1,9 @@
 import { screen } from '@testing-library/react';
 import { commonText } from '../../../localization/common';
 import { requireContext } from '../../../tests/helpers';
-import type { RA } from '../../../utils/types';
 import {
   enterEditMode,
+  getCategoryInputs,
   mockStatsRequests,
   renderEmptyStatsPage,
 } from './statsPageTestUtils';
@@ -12,11 +12,6 @@ requireContext();
 mockStatsRequests();
 
 const newName = 'Renamed Category';
-
-const getCategoryInputs = (): RA<HTMLInputElement> =>
-  screen
-    .getAllByRole<HTMLInputElement>('textbox')
-    .filter((input) => input.closest('ul') === null);
 
 describe('Editing an existing category', () => {
   test('edit mode shows each category name in an editable field', async () => {
