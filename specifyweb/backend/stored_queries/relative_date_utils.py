@@ -3,13 +3,6 @@ import re
 
 
 relative_date_re = r"today\s*([+-])\s*(\d+)\s*(second|minute|hour|day|week|month|year)"
-def apply_absolute_date(query_field):
-    if query_field.fieldspec.date_part is None or query_field.fieldspec.date_part != 'Full Date':
-        return query_field
-
-    field_value = query_field.value
-    new_field_value = ','.join([relative_to_absolute_date(value_split) for value_split in field_value.split(',')])
-    return query_field._replace(value=new_field_value)
 
 def relative_to_absolute_date(raw_date_value):
     date_parse = re.findall(relative_date_re, raw_date_value)

@@ -220,6 +220,7 @@ type CustomSelectElementPropsBase = {
   readonly onClose?: () => void;
   readonly customSelectOptionGroups?: IR<CustomSelectElementOptionGroupProps>;
   readonly autoMapperSuggestions?: JSX.Element;
+  readonly fieldSearch?: JSX.Element;
 };
 
 export type CustomSelectElementPropsClosed = CustomSelectElementPropsBase & {
@@ -467,6 +468,7 @@ export function CustomSelectElement({
   onClose: handleClose,
   previewOption,
   autoMapperSuggestions,
+  fieldSearch,
   validation,
 }: CustomSelectElementPropsClosed | CustomSelectElementPropsOpen): JSX.Element {
   const has = React.useCallback(
@@ -698,6 +700,7 @@ export function CustomSelectElement({
       className={`
         border-brand-300 h-fit flex-1 cursor-pointer
         overflow-x-hidden rounded-b border bg-[color:var(--custom-select-b1)]
+        ${fieldSearch ? 'border-t-0' : ''}
         ${has('preview') ? 'z-[2]' : ''}
         ${has('scroll') ? 'overflow-y-scroll' : 'overflow-y-auto'}
         ${has('shadow') ? 'max-h-[theme(spacing.64)] shadow-md' : ''}
@@ -748,7 +751,7 @@ export function CustomSelectElement({
     <article
       aria-live={has('interactive') ? 'polite' : 'off'}
       className={`
-        custom-select relative flex h-8 flex-col
+        custom-select relative flex ${fieldSearch ? 'h-auto w-full' : 'h-8'} flex-col
         custom-select-${upperToKebab(customSelectType)}
         ${customSelectClassNames[customSelectType] ?? ''}
       `}
@@ -833,6 +836,7 @@ export function CustomSelectElement({
     >
       {autoMapperSuggestions}
       {header}
+      {fieldSearch}
       {preview}
       {optionsShadow}
       {customSelectOptions}

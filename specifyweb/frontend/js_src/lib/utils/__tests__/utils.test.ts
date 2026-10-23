@@ -248,7 +248,7 @@ theories(toggleItem, {
   'remove duplicate item': { in: [[1, 2, 3, 1], 1], out: [2, 3] },
 });
 
-theories(moveItem, {
+(theories(moveItem, {
   'move up': { in: [[1, 2, 3], 1, 'up'], out: [2, 1, 3] },
   'move down': { in: [[1, 2, 3], 1, 'down'], out: [1, 3, 2] },
   'move up outside bounds': { in: [[1, 2, 3], 0, 'up'], out: [1, 2, 3] },
@@ -270,7 +270,7 @@ theories(moveItem, {
         c: 'c',
       },
     },
-  });
+  }));
 
 theories(index, [
   {

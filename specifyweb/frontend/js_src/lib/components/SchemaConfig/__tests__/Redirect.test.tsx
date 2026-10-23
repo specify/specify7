@@ -26,10 +26,7 @@ describe('SchemaConfigRedirect', () => {
 
     render(
       <MemoryRouter
-        future={{
-          v7_relativeSplatPath: true,
-          v7_startTransition: true,
-        }}
+        useTransitions={true}
         initialEntries={['/specify/schema-config/en-us/']}
       >
         <Routes>

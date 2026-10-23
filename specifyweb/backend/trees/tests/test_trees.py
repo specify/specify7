@@ -10,6 +10,7 @@ from specifyweb.backend.trees.extras import set_fullnames
 from specifyweb.backend.trees.views import get_tree_rows
 from specifyweb.backend.stored_queries.execution import set_group_concat_max_len
 from specifyweb.backend.stored_queries.tests.tests import SQLAlchemySetup
+from specifyweb.backend.workbench.upload.auditcodes import REMOVE
 from contextlib import contextmanager
 from django.db import connection
 
@@ -18,18 +19,28 @@ class TestTreeSetup(ApiTests):
 
     def make_taxon_ranks(self, treedef):
         self.taxon_root = treedef.treedefitems.create(name="Taxonomy Root", rankid=0)
-        self.taxon_kingdom = treedef.treedefitems.create(name="Kingdom", rankid=10)
-        treedef.treedefitems.create(name="Phylum", rankid=30)
-        treedef.treedefitems.create(name="Class", rankid=60)
-        treedef.treedefitems.create(name="Order", rankid=100)
-        treedef.treedefitems.create(name="Superfamily", rankid=130)
-        treedef.treedefitems.create(name="Family", rankid=140)
-        treedef.treedefitems.create(name="Genus", rankid=180)
-        treedef.treedefitems.create(name="Subgenus", rankid=190)
-        treedef.treedefitems.create(name="Species", rankid=220)
-        treedef.treedefitems.create(name="Subspecies", rankid=230)
+        self.taxon_kingdom = treedef.treedefitems.create(name="Kingdom", rankid=10, parent=self.taxon_root)
+        phylum = treedef.treedefitems.create(name="Phylum", rankid=30, parent=self.taxon_kingdom)
+        clazz = treedef.treedefitems.create(name="Class", rankid=60, parent=phylum)
+        order = treedef.treedefitems.create(name="Order", rankid=100, parent=clazz)
+        superfamily = treedef.treedefitems.create(name="Superfamily", rankid=130, parent=order)
+        family = treedef.treedefitems.create(name="Family", rankid=140, parent=superfamily)
+        genus = treedef.treedefitems.create(name="Genus", rankid=180, parent=family)
+        subgenus = treedef.treedefitems.create(name="Subgenus", rankid=190, parent=genus)
+        species = treedef.treedefitems.create(name="Species", rankid=220, parent=subgenus)
+        treedef.treedefitems.create(name="Subspecies", rankid=230, parent=species)
+
+    # REFACTOR: Move this to something like tree_extras? Or ApiTests?
+    @staticmethod
+    def get_treedefitem_at_rankid(treedefitems: list, rankid: int):
+        for treedefitem in treedefitems:
+            if treedefitem.rankid == rankid:
+                return treedefitem
+
+        raise ValueError(f"Unable to find treedefitem with rank {rankid} in {treedefitems}")
 
     def make_geography_ranks(self, treedef):
+        # BUG: make sure these ranks have parents
         if not treedef.treedefitems.all().filter(rankid=0).exists():
             treedef.treedefitems.create(name="Planet", rankid=0)
         treedef.treedefitems.create(name="Continent", rankid=100)
@@ -88,7 +99,6 @@ class TestTreeSetup(ApiTests):
         super().setUp()
         self.make_geography_ranks(self.geographytreedef)
 
-        self.taxontreedef = models.Taxontreedef.objects.create(name="Test Taxonomy")
         self.make_taxon_ranks(self.taxontreedef)
 
         self.collectionobjecttype.taxontreedef = self.taxontreedef
@@ -98,6 +108,42 @@ class TestTreeSetup(ApiTests):
 
 
 class TestTree:
+
+    def test_deleting_taxon_audits_cascaded_children(self):
+        root = self.make_taxontree(
+            "Life",
+            "Taxonomy Root",
+            definition=self.taxontreedef,
+        )
+        parent = self.make_taxontree(
+            "Parent",
+            "Kingdom",
+            definition=self.taxontreedef,
+            parent=root,
+        )
+        child = self.make_taxontree(
+            "Child",
+            "Phylum",
+            definition=self.taxontreedef,
+            parent=parent,
+        )
+        parent.refresh_from_db()
+
+        delete_resource(
+            self.collection,
+            self.agent,
+            "Taxon",
+            parent.id,
+            parent.version,
+        )
+
+        audit_records = models.Spauditlog.objects.filter(
+            tablenum=models.Taxon.specify_model.tableId,
+            recordid__in=[parent.id, child.id],
+            action=REMOVE,
+        ).values_list("recordid", flat=True)
+        self.assertCountEqual(audit_records, [parent.id, child.id])
+        self.assertFalse(models.Taxon.objects.filter(id__in=[parent.id, child.id]).exists())
 
     def setUp(self) -> None:
         super().setUp()

@@ -85,20 +85,17 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
     ids.map((id) => (id === undefined ? undefined : new table.Resource({ id })))
   );
 
-  const previousIds = React.useRef(ids);
-
   React.useEffect(() => {
     setRecords((records) =>
-      ids.map((id, index) => {
+      ids.map((id) => {
         if (id === undefined) return undefined;
-        else if (records[index]?.id === id) return records[index];
-        else return new table.Resource({ id });
+        else
+          return (
+            records.find((record) => record?.id === id) ??
+            new table.Resource({ id })
+          );
       })
     );
-
-    return (): void => {
-      previousIds.current = ids;
-    };
   }, [ids, table]);
 
   const [rawIndex, setIndex] = useTriggerState(
@@ -193,7 +190,10 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
     <>
       <ResourceView
         dialog={dialog}
-        headerButtons={(specifyNetworkBadge): JSX.Element => (
+        headerButtons={(
+          specifyNetworkBadge,
+          showParentResource
+        ): JSX.Element => (
           <div className="flex flex-col items-center gap-2 md:contents md:flex-row md:gap-8">
             <div className="flex items-center gap-2 md:contents">
               {headerButtons}
@@ -224,6 +224,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                   onClick={(): void => handleRemove('minusButton')}
                 />
               ) : undefined}
+              {newResource === undefined ? showParentResource : undefined}
               {typeof newResource === 'object' && handleAdd !== undefined ? (
                 <p className="flex-1">{formsText.creatingNewRecord()}</p>
               ) : (

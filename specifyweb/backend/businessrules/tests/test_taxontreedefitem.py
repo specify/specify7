@@ -60,3 +60,35 @@ class TaxonTreeDefItemTests(ApiTests):
         self.taxontreedef.delete()
 
         self.assertFalse(models.Taxontreedef.objects.filter(id=self.taxontreedef.id).exists())
+
+    def test_instance_delete_unused_rank_reparents_children(self):
+        kingdom = self.roottaxontreedefitem.children.create(
+            name="Kingdom",
+            treedef=self.taxontreedef,
+            rankid=100)
+        phylum = kingdom.children.create(
+            name="Phylum",
+            treedef=self.taxontreedef,
+            rankid=200)
+        kingdom_id = kingdom.id
+
+        kingdom.delete()
+
+        phylum.refresh_from_db()
+        self.assertEqual(phylum.parent_id, self.roottaxontreedefitem.id)
+        self.assertFalse(models.Taxontreedefitem.objects.filter(id=kingdom_id).exists())
+
+    def test_delete_adjacent_ranks_reparents_to_surviving_ancestor(self):
+        kingdom = self.roottaxontreedefitem.children.create(
+            name="Kingdom", treedef=self.taxontreedef, rankid=100)
+        phylum = kingdom.children.create(
+            name="Phylum", treedef=self.taxontreedef, rankid=200)
+        class_rank = phylum.children.create(
+            name="Class", treedef=self.taxontreedef, rankid=300)
+        deleting_ids = [kingdom.id, phylum.id]
+
+        models.Taxontreedefitem.objects.filter(id__in=deleting_ids).delete()
+
+        class_rank.refresh_from_db()
+        self.assertEqual(class_rank.parent_id, self.roottaxontreedefitem.id)
+        self.assertFalse(models.Taxontreedefitem.objects.filter(id__in=deleting_ids).exists())

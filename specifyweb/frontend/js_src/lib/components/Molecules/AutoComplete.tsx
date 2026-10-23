@@ -1,5 +1,6 @@
 import type { Placement } from '@floating-ui/react';
 import { Combobox } from '@headlessui/react';
+import { useVirtualizer } from '@tanstack/react-virtual';
 import React from 'react';
 import _ from 'underscore';
 
@@ -8,6 +9,7 @@ import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { listen } from '../../utils/events';
+import { getListKeyboardNavigationIndex } from '../../utils/keyboardNavigation';
 import type { RA } from '../../utils/types';
 import { DialogContext } from '../Atoms/Button';
 import { className } from '../Atoms/className';
@@ -32,17 +34,6 @@ export type AutoCompleteItem<T> = {
 };
 
 type AutoCompleteValue<T> = AutoCompleteItem<T> | string | null;
-
-/**
- * Get the nearest scrollable parent.
- * Adapted from https://stackoverflow.com/a/35940276/8584605
- */
-const getScrollParent = (node: Element | undefined): Element =>
-  node === undefined
-    ? document.body
-    : node.scrollHeight > node.clientHeight
-      ? node
-      : getScrollParent(node.parentElement ?? undefined);
 
 const optionClassName = (isActive: boolean, isSelected: boolean) => `
   p-0.5 active:bg-brand-100 dark:active:bg-brand-400
@@ -81,6 +72,9 @@ export function AutoComplete<T>({
   inputProps = {},
   value: currentValue,
   pendingValueRef,
+  onScrollEnd,
+  isLoadingMore = false,
+  extraItems,
 }: {
   readonly source:
     | RA<AutoCompleteItem<T>>
@@ -115,11 +109,13 @@ export function AutoComplete<T>({
    * typing
    */
   readonly pendingValueRef?: React.MutableRefObject<string>;
+  readonly onScrollEnd?: () => void;
+  readonly isLoadingMore?: boolean;
+  readonly extraItems?: RA<AutoCompleteItem<T>>;
 }): JSX.Element {
   const [results, setResults] = React.useState<
     RA<AutoCompleteItem<T>> | undefined
   >(undefined);
-  const resultsRef = React.useRef<RA<AutoCompleteItem<T>> | undefined>(results);
 
   const [searchAlgorithm] = userPreferences.use(
     'form',
@@ -165,45 +161,53 @@ export function AutoComplete<T>({
   );
 
   const updateItems = React.useCallback(
-    (items: RA<AutoCompleteItem<T>>, pendingValue: string): void => {
+    (items: RA<AutoCompleteItem<T>>): void => {
       setResults(items);
-      resultsRef.current = items;
-      setFilteredItems(filterItems(items, pendingValue));
     },
-    [filterItems]
+    []
   );
 
   // Update source array on changes if statically supplied
   React.useEffect(() => {
-    if (Array.isArray(source)) updateItems(source, '');
+    if (Array.isArray(source)) updateItems(source);
   }, [source, updateItems]);
 
   const [isLoading, handleLoading, handleLoaded] = useBooleanState();
   const previousValue = React.useRef<string>(currentValue);
+  const requestId = React.useRef(0);
   const handleRefreshItems = React.useCallback(
     _.debounce(function onKeyDown(
       fetchItems: typeof source,
       value: string
     ): void {
-      if (typeof fetchItems !== 'function' || previousValue.current === value)
-        return;
+      if (previousValue.current === value) return;
+
+      previousValue.current = value;
+      const currentRequestId = ++requestId.current;
+
+      if (typeof fetchItems !== 'function') return;
 
       if (results === undefined) {
         setResults([]);
-        resultsRef.current = [];
       }
-
-      previousValue.current = value;
 
       if (value.length < minLength) return;
 
       handleLoading();
       void fetchItems(value)
-        .then((items) => updateItems(items, value))
+        .then((items) => {
+          if (currentRequestId === requestId.current) updateItems(items);
+        })
         .catch(softFail)
-        .finally(handleLoaded);
+        .finally(() => {
+          if (currentRequestId === requestId.current) handleLoaded();
+        });
     }, delay),
     []
+  );
+  React.useEffect(
+    () => (): void => handleRefreshItems.cancel(),
+    [handleRefreshItems]
   );
 
   const [input, setInput] = React.useState<HTMLInputElement | null>(null);
@@ -217,18 +221,21 @@ export function AutoComplete<T>({
     []
   );
 
-  const [filteredItems, setFilteredItems] = React.useState<
-    RA<AutoCompleteItem<T>>
-  >([]);
-
   const [pendingValue, setPendingValue] = useTriggerState<string>(currentValue);
   React.useEffect(() => {
     if (typeof pendingValueRef === 'object')
       pendingValueRef.current ??= currentValue;
   }, [currentValue, pendingValueRef]);
-  React.useEffect(
-    () => setFilteredItems(filterItems(results ?? [], pendingValue)),
-    [pendingValue, filterItems, results]
+  const allResults = React.useMemo(
+    () =>
+      extraItems !== undefined && extraItems.length > 0
+        ? [...(results ?? []), ...extraItems]
+        : results,
+    [results, extraItems]
+  );
+  const filteredItems = React.useMemo(
+    () => filterItems(allResults ?? [], pendingValue),
+    [allResults, pendingValue, filterItems]
   );
 
   /*
@@ -238,9 +245,40 @@ export function AutoComplete<T>({
    * thus the filtered list of items has only one item.
    */
   const ignoreFilter = currentValue === pendingValue;
-  const itemSource = ignoreFilter ? (results ?? []) : filteredItems;
+  const itemSource = ignoreFilter ? (allResults ?? []) : filteredItems;
 
-  const pendingItem = results?.find(
+  React.useLayoutEffect(() => {
+    if (
+      typeof onScrollEnd !== 'function' ||
+      dataList === null ||
+      dataList.clientHeight === 0 ||
+      isLoading ||
+      isLoadingMore ||
+      dataList.scrollHeight - dataList.clientHeight >= 40
+    )
+      return;
+    onScrollEnd();
+  }, [dataList, itemSource.length, isLoading, isLoadingMore, onScrollEnd]);
+
+  const [activeIndex, setActiveIndex] = React.useState(-1);
+  const virtualizer = useVirtualizer({
+    count: itemSource.length,
+    getScrollElement: () => dataList,
+    estimateSize: () => 32,
+    initialRect: { height: 256, width: 0 },
+    overscan: 5,
+  });
+  const virtualItems = virtualizer.getVirtualItems();
+  const itemsToRender =
+    virtualItems.length > 0
+      ? virtualItems
+      : itemSource.map((_, index) => ({
+          index,
+          key: index,
+          start: index * 32,
+        }));
+
+  const pendingItem = allResults?.find(
     ({ label, searchValue }) => (searchValue ?? label) === pendingValue
   );
   const showAdd =
@@ -250,12 +288,48 @@ export function AutoComplete<T>({
     pendingItem === undefined;
   const listHasItems = showAdd || isLoading || itemSource.length > 0;
 
+  React.useEffect(() => setActiveIndex(-1), [itemSource]);
+
   function handleChanged(item: AutoCompleteItem<T>): void {
     handleChange(item);
     const value =
       typeof item.label === 'string' ? item.label : (item.searchValue ?? '');
     setPendingValue(value);
     if (typeof pendingValueRef === 'object') pendingValueRef.current = value;
+  }
+
+  function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>): void {
+    if (itemSource.length === 0 && !showAdd) return;
+
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+      event.preventDefault();
+      event.stopPropagation();
+      const nextIndex = getListKeyboardNavigationIndex({
+        activeIndex,
+        itemCount: itemSource.length,
+        key: event.key,
+      });
+      setActiveIndex(nextIndex);
+      virtualizer.scrollToIndex(nextIndex);
+    } else if (event.key === 'Home' || event.key === 'End') {
+      event.preventDefault();
+      event.stopPropagation();
+      const nextIndex = getListKeyboardNavigationIndex({
+        activeIndex,
+        itemCount: itemSource.length,
+        key: event.key,
+      });
+      setActiveIndex(nextIndex);
+      virtualizer.scrollToIndex(nextIndex);
+    } else if (event.key === 'Enter' && activeIndex >= 0) {
+      const item = itemSource[activeIndex];
+      if (item !== undefined) {
+        event.preventDefault();
+        event.stopPropagation();
+        handleChanged(item);
+        inputRef.current?.blur();
+      }
+    }
   }
 
   const isInDialog = typeof React.useContext(DialogContext) === 'function';
@@ -278,9 +352,10 @@ export function AutoComplete<T>({
      */
     const listHeight = dataList.getBoundingClientRect().height;
 
-    const scrollableParent = getScrollParent(input);
-    const { top: parentTop, bottom: parentBottom } =
-      scrollableParent.getBoundingClientRect();
+    // The options are rendered in a fixed portal, so form-table overflow must
+    // not determine whether the list is visible.
+    const parentTop = 0;
+    const parentBottom = globalThis.innerHeight;
 
     const {
       left: inputLeft,
@@ -322,7 +397,7 @@ export function AutoComplete<T>({
         const isOverflowing = inputBottom + listHeight > parentBottom;
         if (isOverflowing) {
           dataList.style.top = '';
-          dataList.style.bottom = `${document.body.clientHeight - inputTop}px`;
+          dataList.style.bottom = `${globalThis.innerHeight - inputTop}px`;
         } else {
           dataList.style.top = `${inputBottom}px`;
           dataList.style.bottom = '';
@@ -360,20 +435,11 @@ export function AutoComplete<T>({
     AutoCompleteItem<T> | string | undefined
   >(undefined);
   React.useLayoutEffect(() => {
-    const newCurrentItem = resultsRef.current?.find(
+    const newCurrentItem = allResults?.find(
       ({ label, searchValue }) => (searchValue ?? label) === currentValue
     );
-    setCurrentItem(
-      newCurrentItem === undefined
-        ? currentValue
-        : (currentItem) =>
-            currentItem === undefined ||
-            typeof currentItem === 'string' ||
-            newCurrentItem.data !== currentItem.data
-              ? newCurrentItem
-              : currentItem
-    );
-  }, [currentValue]);
+    setCurrentItem(newCurrentItem ?? currentValue);
+  }, [currentValue, allResults]);
 
   const handleOptionMouseDown = React.useCallback(
     (e: React.MouseEvent): void => {
@@ -408,6 +474,7 @@ export function AutoComplete<T>({
         autoComplete="off"
         onChange={({ target }): void => {
           const value = (target as HTMLInputElement).value;
+          ++requestId.current;
           handleRefreshItems(source, value);
           setPendingValue(value);
           if (typeof pendingValueRef === 'object')
@@ -423,6 +490,7 @@ export function AutoComplete<T>({
               : (currentItem?.searchValue ?? '');
         }}
         ref={forwardChildRef}
+        onKeyDown={handleKeyDown}
         onBlur={withHandleBlur(inputProps?.onBlur).onBlur}
         /*
          * Padding for the button. Using "em" so as to match @tailwind/forms
@@ -447,6 +515,19 @@ export function AutoComplete<T>({
             shadow-gray-400 dark:border dark:border-gray-500 dark:bg-neutral-900
           `}
           ref={dataListRefCallback}
+          onScroll={
+            typeof onScrollEnd === 'function'
+              ? (event: React.UIEvent<HTMLUListElement>): void => {
+                  const target = event.currentTarget;
+                  const nearBottom =
+                    target.scrollHeight -
+                      target.scrollTop -
+                      target.clientHeight <
+                    40;
+                  if (nearBottom) onScrollEnd();
+                }
+              : undefined
+          }
         >
           {isLoading && (
             <Combobox.Option
@@ -457,84 +538,111 @@ export function AutoComplete<T>({
               {commonText.loading()}
             </Combobox.Option>
           )}
-          {itemSource.map((item, index) => {
-            /**
-             * Highlight relevant part of the string.
-             * Note, if item.searchValue and item.value is different,
-             * label might not be highlighted even if it matched
-             * Also, highlighting might be confusing as it highlights any part
-             * of the string (i.e, it behaves like case-insensitive "contains"
-             * search), where as the search algorithm might actually be
-             * case-sensitive and/or search for values with query as a prefix
-             * only
-             */
-            const stringLabel =
-              typeof item.label === 'string' ? item.label : undefined;
-            const label =
-              typeof stringLabel === 'string' && highlightMatch ? (
-                <span>
-                  {stringLabel
-                    // Convert to lower case as search may be case-insensitive
-                    .toLowerCase()
-                    .split(pendingValue.toLowerCase())
-                    .map((part, index, parts) => {
-                      const startIndex = parts
-                        .slice(0, index)
-                        .join(pendingValue).length;
-                      const offsetStartIndex =
-                        startIndex + (index === 0 ? 0 : pendingValue.length);
-                      const endIndex =
-                        startIndex +
-                        part.length +
-                        (index === 0 ? 0 : pendingValue.length);
-                      return (
-                        <React.Fragment key={index}>
-                          {/* Reconstruct the value in original casing */}
-                          {stringLabel.slice(offsetStartIndex, endIndex)}
-                          {index + 1 !== parts.length && (
-                            <span className="text-brand-300">
-                              {stringLabel.slice(
-                                endIndex,
-                                endIndex + pendingValue.length
-                              )}
-                            </span>
-                          )}
-                        </React.Fragment>
-                      );
-                    })}
-                </span>
-              ) : (
-                item.label
-              );
-            const fullLabel =
-              typeof item.subLabel === 'string' ? (
-                <div className="flex flex-col justify-center">
-                  {label}
-                  <span className="text-gray-500">{item.subLabel}</span>
-                </div>
-              ) : (
-                label
-              );
-            return (
-              <Combobox.Option as={React.Fragment} key={index} value={item}>
-                {({ active, selected }): JSX.Element => (
-                  <li
-                    className={optionClassName(active, selected)}
-                    onMouseDown={handleOptionMouseDown}
-                  >
-                    {typeof item.icon === 'string' ? (
-                      <div className="flex items-center">
-                        {item.icon}
-                        {fullLabel}
-                      </div>
-                    ) : (
-                      fullLabel
+          <div
+            style={{
+              height: virtualizer.getTotalSize(),
+              position: 'relative',
+            }}
+          >
+            {itemsToRender.map((virtualItem) => {
+              const index = virtualItem.index;
+              const item = itemSource[index];
+              if (item === undefined) return null;
+
+              /**
+               * Highlight relevant part of the string.
+               * Note, if item.searchValue and item.value is different,
+               * label might not be highlighted even if it matched
+               * Also, highlighting might be confusing as it highlights any part
+               * of the string (i.e, it behaves like case-insensitive "contains"
+               * search), where as the search algorithm might actually be
+               * case-sensitive and/or search for values with query as a prefix
+               * only
+               */
+              const stringLabel =
+                typeof item.label === 'string' ? item.label : undefined;
+              const label =
+                typeof stringLabel === 'string' && highlightMatch ? (
+                  <span>
+                    {stringLabel
+                      // Convert to lower case as search may be case-insensitive
+                      .toLowerCase()
+                      .split(pendingValue.toLowerCase())
+                      .map((part, index, parts) => {
+                        const startIndex = parts
+                          .slice(0, index)
+                          .join(pendingValue).length;
+                        const offsetStartIndex =
+                          startIndex + (index === 0 ? 0 : pendingValue.length);
+                        const endIndex =
+                          startIndex +
+                          part.length +
+                          (index === 0 ? 0 : pendingValue.length);
+                        return (
+                          <React.Fragment key={index}>
+                            {/* Reconstruct the value in original casing */}
+                            {stringLabel.slice(offsetStartIndex, endIndex)}
+                            {index + 1 !== parts.length && (
+                              <span className="text-brand-300">
+                                {stringLabel.slice(
+                                  endIndex,
+                                  endIndex + pendingValue.length
+                                )}
+                              </span>
+                            )}
+                          </React.Fragment>
+                        );
+                      })}
+                  </span>
+                ) : (
+                  item.label
+                );
+              const fullLabel =
+                typeof item.subLabel === 'string' ? (
+                  <div className="flex flex-col justify-center">
+                    {label}
+                    <span className="text-gray-500">{item.subLabel}</span>
+                  </div>
+                ) : (
+                  label
+                );
+              return (
+                <div
+                  ref={virtualizer.measureElement}
+                  key={virtualItem.key}
+                  data-index={virtualItem.index}
+                  style={{
+                    left: 0,
+                    position: 'absolute',
+                    top: 0,
+                    transform: `translateY(${virtualItem.start}px)`,
+                    width: '100%',
+                  }}
+                >
+                  <Combobox.Option as={React.Fragment} value={item}>
+                    {({ active, selected }): JSX.Element => (
+                      <li
+                        className={optionClassName(
+                          active || index === activeIndex,
+                          selected
+                        )}
+                        onMouseDown={handleOptionMouseDown}
+                      >
+                        {typeof item.icon === 'string' ? (
+                          <div className="flex items-center">
+                            {item.icon}
+                            {fullLabel}
+                          </div>
+                        ) : (
+                          fullLabel
+                        )}
+                      </li>
                     )}
-                  </li>
-                )}
-              </Combobox.Option>
-            );
-          })}
+                  </Combobox.Option>
+                </div>
+              );
+            })}
+          </div>
           {showAdd && (
             <Combobox.Option as={React.Fragment} value={pendingValue}>
               {({ active, selected }): JSX.Element => (
@@ -553,7 +661,14 @@ export function AutoComplete<T>({
               )}
             </Combobox.Option>
           )}
-          {!listHasItems && (
+          {isLoadingMore && (
+            <li
+              className={`${optionClassName(false, false)} cursor-auto text-gray-500`}
+            >
+              {commonText.loading()}
+            </li>
+          )}
+          {!listHasItems && !isLoadingMore && (
             <div className={`${optionClassName(false, false)} cursor-auto`}>
               {formsText.nothingFound()}
             </div>

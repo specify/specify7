@@ -5,6 +5,7 @@
 import { attachmentsText } from '../../localization/attachments';
 import { batchEditText } from '../../localization/batchEdit';
 import { commonText } from '../../localization/common';
+import { dataViewsText } from '../../localization/dataViews';
 import { headerText } from '../../localization/header';
 import { interactionsText } from '../../localization/interactions';
 import { queryText } from '../../localization/query';
@@ -14,7 +15,7 @@ import { treeText } from '../../localization/tree';
 import { wbText } from '../../localization/workbench';
 import { getCache } from '../../utils/cache';
 import { f } from '../../utils/functools';
-import type { IR } from '../../utils/types';
+import { IR } from '../../utils/types';
 import { ensure } from '../../utils/types';
 import { icons } from '../Atoms/Icons';
 import type { MenuItem } from '../Core/Main';
@@ -71,6 +72,11 @@ const rawMenuItems = ensure<IR<Omit<MenuItem, 'name'>>>()({
     enabled: () =>
       hasToolPermission('queryBuilder', 'read') ||
       hasPermission('/querybuilder/query', 'execute'),
+  },
+  dataViews: {
+    url: '/specify/overlay/dataviews/',
+    title: dataViewsText.dataViewsTitle(),
+    icon: icons.eye,
   },
   recordSets: {
     url: '/specify/overlay/record-sets/',

@@ -88,7 +88,13 @@ def to_many_to_data(obj, rel, checker: ReadPermChecker) -> str | list[dict[str, 
     field = parent_model.get_field(field_name)
     if field is not None and field.dependent:
         objs = getattr(obj, field_name)
-        return [_obj_to_data(o, checker) for o in objs.all()]
+        related_objects = objs.all()
+        if field_name in getattr(obj, "_prefetched_objects_cache", {}):
+            return [_obj_to_data(o, checker) for o in related_objects]
+        return [
+            _obj_to_data(o, checker)
+            for o in related_objects.iterator(chunk_size=2000)
+        ]
 
     collection_uri = uri_for_model(rel.related_model)
     return collection_uri + '?' + urlencode([(rel.field.name.lower(), str(obj.id))])

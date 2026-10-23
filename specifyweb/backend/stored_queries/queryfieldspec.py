@@ -487,14 +487,20 @@ class QueryFieldSpec(
                 f = op(
                     orm_field, value, query, is_strict=strict
                 )  # Needed if using op_age_range_simple
-                # Handle modifying query from op_age_range
-                # new_query = op(orm_field, value, query, is_strict=strict)
-                # query = query._replace(query=new_query)
-                # f = None
                 if isinstance(f, Query):
+                    original_columns = query.query.column_descriptions
+                    added_columns = f.column_descriptions[len(original_columns):]
+                    orm_field = None
+                    if added_columns:
+                        # Let add_fields_to_query handle display, position and sorting.
+                        [computed_column] = added_columns
+                        orm_field = computed_column["expr"]
+                        f = f.with_entities(*(
+                            column["expr"] for column in original_columns
+                        ))
                     query = query._replace(query=f)
                     query = query.reset_joinpoint()
-                    return query, None, None
+                    return query, orm_field, None
             else:
                 op, mod_orm_field, value = apply_special_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection, user)
                 f = op(mod_orm_field, value)
@@ -534,6 +540,8 @@ class QueryFieldSpec(
         # print "is auditlog obj format field = " + str(self.is_auditlog_obj_format_field(formatauditobjs))
         # print "############################################################################"
         query, orm_field, field, table = self.add_spec_to_query(query, formatter)
+        if orm_field is None:
+            return query, None, None
         return self.apply_filter(
             query,
             orm_field,
