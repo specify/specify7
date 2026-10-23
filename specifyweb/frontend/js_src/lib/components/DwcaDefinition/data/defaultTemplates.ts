@@ -49,6 +49,7 @@ const occurrenceTemplate: DwcaTemplate = {
         <field stringId="1,9-determinations.determination.typeStatusName" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/typeStatus"/>
         <field stringId="1,9-determinations.determination.determinedDate" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/dateIdentified"/>
         <field stringId="1,9-determinations,5-determiner.agent.determiner" oper="8" value="" isNot="false" isRelFld="true" formatName="" term="http://rs.tdwg.org/dwc/terms/identifiedBy"/>
+        <field stringId="1,9-determinations,5-determiner,168-identifiers.agentidentifier.identifiers" oper="8" value="" isNot="false" isRelFld="true" formatName="AgentIdentifier" term="http://rs.tdwg.org/dwc/terms/identifiedByID"/>
         <field stringId="1,10.collectingevent.stationFieldNumber" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/eventID"/>
         <field stringId="1,10.collectingevent.method" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/samplingProtocol"/>
         <field stringId="1,10.collectingevent.startDate" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/eventDate"/>
@@ -59,6 +60,7 @@ const occurrenceTemplate: DwcaTemplate = {
         <field stringId="1,10.collectingevent.verbatimLocality" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/verbatimLocality"/>
         <field stringId="1,10.collectingevent.remarks" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/eventRemarks"/>
         <field stringId="1,10,30-collectors.collector.collectors" oper="8" value="" isNot="false" isRelFld="true" formatName="" term="http://rs.tdwg.org/dwc/terms/recordedBy"/>
+        <field stringId="1,10,30-collectors.collector.collectors" oper="8" value="" isNot="false" isRelFld="true" formatName="CollectorIDs" term="http://rs.tdwg.org/dwc/terms/recordedByID"/>
         <field stringId="1,10,2,3.geography.Continent" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/continent"/>
         <field stringId="1,10,2,3.geography.Country" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/country"/>
         <field stringId="1,10,2,3.geography.State" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/stateProvince"/>
@@ -267,6 +269,72 @@ function makeDisciplineOccurrenceTemplate(
   };
 }
 
+const identificationHistoryTemplate: DwcaTemplate = {
+  name: 'Specify → Identification History Extension',
+  coreRowTypes: ['http://rs.tdwg.org/dwc/terms/Occurrence'],
+  targets: [
+    {
+      extension: true,
+      rowType: 'http://rs.tdwg.org/dwc/terms/Identification',
+    },
+  ],
+  definition: `<?xml version="1.0" encoding="UTF-8"?>
+<archive>
+  <extension rowType="http://rs.tdwg.org/dwc/terms/Identification">
+    <queries>
+      <query name="Identification.csv" contextTableId="1">
+        <id stringId="1.collectionobject.guid" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/occurrenceID"/>
+        <field stringId="1,9-determinations.determination.guid" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/identificationID"/>
+        <field stringId="1,9-determinations.determination.isCurrent" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/identificationVerificationStatus"/>
+        <field stringId="1,9-determinations.determination.remarks" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/identificationRemarks"/>
+        <field stringId="1,9-determinations.determination.determinedDate" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/dateIdentified"/>
+        <field stringId="1,9-determinations,5-determiner.agent.determiner" oper="8" value="" isNot="false" isRelFld="true" formatName="" term="http://rs.tdwg.org/dwc/terms/identifiedBy"/>
+        <field stringId="1,9-determinations,5-determiner,168-identifiers.agentidentifier.identifiers" oper="8" value="" isNot="false" isRelFld="true" formatName="AgentIdentifier" term="http://rs.tdwg.org/dwc/terms/identifiedByID"/>
+        <field stringId="1,9-determinations.determination.qualifier" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/identificationQualifier"/>
+        <field stringId="1,9-determinations.determination.typeStatusName" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/typeStatus"/>
+        <field stringId="1,9-determinations.determination.confidence" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/taxonRemarks"/>
+        <field stringId="1,9-determinations,4.taxon.Kingdom" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/kingdom"/>
+        <field stringId="1,9-determinations,4.taxon.Phylum" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/phylum"/>
+        <field stringId="1,9-determinations,4.taxon.Class" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/class"/>
+        <field stringId="1,9-determinations,4.taxon.Order" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/order"/>
+        <field stringId="1,9-determinations,4.taxon.Superfamily" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/superfamily"/>
+        <field stringId="1,9-determinations,4.taxon.Family" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/family"/>
+        <field stringId="1,9-determinations,4.taxon.Subfamily" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/subfamily"/>
+        <field stringId="1,9-determinations,4.taxon.Tribe" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/tribe"/>
+        <field stringId="1,9-determinations,4.taxon.Subtribe" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/subtribe"/>
+        <field stringId="1,9-determinations,4.taxon.Genus" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/genus"/>
+        <field stringId="1,9-determinations,4.taxon.Subgenus" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/subgenus"/>
+        <field stringId="1,9-determinations,4.taxon.Species" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/specificEpithet"/>
+        <field stringId="1,9-determinations,4.taxon.Subspecies" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/infraspecificEpithet"/>
+      </query>
+    </queries>
+    <coreid index="0"/>
+  </extension>
+</archive>`,
+};
+
+function withPluralDeterminers(template: DwcaTemplate): DwcaTemplate {
+  const pluralPath =
+    '1,9-determinations,167-determiners.determiner.determiners';
+  return {
+    ...template,
+    name: `${template.name} (Plural Determiners)`,
+    definition: template.definition
+      .replace(
+        'stringId="1,9-determinations,5-determiner.agent.determiner"',
+        `stringId="${pluralPath}"`
+      )
+      .replace(
+        'stringId="1,9-determinations,5-determiner,168-identifiers.agentidentifier.identifiers"',
+        `stringId="${pluralPath}"`
+      )
+      .replace(
+        'formatName="AgentIdentifier" term="http://rs.tdwg.org/dwc/terms/identifiedByID"',
+        'formatName="DeterminerIDs" term="http://rs.tdwg.org/dwc/terms/identifiedByID"'
+      ),
+  };
+}
+
 export const defaultTemplates: readonly DwcaTemplate[] = [
   occurrenceTemplate,
   {
@@ -332,51 +400,17 @@ export const defaultTemplates: readonly DwcaTemplate[] = [
 	</extension>
 </archive>`,
   },
-  {
-    name: 'Specify → Identification History Extension',
-    coreRowTypes: ['http://rs.tdwg.org/dwc/terms/Occurrence'],
-    targets: [
-      {
-        extension: true,
-        rowType: 'http://rs.tdwg.org/dwc/terms/Identification',
-      },
-    ],
-    definition: `<?xml version="1.0" encoding="UTF-8"?>
-<archive>
-  <extension rowType="http://rs.tdwg.org/dwc/terms/Identification">
-    <queries>
-      <query name="Identification.csv" contextTableId="1">
-        <id stringId="1.collectionobject.guid" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/occurrenceID"/>
-        <field stringId="1,9-determinations.determination.guid" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/identificationID"/>
-        <field stringId="1,9-determinations.determination.isCurrent" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/identificationVerificationStatus"/>
-        <field stringId="1,9-determinations.determination.remarks" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/identificationRemarks"/>
-        <field stringId="1,9-determinations.determination.determinedDate" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/dateIdentified"/>
-        <field stringId="1,9-determinations,5-determiner.agent.determiner" oper="8" value="" isNot="false" isRelFld="true" formatName="" term="http://rs.tdwg.org/dwc/terms/identifiedBy"/>
-        <field stringId="1,9-determinations.determination.qualifier" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/identificationQualifier"/>
-        <field stringId="1,9-determinations.determination.typeStatusName" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/typeStatus"/>
-        <field stringId="1,9-determinations.determination.confidence" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/taxonRemarks"/>
-        <field stringId="1,9-determinations,4.taxon.Kingdom" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/kingdom"/>
-        <field stringId="1,9-determinations,4.taxon.Phylum" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/phylum"/>
-        <field stringId="1,9-determinations,4.taxon.Class" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/class"/>
-        <field stringId="1,9-determinations,4.taxon.Order" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/order"/>
-        <field stringId="1,9-determinations,4.taxon.Superfamily" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/superfamily"/>
-        <field stringId="1,9-determinations,4.taxon.Family" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/family"/>
-        <field stringId="1,9-determinations,4.taxon.Subfamily" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/subfamily"/>
-        <field stringId="1,9-determinations,4.taxon.Tribe" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/tribe"/>
-        <field stringId="1,9-determinations,4.taxon.Subtribe" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/subtribe"/>
-        <field stringId="1,9-determinations,4.taxon.Genus" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/genus"/>
-        <field stringId="1,9-determinations,4.taxon.Subgenus" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/subgenus"/>
-        <field stringId="1,9-determinations,4.taxon.Species" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/specificEpithet"/>
-        <field stringId="1,9-determinations,4.taxon.Subspecies" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/infraspecificEpithet"/>
-      </query>
-    </queries>
-    <coreid index="0"/>
-  </extension>
-</archive>`,
-  },
+  identificationHistoryTemplate,
   ...Object.entries(disciplineFields).map(([disciplineType, fields]) =>
     makeDisciplineOccurrenceTemplate(disciplineType, fields)
   ),
   eventTemplate,
   taxonTemplate,
+  withPluralDeterminers(occurrenceTemplate),
+  withPluralDeterminers(identificationHistoryTemplate),
+  ...Object.entries(disciplineFields).map(([disciplineType, fields]) =>
+    withPluralDeterminers(
+      makeDisciplineOccurrenceTemplate(disciplineType, fields)
+    )
+  ),
 ];

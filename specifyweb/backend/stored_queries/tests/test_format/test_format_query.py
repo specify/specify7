@@ -1,4 +1,5 @@
 from specifyweb.backend.stored_queries.format import ObjectFormatter
+from specifyweb.backend.context.app_resource import merge_formatters
 from specifyweb.backend.stored_queries.query_construct import QueryConstruct
 from specifyweb.backend.stored_queries.tests.base_format import SIMPLE_DEF
 from specifyweb.backend.stored_queries.tests.tests import SQLAlchemySetup
@@ -82,6 +83,82 @@ class FormatterAggregatorTests(SQLAlchemySetup):
             query, expr = object_formatter.objformat(query, models.AccessionAgent, None)
             query = query.query.add_column(expr)
             self.assertCountEqual(list(query), [('User - role1',), ('User, Test MiddleInitial - role2',)])
+
+    def test_default_agent_id_aggregators(self):
+        formatter = ObjectFormatter(self.collection, self.specifyuser, False)
+        custom = '''<formatters>
+          <format name="Collector" class="edu.ku.brc.specify.datamodel.Collector" default="true"/>
+          <format name="Determiner" class="edu.ku.brc.specify.datamodel.Determiner" default="true"/>
+        </formatters>'''
+        formatter.formattersDom = ElementTree.fromstring(
+            merge_formatters(custom, ElementTree.tostring(formatter.formattersDom))
+        )
+        event = spmodels.Collectingevent.objects.create(
+            discipline=self.discipline, stationfieldnumber='id-aggregations'
+        )
+        determination = spmodels.Determination.objects.create(
+            collectionobject=self.collectionobjects[0],
+            collectionmemberid=self.collection.id,
+            iscurrent=True,
+        )
+        agents = []
+        for index in range(2):
+            agent = spmodels.Agent.objects.create(
+                agenttype=1,
+                lastname=f'Person {index}',
+                division=self.division,
+            )
+            agents.append(agent)
+            spmodels.Agentidentifier.objects.create(
+                agent=agent, identifiertype='ORCID', identifier=f'id-{index}'
+            )
+            spmodels.Collector.objects.create(
+                collectingevent=event, agent=agent, ordernumber=1 - index
+            )
+            spmodels.Determiner.objects.create(
+                determination=determination, agent=agent, ordernumber=1 - index
+            )
+
+        with FormatterAggregatorTests.test_session_context() as session:
+            query = QueryConstruct(
+                collection=self.collection,
+                objectformatter=formatter,
+                query=session.query(),
+            )
+            collector_ids = formatter.aggregate(
+                query,
+                spmodels.datamodel.get_table('CollectingEvent').get_relationship_strict('collectors'),
+                models.CollectingEvent,
+                'CollectorIDs',
+            )
+            determiner_ids = formatter.aggregate(
+                query,
+                spmodels.datamodel.get_table('Determination').get_relationship_strict('determiners'),
+                models.Determination,
+                'DeterminerIDs',
+            )
+            singular_determiner_id = formatter.aggregate(
+                query,
+                spmodels.datamodel.get_table('Agent').get_relationship_strict('identifiers'),
+                models.Agent,
+                'AgentIdentifier',
+            )
+            expected = 'https://orcid.org/id-1 | https://orcid.org/id-0'
+            for model, identifier, expression in [
+                (models.CollectingEvent, event.id, collector_ids),
+                (models.Determination, determination.id, determiner_ids),
+            ]:
+                result = session.query(expression).select_from(model).filter(
+                    model._id == identifier
+                ).scalar()
+                self.assertEqual(result, expected)
+            self.assertEqual(
+                session.query(singular_determiner_id)
+                .select_from(models.Agent)
+                .filter(models.Agent._id == agents[0].id)
+                .scalar(),
+                'https://orcid.org/id-0',
+            )
 
     def test_aggregator_skips_empty_nested_formatter_values(self):
         object_formatter = self.get_formatter("""

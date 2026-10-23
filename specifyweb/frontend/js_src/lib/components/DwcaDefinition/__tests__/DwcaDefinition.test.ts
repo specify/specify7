@@ -6,6 +6,7 @@ import {
   parseQueryFields,
   unParseQueryFields,
 } from '../../QueryBuilder/helpers';
+import { QueryFieldSpec } from '../../QueryBuilder/fieldSpec';
 import { formattedEntry } from '../../WbPlanView/mappingHelpers';
 import { requireContext } from '../../../tests/helpers';
 import {
@@ -167,6 +168,122 @@ describe('DwCA query field term mapping', () => {
     expect(template?.definition).toContain(
       'stringId="1,9-determinations.determination.isCurrent" oper="6" value="" isNot="false" isRelFld="false" formatName=""/'
     );
+  });
+
+  test('maps agent identifiers with available default and ID aggregations', () => {
+    const occurrence = defaultTemplates.find(
+      ({ name }) => name === 'Specify → Darwin Core Occurrence'
+    );
+    const history = defaultTemplates.find(
+      ({ name }) => name === 'Specify → Identification History Extension'
+    );
+    const pluralOccurrence = defaultTemplates.find(
+      ({ name }) =>
+        name === 'Specify → Darwin Core Occurrence (Plural Determiners)'
+    );
+    const pluralHistory = defaultTemplates.find(
+      ({ name }) =>
+        name ===
+        'Specify → Identification History Extension (Plural Determiners)'
+    );
+    expect(occurrence).toBeDefined();
+    expect(history).toBeDefined();
+    expect(pluralOccurrence).toBeDefined();
+    expect(pluralHistory).toBeDefined();
+    expect(
+      defaultTemplates.find(
+        ({ name }) =>
+          name ===
+          'Specify → Darwin Core Occurrence (Bird) (Plural Determiners)'
+      )?.disciplineTypes
+    ).toEqual(['bird']);
+
+    const expected = [
+      {
+        template: occurrence!,
+        term: 'recordedByID',
+        stringId: '1,10,30-collectors.collector.collectors',
+        formatName: 'CollectorIDs',
+      },
+      {
+        template: occurrence!,
+        term: 'identifiedByID',
+        stringId:
+          '1,9-determinations,5-determiner,168-identifiers.agentidentifier.identifiers',
+        formatName: 'AgentIdentifier',
+      },
+      {
+        template: history!,
+        term: 'identifiedByID',
+        stringId:
+          '1,9-determinations,5-determiner,168-identifiers.agentidentifier.identifiers',
+        formatName: 'AgentIdentifier',
+      },
+      {
+        template: pluralOccurrence!,
+        term: 'identifiedByID',
+        stringId: '1,9-determinations,167-determiners.determiner.determiners',
+        formatName: 'DeterminerIDs',
+      },
+      {
+        template: pluralHistory!,
+        term: 'identifiedByID',
+        stringId: '1,9-determinations,167-determiners.determiner.determiners',
+        formatName: 'DeterminerIDs',
+      },
+    ] as const;
+
+    for (const { template, term, stringId, formatName } of expected) {
+      const [mapping] = parseDefinition(template.definition);
+      const index = mapping?.terms.findIndex(
+        (value) => value === `http://rs.tdwg.org/dwc/terms/${term}`
+      );
+      expect(index).toBeGreaterThanOrEqual(0);
+      const field = mapping!.fields[index!];
+      expect(field?.stringId).toBe(stringId);
+      expect(field?.formatName).toBe(formatName);
+      const parsed = parseQueryFields([field!]);
+      expect(
+        QueryFieldSpec.fromPath(
+          'CollectionObject',
+          parsed[0]!.mappingPath
+        ).toSpQueryAttributes().stringId
+      ).toBe(stringId);
+    }
+
+    for (const [template, namePath] of [
+      [occurrence!, '1,9-determinations,5-determiner.agent.determiner'],
+      [history!, '1,9-determinations,5-determiner.agent.determiner'],
+      [
+        pluralOccurrence!,
+        '1,9-determinations,167-determiners.determiner.determiners',
+      ],
+      [
+        pluralHistory!,
+        '1,9-determinations,167-determiners.determiner.determiners',
+      ],
+    ] as const) {
+      const [mapping] = parseDefinition(template.definition);
+      const nameIndex = mapping!.terms.indexOf(
+        'http://rs.tdwg.org/dwc/terms/identifiedBy'
+      );
+      expect(mapping!.fields[nameIndex]?.stringId).toBe(namePath);
+    }
+
+    const [occurrenceMapping] = parseDefinition(occurrence!.definition);
+    const collectorFields = occurrenceMapping!.fields.filter(
+      ({ stringId }) => stringId === '1,10,30-collectors.collector.collectors'
+    );
+    expect(collectorFields.map(({ formatName }) => formatName)).toEqual([
+      '',
+      'CollectorIDs',
+    ]);
+    expect(
+      unParseQueryFields(
+        'CollectionObject',
+        parseQueryFields(collectorFields)
+      ).map(({ formatName }) => formatName)
+    ).toEqual(['', 'CollectorIDs']);
   });
 
   test('provides an Event core default mapping', () => {
