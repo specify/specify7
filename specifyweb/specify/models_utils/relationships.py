@@ -171,7 +171,7 @@ def _handle_fk_field(collection, agent, obj, field, value, read_checker):
     elif hasattr(value, 'items'):  # i.e. it's a dict of some sort
         # The related object is represented by a nested dict of data.
         rel_model = field.related_model
-        datamodel_field = obj.specify_model.get_relationship(field_name)
+        datamodel_field = obj.specify_model.get_relationship_strict(field_name)
         rel_obj = update_or_create_resource(collection, agent, rel_model, value, obj if dependent else None, datamodel_field)
 
         setattr(obj, field_name, rel_obj)
