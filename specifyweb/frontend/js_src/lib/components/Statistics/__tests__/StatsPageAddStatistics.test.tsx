@@ -1,47 +1,27 @@
-import { screen, within } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { statsText } from '../../../localization/stats';
 import { requireContext } from '../../../tests/helpers';
-import { defaultLayoutGenerated } from '../StatsSpec';
-import type { DefaultStat } from '../types';
 import {
   addPageWithCategory,
+  addStat,
+  findDefaultStat,
   getCategoryItems,
   mockSavedQueries,
   mockStatsRequests,
   openChooseStatisticsDialog,
+  queryStatButton,
   renderEmptyStatsPage,
-  type User,
 } from './statsPageTestUtils';
 
 requireContext();
 mockStatsRequests();
 mockSavedQueries();
 
-const findDefaultStat = (category: string, item: string): DefaultStat =>
-  defaultLayoutGenerated[0].categories
-    .flatMap(({ items }) => items)
-    .find(
-      (stat): stat is DefaultStat =>
-        stat.type === 'DefaultStat' &&
-        stat.categoryName === category &&
-        stat.itemName === item
-    )!;
-
 const statsToAdd = [
   findDefaultStat('holdings', 'specimens'),
   findDefaultStat('loans', 'openLoansCount'),
   findDefaultStat('locality_geography', 'localityCount'),
 ];
-
-const queryStatButton = (dialog: HTMLElement, label: string) =>
-  within(dialog)
-    .queryAllByRole('button')
-    .find((button) => button.firstElementChild?.textContent === label);
-
-async function addStat(user: User, stat: DefaultStat): Promise<void> {
-  const dialog = await openChooseStatisticsDialog(user);
-  await user.click(queryStatButton(dialog, stat.label)!);
-}
 
 describe('Adding several statistics', () => {
   test('"Add" opens the "Choose Statistics" dialog with the default statistics', async () => {

@@ -271,3 +271,23 @@ export async function saveAndReopenEditing(user: User): Promise<void> {
   await enterEditMode(user);
   await user.click(screen.getByRole('button', { name: commonText.cancel() }));
 }
+
+export const findDefaultStat = (category: string, item: string): DefaultStat =>
+  defaultLayoutGenerated[0].categories
+    .flatMap(({ items }) => items)
+    .find(
+      (stat): stat is DefaultStat =>
+        stat.type === 'DefaultStat' &&
+        stat.categoryName === category &&
+        stat.itemName === item
+    )!;
+
+export const queryStatButton = (dialog: HTMLElement, label: string) =>
+  within(dialog)
+    .queryAllByRole('button')
+    .find((button) => button.firstElementChild?.textContent === label);
+
+export async function addStat(user: User, stat: DefaultStat): Promise<void> {
+  const dialog = await openChooseStatisticsDialog(user);
+  await user.click(queryStatButton(dialog, stat.label)!);
+}
