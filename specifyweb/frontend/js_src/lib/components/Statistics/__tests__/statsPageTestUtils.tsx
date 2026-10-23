@@ -291,3 +291,9 @@ export async function addStat(user: User, stat: DefaultStat): Promise<void> {
   const dialog = await openChooseStatisticsDialog(user);
   await user.click(queryStatButton(dialog, stat.label)!);
 }
+
+export const getRemoveButtons = (categoryIndex: number): RA<HTMLElement> =>
+  within(getCategoryInputs()[categoryIndex].closest('li')!).getAllByRole(
+    'button',
+    { name: commonText.remove() }
+  );

@@ -1,5 +1,4 @@
-import { waitFor, within } from '@testing-library/react';
-import { commonText } from '../../../localization/common';
+import { waitFor } from '@testing-library/react';
 import { requireContext } from '../../../tests/helpers';
 import type { RA } from '../../../utils/types';
 import type { StatLayout } from '../types';
@@ -7,8 +6,8 @@ import {
   addPageWithCategory,
   addStat,
   findDefaultStat,
-  getCategoryInputs,
   getCategoryItems,
+  getRemoveButtons,
   getStatInputs,
   mockSavedQueries,
   mockStatsRequests,
@@ -39,16 +38,11 @@ async function addTwoStats(
   );
 }
 
-const getRemoveButtons = () =>
-  within(getCategoryInputs()[0].closest('li')!).getAllByRole('button', {
-    name: commonText.remove(),
-  });
-
 describe('Deleting a new stat item', () => {
   test('the trash button removes only that stat', async () => {
     const { user, getSharedLayout } = await renderEmptyStatsPage();
     await addTwoStats(user, getSharedLayout);
-    await user.click(getRemoveButtons()[0]);
+    await user.click(getRemoveButtons(0)[0]);
 
     expect(getCategoryItems(getSharedLayout).map(({ label }) => label)).toEqual(
       [secondStat.label]
@@ -61,8 +55,8 @@ describe('Deleting a new stat item', () => {
   test('deleting every stat leaves an empty category', async () => {
     const { user, getSharedLayout } = await renderEmptyStatsPage();
     await addTwoStats(user, getSharedLayout);
-    await user.click(getRemoveButtons()[0]);
-    await user.click(getRemoveButtons()[0]);
+    await user.click(getRemoveButtons(0)[0]);
+    await user.click(getRemoveButtons(0)[0]);
 
     expect(getSharedLayout()!.at(-1)!.categories).toEqual([
       { label: 'My Stats', items: [] },
@@ -72,7 +66,7 @@ describe('Deleting a new stat item', () => {
   test('a deleted stat is offered again in "available default statistics"', async () => {
     const { user, getSharedLayout } = await renderEmptyStatsPage();
     await addTwoStats(user, getSharedLayout);
-    await user.click(getRemoveButtons()[0]);
+    await user.click(getRemoveButtons(0)[0]);
 
     const dialog = await openChooseStatisticsDialog(user);
     expect(queryStatButton(dialog, firstStat.label)).toBeDefined();
