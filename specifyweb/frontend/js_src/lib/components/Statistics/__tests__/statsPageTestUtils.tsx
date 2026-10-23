@@ -68,10 +68,10 @@ export function mockStatsRequests(): void {
   );
 }
 
-export const mockSavedQueries = (): void =>
+export const mockSavedQueries = (objects: RA<IR<unknown>> = []): void =>
   overrideAjax(
     '/api/specify/spquery/?limit=10&specifyuser=2&offset=0&orderby=-name',
-    { objects: [], meta: { limit: 10, offset: 0, total_count: 0 } }
+    { objects, meta: { limit: 10, offset: 0, total_count: objects.length } }
   );
 
 const makeEmptyPreferences = <DEFINITIONS extends object>(
@@ -249,3 +249,8 @@ export async function openChooseStatisticsDialog(
 export const getCategoryItems = (
   getSharedLayout: () => RA<StatLayout> | undefined
 ) => getSharedLayout()!.at(-1)!.categories[0].items;
+
+export const getStatInputs = (categoryIndex: number): RA<HTMLInputElement> =>
+  within(getCategoryInputs()[categoryIndex].closest('li')!)
+    .getAllByRole<HTMLInputElement>('textbox')
+    .filter((input) => input.closest('ul') !== null);
