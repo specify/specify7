@@ -12,6 +12,9 @@ from django.db import transaction
 from django.utils import timezone
 
 from specifyweb.middleware.general import require_GET
+from specifyweb.backend.stats.coordination import (
+    StatisticsBusy, busy_response, statistics_result,
+)
 from specifyweb.backend.stored_queries.batch_edit import run_batch_edit
 from specifyweb.specify.models_utils.models_by_table_id import model_names_by_table_id
 from specifyweb.specify.api.serializers import toJson, uri_for_model
@@ -118,6 +121,24 @@ def ephemeral(request):
     """Executes and returns the results of the query provided as JSON in the POST body."""
 
     spquery, collection = get_query(request)
+    if request.headers.get("X-Specify-Statistics") == "true":
+        def validate_cached() -> None:
+            run_ephemeral_query(
+                collection, request.specify_user, spquery, validate_only=True
+            )
+
+        try:
+            content = statistics_result(
+                collection,
+                request.specify_user,
+                json.dumps(spquery, sort_keys=True),
+                lambda: toJson(run_ephemeral_query(collection, request.specify_user, spquery)),
+                validate_cached,
+            )
+        except StatisticsBusy:
+            return busy_response()
+        return HttpResponse(content, content_type='application/json')
+
     data = run_ephemeral_query(collection, request.specify_user, spquery)
 
     return HttpResponse(toJson(data), content_type='application/json')
@@ -356,4 +377,3 @@ def return_loan_preps(request):
         item['loanpreparations'].append({'loanpreparationid': lp_id, 'quantity': int(quantity)})
 
     return JsonResponse(resp, safe=False)
-

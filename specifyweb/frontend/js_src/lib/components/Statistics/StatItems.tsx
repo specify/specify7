@@ -4,7 +4,6 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { statsText } from '../../localization/stats';
 import { userText } from '../../localization/user';
 import type { AjaxResponseObject } from '../../utils/ajax';
-import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { throttledPromise } from '../../utils/ajax/throttledPromise';
 import { localized } from '../../utils/types';
@@ -13,11 +12,12 @@ import { serializeResource } from '../DataModel/serializers';
 import { getNoAccessTables } from '../QueryBuilder/helpers';
 import {
   makeSerializedFieldsFromPaths,
-  queryCountPromiseGenerator,
   querySpecToResource,
+  statisticsCountPromiseGenerator,
   useResolvedStatSpec,
   useStatValueLoad,
 } from './hooks';
+import { statisticsAjax } from './requests';
 import { StatsResult } from './StatsResult';
 import type {
   BackendStatsResult,
@@ -149,18 +149,19 @@ function BackEndItem({
       throttledPromise<BackendStatsResult | undefined>(
         'backendStats',
         async () =>
-          ajax<BackendStatsResult | undefined>(fetchUrl, {
+          statisticsAjax<BackendStatsResult | undefined>(fetchUrl, {
             method: 'GET',
             headers: {
               Accept: 'application/json',
             },
             expectedErrors: [Http.FORBIDDEN],
-          }).then(({ data, status }) => {
-            if (status === Http.FORBIDDEN) {
+          }).then((response) => {
+            if (response === undefined) return undefined;
+            if (response.status === Http.FORBIDDEN) {
               setStatPermission(false);
               return undefined;
             }
-            return data;
+            return response.data;
           }),
         fetchUrl
       ).then((data) => {
@@ -239,9 +240,11 @@ function QueryItem({
   const handleLoadResolve = statState === 'valid' ? handleLoad : undefined;
   const promiseGenerator = React.useCallback(
     async () =>
-      throttledPromise<AjaxResponseObject<{ readonly count: number }>>(
+      throttledPromise<
+        AjaxResponseObject<{ readonly count: number }> | undefined
+      >(
         'queryStats',
-        queryCountPromiseGenerator(serializedQuery),
+        statisticsCountPromiseGenerator(serializedQuery),
         JSON.stringify(querySpec)
       ).then((response) => {
         if (response === undefined) return undefined;

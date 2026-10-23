@@ -677,9 +677,10 @@ def createPlacemark(kmlDoc, row, coord_cols, table, captions, host):
     return placemarkElement
 
 
-def run_ephemeral_query(collection, user, spquery):
+def run_ephemeral_query(collection, user, spquery, *, validate_only: bool = False):
     """Execute a Specify query from deserialized json and return the results
-    as an array for json serialization to the web app.
+    as an array for json serialization to the web app. With validate_only,
+    build the query and check permissions without evaluating its results.
     """
     logger.info("ephemeral query: %s", spquery)
     limit = spquery.get("limit", 20)
@@ -708,6 +709,7 @@ def run_ephemeral_query(collection, user, spquery):
             offset=offset,
             recordsetid=recordsetid,
             formatauditobjs=format_audits,
+            validate_only=validate_only,
         )
 
 
@@ -872,6 +874,7 @@ def execute(
     recordsetid=None,
     formatauditobjs=False,
     formatter_props=None,
+    validate_only: bool = False,
 ):
     "Build and execute a query, returning the results as a data structure for json serialization"
 
@@ -894,6 +897,9 @@ def execute(
             formatter_props=formatter_props,
         ),
     )
+
+    if validate_only:
+        return None
 
     log_sqlalchemy_query(query)
 
