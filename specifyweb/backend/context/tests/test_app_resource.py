@@ -6,6 +6,7 @@ from django.conf import settings
 from django.test import Client, SimpleTestCase
 
 from specifyweb.backend.context.app_resource import (
+    get_app_resource,
     get_data_view_queries_resource,
     merge_formatters,
 )
@@ -82,6 +83,37 @@ class TestMergeFormatters(SimpleTestCase):
 
 
 class TestAppResource(ApiTests):
+
+    @patch("specifyweb.backend.context.app_resource.load_resource_at_level")
+    @patch("specifyweb.backend.context.app_resource.get_app_resource_from_db")
+    def test_custom_formatters_inherit_backstop_aggregations(
+        self, get_from_db: Mock, load_from_filesystem: Mock
+    ):
+        custom = '''<formatters>
+          <format class="edu.ku.brc.specify.datamodel.Collector" name="Collector" default="true"/>
+          <aggregators>
+            <aggregator class="edu.ku.brc.specify.datamodel.Collector" name="Collector" default="true"/>
+          </aggregators>
+        </formatters>'''
+        backstop = (
+            Path(settings.SPECIFY_CONFIG_DIR) / 'backstop' / 'dataobj_formatters.xml'
+        ).read_text()
+        get_from_db.side_effect = lambda _collection, _user, level, _name: (
+            (custom, 'text/xml', 1) if level == 'Collection' else None
+        )
+        load_from_filesystem.side_effect = lambda _collection, _user, level, _name: (
+            (backstop, 'text/xml', 2) if level == 'Backstop' else None
+        )
+
+        result = get_app_resource(self.collection, self.specifyuser, 'DataObjFormatters')
+        self.assertIsNotNone(result)
+        merged = ElementTree.fromstring(result[0])
+        self.assertIsNotNone(
+            merged.find('aggregators/aggregator[@name="Collector Identifiers"]')
+        )
+        self.assertIsNotNone(
+            merged.find('aggregators/aggregator[@name="Determiner Identifiers"]')
+        )
 
     @patch("specifyweb.backend.context.app_resource.load_resource_at_level")
     @patch("specifyweb.backend.context.app_resource.get_app_resource_from_db")

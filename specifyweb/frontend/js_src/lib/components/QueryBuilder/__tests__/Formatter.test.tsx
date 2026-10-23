@@ -40,11 +40,44 @@ jest.mock('../../Formatters/formatters', () => ({
         title: 'Alternate',
         isDefault: false,
       },
+      {
+        table: { name: 'Collector' },
+        name: 'Collector',
+        title: 'Collector',
+        isDefault: true,
+      },
+      {
+        table: { name: 'Collector' },
+        name: 'Collector Identifiers',
+        title: 'Collector Identifiers',
+        isDefault: false,
+      },
     ],
   }),
 }));
 
 requireContext();
+
+test('recognizes the backstop aggregation in a DwC-A mapping', async () => {
+  render(
+    <QueryFieldRecordFormatter
+      formatter="Collector Identifiers"
+      tableName="Collector"
+      type="aggregator"
+      onChange={jest.fn()}
+    />
+  );
+
+  fireEvent.click(
+    await screen.findByRole('button', { name: queryText.chooseFormatter() })
+  );
+  expect(
+    screen.getByRole('combobox', { name: queryText.chooseFormatter() })
+  ).toHaveValue('Collector Identifiers');
+  expect(
+    screen.queryByRole('option', { name: /current, invalid value/i })
+  ).not.toBeInTheDocument();
+});
 
 test.each(['formatter', 'aggregator'] as const)(
   'opens the %s selection when a newly added field has multiple choices',
