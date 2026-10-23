@@ -91,7 +91,7 @@ const getLayout = (
 const isQueryStat = (item: CustomStat | DefaultStat): boolean =>
   item.type === 'CustomStat' || item.itemType === 'QueryStat';
 
-async function waitForInitialLoad(
+export async function waitForInitialLoad(
   getSharedLayout: () => RA<StatLayout> | undefined
 ): Promise<RA<StatLayout>> {
   await waitFor(() => {
@@ -147,8 +147,8 @@ export const getPageButtons = (sectionName: string): RA<HTMLElement> =>
 export const getPageNames = (sectionName: string) =>
   getPageButtons(sectionName).map(({ textContent }) => textContent);
 
-export const getCurrentPageName = () =>
-  getPageButtons(statsText.shared()).find(
+export const getCurrentPageName = (sectionName: string = statsText.shared()) =>
+  getPageButtons(sectionName).find(
     (page) => page.getAttribute('aria-current') === 'page'
   )?.textContent;
 
@@ -162,23 +162,33 @@ async function enterEditMode(user: User): Promise<void> {
   if (editButton !== undefined) await user.click(editButton);
 }
 
-export async function openAddPageDialog(user: User): Promise<HTMLElement> {
+export async function openAddPageDialog(
+  user: User,
+  sectionName: string = statsText.shared()
+): Promise<HTMLElement> {
   await enterEditMode(user);
   await user.click(
-    within(getSection(statsText.shared())).getByRole('button', {
+    within(getSection(sectionName)).getByRole('button', {
       name: commonText.add(),
     })
   );
   return screen.getByRole('dialog', { name: statsText.addPage() });
 }
 
-export async function addSharedPage(user: User, name: string): Promise<void> {
-  const dialog = await openAddPageDialog(user);
+export async function addPage(
+  user: User,
+  name: string,
+  sectionName: string
+): Promise<void> {
+  const dialog = await openAddPageDialog(user, sectionName);
   await user.type(within(dialog).getByRole('textbox'), name);
   await user.click(
     within(dialog).getByRole('button', { name: commonText.add() })
   );
 }
+
+export const addSharedPage = async (user: User, name: string): Promise<void> =>
+  addPage(user, name, statsText.shared());
 
 export async function openEditPageDialog(
   user: User,
