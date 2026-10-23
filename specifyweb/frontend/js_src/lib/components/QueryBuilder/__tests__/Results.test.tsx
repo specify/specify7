@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 
 import { requireContext } from '../../../tests/helpers';
@@ -88,3 +88,65 @@ test.each([
   expect(await screen.findByText('Old first')).toBeInTheDocument();
   expect(screen.getByText('Old last')).toBeInTheDocument();
 });
+
+test.each([1, 3])(
+  'preserves loaded pages and updates the count after deleting record %i',
+  async (deletedId) => {
+    const fields = makeFields(['lastName']);
+    const fetchResults = jest.fn(async () => [
+      [3, 'Third'],
+      [4, 'Fourth'],
+    ]);
+    render(
+      <QueryResults
+        table={tables.Agent}
+        queryResource={undefined}
+        fetchSize={2}
+        fetchResults={fetchResults}
+        fetchCount={undefined}
+        totalCount={4}
+        fieldSpecs={queryFieldsToFieldSpecs('Agent', fields).map(
+          ([, fieldSpec]) => fieldSpec
+        )}
+        displayedFields={fields}
+        allFields={fields}
+        initialData={[
+          [1, 'First'],
+          [2, 'Second'],
+        ]}
+        selectedRows={[new Set<number>(), jest.fn()]}
+        onReRun={jest.fn()}
+        createRecordSet={undefined}
+        extraButtons={undefined}
+        renderSplitPane={({ onDelete, onFetchMore }) => (
+          <>
+            <button onClick={() => onDelete(deletedId)}>Delete record</button>
+            <button
+              disabled={onFetchMore === undefined}
+              onClick={() => void onFetchMore?.()}
+            >
+              Load more
+            </button>
+          </>
+        )}
+      />
+    );
+
+    await screen.findByText('Fourth');
+    fireEvent.click(screen.getByRole('button', { name: 'Delete record' }));
+
+    const names = ['First', 'Second', 'Third', 'Fourth'];
+    await waitFor(() =>
+      expect(screen.queryByText(names[deletedId - 1])).not.toBeInTheDocument()
+    );
+    for (const [index, name] of names.entries())
+      if (index + 1 !== deletedId)
+        expect(screen.getByText(name)).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: 'Results: (3)' })
+    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Load more' })).toBeDisabled();
+    fireEvent.scroll(screen.getByRole('table'));
+    expect(fetchResults).toHaveBeenCalledTimes(1);
+  }
+);
