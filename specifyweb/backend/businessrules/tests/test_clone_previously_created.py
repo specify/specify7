@@ -461,6 +461,12 @@ class TestClonePreviousVersionObjects(ApiTests):
     def test_clone_loan(self):
         original = self.loans[0]
 
+        self._create_prep_type()
+        original.loanpreparations.create(
+            discipline=self.discipline,
+            preparation=self._create_prep(self.collectionobjects[0], None),
+        )
+
         clone = self._clone_resource(
             'loan',
             {
@@ -475,6 +481,8 @@ class TestClonePreviousVersionObjects(ApiTests):
         self.assertEqual(clone.discipline_id, original.discipline_id)
         self.assertEqual(clone.remarks, original.remarks)
         self.assertNotEqual(clone.loannumber, original.loannumber)
+        self.assertEqual(original.loanpreparations.count(), 1)
+        self.assertEqual(clone.loanpreparations.count(), 0)
 
         original.refresh_from_db()
         self.assertEqual(original.loannumber, 'Test loan')

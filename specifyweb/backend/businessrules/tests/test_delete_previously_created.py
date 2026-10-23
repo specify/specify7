@@ -420,13 +420,44 @@ class TestDeletePreviousVersionObjects(ApiTests):
         )
 
     def test_delete_loan_created_in_previous_version(self):
+        self._create_prep_type()
+
         loan = self.loans[0]
+
+        first_prep = self._create_prep(self.collectionobjects[0], None)
+        second_prep = self._create_prep(self.collectionobjects[1], None)
+
+        loan.loanpreparations.create(
+            discipline=self.discipline,
+            preparation=first_prep,
+        )
+        loan.loanpreparations.create(
+            discipline=self.discipline,
+            preparation=second_prep,
+        )
+
         object_id = loan.id
 
         loan.delete()
 
         self.assertEqual(
             models.Loan.objects.filter(id=object_id).count(),
+            0,
+        )
+        self.assertEqual(
+            models.Loanpreparation.objects.filter(loan_id=object_id).count(),
+            0,
+        )
+
+        first_prep.refresh_from_db()
+        second_prep.refresh_from_db()
+
+        self.assertEqual(
+            first_prep.loanpreparations.count(),
+            0,
+        )
+        self.assertEqual(
+            second_prep.loanpreparations.count(),
             0,
         )
 

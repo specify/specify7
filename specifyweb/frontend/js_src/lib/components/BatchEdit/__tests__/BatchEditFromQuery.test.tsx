@@ -135,7 +135,7 @@ describe('the Batch Edit button', () => {
       await user.click(
         getByRole('button', { name: batchEditText.batchEdit() })
       );
-      await expect(findByText('Data set opened')).resolves.toBeInTheDocument();
+      expect(await findByText('Data set opened')).toBeInTheDocument();
     });
   });
 });
@@ -209,9 +209,13 @@ describe('the enable relationships preference', () => {
         await user.click(
           getByRole('button', { name: batchEditText.batchEdit() })
         );
+<<<<<<< HEAD
         await expect(
           findByText('Data set opened')
         ).resolves.toBeInTheDocument();
+=======
+        expect(await findByText('Data set opened')).toBeInTheDocument();
+>>>>>>> main
       });
       expect(ajax).toHaveBeenCalledWith(
         '/stored_query/batch_edit/',
@@ -261,8 +265,13 @@ describe('the missing rank dialog', () => {
       await user.click(
         getByRole('button', { name: batchEditText.batchEdit() })
       );
+<<<<<<< HEAD
       await expect(findByText('Data set opened')).resolves.toBeInTheDocument();
       expect(queryByRole('dialog')).not.toBeInTheDocument();
+=======
+      expect(await findByText('Data set opened')).toBeInTheDocument();
+      expect(queryByRole('dialog')).toBeNull();
+>>>>>>> main
     });
   });
 

@@ -5,6 +5,8 @@ import { removeKey, SET } from '../utils/utils';
 import { DEFAULT_FETCH_LIMIT } from '../components/DataModel/collection';
 import { raise, softFail } from '../components/Errors/Crash';
 
+// REFACTOR: clean this up. See the changes in
+// 3c6eea450a0d64acde19574d66f0bdd5ed4731c1 for an exmaple
 export function usePaginatedCollection<COLLECTION_TYPE>({
   initialRecords,
   totalCount: initialTotalCount,
@@ -17,10 +19,18 @@ export function usePaginatedCollection<COLLECTION_TYPE>({
   readonly fetchMore:
     ((offset: number) => Promise<RA<COLLECTION_TYPE>>) | undefined;
 }) {
+  /*
+   * Warning:
+   * "results" can be a sparse array. Using sparse array to allow
+   * efficiently retrieving the last query result in a query that returns
+   * hundreds of thousands of results.
+   */
   const [results, setResults] = useTriggerState<
     RA<COLLECTION_TYPE | undefined> | undefined
   >(initialRecords);
+
   const resultsRef = React.useRef(results);
+
   const handleSetResults: GetOrSet<
     RA<COLLECTION_TYPE | undefined> | undefined
   >[typeof SET] = React.useCallback(
@@ -37,11 +47,25 @@ export function usePaginatedCollection<COLLECTION_TYPE>({
   const fetchersRef = React.useRef<R<Promise<RA<COLLECTION_TYPE> | undefined>>>(
     {}
   );
+  const collectionGeneration = React.useRef(0);
 
-  const getSetTotalCount = useTriggerState<number | undefined>(
+  const [totalCount, setTotalCount] = useTriggerState<number | undefined>(
     initialTotalCount
   );
-  const [totalCount] = getSetTotalCount;
+  const previousInitialRecords = React.useRef(initialRecords);
+
+  React.useLayoutEffect(() => {
+    if (previousInitialRecords.current === initialRecords) {
+      setTotalCount(initialTotalCount);
+      return;
+    }
+    previousInitialRecords.current = initialRecords;
+    collectionGeneration.current++;
+    fetchersRef.current = {};
+    handleSetResults(initialRecords);
+    setTotalCount(initialTotalCount);
+  }, [initialRecords, initialTotalCount, handleSetResults, setTotalCount]);
+
   const canFetchMore =
     !Array.isArray(results) ||
     totalCount === undefined ||
@@ -52,6 +76,7 @@ export function usePaginatedCollection<COLLECTION_TYPE>({
     async (index: number = 0): Promise<RA<COLLECTION_TYPE> | undefined> => {
       const currentResults = resultsRef.current ?? [];
       if (rawHandleFetchMore == undefined) return undefined;
+      const generation = collectionGeneration.current;
       // Prevent concurrent fetching in different places
       fetchersRef.current[index] ??= rawHandleFetchMore(index)
         .then(async (newResults) => {
@@ -64,6 +89,8 @@ export function usePaginatedCollection<COLLECTION_TYPE>({
                 `Returned ${newResults.length} results, when expected at most ${fetchSize}`
               )
             );
+
+          if (generation !== collectionGeneration.current) return undefined;
 
           // Results might have changed while fetching
           const newCurrentResults = resultsRef.current ?? currentResults;
@@ -89,10 +116,11 @@ export function usePaginatedCollection<COLLECTION_TYPE>({
           return newResults;
         })
         .catch((error) => {
-          fetchersRef.current = removeKey(
-            fetchersRef.current,
-            index.toString()
-          );
+          if (generation === collectionGeneration.current)
+            fetchersRef.current = removeKey(
+              fetchersRef.current,
+              index.toString()
+            );
           raise(error);
           return undefined;
         });
@@ -161,7 +189,7 @@ export function usePaginatedCollection<COLLECTION_TYPE>({
   return {
     results: [results, handleSetResults] as const,
     onFetchMore: handleFetchMore,
-    totalCount: getSetTotalCount,
+    totalCount: [totalCount, setTotalCount] as const,
     canFetchMore,
   };
 }
