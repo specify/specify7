@@ -56,6 +56,21 @@ msgstr ""
 msgid "changePassword"
 msgstr "Endre passord"
 
+#: components/Security/Collection.tsx:171
+#. Used in: Components > Security > Collection
+msgid "presenceActive"
+msgstr ""
+
+#: components/Security/Collection.tsx:172
+#. Used in: Components > Security > Collection
+msgid "presenceInactive"
+msgstr ""
+
+#: components/Security/Collection.tsx:173
+#. Used in: Components > Security > Collection
+msgid "presenceOffline"
+msgstr ""
+
 #: components/PasswordChange/index.tsx:65
 #. Used in: Components > Password Change > Index
 msgid "oldPassword"
@@ -272,7 +287,7 @@ msgstr "Brukerkontoer"
 msgid "institutionUsers"
 msgstr "Brukerkontoer definert i denne {institutionTable:string}"
 
-#: components/Security/Collection.tsx:151
+#: components/Security/Collection.tsx:154
 #. Used in: Components > Security > Collection
 msgid "collectionUsers"
 msgstr "Brukerkontoer tilordnet denne {collectionTable:string}"
@@ -627,7 +642,7 @@ msgstr "Gjeldende bruker"
 msgid "addRole"
 msgstr "Legg til rolle"
 
-#: components/Security/Collection.tsx:215
+#: components/Security/Collection.tsx:238
 #. Used in: Components > Security > Collection
 msgid "addUser"
 msgstr "Legg til bruker"

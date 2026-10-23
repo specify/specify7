@@ -62,6 +62,21 @@ msgstr ""
 msgid "changePassword"
 msgstr "Alterar a senha"
 
+#: components/Security/Collection.tsx:171
+#. Used in: Components > Security > Collection
+msgid "presenceActive"
+msgstr ""
+
+#: components/Security/Collection.tsx:172
+#. Used in: Components > Security > Collection
+msgid "presenceInactive"
+msgstr ""
+
+#: components/Security/Collection.tsx:173
+#. Used in: Components > Security > Collection
+msgid "presenceOffline"
+msgstr ""
+
 #: components/PasswordChange/index.tsx:65
 #. Used in: Components > Password Change > Index
 #, fuzzy
@@ -315,7 +330,7 @@ msgstr "Contas de usuário"
 msgid "institutionUsers"
 msgstr "Contas de usuário definidas neste {institutionTable:string}"
 
-#: components/Security/Collection.tsx:151
+#: components/Security/Collection.tsx:154
 #. Used in: Components > Security > Collection
 #, fuzzy
 msgid "collectionUsers"
@@ -735,7 +750,7 @@ msgstr "Usuário atual"
 msgid "addRole"
 msgstr "Adicionar função"
 
-#: components/Security/Collection.tsx:215
+#: components/Security/Collection.tsx:238
 #. Used in: Components > Security > Collection
 #, fuzzy
 msgid "addUser"

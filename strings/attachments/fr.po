@@ -55,7 +55,7 @@ msgstr "Échelle"
 #: components/Attachments/__tests__/AttachmentsView.test.tsx:131
 #: components/AttachmentsBulkImport/Upload.tsx:257
 #: components/AttachmentsBulkImport/Upload.tsx:264
-#: components/Header/index.tsx:186
+#: components/Header/index.tsx:237
 #: components/WbImportAttachments/index.tsx:134
 #. Used in: Components > Attachments > Plugin ⬤ Components > Attachments > Viewer ⬤ Components > Attachments > Index ⬤ Attachments > __tests__ > Attachments View ⬤ Components > Attachments Bulk Import > Upload ⬤ Components > Header > Index ⬤ Components > Wb Import Attachments > Index
 msgid "attachmentServerUnavailable"

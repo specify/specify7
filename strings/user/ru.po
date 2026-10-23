@@ -63,6 +63,21 @@ msgstr ""
 msgid "changePassword"
 msgstr "Изменить пароль"
 
+#: components/Security/Collection.tsx:171
+#. Used in: Components > Security > Collection
+msgid "presenceActive"
+msgstr ""
+
+#: components/Security/Collection.tsx:172
+#. Used in: Components > Security > Collection
+msgid "presenceInactive"
+msgstr ""
+
+#: components/Security/Collection.tsx:173
+#. Used in: Components > Security > Collection
+msgid "presenceOffline"
+msgstr ""
+
 #: components/PasswordChange/index.tsx:65
 #. Used in: Components > Password Change > Index
 #, fuzzy
@@ -319,7 +334,7 @@ msgstr "Учетные записи пользователей"
 msgid "institutionUsers"
 msgstr "Учетные записи пользователей, определенные в этом {institutionTable:string}"
 
-#: components/Security/Collection.tsx:151
+#: components/Security/Collection.tsx:154
 #. Used in: Components > Security > Collection
 #, fuzzy
 msgid "collectionUsers"
@@ -739,7 +754,7 @@ msgstr "Текущий пользователь"
 msgid "addRole"
 msgstr "Добавить роль"
 
-#: components/Security/Collection.tsx:215
+#: components/Security/Collection.tsx:238
 #. Used in: Components > Security > Collection
 #, fuzzy
 msgid "addUser"

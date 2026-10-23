@@ -62,6 +62,21 @@ msgstr "Trenutno prijavljeni račun nema pristup kolekciji {collectionName:strin
 msgid "changePassword"
 msgstr "Promjena lozinke"
 
+#: components/Security/Collection.tsx:171
+#. Used in: Components > Security > Collection
+msgid "presenceActive"
+msgstr ""
+
+#: components/Security/Collection.tsx:172
+#. Used in: Components > Security > Collection
+msgid "presenceInactive"
+msgstr ""
+
+#: components/Security/Collection.tsx:173
+#. Used in: Components > Security > Collection
+msgid "presenceOffline"
+msgstr ""
+
 #: components/PasswordChange/index.tsx:65
 #. Used in: Components > Password Change > Index
 #, fuzzy
@@ -315,7 +330,7 @@ msgstr "Korisnički računi"
 msgid "institutionUsers"
 msgstr "Korisnički računi definirani u ovom {institutionTable:string}"
 
-#: components/Security/Collection.tsx:151
+#: components/Security/Collection.tsx:154
 #. Used in: Components > Security > Collection
 #, fuzzy
 msgid "collectionUsers"
@@ -733,7 +748,7 @@ msgstr "Trenutni korisnik"
 msgid "addRole"
 msgstr "Dodaj ulogu"
 
-#: components/Security/Collection.tsx:215
+#: components/Security/Collection.tsx:238
 #. Used in: Components > Security > Collection
 #, fuzzy
 msgid "addUser"

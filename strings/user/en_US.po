@@ -46,6 +46,21 @@ msgstr ""
 msgid "changePassword"
 msgstr "Change Password"
 
+#: components/Security/Collection.tsx:171
+#. Used in: Components > Security > Collection
+msgid "presenceActive"
+msgstr "Active"
+
+#: components/Security/Collection.tsx:172
+#. Used in: Components > Security > Collection
+msgid "presenceInactive"
+msgstr "Inactive"
+
+#: components/Security/Collection.tsx:173
+#. Used in: Components > Security > Collection
+msgid "presenceOffline"
+msgstr "Offline"
+
 #: components/PasswordChange/index.tsx:65
 #. Used in: Components > Password Change > Index
 msgid "oldPassword"
@@ -262,7 +277,7 @@ msgstr "User Accounts"
 msgid "institutionUsers"
 msgstr "User Accounts Defined in this {institutionTable:string}"
 
-#: components/Security/Collection.tsx:151
+#: components/Security/Collection.tsx:154
 #. Used in: Components > Security > Collection
 msgid "collectionUsers"
 msgstr "User Accounts Assigned to this {collectionTable:string}"
@@ -613,7 +628,7 @@ msgstr "Current User"
 msgid "addRole"
 msgstr "Add Role"
 
-#: components/Security/Collection.tsx:215
+#: components/Security/Collection.tsx:238
 #. Used in: Components > Security > Collection
 msgid "addUser"
 msgstr "Add User"
