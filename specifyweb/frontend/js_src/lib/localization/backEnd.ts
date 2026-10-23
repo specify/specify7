@@ -276,7 +276,7 @@ export const backEndText = createDictionary({
       'Valor de classificação de árvore pai obrigatório ausente ou não mapeado para "{names:string}".',
     'hr-hr':
       'Nedostaje ili nije mapirana obavezna vrijednost ranga roditeljskog stabla za "{names:string}".',
-    nb: 'Manglende eller ikke-kartlagt obligatorisk rangverdi for foreldretre for «{names:string}».',
+    nb: 'Manglende eller ikke-tilordnet obligatorisk nivå-verdi for foreldretre for «{names:string}».',
   },
   showTraceback: {
     'en-us': 'Show Traceback',
@@ -358,7 +358,7 @@ export const backEndText = createDictionary({
     'pt-br':
       'O nó pai da árvore tem uma classificação maior que a sua própria.',
     'hr-hr': 'Roditelj čvora stabla ima veći rang od samog sebe',
-    nb: 'Trenodens overordnede har en høyere rang enn seg selv',
+    nb: 'Trenodens foreldre-node har et høyere nivå enn seg selv',
   },
   nodeChildrenInvalidRank: {
     'en-us': "Tree node's rank is greater than some of its children",
@@ -441,7 +441,7 @@ export const backEndText = createDictionary({
       'Estrutura de árvore ruim: Encontrados {badRanks:number|formatted} casos em que a classificação do nó não é maior que a do seu pai.',
     'hr-hr':
       'Loša struktura stabla: Pronađeno je {badRanks:number|formatted} slučajeva gdje rang čvora nije veći od njegovog roditelja',
-    nb: 'Dårlig trestruktur: Fant {badRanks:number|formatted} tilfeller der noderang ikke er høyere enn den overordnede',
+    nb: 'Dårlig trestruktur: Fant {badRanks:number|formatted} tilfeller der node-nivå ikke er høyere enn den overordnede',
   },
   invalidNodeType: {
     'en-us':
@@ -714,7 +714,7 @@ export const backEndText = createDictionary({
       'Недопустимый {componentType: string} для выбранного(ых) ранга(ов) дерева.',
     'uk-ua': 'Недійсний {componentType: string} для вибраних рангів дерев',
     'hr-hr': 'Nevažeći {componentType: string} za odabrani rang stabla',
-    nb: 'Ugyldig {componentType: string} for valgte trerangering(er)',
+    nb: 'Ugyldig {componentType: string} for valgte trenivå(er)',
   },
   attachmentNotFound: {
     'en-us':

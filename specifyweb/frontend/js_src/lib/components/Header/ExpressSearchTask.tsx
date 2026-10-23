@@ -310,6 +310,24 @@ function TableResult({
     [ajaxUrl, table.name]
   );
 
+  const fetchCount = React.useCallback(
+    async (): Promise<number> =>
+      ajax<IR<QueryTableResult> | QueryTableResult>(
+        formatUrl(ajaxUrl, {
+          name: table.name,
+          ...parseUrl(ajaxUrl),
+        }),
+        {
+          headers: { Accept: 'application/json' },
+        }
+      ).then(({ data }) =>
+        table.name in data
+          ? (data as IR<QueryTableResult>)[table.name].totalCount
+          : (data as QueryTableResult).totalCount
+      ),
+    [ajaxUrl, table.name]
+  );
+
   const fieldSpecs = React.useMemo(
     () =>
       tableResults.fieldSpecs.map(({ stringId, isRelationship }) =>
@@ -351,6 +369,7 @@ function TableResult({
           createRecordSet={undefined}
           displayedFields={allFields}
           extraButtons={undefined}
+          fetchCount={fetchCount}
           fetchResults={handleFetch}
           fetchSize={expressSearchFetchSize}
           fieldSpecs={fieldSpecs}

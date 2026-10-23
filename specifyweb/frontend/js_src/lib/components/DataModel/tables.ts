@@ -61,12 +61,21 @@ const processFields = <FIELD_TYPE extends LiteralField | Relationship>(
 let schemaLocalization: IR<SchemaLocalization> = undefined!;
 const fetchSchemaLocalization = f.store(async () =>
   import('../Preferences/userPreferences').then(async ({ userPreferences }) =>
-    load<IR<SchemaLocalization>>(
-      formatUrl('/context/schema_localization.json', {
-        lang: userPreferences.get('form', 'schema', 'language'),
-      }),
-      'application/json'
-    )
+    // Preferences are fetched independently of the initial context. Reading
+    // the schema language before that fetch completes can request the default
+    // language, and f.store() would then keep that localization for the life
+    // of the page.
+    userPreferences
+      .fetch()
+      .catch(() => undefined)
+      .then(() =>
+        load<IR<SchemaLocalization>>(
+          formatUrl('/context/schema_localization.json', {
+            lang: userPreferences.get('form', 'schema', 'language'),
+          }),
+          'application/json'
+        )
+      )
   )
 );
 export const getSchemaLocalization = (): IR<SchemaLocalization> =>
@@ -201,6 +210,28 @@ export function getTable(name: string): SpecifyTable | undefined {
 
 export const strictGetTable = (name: string): SpecifyTable =>
   defined(getTable(name), `Trying to get unknown table: ${name}`);
+
+/** Sort a table list by its caption or internal name. */
+export function sortTablesByCaption<T>(
+  values: RA<T>,
+  getName: (value: T) => string,
+  useCaption = true
+): RA<T> {
+  return [...values].sort((first, second) => {
+    const firstName = getName(first);
+    const secondName = getName(second);
+    const firstLabel = useCaption
+      ? (getTable(firstName)?.label ?? firstName)
+      : firstName;
+    const secondLabel = useCaption
+      ? (getTable(secondName)?.label ?? secondName)
+      : secondName;
+    return (
+      firstLabel.localeCompare(secondLabel) ||
+      firstName.localeCompare(secondName)
+    );
+  });
+}
 
 export function getTreeTable(name: string): SpecifyTable<AnyTree> | undefined {
   const table = getTable(name);

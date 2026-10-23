@@ -40,7 +40,7 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Attachment-Server nicht verfügbar',
     'pt-br': 'Servidor de anexos indisponível',
     'hr-hr': 'Poslužitelj priloga nije dostupan',
-    nb: 'Serveren for vedlegg er ikke tilgjengelig',
+    nb: 'Vedleggsserveren utilgjengelig',
   },
   attachmentServerUnavailableDescription: {
     'en-us': 'Setup your attachment server',
@@ -51,7 +51,7 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Richten Sie Ihren Attachment-Server ein',
     'pt-br': 'Configure seu servidor de anexos.',
     'hr-hr': 'Postavite svoj poslužitelj priloga',
-    nb: 'Konfigurer serveren for vedlegg',
+    nb: 'Sett opp vedleggsserveren din',
   },
   orderBy: {
     'en-us': 'Order By',
@@ -223,7 +223,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Скасовано',
     'pt-br': 'Cancelado',
     'hr-hr': 'Otkazano',
-    nb: 'Avbrutt',
+    nb: 'Kanselert',
   },
   frontEndInterruption: {
     'en-us': '{action:string} was in progress when interruption occurred',
@@ -461,7 +461,7 @@ export const attachmentsText = createDictionary({
       'La restauration supprimera les pièces jointes de la base de données Specify et du serveur de pièces jointes.',
     'ru-ru':
       'Функция отката удалит вложения из базы данных Specify и сервера активов.',
-    'uk-ua': 'Відкат видалить вкладення з бази даних Specify та Asset Server',
+    'uk-ua': 'Відкат видалить вкладення з бази даних Specify та Asset Server.',
     'pt-br':
       'A reversão excluirá os anexos do banco de dados especificado e do servidor de ativos.',
     'hr-hr':
@@ -555,7 +555,7 @@ export const attachmentsText = createDictionary({
     'ru-ru': 'Показать элементы управления вложениями',
     'uk-ua': 'Показати елементи керування вкладеннями',
     'pt-br': 'Mostrar controles de anexo',
-    'hr-hr': 'Prikaži kontrole za privitke',
+    'hr-hr': 'Prikaži kontrole privitaka',
     nb: 'Vis vedleggskontroller',
   },
   showControlsDescription: {
@@ -831,7 +831,7 @@ export const attachmentsText = createDictionary({
     'ru-ru':
       'Удаление набора данных приводит к его безвозвратному удалению, а также к удалению пути загрузки. Кроме того, после удаления возможность отката для загруженного набора данных больше не будет доступна.',
     'uk-ua':
-      'Видалення набору даних остаточно видаляє його та шлях завантаження. Також після видалення відкат більше не буде можливим для завантаженого набору даних.',
+      'Видалення набору даних видаляє його та шлях завантаження безповоротно. Також після видалення відкат більше не буде можливим для завантаженого набору даних.',
     'pt-br':
       'A exclusão de um conjunto de dados remove permanentemente o conjunto e seu caminho de upload. Além disso, após a exclusão, a opção de reversão (rollback) não estará mais disponível para o conjunto de dados carregado.',
     'hr-hr':
@@ -956,7 +956,7 @@ export const attachmentsText = createDictionary({
     'es-es': 'Modo de coincidencia',
     'fr-fr': 'Mode de correspondance',
     'ru-ru': 'Режим сопоставления',
-    'uk-ua': 'Режим відповідності',
+    'uk-ua': 'Режим зіставлення',
     'pt-br': 'Modo de correspondência',
     'hr-hr': 'Način podudaranja',
     nb: 'Matching modus',

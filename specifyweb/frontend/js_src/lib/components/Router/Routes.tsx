@@ -377,6 +377,18 @@ export const routes: RA<EnhancedRoute> = [
     ],
   },
   {
+    path: 'dataviews',
+    children: [
+      {
+        path: ':tableName',
+        element: () =>
+          import('../DataViews/index').then(
+            ({ TableDataView }) => TableDataView
+          ),
+      },
+    ],
+  },
+  {
     path: 'user-preferences',
     title: preferencesText.preferences(),
     element: () =>
@@ -390,6 +402,14 @@ export const routes: RA<EnhancedRoute> = [
     element: () =>
       import('../Preferences').then(
         ({ CollectionPreferencesWrapper }) => CollectionPreferencesWrapper
+      ),
+  },
+  {
+    path: 'global-preferences',
+    title: resourcesText.globalPreferences(),
+    element: () =>
+      import('../Preferences').then(
+        ({ GlobalPreferencesWrapper }) => GlobalPreferencesWrapper
       ),
   },
   {

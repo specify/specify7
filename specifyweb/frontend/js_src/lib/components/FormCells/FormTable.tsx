@@ -18,18 +18,18 @@ import { ReadOnlyContext, SearchDialogContext } from '../Core/Contexts';
 import { backboneFieldSeparator } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
 import type { Relationship } from '../DataModel/specifyField';
 import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
 import type { CollectionObjectGroup } from '../DataModel/types';
 import { FormMeta } from '../FormMeta';
 import type { FormCellDefinition, SubViewSortField } from '../FormParse/cells';
-import { DeleteButton } from '../Forms/DeleteButton';
+import { DeleteButtonWrapped } from '../Forms/DeleteButton';
 import { SpecifyForm } from '../Forms/SpecifyForm';
 import { SubViewContext } from '../Forms/SubView';
 import { propsToFormMode, useViewDefinition } from '../Forms/useViewDefinition';
 import { shouldBeToOne } from '../FormSliders/helpers';
 import { getCollectionPref } from '../InitialContext/remotePrefs';
+import { schema } from '../DataModel/schema';
 import { loadingGif } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
 import type { SortConfig } from '../Molecules/Sorting';
@@ -515,7 +515,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                       resource.id !== undefined &&
                       resource.id !== null &&
                       isTreeTable ? (
-                        <DeleteButton
+                        <DeleteButtonWrapped
                           component={Button.Small}
                           deferred
                           isIcon
@@ -537,7 +537,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                               {icons.trash}
                             </Button.Small>
                           )}
-                        </DeleteButton>
+                        </DeleteButtonWrapped>
                       ) : (
                         <Button.Small
                           aria-label={commonText.remove()}

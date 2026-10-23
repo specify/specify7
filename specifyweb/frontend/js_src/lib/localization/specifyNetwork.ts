@@ -287,7 +287,7 @@ export const specifyNetworkText = createDictionary({
       'GBIF "publishingOrgKey" (UUID) для цієї колекції, що використовується для інтеграції Specify Network.',
     'hr-hr':
       'GBIF "publishingOrgKey" (UUID) za ovu kolekciju, koji se koristi za integraciju Specify Network.',
-    nb: 'GBIF «publishingOrgKey» (en UUID) for denne samlingen, brukt for Angi nettverksintegrasjon.',
+    nb: 'GBIF «publishingOrgKey» (en UUID) for denne samlingen, brukt for Specify Network integrasjon.',
   },
   collectionKey: {
     'en-us': 'GBIF Data Set Key',
@@ -317,6 +317,6 @@ export const specifyNetworkText = createDictionary({
       'GBIF "dataSetKey" (UUID) для цієї колекції, що використовується для інтеграції Specify Network.',
     'hr-hr':
       'GBIF "dataSetKey" (UUID) za ovu kolekciju, koji se koristi za integraciju Specify Network.',
-    nb: 'GBIF-en «dataSetKey» (en UUID) for denne samlingen, brukt for Angi nettverksintegrasjon.',
+    nb: 'GBIF «dataSetKey» (en UUID) for denne samlingen, brukt for Specify Network integrasjon.',
   },
 } as const);

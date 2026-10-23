@@ -162,7 +162,7 @@ describe('AppResourcesAside (expanded case)', () => {
       mount(
         <Router.MemoryRouter
           initialEntries={['/specify/resources/']}
-		  useTransitions={true}
+          useTransitions={true}
         >
           <AppResourcesAside
             conformations={[_conformations, setConformations]}

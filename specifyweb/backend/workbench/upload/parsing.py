@@ -1,8 +1,6 @@
 import logging
 from typing import Any, NamedTuple, NoReturn
 
-from django.core.exceptions import ObjectDoesNotExist
-
 from specifyweb.specify.datamodel import datamodel
 from specifyweb.backend.workbench.upload.predicates import filter_match_key
 from .column_options import DisambiguationBehavior, ExtendedColumnOptions
@@ -136,22 +134,20 @@ def _parse(tablename: str, fieldname: str, colopts: ExtendedColumnOptions, value
 
 def parse_with_picklist(picklist, fieldname: str, value: str, column: str, disambiguation_behavior: DisambiguationBehavior) -> ParseResult | WorkBenchParseFailure | None:
     if picklist.type == 0:  # items from picklistitems table
-        try:
-            item = picklist.picklistitems.get(title=value)
+        item = picklist.picklistitems.filter(title=value).first()
+        if item is not None:
             return filter_and_upload({fieldname: item.value}, column, disambiguation_behavior)
-        except ObjectDoesNotExist:
-            if picklist.readonly:
-                return WorkBenchParseFailure(
-                    'failedParsingPickList',
-                    {'value': value},
-                    column
-                )
-            else:
-                return filter_and_upload({fieldname: value}, column, disambiguation_behavior)._replace(
-                    add_to_picklist=PicklistAddition(
-                        picklist=picklist, column=column, value=value)
-                )
-            return filter_and_upload({fieldname: value}, column, disambiguation_behavior)
+        if picklist.readonly:
+            return WorkBenchParseFailure(
+                'failedParsingPickList',
+                {'value': value},
+                column
+            )
+        else:
+            return filter_and_upload({fieldname: value}, column, disambiguation_behavior)._replace(
+                add_to_picklist=PicklistAddition(
+                    picklist=picklist, column=column, value=value)
+            )
 
     elif picklist.type == 1:  # items from rows in some table
         # we ignore this type of picklist because it is primarily used to choose many-to-one's on forms

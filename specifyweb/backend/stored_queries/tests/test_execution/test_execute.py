@@ -30,7 +30,7 @@ class TestExecute(SQLAlchemySetup):
                 distinct=False,
                 series=False,
                 count_only=False,
-                field_specs=query_fields,
+                query_fields=query_fields,
                 limit=0,
                 offset=0,
             )
@@ -77,7 +77,7 @@ class TestExecute(SQLAlchemySetup):
                 series=False,
                 search_synonymy=False,
                 count_only=False,
-                field_specs=query_fields,
+                query_fields=query_fields,
                 limit=0,
                 offset=0,
             )
@@ -110,7 +110,7 @@ class TestExecute(SQLAlchemySetup):
                 series=False,
                 search_synonymy=False,
                 count_only=True,
-                field_specs=query_fields,
+                query_fields=query_fields,
                 limit=0,
                 offset=0,
             )
@@ -132,7 +132,7 @@ class TestExecute(SQLAlchemySetup):
                 series=False,
                 search_synonymy=False,
                 count_only=False,
-                field_specs=query_fields,
+                query_fields=query_fields,
                 limit=0,
                 offset=0,
             )
@@ -168,7 +168,7 @@ class TestExecute(SQLAlchemySetup):
                 series=False,
                 search_synonymy=False,
                 count_only=True,
-                field_specs=query_fields,
+                query_fields=query_fields,
                 limit=0,
                 offset=0,
             )
@@ -203,7 +203,7 @@ class TestExecute(SQLAlchemySetup):
                 series=False,
                 search_synonymy=False,
                 count_only=False,
-                field_specs=query_fields,
+                query_fields=query_fields,
                 limit=3,
                 offset=0,
                 recordsetid=test_rs.id,
@@ -219,7 +219,7 @@ class TestExecute(SQLAlchemySetup):
                 series=False,
                 search_synonymy=False,
                 count_only=True,
-                field_specs=query_fields,
+                query_fields=query_fields,
                 limit=3,
                 offset=0,
                 recordsetid=test_rs.id,
@@ -277,7 +277,7 @@ class TestExecute(SQLAlchemySetup):
                 series=False,
                 search_synonymy=False,
                 count_only=False,
-                field_specs=query_fields,
+                query_fields=query_fields,
                 limit=0,
                 offset=0,
             )
@@ -308,7 +308,7 @@ class TestExecute(SQLAlchemySetup):
                 series=True,
                 search_synonymy=False,
                 count_only=False,
-                field_specs=query_fields,
+                query_fields=query_fields,
                 limit=0,
                 offset=0,
             )
@@ -322,7 +322,7 @@ class TestExecute(SQLAlchemySetup):
                 series=True,
                 search_synonymy=False,
                 count_only=True,
-                field_specs=query_fields,
+                query_fields=query_fields,
                 limit=0,
                 offset=0,
             )

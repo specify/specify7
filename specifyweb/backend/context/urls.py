@@ -3,9 +3,8 @@ Defines the urls for the app context subsystem
 """
 
 from django.urls import path
-from django.urls import path
 
-from . import views, user_resources, collection_resources
+from . import views, user_resources, collection_resources, global_resources
 from specifyweb.backend.attachment_gw.views import get_settings as attachment_settings
 from specifyweb.backend.report_runner.views import get_status as report_runner_status
 
@@ -30,6 +29,7 @@ urlpatterns = [
     path('viewsets.json', views.viewsets),
     path('datamodel.json', views.datamodel),
     path('schema_localization.json', views.schema_localization),
+    path('schema_localization_import.json', views.schema_localization_import),
     path('app.resource', views.app_resource),
     path('available_related_searches.json', views.available_related_searches),
     path('remoteprefs.properties', views.remote_prefs),
@@ -42,5 +42,7 @@ urlpatterns = [
 
     path('collection_resource/', collection_resources.collection_resources),
     path('collection_resource/<int:resourceid>/', collection_resources.collection_resource),
+    path('global_resource/', global_resources.global_resources_view),
+    path('global_resource/<int:resourceid>/', global_resources.global_resource_view),
 
 ]
