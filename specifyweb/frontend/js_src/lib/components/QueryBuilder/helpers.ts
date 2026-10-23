@@ -8,6 +8,7 @@ import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { serializeResource } from '../DataModel/serializers';
 import { genericTables, getTable, tables } from '../DataModel/tables';
+import { schema } from '../DataModel/schema';
 import type { SpQuery, SpQueryField, Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import { queryMappingLocalityColumns } from '../Leaflet/config';
@@ -40,6 +41,10 @@ export type QueryField = {
    * query lines move
    */
   readonly id: number;
+  /** Index of the corresponding SpQueryField in the serialized query. */
+  readonly sourceIndex?: number;
+  /** Stable identity of the corresponding serialized SpQueryField. */
+  readonly sourceStringId?: string;
   readonly mappingPath: MappingPath;
   readonly sortType: SortTypes;
   readonly isDisplay: boolean;
@@ -66,65 +71,109 @@ export function parseQueryFields(
 ): RA<QueryField> {
   return group(
     Array.from(queryFields)
-      .sort(sortFunction(({ position }) => position))
-      .map(({ isNot, isDisplay, isStrict, ...field }, index) => {
-        const fieldSpec = QueryFieldSpec.fromStringId(
-          field.stringId,
-          field.isRelFld ?? false
-        );
+      .map((field, sourceIndex) => ({ field, sourceIndex }))
+      .sort(sortFunction(({ field: { position } }) => position))
+      .map(
+        (
+          { field: { isNot, isDisplay, isStrict, ...field }, sourceIndex },
+          index
+        ) => {
+          const fieldSpec = QueryFieldSpec.fromStringId(
+            field.stringId,
+            field.isRelFld ?? false
+          );
 
-        /*
-         * SpQueryField.startValue containing fullDate may be in different formats
-         * See https://github.com/specify/specify7/issues/1348
-         */
-        const startValue =
-          typeof field.startValue === 'string' &&
-          fieldSpec.datePart === 'fullDate' &&
-          !field.startValue.includes(today)
-            ? field.startValue
-                .split(',')
-                .map((value) =>
-                  parseValue(
-                    parserFromType('java.sql.Timestamp'),
-                    undefined,
-                    value
+          /*
+           * SpQueryField.startValue containing fullDate may be in different formats
+           * See https://github.com/specify/specify7/issues/1348
+           */
+          const startValue =
+            typeof field.startValue === 'string' &&
+            fieldSpec.datePart === 'fullDate' &&
+            !field.startValue.includes(today)
+              ? field.startValue
+                  .split(',')
+                  .map((value) =>
+                    parseValue(
+                      parserFromType('java.sql.Timestamp'),
+                      undefined,
+                      value
+                    )
                   )
-                )
-                .map((parsed) =>
-                  parsed?.isValid
-                    ? (parsed.parsed as string)
-                    : (field.startValue ?? '')
-                )
-                .join(',')
-            : field.startValue;
+                  .map((parsed) =>
+                    parsed?.isValid
+                      ? (parsed.parsed as string)
+                      : (field.startValue ?? '')
+                  )
+                  .join(',')
+              : field.startValue;
 
-        const mappingPath = fieldSpec.toMappingPath();
-        return [
-          mappingPathToString(mappingPath),
-          {
-            id: index,
-            mappingPath,
-            sortType: sortTypes[field.sortType],
-            filter: {
-              type: defined(
-                Object.entries(queryFieldFilterSpecs).find(
-                  ([_, { id }]) => id === field.operStart
-                ),
-                `Unknown SpQueryField.operStart value: ${field.operStart}`
-              )[KEY],
-              fieldFormat: field.formatName ?? undefined,
-              isNot,
-              isStrict,
-              startValue,
+          const mappingPath = fieldSpec.toMappingPath();
+          return [
+            `${mappingPathToString(mappingPath)}${
+              queryFieldFormatType(mappingPath) !== undefined
+                ? `:${field.formatName ?? ''}`
+                : ''
+            }`,
+            {
+              id: index,
+              sourceIndex,
+              sourceStringId: field.stringId,
+              mappingPath,
+              sortType: sortTypes[field.sortType],
+              filter: {
+                type: defined(
+                  Object.entries(queryFieldFilterSpecs).find(
+                    ([_, { id }]) => id === field.operStart
+                  ),
+                  `Unknown SpQueryField.operStart value: ${field.operStart}`
+                )[KEY],
+                fieldFormat: field.formatName ?? undefined,
+                isNot,
+                isStrict,
+                startValue,
+              },
+              isDisplay,
             },
-            isDisplay,
-          },
-        ] as const;
-      })
+          ] as const;
+        }
+      )
   ).map(([_mappingPath, groupedFields]) => ({
     ...removeKey(groupedFields[0], 'filter'),
     filters: groupedFields.map(({ filter }) => filter),
   }));
+}
+
+/** Relationship columns with the same path are distinct by their format. */
+export const queryFieldFormatType = (
+  mappingPath: MappingPath
+): 'aggregator' | 'formatter' | undefined =>
+  mappingPath.at(-1) === formattedEntry
+    ? mappingPath.at(-2) === `${schema.referenceSymbol}1`
+      ? 'aggregator'
+      : 'formatter'
+    : undefined;
+
+/** The blank legacy selection denotes the table's default format. */
+export function nextAvailableQueryFormat(
+  fields: RA<QueryField>,
+  mappingPath: MappingPath,
+  formats: RA<string>
+): string | undefined {
+  const matchingFields = fields.filter(
+    ({ mappingPath: path }) =>
+      mappingPathToString(path) === mappingPathToString(mappingPath)
+  );
+  if (matchingFields.length === 0) return undefined;
+  const used = new Set(
+    matchingFields.map(
+      ({ filters }) =>
+        filters.find(({ type }) => type === 'any')?.fieldFormat ?? ''
+    )
+  );
+  return formats.find(
+    (name, index) => !used.has(name) && !(index === 0 && used.has(''))
+  );
 }
 
 /**

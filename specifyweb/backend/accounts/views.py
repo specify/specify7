@@ -12,13 +12,15 @@ from django import http
 from django.conf import settings
 from django.contrib.auth import login
 from django.contrib.auth.models import AbstractBaseUser
-from django.db import connection
+from django.db import connection, transaction
 from django.db.models import Max
 from django.shortcuts import render
 from django.template.response import TemplateResponse
 from django.utils import crypto
+from django.utils import timezone
 from django.utils.http import url_has_allowed_host_and_scheme, urlencode
 from django.views.decorators.cache import never_cache
+from django.views.decorators.http import require_POST
 from typing import cast
 
 from specifyweb.backend.accounts.account_utils import check_collection_access_against_agents, is_provider_info
@@ -31,14 +33,42 @@ from specifyweb.middleware.general import require_GET, require_http_methods
 from specifyweb.backend.permissions.permissions import check_permission_targets
 from specifyweb.specify import models as spmodels
 from specifyweb.specify.views import login_maybe_required, openapi
-from .models import Spuserexternalid
+from .models import Spuserexternalid, UserPresence
 from specifyweb.specify.models import Specifyuser
-from django.views.decorators.http import require_POST
-from specifyweb.backend.permissions.permissions import check_permission_targets
 from specifyweb.specify.auth.support_login import b64_url_to_bytes
-from django.db import transaction, connection
 
 logger = logging.getLogger(__name__)
+
+@require_POST
+@login_maybe_required
+def update_presence(request: http.HttpRequest) -> http.HttpResponse:
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return http.HttpResponseBadRequest('Invalid JSON body')
+
+    if not isinstance(data, dict) or type(data.get('active')) is not bool:
+        return http.HttpResponseBadRequest('Expected a boolean "active" value')
+
+    if not request.user.is_authenticated:
+        return http.HttpResponse(status=204)
+
+    now = timezone.now()
+    presence, created = UserPresence.objects.get_or_create(
+        specifyuser_id=request.user.pk,
+        defaults={
+            'last_heartbeat': now,
+            'last_activity': now if data['active'] else None,
+        },
+    )
+    if not created:
+        update_fields = {'last_heartbeat': now}
+        if data['active']:
+            update_fields['last_activity'] = now
+        UserPresence.objects.filter(pk=presence.pk).update(**update_fields)
+
+    return http.HttpResponse(status=204)
+
 
 @require_http_methods(['GET', 'POST'])
 def oic_login(request: http.HttpRequest) -> http.HttpResponse:
@@ -179,7 +209,7 @@ def oic_callback(request: http.HttpRequest) -> http.HttpResponse:
             'id': str(ext_user['sub']),
             'provider': provider,
             'provider_title': provider_info['title'],
-            'name': ext_user.get('name', ext_user.get('email', None)),
+            'name': ext_user.get('name') or ext_user.get('email') or '',
             'idtoken': ext_user,
         }
         request.session['external_user'] = external_user

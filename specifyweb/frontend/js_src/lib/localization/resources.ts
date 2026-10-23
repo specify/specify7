@@ -808,24 +808,11 @@ export const resourcesText = createDictionary({
       'Ovaj format će se koristiti samo ako je vrijednost polja uvjeta jednaka ovom uvjetu i nije null.',
     nb: 'Dette formatet vil bare bli brukt hvis betingelsene er oppfylt og ikke er null.',
   },
-  wrongScopeWarning: {
-    'en-us':
-      "This resource belongs to a different collection/discipline than the one you are currently in. It's recommended to switch collection before editing this resource",
-    'de-ch':
-      'Diese Ressource gehört zu einer anderen Sammlung/Disziplin als der, in der Sie sich aktuell befinden. Es wird empfohlen, die Sammlung zu wechseln, bevor Sie diese Ressource bearbeiten.',
-    'es-es':
-      'Este recurso pertenece a una colección/disciplina diferente a la que estás utilizando actualmente. Se recomienda cambiar de colección antes de editar este recurso.',
-    'fr-fr':
-      'Cette ressource appartient à une collection/discipline différente de celle dans laquelle vous vous trouvez actuellement. Il est recommandé de changer de collection avant de modifier cette ressource.',
-    'ru-ru':
-      'Этот ресурс относится к другой коллекции/дисциплине, нежели та, в которой вы сейчас находитесь. Рекомендуется переключиться на другую коллекцию перед редактированием этого ресурса.',
-    'uk-ua':
-      'Цей ресурс належить до іншої колекції/дисципліни, ніж та, у якій ви зараз перебуваєте. Рекомендовано змінити колекцію перед редагуванням цього ресурсу',
-    'pt-br':
-      'Este recurso pertence a uma coleção/disciplina diferente daquela em que você está atualmente. Recomenda-se trocar de coleção antes de editar este recurso.',
-    'hr-hr':
-      'Ovaj resurs pripada drugoj zbirci/disciplini od one u kojoj se trenutno nalazite. Preporučuje se promjena zbirke prije uređivanja ovog resursa.',
-    nb: 'Denne ressursen tilhører en annen samling/disiplinen enn den du er i for øyeblikket. Det anbefales å bytte samling før du redigerer dette.',
+  wrongScopeWarningSummary: {
+    'en-us': 'Different collection or discipline',
+  },
+  wrongScopeWarningDetails: {
+    'en-us': 'Switch to that collection before editing this resource.',
   },
   thisFieldName: {
     'en-us': 'This field name (for preview purposes only)',

@@ -265,9 +265,13 @@ export const getFrontEndPickLists = f.store<{
     SpAppResource: {
       mimeType: definePicklist(
         '_MimeType',
-        ['application/json', 'text/xml', 'jrxml/label', 'jrxml/report'].map(
-          (mimeType) => createPickListItem(mimeType, mimeType)
-        )
+        [
+          'application/json',
+          'text/xml',
+          'jrxml/label',
+          'jrxml/report',
+          'application/vnd.specify.dwca+xml',
+        ].map((mimeType) => createPickListItem(mimeType, mimeType))
       ).set('readOnly', false),
     },
     Collection: {
