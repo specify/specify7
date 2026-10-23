@@ -1622,6 +1622,53 @@ export function QueryMapping({
             </Select>
           )}
         </Label.Block>
+        <Label.Block>
+          {dwcaText.dwcaChooseTemplateOrQuery()}
+          <Select
+            disabled={
+              availableTemplates.length === 0 &&
+              collectionObjectQueries.length === 0
+            }
+            value={localized('')}
+            onValueChange={(value): void => {
+              if (value.startsWith('template:')) {
+                const template = defaultTemplates.find(
+                  (candidate) => `template:${candidate.name}` === value
+                );
+                if (template !== undefined)
+                  requestReplacement({ type: 'template', template });
+                return;
+              }
+              if (!value.startsWith('query:')) return;
+              const id = Number(value.slice('query:'.length));
+              if (!Number.isInteger(id)) return;
+              requestReplacement({ type: 'query', id });
+            }}
+          >
+            <option value="">{dwcaText.dwcaChooseQuery()}</option>
+            {availableTemplates.length > 0 && (
+              <optgroup label={dwcaText.dwcaTemplates()}>
+                {availableTemplates.map((template) => (
+                  <option
+                    key={`template:${template.name}`}
+                    value={`template:${template.name}`}
+                  >
+                    {template.name}
+                  </option>
+                ))}
+              </optgroup>
+            )}
+            {collectionObjectQueries.length > 0 && (
+              <optgroup label={dwcaText.dwcaSavedQueries()}>
+                {collectionObjectQueries.map((query) => (
+                  <option key={query.id} value={`query:${query.id}`}>
+                    {query.name}
+                  </option>
+                ))}
+              </optgroup>
+            )}
+          </Select>
+        </Label.Block>
         <Button.Small
           aria-label={dwcaText.dwcaMappingSettings()}
           className={`self-end ${hasFileNameError ? 'ring-2 ring-red-500' : ''}`}
@@ -1644,6 +1691,7 @@ export function QueryMapping({
       {showSettings && (
         <Dialog
           buttons={commonText.close()}
+          icon={icons.cog}
           header={dwcaText.dwcaMappingSettings()}
           onClose={(): void => setShowSettings(false)}
         >
@@ -1658,55 +1706,6 @@ export function QueryMapping({
                 }
               />
             </Label.Block>
-            {(onTemplate !== undefined || queries !== undefined) && (
-              <Label.Block>
-                {dwcaText.dwcaChooseTemplateOrQuery()}
-                <Select
-                  disabled={
-                    availableTemplates.length === 0 &&
-                    collectionObjectQueries.length === 0
-                  }
-                  value={localized('')}
-                  onValueChange={(value): void => {
-                    if (value.startsWith('template:')) {
-                      const template = defaultTemplates.find(
-                        (candidate) => `template:${candidate.name}` === value
-                      );
-                      if (template !== undefined)
-                        requestReplacement({ type: 'template', template });
-                      return;
-                    }
-                    if (!value.startsWith('query:')) return;
-                    const id = Number(value.slice('query:'.length));
-                    if (!Number.isInteger(id)) return;
-                    requestReplacement({ type: 'query', id });
-                  }}
-                >
-                  <option value="">{dwcaText.dwcaChooseQuery()}</option>
-                  {availableTemplates.length > 0 && (
-                    <optgroup label={dwcaText.dwcaTemplates()}>
-                      {availableTemplates.map((template) => (
-                        <option
-                          key={`template:${template.name}`}
-                          value={`template:${template.name}`}
-                        >
-                          {template.name}
-                        </option>
-                      ))}
-                    </optgroup>
-                  )}
-                  {collectionObjectQueries.length > 0 && (
-                    <optgroup label={dwcaText.dwcaSavedQueries()}>
-                      {collectionObjectQueries.map((query) => (
-                        <option key={query.id} value={`query:${query.id}`}>
-                          {query.name}
-                        </option>
-                      ))}
-                    </optgroup>
-                  )}
-                </Select>
-              </Label.Block>
-            )}
           </div>
         </Dialog>
       )}

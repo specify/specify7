@@ -105,7 +105,7 @@ export const dwcaText = createDictionary({
     'en-us': 'Choose Template or Query',
   },
   dwcaMappingSettings: {
-    'en-us': 'Mapping settings',
+    'en-us': 'Mapping Settings',
   },
   dwcaCheckFileNameInSettings: {
     'en-us': 'Check file name in settings',

@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import React from 'react';
 
 import { requireContext } from '../../../tests/helpers';
@@ -31,7 +31,7 @@ afterEach(() => {
   jest.restoreAllMocks();
 });
 
-test('keeps mapping settings behind a gear button', () => {
+test('shows the template selector on the page for empty and populated mappings', () => {
   const [mapping] = parseDefinition(`
     <archive>
       <core rowType="http://rs.tdwg.org/dwc/terms/Occurrence">
@@ -43,10 +43,10 @@ test('keeps mapping settings behind a gear button', () => {
   expect(mapping).toBeDefined();
   const onChange = jest.fn();
   const onTemplate = jest.fn();
-  render(
+  const view = (fields: NonNullable<typeof mapping>['fields']): JSX.Element => (
     <UnloadProtectsContext.Provider value={[]}>
       <QueryMapping
-        mapping={{ ...mapping!, fileName: 'Occurrence.csv' }}
+        mapping={{ ...mapping!, fields, fileName: 'Occurrence.csv' }}
         hasMappingsToReset={false}
         hasFileNameError={false}
         onCoreChange={jest.fn()}
@@ -55,24 +55,80 @@ test('keeps mapping settings behind a gear button', () => {
       />
     </UnloadProtectsContext.Provider>
   );
+  const { rerender } = render(view(mapping!.fields));
 
   expect(
     screen.getByRole('combobox', { name: 'Row type' })
   ).toBeInTheDocument();
   expect(screen.queryByText('File name')).not.toBeInTheDocument();
+  expect(screen.getByText('Choose Template or Query')).toBeInTheDocument();
   expect(
-    screen.queryByText('Choose Template or Query')
-  ).not.toBeInTheDocument();
+    screen.getByRole('combobox', { name: 'Row type' }).closest('label')
+      ?.nextElementSibling
+  ).toBe(
+    screen
+      .getByRole('combobox', { name: 'Choose Template or Query' })
+      .closest('label')
+  );
 
-  fireEvent.click(screen.getByRole('button', { name: 'Mapping settings' }));
+  fireEvent.click(screen.getByRole('button', { name: /Mapping settings/i }));
   expect(screen.getByRole('dialog')).toBeInTheDocument();
   expect(screen.getByText('File name')).toBeInTheDocument();
-  expect(screen.getByText('Choose Template or Query')).toBeInTheDocument();
+  expect(
+    within(screen.getByRole('dialog')).queryByRole('combobox', {
+      name: 'Choose Template or Query',
+    })
+  ).not.toBeInTheDocument();
   fireEvent.change(screen.getByRole('textbox', { name: 'File name' }), {
     target: { value: 'renamed.csv' },
   });
   expect(onChange).toHaveBeenCalledWith(
     expect.objectContaining({ fileName: 'renamed.csv' })
+  );
+  fireEvent.click(screen.getByRole('button', { name: 'Close' }));
+
+  const [populatedMapping] = parseDefinition(defaultTemplates[0]!.definition);
+  rerender(view(populatedMapping!.fields));
+  expect(
+    screen.getByRole('combobox', { name: 'Choose Template or Query' })
+  ).toBeInTheDocument();
+  fireEvent.click(screen.getByRole('button', { name: /Mapping settings/i }));
+  expect(
+    within(screen.getByRole('dialog')).queryByRole('combobox', {
+      name: 'Choose Template or Query',
+    })
+  ).not.toBeInTheDocument();
+});
+
+test('places the template selector directly after the extension field', () => {
+  const [mapping] = parseDefinition(`
+    <archive>
+      <extension rowType="http://rs.tdwg.org/ac/terms/Multimedia">
+        <queries><query name="Multimedia.csv" contextTableId="1" /></queries>
+      </extension>
+    </archive>
+  `);
+  expect(mapping).toBeDefined();
+  render(
+    <UnloadProtectsContext.Provider value={[]}>
+      <QueryMapping
+        mapping={mapping!}
+        hasMappingsToReset={false}
+        hasFileNameError={false}
+        onCoreChange={jest.fn()}
+        onChange={jest.fn()}
+        onRemove={jest.fn()}
+      />
+    </UnloadProtectsContext.Provider>
+  );
+
+  expect(
+    screen.getByRole('combobox', { name: 'Extension' }).closest('label')
+      ?.nextElementSibling
+  ).toBe(
+    screen
+      .getByRole('combobox', { name: 'Choose Template or Query' })
+      .closest('label')
   );
 });
 
@@ -97,7 +153,6 @@ test('confirms before choosing a template even for a new mapping', () => {
       />
     </UnloadProtectsContext.Provider>
   );
-  fireEvent.click(screen.getByRole('button', { name: 'Mapping settings' }));
   const templateSelect = screen.getByRole('combobox', {
     name: 'Choose Template or Query',
   });
@@ -131,7 +186,6 @@ test('confirms before replacing an existing mapping with a template', () => {
     </UnloadProtectsContext.Provider>
   );
   const selectTemplate = (): void => {
-    fireEvent.click(screen.getByRole('button', { name: 'Mapping settings' }));
     fireEvent.change(
       screen.getByRole('combobox', { name: 'Choose Template or Query' }),
       { target: { value: `template:${defaultTemplates[0]!.name}` } }
@@ -179,7 +233,6 @@ test('confirms before fetching a replacement saved query', () => {
     </UnloadProtectsContext.Provider>
   );
   const selectQuery = (): void => {
-    fireEvent.click(screen.getByRole('button', { name: 'Mapping settings' }));
     fireEvent.change(
       screen.getByRole('combobox', { name: 'Choose Template or Query' }),
       { target: { value: 'query:42' } }
@@ -216,7 +269,7 @@ test('flags a file-name problem on the settings control', () => {
     </UnloadProtectsContext.Provider>
   );
   expect(screen.getByText('Check file name in settings')).toBeInTheDocument();
-  expect(screen.getByRole('button', { name: 'Mapping settings' })).toHaveClass(
+  expect(screen.getByRole('button', { name: /Mapping settings/i })).toHaveClass(
     'ring-2'
   );
 });
