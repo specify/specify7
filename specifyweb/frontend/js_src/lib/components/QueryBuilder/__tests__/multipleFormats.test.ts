@@ -32,7 +32,7 @@ const makeField = (format?: string): QueryField => ({
 
 test('offers each formatted type once on the same query path', () => {
   const formats = ['Default', 'Alternate'];
-  expect(nextAvailableQueryFormat([], path, formats)).toBe('Default');
+  expect(nextAvailableQueryFormat([], path, formats)).toBeUndefined();
   expect(nextAvailableQueryFormat([makeField()], path, formats)).toBe(
     'Alternate'
   );
@@ -56,7 +56,7 @@ test('identifies aggregated relationships separately from formatted relationship
     nextAvailableQueryFormat([makeField('Default')], aggregatedPath, [
       'Default',
     ])
-  ).toBe('Default');
+  ).toBeUndefined();
 });
 
 test('keeps distinct formatted columns when serializing and parsing', () => {
@@ -76,4 +76,22 @@ test('keeps distinct formatted columns when serializing and parsing', () => {
   expect(
     parseQueryFields(aggregated).map(({ filters }) => filters[0]?.fieldFormat)
   ).toEqual(['Default', 'Alternate']);
+});
+
+test('keeps the first formatted or aggregated column on the implicit default', () => {
+  const aggregatedPath = ['preparations', formatToManyIndex(1), formattedEntry];
+  for (const mappingPath of [path, aggregatedPath]) {
+    const firstFormat = nextAvailableQueryFormat([], mappingPath, [
+      'Default',
+      'Alternate',
+    ]);
+    expect(firstFormat).toBeUndefined();
+    const first = { ...makeField(firstFormat), mappingPath };
+    expect(
+      unParseQueryFields('CollectionObject', [first])[0]?.formatName
+    ).toBeUndefined();
+    expect(
+      nextAvailableQueryFormat([first], mappingPath, ['Default', 'Alternate'])
+    ).toBe('Alternate');
+  }
 });

@@ -160,16 +160,16 @@ export function nextAvailableQueryFormat(
   mappingPath: MappingPath,
   formats: RA<string>
 ): string | undefined {
+  const matchingFields = fields.filter(
+    ({ mappingPath: path }) =>
+      mappingPathToString(path) === mappingPathToString(mappingPath)
+  );
+  if (matchingFields.length === 0) return undefined;
   const used = new Set(
-    fields
-      .filter(
-        ({ mappingPath: path }) =>
-          mappingPathToString(path) === mappingPathToString(mappingPath)
-      )
-      .map(
-        ({ filters }) =>
-          filters.find(({ type }) => type === 'any')?.fieldFormat ?? ''
-      )
+    matchingFields.map(
+      ({ filters }) =>
+        filters.find(({ type }) => type === 'any')?.fieldFormat ?? ''
+    )
   );
   return formats.find(
     (name, index) => !used.has(name) && !(index === 0 && used.has(''))
