@@ -59,7 +59,6 @@ describe('Adding a new Private page', () => {
     await addPage(user, newPageName, privateSection);
     await user.click(screen.getByRole('button', { name: commonText.cancel() }));
 
-    // The default Private page was never opened, so it starts loading now
     const personalLayout = await waitForInitialLoad(getPersonalLayout);
     expect(personalLayout.map(({ label }) => label)).toEqual([
       defaultPrivatePageName,
@@ -78,5 +77,46 @@ describe('Adding a new Private page', () => {
 
     expect(getPersonalLayout()).toHaveLength(1);
     expect(getPageNames(privateSection)).toEqual([defaultPrivatePageName]);
+  });
+});
+
+describe('Adding multiple Private pages', () => {
+  const newPageNames = ['First Page', 'Second Page', 'Third Page'];
+
+  test('adds each page to the end of Private and opens the newest one', async () => {
+    const { user, getSharedLayout, getPersonalLayout } =
+      await renderEmptyStatsPage();
+    const sharedLayout = getSharedLayout();
+
+    for (const [index, name] of newPageNames.entries()) {
+      await addPage(user, name, privateSection);
+      const expectedNames = [
+        defaultPrivatePageName,
+        ...newPageNames.slice(0, index + 1),
+      ];
+      expect(getPageNames(privateSection)).toEqual(expectedNames);
+      expect(getPersonalLayout()?.map(({ label }) => label)).toEqual(
+        expectedNames
+      );
+      expect(getCurrentPageName(privateSection)).toBe(name);
+    }
+
+    getPersonalLayout()!
+      .slice(1)
+      .forEach((page) => expect(page.categories).toEqual([]));
+    expect(getSharedLayout()).toEqual(sharedLayout);
+  });
+
+  test('Cancel discards every page added in the edit session', async () => {
+    const { user, getPersonalLayout } = await renderEmptyStatsPage();
+    for (const name of newPageNames) await addPage(user, name, privateSection);
+    await user.click(screen.getByRole('button', { name: commonText.cancel() }));
+
+    const personalLayout = await waitForInitialLoad(getPersonalLayout);
+    expect(personalLayout.map(({ label }) => label)).toEqual([
+      defaultPrivatePageName,
+    ]);
+    expect(getPageNames(privateSection)).toEqual([defaultPrivatePageName]);
+    expect(getCurrentPageName(privateSection)).toBe(defaultPrivatePageName);
   });
 });
