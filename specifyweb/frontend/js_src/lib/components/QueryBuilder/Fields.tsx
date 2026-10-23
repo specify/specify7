@@ -13,6 +13,7 @@ import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import { IsQueryBasicContext } from './Context';
 import type { QueryField } from './helpers';
 import { queryFieldsToFieldSpecs } from './helpers';
+import { queryFieldFormatType } from './helpers';
 import { QueryLine } from './Line';
 
 export function canMoveField(
@@ -69,8 +70,7 @@ export function QueryFields({
   readonly showHiddenFields: boolean;
   readonly getMappedFields: (mappingPathFilter: MappingPath) => RA<string>;
   readonly onChangeField:
-    | ((line: number, field: QueryField) => void)
-    | undefined;
+    ((line: number, field: QueryField) => void) | undefined;
   readonly onMappingChange:
     | ((
         line: number,
@@ -87,22 +87,18 @@ export function QueryFields({
     | undefined;
   readonly onRemoveField: ((line: number) => void) | undefined;
   readonly canRemoveField?:
-    | ((field: QueryField, line: number) => boolean)
-    | undefined;
+    ((field: QueryField, line: number) => boolean) | undefined;
   readonly isFieldReadOnly?:
-    | ((field: QueryField, line: number) => boolean)
-    | undefined;
+    ((field: QueryField, line: number) => boolean) | undefined;
   readonly onOpen: ((line: number, index: number) => void) | undefined;
   readonly onClose: (() => void) | undefined;
   readonly onLineFocus: ((line: number) => void) | undefined;
   readonly onLineMove:
-    | ((line: number, direction: 'down' | 'up') => void)
-    | undefined;
+    ((line: number, direction: 'down' | 'up') => void) | undefined;
   readonly onOpenMap: ((line: number) => void) | undefined;
   readonly onChangeFields?: ((fields: RA<QueryField>) => void) | undefined;
   readonly renderFieldPrefix?:
-    | ((field: QueryField, line: number) => JSX.Element)
-    | undefined;
+    ((field: QueryField, line: number) => JSX.Element) | undefined;
 }): JSX.Element {
   const fieldsContainerRef = React.useRef<HTMLUListElement | null>(null);
 
@@ -270,6 +266,23 @@ export function QueryFields({
               baseTableName={baseTableName}
               enforceLengthLimit={enforceLengthLimit}
               field={field}
+              usedFormats={
+                new Set(
+                  fields
+                    .filter(
+                      (other, index) =>
+                        index !== line &&
+                        queryFieldFormatType(other.mappingPath) !== undefined &&
+                        JSON.stringify(other.mappingPath) ===
+                          JSON.stringify(field.mappingPath)
+                    )
+                    .map(
+                      (other) =>
+                        other.filters.find(({ type }) => type === 'any')
+                          ?.fieldFormat ?? ''
+                    )
+                )
+              }
               fieldHash={`${line}_${length}`}
               fieldName={fieldName}
               getMappedFields={getMappedFields}

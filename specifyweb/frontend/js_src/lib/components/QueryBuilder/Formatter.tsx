@@ -31,11 +31,13 @@ export function QueryFieldRecordFormatter({
   type,
   tableName,
   formatter,
+  usedFormats,
   onChange: handleChange,
 }: {
   readonly type: 'aggregator' | 'formatter';
   readonly tableName: keyof Tables;
   readonly formatter: string | undefined;
+  readonly usedFormats?: ReadonlySet<string>;
   readonly onChange: ((formatter: string | undefined) => void) | undefined;
 }): JSX.Element | null {
   const [formatters] = usePromise(fetchFormatters, false);
@@ -69,6 +71,7 @@ export function QueryFieldRecordFormatter({
     <FormatSelect
       availableFormatters={availableFormatters}
       currentFormat={formatter}
+      usedFormats={usedFormats}
       onChange={handleChange}
     />
   );
@@ -161,11 +164,13 @@ export function CatalogNumberFormatSelection({
 function FormatSelect({
   availableFormatters,
   currentFormat,
+  usedFormats,
   showSingular = false,
   onChange: handleChange,
 }: {
   readonly availableFormatters: RA<SimpleFormatter> | undefined;
   readonly currentFormat: string | undefined;
+  readonly usedFormats?: ReadonlySet<string>;
   readonly showSingular?: boolean;
   readonly onChange: ((formatter: string | undefined) => void) | undefined;
 }): JSX.Element | null {
@@ -206,9 +211,25 @@ function FormatSelect({
             value={currentFormat}
             onValueChange={handleChange}
           >
-            <option value="" />
+            <option
+              value=""
+              disabled={
+                usedFormats?.has('') ||
+                usedFormats?.has(
+                  availableFormatters.find(({ isDefault }) => isDefault)
+                    ?.name ?? ''
+                )
+              }
+            />
             {availableFormatters.map((formatter, index) => (
-              <option key={index} value={formatter.name}>
+              <option
+                key={index}
+                value={formatter.name}
+                disabled={
+                  usedFormats?.has(formatter.name) ||
+                  (formatter.isDefault && usedFormats?.has(''))
+                }
+              >
                 {`${formatter.title}${formatter.isDefault ? resourcesText.defaultInline() : ''}`}
               </option>
             ))}

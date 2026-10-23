@@ -6,6 +6,7 @@ import {
   parseQueryFields,
   unParseQueryFields,
 } from '../../QueryBuilder/helpers';
+import { formattedEntry } from '../../WbPlanView/mappingHelpers';
 import { requireContext } from '../../../tests/helpers';
 import {
   getMappingTerm,
@@ -688,6 +689,51 @@ describe('DwCA query field term mapping', () => {
     expect(getSerializedMappingTerm(mapping, preparation!, 1)).toBe(
       'http://rs.tdwg.org/dwc/terms/preparations'
     );
+  });
+
+  test('keeps distinct formatted columns and their DwC terms through query edits', () => {
+    const firstTerm = 'http://rs.tdwg.org/dwc/terms/scientificName';
+    const secondTerm = 'http://rs.tdwg.org/dwc/terms/acceptedNameUsage';
+    const xml = `<archive><core rowType="http://rs.tdwg.org/dwc/terms/Occurrence"><queries><query name="core.csv" contextTableId="1">
+      <id stringId="1.collectionobject.guid" term="${occurrenceId}" />
+      <field stringId="1.collectionobject." formatName="FirstFormat" term="${firstTerm}" />
+      <field stringId="1.collectionobject." formatName="SecondFormat" term="${secondTerm}" />
+    </query></queries></core></archive>`;
+    const [mapping] = parseDefinition(xml);
+    if (mapping === undefined) throw new Error('Core mapping was not parsed');
+
+    const parsed = parseQueryFields(mapping.fields);
+    expect(parsed).toHaveLength(3);
+    expect(
+      parsed.slice(1).map((field) => getMappingTerm(mapping, field))
+    ).toEqual([firstTerm, secondTerm]);
+    expect(getMappingTerm(mapping, { mappingPath: [formattedEntry] })).toBe(
+      firstTerm
+    );
+
+    const serialized = unParseQueryFields('CollectionObject', parsed);
+    expect(serialized.slice(1).map(({ formatName }) => formatName)).toEqual([
+      'FirstFormat',
+      'SecondFormat',
+    ]);
+    const updated = updateMappingFields(mapping, serialized);
+    expect(updated.terms.slice(1)).toEqual([firstTerm, secondTerm]);
+    expect(serializeDefinition([updated])).toContain(
+      `formatName="SecondFormat" term="${secondTerm}"`
+    );
+    expect(
+      getSerializedMappingTerm(
+        {
+          fields: [
+            { stringId: '1.collectionobject.', formatName: 'FirstFormat' },
+            { stringId: '1.collectionobject.', formatName: null },
+          ],
+          terms: [firstTerm, secondTerm],
+        },
+        { stringId: '1.collectionobject.', formatName: undefined },
+        1
+      )
+    ).toBe(secondTerm);
   });
 
   test('does not serialize terms on hidden relationship fields', () => {

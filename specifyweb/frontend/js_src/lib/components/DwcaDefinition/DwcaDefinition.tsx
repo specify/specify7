@@ -38,7 +38,10 @@ import {
 } from '../DataModel/saveBlockers';
 import { createQuery } from '../QueryBuilder';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
-import { parseQueryFields } from '../QueryBuilder/helpers';
+import {
+  parseQueryFields,
+  queryFieldFormatType,
+} from '../QueryBuilder/helpers';
 import type { QueryField } from '../QueryBuilder/helpers';
 import { Dialog, dialogClassNames, LoadingScreen } from '../Molecules/Dialog';
 import { CollapsibleAlert } from '../Molecules/CollapsibleAlert';
@@ -234,6 +237,12 @@ function getMappingFieldIndex(
   field: Partial<Pick<QueryField, 'id' | 'sourceIndex' | 'sourceStringId'>> &
     Partial<Pick<QueryField, 'mappingPath'>>
 ): number {
+  if (
+    field.sourceIndex !== undefined &&
+    mapping.fields[field.sourceIndex]?.stringId.toLowerCase() ===
+      field.sourceStringId?.toLowerCase()
+  )
+    return field.sourceIndex;
   if (field.sourceStringId !== undefined) {
     const exactIndex = mapping.fields.findIndex(
       ({ stringId }) =>
@@ -244,7 +253,7 @@ function getMappingFieldIndex(
   if (field.mappingPath !== undefined) {
     const pathKey = JSON.stringify(field.mappingPath).toLowerCase();
     const pathIndex = mapping.fields.findIndex(
-      (candidate) => fieldTermKey(candidate) === pathKey
+      (candidate) => fieldTermPathKey(candidate) === pathKey
     );
     if (pathIndex >= 0) return pathIndex;
   }
@@ -267,12 +276,25 @@ export function updateMappingTerm(
 
 export function getSerializedMappingTerm(
   mapping: {
-    readonly fields: ReadonlyArray<{ readonly stringId: string }>;
+    readonly fields: ReadonlyArray<{
+      readonly stringId: string;
+      readonly formatName?: string | null;
+    }>;
     readonly terms: RA<string | undefined>;
   },
-  field: { readonly stringId: string },
+  field: { readonly stringId: string; readonly formatName?: string | null },
   fallbackIndex: number
 ): string | undefined {
+  if (
+    mapping.fields[fallbackIndex]?.stringId.toLowerCase() ===
+      field.stringId.toLowerCase() &&
+    (mapping.fields[fallbackIndex]?.formatName ?? '') ===
+      (field.formatName ?? '') &&
+    !mapping.fields
+      .slice(0, fallbackIndex)
+      .some((previous) => fieldFormatKey(previous) === fieldFormatKey(field))
+  )
+    return mapping.terms[fallbackIndex];
   const fieldIndex = mapping.fields.findIndex(
     ({ stringId }) => stringId.toLowerCase() === field.stringId.toLowerCase()
   );
@@ -520,6 +542,23 @@ function fieldTermKey(
   field: Pick<SerializedResource<SpQueryField>, 'stringId'> &
     Partial<SerializedResource<SpQueryField>>
 ): string {
+  const path = fieldTermPathKey(field);
+  try {
+    const [parsed] = parseQueryFields([
+      field as SerializedResource<SpQueryField>,
+    ]);
+    return queryFieldFormatType(parsed?.mappingPath ?? []) === undefined
+      ? path
+      : `${path}:${field.formatName ?? ''}`;
+  } catch {
+    return path;
+  }
+}
+
+function fieldTermPathKey(
+  field: Pick<SerializedResource<SpQueryField>, 'stringId'> &
+    Partial<SerializedResource<SpQueryField>>
+): string {
   try {
     const [parsed] = parseQueryFields([
       field as SerializedResource<SpQueryField>,
@@ -531,6 +570,11 @@ function fieldTermKey(
     return field.stringId.toLowerCase();
   }
 }
+
+const fieldFormatKey = (field: {
+  readonly stringId: string;
+  readonly formatName?: string | null;
+}): string => `${field.stringId.toLowerCase()}:${field.formatName ?? ''}`;
 
 function fieldShapesEqual(
   left: RA<SerializedResource<SpQueryField>>,
@@ -588,7 +632,7 @@ export function updateMappingFields(
   });
   const oldStringIds = new Map(
     mapping.fields.map((field, index) => [
-      field.stringId.toLowerCase(),
+      fieldFormatKey(field),
       mapping.terms[index],
     ])
   );
@@ -602,7 +646,7 @@ export function updateMappingFields(
     const automaticTerms = autoMapCoreFields(fields, availableTerms);
     const occurrenceIndex = fields.findIndex(
       (field, index) =>
-        (oldStringIds.get(field.stringId.toLowerCase()) ??
+        (oldStringIds.get(fieldFormatKey(field)) ??
           oldMetadata.get(fieldTermKey(field))?.[0] ??
           automaticTerms[index]) === getCoreIdentifierTerm(mapping.coreRowType)
     );
@@ -615,7 +659,7 @@ export function updateMappingFields(
   const usedTerms = new Set<string>();
   const terms = fields.map((field, index) => {
     const key = fieldTermKey(field);
-    const oldTerm = oldStringIds.get(field.stringId.toLowerCase());
+    const oldTerm = oldStringIds.get(fieldFormatKey(field));
     const pathTerms = oldMetadata.get(key);
     const pathTerm = pathTerms?.[0];
     if (pathTerms !== undefined) oldMetadata.set(key, pathTerms.slice(1));

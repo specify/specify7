@@ -8,6 +8,7 @@ import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { serializeResource } from '../DataModel/serializers';
 import { genericTables, getTable, tables } from '../DataModel/tables';
+import { schema } from '../DataModel/schema';
 import type { SpQuery, SpQueryField, Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import { queryMappingLocalityColumns } from '../Leaflet/config';
@@ -109,7 +110,11 @@ export function parseQueryFields(
 
           const mappingPath = fieldSpec.toMappingPath();
           return [
-            mappingPathToString(mappingPath),
+            `${mappingPathToString(mappingPath)}${
+              queryFieldFormatType(mappingPath) !== undefined
+                ? `:${field.formatName ?? ''}`
+                : ''
+            }`,
             {
               id: index,
               sourceIndex,
@@ -137,6 +142,38 @@ export function parseQueryFields(
     ...removeKey(groupedFields[0], 'filter'),
     filters: groupedFields.map(({ filter }) => filter),
   }));
+}
+
+/** Relationship columns with the same path are distinct by their format. */
+export const queryFieldFormatType = (
+  mappingPath: MappingPath
+): 'aggregator' | 'formatter' | undefined =>
+  mappingPath.at(-1) === formattedEntry
+    ? mappingPath.at(-2) === `${schema.referenceSymbol}1`
+      ? 'aggregator'
+      : 'formatter'
+    : undefined;
+
+/** The blank legacy selection denotes the table's default format. */
+export function nextAvailableQueryFormat(
+  fields: RA<QueryField>,
+  mappingPath: MappingPath,
+  formats: RA<string>
+): string | undefined {
+  const used = new Set(
+    fields
+      .filter(
+        ({ mappingPath: path }) =>
+          mappingPathToString(path) === mappingPathToString(mappingPath)
+      )
+      .map(
+        ({ filters }) =>
+          filters.find(({ type }) => type === 'any')?.fieldFormat ?? ''
+      )
+  );
+  return formats.find(
+    (name, index) => !used.has(name) && !(index === 0 && used.has(''))
+  );
 }
 
 /**
