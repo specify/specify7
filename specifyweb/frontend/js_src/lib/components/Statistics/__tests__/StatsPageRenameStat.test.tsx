@@ -6,6 +6,7 @@ import {
   getStatInputs,
   mockStatsRequests,
   renderEmptyStatsPage,
+  saveAndReopenEditing,
 } from './statsPageTestUtils';
 
 requireContext();
@@ -53,5 +54,21 @@ describe('Renaming a stat item', () => {
     expect(getSharedLayout()![0].categories).toEqual(
       sharedLayout[0].categories
     );
+  });
+
+  test('Save keeps the new name', async () => {
+    const { user, sharedLayout, getSharedLayout } =
+      await renderEmptyStatsPage();
+    await enterEditMode(user);
+    const input = getStatInputs(0)[0];
+    await user.clear(input);
+    await user.type(input, newName);
+    await saveAndReopenEditing(user);
+
+    expect(getSharedLayout()![0].categories[0].items[0]).toEqual({
+      ...sharedLayout[0].categories[0].items[0],
+      label: newName,
+    });
+    expect(screen.getByText(newName)).toBeInTheDocument();
   });
 });

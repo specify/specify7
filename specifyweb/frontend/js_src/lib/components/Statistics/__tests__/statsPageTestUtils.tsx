@@ -254,3 +254,20 @@ export const getStatInputs = (categoryIndex: number): RA<HTMLInputElement> =>
   within(getCategoryInputs()[categoryIndex].closest('li')!)
     .getAllByRole<HTMLInputElement>('textbox')
     .filter((input) => input.closest('ul') !== null);
+
+export async function saveAndReopenEditing(user: User): Promise<void> {
+  const collectionSync = jest.spyOn(collectionPreferences, 'awaitSynced');
+  const userSync = jest.spyOn(userPreferences, 'awaitSynced');
+  await user.click(screen.getByRole('button', { name: commonText.save() }));
+
+  expect(
+    screen.queryByRole('button', { name: commonText.cancel() })
+  ).not.toBeInTheDocument();
+  expect(collectionSync).toHaveBeenCalled();
+  expect(userSync).toHaveBeenCalled();
+  collectionSync.mockRestore();
+  userSync.mockRestore();
+
+  await enterEditMode(user);
+  await user.click(screen.getByRole('button', { name: commonText.cancel() }));
+}

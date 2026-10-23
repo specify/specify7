@@ -8,6 +8,7 @@ import {
   mockStatsRequests,
   openChooseStatisticsDialog,
   renderEmptyStatsPage,
+  saveAndReopenEditing,
   type User,
 } from './statsPageTestUtils';
 
@@ -74,5 +75,23 @@ describe('Adding a stat item with the same name', () => {
         expect(item.itemValue).toBeDefined()
       )
     );
+  });
+
+  test('Save keeps both copies', async () => {
+    const { user, getSharedLayout } = await renderEmptyStatsPage();
+    await addPageWithCategory(user);
+    await addSavedQuery(user);
+    await addSavedQuery(user);
+    await waitFor(() =>
+      getCategoryItems(getSharedLayout).forEach((item) =>
+        expect(item.itemValue).toBeDefined()
+      )
+    );
+    await saveAndReopenEditing(user);
+
+    expect(getCategoryItems(getSharedLayout).map(({ label }) => label)).toEqual(
+      [queryName, `${queryName} (2)`]
+    );
+    expect(screen.getByText(`${queryName} (2)`)).toBeInTheDocument();
   });
 });
