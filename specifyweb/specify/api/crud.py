@@ -457,7 +457,8 @@ def strict_get_model(name: str, apps = apps):
     except AttributeError as e:
         for app in apps.get_app_configs():
             for model in app.get_models():
-                if model._meta.model_name == name:
+                if (model._meta.model_name == name
+                        and hasattr(model, 'specify_model')):
                     return model
         # REFACTOR: consider raising a Table/Model DoesNotExist Error here
         # instead?

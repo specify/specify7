@@ -1,6 +1,7 @@
 import json
 
 from django.test import Client
+from django.utils import timezone
 
 from specifyweb.specify.tests.test_api import ApiTests
 from specifyweb.specify import models as spmodels
@@ -38,6 +39,25 @@ class PermissionsApiTest(ApiTests):
         data = json.loads(response.content)
         self.assertEqual(data['/table/%'], ['%'])
         self.assertEqual(data['/field/%'], ['%'])
+
+    def test_all_user_roles_includes_presence_for_collection_users(self) -> None:
+        from specifyweb.backend.accounts.models import UserPresence
+
+        UserPresence.objects.create(
+            specifyuser=self.specifyuser,
+            last_heartbeat=timezone.now(),
+            last_activity=timezone.now(),
+        )
+
+        c = Client()
+        c.force_login(self.specifyuser)
+        response = c.get(f'/permissions/user_roles/{self.collection.id}/')
+
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.content)
+        current_user = next(
+            user for user in data if user['userid'] == self.specifyuser.id)
+        self.assertEqual(current_user['presence'], 'active')
 
     def test_set_user_policies_institution(self) -> None:
         c = Client()
