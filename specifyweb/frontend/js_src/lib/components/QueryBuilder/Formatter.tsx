@@ -31,12 +31,14 @@ export function QueryFieldRecordFormatter({
   type,
   tableName,
   formatter,
+  formatSelectionRequest,
   usedFormats,
   onChange: handleChange,
 }: {
   readonly type: 'aggregator' | 'formatter';
   readonly tableName: keyof Tables;
   readonly formatter: string | undefined;
+  readonly formatSelectionRequest?: number;
   readonly usedFormats?: ReadonlySet<string>;
   readonly onChange: ((formatter: string | undefined) => void) | undefined;
 }): JSX.Element | null {
@@ -71,6 +73,7 @@ export function QueryFieldRecordFormatter({
     <FormatSelect
       availableFormatters={availableFormatters}
       currentFormat={formatter}
+      formatSelectionRequest={formatSelectionRequest}
       usedFormats={usedFormats}
       onChange={handleChange}
     />
@@ -164,17 +167,27 @@ export function CatalogNumberFormatSelection({
 function FormatSelect({
   availableFormatters,
   currentFormat,
+  formatSelectionRequest,
   usedFormats,
   showSingular = false,
   onChange: handleChange,
 }: {
   readonly availableFormatters: RA<SimpleFormatter> | undefined;
   readonly currentFormat: string | undefined;
+  readonly formatSelectionRequest?: number;
   readonly usedFormats?: ReadonlySet<string>;
   readonly showSingular?: boolean;
   readonly onChange: ((formatter: string | undefined) => void) | undefined;
 }): JSX.Element | null {
   const [formatterSelectIsOpen, setFormatterSelect] = React.useState(false);
+
+  React.useEffect(() => {
+    if (
+      formatSelectionRequest !== undefined &&
+      (availableFormatters?.length ?? 0) > 1
+    )
+      setFormatterSelect(true);
+  }, [availableFormatters, formatSelectionRequest]);
 
   const id = useId('formatters-selection');
 

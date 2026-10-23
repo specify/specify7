@@ -47,6 +47,7 @@ export function QueryLine({
   isLast,
   baseTableName,
   field,
+  formatSelectionRequest,
   usedFormats,
   fieldHash,
   enforceLengthLimit = false,
@@ -69,6 +70,7 @@ export function QueryLine({
   readonly isLast: boolean;
   readonly baseTableName: keyof Tables;
   readonly field: QueryField;
+  readonly formatSelectionRequest?: number;
   readonly usedFormats: ReadonlySet<string>;
   readonly fieldHash: string;
   readonly enforceLengthLimit?: boolean;
@@ -390,6 +392,7 @@ export function QueryLine({
             hasAny ? (
               // REFACTOR: move this to the field.filters map
               <QueryFieldRecordFormatter
+                formatSelectionRequest={formatSelectionRequest}
                 usedFormats={usedFormats}
                 formatter={
                   field.filters.find(({ type }) => type === 'any')?.fieldFormat

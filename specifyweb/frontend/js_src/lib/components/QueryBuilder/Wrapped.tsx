@@ -142,6 +142,16 @@ function Wrapped({
   );
 
   const [state, dispatch] = React.useReducer(reducer, pendingState);
+  const formatSelectionRequestId = React.useRef(0);
+  const [formatSelectionRequest, setFormatSelectionRequest] = React.useState<{
+    readonly fieldId: number;
+    readonly requestId: number;
+  }>();
+  const openFormatSelection = (fieldId: number): void =>
+    setFormatSelectionRequest({
+      fieldId,
+      requestId: ++formatSelectionRequestId.current,
+    });
 
   const initialFields = React.useRef<string>('');
 
@@ -149,6 +159,7 @@ function Wrapped({
 
   React.useEffect(() => {
     const initialState = buildInitialState();
+    setFormatSelectionRequest(undefined);
     dispatch({
       type: 'ResetStateAction',
       state: initialState,
@@ -256,13 +267,14 @@ function Wrapped({
       : usedFormats(mappingPath).size === 0 ||
         nextFormat(mappingPath) !== undefined;
 
-  const handleAddField = (mappingPath = state.mappingView): void =>
+  const handleAddField = (mappingPath = state.mappingView): void => {
+    const id = Math.max(-1, ...state.fields.map(({ id }) => id)) + 1;
     dispatch({
       type: 'ChangeFieldsAction',
       fields: [
         ...state.fields,
         {
-          id: Math.max(-1, ...state.fields.map(({ id }) => id)) + 1,
+          id,
           mappingPath,
           sortType: undefined,
           filters: [
@@ -278,6 +290,9 @@ function Wrapped({
         },
       ],
     });
+    if (queryFieldFormatType(mappingPath) !== undefined)
+      openFormatSelection(id);
+  };
 
   const serializeQueryFields = (
     fields: typeof state.fields = state.fields
@@ -574,6 +589,7 @@ function Wrapped({
                 baseTableName={state.baseTableName}
                 enforceLengthLimit={triedToSave}
                 fields={state.fields}
+                formatSelectionRequest={formatSelectionRequest}
                 getMappedFields={getMappedFieldsBind}
                 openedElement={state.openedElement}
                 showHiddenFields={showHiddenFields}
@@ -662,6 +678,7 @@ function Wrapped({
                               ),
                             },
                           });
+                          openFormatSelection(state.fields[line].id);
                           return;
                         }
                         dispatch({
