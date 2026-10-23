@@ -1,7 +1,7 @@
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
-import { useAsyncState } from '../../hooks/useAsyncState';
+import { useAsyncState, usePromise } from '../../hooks/useAsyncState';
 import { useInfiniteScroll } from '../../hooks/useInfiniteScroll';
 import { usePaginatedCollection } from '../../hooks/usePaginatedCollection';
 import { commonText } from '../../localization/common';
@@ -15,6 +15,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { SpQuery } from '../DataModel/types';
+import { fetchFormatters } from '../Formatters/formatters';
 import { treeRanksPromise } from '../InitialContext/treeRanks';
 import { RecordMergingLink } from '../Merging';
 import { loadingGif } from '../Molecules';
@@ -28,17 +29,58 @@ import {
 import { fetchPickList } from '../PickLists/fetch';
 import { userPreferences } from '../Preferences/userPreferences';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
+import { mappingPathToString } from '../WbPlanView/mappingHelpers';
 import { recordSetFromQueryLoading } from './Components';
 import { CreateRecordSet } from './CreateRecordSet';
 import type { QueryFieldSpec } from './fieldSpec';
 import type { QueryField } from './helpers';
-import { sortTypes } from './helpers';
+import { queryFieldFormatType, sortTypes } from './helpers';
 import { QueryResultsTable } from './ResultsTable';
 import { QueryToForms } from './ToForms';
 import { QueryToMap } from './ToMap';
 import { SplitView } from './SplitView';
 
 export type QueryResultRow = RA<number | string | null>;
+
+type ResultFormatDefinition = {
+  readonly table: { readonly name: string } | undefined;
+  readonly name: string;
+  readonly isDefault: boolean;
+};
+
+export function getResultHeaderFormatSuffix(
+  field: QueryField,
+  visibleFields: RA<QueryField>,
+  tableName: string,
+  formatters:
+    | {
+        readonly formatters: RA<ResultFormatDefinition>;
+        readonly aggregators: RA<ResultFormatDefinition>;
+      }
+    | undefined
+): string | undefined {
+  const type = queryFieldFormatType(field.mappingPath);
+  const formatName = field.filters.find(
+    ({ type }) => type === 'any'
+  )?.fieldFormat;
+  if (type === undefined || !formatName || formatters === undefined)
+    return undefined;
+  const definitions =
+    type === 'aggregator' ? formatters.aggregators : formatters.formatters;
+  if (
+    definitions.some(
+      ({ table, name, isDefault }) =>
+        table?.name === tableName && name === formatName && isDefault
+    )
+  )
+    return undefined;
+  const path = mappingPathToString(field.mappingPath);
+  return visibleFields.filter(
+    (other) => mappingPathToString(other.mappingPath) === path
+  ).length > 1
+    ? ` (${formatName})`
+    : undefined;
+}
 
 /*
  * These values are somewhat arbitrary but are based on testing with real queries.
@@ -71,8 +113,7 @@ export type QueryResultsProps = {
    */
   readonly fetchSize: number;
   readonly fetchResults:
-    | ((offset: number) => Promise<RA<QueryResultRow>>)
-    | undefined;
+    ((offset: number) => Promise<RA<QueryResultRow>>) | undefined;
   readonly fetchCount: (() => Promise<number>) | undefined;
   readonly totalCount: number | undefined;
   readonly fieldSpecs: RA<QueryFieldSpec>;
@@ -247,6 +288,10 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
         )
         .map((column, visibleIndex) => ({ ...column, visibleIndex })),
     [fieldSpecs]
+  );
+  const [formatters] = usePromise(fetchFormatters, false);
+  const visibleFields = visibleColumns.map(
+    ({ fieldIndex }) => displayedFields[fieldIndex]
   );
   if (resultsRef !== undefined) resultsRef.current = results;
 
@@ -637,6 +682,12 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
                 <TableHeaderCell
                   columnIndex={visibleIndex}
                   fieldSpec={fieldSpec}
+                  formatSuffix={getResultHeaderFormatSuffix(
+                    displayedFields[fieldIndex],
+                    visibleFields,
+                    fieldSpec.table.name,
+                    formatters
+                  )}
                   key={fieldIndex}
                   sortConfig={sortConfig?.[fieldIndex]}
                   onResizeStart={(event): void =>
@@ -751,12 +802,14 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
 function TableHeaderCell({
   columnIndex,
   fieldSpec,
+  formatSuffix,
   sortConfig,
   onSortChange: handleSortChange,
   onResizeStart: handleResizeStart,
 }: {
   readonly columnIndex?: number;
   readonly fieldSpec: QueryFieldSpec | undefined;
+  readonly formatSuffix?: string;
   readonly sortConfig: QueryField['sortType'];
   readonly onSortChange?: (sortType: QueryField['sortType']) => void;
   readonly onResizeStart?: (event: React.MouseEvent<HTMLDivElement>) => void;
@@ -773,6 +826,7 @@ function TableHeaderCell({
             fieldSpec.baseTable.name,
             fieldSpec.toMappingPath()
           )}
+          {formatSuffix}
         </span>
       </span>
     ) : undefined;
