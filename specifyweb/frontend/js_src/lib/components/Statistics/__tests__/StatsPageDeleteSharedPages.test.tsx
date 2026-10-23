@@ -5,26 +5,19 @@ import { requireContext } from '../../../tests/helpers';
 import { defaultLayoutGenerated } from '../StatsSpec';
 import {
   addSharedPage,
+  deletePage,
   getCurrentPageName,
   getPageButtons,
   getPageNames,
   mockStatsRequests,
   openEditPageDialog,
   renderEmptyStatsPage,
-  type User,
 } from './statsPageTestUtils';
 
 requireContext();
 mockStatsRequests();
 
 const defaultPageName = defaultLayoutGenerated[0].label;
-
-async function deleteSharedPage(user: User, pageName: string): Promise<void> {
-  const dialog = await openEditPageDialog(user, pageName);
-  await user.click(
-    within(dialog).getByRole('button', { name: commonText.remove() })
-  );
-}
 
 describe('Deleting Shared pages', () => {
   test('the only Shared page cannot be deleted', async () => {
@@ -50,20 +43,20 @@ describe('Deleting Shared pages', () => {
     };
 
     // A page before the selected one: selection stays on the same page
-    await deleteSharedPage(user, 'B');
+    await deletePage(user, 'B');
     expectPages([defaultPageName, 'A', 'C', 'D'], 'D');
 
     // The selected page: selection moves to the previous page
-    await deleteSharedPage(user, 'D');
+    await deletePage(user, 'D');
     expectPages([defaultPageName, 'A', 'C'], 'C');
 
     // The first page
-    await deleteSharedPage(user, defaultPageName);
+    await deletePage(user, defaultPageName);
     expectPages(['A', 'C'], 'C');
 
     // A page after the selected one: selection doesn't move
     await user.click(getPageButtons(statsText.shared())[0]);
-    await deleteSharedPage(user, 'C');
+    await deletePage(user, 'C');
     expectPages(['A'], 'A');
 
     // One page remaining so it can no longer be deleted
@@ -77,8 +70,8 @@ describe('Deleting Shared pages', () => {
     const { user, getPersonalLayout } = await renderEmptyStatsPage();
     const personalLayout = getPersonalLayout();
     for (const name of ['A', 'B']) await addSharedPage(user, name);
-    await deleteSharedPage(user, 'A');
-    await deleteSharedPage(user, 'B');
+    await deletePage(user, 'A');
+    await deletePage(user, 'B');
 
     expect(getPersonalLayout()).toEqual(personalLayout);
     expect(getPageNames(statsText.private())).toEqual([

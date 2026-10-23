@@ -192,14 +192,26 @@ export const addSharedPage = async (user: User, name: string): Promise<void> =>
 
 export async function openEditPageDialog(
   user: User,
-  pageName: string
+  pageName: string,
+  sectionName: string = statsText.shared()
 ): Promise<HTMLElement> {
   await enterEditMode(user);
-  const pageItem = getPageItems(statsText.shared()).find(
+  const pageItem = getPageItems(sectionName).find(
     (item) => within(item).getAllByRole('button')[0].textContent === pageName
   )!;
   await user.click(
     within(pageItem).getByRole('button', { name: commonText.edit() })
   );
   return screen.getByRole('dialog', { name: statsText.editPage() });
+}
+
+export async function deletePage(
+  user: User,
+  pageName: string,
+  sectionName: string = statsText.shared()
+): Promise<void> {
+  const dialog = await openEditPageDialog(user, pageName, sectionName);
+  await user.click(
+    within(dialog).getByRole('button', { name: commonText.remove() })
+  );
 }
