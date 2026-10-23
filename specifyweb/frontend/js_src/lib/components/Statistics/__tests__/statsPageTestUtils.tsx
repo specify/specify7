@@ -157,7 +157,7 @@ const findEditButton = (): HTMLElement | undefined =>
     .getAllByRole('button', { name: commonText.edit() })
     .find(({ textContent }) => textContent === commonText.edit());
 
-async function enterEditMode(user: User): Promise<void> {
+export async function enterEditMode(user: User): Promise<void> {
   const editButton = findEditButton();
   if (editButton !== undefined) await user.click(editButton);
 }
