@@ -1,5 +1,6 @@
 import type { LocalizedString } from 'typesafe-i18n';
 
+import { attachmentsText } from '../../localization/attachments';
 import { backEndText } from '../../localization/backEnd';
 import type { IR, RA, RR } from '../../utils/types';
 import { localized } from '../../utils/types';
@@ -20,6 +21,8 @@ export const backendParsingMessageResolvers: RR<
   string,
   PayloadMessageResolver
 > = {
+  failedParsingURL: (): LocalizedString =>
+    attachmentsText.invalidExternalResourceUrl(),
   failedParsingBoolean: (payload): LocalizedString =>
     backEndText.failedParsingBoolean({ value: payload.value as string }),
   failedParsingDecimal: (payload): LocalizedString =>
