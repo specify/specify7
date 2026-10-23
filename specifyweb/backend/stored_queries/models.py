@@ -16,6 +16,16 @@ engine = sqlalchemy.create_engine(settings.SA_DATABASE_URL, pool_recycle=setting
 Session = sessionmaker(bind=engine)
 
 
+@sqlalchemy.event.listens_for(engine, "before_cursor_execute", retval=True)
+def tree_query_recursion_limit(conn, cursor, statement, parameters, context, executemany):
+    if (context.execution_options.get("specify_tree_ranks") is not None
+            and getattr(conn.dialect, "is_mariadb", False)):
+        # MariaDB otherwise returns truncated recursive results after 1,000
+        # iterations. Scope the override to this statement, not the connection.
+        statement = "SET STATEMENT max_recursive_iterations=4294967295 FOR " + statement
+    return statement, parameters
+
+
 def make_session_context(session_maker):
     @contextmanager
     def _session_context():
