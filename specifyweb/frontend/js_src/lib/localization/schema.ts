@@ -915,4 +915,15 @@ export const schemaText = createDictionary({
     'hr-hr': 'Vidljivo',
     nb: 'Synlig',
   },
+  useTableCaptions: {
+    'en-us': 'Use table captions',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'hr-hr': '',
+    nb: '',
+    'pt-br': '',
+    'ru-ru': '',
+    'uk-ua': '',
+  },
 } as const);
