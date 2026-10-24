@@ -21,16 +21,18 @@ import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { InFormEditorContext } from '../FormEditor/Context';
 import { AppTitle } from '../Molecules/AppTitle';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { LinkedRecords } from '../Molecules/LinkedRecords';
+import { LinkedRecordsWrapped } from '../Molecules/LinkedRecords';
 import { IsNotReadOnly } from '../Molecules/ResourceLink';
 import { hasTablePermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
 import { reportEvents } from '../Reports/events';
 import { UnloadProtectDialog } from '../Router/UnloadProtect';
 import { useResourceView } from './BaseResourceView';
-import { DeleteButton } from './DeleteButton';
+import { DeleteButtonWrapped } from './DeleteButton';
 import { SaveButton } from './Save';
 import { propsToFormMode } from './useViewDefinition';
+import { DeleteBlockerProvider } from '../DeleteBlockers/Context';
+import { useShowParentButton } from './useShowParentButton';
 
 /**
  * There is special behavior required when creating one of these resources,
@@ -94,7 +96,7 @@ export const augmentMode = (
 
 // REFACTOR: split this into smaller components
 export function ResourceView<SCHEMA extends AnySchema>({
-  isLoading,
+  isLoading: initialLoading,
   resource,
   extraButtons,
   headerButtons,
@@ -108,6 +110,8 @@ export function ResourceView<SCHEMA extends AnySchema>({
   children,
   viewName,
   title: titleOverride,
+  onParentDeleted: handleParentDeleted,
+  onParentSaved: handleParentSaved,
   /*
    * The presence of these attributes kind of breaks the abstraction, but they
    * are required to change the behaviour in certain ways:
@@ -123,7 +127,8 @@ export function ResourceView<SCHEMA extends AnySchema>({
   readonly resource: SpecifyResource<SCHEMA> | undefined;
   readonly viewName?: string;
   readonly headerButtons?: (
-    specifyNetworkBadge: JSX.Element | undefined
+    specifyNetworkBadge: JSX.Element | undefined,
+    showParentResourceButton: JSX.Element | undefined
   ) => JSX.Element;
   readonly extraButtons?: JSX.Element | undefined;
   readonly deletionMessage?: string | undefined;
@@ -135,6 +140,8 @@ export function ResourceView<SCHEMA extends AnySchema>({
     | undefined;
   readonly onDeleted: (() => void) | undefined;
   readonly onClose: () => void;
+  readonly onParentDeleted?: () => void;
+  readonly onParentSaved?: (parentResource: SpecifyResource<AnySchema>) => void;
   readonly children?: JSX.Element;
   readonly isSubForm: boolean;
   readonly isDependent: boolean;
@@ -149,6 +156,8 @@ export function ResourceView<SCHEMA extends AnySchema>({
   const [isDeleted, setDeleted, setNotDeleted] = useBooleanState();
   // Remove isDeleted status when resource changes
   React.useEffect(setNotDeleted, [resource, setNotDeleted]);
+
+  const [isLoading, setIsLoading] = useTriggerState(initialLoading);
 
   function handleDelete(): void {
     setDeleted();
@@ -217,6 +226,14 @@ export function ResourceView<SCHEMA extends AnySchema>({
       !isNotReadOnlyContext
   );
 
+  const { showParentResourceButton, parentResourceForm } = useShowParentButton({
+    resource: isSubForm ? undefined : resource,
+    onLoading: setIsLoading,
+    onDelete: handleDelete,
+    onParentSaved: handleParentSaved,
+    onParentDeleted: handleParentDeleted,
+  });
+
   const navigate = useNavigate();
   if (isDeleted)
     return (
@@ -271,7 +288,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
     !isReadOnly &&
     hasTablePermission(resource.specifyTable.name, 'delete') ? (
       <ErrorBoundary dismissible>
-        <DeleteButton
+        <DeleteButtonWrapped
           deletionMessage={deletionMessage}
           resource={resource}
           onDeleted={handleDelete}
@@ -283,7 +300,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
     showResourceReferenceButtons &&
     hasTablePermission(resource.specifyTable.name, 'read') ? (
       <ErrorBoundary dismissible>
-        <LinkedRecords resource={resource} />
+        <LinkedRecordsWrapped resource={resource} />
       </ErrorBoundary>
     ) : undefined;
 
@@ -315,8 +332,12 @@ export function ResourceView<SCHEMA extends AnySchema>({
         typeof saveButtonElement === 'object' ||
         typeof extraButtons === 'object' ? (
           <DataEntry.Footer>
-            {deleteButton}
-            {referencingRecordsButton}
+            <DeleteBlockerProvider>
+              <>
+                {deleteButton}
+                {referencingRecordsButton}
+              </>
+            </DeleteBlockerProvider>
             {extraButtons ?? <span className="-ml-2 md:flex-1" />}
             {saveButtonElement}
           </DataEntry.Footer>
@@ -324,9 +345,13 @@ export function ResourceView<SCHEMA extends AnySchema>({
       </>
     );
 
-    const headerComponents = headerButtons?.(headerContent) ?? (
+    const headerComponents = headerButtons?.(
+      headerContent,
+      showParentResourceButton
+    ) ?? (
       <>
         <span className="-ml-2 flex-1" />
+        {showParentResourceButton}
         {headerContent}
       </>
     );
@@ -355,16 +380,19 @@ export function ResourceView<SCHEMA extends AnySchema>({
         </div>
       </DataEntry.SubForm>
     ) : (
-      <Container.FullGray>
-        <Container.Center className="!w-auto">
-          <DataEntry.Header>
-            <AppTitle title={customTitle ?? formatted} />
-            <DataEntry.Title>{customTitle ?? jsxFormatted}</DataEntry.Title>
-            {headerComponents}
-          </DataEntry.Header>
-          {formattedChildren}
-        </Container.Center>
-      </Container.FullGray>
+      <>
+        <Container.FullGray>
+          <Container.Center className="!w-auto">
+            <DataEntry.Header>
+              <AppTitle title={customTitle ?? formatted} />
+              <DataEntry.Title>{customTitle ?? jsxFormatted}</DataEntry.Title>
+              {headerComponents}
+            </DataEntry.Header>
+            {formattedChildren}
+          </Container.Center>
+        </Container.FullGray>
+        {parentResourceForm}
+      </>
     );
   }
 
@@ -381,8 +409,12 @@ export function ResourceView<SCHEMA extends AnySchema>({
       buttons={
         isSubForm ? undefined : (
           <>
-            {deleteButton}
-            {referencingRecordsButton}
+            <DeleteBlockerProvider>
+              <>
+                {deleteButton}
+                {referencingRecordsButton}
+              </>
+            </DeleteBlockerProvider>
             {extraButtons ?? <span className="-ml-2 flex-1" />}
             {isModified && !isDependent ? (
               <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
@@ -405,9 +437,10 @@ export function ResourceView<SCHEMA extends AnySchema>({
       header={customTitle ?? title}
       headerButtons={
         <>
-          {headerButtons?.(headerContent) ?? (
+          {headerButtons?.(headerContent, showParentResourceButton) ?? (
             <>
               <DataEntry.Visit resource={resource} />
+              {showParentResourceButton}
               <span className="-ml-4 flex-1" />
               {headerContent}
             </>
@@ -431,6 +464,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
           {formsText.unsavedFormUnloadProtect()}
         </UnloadProtectDialog>
       )}
+      {parentResourceForm}
     </Dialog>
   );
 }

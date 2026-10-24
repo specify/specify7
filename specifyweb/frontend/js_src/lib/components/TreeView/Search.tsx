@@ -74,6 +74,7 @@ export function TreeViewSearch<SCHEMA extends AnyTree>({
     <div>
       {/* A React component that is also a TypeScript generic */}
       <AutoComplete<SerializedResource<SCHEMA>>
+        delay={500}
         filterItems={false}
         forwardRef={(element): void => {
           forwardRef.current = element;

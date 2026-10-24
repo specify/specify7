@@ -194,7 +194,10 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
     <>
       <ResourceView
         dialog={dialog}
-        headerButtons={(specifyNetworkBadge): JSX.Element => (
+        headerButtons={(
+          specifyNetworkBadge,
+          showParentResource
+        ): JSX.Element => (
           <div className="flex flex-col items-center gap-2 md:contents md:flex-row md:gap-8">
             <div className="flex items-center gap-2 md:contents">
               {headerButtons}
@@ -226,6 +229,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                   onClick={(): void => handleRemove('minusButton')}
                 />
               ) : undefined}
+              {newResource === undefined ? showParentResource : undefined}
               {typeof newResource === 'object' && handleAdd !== undefined ? (
                 <p className="flex-1">{formsText.creatingNewRecord()}</p>
               ) : (
