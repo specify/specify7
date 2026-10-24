@@ -9,6 +9,10 @@ import { createDictionary } from './utils';
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
 export const preferencesText = createDictionary({
+  shortcutConflict: {
+    'en-us':
+      'Also assigned to the following actions. Only one action may run when they are available together.',
+  },
   preferences: {
     'en-us': 'Preferences',
     'ru-ru': 'Настройки',
@@ -1649,17 +1653,6 @@ export const preferencesText = createDictionary({
     'hr-hr': 'Fleksibilna širina stupca mreže podprikaza',
     nb: 'Fleksibel kolonnebredde for delvisnings-rutenett',
   },
-  closeOnEsc: {
-    'en-us': 'Close on <key>ESC</key> key press',
-    'ru-ru': 'Закрыть при нажатии клавиши <key>ESC</key>',
-    'es-es': 'Cerrar al pulsar la tecla <key>ESC</key>',
-    'fr-fr': 'Fermer quand <key>ESC</key> est sélectionné',
-    'uk-ua': 'Закрити натисканням клавіші <key>ESC</key>',
-    'de-ch': 'Schließen durch Drücken der Taste <key>ESC</key>.',
-    'pt-br': 'Fechar ao pressionar a tecla <key>ESC</key>',
-    'hr-hr': 'Zatvori pritiskom tipke <key>ESC</key>',
-    nb: 'Lukk ved å trykke på <key>ESC</key>-tasten',
-  },
   closeOnOutsideClick: {
     'en-us': 'Close on outside click',
     'ru-ru': 'Закрыть при внешнем щелчке',
@@ -2885,4 +2878,72 @@ export const preferencesText = createDictionary({
       'Samo će zapisi {componentTableName: string} bez {catalogNumberFieldName: string} naslijediti jedan od svog roditelja {collectionObjectTableName: string}.',
     nb: 'Bare {componentTableName: string}-databaseposter uten en {catalogNumberFieldName: string} vil arve en fra den overordnede {collectionObjectTableName: string}.',
   },
+  alt: {
+    comment: 'Alt key on the keyboard',
+    'en-us': 'Alt',
+  },
+  macOption: {
+    comment: 'Option key on the macOS keyboard',
+    'en-us': '⌥',
+  },
+  ctrl: {
+    comment: 'Ctrl key on the keyboard',
+    'en-us': 'Ctrl',
+  },
+  macControl: {
+    comment: 'Control key on the macOS keyboard',
+    'en-us': '⌃',
+  },
+  macMeta: {
+    comment: 'Meta/Command key on the macOS keyboard',
+    'en-us': '⌘',
+  },
+  macShift: {
+    comment: 'Shift key on the macOS keyboard',
+    'en-us': '⇧',
+  },
+  shift: {
+    comment: 'Shift key on the keyboard',
+    'en-us': 'Shift',
+  },
+  pressKeys: { 'en-us': 'Press desired key combination...' },
+  noKeyAssigned: { 'en-us': 'No key binding assigned' },
+  keyboardShortcuts: { 'en-us': 'Keyboard Shortcuts' },
+  shortcutsEnabled: { 'en-us': 'Enable Keyboard Shortcuts' },
+  shortcutsEnabledDescription: {
+    'en-us':
+      'When enabled, keyboard shortcuts can be used to perform various actions in Specify. You can press and hold the <key>Ctrl</key> key (or <key>⌘</key> key on Mac) to see a list of available shortcuts. When disabled, all keyboard shortcuts are ignored.',
+  },
+  navigationAndTools: { 'en-us': 'Navigation and User Tools' },
+  navigationShortcutsDescription: {
+    'en-us':
+      'Open the corresponding navigation menu or page, just as clicking its icon in the navigation bar would.',
+  },
+  userToolShortcutsDescription: {
+    'en-us': 'Run the corresponding action from the User Tools menu.',
+  },
+  formActionsDescription: {
+    'en-us': 'Shortcuts for actions in regular data entry forms.',
+  },
+  dialogActionsDescription: {
+    'en-us':
+      'Shortcuts for actions available in dialogs, such as closing or saving.',
+  },
+  treeActionsDescription: {
+    'en-us': 'Shortcuts for actions in the Tree Editor.',
+  },
+  queryBuilderActionsDescription: {
+    'en-us': 'Shortcuts for actions in the Query Builder.',
+  },
+  openRelatedRecordInNewTab: { 'en-us': 'Open related record in new tab' },
+  openFormMeta: { 'en-us': 'Open form meta' },
+  urlShortcuts: { 'en-us': 'Keyboard Shortcuts to URLs' },
+  urlShortcutsDescription: {
+    'en-us':
+      'Shortcuts for opening custom pages or other URLs from anywhere in Specify.',
+  },
+  pages: { 'en-us': 'Pages' },
+  overlays: { 'en-us': 'Overlays' },
+  customPages: { 'en-us': 'Custom Pages' },
+  relativeOrAbsoluteUrl: { 'en-us': 'Relative or absolute URL' },
 } as const);
