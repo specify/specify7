@@ -2,9 +2,8 @@ import { fireEvent, screen } from '@testing-library/react';
 import React from 'react';
 
 import { mount } from '../../../tests/reactUtils';
-
-import { KeyboardShortcutPreferenceItem } from '../Shortcuts';
 import { bindKeyboardShortcut } from '../context';
+import { KeyboardShortcutPreferenceItem } from '../Shortcuts';
 
 test('accepts a complete chord on release without an inner Save button', async () => {
   const onChange = jest.fn();
