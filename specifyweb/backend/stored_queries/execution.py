@@ -13,6 +13,7 @@ from collections import namedtuple, defaultdict
 from functools import reduce
 
 from django.conf import settings
+from django.core.exceptions import BadRequest
 from django.db import transaction
 from django.utils import timezone
 from specifyweb.backend.inheritance.api import DefaultQueryProcessors
@@ -28,6 +29,7 @@ from specifyweb.backend.trees.utils import get_search_filters
 from . import models
 from .format import ObjectFormatter, ObjectFormatterProps
 from .query_construct import QueryConstruct
+from .selection import QuerySelection, apply_selection, parse_selection
 from .field_spec_maps import transform_field_specs
 from .web_portal_export import query_to_web_portal_zip as _query_to_web_portal_zip, WebportalQueryResultProcessors
 from specifyweb.backend.notifications.models import Message
@@ -81,6 +83,7 @@ class BuildQueryProps(NamedTuple):
     search_synonymy: bool = False
     implicit_or: bool = True
     formatter_props: ObjectFormatterProps = DefaultQueryFormatterProps()
+    selection: QuerySelection | None = None
 
 
 def set_group_concat_max_len(connection):
@@ -260,6 +263,7 @@ def do_export(spquery, collection, user, filename, exporttype, host):
     See query_to_csv for details of the other accepted arguments.
     """
     recordsetid = spquery.get("recordsetid", None)
+    selection = parse_selection(spquery.get("selection"))
 
     distinct = spquery["selectdistinct"]
     tableid = spquery["contexttableid"]
@@ -274,11 +278,13 @@ def do_export(spquery, collection, user, filename, exporttype, host):
                 query_to_csv(session, collection, user, tableid, field_specs, path,
                              recordsetid=recordsetid, 
                              captions=spquery['captions'], strip_id=True,
-                             distinct=spquery['selectdistinct'], delimiter=spquery['delimiter'], bom=spquery['bom'])
+                             distinct=spquery['selectdistinct'], delimiter=spquery['delimiter'], bom=spquery['bom'],
+                             selection=selection, search_synonymy=spquery.get("searchsynonymy", False))
                 message_type = 'query-export-to-csv-complete'
             elif exporttype == 'kml':
                 query_to_kml(session, collection, user, tableid, field_specs, path, spquery['captions'], host,
-                             recordsetid=recordsetid, strip_id=False, selected_rows=spquery.get('selectedrows', None))
+                             recordsetid=recordsetid, strip_id=False, selected_rows=spquery.get('selectedrows', None),
+                             selection=selection, search_synonymy=spquery.get("searchsynonymy", False))
                 message_type = 'query-export-to-kml-complete'
             elif exporttype == 'webportal':
                 query_to_web_portal_zip(
@@ -401,6 +407,8 @@ def query_to_csv(
     distinct=False,
     delimiter=",",
     bom=False,
+    selection=None,
+    search_synonymy=False,
 ):
     """Build a sqlalchemy query using the QueryField objects given by
     field_specs and send the results to a CSV file at the given
@@ -415,7 +423,8 @@ def query_to_csv(
         user,
         tableid,
         field_specs,
-        BuildQueryProps(recordsetid=recordsetid, replace_nulls=True, distinct=distinct),
+        BuildQueryProps(recordsetid=recordsetid, replace_nulls=True, distinct=distinct,
+                        selection=selection, search_synonymy=search_synonymy),
     )
     query = query.order_by(*order_by_exprs)
     query_rows = apply_special_post_query_processing(
@@ -476,6 +485,8 @@ def query_to_kml(
     recordsetid=None,
     strip_id=False,
     selected_rows=None,
+    selection=None,
+    search_synonymy=False,
 ):
     """Build a sqlalchemy query using the QueryField objects given by
     field_specs and send the results to a kml file at the given
@@ -490,7 +501,8 @@ def query_to_kml(
         user,
         tableid,
         field_specs,
-        BuildQueryProps(recordsetid=recordsetid, replace_nulls=True),
+        BuildQueryProps(recordsetid=recordsetid, replace_nulls=True,
+                        selection=selection, search_synonymy=search_synonymy),
     )
     if selected_rows:
         model = models.models_by_tableid[tableid]
@@ -708,6 +720,7 @@ def run_ephemeral_query(collection, user, spquery):
             offset=offset,
             recordsetid=recordsetid,
             formatauditobjs=format_audits,
+            selection=parse_selection(spquery.get("selection")),
         )
 
 
@@ -742,7 +755,11 @@ def recordset(collection, user, user_agent, recordset_info): # pragma: no cover
             user,
             tableid,
             field_specs,
-            BuildQueryProps(recordsetid=spquery.get("recordsetid", None)),
+            BuildQueryProps(
+                recordsetid=spquery.get("recordsetid", None),
+                search_synonymy=spquery.get("searchsynonymy", False),
+                selection=parse_selection(spquery.get("selection")),
+            ),
         )
         query = query.with_entities(model._id, literal(new_rs_id)).distinct()
         RSI = models.RecordSetItem
@@ -872,6 +889,7 @@ def execute(
     recordsetid=None,
     formatauditobjs=False,
     formatter_props=None,
+    selection: QuerySelection | None = None,
 ):
     "Build and execute a query, returning the results as a data structure for json serialization"
 
@@ -892,6 +910,7 @@ def execute(
             series=series,
             search_synonymy=search_synonymy,
             formatter_props=formatter_props,
+            selection=selection,
         ),
     )
 
@@ -1165,6 +1184,8 @@ def build_query(
     search_synonymy = if True, search synonym nodes as well, and return all record IDs associated with parent node
     """
     model = models.models_by_tableid[tableid]
+    if props.selection is not None and (props.distinct or props.series):
+        raise BadRequest("Record selection is not supported for grouped query results.")
     id_field = model._id
     query = build_query_construct_base(
         session=session,
@@ -1221,8 +1242,7 @@ def build_query(
 
     internal_predicate = query.get_internal_filters()
     query = query.filter(internal_predicate)
-
-    return query.query, order_by_exprs
+    return apply_selection(query.query, id_field, props.selection), order_by_exprs
 
 def series_post_query(query, limit=40, offset=0, sort_type=0, co_id_cat_num_pair_col_index=0, is_count=False):
     """Transform the query results by removing the co_id:catnum pair column

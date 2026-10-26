@@ -18,6 +18,7 @@ from specifyweb.specify.api.serializers import toJson, uri_for_model
 from . import models
 from .execution import execute, run_ephemeral_query, do_export, recordset
 from .queryfield import QueryField
+from .selection import parse_selection
 from specifyweb.backend.permissions.permissions import PermissionTarget, PermissionTargetAction, \
     check_permission_targets, check_table_permissions
 from specifyweb.specify.models import Collection, Recordset, Recordsetitem, \
@@ -135,6 +136,7 @@ def get_query(request):
         collection = request.specify_collection
     
     check_permission_targets(collection.id, request.specify_user.id, [QueryBuilderPt.execute])
+    parse_selection(spquery.get("selection"))
     return spquery, collection
 
 @require_POST
@@ -156,6 +158,7 @@ def export_csv(request):
     except ValueError as e:
         return HttpResponseBadRequest(e)
 
+    parse_selection(spquery.get("selection"))
     logger.info('export query: %s', spquery)
 
     if 'collectionid' in spquery:
@@ -184,6 +187,7 @@ def export_kml(request):
     except ValueError as e:
         return HttpResponseBadRequest(e)
 
+    parse_selection(spquery.get("selection"))
     logger.info('export query: %s', spquery)
 
     abs_uri = request.build_absolute_uri('')
@@ -256,7 +260,18 @@ def make_recordset(request): # pragma: no cover
     except ValueError as e:
         return HttpResponseBadRequest(e)
 
-    new_rs_id = recordset(request.specify_collection, request.specify_user,
+    spquery = recordset_info["fromquery"]
+    parse_selection(spquery.get("selection"))
+    collection = (
+        Collection.objects.get(pk=spquery["collectionid"])
+        if spquery.get("collectionid") is not None
+        else request.specify_collection
+    )
+    check_permission_targets(collection.id, request.specify_user.id, [
+        QueryBuilderPt.execute, QueryBuilderPt.create_recordset,
+    ])
+    check_table_permissions(collection, request.specify_user, Recordset, "create")
+    new_rs_id = recordset(collection, request.specify_user,
                           request.specify_user_agent, recordset_info)
 
     return HttpResponseRedirect(uri_for_model('recordset', new_rs_id))
@@ -356,4 +371,3 @@ def return_loan_preps(request):
         item['loanpreparations'].append({'loanpreparationid': lp_id, 'quantity': int(quantity)})
 
     return JsonResponse(resp, safe=False)
-
