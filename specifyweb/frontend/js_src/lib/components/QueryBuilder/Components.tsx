@@ -32,6 +32,8 @@ import { ButtonWithConfirmation } from '../WbPlanView/Components';
 import { mappingPathIsComplete } from '../WbPlanView/helpers';
 import type { QueryField } from './helpers';
 import { QuerySaveDialog } from './Save';
+import type { SelectedQuery } from './selection';
+import { isSelectionEmpty, selectionPayload } from './selection';
 
 export function SaveQueryButtons({
   fields,
@@ -189,6 +191,7 @@ export function MakeRecordSetButton({
   fields,
   getQueryFieldRecords,
   sourceRecordSetId,
+  selectedQuery,
 }: {
   readonly baseTableName: keyof Tables;
   readonly queryResource: SpecifyResource<SpQuery>;
@@ -197,6 +200,7 @@ export function MakeRecordSetButton({
     | (() => RA<SerializedResource<SpQueryField>>)
     | undefined;
   readonly sourceRecordSetId: number | undefined;
+  readonly selectedQuery?: SelectedQuery;
 }): JSX.Element {
   const [state, setState] = React.useState<
     'editing' | 'saved' | 'saving' | undefined
@@ -208,13 +212,20 @@ export function MakeRecordSetButton({
   return (
     <>
       <QueryButton
-        disabled={fields.length === 0}
+        disabled={
+          fields.length === 0 ||
+          (selectedQuery !== undefined &&
+            isSelectionEmpty(selectedQuery.selection))
+        }
         showConfirmation={(): boolean =>
           fields.some(({ mappingPath }) => !mappingPathIsComplete(mappingPath))
         }
         onClick={(): void => {
           setState('editing');
-          if (typeof getQueryFieldRecords === 'function')
+          if (
+            selectedQuery === undefined &&
+            typeof getQueryFieldRecords === 'function'
+          )
             queryResource.set('fields', getQueryFieldRecords());
 
           const recordSet = new tables.RecordSet.Resource();
@@ -225,8 +236,12 @@ export function MakeRecordSetButton({
           recordSet.set('dbTableId', strictGetTable(baseTableName).tableId);
           // @ts-expect-error Adding a non-datamodel field
           recordSet.set('fromQuery', {
-            ...queryResource.toJSON(),
-            recordsetid: sourceRecordSetId,
+            ...(selectedQuery === undefined
+              ? { ...queryResource.toJSON(), recordsetid: sourceRecordSetId }
+              : {
+                  ...selectedQuery.query,
+                  selection: selectionPayload(selectedQuery.selection),
+                }),
           });
           // @ts-expect-error Overwriting the resource back-end URL
           recordSet.url = '/stored_query/make_recordset/';

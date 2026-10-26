@@ -635,6 +635,7 @@ function Wrapped({
               />
             </div>
             <QueryBuilderResults
+              enableBulkSelection={handleSelected === undefined}
               forceCollection={forceCollection}
               getQueryFieldRecords={getQueryFieldRecords}
               isCountOnly={isCountOnly}

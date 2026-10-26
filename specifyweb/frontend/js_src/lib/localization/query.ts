@@ -9,6 +9,20 @@ import { createDictionary } from './utils';
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
 export const queryText = createDictionary({
+  selectionCount: {
+    'en-us': '{selected:string} of {total:string} result rows selected',
+  },
+  selectionUnavailable: {
+    'en-us':
+      'Record selection is not available for grouped or count-only results.',
+  },
+  selectionLimit: {
+    'en-us':
+      'At most {limit:number} individual selections or exclusions are supported. Refine the query to select a larger subset.',
+  },
+  mapSelectionLimit: {
+    'en-us': 'Select at most {limit:number} result rows to display on the map.',
+  },
   query: {
     'en-us': 'Query',
     'ru-ru': 'Запрос',

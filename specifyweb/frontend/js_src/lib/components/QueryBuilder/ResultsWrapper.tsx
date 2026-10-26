@@ -25,6 +25,8 @@ import {
 import type { QueryResultRow, QueryResultsSplitPaneProps } from './Results';
 import { QueryResults } from './Results';
 import { SplitView } from './SplitView';
+import type { ExecutedQuery, QuerySelection } from './selection';
+import { emptySelection } from './selection';
 
 // TODO: [FEATURE] allow customizing this and other constants as make sense
 const fetchSize = 40;
@@ -44,6 +46,7 @@ export function QueryResultsWrapper({
   splitHorizontal,
   splitPrimaryPaneMaxWidth,
   isSplit,
+  renderActions,
   ...props
 }: ResultsProps & {
   readonly createRecordSet: JSX.Element | undefined;
@@ -59,6 +62,12 @@ export function QueryResultsWrapper({
   readonly splitPrimaryPaneMaxWidth?: string;
   readonly isSplit?: boolean;
   readonly onReRun: () => void;
+  readonly renderActions?: (query: ExecutedQuery) =>
+    | {
+        readonly createRecordSet: JSX.Element | undefined;
+        readonly extraButtons: JSX.Element | undefined;
+      }
+    | undefined;
   readonly renderSplitPane?: (props: QueryResultsSplitPaneProps) => JSX.Element;
 }): JSX.Element | null {
   const wrappedProps = useQueryResultsWrapper(props);
@@ -68,6 +77,10 @@ export function QueryResultsWrapper({
       <div className="flex-1 snap-start">{loadingGif}</div>
     );
   const { isLoading, ...newProps } = wrappedProps;
+  const actions =
+    newProps.executedQuery === undefined
+      ? undefined
+      : renderActions?.(newProps.executedQuery);
 
   const queryResults = (
     <div
@@ -79,8 +92,12 @@ export function QueryResultsWrapper({
           {...newProps}
           onResults={handleResults}
           onDeleted={handleDeleted}
-          createRecordSet={createRecordSet}
-          extraButtons={extraButtons}
+          createRecordSet={
+            actions === undefined ? createRecordSet : actions.createRecordSet
+          }
+          extraButtons={
+            actions === undefined ? extraButtons : actions.extraButtons
+          }
           onReRun={handleReRun}
           renderSplitPane={renderSplitPane}
           isSplit={isSplit}
@@ -132,6 +149,8 @@ type ResultsProps = {
     newFields: RA<QueryField>
   ) => void;
   readonly selectedRows: GetSet<ReadonlySet<number>>;
+  readonly selection?: GetSet<QuerySelection>;
+  readonly showSelectionControls?: boolean;
   readonly containerClassName?: string;
   readonly tableClassName?: string;
   readonly onResults?: (results: RA<QueryResultRow | undefined>) => void;
@@ -213,6 +232,8 @@ export function useQueryResultsWrapper({
   onResults: handleResults,
   onMerged: handleMerged,
   selectedRows: [selectedRows, setSelectedRows],
+  selection,
+  showSelectionControls,
   scrollRef,
   restoreScrollTopRef,
   resultsRef,
@@ -244,6 +265,7 @@ export function useQueryResultsWrapper({
     if (queryRunCount === previousQueryRunCount.current) return;
     previousQueryRunCount.current = queryRunCount;
     const generation = ++requestGeneration.current;
+    selection?.[1](emptySelection());
     setIsLoading(true);
     setTotalCount(undefined);
 
@@ -298,6 +320,12 @@ export function useQueryResultsWrapper({
       .then((initialData) => {
         if (generation !== requestGeneration.current) return;
         setProps({
+          executedQuery: {
+            ...query,
+            collectionId: forceCollection,
+            recordSetId,
+          },
+          showSelectionControls,
           queryResource,
           containerClassName,
           tableClassName,
@@ -364,6 +392,7 @@ export function useQueryResultsWrapper({
         ...props,
         totalCount,
         selectedRows: [selectedRows, setSelectedRows],
+        selection,
         resultsRef,
         isLoading,
       };

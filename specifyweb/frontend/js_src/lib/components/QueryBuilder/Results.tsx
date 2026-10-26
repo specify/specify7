@@ -6,6 +6,7 @@ import { useInfiniteScroll } from '../../hooks/useInfiniteScroll';
 import { usePaginatedCollection } from '../../hooks/usePaginatedCollection';
 import { commonText } from '../../localization/common';
 import { interactionsText } from '../../localization/interactions';
+import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
 import { type GetSet, type RA } from '../../utils/types';
 import { Container, H3 } from '../Atoms';
@@ -34,9 +35,19 @@ import type { QueryFieldSpec } from './fieldSpec';
 import type { QueryField } from './helpers';
 import { sortTypes } from './helpers';
 import { QueryResultsTable } from './ResultsTable';
-import { QueryToForms } from './ToForms';
 import { QueryToMap } from './ToMap';
 import { SplitView } from './SplitView';
+import { softFail } from '../Errors/Crash';
+import type { ExecutedQuery, QuerySelection, SelectedQuery } from './selection';
+import {
+  emptySelection,
+  allSelection,
+  isSelected,
+  maxSelectionIds,
+  selectRecords,
+} from './selection';
+import { useSelectedQueryCount } from './useSelectedQuery';
+import { SelectedQueryForms } from './SelectedQueryForms';
 
 export type QueryResultRow = RA<number | string | null>;
 
@@ -92,6 +103,9 @@ export type QueryResultsProps = {
   readonly containerClassName?: string;
   readonly tableClassName?: string;
   readonly selectedRows: GetSet<ReadonlySet<number>>;
+  readonly selection?: GetSet<QuerySelection>;
+  readonly executedQuery?: ExecutedQuery;
+  readonly showSelectionControls?: boolean;
   readonly onResults?: (results: RA<QueryResultRow | undefined>) => void;
   readonly renderSplitPane?: (props: QueryResultsSplitPaneProps) => JSX.Element;
   readonly isSplit?: boolean;
@@ -112,6 +126,8 @@ export type QueryResultsSplitPaneProps = {
   readonly results: RA<QueryResultRow | undefined>;
   readonly selectedRows: ReadonlySet<number>;
   readonly totalCount: number | undefined;
+  readonly selectedQuery?: SelectedQuery;
+  readonly selectedCount?: number;
   readonly onFetchMore:
     | ((index?: number) => Promise<RA<QueryResultRow | undefined> | undefined>)
     | undefined;
@@ -151,6 +167,22 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     displayedFields,
     isLoading = false,
   } = props;
+  const explicitSelection = props.selection?.[0];
+  const setExplicitSelection = props.selection?.[1];
+  const supportsSelection =
+    props.executedQuery !== undefined &&
+    !props.executedQuery.selectDistinct &&
+    !props.executedQuery.smushed &&
+    !props.executedQuery.countOnly;
+  const selectedQuery = React.useMemo(
+    () =>
+      supportsSelection &&
+      props.executedQuery !== undefined &&
+      explicitSelection !== undefined
+        ? { query: props.executedQuery, selection: explicitSelection }
+        : undefined,
+    [supportsSelection, props.executedQuery, explicitSelection, refreshToken]
+  );
 
   const {
     results: [results, setResults],
@@ -163,8 +195,11 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     fetchSize: props.fetchSize,
     totalCount: props.totalCount,
   });
+  const selectedCount = useSelectedQueryCount(selectedQuery, totalCount);
   const currentResultsRef = React.useRef(results);
   currentResultsRef.current = results;
+  const executedQueryRef = React.useRef(props.executedQuery);
+  executedQueryRef.current = props.executedQuery;
   const previousRefreshToken = React.useRef(refreshToken);
   const refreshGenerationRef = React.useRef(0);
 
@@ -308,6 +343,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     if (previousFieldSpecs.current === fieldSpecs) return;
     previousFieldSpecs.current = fieldSpecs;
     setSelectedRows(new Set());
+    setExplicitSelection?.(emptySelection());
   }, [fieldSpecs, setSelectedRows]);
 
   const showResults =
@@ -329,6 +365,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
 
   /* eslint-disable functional/prefer-readonly-type */
   const deletingRef = React.useRef<Set<number>>(new Set()); // Track recent deleted IDs to prevent duplicate deletion
+  const deleteCountGenerationRef = React.useRef(0);
 
   // TEST: try deleting while records are being fetched
   /**
@@ -349,9 +386,9 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
         if (resultsRef !== undefined) resultsRef.current = newResults;
         return newResults;
       }
-      setResults(newResults(results));
+      setResults(newResults(currentResultsRef.current));
       // Delete deletingRef if no records are able to be removed
-      if (removeCount === 0) {
+      if (removeCount === 0 && explicitSelection === undefined) {
         deletingRef.current.delete(recordId);
         return;
       }
@@ -363,9 +400,38 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
       const newSelectedRows = (selectedRows: ReadonlySet<number>) =>
         new Set(Array.from(selectedRows).filter((id) => id !== recordId));
       setSelectedRows(newSelectedRows(selectedRows));
+      if (explicitSelection !== undefined)
+        setExplicitSelection?.({
+          ...explicitSelection,
+          ids: new Set(
+            Array.from(explicitSelection.ids).filter((id) => id !== recordId)
+          ),
+        });
+      if (explicitSelection !== undefined && fetchCount !== undefined) {
+        const executedQuery = props.executedQuery;
+        const generation = ++deleteCountGenerationRef.current;
+        fetchCount()
+          .then((count) => {
+            if (
+              executedQueryRef.current === executedQuery &&
+              generation === deleteCountGenerationRef.current
+            )
+              setTotalCount(count);
+          })
+          .catch(softFail);
+      }
       setTimeout(() => deletingRef.current.delete(recordId), 100); // Remove the record from the deletingRef
     },
-    [setResults, setTotalCount, totalCount]
+    [
+      setResults,
+      setTotalCount,
+      totalCount,
+      selectedRows,
+      explicitSelection,
+      setExplicitSelection,
+      fetchCount,
+      props.executedQuery,
+    ]
   );
 
   const [showLineNumber] = userPreferences.use(
@@ -491,18 +557,51 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
         <H3>
           {commonText.colonLine({
             label,
-            value: `(${
-              selectedRows.size === 0
-                ? (totalCount ?? commonText.loading())
-                : `${selectedRows.size}/${totalCount ?? commonText.loading()}`
-            })`,
+            value:
+              selectedQuery !== undefined
+                ? queryText.selectionCount({
+                    selected: (
+                      selectedCount ?? commonText.loading()
+                    ).toString(),
+                    total: (totalCount ?? commonText.loading()).toString(),
+                  })
+                : `(${
+                    selectedRows.size === 0
+                      ? (totalCount ?? commonText.loading())
+                      : `${selectedRows.size}/${totalCount ?? commonText.loading()}`
+                  })`,
           })}
         </H3>
-        {selectedRows.size > 0 && (
+        {props.showSelectionControls && (
+          <>
+            <Button.Small
+              disabled={
+                selectedQuery === undefined || isLoading || totalCount === 0
+              }
+              title={
+                !supportsSelection
+                  ? queryText.selectionUnavailable()
+                  : undefined
+              }
+              onClick={(): void => {
+                setExplicitSelection?.(allSelection());
+                lastSelectedRow.current = undefined;
+              }}
+            >
+              {interactionsText.selectAll()}
+            </Button.Small>
+          </>
+        )}
+        {(selectedQuery !== undefined || selectedRows.size > 0) && (
           <Button.Small
+            disabled={
+              isLoading || (selectedQuery !== undefined && selectedCount === 0)
+            }
             onClick={(): void => {
               setSelectedRows(new Set());
+              setExplicitSelection?.(emptySelection());
               handleSelected?.([]);
+              lastSelectedRow.current = undefined;
             }}
           >
             {interactionsText.deselectAll()}
@@ -511,18 +610,26 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
         <div className="-ml-2 flex-1" />
         {displayedFields.length > 0 &&
         visibleColumns.length > 0 &&
-        totalCount !== 0
-          ? extraButtons
-          : null}
+        totalCount !== 0 ? (
+          <fieldset disabled={isLoading} className="contents">
+            {extraButtons}
+          </fieldset>
+        ) : null}
         {Array.isArray(results) &&
         Array.isArray(loadedResults) &&
         results.length > 0 &&
         typeof fetchResults === 'function' &&
         visibleColumns.length > 0 ? (
           <>
-            {canMergeTable ? (
+            {canMergeTable && !isLoading ? (
               <RecordMergingLink
-                selectedRows={selectedRows}
+                selectedRows={
+                  explicitSelection === undefined
+                    ? selectedRows
+                    : explicitSelection.mode === 'include'
+                      ? explicitSelection.ids
+                      : new Set()
+                }
                 table={table}
                 onDeleted={(recordId): void => {
                   handleDelete(recordId);
@@ -531,8 +638,12 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
                 onMerged={handleMerged ?? handleReRun}
               />
             ) : undefined}
-            {hasToolPermission('recordSets', 'create') && totalCount !== 0 ? (
-              selectedRows.size > 0 && !isDistinct ? (
+            {hasToolPermission('recordSets', 'create') &&
+            totalCount !== 0 &&
+            !isLoading ? (
+              selectedQuery !== undefined ? (
+                createRecordSet
+              ) : selectedRows.size > 0 && !isDistinct ? (
                 <CreateRecordSet
                   /*
                    * This is needed so that IDs are in the same order as they
@@ -565,6 +676,8 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
               selectedRows={selectedRows}
               table={table}
               totalCount={totalCount}
+              selectedQuery={selectedQuery}
+              selectedCount={selectedCount}
               onFetchMore={
                 canFetchMore && !isFetching
                   ? async (): Promise<void> => {
@@ -574,13 +687,17 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
               }
             />
             {isDistinct ? null : (
-              <QueryToForms
-                results={results}
-                selectedRows={selectedRows}
+              <SelectedQueryForms
+                {...(selectedQuery === undefined
+                  ? {
+                      results,
+                      selectedRows,
+                      totalCount,
+                      onFetchMore: isFetching ? undefined : handleFetchMore,
+                    }
+                  : { selectedQuery, selectedCount })}
                 table={table}
-                totalCount={totalCount}
                 onDelete={handleDelete}
-                onFetchMore={isFetching ? undefined : handleFetchMore}
               />
             )}
           </>
@@ -663,9 +780,15 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
               results={loadedResults}
               showCellEllipsis={showCellEllipsis}
               selectedRows={selectedRows}
+              isRecordSelected={
+                selectedQuery === undefined
+                  ? undefined
+                  : (id) => isSelected(selectedQuery.selection, id)
+              }
               table={table}
               wrapQueryResults={wrapQueryResults}
               onSelected={(rowIndex, isSelected, isShiftClick): void => {
+                if (isLoading) return;
                 /*
                  * If shift/ctrl/cmd key was held during click, toggle all rows
                  * between the current one, and the last selected one
@@ -684,6 +807,24 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
                 ).map(
                   (rowIndex) => loadedResults[rowIndex][queryIdField] as number
                 );
+                if (selectedQuery !== undefined) {
+                  const next = selectRecords(
+                    selectedQuery.selection,
+                    ids,
+                    isSelected
+                  );
+                  if (next.ids.size > maxSelectionIds) {
+                    softFail(
+                      new Error(
+                        queryText.selectionLimit({ limit: maxSelectionIds })
+                      )
+                    );
+                    return;
+                  }
+                  setExplicitSelection?.(next);
+                  lastSelectedRow.current = rowIndex;
+                  return;
+                }
                 const newSelectedRows = [
                   ...Array.from(selectedRows).filter(
                     (id) => isSelected || !ids.includes(id)
@@ -697,12 +838,17 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
                 lastSelectedRow.current = rowIndex;
               }}
               onRowSelected={(rowIndex): void => {
+                if (isLoading) return;
                 const rawId = loadedResults[rowIndex][queryIdField];
                 if (typeof rawId !== 'number') return;
                 const id = rawId;
                 if (typeof id !== 'number' || !Number.isFinite(id)) return;
 
                 const newSelectedRows = new Set([id]);
+                setExplicitSelection?.({
+                  mode: 'include',
+                  ids: newSelectedRows,
+                });
                 setSelectedRows(newSelectedRows);
                 handleSelected?.(Array.from(newSelectedRows));
                 lastSelectedRow.current = rowIndex;
@@ -736,6 +882,8 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
             results: results ?? [],
             selectedRows,
             totalCount,
+            selectedQuery,
+            selectedCount,
             onFetchMore: canFetchMore ? handleFetchMore : undefined,
             onDelete: handleDelete,
           })
