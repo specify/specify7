@@ -1585,8 +1585,8 @@ export const formsText = createDictionary({
     'uk-ua': 'Перейти до першого запису',
     'de-ch': 'Zum ersten Eintrag gehen',
     'pt-br': 'Ir para o primeiro registro',
-    'hr-hr': '',
-    nb: '',
+    'hr-hr': 'Idi na prvi zapis',
+    nb: 'Gå til første post',
   },
   goToLastRecord: {
     'en-us': 'Go to last record',
@@ -1596,8 +1596,8 @@ export const formsText = createDictionary({
     'uk-ua': 'Перейти до останнього запису',
     'de-ch': 'Zum letzten Eintrag gehen',
     'pt-br': 'Ir para o último registro',
-    'hr-hr': '',
-    nb: '',
+    'hr-hr': 'Idi na zadnji zapis',
+    nb: 'Gå til siste oppføring',
   },
   goToPreviousRecord: {
     'en-us': 'Go to previous record',
@@ -1607,8 +1607,8 @@ export const formsText = createDictionary({
     'uk-ua': 'Перейти до попереднього запису',
     'de-ch': 'Zum vorherigen Datensatz gehen',
     'pt-br': 'Ir para o registro anterior',
-    'hr-hr': '',
-    nb: '',
+    'hr-hr': 'Idi na prethodni zapis',
+    nb: 'Gå til forrige post',
   },
   goToNextRecord: {
     'en-us': 'Go to next record',
@@ -1618,8 +1618,8 @@ export const formsText = createDictionary({
     'uk-ua': 'Перейти до наступного запису',
     'de-ch': 'Zum nächsten Datensatz gehen',
     'pt-br': 'Ir para o próximo registro',
-    'hr-hr': '',
-    nb: '',
+    'hr-hr': 'Idi na sljedeći zapis',
+    nb: 'Gå til neste post',
   },
   viewParentResource: {
     'en-us': 'View Parent Resource',
