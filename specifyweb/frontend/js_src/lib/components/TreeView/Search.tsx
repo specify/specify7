@@ -104,27 +104,29 @@ export function TreeViewSearch<SCHEMA extends AnyTree>({
                 : {}),
             }
           ).then(({ records }) =>
-            records.filter((node) => {
-              if (
-                tableName !== 'GeologicTimePeriod' ||
-                biostratFilter === 'all'
-              )
-                return true;
-              const isBioStrat = (node as any).isBioStrat;
-              return biostratFilter === 'bio'
-                ? isBioStrat === true
-                : isBioStrat !== true;
-            }).map((node) => {
-              const rankDefinition = treeDefinitionItems.find(
-                ({ rankId }) => rankId === node.rankId
-              );
-              const rankName = rankDefinition?.title || rankDefinition?.name;
-              return {
-                label: node.fullName ?? node.name,
-                subLabel: rankName,
-                data: node as SerializedResource<SCHEMA>,
-              };
-            })
+            records
+              .filter((node) => {
+                if (
+                  tableName !== 'GeologicTimePeriod' ||
+                  biostratFilter === 'all'
+                )
+                  return true;
+                const isBioStrat = (node as any).isBioStrat;
+                return biostratFilter === 'bio'
+                  ? isBioStrat === true
+                  : isBioStrat !== true;
+              })
+              .map((node) => {
+                const rankDefinition = treeDefinitionItems.find(
+                  ({ rankId }) => rankId === node.rankId
+                );
+                const rankName = rankDefinition?.title || rankDefinition?.name;
+                return {
+                  label: node.fullName ?? node.name,
+                  subLabel: rankName,
+                  data: node as SerializedResource<SCHEMA>,
+                };
+              })
           )
         }
         value={searchValue}
