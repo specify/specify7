@@ -42,8 +42,15 @@ test('selects the highlighted result after repeated ArrowDown presses', async ()
   expect(document.activeElement).toBe(input);
   await screen.findAllByRole('option');
   await user.keyboard('{ArrowDown}');
+  expect(input).toHaveAttribute(
+    'aria-activedescendant',
+    screen.getByRole('option', { name: 'First result' }).id
+  );
   await user.keyboard('{ArrowDown}');
-  expect(input).toHaveAttribute('aria-activedescendant');
+  expect(input).toHaveAttribute(
+    'aria-activedescendant',
+    screen.getByRole('option', { name: 'Second result' }).id
+  );
   await user.keyboard('{Enter}');
 
   expect(onChange).toHaveBeenCalledTimes(1);
