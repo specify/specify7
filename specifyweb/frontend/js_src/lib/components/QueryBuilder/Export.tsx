@@ -20,7 +20,7 @@ import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import { downloadDataSet } from '../WorkBench/helpers';
 import { QueryButton } from './Components';
 import type { QueryField } from './helpers';
-import { hasLocalityColumns } from './helpers';
+import { hasLocalityColumns, unParseQueryFields } from './helpers';
 import type { QueryResultRow } from './Results';
 import { dialogIcons } from '../Atoms/Icons';
 import type { SelectedQuery } from './selection';
@@ -82,11 +82,19 @@ export function QueryExportButtons({
       typeof getQueryFieldRecords === 'function'
     )
       queryResource.set('fields', getQueryFieldRecords());
-    const serialized = selectedQuery?.query ?? queryResource.toJSON();
     const exportFields =
       selectedQuery === undefined
         ? fields
-        : parseQueryFields(selectedQuery.query.fields);
+        : parseQueryFields(selectedQuery.query.fields).filter(
+            ({ id }) => id !== -1
+          );
+    const serialized =
+      selectedQuery === undefined
+        ? queryResource.toJSON()
+        : {
+            ...selectedQuery.query,
+            fields: unParseQueryFields(baseTableName, exportFields),
+          };
     setState('creating');
     void ping(url, {
       method: 'POST',
