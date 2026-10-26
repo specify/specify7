@@ -703,17 +703,6 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
 
                 lastSelectedRow.current = rowIndex;
               }}
-              onRowSelected={(rowIndex): void => {
-                const rawId = loadedResults[rowIndex][queryIdField];
-                if (typeof rawId !== 'number') return;
-                const id = rawId;
-                if (typeof id !== 'number' || !Number.isFinite(id)) return;
-
-                const newSelectedRows = new Set([id]);
-                setSelectedRows(newSelectedRows);
-                handleSelected?.(Array.from(newSelectedRows));
-                lastSelectedRow.current = rowIndex;
-              }}
             />
           ) : undefined}
           {isLoading ||

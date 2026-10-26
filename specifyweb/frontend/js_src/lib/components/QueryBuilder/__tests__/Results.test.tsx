@@ -89,6 +89,58 @@ test.each([
   expect(screen.getByText('Old last')).toBeInTheDocument();
 });
 
+test('row clicks add, range-select, and toggle result selections', async () => {
+  const fields = makeFields(['lastName']);
+  const props = {
+    table: tables.Agent,
+    queryResource: undefined,
+    fetchSize: 40,
+    fetchResults: undefined,
+    fetchCount: undefined,
+    totalCount: 3,
+    fieldSpecs: queryFieldsToFieldSpecs('Agent', fields).map(
+      ([, fieldSpec]) => fieldSpec
+    ),
+    displayedFields: fields,
+    allFields: fields,
+    initialData: [
+      [1, 'First'],
+      [2, 'Second'],
+      [3, 'Third'],
+    ],
+    onReRun: jest.fn(),
+    createRecordSet: undefined,
+    extraButtons: undefined,
+  };
+
+  function ResultsWithSelection(): JSX.Element {
+    const selectedRows = React.useState<ReadonlySet<number>>(new Set());
+    return <QueryResults {...props} selectedRows={selectedRows} />;
+  }
+
+  render(<ResultsWithSelection />);
+  const firstResult = await screen.findByText('First');
+  const secondResult = screen.getByText('Second');
+  const thirdResult = screen.getByText('Third');
+  const checkboxes = screen.getAllByRole('checkbox');
+
+  fireEvent.click(firstResult);
+  fireEvent.click(secondResult);
+  expect(checkboxes[0]).toBeChecked();
+  expect(checkboxes[1]).toBeChecked();
+  expect(checkboxes[2]).not.toBeChecked();
+
+  fireEvent.click(thirdResult, { shiftKey: true });
+  expect(checkboxes[0]).toBeChecked();
+  expect(checkboxes[1]).toBeChecked();
+  expect(checkboxes[2]).toBeChecked();
+
+  fireEvent.click(secondResult);
+  expect(checkboxes[0]).toBeChecked();
+  expect(checkboxes[1]).not.toBeChecked();
+  expect(checkboxes[2]).toBeChecked();
+});
+
 test.each([1, 3])(
   'preserves loaded pages and updates the count after deleting record %i',
   async (deletedId) => {
