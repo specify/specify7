@@ -284,7 +284,6 @@ export function AutoComplete<T>({
       event.stopPropagation();
       if (event.key === 'ArrowDown' && activeIndex === -1) {
         // Headless UI opens with the first option active.
-        event.preventDefault();
       }
       const direction = event.key === 'ArrowDown' ? 1 : -1;
       const lastIndex = itemSource.length - (showAdd ? 0 : 1);
