@@ -297,6 +297,8 @@ describe('AutoComplete keyboard navigation', () => {
   });
 
   test('keeps the highlighted row when the next page is appended', async () => {
+    const source = makeItems(10);
+
     function Harness({
       extraItems,
     }: {
@@ -308,7 +310,7 @@ describe('AutoComplete keyboard navigation', () => {
           delay={0}
           extraItems={extraItems}
           filterItems={false}
-          source={makeItems(10)}
+          source={source}
           value={value}
           onChange={(item): void => setValue(item.label.toString())}
         />
@@ -324,9 +326,47 @@ describe('AutoComplete keyboard navigation', () => {
     expect(scrolledIndexes()).toContain('2');
 
     rerender(<Harness extraItems={[{ label: 'Item 10', data: '10' }]} />);
+    // Let Headless UI flush its own pending scrollIntoView before measuring ours
+    await new Promise((resolve) => setTimeout(resolve, 100));
     scrollIntoView.mockClear();
     await user.keyboard('{ArrowDown}');
 
     expect(scrolledIndexes()).toEqual(['3']);
+  });
+
+  test('resets the highlighted row when the results are replaced', async () => {
+    const { getByRole, rerender, user } = mount(
+      <AutoComplete
+        delay={0}
+        filterItems={false}
+        source={makeItems(10)}
+        value=""
+        onChange={jest.fn()}
+      />
+    );
+
+    await user.type(getByRole('combobox'), 'i');
+    await user.keyboard('{ArrowDown}');
+    await user.keyboard('{ArrowDown}');
+    expect(scrolledIndexes()).toContain('1');
+
+    rerender(
+      <AutoComplete
+        delay={0}
+        filterItems={false}
+        source={makeItems(10).map((item) => ({
+          ...item,
+          label: `Renamed ${item.data}`,
+        }))}
+        value=""
+        onChange={jest.fn()}
+      />
+    );
+    // Let Headless UI flush its own pending scrollIntoView before measuring ours
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    scrollIntoView.mockClear();
+    await user.keyboard('{ArrowDown}');
+
+    expect(scrolledIndexes()).toEqual(['0']);
   });
 });
