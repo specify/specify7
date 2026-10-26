@@ -295,4 +295,38 @@ describe('AutoComplete keyboard navigation', () => {
 
     expect(scrolledIndexes()).toContain('1');
   });
+
+  test('keeps the highlighted row when the next page is appended', async () => {
+    function Harness({
+      extraItems,
+    }: {
+      readonly extraItems: ReadonlyArray<AutoCompleteItem<string>>;
+    }): JSX.Element {
+      const [value, setValue] = React.useState('');
+      return (
+        <AutoComplete
+          delay={0}
+          extraItems={extraItems}
+          filterItems={false}
+          source={makeItems(10)}
+          value={value}
+          onChange={(item): void => setValue(item.label.toString())}
+        />
+      );
+    }
+
+    const { getByRole, rerender, user } = mount(<Harness extraItems={[]} />);
+
+    await user.type(getByRole('combobox'), 'i');
+    await user.keyboard('{ArrowDown}');
+    await user.keyboard('{ArrowDown}');
+    await user.keyboard('{ArrowDown}');
+    expect(scrolledIndexes()).toContain('2');
+
+    rerender(<Harness extraItems={[{ label: 'Item 10', data: '10' }]} />);
+    scrollIntoView.mockClear();
+    await user.keyboard('{ArrowDown}');
+
+    expect(scrolledIndexes()).toEqual(['3']);
+  });
 });
