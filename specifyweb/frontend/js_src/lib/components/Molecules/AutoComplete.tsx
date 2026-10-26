@@ -204,6 +204,8 @@ export function AutoComplete<T>({
   );
 
   const [input, setInput] = React.useState<HTMLInputElement | null>(null);
+  const inputRef = React.useRef<HTMLInputElement | null>(null);
+  const skipKeyboardNavigation = React.useRef(false);
   const dataListRef = React.useRef<HTMLUListElement | null>(null);
   const [dataList, setDataList] = React.useState<HTMLUListElement | null>(null);
   const dataListRefCallback = React.useCallback(
@@ -275,6 +277,7 @@ export function AutoComplete<T>({
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>): void {
+    if (skipKeyboardNavigation.current) return;
     if (itemSource.length === 0 && !showAdd) return;
 
     if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
@@ -284,22 +287,44 @@ export function AutoComplete<T>({
         event.preventDefault();
       }
       const direction = event.key === 'ArrowDown' ? 1 : -1;
+      const lastIndex = itemSource.length - (showAdd ? 0 : 1);
       const nextIndex =
         activeIndex === -1
           ? direction === 1
             ? 0
-            : itemSource.length - 1
+            : lastIndex
           : Math.min(
-              itemSource.length - 1,
+              lastIndex,
               Math.max(0, activeIndex + direction)
             );
       setActiveIndex(nextIndex);
-      virtualizer.scrollToIndex(nextIndex);
+      if (nextIndex < itemSource.length) virtualizer.scrollToIndex(nextIndex);
     } else if (event.key === 'Home' || event.key === 'End') {
       event.stopPropagation();
-      const nextIndex = event.key === 'Home' ? 0 : itemSource.length - 1;
+      const nextIndex =
+        event.key === 'Home' ? 0 : Math.max(0, itemSource.length - 1);
       setActiveIndex(nextIndex);
-      virtualizer.scrollToIndex(nextIndex);
+      if (itemSource.length > 0) virtualizer.scrollToIndex(nextIndex);
+      if (event.key === 'End' && showAdd && itemSource.length > 0) {
+        event.preventDefault();
+        skipKeyboardNavigation.current = true;
+        try {
+          const dispatchKey = (key: string): void => {
+            inputRef.current?.dispatchEvent(
+              new KeyboardEvent('keydown', {
+                bubbles: true,
+                cancelable: true,
+                key,
+              })
+            );
+          };
+          dispatchKey('Home');
+          for (let index = 1; index < itemSource.length; index++)
+            dispatchKey('ArrowDown');
+        } finally {
+          skipKeyboardNavigation.current = false;
+        }
+      }
     }
   }
 
@@ -388,7 +413,6 @@ export function AutoComplete<T>({
     'highlightMatch'
   );
 
-  const inputRef = React.useRef<HTMLInputElement | null>(null);
   const shouldBlurAfterMouseSelection = React.useRef(false);
   const forwardChildRef: React.RefCallback<HTMLInputElement> =
     React.useCallback(
@@ -614,7 +638,10 @@ export function AutoComplete<T>({
             <Combobox.Option as={React.Fragment} value={pendingValue}>
               {({ active, selected }): JSX.Element => (
                 <li
-                  className={optionClassName(active, selected)}
+                  className={optionClassName(
+                    active || activeIndex === itemSource.length,
+                    selected
+                  )}
                   onMouseDown={(e: React.MouseEvent): void => {
                     e.stopPropagation();
                     shouldBlurAfterMouseSelection.current = true;

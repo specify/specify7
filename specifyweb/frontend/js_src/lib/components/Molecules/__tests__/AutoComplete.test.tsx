@@ -89,3 +89,54 @@ test.each([
   expect(onChange).toHaveBeenCalledTimes(1);
   expect(onChange).toHaveBeenCalledWith(items[index]);
 });
+
+test('ArrowDown can highlight the Add option after the results', async () => {
+  const onChange = jest.fn();
+  const onNewValue = jest.fn();
+  const { user } = mount(
+    <AutoComplete
+      filterItems={false}
+      onChange={onChange}
+      onNewValue={onNewValue}
+      source={items}
+      value=""
+    />
+  );
+  const input = screen.getByRole('combobox');
+
+  await user.click(input);
+  await user.type(input, 'x');
+  await screen.findAllByRole('option');
+  for (let index = 0; index <= items.length; index++)
+    await user.keyboard('{ArrowDown}');
+  await user.keyboard('{Enter}');
+
+  expect(onChange).not.toHaveBeenCalled();
+  expect(onNewValue).toHaveBeenCalledTimes(1);
+  expect(onNewValue).toHaveBeenCalledWith('x');
+});
+
+test('End selects the last result before the trailing Add option', async () => {
+  const onChange = jest.fn();
+  const onNewValue = jest.fn();
+  const { user } = mount(
+    <AutoComplete
+      filterItems={false}
+      onChange={onChange}
+      onNewValue={onNewValue}
+      source={items}
+      value=""
+    />
+  );
+  const input = screen.getByRole('combobox');
+
+  await user.click(input);
+  await user.type(input, 'x');
+  await screen.findAllByRole('option');
+  await user.keyboard('{End}');
+  await user.keyboard('{Enter}');
+
+  expect(onChange).toHaveBeenCalledTimes(1);
+  expect(onChange).toHaveBeenCalledWith(items[2]);
+  expect(onNewValue).not.toHaveBeenCalled();
+});
