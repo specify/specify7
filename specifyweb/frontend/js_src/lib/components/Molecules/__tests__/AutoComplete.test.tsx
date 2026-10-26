@@ -58,4 +58,40 @@ describe('AutoComplete keyboard navigation', () => {
 
     expect(scrolledIndexes()).toContain('1');
   });
+
+  test('resets the highlighted row when the results are replaced', async () => {
+    const { getByRole, rerender, user } = mount(
+      <AutoComplete
+        delay={0}
+        filterItems={false}
+        source={makeItems(10)}
+        value=""
+        onChange={jest.fn()}
+      />
+    );
+
+    await user.type(getByRole('combobox'), 'i');
+    await user.keyboard('{ArrowDown}');
+    await user.keyboard('{ArrowDown}');
+    expect(scrolledIndexes()).toContain('1');
+
+    rerender(
+      <AutoComplete
+        delay={0}
+        filterItems={false}
+        source={makeItems(10).map((item) => ({
+          ...item,
+          label: `Renamed ${item.data}`,
+        }))}
+        value=""
+        onChange={jest.fn()}
+      />
+    );
+    // Let Headless UI flush its own pending scrollIntoView before measuring ours
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    scrollIntoView.mockClear();
+    await user.keyboard('{ArrowDown}');
+
+    expect(scrolledIndexes()).toEqual(['0']);
+  });
 });
