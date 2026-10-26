@@ -34,6 +34,7 @@ import type { QueryField } from './helpers';
 import { QuerySaveDialog } from './Save';
 import type { SelectedQuery } from './selection';
 import { isSelectionEmpty, selectionPayload } from './selection';
+import { keysToLowerCase } from '../../utils/utils';
 
 export function SaveQueryButtons({
   fields,
@@ -239,8 +240,10 @@ export function MakeRecordSetButton({
             ...(selectedQuery === undefined
               ? { ...queryResource.toJSON(), recordsetid: sourceRecordSetId }
               : {
-                  ...selectedQuery.query,
-                  selection: selectionPayload(selectedQuery.selection),
+                  ...keysToLowerCase({
+                    ...selectedQuery.query,
+                    selection: selectionPayload(selectedQuery.selection),
+                  }),
                 }),
           });
           // @ts-expect-error Overwriting the resource back-end URL
