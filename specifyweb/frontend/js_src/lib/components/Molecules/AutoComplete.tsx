@@ -205,7 +205,6 @@ export function AutoComplete<T>({
 
   const [input, setInput] = React.useState<HTMLInputElement | null>(null);
   const inputRef = React.useRef<HTMLInputElement | null>(null);
-  const skipKeyboardNavigation = React.useRef(false);
   const dataListRef = React.useRef<HTMLUListElement | null>(null);
   const [dataList, setDataList] = React.useState<HTMLUListElement | null>(null);
   const dataListRefCallback = React.useCallback(
@@ -239,6 +238,14 @@ export function AutoComplete<T>({
   const ignoreFilter = currentValue === pendingValue;
   const itemSource = ignoreFilter ? (results ?? []) : filteredItems;
   const [activeIndex, setActiveIndex] = React.useState(-1);
+  const [lastResultOption, setLastResultOption] =
+    React.useState<HTMLLIElement | null>(null);
+  const [shouldFocusLastResult, setShouldFocusLastResult] =
+    React.useState(false);
+  const lastResultOptionRefCallback = React.useCallback(
+    (option: HTMLLIElement | null): void => setLastResultOption(option),
+    []
+  );
   const virtualizer = useVirtualizer({
     count: itemSource.length,
     getScrollElement: () => dataList,
@@ -267,6 +274,12 @@ export function AutoComplete<T>({
   const listHasItems = showAdd || isLoading || itemSource.length > 0;
 
   React.useEffect(() => setActiveIndex(-1), [itemSource]);
+  React.useLayoutEffect(() => {
+    if (!shouldFocusLastResult || lastResultOption === null) return;
+    lastResultOption.focus();
+    inputRef.current?.focus({ preventScroll: true });
+    setShouldFocusLastResult(false);
+  }, [shouldFocusLastResult, lastResultOption]);
 
   function handleChanged(item: AutoCompleteItem<T>): void {
     handleChange(item);
@@ -277,7 +290,6 @@ export function AutoComplete<T>({
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>): void {
-    if (skipKeyboardNavigation.current) return;
     if (itemSource.length === 0 && !showAdd) return;
 
     if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
@@ -303,26 +315,8 @@ export function AutoComplete<T>({
         event.key === 'Home' ? 0 : Math.max(0, itemSource.length - 1);
       setActiveIndex(nextIndex);
       if (itemSource.length > 0) virtualizer.scrollToIndex(nextIndex);
-      if (event.key === 'End' && showAdd && itemSource.length > 0) {
-        event.preventDefault();
-        skipKeyboardNavigation.current = true;
-        try {
-          const dispatchKey = (key: string): void => {
-            inputRef.current?.dispatchEvent(
-              new KeyboardEvent('keydown', {
-                bubbles: true,
-                cancelable: true,
-                key,
-              })
-            );
-          };
-          dispatchKey('Home');
-          for (let index = 1; index < itemSource.length; index++)
-            dispatchKey('ArrowDown');
-        } finally {
-          skipKeyboardNavigation.current = false;
-        }
-      }
+      if (event.key === 'End' && itemSource.length > 0)
+        setShouldFocusLastResult(true);
     }
   }
 
@@ -615,6 +609,11 @@ export function AutoComplete<T>({
                           active || index === activeIndex,
                           selected
                         )}
+                        ref={
+                          index === itemSource.length - 1
+                            ? lastResultOptionRefCallback
+                            : undefined
+                        }
                         onMouseDown={handleOptionMouseDown}
                       >
                         {typeof item.icon === 'string' ? (

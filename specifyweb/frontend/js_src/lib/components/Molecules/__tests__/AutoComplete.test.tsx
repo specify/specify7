@@ -165,3 +165,32 @@ test('End selects the last result before the trailing Add option', async () => {
   expect(onChange).toHaveBeenCalledWith(items[2]);
   expect(onNewValue).not.toHaveBeenCalled();
 });
+
+test('End selects the final virtualized result before the trailing Add option', async () => {
+  const manyItems = Array.from({ length: 100 }, (_, index) => ({
+    label: `Result ${index + 1}`,
+    data: index + 1,
+  }));
+  const onChange = jest.fn();
+  const onNewValue = jest.fn();
+  const { user } = mount(
+    <AutoComplete
+      filterItems={false}
+      onChange={onChange}
+      onNewValue={onNewValue}
+      source={manyItems}
+      value=""
+    />
+  );
+  const input = screen.getByRole('combobox');
+
+  await user.click(input);
+  await user.type(input, 'x');
+  await screen.findAllByRole('option');
+  await user.keyboard('{End}');
+  await user.keyboard('{Enter}');
+
+  expect(onChange).toHaveBeenCalledTimes(1);
+  expect(onChange).toHaveBeenCalledWith(manyItems.at(-1));
+  expect(onNewValue).not.toHaveBeenCalled();
+});
