@@ -298,6 +298,7 @@ export function AutoComplete<T>({
       if (nextIndex < itemSource.length) virtualizer.scrollToIndex(nextIndex);
     } else if (event.key === 'Home' || event.key === 'End') {
       event.stopPropagation();
+      if (event.shiftKey) return;
       const nextIndex =
         event.key === 'Home' ? 0 : Math.max(0, itemSource.length - 1);
       setActiveIndex(nextIndex);
