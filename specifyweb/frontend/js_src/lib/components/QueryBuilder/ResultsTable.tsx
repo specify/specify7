@@ -160,7 +160,7 @@ function Row({
                * Ignore clicks on the "View" links, formatted audit log cell
                * links, and record-list controls.
                */
-              (target as Element).closest('a, button') === null
+              (target as Element).closest('a, button') === null && hasValidId
                 ? handleSelected?.(!isSelected, shiftKey)
                 : undefined
           : undefined
