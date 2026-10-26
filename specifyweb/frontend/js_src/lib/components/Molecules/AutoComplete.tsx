@@ -290,9 +290,7 @@ export function AutoComplete<T>({
       const lastIndex = itemSource.length - (showAdd ? 0 : 1);
       const nextIndex =
         activeIndex === -1
-          ? direction === 1
-            ? 0
-            : lastIndex
+          ? 0
           : Math.min(
               lastIndex,
               Math.max(0, activeIndex + direction)

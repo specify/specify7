@@ -72,6 +72,31 @@ test('selects the previous highlighted result after ArrowUp', async () => {
   expect(onChange).toHaveBeenCalledWith(items[1]);
 });
 
+test('initial ArrowUp stays synchronized with the first active result', async () => {
+  const onChange = jest.fn();
+  const onNewValue = jest.fn();
+  const { user } = mount(
+    <AutoComplete
+      filterItems={false}
+      onChange={onChange}
+      onNewValue={onNewValue}
+      source={items}
+      value=""
+    />
+  );
+  const input = screen.getByRole('combobox');
+
+  await user.click(input);
+  await user.type(input, 'x');
+  await screen.findAllByRole('option');
+  await user.keyboard('{ArrowUp}');
+  await user.keyboard('{Enter}');
+
+  expect(onChange).toHaveBeenCalledTimes(1);
+  expect(onChange).toHaveBeenCalledWith(items[0]);
+  expect(onNewValue).not.toHaveBeenCalled();
+});
+
 test.each([
   ['Home', 0],
   ['End', 2],
