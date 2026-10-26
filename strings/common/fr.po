@@ -195,7 +195,7 @@ msgstr "Créer"
 #: components/ExportFeed/Dwca.tsx:100
 #: components/ExportFeed/Dwca.tsx:128
 #: components/ExportFeed/ForceUpdate.tsx:23
-#: components/FormCells/FormTable.tsx:621
+#: components/FormCells/FormTable.tsx:696
 #: components/FormCommands/ShowTransactions.tsx:69
 #: components/FormCommands/index.tsx:96
 #: components/FormCommands/index.tsx:118
@@ -527,7 +527,7 @@ msgstr "Outils"
 #: components/DeleteBlockers/DeleteBlockersAside.tsx:126
 #: components/DeleteBlockers/DeleteBlockersAside.tsx:193
 #: components/DeleteBlockers/DeleteBlockersAside.tsx:249
-#: components/FormCells/FormTable.tsx:284
+#: components/FormCells/FormTable.tsx:303
 #: components/FormCommands/ShowTransactions.tsx:76
 #: components/FormCommands/ShowTransactions.tsx:124
 #: components/FormFields/ComboBox.tsx:131
@@ -608,10 +608,10 @@ msgstr "Téléchargé"
 #: components/ExportFeed/Editor.tsx:157
 #: components/FieldFormatters/Parts.tsx:238
 #: components/FieldFormatters/Parts.tsx:239
-#: components/FormCells/FormTable.tsx:531
-#: components/FormCells/FormTable.tsx:534
-#: components/FormCells/FormTable.tsx:543
-#: components/FormCells/FormTable.tsx:545
+#: components/FormCells/FormTable.tsx:606
+#: components/FormCells/FormTable.tsx:609
+#: components/FormCells/FormTable.tsx:618
+#: components/FormCells/FormTable.tsx:620
 #: components/FormPlugins/CollectionRelOneToMany.tsx:136
 #: components/FormSliders/IntegratedRecordSelector.tsx:347
 #: components/Formatters/Fields.tsx:236
@@ -812,8 +812,8 @@ msgstr "(s'ouvre dans un nouvel onglet)"
 #: components/Atoms/DataEntry.tsx:215
 #: components/Atoms/DataEntry.tsx:219
 #: components/Attachments/Viewer.tsx:272
-#: components/FormCells/FormTable.tsx:494
-#: components/FormCells/FormTable.tsx:497
+#: components/FormCells/FormTable.tsx:569
+#: components/FormCells/FormTable.tsx:572
 #. 🟥Used in a button that opens a link in a new tab. Used in: Components > Atoms > Data Entry ⬤ Components > Attachments > Viewer ⬤ Components > Form Cells > Form Table
 msgid "openInNewTab"
 msgstr "Ouvrir dans un nouvel onglet"
@@ -826,7 +826,7 @@ msgstr "Ouvrir dans un nouvel onglet"
 msgid "goToHomepage"
 msgstr "Accéder à la page d'accueil"
 
-#: components/FormCells/FormTable.tsx:367
+#: components/FormCells/FormTable.tsx:414
 #: components/Preferences/UserDefinitions.tsx:708
 #: components/Preferences/UserDefinitions.tsx:945
 #: components/Preferences/UserDefinitions.tsx:1640
@@ -1050,9 +1050,9 @@ msgstr "Copier dans le presse-papiers"
 msgid "selected"
 msgstr "Selectionné"
 
-#: components/FormCells/FormTable.tsx:322
-#: components/FormCells/FormTable.tsx:418
-#: components/FormCells/FormTable.tsx:420
+#: components/FormCells/FormTable.tsx:340
+#: components/FormCells/FormTable.tsx:473
+#: components/FormCells/FormTable.tsx:475
 #: components/FormSliders/IntegratedRecordSelector.tsx:112
 #: components/Formatters/Definitions.tsx:244
 #: components/Header/index.tsx:164
@@ -1067,8 +1067,8 @@ msgstr "Développer"
 msgid "expandAll"
 msgstr "Développer tout"
 
-#: components/FormCells/FormTable.tsx:378
-#: components/FormCells/FormTable.tsx:380
+#: components/FormCells/FormTable.tsx:429
+#: components/FormCells/FormTable.tsx:431
 #: components/FormSliders/IntegratedRecordSelector.tsx:112
 #: components/Header/index.tsx:164
 #: components/SchemaConfig/Tables.tsx:246
@@ -1133,7 +1133,7 @@ msgstr "Aucun disponible"
 #: components/DeleteBlockers/DeleteBlockersAside.tsx:121
 #: components/DeleteBlockers/DeleteBlockersAside.tsx:188
 #: components/DeleteBlockers/DeleteBlockersAside.tsx:244
-#: components/FormCells/FormTable.tsx:175
+#: components/FormCells/FormTable.tsx:182
 #: components/Formatters/Types.tsx:55
 #: components/Formatters/Types.tsx:59
 #: components/Header/ExpressSearchTask.tsx:366
