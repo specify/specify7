@@ -11,21 +11,23 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 2026.10.dev0\n"
 
-#: components/Preferences/UserDefinitions.tsx:2358
+#: components/Preferences/UserDefinitions.tsx:1643
+#: components/Preferences/UserDefinitions.tsx:2019
+#: components/Preferences/UserDefinitions.tsx:2464
 #: components/QueryBuilder/Header.tsx:108
-#: components/QueryBuilder/Toolbar.tsx:103
+#: components/QueryBuilder/Toolbar.tsx:131
 #: components/Reports/RecordSets.tsx:95
 #: components/Toolbar/RecordSetEdit.tsx:52
-#: components/TreeView/Actions.tsx:95
-#: components/TreeView/Actions.tsx:106
-#: components/TreeView/Actions.tsx:112
+#: components/TreeView/Actions.tsx:100
+#: components/TreeView/Actions.tsx:113
+#: components/TreeView/Actions.tsx:259
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Header ⬤ Components > Query Builder > Toolbar ⬤ Components > Reports > Record Sets ⬤ Components > Toolbar > Record Set Edit ⬤ Components > Tree View > Actions
 #, fuzzy
 msgid "query"
 msgstr "Consulta"
 
 #: components/Header/menuItemDefinitions.ts:70
-#: components/Router/OverlayRoutes.tsx:124
+#: components/Router/OverlayRoutes.tsx:131
 #: components/Toolbar/Query.tsx:79
 #: components/Toolbar/Query.tsx:242
 #: components/Toolbar/Query.tsx:246
@@ -37,11 +39,12 @@ msgid "queries"
 msgstr "Consultas"
 
 #: components/Preferences/CollectionDefinitions.tsx:317
-#: components/Preferences/UserDefinitions.tsx:1794
+#: components/Preferences/UserDefinitions.tsx:1888
+#: components/Preferences/index.tsx:279
 #: components/SearchDialog/index.tsx:243
 #: components/SearchDialog/index.tsx:387
 #: components/Security/registry.ts:210
-#. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Search Dialog > Index ⬤ Components > Security > Registry
+#. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Preferences > Index ⬤ Components > Search Dialog > Index ⬤ Components > Security > Registry
 #, fuzzy
 msgid "queryBuilder"
 msgstr "Construtor de consultas"
@@ -189,31 +192,33 @@ msgstr ""
 msgid "treeQueryName"
 msgstr "{tableName:string} usando \"{nodeFullName:string}\""
 
-#: components/QueryBuilder/Wrapped.tsx:491
+#: components/QueryBuilder/Wrapped.tsx:501
 #. Used in: Components > Query Builder > Wrapped
 #, fuzzy
 msgid "newButtonDescription"
 msgstr "Adicionar novo campo"
 
-#: components/QueryBuilder/Toolbar.tsx:87
-#. 🟥Verb. Used in: Components > Query Builder > Toolbar
+#: components/Preferences/UserDefinitions.tsx:2020
+#: components/QueryBuilder/Toolbar.tsx:114
+#. 🟥Verb. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Toolbar
 #, fuzzy
 msgid "countOnly"
 msgstr "Contar"
 
-#: components/QueryBuilder/Toolbar.tsx:74
-#. Used in: Components > Query Builder > Toolbar
+#: components/Preferences/UserDefinitions.tsx:2021
+#: components/QueryBuilder/Toolbar.tsx:98
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Toolbar
 #, fuzzy
 msgid "distinct"
 msgstr "Distinto"
 
-#: components/QueryBuilder/Toolbar.tsx:60
+#: components/QueryBuilder/Toolbar.tsx:84
 #. Used in: Components > Query Builder > Toolbar
 #, fuzzy
 msgid "series"
 msgstr "Série"
 
-#: components/QueryBuilder/Toolbar.tsx:83
+#: components/QueryBuilder/Toolbar.tsx:107
 #. Used in: Components > Query Builder > Toolbar
 #, fuzzy
 msgid "searchSynonyms"
@@ -440,7 +445,7 @@ msgstr "Em"
 msgid "inDescription"
 msgstr "Uma lista de valores separados por vírgulas"
 
-#: components/Preferences/UserDefinitions.tsx:1552
+#: components/Preferences/UserDefinitions.tsx:1633
 #: components/QueryBuilder/FieldFilterSpec.tsx:512
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter Spec
 #, fuzzy
@@ -459,7 +464,7 @@ msgstr "Vazio"
 msgid "and"
 msgstr "e"
 
-#: components/Preferences/UserDefinitions.tsx:1548
+#: components/Preferences/UserDefinitions.tsx:1629
 #: components/QueryBuilder/FieldFilterSpec.tsx:520
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter Spec
 #, fuzzy
@@ -490,16 +495,17 @@ msgid "yes"
 msgstr "Sim"
 
 #: components/QueryBuilder/ResultsTable.tsx:236
-#: components/QueryBuilder/ToForms.tsx:57
+#: components/QueryBuilder/ToForms.tsx:63
 #. Used in: Components > Query Builder > Results Table ⬤ Components > Query Builder > To Forms
 #, fuzzy
 msgid "queryResults"
 msgstr "Resultados da consulta"
 
 #: components/BatchIdentify/index.tsx:778
-#: components/LocalityUpdate/Status.tsx:325
-#: components/QueryBuilder/ToForms.tsx:44
-#. Used in: Components > Batch Identify > Index ⬤ Components > Locality Update > Status ⬤ Components > Query Builder > To Forms
+#: components/LocalityUpdate/Status.tsx:371
+#: components/Preferences/UserDefinitions.tsx:2023
+#: components/QueryBuilder/ToForms.tsx:50
+#. Used in: Components > Batch Identify > Index ⬤ Components > Locality Update > Status ⬤ Components > Preferences > User Definitions ⬤ Components > Query Builder > To Forms
 #, fuzzy
 msgid "browseInForms"
 msgstr "Navegar em formulários"
@@ -661,7 +667,7 @@ msgstr "Mudar para absoluto"
 msgid "scrollToEditor"
 msgstr "Vá até o editor"
 
-#: components/LocalityUpdate/Status.tsx:312
+#: components/LocalityUpdate/Status.tsx:313
 #: components/QueryBuilder/ResultsTable.tsx:221
 #. Used in: Components > Locality Update > Status ⬤ Components > Query Builder > Results Table
 #, fuzzy

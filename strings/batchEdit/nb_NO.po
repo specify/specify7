@@ -27,7 +27,7 @@ msgstr ""
 #: components/BatchEdit/__tests__/MissingRanks.test.tsx:110
 #: components/BatchEdit/__tests__/MissingRanks.test.tsx:144
 #: components/Header/menuItemDefinitions.ts:117
-#: components/Preferences/UserDefinitions.tsx:2355
+#: components/Preferences/UserDefinitions.tsx:2461
 #: components/Router/OverlayRoutes.tsx:272
 #: components/WbUtils/datasetVariants.tsx:88
 #: components/WbUtils/datasetVariants.tsx:104
@@ -41,7 +41,7 @@ msgstr "Batch-redigering"
 msgid "batchEditPrefs"
 msgstr "Batch-redigering innstillinger"
 
-#: components/Preferences/UserDefinitions.tsx:2361
+#: components/Preferences/UserDefinitions.tsx:2467
 #. Used in: Components > Preferences > User Definitions
 msgid "numberOfRecords"
 msgstr "Antall poster valgt fra søket"
@@ -89,12 +89,12 @@ msgstr ""
 "Bruk utvidet-søk-byggeren til å opprette et nytt datasett for "
 "batch-redigering"
 
-#: components/Preferences/UserDefinitions.tsx:2384
+#: components/Preferences/UserDefinitions.tsx:2490
 #. Used in: Components > Preferences > User Definitions
 msgid "showRollback"
 msgstr "Vis tilbakerullingsknapp"
 
-#: components/Preferences/UserDefinitions.tsx:2389
+#: components/Preferences/UserDefinitions.tsx:2495
 #. Used in: Components > Preferences > User Definitions
 msgid "showRollbackDescription"
 msgstr ""
@@ -221,12 +221,12 @@ msgstr ""
 "(Datasett for batch-redigering kan ikke redigeres etter tilbakestilling – "
 "skrivebeskyttet)"
 
-#: components/Preferences/UserDefinitions.tsx:2376
+#: components/Preferences/UserDefinitions.tsx:2482
 #. Used in: Components > Preferences > User Definitions
 msgid "enableRelationships"
 msgstr "Aktiver relasjoner"
 
-#: components/Preferences/UserDefinitions.tsx:2381
+#: components/Preferences/UserDefinitions.tsx:2487
 #. Used in: Components > Preferences > User Definitions
 msgid "enableRelationshipsDescription"
 msgstr ""

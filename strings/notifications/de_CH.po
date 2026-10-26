@@ -45,7 +45,7 @@ msgstr "Fehler"
 #: components/AppResources/EditorComponents.tsx:161
 #: components/Attachments/Cell.tsx:87
 #: components/Attachments/Viewer.tsx:264
-#: components/LocalityUpdate/Status.tsx:400
+#: components/LocalityUpdate/Status.tsx:417
 #: components/Notifications/NotificationRenderers.tsx:146
 #: components/Notifications/NotificationRenderers.tsx:176
 #: components/Notifications/NotificationRenderers.tsx:234

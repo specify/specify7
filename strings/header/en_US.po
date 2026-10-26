@@ -1,7 +1,7 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/Core/Main.tsx:66
+#: components/Core/Main.tsx:67
 #. 🟥For accessibility purposes. Allows jumping to page content. Used in: Components > Core > Main
 msgid "skipToContent"
 msgstr "Skip to Content"
@@ -77,7 +77,8 @@ msgstr "Export started. You will receive a notification when the export is compl
 
 #: components/Header/userToolDefinitions.ts:144
 #: components/LocalityUpdate/index.tsx:83
-#. Used in: Components > Header > User Tool Definitions ⬤ Components > Locality Update > Index
+#: components/Router/Routes.tsx:250
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Locality Update > Index ⬤ Components > Router > Routes
 msgid "localityUpdateTool"
 msgstr "Locality Update Tool"
 
@@ -145,19 +146,20 @@ msgid "metadataResource"
 msgstr "Metadata Resource"
 
 #: components/Header/ExpressSearchTask.tsx:68
-#: components/Header/ExpressSearchTask.tsx:200
+#: components/Header/ExpressSearchTask.tsx:205
+#: components/Header/menuItemDefinitions.ts:125
 #: components/Router/OverlayRoutes.tsx:53
-#: components/Router/Routes.tsx:33
-#. Used in: Components > Header > Express Search Task ⬤ Components > Router > Overlay Routes ⬤ Components > Router > Routes
+#: components/Router/Routes.tsx:34
+#. Used in: Components > Header > Express Search Task ⬤ Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Router > Routes
 msgid "simpleSearch"
 msgstr "Express Search"
 
-#: components/Header/ExpressSearchTask.tsx:234
+#: components/Header/ExpressSearchTask.tsx:239
 #. Used in: Components > Header > Express Search Task
 msgid "primarySearch"
 msgstr "Primary Search"
 
-#: components/Header/ExpressSearchTask.tsx:240
+#: components/Header/ExpressSearchTask.tsx:245
 #. Used in: Components > Header > Express Search Task
 msgid "secondarySearch"
 msgstr "Secondary Search"
@@ -169,9 +171,11 @@ msgstr "Menu Items"
 
 #: components/Header/UserTools.tsx:48
 #: components/Header/UserTools.tsx:79
+#: components/KeyboardShortcuts/UrlShortcuts.tsx:238
 #: components/Preferences/Renderers.tsx:126
+#: components/Preferences/UserDefinitions.tsx:719
 #: components/Router/OverlayRoutes.tsx:45
-#. Used in: Components > Header > User Tools ⬤ Components > Preferences > Renderers ⬤ Components > Router > Overlay Routes
+#. Used in: Components > Header > User Tools ⬤ Components > Keyboard Shortcuts > Url Shortcuts ⬤ Components > Preferences > Renderers ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes
 msgid "userTools"
 msgstr "User Tools"
 
@@ -226,11 +230,11 @@ msgstr "Operations API"
 #: components/AppResources/Create.tsx:133
 #: components/AppResources/Filters.tsx:171
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:271
-#: components/Header/ExpressSearchTask.tsx:156
+#: components/Header/ExpressSearchTask.tsx:161
 #: components/Header/userToolDefinitions.ts:158
-#: components/Preferences/UserDefinitions.tsx:625
-#: components/Preferences/index.tsx:70
-#: components/Preferences/index.tsx:76
+#: components/Preferences/UserDefinitions.tsx:639
+#: components/Preferences/index.tsx:91
+#: components/Preferences/index.tsx:97
 #: components/SetupTool/index.tsx:285
 #: components/Toolbar/WbsDialog.tsx:227
 #: components/WbPlanView/MapperComponents.tsx:89
@@ -255,7 +259,7 @@ msgstr "Community Forum"
 
 #: components/Errors/ErrorDialog.tsx:150
 #: components/Header/userToolDefinitions.ts:182
-#: components/Router/Routes.tsx:483
+#: components/Router/Routes.tsx:485
 #: components/RouterCommands/CacheBuster.tsx:39
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Router Commands > Cache Buster
 msgid "clearCache"

@@ -34,14 +34,14 @@ msgstr "Brukernavn"
 msgid "password"
 msgstr "Passord"
 
-#: components/FormPlugins/CollectionRelOneToMany.tsx:181
-#: components/QueryComboBox/index.tsx:715
+#: components/FormPlugins/CollectionRelOneToMany.tsx:182
+#: components/QueryComboBox/index.tsx:716
 #. Used in: Components > Form Plugins > Collection Rel One To Many ⬤ Components > Query Combo Box > Index
 msgid "collectionAccessDenied"
 msgstr "Du har ikke tilgang til denne samlingen"
 
-#: components/FormPlugins/CollectionRelOneToMany.tsx:184
-#: components/QueryComboBox/index.tsx:718
+#: components/FormPlugins/CollectionRelOneToMany.tsx:185
+#: components/QueryComboBox/index.tsx:719
 #. Used in: Components > Form Plugins > Collection Rel One To Many ⬤ Components > Query Combo Box > Index
 msgid "collectionAccessDeniedDescription"
 msgstr ""
@@ -86,9 +86,9 @@ msgstr "Nytt passord"
 msgid "repeatPassword"
 msgstr "Gjenta nytt passord"
 
-#: components/Core/Main.tsx:97
+#: components/Core/Main.tsx:99
 #: components/Header/userToolDefinitions.ts:29
-#: components/Router/Routes.tsx:491
+#: components/Router/Routes.tsx:493
 #. Used in: Components > Core > Main ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes
 msgid "logOut"
 msgstr "Logg ut"
@@ -98,12 +98,12 @@ msgstr "Logg ut"
 msgid "setUserAgents"
 msgstr "Angi brukeragenter"
 
-#: components/Core/Main.tsx:104
+#: components/Core/Main.tsx:106
 #. Used in: Components > Core > Main
 msgid "noAgent"
 msgstr "Gjeldende bruker har ikke en agent tildelt"
 
-#: components/Core/Main.tsx:109
+#: components/Core/Main.tsx:111
 #. Used in: Components > Core > Main
 msgid "noAgentDescription"
 msgstr "Vennligst logg inn som administrator og tilordne en agent til denne brukeren"
@@ -324,8 +324,8 @@ msgid "configureCollectionAccess"
 msgstr "Velg tilgang til brukersamling"
 
 #: components/Header/userToolDefinitions.ts:92
-#: components/Router/Routes.tsx:73
-#: components/Router/Routes.tsx:179
+#: components/Router/Routes.tsx:74
+#: components/Router/Routes.tsx:181
 #: components/Toolbar/Security.tsx:102
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Toolbar > Security
 msgid "securityPanel"
@@ -435,13 +435,14 @@ msgstr "Alle handlinger"
 msgid "collectionAccess"
 msgstr "Aktiver tilgang til samlinger"
 
-#: components/Router/Routes.tsx:150
+#: components/Router/Routes.tsx:93
+#: components/Router/Routes.tsx:152
 #. Used in: Components > Router > Routes
 msgid "createRole"
 msgstr "Opprett rolle"
 
-#: components/Router/Routes.tsx:99
-#: components/Router/Routes.tsx:158
+#: components/Router/Routes.tsx:101
+#: components/Router/Routes.tsx:160
 #: components/Security/RoleTemplate.tsx:83
 #. Used in: Components > Router > Routes ⬤ Components > Security > Role Template
 msgid "newRole"

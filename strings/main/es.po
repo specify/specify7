@@ -24,7 +24,7 @@ msgstr "Specify 7"
 #: components/Formatters/Element.tsx:66
 #: components/Router/NotFoundView.tsx:15
 #: components/Router/NotFoundView.tsx:20
-#: components/Router/RouterUtils.tsx:194
+#: components/Router/RouterUtils.tsx:200
 #. 🟥Used in title. Used in: Components > Formatters > Element ⬤ Components > Router > Not Found View ⬤ Components > Router > Router Utils
 msgid "pageNotFound"
 msgstr "Página no encontrada"
@@ -90,8 +90,8 @@ msgstr ""
 
 #: components/Core/__tests__/Contexts.test.tsx:48
 #: components/Errors/ErrorDialog.tsx:194
-#: components/LocalityUpdate/Status.tsx:382
-#: components/LocalityUpdate/Status.tsx:429
+#: components/LocalityUpdate/Status.tsx:399
+#: components/LocalityUpdate/Status.tsx:446
 #. Used in: Core > __tests__ > Contexts ⬤ Components > Errors > Error Dialog ⬤ Components > Locality Update > Status
 msgid "errorMessage"
 msgstr "Mensaje de error"

@@ -39,15 +39,15 @@ msgstr "Korisničko ime"
 msgid "password"
 msgstr "Lozinka"
 
-#: components/FormPlugins/CollectionRelOneToMany.tsx:181
-#: components/QueryComboBox/index.tsx:715
+#: components/FormPlugins/CollectionRelOneToMany.tsx:182
+#: components/QueryComboBox/index.tsx:716
 #. Used in: Components > Form Plugins > Collection Rel One To Many ⬤ Components > Query Combo Box > Index
 #, fuzzy
 msgid "collectionAccessDenied"
 msgstr "Nemate pristup ovoj kolekciji"
 
-#: components/FormPlugins/CollectionRelOneToMany.tsx:184
-#: components/QueryComboBox/index.tsx:718
+#: components/FormPlugins/CollectionRelOneToMany.tsx:185
+#: components/QueryComboBox/index.tsx:719
 #. Used in: Components > Form Plugins > Collection Rel One To Many ⬤ Components > Query Combo Box > Index
 #, fuzzy
 msgid "collectionAccessDeniedDescription"
@@ -95,9 +95,9 @@ msgstr "Nova lozinka"
 msgid "repeatPassword"
 msgstr "Ponovite novu lozinku"
 
-#: components/Core/Main.tsx:97
+#: components/Core/Main.tsx:99
 #: components/Header/userToolDefinitions.ts:29
-#: components/Router/Routes.tsx:491
+#: components/Router/Routes.tsx:493
 #. Used in: Components > Core > Main ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes
 #, fuzzy
 msgid "logOut"
@@ -109,13 +109,13 @@ msgstr "Odjava"
 msgid "setUserAgents"
 msgstr "Postavljanje korisničkih agenata"
 
-#: components/Core/Main.tsx:104
+#: components/Core/Main.tsx:106
 #. Used in: Components > Core > Main
 #, fuzzy
 msgid "noAgent"
 msgstr "Trenutni korisnik nema dodijeljenog agenta"
 
-#: components/Core/Main.tsx:109
+#: components/Core/Main.tsx:111
 #. Used in: Components > Core > Main
 #, fuzzy
 msgid "noAgentDescription"
@@ -373,8 +373,8 @@ msgid "configureCollectionAccess"
 msgstr "Odaberite pristup korisničke zbirke"
 
 #: components/Header/userToolDefinitions.ts:92
-#: components/Router/Routes.tsx:73
-#: components/Router/Routes.tsx:179
+#: components/Router/Routes.tsx:74
+#: components/Router/Routes.tsx:181
 #: components/Toolbar/Security.tsx:102
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Toolbar > Security
 #, fuzzy
@@ -504,14 +504,15 @@ msgstr "Sve radnje"
 msgid "collectionAccess"
 msgstr "Omogući pristup zbirci"
 
-#: components/Router/Routes.tsx:150
+#: components/Router/Routes.tsx:93
+#: components/Router/Routes.tsx:152
 #. Used in: Components > Router > Routes
 #, fuzzy
 msgid "createRole"
 msgstr "Stvori ulogu"
 
-#: components/Router/Routes.tsx:99
-#: components/Router/Routes.tsx:158
+#: components/Router/Routes.tsx:101
+#: components/Router/Routes.tsx:160
 #: components/Security/RoleTemplate.tsx:83
 #. Used in: Components > Router > Routes ⬤ Components > Security > Role Template
 #, fuzzy

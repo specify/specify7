@@ -12,20 +12,22 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 2026.11.dev0\n"
 
-#: components/Preferences/UserDefinitions.tsx:812
-#. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:847
+#: components/Preferences/index.tsx:261
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Preferences > Index
 msgid "forms"
 msgstr "Форми"
 
-#: components/Atoms/DataEntry.tsx:153
-#: components/Forms/Save.tsx:271
+#: components/Atoms/DataEntry.tsx:184
+#: components/Forms/Save.tsx:317
 #: components/Forms/__tests__/Save.test.tsx:24
+#: components/Preferences/UserDefinitions.tsx:956
 #: components/Statistics/ResultsDialog.tsx:69
-#. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Save ⬤ Forms > __tests__ > Save ⬤ Components > Statistics > Results Dialog
+#. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Save ⬤ Forms > __tests__ > Save ⬤ Components > Preferences > User Definitions ⬤ Components > Statistics > Results Dialog
 msgid "clone"
 msgstr "Клон"
 
-#: components/Forms/Save.tsx:272
+#: components/Forms/Save.tsx:318
 #. Used in: Components > Forms > Save
 msgid "cloneDescription"
 msgstr "Створити повну копію поточного запису"
@@ -176,7 +178,7 @@ msgstr "У цьому {pickListTable:string} підтримуються лише
 
 #: components/Attachments/Plugin.tsx:117
 #: components/FormCells/FormTable.tsx:286
-#: components/FormCells/FormTable.tsx:647
+#: components/FormCells/FormTable.tsx:650
 #: components/Forms/BaseResourceView.tsx:106
 #. Used in: Components > Attachments > Plugin ⬤ Components > Form Cells > Form Table ⬤ Components > Forms > Base Resource View
 msgid "noData"
@@ -196,33 +198,17 @@ msgstr ""
 msgid "saveRecordFirst"
 msgstr "Спочатку збережіть запис"
 
-#: components/FormSliders/useSliderButtons.tsx:34
-#: components/FormSliders/useSliderButtons.tsx:36
-#: components/Preferences/UserDefinitions.tsx:1231
-#. Used in: Components > Form Sliders > Use Slider Buttons ⬤ Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1292
+#. Used in: Components > Preferences > User Definitions
 msgid "firstRecord"
 msgstr "Перший запис"
 
-#: components/FormSliders/useSliderButtons.tsx:69
-#: components/FormSliders/useSliderButtons.tsx:71
-#: components/Preferences/UserDefinitions.tsx:1235
-#. Used in: Components > Form Sliders > Use Slider Buttons ⬤ Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1296
+#. Used in: Components > Preferences > User Definitions
 msgid "lastRecord"
 msgstr "Останній запис"
 
-#: components/FormSliders/useSliderButtons.tsx:45
-#: components/FormSliders/useSliderButtons.tsx:48
-#. Used in: Components > Form Sliders > Use Slider Buttons
-msgid "previousRecord"
-msgstr "Попередній запис"
-
-#: components/FormSliders/useSliderButtons.tsx:57
-#: components/FormSliders/useSliderButtons.tsx:60
-#. Used in: Components > Form Sliders > Use Slider Buttons
-msgid "nextRecord"
-msgstr "Наступний запис"
-
-#: components/FormSliders/Slider.tsx:67
+#: components/FormSliders/Slider.tsx:106
 #. Used in: Components > Form Sliders > Slider
 msgid "currentRecord"
 msgstr "Поточний об'єкт (з {total:number|formatted})"
@@ -235,12 +221,12 @@ msgid "unsavedFormUnloadProtect"
 msgstr "Цю форму не збережено."
 
 #: components/AttachmentsBulkImport/utils.ts:618
-#: components/Forms/Save.tsx:305
+#: components/Forms/Save.tsx:351
 #. 🟥Meaning a conflict occurred when saving. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Forms > Save
 msgid "saveConflict"
 msgstr "Зберегти конфлікт"
 
-#: components/Forms/Save.tsx:308
+#: components/Forms/Save.tsx:354
 #. Used in: Components > Forms > Save
 msgid "saveConflictDescription"
 msgstr ""
@@ -248,12 +234,12 @@ msgstr ""
 "або в іншій вкладці браузера та застарілі. Сторінку необхідно "
 "перезавантажити, щоб запобігти збереженню невідповідних даних."
 
-#: components/Forms/Save.tsx:339
+#: components/Forms/Save.tsx:385
 #. Used in: Components > Forms > Save
 msgid "saveBlocked"
 msgstr "Зберегти заблоковано"
 
-#: components/Forms/Save.tsx:342
+#: components/Forms/Save.tsx:388
 #. Used in: Components > Forms > Save
 msgid "saveBlockedDescription"
 msgstr "Форму неможливо зберегти через таку помилку:"
@@ -420,24 +406,24 @@ msgstr "Непідтримуваний тип клітинки"
 msgid "additionalResultsOmitted"
 msgstr "Додаткові результати пропущені"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:290
+#: components/FormSliders/RecordSelectorFromIds.tsx:295
 #: components/FormSliders/RecordSelectorFromPage.tsx:254
 #. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Form Sliders > Record Selector From Page
 msgid "recordSelectorUnloadProtect"
 msgstr "Продовжити без збереження?"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:293
+#: components/FormSliders/RecordSelectorFromIds.tsx:298
 #: components/FormSliders/RecordSelectorFromPage.tsx:257
 #. 🟥When in record set and current record is unsaved and try to navigate to another record. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Form Sliders > Record Selector From Page
 msgid "recordSelectorUnloadProtectDescription"
 msgstr "Можливо, ви захочете зберегти цей запис, перш ніж залишати сторінку."
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:229
+#: components/FormSliders/RecordSelectorFromIds.tsx:234
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "creatingNewRecord"
 msgstr "Створення нового запису"
 
-#: components/FormSliders/RecordSet.tsx:376
+#: components/FormSliders/RecordSet.tsx:377
 #. Used in: Components > Form Sliders > Record Set
 msgid "createNewRecordSet"
 msgstr "Створити новий набір записів"
@@ -459,22 +445,22 @@ msgstr "Зворотний"
 msgid "deletedInline"
 msgstr "(видалено)"
 
-#: components/FormSliders/RecordSet.tsx:524
+#: components/FormSliders/RecordSet.tsx:525
 #. 🟥Example: Duplicate Record Set Item. Used in: Components > Form Sliders > Record Set
 msgid "duplicateRecordSetItem"
 msgstr "Дублікат {recordSetItemTable:string}"
 
-#: components/FormSliders/RecordSet.tsx:529
+#: components/FormSliders/RecordSet.tsx:530
 #. Used in: Components > Form Sliders > Record Set
 msgid "duplicateRecordSetItemDescription"
 msgstr "Цей запис вже присутній у поточному {recordSetTable:string}"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:174
+#: components/FormSliders/RecordSelectorFromIds.tsx:178
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "addToRecordSet"
 msgstr "Додати до {recordSetTable:string}"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:179
+#: components/FormSliders/RecordSelectorFromIds.tsx:183
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "removeFromRecordSet"
 msgstr "Видалити з {recordSetTable:string}"
@@ -486,8 +472,9 @@ msgid "nothingFound"
 msgstr "Нічого не знайдено"
 
 #: components/Forms/BulkCarryForward.tsx:290
-#: components/Forms/Save.tsx:253
-#. 🟥Verb. Button label. Used in: Components > Forms > Bulk Carry Forward ⬤ Components > Forms > Save
+#: components/Forms/Save.tsx:304
+#: components/Preferences/UserDefinitions.tsx:953
+#. 🟥Verb. Button label. Used in: Components > Forms > Bulk Carry Forward ⬤ Components > Forms > Save ⬤ Components > Preferences > User Definitions
 msgid "carryForward"
 msgstr "Перенести далі"
 
@@ -506,7 +493,7 @@ msgstr "Показати кількість групового перенесе�
 msgid "bulkCarryForwardCount"
 msgstr "Кількість перенесених даних"
 
-#: components/Forms/Save.tsx:254
+#: components/Forms/Save.tsx:305
 #. Used in: Components > Forms > Save
 msgid "carryForwardDescription"
 msgstr "Створити новий запис із перенесенням певних полів"
@@ -588,7 +575,7 @@ msgstr "Кнопка «Показати клон»"
 msgid "addButtonEnabled"
 msgstr "Показати кнопку «Додати»"
 
-#: components/Forms/Save.tsx:280
+#: components/Forms/Save.tsx:326
 #. Used in: Components > Forms > Save
 msgid "addButtonDescription"
 msgstr "Створити новий пустий запис"
@@ -645,17 +632,17 @@ msgstr "Історія редагування"
 msgid "editHistoryQueryName"
 msgstr "Історія редагувань для \"{formattedRecord:string}\""
 
-#: components/FormMeta/index.tsx:151
+#: components/FormMeta/index.tsx:162
 #. Used in: Components > Form Meta > Index
 msgid "formConfiguration"
 msgstr "Конфігурація форми"
 
-#: components/FormMeta/index.tsx:183
+#: components/FormMeta/index.tsx:194
 #. Used in: Components > Form Meta > Index
 msgid "formState"
 msgstr "Стан форми"
 
-#: components/FormMeta/index.tsx:232
+#: components/FormMeta/index.tsx:243
 #. Used in: Components > Form Meta > Index
 msgid "recordInformation"
 msgstr "Інформація про запис"
@@ -682,12 +669,12 @@ msgid "subForm"
 msgstr "Підформа"
 
 #: components/FormMeta/SubViewMeta.tsx:37
-#: components/Preferences/UserDefinitions.tsx:1242
+#: components/Preferences/UserDefinitions.tsx:1323
 #. Used in: Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 msgid "formTable"
 msgstr "Сітка"
 
-#: components/FormMeta/index.tsx:201
+#: components/FormMeta/index.tsx:212
 #. Used in: Components > Form Meta > Index
 msgid "subviewConfiguration"
 msgstr "Підвид"
@@ -713,10 +700,10 @@ msgstr "Налаштування таблиць для введення дани
 msgid "configureInteractionTables"
 msgstr "Налаштування таблиць взаємодії"
 
-#: components/FormMeta/index.tsx:69
-#: components/FormMeta/index.tsx:71
-#: components/QueryBuilder/__tests__/RecordMergingAvailability.test.tsx:122
-#: components/QueryBuilder/__tests__/RecordMergingAvailability.test.tsx:135
+#: components/FormMeta/index.tsx:80
+#: components/FormMeta/index.tsx:82
+#: components/QueryBuilder/__tests__/RecordMergingAvailability.test.tsx:123
+#: components/QueryBuilder/__tests__/RecordMergingAvailability.test.tsx:136
 #. Used in: Components > Form Meta > Index ⬤ Query Builder > __tests__ > Record Merging Availability
 msgid "formMeta"
 msgstr "Метадані форми"
@@ -756,10 +743,46 @@ msgstr "(Діапазон: {from:string} - {to:string})"
 msgid "catalogNumberNumericFormatter"
 msgstr "Номер у каталозі (числовий)"
 
-#: components/FormCells/COJODialog.tsx:94
+#: components/FormCells/COJODialog.tsx:96
 #. Used in: Components > Form Cells > COJODialog
 msgid "addCOGChildren"
 msgstr "Додати дочірні елементи COG"
+
+#: components/FormSliders/Slider.tsx:81
+#: components/FormSliders/Slider.tsx:83
+#: components/FormSliders/useSliderButtons.tsx:34
+#: components/FormSliders/useSliderButtons.tsx:36
+#: components/Preferences/UserDefinitions.tsx:1301
+#. Used in: Components > Form Sliders > Slider ⬤ Components > Form Sliders > Use Slider Buttons ⬤ Components > Preferences > User Definitions
+msgid "goToFirstRecord"
+msgstr "Перейти до першого запису"
+
+#: components/FormSliders/Slider.tsx:145
+#: components/FormSliders/Slider.tsx:147
+#: components/FormSliders/useSliderButtons.tsx:69
+#: components/FormSliders/useSliderButtons.tsx:71
+#: components/Preferences/UserDefinitions.tsx:1313
+#. Used in: Components > Form Sliders > Slider ⬤ Components > Form Sliders > Use Slider Buttons ⬤ Components > Preferences > User Definitions
+msgid "goToLastRecord"
+msgstr "Перейти до останнього запису"
+
+#: components/FormSliders/Slider.tsx:89
+#: components/FormSliders/Slider.tsx:92
+#: components/FormSliders/useSliderButtons.tsx:45
+#: components/FormSliders/useSliderButtons.tsx:48
+#: components/Preferences/UserDefinitions.tsx:1305
+#. Used in: Components > Form Sliders > Slider ⬤ Components > Form Sliders > Use Slider Buttons ⬤ Components > Preferences > User Definitions
+msgid "goToPreviousRecord"
+msgstr "Перейти до попереднього запису"
+
+#: components/FormSliders/Slider.tsx:136
+#: components/FormSliders/Slider.tsx:139
+#: components/FormSliders/useSliderButtons.tsx:57
+#: components/FormSliders/useSliderButtons.tsx:60
+#: components/Preferences/UserDefinitions.tsx:1309
+#. Used in: Components > Form Sliders > Slider ⬤ Components > Form Sliders > Use Slider Buttons ⬤ Components > Preferences > User Definitions
+msgid "goToNextRecord"
+msgstr "Перейти до наступного запису"
 
 #: components/Forms/useShowParentButton.tsx:44
 #. Used in: Components > Forms > Use Show Parent Button

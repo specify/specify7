@@ -22,9 +22,9 @@ msgstr ""
 #: components/Molecules/SyncAttachmentPicker.tsx:127
 #: components/Preferences/CollectionDefinitions.tsx:47
 #: components/Preferences/GlobalDefinitions.tsx:107
-#: components/Preferences/UserDefinitions.tsx:1428
-#: components/Router/Routes.tsx:190
-#: components/Router/Routes.tsx:522
+#: components/Preferences/UserDefinitions.tsx:1509
+#: components/Router/Routes.tsx:192
+#: components/Router/Routes.tsx:524
 #: components/Statistics/StatsSpec.tsx:508
 #: components/WbAttachmentViewer/index.tsx:132
 #: components/WbImportAttachments/index.tsx:131
@@ -55,7 +55,7 @@ msgstr "Skala"
 #: components/Attachments/__tests__/AttachmentsView.test.tsx:131
 #: components/AttachmentsBulkImport/Upload.tsx:257
 #: components/AttachmentsBulkImport/Upload.tsx:264
-#: components/Header/index.tsx:237
+#: components/Header/index.tsx:240
 #: components/WbImportAttachments/index.tsx:134
 #. Used in: Components > Attachments > Plugin ⬤ Components > Attachments > Viewer ⬤ Components > Attachments > Index ⬤ Attachments > __tests__ > Attachments View ⬤ Components > Attachments Bulk Import > Upload ⬤ Components > Header > Index ⬤ Components > Wb Import Attachments > Index
 msgid "attachmentServerUnavailable"
@@ -70,7 +70,7 @@ msgstr "Sett opp vedleggsserveren din"
 
 #: components/Attachments/index.tsx:217
 #: components/FormMeta/SubViewMeta.tsx:42
-#: components/Preferences/UserDefinitions.tsx:1415
+#: components/Preferences/UserDefinitions.tsx:1496
 #. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 msgid "orderBy"
 msgstr "Sorter etter"
@@ -278,24 +278,24 @@ msgstr "Se etter flere vedlegg"
 msgid "hideForm"
 msgstr "Skjul skjema"
 
-#: components/Preferences/UserDefinitions.tsx:1465
+#: components/Preferences/UserDefinitions.tsx:1546
 #. Used in: Components > Preferences > User Definitions
 msgid "collapseFormByDefault"
 msgstr "Skjul skjema som standard"
 
-#: components/Preferences/UserDefinitions.tsx:1466
+#: components/Preferences/UserDefinitions.tsx:1547
 #. Used in: Components > Preferences > User Definitions
 msgid "collapseFormByDefaultDescription"
 msgstr ""
 "Skal vedleggsskjemaet skjules som standard når eksisterende vedlegg vises? "
 "Hvis vedleggskontrollene er skjult, har denne innstillingen ingen effekt."
 
-#: components/Preferences/UserDefinitions.tsx:1457
+#: components/Preferences/UserDefinitions.tsx:1538
 #. Used in: Components > Preferences > User Definitions
 msgid "showControls"
 msgstr "Vis vedleggskontroller"
 
-#: components/Preferences/UserDefinitions.tsx:1458
+#: components/Preferences/UserDefinitions.tsx:1539
 #. Used in: Components > Preferences > User Definitions
 msgid "showControlsDescription"
 msgstr ""
@@ -328,7 +328,7 @@ msgid "stoppedByUser"
 msgstr "Stoppet av bruker"
 
 #: components/Router/OverlayRoutes.tsx:255
-#: components/Router/Routes.tsx:221
+#: components/Router/Routes.tsx:223
 #: components/Toolbar/WbsDialog.tsx:195
 #: components/WbImportAttachments/index.tsx:162
 #. Used in: Components > Router > Overlay Routes ⬤ Components > Router > Routes ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Wb Import Attachments > Index

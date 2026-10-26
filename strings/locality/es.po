@@ -18,7 +18,7 @@ msgid "openMap"
 msgstr "Abrir mapa"
 
 #: components/Leaflet/Map.tsx:108
-#: components/Preferences/UserDefinitions.tsx:2303
+#: components/Preferences/UserDefinitions.tsx:2409
 #: components/QueryBuilder/ToMap.tsx:67
 #: components/QueryBuilder/ToMap.tsx:264
 #: components/WbToolkit/WbLeafletMap.tsx:65
@@ -238,7 +238,7 @@ msgstr "Importación del conjunto de datos de localidad"
 msgid "localityUpdateParsed"
 msgstr "Se ha analizado el conjunto de datos de actualización de localidad."
 
-#: components/LocalityUpdate/Status.tsx:474
+#: components/LocalityUpdate/Status.tsx:491
 #: components/LocalityUpdate/utils.ts:38
 #: components/Notifications/NotificationRenderers.tsx:73
 #. Used in: Components > Locality Update > Status ⬤ Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
@@ -267,21 +267,21 @@ msgstr "Actualización de localidad cancelada"
 msgid "localityUpdateSucceeded"
 msgstr "Actualización de localidad realizada con éxito"
 
-#: components/LocalityUpdate/Status.tsx:478
-#: components/LocalityUpdate/Status.tsx:516
+#: components/LocalityUpdate/Status.tsx:495
+#: components/LocalityUpdate/Status.tsx:533
 #. Used in: Components > Locality Update > Status
 #, fuzzy
 msgid "localityUpdateWentWrong"
 msgstr "Algo salió mal durante el proceso de actualización de localidad."
 
-#: components/LocalityUpdate/Status.tsx:375
+#: components/LocalityUpdate/Status.tsx:392
 #. 🟥The file name which is used when Parse Errors are exported. The .csv file extension is appended to the end of this string. Used in: Components > Locality Update > Status
 #, fuzzy
 msgid "localityUpdateParseErrorFileName"
 msgstr "Errores de actualización de localidad - {date:string}"
 
-#: components/LocalityUpdate/Status.tsx:460
-#: components/LocalityUpdate/Status.tsx:501
+#: components/LocalityUpdate/Status.tsx:477
+#: components/LocalityUpdate/Status.tsx:518
 #. 🟥The file name which is used when any Generic non-parsing errors are exported. The .txt file extension is appended to the end of this string. Used in: Components > Locality Update > Status
 #, fuzzy
 msgid "localityUpdateCrashFileName"
@@ -309,7 +309,7 @@ msgstr ""
 "Se encontró más de una localidad con el identificador GUID: {guid:string}. "
 "Identificadores de localidad: {localityIds: string}"
 
-#: components/LocalityUpdate/Status.tsx:245
+#: components/LocalityUpdate/Status.tsx:246
 #. Used in: Components > Locality Update > Status
 #, fuzzy
 msgid "localityUpdateEffectCounts"
@@ -318,7 +318,7 @@ msgstr ""
 "afectados por la actualización y se crearán registros "
 "{geoCoordDetailTableLabel: string}:"
 
-#: components/LocalityUpdate/Status.tsx:296
+#: components/LocalityUpdate/Status.tsx:297
 #. Used in: Components > Locality Update > Status
 #, fuzzy
 msgid "localityUploadedDescription"
@@ -332,14 +332,14 @@ msgstr ""
 msgid "localityUpdateStarted"
 msgstr "El proceso de actualización de localidad ha comenzado."
 
-#: components/LocalityUpdate/Status.tsx:343
+#: components/LocalityUpdate/Status.tsx:342
 #: components/Notifications/NotificationRenderers.tsx:452
 #. Used in: Components > Locality Update > Status ⬤ Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "localityUpdateResults"
 msgstr "Resultados de la actualización de localidad"
 
-#: components/LocalityUpdate/Status.tsx:404
+#: components/LocalityUpdate/Status.tsx:421
 #: components/Notifications/NotificationRenderers.tsx:384
 #: components/Notifications/NotificationRenderers.tsx:408
 #. Used in: Components > Locality Update > Status ⬤ Components > Notifications > Notification Renderers

@@ -15,7 +15,7 @@ msgstr ""
 #: components/FormCommands/ShowTransactions.tsx:70
 #: components/Header/menuItemDefinitions.ts:58
 #: components/Interactions/InteractionsDialog.tsx:58
-#: components/Preferences/UserDefinitions.tsx:696
+#: components/Preferences/UserDefinitions.tsx:731
 #: components/Router/OverlayRoutes.tsx:97
 #. Used in: Components > Form Commands > Show Transactions ⬤ Components > Header > Menu Item Definitions ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes
 msgid "interactions"

@@ -15,7 +15,7 @@ msgstr ""
 #: components/DataViews/DataViewTables.tsx:107
 #: components/DataViews/DataViewTables.tsx:115
 #: components/Header/menuItemDefinitions.ts:78
-#: components/Preferences/UserDefinitions.tsx:1951
+#: components/Preferences/UserDefinitions.tsx:2057
 #: components/Router/OverlayRoutes.tsx:147
 #. 🟥The name of the component. Used in: Components > Data Views > Data View Tables ⬤ Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes
 #, fuzzy
@@ -41,8 +41,8 @@ msgstr "Konfiguriraj tablice {dataViews:string}"
 msgid "dataViewQueries"
 msgstr "Upiti za prikaz podataka"
 
-#: components/Preferences/UserDefinitions.tsx:1800
-#: components/Preferences/UserDefinitions.tsx:1957
+#: components/Preferences/UserDefinitions.tsx:1894
+#: components/Preferences/UserDefinitions.tsx:2063
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "splitViewByDefault"
@@ -56,8 +56,8 @@ msgstr "Omogući {splitView:string} prema zadanim postavkama"
 msgid "configureQuery"
 msgstr "Konfiguriraj upit"
 
-#: components/Preferences/UserDefinitions.tsx:1803
-#: components/Preferences/UserDefinitions.tsx:1960
+#: components/Preferences/UserDefinitions.tsx:1897
+#: components/Preferences/UserDefinitions.tsx:2066
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "splitViewDescription"
@@ -65,8 +65,8 @@ msgstr ""
 "{splitView:string} prikazuje rezultate upita uz pregled zapisa, što vam "
 "omogućuje pregled zapisa bez napuštanja popisa rezultata."
 
-#: components/Preferences/UserDefinitions.tsx:1812
-#: components/Preferences/UserDefinitions.tsx:1969
+#: components/Preferences/UserDefinitions.tsx:1906
+#: components/Preferences/UserDefinitions.tsx:2075
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "splitViewOrientation"

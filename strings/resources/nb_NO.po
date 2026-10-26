@@ -14,8 +14,8 @@ msgstr ""
 #: components/AppResources/Filters.tsx:87
 #: components/AppResources/Filters.tsx:134
 #: components/Header/userToolDefinitions.ts:82
-#: components/Preferences/UserDefinitions.tsx:2230
-#: components/Router/Routes.tsx:259
+#: components/Preferences/UserDefinitions.tsx:2336
+#: components/Router/Routes.tsx:261
 #: components/Security/registry.ts:218
 #. Used in: Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Security > Registry
 msgid "appResources"
@@ -24,7 +24,7 @@ msgstr "Appressurser"
 #: components/AppResources/Create.tsx:288
 #: components/FormMeta/Definition.tsx:31
 #: components/FormMeta/Definition.tsx:74
-#: components/Preferences/UserDefinitions.tsx:910
+#: components/Preferences/UserDefinitions.tsx:971
 #. Used in: Components > App Resources > Create ⬤ Components > Form Meta > Definition ⬤ Components > Preferences > User Definitions
 msgid "formDefinition"
 msgstr "Skjemadefinisjon"
@@ -83,8 +83,9 @@ msgid "subCategories"
 msgstr "Underkategorier"
 
 #: components/AppResources/Aside.tsx:331
-#: components/Router/Routes.tsx:267
-#. Used in: Components > App Resources > Aside ⬤ Components > Router > Routes
+#: components/Preferences/UserDefinitions.tsx:1317
+#: components/Router/Routes.tsx:269
+#. Used in: Components > App Resources > Aside ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes
 msgid "addResource"
 msgstr "Legg til ressurs"
 
@@ -281,8 +282,8 @@ msgstr "Velg ressurstype"
 #: components/AppResources/__tests__/disambiguateGlobalPrefs.test.ts:32
 #: components/AppResources/__tests__/getGlobalAllResources.test.ts:38
 #: components/Header/userToolDefinitions.ts:69
-#: components/Preferences/index.tsx:110
-#: components/Router/Routes.tsx:409
+#: components/Preferences/index.tsx:132
+#: components/Router/Routes.tsx:411
 #. Used in: Components > App Resources > Tree ⬤ Components > App Resources > Types ⬤ App Resources > __tests__ > Disambiguate Global Prefs ⬤ App Resources > __tests__ > Get Global All Resources ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > Index ⬤ Components > Router > Routes
 msgid "globalPreferences"
 msgstr "Globale preferanser"
@@ -485,12 +486,12 @@ msgstr "Kopier standardvisningsdefinisjon"
 msgid "copyDefaultForms"
 msgstr "Kopier standardskjemaer"
 
-#: components/FormMeta/index.tsx:115
+#: components/FormMeta/index.tsx:126
 #. Used in: Components > Form Meta > Index
 msgid "saveFormFirst"
 msgstr "Lagre skjemaet først"
 
-#: components/FormMeta/index.tsx:118
+#: components/FormMeta/index.tsx:129
 #. Used in: Components > Form Meta > Index
 msgid "saveFormFirstDescription"
 msgstr "Du må lagre dette skjemaet før du redigerer et nytt"

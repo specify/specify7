@@ -24,7 +24,7 @@ msgstr "Trær"
 msgid "badStructure"
 msgstr "Ugyldig trestruktur."
 
-#: components/TreeView/Actions.tsx:165
+#: components/TreeView/Actions.tsx:278
 #. Used in: Components > Tree View > Actions
 msgid "move"
 msgstr "Flytte"
@@ -37,118 +37,121 @@ msgstr "Flytte"
 #: components/SearchDialog/SelectRecordSet.tsx:132
 #: components/SearchDialog/SelectRecordSet.tsx:136
 #: components/Toolbar/MergeRecordSets.tsx:79
-#: components/TreeView/Actions.tsx:186
+#: components/TreeView/Actions.tsx:318
 #. Used in: Components > Merging > Compare Field ⬤ Components > Merging > Index ⬤ Components > Search Dialog > Select Record Set ⬤ Components > Toolbar > Merge Record Sets ⬤ Components > Tree View > Actions
 msgid "merge"
 msgstr "Slå sammen"
 
-#: components/TreeView/Actions.tsx:206
+#: components/TreeView/Actions.tsx:342
 #. Used in: Components > Tree View > Actions
 msgid "undoSynonymy"
 msgstr "Angre synonym"
 
-#: components/TreeView/Actions.tsx:206
+#: components/TreeView/Actions.tsx:342
 #. Used in: Components > Tree View > Actions
 msgid "synonymize"
 msgstr "Synonymisere"
 
-#: components/TreeView/Actions.tsx:408
+#: components/TreeView/Actions.tsx:548
 #. Used in: Components > Tree View > Actions
 msgid "actionFailed"
 msgstr "Operasjonen mislyktes"
 
-#: components/TreeView/Actions.tsx:411
+#: components/TreeView/Actions.tsx:551
 #. Used in: Components > Tree View > Actions
 msgid "actionFailedDescription"
 msgstr "Operasjonen kunne ikke fullføres på grunn av følgende feil:"
 
-#: components/TreeView/Actions.tsx:430
-#: components/TreeView/Actions.tsx:443
-#. Used in: Components > Tree View > Actions
+#: components/Preferences/UserDefinitions.tsx:1646
+#: components/TreeView/Actions.tsx:570
+#: components/TreeView/Actions.tsx:583
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Tree View > Actions
 msgid "moveNode"
 msgstr "Flytt node"
 
-#: components/TreeView/Actions.tsx:153
-#. Used in: Components > Tree View > Actions
+#: components/Preferences/UserDefinitions.tsx:1645
+#: components/TreeView/Actions.tsx:154
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Tree View > Actions
 msgid "addChild"
 msgstr "Legg til underordnet"
 
-#: components/TreeView/Actions.tsx:388
+#: components/TreeView/Actions.tsx:528
 #. Used in: Components > Tree View > Actions
 msgid "moveNodeHere"
 msgstr "Flytt «{nodeName:string}» hit"
 
-#: components/TreeView/Actions.tsx:390
+#: components/TreeView/Actions.tsx:530
 #. Used in: Components > Tree View > Actions
 msgid "moveNodePreparationsHere"
 msgstr "Flytt alle preparater for \"{nodeName:string}\" hit"
 
-#: components/TreeView/Actions.tsx:455
+#: components/TreeView/Actions.tsx:595
 #. Used in: Components > Tree View > Actions
 msgid "nodeMoveMessage"
 msgstr ""
 "Noden {treeName:string} «{nodeName:string}» vil bli plassert, sammen med "
 "alle sine underordnede, under den nye overordnede «{parentName:string}»."
 
-#: components/TreeView/Actions.tsx:461
+#: components/TreeView/Actions.tsx:601
 #. Used in: Components > Tree View > Actions
 msgid "nodeBulkMoveMessage"
 msgstr ""
 "{treeName:string}-noden «{nodeName:string}» preparater vil bli plassert "
 "under det nye stedet «{parentName:string}»."
 
-#: components/TreeView/Actions.tsx:361
+#: components/TreeView/Actions.tsx:492
 #. Used in: Components > Tree View > Actions
 msgid "cantMoveHere"
 msgstr "Kan ikke flytte denne tre­noden hit"
 
-#: components/TreeView/Actions.tsx:368
+#: components/TreeView/Actions.tsx:499
 #. Used in: Components > Tree View > Actions
 msgid "cantMergeHere"
 msgstr "Kan ikke slå sammen denne trenoden her"
 
-#: components/TreeView/Actions.tsx:362
+#: components/TreeView/Actions.tsx:493
 #. Used in: Components > Tree View > Actions
 msgid "cantMoveToSynonym"
 msgstr "Kan ikke flytte til et synonym"
 
-#: components/TreeView/Actions.tsx:369
+#: components/TreeView/Actions.tsx:500
 #. Used in: Components > Tree View > Actions
 msgid "cantMergeIntoSynonym"
 msgstr "Kan ikke slås sammen inn i synonymer"
 
-#: components/TreeView/Actions.tsx:372
+#: components/TreeView/Actions.tsx:503
 #. Used in: Components > Tree View > Actions
 msgid "cantSynonymizeSynonym"
 msgstr "Kan ikke synonymisere med et synonym"
 
-#: components/TreeView/Actions.tsx:341
+#: components/TreeView/Actions.tsx:472
 #. Used in: Components > Tree View > Actions
 msgid "nodeMoveHintMessage"
 msgstr "Velg en ny overordnet for «{nodeName:string}»"
 
-#: components/TreeView/Actions.tsx:434
-#: components/TreeView/Actions.tsx:447
-#. Used in: Components > Tree View > Actions
+#: components/Preferences/UserDefinitions.tsx:1648
+#: components/TreeView/Actions.tsx:574
+#: components/TreeView/Actions.tsx:587
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Tree View > Actions
 msgid "mergeNode"
 msgstr "Slå sammen node"
 
-#: components/TreeView/Actions.tsx:394
+#: components/TreeView/Actions.tsx:534
 #. Used in: Components > Tree View > Actions
 msgid "mergeNodeHere"
 msgstr "Slå sammen «{nodeName:string}» her"
 
-#: components/TreeView/Actions.tsx:343
+#: components/TreeView/Actions.tsx:474
 #. Used in: Components > Tree View > Actions
 msgid "mergeNodeHintMessage"
 msgstr "Velg et nytt mål som «{nodeName:string}» skal slås sammen med"
 
-#: components/TreeView/Actions.tsx:345
+#: components/TreeView/Actions.tsx:476
 #. Used in: Components > Tree View > Actions
 msgid "bulkMoveNodeHintMessage"
 msgstr "Velg en ny lokasjon \"{nodeName:string}\"-preparater skal flyttes til"
 
-#: components/TreeView/Actions.tsx:467
+#: components/TreeView/Actions.tsx:607
 #. Used in: Components > Tree View > Actions
 msgid "mergeNodeMessage"
 msgstr ""
@@ -157,38 +160,39 @@ msgstr ""
 "«{nodeName:string}» vil bli flyttet til «{parentName:string}». Underordnede "
 "med samme navn og nivå vil selv bli slått sammen automatisk."
 
-#: components/TreeView/Actions.tsx:436
-#: components/TreeView/Actions.tsx:449
-#. Used in: Components > Tree View > Actions
+#: components/Preferences/UserDefinitions.tsx:1649
+#: components/TreeView/Actions.tsx:576
+#: components/TreeView/Actions.tsx:589
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Tree View > Actions
 msgid "synonymizeNode"
 msgstr "Synonymiser node"
 
-#: components/TreeView/Actions.tsx:396
+#: components/TreeView/Actions.tsx:536
 #. Used in: Components > Tree View > Actions
 msgid "makeSynonym"
 msgstr "Gjør {nodeName:string} til et synonym for {synonymName:string}"
 
-#: components/TreeView/Actions.tsx:347
+#: components/TreeView/Actions.tsx:478
 #. Used in: Components > Tree View > Actions
 msgid "synonymizeNodeHintMessage"
 msgstr "Velg et mål som «{nodeName:string}» skal synonymiseres med"
 
-#: components/TreeView/Actions.tsx:473
+#: components/TreeView/Actions.tsx:613
 #. Used in: Components > Tree View > Actions
 msgid "synonymizeMessage"
 msgstr ""
 "Noden {treeName:string} «{nodeName:string}» vil bli gjort til et synonym "
 "for «{synonymName:string}»."
 
-#: components/TreeView/Actions.tsx:400
-#: components/TreeView/Actions.tsx:437
-#: components/TreeView/Actions.tsx:450
+#: components/TreeView/Actions.tsx:540
+#: components/TreeView/Actions.tsx:577
+#: components/TreeView/Actions.tsx:590
 #. Used in: Components > Tree View > Actions
 msgid "desynonymizeNode"
 msgstr "Opphev synonym for node"
 
-#: components/TreeView/Actions.tsx:350
-#: components/TreeView/Actions.tsx:478
+#: components/TreeView/Actions.tsx:481
+#: components/TreeView/Actions.tsx:618
 #. Used in: Components > Tree View > Actions
 msgid "desynonymizeNodeMessage"
 msgstr ""
@@ -211,9 +215,9 @@ msgstr "Synonymer: {names:string}"
 msgid "treeViewTitle"
 msgstr "{treeName:string} Tre"
 
-#: components/TreeView/Search.tsx:73
-#: components/TreeView/Search.tsx:74
-#: components/TreeView/Search.tsx:75
+#: components/TreeView/Search.tsx:84
+#: components/TreeView/Search.tsx:85
+#: components/TreeView/Search.tsx:86
 #. Used in: Components > Tree View > Search
 msgid "searchTreePlaceholder"
 msgstr "Søk i treet"
@@ -320,28 +324,28 @@ msgstr "Dette vil permanent slette følgende ressurs"
 msgid "associatedNodesOnly"
 msgstr "Vis bare noder med tilknyttede objekter"
 
-#: components/Preferences/UserDefinitions.tsx:1801
-#: components/Preferences/UserDefinitions.tsx:1804
-#: components/Preferences/UserDefinitions.tsx:1813
-#: components/Preferences/UserDefinitions.tsx:1958
-#: components/Preferences/UserDefinitions.tsx:1961
-#: components/Preferences/UserDefinitions.tsx:1970
+#: components/Preferences/UserDefinitions.tsx:1895
+#: components/Preferences/UserDefinitions.tsx:1898
+#: components/Preferences/UserDefinitions.tsx:1907
+#: components/Preferences/UserDefinitions.tsx:2064
+#: components/Preferences/UserDefinitions.tsx:2067
+#: components/Preferences/UserDefinitions.tsx:2076
 #: components/QueryBuilder/SplitView.tsx:53
 #: components/TreeView/index.tsx:375
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Split View ⬤ Components > Tree View > Index
 msgid "splitView"
 msgstr "Delt visning"
 
-#: components/Preferences/UserDefinitions.tsx:1819
-#: components/Preferences/UserDefinitions.tsx:1976
+#: components/Preferences/UserDefinitions.tsx:1913
+#: components/Preferences/UserDefinitions.tsx:2082
 #: components/QueryBuilder/SplitView.tsx:33
 #: components/TreeView/index.tsx:381
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Split View ⬤ Components > Tree View > Index
 msgid "horizontal"
 msgstr "Horisontal"
 
-#: components/Preferences/UserDefinitions.tsx:1820
-#: components/Preferences/UserDefinitions.tsx:1977
+#: components/Preferences/UserDefinitions.tsx:1914
+#: components/Preferences/UserDefinitions.tsx:2083
 #: components/QueryBuilder/SplitView.tsx:33
 #: components/TreeView/index.tsx:381
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Split View ⬤ Components > Tree View > Index
@@ -365,10 +369,11 @@ msgstr "Legg til nytt nivå"
 msgid "chooseParentRank"
 msgstr "Velg overordnet nivå"
 
-#: components/TreeView/Actions.tsx:176
-#: components/TreeView/Actions.tsx:432
-#: components/TreeView/Actions.tsx:445
-#. Used in: Components > Tree View > Actions
+#: components/Preferences/UserDefinitions.tsx:1647
+#: components/TreeView/Actions.tsx:298
+#: components/TreeView/Actions.tsx:572
+#: components/TreeView/Actions.tsx:585
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Tree View > Actions
 msgid "moveItems"
 msgstr "Flytt elementer"
 

@@ -99,7 +99,7 @@ msgstr "Mesa"
 
 #: components/Attachments/index.tsx:202
 #: components/FormEditor/Table.tsx:49
-#: components/Router/Routes.tsx:447
+#: components/Router/Routes.tsx:449
 #: components/SchemaConfig/Tables.tsx:230
 #: components/SchemaConfig/Tables.tsx:243
 #: components/SchemaConfig/Tables.tsx:246
@@ -108,7 +108,7 @@ msgstr "Mesa"
 msgid "tables"
 msgstr "Tabelas"
 
-#: components/Preferences/UserDefinitions.tsx:885
+#: components/Preferences/UserDefinitions.tsx:920
 #: components/WbPlanView/MapperComponents.tsx:554
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Plan View > Mapper Components
 #, fuzzy
@@ -122,8 +122,8 @@ msgid "withoutTable"
 msgstr "Sem mesa"
 
 #: components/Header/userToolDefinitions.ts:75
-#: components/Preferences/UserDefinitions.tsx:828
-#: components/Router/Routes.tsx:417
+#: components/Preferences/UserDefinitions.tsx:863
+#: components/Router/Routes.tsx:426
 #: components/SchemaConfig/Components.tsx:36
 #: components/SchemaConfig/Languages.tsx:36
 #: components/SchemaConfig/Layout.tsx:106
@@ -163,8 +163,8 @@ msgstr "Alterar tabela base"
 
 #: components/FieldFormatters/FieldFormatter.tsx:59
 #: components/Formatters/Fields.tsx:75
-#: components/LocalityUpdate/Status.tsx:381
-#: components/LocalityUpdate/Status.tsx:426
+#: components/LocalityUpdate/Status.tsx:398
+#: components/LocalityUpdate/Status.tsx:443
 #: components/SchemaConfig/Field.tsx:43
 #: components/SchemaConfig/index.tsx:102
 #: components/WebLinks/Definition.tsx:25
@@ -334,7 +334,7 @@ msgstr "Data"
 msgid "decimal"
 msgstr "Decimal"
 
-#: components/FormMeta/index.tsx:76
+#: components/FormMeta/index.tsx:87
 #: components/SchemaViewer/Fields.tsx:60
 #: components/SchemaViewer/Relationships.tsx:97
 #: components/SchemaViewer/schemaToTsv.tsx:23
@@ -375,7 +375,7 @@ msgstr "Link da Web"
 msgid "userDefined"
 msgstr "Definido pelo usuário"
 
-#: components/Router/Routes.tsx:432
+#: components/Router/Routes.tsx:434
 #: components/SchemaConfig/Languages.tsx:29
 #: components/SchemaConfig/Languages.tsx:78
 #. Used in: Components > Router > Routes ⬤ Components > Schema Config > Languages
@@ -451,8 +451,8 @@ msgid "relationshipCount"
 msgstr "Contagem de relacionamentos"
 
 #: components/Header/userToolDefinitions.ts:177
-#: components/Router/Routes.tsx:45
-#: components/Router/Routes.tsx:49
+#: components/Router/Routes.tsx:46
+#: components/Router/Routes.tsx:50
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes
 #, fuzzy
 msgid "databaseSchema"

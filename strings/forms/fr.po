@@ -11,20 +11,22 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 2026.11.dev0\n"
 
-#: components/Preferences/UserDefinitions.tsx:812
-#. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:847
+#: components/Preferences/index.tsx:261
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Preferences > Index
 msgid "forms"
 msgstr "Formulaires"
 
-#: components/Atoms/DataEntry.tsx:153
-#: components/Forms/Save.tsx:271
+#: components/Atoms/DataEntry.tsx:184
+#: components/Forms/Save.tsx:317
 #: components/Forms/__tests__/Save.test.tsx:24
+#: components/Preferences/UserDefinitions.tsx:956
 #: components/Statistics/ResultsDialog.tsx:69
-#. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Save ⬤ Forms > __tests__ > Save ⬤ Components > Statistics > Results Dialog
+#. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Save ⬤ Forms > __tests__ > Save ⬤ Components > Preferences > User Definitions ⬤ Components > Statistics > Results Dialog
 msgid "clone"
 msgstr "Cloner"
 
-#: components/Forms/Save.tsx:272
+#: components/Forms/Save.tsx:318
 #. Used in: Components > Forms > Save
 msgid "cloneDescription"
 msgstr "Créer une copie complète de l'enregistrement actuel"
@@ -179,7 +181,7 @@ msgstr ""
 
 #: components/Attachments/Plugin.tsx:117
 #: components/FormCells/FormTable.tsx:286
-#: components/FormCells/FormTable.tsx:647
+#: components/FormCells/FormTable.tsx:650
 #: components/Forms/BaseResourceView.tsx:106
 #. Used in: Components > Attachments > Plugin ⬤ Components > Form Cells > Form Table ⬤ Components > Forms > Base Resource View
 msgid "noData"
@@ -199,33 +201,17 @@ msgstr ""
 msgid "saveRecordFirst"
 msgstr "Sauvegarder d'abord l'enregistrement"
 
-#: components/FormSliders/useSliderButtons.tsx:34
-#: components/FormSliders/useSliderButtons.tsx:36
-#: components/Preferences/UserDefinitions.tsx:1231
-#. Used in: Components > Form Sliders > Use Slider Buttons ⬤ Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1292
+#. Used in: Components > Preferences > User Definitions
 msgid "firstRecord"
 msgstr "Premier enregistrement"
 
-#: components/FormSliders/useSliderButtons.tsx:69
-#: components/FormSliders/useSliderButtons.tsx:71
-#: components/Preferences/UserDefinitions.tsx:1235
-#. Used in: Components > Form Sliders > Use Slider Buttons ⬤ Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1296
+#. Used in: Components > Preferences > User Definitions
 msgid "lastRecord"
 msgstr "Dernier enregistrement"
 
-#: components/FormSliders/useSliderButtons.tsx:45
-#: components/FormSliders/useSliderButtons.tsx:48
-#. Used in: Components > Form Sliders > Use Slider Buttons
-msgid "previousRecord"
-msgstr "Enregistrement précédent"
-
-#: components/FormSliders/useSliderButtons.tsx:57
-#: components/FormSliders/useSliderButtons.tsx:60
-#. Used in: Components > Form Sliders > Use Slider Buttons
-msgid "nextRecord"
-msgstr "Enregistrement suivant"
-
-#: components/FormSliders/Slider.tsx:67
+#: components/FormSliders/Slider.tsx:106
 #. Used in: Components > Form Sliders > Slider
 msgid "currentRecord"
 msgstr "Objet actuel (sur {total:number|formatted})"
@@ -238,12 +224,12 @@ msgid "unsavedFormUnloadProtect"
 msgstr "Ce formulaire n'a pas été enregistré."
 
 #: components/AttachmentsBulkImport/utils.ts:618
-#: components/Forms/Save.tsx:305
+#: components/Forms/Save.tsx:351
 #. 🟥Meaning a conflict occurred when saving. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Forms > Save
 msgid "saveConflict"
 msgstr "Sauver le conflit"
 
-#: components/Forms/Save.tsx:308
+#: components/Forms/Save.tsx:354
 #. Used in: Components > Forms > Save
 msgid "saveConflictDescription"
 msgstr ""
@@ -252,12 +238,12 @@ msgstr ""
 "page doit être rechargée pour éviter l'enregistrement de données "
 "incohérentes."
 
-#: components/Forms/Save.tsx:339
+#: components/Forms/Save.tsx:385
 #. Used in: Components > Forms > Save
 msgid "saveBlocked"
 msgstr "Enregistrement bloqué"
 
-#: components/Forms/Save.tsx:342
+#: components/Forms/Save.tsx:388
 #. Used in: Components > Forms > Save
 msgid "saveBlockedDescription"
 msgstr "Le formulaire ne peut pas être enregistré en raison de l'erreur suivante :"
@@ -426,13 +412,13 @@ msgstr "Type de cellule non pris en charge"
 msgid "additionalResultsOmitted"
 msgstr "Résultats supplémentaires masqués"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:290
+#: components/FormSliders/RecordSelectorFromIds.tsx:295
 #: components/FormSliders/RecordSelectorFromPage.tsx:254
 #. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Form Sliders > Record Selector From Page
 msgid "recordSelectorUnloadProtect"
 msgstr "Continuer sans enregistrer ?"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:293
+#: components/FormSliders/RecordSelectorFromIds.tsx:298
 #: components/FormSliders/RecordSelectorFromPage.tsx:257
 #. 🟥When in record set and current record is unsaved and try to navigate to another record. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Form Sliders > Record Selector From Page
 msgid "recordSelectorUnloadProtectDescription"
@@ -440,12 +426,12 @@ msgstr ""
 "Vous voudrez peut-être sauvegarder cet enregistrement avant de quitter la "
 "page."
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:229
+#: components/FormSliders/RecordSelectorFromIds.tsx:234
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "creatingNewRecord"
 msgstr "Création d'un nouvel enregistrement"
 
-#: components/FormSliders/RecordSet.tsx:376
+#: components/FormSliders/RecordSet.tsx:377
 #. Used in: Components > Form Sliders > Record Set
 msgid "createNewRecordSet"
 msgstr "Créer un nouvel ensemble d'enregistrements"
@@ -467,22 +453,22 @@ msgstr "Arrière"
 msgid "deletedInline"
 msgstr "(supprimé)"
 
-#: components/FormSliders/RecordSet.tsx:524
+#: components/FormSliders/RecordSet.tsx:525
 #. 🟥Example: Duplicate Record Set Item. Used in: Components > Form Sliders > Record Set
 msgid "duplicateRecordSetItem"
 msgstr "Dupliquer {recordSetItemTable:string}"
 
-#: components/FormSliders/RecordSet.tsx:529
+#: components/FormSliders/RecordSet.tsx:530
 #. Used in: Components > Form Sliders > Record Set
 msgid "duplicateRecordSetItemDescription"
 msgstr "Cet enregistrement est déjà présent dans le {recordSetTable:string} actuel"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:174
+#: components/FormSliders/RecordSelectorFromIds.tsx:178
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "addToRecordSet"
 msgstr "Ajouter à {recordSetTable:string}"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:179
+#: components/FormSliders/RecordSelectorFromIds.tsx:183
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "removeFromRecordSet"
 msgstr "Retirer de {recordSetTable:string}"
@@ -494,8 +480,9 @@ msgid "nothingFound"
 msgstr "Rien n'a été trouvé"
 
 #: components/Forms/BulkCarryForward.tsx:290
-#: components/Forms/Save.tsx:253
-#. 🟥Verb. Button label. Used in: Components > Forms > Bulk Carry Forward ⬤ Components > Forms > Save
+#: components/Forms/Save.tsx:304
+#: components/Preferences/UserDefinitions.tsx:953
+#. 🟥Verb. Button label. Used in: Components > Forms > Bulk Carry Forward ⬤ Components > Forms > Save ⬤ Components > Preferences > User Definitions
 msgid "carryForward"
 msgstr "Reporter"
 
@@ -514,7 +501,7 @@ msgstr "Afficher le nombre de reports en masse"
 msgid "bulkCarryForwardCount"
 msgstr "Nombre de report en masse"
 
-#: components/Forms/Save.tsx:254
+#: components/Forms/Save.tsx:305
 #. Used in: Components > Forms > Save
 msgid "carryForwardDescription"
 msgstr "Créer un nouvel enregistrement avec certains champs reportés"
@@ -598,7 +585,7 @@ msgstr "Afficher le bouton Cloner"
 msgid "addButtonEnabled"
 msgstr "Afficher le bouton Ajouter"
 
-#: components/Forms/Save.tsx:280
+#: components/Forms/Save.tsx:326
 #. Used in: Components > Forms > Save
 msgid "addButtonDescription"
 msgstr "Créer un nouvel enregistrement vierge"
@@ -655,17 +642,17 @@ msgstr "Modifier l'historique"
 msgid "editHistoryQueryName"
 msgstr "Modifier l'historique pour « {formattedRecord:string} »"
 
-#: components/FormMeta/index.tsx:151
+#: components/FormMeta/index.tsx:162
 #. Used in: Components > Form Meta > Index
 msgid "formConfiguration"
 msgstr "Configuration du formulaire"
 
-#: components/FormMeta/index.tsx:183
+#: components/FormMeta/index.tsx:194
 #. Used in: Components > Form Meta > Index
 msgid "formState"
 msgstr "État du formulaire"
 
-#: components/FormMeta/index.tsx:232
+#: components/FormMeta/index.tsx:243
 #. Used in: Components > Form Meta > Index
 msgid "recordInformation"
 msgstr "Informations sur les enregistrements"
@@ -692,12 +679,12 @@ msgid "subForm"
 msgstr "Sous-formulaire"
 
 #: components/FormMeta/SubViewMeta.tsx:37
-#: components/Preferences/UserDefinitions.tsx:1242
+#: components/Preferences/UserDefinitions.tsx:1323
 #. Used in: Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 msgid "formTable"
 msgstr "Grille"
 
-#: components/FormMeta/index.tsx:201
+#: components/FormMeta/index.tsx:212
 #. Used in: Components > Form Meta > Index
 msgid "subviewConfiguration"
 msgstr "Sous-vue"
@@ -723,10 +710,10 @@ msgstr "Configurer les tables de saisie de données"
 msgid "configureInteractionTables"
 msgstr "Configurer les tables d'interaction"
 
-#: components/FormMeta/index.tsx:69
-#: components/FormMeta/index.tsx:71
-#: components/QueryBuilder/__tests__/RecordMergingAvailability.test.tsx:122
-#: components/QueryBuilder/__tests__/RecordMergingAvailability.test.tsx:135
+#: components/FormMeta/index.tsx:80
+#: components/FormMeta/index.tsx:82
+#: components/QueryBuilder/__tests__/RecordMergingAvailability.test.tsx:123
+#: components/QueryBuilder/__tests__/RecordMergingAvailability.test.tsx:136
 #. Used in: Components > Form Meta > Index ⬤ Query Builder > __tests__ > Record Merging Availability
 msgid "formMeta"
 msgstr "Formulaire Meta"
@@ -766,10 +753,46 @@ msgstr "(Plage : {from:string} - {to:string})"
 msgid "catalogNumberNumericFormatter"
 msgstr "Numéro de catalogue numérique"
 
-#: components/FormCells/COJODialog.tsx:94
+#: components/FormCells/COJODialog.tsx:96
 #. Used in: Components > Form Cells > COJODialog
 msgid "addCOGChildren"
 msgstr "Ajouter des enfants COG"
+
+#: components/FormSliders/Slider.tsx:81
+#: components/FormSliders/Slider.tsx:83
+#: components/FormSliders/useSliderButtons.tsx:34
+#: components/FormSliders/useSliderButtons.tsx:36
+#: components/Preferences/UserDefinitions.tsx:1301
+#. Used in: Components > Form Sliders > Slider ⬤ Components > Form Sliders > Use Slider Buttons ⬤ Components > Preferences > User Definitions
+msgid "goToFirstRecord"
+msgstr "Aller au premier enregistrement"
+
+#: components/FormSliders/Slider.tsx:145
+#: components/FormSliders/Slider.tsx:147
+#: components/FormSliders/useSliderButtons.tsx:69
+#: components/FormSliders/useSliderButtons.tsx:71
+#: components/Preferences/UserDefinitions.tsx:1313
+#. Used in: Components > Form Sliders > Slider ⬤ Components > Form Sliders > Use Slider Buttons ⬤ Components > Preferences > User Definitions
+msgid "goToLastRecord"
+msgstr "Aller au dernier enregistrement"
+
+#: components/FormSliders/Slider.tsx:89
+#: components/FormSliders/Slider.tsx:92
+#: components/FormSliders/useSliderButtons.tsx:45
+#: components/FormSliders/useSliderButtons.tsx:48
+#: components/Preferences/UserDefinitions.tsx:1305
+#. Used in: Components > Form Sliders > Slider ⬤ Components > Form Sliders > Use Slider Buttons ⬤ Components > Preferences > User Definitions
+msgid "goToPreviousRecord"
+msgstr "Aller à l'enregistrement précédent"
+
+#: components/FormSliders/Slider.tsx:136
+#: components/FormSliders/Slider.tsx:139
+#: components/FormSliders/useSliderButtons.tsx:57
+#: components/FormSliders/useSliderButtons.tsx:60
+#: components/Preferences/UserDefinitions.tsx:1309
+#. Used in: Components > Form Sliders > Slider ⬤ Components > Form Sliders > Use Slider Buttons ⬤ Components > Preferences > User Definitions
+msgid "goToNextRecord"
+msgstr "Aller à l'enregistrement suivant"
 
 #: components/Forms/useShowParentButton.tsx:44
 #. Used in: Components > Forms > Use Show Parent Button

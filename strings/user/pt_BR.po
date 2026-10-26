@@ -37,15 +37,15 @@ msgstr "Nome de usuário"
 msgid "password"
 msgstr "Senha"
 
-#: components/FormPlugins/CollectionRelOneToMany.tsx:181
-#: components/QueryComboBox/index.tsx:715
+#: components/FormPlugins/CollectionRelOneToMany.tsx:182
+#: components/QueryComboBox/index.tsx:716
 #. Used in: Components > Form Plugins > Collection Rel One To Many ⬤ Components > Query Combo Box > Index
 #, fuzzy
 msgid "collectionAccessDenied"
 msgstr "Você não tem acesso a esta coleção."
 
-#: components/FormPlugins/CollectionRelOneToMany.tsx:184
-#: components/QueryComboBox/index.tsx:718
+#: components/FormPlugins/CollectionRelOneToMany.tsx:185
+#: components/QueryComboBox/index.tsx:719
 #. Used in: Components > Form Plugins > Collection Rel One To Many ⬤ Components > Query Combo Box > Index
 #, fuzzy
 msgid "collectionAccessDeniedDescription"
@@ -95,9 +95,9 @@ msgstr "Nova Senha"
 msgid "repeatPassword"
 msgstr "Repita a nova senha"
 
-#: components/Core/Main.tsx:97
+#: components/Core/Main.tsx:99
 #: components/Header/userToolDefinitions.ts:29
-#: components/Router/Routes.tsx:491
+#: components/Router/Routes.tsx:493
 #. Used in: Components > Core > Main ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes
 #, fuzzy
 msgid "logOut"
@@ -109,13 +109,13 @@ msgstr "Sair"
 msgid "setUserAgents"
 msgstr "Configurar agentes de usuário"
 
-#: components/Core/Main.tsx:104
+#: components/Core/Main.tsx:106
 #. Used in: Components > Core > Main
 #, fuzzy
 msgid "noAgent"
 msgstr "O usuário atual não possui um agente atribuído."
 
-#: components/Core/Main.tsx:109
+#: components/Core/Main.tsx:111
 #. Used in: Components > Core > Main
 #, fuzzy
 msgid "noAgentDescription"
@@ -373,8 +373,8 @@ msgid "configureCollectionAccess"
 msgstr "Selecione o acesso à coleção de usuários"
 
 #: components/Header/userToolDefinitions.ts:92
-#: components/Router/Routes.tsx:73
-#: components/Router/Routes.tsx:179
+#: components/Router/Routes.tsx:74
+#: components/Router/Routes.tsx:181
 #: components/Toolbar/Security.tsx:102
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Toolbar > Security
 #, fuzzy
@@ -506,14 +506,15 @@ msgstr "Todas as ações"
 msgid "collectionAccess"
 msgstr "Habilitar acesso à coleção"
 
-#: components/Router/Routes.tsx:150
+#: components/Router/Routes.tsx:93
+#: components/Router/Routes.tsx:152
 #. Used in: Components > Router > Routes
 #, fuzzy
 msgid "createRole"
 msgstr "Criar função"
 
-#: components/Router/Routes.tsx:99
-#: components/Router/Routes.tsx:158
+#: components/Router/Routes.tsx:101
+#: components/Router/Routes.tsx:160
 #: components/Security/RoleTemplate.tsx:83
 #. Used in: Components > Router > Routes ⬤ Components > Security > Role Template
 #, fuzzy

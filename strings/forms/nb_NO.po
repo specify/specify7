@@ -11,20 +11,22 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 2026.11.dev0\n"
 
-#: components/Preferences/UserDefinitions.tsx:812
-#. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:847
+#: components/Preferences/index.tsx:261
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Preferences > Index
 msgid "forms"
 msgstr "Skjema"
 
-#: components/Atoms/DataEntry.tsx:153
-#: components/Forms/Save.tsx:271
+#: components/Atoms/DataEntry.tsx:184
+#: components/Forms/Save.tsx:317
 #: components/Forms/__tests__/Save.test.tsx:24
+#: components/Preferences/UserDefinitions.tsx:956
 #: components/Statistics/ResultsDialog.tsx:69
-#. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Save ⬤ Forms > __tests__ > Save ⬤ Components > Statistics > Results Dialog
+#. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Save ⬤ Forms > __tests__ > Save ⬤ Components > Preferences > User Definitions ⬤ Components > Statistics > Results Dialog
 msgid "clone"
 msgstr "Klone"
 
-#: components/Forms/Save.tsx:272
+#: components/Forms/Save.tsx:318
 #. Used in: Components > Forms > Save
 msgid "cloneDescription"
 msgstr "Opprett en full kopi av gjeldende post"
@@ -175,7 +177,7 @@ msgstr "Bare numeriske verdier støttes i denne {pickListTable:string}"
 
 #: components/Attachments/Plugin.tsx:117
 #: components/FormCells/FormTable.tsx:286
-#: components/FormCells/FormTable.tsx:647
+#: components/FormCells/FormTable.tsx:650
 #: components/Forms/BaseResourceView.tsx:106
 #. Used in: Components > Attachments > Plugin ⬤ Components > Form Cells > Form Table ⬤ Components > Forms > Base Resource View
 msgid "noData"
@@ -195,33 +197,17 @@ msgstr ""
 msgid "saveRecordFirst"
 msgstr "Lagre posten først"
 
-#: components/FormSliders/useSliderButtons.tsx:34
-#: components/FormSliders/useSliderButtons.tsx:36
-#: components/Preferences/UserDefinitions.tsx:1231
-#. Used in: Components > Form Sliders > Use Slider Buttons ⬤ Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1292
+#. Used in: Components > Preferences > User Definitions
 msgid "firstRecord"
 msgstr "Første post"
 
-#: components/FormSliders/useSliderButtons.tsx:69
-#: components/FormSliders/useSliderButtons.tsx:71
-#: components/Preferences/UserDefinitions.tsx:1235
-#. Used in: Components > Form Sliders > Use Slider Buttons ⬤ Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1296
+#. Used in: Components > Preferences > User Definitions
 msgid "lastRecord"
 msgstr "Siste post"
 
-#: components/FormSliders/useSliderButtons.tsx:45
-#: components/FormSliders/useSliderButtons.tsx:48
-#. Used in: Components > Form Sliders > Use Slider Buttons
-msgid "previousRecord"
-msgstr "Forrige post"
-
-#: components/FormSliders/useSliderButtons.tsx:57
-#: components/FormSliders/useSliderButtons.tsx:60
-#. Used in: Components > Form Sliders > Use Slider Buttons
-msgid "nextRecord"
-msgstr "Neste post"
-
-#: components/FormSliders/Slider.tsx:67
+#: components/FormSliders/Slider.tsx:106
 #. Used in: Components > Form Sliders > Slider
 msgid "currentRecord"
 msgstr "Gjeldende objekt (av {total:number|formatted})"
@@ -234,12 +220,12 @@ msgid "unsavedFormUnloadProtect"
 msgstr "Dette skjemaet er ikke lagret."
 
 #: components/AttachmentsBulkImport/utils.ts:618
-#: components/Forms/Save.tsx:305
+#: components/Forms/Save.tsx:351
 #. 🟥Meaning a conflict occurred when saving. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Forms > Save
 msgid "saveConflict"
 msgstr "Lagre-konflikt"
 
-#: components/Forms/Save.tsx:308
+#: components/Forms/Save.tsx:354
 #. Used in: Components > Forms > Save
 msgid "saveConflictDescription"
 msgstr ""
@@ -247,12 +233,12 @@ msgstr ""
 "annen fane i nettleseren, og er utdaterte. Siden må lastes inn på nytt for "
 "å hindre at inkonsistente data blir lagret."
 
-#: components/Forms/Save.tsx:339
+#: components/Forms/Save.tsx:385
 #. Used in: Components > Forms > Save
 msgid "saveBlocked"
 msgstr "Lagring blokkert"
 
-#: components/Forms/Save.tsx:342
+#: components/Forms/Save.tsx:388
 #. Used in: Components > Forms > Save
 msgid "saveBlockedDescription"
 msgstr "Skjemaet kan ikke lagres på grunn av følgende feil:"
@@ -419,24 +405,24 @@ msgstr "Ugyldig celletype"
 msgid "additionalResultsOmitted"
 msgstr "Ytterligere resultater utelatt"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:290
+#: components/FormSliders/RecordSelectorFromIds.tsx:295
 #: components/FormSliders/RecordSelectorFromPage.tsx:254
 #. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Form Sliders > Record Selector From Page
 msgid "recordSelectorUnloadProtect"
 msgstr "Fortsette uten å lagre?"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:293
+#: components/FormSliders/RecordSelectorFromIds.tsx:298
 #: components/FormSliders/RecordSelectorFromPage.tsx:257
 #. 🟥When in record set and current record is unsaved and try to navigate to another record. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Form Sliders > Record Selector From Page
 msgid "recordSelectorUnloadProtectDescription"
 msgstr "Du bør kanskje lagre denne databasepost før du navigerer videre."
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:229
+#: components/FormSliders/RecordSelectorFromIds.tsx:234
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "creatingNewRecord"
 msgstr "Oppretter ny post"
 
-#: components/FormSliders/RecordSet.tsx:376
+#: components/FormSliders/RecordSet.tsx:377
 #. Used in: Components > Form Sliders > Record Set
 msgid "createNewRecordSet"
 msgstr "Opprett et nytt postsett"
@@ -458,22 +444,22 @@ msgstr "Tilbake"
 msgid "deletedInline"
 msgstr "(slettet)"
 
-#: components/FormSliders/RecordSet.tsx:524
+#: components/FormSliders/RecordSet.tsx:525
 #. 🟥Example: Duplicate Record Set Item. Used in: Components > Form Sliders > Record Set
 msgid "duplicateRecordSetItem"
 msgstr "Duplikat {recordSetItemTable:string}"
 
-#: components/FormSliders/RecordSet.tsx:529
+#: components/FormSliders/RecordSet.tsx:530
 #. Used in: Components > Form Sliders > Record Set
 msgid "duplicateRecordSetItemDescription"
 msgstr "Denne databaseposten finnes allerede i gjeldende {recordSetTable:string}"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:174
+#: components/FormSliders/RecordSelectorFromIds.tsx:178
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "addToRecordSet"
 msgstr "Legg til i {recordSetTable:string}"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:179
+#: components/FormSliders/RecordSelectorFromIds.tsx:183
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "removeFromRecordSet"
 msgstr "Fjern fra {recordSetTable:string}"
@@ -485,8 +471,9 @@ msgid "nothingFound"
 msgstr "Ingen treff"
 
 #: components/Forms/BulkCarryForward.tsx:290
-#: components/Forms/Save.tsx:253
-#. 🟥Verb. Button label. Used in: Components > Forms > Bulk Carry Forward ⬤ Components > Forms > Save
+#: components/Forms/Save.tsx:304
+#: components/Preferences/UserDefinitions.tsx:953
+#. 🟥Verb. Button label. Used in: Components > Forms > Bulk Carry Forward ⬤ Components > Forms > Save ⬤ Components > Preferences > User Definitions
 msgid "carryForward"
 msgstr "Ta med videre"
 
@@ -505,7 +492,7 @@ msgstr "Vis antall massevidereføring"
 msgid "bulkCarryForwardCount"
 msgstr "Antall massevidereføring"
 
-#: components/Forms/Save.tsx:254
+#: components/Forms/Save.tsx:305
 #. Used in: Components > Forms > Save
 msgid "carryForwardDescription"
 msgstr "Opprett en ny post med bestemte felt overført"
@@ -587,7 +574,7 @@ msgstr "Vis klone-knapp"
 msgid "addButtonEnabled"
 msgstr "Vis Legg til-knappen"
 
-#: components/Forms/Save.tsx:280
+#: components/Forms/Save.tsx:326
 #. Used in: Components > Forms > Save
 msgid "addButtonDescription"
 msgstr "Opprett en ny, tom post"
@@ -644,17 +631,17 @@ msgstr "Rediger historikk"
 msgid "editHistoryQueryName"
 msgstr "Rediger historikk for «{formattedRecord:string}»"
 
-#: components/FormMeta/index.tsx:151
+#: components/FormMeta/index.tsx:162
 #. Used in: Components > Form Meta > Index
 msgid "formConfiguration"
 msgstr "Skjemakonfigurasjon"
 
-#: components/FormMeta/index.tsx:183
+#: components/FormMeta/index.tsx:194
 #. Used in: Components > Form Meta > Index
 msgid "formState"
 msgstr "Skjemastatus"
 
-#: components/FormMeta/index.tsx:232
+#: components/FormMeta/index.tsx:243
 #. Used in: Components > Form Meta > Index
 msgid "recordInformation"
 msgstr "Databasepost informasjon"
@@ -681,12 +668,12 @@ msgid "subForm"
 msgstr "Delskjema"
 
 #: components/FormMeta/SubViewMeta.tsx:37
-#: components/Preferences/UserDefinitions.tsx:1242
+#: components/Preferences/UserDefinitions.tsx:1323
 #. Used in: Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 msgid "formTable"
 msgstr "Rutenett"
 
-#: components/FormMeta/index.tsx:201
+#: components/FormMeta/index.tsx:212
 #. Used in: Components > Form Meta > Index
 msgid "subviewConfiguration"
 msgstr "Delvisning"
@@ -712,10 +699,10 @@ msgstr "Konfigurer datainntastingstabeller"
 msgid "configureInteractionTables"
 msgstr "Konfigurer interaksjonstabeller"
 
-#: components/FormMeta/index.tsx:69
-#: components/FormMeta/index.tsx:71
-#: components/QueryBuilder/__tests__/RecordMergingAvailability.test.tsx:122
-#: components/QueryBuilder/__tests__/RecordMergingAvailability.test.tsx:135
+#: components/FormMeta/index.tsx:80
+#: components/FormMeta/index.tsx:82
+#: components/QueryBuilder/__tests__/RecordMergingAvailability.test.tsx:123
+#: components/QueryBuilder/__tests__/RecordMergingAvailability.test.tsx:136
 #. Used in: Components > Form Meta > Index ⬤ Query Builder > __tests__ > Record Merging Availability
 msgid "formMeta"
 msgstr "Metadata for skjem"
@@ -755,10 +742,46 @@ msgstr "(Utvalg: {from:string}–{to:string})"
 msgid "catalogNumberNumericFormatter"
 msgstr "Katalognummer Numerisk"
 
-#: components/FormCells/COJODialog.tsx:94
+#: components/FormCells/COJODialog.tsx:96
 #. Used in: Components > Form Cells > COJODialog
 msgid "addCOGChildren"
 msgstr "Legg til COG-underelementer"
+
+#: components/FormSliders/Slider.tsx:81
+#: components/FormSliders/Slider.tsx:83
+#: components/FormSliders/useSliderButtons.tsx:34
+#: components/FormSliders/useSliderButtons.tsx:36
+#: components/Preferences/UserDefinitions.tsx:1301
+#. Used in: Components > Form Sliders > Slider ⬤ Components > Form Sliders > Use Slider Buttons ⬤ Components > Preferences > User Definitions
+msgid "goToFirstRecord"
+msgstr ""
+
+#: components/FormSliders/Slider.tsx:145
+#: components/FormSliders/Slider.tsx:147
+#: components/FormSliders/useSliderButtons.tsx:69
+#: components/FormSliders/useSliderButtons.tsx:71
+#: components/Preferences/UserDefinitions.tsx:1313
+#. Used in: Components > Form Sliders > Slider ⬤ Components > Form Sliders > Use Slider Buttons ⬤ Components > Preferences > User Definitions
+msgid "goToLastRecord"
+msgstr ""
+
+#: components/FormSliders/Slider.tsx:89
+#: components/FormSliders/Slider.tsx:92
+#: components/FormSliders/useSliderButtons.tsx:45
+#: components/FormSliders/useSliderButtons.tsx:48
+#: components/Preferences/UserDefinitions.tsx:1305
+#. Used in: Components > Form Sliders > Slider ⬤ Components > Form Sliders > Use Slider Buttons ⬤ Components > Preferences > User Definitions
+msgid "goToPreviousRecord"
+msgstr ""
+
+#: components/FormSliders/Slider.tsx:136
+#: components/FormSliders/Slider.tsx:139
+#: components/FormSliders/useSliderButtons.tsx:57
+#: components/FormSliders/useSliderButtons.tsx:60
+#: components/Preferences/UserDefinitions.tsx:1309
+#. Used in: Components > Form Sliders > Slider ⬤ Components > Form Sliders > Use Slider Buttons ⬤ Components > Preferences > User Definitions
+msgid "goToNextRecord"
+msgstr ""
 
 #: components/Forms/useShowParentButton.tsx:44
 #. Used in: Components > Forms > Use Show Parent Button
