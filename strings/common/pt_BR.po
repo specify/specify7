@@ -453,7 +453,7 @@ msgstr "Salvar"
 #: components/KeyboardShortcuts/UrlShortcuts.tsx:488
 #: components/KeyboardShortcuts/__tests__/Conflicts.test.tsx:163
 #: components/Merging/CompareSubView.tsx:184
-#: components/Molecules/AutoComplete.tsx:658
+#: components/Molecules/AutoComplete.tsx:635
 #: components/PickLists/index.tsx:280
 #: components/QueryBuilder/Wrapped.tsx:498
 #: components/SchemaConfig/Format.tsx:299
@@ -571,8 +571,8 @@ msgstr "Ferramentas"
 #: components/KeyboardShortcuts/UrlShortcuts.tsx:62
 #: components/Leaflet/index.ts:196
 #: components/Merging/Usages.tsx:50
-#: components/Molecules/AutoComplete.tsx:538
-#: components/Molecules/AutoComplete.tsx:668
+#: components/Molecules/AutoComplete.tsx:531
+#: components/Molecules/AutoComplete.tsx:645
 #: components/Molecules/FormattedResource.tsx:16
 #: components/Molecules/FormattedResource.tsx:31
 #: components/Molecules/LinkedRecords.tsx:61
@@ -1126,7 +1126,7 @@ msgstr "Selecionado"
 #: components/FormSliders/IntegratedRecordSelector.tsx:112
 #: components/Formatters/Definitions.tsx:244
 #: components/Header/index.tsx:164
-#: components/Molecules/AutoComplete.tsx:684
+#: components/Molecules/AutoComplete.tsx:661
 #: components/SchemaConfig/Tables.tsx:230
 #. Used in: Components > Form Cells > Form Table ⬤ Components > Form Sliders > Integrated Record Selector ⬤ Components > Formatters > Definitions ⬤ Components > Header > Index ⬤ Components > Molecules > Auto Complete ⬤ Components > Schema Config > Tables
 #, fuzzy
