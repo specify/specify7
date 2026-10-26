@@ -156,16 +156,18 @@ test.each(['Home', 'End'])(
   }
 );
 
-test('ArrowDown navigates beyond 50 results without unmounting earlier options', async () => {
+test('ArrowDown selects a result beyond 50 rows rather than the available Add option', async () => {
   const manyItems = Array.from({ length: 100 }, (_, index) => ({
     label: `Result ${index + 1}`,
     data: index + 1,
   }));
   const onChange = jest.fn();
+  const onNewValue = jest.fn();
   const { user } = mount(
     <AutoComplete
       filterItems={false}
       onChange={onChange}
+      onNewValue={onNewValue}
       source={manyItems}
       value=""
     />
@@ -173,7 +175,7 @@ test('ArrowDown navigates beyond 50 results without unmounting earlier options',
   const input = screen.getByRole('combobox');
 
   await user.type(input, 'x');
-  expect(await screen.findAllByRole('option')).toHaveLength(100);
+  expect(await screen.findAllByRole('option')).toHaveLength(101);
   for (let index = 0; index < 55; index++)
     await user.keyboard('{ArrowDown}');
 
@@ -181,11 +183,17 @@ test('ArrowDown navigates beyond 50 results without unmounting earlier options',
     'aria-activedescendant',
     screen.getByRole('option', { name: 'Result 55' }).id
   );
-  expect(screen.getAllByRole('option')).toHaveLength(100);
+  expect(
+    screen
+      .getAllByRole('option')
+      .filter((option) => option.classList.contains('bg-gray-100'))
+  ).toEqual([screen.getByRole('option', { name: 'Result 55' })]);
+  expect(screen.getAllByRole('option')).toHaveLength(101);
   await user.keyboard('{Enter}');
 
   expect(onChange).toHaveBeenCalledTimes(1);
   expect(onChange).toHaveBeenCalledWith(manyItems[54]);
+  expect(onNewValue).not.toHaveBeenCalled();
 });
 
 test('ArrowDown can highlight the Add option after the results', async () => {
