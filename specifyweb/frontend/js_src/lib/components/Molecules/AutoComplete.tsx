@@ -278,8 +278,11 @@ export function AutoComplete<T>({
     if (itemSource.length === 0 && !showAdd) return;
 
     if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
-      event.preventDefault();
       event.stopPropagation();
+      if (event.key === 'ArrowDown' && activeIndex === -1) {
+        // Headless UI opens with the first option active.
+        event.preventDefault();
+      }
       const direction = event.key === 'ArrowDown' ? 1 : -1;
       const nextIndex =
         activeIndex === -1
@@ -293,19 +296,10 @@ export function AutoComplete<T>({
       setActiveIndex(nextIndex);
       virtualizer.scrollToIndex(nextIndex);
     } else if (event.key === 'Home' || event.key === 'End') {
-      event.preventDefault();
       event.stopPropagation();
       const nextIndex = event.key === 'Home' ? 0 : itemSource.length - 1;
       setActiveIndex(nextIndex);
       virtualizer.scrollToIndex(nextIndex);
-    } else if (event.key === 'Enter' && activeIndex >= 0) {
-      const item = itemSource[activeIndex];
-      if (item !== undefined) {
-        event.preventDefault();
-        event.stopPropagation();
-        handleChanged(item);
-        inputRef.current?.blur();
-      }
     }
   }
 
