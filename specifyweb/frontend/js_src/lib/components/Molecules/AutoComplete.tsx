@@ -253,10 +253,11 @@ export function AutoComplete<T>({
   const listHasItems = showAdd || isLoading || itemSource.length > 0;
 
   /*
-   * Reset the keyboard highlight when the search text changes, but not when a
-   * new page of results is appended (issue #8691)
+   * Reset the keyboard highlight when the search text changes or the base
+   * results are replaced, but not when a new page of results is appended
+   * (issue #8691)
    */
-  React.useEffect(() => setActiveIndex(-1), [pendingValue]);
+  React.useEffect(() => setActiveIndex(-1), [pendingValue, results]);
 
   function handleChanged(item: AutoCompleteItem<T>): void {
     handleChange(item);
