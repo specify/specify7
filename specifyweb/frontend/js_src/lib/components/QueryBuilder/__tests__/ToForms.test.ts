@@ -1,4 +1,7 @@
-import { getSelectedResults, hasFetchableRecordIds } from '../ToForms';
+import {
+  getSelectedResults,
+  hasFetchableRecordIds,
+} from '../SelectedQueryForms';
 
 test('only exposes results with fetchable record IDs to the form view', () => {
   expect(hasFetchableRecordIds([[101, 'First'], undefined])).toBe(true);

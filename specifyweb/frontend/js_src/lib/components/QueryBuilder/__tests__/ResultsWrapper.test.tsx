@@ -11,6 +11,7 @@ import {
 } from '../../DataViews/queries';
 import { parseQueryFields } from '../helpers';
 import { useQueryResultsWrapper } from '../ResultsWrapper';
+import { emptySelection } from '../selection';
 
 requireContext();
 
@@ -74,6 +75,34 @@ test('does not cancel an in-flight query when fields change without a new run', 
   expect(result.current?.totalCount).toBe(3);
   expect(result.current?.isLoading).toBe(false);
   expect(ajax).toHaveBeenCalledTimes(2);
+});
+
+test('keeps the executed query snapshot until rerun and resets explicit selection on rerun', async () => {
+  jest.spyOn(ajaxModule, 'ajax').mockResolvedValue(response(3));
+  const setSelection = jest.fn();
+  const props = {
+    ...makeProps(),
+    forceCollection: 2,
+    recordSetId: 4,
+    selection: [emptySelection(), setSelection] as const,
+  };
+  const { result, rerender } = renderHook(useQueryResultsWrapper, {
+    initialProps: props,
+  });
+  await waitFor(() => expect(result.current?.isLoading).toBe(false));
+  const executed = result.current?.executedQuery;
+  expect(executed).toEqual(
+    expect.objectContaining({ collectionId: 2, recordSetId: 4 })
+  );
+  expect(setSelection).toHaveBeenCalledTimes(1);
+  rerender({ ...props, forceCollection: 9, fields: [...props.fields] });
+  expect(result.current?.executedQuery).toBe(executed);
+  expect(setSelection).toHaveBeenCalledTimes(1);
+  rerender({ ...props, queryRunCount: 2, forceCollection: 9 });
+  await waitFor(() =>
+    expect(result.current?.executedQuery?.collectionId).toBe(9)
+  );
+  expect(setSelection).toHaveBeenCalledTimes(2);
 });
 
 test('ignores stale results and counts after a new query run', async () => {
