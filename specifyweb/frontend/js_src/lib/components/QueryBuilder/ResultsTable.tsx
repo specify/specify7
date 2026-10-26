@@ -161,7 +161,7 @@ function Row({
                * links, and record-list controls.
                */
               (target as Element).closest('a, button') === null && hasValidId
-                ? handleSelected?.(!isSelected, shiftKey)
+                ? handleSelected?.(shiftKey || !isSelected, shiftKey)
                 : undefined
           : undefined
       }
