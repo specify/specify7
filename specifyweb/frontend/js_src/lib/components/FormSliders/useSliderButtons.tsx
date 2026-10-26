@@ -31,9 +31,9 @@ export function useSliderButtons({
 } {
   const navigateToFirst = (
     <Button.Small
-      aria-label={formsText.firstRecord()}
+      aria-label={formsText.goToFirstRecord()}
       disabled={buttonsDisabled.first || handleChange === undefined}
-      title={formsText.firstRecord()}
+      title={formsText.goToFirstRecord()}
       onClick={(): void => handleChange?.('first')}
     >
       {icons.chevronDoubleLeft}
@@ -42,10 +42,10 @@ export function useSliderButtons({
 
   const navigateToPrevious = (
     <Button.Small
-      aria-label={formsText.previousRecord()}
+      aria-label={formsText.goToPreviousRecord()}
       className="px-4 dark:bg-neutral-500"
       disabled={buttonsDisabled.previous || handleChange === undefined}
-      title={formsText.previousRecord()}
+      title={formsText.goToPreviousRecord()}
       onClick={(): void => handleChange?.('previous')}
     >
       {icons.chevronLeft}
@@ -54,10 +54,10 @@ export function useSliderButtons({
 
   const navigateToNext = (
     <Button.Small
-      aria-label={formsText.nextRecord()}
+      aria-label={formsText.goToNextRecord()}
       className="px-4 dark:bg-neutral-500"
       disabled={buttonsDisabled.next || handleChange === undefined}
-      title={formsText.nextRecord()}
+      title={formsText.goToNextRecord()}
       onClick={(): void => handleChange?.('next')}
     >
       {icons.chevronRight}
@@ -66,9 +66,9 @@ export function useSliderButtons({
 
   const navigateToLast = (
     <Button.Small
-      aria-label={formsText.lastRecord()}
+      aria-label={formsText.goToLastRecord()}
       disabled={buttonsDisabled.last || handleChange === undefined}
-      title={formsText.lastRecord()}
+      title={formsText.goToLastRecord()}
       onClick={(): void => handleChange?.('last')}
     >
       {icons.chevronDoubleRight}
