@@ -395,7 +395,7 @@ class BoundUploadTable(NamedTuple):
         model = self.django_model
 
         if self.disambiguation is not None:
-            if model.objects.filter(id=self.disambiguation).exists():
+            if model.objects.filter(pk=self.disambiguation).exists():
                 return DjangoPredicates(filters={"id": self.disambiguation})
 
         # here's why the line below matters: If some records were added during record epansion, we cannot _filter_ or _eclude_ on them.
@@ -554,7 +554,7 @@ class BoundUploadTable(NamedTuple):
     def _handle_row(self, skip_match: bool, allow_null: bool) -> UploadResult:
         model = self.django_model
         if self.disambiguation is not None:
-            if model.objects.filter(id=self.disambiguation).exists():
+            if model.objects.filter(pk=self.disambiguation).exists():
                 return UploadResult(
                     Matched(
                         id=self.disambiguation, info=ReportInfo(self.name, [], None)
