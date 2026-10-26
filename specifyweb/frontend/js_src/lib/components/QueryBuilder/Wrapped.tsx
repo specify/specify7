@@ -268,6 +268,36 @@ function Wrapped({
 
   const [isBasic] = useQueryViewPref(query.id);
 
+  const handleSubmit = (): void => {
+    /*
+     * If a filter for a query field was changed, and the <input> is
+     * still focused, the new value is not yet in global state.
+     * The value would be in global state after onBlur on <input>.
+     * If user hits "Enter", the form submission event is fired before
+     * onBlur (at least in Chrome and Firefox), and the query is run
+     * with the stale query field filter. This does not happen if query
+     * is run by pressing the "Query" button as that triggers onBlur
+     *
+     * The workaround is to check if input field is focused before
+     * submitting the query, and if it is, trigger blur, wait for
+     * global state to get updated and only then re run the query.
+     *
+     * See more: https://github.com/specify/specify7/issues/1647
+     */
+    const focusedInput =
+      document.activeElement?.tagName === 'INPUT'
+        ? (document.activeElement as HTMLInputElement)
+        : undefined;
+    if (typeof focusedInput === 'object' && focusedInput.type !== 'submit') {
+      // Trigger onBlur handler that parses the filter field value
+      focusedInput.blur();
+      // Return focus back to the field
+      focusedInput.focus();
+      // ReRun the query after React propagates the change
+      scheduleQueryRun();
+    } else runQuery('regular');
+  };
+
   const resultsRef = React.useRef<RA<QueryResultRow | undefined> | undefined>(
     undefined
   );
@@ -380,38 +410,7 @@ function Wrapped({
                 ? handleScrollTop()
                 : handleScrolledDown()
             }
-            onSubmit={(): void => {
-              /*
-               * If a filter for a query field was changed, and the <input> is
-               * still focused, the new value is not yet in global state.
-               * The value would be in global state after onBlur on <input>.
-               * If user hits "Enter", the form submission event is fired before
-               * onBlur (at least in Chrome and Firefox), and the query is run
-               * with the stale query field filter. This does not happen if query
-               * is run by pressing the "Query" button as that triggers onBlur
-               *
-               * The workaround is to check if input field is focused before
-               * submitting the query, and if it is, trigger blur, wait for
-               * global state to get updated and only then re run the query.
-               *
-               * See more: https://github.com/specify/specify7/issues/1647
-               */
-              const focusedInput =
-                document.activeElement?.tagName === 'INPUT'
-                  ? (document.activeElement as HTMLInputElement)
-                  : undefined;
-              if (
-                typeof focusedInput === 'object' &&
-                focusedInput.type !== 'submit'
-              ) {
-                // Trigger onBlur handler that parses the filter field value
-                focusedInput.blur();
-                // Return focus back to the field
-                focusedInput.focus();
-                // ReRun the query after React propagates the change
-                scheduleQueryRun();
-              } else runQuery('regular');
-            }}
+            onSubmit={handleSubmit}
           >
             <div className="flex snap-start flex-col gap-4 overflow-y-auto">
               {showMappingView && (
@@ -575,7 +574,7 @@ function Wrapped({
                 showSeries={showSeries}
                 tableName={table.name}
                 onRunCountOnly={(): void => runQuery('count')}
-                onSubmitClick={(): void => runQuery('regular')}
+                onSubmitClick={handleSubmit}
                 onToggleDistinct={(): void => {
                   setQuery({
                     ...query,
