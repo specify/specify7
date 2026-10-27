@@ -278,7 +278,7 @@ export function AutoComplete<T>({
     } else if (event.key === 'Home' || event.key === 'End') {
       event.stopPropagation();
       if (event.shiftKey) return;
-      if (event.key === 'End' && itemSource.length > 0) {
+      if (event.key === 'End' && lastResultOption !== null) {
         // Focus the last result so Headless UI does not activate the Add option.
         event.preventDefault();
         setShouldFocusLastResult(true);
