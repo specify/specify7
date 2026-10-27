@@ -18,6 +18,7 @@ from specifyweb.backend.stored_queries.models import Component as sq_Component
 
 from . import models
 from .query_ops import QueryOps
+from .tree_rank import TreeRankQuery
 
 logger = logging.getLogger(__name__)
 
