@@ -7,7 +7,7 @@ from sqlalchemy.ext import compiler
 from sqlalchemy.sql.elements import ClauseElement
 from sqlalchemy.types import String
 
-from specifyweb.backend.stored_queries.query_construct import QueryConstruct
+from specifyweb.backend.stored_queries.query_construct_model import QueryConstruct
 
 class group_concat(expression.ColumnElement):
     # MySQL GROUP_CONCAT(expr [ORDER BY ...] [SEPARATOR ...])

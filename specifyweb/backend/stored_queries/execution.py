@@ -28,6 +28,8 @@ from specifyweb.backend.trees.utils import get_search_filters
 from . import models
 from .format import ObjectFormatter, ObjectFormatterProps
 from .field_spec_maps import transform_field_specs
+from .query_construct_model import QueryConstruct
+from .queryfieldspec import tables_in_path
 from .web_portal_export import query_to_web_portal_zip as _query_to_web_portal_zip, WebportalQueryResultProcessors
 from specifyweb.backend.notifications.models import Message
 from specifyweb.backend.permissions.permissions import check_table_permissions
@@ -45,10 +47,6 @@ from specifyweb.specify.models_utils.load_datamodel import Table
 # import it would already be handled.
 if TYPE_CHECKING:
     from specifyweb.backend.stored_queries.queryfield import QueryField
-
-    class QueryConstruct:  # typing-only forward declaration to avoid cyclic import
-
-        pass
 
 logger = logging.getLogger(__name__)
 
@@ -682,8 +680,6 @@ def createPlacemark(kmlDoc, row, coord_cols, table, captions, host):
 
 def get_query_tables(query_fields: Iterable[QueryField]) -> set[Table]:
     """Return the tables referenced by query field paths."""
-    from .query_construct import tables_in_path
-
     return {
         table
         for field in query_fields
@@ -987,8 +983,6 @@ def build_query_construct_base(
     model,
     props: BuildQueryProps,
 ):
-    from .query_construct import QueryConstruct
-
     id_field = model._id
     catalognumber_field = model.catalogNumber if hasattr(model, 'catalogNumber') else None
     query_construct_query = session.query(id_field)

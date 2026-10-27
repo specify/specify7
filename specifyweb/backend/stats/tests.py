@@ -506,7 +506,7 @@ class StatisticsQueryPermissionTests(SimpleTestCase):
         )
 
     def test_table_paths_accept_field_names(self):
-        from specifyweb.backend.stored_queries.query_construct import tables_in_path
+        from specifyweb.backend.stored_queries.queryfieldspec import tables_in_path
 
         self.assertEqual(
             tables_in_path(

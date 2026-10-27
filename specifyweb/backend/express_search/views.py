@@ -21,7 +21,7 @@ from specifyweb.backend.stored_queries import models
 from specifyweb.backend.stored_queries.execution import DefaultQueryFormatterProps, filter_by_collection
 from specifyweb.backend.stored_queries.format import ObjectFormatter
 from specifyweb.backend.stored_queries.queryfield import QueryField
-from specifyweb.backend.stored_queries.query_construct import QueryConstruct
+from specifyweb.backend.stored_queries.query_construct_model import QueryConstruct
 from specifyweb.backend.stored_queries.queryfieldspec import QueryFieldSpec
 
 logger = logging.getLogger(__name__)
