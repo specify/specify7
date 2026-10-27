@@ -46,7 +46,6 @@ from specifyweb.specify.models_utils.load_datamodel import Table
 # import it would already be handled.
 if TYPE_CHECKING:
     from specifyweb.backend.stored_queries.queryfield import QueryField
-    from .query_construct_model import QueryConstruct
 
 logger = logging.getLogger(__name__)
 
