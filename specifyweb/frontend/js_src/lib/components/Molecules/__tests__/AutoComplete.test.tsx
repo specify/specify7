@@ -51,7 +51,6 @@ test('selects the highlighted result after repeated ArrowDown presses', async ()
   await user.type(input, 'x');
   expect(document.activeElement).toBe(input);
   await screen.findAllByRole('option');
-  await user.keyboard('{ArrowDown}');
   expect(input).toHaveAttribute(
     'aria-activedescendant',
     screen.getByRole('option', { name: 'First result' }).id
@@ -61,15 +60,20 @@ test('selects the highlighted result after repeated ArrowDown presses', async ()
     'aria-activedescendant',
     screen.getByRole('option', { name: 'Second result' }).id
   );
+  await user.keyboard('{ArrowDown}');
+  expect(input).toHaveAttribute(
+    'aria-activedescendant',
+    screen.getByRole('option', { name: 'Third result' }).id
+  );
   expect(
     screen
       .getAllByRole('option')
       .filter((option) => option.classList.contains('bg-gray-100'))
-  ).toEqual([screen.getByRole('option', { name: 'Second result' })]);
+  ).toEqual([screen.getByRole('option', { name: 'Third result' })]);
   await user.keyboard('{Enter}');
 
   expect(onChange).toHaveBeenCalledTimes(1);
-  expect(onChange).toHaveBeenCalledWith(items[1]);
+  expect(onChange).toHaveBeenCalledWith(items[2]);
 });
 
 test('selects the previous highlighted result after ArrowUp', async () => {
@@ -92,6 +96,37 @@ test('selects the previous highlighted result after ArrowUp', async () => {
 
   expect(onChange).toHaveBeenCalledTimes(1);
   expect(onChange).toHaveBeenCalledWith(items[1]);
+});
+
+test('highlights only the active result after hovering then pressing ArrowDown', async () => {
+  const onChange = jest.fn();
+  const { user } = renderAutoComplete(onChange);
+  const input = screen.getByRole('combobox');
+
+  await user.type(input, 'x');
+  const secondOption = await screen.findByRole('option', {
+    name: 'Second result',
+  });
+  await user.hover(secondOption);
+  await user.pointer({
+    target: secondOption,
+    coords: { screenX: 10, screenY: 10 },
+  });
+  expect(input).toHaveAttribute('aria-activedescendant', secondOption.id);
+
+  scrollIntoView.mockClear();
+  await user.keyboard('{ArrowDown}');
+
+  const thirdOption = screen.getByRole('option', { name: 'Third result' });
+  expect(input).toHaveAttribute('aria-activedescendant', thirdOption.id);
+  expect(
+    screen
+      .getAllByRole('option')
+      .filter((option) => option.classList.contains('bg-gray-100'))
+  ).toEqual([thirdOption]);
+  expect(scrollIntoView.mock.instances).toContain(thirdOption);
+  await user.keyboard('{Enter}');
+  expect(onChange).toHaveBeenCalledWith(items[2]);
 });
 
 test('initial ArrowUp stays synchronized with the first active result', async () => {
@@ -130,7 +165,15 @@ test.each([
   await user.click(input);
   await user.type(input, 'x');
   await screen.findAllByRole('option');
+  await user.keyboard('{ArrowDown}');
   await user.keyboard(`{${key}}`);
+  const activeOption = screen.getAllByRole('option')[index];
+  expect(input).toHaveAttribute('aria-activedescendant', activeOption.id);
+  expect(
+    screen
+      .getAllByRole('option')
+      .filter((option) => option.classList.contains('bg-gray-100'))
+  ).toEqual([activeOption]);
   await user.keyboard('{Enter}');
 
   expect(onChange).toHaveBeenCalledTimes(1);
@@ -146,7 +189,6 @@ test.each(['Home', 'End'])(
 
     await user.type(input, 'x');
     await screen.findAllByRole('option');
-    await user.keyboard('{ArrowDown}');
     await user.keyboard('{ArrowDown}');
     await user.keyboard(`{Shift>}{${key}}{/Shift}`);
     await user.keyboard('{Enter}');
@@ -176,7 +218,7 @@ test('ArrowDown selects a result beyond 50 rows rather than the available Add op
 
   await user.type(input, 'x');
   expect(await screen.findAllByRole('option')).toHaveLength(101);
-  for (let index = 0; index < 55; index++)
+  for (let index = 0; index < 54; index++)
     await user.keyboard('{ArrowDown}');
 
   expect(input).toHaveAttribute(
@@ -213,8 +255,15 @@ test('ArrowDown can highlight the Add option after the results', async () => {
   await user.click(input);
   await user.type(input, 'x');
   await screen.findAllByRole('option');
-  for (let index = 0; index <= items.length; index++)
+  for (let index = 0; index < items.length; index++)
     await user.keyboard('{ArrowDown}');
+  const addOption = screen.getAllByRole('option')[items.length];
+  expect(input).toHaveAttribute('aria-activedescendant', addOption.id);
+  expect(
+    screen
+      .getAllByRole('option')
+      .filter((option) => option.classList.contains('bg-gray-100'))
+  ).toEqual([addOption]);
   await user.keyboard('{Enter}');
 
   expect(onChange).not.toHaveBeenCalled();
@@ -310,7 +359,7 @@ describe('AutoComplete keyboard navigation', () => {
     expect(scrolledIndexes()).toContain('1');
   });
 
-  test('resets the highlighted row when the results are replaced', async () => {
+  test('keeps highlighting synchronized with the active option when results are replaced', async () => {
     const { getByRole, rerender, user } = mount(
       <AutoComplete
         delay={0}
@@ -338,11 +387,25 @@ describe('AutoComplete keyboard navigation', () => {
         onChange={jest.fn()}
       />
     );
+    expect(getByRole('combobox')).toHaveAttribute(
+      'aria-activedescendant',
+      getByRole('option', { name: 'Renamed 2' }).id
+    );
     // Let Headless UI flush its own pending scrollIntoView before measuring ours
     await new Promise((resolve) => setTimeout(resolve, 100));
     scrollIntoView.mockClear();
     await user.keyboard('{ArrowDown}');
 
-    expect(scrolledIndexes()).toEqual(['0']);
+    const activeOption = getByRole('option', { name: 'Renamed 3' });
+    expect(getByRole('combobox')).toHaveAttribute(
+      'aria-activedescendant',
+      activeOption.id
+    );
+    expect(
+      screen
+        .getAllByRole('option')
+        .filter((option) => option.classList.contains('bg-gray-100'))
+    ).toEqual([activeOption]);
+    expect(scrolledIndexes()).toContain('3');
   });
 });

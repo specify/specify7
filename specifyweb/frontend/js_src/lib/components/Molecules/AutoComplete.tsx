@@ -236,7 +236,6 @@ export function AutoComplete<T>({
    */
   const ignoreFilter = currentValue === pendingValue;
   const itemSource = ignoreFilter ? (results ?? []) : filteredItems;
-  const [activeIndex, setActiveIndex] = React.useState(-1);
   const [lastResultOption, setLastResultOption] =
     React.useState<HTMLLIElement | null>(null);
   const [shouldFocusLastResult, setShouldFocusLastResult] =
@@ -245,10 +244,6 @@ export function AutoComplete<T>({
     (option: HTMLLIElement | null): void => setLastResultOption(option),
     []
   );
-  const scrollToItem = (index: number): void =>
-    dataList
-      ?.querySelector<HTMLElement>(`[data-index="${index}"]`)
-      ?.scrollIntoView({ block: 'nearest' });
 
   const pendingItem = results?.find(
     ({ label, searchValue }) => (searchValue ?? label) === pendingValue
@@ -260,11 +255,6 @@ export function AutoComplete<T>({
     pendingItem === undefined;
   const listHasItems = showAdd || isLoading || itemSource.length > 0;
 
-  /*
-   * Reset on a new search or replacement results, not when another page is
-   * appended.
-   */
-  React.useEffect(() => setActiveIndex(-1), [pendingValue, results]);
   React.useLayoutEffect(() => {
     if (!shouldFocusLastResult || lastResultOption === null) return;
     lastResultOption.focus();
@@ -285,27 +275,14 @@ export function AutoComplete<T>({
 
     if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
       event.stopPropagation();
-      if (event.key === 'ArrowDown' && activeIndex === -1) {
-        // Headless UI opens with the first option active.
-        event.preventDefault();
-      }
-      const direction = event.key === 'ArrowDown' ? 1 : -1;
-      const lastIndex = itemSource.length - (showAdd ? 0 : 1);
-      const nextIndex =
-        activeIndex === -1
-          ? 0
-          : Math.min(lastIndex, Math.max(0, activeIndex + direction));
-      setActiveIndex(nextIndex);
-      scrollToItem(nextIndex);
     } else if (event.key === 'Home' || event.key === 'End') {
       event.stopPropagation();
       if (event.shiftKey) return;
-      const nextIndex =
-        event.key === 'Home' ? 0 : Math.max(0, itemSource.length - 1);
-      setActiveIndex(nextIndex);
-      scrollToItem(nextIndex);
-      if (event.key === 'End' && itemSource.length > 0)
+      if (event.key === 'End' && itemSource.length > 0) {
+        // Focus the last result so Headless UI does not activate the Add option.
+        event.preventDefault();
         setShouldFocusLastResult(true);
+      }
     }
   }
 
@@ -578,12 +555,10 @@ export function AutoComplete<T>({
             return (
               <Combobox.Option key={index} as={React.Fragment} value={item}>
                 {({ active, selected }): JSX.Element => (
-                  <li
+                  <AutoCompleteOption
+                    active={active}
+                    selected={selected}
                     data-index={index}
-                    className={optionClassName(
-                      active || index === activeIndex,
-                      selected
-                    )}
                     ref={
                       index === itemSource.length - 1
                         ? lastResultOptionRefCallback
@@ -599,7 +574,7 @@ export function AutoComplete<T>({
                     ) : (
                       fullLabel
                     )}
-                  </li>
+                  </AutoCompleteOption>
                 )}
               </Combobox.Option>
             );
@@ -607,11 +582,9 @@ export function AutoComplete<T>({
           {showAdd && (
             <Combobox.Option as={React.Fragment} value={pendingValue}>
               {({ active, selected }): JSX.Element => (
-                <li
-                  className={optionClassName(
-                    active || activeIndex === itemSource.length,
-                    selected
-                  )}
+                <AutoCompleteOption
+                  active={active}
+                  selected={selected}
                   onMouseDown={(e: React.MouseEvent): void => {
                     e.stopPropagation();
                     shouldBlurAfterMouseSelection.current = true;
@@ -621,7 +594,7 @@ export function AutoComplete<T>({
                     <span className={className.dataEntryAdd}>{icons.plus}</span>
                     {commonText.add()}
                   </div>
-                </li>
+                </AutoCompleteOption>
               )}
             </Combobox.Option>
           )}
@@ -635,6 +608,34 @@ export function AutoComplete<T>({
     </Combobox>
   );
 }
+
+const AutoCompleteOption = React.forwardRef<
+  HTMLLIElement,
+  TagProps<'li'> & {
+    readonly active: boolean;
+    readonly selected: boolean;
+  }
+>(function AutoCompleteOption(
+  { active, selected, ...props },
+  forwardedRef
+): JSX.Element {
+  const optionRef = React.useRef<HTMLLIElement | null>(null);
+  const ref = React.useCallback(
+    (option: HTMLLIElement | null): void => {
+      optionRef.current = option;
+      if (typeof forwardedRef === 'function') forwardedRef(option);
+      else if (forwardedRef !== null) forwardedRef.current = option;
+    },
+    [forwardedRef]
+  );
+  React.useEffect(() => {
+    if (active) optionRef.current?.scrollIntoView({ block: 'nearest' });
+  }, [active]);
+
+  return (
+    <li {...props} className={optionClassName(active, selected)} ref={ref} />
+  );
+});
 
 const toggleButton = (
   <Combobox.Button
