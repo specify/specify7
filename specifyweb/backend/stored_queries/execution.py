@@ -27,7 +27,6 @@ from specifyweb.backend.trees.utils import get_search_filters
 
 from . import models
 from .format import ObjectFormatter, ObjectFormatterProps
-from .query_construct import QueryConstruct, tables_in_path
 from .field_spec_maps import transform_field_specs
 from .web_portal_export import query_to_web_portal_zip as _query_to_web_portal_zip, WebportalQueryResultProcessors
 from specifyweb.backend.notifications.models import Message
@@ -46,6 +45,7 @@ from specifyweb.specify.models_utils.load_datamodel import Table
 # import it would already be handled.
 if TYPE_CHECKING:
     from specifyweb.backend.stored_queries.queryfield import QueryField
+    from .query_construct import QueryConstruct
 
 logger = logging.getLogger(__name__)
 
