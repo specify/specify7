@@ -16,11 +16,10 @@ const options = { headers: { Accept: 'application/json' as const } };
 const result = (status: number, retryAfter?: string) => ({
   status,
   data: { count: 12 },
-  response: Object.assign(new Response(undefined, { status }), {
-    headers: {
-      get: (name: string) =>
-        name === 'X-Specify-Retry-After' ? (retryAfter ?? null) : null,
-    },
+  response: new Response(undefined, {
+    status,
+    headers:
+      retryAfter === undefined ? {} : { 'X-Specify-Retry-After': retryAfter },
   }),
 });
 
