@@ -35,9 +35,16 @@ def statistics_result(
     user,
     query_key: str,
     calculate: Callable[[], str],
-    validate_cached: Callable[[], None],
+    check_cached_permissions: Callable[[], None],
 ) -> str:
-    """Reuse cached statistics when Redis is available; always gate calculations."""
+    """Reuse cached statistics when Redis is available; always gate calculations.
+
+    Before returning a cache hit, check_cached_permissions must raise if the user
+    can no longer access the result. It checks authorization, not query validity.
+    On a cache miss, calculate is responsible for normal validation and permissions.
+    Exceptions propagate to the caller: failed calculations are not cached, and
+    failed permission checks leave the cached value unchanged.
+    """
     digest = hashlib.sha256(query_key.encode()).hexdigest()
     cache_key = format_key(
         f"specify:{{database}}:statistics:{collection.id}:{user.id}:{digest}"
@@ -59,7 +66,7 @@ def statistics_result(
             cache = None
             return None
         if result is not None:
-            validate_cached()
+            check_cached_permissions()
         return result
 
     result = cached_result()
@@ -90,17 +97,17 @@ def statistics_result(
 
 
 def statistics_content(request, tables, calculate: Callable[[], str]) -> str:
-    def validate() -> None:
+    def check_permissions() -> None:
         for table in tables:
             check_table_permissions(
                 request.specify_collection, request.specify_user, table, "read"
             )
 
-    validate()
+    check_permissions()
     return statistics_result(
         request.specify_collection,
         request.specify_user,
         json.dumps([request.path, sorted(request.GET.items())]),
         calculate,
-        validate,
+        check_permissions,
     )

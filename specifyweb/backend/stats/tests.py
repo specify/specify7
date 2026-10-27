@@ -1,12 +1,14 @@
 import hashlib
 import json
 from types import SimpleNamespace
-from unittest.mock import Mock, patch
+from unittest.mock import Mock, call, patch
 
 from django.core.exceptions import PermissionDenied
 from django.http import JsonResponse
 from django.test import RequestFactory, SimpleTestCase, override_settings
 from redis.exceptions import ConnectionError as RedisConnectionError, TimeoutError as RedisTimeoutError
+
+from specifyweb.specify.datamodel import datamodel
 
 from .coordination import (
     STATISTICS_CACHE_SECONDS,
@@ -23,7 +25,7 @@ class StatisticsCoordinationTests(SimpleTestCase):
         self.collection = SimpleNamespace(id=1)
         self.user = SimpleNamespace(id=2)
         self.calculate = Mock(return_value='{"count": 12}')
-        self.validate = Mock()
+        self.check_permissions = Mock()
         self.cache = Mock()
         self.cache.get.return_value = None
         cache_patch = patch(
@@ -39,7 +41,7 @@ class StatisticsCoordinationTests(SimpleTestCase):
 
     def run_statistic(self, query_key="query"):
         return statistics_result(
-            self.collection, self.user, query_key, self.calculate, self.validate
+            self.collection, self.user, query_key, self.calculate, self.check_permissions
         )
 
     def test_result_is_cached_for_five_minutes(self):
@@ -78,7 +80,7 @@ class StatisticsCoordinationTests(SimpleTestCase):
         self.calculate.assert_called_once_with()
         self.lock.acquire.assert_called_once_with()
         self.lock.release.assert_called_once_with()
-        self.validate.assert_not_called()
+        self.check_permissions.assert_not_called()
 
     def test_unconfigured_redis_still_calculates_under_lock(self):
         self.redis_connection.side_effect = ValueError("Redis is not correctly configured")
@@ -125,16 +127,18 @@ class StatisticsCoordinationTests(SimpleTestCase):
     def test_cached_result_rechecks_permissions_without_running_query(self):
         self.cache.get.return_value = '{"count": 12}'
         self.assertEqual(self.run_statistic(), '{"count": 12}')
-        self.validate.assert_called_once_with()
+        self.check_permissions.assert_called_once_with()
         self.calculate.assert_not_called()
         self.lock.acquire.assert_not_called()
 
     def test_revoked_permissions_prevent_cached_result_access(self):
         self.cache.get.return_value = '{"count": 12}'
-        self.validate.side_effect = PermissionDenied
+        self.check_permissions.side_effect = PermissionDenied
         with self.assertRaises(PermissionDenied):
             self.run_statistic()
         self.calculate.assert_not_called()
+        self.cache.set.assert_not_called()
+        self.cache.delete.assert_not_called()
 
     def test_busy_database_does_not_start_or_wait_for_another_calculation(self):
         self.lock.acquire.side_effect = TimeoutError
@@ -176,7 +180,7 @@ class StatisticsCoordinationTests(SimpleTestCase):
     def test_cache_is_checked_again_after_acquiring_lock(self):
         self.cache.get.side_effect = [None, '{"count": 12}']
         self.assertEqual(self.run_statistic(), '{"count": 12}')
-        self.validate.assert_called_once_with()
+        self.check_permissions.assert_called_once_with()
         self.calculate.assert_not_called()
         self.lock.release.assert_called_once_with()
 
@@ -261,20 +265,61 @@ class StatisticsCoordinationTests(SimpleTestCase):
         self.lock.acquire.assert_called_once_with()
         self.cache.set.assert_called_once()
 
+    @patch("specifyweb.backend.stored_queries.execution.check_table_permissions")
     @patch("specifyweb.backend.stored_queries.views.run_ephemeral_query")
     @patch("specifyweb.backend.stored_queries.views.get_query")
-    def test_ephemeral_cache_hit_validates_query_without_executing(self, get_query, execute):
+    def test_ephemeral_cache_hit_checks_permissions_without_executing(
+        self, get_query, execute, check
+    ):
         from specifyweb.backend.stored_queries.views import ephemeral
 
-        query = {"countonly": True}
+        query = {
+            "countonly": True,
+            "fields": [{
+                "position": 0,
+                "stringid": "1.collectionobject.catalogNumber",
+                "isrelfld": False,
+            }],
+        }
         get_query.return_value = query, self.collection
         self.cache.get.return_value = '{"count": 12}'
         response = ephemeral(self.ephemeral_request())
         self.assertEqual(json.loads(response.content), {"count": 12})
-        execute.assert_called_once_with(
-            self.collection, self.user, query, validate_only=True
+        check.assert_called_once_with(
+            self.collection, self.user, datamodel.get_table_strict("Collectionobject"), "read"
         )
+        execute.assert_not_called()
         self.lock.acquire.assert_not_called()
+        self.cache.set.assert_not_called()
+
+    @patch(
+        "specifyweb.backend.stored_queries.execution.check_table_permissions",
+        side_effect=PermissionDenied,
+    )
+    @patch("specifyweb.backend.stored_queries.views.run_ephemeral_query")
+    @patch("specifyweb.backend.stored_queries.views.get_query")
+    def test_ephemeral_cache_hit_rejects_revoked_permissions(
+        self, get_query, execute, check
+    ):
+        from specifyweb.backend.stored_queries.views import ephemeral
+
+        query = {
+            "countonly": True,
+            "fields": [{
+                "position": 0,
+                "stringid": "1.collectionobject.catalogNumber",
+                "isrelfld": False,
+            }],
+        }
+        get_query.return_value = query, self.collection
+        self.cache.get.return_value = '{"count": 12}'
+        with self.assertRaises(PermissionDenied):
+            ephemeral(self.ephemeral_request())
+        check.assert_called_once()
+        execute.assert_not_called()
+        self.lock.acquire.assert_not_called()
+        self.cache.set.assert_not_called()
+        self.cache.delete.assert_not_called()
 
     @patch("specifyweb.backend.stored_queries.views.run_ephemeral_query")
     @patch("specifyweb.backend.stored_queries.views.get_query")
@@ -303,13 +348,113 @@ class StatisticsCoordinationTests(SimpleTestCase):
         self.lock.acquire.assert_not_called()
 
 
-class StatisticsPermissionValidationTests(SimpleTestCase):
+class StatisticsQueryPermissionTests(SimpleTestCase):
+    @patch("specifyweb.backend.stored_queries.execution.build_query")
+    @patch("specifyweb.backend.stored_queries.execution.check_table_permissions")
+    def test_checks_root_and_joined_tables_once_without_building_query(self, check, build):
+        from specifyweb.backend.stored_queries.execution import check_query_permissions
+        from specifyweb.backend.stored_queries.queryfield import fields_from_json
+
+        collection, user = Mock(), Mock()
+        fields = fields_from_json([
+            {
+                "position": 0,
+                "stringid": "1,10,2.locality.localityName",
+                "isrelfld": False,
+            },
+            {
+                "position": 1,
+                "stringid": "1.collectionobject.catalogNumber",
+                "isrelfld": False,
+            },
+        ])
+        check_query_permissions(collection, user, fields)
+        self.assertCountEqual(
+            check.call_args_list,
+            [
+                call(collection, user, datamodel.get_table_strict(name), "read")
+                for name in ("Collectionobject", "Collectingevent", "Locality")
+            ],
+        )
+        build.assert_not_called()
+
+    @patch("specifyweb.backend.stored_queries.execution.check_table_permissions")
+    def test_tree_rank_paths_check_referenced_tables(self, check):
+        from specifyweb.backend.stored_queries.execution import check_query_permissions
+        from specifyweb.backend.stored_queries.queryfield import fields_from_json
+
+        collection, user = Mock(), Mock()
+        fields = fields_from_json([{
+            "position": 0,
+            "stringid": "1,9-determinations,4.taxon.Genus",
+            "isrelfld": False,
+        }])
+        check_query_permissions(collection, user, fields)
+        self.assertCountEqual(
+            check.call_args_list,
+            [
+                call(collection, user, datamodel.get_table_strict(name), "read")
+                for name in ("Collectionobject", "Determination", "Taxon")
+            ],
+        )
+
+    def test_table_paths_accept_field_names(self):
+        from specifyweb.backend.stored_queries.query_construct import tables_in_path
+
+        self.assertEqual(
+            tables_in_path(
+                datamodel.get_table_strict("Collectionobject"),
+                ("collectingEvent", "locality", "localityName"),
+            ),
+            [
+                datamodel.get_table_strict(name)
+                for name in ("Collectionobject", "Collectingevent", "Locality")
+            ],
+        )
+
+    @patch("specifyweb.backend.stored_queries.execution.models.session_context")
+    @patch("specifyweb.backend.stored_queries.execution.execute")
+    def test_ephemeral_execution_returns_query_results(self, execute, context):
+        from specifyweb.backend.stored_queries.execution import run_ephemeral_query
+        from specifyweb.backend.stored_queries.queryfield import fields_from_json
+
+        collection, user = Mock(), Mock()
+        query = {
+            "selectdistinct": False,
+            "contexttableid": 1,
+            "countonly": True,
+            "fields": [{
+                "position": 0,
+                "stringid": "1.collectionobject.catalogNumber",
+                "isrelfld": False,
+            }],
+        }
+        execute.return_value = {"count": 12}
+        self.assertEqual(run_ephemeral_query(collection, user, query), {"count": 12})
+        execute.assert_called_once_with(
+            session=context.return_value.__enter__.return_value,
+            collection=collection,
+            user=user,
+            tableid=1,
+            distinct=False,
+            series=None,
+            search_synonymy=False,
+            count_only=True,
+            query_fields=fields_from_json(query["fields"]),
+            limit=20,
+            offset=0,
+            recordsetid=None,
+            formatauditobjs=False,
+        )
+
+    @patch("specifyweb.backend.stored_queries.execution.log_sqlalchemy_query")
     @patch("specifyweb.backend.stored_queries.execution.set_group_concat_max_len")
     @patch("specifyweb.backend.stored_queries.execution.build_query")
-    def test_validation_builds_and_checks_query_without_evaluating_it(self, build, setup):
+    def test_execute_returns_query_results(self, build, setup, log):
         from specifyweb.backend.stored_queries.execution import execute
 
         query = Mock()
+        query.count.return_value = 12
         build.return_value = query, []
         result = execute(
             session=SimpleNamespace(info={"connection": Mock()}),
@@ -323,10 +468,9 @@ class StatisticsPermissionValidationTests(SimpleTestCase):
             query_fields=[],
             limit=0,
             offset=0,
-            validate_only=True,
         )
-        self.assertIsNone(result)
+        self.assertEqual(result, {"count": 12})
         setup.assert_called_once()
         build.assert_called_once()
-        query.count.assert_not_called()
+        query.count.assert_called_once_with()
         query.all.assert_not_called()

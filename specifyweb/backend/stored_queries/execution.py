@@ -27,7 +27,7 @@ from specifyweb.backend.trees.utils import get_search_filters
 
 from . import models
 from .format import ObjectFormatter, ObjectFormatterProps
-from .query_construct import QueryConstruct
+from .query_construct import QueryConstruct, tables_in_path
 from .field_spec_maps import transform_field_specs
 from .web_portal_export import query_to_web_portal_zip as _query_to_web_portal_zip, WebportalQueryResultProcessors
 from specifyweb.backend.notifications.models import Message
@@ -677,10 +677,24 @@ def createPlacemark(kmlDoc, row, coord_cols, table, captions, host):
     return placemarkElement
 
 
-def run_ephemeral_query(collection, user, spquery, *, validate_only: bool = False):
+def check_query_permissions(collection, user, query_fields: Iterable[QueryField]) -> None:
+    """Check read permissions for query field paths without building the data query.
+
+    Permission failures propagate from check_table_permissions. This checks current
+    authorization, not query validity.
+    """
+    tables_to_read = {
+        table
+        for field in query_fields
+        for table in tables_in_path(field.fieldspec.root_table, field.fieldspec.join_path)
+    }
+    for table_to_read in tables_to_read:
+        check_table_permissions(collection, user, table_to_read, "read")
+
+
+def run_ephemeral_query(collection, user, spquery):
     """Execute a Specify query from deserialized json and return the results
-    as an array for json serialization to the web app. With validate_only,
-    build the query and check permissions without evaluating its results.
+    as an array for json serialization to the web app.
     """
     logger.info("ephemeral query: %s", spquery)
     limit = spquery.get("limit", 20)
@@ -709,7 +723,6 @@ def run_ephemeral_query(collection, user, spquery, *, validate_only: bool = Fals
             offset=offset,
             recordsetid=recordsetid,
             formatauditobjs=format_audits,
-            validate_only=validate_only,
         )
 
 
@@ -874,7 +887,6 @@ def execute(
     recordsetid=None,
     formatauditobjs=False,
     formatter_props=None,
-    validate_only: bool = False,
 ):
     "Build and execute a query, returning the results as a data structure for json serialization"
 
@@ -897,9 +909,6 @@ def execute(
             formatter_props=formatter_props,
         ),
     )
-
-    if validate_only:
-        return None
 
     log_sqlalchemy_query(query)
 
@@ -1182,16 +1191,7 @@ def build_query(
 
     query_fields = list(transform_field_specs(query_fields, user))
 
-    tables_to_read = {
-            table
-            for field in query_fields
-            for table in query.tables_in_path(
-                field.fieldspec.root_table, field.fieldspec.join_path
-            )
-    }
-
-    for table_to_read in tables_to_read:
-        check_table_permissions(collection, user, table_to_read, "read")
+    check_query_permissions(collection, user, query_fields)
 
     query = filter_by_collection(model, query, collection)
 

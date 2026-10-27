@@ -20,14 +20,14 @@ from specifyweb.specify.models_utils.models_by_table_id import model_names_by_ta
 from specifyweb.specify.api.serializers import toJson, uri_for_model
 from . import models
 from .execution import execute, run_ephemeral_query, do_export, recordset
-from .queryfield import QueryField
+from .queryfield import QueryField, fields_from_json
 from specifyweb.backend.permissions.permissions import PermissionTarget, PermissionTargetAction, \
     check_permission_targets, check_table_permissions
 from specifyweb.specify.models import Collection, Recordset, Recordsetitem, \
     Loanreturnpreparation, Loanpreparation, Loan
 from specifyweb.specify.views import login_maybe_required
 from .execution import execute, run_ephemeral_query, do_export, recordset, \
-    return_loan_preps as rlp
+    return_loan_preps as rlp, check_query_permissions
 
 
 logger = logging.getLogger(__name__)
@@ -122,9 +122,9 @@ def ephemeral(request):
 
     spquery, collection = get_query(request)
     if request.headers.get("X-Specify-Statistics") == "true":
-        def validate_cached() -> None:
-            run_ephemeral_query(
-                collection, request.specify_user, spquery, validate_only=True
+        def check_cached_permissions() -> None:
+            check_query_permissions(
+                collection, request.specify_user, fields_from_json(spquery["fields"])
             )
 
         try:
@@ -133,7 +133,7 @@ def ephemeral(request):
                 request.specify_user,
                 json.dumps(spquery, sort_keys=True),
                 lambda: toJson(run_ephemeral_query(collection, request.specify_user, spquery)),
-                validate_cached,
+                check_cached_permissions,
             )
         except StatisticsBusy:
             return busy_response()

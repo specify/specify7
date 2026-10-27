@@ -17,6 +17,21 @@ def _safe_filter(query):
         return query.first()
     raise Exception(f"Got more than one matching: {list(query)}")
 
+
+def tables_in_path(table, join_path):
+    path = deque(join_path)
+    tables = [table]
+    while len(path) > 0:
+        field = path.popleft()
+        if isinstance(field, str):
+            field = tables[-1].get_field(field, strict=True)
+        if not field.is_relationship: # also handles tree ranks
+            break
+
+        tables.append(spmodels.datamodel.get_table(field.relatedModelName, strict=True))
+    return tables
+
+
 class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter query join_cache tree_rank_count internal_filters')):
 
     def __new__(cls, *args, **kwargs):
@@ -111,20 +126,6 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
         query = query._replace(internal_filters=new_filters)
 
         return query, column, field, table
-
-    def tables_in_path(self, table, join_path):
-        path = deque(join_path)
-        field = None
-        tables = [table]
-        while len(path) > 0:
-            field = path.popleft()
-            if isinstance(field, str):
-                field = tables[-1].get_field(field, strict=True)
-            if not field.is_relationship: # also handles tree ranks
-                break
-
-            tables.append(spmodels.datamodel.get_table(field.relatedModelName, strict=True))
-        return tables
 
     def build_join(self, table, model, join_path):
         query = self
