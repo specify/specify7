@@ -4,6 +4,7 @@ from specifyweb.backend.stored_queries.queryfieldspec import (
 )
 from specifyweb.backend.stored_queries.tests.tests import SQLAlchemySetup
 from specifyweb.backend.stored_queries.tests.utils import make_query_fields_test
+from specifyweb.backend.businessrules.rules.cogtype_rules import SYSTEM_COGTYPES_PICKLIST
 from specifyweb.specify.models import (
     Collection,
     Collectionobject,
@@ -11,6 +12,8 @@ from specifyweb.specify.models import (
     Collectionobjectgroupjoin,
     Collectionobjectgrouptype,
     Component,
+    Picklist,
+    Picklistitem,
 )
 from specifyweb.specify.tests.test_utils.test_collection_preference_context import (
     TestCollectionPreferenceContext,
@@ -26,6 +29,19 @@ class DuplicateCatalogNumberInheritanceTests(SQLAlchemySetup, TestCollectionPref
             collectionname='Other collection', catalognumformatname='test',
             isembeddedcollectingevent=False, discipline=self.discipline,
         )
+        for collection in (self.collection, self.other_collection):
+            cog_type_picklist = Picklist.objects.create(
+                name=SYSTEM_COGTYPES_PICKLIST,
+                issystem=True,
+                type=0,
+                readonly=True,
+                collection=collection,
+            )
+            Picklistitem.objects.create(
+                title='Discrete',
+                value='Discrete',
+                picklist=cog_type_picklist,
+            )
         # Duplicate numbers are valid across collections. Move the second
         # parent and its sibling before assigning the number, preserving the
         # unique (collection, catalognumber) pair throughout setup.
