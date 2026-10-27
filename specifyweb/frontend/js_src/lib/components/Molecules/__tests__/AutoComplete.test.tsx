@@ -77,7 +77,7 @@ describe('AutoComplete remote contains results', () => {
     function PaginatedAutoComplete({
       extraItems,
     }: {
-      readonly extraItems: readonly AutoCompleteItem<string>[];
+      readonly extraItems: ReadonlyArray<AutoCompleteItem<string>>;
     }): JSX.Element {
       const [value, setValue] = React.useState('');
       return (
@@ -128,7 +128,7 @@ describe('AutoComplete remote contains results', () => {
     'updates selected-option state when %s results arrive or change',
     async (_page, appended) => {
       const renderAutoComplete = (
-        items: readonly AutoCompleteItem<string>[]
+        items: ReadonlyArray<AutoCompleteItem<string>>
       ) => (
         <AutoComplete
           extraItems={appended ? items : undefined}
@@ -144,19 +144,19 @@ describe('AutoComplete remote contains results', () => {
 
       rerender(renderAutoComplete([{ label: 'Bacopa hydrolea', data: '2' }]));
       await user.click(getByRole('button', { name: 'Expand' }));
-      await expect(
-        findByRole('option', { name: 'Bacopa hydrolea' })
-      ).resolves.toHaveAttribute('aria-selected', 'true');
+      expect(
+        await findByRole('option', { name: 'Bacopa hydrolea' })
+      ).toHaveAttribute('aria-selected', 'true');
 
       rerender(renderAutoComplete([{ label: 'Bacopa hydrolea', data: '2' }]));
-      await expect(
-        findByRole('option', { name: 'Bacopa hydrolea' })
-      ).resolves.toHaveAttribute('aria-selected', 'true');
+      expect(
+        await findByRole('option', { name: 'Bacopa hydrolea' })
+      ).toHaveAttribute('aria-selected', 'true');
 
       rerender(renderAutoComplete([{ label: 'Bacopa hydrolea', data: '3' }]));
-      await expect(
-        findByRole('option', { name: 'Bacopa hydrolea' })
-      ).resolves.toHaveAttribute('aria-selected', 'true');
+      expect(
+        await findByRole('option', { name: 'Bacopa hydrolea' })
+      ).toHaveAttribute('aria-selected', 'true');
     }
   );
 
@@ -177,7 +177,7 @@ describe('AutoComplete remote contains results', () => {
       ]);
       const onChange = jest.fn();
       const renderAutoComplete = (
-        extraItems: readonly AutoCompleteItem<string>[]
+        extraItems: ReadonlyArray<AutoCompleteItem<string>>
       ) => (
         <AutoComplete
           delay={0}
@@ -267,13 +267,13 @@ describe('AutoComplete keyboard navigation', () => {
     cleanup();
   });
 
-  const makeItems = (count: number): readonly AutoCompleteItem<string>[] =>
+  const makeItems = (count: number): ReadonlyArray<AutoCompleteItem<string>> =>
     Array.from({ length: count }, (_, index) => ({
       label: `Item ${index}`,
       data: String(index),
     }));
 
-  const scrolledIndexes = (): readonly (string | null)[] =>
+  const scrolledIndexes = (): ReadonlyArray<string | null> =>
     scrollIntoView.mock.instances.map((element: Element) =>
       element.getAttribute('data-index')
     );
@@ -302,7 +302,7 @@ describe('AutoComplete keyboard navigation', () => {
     function Harness({
       extraItems,
     }: {
-      readonly extraItems: readonly AutoCompleteItem<string>[];
+      readonly extraItems: ReadonlyArray<AutoCompleteItem<string>>;
     }): JSX.Element {
       const [value, setValue] = React.useState('');
       return (

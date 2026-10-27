@@ -18,8 +18,7 @@ const queryField = (
   filters: [],
 });
 
-/*
- * A query over Collection Object that reaches through a to-one relationship
+/* A query over Collection Object that reaches through a to-one relationship
  * (accession), a to-many one (accession agents), and an unchecked field.
  */
 const fields: RA<QueryField> = [

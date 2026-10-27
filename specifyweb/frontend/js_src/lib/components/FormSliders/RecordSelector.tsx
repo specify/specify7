@@ -22,7 +22,8 @@ export type RecordSelectorProps<SCHEMA extends AnySchema> = {
   readonly records: RA<SpecifyResource<SCHEMA> | undefined>;
   // Callback to call when new record needs to be added to the record set
   readonly onAdd:
-    ((resources: RA<SpecifyResource<SCHEMA>>) => void) | undefined;
+    | ((resources: RA<SpecifyResource<SCHEMA>>) => void)
+    | undefined;
   // Callback to call when a record needs to be removed from the record set
   readonly onDelete:
     | ((index: number, source: 'deleteButton' | 'minusButton') => void)
@@ -51,10 +52,12 @@ export type RecordSelectorState<SCHEMA extends AnySchema> = {
   readonly resource: SpecifyResource<SCHEMA> | undefined;
   // Set this as an "Add" button event listener
   readonly onAdd:
-    ((resources: RA<SpecifyResource<SCHEMA>>) => void) | undefined;
+    | ((resources: RA<SpecifyResource<SCHEMA>>) => void)
+    | undefined;
   // Set this as an "Remove" button event listener
   readonly onRemove:
-    ((source: 'deleteButton' | 'minusButton') => void) | undefined;
+    | ((source: 'deleteButton' | 'minusButton') => void)
+    | undefined;
   readonly showSearchDialog: () => void;
   // True while fetching new record
   readonly isLoading: boolean;

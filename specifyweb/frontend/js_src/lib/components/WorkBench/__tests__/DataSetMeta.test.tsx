@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { batchEditText } from '../../../localization/batchEdit';
 import { mount } from '../../../tests/reactUtils';
 import { localized } from '../../../utils/types';
