@@ -25,7 +25,6 @@ class StatisticsCoordinationTests(SimpleTestCase):
         self.collection = SimpleNamespace(id=1)
         self.user = SimpleNamespace(id=2)
         self.calculate = Mock(return_value='{"count": 12}')
-        self.check_permissions = Mock()
         self.cache = Mock()
         self.cache.get.return_value = None
         cache_patch = patch(
@@ -41,7 +40,7 @@ class StatisticsCoordinationTests(SimpleTestCase):
 
     def run_statistic(self, query_key="query"):
         return statistics_result(
-            self.collection, self.user, query_key, self.calculate, self.check_permissions
+            self.collection, self.user, query_key, self.calculate
         )
 
     def test_result_is_cached_for_five_minutes(self):
@@ -80,7 +79,6 @@ class StatisticsCoordinationTests(SimpleTestCase):
         self.calculate.assert_called_once_with()
         self.lock.acquire.assert_called_once_with()
         self.lock.release.assert_called_once_with()
-        self.check_permissions.assert_not_called()
 
     def test_unconfigured_redis_still_calculates_under_lock(self):
         self.redis_connection.side_effect = ValueError("Redis is not correctly configured")
@@ -124,21 +122,11 @@ class StatisticsCoordinationTests(SimpleTestCase):
         self.calculate.assert_not_called()
         self.lock.release.assert_called_once_with()
 
-    def test_cached_result_rechecks_permissions_without_running_query(self):
+    def test_cached_result_is_returned_without_running_query(self):
         self.cache.get.return_value = '{"count": 12}'
         self.assertEqual(self.run_statistic(), '{"count": 12}')
-        self.check_permissions.assert_called_once_with()
         self.calculate.assert_not_called()
         self.lock.acquire.assert_not_called()
-
-    def test_revoked_permissions_prevent_cached_result_access(self):
-        self.cache.get.return_value = '{"count": 12}'
-        self.check_permissions.side_effect = PermissionDenied
-        with self.assertRaises(PermissionDenied):
-            self.run_statistic()
-        self.calculate.assert_not_called()
-        self.cache.set.assert_not_called()
-        self.cache.delete.assert_not_called()
 
     def test_busy_database_does_not_start_or_wait_for_another_calculation(self):
         self.lock.acquire.side_effect = TimeoutError
@@ -180,7 +168,6 @@ class StatisticsCoordinationTests(SimpleTestCase):
     def test_cache_is_checked_again_after_acquiring_lock(self):
         self.cache.get.side_effect = [None, '{"count": 12}']
         self.assertEqual(self.run_statistic(), '{"count": 12}')
-        self.check_permissions.assert_called_once_with()
         self.calculate.assert_not_called()
         self.lock.release.assert_called_once_with()
 
@@ -225,6 +212,21 @@ class StatisticsCoordinationTests(SimpleTestCase):
         view.assert_not_called()
 
     @patch(
+        "specifyweb.backend.stats.coordination.check_table_permissions",
+        side_effect=PermissionDenied,
+    )
+    def test_backend_view_rejects_revoked_permissions_before_cache_lookup(self, check):
+        table = Mock()
+        request = RequestFactory().get("/stats/collection/preparations/")
+        request.specify_collection = self.collection
+        request.specify_user = self.user
+        with self.assertRaises(PermissionDenied):
+            statistics_content(request, (table,), self.calculate)
+        check.assert_called_once_with(self.collection, self.user, table, "read")
+        self.cache.get.assert_not_called()
+        self.calculate.assert_not_called()
+
+    @patch(
         "specifyweb.backend.stats.views.statistics_content",
         side_effect=StatisticsBusy,
     )
@@ -251,17 +253,30 @@ class StatisticsCoordinationTests(SimpleTestCase):
         request.specify_collection = self.collection
         return request
 
+    @staticmethod
+    def ephemeral_query():
+        return {
+            "countonly": True,
+            "fields": [{
+                "position": 0,
+                "stringid": "1.collectionobject.catalogNumber",
+                "isrelfld": False,
+            }],
+        }
+
+    @patch("specifyweb.backend.stored_queries.execution.check_table_permissions")
     @patch("specifyweb.backend.stored_queries.views.run_ephemeral_query")
     @patch("specifyweb.backend.stored_queries.views.get_query")
-    def test_ephemeral_statistics_are_gated_and_cached(self, get_query, execute):
+    def test_ephemeral_statistics_are_gated_and_cached(self, get_query, execute, check):
         from specifyweb.backend.stored_queries.views import ephemeral
 
-        query = {"countonly": True}
+        query = self.ephemeral_query()
         get_query.return_value = query, self.collection
         execute.return_value = {"count": 12}
         response = ephemeral(self.ephemeral_request())
         self.assertEqual(json.loads(response.content), {"count": 12})
         execute.assert_called_once_with(self.collection, self.user, query)
+        check.assert_called_once()
         self.lock.acquire.assert_called_once_with()
         self.cache.set.assert_called_once()
 
@@ -273,14 +288,7 @@ class StatisticsCoordinationTests(SimpleTestCase):
     ):
         from specifyweb.backend.stored_queries.views import ephemeral
 
-        query = {
-            "countonly": True,
-            "fields": [{
-                "position": 0,
-                "stringid": "1.collectionobject.catalogNumber",
-                "isrelfld": False,
-            }],
-        }
+        query = self.ephemeral_query()
         get_query.return_value = query, self.collection
         self.cache.get.return_value = '{"count": 12}'
         response = ephemeral(self.ephemeral_request())
@@ -303,30 +311,40 @@ class StatisticsCoordinationTests(SimpleTestCase):
     ):
         from specifyweb.backend.stored_queries.views import ephemeral
 
-        query = {
-            "countonly": True,
-            "fields": [{
-                "position": 0,
-                "stringid": "1.collectionobject.catalogNumber",
-                "isrelfld": False,
-            }],
-        }
+        query = self.ephemeral_query()
         get_query.return_value = query, self.collection
         self.cache.get.return_value = '{"count": 12}'
         with self.assertRaises(PermissionDenied):
             ephemeral(self.ephemeral_request())
         check.assert_called_once()
         execute.assert_not_called()
+        self.cache.get.assert_not_called()
         self.lock.acquire.assert_not_called()
         self.cache.set.assert_not_called()
         self.cache.delete.assert_not_called()
 
-    @patch("specifyweb.backend.stored_queries.views.run_ephemeral_query")
+    @patch("specifyweb.backend.stored_queries.views.statistics_result")
     @patch("specifyweb.backend.stored_queries.views.get_query")
-    def test_ephemeral_busy_response_does_not_execute_query(self, get_query, execute):
+    def test_malformed_ephemeral_query_is_rejected_before_cache_lookup(
+        self, get_query, statistics_result_mock
+    ):
         from specifyweb.backend.stored_queries.views import ephemeral
 
         get_query.return_value = {"countonly": True}, self.collection
+        with self.assertRaises(KeyError):
+            ephemeral(self.ephemeral_request())
+        statistics_result_mock.assert_not_called()
+        self.cache.get.assert_not_called()
+
+    @patch("specifyweb.backend.stored_queries.execution.check_table_permissions")
+    @patch("specifyweb.backend.stored_queries.views.run_ephemeral_query")
+    @patch("specifyweb.backend.stored_queries.views.get_query")
+    def test_ephemeral_busy_response_does_not_execute_query(
+        self, get_query, execute, check
+    ):
+        from specifyweb.backend.stored_queries.views import ephemeral
+
+        get_query.return_value = self.ephemeral_query(), self.collection
         self.lock.acquire.side_effect = TimeoutError
         response = ephemeral(self.ephemeral_request())
         self.assertEqual(response.status_code, 409)

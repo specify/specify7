@@ -35,15 +35,13 @@ def statistics_result(
     user,
     query_key: str,
     calculate: Callable[[], str],
-    check_cached_permissions: Callable[[], None],
 ) -> str:
-    """Reuse cached statistics when Redis is available; always gate calculations.
+    """Reuse cached statistics without handling query validity.
 
-    Before returning a cache hit, check_cached_permissions must raise if the user
-    can no longer access the result. It checks authorization, not query validity.
-    On a cache miss, calculate is responsible for normal validation and permissions.
-    Exceptions propagate to the caller: failed calculations are not cached, and
-    failed permission checks leave the cached value unchanged.
+    Callers must check current permissions before invoking this function because
+    a cache hit skips calculate. On a miss, calculate is responsible for normal
+    query construction and execution; exceptions propagate and failed
+    calculations are not cached.
     """
     digest = hashlib.sha256(query_key.encode()).hexdigest()
     cache_key = format_key(
@@ -65,8 +63,6 @@ def statistics_result(
             logger.warning("Statistics cache read failed; calculating without caching.", exc_info=True)
             cache = None
             return None
-        if result is not None:
-            check_cached_permissions()
         return result
 
     result = cached_result()
@@ -97,17 +93,13 @@ def statistics_result(
 
 
 def statistics_content(request, tables, calculate: Callable[[], str]) -> str:
-    def check_permissions() -> None:
-        for table in tables:
-            check_table_permissions(
-                request.specify_collection, request.specify_user, table, "read"
-            )
-
-    check_permissions()
+    for table in tables:
+        check_table_permissions(
+            request.specify_collection, request.specify_user, table, "read"
+        )
     return statistics_result(
         request.specify_collection,
         request.specify_user,
         json.dumps([request.path, sorted(request.GET.items())]),
         calculate,
-        check_permissions,
     )

@@ -122,10 +122,8 @@ def ephemeral(request):
 
     spquery, collection = get_query(request)
     if request.headers.get("X-Specify-Statistics") == "true":
-        def check_cached_permissions() -> None:
-            check_query_permissions(
-                collection, request.specify_user, fields_from_json(spquery["fields"])
-            )
+        query_fields = fields_from_json(spquery["fields"])
+        check_query_permissions(collection, request.specify_user, query_fields)
 
         try:
             content = statistics_result(
@@ -133,7 +131,6 @@ def ephemeral(request):
                 request.specify_user,
                 json.dumps(spquery, sort_keys=True),
                 lambda: toJson(run_ephemeral_query(collection, request.specify_user, spquery)),
-                check_cached_permissions,
             )
         except StatisticsBusy:
             return busy_response()
