@@ -21,7 +21,6 @@ from specifyweb.backend.stored_queries import models
 from specifyweb.backend.stored_queries.execution import DefaultQueryFormatterProps, filter_by_collection
 from specifyweb.backend.stored_queries.format import ObjectFormatter
 from specifyweb.backend.stored_queries.queryfield import QueryField
-from specifyweb.backend.stored_queries.query_construct_model import QueryConstruct
 from specifyweb.backend.stored_queries.queryfieldspec import QueryFieldSpec
 
 logger = logging.getLogger(__name__)
@@ -32,6 +31,8 @@ def get_express_search_config(collection, user):
 
 
 def build_primary_query(session, searchtable, terms, collection, user, as_scalar=False):
+    from specifyweb.backend.stored_queries.query_construct_model import QueryConstruct
+
     table = datamodel.get_table(searchtable.find('tableName').text)
     check_table_permissions(collection, user, table, "read")
 
