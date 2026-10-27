@@ -31,7 +31,7 @@ class JWTAuthMiddleware:
         # revoked. Stop here and return a 401 Unauthorized
         if token == False or token_is_revoked(token):
             response = HttpResponse('Invalid access token', status=401)
-            response["WWW-Authenticate"] = 'error=\"invalid_token\", error_description=\"The access token is expired, revoked, or invalid\"'
+            response["WWW-Authenticate"] = 'Bearer error=\"invalid_token\", error_description=\"The access token is expired, revoked, or invalid\"'
             return response
 
         user_id = int(token["sub"])
