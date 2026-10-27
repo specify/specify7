@@ -2,6 +2,9 @@ from specifyweb.specify.datamodel import datamodel
 from specifyweb.specify.models_utils.load_datamodel import Relationship
 
 
+RANK_KEY_DELIMITER = "::"
+
+
 class TreeRankQuery(Relationship):
     # FUTURE: used to remember what the previous value was. Useless after 6 retires
     original_field: str
@@ -33,7 +36,5 @@ class TreeRankQuery(Relationship):
         return obj
 
     def get_workbench_name(self):
-        from specifyweb.backend.workbench.upload.treerecord import RANK_KEY_DELIMITER
-
         # Treedef id included to make it easier to pass it to batch edit
         return f"{self.treedef_name}{RANK_KEY_DELIMITER}{self.name}{RANK_KEY_DELIMITER}{self.treedef_id}"
