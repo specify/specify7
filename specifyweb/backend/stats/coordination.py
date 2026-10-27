@@ -27,7 +27,7 @@ def busy_response() -> JsonResponse:
         {"message": "Statistics are already being calculated. Please retry."},
         status=409,
     )
-    response["Retry-After"] = str(STATISTICS_RETRY_SECONDS)
+    response["X-Specify-Retry-After"] = str(STATISTICS_RETRY_SECONDS)
     return response
 
 

@@ -17,7 +17,10 @@ const result = (status: number, retryAfter?: string) => ({
   status,
   data: { count: 12 },
   response: Object.assign(new Response(undefined, { status }), {
-    headers: { get: () => retryAfter ?? null },
+    headers: {
+      get: (name: string) =>
+        name === 'X-Specify-Retry-After' ? (retryAfter ?? null) : null,
+    },
   }),
 });
 
@@ -59,7 +62,7 @@ test('marks statistics requests and tracks loading through completion', async ()
   expect(loading.current).toBe(false);
 });
 
-test('retries busy responses using Retry-After while remaining loading', async () => {
+test('retries busy responses using the Specify retry header while remaining loading', async () => {
   ajaxMock
     .mockResolvedValueOnce(result(Http.CONFLICT, '3'))
     .mockResolvedValueOnce(result(Http.OK));

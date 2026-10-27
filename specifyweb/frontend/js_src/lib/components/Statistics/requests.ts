@@ -52,7 +52,9 @@ export async function statisticsAjax<T>(
       });
       if (requestGeneration !== generation) return undefined;
       if (result.status !== Http.CONFLICT) return result;
-      const retryAfter = Number(result.response.headers.get('Retry-After'));
+      const retryAfter = Number(
+        result.response.headers.get('X-Specify-Retry-After')
+      );
       await new Promise<void>((resolve) =>
         globalThis.setTimeout(
           resolve,

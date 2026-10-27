@@ -127,7 +127,7 @@ class StatisticsCoordinationTests(SimpleTestCase):
         self.lock.release.assert_not_called()
         response = busy_response()
         self.assertEqual(response.status_code, 409)
-        self.assertEqual(response["Retry-After"], "2")
+        self.assertEqual(response["X-Specify-Retry-After"], "2")
         self.assertIn("message", json.loads(response.content))
 
     def test_lock_connection_errors_are_not_reported_as_busy(self):
@@ -256,7 +256,7 @@ class StatisticsCoordinationTests(SimpleTestCase):
         self.lock.acquire.side_effect = TimeoutError
         response = ephemeral(self.ephemeral_request())
         self.assertEqual(response.status_code, 409)
-        self.assertEqual(response["Retry-After"], "2")
+        self.assertEqual(response["X-Specify-Retry-After"], "2")
         execute.assert_not_called()
 
     @patch("specifyweb.backend.stored_queries.views.run_ephemeral_query")
