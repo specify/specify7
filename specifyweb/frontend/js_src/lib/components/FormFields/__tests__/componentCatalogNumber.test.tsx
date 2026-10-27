@@ -113,7 +113,10 @@ test('explicit number is displayed without an inherited placeholder', async () =
   await waitFor(() =>
     expect(request).toHaveBeenCalledWith(
       '/inheritance/catalog_number_from_parent/',
-      expect.objectContaining({ method: 'POST', body: component })
+      expect.objectContaining({
+        method: 'POST',
+        body: expect.objectContaining({ catalognumber: 'COMP-456' }),
+      })
     )
   );
   await act(async () => {
