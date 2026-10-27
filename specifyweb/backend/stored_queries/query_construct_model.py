@@ -2,14 +2,17 @@ from __future__ import annotations
 
 import logging
 from collections import namedtuple, deque
+from typing import TYPE_CHECKING
 
 from sqlalchemy import orm, sql, or_
 
 import specifyweb.specify.models as spmodels
 from specifyweb.backend.trees.utils import get_treedefs
 
-from .tree_rank import TreeRankQuery
 from specifyweb.backend.stored_queries import models
+
+if TYPE_CHECKING:
+    from .tree_rank import TreeRankQuery
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +42,7 @@ class QueryConstruct(
         self,
         node,
         table,
-        tree_rank: TreeRankQuery,
+        tree_rank: "TreeRankQuery",
         next_join_path,
         current_field_spec,
     ):
@@ -153,8 +156,9 @@ class QueryConstruct(
             field = path.popleft()
             if isinstance(field, str):
                 field = table.get_field(field, strict=True)
+            from . import tree_rank
             # basically, tree ranks act as forks.
-            if not field.is_relationship or isinstance(field, TreeRankQuery):
+            if not field.is_relationship or isinstance(field, tree_rank.TreeRankQuery):
                 break
             next_table = spmodels.datamodel.get_table(field.relatedModelName, strict=True)
             logger.debug("joining: %r to %r via %r", table, next_table, field)
