@@ -1,9 +1,11 @@
-import { cleanup, waitFor } from '@testing-library/react';
+import { act, cleanup, waitFor } from '@testing-library/react';
 import React from 'react';
 
 import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
 import { mount } from '../../../tests/reactUtils';
+import * as ajaxModule from '../../../utils/ajax';
+import { Http } from '../../../utils/ajax/definitions';
 import { tables } from '../../DataModel/tables';
 import { collectionPreferences } from '../../Preferences/collectionPreferences';
 import { UiField } from '../Field';
@@ -22,6 +24,7 @@ beforeEach(() => {
 });
 afterEach(() => {
   cleanup();
+  jest.restoreAllMocks();
   collectionPreferences.setRaw(originalPreferences);
 });
 
@@ -66,7 +69,7 @@ test.each([false, true])(
   }
 );
 
-test('explicit number is displayed in preference to inherited placeholder', async () => {
+test('explicit number is displayed without an inherited placeholder', async () => {
   collectionPreferences.setRaw({
     catalogNumberParentInheritance: { behavior: { inheritance: true } },
   });
@@ -81,6 +84,24 @@ test('explicit number is displayed in preference to inherited placeholder', asyn
     'collectionObject',
     new tables.CollectionObject.Resource({ id: 1 }, { noBusinessRules: true })
   );
+  const originalAjax = ajaxModule.ajax;
+  const request = jest
+    .spyOn(ajaxModule, 'ajax')
+    .mockImplementation(
+      async <RESPONSE_TYPE,>(
+        url: string,
+        options: Parameters<typeof ajaxModule.ajax>[1]
+      ): Promise<ajaxModule.AjaxResponseObject<RESPONSE_TYPE>> => {
+        if (url !== '/inheritance/catalog_number_from_parent/')
+          return originalAjax<RESPONSE_TYPE>(url, options);
+        const body = JSON.parse(JSON.stringify(options.body));
+        return {
+          data: (body.catalognumber == null ? 'CO-123' : null) as RESPONSE_TYPE,
+          status: Http.OK,
+          response: new Response('', { status: Http.OK }),
+        };
+      }
+    );
   const { getByRole } = mount(
     <UiField
       resource={component}
@@ -90,8 +111,15 @@ test('explicit number is displayed in preference to inherited placeholder', asyn
     />
   );
   await waitFor(() =>
-    expect(getByRole('textbox')).toHaveAttribute('placeholder', 'CO-123')
+    expect(request).toHaveBeenCalledWith(
+      '/inheritance/catalog_number_from_parent/',
+      expect.objectContaining({ method: 'POST', body: component })
+    )
   );
+  await act(async () => {
+    await Promise.all(request.mock.results.map(({ value }) => value));
+  });
   expect(getByRole('textbox')).toHaveValue('COMP-456');
+  expect(getByRole('textbox')).not.toHaveAttribute('placeholder');
   expect(component.get('catalogNumber')).toBe('COMP-456');
 });
