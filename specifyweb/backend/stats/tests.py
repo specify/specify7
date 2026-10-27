@@ -48,10 +48,7 @@ class StatisticsCoordinationTests(SimpleTestCase):
         self.lock.acquire.assert_called_once_with()
         self.lock.release.assert_called_once_with()
         self.calculate.assert_called_once_with()
-        expected_lock_name = (
-            "statistics:"
-            + hashlib.sha256("statistics_test".encode()).hexdigest()[:48]
-        )
+        expected_lock_name = "statistics_test:statistics"
         self.assertEqual(self.lock_class.call_args.args[0], expected_lock_name)
         self.assertLessEqual(len(expected_lock_name), 64)
         self.assertEqual(self.lock_class.call_args.args[1], 0)
@@ -68,11 +65,21 @@ class StatisticsCoordinationTests(SimpleTestCase):
             self.run_statistic()
 
         lock_name = self.lock_class.call_args.args[0]
+        full_name = f"{database_name}:statistics"
         self.assertEqual(
             lock_name,
-            "statistics:" + hashlib.sha256(database_name.encode()).hexdigest()[:48],
+            f"{full_name[:15]}:{hashlib.sha256(full_name.encode()).hexdigest()[:48]}",
         )
         self.assertLessEqual(len(lock_name), 64)
+
+    def test_long_database_names_with_shared_prefix_have_distinct_lock_names(self):
+        names = []
+        for database_name in ("d" * 63 + "1", "d" * 63 + "2"):
+            with override_settings(DATABASE_NAME=database_name):
+                self.run_statistic()
+            names.append(self.lock_class.call_args.args[0])
+
+        self.assertNotEqual(names[0], names[1])
 
     def assert_uncached_calculation(self):
         self.assertEqual(self.run_statistic(), '{"count": 12}')

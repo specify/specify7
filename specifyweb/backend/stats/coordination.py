@@ -3,7 +3,6 @@ import json
 import logging
 from collections.abc import Callable
 
-from django.conf import settings
 from django.http import JsonResponse
 from redis.exceptions import RedisError
 
@@ -70,13 +69,10 @@ def statistics_result(
         return result
 
     # A database advisory lock has no lease that could expire during a slow query.
-    lock_name = hashlib.sha256(settings.DATABASE_NAME.encode()).hexdigest()[:48]
-    # Keep the bounded lock name while letting the dispatcher own cleanup.
-    with LockDispatcher(
-        lock_namespace="statistics", lock_name_separator=":"
-    ) as locks:
+    # Keep the lock database-scoped while letting the dispatcher bound its name.
+    with LockDispatcher(lock_name_separator=":") as locks:
         try:
-            locks.acquire(lock_name, timeout=0)
+            locks.acquire("statistics", timeout=0)
         except TimeoutError as error:
             logger.debug("Deferring statistics calculation: %s", error)
             raise StatisticsBusy from error
