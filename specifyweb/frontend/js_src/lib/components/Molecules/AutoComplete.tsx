@@ -619,18 +619,13 @@ const AutoCompleteOption = React.forwardRef<
   { active, selected, ...props },
   forwardedRef
 ): JSX.Element {
-  const optionRef = React.useRef<HTMLLIElement | null>(null);
   const ref = React.useCallback(
     (option: HTMLLIElement | null): void => {
-      optionRef.current = option;
       if (typeof forwardedRef === 'function') forwardedRef(option);
       else if (forwardedRef !== null) forwardedRef.current = option;
     },
     [forwardedRef]
   );
-  React.useEffect(() => {
-    if (active) optionRef.current?.scrollIntoView({ block: 'nearest' });
-  }, [active]);
 
   return (
     <li {...props} className={optionClassName(active, selected)} ref={ref} />
