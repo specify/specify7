@@ -174,8 +174,11 @@ class DataSetTests(ApiTests):
             no_commit=False,
             allow_partial=False,
         )
-
-        self.assertTrue(dataset.uploadresult["success"])
+        
+        # ignoring this mympy type error becuase mypy deduces that the type of `uploadresult` is 
+        # Any | None. we know it is a JSONField, but since that is a field of the parent of Spdataset, mypy can't find it.
+        # TODO (mypy): figure out how to tell mypy that uploadresult is iterable
+        self.assertTrue(dataset.uploadresult["success"]) #type: ignore
 
         response = c.post(
             f"/api/workbench/create_recordset/{datasetid}/",

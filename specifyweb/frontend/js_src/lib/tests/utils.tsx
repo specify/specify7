@@ -123,10 +123,7 @@ export function TestComponentWrapperRouter({
   readonly context?: IR<unknown>;
 }) {
   return (
-    <Router.MemoryRouter
-      future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
-      initialEntries={initialEntries}
-    >
+    <Router.MemoryRouter initialEntries={initialEntries} useTransitions={true}>
       <Router.Routes>
         <Router.Route element={<Router.Outlet context={context} />} path="/">
           <Router.Route element={children} index path={path} />

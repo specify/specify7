@@ -19,6 +19,7 @@ import { reportsText } from '../../localization/report';
 import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
 import { statsText } from '../../localization/stats';
+import { treeText } from '../../localization/tree';
 import type { Language } from '../../localization/utils/config';
 import { LANGUAGE } from '../../localization/utils/config';
 import { wbPlanText } from '../../localization/wbPlan';
@@ -39,6 +40,10 @@ import type { TableFields } from '../DataModel/helperTypes';
 import { genericTables, tables } from '../DataModel/tables';
 import type { Collection, Tables } from '../DataModel/types';
 import { error, softError } from '../Errors/assert';
+import type { KeyboardShortcuts } from '../KeyboardShortcuts/config';
+import { KeyboardShortcutPreferenceItem } from '../KeyboardShortcuts/Shortcuts';
+import type { UrlShortcuts } from '../KeyboardShortcuts/UrlShortcuts';
+import { UrlShortcutsEditor } from '../KeyboardShortcuts/UrlShortcuts';
 import type { StatLayout } from '../Statistics/types';
 import {
   LanguagePreferencesItem,
@@ -56,10 +61,12 @@ import {
 } from './Renderers';
 import type {
   GenericPreferences,
+  PreferenceItem,
   PreferenceRendererProps,
   PreferencesVisibilityContext,
 } from './types';
 import { definePref } from './types';
+import { dataViewsText } from '../../localization/dataViews';
 
 const isLightMode = ({
   isDarkMode,
@@ -164,6 +171,22 @@ function CollectionObjectFieldPreferenceItem({
  */
 export const tableLabel = (tableName: keyof Tables): LocalizedString =>
   genericTables[tableName]?.label ?? camelToHuman(tableName);
+
+const defineKeyboardShortcut = (
+  title: LocalizedString,
+  defaultValue: KeyboardShortcuts | string
+): PreferenceItem<KeyboardShortcuts> =>
+  definePref<KeyboardShortcuts>({
+    title,
+    requiresReload: false,
+    visible: true,
+    defaultValue:
+      typeof defaultValue === 'string'
+        ? { other: [defaultValue] }
+        : defaultValue,
+    renderer: KeyboardShortcutPreferenceItem,
+    container: 'div',
+  });
 
 export const userPreferenceDefinitions = {
   general: {
@@ -548,13 +571,6 @@ export const userPreferenceDefinitions = {
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
-          closeOnEsc: definePref<boolean>({
-            title: preferencesText.closeOnEsc(),
-            requiresReload: false,
-            visible: true,
-            defaultValue: true,
-            type: 'java.lang.Boolean',
-          }),
           closeOnOutsideClick: definePref<boolean>({
             title: preferencesText.closeOnOutsideClick(),
             requiresReload: false,
@@ -685,6 +701,27 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: '',
             type: 'text',
+          }),
+        },
+      },
+      actions: {
+        title: commonText.actions(),
+        items: {
+          shortcutsEnabled: definePref<boolean>({
+            title: preferencesText.shortcutsEnabled(),
+            description: preferencesText.shortcutsEnabledDescription(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
+          urlShortcuts: definePref<UrlShortcuts>({
+            title: headerText.userTools(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: {},
+            renderer: UrlShortcutsEditor,
+            container: 'div',
           }),
         },
       },
@@ -902,6 +939,32 @@ export const userPreferenceDefinitions = {
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
+        },
+      },
+      actions: {
+        title: commonText.actions(),
+        items: {
+          openFormMeta: defineKeyboardShortcut(
+            preferencesText.openFormMeta(),
+            'KeyM'
+          ),
+          save: defineKeyboardShortcut(commonText.save(), 'Alt+Ctrl+KeyS'),
+          carryForward: defineKeyboardShortcut(
+            formsText.carryForward(),
+            'Alt+Ctrl+Shift+KeyC'
+          ),
+          clone: defineKeyboardShortcut(formsText.clone(), 'Ctrl+Shift+KeyL'),
+        },
+      },
+      dialogs: {
+        title: preferencesText.dialogs(),
+        items: {
+          close: defineKeyboardShortcut(commonText.close(), 'Escape'),
+          save: defineKeyboardShortcut(commonText.save(), 'Alt+Ctrl+KeyS'),
+          openRelatedRecordInNewTab: defineKeyboardShortcut(
+            preferencesText.openRelatedRecordInNewTab(),
+            'KeyO'
+          ),
         },
       },
       definition: {
@@ -1189,7 +1252,7 @@ export const userPreferenceDefinitions = {
             title: preferencesText.treeSearchAlgorithm(),
             requiresReload: false,
             visible: true,
-            defaultValue: 'contains',
+            defaultValue: 'startsWith',
             values: [
               {
                 value: 'startsWith',
@@ -1234,6 +1297,26 @@ export const userPreferenceDefinitions = {
               },
             ],
           }),
+          goToFirstRecord: defineKeyboardShortcut(
+            formsText.goToFirstRecord(),
+            'Ctrl+Shift+ArrowUp'
+          ),
+          goToPreviousRecord: defineKeyboardShortcut(
+            formsText.goToPreviousRecord(),
+            'Ctrl+Shift+ArrowLeft'
+          ),
+          goToNextRecord: defineKeyboardShortcut(
+            formsText.goToNextRecord(),
+            'Ctrl+Shift+ArrowRight'
+          ),
+          goToLastRecord: defineKeyboardShortcut(
+            formsText.goToLastRecord(),
+            'Ctrl+Shift+ArrowDown'
+          ),
+          addResource: defineKeyboardShortcut(
+            resourcesText.addResource(),
+            'KeyA'
+          ),
         },
       },
       formTable: {
@@ -1553,6 +1636,19 @@ export const userPreferenceDefinitions = {
           }),
         },
       },
+      actions: {
+        title: commonText.actions(),
+        items: {
+          search: defineKeyboardShortcut(commonText.search(), 'KeyS'),
+          query: defineKeyboardShortcut(queryText.query(), 'KeyQ'),
+          edit: defineKeyboardShortcut(commonText.edit(), 'KeyE'),
+          add: defineKeyboardShortcut(treeText.addChild(), 'KeyA'),
+          move: defineKeyboardShortcut(treeText.moveNode(), 'KeyM'),
+          bulkMove: defineKeyboardShortcut(treeText.moveItems(), 'KeyB'),
+          merge: defineKeyboardShortcut(treeText.mergeNode(), 'KeyC'),
+          synonymize: defineKeyboardShortcut(treeText.synonymizeNode(), 'KeyY'),
+        },
+      },
       geography: {
         /*
          * This would be replaced with labels from schema once
@@ -1614,6 +1710,31 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
+          }),
+          showSynonymCounts: definePref<boolean>({
+            title: preferencesText.showSynonymCounts(),
+            description: preferencesText.showSynonymCountsDescription(),
+            requiresReload: true,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+          queryField: definePref<'preferredTaxon' | 'taxon'>({
+            title: preferencesText.queryButtonTaxonField(),
+            description: preferencesText.queryButtonTaxonFieldDescription(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 'preferredTaxon',
+            values: [
+              {
+                value: 'preferredTaxon',
+                title: localized('_preferredTaxon'),
+              },
+              {
+                value: 'taxon',
+                title: localized('_taxon'),
+              },
+            ],
           }),
           rankThreshold: definePref<number>({
             title: preferencesText.rankThreshold(),
@@ -1769,6 +1890,30 @@ export const userPreferenceDefinitions = {
       general: {
         title: preferencesText.general(),
         items: {
+          splitViewByDefault: definePref<boolean>({
+            title: dataViewsText.splitViewByDefault({
+              splitView: treeText.splitView(),
+            }),
+            description: dataViewsText.splitViewDescription({
+              splitView: treeText.splitView(),
+            }),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+          splitViewOrientation: definePref<'horizontal' | 'vertical'>({
+            title: dataViewsText.splitViewOrientation({
+              splitView: treeText.splitView(),
+            }),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 'horizontal',
+            values: [
+              { value: 'horizontal', title: treeText.horizontal() },
+              { value: 'vertical', title: treeText.vertical() },
+            ],
+          }),
           noRestrictionsMode: definePref<boolean>({
             title: preferencesText.noRestrictionsMode(),
             description: (
@@ -1868,6 +2013,18 @@ export const userPreferenceDefinitions = {
           }),
         },
       },
+      actions: {
+        title: commonText.actions(),
+        items: {
+          query: defineKeyboardShortcut(queryText.query(), 'KeyR'),
+          count: defineKeyboardShortcut(queryText.countOnly(), 'KeyC'),
+          distinct: defineKeyboardShortcut(queryText.distinct(), 'KeyD'),
+          browseInForms: defineKeyboardShortcut(
+            queryText.browseInForms(),
+            'KeyF'
+          ),
+        },
+      },
       appearance: {
         title: preferencesText.appearance(),
         items: {
@@ -1891,6 +2048,48 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: false,
             type: 'java.lang.Boolean',
+          }),
+        },
+      },
+    },
+  },
+  dataViews: {
+    title: dataViewsText.dataViewsTitle(),
+    subCategories: {
+      general: {
+        title: preferencesText.general(),
+        items: {
+          splitViewByDefault: definePref<boolean>({
+            title: dataViewsText.splitViewByDefault({
+              splitView: treeText.splitView(),
+            }),
+            description: dataViewsText.splitViewDescription({
+              splitView: treeText.splitView(),
+            }),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
+          splitViewOrientation: definePref<'horizontal' | 'vertical'>({
+            title: dataViewsText.splitViewOrientation({
+              splitView: treeText.splitView(),
+            }),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 'horizontal',
+            values: [
+              { value: 'horizontal', title: treeText.horizontal() },
+              { value: 'vertical', title: treeText.vertical() },
+            ],
+          }),
+          shownTables: definePref<RA<number>>({
+            title: localized('_shownTables'),
+            requiresReload: false,
+            visible: false,
+            defaultValue: [],
+            renderer: f.never,
+            container: 'div',
           }),
         },
       },
@@ -2393,6 +2592,44 @@ import('../DataModel/tables')
       } else {
         softError(
           'Unable to replace the tree preferences item title for orderByField'
+        );
+      }
+
+      const taxonQueryField =
+        userPreferenceDefinitions.treeEditor.subCategories.taxon.items
+          .queryField;
+      if ('values' in taxonQueryField) {
+        const queryFieldValues = taxonQueryField.values as RA<{
+          readonly value: string;
+          readonly title: string;
+        }>;
+        const preferredTaxon = defined(
+          queryFieldValues.find(
+            (entry) =>
+              typeof entry === 'object' && entry.value === 'preferredTaxon'
+          ),
+          'Unable to find tree query preferredTaxon value'
+        );
+        const taxon = defined(
+          queryFieldValues.find(
+            (entry) => typeof entry === 'object' && entry.value === 'taxon'
+          ),
+          'Unable to find tree query taxon value'
+        );
+
+        overwriteReadOnly(
+          preferredTaxon,
+          'title',
+          getField(tables.Determination, 'preferredTaxon').label
+        );
+        overwriteReadOnly(
+          taxon,
+          'title',
+          getField(tables.Determination, 'taxon').label
+        );
+      } else {
+        softError(
+          'Unable to replace the tree preferences item title for queryField'
         );
       }
     })

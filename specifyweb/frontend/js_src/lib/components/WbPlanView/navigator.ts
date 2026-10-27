@@ -45,6 +45,8 @@ import {
 } from './mappingHelpers';
 import { getMaxToManyIndex, isCircularRelationship } from './modelHelpers';
 import type { NavigatorSpec } from './navigatorSpecs';
+export { searchFields } from './fieldSearch';
+export type { FieldSearchResult } from './fieldSearch';
 
 const geoPaleoDisciplines: readonly string[] = [
   'geology',
@@ -138,7 +140,10 @@ function navigator({
     isTreeTable(table.name) && !valueIsTreeMeta(parentPartName);
 
   const disciplineType = getSystemInfo().discipline_type?.toLowerCase();
-  const isNonGeoDiscipline = !geoPaleoDisciplines.includes(disciplineType);
+  const isGeoPaleoDiscipline =
+    disciplineType !== undefined &&
+    geoPaleoDisciplines.includes(disciplineType);
+  const isNonGeoDiscipline = !isGeoPaleoDiscipline;
 
   if (
     isNonGeoDiscipline &&
@@ -560,10 +565,10 @@ export function getMappingLineData({
 
             const disciplineType =
               getSystemInfo().discipline_type?.toLowerCase();
-            if (
-              field.name === 'age' &&
-              !geoPaleoDisciplines.includes(disciplineType)
-            ) {
+            const isGeoPaleoDiscipline =
+              disciplineType !== undefined &&
+              geoPaleoDisciplines.includes(disciplineType);
+            if (field.name === 'age' && !isGeoPaleoDiscipline) {
               return false;
             }
 

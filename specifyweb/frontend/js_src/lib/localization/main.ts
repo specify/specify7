@@ -235,7 +235,7 @@ export const mainText = createDictionary({
     'de-ch': 'Verlassen',
     'pt-br': 'Deixar',
     'hr-hr': 'Ostavite',
-    nb: 'Forlate',
+    nb: 'Forlat siden',
   },
   versionMismatch: {
     'en-us': 'Specify version does not match database version',
@@ -250,7 +250,7 @@ export const mainText = createDictionary({
     'pt-br':
       'A versão especificada não corresponde à versão do banco de dados.',
     'hr-hr': 'Navedena verzija ne odgovara verziji baze podataka',
-    nb: 'Den angitte versjonen samsvarer ikke med databaseversjonen',
+    nb: 'Specify versjon samsvarer ikke med databaseversjon',
   },
   versionMismatchDescription: {
     'en-us':
@@ -269,7 +269,7 @@ export const mainText = createDictionary({
       'A versão especificada {specifySixVersion:string} não corresponde à versão do banco de dados {databaseVersion:string}.',
     'hr-hr':
       'Navedena verzija {specifySixVersion:string} ne odgovara verziji baze podataka {databaseVersion:string}.',
-    nb: 'Spesifiser versjon {specifySixVersion:string} samsvarer ikke med databaseversjonen {databaseVersion:string}.',
+    nb: 'Specify versjonen {specifySixVersion:string} samsvarer ikke med databaseversjonen {databaseVersion:string}.',
   },
   versionMismatchSecondDescription: {
     'en-us':
@@ -286,7 +286,7 @@ export const mainText = createDictionary({
       'Portanto, algumas funcionalidades do Specify 7 podem não funcionar corretamente.',
     'hr-hr':
       'Stoga neke značajke programa Specify 7 možda neće ispravno raditi.',
-    nb: 'Enkelte funksjoner i Specifice 7 fungerer kanskje derfor ikke som de skal.',
+    nb: 'Enkelte funksjoner i Specify 7 fungerer kanskje derfor ikke som de skal.',
   },
   versionMismatchInstructions: {
     'en-us': 'Instructions for resolving Specify schema mismatch',
@@ -300,7 +300,7 @@ export const mainText = createDictionary({
     'pt-br':
       'Instruções para resolver a incompatibilidade de esquema especificado.',
     'hr-hr': 'Upute za rješavanje neusklađenosti Navedite shemu',
-    nb: 'Instruksjoner for å løse uoverensstemmelser mellom spesifiserte skjemaer',
+    nb: 'Instruksjoner for å løse uoverensstemmelser mellom Specify-skjemaer',
   },
   online: {
     'en-us': 'online',
@@ -322,6 +322,6 @@ export const mainText = createDictionary({
     'de-ch': 'offline',
     'pt-br': 'offline',
     'hr-hr': 'izvan mreže',
-    nb: 'frakoblet',
+    nb: 'frakoblet nett',
   },
 } as const);

@@ -104,14 +104,14 @@ export const fetchContext = fetchSystemInfo.then(async (systemInfo) => {
 
   const parameters = {
     version: systemInfo.version,
-    dbVersion: systemInfo.database_version,
-    institution: systemInfo.institution,
-    institutionGUID: systemInfo.institution_guid,
-    discipline: systemInfo.discipline,
-    collection: systemInfo.collection,
-    collectionGUID: systemInfo.collection_guid,
-    isaNumber: systemInfo.isa_number,
-    disciplineType: systemInfo.discipline_type,
+    dbVersion: systemInfo.database_version ?? '',
+    institution: systemInfo.institution ?? '',
+    institutionGUID: systemInfo.institution_guid ?? '',
+    discipline: systemInfo.discipline ?? '',
+    collection: systemInfo.collection ?? '',
+    collectionGUID: systemInfo.collection_guid ?? '',
+    isaNumber: systemInfo.isa_number ?? '',
+    disciplineType: systemInfo.discipline_type ?? '',
     collectionObjectCount: counts?.Collectionobject ?? 0,
     collectionCount: counts?.Collection ?? 0,
     userCount: counts?.Specifyuser ?? 0,
@@ -132,13 +132,13 @@ export const fetchContext = fetchSystemInfo.then(async (systemInfo) => {
     ).catch(softFail);
 
   const lambdaUrl = buildStatsLambdaUrl(stats2LambdaFunctionUrl);
-  if (lambdaUrl) {
+  if (lambdaUrl && systemInfo.collection_guid) {
     if (shouldSkipLambdaStatsRequest(globalThis.location.hostname)) {
       return;
     }
     const storageKey = buildStats2RequestKey(
       lambdaUrl,
-      `${systemInfo.collection_guid}`
+      systemInfo.collection_guid
     );
     if (!shouldSendStats2Request(storageKey)) {
       return;

@@ -7,7 +7,7 @@ from typing import Literal
 
 from django.conf import settings
 
-from specifyweb.backend.redis_cache.store import set_string, key_exists
+from specifyweb.backend.cache.redis.connect import RedisConnection, RedisString
 
 DEFAULT_AUTH_LIFESPAN_SECONDS = 1800
 
@@ -53,7 +53,9 @@ def revoke_access_token(token: dict):
     expires_at = token["exp"]
     current_time = int(datetime.now(timezone.utc).timestamp())
     blacklist_ttl = expires_at - current_time
-    set_string(f"revoked:{jti}", "true", time_to_live=blacklist_ttl)
+    redis_string = RedisString(RedisConnection())
+    token_key = f"revoked:{jti}"
+    redis_string.set(token_key, "true", time_to_live=blacklist_ttl)
 
 
 def get_token_from_request(request) -> Literal[False] | None | dict:
@@ -73,4 +75,6 @@ def get_token_from_request(request) -> Literal[False] | None | dict:
 
 def token_is_revoked(token: dict):
     token_identifier = token["jti"]
-    return key_exists(f"revoked:{token_identifier}")
+    redis_string = RedisString(RedisConnection())
+    token_key = f"revoked:{token_identifier}"
+    return redis_string.exists(token_key)

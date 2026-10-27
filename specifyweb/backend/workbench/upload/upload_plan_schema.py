@@ -85,6 +85,11 @@ schema: dict = {
                 "static": {"$ref": "#/definitions/static"},
                 "toOne": {"$ref": "#/definitions/toOne"},
                 "toMany": {"$ref": "#/definitions/toManyRecords"},
+                "preserveIdentity": {
+                    "type": "boolean",
+                    "default": False,
+                    "description": "If true, batch edit should update the matched record in place rather than cloning it.",
+                },
             },
             "required": ["wbcols", "static", "toOne", "toMany"],
             "additionalProperties": False,
@@ -101,6 +106,11 @@ schema: dict = {
                 "static": {"$ref": "#/definitions/static"},
                 "toOne": {"$ref": "#/definitions/toOne"},
                 "toMany": {"$ref": "#/definitions/toManyRecords"},
+                "preserveIdentity": {
+                    "type": "boolean",
+                    "default": False,
+                    "description": "If true, batch edit should update the matched record in place rather than cloning it.",
+                },
             },
             # not making tomany required, to not choke on legacy upload plans
             "required": ["wbcols", "static", "toOne"],
@@ -351,7 +361,7 @@ def parse_uploadable(table: Table, to_parse: dict) -> Uploadable:
 def parse_upload_table(table: Table, to_parse: dict) -> UploadTable:
 
     def rel_table(key: str) -> Table:
-        related_model_name = table.get_relationship(key).relatedModelName
+        related_model_name = table.get_relationship_strict(key).relatedModelName
         if related_model_name is None:
             raise ValueError(f"Related model name for key '{key}' is None.")
         return datamodel.get_table_strict(related_model_name)
@@ -363,6 +373,7 @@ def parse_upload_table(table: Table, to_parse: dict) -> UploadTable:
         ),
         wbcols={k: parse_column_options(v) for k, v in to_parse["wbcols"].items()},
         static=to_parse["static"],
+        preserveIdentity=to_parse.get("preserveIdentity", False),
         toOne={
             key: parse_uploadable(rel_table(key), to_one)
             for key, to_one in to_parse["toOne"].items()

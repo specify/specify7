@@ -172,7 +172,7 @@ class Spdataset(Dataset):
         return ds_dict
 
     def was_uploaded(self) -> bool:
-        return self.uploadresult and self.uploadresult["success"]
+        return bool(self.uploadresult and self.uploadresult["success"])
 
 class Spdatasetattachment(models.Model):
     specify_model = datamodel.get_table_strict('spdatasetattachment')

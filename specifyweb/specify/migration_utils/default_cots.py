@@ -21,9 +21,11 @@ def create_default_collection_types(apps):
             taxontreedef_id=discipline.taxontreedef_id
         )
 
-        # Update CollectionObjects' collectionobjecttype for the discipline
+        # Update only untyped CollectionObjects so existing assignments are preserved.
         Collectionobject.objects.filter(
-            collection=collection).update(collectionobjecttype=cot)
+            collection=collection,
+            collectionobjecttype__isnull=True,
+        ).update(collectionobjecttype=cot)
         collection.collectionobjecttype = cot
         collection.save()
 

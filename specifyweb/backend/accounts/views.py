@@ -10,15 +10,16 @@ from django import forms
 from django import http
 from django.conf import settings
 from django.contrib.auth import login, authenticate
-from django.contrib.auth.models import AbstractBaseUser
-from django.db import connection
+from django.db import connection, transaction
 from django.db.models import Max
 from django.shortcuts import render
 from django.template.response import TemplateResponse
 from django.utils import crypto
+from django.utils import timezone
 from django.utils.http import url_has_allowed_host_and_scheme, urlencode
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 from typing import cast
 
 from specifyweb.backend.accounts.account_utils import check_collection_access_against_agents, is_provider_info
@@ -30,17 +31,44 @@ from specifyweb.middleware.general import require_GET, require_http_methods
 from specifyweb.backend.context.views import has_collection_access, set_collection_cookie, users_collections_for_sp7
 
 from specifyweb.backend.permissions.permissions import check_permission_targets
-from specifyweb.specify import models as spmodels
 from specifyweb.specify.views import login_maybe_required, openapi
-from .models import Spuserexternalid
-from specifyweb.specify.models import Specifyuser, Collection
-from django.views.decorators.http import require_POST
-from specifyweb.backend.permissions.permissions import check_permission_targets
+from .models import Spuserexternalid, UserPresence
+from specifyweb.specify.models import Specifyuser, Agent, Collection
 from specifyweb.specify.auth.support_login import b64_url_to_bytes
 from specifyweb.backend.accounts.access_token_utils import DEFAULT_AUTH_LIFESPAN_SECONDS, generate_access_token, revoke_access_token as revoke_token, AUTH_JWT_DECODE_OPTIONS, AUTH_TOKEN_ALGORITHMS
-from django.db import transaction, connection
 
 logger = logging.getLogger(__name__)
+
+@require_POST
+@login_maybe_required
+def update_presence(request: http.HttpRequest) -> http.HttpResponse:
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return http.HttpResponseBadRequest('Invalid JSON body')
+
+    if not isinstance(data, dict) or type(data.get('active')) is not bool:
+        return http.HttpResponseBadRequest('Expected a boolean "active" value')
+
+    if not request.user.is_authenticated:
+        return http.HttpResponse(status=204)
+
+    now = timezone.now()
+    presence, created = UserPresence.objects.get_or_create(
+        specifyuser_id=request.user.pk,
+        defaults={
+            'last_heartbeat': now,
+            'last_activity': now if data['active'] else None,
+        },
+    )
+    if not created:
+        update_fields = {'last_heartbeat': now}
+        if data['active']:
+            update_fields['last_activity'] = now
+        UserPresence.objects.filter(pk=presence.pk).update(**update_fields)
+
+    return http.HttpResponse(status=204)
+
 
 @require_http_methods(['GET', 'POST'])
 def oic_login(request: http.HttpRequest) -> http.HttpResponse:
@@ -195,7 +223,7 @@ def oic_callback(request: http.HttpRequest) -> http.HttpResponse:
     spuserexternalid.save()
 
     login(request,
-          cast(AbstractBaseUser, spuserexternalid.specifyuser),
+          cast(Specifyuser, spuserexternalid.specifyuser),
           backend='django.contrib.auth.backends.ModelBackend')
     return http.HttpResponseRedirect('/accounts/choose_collection')
 
@@ -295,7 +323,6 @@ def choose_collection(request) -> http.HttpResponse:
     through here, we also use the opportunity to associate an external
     id to the user if one is provided.
     """
-    from specifyweb.backend.context.views import set_collection_cookie, users_collections_for_sp7
     from specifyweb.specify.api.serializers import obj_to_data, toJson
     from specifyweb.backend.setup_tool.api import is_collection_available
 
@@ -403,7 +430,7 @@ def set_password(request, userid):
     """
     check_permission_targets(None, request.specify_user.id, [
                              SetPasswordPT.update])
-    user = spmodels.Specifyuser.objects.get(pk=userid)
+    user = Specifyuser.objects.get(pk=userid)
     user.set_password(request.POST['password'])
     user.save()
     return http.HttpResponse('', status=204)
@@ -489,23 +516,23 @@ def set_password(request, userid):
 @require_POST
 def set_user_agents(request, userid: int):
     "Sets the agents to represent the user in different disciplines."
-    user = spmodels.Specifyuser.objects.get(pk=userid)
+    user = Specifyuser.objects.get(pk=userid)
     new_agentids = json.loads(request.body)
     cursor = connection.cursor()
 
     with transaction.atomic():
         # clear user's existing agents
-        spmodels.Agent.objects.filter(
+        Agent.objects.filter(
             specifyuser_id=userid).update(specifyuser_id=None)
 
         # check if any of the agents to be assigned are used by other users
-        in_use = spmodels.Agent.objects.select_for_update().filter(
+        in_use = Agent.objects.select_for_update().filter(
             pk__in=new_agentids, specifyuser_id__isnull=False)
         if in_use:
             raise AgentInUseException([a.id for a in in_use])
 
         # assign the new agents
-        spmodels.Agent.objects.filter(
+        Agent.objects.filter(
             pk__in=new_agentids).update(specifyuser_id=userid)
 
         # check for multiple agents assigned to the user
@@ -527,7 +554,7 @@ def set_user_agents(request, userid: int):
             raise MultipleAgentsException(multiple)
 
         # get the list of collections the agents belong to.
-        collections = spmodels.Collection.objects.filter(
+        collections = Collection.objects.filter(
             discipline__division__members__specifyuser_id=userid).values_list('id', flat=True)
 
         # check permissions for setting user agents in those collections.
@@ -576,7 +603,7 @@ def set_admin_status(request, userid):
     """
     check_permission_targets(
         None, request.specify_user.id, [Sp6AdminPT.update])
-    user = spmodels.Specifyuser.objects.get(pk=userid)
+    user = Specifyuser.objects.get(pk=userid)
     if request.POST['admin_status'] == 'true':
         user.set_admin()
         return http.HttpResponse('true', content_type='text/plain')

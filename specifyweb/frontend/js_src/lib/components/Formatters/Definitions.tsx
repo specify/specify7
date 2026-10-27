@@ -200,6 +200,7 @@ function ConditionalFormatter({
                       separator: localized(' '),
                       aggregator: undefined,
                       formatter: undefined,
+                      format: undefined,
                       fieldFormatter: undefined,
                       field: undefined,
                       trimZeros: false,

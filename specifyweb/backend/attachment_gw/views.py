@@ -3,6 +3,7 @@ import hmac
 import json
 import logging
 import time
+from threading import Lock
 from tempfile import mkdtemp
 from os.path import splitext
 from uuid import uuid4
@@ -33,6 +34,10 @@ logger = logging.getLogger(__name__)
 
 server_urls = None
 server_time_delta = None
+initialization_lock = Lock()
+next_initialization_attempt = 0
+initialization_failures = 0
+MAX_INITIALIZATION_RETRY_DELAY = 60
 
 from .models import Spattachmentdataset
 
@@ -226,33 +231,76 @@ def init():
         logger.info('Asset server is not configured')
         return
 
-    r = requests.get(settings.WEB_ATTACHMENT_URL)
-    if r.status_code != 200:
-        logger.error('Failed fetching asset server configuration')
-        return
-
-    update_time_delta(r)
-
     try:
-        urls_xml = ElementTree.fromstring(r.text)
-    except:
-        logger.error('Failed parsing the response')
-        return
+        r = requests.get(settings.WEB_ATTACHMENT_URL, timeout=settings.WEB_ATTACHMENT_TIMEOUT)
+        if r.status_code != 200:
+            logger.error('Failed fetching asset server configuration')
+            return
 
-    server_urls = {url.attrib['type']: url.text
-                   for url in urls_xml.findall('url')}
+        update_time_delta(r)
 
-    try:
-        test_key()
-    except AttachmentError as error:
-        logger.error('%s', str(error))
+        try:
+            urls_xml = ElementTree.fromstring(r.text)
+        except ElementTree.ParseError:
+            logger.error('Failed parsing the response')
+            return
+
+        try:
+            urls = {url.attrib['type']: url.text
+                    for url in urls_xml.findall('url')}
+            required_url_types = (
+                'delete',
+                'getmetadata',
+                'read',
+                'testkey',
+                'write',
+            )
+            if any(not urls.get(url_type) for url_type in required_url_types):
+                raise AttachmentError('Incomplete asset server configuration.')
+            test_key(urls)
+            server_urls = urls
+        except (AttachmentError, requests.RequestException, KeyError) as error:
+            logger.error('Invalid asset server configuration: %s', str(error))
+            server_urls = None
+    except requests.RequestException as error:
+        logger.error('Failed to connect to asset server: %s', str(error))
         server_urls = None
 
-def test_key():
+def retry_initialization():
+    """Attempt a bounded, backoff-limited asset server initialization."""
+    global initialization_failures, next_initialization_attempt
+
+    now = time.monotonic()
+    if now < next_initialization_attempt or not initialization_lock.acquire(blocking=False):
+        return False
+
+    try:
+        if server_urls is not None:
+            return True
+        if now < next_initialization_attempt:
+            return False
+
+        init()
+        if server_urls is not None:
+            initialization_failures = 0
+            next_initialization_attempt = 0
+            return True
+
+        initialization_failures += 1
+        next_initialization_attempt = time.monotonic() + min(
+            2 ** initialization_failures,
+            MAX_INITIALIZATION_RETRY_DELAY,
+        )
+        return False
+    finally:
+        initialization_lock.release()
+
+def test_key(urls=None):
     random = str(uuid4())
     token = generate_token(get_timestamp(), random)
-    r = requests.get(server_urls["testkey"],
-                     params={'random': random, 'token': token})
+    r = requests.get((urls or server_urls)["testkey"],
+                     params={'random': random, 'token': token},
+                     timeout=settings.WEB_ATTACHMENT_TIMEOUT)
 
     if r.status_code == 200:
         return
@@ -260,6 +308,24 @@ def test_key():
         raise AttachmentError("Bad attachment key.")
     else:
         raise AttachmentError("Attachment key test failed.")
+
+@login_maybe_required
+@require_http_methods(['GET', 'HEAD'])
+@never_cache
+def health(request):
+    if server_urls is None:
+        if settings.WEB_ATTACHMENT_URL in (None, ''):
+            return HttpResponse(status=404)
+        if not retry_initialization():
+            return HttpResponse(status=503)
+
+    try:
+        test_key()
+    except (AttachmentError, requests.RequestException) as error:
+        logger.error('Health check failed: %s', str(error))
+        return HttpResponse(status=503)
+
+    return HttpResponse(status=204)
 
 @openapi(schema={
     "get": {

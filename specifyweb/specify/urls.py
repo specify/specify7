@@ -1,5 +1,6 @@
 # Entrypoint for the routing of the app
 
+from django.urls import path
 from django.urls import include, re_path
 
 from specifyweb.specify import views
@@ -7,9 +8,9 @@ from specifyweb.specify.models_utils import schema
 
 urlpatterns = [
     # the main business data API
-    re_path(r'^specify_schema/openapi.json$', schema.openapi),
+    path('specify_schema/openapi.json', schema.openapi),
     re_path(r'^specify_schema/(?P<model>\w+)/$', schema.view),
-    re_path(r'^specify/', include('specifyweb.backend.batch_identify.urls')), # batch identify
+    path('specify/', include('specifyweb.backend.batch_identify.urls')), # batch identify
     re_path(r'^specify/(?P<model>\w+)/(?P<id>\d+)/$', views.resource), # permissions added
     re_path(r'^specify/(?P<model>\w+)/$', views.collection), # permissions added
 
@@ -19,29 +20,29 @@ urlpatterns = [
     # === Backwards compatibility ===
 
     # Merge endpoints
-    re_path(r'^specify/merge/', include('specifyweb.backend.merge.urls')),
+    path('specify/merge/', include('specifyweb.backend.merge.urls')),
 
     # Inheritance (catalog number endpoints)
-    re_path(r'^specify/', include('specifyweb.backend.inheritance.urls')),
+    path('specify/', include('specifyweb.backend.inheritance.urls')),
 
     # Series endpoints
-    re_path(r'^specify', include('specifyweb.backend.series.urls')),
+    path('specify', include('specifyweb.backend.series.urls')),
 
     # Table rows
-    re_path(r'^', include('specifyweb.backend.table_rows.urls')),
+    path('', include('specifyweb.backend.table_rows.urls')),
 
     # Delete blockers
-    re_path(r'^', include('specifyweb.backend.delete_blockers.urls')),
+    path('', include('specifyweb.backend.delete_blockers.urls')),
 
     ## Bulk copy
-    re_path(r'^specify', include('specifyweb.backend.bulk_copy.urls')),
+    path('specify', include('specifyweb.backend.bulk_copy.urls')),
 
     # Trees
-    re_path(r'^', include('specifyweb.backend.trees.urls')),
+    path('', include('specifyweb.backend.trees.urls')),
 
     # Locality update tool
-    re_path(r'^', include('specifyweb.backend.locality_update_tool.urls')),
+    path('', include('specifyweb.backend.locality_update_tool.urls')),
 
     # Master key + User management
-    re_path(r'^', include('specifyweb.backend.accounts.urls')),
+    path('', include('specifyweb.backend.accounts.urls')),
 ]

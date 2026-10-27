@@ -50,7 +50,11 @@ export const foreverFetch = async <T>(): Promise<T> => foreverPromise;
 export const unlockInitialContext = (entrypoint: typeof entrypointName): void =>
   unlock(entrypoint);
 
-export const load = async <T>(path: string, mimeType: MimeType): Promise<T> =>
+export const load = async <T>(
+  path: string,
+  mimeType: MimeType,
+  refresh = false
+): Promise<T> =>
   contextUnlockedPromise.then(async (entrypoint) => {
     if (entrypoint !== 'main') return foreverFetch<T>();
 
@@ -60,6 +64,7 @@ export const load = async <T>(path: string, mimeType: MimeType): Promise<T> =>
     const { data } = await ajax<T>(cacheableUrl(path), {
       errorMode: 'visible',
       headers: { Accept: mimeType },
+      cache: refresh ? 'no-cache' : undefined,
     });
 
     return data;

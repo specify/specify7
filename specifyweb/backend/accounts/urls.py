@@ -51,6 +51,8 @@ urlpatterns = [
     # generates Sp6 master key
     path('master_key/', master_key.master_key),
 
+    path('presence/', views.update_presence),
+
     # set a user's password
     path('set_password/<int:userid>/', views.set_password),
     path('set_admin_status/<int:userid>/', views.set_admin_status),

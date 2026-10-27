@@ -40,7 +40,7 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Attachment-Server nicht verfügbar',
     'pt-br': 'Servidor de anexos indisponível',
     'hr-hr': 'Poslužitelj priloga nije dostupan',
-    nb: 'Vedleggsserveren er ikke tilgjengelig',
+    nb: 'Vedleggsserveren utilgjengelig',
   },
   attachmentServerUnavailableDescription: {
     'en-us': 'Setup your attachment server',
@@ -51,7 +51,7 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Richten Sie Ihren Attachment-Server ein',
     'pt-br': 'Configure seu servidor de anexos.',
     'hr-hr': 'Postavite svoj poslužitelj priloga',
-    nb: 'Konfigurer vedleggsserveren din',
+    nb: 'Sett opp vedleggsserveren din',
   },
   orderBy: {
     'en-us': 'Order By',
@@ -60,9 +60,9 @@ export const attachmentsText = createDictionary({
     'fr-fr': 'Trier par',
     'uk-ua': 'Сортувати за',
     'de-ch': 'Sortiere nach',
-    'pt-br': 'Ordenar por',
+    'pt-br': 'Ordem por',
     'hr-hr': 'Poredaj po',
-    nb: 'Bestill etter',
+    nb: 'Sorter etter',
   },
   uploadingInline: {
     'en-us': 'Uploading…',
@@ -95,7 +95,7 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Verknüpfter Datensatz kann nicht gefunden werden',
     'pt-br': 'Não foi possível encontrar o registro relacionado.',
     'hr-hr': 'Nije moguće pronaći povezani zapis',
-    nb: 'Finner ikke relatert oppføring',
+    nb: 'Finner ikke posten',
   },
   unableToFindRelatedRecordDescription: {
     'en-us': 'Unable to find a record that this attachment is related to.',
@@ -110,7 +110,7 @@ export const attachmentsText = createDictionary({
     'pt-br':
       'Não foi possível encontrar nenhum registro ao qual este anexo esteja relacionado.',
     'hr-hr': 'Nije moguće pronaći zapis na koji se odnosi ovaj privitak.',
-    nb: 'Finner ikke en oppføring som dette vedlegget er relatert til.',
+    nb: 'Finner ikke en posten som dette vedlegget er relatert til.',
   },
   showForm: {
     'en-us': 'Show Form',
@@ -207,7 +207,7 @@ export const attachmentsText = createDictionary({
     'en-us': 'Skipped',
     'de-ch': 'Übersprungen',
     'es-es': 'Saltado',
-    'fr-fr': 'Omission',
+    'fr-fr': 'Omis',
     'ru-ru': 'Пропущено',
     'uk-ua': 'Пропущено',
     'pt-br': 'Ignorado',
@@ -223,7 +223,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Скасовано',
     'pt-br': 'Cancelado',
     'hr-hr': 'Otkazano',
-    nb: 'Avlyst',
+    nb: 'Kanselert',
   },
   frontEndInterruption: {
     'en-us': '{action:string} was in progress when interruption occurred',
@@ -276,8 +276,7 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Anhänge-Importdatensätze ({count:number})',
     'es-es':
       'Conjuntos de datos de importación de archivos adjuntos ({count:number})',
-    'fr-fr':
-      'Importer des ensembles de données de pièces jointes ({count:number})',
+    'fr-fr': 'Importer un jeu de données de pièces jointes ({count:number})',
     'ru-ru': 'Наборы данных для импорта вложений ({count:number})',
     'uk-ua': 'Набори даних імпорту вкладень ({count:number})',
     'pt-br': 'Conjuntos de dados de importação de anexos ({count:number})',
@@ -345,7 +344,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Відкат перервано',
     'pt-br': 'Reversão interrompida',
     'hr-hr': 'Povratak prekinut',
-    nb: 'Tilbakerulling avbrutt',
+    nb: 'Tilbakestilling avbrutt',
   },
   rollbackInterruptedDescription: {
     'en-us':
@@ -364,7 +363,7 @@ export const attachmentsText = createDictionary({
       'O processo de reversão estava em andamento quando ocorreu uma interrupção. Alguns arquivos podem ter sido excluídos.',
     'hr-hr':
       'Vraćanje je bilo u tijeku kada je došlo do prekida. Neke datoteke su možda izbrisane.',
-    nb: 'Tilbakerullingen pågikk da et avbrudd oppsto. Noen filer kan ha blitt slettet.',
+    nb: 'Tilbakestillingen pågikk da et avbrudd oppsto. Noen filer kan ha blitt slettet',
   },
   attachmentId: {
     'en-us': 'Attachment ID',
@@ -407,7 +406,7 @@ export const attachmentsText = createDictionary({
     'es-es':
       'Al cargar los archivos adjuntos, estos se guardarán en el servidor de activos y en la base de datos de Specify.',
     'fr-fr':
-      'Le chargement des pièces jointes les ajoutera au serveur de ressources et à la base de données Specification.',
+      'Le chargement des pièces jointes les ajoutera au serveur de ressources et à la base de données Specify.',
     'ru-ru':
       'Загрузка вложений создаст их на сервере активов и в базе данных Specify.',
     'uk-ua':
@@ -416,7 +415,7 @@ export const attachmentsText = createDictionary({
       'O envio dos anexos os criará no servidor de ativos e no banco de dados especificado.',
     'hr-hr':
       'Prijenosom privitaka stvorit će se privitci na poslužitelju imovine i u Navedite bazu podataka',
-    nb: 'Opplasting av vedlegg vil opprette vedlegg på ressursserveren og i Specify-databasen.',
+    nb: 'Opplasting av vedlegg vil opprette vedlegg på ressursserveren og i Specify-databasen',
   },
   interrupted: {
     'en-us': 'Interrupted',
@@ -459,15 +458,15 @@ export const attachmentsText = createDictionary({
     'es-es':
       'La reversión eliminará los archivos adjuntos de la base de datos Specify y del servidor de activos.',
     'fr-fr':
-      "La restauration supprimera les pièces jointes de la base de données Specification et du serveur d'actifs.",
+      'La restauration supprimera les pièces jointes de la base de données Specify et du serveur de pièces jointes.',
     'ru-ru':
       'Функция отката удалит вложения из базы данных Specify и сервера активов.',
-    'uk-ua': 'Відкат видалить вкладення з бази даних Specify та Asset Server',
+    'uk-ua': 'Відкат видалить вкладення з бази даних Specify та Asset Server.',
     'pt-br':
       'A reversão excluirá os anexos do banco de dados especificado e do servidor de ativos.',
     'hr-hr':
       'Vraćanje na prethodno stanje će izbrisati priloge iz Navedite bazu podataka i Poslužitelja imovine',
-    nb: 'Tilbakerulling vil slette vedleggene fra Specify-databasen og Asset Server',
+    nb: 'Tilbakestillingen vil slette vedleggene fra Specify-databasen og Vedleggserveren',
   },
   noMatch: {
     'en-us': 'No match',
@@ -546,7 +545,7 @@ export const attachmentsText = createDictionary({
       'Define se o formulário de anexos deve ser recolhido por padrão ao visualizar anexos existentes. Se os controles de anexos estiverem ocultos, essa configuração não terá efeito.',
     'hr-hr':
       'Treba li se obrazac za prilog prema zadanim postavkama sažeti prilikom pregleda postojećih priloga. Ako su kontrole priloga skrivene, ova postavka nema učinka.',
-    nb: 'Om vedleggsskjemaet skal skjules som standard når eksisterende vedlegg vises. Hvis vedleggskontrollene er skjult, har denne innstillingen ingen effekt.',
+    nb: 'Skal vedleggsskjemaet skjules som standard når eksisterende vedlegg vises? Hvis vedleggskontrollene er skjult, har denne innstillingen ingen effekt.',
   },
   showControls: {
     'en-us': 'Show attachment controls',
@@ -555,7 +554,7 @@ export const attachmentsText = createDictionary({
     'fr-fr': 'Afficher les commandes de pièce jointe',
     'ru-ru': 'Показать элементы управления вложениями',
     'uk-ua': 'Показати елементи керування вкладеннями',
-    'pt-br': 'Mostrar controles de anexos',
+    'pt-br': 'Mostrar controles de anexo',
     'hr-hr': 'Prikaži kontrole privitaka',
     nb: 'Vis vedleggskontroller',
   },
@@ -582,12 +581,12 @@ export const attachmentsText = createDictionary({
     'en-us': 'Multiple matches',
     'de-ch': 'Mehrere Übereinstimmungen',
     'es-es': 'Múltiples coincidencias',
-    'fr-fr': 'Plusieurs matchs',
+    'fr-fr': 'Plusieurs correspondances',
     'ru-ru': 'Несколько матчей',
     'uk-ua': 'Кілька збігів',
     'pt-br': 'Vários confrontos',
     'hr-hr': 'Višestruka podudaranja',
-    nb: 'Flere kamper',
+    nb: 'Flere treff',
   },
   multipleMatchesClick: {
     'en-us': 'Multiple Matches. Click To Disambiguate',
@@ -599,7 +598,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Кілька збігів. Натисніть, щоб усунути неоднозначність.',
     'pt-br': 'Vários resultados. Clique para desambiguar.',
     'hr-hr': 'Višestruka podudaranja. Kliknite za razrješenje dvosmislenosti',
-    nb: 'Flere treff. Klikk for å gjøre det mer entydig.',
+    nb: 'Flere treff. Klikk for å avklare',
   },
   totalFiles: {
     'en-us': 'Total files',
@@ -638,7 +637,7 @@ export const attachmentsText = createDictionary({
     'en-us': 'Import Attachments',
     'de-ch': 'Anhänge importieren',
     'es-es': 'Importar archivos adjuntos',
-    'fr-fr': 'Pièces jointes importées',
+    'fr-fr': 'Importer des pièces jointes',
     'ru-ru': 'Импорт вложений',
     'uk-ua': 'Імпорт вкладень',
     'pt-br': 'Importar anexos',
@@ -651,7 +650,7 @@ export const attachmentsText = createDictionary({
     'es-es': 'Fichado',
     'ru-ru': 'В архиве',
     'uk-ua': 'У файлі',
-    'fr-fr': 'En dossier',
+    'fr-fr': 'Sur le fichier',
     'pt-br': 'Em arquivo',
     'hr-hr': 'U datoteci',
     nb: 'På fil',
@@ -665,7 +664,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Знайдено дублікати файлів',
     'pt-br': 'Arquivos duplicados encontrados',
     'hr-hr': 'Pronađene duplikatne datoteke',
-    nb: 'Duplikatfiler funnet',
+    nb: 'Duplikater funnet',
   },
   duplicateFilesDescription: {
     'en-us':
@@ -684,7 +683,7 @@ export const attachmentsText = createDictionary({
       'Os seguintes arquivos não foram selecionados porque já existem neste conjunto de dados.',
     'hr-hr':
       'Sljedeće datoteke nisu odabrane jer već postoje u ovom skupu podataka.',
-    nb: 'Følgende filer er ikke valgt fordi de allerede finnes i dette datasettet.',
+    nb: 'Følgende filer er utelatt fordi de allerede finnes i dette datasettet.',
   },
   missingFilesFound: {
     'en-us': 'Files Missing From Mapping File',
@@ -725,7 +724,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Помилка отримання запису',
     'pt-br': 'Erro ao buscar registro',
     'hr-hr': 'Pogreška pri dohvaćanju zapisa',
-    nb: 'Feil ved henting av oppføring',
+    nb: 'Feil ved henting av databasepost',
   },
   errorSavingRecord: {
     'en-us': 'Error saving record',
@@ -736,7 +735,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Помилка збереження запису',
     'pt-br': 'Erro ao salvar o registro',
     'hr-hr': 'Pogreška pri spremanju zapisa',
-    nb: 'Feil ved lagring av oppføring',
+    nb: 'Feil ved lagring av databasepost',
   },
   interruptionStopped: {
     'en-us': 'Stopped because of error uploading a previous file',
@@ -818,7 +817,7 @@ export const attachmentsText = createDictionary({
       '{success: number} dos {total: number} anexos no conjunto de dados foram {action: string}.',
     'hr-hr':
       '{success: number} od {total: number} privitaka u skupu podataka je {action: string}.',
-    nb: '{success: number} av {total: number} vedlegg i datasettet har vært {action: string}.',
+    nb: '{success: number} av {total: number} vedlegg i datasettet har blitt {action: string}.',
   },
   deleteAttachmentDataSetDescription: {
     'en-us':
@@ -832,12 +831,12 @@ export const attachmentsText = createDictionary({
     'ru-ru':
       'Удаление набора данных приводит к его безвозвратному удалению, а также к удалению пути загрузки. Кроме того, после удаления возможность отката для загруженного набора данных больше не будет доступна.',
     'uk-ua':
-      'Видалення набору даних остаточно видаляє його та шлях завантаження. Також після видалення відкат більше не буде можливим для завантаженого набору даних.',
+      'Видалення набору даних видаляє його та шлях завантаження безповоротно. Також після видалення відкат більше не буде можливим для завантаженого набору даних.',
     'pt-br':
       'A exclusão de um conjunto de dados remove permanentemente o conjunto e seu caminho de upload. Além disso, após a exclusão, a opção de reversão (rollback) não estará mais disponível para o conjunto de dados carregado.',
     'hr-hr':
       'Trajnim brisanjem skupa podataka uklanja se on i njegov put prijenosa. Također, nakon brisanja, vraćanje na prethodno stanje više neće biti moguće za preneseni skup podataka.',
-    nb: 'Hvis du sletter et datasett permanent, fjernes det og opplastingsbanen. Etter sletting vil heller ikke tilbakerulling lenger være et alternativ for et opplastet datasett.',
+    nb: 'Hvis du sletter et datasett permanent, fjernes dét og opplastingsbanen. Etter sletting vil heller ikke tilbakerulling lenger være et alternativ for et opplastet datasett.',
   },
   attachmentUploadError: {
     'en-us':
@@ -888,7 +887,7 @@ export const attachmentsText = createDictionary({
     'es-es':
       'No se han cargado todos los archivos adjuntos. Cree un conjunto de registros con los resultados de la consulta para descargar todos los archivos adjuntos.',
     'fr-fr':
-      "Toutes les pièces jointes n'ont pas été chargées. Veuillez créer un enregistrement des résultats de la requête pour télécharger toutes les pièces jointes.",
+      "Toutes les pièces jointes n'ont pas été chargées. Veuillez créer un ensemble d'enregistrements des résultats de la requête pour télécharger toutes les pièces jointes.",
     'pt-br':
       'Nem todos os anexos foram carregados. Crie um conjunto de registros com os resultados da consulta para baixar todos os anexos.',
     'ru-ru':
@@ -897,7 +896,7 @@ export const attachmentsText = createDictionary({
       'Не всі вкладення завантажено. Будь ласка, створіть набір записів результатів запиту, щоб завантажити всі вкладення.',
     'hr-hr':
       'Nisu učitani svi privitci. Izradite skup zapisa rezultata upita kako biste preuzeli sve privitke.',
-    nb: 'Ikke alle vedleggene er lastet inn. Vennligst opprett et postsett med søkeresultatene for å laste ned alle vedleggene.',
+    nb: 'Ikke alle vedlegg er lastet inn. Vennligst opprett et databasepost-sett fra søkeresultatene for å laste ned alle vedleggene.',
   },
   deleteAttachmentWarning: {
     'en-us': 'Are you sure you want to delete this attachment?',
@@ -940,7 +939,7 @@ export const attachmentsText = createDictionary({
     'es-es':
       'Esto controla si los nuevos archivos adjuntos añadidos a esta colección se marcan como "Públicos" por defecto. Los archivos adjuntos públicos serán visibles automáticamente en un portal web específico. Esta configuración se puede modificar para cada archivo adjunto individualmente y no afecta a los archivos adjuntos existentes.',
     'fr-fr':
-      "Ce paramètre détermine si les nouvelles pièces jointes ajoutées à cette collection sont marquées comme « publiques » par défaut. Les pièces jointes publiques seront automatiquement visibles sur le portail web de spécification. Ce paramètre peut être modifié pour chaque pièce jointe individuellement et n'affecte pas les pièces jointes existantes.",
+      "Ce paramètre détermine si les nouvelles pièces jointes ajoutées à cette collection sont marquées comme « publiques » par défaut. Les pièces jointes publiques seront automatiquement visibles sur le portail web de Specify. Ce paramètre peut être modifié pour chaque pièce jointe individuellement et n'affecte pas les pièces jointes existantes.",
     'pt-br':
       'Esta opção controla se os novos anexos adicionados a esta coleção serão sinalizados como "Públicos" por padrão. Anexos públicos serão automaticamente visíveis em um Portal Web especificado. Essa configuração pode ser alterada individualmente para cada anexo e não afeta os anexos existentes.',
     'ru-ru':
@@ -960,7 +959,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Режим зіставлення',
     'pt-br': 'Modo de correspondência',
     'hr-hr': 'Način podudaranja',
-    nb: 'Samsvarsmodus',
+    nb: 'Matching modus',
   },
   matchByFilename: {
     'en-us': 'Match by filename',
@@ -971,7 +970,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Зіставлення за назвою файлу',
     'pt-br': 'Correspondência por nome de arquivo',
     'hr-hr': 'Podudaranje prema nazivu datoteke',
-    nb: 'Samsvar etter filnavn',
+    nb: 'Match på filnavn',
   },
   matchByMappingFile: {
     'en-us': 'Match by mapping file',
@@ -982,7 +981,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Зіставлення за файлом зіставлення',
     'pt-br': 'Correspondência por arquivo de mapeamento',
     'hr-hr': 'Podudaranje prema datoteci mapiranja',
-    nb: 'Samsvar etter kartleggingsfil',
+    nb: 'Match med kartleggingsfil',
   },
   fileMissing: {
     'en-us': 'File Missing',
@@ -1050,18 +1049,18 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Стовпець зі значенням відповідності',
     'pt-br': 'Coluna de valor correspondente',
     'hr-hr': 'Stupac vrijednosti podudaranja',
-    nb: 'Samsvarsverdi-kolonnen',
+    nb: 'Match verdi kolonne',
   },
   selectFileNameColumn: {
     'en-us': 'File Name Column',
     'de-ch': 'Spalte für Dateinamen',
     'es-es': 'Columna del nombre del archivo',
-    'fr-fr': 'Colonne Nom du fichier',
+    'fr-fr': 'Colonne du Nom du fichier',
     'ru-ru': 'Столбец «Имя файла»',
     'uk-ua': 'Стовпець імені файлу',
     'pt-br': 'Coluna Nome do Arquivo',
     'hr-hr': 'Stupac naziva datoteke',
-    nb: 'Filnavnkolonne',
+    nb: 'Filnavn-kolonne',
   },
   mappingFileLoaded: {
     'en-us': 'Mapping file loaded ({count:number} rows)',
@@ -1106,7 +1105,7 @@ export const attachmentsText = createDictionary({
       'Escolha como os arquivos anexos devem ser associados aos registros do banco de dados.',
     'hr-hr':
       'Odaberite kako se datoteke privitaka trebaju podudarati s zapisima baze podataka.',
-    nb: 'Velg hvordan vedleggsfiler skal samsvare med databaseposter.',
+    nb: 'Velg hvordan vedleggsfiler skal matches med databaseposter.',
   },
   matchByFilenameDescription: {
     'en-us':
@@ -1125,7 +1124,7 @@ export const attachmentsText = createDictionary({
       'Analisa o identificador de registro de cada nome de arquivo usando um formatador de campo. Funciona melhor com campos numéricos estruturados.',
     'hr-hr':
       'Analizirajte identifikator zapisa iz svakog naziva datoteke pomoću formatatora polja. Najbolje radi s strukturiranim, numeričkim poljima.',
-    nb: 'Analyser postidentifikatoren fra hvert filnavn ved hjelp av en feltformatering. Fungerer best med strukturerte numeriske felt.',
+    nb: 'Gå gjennom databasepost-id fra hvert filnavn ved hjelp av en felt-formatterer. Fungerer best med strukturerte numeriske felt.',
   },
   matchByMappingFileDescription: {
     'en-us':
@@ -1144,7 +1143,7 @@ export const attachmentsText = createDictionary({
       'Utilize um arquivo de mapeamento CSV explícito que liste a qual registro cada arquivo pertence.',
     'hr-hr':
       'Koristite eksplicitnu CSV datoteku mapiranja koja navodi kojem zapisu pripada svaka datoteka.',
-    nb: 'Bruk en eksplisitt CSV-tilordningsfil som viser hvilken oppføring hver fil tilhører.',
+    nb: 'Bruk en eksplisitt CSV-tilordningsfil som viser hvilken databaepost hver fil tilhører.',
   },
   matchValue: {
     'en-us': 'Match Value',
@@ -1155,7 +1154,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Значення збігу',
     'pt-br': 'Valor correspondente',
     'hr-hr': 'Vrijednost podudaranja',
-    nb: 'Samsvarsverdi',
+    nb: 'Match verdi',
   },
   csvParseError: {
     'en-us': 'Failed to parse CSV file',
@@ -1163,7 +1162,7 @@ export const attachmentsText = createDictionary({
     'es-es': 'Error al analizar el archivo CSV.',
     'fr-fr': "Impossible d'analyser le fichier CSV",
     'hr-hr': 'Nije uspjelo raščlaniti CSV datoteku',
-    nb: 'Kunne ikke analysere CSV-filen',
+    nb: 'Kunne ikke lese CSV-filen',
     'pt-br': 'Falha ao analisar o arquivo CSV',
     'ru-ru': 'Не удалось разобрать CSV-файл.',
     'uk-ua': 'Не вдалося проаналізувати CSV-файл',

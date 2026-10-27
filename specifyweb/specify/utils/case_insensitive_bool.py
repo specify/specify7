@@ -9,7 +9,12 @@ class BooleanField(models.BooleanField):
             return False
         return super().to_python(value)
 
-class NullBooleanField(models.NullBooleanField):
+class NullBooleanField(BooleanField):
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault('null', True)
+        kwargs.setdefault('blank', True)
+        super().__init__(*args, **kwargs)
+
     def to_python(self, value):
         if value == 'true':
             return True

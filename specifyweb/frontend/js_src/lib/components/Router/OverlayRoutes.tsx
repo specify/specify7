@@ -14,9 +14,10 @@ import { treeText } from '../../localization/tree';
 import { userText } from '../../localization/user';
 import { welcomeText } from '../../localization/welcome';
 import { wbText } from '../../localization/workbench';
-import type { RA } from '../../utils/types';
+import { RA } from '../../utils/types';
 import { Redirect } from './Redirect';
 import type { EnhancedRoute } from './RouterUtils';
+import { dataViewsText } from '../../localization/dataViews';
 
 /* eslint-disable @typescript-eslint/promise-function-async */
 /**
@@ -120,7 +121,6 @@ export const overlayRoutes: RA<EnhancedRoute> = [
       },
       {
         path: 'queries',
-        title: queryText.queries(),
         element: () =>
           import('../Toolbar/Query').then(
             ({ QueriesOverlay }) => QueriesOverlay
@@ -128,6 +128,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
         children: [
           {
             index: true,
+            title: queryText.queries(),
             element: () =>
               import('../Toolbar/Query').then(
                 ({ QueryListOutlet }) => QueryListOutlet
@@ -140,6 +141,14 @@ export const overlayRoutes: RA<EnhancedRoute> = [
               import('../Toolbar/Query').then(({ NewQuery }) => NewQuery),
           },
         ],
+      },
+      {
+        path: 'dataviews',
+        title: dataViewsText.dataViewsTitle(),
+        element: () =>
+          import('../DataViews/DataViewTables').then(
+            ({ DataViewTables }) => DataViewTables
+          ),
       },
       {
         path: 'record-sets',

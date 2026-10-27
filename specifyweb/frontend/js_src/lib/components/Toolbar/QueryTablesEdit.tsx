@@ -7,7 +7,7 @@ import { schemaText } from '../../localization/schema';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import type { SpecifyTable } from '../DataModel/specifyTable';
-import { genericTables } from '../DataModel/tables';
+import { genericTables, sortTablesByCaption } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import { userPreferences } from '../Preferences/userPreferences';
@@ -30,7 +30,7 @@ export function QueryTablesEdit({
     <TablesListEdit
       defaultTables={defaultQueryTablesConfig}
       header={queryText.configureQueryTables()}
-      isNoRestrictionMode={isNoRestrictionMode}
+      showHiddenTables={isNoRestrictionMode}
       tables={tables}
       onChange={setTables}
       onClose={handleClose}
@@ -39,14 +39,14 @@ export function QueryTablesEdit({
 }
 
 export function TablesListEdit({
-  isNoRestrictionMode,
+  showHiddenTables = false,
   defaultTables,
   header,
   tables: selectedTables,
   onChange: handleChange,
   onClose: handleClose,
 }: {
-  readonly isNoRestrictionMode: boolean;
+  readonly showHiddenTables?: boolean;
   readonly defaultTables: RA<keyof Tables>;
   readonly header: LocalizedString;
   readonly tables: RA<SpecifyTable>;
@@ -54,11 +54,12 @@ export function TablesListEdit({
   readonly onClose: () => void;
 }): JSX.Element {
   const selectedValues = selectedTables.map(({ name }) => name);
-  const allTables = Object.values(genericTables)
-    .filter((table) =>
-      tablesFilter(isNoRestrictionMode, false, true, table, selectedValues)
-    )
-    .map(({ name, label }) => ({ name, label }));
+  const allTables = sortTablesByCaption(
+    Object.values(genericTables).filter((table) =>
+      tablesFilter(showHiddenTables, false, true, table, selectedValues)
+    ),
+    ({ name }) => name
+  ).map(({ name, label }) => ({ name, label }));
 
   const handleChanged = (items: RA<keyof Tables>): void =>
     handleChange(items.map((name) => genericTables[name]));
