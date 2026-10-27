@@ -159,7 +159,6 @@ const base_config = [
       'no-restricted-syntax': [
         ERROR,
         'CatchClause',
-        'Class',
         'ContinueStatement',
         'DoWhileStatement',
         'ForStatement',
