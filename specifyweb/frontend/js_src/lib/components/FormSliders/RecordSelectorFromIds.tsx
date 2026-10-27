@@ -75,8 +75,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   readonly onClose: () => void;
   readonly onSaved: (resource: SpecifyResource<SCHEMA>) => void;
   readonly onClone:
-    | ((resources: RA<SpecifyResource<SCHEMA>>) => void)
-    | undefined;
+    ((resources: RA<SpecifyResource<SCHEMA>>) => void) | undefined;
   readonly onFetch?: (
     index: number
   ) => Promise<RA<number | undefined> | undefined>;

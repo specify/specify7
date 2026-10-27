@@ -58,8 +58,7 @@ const { formatCacheKey } = exportsForTests;
 type WbAttachmentPreviewCell = {
   readonly attachment: SerializedResource<Attachment> | undefined;
   readonly spDataSetAttachment:
-    | SerializedResource<SpDataSetAttachment>
-    | undefined;
+    SerializedResource<SpDataSetAttachment> | undefined;
   readonly isLoading: boolean;
 };
 

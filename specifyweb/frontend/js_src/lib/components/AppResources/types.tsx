@@ -12,11 +12,7 @@ import type { AppResourceMode } from './helpers';
 import { dataViewsText } from '../../localization/dataViews';
 
 export type AppResourceScope =
-  | 'collection'
-  | 'discipline'
-  | 'global'
-  | 'user'
-  | 'userType';
+  'collection' | 'discipline' | 'global' | 'user' | 'userType';
 
 export type AppResourceType = {
   readonly tableName: keyof Tables & ('SpAppResource' | 'SpViewSetObj');

@@ -91,8 +91,7 @@ export function FormTable<SCHEMA extends AnySchema>({
   readonly resources: RA<SpecifyResource<SCHEMA>>;
   readonly totalCount?: number;
   readonly onAdd:
-    | ((resources: RA<SpecifyResource<SCHEMA>>) => void)
-    | undefined;
+    ((resources: RA<SpecifyResource<SCHEMA>>) => void) | undefined;
   readonly onDelete: ((resource: SpecifyResource<SCHEMA>) => void) | undefined;
   readonly viewName?: string;
   readonly dialog: 'modal' | 'nonModal' | false;
@@ -659,8 +658,7 @@ export function FormTable<SCHEMA extends AnySchema>({
         enableShortcut={dialog !== false}
         parentResource={
           collection?.related as
-            | SpecifyResource<CollectionObjectGroup>
-            | undefined
+            SpecifyResource<CollectionObjectGroup> | undefined
         }
       />
     ) : typeof handleAddResources === 'function' ? (

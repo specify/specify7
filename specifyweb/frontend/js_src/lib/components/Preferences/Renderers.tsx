@@ -253,11 +253,7 @@ export function FontFamilyPreferenceItem({
 }
 
 export type WelcomePageMode =
-  | 'critterless'
-  | 'customImage'
-  | 'default'
-  | 'embeddedWebpage'
-  | 'taxonTiles';
+  'critterless' | 'customImage' | 'default' | 'embeddedWebpage' | 'taxonTiles';
 
 export function getDefaultWelcomePageImage(isDarkMode: boolean): string {
   return isDarkMode

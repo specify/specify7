@@ -57,8 +57,7 @@ export function COJODialog({
 
   const handleCOJOCreation = (
     selectedResource?:
-      | SpecifyResource<CollectionObject>
-      | SpecifyResource<CollectionObjectGroup>
+      SpecifyResource<CollectionObject> | SpecifyResource<CollectionObjectGroup>
   ): void => {
     if (parentResource === undefined) return;
 
