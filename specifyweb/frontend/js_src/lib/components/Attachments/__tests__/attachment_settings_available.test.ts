@@ -9,14 +9,14 @@ import {
 requireContext();
 
 describe('attachmentSettingsPromise', () => {
-  test('settings get loaded', () => {
-    expect(attachmentSettingsPromise).resolves.toBe(true);
+  test('settings get loaded', async () => {
+    await expect(attachmentSettingsPromise).resolves.toBe(true);
   });
 });
 
 describe('attachmentsAvailable', () => {
   test('eventually returns true', async () => {
-    waitFor(() => {
+    await waitFor(() => {
       expect(attachmentsAvailable()).toBe(true);
     });
   });

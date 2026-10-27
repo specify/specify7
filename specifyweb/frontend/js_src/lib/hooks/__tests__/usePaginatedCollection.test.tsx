@@ -45,7 +45,7 @@ test('replaces the current result page when initial records change', () => {
 test('ignores page requests from the previous result set', async () => {
   let resolveFetch: ((rows: number[]) => void) | undefined;
   const fetchMore = jest.fn(
-    () =>
+    async () =>
       new Promise<number[]>((resolve) => {
         resolveFetch = resolve;
       })
@@ -66,7 +66,7 @@ test('ignores page requests from the previous result set', async () => {
     }
   );
 
-  let request: Promise<ReadonlyArray<number> | undefined> | undefined;
+  let request: Promise<readonly number[] | undefined> | undefined;
   act(() => {
     request = result.current.onFetchMore();
   });

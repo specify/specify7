@@ -35,7 +35,7 @@ test('shows active shortcuts after holding Control for one second', () => {
 
   act(() => jest.advanceTimersByTime(1));
   expect(
-    queryByRole('dialog', { name: preferencesText.keyboardShortcuts() })
+    getByRole('dialog', { name: preferencesText.keyboardShortcuts() })
   ).toBeInTheDocument();
   expect(getByText('Add record')).toBeInTheDocument();
 

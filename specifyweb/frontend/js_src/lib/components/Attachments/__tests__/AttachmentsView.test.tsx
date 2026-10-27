@@ -2,19 +2,19 @@ import { act, waitFor } from '@testing-library/react';
 import React from 'react';
 import * as Router from 'react-router-dom';
 
+import { attachmentsText } from '../../../localization/attachments';
+import { commonText } from '../../../localization/common';
 import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
 import { mount } from '../../../tests/reactUtils';
-import { commonText } from '../../../localization/common';
-import { attachmentsText } from '../../../localization/attachments';
 import { Http } from '../../../utils/ajax/definitions';
 import { SetMenuContext } from '../../Header/MenuContext';
+import { AttachmentsView } from '..';
 import {
   attachmentSettingsPromise,
   overrideAttachmentServerStatus,
   overrideAttachmentSettings,
 } from '../attachments';
-import { AttachmentsView } from '..';
 
 /*
  * Bypass the paginated attachment fetches (a pre-existing, unrelated bug in
@@ -59,7 +59,7 @@ const testSettings = {
 
 function TestAttachmentsView(): JSX.Element {
   return (
-    <Router.MemoryRouter useTransitions={true}>
+    <Router.MemoryRouter useTransitions>
       <SetMenuContext.Provider value={jest.fn()}>
         <AttachmentsView />
       </SetMenuContext.Provider>

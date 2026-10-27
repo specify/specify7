@@ -1,6 +1,5 @@
 import { backEndText } from '../../../localization/backEnd';
 import { requireContext } from '../../../tests/helpers';
-
 import { resolveValidationMessage } from '../resultsParser';
 
 requireContext();
