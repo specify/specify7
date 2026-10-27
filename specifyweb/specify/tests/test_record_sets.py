@@ -1,4 +1,6 @@
-from specifyweb.specify.api.crud import get_resource, update_obj
+from specifyweb.specify.api.crud import get_resource, post_resource, update_obj
+from specifyweb.specify.api.exceptions import RecordSetException
+from specifyweb.specify.api.serializers import uri_for_model
 from specifyweb.specify.models import Collectionobject, Recordset, Recordsetitem
 from specifyweb.specify.tests.test_api import ApiTests, skip_perms_check
 
@@ -152,3 +154,71 @@ class RecordSetEditingTests(ApiTests):
             set(recordset.recordsetitems.values_list("recordid", flat=True)),
             {first.id, third.id},
         )
+
+
+class RecordSetNestingTests(ApiTests):
+    def test_add_record_set_to_record_set(self):
+        """Add an existing record set as a record in another record set."""
+        inner = Recordset.objects.create(
+            collectionmemberid=self.collection.id,
+            dbtableid=Collectionobject.specify_model.tableId,
+            name="Inner record set",
+            type=0,
+            specifyuser=self.specifyuser,
+        )
+        inner.recordsetitems.create(recordid=self.collectionobjects[0].id)
+
+        outer = Recordset.objects.create(
+            collectionmemberid=self.collection.id,
+            dbtableid=Recordset.specify_model.tableId,
+            name="Outer record set",
+            type=0,
+            specifyuser=self.specifyuser,
+        )
+
+        post_resource(
+            self.collection,
+            self.agent,
+            "recordsetitem",
+            {
+                "recordid": inner.id,
+                "recordset": uri_for_model("recordset", outer.id),
+            },
+        )
+
+        nested = post_resource(
+            self.collection,
+            self.agent,
+            "recordset",
+            {
+                "name": "Nested record set",
+                "dbtableid": Collectionobject.specify_model.tableId,
+                "type": 0,
+                "specifyuser": uri_for_model(
+                    "specifyuser", self.specifyuser.id
+                ),
+            },
+            recordsetid=outer.id,
+        )
+
+        with self.assertRaises(RecordSetException):
+            post_resource(
+                self.collection,
+                self.agent,
+                "collectionobject",
+                {
+                    "collection": uri_for_model(
+                        "collection", self.collection.id
+                    ),
+                    "catalognumber": "not-a-record-set",
+                },
+                recordsetid=outer.id,
+            )
+
+        outer.refresh_from_db()
+        self.assertEqual(
+            set(outer.recordsetitems.values_list("recordid", flat=True)),
+            {inner.id, nested.id},
+        )
+        self.assertEqual(inner.recordsetitems.count(), 1)
+
