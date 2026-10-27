@@ -34,7 +34,6 @@ from .queryfieldspec import QueryFieldSpec
 from typing import NamedTuple, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from specifyweb.backend.stored_queries.queryfield import QueryField
     from .query_construct_model import QueryConstruct
 
 logger = logging.getLogger(__name__)
