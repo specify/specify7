@@ -218,8 +218,7 @@ test('ArrowDown selects a result beyond 50 rows rather than the available Add op
 
   await user.type(input, 'x');
   expect(await screen.findAllByRole('option')).toHaveLength(101);
-  for (let index = 0; index < 54; index++)
-    await user.keyboard('{ArrowDown}');
+  for (let index = 0; index < 54; index++) await user.keyboard('{ArrowDown}');
 
   expect(input).toHaveAttribute(
     'aria-activedescendant',
