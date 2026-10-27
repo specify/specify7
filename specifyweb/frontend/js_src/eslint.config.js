@@ -939,6 +939,7 @@ export default [
       'testing-library/no-global-regexp-flag-in-query': WARN,
       'testing-library/no-manual-cleanup': ERROR,
       'testing-library/prefer-user-event': ERROR,
+      'testing-library/prefer-find-by': OFF,
       //'testing-library/prefer-wait-for': ERROR,
     },
   },
