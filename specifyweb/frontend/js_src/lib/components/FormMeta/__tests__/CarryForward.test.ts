@@ -1,10 +1,10 @@
 import { requireContext } from '../../../tests/helpers';
+import { tables } from '../../DataModel/tables';
 import {
   dependentFields,
   strictDependentFields,
   tableValidForBulkClone,
 } from '../CarryForward';
-import { tables } from '../../DataModel/tables';
 
 requireContext();
 

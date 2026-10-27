@@ -49,7 +49,7 @@ test('reopens rollback status after conflict response', async () => {
     });
     expect(loadingHandler).toHaveBeenCalledTimes(1);
     await waitFor(() => {
-      expect(queryByRole('dialog')).toBeNull();
+      expect(queryByRole('dialog')).not.toBeInTheDocument();
     });
   } finally {
     consoleError.mockRestore();

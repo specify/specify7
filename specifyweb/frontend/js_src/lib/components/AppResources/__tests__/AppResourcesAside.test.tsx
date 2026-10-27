@@ -1,10 +1,10 @@
 import React from 'react';
 import * as Router from 'react-router-dom';
 
-import { hasPermission } from '../../Permissions/helpers';
 import { requireContext } from '../../../tests/helpers';
 import { mount } from '../../../tests/reactUtils';
 import type { RA } from '../../../utils/types';
+import { hasPermission } from '../../Permissions/helpers';
 import type { AppResourcesConformation } from '../Aside';
 import { AppResourcesAside } from '../Aside';
 import { testAppResources } from './testAppResources';
@@ -162,7 +162,7 @@ describe('AppResourcesAside (expanded case)', () => {
       mount(
         <Router.MemoryRouter
           initialEntries={['/specify/resources/']}
-          useTransitions={true}
+          useTransitions
         >
           <AppResourcesAside
             conformations={[_conformations, setConformations]}

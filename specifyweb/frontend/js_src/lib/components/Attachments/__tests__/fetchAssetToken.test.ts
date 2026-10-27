@@ -12,7 +12,7 @@ describe('fetchAssetToken', () => {
   overrideAjax(formatUrl('/attachment_gw/get_token/', { fileName }), testToken);
 
   test('fetches correctly, not silent', async () => {
-    expect(fetchAssetToken(fileName)).resolves.toBe(testToken);
+    await expect(fetchAssetToken(fileName)).resolves.toBe(testToken);
   });
 
   overrideAjax(
@@ -22,6 +22,6 @@ describe('fetchAssetToken', () => {
   );
 
   test('handles fetch error on silent', async () => {
-    expect(fetchAssetToken(failedFileName, true)).resolves.toBeUndefined();
+    await expect(fetchAssetToken(failedFileName, true)).resolves.toBeUndefined();
   });
 });

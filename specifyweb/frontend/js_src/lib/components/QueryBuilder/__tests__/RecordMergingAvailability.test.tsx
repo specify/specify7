@@ -7,12 +7,12 @@ import {
 } from '@testing-library/react';
 import React from 'react';
 
+import { formsText } from '../../../localization/forms';
 import { requireContext } from '../../../tests/helpers';
 import { RecordMergingContext } from '../../Core/Contexts';
 import { tables } from '../../DataModel/tables';
 import { defaultDataViewQuery } from '../../DataViews/queries';
 import { FormMeta } from '../../FormMeta';
-import { formsText } from '../../../localization/forms';
 import { UnloadProtectsContext } from '../../Router/UnloadProtect';
 import { parseQueryFields, queryFieldsToFieldSpecs } from '../helpers';
 import { QueryResults } from '../Results';
@@ -69,28 +69,26 @@ test('hides merging in Data Views without changing Query Builder availability', 
   );
   const results = (
     <QueryResults
-      table={tables.Agent}
-      queryResource={undefined}
-      fetchSize={40}
-      fetchResults={async () => [[1], [2]]}
-      fetchCount={undefined}
-      totalCount={2}
-      fieldSpecs={fieldSpecs}
-      displayedFields={fields}
       allFields={fields}
-      initialData={[[1], [2]]}
-      selectedRows={[new Set([1, 2]), jest.fn()]}
-      onReRun={jest.fn()}
       createRecordSet={undefined}
+      displayedFields={fields}
       extraButtons={undefined}
+      fetchCount={undefined}
+      fetchResults={async () => [[1], [2]]}
+      fetchSize={40}
+      fieldSpecs={fieldSpecs}
+      initialData={[[1], [2]]}
+      queryResource={undefined}
+      selectedRows={[new Set([1, 2]), jest.fn()]}
+      table={tables.Agent}
+      totalCount={2}
+      onReRun={jest.fn()}
     />
   );
   const { rerender } = render(results);
-  await waitFor(() =>
-    expect(
-      screen.getByRole('button', { name: 'Merge selected records' })
-    ).toBeInTheDocument()
-  );
+  await expect(
+      screen.findByRole('button', { name: 'Merge selected records' })
+    ).resolves.toBeInTheDocument();
 
   await act(async () =>
     rerender(

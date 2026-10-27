@@ -1,18 +1,18 @@
+import { waitFor } from '@testing-library/react';
 import React from 'react';
 import * as Router from 'react-router-dom';
-import { waitFor } from '@testing-library/react';
 
 import { commonText } from '../../../localization/common';
 import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
 import { mount } from '../../../tests/reactUtils';
 import { Http } from '../../../utils/ajax/definitions';
-import { SetMenuContext } from '../MenuContext';
 import {
   overrideAttachmentServerStatus,
   overrideAttachmentSettings,
 } from '../../Attachments/attachments';
 import { HeaderItems } from '..';
+import { SetMenuContext } from '../MenuContext';
 
 requireContext();
 
@@ -36,9 +36,11 @@ overrideAjax('/attachment_gw/health/', '', {
 
 function TestHeaderItems(): JSX.Element {
   return (
-    <Router.MemoryRouter useTransitions={true}>
+    <Router.MemoryRouter useTransitions>
       <SetMenuContext.Provider value={jest.fn()}>
         <HeaderItems
+          activeMenuItem={undefined}
+          isCollapsed={false}
           menuItems={[
             {
               name: 'attachments',
@@ -53,8 +55,6 @@ function TestHeaderItems(): JSX.Element {
               url: '/specify/overlay/express-search/',
             },
           ]}
-          isCollapsed={false}
-          activeMenuItem={undefined}
         />
       </SetMenuContext.Provider>
     </Router.MemoryRouter>
@@ -84,9 +84,9 @@ describe('HeaderItems', () => {
         'span[aria-disabled]'
       );
       expect(attachmentsItem).toHaveAttribute('aria-disabled', 'true');
-      expect(attachmentsItem).toHaveClass('cursor-not-allowed');
-      expect(attachmentsItem).toHaveClass('opacity-50');
-    });
+    })
+    expect(attachmentsItem).toHaveClass('opacity-50');
+    expect(attachmentsItem).toHaveClass('cursor-not-allowed');;
   });
 
   test('does not disable non-attachments items', async () => {
@@ -96,11 +96,11 @@ describe('HeaderItems', () => {
     await waitFor(() => {
       const searchItem = getByTestId('search-icon').closest('a');
       expect(searchItem).toBeEnabled();
-      expect(searchItem).toHaveAttribute(
+    })
+    expect(searchItem).toHaveAttribute(
         'href',
         '/specify/overlay/express-search/'
-      );
-    });
+      );;
   });
 
   test('renders disabled attachments item as non-interactive', async () => {
@@ -123,7 +123,7 @@ describe('HeaderItems', () => {
     await waitFor(() => {
       const attachmentsItem = getByTestId('attachments-icon').closest('a');
       expect(attachmentsItem).toBeEnabled();
-      expect(attachmentsItem).toHaveAttribute('href', '/specify/attachments/');
-    });
+    })
+    expect(attachmentsItem).toHaveAttribute('href', '/specify/attachments/');;
   });
 });

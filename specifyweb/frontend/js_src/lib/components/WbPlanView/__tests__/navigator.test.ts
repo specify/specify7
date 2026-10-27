@@ -1,9 +1,9 @@
 import { requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
 import { localized } from '../../../utils/types';
+import { strictGetTable } from '../../DataModel/tables';
 import { getMappingLineData, searchFields } from '../navigator';
 import { navigatorSpecs } from '../navigatorSpecs';
-import { strictGetTable } from '../../DataModel/tables';
 
 requireContext();
 
@@ -144,7 +144,7 @@ test('searchFields uses any rank for tree field-name matches', () => {
   );
   expect(
     results.some(({ mappingPath }) =>
-      mappingPath.some((part) => /^\$/.test(part) && part !== '$-any')
+      mappingPath.some((part) => part.startsWith("$") && part !== '$-any')
     )
   ).toBe(false);
 });

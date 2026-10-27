@@ -491,8 +491,10 @@ describe('independent resource change propagation', () => {
 
     await independentCollection.fetch();
 
-    // Connect the collection to the parent's event system, as rgetCollection would do internally.
-    // storeIndependent is not in the public TS types so cast to any.
+    /*
+     * Connect the collection to the parent's event system, as rgetCollection would do internally.
+     * storeIndependent is not in the public TS types so cast to any.
+     */
     (parentResource as any).storeIndependent(
       collectionObjectRel.getReverse(),
       independentCollection
@@ -503,8 +505,10 @@ describe('independent resource change propagation', () => {
     });
     independentCollection.add(newCollectionObject);
 
-    // Adding an existing resource to an independent collection does not mark the resource itself needsSaved;
-    // only the parent is notified via saverequired
+    /*
+     * Adding an existing resource to an independent collection does not mark the resource itself needsSaved;
+     * only the parent is notified via saverequired
+     */
     expect(newCollectionObject.needsSaved).toBe(false);
     expect(parentResource.needsSaved).toBe(true);
 

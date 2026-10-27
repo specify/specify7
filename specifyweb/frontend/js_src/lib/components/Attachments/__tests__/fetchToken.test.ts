@@ -10,10 +10,10 @@ describe('fetchToken', () => {
 
   overrideAjax(formatUrl('/attachment_gw/get_token/', { fileName }), testToken);
 
-  test('does not fetch token when not required for get', () => {
+  test('does not fetch token when not required for get', async () => {
     expect(attachmentSettings.token_required_for_get).toBe(false);
 
-    expect(fetchToken(fileName)).resolves.toBeUndefined();
+    await expect(fetchToken(fileName)).resolves.toBeUndefined();
   });
 
   test('does not fetch token when not required for get', () => {
@@ -22,6 +22,6 @@ describe('fetchToken', () => {
       token_required_for_get: true,
     });
 
-    expect(fetchToken(fileName)).resolves.toBe(testToken);
+    await expect(fetchToken(fileName)).resolves.toBe(testToken);
   });
 });
