@@ -1,5 +1,6 @@
-from specifyweb.specify.tests.test_api import ApiTests
-from specifyweb.specify.models import Recordset, Recordsetitem, Collectionobject
+from specifyweb.specify.api.crud import get_resource, update_obj
+from specifyweb.specify.models import Collectionobject, Recordset, Recordsetitem
+from specifyweb.specify.tests.test_api import ApiTests, skip_perms_check
 
 
 
@@ -107,4 +108,47 @@ class RecordSetCreationTests(ApiTests):
         self.assertEqual(
             recordset.recordsetitems.count(),
             matching_cos.count(),
+        )
+
+
+class RecordSetEditingTests(ApiTests):
+    def test_edit_existing_record_set(self):
+        """Edit an existing record set by renaming it and replacing one item."""
+        recordset = Recordset.objects.create(
+            collectionmemberid=self.collection.id,
+            dbtableid=Collectionobject.specify_model.tableId,
+            name="Original record set",
+            type=0,
+            specifyuser=self.specifyuser,
+        )
+        first = self.collectionobjects[0]
+        second = self.collectionobjects[1]
+        third = self.collectionobjects[2]
+        recordset.recordsetitems.create(recordid=first.id)
+        recordset.recordsetitems.create(recordid=second.id)
+
+        data = get_resource("recordset", recordset.id, skip_perms_check)
+        data["name"] = "Edited record set"
+        data["recordsetitems"] = [
+            {"recordid": item.recordid}
+            for item in recordset.recordsetitems.all()
+            if item.recordid != second.id
+        ]
+        data["recordsetitems"].append({"recordid": third.id})
+
+        update_obj(
+            self.collection,
+            self.agent,
+            "recordset",
+            data["id"],
+            data["version"],
+            data,
+        )
+
+        recordset.refresh_from_db()
+        self.assertEqual(recordset.name, "Edited record set")
+        self.assertEqual(recordset.version, data["version"] + 1)
+        self.assertEqual(
+            set(recordset.recordsetitems.values_list("recordid", flat=True)),
+            {first.id, third.id},
         )
