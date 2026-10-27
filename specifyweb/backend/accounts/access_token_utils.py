@@ -26,7 +26,7 @@ def generate_access_token(user, collection_id: int, expires_in: int = DEFAULT_AU
     jti = str(uuid.uuid4())
 
     jwt_payload = {
-        "sub": user.id,
+        "sub": str(user.id),
         "username": user.name,
         "collection": collection_id,
         "jti": jti,

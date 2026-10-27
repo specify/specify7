@@ -34,8 +34,8 @@ class JWTAuthMiddleware:
             response["WWW-Authenticate"] = 'error=\"invalid_token\", error_description=\"The access token is expired, revoked, or invalid\"'
             return response
 
-        user_id = token["sub"]
-        collection_id = token["collection"]
+        user_id = int(token["sub"])
+        collection_id = int(token["collection"])
 
         # This shouldn't happen often in practice as this is also enforced when
         # the tokens are generated, but just in case a token is forged or the
