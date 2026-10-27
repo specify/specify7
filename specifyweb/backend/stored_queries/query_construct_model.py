@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 from collections import namedtuple, deque
 
@@ -6,7 +8,7 @@ from sqlalchemy import orm, sql, or_
 import specifyweb.specify.models as spmodels
 from specifyweb.backend.trees.utils import get_treedefs
 
-from .queryfieldspec import TreeRankQuery, QueryFieldSpec
+from .tree_rank import TreeRankQuery
 from specifyweb.backend.stored_queries import models
 
 logger = logging.getLogger(__name__)
@@ -39,7 +41,7 @@ class QueryConstruct(
         table,
         tree_rank: TreeRankQuery,
         next_join_path,
-        current_field_spec: QueryFieldSpec,
+        current_field_spec,
     ):
         query = self
         query_before_tree_joins = query

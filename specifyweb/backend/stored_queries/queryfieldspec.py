@@ -18,6 +18,7 @@ from specifyweb.backend.stored_queries.models import Component as sq_Component
 
 from . import models
 from .query_ops import QueryOps
+from .tree_rank import TreeRankQuery
 
 logger = logging.getLogger(__name__)
 
@@ -130,41 +131,6 @@ def make_stringid(fs: "QueryFieldSpec", table_list: list[str]) -> tuple[list[str
     return table_list, fs.table.name.lower(), field_name.strip()
 
 
-class TreeRankQuery(Relationship):
-    # FUTURE: used to remember what the previous value was. Useless after 6 retires
-    original_field: str
-    # This is used to query a particular treedef. If this is none, all treedefs are searched, otherwise a specific treedef is searched.
-    treedef_id: int | None
-    # Yeah this can be inferred from treedef_id but doing it this way avoids a database lookup because we already fetch it once.
-    treedef_name: str | None
-
-    def __hash__(self):
-        return hash((TreeRankQuery, self.relatedModelName, self.name))
-
-    def __eq__(self, value):
-        return (
-            isinstance(value, TreeRankQuery)
-            and value.name == self.name
-            and value.relatedModelName == self.relatedModelName
-        )
-
-    @staticmethod
-    def create(name, table_name, treedef_id=None, treedef_name=None):
-        obj = TreeRankQuery(
-            name=name,
-            relatedModelName=table_name,
-            type="many-to-one",
-            column=datamodel.get_table_strict(table_name).idFieldName
-        )
-        obj.treedef_id = treedef_id
-        obj.treedef_name = treedef_name
-        return obj
-
-    def get_workbench_name(self):
-        from specifyweb.backend.workbench.upload.treerecord import RANK_KEY_DELIMITER
-        # Treedef id included to make it easier to pass it to batch edit
-        return f"{self.treedef_name}{RANK_KEY_DELIMITER}{self.name}{RANK_KEY_DELIMITER}{self.treedef_id}"
-
 def null_safe_not(field_expr, predicate):
 
     """Return a NOT clause that still matches NULL values on the target field.
@@ -186,20 +152,6 @@ def null_safe_not(field_expr, predicate):
 
 QueryNode = Field | Relationship | TreeRankQuery
 FieldSpecJoinPath = tuple[QueryNode]
-
-
-def tables_in_path(table, join_path):
-    path = deque(join_path)
-    tables = [table]
-    while len(path) > 0:
-        field = path.popleft()
-        if isinstance(field, str):
-            field = tables[-1].get_field(field, strict=True)
-        if not field.is_relationship:  # also handles tree ranks
-            break
-
-        tables.append(datamodel.get_table(field.relatedModelName, strict=True))
-    return tables
 
 
 class QueryFieldSpec(
