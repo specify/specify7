@@ -200,14 +200,24 @@ class Lock:
 
 
 class LockDispatcher:
-    def __init__(self, lock_prefix: str | None = None, case_sensitive_names=False):
+    def __init__(
+        self,
+        lock_prefix: str | None = None,
+        case_sensitive_names=False,
+        *,
+        lock_namespace: str | None = None,
+        lock_name_separator: str = LOCK_NAME_SEPARATOR,
+    ):
         db_name = getattr(settings, "DATABASE_NAME")
-        self.lock_prefix_parts: list[str] = [db_name]
+        self.lock_prefix_parts: list[str] = [
+            db_name if lock_namespace is None else lock_namespace
+        ]
 
         if lock_prefix is not None:
             self.lock_prefix_parts.append(lock_prefix)
 
         self.case_sensitive_names = case_sensitive_names
+        self.lock_name_separator = lock_name_separator
         self.locks: dict[str, Lock] = dict()
         self.in_context = False
 
@@ -223,8 +233,9 @@ class LockDispatcher:
         self.in_context = False
 
     def lock_name(self, *name_parts: str):
-        final_name = LOCK_NAME_SEPARATOR.join(
-            (*self.lock_prefix_parts, *name_parts))
+        final_name = self.lock_name_separator.join(
+            (*self.lock_prefix_parts, *name_parts)
+        )
 
         return final_name.lower() if not self.case_sensitive_names else final_name
 

@@ -1,3 +1,4 @@
+import hashlib
 import json
 from types import SimpleNamespace
 from unittest.mock import Mock, patch
@@ -29,7 +30,7 @@ class StatisticsCoordinationTests(SimpleTestCase):
             "specifyweb.backend.stats.coordination.redis_connection",
             return_value=self.cache,
         )
-        lock_patch = patch("specifyweb.backend.stats.coordination.Lock")
+        lock_patch = patch("specifyweb.specify.models_utils.lock_tables.Lock")
         self.redis_connection = cache_patch.start()
         self.lock_class = lock_patch.start()
         self.addCleanup(cache_patch.stop)
@@ -46,14 +47,31 @@ class StatisticsCoordinationTests(SimpleTestCase):
         self.lock.acquire.assert_called_once_with()
         self.lock.release.assert_called_once_with()
         self.calculate.assert_called_once_with()
-        self.assertEqual(self.lock_class.call_args.kwargs, {"timeout": 0})
-        self.assertLessEqual(len(self.lock_class.call_args.args[0]), 64)
+        expected_lock_name = (
+            "statistics:"
+            + hashlib.sha256("statistics_test".encode()).hexdigest()[:48]
+        )
+        self.assertEqual(self.lock_class.call_args.args[0], expected_lock_name)
+        self.assertLessEqual(len(expected_lock_name), 64)
+        self.assertEqual(self.lock_class.call_args.args[1], 0)
         self.cache.set.assert_called_once_with(
             self.cache.get.call_args.args[0],
             '{"count": 12}',
             ex=STATISTICS_CACHE_SECONDS,
         )
         self.assertEqual(STATISTICS_CACHE_SECONDS, 300)
+
+    def test_long_database_name_uses_bounded_lock_name(self):
+        database_name = "d" * 64
+        with override_settings(DATABASE_NAME=database_name):
+            self.run_statistic()
+
+        lock_name = self.lock_class.call_args.args[0]
+        self.assertEqual(
+            lock_name,
+            "statistics:" + hashlib.sha256(database_name.encode()).hexdigest()[:48],
+        )
+        self.assertLessEqual(len(lock_name), 64)
 
     def assert_uncached_calculation(self):
         self.assertEqual(self.run_statistic(), '{"count": 12}')
@@ -102,7 +120,7 @@ class StatisticsCoordinationTests(SimpleTestCase):
             with self.assertRaises(StatisticsBusy):
                 self.run_statistic()
         self.calculate.assert_not_called()
-        self.lock.release.assert_not_called()
+        self.lock.release.assert_called_once_with()
 
     def test_cached_result_rechecks_permissions_without_running_query(self):
         self.cache.get.return_value = '{"count": 12}'
@@ -124,7 +142,7 @@ class StatisticsCoordinationTests(SimpleTestCase):
             self.run_statistic()
         self.calculate.assert_not_called()
         self.cache.set.assert_not_called()
-        self.lock.release.assert_not_called()
+        self.lock.release.assert_called_once_with()
         response = busy_response()
         self.assertEqual(response.status_code, 409)
         self.assertEqual(response["X-Specify-Retry-After"], "2")
@@ -134,6 +152,13 @@ class StatisticsCoordinationTests(SimpleTestCase):
         self.lock.acquire.side_effect = ConnectionError
         with self.assertRaises(ConnectionError):
             self.run_statistic()
+        self.lock.release.assert_called_once_with()
+
+    def test_interrupted_lock_acquisition_releases_lock(self):
+        self.lock.acquire.side_effect = KeyboardInterrupt
+        with self.assertRaises(KeyboardInterrupt):
+            self.run_statistic()
+        self.lock.release.assert_called_once_with()
 
     def test_calculation_errors_release_lock_without_caching(self):
         self.calculate.side_effect = ValueError("calculation failed")

@@ -10,7 +10,7 @@ from redis.exceptions import RedisError
 
 from specifyweb.backend.cache.redis.utils import format_key, redis_connection
 from specifyweb.backend.permissions.permissions import check_table_permissions
-from specifyweb.specify.models_utils.lock_tables import Lock
+from specifyweb.specify.models_utils.lock_tables import LockDispatcher
 
 logger = logging.getLogger(__name__)
 
@@ -69,14 +69,16 @@ def statistics_result(
 
     # A database advisory lock has no lease that could expire during a slow query.
     lock_name = hashlib.sha256(settings.DATABASE_NAME.encode()).hexdigest()[:48]
-    lock = Lock(f"statistics:{lock_name}", timeout=0)
-    try:
-        lock.acquire()
-    except TimeoutError as error:
-        logger.debug("Deferring statistics calculation: %s", error)
-        raise StatisticsBusy from error
+    # Keep the bounded lock name while letting the dispatcher own cleanup.
+    with LockDispatcher(
+        lock_namespace="statistics", lock_name_separator=":"
+    ) as locks:
+        try:
+            locks.acquire(lock_name, timeout=0)
+        except TimeoutError as error:
+            logger.debug("Deferring statistics calculation: %s", error)
+            raise StatisticsBusy from error
 
-    try:
         result = cached_result()
         if result is None:
             result = calculate()
@@ -86,8 +88,6 @@ def statistics_result(
                 except RedisError:
                     logger.warning("Statistics cache write failed; returning uncached result.", exc_info=True)
         return result
-    finally:
-        lock.release()
 
 
 def statistics_response(*tables):
