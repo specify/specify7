@@ -30,6 +30,7 @@ from . import models
 from .build_models import get_many_to_many_join_info
 from .group_concat import group_concat
 from .blank_nulls import blank_nulls
+from .query_construct_model import QueryConstruct
 from .queryfieldspec import QueryFieldSpec
 from typing import NamedTuple
 
