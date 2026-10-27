@@ -31,7 +31,7 @@ const expectedPaths = [
 ] as const;
 
 describe('staticAttachmentImportPaths', () => {
-  test('contains every expected path', () => {
+  test('every configured path resolves to a real table field', () => {
     const invalid = Object.entries(staticAttachmentImportPaths).filter(
       ([, { baseTable, path }]) => {
         try {
@@ -46,7 +46,7 @@ describe('staticAttachmentImportPaths', () => {
     expect(invalid).toEqual([]);
   });
 
-  test('contains every path required by the spreadsheet', () => {
+  test('contains every expected path', () => {
     expect(Object.keys(staticAttachmentImportPaths)).toEqual(
       expect.arrayContaining([...expectedPaths])
     );
