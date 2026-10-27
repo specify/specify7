@@ -36,6 +36,7 @@ describe('useFormatted', () => {
      */
 
     await waitFor(() => expect(result.current).toBe('000000005'));
+
   });
 
   test('updates formatted value when value changes', async () => {
