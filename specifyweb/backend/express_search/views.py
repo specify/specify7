@@ -10,7 +10,6 @@ from django import forms
 from django.http import HttpResponse, HttpResponseBadRequest
 from sqlalchemy.sql.expression import or_, and_
 
-from specifyweb.backend.stored_queries.query_construct_model import QueryConstruct
 from specifyweb.middleware.general import require_GET
 from .search_terms import parse_search_str
 from specifyweb.backend.context.app_resource import get_app_resource
@@ -32,6 +31,8 @@ def get_express_search_config(collection, user):
 
 
 def build_primary_query(session, searchtable, terms, collection, user, as_scalar=False):
+    from specifyweb.backend.stored_queries.query_construct_model import QueryConstruct
+
     table = datamodel.get_table(searchtable.find('tableName').text)
     check_table_permissions(collection, user, table, "read")
 
