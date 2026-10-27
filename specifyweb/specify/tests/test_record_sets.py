@@ -222,3 +222,39 @@ class RecordSetNestingTests(ApiTests):
         )
         self.assertEqual(inner.recordsetitems.count(), 1)
 
+
+class RecordSetRenameTests(ApiTests):
+    def test_rename_record_set(self):
+        """Rename an existing record set without changing its records."""
+        recordset = Recordset.objects.create(
+            collectionmemberid=self.collection.id,
+            dbtableid=Collectionobject.specify_model.tableId,
+            name="Original record set name",
+            type=0,
+            specifyuser=self.specifyuser,
+        )
+        first = self.collectionobjects[0]
+        second = self.collectionobjects[1]
+        recordset.recordsetitems.create(recordid=first.id)
+        recordset.recordsetitems.create(recordid=second.id)
+
+        data = get_resource("recordset", recordset.id, skip_perms_check)
+        data["name"] = "Renamed record set"
+
+        update_obj(
+            self.collection,
+            self.agent,
+            "recordset",
+            data["id"],
+            data["version"],
+            data,
+        )
+
+        recordset.refresh_from_db()
+        self.assertEqual(recordset.name, "Renamed record set")
+        self.assertEqual(recordset.version, data["version"] + 1)
+        self.assertEqual(
+            set(recordset.recordsetitems.values_list("recordid", flat=True)),
+            {first.id, second.id},
+        )
+
