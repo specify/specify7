@@ -12,7 +12,7 @@ from .coordination import (
     STATISTICS_CACHE_SECONDS,
     StatisticsBusy,
     busy_response,
-    statistics_response,
+    statistics_content,
     statistics_result,
 )
 
@@ -212,24 +212,28 @@ class StatisticsCoordinationTests(SimpleTestCase):
         request.specify_collection = self.collection
         request.specify_user = self.user
         view = Mock(return_value=JsonResponse({"lots": 12}))
-        wrapped = statistics_response(table)(view)
         self.cache.get.return_value = '{"lots": 12}'
-        response = wrapped(request)
-        self.assertEqual(json.loads(response.content), {"lots": 12})
+        content = statistics_content(
+            request, (table,), lambda: view(request).content.decode()
+        )
+        self.assertEqual(json.loads(content), {"lots": 12})
         check.assert_called_with(self.collection, self.user, table, "read")
         view.assert_not_called()
 
-    @patch("specifyweb.backend.stats.coordination.check_table_permissions")
-    def test_backend_view_returns_busy_response(self, check):
+    @patch(
+        "specifyweb.backend.stats.views.statistics_content",
+        side_effect=StatisticsBusy,
+    )
+    def test_backend_view_returns_busy_response(self, statistics_content_mock):
+        from specifyweb.backend.stats.views import collection_preparations
+
         request = RequestFactory().get("/stats/collection/preparations/")
+        request.user = SimpleNamespace(is_authenticated=True)
         request.specify_collection = self.collection
         request.specify_user = self.user
-        self.lock.acquire.side_effect = TimeoutError
-        view = Mock()
-        response = statistics_response(Mock())(view)(request)
+        response = collection_preparations(request)
         self.assertEqual(response.status_code, 409)
-        check.assert_called_once()
-        view.assert_not_called()
+        statistics_content_mock.assert_called_once()
 
     def ephemeral_request(self, statistics=True):
         request = RequestFactory().post(

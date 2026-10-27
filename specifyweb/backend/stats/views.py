@@ -1,19 +1,15 @@
 from django import http
-
 from specifyweb.backend.permissions.permissions import check_table_permissions
-from specifyweb.specify.views import openapi
 from django.http import HttpResponse, Http404
-
 from specifyweb.specify.models import Preparation, Determination, Discipline, Locality, Collectionobject, Collectionobjectattachment, Attachment
-from specifyweb.specify.views import login_maybe_required
+from specifyweb.specify.views import login_maybe_required, openapi
 import logging
 
 logger = logging.getLogger(__name__)
 from django.db import connection
-from .coordination import statistics_response
+from .coordination import StatisticsBusy, busy_response, statistics_content
 
 @login_maybe_required
-@statistics_response(Preparation)
 @openapi(schema={
     'get': {
         'responses': {
@@ -31,6 +27,18 @@ from .coordination import statistics_response
         }
     }}, )
 def collection_preparations(request) -> HttpResponse:
+    try:
+        content = statistics_content(
+            request,
+            (Preparation,),
+            lambda: _collection_preparations(request).content.decode(),
+        )
+    except StatisticsBusy:
+        return busy_response()
+    return HttpResponse(content, content_type="application/json")
+
+
+def _collection_preparations(request) -> HttpResponse:
     check_table_permissions(request.specify_collection, request.specify_user, Preparation, "read")
     cursor = connection.cursor()
     # PREP_BY_TYPE_LOTS
@@ -55,7 +63,6 @@ def collection_preparations(request) -> HttpResponse:
 
 
 @login_maybe_required
-@statistics_response(Discipline, Locality)
 @openapi(schema={
     'get': {
         'responses': {
@@ -77,6 +84,18 @@ def collection_preparations(request) -> HttpResponse:
         }
     }}, )
 def collection_locality_geography(request, stat) -> HttpResponse:
+    try:
+        content = statistics_content(
+            request,
+            (Discipline, Locality),
+            lambda: _collection_locality_geography(request, stat).content.decode(),
+        )
+    except StatisticsBusy:
+        return busy_response()
+    return HttpResponse(content, content_type="application/json")
+
+
+def _collection_locality_geography(request, stat) -> HttpResponse:
     geography_dict = {}
     if stat == 'percentGeoReferenced':
         geography_dict[stat] = get_percent_georeferenced(request)
@@ -85,7 +104,6 @@ def collection_locality_geography(request, stat) -> HttpResponse:
     return http.JsonResponse(geography_dict)
 
 @login_maybe_required
-@statistics_response(Determination)
 @openapi(schema={
     'get': {
         'responses': {
@@ -103,6 +121,18 @@ def collection_locality_geography(request, stat) -> HttpResponse:
         }
     }}, )
 def collection_type_specimens(request) -> HttpResponse:
+    try:
+        content = statistics_content(
+            request,
+            (Determination,),
+            lambda: _collection_type_specimens(request).content.decode(),
+        )
+    except StatisticsBusy:
+        return busy_response()
+    return HttpResponse(content, content_type="application/json")
+
+
+def _collection_type_specimens(request) -> HttpResponse:
     check_table_permissions(request.specify_collection, request.specify_user,
                             Determination, "read")
     cursor = connection.cursor()
@@ -149,7 +179,6 @@ def get_percent_georeferenced(request):
     return percent_georeferenced
 
 @login_maybe_required
-@statistics_response(Collectionobject, Collectionobjectattachment, Attachment)
 @openapi(schema={
     'get': {
         'responses': {
@@ -167,6 +196,18 @@ def get_percent_georeferenced(request):
         }
     }}, )
 def collection_attachments(request, stat)->HttpResponse:
+    try:
+        content = statistics_content(
+            request,
+            (Collectionobject, Collectionobjectattachment, Attachment),
+            lambda: _collection_attachments(request, stat).content.decode(),
+        )
+    except StatisticsBusy:
+        return busy_response()
+    return HttpResponse(content, content_type="application/json")
+
+
+def _collection_attachments(request, stat)->HttpResponse:
     attachments_dict = {}
     if stat == 'percentCoImaged':
         attachments_dict[stat] = get_percent_imaged(request)

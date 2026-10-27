@@ -2,10 +2,9 @@ import hashlib
 import json
 import logging
 from collections.abc import Callable
-from functools import wraps
 
 from django.conf import settings
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 from redis.exceptions import RedisError
 
 from specifyweb.backend.cache.redis.utils import format_key, redis_connection
@@ -90,29 +89,18 @@ def statistics_result(
         return result
 
 
-def statistics_response(*tables):
-    def decorate(view):
-        @wraps(view)
-        def wrapped(request, *args, **kwargs):
-            def validate() -> None:
-                for table in tables:
-                    check_table_permissions(
-                        request.specify_collection, request.specify_user, table, "read"
-                    )
+def statistics_content(request, tables, calculate: Callable[[], str]) -> str:
+    def validate() -> None:
+        for table in tables:
+            check_table_permissions(
+                request.specify_collection, request.specify_user, table, "read"
+            )
 
-            validate()
-            try:
-                content = statistics_result(
-                    request.specify_collection,
-                    request.specify_user,
-                    json.dumps([request.path, sorted(request.GET.items())]),
-                    lambda: view(request, *args, **kwargs).content.decode(),
-                    validate,
-                )
-            except StatisticsBusy:
-                return busy_response()
-            return HttpResponse(content, content_type="application/json")
-
-        return wrapped
-
-    return decorate
+    validate()
+    return statistics_result(
+        request.specify_collection,
+        request.specify_user,
+        json.dumps([request.path, sorted(request.GET.items())]),
+        calculate,
+        validate,
+    )
