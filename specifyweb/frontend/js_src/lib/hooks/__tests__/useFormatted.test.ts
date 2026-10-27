@@ -24,7 +24,7 @@ describe('useFormatted', () => {
     },
   });
 
-   test('sets the formatted value initially', async () => {
+  test('sets the formatted value initially', async () => {
     const collectionObject = new tables.CollectionObject.Resource({
       catalogNumber: '5',
     });
