@@ -1,4 +1,4 @@
-import { cleanup, screen } from '@testing-library/react';
+import { cleanup, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 
 import { requireContext } from '../../../tests/helpers';
@@ -124,7 +124,9 @@ test('highlights only the active result after hovering then pressing ArrowDown',
       .getAllByRole('option')
       .filter((option) => option.classList.contains('bg-gray-100'))
   ).toEqual([thirdOption]);
-  expect(scrollIntoView.mock.instances).toContain(thirdOption);
+  await waitFor(() =>
+    expect(scrollIntoView.mock.instances).toContain(thirdOption)
+  );
   await user.keyboard('{Enter}');
   expect(onChange).toHaveBeenCalledWith(items[2]);
 });
@@ -353,9 +355,10 @@ describe('AutoComplete keyboard navigation', () => {
 
     await user.type(getByRole('combobox'), 'i');
     await user.keyboard('{ArrowDown}');
+    await waitFor(() => expect(scrolledIndexes()).toContain('1'));
     await user.keyboard('{ArrowDown}');
 
-    expect(scrolledIndexes()).toContain('1');
+    await waitFor(() => expect(scrolledIndexes()).toContain('2'));
   });
 
   test('keeps highlighting synchronized with the active option when results are replaced', async () => {
@@ -372,7 +375,7 @@ describe('AutoComplete keyboard navigation', () => {
     await user.type(getByRole('combobox'), 'i');
     await user.keyboard('{ArrowDown}');
     await user.keyboard('{ArrowDown}');
-    expect(scrolledIndexes()).toContain('1');
+    await waitFor(() => expect(scrolledIndexes()).toContain('2'));
 
     rerender(
       <AutoComplete
@@ -390,8 +393,6 @@ describe('AutoComplete keyboard navigation', () => {
       'aria-activedescendant',
       getByRole('option', { name: 'Renamed 2' }).id
     );
-    // Let Headless UI flush its own pending scrollIntoView before measuring ours
-    await new Promise((resolve) => setTimeout(resolve, 100));
     scrollIntoView.mockClear();
     await user.keyboard('{ArrowDown}');
 
@@ -405,6 +406,6 @@ describe('AutoComplete keyboard navigation', () => {
         .getAllByRole('option')
         .filter((option) => option.classList.contains('bg-gray-100'))
     ).toEqual([activeOption]);
-    expect(scrolledIndexes()).toContain('3');
+    await waitFor(() => expect(scrolledIndexes()).toContain('3'));
   });
 });
