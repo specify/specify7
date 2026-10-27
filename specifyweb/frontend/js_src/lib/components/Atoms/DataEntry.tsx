@@ -25,7 +25,8 @@ const dataEntryButton = (
   const component = (
     props: Omit<TagProps<'button'>, 'children' | 'type'> & {
       readonly onClick:
-        ((event: React.MouseEvent<HTMLButtonElement>) => void) | undefined;
+        | ((event: React.MouseEvent<HTMLButtonElement>) => void)
+        | undefined;
     }
   ): JSX.Element => (
     <Button.Icon

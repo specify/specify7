@@ -17,7 +17,8 @@ export function usePaginatedCollection<COLLECTION_TYPE>({
   readonly totalCount?: number;
   readonly fetchSize?: number;
   readonly fetchMore:
-    ((offset: number) => Promise<RA<COLLECTION_TYPE>>) | undefined;
+    | ((offset: number) => Promise<RA<COLLECTION_TYPE>>)
+    | undefined;
 }) {
   /*
    * Warning:

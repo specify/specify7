@@ -24,7 +24,7 @@ describe('useFormatted', () => {
     },
   });
 
-  test('sets the formatted value initially', async () => {
+  test('sets the formatted value initially', () => {
     const collectionObject = new tables.CollectionObject.Resource({
       catalogNumber: '5',
     });
@@ -35,20 +35,20 @@ describe('useFormatted', () => {
      * See https://github.com/testing-library/react-testing-library/issues/480#issuecomment-530008573
      */
 
-    await waitFor(() => expect(result.current).toBe('000000005'));
+    waitFor(() => expect(result).toBe('000000005'));
   });
 
-  test('updates formatted value when value changes', async () => {
+  test('updates formatted value when value changes', () => {
     const collectionObject = new tables.CollectionObject.Resource({
       catalogNumber: '5',
     });
     const { result } = renderHook(() => useFormatted(collectionObject));
 
     // This wait is still needed.
-    await waitFor(() => expect(result.current).toBe('000000005'));
+    waitFor(() => expect(result).toBe('000000005'));
 
     act(() => void collectionObject.set('catalogNumber', '7'));
 
-    await waitFor(() => expect(result.current).toBe('000000007'));
+    waitFor(() => expect(result).toBe('000000007'));
   });
 });

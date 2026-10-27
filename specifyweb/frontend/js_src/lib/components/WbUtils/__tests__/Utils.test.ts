@@ -1,5 +1,4 @@
 import type React from 'react';
-
 import type { RA } from '../../../utils/types';
 import type { Workbench } from '../../WorkBench/WbView';
 import { WbUtils } from '../Utils';
@@ -57,17 +56,17 @@ function buildWorkbench(
 const enterKey = { key: 'Enter' } as React.KeyboardEvent<HTMLInputElement>;
 const replacement = { value: 'new' } as HTMLInputElement;
 
-const buildUtilities = (
+const buildUtils = (
   workbench: Workbench,
   replaceMode: 'replaceAll' | 'replaceNext'
 ): WbUtils => {
-  const utilities = new WbUtils(workbench, { current: null });
-  utilities.searchQuery = 'old';
-  utilities.searchPreferences = {
-    ...utilities.searchPreferences,
+  const utils = new WbUtils(workbench, { current: null });
+  utils.searchQuery = 'old';
+  utils.searchPreferences = {
+    ...utils.searchPreferences,
     replace: { replaceMode },
   };
-  return utilities;
+  return utils;
 };
 
 describe('replaceCells, replace all', () => {
@@ -75,7 +74,7 @@ describe('replaceCells, replace all', () => {
     const { workbench, setDataAtCell } = buildWorkbench([
       [cell('old'), cell('old')],
     ]);
-    buildUtilities(workbench, 'replaceAll').replaceCells(enterKey, replacement);
+    buildUtils(workbench, 'replaceAll').replaceCells(enterKey, replacement);
     expect(setDataAtCell).toHaveBeenCalledWith([
       [0, 0, 'new'],
       [0, 1, 'new'],
@@ -86,7 +85,7 @@ describe('replaceCells, replace all', () => {
     const { workbench, setDataAtCell } = buildWorkbench([
       [cell('old'), cell('old', { readOnly: true })],
     ]);
-    buildUtilities(workbench, 'replaceAll').replaceCells(enterKey, replacement);
+    buildUtils(workbench, 'replaceAll').replaceCells(enterKey, replacement);
     expect(setDataAtCell).toHaveBeenCalledWith([[0, 0, 'new']]);
   });
 
@@ -94,7 +93,7 @@ describe('replaceCells, replace all', () => {
     const { workbench, setDataAtCell } = buildWorkbench([
       [cell('old', { readOnly: true }), cell('old', { readOnly: true })],
     ]);
-    buildUtilities(workbench, 'replaceAll').replaceCells(enterKey, replacement);
+    buildUtils(workbench, 'replaceAll').replaceCells(enterKey, replacement);
     expect(setDataAtCell).toHaveBeenCalledWith([]);
   });
 
@@ -102,7 +101,7 @@ describe('replaceCells, replace all', () => {
     const { workbench, setDataAtCell } = buildWorkbench([
       [cell('old'), cell('other', { isSearchResult: false })],
     ]);
-    buildUtilities(workbench, 'replaceAll').replaceCells(enterKey, replacement);
+    buildUtils(workbench, 'replaceAll').replaceCells(enterKey, replacement);
     expect(setDataAtCell).toHaveBeenCalledWith([[0, 0, 'new']]);
   });
 
@@ -110,13 +109,13 @@ describe('replaceCells, replace all', () => {
     const { workbench, setDataAtCell } = buildWorkbench([
       [cell('old'), cell('')],
     ]);
-    buildUtilities(workbench, 'replaceAll').replaceCells(enterKey, replacement);
+    buildUtils(workbench, 'replaceAll').replaceCells(enterKey, replacement);
     expect(setDataAtCell).toHaveBeenCalledWith([[0, 0, 'new']]);
   });
 
   test('ignores keys other than Enter', () => {
     const { workbench, setDataAtCell } = buildWorkbench([[cell('old')]]);
-    buildUtilities(workbench, 'replaceAll').replaceCells(
+    buildUtils(workbench, 'replaceAll').replaceCells(
       { key: 'a' } as React.KeyboardEvent<HTMLInputElement>,
       replacement
     );
@@ -127,10 +126,7 @@ describe('replaceCells, replace all', () => {
 describe('replaceCells, replace next', () => {
   test('replaces the selected cell when it is editable', () => {
     const { workbench, setDataAtCell } = buildWorkbench([[cell('old')]]);
-    buildUtilities(workbench, 'replaceNext').replaceCells(
-      enterKey,
-      replacement
-    );
+    buildUtils(workbench, 'replaceNext').replaceCells(enterKey, replacement);
     expect(setDataAtCell).toHaveBeenCalledWith(0, 0, 'new');
   });
 
@@ -138,10 +134,7 @@ describe('replaceCells, replace next', () => {
     const { workbench, setDataAtCell } = buildWorkbench([
       [cell('old', { readOnly: true })],
     ]);
-    buildUtilities(workbench, 'replaceNext').replaceCells(
-      enterKey,
-      replacement
-    );
+    buildUtils(workbench, 'replaceNext').replaceCells(enterKey, replacement);
     expect(setDataAtCell).not.toHaveBeenCalled();
   });
 });

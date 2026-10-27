@@ -1,7 +1,6 @@
 import { within } from '@testing-library/react';
 import React from 'react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
-
 import { batchEditText } from '../../../localization/batchEdit';
 import { commonText } from '../../../localization/common';
 import { interactionsText } from '../../../localization/interactions';
@@ -12,10 +11,10 @@ import { mount } from '../../../tests/reactUtils';
 import * as ajaxModule from '../../../utils/ajax';
 import type { RA } from '../../../utils/types';
 import { LoadingContext } from '../../Core/Contexts';
+import { UnloadProtectsContext } from '../../Router/UnloadProtect';
 import { tables } from '../../DataModel/tables';
 import { userPreferences } from '../../Preferences/userPreferences';
 import type { QueryField } from '../../QueryBuilder/helpers';
-import { UnloadProtectsContext } from '../../Router/UnloadProtect';
 import type { MappingPath } from '../../WbPlanView/Mapper';
 import { formatTreeRank } from '../../WbPlanView/mappingHelpers';
 import { BatchEditFromQuery } from '../index';
@@ -135,7 +134,7 @@ describe('the Batch Edit button', () => {
       await user.click(
         getByRole('button', { name: batchEditText.batchEdit() })
       );
-      await expect(findByText('Data set opened')).resolves.toBeInTheDocument();
+      expect(await findByText('Data set opened')).toBeInTheDocument();
     });
   });
 });
@@ -147,7 +146,7 @@ describe('the unsaved query guard', () => {
     expect(getByRole('dialog')).toHaveTextContent(
       queryText.unsavedChangesInQuery()
     );
-    expect(queryByText('Data set opened')).not.toBeInTheDocument();
+    expect(queryByText('Data set opened')).toBeNull();
   });
 
   test('warns when the query resource itself is unsaved', async () => {
@@ -165,7 +164,7 @@ describe('the unsaved query guard', () => {
         getByRole('button', { name: batchEditText.batchEdit() })
       );
       await user.click(getByRole('button', { name: commonText.close() }));
-      expect(queryByRole('dialog')).not.toBeInTheDocument();
+      expect(queryByRole('dialog')).toBeNull();
     });
   });
 });
@@ -209,7 +208,7 @@ describe('the enable relationships preference', () => {
         await user.click(
           getByRole('button', { name: batchEditText.batchEdit() })
         );
-        await expect(findByText('Data set opened')).resolves.toBeInTheDocument();
+        expect(await findByText('Data set opened')).toBeInTheDocument();
       });
       expect(ajax).toHaveBeenCalledWith(
         '/stored_query/batch_edit/',
@@ -248,7 +247,7 @@ describe('the missing rank dialog', () => {
           .getAllByRole('listitem')
           .map((item) => item.textContent)
       ).toEqual(['Subgenus', 'Species', 'Subspecies'].map(missingRank));
-      expect(queryByText('Data set opened')).not.toBeInTheDocument();
+      expect(queryByText('Data set opened')).toBeNull();
     });
   });
 
@@ -259,8 +258,8 @@ describe('the missing rank dialog', () => {
       await user.click(
         getByRole('button', { name: batchEditText.batchEdit() })
       );
-      await expect(findByText('Data set opened')).resolves.toBeInTheDocument();
-      expect(queryByRole('dialog')).not.toBeInTheDocument();
+      expect(await findByText('Data set opened')).toBeInTheDocument();
+      expect(queryByRole('dialog')).toBeNull();
     });
   });
 
@@ -277,7 +276,7 @@ describe('the missing rank dialog', () => {
           name: interactionsText.continue(),
         })
       );
-      await expect(findByText('Data set opened')).resolves.toBeInTheDocument();
+      expect(await findByText('Data set opened')).toBeInTheDocument();
     });
   });
 
@@ -292,8 +291,8 @@ describe('the missing rank dialog', () => {
       await user.click(
         within(dialog).getByRole('button', { name: commonText.close() })
       );
-      expect(queryByRole('dialog')).not.toBeInTheDocument();
-      expect(queryByText('Data set opened')).not.toBeInTheDocument();
+      expect(queryByRole('dialog')).toBeNull();
+      expect(queryByText('Data set opened')).toBeNull();
     });
   });
 });
