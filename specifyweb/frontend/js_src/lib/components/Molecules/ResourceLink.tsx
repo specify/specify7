@@ -32,6 +32,7 @@ export function ResourceLink<COMPONENT extends (typeof Link)['Icon']>({
   resourceView,
   children,
   autoClose = true,
+  toggleRef,
 }: {
   readonly resource: SpecifyResource<AnySchema> | undefined;
   readonly component: COMPONENT;
@@ -47,8 +48,11 @@ export function ResourceLink<COMPONENT extends (typeof Link)['Icon']>({
     'dialog' | 'onAdd' | 'onClose' | 'onSaved'
   >;
   readonly autoClose?: boolean;
+  readonly toggleRef?: React.MutableRefObject<(() => void) | undefined>;
 }): JSX.Element {
   const [isOpen, _, handleClose, handleToggle] = useBooleanState();
+  if (toggleRef) toggleRef.current = handleToggle;
+
   React.useEffect(() => {
     if (autoClose) handleClose();
   }, [resource]);
@@ -66,7 +70,7 @@ export function ResourceLink<COMPONENT extends (typeof Link)['Icon']>({
     'aria-pressed': isOpen,
     href: resource?.isNew()
       ? getResourceViewUrl(resource.specifyTable.name, undefined)
-      : resource?.viewUrl()!,
+      : resource?.viewUrl() ?? '',
     title: props.title ?? commonText.view(),
     onClick: (event): void => {
       event.preventDefault();
@@ -76,6 +80,7 @@ export function ResourceLink<COMPONENT extends (typeof Link)['Icon']>({
     },
     children,
   };
+
   const AnyComponent = Component as (props: typeof allProps) => JSX.Element;
 
   return (
