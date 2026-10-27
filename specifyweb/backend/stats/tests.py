@@ -256,6 +256,8 @@ class StatisticsCoordinationTests(SimpleTestCase):
     @staticmethod
     def ephemeral_query():
         return {
+            "contexttableid": 1,
+            "selectdistinct": False,
             "countonly": True,
             "fields": [{
                 "position": 0,
@@ -284,10 +286,60 @@ class StatisticsCoordinationTests(SimpleTestCase):
             "content": response.content.decode(),
             "tables": [datamodel.get_table_strict("Collectionobject").name],
         })
+        from specifyweb.backend.stored_queries.views import ephemeral_statistics_cache_key
+
         expected_digest = hashlib.sha256(
-            json.dumps(["ephemeral-statistics-v1", query], sort_keys=True).encode()
+            ephemeral_statistics_cache_key(query).encode()
         ).hexdigest()
         self.assertTrue(self.cache.set.call_args.args[0].endswith(f":{expected_digest}"))
+
+    def test_ephemeral_statistics_cache_key_ignores_query_metadata(self):
+        from specifyweb.backend.stored_queries.views import ephemeral_statistics_cache_key
+
+        query = self.ephemeral_query()
+        query.update({
+            "id": 57,
+            "name": "New Query",
+            "ordinal": 1,
+            "remarks": None,
+            "timestampmodified": "2025-04-01T16:22:51",
+            "version": 1,
+            "modifiedbyagent": "/api/specify/agent/3/",
+        })
+        query["fields"][0].update({
+            "id": 1344,
+            "remarks": "Original",
+            "timestampmodified": "2025-04-01T16:22:51",
+            "version": 0,
+            "modifiedbyagent": None,
+        })
+        key = ephemeral_statistics_cache_key(query)
+
+        query["name"] = "Renamed Query"
+        query["ordinal"] = 2
+        query["remarks"] = "Updated"
+        query["timestampmodified"] = "2025-04-02T16:22:51"
+        query["version"] = 2
+        query["modifiedbyagent"] = "/api/specify/agent/4/"
+        query["fields"][0].update({
+            "position": 3,
+            "remarks": "Updated",
+            "timestampmodified": "2025-04-02T16:22:51",
+            "version": 1,
+            "modifiedbyagent": "/api/specify/agent/4/",
+        })
+
+        self.assertEqual(ephemeral_statistics_cache_key(query), key)
+
+    def test_ephemeral_statistics_cache_key_changes_with_query_inputs(self):
+        from specifyweb.backend.stored_queries.views import ephemeral_statistics_cache_key
+
+        query = self.ephemeral_query()
+        key = ephemeral_statistics_cache_key(query)
+
+        query["fields"][0]["startvalue"] = "new filter value"
+
+        self.assertNotEqual(ephemeral_statistics_cache_key(query), key)
 
     @patch("specifyweb.backend.stored_queries.views.check_table_permissions")
     @patch("specifyweb.backend.stored_queries.views.run_ephemeral_query")

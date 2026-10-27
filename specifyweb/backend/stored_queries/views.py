@@ -76,6 +76,38 @@ def format_export_file_name(spquery, file_extension = ''):
     return non_extension if not file_extension else non_extension + ".%s" % file_extension
   
 
+def ephemeral_statistics_cache_key(spquery):
+    """Return a cache key based only on inputs that affect ephemeral query results."""
+    fields = sorted(spquery["fields"], key=lambda field: field["position"])
+    execution_fields = (
+        "stringid",
+        "isrelfld",
+        "operstart",
+        "startvalue",
+        "isnot",
+        "isdisplay",
+        "sorttype",
+        "formatname",
+        "isstrict",
+    )
+    query = {
+        "contexttableid": spquery["contexttableid"],
+        "selectdistinct": spquery["selectdistinct"],
+        "countonly": spquery["countonly"],
+        "limit": spquery.get("limit", 20),
+        "offset": spquery.get("offset", 0),
+        "recordsetid": spquery.get("recordsetid"),
+        "smushed": spquery.get("smushed"),
+        "searchsynonymy": bool(spquery.get("searchsynonymy", False)),
+        "formatauditrecids": spquery.get("formatauditrecids", False),
+        "fields": [
+            {name: field.get(name) for name in execution_fields}
+            for field in fields
+        ],
+    }
+    return json.dumps(["ephemeral-statistics-v2", query], sort_keys=True)
+
+
 @require_GET
 @login_maybe_required
 @never_cache
@@ -140,7 +172,7 @@ def ephemeral(request):
             content = statistics_result(
                 collection,
                 request.specify_user,
-                json.dumps(["ephemeral-statistics-v1", spquery], sort_keys=True),
+                ephemeral_statistics_cache_key(spquery),
                 calculate_statistics,
             )
         except StatisticsBusy:
