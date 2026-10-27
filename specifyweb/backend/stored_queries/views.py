@@ -18,6 +18,7 @@ from specifyweb.backend.stats.coordination import (
 from specifyweb.backend.stored_queries.batch_edit import run_batch_edit
 from specifyweb.specify.models_utils.models_by_table_id import model_names_by_table_id
 from specifyweb.specify.api.serializers import toJson, uri_for_model
+from specifyweb.specify.datamodel import datamodel
 from . import models
 from .execution import execute, run_ephemeral_query, do_export, recordset
 from .queryfield import QueryField, fields_from_json
@@ -27,7 +28,7 @@ from specifyweb.specify.models import Collection, Recordset, Recordsetitem, \
     Loanreturnpreparation, Loanpreparation, Loan
 from specifyweb.specify.views import login_maybe_required
 from .execution import execute, run_ephemeral_query, do_export, recordset, \
-    return_loan_preps as rlp, check_query_permissions
+    return_loan_preps as rlp, get_query_tables
 
 
 logger = logging.getLogger(__name__)
@@ -118,23 +119,38 @@ def query(request, id):
 @login_maybe_required
 @never_cache
 def ephemeral(request):
-    """Executes and returns the results of the query provided as JSON in the POST body."""
+    """Execute the query provided as JSON in the POST body.
+
+    Statistics cache hits authorize the recorded table dependencies without
+    reparsing or rebuilding the query.
+    """
 
     spquery, collection = get_query(request)
     if request.headers.get("X-Specify-Statistics") == "true":
-        query_fields = fields_from_json(spquery["fields"])
-        check_query_permissions(collection, request.specify_user, query_fields)
+        def calculate_statistics() -> str:
+            data = run_ephemeral_query(collection, request.specify_user, spquery)
+            tables = get_query_tables(fields_from_json(spquery["fields"]))
+            return json.dumps({
+                "content": toJson(data),
+                "tables": sorted(table.name for table in tables),
+            })
 
         try:
+            # Keep metadata-bearing entries separate from older body-only cache entries.
             content = statistics_result(
                 collection,
                 request.specify_user,
-                json.dumps(spquery, sort_keys=True),
-                lambda: toJson(run_ephemeral_query(collection, request.specify_user, spquery)),
+                json.dumps(["ephemeral-statistics-v1", spquery], sort_keys=True),
+                calculate_statistics,
             )
         except StatisticsBusy:
             return busy_response()
-        return HttpResponse(content, content_type='application/json')
+        result = json.loads(content)
+        for table_name in result["tables"]:
+            check_table_permissions(
+                collection, request.specify_user, datamodel.get_table_strict(table_name), "read"
+            )
+        return HttpResponse(result["content"], content_type='application/json')
 
     data = run_ephemeral_query(collection, request.specify_user, spquery)
 

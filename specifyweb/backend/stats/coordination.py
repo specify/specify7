@@ -38,9 +38,9 @@ def statistics_result(
 ) -> str:
     """Reuse cached statistics without handling query validity.
 
-    Callers must check current permissions before invoking this function because
-    a cache hit skips calculate. On a miss, calculate is responsible for normal
-    query construction and execution; exceptions propagate and failed
+    Callers must enforce current permissions before returning the result to the
+    user because a cache hit skips calculate. On a miss, calculate is responsible
+    for normal query construction and execution; exceptions propagate and failed
     calculations are not cached.
     """
     digest = hashlib.sha256(query_key.encode()).hexdigest()

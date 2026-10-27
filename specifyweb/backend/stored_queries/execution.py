@@ -677,18 +677,22 @@ def createPlacemark(kmlDoc, row, coord_cols, table, captions, host):
     return placemarkElement
 
 
+def get_query_tables(query_fields: Iterable[QueryField]) -> set[Table]:
+    """Return the tables referenced by query field paths."""
+    return {
+        table
+        for field in query_fields
+        for table in tables_in_path(field.fieldspec.root_table, field.fieldspec.join_path)
+    }
+
+
 def check_query_permissions(collection, user, query_fields: Iterable[QueryField]) -> None:
     """Check read permissions for query field paths without building the data query.
 
     Permission failures propagate from check_table_permissions. This checks current
     authorization, not query validity.
     """
-    tables_to_read = {
-        table
-        for field in query_fields
-        for table in tables_in_path(field.fieldspec.root_table, field.fieldspec.join_path)
-    }
-    for table_to_read in tables_to_read:
+    for table_to_read in get_query_tables(query_fields):
         check_table_permissions(collection, user, table_to_read, "read")
 
 

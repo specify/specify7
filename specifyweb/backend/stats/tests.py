@@ -264,7 +264,7 @@ class StatisticsCoordinationTests(SimpleTestCase):
             }],
         }
 
-    @patch("specifyweb.backend.stored_queries.execution.check_table_permissions")
+    @patch("specifyweb.backend.stored_queries.views.check_table_permissions")
     @patch("specifyweb.backend.stored_queries.views.run_ephemeral_query")
     @patch("specifyweb.backend.stored_queries.views.get_query")
     def test_ephemeral_statistics_are_gated_and_cached(self, get_query, execute, check):
@@ -279,29 +279,49 @@ class StatisticsCoordinationTests(SimpleTestCase):
         check.assert_called_once()
         self.lock.acquire.assert_called_once_with()
         self.cache.set.assert_called_once()
+        cached_result = json.loads(self.cache.set.call_args.args[1])
+        self.assertEqual(cached_result, {
+            "content": response.content.decode(),
+            "tables": [datamodel.get_table_strict("Collectionobject").name],
+        })
+        expected_digest = hashlib.sha256(
+            json.dumps(["ephemeral-statistics-v1", query], sort_keys=True).encode()
+        ).hexdigest()
+        self.assertTrue(self.cache.set.call_args.args[0].endswith(f":{expected_digest}"))
 
-    @patch("specifyweb.backend.stored_queries.execution.check_table_permissions")
+    @patch("specifyweb.backend.stored_queries.views.check_table_permissions")
     @patch("specifyweb.backend.stored_queries.views.run_ephemeral_query")
     @patch("specifyweb.backend.stored_queries.views.get_query")
-    def test_ephemeral_cache_hit_checks_permissions_without_executing(
+    def test_ephemeral_cache_hit_checks_cached_dependencies_without_parsing_query(
         self, get_query, execute, check
     ):
         from specifyweb.backend.stored_queries.views import ephemeral
 
         query = self.ephemeral_query()
+        query["fields"][0]["stringid"] = "1,10,2.locality.localityName"
         get_query.return_value = query, self.collection
-        self.cache.get.return_value = '{"count": 12}'
-        response = ephemeral(self.ephemeral_request())
+        table_names = ("Collectionobject", "Collectingevent", "Locality")
+        self.cache.get.return_value = json.dumps({
+            "content": '{"count": 12}',
+            "tables": [datamodel.get_table_strict(name).name for name in table_names],
+        })
+        with patch("specifyweb.backend.stored_queries.views.fields_from_json") as parse:
+            response = ephemeral(self.ephemeral_request())
+        parse.assert_not_called()
         self.assertEqual(json.loads(response.content), {"count": 12})
-        check.assert_called_once_with(
-            self.collection, self.user, datamodel.get_table_strict("Collectionobject"), "read"
+        self.assertCountEqual(
+            check.call_args_list,
+            [
+                call(self.collection, self.user, datamodel.get_table_strict(name), "read")
+                for name in table_names
+            ],
         )
         execute.assert_not_called()
         self.lock.acquire.assert_not_called()
         self.cache.set.assert_not_called()
 
     @patch(
-        "specifyweb.backend.stored_queries.execution.check_table_permissions",
+        "specifyweb.backend.stored_queries.views.check_table_permissions",
         side_effect=PermissionDenied,
     )
     @patch("specifyweb.backend.stored_queries.views.run_ephemeral_query")
@@ -313,30 +333,39 @@ class StatisticsCoordinationTests(SimpleTestCase):
 
         query = self.ephemeral_query()
         get_query.return_value = query, self.collection
-        self.cache.get.return_value = '{"count": 12}'
-        with self.assertRaises(PermissionDenied):
-            ephemeral(self.ephemeral_request())
+        self.cache.get.return_value = json.dumps({
+            "content": '{"count": 12}',
+            "tables": [datamodel.get_table_strict("Collectionobject").name],
+        })
+        with patch("specifyweb.backend.stored_queries.views.fields_from_json") as parse:
+            with self.assertRaises(PermissionDenied):
+                ephemeral(self.ephemeral_request())
+        parse.assert_not_called()
         check.assert_called_once()
         execute.assert_not_called()
-        self.cache.get.assert_not_called()
+        self.cache.get.assert_called_once()
         self.lock.acquire.assert_not_called()
         self.cache.set.assert_not_called()
         self.cache.delete.assert_not_called()
 
-    @patch("specifyweb.backend.stored_queries.views.statistics_result")
+    @patch(
+        "specifyweb.backend.stored_queries.views.run_ephemeral_query",
+        side_effect=ValueError("Invalid query"),
+    )
     @patch("specifyweb.backend.stored_queries.views.get_query")
-    def test_malformed_ephemeral_query_is_rejected_before_cache_lookup(
-        self, get_query, statistics_result_mock
-    ):
+    def test_ephemeral_query_errors_propagate_without_caching(self, get_query, execute):
         from specifyweb.backend.stored_queries.views import ephemeral
 
-        get_query.return_value = {"countonly": True}, self.collection
-        with self.assertRaises(KeyError):
+        query = self.ephemeral_query()
+        get_query.return_value = query, self.collection
+        with self.assertRaisesRegex(ValueError, "Invalid query"):
             ephemeral(self.ephemeral_request())
-        statistics_result_mock.assert_not_called()
-        self.cache.get.assert_not_called()
+        execute.assert_called_once_with(self.collection, self.user, query)
+        self.cache.get.assert_called()
+        self.cache.set.assert_not_called()
+        self.lock.release.assert_called_once_with()
 
-    @patch("specifyweb.backend.stored_queries.execution.check_table_permissions")
+    @patch("specifyweb.backend.stored_queries.views.check_table_permissions")
     @patch("specifyweb.backend.stored_queries.views.run_ephemeral_query")
     @patch("specifyweb.backend.stored_queries.views.get_query")
     def test_ephemeral_busy_response_does_not_execute_query(
@@ -350,6 +379,7 @@ class StatisticsCoordinationTests(SimpleTestCase):
         self.assertEqual(response.status_code, 409)
         self.assertEqual(response["X-Specify-Retry-After"], "2")
         execute.assert_not_called()
+        check.assert_not_called()
 
     @patch("specifyweb.backend.stored_queries.views.run_ephemeral_query")
     @patch("specifyweb.backend.stored_queries.views.get_query")
