@@ -259,7 +259,11 @@ export function QueryExportButtons({
       {containsResults &&
         hasPermission('/querybuilder/query', 'export_to_web_portal') && (
           <QueryButton
-            disabled={fields.length === 0}
+            disabled={
+              fields.length === 0 ||
+              (selectedQuery !== undefined &&
+                isSelectionEmpty(selectedQuery.selection))
+            }
             showConfirmation={showConfirmation}
             onClick={(): void => {
               if (hasDuplicateRecordIds()) {
