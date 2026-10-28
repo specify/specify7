@@ -224,8 +224,9 @@ def export_to_web_portal(request):
 
     try:
         parse_selection(spquery.get("selection"))
-    except BadRequest as e:
-        return HttpResponseBadRequest(str(e))
+    except BadRequest:
+        logger.warning("Invalid selection data provided for web portal export.", exc_info=True)
+        return HttpResponseBadRequest('Invalid selection data.')
     spquery_log_preview = str(spquery)[:200] if isinstance(spquery, dict) else spquery
     spquery_log_preview = str(spquery_log_preview).replace('\r', '').replace('\n', '')
     logger.info('export web portal query: %s', spquery_log_preview)
