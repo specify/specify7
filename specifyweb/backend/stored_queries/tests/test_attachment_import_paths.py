@@ -265,3 +265,11 @@ class TestAttachmentImportPaths(SQLAlchemySetup):
             "CE-FIELD",
             collectingevent.id,
         )
+
+    @patch("specifyweb.backend.stored_queries.execution.models.session_context")
+    def test_match_loan_by_loan_number(self, session_context):
+        session_context.side_effect = self._fresh_session_context
+        loan = models.Loan.objects.create(
+            discipline=self.discipline, loannumber="LOAN-1"
+        )
+        self._assert_path("Loan", "loanNumber", "LOAN-1", loan.id)
