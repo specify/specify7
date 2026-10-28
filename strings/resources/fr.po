@@ -603,7 +603,8 @@ msgstr ""
 "(type d'objet)"
 
 #: components/DataModel/businessRuleDefs.ts:432
-#. Used in: Components > Data Model > Business Rule Defs
+#: components/DataModel/__tests__/component.test.ts:41
+#. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Component
 msgid "invalidNameTaxon"
 msgstr ""
 "{taxonName: string} n'appartient pas à l'arbre {taxonTableLabel: string} "

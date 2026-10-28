@@ -697,7 +697,8 @@ msgid "invalidDeterminationTaxon"
 msgstr "Determinacija ne pripada stablu taksona povezanom s tipom objekta kolekcije"
 
 #: components/DataModel/businessRuleDefs.ts:432
-#. Used in: Components > Data Model > Business Rule Defs
+#: components/DataModel/__tests__/component.test.ts:41
+#. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Component
 #, fuzzy
 msgid "invalidNameTaxon"
 msgstr ""

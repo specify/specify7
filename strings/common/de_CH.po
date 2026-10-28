@@ -416,6 +416,7 @@ msgstr "Nicht zugeordnete Spalten löschen"
 #: components/Preferences/__tests__/sectionScroll.test.tsx:20
 #: components/QueryBuilder/FromMap.tsx:74
 #: components/QueryBuilder/Save.tsx:67
+#: components/QueryComboBox/__tests__/componentTaxon.test.tsx:181
 #: components/Reports/Report.tsx:318
 #: components/SchemaConfig/Components.tsx:74
 #: components/SchemaConfig/TableUniquenessRules.tsx:141
@@ -430,7 +431,7 @@ msgstr "Nicht zugeordnete Spalten löschen"
 #: components/WbPlanView/Mapper.tsx:482
 #: components/WbToolkit/DevShowPlan.tsx:201
 #: components/WorkBench/DataSetMeta.tsx:191
-#. Used in: Components > Attachments Bulk Import > Datasets ⬤ Components > Attachments Bulk Import > Import ⬤ Components > Data Views > Data View Tables ⬤ Components > Data Views > Index ⬤ Components > Express Search Config > Express Search Config Dialog ⬤ Components > Forms > Save ⬤ Keyboard Shortcuts > __tests__ > Conflicts ⬤ Components > Preferences > User Definitions ⬤ Components > Preferences > Index ⬤ Preferences > __tests__ > Section Scroll ⬤ Components > Query Builder > From Map ⬤ Components > Query Builder > Save ⬤ Components > Reports > Report ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Table Uniqueness Rules ⬤ Components > Security > Missing Agents Dialog ⬤ Components > Security > Role ⬤ Components > Security > User Collections ⬤ Components > Statistics > Results Dialog ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Statistics > Index ⬤ Components > System Configuration Tool > Hierarchy ⬤ Components > Wb Actions > Wb Save ⬤ Components > Wb Plan View > Mapper ⬤ Components > Wb Toolkit > Dev Show Plan ⬤ Components > Work Bench > Data Set Meta
+#. Used in: Components > Attachments Bulk Import > Datasets ⬤ Components > Attachments Bulk Import > Import ⬤ Components > Data Views > Data View Tables ⬤ Components > Data Views > Index ⬤ Components > Express Search Config > Express Search Config Dialog ⬤ Components > Forms > Save ⬤ Keyboard Shortcuts > __tests__ > Conflicts ⬤ Components > Preferences > User Definitions ⬤ Components > Preferences > Index ⬤ Preferences > __tests__ > Section Scroll ⬤ Components > Query Builder > From Map ⬤ Components > Query Builder > Save ⬤ Query Combo Box > __tests__ > Component Taxon ⬤ Components > Reports > Report ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Table Uniqueness Rules ⬤ Components > Security > Missing Agents Dialog ⬤ Components > Security > Role ⬤ Components > Security > User Collections ⬤ Components > Statistics > Results Dialog ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Statistics > Index ⬤ Components > System Configuration Tool > Hierarchy ⬤ Components > Wb Actions > Wb Save ⬤ Components > Wb Plan View > Mapper ⬤ Components > Wb Toolkit > Dev Show Plan ⬤ Components > Work Bench > Data Set Meta
 msgid "save"
 msgstr "Speichern"
 
@@ -538,7 +539,7 @@ msgstr "Tools"
 #: components/FormCommands/ShowTransactions.tsx:76
 #: components/FormCommands/ShowTransactions.tsx:124
 #: components/FormFields/ComboBox.tsx:131
-#: components/FormFields/Field.tsx:84
+#: components/FormFields/Field.tsx:85
 #: components/FormPlugins/CollectionRelOneToMany.tsx:158
 #: components/FormPlugins/CollectionRelOneToOne.tsx:43
 #: components/Formatters/Preview.tsx:108
