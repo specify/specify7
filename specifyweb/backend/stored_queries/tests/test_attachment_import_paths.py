@@ -291,3 +291,13 @@ class TestAttachmentImportPaths(SQLAlchemySetup):
             discipline=self.discipline, giftnumber="GIFT-1"
         )
         self._assert_path("Gift", "giftNumber", "GIFT-1", gift.id)
+
+    @patch("specifyweb.backend.stored_queries.execution.models.session_context")
+    def test_match_preparation_by_barcode(self, session_context):
+        session_context.side_effect = self._fresh_session_context
+        preparation = self._create_preparation(
+            "PREP-BARCODE", "PREP-GUID-1"
+        )
+        self._assert_path(
+            "Preparation", "barCode", "PREP-BARCODE", preparation.id
+        )
