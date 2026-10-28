@@ -298,6 +298,7 @@ def do_export(spquery, collection, user, filename, exporttype, host):
                     recordsetid=recordsetid,
                     distinct=spquery['selectdistinct'],
                     selection=selection,
+                    search_synonymy=spquery.get("searchsynonymy", False),
                     
                 )
                 message_type = 'query-export-to-webportal-complete'
@@ -338,6 +339,8 @@ def query_to_web_portal_zip(
     recordsetid=None,
     distinct=False,
     selection=None,
+    search_synonymy=False,
+    
 ):
     query, _ = build_query(
         session=session,
@@ -350,6 +353,7 @@ def query_to_web_portal_zip(
             replace_nulls=True,
             distinct=distinct,
             selection=selection,
+            search_synonymy=search_synonymy,
         )
     )
 
