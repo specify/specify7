@@ -37,7 +37,7 @@ import { sortTypes } from './helpers';
 import { QueryResultsTable } from './ResultsTable';
 import { QueryToMap } from './ToMap';
 import { SplitView } from './SplitView';
-import { softFail } from '../Errors/Crash';
+import { raise, softFail } from '../Errors/Crash';
 import type { ExecutedQuery, QuerySelection, SelectedQuery } from './selection';
 import {
   emptySelection,
@@ -814,7 +814,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
                     isSelected
                   );
                   if (next.ids.size > maxSelectionIds) {
-                    softFail(
+                    raise(
                       new Error(
                         queryText.selectionLimit({ limit: maxSelectionIds })
                       )
