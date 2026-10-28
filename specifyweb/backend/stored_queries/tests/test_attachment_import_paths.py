@@ -283,3 +283,11 @@ class TestAttachmentImportPaths(SQLAlchemySetup):
         self._assert_path(
             "Accession", "accessionNumber", "ACC-1", accession.id
         )
+
+    @patch("specifyweb.backend.stored_queries.execution.models.session_context")
+    def test_match_gift_by_gift_number(self, session_context):
+        session_context.side_effect = self._fresh_session_context
+        gift = models.Gift.objects.create(
+            discipline=self.discipline, giftnumber="GIFT-1"
+        )
+        self._assert_path("Gift", "giftNumber", "GIFT-1", gift.id)
