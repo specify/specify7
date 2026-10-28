@@ -165,7 +165,11 @@ export function useResourceView<SCHEMA extends AnySchema>({
      */
     formElement: formRef.current,
     formPreferences: (
-      <FormMeta resource={resource} viewDescription={viewDefinition} />
+      <FormMeta
+        enableKeyboardShortcut={!isSubForm}
+        resource={resource}
+        viewDescription={viewDefinition}
+      />
     ),
     form: (children, className) =>
       isSubForm ? (

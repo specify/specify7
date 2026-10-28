@@ -34,7 +34,7 @@ class TestMergingStatus(ApiTests):
         c = Client()
         c.force_login(self.specifyuser)
 
-        response = c.get("/merge/merge/status/aaaa/")
+        response = c.get("/merge/status/aaaa/")
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(

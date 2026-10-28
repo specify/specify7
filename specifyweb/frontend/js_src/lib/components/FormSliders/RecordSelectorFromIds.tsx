@@ -52,7 +52,10 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   onFetch: handleFetch,
   hasSeveralResourceType,
   ...rest
-}: Omit<RecordSelectorProps<SCHEMA>, 'index' | 'records'> & {
+}: Omit<
+  RecordSelectorProps<SCHEMA>,
+  'enableKeyboardShortcuts' | 'index' | 'records'
+> & {
   /*
    * Undefined IDs are placeholders for items with unknown IDs (e.g in record
    * sets or query results with thousands of items)
@@ -85,20 +88,17 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
     ids.map((id) => (id === undefined ? undefined : new table.Resource({ id })))
   );
 
-  const previousIds = React.useRef(ids);
-
   React.useEffect(() => {
     setRecords((records) =>
-      ids.map((id, index) => {
+      ids.map((id) => {
         if (id === undefined) return undefined;
-        else if (records[index]?.id === id) return records[index];
-        else return new table.Resource({ id });
+        else
+          return (
+            records.find((record) => record?.id === id) ??
+            new table.Resource({ id })
+          );
       })
     );
-
-    return (): void => {
-      previousIds.current = ids;
-    };
   }, [ids, table]);
 
   const [rawIndex, setIndex] = useTriggerState(
@@ -126,6 +126,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
     isLoading,
   } = useRecordSelector({
     ...rest,
+    enableKeyboardShortcuts: true,
     index,
     table,
     records:
@@ -193,7 +194,10 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
     <>
       <ResourceView
         dialog={dialog}
-        headerButtons={(specifyNetworkBadge): JSX.Element => (
+        headerButtons={(
+          specifyNetworkBadge,
+          showParentResource
+        ): JSX.Element => (
           <div className="flex flex-col items-center gap-2 md:contents md:flex-row md:gap-8">
             <div className="flex items-center gap-2 md:contents">
               {headerButtons}
@@ -209,6 +213,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                 <DataEntry.Add
                   aria-label={addLabel}
                   disabled={isReadOnly}
+                  enableShortcut
                   title={addLabel}
                   onClick={() => {
                     const resource = new table.Resource();
@@ -224,6 +229,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                   onClick={(): void => handleRemove('minusButton')}
                 />
               ) : undefined}
+              {newResource === undefined ? showParentResource : undefined}
               {typeof newResource === 'object' && handleAdd !== undefined ? (
                 <p className="flex-1">{formsText.creatingNewRecord()}</p>
               ) : (

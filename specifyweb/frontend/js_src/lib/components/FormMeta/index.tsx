@@ -12,6 +12,7 @@ import { H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
+import { RecordMergingContext } from '../Core/Contexts';
 import { toTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -29,6 +30,7 @@ import {
   ProtectedAction,
   ProtectedTool,
 } from '../Permissions/PermissionDenied';
+import { userPreferences } from '../Preferences/userPreferences';
 import { canMerge } from '../QueryBuilder/Results';
 import { UnloadProtectsContext } from '../Router/UnloadProtect';
 import { AutoNumbering } from './AutoNumbering';
@@ -44,22 +46,32 @@ import { ShareRecord } from './ShareRecord';
 import { SubViewMeta } from './SubViewMeta';
 
 /**
- * Form preferences host context aware user preferences and other meta-actions.
+ * Form preferences, context aware user preferences, and other meta-actions.
  * List of available features: https://github.com/specify/specify7/issues/1330
  */
 export function FormMeta({
   resource,
   className,
   viewDescription,
+  enableKeyboardShortcut,
 }: {
   readonly resource: SpecifyResource<AnySchema> | undefined;
   readonly className?: string;
   readonly viewDescription: ViewDescription | undefined;
+  readonly enableKeyboardShortcut: boolean;
 }): JSX.Element | null {
   const [isOpen, _, handleClose, handleToggle] = useBooleanState();
   const [isReadOnly = false] = useCachedState('forms', 'readOnlyMode');
   const subView = React.useContext(SubViewContext);
   const isInFormEditor = React.useContext(InFormEditorContext);
+
+  const keyboardShortcut = userPreferences.useKeyboardShortcut(
+    'form',
+    'actions',
+    'openFormMeta',
+    enableKeyboardShortcut && resource !== undefined ? handleToggle : undefined
+  );
+
   return isInFormEditor && typeof viewDescription === 'object' ? (
     <FormEditorLink viewDescription={viewDescription} />
   ) : typeof resource === 'object' ? (
@@ -67,7 +79,7 @@ export function FormMeta({
       <Button.Small
         aria-label={formsText.formMeta()}
         className={className}
-        title={formsText.formMeta()}
+        title={`${formsText.formMeta()}${keyboardShortcut}`}
         onClick={handleToggle}
       >
         {icons.cog}
@@ -131,7 +143,8 @@ function MetaDialog({
   readonly onClose: () => void;
 }): JSX.Element {
   const subView = React.useContext(SubViewContext);
-  const canMergeTable = canMerge(resource.specifyTable);
+  const canMergeTable =
+    React.useContext(RecordMergingContext) && canMerge(resource.specifyTable);
   return (
     <Dialog
       buttons={commonText.close()}

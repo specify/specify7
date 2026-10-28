@@ -57,7 +57,7 @@ let index = 0;
 /** Convert EnhancedRoutes to RouteObjects */
 export const toReactRoutes = (
   enhancedRoutes: RA<EnhancedRoute>,
-  title?: LocalizedString,
+  parentTitle?: LocalizedString,
   dismissible: boolean = true
 ): WritableArray<RouteObject> =>
   enhancedRoutes.map<IndexRouteObject | NonIndexRouteObject>((data) => {
@@ -79,9 +79,15 @@ export const toReactRoutes = (
         )
       );
 
+    const resolvedTitle =
+      data.title === undefined
+        ? data.index === true
+          ? parentTitle
+          : undefined
+        : data.title;
     const titleComponent =
-      typeof title === 'string' ? (
-        <AppTitle source={undefined} title={title} />
+      typeof resolvedTitle === 'string' ? (
+        <AppTitle source={undefined} title={resolvedTitle} />
       ) : undefined;
 
     const resolvedElement =
@@ -91,7 +97,7 @@ export const toReactRoutes = (
           {ReactLazy(rawElement)({})}
         </>
       ) : rawElement === undefined ? (
-        enhancedRoute.index ? (
+        enhancedRoute.index === true ? (
           <></>
         ) : undefined
       ) : (
@@ -108,7 +114,7 @@ export const toReactRoutes = (
       ...enhancedRoute,
       index: enhancedRoute.index as unknown as false,
       children: Array.isArray(children)
-        ? toReactRoutes(children, title)
+        ? toReactRoutes(children, resolvedTitle)
         : undefined,
       element:
         process.env.NODE_ENV === 'test' ||
