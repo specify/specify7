@@ -110,8 +110,7 @@ export function QueryExportButtons({
             ? recordSetId
             : selectedQuery.query.recordSetId,
         selection:
-          selectedQuery === undefined ||
-          url === '/stored_query/exportwebportal/'
+          selectedQuery === undefined
             ? undefined
             : selectionPayload(selectedQuery.selection),
         selectedRows:
