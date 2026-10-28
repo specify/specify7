@@ -1495,14 +1495,14 @@ msgstr ""
 "Больше или равно и Меньше или равно"
 
 #: components/QueryBuilder/Header.tsx:151
-#: components/Reports/Parameters.tsx:98
+#: components/Reports/Parameters.tsx:101
 #. Used in: Components > Query Builder > Header ⬤ Components > Reports > Parameters
 #, fuzzy
 msgid "basicView"
 msgstr "Базовый вид"
 
 #: components/QueryBuilder/Header.tsx:150
-#: components/Reports/Parameters.tsx:97
+#: components/Reports/Parameters.tsx:100
 #. Used in: Components > Query Builder > Header ⬤ Components > Reports > Parameters
 #, fuzzy
 msgid "detailedView"

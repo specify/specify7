@@ -66,10 +66,10 @@ msgstr "No"
 #: components/QueryBuilder/FromMap.tsx:72
 #: components/QueryBuilder/Import.tsx:69
 #: components/QueryBuilder/LoanReturn.tsx:159
-#: components/Reports/Parameters.tsx:86
-#: components/Reports/Report.tsx:200
-#: components/Reports/Report.tsx:227
-#: components/Reports/Report.tsx:312
+#: components/Reports/Parameters.tsx:89
+#: components/Reports/Report.tsx:201
+#: components/Reports/Report.tsx:228
+#: components/Reports/Report.tsx:317
 #: components/Reports/index.tsx:142
 #: components/Router/UnloadProtect.tsx:26
 #: components/SchemaConfig/Layout.tsx:164
@@ -407,7 +407,7 @@ msgstr "Delete unmapped columns"
 #: components/Preferences/__tests__/sectionScroll.test.tsx:20
 #: components/QueryBuilder/FromMap.tsx:74
 #: components/QueryBuilder/Save.tsx:67
-#: components/Reports/Report.tsx:313
+#: components/Reports/Report.tsx:318
 #: components/SchemaConfig/Components.tsx:74
 #: components/SchemaConfig/TableUniquenessRules.tsx:141
 #: components/Security/MissingAgentsDialog.tsx:107
@@ -736,7 +736,7 @@ msgstr "New"
 msgid "edit"
 msgstr "Edit"
 
-#: components/Reports/Report.tsx:202
+#: components/Reports/Report.tsx:203
 #: components/Security/UserComponents.tsx:188
 #. Used in: Components > Reports > Report ⬤ Components > Security > User Components
 msgid "ignore"

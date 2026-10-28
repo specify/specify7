@@ -18,7 +18,7 @@ msgstr "Отчет"
 
 #: components/Header/menuItemDefinitions.ts:89
 #: components/Preferences/UserDefinitions.tsx:2136
-#: components/Reports/Parameters.tsx:91
+#: components/Reports/Parameters.tsx:94
 #: components/Reports/index.tsx:143
 #: components/Reports/index.tsx:150
 #: components/Router/OverlayRoutes.tsx:163
@@ -26,38 +26,38 @@ msgstr "Отчет"
 msgid "reports"
 msgstr "Отчеты"
 
-#: components/Reports/Report.tsx:206
+#: components/Reports/Report.tsx:207
 #. Used in: Components > Reports > Report
 msgid "reportProblems"
 msgstr "Проблемы с отчетом"
 
-#: components/Reports/Report.tsx:210
+#: components/Reports/Report.tsx:211
 #. Used in: Components > Reports > Report
 msgid "reportProblemsDescription"
 msgstr "В выбранном отчете есть следующие проблемы:"
 
-#: components/Reports/Report.tsx:211
+#: components/Reports/Report.tsx:212
 #. Used in: Components > Reports > Report
 msgid "missingAttachments"
 msgstr "Отсутствующие вложения"
 
-#: components/Reports/Report.tsx:215
-#: components/Reports/Report.tsx:217
+#: components/Reports/Report.tsx:216
+#: components/Reports/Report.tsx:218
 #. Used in: Components > Reports > Report
 msgid "fix"
 msgstr "Исправить"
 
-#: components/Reports/Report.tsx:228
+#: components/Reports/Report.tsx:229
 #. Used in: Components > Reports > Report
 msgid "chooseFile"
 msgstr "Выберите файл"
 
-#: components/Reports/Report.tsx:316
+#: components/Reports/Report.tsx:321
 #. Used in: Components > Reports > Report
 msgid "reportParameters"
 msgstr "Параметры отчета"
 
-#: components/Reports/Parameters.tsx:87
+#: components/Reports/Parameters.tsx:90
 #. Used in: Components > Reports > Parameters
 msgid "runReport"
 msgstr "Запустить репорт"

@@ -1291,13 +1291,13 @@ msgstr ""
 "Større enn eller lik og Mindre enn eller lik"
 
 #: components/QueryBuilder/Header.tsx:151
-#: components/Reports/Parameters.tsx:98
+#: components/Reports/Parameters.tsx:101
 #. Used in: Components > Query Builder > Header ⬤ Components > Reports > Parameters
 msgid "basicView"
 msgstr "Basis-visning"
 
 #: components/QueryBuilder/Header.tsx:150
-#: components/Reports/Parameters.tsx:97
+#: components/Reports/Parameters.tsx:100
 #. Used in: Components > Query Builder > Header ⬤ Components > Reports > Parameters
 msgid "detailedView"
 msgstr "Detaljert visning"
