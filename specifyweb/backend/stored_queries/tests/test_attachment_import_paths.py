@@ -252,3 +252,16 @@ class TestAttachmentImportPaths(SQLAlchemySetup):
         self._assert_path(
             "CollectingEvent", "guid", "CE-GUID", collectingevent.id
         )
+
+    @patch("specifyweb.backend.stored_queries.execution.models.session_context")
+    def test_match_collecting_event_by_field_number(self, session_context):
+        session_context.side_effect = self._fresh_session_context
+        collectingevent = self.collectingevent
+        collectingevent.stationfieldnumber = "CE-FIELD"
+        collectingevent.save()
+        self._assert_path(
+            "CollectingEvent",
+            "stationFieldNumber",
+            "CE-FIELD",
+            collectingevent.id,
+        )
