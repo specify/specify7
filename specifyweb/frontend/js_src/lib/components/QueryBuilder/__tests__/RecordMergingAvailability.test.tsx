@@ -32,7 +32,7 @@ jest.mock('../../Permissions/PermissionDenied', () => ({
 jest.mock('../../Merging', () => ({
   RecordMergingLink: () => <button>Merge selected records</button>,
 }));
-jest.mock('../ToForms', () => ({ QueryToForms: () => null }));
+jest.mock('../SelectedQueryForms', () => ({ SelectedQueryForms: () => null }));
 jest.mock('../ToMap', () => ({ QueryToMap: () => null }));
 jest.mock('../ResultsTable', () => ({ QueryResultsTable: () => null }));
 jest.mock('../../FormMeta/MergeRecord', () => ({

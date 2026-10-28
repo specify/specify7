@@ -14,10 +14,14 @@ import type { QueryField } from './helpers';
 import type { MainState } from './reducer';
 import type { QueryResultRow } from './Results';
 import { QueryResultsWrapper } from './ResultsWrapper';
-import { hasFetchableRecordIds, QueryFormView } from './ToForms';
+import { emptySelection, type QuerySelection } from './selection';
+import { SelectedQueryForms } from './SelectedQueryForms';
+import { parseQueryFields } from './helpers';
+import { getTableById } from '../DataModel/tables';
 
 export function QueryBuilderResults({
   table,
+  enableBulkSelection,
   query,
   queryResource,
   recordSet,
@@ -42,6 +46,7 @@ export function QueryBuilderResults({
   onSortChange: handleSortChange,
 }: {
   readonly table: SpecifyTable;
+  readonly enableBulkSelection: boolean;
   readonly query: SerializedResource<SpQuery>;
   readonly queryResource: SpecifyResource<SpQuery>;
   readonly recordSet: SpecifyResource<RecordSet> | undefined;
@@ -72,8 +77,71 @@ export function QueryBuilderResults({
   readonly onSortChange: (fields: RA<QueryField>) => void;
 }): JSX.Element | null {
   const [refreshToken, setRefreshToken] = React.useState(0);
+  const [selection, setSelection] =
+    React.useState<QuerySelection>(emptySelection);
+  const explicitSelection = enableBulkSelection;
+  React.useEffect(() => setSelectedIndex(0), [selection, setSelectedIndex]);
   return hasPermission('/querybuilder/query', 'execute') ? (
     <QueryResultsWrapper
+      showSelectionControls={enableBulkSelection}
+      selection={explicitSelection ? [selection, setSelection] : undefined}
+      renderActions={
+        explicitSelection
+          ? (executedQuery) =>
+              executedQuery.selectDistinct ||
+              executedQuery.smushed ||
+              executedQuery.countOnly
+                ? undefined
+                : {
+                    createRecordSet:
+                      !isReadOnly &&
+                      hasPermission(
+                        '/querybuilder/query',
+                        'create_recordset'
+                      ) ? (
+                        <MakeRecordSetButton
+                          baseTableName={
+                            getTableById(executedQuery.contextTableId).name
+                          }
+                          fields={parseQueryFields(executedQuery.fields)}
+                          getQueryFieldRecords={undefined}
+                          queryResource={queryResource}
+                          sourceRecordSetId={recordSet?.id}
+                          selectedQuery={{ query: executedQuery, selection }}
+                        />
+                      ) : undefined,
+                    extraButtons: (
+                      <>
+                        {datasetVariants.batchEdit.canCreate() && (
+                          <BatchEditFromQuery
+                            baseTableName={
+                              getTableById(executedQuery.contextTableId).name
+                            }
+                            fields={parseQueryFields(executedQuery.fields)}
+                            query={queryResource}
+                            recordSetId={recordSet?.id}
+                            saveRequired={saveRequired}
+                          />
+                        )}
+                        {!isCountOnly && (
+                          <QueryExportButtons
+                            baseTableName={
+                              getTableById(executedQuery.contextTableId).name
+                            }
+                            fields={parseQueryFields(executedQuery.fields)}
+                            getQueryFieldRecords={undefined}
+                            queryResource={queryResource}
+                            recordSetId={recordSet?.id}
+                            results={resultsRef}
+                            selectedRows={selectedRows}
+                            selectedQuery={{ query: executedQuery, selection }}
+                          />
+                        )}
+                      </>
+                    ),
+                  }
+          : undefined
+      }
       createRecordSet={
         !isReadOnly &&
         hasPermission('/querybuilder/query', 'create_recordset') &&
@@ -130,26 +198,37 @@ export function QueryBuilderResults({
         totalCount,
         onFetchMore,
         onDelete,
+        selectedQuery,
+        selectedCount,
       }) => (
         <>
-          {query.selectDistinct !== true &&
-          !isCountOnly &&
-          hasFetchableRecordIds(results) ? (
-            <QueryFormView
-              results={results}
-              selectedRows={resultSelection}
+          {!isCountOnly &&
+          (selectedQuery !== undefined || query.selectDistinct !== true) ? (
+            <SelectedQueryForms
+              inline
+              {...(selectedQuery === undefined
+                ? {
+                    results,
+                    selectedRows: resultSelection,
+                    totalCount,
+                    onFetchMore,
+                  }
+                : { selectedQuery, selectedCount })}
               selectedIndex={selectedIndex}
-              table={table}
+              table={
+                selectedQuery === undefined
+                  ? table
+                  : getTableById(selectedQuery.query.contextTableId)
+              }
               title={localized(query.name)}
-              totalCount={totalCount}
+              onSlide={setSelectedIndex}
               onClose={(): void => {
                 setSelectedRows(new Set());
+                if (explicitSelection) setSelection(emptySelection());
                 setSelectedIndex(0);
               }}
               onDelete={onDelete}
-              onFetchMore={onFetchMore}
               onSaved={(): void => setRefreshToken((token) => token + 1)}
-              onSlide={setSelectedIndex}
             />
           ) : null}
         </>

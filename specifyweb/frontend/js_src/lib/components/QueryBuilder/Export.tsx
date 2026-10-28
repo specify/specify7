@@ -20,9 +20,12 @@ import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import { downloadDataSet } from '../WorkBench/helpers';
 import { QueryButton } from './Components';
 import type { QueryField } from './helpers';
-import { hasLocalityColumns } from './helpers';
+import { hasLocalityColumns, unParseQueryFields } from './helpers';
 import type { QueryResultRow } from './Results';
 import { dialogIcons } from '../Atoms/Icons';
+import type { SelectedQuery } from './selection';
+import { isSelectionEmpty, selectionPayload } from './selection';
+import { parseQueryFields } from './helpers';
 
 export function QueryExportButtons({
   baseTableName,
@@ -32,6 +35,7 @@ export function QueryExportButtons({
   recordSetId,
   results,
   selectedRows,
+  selectedQuery,
 }: {
   readonly baseTableName: keyof Tables;
   readonly fields: RA<QueryField>;
@@ -44,6 +48,7 @@ export function QueryExportButtons({
     RA<QueryResultRow | undefined> | undefined
   >;
   readonly selectedRows: ReadonlySet<number>;
+  readonly selectedQuery?: SelectedQuery;
 }): JSX.Element {
   const showConfirmation = (): boolean =>
     fields.some(({ mappingPath }) => !mappingPathIsComplete(mappingPath));
@@ -72,22 +77,46 @@ export function QueryExportButtons({
     bom: boolean | undefined,
     selectedRows: ReadonlySet<number> | undefined
   ): void {
-    if (typeof getQueryFieldRecords === 'function')
+    if (
+      selectedQuery === undefined &&
+      typeof getQueryFieldRecords === 'function'
+    )
       queryResource.set('fields', getQueryFieldRecords());
-    const serialized = queryResource.toJSON();
+    const exportFields =
+      selectedQuery === undefined
+        ? fields
+        : parseQueryFields(selectedQuery.query.fields).filter(
+            ({ id }) => id !== -1
+          );
+    const serialized =
+      selectedQuery === undefined
+        ? queryResource.toJSON()
+        : {
+            ...selectedQuery.query,
+            fields: unParseQueryFields(baseTableName, exportFields),
+          };
     setState('creating');
     void ping(url, {
       method: 'POST',
       body: keysToLowerCase({
         ...serialized,
-        captions: fields
+        captions: exportFields
           .filter(({ isDisplay }) => isDisplay)
           .map(({ mappingPath }) =>
             generateMappingPathPreview(baseTableName, mappingPath)
           ),
-        recordSetId,
+        recordSetId:
+          selectedQuery === undefined
+            ? recordSetId
+            : selectedQuery.query.recordSetId,
+        selection:
+          selectedQuery === undefined
+            ? undefined
+            : selectionPayload(selectedQuery.selection),
         selectedRows:
-          selectedRows === undefined ? undefined : Array.from(selectedRows),
+          selectedQuery !== undefined || selectedRows === undefined
+            ? undefined
+            : Array.from(selectedRows),
         delimiter,
         bom,
       }),
@@ -185,10 +214,14 @@ export function QueryExportButtons({
       {containsResults &&
         hasPermission('/querybuilder/query', 'export_csv') && (
           <QueryButton
-            disabled={fields.length === 0}
+            disabled={
+              fields.length === 0 ||
+              (selectedQuery !== undefined &&
+                isSelectionEmpty(selectedQuery.selection))
+            }
             showConfirmation={showConfirmation}
             onClick={(): void => {
-              selectedRows.size === 0
+              selectedQuery !== undefined || selectedRows.size === 0
                 ? doQueryExport(
                     '/stored_query/exportcsv/',
                     separator,
@@ -203,7 +236,11 @@ export function QueryExportButtons({
         )}
       {canUseKml && (
         <QueryButton
-          disabled={fields.length === 0}
+          disabled={
+            fields.length === 0 ||
+            (selectedQuery !== undefined &&
+              isSelectionEmpty(selectedQuery.selection))
+          }
           showConfirmation={showConfirmation}
           onClick={(): void =>
             hasLocalityColumns(fields)
@@ -222,7 +259,11 @@ export function QueryExportButtons({
       {containsResults &&
         hasPermission('/querybuilder/query', 'export_to_web_portal') && (
           <QueryButton
-            disabled={fields.length === 0}
+            disabled={
+              fields.length === 0 ||
+              (selectedQuery !== undefined &&
+                isSelectionEmpty(selectedQuery.selection))
+            }
             showConfirmation={showConfirmation}
             onClick={(): void => {
               if (hasDuplicateRecordIds()) {

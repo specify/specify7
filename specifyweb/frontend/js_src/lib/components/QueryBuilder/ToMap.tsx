@@ -37,11 +37,17 @@ import type { QueryFieldSpec } from './fieldSpec';
 import type { QueryField } from './helpers';
 import type { QueryResultRow } from './Results';
 import { queryIdField } from './Results';
+import { queryText } from '../../localization/query';
+import type { SelectedQuery } from './selection';
+import { maxMapSelectionRows } from './selection';
+import { useSelectedQueryResults } from './useSelectedQuery';
 
 export function QueryToMap({
   results,
   totalCount,
   selectedRows,
+  selectedQuery,
+  selectedCount,
   table,
   fieldSpecs,
   fields,
@@ -50,6 +56,8 @@ export function QueryToMap({
   readonly results: RA<QueryResultRow>;
   readonly totalCount: number | undefined;
   readonly selectedRows: ReadonlySet<number>;
+  readonly selectedQuery?: SelectedQuery;
+  readonly selectedCount?: number;
   readonly table: SpecifyTable;
   readonly fieldSpecs: RA<QueryFieldSpec>;
   readonly fields: RA<QueryField>;
@@ -57,24 +65,59 @@ export function QueryToMap({
 }): JSX.Element | null {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   const ids = useSelectedResults(results, selectedRows);
+  const selectionTooLarge =
+    selectedQuery !== undefined &&
+    (selectedCount === undefined || selectedCount > maxMapSelectionRows);
+  const selectedResults = useSelectedQueryResults(
+    selectedQuery,
+    isOpen && !selectionTooLarge,
+    selectedCount
+  );
+  const mapResults =
+    selectedQuery === undefined
+      ? ids.filter((row): row is QueryResultRow => row !== undefined)
+      : selectedResults.results[0]?.filter(
+          (row): row is QueryResultRow => row !== undefined
+        );
   const localityMappings = React.useMemo(
     () => fieldSpecsToLocalityMappings(table.name, fieldSpecs),
     [table.name, fieldSpecs]
   );
   return localityMappings.length === 0 ? null : (
     <>
-      <Button.Small disabled={results.length === 0} onClick={handleOpen}>
+      <Button.Small
+        disabled={
+          results.length === 0 ||
+          selectionTooLarge ||
+          (selectedQuery !== undefined && selectedCount === 0)
+        }
+        title={
+          selectionTooLarge
+            ? queryText.mapSelectionLimit({ limit: maxMapSelectionRows })
+            : undefined
+        }
+        onClick={handleOpen}
+      >
         {localityText.geoMap()}
       </Button.Small>
-      {isOpen && ids.length > 0 ? (
+      {isOpen && mapResults === undefined ? <LoadingScreen /> : null}
+      {isOpen && mapResults !== undefined && mapResults.length > 0 ? (
         <QueryToMapDialog
           fields={fields}
           localityMappings={localityMappings}
-          results={results}
+          results={mapResults}
           tableName={table.name}
-          totalCount={totalCount}
+          totalCount={selectedQuery === undefined ? totalCount : selectedCount}
           onClose={handleClose}
-          onFetchMore={selectedRows.size > 0 ? undefined : handleFetchMore}
+          onFetchMore={
+            selectedQuery === undefined
+              ? selectedRows.size > 0
+                ? undefined
+                : handleFetchMore
+              : selectedResults.canFetchMore
+                ? async () => selectedResults.onFetchMore()
+                : undefined
+          }
         />
       ) : undefined}
     </>
