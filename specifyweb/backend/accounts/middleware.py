@@ -18,6 +18,13 @@ def get_agent(request):
 
 
 class JWTAuthMiddleware:
+    """
+    This middleware is in charge of handling requests that contain a JWT
+    Authorization Bearer Token following the Auth 2.0 framework.
+    See RFCs 6749 and 6750 for the Auth 2.0 spec:
+    https://www.rfc-editor.org/info/rfc6749/
+    https://www.rfc-editor.org/info/rfc6750/
+    """
     def __init__(self, get_response):
         self.get_response = get_response
 
@@ -31,11 +38,15 @@ class JWTAuthMiddleware:
         # revoked. Stop here and return a 401 Unauthorized
         if token == False or token_is_revoked(token):
             response = HttpResponse('Invalid access token', status=401)
-            # This header is formatted per OAuth 2.0, see section 3 of RFC 6750
-            # See https://datatracker.ietf.org/doc/html/rfc6750#section-3
+            # This header is formatted per OAuth 2.0, see section 5.2 of RFC
+            # 6749 and section 3 of RFC 6750
+            # See https://www.rfc-editor.org/info/rfc6749/#section-5.2 and
+            # https://www.rfc-editor.org/info/rfc6750/#section-3
             response["WWW-Authenticate"] = 'Bearer error=\"invalid_token\", error_description=\"The access token is expired, revoked, or invalid\"'
             return response
 
+        # REFACTOR: explicitly handle cases where these values can't be cast as
+        # an integer?
         user_id = int(token["sub"])
         collection_id = int(token["collection"])
 

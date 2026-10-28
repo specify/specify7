@@ -672,6 +672,11 @@ def set_admin_status(request, userid):
 @require_POST
 @csrf_exempt
 def acquire_access_token(request):
+    # FEAT: Currently we only accept x-www-form-urlencoded because that is
+    # required by the OAuth 2.0 framework, see section 4.4.2 of RFC 6749:
+    # https://www.rfc-editor.org/info/rfc6749/#section-4.4.2
+    # Though in the future we can allow this endpoint to also accept
+    # application/json bodies
     username = request.POST.get("username")
     password = request.POST.get("password")
     collection_id = request.POST.get("collectionid")
