@@ -16,7 +16,11 @@ import { agentTypes, getField } from '../DataModel/helpers';
 import type { SerializedResource, TableFields } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { deserializeResource } from '../DataModel/serializers';
-import { genericTables, tables } from '../DataModel/tables';
+import {
+  genericTables,
+  sortTablesByCaption,
+  tables,
+} from '../DataModel/tables';
 import type { PickList, PickListItem, Tables } from '../DataModel/types';
 import { getUiFormatters } from '../FieldFormatters';
 import { hasToolPermission } from '../Permissions/helpers';
@@ -110,8 +114,8 @@ export function definePicklist(
 export const pickListTablesPickList = f.store(() =>
   definePicklist(
     '_TablesByName',
-    Object.values(genericTables).map(({ name, label }) =>
-      createPickListItem(name.toLowerCase(), label)
+    sortTablesByCaption(Object.values(genericTables), ({ name }) => name).map(
+      ({ name, label }) => createPickListItem(name.toLowerCase(), label)
     )
   )
 );
@@ -157,8 +161,8 @@ export const getFrontEndPickLists = f.store<{
   // Like pickListTablesPickList, but indexed by tableId
   const tablesPickList = definePicklist(
     '_Tables',
-    Object.values(genericTables).map(({ tableId, label }) =>
-      createPickListItem(tableId.toString(), label)
+    sortTablesByCaption(Object.values(genericTables), ({ name }) => name).map(
+      ({ tableId, label }) => createPickListItem(tableId.toString(), label)
     )
   );
 
