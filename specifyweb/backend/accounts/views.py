@@ -35,7 +35,13 @@ from specifyweb.specify.views import login_maybe_required, openapi
 from .models import Spuserexternalid, UserPresence
 from specifyweb.specify.models import Specifyuser, Agent, Collection
 from specifyweb.specify.auth.support_login import b64_url_to_bytes
-from specifyweb.backend.accounts.access_token_utils import DEFAULT_AUTH_LIFESPAN_SECONDS, generate_access_token, revoke_access_token as revoke_token, AUTH_JWT_DECODE_OPTIONS, AUTH_TOKEN_ALGORITHMS
+from specifyweb.backend.accounts.access_token_utils import (
+    DEFAULT_AUTH_LIFESPAN_SECONDS,
+    AUTH_JWT_DECODE_OPTIONS,
+    AUTH_TOKEN_ALGORITHMS,
+    ACCESS_TOKEN_GRANT_TYPE,
+    revoke_access_token as revoke_token,
+    handle_password_token_grant)
 
 logger = logging.getLogger(__name__)
 
@@ -616,29 +622,39 @@ def set_admin_status(request, userid):
     'post': {
         "requestBody": {
             "required": True,
-            "description": "Obtain an access token that can be used with the API",
+            "description": "Obtain an access token that can be used with the API. This endpoint follows OAuth 2.0 Framework defined in RFC 6749: https://www.rfc-editor.org/info/rfc6749/. Specify supports using bearer access tokens through an Authorization Bearer header as defined in RFC 6750: https://www.rfc-editor.org/info/rfc6750/",
             "content": {
                 "application/x-www-form-urlencoded": {
                     "schema": {
-                        "type": "object",
-                        "properties": {
-                            "username": {
-                                "type": "string"
-                            },
-                            "password": {
-                                "type": "string"
-                            },
-                            "collectionid": {
-                                "type": "integer"
-                            },
-                            "expires": {
-                                "type": "integer",
-                                "description": f"The number of seconds this token should be valid for. Defaults to {DEFAULT_AUTH_LIFESPAN_SECONDS} seconds if not specified",
-                                "default": DEFAULT_AUTH_LIFESPAN_SECONDS
+                        "oneOf": [
+                            # FEAT: Add the refresh_token grant type, to
+                            # generate access tokens
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "grant_type": {
+                                        "type": "string",
+                                        "enum": [ACCESS_TOKEN_GRANT_TYPE.PASSWORD]
+                                    },
+                                    "username": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    },
+                                    "collectionid": {
+                                        "type": "integer"
+                                    },
+                                    "expires": {
+                                        "type": "integer",
+                                        "description": f"The number of seconds this token should be valid for. Defaults to {DEFAULT_AUTH_LIFESPAN_SECONDS} seconds if not specified",
+                                        "default": DEFAULT_AUTH_LIFESPAN_SECONDS
+                                    }
+                                },
+                                "required": ['grant_type', 'username', 'password', 'collectionid'],
+                                'additionalProperties': False
                             }
-                        },
-                        "required": ['username', 'password', 'collectionid'],
-                        'additionalProperties': False
+                        ]
                     }
                 }
             }
@@ -663,57 +679,74 @@ def set_admin_status(request, userid):
                     }
                 }
             },
-            "400": {"description": "One of the required keys was not supplied, or one or more keys were supplied incorrectly"},
-            "403": {"description": "The provided credentials were incorrect, or the user does not have access to the collection"},
+            "400": {
+                "description": "The request for an access token was invalid. See the error_description for more details. The error types are described in Section 5.2 of RFC 6749: https://www.rfc-editor.org/info/rfc6749/#section-5.2",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "error": {
+                                    "type": "string"
+                                },
+                                "error_description": {
+                                    "type": "string"
+                                },
+                                "required": ["error"]
+                            }
+                        }
+                    }
+                }
+            },
+            "401": {
+                "description": "The provided credentials were incorrect, or the user does not have access to the collection",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "error": {
+                                    "type": "string",
+                                    "enum": ["invalid_client"]
+                                },
+                                "error_description": {
+                                    "type": "string"
+                                },
+                                "required": ["error"]
+                            }
+                        }
+                    }
+                }
+            },
             "405": {"description": "A non-POST method was made to the endpoint. Only POST is supported"}
         }
     },
 })
 @require_POST
 @csrf_exempt
-def acquire_access_token(request):
+def acquire_access_token(request: http.HttpRequest):
     # FEAT: Currently we only accept x-www-form-urlencoded because that is
     # required by the OAuth 2.0 framework, see section 4.4.2 of RFC 6749:
     # https://www.rfc-editor.org/info/rfc6749/#section-4.4.2
     # Though in the future we can allow this endpoint to also accept
     # application/json bodies
-    username = request.POST.get("username")
-    password = request.POST.get("password")
-    collection_id = request.POST.get("collectionid")
-    raw_expires_in = request.POST.get("expires", DEFAULT_AUTH_LIFESPAN_SECONDS)
+    grant_type = require_POST.get("grant_type")
 
-    if None in (username, password, collection_id):
-        return http.HttpResponseBadRequest(f"username, password, and collection are required")
+    if grant_type is None:
+        error_response = {
+            "error": "invalid_request",
+            "error_description": "A grant_type was not provided in access token request"
+        }
+        return http.JsonResponse(error_response, status=400)
 
-    try:
-        expires_in = int(raw_expires_in)
-        if expires_in <= 0:
-            return http.HttpResponseBadRequest(f"Invalid expiry time")
-    except ValueError:
-        return http.HttpResponseBadRequest(f"Expiry time could be parsed as integer")
+    if grant_type == ACCESS_TOKEN_GRANT_TYPE.PASSWORD:
+        response = handle_password_token_grant(request)
+        return response
 
-
-    try:
-        collection = Collection.objects.get(id=collection_id)
-    except Collection.DoesNotExist:
-        return http.HttpResponseBadRequest(f'collection {collection_id} does not exist')
-
-    user = authenticate(username=username, password=password)
-
-    if user is None or not has_collection_access(collection.id, user.id):
-        return http.HttpResponseForbidden()
-
-    token = generate_access_token(user, collection.id, expires_in=expires_in)
-
-    # TODO: lower default expiry time and also issue refresh tokens that can be
-    # used to re-issue auth tokens
-    # Issue refresh tokens as HTTP-only cookies? Need to keep CSRF protection
-    # and replay attacks in mind. Maybe just store them in Redis...
-    response = {
-        "access_token": token,
-        "expires_in": expires_in
+    error_response = {
+        "error": "unsupported_grant_type"
     }
-    return http.JsonResponse(response)
+    return http.JsonResponse(error_response, status=400)
 
 
 @openapi(schema={
@@ -740,7 +773,7 @@ def acquire_access_token(request):
         "responses": {
             "204": {"description": "The access token was revoked"},
             "400": {"description": "The provided token is already invalid or could not be validated"},
-            "403": {"description": "The user was not logged-in when making a request to the endpoint"},
+            "403": {"description": "The user was not authenticated/logged-in when making a request to the endpoint"},
             "405": {"description": "A non-POST method was made to the endpoint. Only POST is supported"}
         }
     },

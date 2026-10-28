@@ -5,9 +5,13 @@ import jwt
 from datetime import datetime, timezone, timedelta
 from typing import Literal
 
+from django import http
+from django.contrib.auth import authenticate
 from django.conf import settings
 
+from specifyweb.specify.models import Collection
 from specifyweb.backend.cache.redis.connect import RedisConnection, RedisString
+from specifyweb.backend.context.views import has_collection_access
 
 DEFAULT_AUTH_LIFESPAN_SECONDS = 1800
 
@@ -78,3 +82,82 @@ def token_is_revoked(token: dict):
     redis_string = RedisString(RedisConnection())
     token_key = f"revoked:{token_identifier}"
     return redis_string.exists(token_key)
+
+class ACCESS_TOKEN_GRANT_TYPE:
+    # The client provides the server with a username, password, and collection
+    # id
+    PASSWORD = "password"
+
+def handle_password_token_grant(request: http.HttpRequest) -> http.HttpResponse:
+    """
+    The client indiciated they want to authenticate using username and password.
+    They should have also provided a collection id to scope the token to.
+
+    See Section 4.3 of RFC 6749 for more information about this specific grant
+    type according to the OAuth 2.0 Framework:
+        https://www.rfc-editor.org/info/rfc6749/#section-4.3
+    """
+    username = request.POST.get("username")
+    password = request.POST.get("password")
+    raw_collection_id = request.POST.get("collectionid")
+    raw_expires_in = request.POST.get("expires", DEFAULT_AUTH_LIFESPAN_SECONDS)
+
+    if None in (username, password, raw_collection_id):
+        error_response = {
+            "error": "invalid_request",
+            "error_description": "username, password, and collectionid are required"
+        }
+        return http.JsonResponse(error_response, status=400)
+
+    try:
+        expires_in = int(raw_expires_in)
+        if expires_in <= 0:
+            error_response = {
+                "error": "invalid_request",
+                "error_description": "Token expiry time must be greater than 0"
+            }
+            return http.JsonResponse(error_response, status=400)
+    except ValueError:
+        error_response = {
+            "error": "invalid_request",
+            "error_description": "Expiry time could not be parsed as integer"
+        }
+        return http.JsonResponse(error_response, status=400)
+
+    try:
+        collection_id = int(raw_collection_id)
+    except ValueError:
+        error_response = {
+            "error": "invalid_request",
+            "error_description": "Collection ID could not be parsed as integer"
+        }
+        return http.JsonResponse(error_response, status=400)
+
+    try:
+        collection = Collection.objects.get(id=collection_id)
+    except Collection.DoesNotExist:
+        error_response = {
+            "error": "invalid_request",
+            "error_description": f"Collection {collection_id} does not exist"
+        }
+        return http.JsonResponse(error_response, status=400)
+
+    user = authenticate(username=username, password=password)
+
+    if user is None or not has_collection_access(collection.id, user.id):
+        error_response = {
+            "error": "invalid_client",
+            "error_description": "Credentials were incorrect or user does not have access to the Collection"
+        }
+        return http.JsonResponse(error_response, status=401)
+
+    token = generate_access_token(user, collection.id, expires_in=expires_in)
+
+    # TODO: issue refresh tokens that can be used to re-issue auth tokens
+    # Issue refresh tokens as HTTP-only cookies? Need to keep CSRF protection
+    # and replay attacks in mind. Maybe just store them in Redis...
+    response = {
+        "access_token": token,
+        "expires_in": expires_in
+    }
+    return http.JsonResponse(response)
