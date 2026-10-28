@@ -3,7 +3,7 @@ django-stubs==5.2.9
 mypy==1.13.0
 # hypothesis-jsonschema 0.23.2 requires Hypothesis 6.170.10 or later.
 hypothesis>=6.170.10,<7
-hypothesis-jsonschema==0.23.2
+hypothesis-jsonschema==0.22.0
 types-requests==2.28.5
 lxml
 debugpy==1.6.5
