@@ -16,7 +16,6 @@ from django.conf import settings
 from django.db import transaction
 from django.utils import timezone
 from specifyweb.backend.inheritance.api import DefaultQueryProcessors
-from specifyweb.backend.stored_queries.query_construct_model import QueryConstruct
 from specifyweb.backend.stored_queries.utils import log_sqlalchemy_query
 from specifyweb.specify.utils.field_change_info import FieldChangeInfo
 from sqlalchemy import sql, orm, func, text
@@ -47,6 +46,7 @@ from specifyweb.specify.models_utils.load_datamodel import Table
 # import it would already be handled.
 if TYPE_CHECKING:
     from specifyweb.backend.stored_queries.queryfield import QueryField
+    from specifyweb.backend.stored_queries.query_construct_model import QueryConstruct
 
 logger = logging.getLogger(__name__)
 
