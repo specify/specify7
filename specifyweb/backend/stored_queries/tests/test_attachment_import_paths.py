@@ -397,3 +397,13 @@ class TestAttachmentImportPaths(SQLAlchemySetup):
         self._assert_path(
             "CollectingTrip", "collectingTripName", "TRIP-1", trip.id
         )
+
+    @patch("specifyweb.backend.stored_queries.execution.models.session_context")
+    def test_match_deaccession_by_deaccession_number(self, session_context):
+        session_context.side_effect = self._fresh_session_context
+        deaccession = models.Deaccession.objects.create(
+            deaccessionnumber="DEACC-1"
+        )
+        self._assert_path(
+            "Deaccession", "deaccessionNumber", "DEACC-1", deaccession.id
+        )
