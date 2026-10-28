@@ -17,6 +17,8 @@ msgstr ""
 #: components/Attachments/index.tsx:168
 #: components/FormSliders/AttachmentsCollection.tsx:68
 #: components/FormSliders/AttachmentsCollection.tsx:91
+#: components/FormSliders/__tests__/AttachmentsCollection.test.tsx:81
+#: components/FormSliders/__tests__/AttachmentsCollection.test.tsx:97
 #: components/Header/menuItemDefinitions.ts:101
 #: components/Molecules/SyncAttachmentPicker.tsx:118
 #: components/Molecules/SyncAttachmentPicker.tsx:127
@@ -35,7 +37,7 @@ msgstr ""
 #: components/WorkBench/WbAttachmentsPreview.tsx:546
 #: components/WorkBench/WbView.tsx:261
 #: components/WorkBench/hotProps.tsx:75
-#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Form Sliders > Attachments Collection ⬤ Components > Header > Menu Item Definitions ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Preferences > Collection Definitions ⬤ Components > Preferences > Global Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Statistics > Stats Spec ⬤ Components > Wb Attachment Viewer > Index ⬤ Components > Wb Import Attachments > Index ⬤ Components > Wb Toolkit > Index ⬤ Components > Work Bench > Wb Attachments Preview ⬤ Components > Work Bench > Wb View ⬤ Components > Work Bench > Hot Props
+#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Form Sliders > Attachments Collection ⬤ Form Sliders > __tests__ > Attachments Collection ⬤ Components > Header > Menu Item Definitions ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Preferences > Collection Definitions ⬤ Components > Preferences > Global Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Statistics > Stats Spec ⬤ Components > Wb Attachment Viewer > Index ⬤ Components > Wb Import Attachments > Index ⬤ Components > Wb Toolkit > Index ⬤ Components > Work Bench > Wb Attachments Preview ⬤ Components > Work Bench > Wb View ⬤ Components > Work Bench > Hot Props
 msgid "attachments"
 msgstr "Vedlegg"
 
