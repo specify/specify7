@@ -23,5 +23,5 @@ test('Clone button is hidden for CollectionObjectGroup, but Add button is not', 
   expect(
     queryByRole('button', { name: formsText.clone() })
   ).not.toBeInTheDocument();
-  expect(getByRole('button', { name: commonText.add() })).toBeInTheDocument();
+  expect(queryByRole('button', { name: commonText.add() })).toBeInTheDocument();
 });

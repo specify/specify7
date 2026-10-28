@@ -65,7 +65,7 @@ test('shows stored query badges on initial load without opening a table', () => 
     getByRole('button', { name: /^Loan$/ }).querySelector('.bg-brand-400')
   ).not.toBeNull();
   expect(
-    queryByRole('button', { name: /^Agent$/ }).querySelector('.bg-brand-400')
+    getByRole('button', { name: /^Agent$/ }).querySelector('.bg-brand-400')
   ).toBeNull();
 });
 
@@ -78,10 +78,10 @@ test('does not badge default queries absent from the editable resource', () => {
   );
 
   expect(
-    queryByRole('button', { name: /^Loan$/ }).querySelector('.bg-brand-400')
+    getByRole('button', { name: /^Loan$/ }).querySelector('.bg-brand-400')
   ).toBeNull();
   expect(
-    queryByRole('button', { name: /^Agent$/ }).querySelector('.bg-brand-400')
+    getByRole('button', { name: /^Agent$/ }).querySelector('.bg-brand-400')
   ).toBeNull();
 });
 
@@ -97,7 +97,7 @@ test('opening an unconfigured table does not create a query badge', async () => 
   await user.click(getByRole('button', { name: /^Loan$/ }));
   expect(onChange).not.toHaveBeenCalled();
   expect(
-    queryByRole('button', { name: /^Loan$/ }).querySelector('.bg-brand-400')
+    getByRole('button', { name: /^Loan$/ }).querySelector('.bg-brand-400')
   ).toBeNull();
 
   await user.click(getByRole('button', { name: 'Change query' }));

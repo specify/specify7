@@ -84,9 +84,9 @@ describe('HeaderItems', () => {
         'span[aria-disabled]'
       );
       expect(attachmentsItem).toHaveAttribute('aria-disabled', 'true');
-    })
-    expect(attachmentsItem).toHaveClass('opacity-50');
-    expect(attachmentsItem).toHaveClass('cursor-not-allowed');;
+      expect(attachmentsItem).toHaveClass('cursor-not-allowed');
+      expect(attachmentsItem).toHaveClass('opacity-50');
+    });
   });
 
   test('does not disable non-attachments items', async () => {
@@ -96,11 +96,11 @@ describe('HeaderItems', () => {
     await waitFor(() => {
       const searchItem = getByTestId('search-icon').closest('a');
       expect(searchItem).toBeEnabled();
-    })
-    expect(searchItem).toHaveAttribute(
+      expect(searchItem).toHaveAttribute(
         'href',
         '/specify/overlay/express-search/'
-      );;
+      );
+    });
   });
 
   test('renders disabled attachments item as non-interactive', async () => {
@@ -123,7 +123,7 @@ describe('HeaderItems', () => {
     await waitFor(() => {
       const attachmentsItem = getByTestId('attachments-icon').closest('a');
       expect(attachmentsItem).toBeEnabled();
-    })
-    expect(attachmentsItem).toHaveAttribute('href', '/specify/attachments/');;
+      expect(attachmentsItem).toHaveAttribute('href', '/specify/attachments/');
+    });
   });
 });
