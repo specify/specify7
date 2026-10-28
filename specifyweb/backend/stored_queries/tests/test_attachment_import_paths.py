@@ -345,3 +345,11 @@ class TestAttachmentImportPaths(SQLAlchemySetup):
         self._assert_path(
             "ReferenceWork", "title", "Ref Title", reference.id
         )
+
+    @patch("specifyweb.backend.stored_queries.execution.models.session_context")
+    def test_match_reference_work_by_guid(self, session_context):
+        session_context.side_effect = self._fresh_session_context
+        reference = self._create_reference("Ref Title 2", "REF-GUID-2")
+        self._assert_path(
+            "ReferenceWork", "guid", "REF-GUID-2", reference.id
+        )
