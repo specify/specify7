@@ -353,3 +353,11 @@ class TestAttachmentImportPaths(SQLAlchemySetup):
         self._assert_path(
             "ReferenceWork", "guid", "REF-GUID-2", reference.id
         )
+
+    @patch("specifyweb.backend.stored_queries.execution.models.session_context")
+    def test_match_locality_by_unique_identifier(self, session_context):
+        session_context.side_effect = self._fresh_session_context
+        locality = self._create_locality("LOC-1", "LOC-GUID-1")
+        self._assert_path(
+            "Locality", "uniqueIdentifier", "LOC-1", locality.id
+        )
