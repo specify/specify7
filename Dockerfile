@@ -232,11 +232,11 @@ RUN echo "import os \nDEBUG = os.getenv('SP7_DEBUG', '').lower() == 'true'\n" \
 
 RUN cat <<EOF > settings/secret_key.py
 import os
-DEFAULT_KEY="$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | head -c 50)"
+import secrets
 CURRENT_KEY=os.getenv("SECRET_KEY")
 
 if CURRENT_KEY is None or CURRENT_KEY.strip() == "" or CURRENT_KEY.strip().replace(" ", "_") == "change_this_to_some_unique_random_string":
-    new_key = DEFAULT_KEY
+    new_key = secrets.token_urlsafe()
 else:
     new_key = CURRENT_KEY
 
