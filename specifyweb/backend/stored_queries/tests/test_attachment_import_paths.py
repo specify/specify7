@@ -387,3 +387,13 @@ class TestAttachmentImportPaths(SQLAlchemySetup):
         agent.guid = "AGENT-GUID"
         agent.save()
         self._assert_path("Agent", "guid", "AGENT-GUID", agent.id)
+
+    @patch("specifyweb.backend.stored_queries.execution.models.session_context")
+    def test_match_collecting_trip_by_name(self, session_context):
+        session_context.side_effect = self._fresh_session_context
+        trip = models.Collectingtrip.objects.create(
+            discipline=self.discipline, collectingtripname="TRIP-1"
+        )
+        self._assert_path(
+            "CollectingTrip", "collectingTripName", "TRIP-1", trip.id
+        )
