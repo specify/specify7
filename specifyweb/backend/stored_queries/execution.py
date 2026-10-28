@@ -346,10 +346,11 @@ def query_to_web_portal_zip(
         tableid=tableid,
         query_fields=field_specs,
         props=BuildQueryProps(
-        recordsetid=recordsetid,
-        replace_nulls=True,
-        distinct=distinct,
-        selection=selection,
+            recordsetid=recordsetid,
+            replace_nulls=True,
+            distinct=distinct,
+            selection=selection,
+        )
     )
 
     processors = [
