@@ -369,3 +369,13 @@ class TestAttachmentImportPaths(SQLAlchemySetup):
         self._assert_path(
             "Locality", "guid", "LOC-GUID-2", locality.id
         )
+
+    @patch("specifyweb.backend.stored_queries.execution.models.session_context")
+    def test_match_permit_by_permit_number(self, session_context):
+        session_context.side_effect = self._fresh_session_context
+        permit = models.Permit.objects.create(
+            institution=self.institution, permitnumber="PERMIT-1"
+        )
+        self._assert_path(
+            "Permit", "permitNumber", "PERMIT-1", permit.id
+        )
