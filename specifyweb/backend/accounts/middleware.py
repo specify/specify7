@@ -31,6 +31,8 @@ class JWTAuthMiddleware:
         # revoked. Stop here and return a 401 Unauthorized
         if token == False or token_is_revoked(token):
             response = HttpResponse('Invalid access token', status=401)
+            # This header is formatted per OAuth 2.0, see section 3 of RFC 6750
+            # See https://datatracker.ietf.org/doc/html/rfc6750#section-3
             response["WWW-Authenticate"] = 'Bearer error=\"invalid_token\", error_description=\"The access token is expired, revoked, or invalid\"'
             return response
 
