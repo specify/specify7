@@ -235,3 +235,10 @@ class TestAttachmentImportPaths(SQLAlchemySetup):
         session_context.side_effect = self._fresh_session_context
         taxon = self._create_taxon()
         self._assert_path("Taxon", "fullName", "Taxon A", taxon.id)
+
+    @unittest.skip("Storage.fullName currently produces an empty SQL query")
+    @patch("specifyweb.backend.stored_queries.execution.models.session_context")
+    def test_match_storage_by_full_name(self, session_context):
+        session_context.side_effect = self._fresh_session_context
+        storage = self._create_storage()
+        self._assert_path("Storage", "fullName", "Storage A", storage.id)
