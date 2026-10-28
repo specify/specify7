@@ -70,7 +70,7 @@ export function ResourceLink<COMPONENT extends (typeof Link)['Icon']>({
     'aria-pressed': isOpen,
     href: resource?.isNew()
       ? getResourceViewUrl(resource.specifyTable.name, undefined)
-      : resource?.viewUrl() ?? '',
+      : (resource?.viewUrl() ?? ''),
     title: props.title ?? commonText.view(),
     onClick: (event): void => {
       event.preventDefault();
