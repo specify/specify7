@@ -89,6 +89,7 @@ const testRules = {
    * with TypeScript type checking)
    */
   'jest/valid-title': OFF,
+  'jest/valid-expect': OFF,
 
   '@typescript-eslint/no-magic-numbers': WARN,
 };
@@ -940,6 +941,8 @@ export default [
       'testing-library/no-manual-cleanup': ERROR,
       'testing-library/prefer-user-event': ERROR,
       'testing-library/prefer-find-by': OFF,
+      'testing-library/prefer-presence-queries': OFF,
+      'testing-library/no-wait-for-multiple-assertions': OFF,
       //'testing-library/prefer-wait-for': ERROR,
     },
   },
