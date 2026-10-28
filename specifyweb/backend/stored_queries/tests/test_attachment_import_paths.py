@@ -242,3 +242,13 @@ class TestAttachmentImportPaths(SQLAlchemySetup):
         session_context.side_effect = self._fresh_session_context
         storage = self._create_storage()
         self._assert_path("Storage", "fullName", "Storage A", storage.id)
+
+    @patch("specifyweb.backend.stored_queries.execution.models.session_context")
+    def test_match_collecting_event_by_guid(self, session_context):
+        session_context.side_effect = self._fresh_session_context
+        collectingevent = self.collectingevent
+        collectingevent.guid = "CE-GUID"
+        collectingevent.save()
+        self._assert_path(
+            "CollectingEvent", "guid", "CE-GUID", collectingevent.id
+        )
