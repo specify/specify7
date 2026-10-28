@@ -25,6 +25,22 @@ class TestExportWebPortal(SQLAlchemySetup):
         thread.return_value.start.assert_called_once()
         self._assertContentEqual(response, "OK")
 
+    @patch("specifyweb.backend.stored_queries.views.Thread")
+    def test_invalid_selection_is_rejected_before_export(self, thread: Mock):
+        c = Client()
+        c.force_login(self.specifyuser)
+        query = get_simple_query(self.specifyuser)
+        query["selection"] = {"mode": "invalid", "ids": [1]}
+
+        response = c.post(
+            "/stored_query/exportwebportal/",
+            query,
+            content_type="application/json",
+        )
+
+        self._assertStatusCodeEqual(response, 400)
+        thread.assert_not_called()
+
     def test_portal_attachment_map(self):
         from specifyweb.backend.stored_queries import web_portal_export
 
