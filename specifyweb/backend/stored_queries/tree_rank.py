@@ -1,7 +1,7 @@
 from specifyweb.specify.datamodel import datamodel
 from specifyweb.specify.models_utils.load_datamodel import Relationship
 
-RANK_KEY_DELIMITER = ":::"
+RANK_KEY_DELIMITER = "~>"
 
 class TreeRankQuery(Relationship):
     # FUTURE: used to remember what the previous value was. Useless after 6 retires

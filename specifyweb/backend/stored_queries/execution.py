@@ -983,6 +983,8 @@ def build_query_construct_base(
     model,
     props: BuildQueryProps,
 ):
+    from .query_construct_model import QueryConstruct
+
     id_field = model._id
     catalognumber_field = model.catalogNumber if hasattr(model, 'catalogNumber') else None
     query_construct_query = session.query(id_field)
