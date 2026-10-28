@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 from specifyweb.backend.workbench.models import Spdataset, Spdatasetattachment
 from specifyweb.specify import models
 from specifyweb.specify.tests.test_api import ApiTests
@@ -57,7 +59,8 @@ class TestAttachmentRules(ApiTests):
         attachment.refresh_from_db()
         self.assertEqual(attachment.tableid, Spdataset.specify_model.tableId)
 
-    def test_delete_last_dataset_reference_deletes_attachment(self):
+    @patch('specifyweb.backend.attachment_gw.views.delete_attachment_file')
+    def test_delete_last_dataset_reference_deletes_attachment(self, delete_attachment_file):
         attachment = models.Attachment.objects.create(
             origfilename="test.jpg",
             attachmentlocation="test.jpg",
@@ -81,3 +84,4 @@ class TestAttachmentRules(ApiTests):
         self.assertFalse(
             models.Attachment.objects.filter(id=attachment.id).exists()
         )
+        delete_attachment_file.assert_called_once_with('test.jpg')

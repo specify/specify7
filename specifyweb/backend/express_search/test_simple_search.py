@@ -45,9 +45,9 @@ class SimpleSearchResultsTests(SQLAlchemySetup):
 
     def test_taxon_full_name_exact_and_partial(self):
         rank = models.Taxontreedefitem.objects.create(treedef=self.taxontreedef, name='Species', rankid=220)
-        expected = models.Taxon.objects.create(treedef=self.taxontreedef, treedefitem=rank,
+        expected = models.Taxon.objects.create(definition=self.taxontreedef, definitionitem=rank,
                                                rankid=220, name='alba', fullname='Quercus alba')
-        models.Taxon.objects.create(treedef=self.taxontreedef, treedefitem=rank,
+        models.Taxon.objects.create(definition=self.taxontreedef, definitionitem=rank,
                                     rankid=220, name='Quercus', fullname='Unrelated')
         self.assertEqual(self.ids('Taxon', '"Quercus alba"'), [expected.id])
         self.assertEqual(self.ids('Taxon', 'Quercus*'), [expected.id])
@@ -55,10 +55,10 @@ class SimpleSearchResultsTests(SQLAlchemySetup):
 
     def test_locality_and_geography_use_separate_configured_fields(self):
         rank = self.geographytreedef.treedefitems.first()
-        geography = models.Geography.objects.create(treedef=self.geographytreedef,
-            treedefitem=rank, rankid=0, name='Short', fullname='Searchable Region')
-        models.Geography.objects.create(treedef=self.geographytreedef,
-            treedefitem=rank, rankid=0, name='Other', fullname='Unrelated')
+        geography = models.Geography.objects.create(definition=self.geographytreedef,
+            definitionitem=rank, rankid=0, name='Short', fullname='Searchable Region')
+        models.Geography.objects.create(definition=self.geographytreedef,
+            definitionitem=rank, rankid=0, name='Other', fullname='Unrelated')
         locality = models.Locality.objects.create(discipline=self.discipline,
             localityname='Searchable Site', geography=geography)
         models.Locality.objects.create(discipline=self.discipline, localityname='Unrelated', geography=geography)
