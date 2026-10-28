@@ -379,3 +379,11 @@ class TestAttachmentImportPaths(SQLAlchemySetup):
         self._assert_path(
             "Permit", "permitNumber", "PERMIT-1", permit.id
         )
+
+    @patch("specifyweb.backend.stored_queries.execution.models.session_context")
+    def test_match_agent_by_guid(self, session_context):
+        session_context.side_effect = self._fresh_session_context
+        agent = self.agent
+        agent.guid = "AGENT-GUID"
+        agent.save()
+        self._assert_path("Agent", "guid", "AGENT-GUID", agent.id)
