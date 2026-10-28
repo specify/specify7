@@ -11,6 +11,7 @@ import {
 const pending = new Set<symbol>();
 const listeners = new Set<() => void>();
 let generation = 0;
+const delayCancellers = new Set<() => void>();
 
 const notify = (): void => listeners.forEach((listener) => listener());
 
@@ -33,6 +34,7 @@ export function useStatisticsLoading(): boolean {
 
 export function cancelStatisticsRequests(): void {
   generation += 1;
+  Array.from(delayCancellers).forEach((cancel) => cancel());
 }
 
 export async function statisticsAjax<T>(
@@ -55,13 +57,17 @@ export async function statisticsAjax<T>(
       const retryAfter = Number(
         result.response.headers.get('X-Specify-Retry-After')
       );
-      await new Promise<void>((resolve) =>
-        globalThis.setTimeout(
-          resolve,
-          (Number.isFinite(retryAfter) && retryAfter > 0 ? retryAfter : 2) *
-            1000
-        )
-      );
+      const delay =
+        (Number.isFinite(retryAfter) && retryAfter > 0 ? retryAfter : 2) * 1000;
+      await new Promise<void>((resolve) => {
+        const finish = (): void => {
+          globalThis.clearTimeout(timer);
+          delayCancellers.delete(finish);
+          resolve();
+        };
+        const timer = globalThis.setTimeout(finish, delay);
+        delayCancellers.add(finish);
+      });
     }
     return undefined;
   } finally {
