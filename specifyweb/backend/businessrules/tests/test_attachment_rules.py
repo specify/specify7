@@ -59,8 +59,12 @@ class TestAttachmentRules(ApiTests):
         attachment.refresh_from_db()
         self.assertEqual(attachment.tableid, Spdataset.specify_model.tableId)
 
-    @patch('specifyweb.backend.attachment_gw.views.delete_attachment_file')
-    def test_delete_last_dataset_reference_deletes_attachment(self, delete_file):
+    @patch(
+        "specifyweb.backend.attachment_gw.views.delete_attachment_file"
+    )
+    def test_delete_last_dataset_reference_deletes_attachment(
+        self, delete_attachment_file
+    ):
         attachment = models.Attachment.objects.create(
             origfilename="test.jpg",
             attachmentlocation="test.jpg",
@@ -81,7 +85,9 @@ class TestAttachmentRules(ApiTests):
 
         dataset_attachment.delete()
 
+        delete_attachment_file.assert_called_once_with(
+            attachment.attachmentlocation
+        )
         self.assertFalse(
             models.Attachment.objects.filter(id=attachment.id).exists()
         )
-        delete_file.assert_called_once_with('test.jpg')
