@@ -273,3 +273,13 @@ class TestAttachmentImportPaths(SQLAlchemySetup):
             discipline=self.discipline, loannumber="LOAN-1"
         )
         self._assert_path("Loan", "loanNumber", "LOAN-1", loan.id)
+
+    @patch("specifyweb.backend.stored_queries.execution.models.session_context")
+    def test_match_accession_by_accession_number(self, session_context):
+        session_context.side_effect = self._fresh_session_context
+        accession = models.Accession.objects.create(
+            division=self.division, accessionnumber="ACC-1"
+        )
+        self._assert_path(
+            "Accession", "accessionNumber", "ACC-1", accession.id
+        )
