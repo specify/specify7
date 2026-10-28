@@ -16,7 +16,7 @@ from specifyweb.backend.context.views import has_collection_access
 DEFAULT_AUTH_LIFESPAN_SECONDS = 1800
 
 # See https://pyjwt.readthedocs.io/en/latest/api.html#jwt.decode
-AUTH_JWT_DECODE_OPTIONS = {
+AUTH_JWT_DECODE_OPTIONS: jwt.types.Options = {
     "require": ["iat", "exp", "jti"],
     "verify_signature": True,
     "verify_iat": True,
