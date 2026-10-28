@@ -321,3 +321,11 @@ class TestAttachmentImportPaths(SQLAlchemySetup):
         self._assert_path(
             "TreatmentEvent", "fieldNumber", "TREAT-1", treatment.id
         )
+
+    @patch("specifyweb.backend.stored_queries.execution.models.session_context")
+    def test_match_exchange_in_by_exchange_in_number(self, session_context):
+        session_context.side_effect = self._fresh_session_context
+        exchange = self._create_exchange_in()
+        self._assert_path(
+            "ExchangeIn", "exchangeInNumber", "EXIN-1", exchange.id
+        )
