@@ -361,3 +361,11 @@ class TestAttachmentImportPaths(SQLAlchemySetup):
         self._assert_path(
             "Locality", "uniqueIdentifier", "LOC-1", locality.id
         )
+
+    @patch("specifyweb.backend.stored_queries.execution.models.session_context")
+    def test_match_locality_by_guid(self, session_context):
+        session_context.side_effect = self._fresh_session_context
+        locality = self._create_locality("LOC-2", "LOC-GUID-2")
+        self._assert_path(
+            "Locality", "guid", "LOC-GUID-2", locality.id
+        )
