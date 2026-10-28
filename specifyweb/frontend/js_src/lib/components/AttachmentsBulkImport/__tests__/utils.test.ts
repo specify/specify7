@@ -1,5 +1,6 @@
 import type { LocalizedString } from 'typesafe-i18n';
 
+import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
 import { fieldFormatterToParser } from '../../../utils/parser/definitions';
 import type { IR, RA } from '../../../utils/types';
@@ -21,6 +22,7 @@ import {
   matchSelectedFiles,
   prepareMappingFileSelection,
   resolveFileNames,
+  validateAttachmentFiles,
 } from '../utils';
 
 requireContext();
@@ -1179,5 +1181,64 @@ describe('prepareMappingFileSelection – edge cases', () => {
       expect(r.uploadFile.mappingMatchValue).toBeTruthy();
       expect(r.uploadFile.parsedName).toBeTruthy();
     }
+  });
+});
+
+describe('validateAttachmentFiles', () => {
+  const matchingName = '000000001';
+  const missingName = '000000002';
+
+  overrideAjax(
+    '/stored_query/ephemeral/',
+    { results: [[1, matchingName]] },
+    {
+      method: 'POST',
+      body: expect.objectContaining({
+        contexttableid: 1,
+        contextname: 'CollectionObject',
+        fields: [
+          expect.objectContaining({
+            tablelist: '1',
+            stringid: '1.collectionobject.catalogNumber',
+            fieldname: 'catalogNumber',
+            operstart: 10,
+            startvalue: `${matchingName},${missingName}`,
+          }),
+        ],
+      }),
+    }
+  );
+
+  test('matches files returned by the validation query', async () => {
+    const files = [
+      {
+        uploadFile: {
+          file: {
+            name: `${matchingName}.jpg`,
+            size: 0,
+            type: 'image/jpeg',
+          },
+          parsedName: matchingName,
+        },
+      },
+      {
+        uploadFile: {
+          file: {
+            name: `${missingName}.jpg`,
+            size: 0,
+            type: 'image/jpeg',
+          },
+          parsedName: missingName,
+        },
+      },
+    ] as RA<PartialUploadableFileSpec>;
+
+    const result = await validateAttachmentFiles(files, {
+      staticPathKey: 'collectionObjectCatalogNumber',
+      formatQueryResults: (value) => value?.toString(),
+    });
+
+    expect(result[0].matchedId).toEqual([1]);
+    expect(result[1].matchedId).toEqual([]);
   });
 });
