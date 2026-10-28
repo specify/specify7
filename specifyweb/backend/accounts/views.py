@@ -12,7 +12,7 @@ from django.conf import settings
 from django.contrib.auth import login, authenticate
 from django.db import connection, transaction
 from django.db.models import Max
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.template.response import TemplateResponse
 from django.utils import crypto
 from django.utils import timezone
@@ -514,6 +514,9 @@ def set_password(request, userid):
                         }
                     }
                 }
+            },
+            "404": {
+                "description": "No SpecifyUser with the ID exists"
             }
         }
     },
@@ -522,14 +525,15 @@ def set_password(request, userid):
 @require_POST
 def set_user_agents(request, userid: int):
     "Sets the agents to represent the user in different disciplines."
-    user = Specifyuser.objects.get(pk=userid)
+    # BUG: Handle returning 400 code when userid is not an int
+    user = get_object_or_404(Specifyuser, pk=userid)
     new_agentids = json.loads(request.body)
     cursor = connection.cursor()
 
     with transaction.atomic():
         # clear user's existing agents
         Agent.objects.filter(
-            specifyuser_id=userid).update(specifyuser_id=None)
+            specifyuser_id=user.pk).update(specifyuser_id=None)
 
         # check if any of the agents to be assigned are used by other users
         in_use = Agent.objects.select_for_update().filter(
@@ -539,7 +543,7 @@ def set_user_agents(request, userid: int):
 
         # assign the new agents
         Agent.objects.filter(
-            pk__in=new_agentids).update(specifyuser_id=userid)
+            pk__in=new_agentids).update(specifyuser_id=user.pk)
 
         # check for multiple agents assigned to the user
         # NOTE: This is too aggressive (and inefficient) of a test.
@@ -549,7 +553,7 @@ def set_user_agents(request, userid: int):
             """select divisionid, a1.agentid, a2.agentid
             from agent a1 join agent a2 using (specifyuserid, divisionid)
             where a1.agentid < a2.agentid and specifyuserid = %s
-            """, [userid]
+            """, [user.pk]
         )
 
         multiple = [
@@ -561,14 +565,14 @@ def set_user_agents(request, userid: int):
 
         # get the list of collections the agents belong to.
         collections = Collection.objects.filter(
-            discipline__division__members__specifyuser_id=userid).values_list('id', flat=True)
+            discipline__division__members__specifyuser_id=user.pk).values_list('id', flat=True)
 
         # check permissions for setting user agents in those collections.
         for collectionid in collections:
             check_permission_targets(collectionid, request.specify_user.id, [
                                      SetUserAgentsPT.update])
 
-        check_collection_access_against_agents(userid)
+        check_collection_access_against_agents(user.pk)
 
     return http.HttpResponse('', status=204)
 
@@ -674,7 +678,8 @@ def set_admin_status(request, userid):
                                     "type": "integer",
                                     "description": "The number of seconds the access token is live for."
                                 }
-                            }
+                            },
+                            "required": ['access_token', 'expires_in']
                         }
                     }
                 }
@@ -692,8 +697,8 @@ def set_admin_status(request, userid):
                                 "error_description": {
                                     "type": "string"
                                 },
-                                "required": ["error"]
-                            }
+                            },
+                            "required": ['error']
                         }
                     }
                 }
@@ -712,8 +717,8 @@ def set_admin_status(request, userid):
                                 "error_description": {
                                     "type": "string"
                                 },
-                                "required": ["error"]
-                            }
+                            },
+                            "required": ['error']
                         }
                     }
                 }
@@ -730,7 +735,7 @@ def acquire_access_token(request: http.HttpRequest):
     # https://www.rfc-editor.org/info/rfc6749/#section-4.4.2
     # Though in the future we can allow this endpoint to also accept
     # application/json bodies
-    grant_type = require_POST.get("grant_type")
+    grant_type = request.POST.get("grant_type")
 
     if grant_type is None:
         error_response = {
