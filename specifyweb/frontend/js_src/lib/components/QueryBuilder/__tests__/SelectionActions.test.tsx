@@ -138,17 +138,13 @@ test('record-set creation sends query plus exceptions, not browser-loaded IDs', 
   );
 });
 
-test('web portal export retains whole-query scope regardless of selection', async () => {
+test('web portal export is disabled and sends no request when selection is empty', () => {
   const ping = jest.spyOn(pingModule, 'ping').mockResolvedValue(200);
   renderActions(<QueryExportButtons {...props(emptySelection())} />);
-  fireEvent.click(
-    screen.getByRole('button', { name: queryText.exportToWebPortal() })
-  );
-  await waitFor(() => expect(ping).toHaveBeenCalledTimes(1));
-  expect(ping.mock.calls[0][1]?.body).toEqual(
-    expect.objectContaining({
-      selection: undefined,
-      selectedrows: undefined,
-    })
-  );
+  const button = screen.getByRole('button', {
+    name: queryText.exportToWebPortal(),
+  });
+  expect(button).toBeDisabled();
+  fireEvent.click(button);
+  expect(ping).not.toHaveBeenCalled();
 });
