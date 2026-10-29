@@ -638,7 +638,7 @@ def set_admin_status(request, userid):
                                 "properties": {
                                     "grant_type": {
                                         "type": "string",
-                                        "enum": [ACCESS_TOKEN_GRANT_TYPE.PASSWORD]
+                                        "enum": [ACCESS_TOKEN_GRANT_TYPE.PASSWORD.value]
                                     },
                                     "username": {
                                         "type": "string"
