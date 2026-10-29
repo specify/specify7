@@ -151,7 +151,7 @@ def handle_password_token_grant(request: http.HttpRequest) -> http.HttpResponse:
         }
         return http.JsonResponse(error_response, status=400)
 
-    user: Specifyuser = authenticate(username=username, password=password)
+    user: Specifyuser | None = authenticate(username=username, password=password)
 
     if user is None or not has_collection_access(collection.id, user.id):
         error_response = {
