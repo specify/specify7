@@ -740,16 +740,17 @@ def acquire_access_token(request: http.HttpRequest):
     if grant_type is None:
         error_response = {
             "error": "invalid_request",
-            "error_description": "A grant_type was not provided in access token request"
+            "error_description": f"A grant_type was not provided in access token request. Available grant_types: {list(ACCESS_TOKEN_GRANT_TYPE.types())}"
         }
         return http.JsonResponse(error_response, status=400)
 
-    if grant_type == ACCESS_TOKEN_GRANT_TYPE.PASSWORD:
+    if grant_type == ACCESS_TOKEN_GRANT_TYPE.PASSWORD.value:
         response = handle_password_token_grant(request)
         return response
 
     error_response = {
-        "error": "unsupported_grant_type"
+        "error": "unsupported_grant_type",
+        "error_description": f"Available grant_types: {list(ACCESS_TOKEN_GRANT_TYPE.types())}"
     }
     return http.JsonResponse(error_response, status=400)
 

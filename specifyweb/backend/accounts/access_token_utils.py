@@ -1,10 +1,10 @@
 import uuid
 
-import jwt
-
 from datetime import datetime, timezone, timedelta
-from typing import Literal, cast
+from typing import Literal, Generator, cast
+from enum import StrEnum
 
+import jwt
 from django import http
 from django.contrib.auth import authenticate
 from django.conf import settings
@@ -83,10 +83,15 @@ def token_is_revoked(token: dict):
     token_key = f"revoked:{token_identifier}"
     return redis_string.exists(token_key)
 
-class ACCESS_TOKEN_GRANT_TYPE:
+class ACCESS_TOKEN_GRANT_TYPE(StrEnum):
     # The client provides the server with a username, password, and collection
     # id
     PASSWORD = "password"
+
+    @classmethod
+    def types(cls) -> Generator[str, None, None]:
+        return (item.value for item in cls)
+
 
 def handle_password_token_grant(request: http.HttpRequest) -> http.HttpResponse:
     """
