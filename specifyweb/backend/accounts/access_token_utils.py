@@ -81,7 +81,7 @@ def get_token_from_request(request: http.HttpRequest) -> Literal[False] | None |
     if auth_header is None or not auth_header.lower().startswith("bearer "):
         return None
 
-    auth_fields = auth_header.split(" ")
+    auth_fields = auth_header.strip().split(" ")
     # If there is more than one space in the Authorization header, consider it
     # invalid
     if len(auth_fields) != 2:
