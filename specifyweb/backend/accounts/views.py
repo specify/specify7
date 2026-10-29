@@ -37,9 +37,8 @@ from specifyweb.specify.models import Specifyuser, Agent, Collection
 from specifyweb.specify.auth.support_login import b64_url_to_bytes
 from specifyweb.backend.accounts.access_token_utils import (
     DEFAULT_AUTH_LIFESPAN_SECONDS,
-    AUTH_JWT_DECODE_OPTIONS,
-    AUTH_TOKEN_ALGORITHMS,
     ACCESS_TOKEN_GRANT_TYPE,
+    decode_access_token,
     revoke_access_token as revoke_token,
     handle_password_token_grant)
 
@@ -802,10 +801,9 @@ def revoke_access_token(request):
     if encoded_token is None:
         return http.HttpResponse('', status=204)
 
-    try:
-        token = jwt.decode(encoded_token, settings.SECRET_KEY,
-                           options=AUTH_JWT_DECODE_OPTIONS, algorithms=AUTH_TOKEN_ALGORITHMS)
-    except jwt.exceptions.InvalidTokenError:
+    token = decode_access_token(encoded_token)
+
+    if token is None:
         return http.HttpResponse('', status=204)
 
     revoke_token(token)

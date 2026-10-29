@@ -1,7 +1,7 @@
 import uuid
 
 from datetime import datetime, timezone, timedelta
-from typing import Literal, Generator, cast
+from typing import Literal, Generator, Any, cast
 from enum import StrEnum
 
 import jwt
@@ -42,7 +42,7 @@ def generate_access_token(user, collection_id: int, expires_in: int = DEFAULT_AU
     return token
 
 
-def revoke_access_token(token: dict):
+def revoke_access_token(token: dict[str, Any]):
     """
     Accepts and revokes a decoded JWT Auth Token.
     Specifically, stores the token in a "blacklist" in Redis for the remaining
@@ -81,13 +81,28 @@ def get_token_from_request(request: http.HttpRequest) -> Literal[False] | None |
 
     encoded_token = auth_header.split(" ")[1]
 
-    try:
-        token = jwt.decode(encoded_token, settings.SECRET_KEY,
-                           options=AUTH_JWT_DECODE_OPTIONS, algorithms=AUTH_TOKEN_ALGORITHMS)
-    except jwt.exceptions.InvalidTokenError:
+    token = decode_access_token(encoded_token)
+
+    if token is None:
         return False
+
     return token
 
+def decode_access_token(token: str) -> dict[str, Any] | None:
+    """
+    Attempts to decode an Access Token. Returns the token if it's valid and
+    None otherwise
+    """
+    try:
+        token = jwt.decode(
+            token,
+            settings.SECRET_KEY,
+            options=AUTH_JWT_DECODE_OPTIONS,
+            algorithms=AUTH_TOKEN_ALGORITHMS
+        )
+    except jwt.exceptions.InvalidTokenError:
+        return None
+    return token
 
 def token_is_revoked(token: dict):
     token_identifier = token["jti"]
