@@ -765,20 +765,24 @@ def acquire_access_token(request: http.HttpRequest):
                     "schema": {
                         "type": "object",
                         "properties": {
-                            "access_token": {
+                            "token": {
                                 "type": "string",
-                                "description": "The JWT Access token to revoke"
+                                "description": "The JWT token to revoke"
                             },
+                            "token_type_hint": {
+                                "type": "string",
+                                "description": "A hint to the server about the type of token to revoke",
+                                "enum": ['access_token']
+                            }
                         },
-                        "required": ['access_token'],
+                        "required": ['token'],
                         'additionalProperties': False
                     }
                 }
             }
         },
         "responses": {
-            "204": {"description": "The access token was revoked"},
-            "400": {"description": "The provided token is already invalid or could not be validated"},
+            "204": {"description": "The access token was revoked or is already invalid"},
             "403": {"description": "The user was not authenticated/logged-in when making a request to the endpoint"},
             "405": {"description": "A non-POST method was made to the endpoint. Only POST is supported"}
         }
@@ -787,13 +791,22 @@ def acquire_access_token(request: http.HttpRequest):
 @require_POST
 @login_maybe_required
 def revoke_access_token(request):
-    encoded_token = request.POST.get("access_token")
+    """
+    Where possible, this endpoint should generally follow the OAuth 2.0 Spec
+    for Token Revocation as defined by RFC 7009:
+        https://www.rfc-editor.org/info/rfc7009/
+
+    FEAT: When refresh tokens are implemented, allow their revocation
+    """
+    encoded_token = request.POST.get("token")
+    if encoded_token is None:
+        return http.HttpResponse('', status=204)
 
     try:
         token = jwt.decode(encoded_token, settings.SECRET_KEY,
                            options=AUTH_JWT_DECODE_OPTIONS, algorithms=AUTH_TOKEN_ALGORITHMS)
     except jwt.exceptions.InvalidTokenError:
-        return http.HttpResponseBadRequest()
+        return http.HttpResponse('', status=204)
 
     revoke_token(token)
 
