@@ -625,39 +625,47 @@ def set_admin_status(request, userid):
     'post': {
         "requestBody": {
             "required": True,
-            "description": "Obtain an access token that can be used with the API. This endpoint follows OAuth 2.0 Framework defined in RFC 6749: https://www.rfc-editor.org/info/rfc6749/. Specify supports using bearer access tokens through an Authorization Bearer header as defined in RFC 6750: https://www.rfc-editor.org/info/rfc6750/",
+            # BUG: Currently Swagger UI does not cleanly render OneOf request
+            # body options.
+            # The user had to go into the schema to view descriptions and each
+            # option. Or I was setting them up wrong.
+            # Because we only support one grant type at the moment, I'm
+            # including the description up here for convenience
+            "description": "Authenticate with a user name, password, and collection id. The resulting access token has the same permissions as the authenticated user used to generate it and will be 'logged in' or scoped to the provided collection.",
             "content": {
                 "application/x-www-form-urlencoded": {
                     "schema": {
-                        "oneOf": [
-                            # FEAT: Add the refresh_token grant type, to
-                            # generate access tokens
-                            {
-                                "type": "object",
-                                "properties": {
-                                    "grant_type": {
-                                        "type": "string",
-                                        "enum": [ACCESS_TOKEN_GRANT_TYPE.PASSWORD.value]
-                                    },
-                                    "username": {
-                                        "type": "string"
-                                    },
-                                    "password": {
-                                        "type": "string"
-                                    },
-                                    "collectionid": {
-                                        "type": "integer"
-                                    },
-                                    "expires_in": {
-                                        "type": "integer",
-                                        "description": f"The number of seconds this token should be valid for. Defaults to {DEFAULT_AUTH_LIFESPAN_SECONDS} seconds if not specified",
-                                        "default": DEFAULT_AUTH_LIFESPAN_SECONDS
-                                    }
-                                },
-                                "required": ['grant_type', 'username', 'password', 'collectionid'],
-                                'additionalProperties': False
+                        # FEAT: Add the refresh_token grant type, to generate
+                        # access tokens.
+                        # We can use oneOf here to validate against different
+                        # schemas when refresh tokens are supported
+                        "type": "object",
+                        "properties": {
+                            "grant_type": {
+                                "type": "string",
+                                "description": "The type of information you are authenticating with. We currently only support the password grant type",
+                                "enum": [ACCESS_TOKEN_GRANT_TYPE.PASSWORD.value]
+                            },
+                            "username": {
+                                "type": "string",
+                                "description": "The user name of the Specify User"
+                            },
+                            "password": {
+                                "type": "string",
+                                "description": "The password for the Specify User"
+                            },
+                            "collectionid": {
+                                "type": "integer",
+                                "description": "The ID of the Collection to scope this access token to. /context/login/ can be used to get Collection IDs if needed"
+                            },
+                            "expires_in": {
+                                "type": "integer",
+                                "description": f"The number of seconds this token should be valid for. Defaults to {DEFAULT_AUTH_LIFESPAN_SECONDS} seconds if not specified",
+                                "default": DEFAULT_AUTH_LIFESPAN_SECONDS
                             }
-                        ]
+                        },
+                        "required": ['grant_type', 'username', 'password', 'collectionid'],
+                        'additionalProperties': False
                     }
                 }
             }
@@ -735,7 +743,12 @@ def set_admin_status(request, userid):
 @csrf_exempt
 def acquire_access_token(request: http.HttpRequest):
     """
-    Obtain an access token that can be used for API authentication.
+    Obtain an access token for use with the API.
+
+    This endpoint follows the OAuth 2.0 Framework defined in RFC 6749: https://www.rfc-editor.org/info/rfc6749/.
+    Specify supports using bearer access tokens through an Authorization Bearer header as defined in RFC 6750: https://www.rfc-editor.org/info/rfc6750/.
+
+    To use an access token, include it in future requests with an "Authorization: Bearer <TOKEN>" header, replacing <TOKEN> with the generated access token.
     """
     # FEAT: Currently we only accept x-www-form-urlencoded because that is
     # required by the OAuth 2.0 framework, see section 4.4.2 of RFC 6749:
@@ -766,7 +779,6 @@ def acquire_access_token(request: http.HttpRequest):
     'post': {
         "requestBody": {
             "required": True,
-            "description": "Revoke a previously granted access token",
             "content": {
                 "application/x-www-form-urlencoded": {
                     "schema": {
@@ -774,11 +786,11 @@ def acquire_access_token(request: http.HttpRequest):
                         "properties": {
                             "token": {
                                 "type": "string",
-                                "description": "The JWT token to revoke"
+                                "description": "The access token to revoke"
                             },
                             "token_type_hint": {
                                 "type": "string",
-                                "description": "A hint to the server about the type of token to revoke",
+                                "description": "A hint to the server about the type of token to revoke. This is ignored at the moment, but may have an effect in the future.",
                                 "enum": ['access_token']
                             }
                         },
@@ -799,7 +811,9 @@ def acquire_access_token(request: http.HttpRequest):
 @login_maybe_required
 def revoke_access_token(request):
     """
-    Revoke/Invalidate a previously generated access token
+    Revoke/invalidate a previously generated access token.
+    You must be authenticated (e.g., from a Session or by Bearer token) to call this endpoint.
+    A bearer token that is used for authentication can be revoked. That is, a token can revoke itself.
     """
     """
     Where possible, this endpoint should generally follow the OAuth 2.0 Spec

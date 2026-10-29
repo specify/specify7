@@ -76,7 +76,7 @@ def get_token_from_request(request: http.HttpRequest) -> Literal[False] | None |
         https://www.rfc-editor.org/info/rfc6750/#section-2.1
     """
     auth_header = request.headers.get("Authorization")
-    if auth_header is None or not auth_header.startswith("Bearer "):
+    if auth_header is None or not auth_header.lower().startswith("bearer "):
         return None
 
     encoded_token = auth_header.split(" ")[1]
