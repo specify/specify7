@@ -88,14 +88,14 @@ def get_token_from_request(request: http.HttpRequest) -> Literal[False] | None |
 
     return token
 
-def decode_access_token(token: str) -> dict[str, Any] | None:
+def decode_access_token(encoded_token: str) -> dict[str, Any] | None:
     """
     Attempts to decode an Access Token. Returns the token if it's valid and
     None otherwise
     """
     try:
         token = jwt.decode(
-            token,
+            encoded_token,
             settings.SECRET_KEY,
             options=AUTH_JWT_DECODE_OPTIONS,
             algorithms=AUTH_TOKEN_ALGORITHMS
@@ -178,7 +178,10 @@ def handle_password_token_grant(request: http.HttpRequest) -> http.HttpResponse:
         }
         return http.JsonResponse(error_response, status=400)
 
-    user: Specifyuser | None = authenticate(username=username, password=password)
+    untyped_user = authenticate(username=username, password=password)
+    # authenticate should always return a Specifyuser, as that's our only Auth
+    # User Model
+    user = cast(Specifyuser | None, untyped_user)
 
     if user is None or not has_collection_access(collection.id, user.id):
         error_response = {

@@ -3,6 +3,7 @@ import uuid
 import json
 from unittest.mock import patch
 from datetime import datetime, timezone, timedelta
+from typing import cast, Any
 
 from django.test import Client
 
@@ -88,9 +89,10 @@ class AccessTokenApiTests(AccessTokenTests):
         self.assertEqual(response["expires_in"], 120)
         claims = decode_access_token(response["access_token"])
         self.assertIsNotNone(claims)
-        self.assertEqual(claims["sub"], str(self.specifyuser.id))
-        self.assertEqual(claims["username"], self.specifyuser.name)
-        self.assertEqual(claims["collection"], self.collection.id)
+        enforced_claims = cast(dict[str, Any], claims)
+        self.assertEqual(enforced_claims["sub"], str(self.specifyuser.id))
+        self.assertEqual(enforced_claims["username"], self.specifyuser.name)
+        self.assertEqual(enforced_claims["collection"], self.collection.id)
 
     def test_acquire_access_token_succeeds_when_user_is_not_logged_in(self) -> None:
         client = Client()
@@ -109,9 +111,10 @@ class AccessTokenApiTests(AccessTokenTests):
 
         claims = decode_access_token(response["access_token"])
         self.assertIsNotNone(claims)
-        self.assertEqual(claims["sub"], str(self.specifyuser.id))
-        self.assertEqual(claims["username"], self.specifyuser.name)
-        self.assertEqual(claims["collection"], self.collection.id)
+        enforced_claims = cast(dict[str, Any], claims)
+        self.assertEqual(enforced_claims["sub"], str(self.specifyuser.id))
+        self.assertEqual(enforced_claims["username"], self.specifyuser.name)
+        self.assertEqual(enforced_claims["collection"], self.collection.id)
 
     def test_acquire_access_token_rejects_missing_or_unsupported_grant_type(self) -> None:
         client = Client()
