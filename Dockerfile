@@ -230,18 +230,8 @@ EOF
 RUN echo "import os \nDEBUG = os.getenv('SP7_DEBUG', '').lower() == 'true'\n" \
         > settings/debug.py
 
-RUN cat <<EOF > settings/secret_key.py
-import os
-import secrets
-CURRENT_KEY=os.getenv("SECRET_KEY")
-
-if CURRENT_KEY is None or CURRENT_KEY.strip() == "" or CURRENT_KEY.strip().replace(" ", "_") == "change_this_to_some_unique_random_string":
-    new_key = secrets.token_urlsafe()
-else:
-    new_key = CURRENT_KEY
-
-SECRET_KEY=new_key
-EOF
+RUN echo "import os \nSECRET_KEY = os.environ['SECRET_KEY']\n" \
+        > settings/secret_key.py
 
 ENV LC_ALL=C.UTF-8
 ENV LANG=C.UTF-8
