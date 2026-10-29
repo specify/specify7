@@ -125,11 +125,5 @@ export default {
       },
     ],
   },
-  overrides: [
-    {
-      files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
-      customSyntax: '@stylelint/postcss-css-in-js',
-    },
-  ],
-  ignoreFiles: ['**/*.md'],
+  ignoreFiles: ['**/*.md', '**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx']
 };
