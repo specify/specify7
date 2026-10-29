@@ -3,13 +3,13 @@ import uuid
 import jwt
 
 from datetime import datetime, timezone, timedelta
-from typing import Literal
+from typing import Literal, cast
 
 from django import http
 from django.contrib.auth import authenticate
 from django.conf import settings
 
-from specifyweb.specify.models import Collection
+from specifyweb.specify.models import Collection, Specifyuser
 from specifyweb.backend.cache.redis.connect import RedisConnection, RedisString
 from specifyweb.backend.context.views import has_collection_access
 
@@ -125,7 +125,11 @@ def handle_password_token_grant(request: http.HttpRequest) -> http.HttpResponse:
         return http.JsonResponse(error_response, status=400)
 
     try:
-        collection_id = int(raw_collection_id)
+        # We know that the raw_collection_id can not be NONE here as that was
+        # caught by the first check for username, password, and collectionid
+        # In the worst case scenario where the above check is changed and this
+        # can be None, this will raise TypeError
+        collection_id = int(cast(str, raw_collection_id))
     except ValueError:
         error_response = {
             "error": "invalid_request",
@@ -142,7 +146,7 @@ def handle_password_token_grant(request: http.HttpRequest) -> http.HttpResponse:
         }
         return http.JsonResponse(error_response, status=400)
 
-    user = authenticate(username=username, password=password)
+    user: Specifyuser = authenticate(username=username, password=password)
 
     if user is None or not has_collection_access(collection.id, user.id):
         error_response = {
