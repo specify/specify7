@@ -57,9 +57,11 @@ def revoke_access_token(token: dict[str, Any]):
     expires_at = token["exp"]
     current_time = int(datetime.now(timezone.utc).timestamp())
     blacklist_ttl = expires_at - current_time
+    if blacklist_ttl < 1:
+        return
     redis_string = RedisString(RedisConnection())
     token_key = f"revoked:{jti}"
-    redis_string.set(token_key, "true", time_to_live=blacklist_ttl)
+    redis_string.set(token_key, "true", time_to_live=max(blacklist_ttl, 1))
 
 
 def get_token_from_request(request: http.HttpRequest) -> Literal[False] | None | dict:
