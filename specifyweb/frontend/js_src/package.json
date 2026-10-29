@@ -182,7 +182,7 @@
     "glob@10.3.10": {
       "minimatch": {
         ".": "9.0.9",
-        "brace-expansion": "^2.0.2"
+        "brace-expansion": "^2.1.4"
       }
     },
     "worker-loader": {
@@ -215,13 +215,13 @@
     "@eslint/eslintrc": {
       "minimatch": {
         ".": "^3.1.5",
-        "brace-expansion": "^1.1.7"
+        "brace-expansion": "^1.1.18"
       }
     },
     "eslint-plugin-react": {
       "minimatch": {
         ".": "^3.1.5",
-        "brace-expansion": "^1.1.7"
+        "brace-expansion": "^1.1.18"
       }
     }
   }
