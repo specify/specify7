@@ -34,11 +34,11 @@ test('exports rows using the selected delimiter', async () => {
     'Data Set',
     [['100', 'First row']],
     ['Catalog Number', 'Remarks'],
-    '\t' //delimeter is tab
+    '\t' // Delimeter is tab
   );
 
   expect(downloadFile).toHaveBeenCalledWith(
-    'Data Set.tsv', // so the extension should be .tsv
+    'Data Set.tsv', // So the extension should be .tsv
     'Catalog Number\tRemarks\n100\tFirst row\n'
   );
 });

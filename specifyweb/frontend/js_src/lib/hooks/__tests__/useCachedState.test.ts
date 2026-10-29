@@ -103,7 +103,7 @@ describe('useCachedState', () => {
       setCache(categoryKey, categoryValue, true, true);
     });
 
-    waitFor(() => {
+    await waitFor(() => {
       expect(result.current[0]).toBe(true);
     });
 
@@ -111,7 +111,7 @@ describe('useCachedState', () => {
       setCache(categoryKey, categoryValue, false, true);
     });
 
-    waitFor(() => {
+    await waitFor(() => {
       expect(result.current[0]).toBe(false);
     });
   });

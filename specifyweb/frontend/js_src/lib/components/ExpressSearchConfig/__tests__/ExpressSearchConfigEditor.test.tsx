@@ -1,9 +1,10 @@
-import React from 'react';
-import { clearIdStore } from '../../../hooks/useId';
-import { mount } from '../../../tests/reactUtils';
-import { overrideAjax } from '../../../tests/ajax';
-import { ExpressSearchConfigEditor } from '../ExpressSearchConfigEditor';
 import { act } from '@testing-library/react';
+import React from 'react';
+
+import { clearIdStore } from '../../../hooks/useId';
+import { overrideAjax } from '../../../tests/ajax';
+import { mount } from '../../../tests/reactUtils';
+import { ExpressSearchConfigEditor } from '../ExpressSearchConfigEditor';
 
 // Mock child components to simplify testing the main editor logic
 jest.mock('../SearchFieldsTab', () => ({
@@ -52,11 +53,11 @@ describe('ExpressSearchConfigEditor', () => {
 
     mount(
       <ExpressSearchConfigEditor
-        onChange={jest.fn()}
-        onSetCleanup={jest.fn()}
-        onChangeJSON={onChangeJSON}
         initialXmlData={xml}
         useResolvedConfig={false}
+        onChange={jest.fn()}
+        onChangeJSON={onChangeJSON}
+        onSetCleanup={jest.fn()}
       />
     );
 
@@ -66,7 +67,7 @@ describe('ExpressSearchConfigEditor', () => {
 
     expect(onChangeJSON).toHaveBeenCalled();
     const latestConfig =
-      onChangeJSON.mock.calls[onChangeJSON.mock.calls.length - 1][0];
+      onChangeJSON.mock.calls.at(-1)[0];
     expect(latestConfig.tables[0].tableName).toBe('Agent');
     expect(latestConfig.tables[0].searchFields[0].fieldName).toBe('firstName');
   });
@@ -94,7 +95,7 @@ describe('ExpressSearchConfigEditor', () => {
       />
     );
 
-    expect(await findByRole('tablist')).toBeInTheDocument();
+    await expect(findByRole('tablist')).resolves.toBeInTheDocument();
   });
 
   test('switches tabs correctly', async () => {
@@ -106,21 +107,21 @@ describe('ExpressSearchConfigEditor', () => {
     );
 
     // Initial tab
-    expect(await findByText('Search Fields Tab')).toBeInTheDocument();
+    await expect(findByText('Search Fields Tab')).resolves.toBeInTheDocument();
 
     // Click Related Tables
-    const relatedTab = getByRole('tab', { name: /Related Tables/i });
+    const relatedTab = getByRole('tab', { name: /related tables/i });
     await act(async () => {
       await user.click(relatedTab);
     });
 
-    expect(await findByText('Related Tables Tab')).toBeInTheDocument();
+    await expect(findByText('Related Tables Tab')).resolves.toBeInTheDocument();
 
     // Click Results Ordering
-    const resultsTab = getByRole('tab', { name: /Results Ordering/i });
+    const resultsTab = getByRole('tab', { name: /results ordering/i });
     await act(async () => {
       await user.click(resultsTab);
     });
-    expect(await findByText('Results Ordering Tab')).toBeInTheDocument();
+    await expect(findByText('Results Ordering Tab')).resolves.toBeInTheDocument();
   });
 });

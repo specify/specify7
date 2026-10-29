@@ -10,7 +10,7 @@ import { useTableRecordCounts } from '../DataViewTables';
 
 jest.mock('../../../utils/ajax/throttledPromise', () => ({
   throttledPromise: jest.fn(
-    (_key: string, generator: () => Promise<number | undefined>) => generator()
+    async (_key: string, generator: () => Promise<number | undefined>) => generator()
   ),
 }));
 

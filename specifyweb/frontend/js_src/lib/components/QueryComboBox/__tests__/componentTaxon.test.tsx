@@ -1,28 +1,30 @@
 import { act, cleanup, fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
 
+import { commonText } from '../../../localization/common';
 import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
 import { mount } from '../../../tests/reactUtils';
 import { localized } from '../../../utils/types';
-import { commonText } from '../../../localization/common';
 import { LoadingContext } from '../../Core/Contexts';
 import { getResourceApiUrl } from '../../DataModel/resource';
 import { tables } from '../../DataModel/tables';
 import { SaveButton } from '../../Forms/Save';
 import * as permissions from '../../Permissions/helpers';
+import { queryFieldFilterSpecs } from '../../QueryBuilder/FieldFilterSpec';
+import { runQuery } from '../../QueryBuilder/ResultsWrapper';
 import {
   SetUnloadProtectsContext,
   UnloadProtectsContext,
 } from '../../Router/UnloadProtect';
-import { queryFieldFilterSpecs } from '../../QueryBuilder/FieldFilterSpec';
-import { runQuery } from '../../QueryBuilder/ResultsWrapper';
 import { SearchDialog } from '../../SearchDialog';
 import { QueryComboBox } from '../index';
 
 jest.mock('../../QueryBuilder/ResultsWrapper', () => ({ runQuery: jest.fn() }));
-// Keep the boundary to the full search form small while inspecting the filters
-// produced by clicking the real QueryComboBox search button.
+/*
+ * Keep the boundary to the full search form small while inspecting the filters
+ * produced by clicking the real QueryComboBox search button.
+ */
 jest.mock('../../SearchDialog', () => ({ SearchDialog: jest.fn(() => null) }));
 
 requireContext();
@@ -68,14 +70,14 @@ function renderComponent(typeId: number) {
     ...mount(
       <QueryComboBox
         field={tables.Component.strictGetRelationship('name')}
-        resource={resource}
+        forceCollection={undefined}
         formType="form"
-        hasNewButton={false}
         hasEditButton={false}
+        hasNewButton={false}
         hasSearchButton
         id={undefined}
         isRequired={false}
-        forceCollection={undefined}
+        resource={resource}
         typeSearch={{
           table: tables.Taxon,
           searchFields: [[tables.Taxon.strictGetLiteralField('fullName')]],
@@ -112,7 +114,7 @@ test.each([101, 202])(
       ])
     );
     expect(resource.get('name')).toBeNull();
-    expect(queryByRole('option', { name: 'Nonexistent taxon' })).toBeNull();
+    expect(queryByRole('option', { name: 'Nonexistent taxon' })).not.toBeInTheDocument();
 
     fireEvent.click(getByRole('button', { name: /search/i }));
     await waitFor(() => expect(SearchDialog).toHaveBeenCalled());
@@ -156,8 +158,10 @@ test('Save does not submit a selected taxon after Type changes to another tree',
     name: getResourceApiUrl('Taxon', 101),
   });
   const save = jest.spyOn(component, 'save');
-  // Without a full resource form, SaveButton reports an unclaimed blocker
-  // and displays its fallback validation dialog.
+  /*
+   * Without a full resource form, SaveButton reports an unclaimed blocker
+   * and displays its fallback validation dialog.
+   */
   const reportBlocker = jest
     .spyOn(console, 'error')
     .mockImplementation(() => undefined);
@@ -167,7 +171,7 @@ test('Save does not submit a selected taxon after Type changes to another tree',
     <UnloadProtectsContext.Provider value={[]}>
       <SetUnloadProtectsContext.Provider value={jest.fn()}>
         <LoadingContext.Provider value={(promise) => void promise}>
-          <SaveButton resource={component} form={form} />
+          <SaveButton form={form} resource={component} />
         </LoadingContext.Provider>
       </SetUnloadProtectsContext.Provider>
     </UnloadProtectsContext.Provider>

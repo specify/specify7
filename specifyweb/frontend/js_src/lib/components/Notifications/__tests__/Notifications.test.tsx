@@ -10,12 +10,12 @@ import {
   Toasts,
 } from '../../Errors/Toasts';
 import { UnloadProtectsContext } from '../../Router/UnloadProtect';
-import { Notifications } from '../Notifications';
-import {
-  getNotificationHeading,
-  type GenericNotification,
-} from '../NotificationRenderers';
 import { useNotificationsFetch } from '../hooks';
+import {
+  type GenericNotification,
+  getNotificationHeading,
+} from '../NotificationRenderers';
+import { Notifications } from '../Notifications';
 
 jest.mock('../hooks');
 jest.mock('../../../utils/ajax/ping');
@@ -65,7 +65,7 @@ test('notification toasts disappear after ten seconds', () => {
         <NotificationToastHarness />
       </Toasts>
     );
-    const toast = view.getByRole('button', { name: /Timed notification/i });
+    const toast = view.getByRole('button', { name: /timed notification/i });
     expect(
       toast.parentElement?.querySelector('.notification-toast-progress')
     ).toHaveStyle({ animationPlayState: 'running' });
@@ -74,7 +74,7 @@ test('notification toasts disappear after ten seconds', () => {
     expect(toast).toBeInTheDocument();
     act(() => jest.advanceTimersByTime(1));
     expect(
-      view.queryByRole('button', { name: /Timed notification/i })
+      view.queryByRole('button', { name: /timed notification/i })
     ).not.toBeInTheDocument();
   } finally {
     jest.useRealTimers();
@@ -91,7 +91,7 @@ test('notification toast headings are announced', async () => {
   expect(liveRegion).toBeInTheDocument();
   expect(liveRegion).toHaveTextContent('Timed notification');
   expect(
-    view.getByRole('button', { name: /Timed notification/i })
+    view.getByRole('button', { name: /timed notification/i })
   ).not.toHaveAttribute('aria-live');
   expect(view.getByRole('button', { name: 'Dismiss' })).toBeInTheDocument();
   await view.user.click(view.getByRole('button', { name: 'Dismiss' }));
@@ -138,7 +138,7 @@ test('new notification toasts open the dialog with current notifications', async
   });
 
   const csvToast = view.getByRole('button', {
-    name: /Query export to CSV completed/i,
+    name: /query export to csv completed/i,
   });
   expect(csvToast).not.toHaveAttribute('aria-live');
   expect(csvToast.parentElement).toHaveClass(
@@ -157,10 +157,10 @@ test('new notification toasts open the dialog with current notifications', async
     'dark:text-brand-400'
   );
   const dwcaToast = view.getByRole('button', {
-    name: /DwCA export completed/i,
+    name: /dwca export completed/i,
   });
   expect(
-    view.getByRole('button', { name: /Query export to KML completed/i })
+    view.getByRole('button', { name: /query export to kml completed/i })
   ).toBeInTheDocument();
   await view.user.click(
     within(dwcaToast.parentElement ?? dwcaToast).getByRole('button', {
@@ -168,7 +168,7 @@ test('new notification toasts open the dialog with current notifications', async
     })
   );
   expect(
-    view.queryByRole('button', { name: /DwCA export completed/i })
+    view.queryByRole('button', { name: /dwca export completed/i })
   ).not.toBeInTheDocument();
 
   await view.user.click(csvToast);
@@ -180,7 +180,7 @@ test('new notification toasts open the dialog with current notifications', async
     within(dialog).getAllByRole('button', { name: 'Delete' })[2]!
   );
   expect(
-    view.queryByRole('button', { name: /Query export to KML completed/i })
+    view.queryByRole('button', { name: /query export to kml completed/i })
   ).not.toBeInTheDocument();
   expect(
     within(dialog).getAllByRole('link', { name: 'Download' })

@@ -72,7 +72,7 @@ describe('useIsModifiedTest', () => {
     await act(() => collectionObject.trigger('saverequired'));
     // The event-handler doesn't necessarily run immediately. So, need a waitFor.
 
-    waitFor(() => {
+    await waitFor(() => {
       expect(result.current).toBe(true);
     });
   });
@@ -88,7 +88,7 @@ describe('useIsModifiedTest', () => {
     await act(() => collectionObject.trigger('saved'));
     // The event-handler doesn't necessarily run immediately. So, need a waitFor.
 
-    waitFor(() => {
+    await waitFor(() => {
       expect(result.current).toBe(false);
     });
   });

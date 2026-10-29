@@ -7,7 +7,7 @@ import { mount } from '../../../tests/reactUtils';
 import { localized, type RA } from '../../../utils/types';
 import { Contexts } from '../../Core/Contexts';
 import { defaultColumnOptions } from '../linesGetter';
-import { type MappingLine, Mapper } from '../Mapper';
+import { Mapper,type MappingLine } from '../Mapper';
 import { emptyMapping } from '../mappingHelpers';
 import type { Dataset } from '../Wrapped';
 
@@ -59,7 +59,7 @@ test('deletes only unmapped columns', async () => {
         lines={lines}
         mustMatchPreferences={{}}
         onChangeBaseTable={jest.fn()}
-        onSave={() => Promise.resolve()}
+        onSave={async () => Promise.resolve()}
       />
     </Contexts>
   );

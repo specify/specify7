@@ -1,5 +1,5 @@
-import type Handsontable from 'handsontable';
 import { act } from '@testing-library/react';
+import type Handsontable from 'handsontable';
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
@@ -9,12 +9,12 @@ import { requireContext } from '../../../tests/helpers';
 import { mount } from '../../../tests/reactUtils';
 import { Http } from '../../../utils/ajax/definitions';
 import { f } from '../../../utils/functools';
+import { testAttachment } from '../../Attachments/__tests__/utils';
 import * as Attachments from '../../Attachments/attachments';
 import {
   attachmentSettingsPromise,
   overrideAttachmentServerStatus,
 } from '../../Attachments/attachments';
-import { testAttachment } from '../../Attachments/__tests__/utils';
 import { LoadingContext } from '../../Core/Contexts';
 import type { Dataset } from '../../WbPlanView/Wrapped';
 import { ATTACHMENTS_COLUMN } from '../attachmentHelpers';
@@ -168,11 +168,11 @@ test('shows the selected row attachment', async () => {
     </LoadingContext.Provider>
   );
 
-  expect(
-    await findByRole('img', {
+  await expect(
+    findByRole('img', {
       name: 'First row attachment',
     })
-  ).toBeInTheDocument();
+  ).resolves.toBeInTheDocument();
 
   expect(firstDataSetAttachmentRequest).toHaveBeenCalledTimes(1);
   expect(secondDataSetAttachmentRequest).not.toHaveBeenCalled();
@@ -188,11 +188,11 @@ test('shows the selected row attachment', async () => {
     selectRow(1);
   });
 
-  expect(
-    await findByRole('img', {
+  await expect(
+    findByRole('img', {
       name: 'Second row attachment',
     })
-  ).toBeInTheDocument();
+  ).resolves.toBeInTheDocument();
 
   expect(
     queryByRole('img', {

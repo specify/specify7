@@ -502,7 +502,7 @@ describe('Collector business rule', () => {
     const collectingEvent = new tables.CollectingEvent.Resource();
     const collector = new tables.Collector.Resource();
 
-    //This initializes the dependent collection
+    // This initializes the dependent collection
     collectingEvent.set('collectors', []);
     collectingEvent.getDependentResource('collectors')?.add(collector);
 
