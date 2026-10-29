@@ -649,7 +649,7 @@ def set_admin_status(request, userid):
                                     "collectionid": {
                                         "type": "integer"
                                     },
-                                    "expires": {
+                                    "expires_in": {
                                         "type": "integer",
                                         "description": f"The number of seconds this token should be valid for. Defaults to {DEFAULT_AUTH_LIFESPAN_SECONDS} seconds if not specified",
                                         "default": DEFAULT_AUTH_LIFESPAN_SECONDS

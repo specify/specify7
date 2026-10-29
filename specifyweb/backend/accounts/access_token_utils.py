@@ -62,7 +62,19 @@ def revoke_access_token(token: dict):
     redis_string.set(token_key, "true", time_to_live=blacklist_ttl)
 
 
-def get_token_from_request(request) -> Literal[False] | None | dict:
+def get_token_from_request(request: http.HttpRequest) -> Literal[False] | None | dict:
+    """
+    Attempts to get an Access Token from a HTTP Request.
+    Currently, we only support using access tokens with an Authorization
+    Header.
+
+    Particularly, clients should provide an access token like the following as
+    a Header:
+        Authorization: Bearer <token>
+
+    For more information, see Section 2.1 of RFC 6750:
+        https://www.rfc-editor.org/info/rfc6750/#section-2.1
+    """
     auth_header = request.headers.get("Authorization")
     if auth_header is None or not auth_header.startswith("Bearer "):
         return None
@@ -105,7 +117,7 @@ def handle_password_token_grant(request: http.HttpRequest) -> http.HttpResponse:
     username = request.POST.get("username")
     password = request.POST.get("password")
     raw_collection_id = request.POST.get("collectionid")
-    raw_expires_in = request.POST.get("expires", DEFAULT_AUTH_LIFESPAN_SECONDS)
+    raw_expires_in = request.POST.get("expires_in", DEFAULT_AUTH_LIFESPAN_SECONDS)
 
     if None in (username, password, raw_collection_id):
         error_response = {
