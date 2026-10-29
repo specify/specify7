@@ -197,6 +197,7 @@ def handle_password_token_grant(request: http.HttpRequest) -> http.HttpResponse:
     # and replay attacks in mind. Maybe just store them in Redis...
     response = {
         "access_token": token,
-        "expires_in": expires_in
+        "expires_in": expires_in,
+        "token_type": "Bearer"
     }
     return http.JsonResponse(response)

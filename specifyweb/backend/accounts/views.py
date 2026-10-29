@@ -676,9 +676,14 @@ def set_admin_status(request, userid):
                                 "expires_in": {
                                     "type": "integer",
                                     "description": "The number of seconds the access token is live for."
+                                },
+                                "token_type": {
+                                    "type": "string",
+                                    "description": "The type of access token. Currently, only Bearer tokens are supported",
+                                    "enum": ["Bearer"]
                                 }
                             },
-                            "required": ['access_token', 'expires_in']
+                            "required": ['access_token', 'expires_in', 'token_type']
                         }
                     }
                 }
@@ -729,6 +734,9 @@ def set_admin_status(request, userid):
 @require_POST
 @csrf_exempt
 def acquire_access_token(request: http.HttpRequest):
+    """
+    Obtain an access token that can be used for API authentication.
+    """
     # FEAT: Currently we only accept x-www-form-urlencoded because that is
     # required by the OAuth 2.0 framework, see section 4.4.2 of RFC 6749:
     # https://www.rfc-editor.org/info/rfc6749/#section-4.4.2
@@ -790,6 +798,9 @@ def acquire_access_token(request: http.HttpRequest):
 @require_POST
 @login_maybe_required
 def revoke_access_token(request):
+    """
+    Revoke/Invalidate a previously generated access token
+    """
     """
     Where possible, this endpoint should generally follow the OAuth 2.0 Spec
     for Token Revocation as defined by RFC 7009:
