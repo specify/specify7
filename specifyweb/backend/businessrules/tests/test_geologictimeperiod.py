@@ -71,6 +71,38 @@ class Geologictimeperiod(ApiTests):
 
         period.delete()
 
+    def test_clone_geologictimeperiod(self):
+        original = self._create_period(
+            "Paleozoic",
+            remarks="Original remarks",
+            startperiod=541.0,
+            endperiod=252.0,
+            isbiostrat=False,
+        )
+
+        clone = self._create_period(
+            original.name,
+            remarks=original.remarks,
+            startperiod=original.startperiod,
+            endperiod=original.endperiod,
+            isbiostrat=original.isbiostrat,
+        )
+
+        self.assertNotEqual(clone.id, original.id)
+        self.assertEqual(clone.name, original.name)
+        self.assertEqual(clone.parent_id, original.parent_id)
+        self.assertEqual(clone.definitionitem_id, original.definitionitem_id)
+        self.assertEqual(clone.remarks, original.remarks)
+        self.assertEqual(clone.startperiod, original.startperiod)
+        self.assertEqual(clone.endperiod, original.endperiod)
+        self.assertEqual(clone.isbiostrat, original.isbiostrat)
+
+        original.refresh_from_db()
+        self.assertEqual(original.name, "Paleozoic")
+
+        clone.delete()
+        original.delete()
+
     def test_delete_blocked_by_biostratspaleocontext(self):
         self.rootgtp.biostratspaleocontext.create(
             discipline=self.discipline)
