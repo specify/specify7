@@ -91,3 +91,4 @@ class TestAttachmentRules(ApiTests):
         self.assertFalse(
             models.Attachment.objects.filter(id=attachment.id).exists()
         )
+        delete_attachment_file.assert_called_once_with('test.jpg')
