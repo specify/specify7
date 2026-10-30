@@ -6,20 +6,19 @@ import jwt
 import logging
 import requests
 import time
-from urllib.parse import unquote_plus
 from django import forms
 from django import http
 from django.conf import settings
-from django.contrib.auth import login
-from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.auth import login, authenticate
 from django.db import connection, transaction
 from django.db.models import Max
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.template.response import TemplateResponse
 from django.utils import crypto
 from django.utils import timezone
 from django.utils.http import url_has_allowed_host_and_scheme, urlencode
 from django.views.decorators.cache import never_cache
+from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from typing import cast
 
@@ -29,13 +28,19 @@ from specifyweb.backend.accounts.forms_types import CollectionChoiceField
 from specifyweb.backend.accounts.permissions_types import InviteLinkPT, SetPasswordPT, SetUserAgentsPT, Sp6AdminPT, UserOICProvidersPT
 from specifyweb.backend.accounts.types import ExternalUser, InviteToken, OAuthLogin, ProviderConf, ProviderInfo
 from specifyweb.middleware.general import require_GET, require_http_methods
+from specifyweb.backend.context.views import has_collection_access, set_collection_cookie, users_collections_for_sp7
 
 from specifyweb.backend.permissions.permissions import check_permission_targets
-from specifyweb.specify import models as spmodels
 from specifyweb.specify.views import login_maybe_required, openapi
 from .models import Spuserexternalid, UserPresence
-from specifyweb.specify.models import Specifyuser
+from specifyweb.specify.models import Specifyuser, Agent, Collection
 from specifyweb.specify.auth.support_login import b64_url_to_bytes
+from specifyweb.backend.accounts.access_token_utils import (
+    DEFAULT_AUTH_LIFESPAN_SECONDS,
+    ACCESS_TOKEN_GRANT_TYPE,
+    decode_access_token,
+    revoke_access_token as revoke_token,
+    handle_password_token_grant)
 
 logger = logging.getLogger(__name__)
 
@@ -323,7 +328,6 @@ def choose_collection(request) -> http.HttpResponse:
     through here, we also use the opportunity to associate an external
     id to the user if one is provided.
     """
-    from specifyweb.backend.context.views import set_collection_cookie, users_collections_for_sp7
     from specifyweb.specify.api.serializers import obj_to_data, toJson
     from specifyweb.backend.setup_tool.api import is_collection_available
 
@@ -386,7 +390,6 @@ def support_login(request: http.HttpRequest) -> http.HttpResponse:
     if not settings.ALLOW_SUPPORT_LOGIN:
         return http.HttpResponseForbidden()
 
-    from django.contrib.auth import login, authenticate
     token = request.GET["token"]
     key = b64_url_to_bytes(request.GET["key"])
 
@@ -432,7 +435,7 @@ def set_password(request, userid):
     """
     check_permission_targets(None, request.specify_user.id, [
                              SetPasswordPT.update])
-    user = spmodels.Specifyuser.objects.get(pk=userid)
+    user = Specifyuser.objects.get(pk=userid)
     user.set_password(request.POST['password'])
     user.save()
     return http.HttpResponse('', status=204)
@@ -510,6 +513,9 @@ def set_password(request, userid):
                         }
                     }
                 }
+            },
+            "404": {
+                "description": "No SpecifyUser with the ID exists"
             }
         }
     },
@@ -518,24 +524,25 @@ def set_password(request, userid):
 @require_POST
 def set_user_agents(request, userid: int):
     "Sets the agents to represent the user in different disciplines."
-    user = spmodels.Specifyuser.objects.get(pk=userid)
+    # BUG: Handle returning 400 code when userid is not an int
+    user = get_object_or_404(Specifyuser, pk=userid)
     new_agentids = json.loads(request.body)
     cursor = connection.cursor()
 
     with transaction.atomic():
         # clear user's existing agents
-        spmodels.Agent.objects.filter(
-            specifyuser_id=userid).update(specifyuser_id=None)
+        Agent.objects.filter(
+            specifyuser_id=user.pk).update(specifyuser_id=None)
 
         # check if any of the agents to be assigned are used by other users
-        in_use = spmodels.Agent.objects.select_for_update().filter(
+        in_use = Agent.objects.select_for_update().filter(
             pk__in=new_agentids, specifyuser_id__isnull=False)
         if in_use:
             raise AgentInUseException([a.id for a in in_use])
 
         # assign the new agents
-        spmodels.Agent.objects.filter(
-            pk__in=new_agentids).update(specifyuser_id=userid)
+        Agent.objects.filter(
+            pk__in=new_agentids).update(specifyuser_id=user.pk)
 
         # check for multiple agents assigned to the user
         # NOTE: This is too aggressive (and inefficient) of a test.
@@ -545,7 +552,7 @@ def set_user_agents(request, userid: int):
             """select divisionid, a1.agentid, a2.agentid
             from agent a1 join agent a2 using (specifyuserid, divisionid)
             where a1.agentid < a2.agentid and specifyuserid = %s
-            """, [userid]
+            """, [user.pk]
         )
 
         multiple = [
@@ -556,15 +563,15 @@ def set_user_agents(request, userid: int):
             raise MultipleAgentsException(multiple)
 
         # get the list of collections the agents belong to.
-        collections = spmodels.Collection.objects.filter(
-            discipline__division__members__specifyuser_id=userid).values_list('id', flat=True)
+        collections = Collection.objects.filter(
+            discipline__division__members__specifyuser_id=user.pk).values_list('id', flat=True)
 
         # check permissions for setting user agents in those collections.
         for collectionid in collections:
             check_permission_targets(collectionid, request.specify_user.id, [
                                      SetUserAgentsPT.update])
 
-        check_collection_access_against_agents(userid)
+        check_collection_access_against_agents(user.pk)
 
     return http.HttpResponse('', status=204)
 
@@ -605,10 +612,225 @@ def set_admin_status(request, userid):
     """
     check_permission_targets(
         None, request.specify_user.id, [Sp6AdminPT.update])
-    user = spmodels.Specifyuser.objects.get(pk=userid)
+    user = Specifyuser.objects.get(pk=userid)
     if request.POST['admin_status'] == 'true':
         user.set_admin()
         return http.HttpResponse('true', content_type='text/plain')
     else:
         user.clear_admin()
         return http.HttpResponse('false', content_type='text/plain')
+
+
+@openapi(schema={
+    'post': {
+        "requestBody": {
+            "required": True,
+            # BUG: Currently Swagger UI does not cleanly render OneOf request
+            # body options.
+            # The user had to go into the schema to view descriptions and each
+            # option. Or I was setting them up wrong.
+            # Because we only support one grant type at the moment, I'm
+            # including the description up here for convenience
+            "description": "Authenticate with a user name, password, and collection id. The resulting access token has the same permissions as the authenticated user used to generate it and will be 'logged in' or scoped to the provided collection.",
+            "content": {
+                "application/x-www-form-urlencoded": {
+                    "schema": {
+                        # FEAT: Add the refresh_token grant type, to generate
+                        # access tokens.
+                        # We can use oneOf here to validate against different
+                        # schemas when refresh tokens are supported
+                        "type": "object",
+                        "properties": {
+                            "grant_type": {
+                                "type": "string",
+                                "description": "The type of information you are authenticating with. We currently only support the password grant type",
+                                "enum": [ACCESS_TOKEN_GRANT_TYPE.PASSWORD.value]
+                            },
+                            "username": {
+                                "type": "string",
+                                "description": "The user name of the Specify User"
+                            },
+                            "password": {
+                                "type": "string",
+                                "description": "The password for the Specify User"
+                            },
+                            "collectionid": {
+                                "type": "integer",
+                                "description": "The ID of the Collection to scope this access token to. /context/login/ can be used to get Collection IDs if needed"
+                            },
+                            "expires_in": {
+                                "type": "integer",
+                                "description": f"The number of seconds this token should be valid for. Defaults to {DEFAULT_AUTH_LIFESPAN_SECONDS} seconds if not specified",
+                                "default": DEFAULT_AUTH_LIFESPAN_SECONDS
+                            }
+                        },
+                        "required": ['grant_type', 'username', 'password', 'collectionid'],
+                        'additionalProperties': False
+                    }
+                }
+            }
+        },
+        "responses": {
+            "200": {
+                "description": "The access token was successfully generated",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "access_token": {
+                                    "type": "string"
+                                },
+                                "expires_in": {
+                                    "type": "integer",
+                                    "description": "The number of seconds the access token is live for."
+                                },
+                                "token_type": {
+                                    "type": "string",
+                                    "description": "The type of access token. Currently, only Bearer tokens are supported",
+                                    "enum": ["Bearer"]
+                                }
+                            },
+                            "required": ['access_token', 'expires_in', 'token_type']
+                        }
+                    }
+                }
+            },
+            "400": {
+                "description": "The request for an access token was invalid. See the error_description for more details. The error types are described in Section 5.2 of RFC 6749: https://www.rfc-editor.org/info/rfc6749/#section-5.2",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "error": {
+                                    "type": "string"
+                                },
+                                "error_description": {
+                                    "type": "string"
+                                },
+                            },
+                            "required": ['error']
+                        }
+                    }
+                }
+            },
+            "401": {
+                "description": "The provided credentials were incorrect, or the user does not have access to the collection",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "error": {
+                                    "type": "string",
+                                    "enum": ["invalid_client"]
+                                },
+                                "error_description": {
+                                    "type": "string"
+                                },
+                            },
+                            "required": ['error']
+                        }
+                    }
+                }
+            },
+            "405": {"description": "A non-POST method was made to the endpoint. Only POST is supported"}
+        }
+    },
+})
+@require_POST
+@csrf_exempt
+def acquire_access_token(request: http.HttpRequest):
+    """
+    Obtain an access token for use with the API.
+
+    This endpoint follows the OAuth 2.0 Framework defined in RFC 6749: https://www.rfc-editor.org/info/rfc6749/.
+    Specify supports using bearer access tokens through an Authorization Bearer header as defined in RFC 6750: https://www.rfc-editor.org/info/rfc6750/.
+
+    To use an access token, include it in future requests with an "Authorization: Bearer <TOKEN>" header, replacing <TOKEN> with the generated access token.
+    """
+    # FEAT: Currently we only accept x-www-form-urlencoded because that is
+    # required by the OAuth 2.0 framework, see section 4.4.2 of RFC 6749:
+    # https://www.rfc-editor.org/info/rfc6749/#section-4.4.2
+    # Though in the future we can allow this endpoint to also accept
+    # application/json bodies
+    grant_type = request.POST.get("grant_type")
+
+    if grant_type is None:
+        error_response = {
+            "error": "invalid_request",
+            "error_description": f"A grant_type was not provided in access token request. Available grant_types: {list(ACCESS_TOKEN_GRANT_TYPE.types())}"
+        }
+        return http.JsonResponse(error_response, status=400)
+
+    if grant_type == ACCESS_TOKEN_GRANT_TYPE.PASSWORD.value:
+        response = handle_password_token_grant(request)
+        return response
+
+    error_response = {
+        "error": "unsupported_grant_type",
+        "error_description": f"Available grant_types: {list(ACCESS_TOKEN_GRANT_TYPE.types())}"
+    }
+    return http.JsonResponse(error_response, status=400)
+
+
+@openapi(schema={
+    'post': {
+        "requestBody": {
+            "required": True,
+            "content": {
+                "application/x-www-form-urlencoded": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "token": {
+                                "type": "string",
+                                "description": "The access token to revoke"
+                            },
+                            "token_type_hint": {
+                                "type": "string",
+                                "description": "A hint to the server about the type of token to revoke. This is ignored at the moment, but may have an effect in the future.",
+                                "enum": ['access_token']
+                            }
+                        },
+                        "required": ['token'],
+                        'additionalProperties': False
+                    }
+                }
+            }
+        },
+        "responses": {
+            "204": {"description": "The access token was revoked or is already invalid"},
+            "403": {"description": "The user was not authenticated/logged-in when making a request to the endpoint"},
+            "405": {"description": "A non-POST method was made to the endpoint. Only POST is supported"}
+        }
+    },
+})
+@require_POST
+@login_maybe_required
+def revoke_access_token(request):
+    """
+    Revoke/invalidate a previously generated access token.
+    You must be authenticated (e.g., from a Session or by Bearer token) to call this endpoint.
+    A bearer token that is used for authentication can be revoked. That is, a token can revoke itself.
+    """
+    """
+    Where possible, this endpoint should generally follow the OAuth 2.0 Spec
+    for Token Revocation as defined by RFC 7009:
+        https://www.rfc-editor.org/info/rfc7009/
+
+    FEAT: When refresh tokens are implemented, allow their revocation
+    """
+    encoded_token = request.POST.get("token")
+    if encoded_token is None:
+        return http.HttpResponse('', status=204)
+
+    token = decode_access_token(encoded_token)
+
+    if token is None:
+        return http.HttpResponse('', status=204)
+
+    revoke_token(token)
+
+    return http.HttpResponse('', status=204)
