@@ -81,7 +81,11 @@ def _schema_localization_or_empty(collection) -> dict[str, Any]:
 
 
 def _clean_cell(value: Any) -> str:
-    return re.sub("\r|\n", " ", str(value if value is not None else ''))
+    # The portal unescapes Java-style sequences in exported text. See #8644!
+    # Escape literal sequences such as ``\\r`` by escaping their backslash before
+    # the value is written to CSV.
+    text = str(value if value is not None else '')
+    return re.sub("\r|\n", " ", text).replace('\\', '\\\\')
 
 
 def _clean_portal_attachment_text(value: Any) -> str:

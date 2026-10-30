@@ -244,3 +244,129 @@ describe('AutoComplete remote contains results', () => {
     expect(queryByRole('option', { name: /add/i })).not.toBeInTheDocument();
   });
 });
+
+describe('AutoComplete keyboard navigation', () => {
+  const scrollIntoView = jest.fn();
+  const portalRoot = document.createElement('div');
+
+  beforeAll(() => {
+    portalRoot.id = 'portal-root';
+    document.body.append(portalRoot);
+    Element.prototype.scrollIntoView = scrollIntoView;
+  });
+
+  afterAll(() => {
+    portalRoot.remove();
+  });
+
+  beforeEach(() => {
+    scrollIntoView.mockClear();
+  });
+
+  afterEach(() => {
+    cleanup();
+  });
+
+  const makeItems = (count: number): ReadonlyArray<AutoCompleteItem<string>> =>
+    Array.from({ length: count }, (_, index) => ({
+      label: `Item ${index}`,
+      data: String(index),
+    }));
+
+  const scrolledIndexes = (): ReadonlyArray<string | null> =>
+    scrollIntoView.mock.instances.map((element: Element) =>
+      element.getAttribute('data-index')
+    );
+
+  test('scrolls the highlighted row into view with arrow keys', async () => {
+    const { getByRole, user } = mount(
+      <AutoComplete
+        delay={0}
+        filterItems={false}
+        source={makeItems(10)}
+        value=""
+        onChange={jest.fn()}
+      />
+    );
+
+    await user.type(getByRole('combobox'), 'i');
+    await user.keyboard('{ArrowDown}');
+    await user.keyboard('{ArrowDown}');
+
+    expect(scrolledIndexes()).toContain('1');
+  });
+
+  test('keeps the highlighted row when the next page is appended', async () => {
+    const source = makeItems(10);
+
+    function Harness({
+      extraItems,
+    }: {
+      readonly extraItems: ReadonlyArray<AutoCompleteItem<string>>;
+    }): JSX.Element {
+      const [value, setValue] = React.useState('');
+      return (
+        <AutoComplete
+          delay={0}
+          extraItems={extraItems}
+          filterItems={false}
+          source={source}
+          value={value}
+          onChange={(item): void => setValue(item.label.toString())}
+        />
+      );
+    }
+
+    const { getByRole, rerender, user } = mount(<Harness extraItems={[]} />);
+
+    await user.type(getByRole('combobox'), 'i');
+    await user.keyboard('{ArrowDown}');
+    await user.keyboard('{ArrowDown}');
+    await user.keyboard('{ArrowDown}');
+    expect(scrolledIndexes()).toContain('2');
+
+    rerender(<Harness extraItems={[{ label: 'Item 10', data: '10' }]} />);
+    // Let Headless UI flush its own pending scrollIntoView before measuring ours
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    scrollIntoView.mockClear();
+    await user.keyboard('{ArrowDown}');
+
+    expect(scrolledIndexes()).toEqual(['3']);
+  });
+
+  test('resets the highlighted row when the results are replaced', async () => {
+    const { getByRole, rerender, user } = mount(
+      <AutoComplete
+        delay={0}
+        filterItems={false}
+        source={makeItems(10)}
+        value=""
+        onChange={jest.fn()}
+      />
+    );
+
+    await user.type(getByRole('combobox'), 'i');
+    await user.keyboard('{ArrowDown}');
+    await user.keyboard('{ArrowDown}');
+    expect(scrolledIndexes()).toContain('1');
+
+    rerender(
+      <AutoComplete
+        delay={0}
+        filterItems={false}
+        source={makeItems(10).map((item) => ({
+          ...item,
+          label: `Renamed ${item.data}`,
+        }))}
+        value=""
+        onChange={jest.fn()}
+      />
+    );
+    // Let Headless UI flush its own pending scrollIntoView before measuring ours
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    scrollIntoView.mockClear();
+    await user.keyboard('{ArrowDown}');
+
+    expect(scrolledIndexes()).toEqual(['0']);
+  });
+});

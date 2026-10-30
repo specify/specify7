@@ -15,6 +15,7 @@ import { raise } from '../Errors/Crash';
 import { fetchPathAsString } from '../Formatters/formatters';
 import { collectionPreferences } from '../Preferences/collectionPreferences';
 import { userPreferences } from '../Preferences/userPreferences';
+import { keysToLowerCase } from '../../utils/utils';
 
 export function UiField({
   field,
@@ -177,7 +178,7 @@ function Field({
       ajax<string | null>('/inheritance/catalog_number_for_sibling/', {
         method: 'POST',
         headers: { Accept: 'application/json' },
-        body: resource,
+        body: keysToLowerCase(resource.toJSON()),
       })
         .then((response) => {
           setPrimaryCatalogNumber(response.data);
@@ -189,7 +190,7 @@ function Field({
       ajax<string | null>('/inheritance/catalog_number_from_parent/', {
         method: 'POST',
         headers: { Accept: 'application/json' },
-        body: resource,
+        body: keysToLowerCase(resource.toJSON()),
       })
         .then((response) => {
           setParentCatalogNumber(response.data);
