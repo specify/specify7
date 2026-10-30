@@ -103,6 +103,22 @@ class Geologictimeperiod(ApiTests):
         clone.delete()
         original.delete()
 
+    def test_delete_new_geologictimeperiod(self):
+        period = self._create_period("Triassic")
+        period_id = period.id
+
+        delete_resource(
+            self.collection,
+            self.agent,
+            "geologictimeperiod",
+            period_id,
+            period.version,
+        )
+
+        self.assertNotExists(
+            models.Geologictimeperiod.objects.filter(id=period_id)
+        )
+
     def test_delete_blocked_by_biostratspaleocontext(self):
         self.rootgtp.biostratspaleocontext.create(
             discipline=self.discipline)
