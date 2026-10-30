@@ -68,42 +68,87 @@ def get_app_resource(collection, user, resource_name, additional_default=False):
     if resource_name == 'DataViewQueries':
         return get_data_view_queries_resource(collection, user)
 
-    # Handling for DataObjFormatters to support fallback to defaults
-    if resource_name == 'DataObjFormatters':
+    # UIFormatters + additional_default: return Backstop only (same contract as
+    # TypeSearches with additionaldefault=true). Do not merge custom resources.
+    if resource_name == 'UIFormatters' and additional_default:
+        return load_resource_at_level(collection, user, 'Backstop', resource_name)
+
+    # Handling for DataObjFormatters / UIFormatters to support fallback to defaults.
+    # Custom resources at a more-specific level would otherwise fully replace
+    # backstop definitions (see #6243, #8676).
+    if resource_name in ('DataObjFormatters', 'UIFormatters'):
         custom_formatter = None
-        default_formatter = None
-        
-        # Try to search for the the custom formatter first
+        custom_level = None
+
+        # Try to search for the custom formatter first
         for level in DIR_LEVELS:
             # First look in the database.
             from_db = get_app_resource_from_db(collection, user, level, resource_name)
             if from_db is not None:
                 custom_formatter = from_db
+                custom_level = level
                 break
 
             # If resource was not found, look on the filesystem.
             from_fs = load_resource_at_level(collection, user, level, resource_name)
             if from_fs is not None:
                 custom_formatter = from_fs
+                custom_level = level
                 break
-        
+
         # If custom formatter not found, try to load the default formatter from the backstop level
         default_formatter = load_resource_at_level(collection, user, 'Backstop', resource_name)
-        
-        # If both custom and default formatters are found, merge them
+
+        if resource_name == 'UIFormatters':
+            # Merge by format name: many UIFormatters share the same class
+            # (e.g. several CatalogNumber* formats on CollectionObject).
+            # Order: most-specific custom → Common → Backstop so overlapping
+            # names keep the most-specific definition (#8676).
+            if custom_formatter is not None:
+                merged_xml = custom_formatter[0]
+
+                # When custom is above Common, also pull Common definitions.
+                if custom_level not in ('Common', 'Backstop'):
+                    common_formatter = get_app_resource_from_db(
+                        collection, user, 'Common', resource_name
+                    )
+                    if common_formatter is None:
+                        common_formatter = load_resource_at_level(
+                            collection, user, 'Common', resource_name
+                        )
+                    if common_formatter is not None:
+                        merged_xml = merge_ui_formatters(
+                            merged_xml, common_formatter[0]
+                        )
+
+                if default_formatter is not None:
+                    merged_xml = merge_ui_formatters(
+                        merged_xml, default_formatter[0]
+                    )
+
+                return merged_xml, custom_formatter[1], custom_formatter[2]
+
+            if default_formatter is not None:
+                return default_formatter
+
+            return None
+
+        # DataObjFormatters: merge by class with Backstop only.
         if custom_formatter is not None and default_formatter is not None:
-            merged_formatter = merge_formatters(custom_formatter[0], default_formatter[0])
+            merged_formatter = merge_formatters(
+                custom_formatter[0], default_formatter[0]
+            )
             return merged_formatter, custom_formatter[1], custom_formatter[2]
-        
+
         # Return the custom formatter if it exists, otherwise return the default
         if custom_formatter is not None:
             return custom_formatter
-        
+
         if default_formatter is not None:
             return default_formatter
-        
+
         return None
-    
+
     if not additional_default:
         # Traverse the hierarchy.
         for level in DIR_LEVELS:
@@ -323,15 +368,15 @@ def get_app_resource_dirs_for_level(collection, user, level):
     return Spappresourcedir.objects.filter(**filters)
 
 def merge_formatters(custom_xml, default_xml):
-    """Merge custom and default XML formatters.
-    This function takes two XML strings, one for custom formatters and one for default formatters,
-    and merges them by adding any formatters from the default XML that are not already present in
-    the custom XML. It returns the merged XML as a string.
+    """Merge custom and default XML DataObjFormatters by ``class``.
+
+    Adds any formatters from the default XML whose ``class`` is not already
+    present in the custom XML. Returns the merged XML as a string.
     """
-    
+
     custom_root = ElementTree.fromstring(custom_xml)
     default_root = ElementTree.fromstring(default_xml)
-    
+
     # Create a set of existing classes in the custom XML to avoid duplicates
     custom_classes = set()
     for format_elem in custom_root.findall('format'):
@@ -344,6 +389,33 @@ def merge_formatters(custom_xml, default_xml):
         class_attr = format_elem.get('class')
         if class_attr and class_attr not in custom_classes:
             custom_root.append(format_elem)
-    
+
     # Convert the merged XML tree back to a string
+    return ElementTree.tostring(custom_root, encoding='utf-8').decode('utf-8')
+
+
+def merge_ui_formatters(custom_xml, default_xml):
+    """Merge custom and default UIFormatters by format ``name``.
+
+    Unlike DataObjFormatters (merged by ``class``), several UIFormatters can
+    share the same datamodel class (e.g. multiple catalog-number formats on
+    CollectionObject). Custom entries with the same name win; missing names
+    are filled from the default/backstop resource.
+    """
+
+    custom_root = ElementTree.fromstring(custom_xml)
+    default_root = ElementTree.fromstring(default_xml)
+
+    custom_names = {
+        format_elem.get('name')
+        for format_elem in custom_root.findall('format')
+        if format_elem.get('name')
+    }
+
+    for format_elem in default_root.findall('format'):
+        name = format_elem.get('name')
+        if name and name not in custom_names:
+            custom_root.append(format_elem)
+            custom_names.add(name)
+
     return ElementTree.tostring(custom_root, encoding='utf-8').decode('utf-8')
