@@ -13,9 +13,11 @@ import { collectionPreferences } from '../../Preferences/collectionPreferences';
 import { userPreferenceDefinitions } from '../../Preferences/UserDefinitions';
 import { userPreferences } from '../../Preferences/userPreferences';
 import { UnloadProtectsContext } from '../../Router/UnloadProtect';
+import { getNoAccessTables } from '../../QueryBuilder/helpers';
 import {
   getBackendUrlToFetch,
   getDynamicQuerySpecsToFetch,
+  makeSerializedFieldsFromPaths,
   resolveStatsSpec,
 } from '../hooks';
 import { StatsPage } from '../index';
@@ -97,6 +99,18 @@ const getLayout = (
 const isQueryStat = (item: CustomStat | DefaultStat): boolean =>
   item.type === 'CustomStat' || item.itemType === 'QueryStat';
 
+const canRead = (item: CustomStat | DefaultStat): boolean => {
+  const querySpec = resolveStatsSpec(item, {
+    showPreparationsTotal: true,
+  })?.querySpec;
+  return (
+    querySpec === undefined ||
+    getNoAccessTables(
+      makeSerializedFieldsFromPaths(querySpec.tableName, querySpec.fields)
+    ).length === 0
+  );
+};
+
 export async function waitForInitialLoad(
   getSharedLayout: () => RA<StatLayout> | undefined
 ): Promise<RA<StatLayout>> {
@@ -108,7 +122,7 @@ export async function waitForInitialLoad(
     expect(getDynamicQuerySpecsToFetch(layout!)).toEqual([]);
     layout![0].categories
       .flatMap(({ items }) => items)
-      .filter(isQueryStat)
+      .filter((item) => isQueryStat(item) && canRead(item))
       .forEach((item) => expect(item.itemValue).toBeDefined());
   });
   return getSharedLayout()!;
