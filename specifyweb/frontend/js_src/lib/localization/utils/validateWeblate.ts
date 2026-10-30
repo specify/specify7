@@ -1,6 +1,7 @@
 import { Http } from '../../utils/ajax/definitions';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { rootSchemaLanguage } from '../schema-localization/parser';
 import { schemaLocalizationName } from '../schema-localization/toPoFile';
@@ -91,10 +92,45 @@ function getToken(): string {
   return `Token ${key}`;
 }
 
-const doFetch = async (url: string): Promise<IR<unknown>> =>
+const fetchResponse = async (url: string): Promise<Response> =>
   fetch(url, {
     headers: { Authorization: getToken() },
-  }).then(async (response) => response.json());
+  });
+
+const readResponse = async (
+  url: string,
+  response: Response
+): Promise<IR<unknown>> => {
+  if (!response.ok)
+    throw new Error(
+      `Weblate API request failed (${response.status} ${response.statusText}) ` +
+        `for ${url}: ${await response.text()}`
+    );
+  return response.json();
+};
+
+const doFetch = async (url: string): Promise<IR<unknown>> =>
+  readResponse(url, await fetchResponse(url));
+
+/**
+ * Deleted addon references are validation errors, not traversal failures.
+ * Keep checking the component's settings and remaining addons after reporting.
+ */
+const fetchAddon = async (
+  url: string,
+  component: string
+): Promise<IR<unknown> | undefined> => {
+  const response = await fetchResponse(url);
+  if (response.status === Http.NOT_FOUND) {
+    error(
+      `Weblate component "${component}" references addon "${url}", which ` +
+        `no longer exists (404 Not Found). Remove or fix the stale addon ` +
+        `reference in Weblate.`
+    );
+    return undefined;
+  }
+  return readResponse(url, response);
+};
 
 const fetchComponents = async (
   url = componentsApiUrl
@@ -104,8 +140,15 @@ const fetchComponents = async (
     ...(await Promise.all(
       (results as RA<IR<unknown>>).map(async (component) => ({
         ...component,
-        addons: await Promise.all(
-          (component.addons as RA<string>).map(doFetch)
+        addons: filterArray(
+          await Promise.all(
+            (component.addons as RA<string>).map(async (url) => {
+              console.log(
+                `Fetching addon ${url} for component ${component.slug}`
+              );
+              return fetchAddon(url, component.slug as string);
+            })
+          )
         ),
       }))
     )),
@@ -172,20 +215,18 @@ async function createComponent(
   warn(`Creating a component for "${name}"`);
   const { addons, ...settings } =
     localizationKinds[kind].getComponentSettings(name);
-  fetch(componentsApiUrl, {
+  const response = await fetch(componentsApiUrl, {
     headers: {
       Authorization: getToken(),
       'Content-Type': 'application/json',
     },
     method: 'POST',
     body: JSON.stringify(settings),
-  })
-    .then(async (response) =>
-      response.status === Http.CREATED
-        ? f.void()
-        : Promise.reject(await response.text())
-    )
-    .then(console.log);
+  });
+  if (response.status === Http.CREATED) return;
+  error(
+    `Failed to create a Weblate component for "${name}": ${await response.text()}`
+  );
 }
 
 /**

@@ -51,7 +51,7 @@ export function WelcomeView({
               {icons.cog}
             </Button.BorderedGray>
           )}
-          <SearchForm formId={formId} />
+          <SearchForm autoFocus={false} formId={formId} />
           <Submit.Secondary form={formId}>
             {commonText.search()}
           </Submit.Secondary>

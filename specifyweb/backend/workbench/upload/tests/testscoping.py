@@ -3,6 +3,9 @@ from specifyweb.backend.workbench.upload.scope_context import ScopeContext
 from ..upload_plan_schema import parse_plan
 from ..upload_table import UploadTable, OneToOneTable, ScopedUploadTable, ScopedOneToOneTable
 from ..upload import do_upload
+from ..column_options import ColumnOptions
+from ..parsing import parse_value, ParseResult
+from ..scoping import extend_columnoptions
 
 from specifyweb.specify import models
 from specifyweb.specify.tests.test_api import get_table
@@ -119,6 +122,41 @@ class ScopingTests(UploadTestsBase):
         context = ScopeContext()
         plan = self.example_plan.apply_scoping(self.collection, context)
         self.assertFalse(context.is_variable, 'caching is possible here, since no dynamic scope is being used')
+
+    def test_missing_picklist_is_treated_as_unassigned(self):
+        schema_container = get_table('Splocalecontainer').objects.create(
+            name='collectionobject',
+            schematype=0,
+            discipline=self.discipline,
+            ishidden=False,
+            issystem=False,
+        )
+        schema_container.items.create(
+            name='text1',
+            ishidden=False,
+            issystem=False,
+            picklistname='MissingPicklist',
+        )
+        column_options = ColumnOptions(
+            column='Text 1',
+            matchBehavior='ignoreWhenBlank',
+            nullAllowed=True,
+            default=None,
+            disambiguationBehavior='ask',
+        )
+
+        extended = extend_columnoptions(
+            column_options,
+            self.collection,
+            'Collectionobject',
+            'text1',
+        )
+
+        self.assertIsNone(extended.picklist)
+        self.assertIsInstance(
+            parse_value('Collectionobject', 'text1', 'arbitrary value', extended),
+            ParseResult,
+        )
 
     def test_collection_rel_uploaded_in_correct_collection(self):
         scoped_plan = parse_plan(self.collection_rel_plan)

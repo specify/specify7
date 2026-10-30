@@ -6,15 +6,20 @@ import { notificationsText } from '../../localization/notifications';
 import { formData } from '../../utils/ajax/helpers';
 import { ping } from '../../utils/ajax/ping';
 import { f } from '../../utils/functools';
+import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
+import { SetToastsContext } from '../Errors/Toasts';
 import { MenuButton } from '../Header/index';
 import { DateElement } from '../Molecules/DateElement';
 import { Dialog, dialogClassNames, LoadingScreen } from '../Molecules/Dialog';
 import { useNotificationsFetch } from './hooks';
 import type { GenericNotification } from './NotificationRenderers';
-import { notificationRenderers } from './NotificationRenderers';
+import {
+  getNotificationHeading,
+  notificationRenderers,
+} from './NotificationRenderers';
 
 export function Notifications({
   isCollapsed,
@@ -23,10 +28,26 @@ export function Notifications({
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   const freezeFetchPromise = React.useRef<Promise<void> | undefined>(undefined);
+  const setToasts = React.useContext(SetToastsContext);
+  const handleNewNotifications = React.useCallback(
+    (newNotifications: RA<GenericNotification>): void =>
+      setToasts((toasts) => [
+        ...toasts,
+        ...newNotifications.map((notification) => ({
+          type: 'Notification' as const,
+          messageId: notification.messageId,
+          message: getNotificationHeading(notification),
+          onClick: handleOpen,
+          onDismiss: f.void,
+        })),
+      ]),
+    [handleOpen, setToasts]
+  );
 
   const { notifications, setNotifications } = useNotificationsFetch({
     freezeFetchPromise,
     isOpen,
+    onNewNotifications: handleNewNotifications,
   });
 
   const notificationCount = notifications?.length;
@@ -44,6 +65,17 @@ export function Notifications({
         })
       : notificationsText.notificationsLoading();
 
+  const removeNotificationToasts = React.useCallback(
+    (messageIds: ReadonlySet<string>): void =>
+      setToasts((toasts) =>
+        toasts.filter(
+          (toast) =>
+            toast.type !== 'Notification' || !messageIds.has(toast.messageId)
+        )
+      ),
+    [setToasts]
+  );
+
   function handleClearAll() {
     if (notifications === undefined) return;
     const message_ids = notifications.map(({ messageId }) => messageId);
@@ -56,6 +88,7 @@ export function Notifications({
     }).then(() => {
       // After the notifications are deleted on the server, clear them from the local state
       setNotifications([]);
+      removeNotificationToasts(new Set(message_ids));
     });
   }
 
@@ -66,7 +99,6 @@ export function Notifications({
         isActive={isOpen}
         isCollapsed={isCollapsed}
         props={{
-          'aria-live': 'polite',
           className:
             unreadCount > 0 && !isOpen
               ? '[&:not(:hover)]:!text-brand-200 [&:not(:hover)]:dark:!text-brand-400'
@@ -129,6 +161,7 @@ export function Notifications({
                 notification={notification}
                 onDelete={(promise): void => {
                   freezeFetchPromise.current = promise;
+                  removeNotificationToasts(new Set([notification.messageId]));
                   setNotifications(
                     notifications.filter((item) => item !== notification)
                   );

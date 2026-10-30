@@ -59,9 +59,7 @@ const testSettings = {
 
 function TestAttachmentsView(): JSX.Element {
   return (
-    <Router.MemoryRouter
-	  useTransitions={true}
-    >
+    <Router.MemoryRouter useTransitions={true}>
       <SetMenuContext.Provider value={jest.fn()}>
         <AttachmentsView />
       </SetMenuContext.Provider>

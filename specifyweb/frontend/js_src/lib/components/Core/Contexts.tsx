@@ -213,6 +213,9 @@ ErrorContext.displayName = 'ErrorContext';
 export const ReadOnlyContext = React.createContext<boolean>(false);
 ReadOnlyContext.displayName = 'ReadOnlyContext';
 
+export const RecordMergingContext = React.createContext(true);
+RecordMergingContext.displayName = 'RecordMergingContext';
+
 /** If true, form is rendered in a search dialog - required fields are not enforced */
 export const SearchDialogContext = React.createContext<boolean>(false);
 SearchDialogContext.displayName = 'SearchDialogContext';

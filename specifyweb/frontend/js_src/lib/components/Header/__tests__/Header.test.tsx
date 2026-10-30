@@ -36,9 +36,7 @@ overrideAjax('/attachment_gw/health/', '', {
 
 function TestHeaderItems(): JSX.Element {
   return (
-    <Router.MemoryRouter
-	  useTransitions={true}
-    >
+    <Router.MemoryRouter useTransitions={true}>
       <SetMenuContext.Provider value={jest.fn()}>
         <HeaderItems
           menuItems={[

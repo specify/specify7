@@ -1,6 +1,4 @@
-from specifyweb.backend.context.app_resource import get_usertype
-from specifyweb.specify.models import Spappresource, Spappresourcedir
-from specifyweb.specify.views import openapi
+from specifyweb.specify.views import openapi, login_maybe_required
 from specifyweb.backend.context.resources import Resource, Resources
 
 collection_resources = openapi(schema={
@@ -71,7 +69,7 @@ collection_resources = openapi(schema={
             }
         }
     }
-})(Resources.as_view(_spappresourcedirfilter= lambda request: {
+})(login_maybe_required(Resources.as_view(_spappresourcedirfilter= lambda request: {
                 'ispersonal': False,
                 'specifyuser__isnull': True,
                 'usertype__isnull': True,
@@ -83,7 +81,7 @@ collection_resources = openapi(schema={
     'specifyuser': request.specify_user
 },_spappresourcedircreate=lambda request:{
     'ispersonal': False
-}))
+})))
 
 
 collection_resource = openapi(schema={
@@ -139,9 +137,9 @@ collection_resource = openapi(schema={
             "204": {"description": "The resource was deleted.",}
         }
     }
-})(Resource.as_view(_spappresourcefilter= lambda request: {
+})(login_maybe_required(Resource.as_view(_spappresourcefilter= lambda request: {
             'spappresourcedir__ispersonal': False,
-}))
+})))
 
 
 

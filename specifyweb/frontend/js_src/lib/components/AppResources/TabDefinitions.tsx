@@ -30,6 +30,7 @@ import { FormEditor } from '../FormEditor';
 import { viewSetsSpec } from '../FormEditor/spec';
 import {
   CollectionPreferencesEditor,
+  GlobalPreferencesEditor,
   UserPreferencesEditor,
 } from '../Preferences/Editor';
 import { useDarkMode } from '../Preferences/Hooks';
@@ -39,6 +40,7 @@ import { WebLinkEditor } from '../WebLinks/Editor';
 import { webLinksSpec } from '../WebLinks/spec';
 import { useCodeMirrorExtensions } from './EditorComponents';
 import type { appResourceSubTypes } from './types';
+import { DataViewQueryEditor } from '../DataViews/QueryEditor';
 
 export type AppResourceEditorType = 'generic' | 'json' | 'visual' | 'xml';
 
@@ -159,8 +161,16 @@ export const visualAppResourceEditors = f.store<
     visual: UserPreferencesEditor,
     json: AppResourceTextEditor,
   },
+  dataViewQueries: {
+    visual: DataViewQueryEditor,
+    json: AppResourceTextEditor,
+  },
   collectionPreferences: {
     visual: CollectionPreferencesEditor,
+    json: AppResourceTextEditor,
+  },
+  globalPreferences: {
+    visual: GlobalPreferencesEditor,
     json: AppResourceTextEditor,
   },
   leafletLayers: undefined,

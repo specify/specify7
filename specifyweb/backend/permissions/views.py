@@ -7,6 +7,7 @@ from django.db import transaction, connection
 from django.views import View
 
 from specifyweb.backend.accounts.account_utils import check_collection_access_against_agents
+from specifyweb.backend.accounts.presence import get_user_presence_statuses
 from specifyweb.specify.models import Specifyuser
 from specifyweb.specify.views import openapi
 from . import models
@@ -392,16 +393,32 @@ class AllUserRoles(LoginRequiredMixin, View):
     def get(self, request, collectionid: int) -> http.HttpResponse:
         check_permission_targets(collectionid, request.specify_user.id, [UserRolesPT.read])
 
+        users = list(Specifyuser.objects.all())
+        presence_user_ids = set(
+            models.UserRole.objects.filter(
+                role__collection_id=collectionid
+            ).values_list('specifyuser_id', flat=True)
+        )
+        presence_user_ids.update(
+            models.UserPolicy.objects.filter(
+                collection_id=collectionid,
+                specifyuser__isnull=False,
+            ).values_list('specifyuser_id', flat=True)
+        )
+        presence_user_ids.add(request.specify_user.id)
+        presence_statuses = get_user_presence_statuses(
+            list(presence_user_ids))
         data = [
             {
                 'userid': user.id,
                 'username': user.name,
+                'presence': presence_statuses.get(user.id),
                 'roles': [
                     {'roleid': role.id, 'rolename': role.name}
                     for role in models.Role.objects.filter(collection_id=collectionid, userrole__specifyuser=user)
                 ]
             }
-            for user in Specifyuser.objects.all()
+            for user in users
         ]
 
         return http.JsonResponse(data, safe=False)
@@ -420,6 +437,12 @@ all_user_roles = openapi(schema={
                                 "properties": {
                                     "userid": { "type": "integer", "description": "The user id." },
                                     "username": { "type": "string", "description": "The user name." },
+                                    "presence": {
+                                        "type": "string",
+                                        "enum": ["active", "inactive", "offline"],
+                                        "description": "The user's estimated presence status.",
+                                        "nullable": True,
+                                    },
                                     "roles": {
                                         "type": "array",
                                         "items": {
@@ -434,7 +457,7 @@ all_user_roles = openapi(schema={
                                         }
                                     }
                                 },
-                                "required": ['userid', 'username', 'roles'],
+                                "required": ['userid', 'username', 'presence', 'roles'],
                                 'additionalProperties': False
                             }
                         }

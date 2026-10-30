@@ -57,3 +57,37 @@ class TestFormatSprintf(SQLAlchemySetup):
             (acc4.id, '')],
             results
         )
+
+    @patch('specifyweb.backend.stored_queries.format.app_resource.get_app_resource')
+    def test_static_fields_and_postfix(self, get_app_resource: Mock):
+        get_app_resource.return_value = ("""
+            <formatters>
+                <format name="Accession" title="Accession"
+                    class="edu.ku.brc.specify.datamodel.Accession" default="true">
+                    <switch single="true">
+                        <fields>
+                            <field sep="[" />
+                            <field format="%s]">remarks</field>
+                            <field sep="!" />
+                        </fields>
+                    </switch>
+                </format>
+            </formatters>
+        """, None, None)
+        Accession.objects.all().delete()
+        accession = Accession.objects.create(
+            division=self.division,
+            remarks="Remarks",
+            accessionnumber="1",
+        )
+        empty = Accession.objects.create(
+            division=self.division,
+            accessionnumber="2",
+        )
+        table, query_fields = make_query_fields_test("Accession", [[]])
+
+        results = self._get_results(table, query_fields)
+        self.assertCountEqual([
+            (accession.id, "[Remarks]!"),
+            (empty.id, "[!"),
+        ], results)

@@ -123,10 +123,7 @@ export function TestComponentWrapperRouter({
   readonly context?: IR<unknown>;
 }) {
   return (
-    <Router.MemoryRouter
-      initialEntries={initialEntries}
-	  useTransitions={true}
-    >
+    <Router.MemoryRouter initialEntries={initialEntries} useTransitions={true}>
       <Router.Routes>
         <Router.Route element={<Router.Outlet context={context} />} path="/">
           <Router.Route element={children} index path={path} />

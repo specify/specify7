@@ -41,7 +41,8 @@ def create_default_collection_types(apps, using="default"):
         )
 
         Collectionobject.objects.using(db).filter(
-            collection=collection
+            collection=collection,
+            collectionobjecttype__isnull=True,
         ).update(collectionobjecttype=cot)
 
         collection.collectionobjecttype = cot

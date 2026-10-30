@@ -11,7 +11,7 @@ from django.db import transaction
 
 from specifyweb.specify.utils.func import Func
 from specifyweb.specify.models_utils.load_datamodel import Table
-from specifyweb.specify.models import ModelWithTable
+from specifyweb.specify.models_utils.model_extras import ModelWithTable
 
 FIELDS_TO_NOT_CLONE: dict[str, list[str]] = json.load(
     open("specifyweb/frontend/js_src/lib/components/DataModel/uniqueFields.json")
@@ -66,7 +66,7 @@ def clone_record(
             field,
             (
                 field.is_relation
-                and specify_model.get_relationship(field.name).dependent
+                and specify_model.get_relationship_strict(field.name).dependent
                 or field.name.lower() in one_to_ones.get(model_name.lower(), [])
                 and field.name is not None
             ),

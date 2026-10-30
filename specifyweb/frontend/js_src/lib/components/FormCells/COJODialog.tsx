@@ -20,9 +20,11 @@ import { SearchDialog } from '../SearchDialog';
 export function COJODialog({
   parentResource,
   collection,
+  enableShortcut = true,
 }: {
   readonly parentResource: SpecifyResource<CollectionObjectGroup> | undefined;
   readonly collection: Collection<AnySchema> | undefined;
+  readonly enableShortcut?: boolean;
 }): JSX.Element | null {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   const COJOChildrenTables = [
@@ -86,7 +88,7 @@ export function COJODialog({
 
   return (
     <>
-      <DataEntry.Add onClick={handleOpen} />
+      <DataEntry.Add enableShortcut={enableShortcut} onClick={handleOpen} />
       {isOpen && (
         <Dialog
           buttons={commonText.cancel()}
@@ -100,6 +102,7 @@ export function COJODialog({
                 <TableIcon label name={table.name} />
                 {table.label}
                 <DataEntry.Add
+                  enableShortcut={false}
                   onClick={(): void => {
                     setState('Add');
                     setResourceTable(table);

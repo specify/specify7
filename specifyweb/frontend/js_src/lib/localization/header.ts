@@ -440,7 +440,7 @@ export const headerText = createDictionary({
       'A tradução para este idioma ainda não está completa. Alguns elementos podem estar sem localização ou com localização incorreta. Se você estiver interessado em nos ajudar a concluir a localização, siga as instruções.',
     'hr-hr':
       'Prijevod na ovaj jezik još nije dovršen. Nekim elementima možda nedostaje lokalizacija ili je lokalizacija netočna. Ako ste zainteresirani da nam pomognete dovršiti lokalizaciju, molimo <link>slijedite upute.</link>',
-    nb: 'Oversettelsen til dette språket er ikke fullført ennå. Noen elementer kan mangle lokal tilpasning, eller ha feil lokal tilpasning. Hvis du er interessert i å hjelpe oss med å fullføre lokal tilpasning, kan du <link> følge instruksjonene.</link>',
+    nb: 'Oversettelsen til dette språket er ikke fullført ennå. Noen elementer kan mangle lokal tilpasning, eller ha feil lokal tilpasning. Hvis du er interessert i å hjelpe oss med å fullføre lokal tilpasning, kan du <link>følge instruksjonene.</link>',
   },
   tableApi: {
     'en-us': 'Tables API',
@@ -462,7 +462,7 @@ export const headerText = createDictionary({
     'de-ch': 'Operations-API',
     'pt-br': 'API de Operações',
     'hr-hr': 'API za operacije',
-    nb: 'Drifts-API',
+    nb: 'API-operasjoner',
   },
   documentation: {
     'en-us': 'Documentation',
@@ -506,7 +506,7 @@ export const headerText = createDictionary({
     'de-ch': 'Community-Forum',
     'pt-br': 'Fórum da Comunidade',
     'hr-hr': 'Forum zajednice',
-    nb: 'Brukerforum',
+    nb: "Specify's diskusjonsforum",
   },
   clearCache: {
     'en-us': 'Clear Browser Cache',

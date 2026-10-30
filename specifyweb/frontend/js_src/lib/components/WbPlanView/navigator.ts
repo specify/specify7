@@ -45,6 +45,8 @@ import {
 } from './mappingHelpers';
 import { getMaxToManyIndex, isCircularRelationship } from './modelHelpers';
 import type { NavigatorSpec } from './navigatorSpecs';
+export { searchFields } from './fieldSearch';
+export type { FieldSearchResult } from './fieldSearch';
 
 const geoPaleoDisciplines: readonly string[] = [
   'geology',

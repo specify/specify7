@@ -1,10 +1,367 @@
 import { requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
 import { localized } from '../../../utils/types';
-import { getMappingLineData } from '../navigator';
+import { getMappingLineData, searchFields } from '../navigator';
 import { navigatorSpecs } from '../navigatorSpecs';
+import { strictGetTable } from '../../DataModel/tables';
 
 requireContext();
+
+test('searchFields returns matching downstream fields in join order', () => {
+  const results = searchFields({
+    baseTableName: 'CollectionObject',
+    search: 'taxon',
+    spec: navigatorSpecs.wbPlanView,
+  });
+  expect(results.length).toBeGreaterThan(0);
+  expect(results.every(({ mappingPath }) => mappingPath.at(-1))).toBe(true);
+  const joinCounts = results.map(({ joinCount }) => joinCount);
+  expect(joinCounts).toEqual([...joinCounts].sort((a, b) => a - b));
+});
+
+test('searchFields matches relationship names and returns complete paths', () => {
+  const results = searchFields({
+    baseTableName: 'CollectionObject',
+    search: 'determination',
+    spec: navigatorSpecs.wbPlanView,
+  });
+
+  expect(results).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        mappingPath: expect.arrayContaining(['determinations']),
+      }),
+    ])
+  );
+});
+
+test('searchFields does not prefix downstream fields with the leaf table', () => {
+  const results = searchFields({
+    baseTableName: 'CollectionObject',
+    search: 'Country',
+    spec: navigatorSpecs.wbPlanView,
+  });
+
+  expect(results).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        mappingPath: [
+          'collectingEvent',
+          'locality',
+          'geography',
+          '$Country',
+          'name',
+        ],
+        label: expect.not.stringMatching(/^Geography →/u),
+      }),
+    ])
+  );
+});
+
+test('searchFields includes aggregate and formatted relationship options', () => {
+  const aggregateResults = searchFields({
+    baseTableName: 'CollectionObject',
+    search: 'determinations',
+    spec: navigatorSpecs.wbPlanView,
+  });
+  const formattedResults = searchFields({
+    baseTableName: 'CollectionObject',
+    search: 'cataloger',
+    spec: navigatorSpecs.wbPlanView,
+  });
+
+  expect(aggregateResults).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        mappingPath: ['determinations', '#1', '-formatted'],
+      }),
+    ])
+  );
+  expect(formattedResults).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        mappingPath: ['cataloger', '-formatted'],
+      }),
+    ])
+  );
+});
+
+test('searchFields resolves tree ranks and rank fields', () => {
+  const speciesResults = searchFields({
+    baseTableName: 'CollectionObject',
+    search: 'Species',
+    spec: navigatorSpecs.wbPlanView,
+  });
+  const fullNameResults = searchFields({
+    baseTableName: 'CollectionObject',
+    search: 'Full Name',
+    spec: navigatorSpecs.queryBuilder,
+  });
+
+  expect(speciesResults).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        mappingPath: ['determinations', '#1', 'taxon', '$Species', 'name'],
+        label: expect.stringMatching(/Species$/u),
+      }),
+    ])
+  );
+  expect(speciesResults).not.toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        mappingPath: ['determinations', '#1', 'taxon', '$Species', 'fullName'],
+      }),
+    ])
+  );
+  expect(fullNameResults).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        mappingPath: expect.arrayContaining(['$-any', 'fullName']),
+      }),
+    ])
+  );
+});
+
+test('searchFields uses any rank for tree field-name matches', () => {
+  const results = searchFields({
+    baseTableName: 'Preparation',
+    search: 'Ordinal',
+    spec: navigatorSpecs.queryBuilder,
+  });
+
+  expect(results).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        mappingPath: [
+          'storage',
+          '$-any',
+          'storageAttachments',
+          '#1',
+          'ordinal',
+        ],
+      }),
+    ])
+  );
+  expect(
+    results.some(({ mappingPath }) =>
+      mappingPath.some((part) => /^\$/.test(part) && part !== '$-any')
+    )
+  ).toBe(false);
+});
+
+test('searchFields prefers the collecting event route to collectors', () => {
+  const results = searchFields({
+    baseTableName: 'CollectionObject',
+    search: 'collectors',
+    spec: navigatorSpecs.wbPlanView,
+  });
+  const normalizedPath = (mappingPath: readonly string[]): string[] =>
+    mappingPath.filter(
+      (part) => !part.startsWith('#') && part !== '-formatted'
+    );
+  const preferredIndex = results.findIndex(
+    ({ mappingPath }) =>
+      normalizedPath(mappingPath).slice(0, 2).join('.') ===
+      'collectingEvent.collectors'
+  );
+  const discouragedIndex = results.findIndex(
+    ({ mappingPath }) =>
+      normalizedPath(mappingPath).slice(0, 2).join('.') ===
+      'cataloger.collectors'
+  );
+
+  expect(preferredIndex).toBeGreaterThanOrEqual(0);
+  expect(discouragedIndex).toBeGreaterThanOrEqual(0);
+  expect(preferredIndex).toBeLessThan(discouragedIndex);
+});
+
+test('searchFields returns no results for empty input', () => {
+  expect(
+    searchFields({
+      baseTableName: 'CollectionObject',
+      search: '  ',
+      spec: navigatorSpecs.wbPlanView,
+    })
+  ).toEqual([]);
+});
+
+test('searchFields supports bounded result windows', () => {
+  const allResults = searchFields({
+    baseTableName: 'CollectionObject',
+    search: 'taxon',
+    spec: navigatorSpecs.wbPlanView,
+  });
+  const firstResults = searchFields({
+    baseTableName: 'CollectionObject',
+    limit: 3,
+    search: 'taxon',
+    spec: navigatorSpecs.wbPlanView,
+  });
+  const nextResults = searchFields({
+    baseTableName: 'CollectionObject',
+    limit: 3,
+    offset: 3,
+    search: 'taxon',
+    spec: navigatorSpecs.wbPlanView,
+  });
+
+  expect(firstResults).toEqual(allResults.slice(0, 3));
+  expect(nextResults).toEqual(allResults.slice(3, 6));
+});
+
+test('searchFields supports offsets beyond the result page limit', () => {
+  const resultBeforeLimit = searchFields({
+    baseTableName: 'CollectionObject',
+    search: 'a',
+    limit: 1,
+    offset: 499,
+    spec: navigatorSpecs.queryBuilder,
+  });
+  const offsetResults = searchFields({
+    baseTableName: 'CollectionObject',
+    search: 'a',
+    limit: 1,
+    offset: 500,
+    spec: navigatorSpecs.queryBuilder,
+  });
+
+  expect(resultBeforeLimit).toHaveLength(1);
+  expect(offsetResults).toHaveLength(1);
+});
+
+test('searchFields tolerates hidden-field searches across unconfigured trees', () => {
+  expect(() =>
+    searchFields({
+      baseTableName: 'CollectionObject',
+      search: 'modified',
+      showHiddenFields: true,
+      spec: navigatorSpecs.wbPlanView,
+    })
+  ).not.toThrow();
+});
+
+test('searchFields includes read-only fields only for Query Builder', () => {
+  const workBenchResults = searchFields({
+    baseTableName: 'CollectionObject',
+    search: 'timestampModified',
+    spec: navigatorSpecs.wbPlanView,
+  });
+  const queryBuilderResults = searchFields({
+    baseTableName: 'CollectionObject',
+    search: 'timestampModified',
+    spec: navigatorSpecs.queryBuilder,
+  });
+
+  expect(
+    workBenchResults.some(({ mappingPath }) =>
+      mappingPath.includes('timestampModified')
+    )
+  ).toBe(false);
+  expect(
+    queryBuilderResults.some(({ mappingPath }) =>
+      mappingPath.includes('timestampModified-fullDate')
+    )
+  ).toBe(true);
+  expect(queryBuilderResults).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        mappingPath: expect.arrayContaining(['timestampModified-fullDate']),
+      }),
+    ])
+  );
+  expect(
+    queryBuilderResults.some(
+      ({ mappingPath }) => mappingPath.at(-1) === 'timestampModified'
+    )
+  ).toBe(false);
+});
+
+test('searchFields excludes virtual fields and relationships', () => {
+  const results = searchFields({
+    baseTableName: 'CollectionObject',
+    search: 'currentDetermination',
+    spec: navigatorSpecs.queryBuilder,
+  });
+
+  expect(
+    results.some(({ mappingPath }) =>
+      mappingPath.includes('currentDetermination')
+    )
+  ).toBe(false);
+});
+
+test('searchFields excludes SpecifyUser and Workbench tables', () => {
+  for (const [search, tableName, relationshipName] of [
+    ['specifyuser', 'SpecifyUser', 'specifyUser'],
+    ['workbench', 'Workbench', 'workbench'],
+  ] as const) {
+    const results = searchFields({
+      baseTableName: 'CollectionObject',
+      search,
+      spec: navigatorSpecs.queryBuilder,
+    });
+
+    expect(results.every((result) => result.tableName !== tableName)).toBe(
+      true
+    );
+    expect(
+      results.every(
+        ({ mappingPath }) => !mappingPath.includes(relationshipName)
+      )
+    ).toBe(true);
+  }
+});
+
+test('searchFields includes matching self-referential relationships', () => {
+  const results = searchFields({
+    baseTableName: 'Preparation',
+    search: 'organ',
+    spec: navigatorSpecs.queryBuilder,
+  });
+
+  expect(results).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        mappingPath: ['preparedByAgent', 'organization', '-formatted'],
+      }),
+    ])
+  );
+});
+
+test('searchFields uses any rank for formatted tree relationships', () => {
+  const results = searchFields({
+    baseTableName: 'Preparation',
+    search: 'storage',
+    spec: navigatorSpecs.queryBuilder,
+  });
+
+  expect(results).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        mappingPath: ['storage', '$-any', '-formatted'],
+      }),
+    ])
+  );
+});
+
+test('searchFields labels ID fields as ID', () => {
+  const idFieldName = strictGetTable('CollectionObject').idField.name;
+  const results = searchFields({
+    baseTableName: 'CollectionObject',
+    search: idFieldName,
+    showHiddenFields: true,
+    spec: navigatorSpecs.queryBuilder,
+  });
+
+  expect(results).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        mappingPath: [idFieldName],
+        label: 'ID',
+      }),
+    ])
+  );
+});
 
 // TEST: break this test into smaller tests
 theories(getMappingLineData, [

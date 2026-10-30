@@ -359,7 +359,7 @@ export const interactionsText = createDictionary({
   returnedPreparations: {
     comment: 'Example: Preparation records',
     'en-us': 'Returned {tablePreparation:string} records',
-    'es-es': 'Registros devueltos {tablePreparation:string}',
+    'es-es': 'Registros {tablePreparation:string} devueltos',
     'fr-fr': 'Enregistrements {tablePreparation:string} retournés',
     'ru-ru': 'Возвращены записи {tablePreparation:string}',
     'uk-ua': 'Повернуто записів {tablePreparation:string}',

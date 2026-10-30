@@ -36,6 +36,7 @@ export type RecordSelectorProps<SCHEMA extends AnySchema> = {
     | ((newIndex: number, replace: boolean, callback?: () => void) => void)
     | undefined;
   readonly isCollapsed?: boolean;
+  readonly enableKeyboardShortcuts: boolean;
 };
 
 export type RecordSelectorState<SCHEMA extends AnySchema> = {
@@ -72,6 +73,7 @@ export function useRecordSelector<SCHEMA extends AnySchema>({
   index,
   onSlide: handleSlide,
   totalCount,
+  enableKeyboardShortcuts,
 }: RecordSelectorProps<SCHEMA> & {
   // Total number of elements in the collection
   readonly totalCount: number;
@@ -120,6 +122,7 @@ export function useRecordSelector<SCHEMA extends AnySchema>({
     slider: (
       <Slider
         count={totalCount}
+        enableKeyboardShortcuts={enableKeyboardShortcuts}
         value={index}
         onChange={
           handleSlide === undefined

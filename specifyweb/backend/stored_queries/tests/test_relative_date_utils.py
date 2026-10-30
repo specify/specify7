@@ -1,5 +1,6 @@
 from specifyweb.specify.tests.test_api import ApiTests, MockDateTime
-from specifyweb.backend.stored_queries.relative_date_utils import apply_absolute_date, relative_to_absolute_date
+from specifyweb.backend.stored_queries.relative_date_utils import relative_to_absolute_date
+from specifyweb.backend.stored_queries.field_spec_maps import apply_absolute_date
 from unittest.mock import patch, Mock
 import datetime
 

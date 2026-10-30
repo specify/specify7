@@ -264,7 +264,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Província/Estado',
     'ru-ru': 'Провинция/штат',
     'uk-ua': 'Провінція/Штат',
-    nb: 'Provins/Stat',
+    nb: 'Fylke/Region',
   },
   addressStateDescription: {
     'en-us': 'The state or province.',
@@ -275,7 +275,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'O estado ou província.',
     'ru-ru': 'Штат или провинция.',
     'uk-ua': 'Штат або провінція.',
-    nb: 'Staten eller provinsen.',
+    nb: 'Fylket eller regionen.',
   },
   addressCountry: {
     'en-us': 'Country',
@@ -352,7 +352,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Classificações da árvore',
     'ru-ru': 'Ранги деревьев',
     'uk-ua': 'Ряди дерев',
-    nb: 'Trerangeringer',
+    nb: 'Tre-nivåer',
   },
   rank: {
     'en-us': 'Rank',
@@ -363,7 +363,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Classificação',
     'ru-ru': 'Классифицировать',
     'uk-ua': 'Ранг',
-    nb: 'Rang',
+    nb: 'Nivå',
   },
   fullNameDirection: {
     'en-us': 'Full Name Direction',
@@ -385,7 +385,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Preencher a árvore com registros padrão',
     'ru-ru': 'Заполнить дерево записями по умолчанию',
     'uk-ua': 'Заповнити дерево записами за замовчуванням',
-    nb: 'Fyll treet med standardoppføringer',
+    nb: 'Fyll treet med standardverdier',
   },
   preloadTreeDescription: {
     'en-us': 'Download default records for this tree.',
@@ -396,7 +396,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Baixe os registros padrão para esta árvore.',
     'ru-ru': 'Загрузить записи по умолчанию для этого дерева.',
     'uk-ua': 'Завантажити записи за замовчуванням для цього дерева.',
-    nb: 'Last ned standardoppføringer for dette treet.',
+    nb: 'Last ned standardverdier for dette treet.',
   },
   treeToPreload: {
     'en-us': 'Tree to download:',
@@ -429,7 +429,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Incluir',
     'ru-ru': 'Включать',
     'uk-ua': 'Включити',
-    nb: 'Inkludere',
+    nb: 'Inkluder',
   },
   includeDescription: {
     'en-us': 'Include places the Level in the tree definition.',
@@ -442,7 +442,7 @@ export const setupToolText = createDictionary({
     'ru-ru':
       'Включение этого параметра размещает уровень в определении дерева.',
     'uk-ua': 'Включити місця рівня у визначення дерева.',
-    nb: 'Inkluder plasserer nivået i tredefinisjonen.',
+    nb: '"Inkluder" plasserer nivået i tredefinisjonen.',
   },
   enforced: {
     'en-us': 'Enforced',
@@ -453,7 +453,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Aplicado',
     'ru-ru': 'Принудительное исполнение',
     'uk-ua': 'Примусово',
-    nb: 'Håndhevet',
+    nb: 'Enforced',
   },
   enforcedDescription: {
     'en-us':
@@ -502,7 +502,7 @@ export const setupToolText = createDictionary({
       'Функция Is in Full Name включает уровень детализации при построении выражения для полного имени, которое можно запрашивать и использовать в отчетах.',
     'uk-ua':
       '«У повному імені» враховує рівень під час створення виразу повного імені, який можна запитувати та використовувати у звітах.',
-    nb: '«Er i fullt navn» inkluderer nivået når du bygger et uttrykk for fullt navn, som kan spørres og brukes i rapporter.',
+    nb: '«Er i fullt navn» inkluderer nivået når du bygger et fullt-navn-uttrykk, som kan spørres og brukes i rapporter.',
   },
   fullNameSeparator: {
     'en-us': 'Separator',
@@ -513,7 +513,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Separador',
     'ru-ru': 'Сепаратор',
     'uk-ua': 'Роздільник',
-    nb: 'Separator',
+    nb: 'Skilletegn',
   },
   fullNameSeparatorDescription: {
     'en-us':
@@ -543,7 +543,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Árvore de armazenamento',
     'ru-ru': 'Дерево для хранения',
     'uk-ua': 'Дерево сховища',
-    nb: 'Lagringstre',
+    nb: 'Magasin-tre',
   },
   geographyTree: {
     'en-us': 'Geography Tree',

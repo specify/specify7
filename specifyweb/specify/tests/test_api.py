@@ -95,6 +95,8 @@ class MainSetupTearDown:
             name='paleobotany'
         )
 
+        # BUG: Don't we need to set the TaxonTreeDef -> Discipline here?
+
         apply_default_uniqueness_rules(self.discipline)
 
         self.collection = Collection.objects.create(
@@ -126,19 +128,8 @@ class MainSetupTearDown:
         self.collectionobjecttype = Collectionobjecttype.objects.create(
             name="Test", collection=self.collection, taxontreedef=self.taxontreedef
         )
-        
-        def make_co(num: int):
-            return [
-                models.Collectionobject.objects.create(
-                    collection=self.collection, 
-                    catalognumber="num-%d" % i,
-                    collectionobjecttype=self.collectionobjecttype,
-                )
-                for i in range(num)
-            ]
 
-        self.collectionobjects = make_co(5)
-        self.make_co = make_co
+        self.collectionobjects = self.make_co(5)
 
         def _update(obj, kwargs):
             for key, value in kwargs.items():
@@ -146,7 +137,24 @@ class MainSetupTearDown:
             obj.save()
 
         self._update = _update
-    
+
+    def make_co(self, num: int) -> list[Collectionobject]:
+        if not hasattr(self, "_current_co_count"):
+            self._current_co_count = 0
+        results = []
+        # REFACTOR: Performance. This can very easily be made into a
+        # bulk_create call. Though keep in mind that signals and custom save
+        # methods don't get called if we do
+        for _ in range(num):
+            new_co = models.Collectionobject.objects.create(
+                collection=self.collection,
+                catalognumber="num-%d" % self._current_co_count,
+                collectionobjecttype=self.collectionobjecttype,
+            )
+            self._current_co_count += 1
+            results.append(new_co)
+        return results
+
     def _create_prep_type(self):
         self.prep_type = Preptype.objects.create(
                 name="testPrepType",

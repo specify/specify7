@@ -13,7 +13,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { tables } from '../DataModel/tables';
 import type { Attachment } from '../DataModel/types';
 import { load } from '../InitialContext';
-import { getPref } from '../InitialContext/remotePrefs';
+import { globalPreferences } from '../Preferences/globalPreferences';
 import { downloadFile } from '../Molecules/FilePicker';
 import { formatUrl } from '../Router/queryString';
 // Import SVG icons, but better than in Icons.tsx
@@ -270,7 +270,11 @@ export type AttachmentThumbnail = {
 
 export async function fetchThumbnail(
   attachment: SerializedResource<Attachment>,
-  scale = getPref('attachment.preview_size')
+  scale = globalPreferences.get(
+    'general',
+    'attachments',
+    'attachmentThumbnailSize'
+  )
 ): Promise<AttachmentThumbnail | undefined> {
   const mimeType = attachment.mimeType ?? undefined;
   const thumbnail =
