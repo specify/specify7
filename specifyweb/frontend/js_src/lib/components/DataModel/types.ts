@@ -666,6 +666,7 @@ export type Attachment = {
     readonly mimeType: string | null;
     readonly origFilename: string;
     readonly remarks: string | null;
+    readonly resourceURL: string | null;
     readonly scopeID: number | null;
     readonly scopeType: number | null;
     readonly subjectOrientation: string | null;
