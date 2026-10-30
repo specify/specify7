@@ -51,7 +51,7 @@ class TestBuildQuery(SQLAlchemySetup):
         )
 
     # This test helps guard against Issues like #8529 and #3369
-    def test_no_extra_tree_joins(self):
+    def test_tree_joins_are_isolated_by_relationship(self):
         base_field_attrs = {
             "formatname": None,
             "isdisplay": True,
@@ -100,30 +100,26 @@ class TestBuildQuery(SQLAlchemySetup):
                 series=props.series,
                 formatauditobjs=props.formatauditobjs
             )
-            # There should be 4 objects in the join cache
+            # Relationship joins may be shared only while their paths are the
+            # same. Each relationship into Taxon needs its own rank aliases.
             # CollectionObject -> Determinations
             # Determination -> taxon
-            # Taxon Ranks for Determination -> taxon
             # Determination -> preferredTaxon
+            # Taxon ranks for each of those two relationships
+            # Shared tree-definition metadata and one rank-item entry per rank
             self.assertEqual(
                 len(query.join_cache),
-                4
+                8
             )
-            # BUG: This is technically undesirable, as it causes #8650
-            # In the underlying query, the Preferred Taxon currently uses the
-            # JOIN for Determination -> taxon. Specifically, it uses the cached
-            # JOINs for the tree ranks.
-            taxon_table = datamodel.get_table_strict("taxon")
-            cache_key = (taxon_table, 'TreeRanks')
-            tree_ranks_in_cache = list(filter(lambda cache_key: 'TreeRanks' in cache_key, query.join_cache.keys()))
-            self.assertEqual(
-                tree_ranks_in_cache,
-                [cache_key]
-            )
-            tree_join_information = query.join_cache[cache_key]
-            tree_ranks = tree_join_information[0]
-
-            self.assertEqual(
-                len(tree_ranks),
-                len(self.taxontreedef.treedefitems.all())
-            )
+            tree_rank_keys = [
+                key for key in query.join_cache
+                if len(key) > 1 and key[1] == 'TreeRanks'
+            ]
+            self.assertEqual(len(tree_rank_keys), 2)
+            self.assertNotEqual(tree_rank_keys[0][0], tree_rank_keys[1][0])
+            for cache_key in tree_rank_keys:
+                tree_ranks, _ = query.join_cache[cache_key]
+                self.assertEqual(
+                    len(tree_ranks),
+                    len(self.taxontreedef.treedefitems.all())
+                )
