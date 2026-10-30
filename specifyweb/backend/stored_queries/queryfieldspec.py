@@ -5,6 +5,8 @@ import re
 from collections import namedtuple, deque
 from typing import TypedDict, Iterable
 
+from django.db.models import Q
+
 from specifyweb.backend.inheritance.utils import get_cat_num_inheritance_setting, get_parent_cat_num_inheritance_setting
 from specifyweb.specify.utils.uiformatters import get_uiformatter
 from sqlalchemy import sql, Table as SQLTable
@@ -688,27 +690,27 @@ def cog_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uif
     return op, orm_field, value
 
 def cog_primary_co_sibling_ids(cat_num, collection):
-    # Get the collection object with the given catalog number
-    co = Collectionobject.objects.filter(catalognumber=cat_num, collection=collection).first()
-    if not co:
+    # Keep every explicit match, including COs that are not a group's primary.
+    matching_co_ids = list(Collectionobject.objects.filter(
+        catalognumber=cat_num, collection=collection
+    ).values_list('id', flat=True))
+    if not matching_co_ids:
         return []
 
-    # Get the primary group join for the collection object
-    cojo = Collectionobjectgroupjoin.objects.filter(childco=co, isprimary=True).first()
-    if not cojo:
-        return []
+    primary_group_ids = Collectionobjectgroupjoin.objects.filter(
+        childco_id__in=matching_co_ids, isprimary=True
+    ).values_list('parentcog_id', flat=True)
 
-    # Get sibling collection objects in the same parent group
     sibling_co_ids = Collectionobjectgroupjoin.objects.filter(
-        parentcog=cojo.parentcog, childco__isnull=False
-    ).exclude(childco=co).values_list('childco_id', flat=True)
+        parentcog_id__in=primary_group_ids, childco__isnull=False
+    ).values_list('childco_id', flat=True)
 
-    # Filter siblings with no catalog number and return all IDs as strings
+    # Explicit sibling numbers override inheritance.
     target_sibling_co_ids = Collectionobject.objects.filter(
-        id__in=sibling_co_ids, catalognumber=None
+        id__in=sibling_co_ids, catalognumber=None, collection=collection
     ).values_list('id', flat=True)
 
-    return [str(i) for i in [co.id] + list(target_sibling_co_ids)]
+    return [str(i) for i in set(matching_co_ids).union(target_sibling_co_ids)]
 
 def parent_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection=None, user=None):
     if (
@@ -726,25 +728,11 @@ def parent_inheritance_filter_cases(orm_field, field, table, value, op, op_num, 
     return op, orm_field, value
 
 def co_components_ids(cat_num, collection):
-    # Get the collection object with the given catalog number
-    coparent = Collectionobject.objects.filter(catalognumber=cat_num, collection=collection).first()
-
-    if not coparent:
-        return []
-    
-    # Get component objects with the same cat num than the CO parent
-    components_with_cat_num = Component.objects.filter(catalognumber=cat_num)
-
-    # Get component objects directly from the parent CO
-    empty_cat_num_components = coparent.components.filter(catalognumber=None)
-
-    # Get component ids
-    ids_with_cat_num = components_with_cat_num.values_list('id', flat=True)
-    ids_with_no_cat_num = empty_cat_num_components.values_list('id', flat=True)
-
-    # Combine all IDs and add the parent ID, convert to strings and remove duplicates
-    all_ids = {str(coparent.id)}
-    all_ids.update(str(i) for i in ids_with_cat_num)
-    all_ids.update(str(i) for i in ids_with_no_cat_num)
-
-    return list(all_ids)
+    # Match explicit numbers and blank Components of every matching parent.
+    component_ids = Component.objects.filter(
+        collectionobject__collection=collection
+    ).filter(
+        Q(catalognumber=cat_num)
+        | Q(catalognumber=None, collectionobject__catalognumber=cat_num)
+    ).values_list('id', flat=True)
+    return [str(i) for i in component_ids]

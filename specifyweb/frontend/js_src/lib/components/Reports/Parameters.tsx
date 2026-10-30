@@ -28,6 +28,7 @@ export function QueryParametersDialog({
   recordSetId,
   definition,
   parameters,
+  reportId,
   autoRun,
   onClose: handleClose,
 }: {
@@ -35,6 +36,7 @@ export function QueryParametersDialog({
   readonly recordSetId: number | undefined;
   readonly definition: Element;
   readonly parameters: IR<string>;
+  readonly reportId: number | undefined;
   readonly autoRun: boolean;
   readonly onClose: () => void;
 }): JSX.Element {
@@ -77,6 +79,7 @@ export function QueryParametersDialog({
       parameters={parameters}
       query={state.query}
       recordSetId={recordSetId}
+      reportId={reportId}
       onClose={(): void => setState({ type: 'Main' })}
     />
   ) : (
