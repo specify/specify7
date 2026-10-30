@@ -172,7 +172,9 @@ export function AppResourceEditor({
   const isEditingForm =
     typeof toResource(resource, 'SpViewSetObj') === 'object';
   // When editing a form, don't render the page inside of <form> to avoid #3357
-  const renderInForm = !isEditingForm;
+  const renderInForm =
+    !isEditingForm &&
+    appResource.get('mimeType') !== 'application/vnd.specify.dwca+xml';
 
   const headerButtons = (
     <div className="flex flex-wrap gap-3">
@@ -382,6 +384,7 @@ export function AppResourceEditor({
             if (typeof data === 'function') setLastData(() => data);
             else setResourceData({ ...resourceData, data });
           }}
+          onSwitchToXmlEditor={(): void => handleChangeTab(1)}
           onSetCleanup={handleSetCleanup}
         />
       </AppResourceContext.Provider>

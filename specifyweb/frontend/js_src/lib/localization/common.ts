@@ -90,6 +90,12 @@ export const commonText = createDictionary({
     'hr-hr': 'Zatvoriti',
     nb: 'Lukk',
   },
+  showDetails: {
+    'en-us': 'Show details',
+  },
+  hideDetails: {
+    'en-us': 'Hide details',
+  },
   configureExpressSearch: {
     'en-us': 'Configure Express Search',
     'ru-ru': 'Настройка экспресс-поиска',

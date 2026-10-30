@@ -3,6 +3,7 @@ import React from 'react';
 import { useUnloadProtect } from '../../hooks/navigation';
 import { useResource } from '../../hooks/resource';
 import { useAsyncState } from '../../hooks/useAsyncState';
+import { usePromise } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { useErrorContext } from '../../hooks/useErrorContext';
@@ -28,7 +29,12 @@ import { useTitle } from '../Molecules/AppTitle';
 import { hasPermission, hasToolPermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
 import { QueryBuilderSkeleton } from '../SkeletonLoaders/QueryBuilder';
-import { getMappedFields, mappingPathIsComplete } from '../WbPlanView/helpers';
+import {
+  getMappedFields,
+  mappingPathIsComplete,
+  mutateMappingPath,
+} from '../WbPlanView/helpers';
+import type { MappingPath } from '../WbPlanView/Mapper';
 import { getMappingLineProps } from '../WbPlanView/LineComponents';
 import { MappingView } from '../WbPlanView/MapperComponents';
 import {
@@ -43,9 +49,16 @@ import { navigatorSpecs } from '../WbPlanView/navigatorSpecs';
 import { CheckReadAccess } from './CheckReadAccess';
 import { IsQueryBasicContext, useQueryViewPref } from './Context';
 import { QueryFields } from './Fields';
+import { fetchFormatters } from '../Formatters/formatters';
+import { QueryFieldSpec } from './fieldSpec';
 import { QueryFromMap } from './FromMap';
 import { QueryHeader } from './Header';
-import { unParseQueryFields } from './helpers';
+import {
+  nextAvailableQueryFormat,
+  queryFieldFormatType,
+  unParseQueryFields,
+} from './helpers';
+import type { QueryField } from './helpers';
 import { getInitialState, reducer } from './reducer';
 import type { QueryResultRow } from './Results';
 import { QueryBuilderResults } from './QueryBuilderResults';
@@ -80,15 +93,20 @@ function Wrapped({
   forceCollection,
   isEmbedded = false,
   autoRun = false,
+  defaultBasicView = false,
   // If present, this callback is called when query results are selected
   onSelected: handleSelected,
   onChange: handleChange,
+  renderFieldPrefix,
+  canRemoveField,
+  isFieldReadOnly,
 }: {
   readonly query: SpecifyResource<SpQuery>;
   readonly recordSet?: SpecifyResource<RecordSet>;
   readonly forceCollection: number | undefined;
   readonly isEmbedded?: boolean;
   readonly autoRun?: boolean;
+  readonly defaultBasicView?: boolean;
   readonly onSelected?: (selected: RA<number>) => void;
   readonly onChange?: (props: {
     readonly fields: RA<SerializedResource<SpQueryField>>;
@@ -96,6 +114,9 @@ function Wrapped({
     readonly searchSynonymy: boolean | null;
     readonly isSeries: boolean | null;
   }) => void;
+  readonly renderFieldPrefix?: (field: QueryField, line: number) => JSX.Element;
+  readonly canRemoveField?: (field: QueryField, line: number) => boolean;
+  readonly isFieldReadOnly?: (field: QueryField, line: number) => boolean;
 }): JSX.Element {
   const [query, setQuery] = useResource(queryResource);
   useErrorContext('query', query);
@@ -121,6 +142,16 @@ function Wrapped({
   );
 
   const [state, dispatch] = React.useReducer(reducer, pendingState);
+  const formatSelectionRequestId = React.useRef(0);
+  const [formatSelectionRequest, setFormatSelectionRequest] = React.useState<{
+    readonly fieldId: number;
+    readonly requestId: number;
+  }>();
+  const openFormatSelection = (fieldId: number): void =>
+    setFormatSelectionRequest({
+      fieldId,
+      requestId: ++formatSelectionRequestId.current,
+    });
 
   const initialFields = React.useRef<string>('');
 
@@ -128,6 +159,7 @@ function Wrapped({
 
   React.useEffect(() => {
     const initialState = buildInitialState();
+    setFormatSelectionRequest(undefined);
     dispatch({
       type: 'ResetStateAction',
       state: initialState,
@@ -183,13 +215,67 @@ function Wrapped({
     queryText.queryUnloadProtect()
   );
 
-  const handleAddField = (mappingPath = state.mappingView): void =>
+  const [formatters] = usePromise(fetchFormatters, false);
+  const availableFormats = (mappingPath: MappingPath): RA<string> => {
+    const type = queryFieldFormatType(mappingPath);
+    if (type === undefined || formatters === undefined) return [];
+    const tableName = QueryFieldSpec.fromPath(state.baseTableName, mappingPath)
+      .table.name;
+    const definitions =
+      type === 'formatter'
+        ? formatters.formatters.map(({ table, name, isDefault }) => ({
+            table,
+            name,
+            isDefault,
+          }))
+        : formatters.aggregators.map(({ table, name, isDefault }) => ({
+            table,
+            name,
+            isDefault,
+          }));
+    return definitions
+      .filter(({ table }) => table?.name === tableName)
+      .sort(
+        ({ isDefault: left }, { isDefault: right }) =>
+          Number(right) - Number(left)
+      )
+      .map(({ name }) => name);
+  };
+  const usedFormats = (mappingPath: MappingPath): ReadonlySet<string> =>
+    new Set(
+      state.fields
+        .filter(
+          ({ mappingPath: path }) =>
+            JSON.stringify(path) === JSON.stringify(mappingPath)
+        )
+        .map(
+          ({ filters }) =>
+            filters.find(({ type }) => type === 'any')?.fieldFormat ?? ''
+        )
+    );
+  const nextFormat = (mappingPath: MappingPath): string | undefined =>
+    nextAvailableQueryFormat(
+      state.fields,
+      mappingPath,
+      availableFormats(mappingPath)
+    );
+  const canAddMapping = (mappingPath: MappingPath): boolean =>
+    queryFieldFormatType(mappingPath) === undefined
+      ? !getMappedFields(state.fields, mappingPath.slice(0, -1)).includes(
+          mappingPath.at(-1)!
+        )
+      : usedFormats(mappingPath).size === 0 ||
+        nextFormat(mappingPath) !== undefined;
+
+  const handleAddField = (mappingPath = state.mappingView): void => {
+    const id = Math.max(-1, ...state.fields.map(({ id }) => id)) + 1;
+    const hasExistingFormat = usedFormats(mappingPath).size > 0;
     dispatch({
       type: 'ChangeFieldsAction',
       fields: [
         ...state.fields,
         {
-          id: Math.max(-1, ...state.fields.map(({ id }) => id)) + 1,
+          id,
           mappingPath,
           sortType: undefined,
           filters: [
@@ -198,12 +284,18 @@ function Wrapped({
               startValue: '',
               isNot: false,
               isStrict: false,
+              fieldFormat: nextFormat(mappingPath),
             },
           ],
           isDisplay: true,
         },
       ],
     });
+    if (queryFieldFormatType(mappingPath) !== undefined) {
+      if (hasExistingFormat) openFormatSelection(id);
+      else setFormatSelectionRequest(undefined);
+    }
+  };
 
   const serializeQueryFields = (
     fields: typeof state.fields = state.fields
@@ -262,13 +354,16 @@ function Wrapped({
       queryResource.isNew() ? 'create' : 'update'
     );
   const isReadOnly = React.useContext(ReadOnlyContext) || !hasAccess;
-  const getMappedFieldsBind = getMappedFields.bind(undefined, state.fields);
+  const getMappedFieldsBind = (mappingPath: MappingPath): RA<string> =>
+    getMappedFields(state.fields, mappingPath).filter(
+      (name) =>
+        queryFieldFormatType([...mappingPath, name]) === undefined ||
+        !canAddMapping([...mappingPath, name])
+    );
   const mapButtonEnabled =
     !isReadOnly &&
     mappingPathIsComplete(state.mappingView) &&
-    !getMappedFieldsBind(state.mappingView.slice(0, -1)).includes(
-      state.mappingView.at(-1)!
-    );
+    canAddMapping(state.mappingView);
 
   // Scroll down to query results when pressed the "Query" button
   const [form, setForm] = React.useState<HTMLFormElement | null>(null);
@@ -307,7 +402,7 @@ function Wrapped({
   );
   const resultsShown = state.queryRunCount !== 0;
 
-  const [isBasic] = useQueryViewPref(query.id);
+  const [isBasic] = useQueryViewPref(query.id, defaultBasicView);
 
   const resultsRef = React.useRef<RA<QueryResultRow | undefined> | undefined>(
     undefined
@@ -384,6 +479,7 @@ function Wrapped({
           <QueryHeader
             form={form}
             getQueryFieldRecords={getQueryFieldRecords}
+            defaultBasicView={defaultBasicView}
             isEmbedded={isEmbedded}
             isScrolledTop={isScrolledTop}
             query={query}
@@ -465,11 +561,7 @@ function Wrapped({
                             ? formattedEntry
                             : 'fullName',
                         ]);
-                        if (
-                          !getMappedFieldsBind(
-                            newMappingPath.slice(0, -1)
-                          ).includes(newMappingPath.at(-1)!)
-                        )
+                        if (canAddMapping(newMappingPath))
                           handleAddField(newMappingPath);
                       } else
                         dispatch({
@@ -510,6 +602,7 @@ function Wrapped({
                 baseTableName={state.baseTableName}
                 enforceLengthLimit={triedToSave}
                 fields={state.fields}
+                formatSelectionRequest={formatSelectionRequest}
                 getMappedFields={getMappedFieldsBind}
                 openedElement={state.openedElement}
                 showHiddenFields={showHiddenFields}
@@ -532,6 +625,9 @@ function Wrapped({
                           fields,
                         })
                 }
+                renderFieldPrefix={renderFieldPrefix}
+                canRemoveField={canRemoveField}
+                isFieldReadOnly={isFieldReadOnly}
                 onClose={(): void =>
                   dispatch({
                     type: 'ChangeOpenedElementAction',
@@ -563,12 +659,46 @@ function Wrapped({
                 onMappingChange={
                   isReadOnly
                     ? undefined
-                    : (line, payload): void =>
+                    : (line, payload): void => {
+                        const path = mutateMappingPath({
+                          ...payload,
+                          mappingPath: state.fields[line].mappingPath,
+                          ignoreToMany: true,
+                        });
+                        if (
+                          mappingPathIsComplete(path) &&
+                          queryFieldFormatType(path) !== undefined &&
+                          JSON.stringify(path) !==
+                            JSON.stringify(state.fields[line].mappingPath)
+                        ) {
+                          const format = nextFormat(path);
+                          const hasExistingFormat = usedFormats(path).size > 0;
+                          if (hasExistingFormat && format === undefined) return;
+                          dispatch({
+                            type: 'ChangeFieldAction',
+                            line,
+                            field: {
+                              ...state.fields[line],
+                              mappingPath: path,
+                              filters: state.fields[line].filters.map(
+                                (filter) =>
+                                  filter.type === 'any'
+                                    ? { ...filter, fieldFormat: format }
+                                    : filter
+                              ),
+                            },
+                          });
+                          if (hasExistingFormat)
+                            openFormatSelection(state.fields[line].id);
+                          else setFormatSelectionRequest(undefined);
+                          return;
+                        }
                         dispatch({
                           type: 'ChangeSelectElementValueAction',
                           line,
                           ...payload,
-                        })
+                        });
+                      }
                 }
                 onOpen={(line, index): void =>
                   dispatch({
