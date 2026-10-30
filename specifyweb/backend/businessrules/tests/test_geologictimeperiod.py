@@ -1,4 +1,6 @@
 from unittest import skip
+from decimal import Decimal
+
 from django.db.models import ProtectedError
 
 from specifyweb.specify import models
@@ -93,6 +95,33 @@ class Geologictimeperiod(ApiTests):
                 definitionitem=self.era_rank,
                 rankid=self.era_rank.rankid,
             )
+
+    def test_geologictimeperiod_optional_fields_round_trip(self):
+        period = self._create_period(
+            "Cenozoic",
+            remarks="Optional fields",
+            startperiod=66.0,
+            endperiod=23.03,
+            startuncertainty=0.5,
+            enduncertainty=0.2,
+            standard="ICS",
+            text1="Text one",
+            text2="Text two",
+            isbiostrat=False,
+        )
+
+        period.refresh_from_db()
+        self.assertEqual(period.remarks, "Optional fields")
+        self.assertEqual(period.startperiod, Decimal("66.0"))
+        self.assertEqual(period.endperiod, Decimal("23.03"))
+        self.assertEqual(period.startuncertainty, Decimal("0.5"))
+        self.assertEqual(period.enduncertainty, Decimal("0.2"))
+        self.assertEqual(period.standard, "ICS")
+        self.assertEqual(period.text1, "Text one")
+        self.assertEqual(period.text2, "Text two")
+        self.assertFalse(period.isbiostrat)
+
+        period.delete()
 
     def test_clone_geologictimeperiod(self):
         original = self._create_period(
