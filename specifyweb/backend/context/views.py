@@ -41,6 +41,7 @@ from specifyweb.specify.views import login_maybe_required, openapi
 from .app_resource import get_app_resource, FORM_RESOURCE_EXCLUDED_LST
 from .schema_localization import get_schema_languages, get_schema_localization
 from .viewsets import get_views
+from .collection_access import users_collections_for_sp6
 from specifyweb.backend.setup_tool.api import (
     get_config_progress,
     filter_ready_disciplines_for_config_tasks,
@@ -52,17 +53,6 @@ logger = logging.getLogger(__name__)
    
 def set_collection_cookie(response, collection_id): # pragma: no cover
     response.set_cookie('collection', str(collection_id), max_age=365*24*60*60)
-
-def users_collections_for_sp6(cursor, user_id): # pragma: no cover
-    cursor.execute("""
-    select distinct c.usergroupscopeid, c.collectionname from collection c
-    inner join spprincipal p on p.usergroupscopeid = c.usergroupscopeid
-    inner join specifyuser_spprincipal up on up.spprincipalid = p.spprincipalid
-    inner join specifyuser u on u.specifyuserid = up.specifyuserid and p.grouptype is null
-    where up.specifyuserid = %s
-    """, [user_id])
-
-    return list(cursor.fetchall())
 
 def users_collections_for_sp7(userid: int) -> list: # pragma: no cover
     return [

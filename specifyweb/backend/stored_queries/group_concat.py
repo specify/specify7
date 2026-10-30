@@ -1,13 +1,15 @@
+from __future__ import annotations
+
 # Based on stackoverflow answer from Wolph:
 # https://stackoverflow.com/questions/19205850/how-do-i-write-a-group-concat-function-in-sqlalchemy
+
+from typing import Any
 
 import sqlalchemy
 from sqlalchemy.sql import expression, bindparam
 from sqlalchemy.ext import compiler
 from sqlalchemy.sql.elements import ClauseElement
 from sqlalchemy.types import String
-
-from specifyweb.backend.stored_queries.query_construct import QueryConstruct
 
 class group_concat(expression.ColumnElement):
     # MySQL GROUP_CONCAT(expr [ORDER BY ...] [SEPARATOR ...])
@@ -41,7 +43,7 @@ def _group_concat_mysql(element, compiler, **kwargs):
 
     return 'GROUP_CONCAT(%s)' % inner_expr
 
-def group_by_displayed_fields(query: QueryConstruct, fields, ignore_cat_num=False):
+def group_by_displayed_fields(query: Any, fields, ignore_cat_num=False):
     for field in fields:
         if (
             ignore_cat_num

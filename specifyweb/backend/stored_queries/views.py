@@ -12,19 +12,23 @@ from django.db import transaction
 from django.utils import timezone
 
 from specifyweb.middleware.general import require_GET
+from specifyweb.backend.stats.coordination import (
+    StatisticsBusy, busy_response, statistics_result,
+)
 from specifyweb.backend.stored_queries.batch_edit import run_batch_edit
 from specifyweb.specify.models_utils.models_by_table_id import model_names_by_table_id
 from specifyweb.specify.api.serializers import toJson, uri_for_model
+from specifyweb.specify.datamodel import datamodel
 from . import models
 from .execution import execute, run_ephemeral_query, do_export, recordset
-from .queryfield import QueryField
+from .queryfield import QueryField, fields_from_json
 from specifyweb.backend.permissions.permissions import PermissionTarget, PermissionTargetAction, \
     check_permission_targets, check_table_permissions
 from specifyweb.specify.models import Collection, Recordset, Recordsetitem, \
     Loanreturnpreparation, Loanpreparation, Loan
 from specifyweb.specify.views import login_maybe_required
 from .execution import execute, run_ephemeral_query, do_export, recordset, \
-    return_loan_preps as rlp
+    return_loan_preps as rlp, get_query_tables
 
 
 logger = logging.getLogger(__name__)
@@ -72,6 +76,38 @@ def format_export_file_name(spquery, file_extension = ''):
     return non_extension if not file_extension else non_extension + ".%s" % file_extension
   
 
+def ephemeral_statistics_cache_key(spquery):
+    """Return a cache key based only on inputs that affect ephemeral query results."""
+    fields = sorted(spquery["fields"], key=lambda field: field["position"])
+    execution_fields = (
+        "stringid",
+        "isrelfld",
+        "operstart",
+        "startvalue",
+        "isnot",
+        "isdisplay",
+        "sorttype",
+        "formatname",
+        "isstrict",
+    )
+    query = {
+        "contexttableid": spquery["contexttableid"],
+        "selectdistinct": spquery["selectdistinct"],
+        "countonly": spquery["countonly"],
+        "limit": spquery.get("limit", 20),
+        "offset": spquery.get("offset", 0),
+        "recordsetid": spquery.get("recordsetid"),
+        "smushed": spquery.get("smushed"),
+        "searchsynonymy": bool(spquery.get("searchsynonymy", False)),
+        "formatauditrecids": spquery.get("formatauditrecids", False),
+        "fields": [
+            {name: field.get(name) for name in execution_fields}
+            for field in fields
+        ],
+    }
+    return json.dumps(["ephemeral-statistics-v2", query], sort_keys=True)
+
+
 @require_GET
 @login_maybe_required
 @never_cache
@@ -115,9 +151,39 @@ def query(request, id):
 @login_maybe_required
 @never_cache
 def ephemeral(request):
-    """Executes and returns the results of the query provided as JSON in the POST body."""
+    """Execute the query provided as JSON in the POST body.
+
+    Statistics cache hits authorize the recorded table dependencies without
+    reparsing or rebuilding the query.
+    """
 
     spquery, collection = get_query(request)
+    if request.headers.get("X-Specify-Statistics") == "true":
+        def calculate_statistics() -> str:
+            data = run_ephemeral_query(collection, request.specify_user, spquery)
+            tables = get_query_tables(fields_from_json(spquery["fields"]))
+            return json.dumps({
+                "content": toJson(data),
+                "tables": sorted(table.name for table in tables),
+            })
+
+        try:
+            # Keep metadata-bearing entries separate from older body-only cache entries.
+            content = statistics_result(
+                collection,
+                request.specify_user,
+                ephemeral_statistics_cache_key(spquery),
+                calculate_statistics,
+            )
+        except StatisticsBusy:
+            return busy_response()
+        result = json.loads(content)
+        for table_name in result["tables"]:
+            check_table_permissions(
+                collection, request.specify_user, datamodel.get_table_strict(table_name), "read"
+            )
+        return HttpResponse(result["content"], content_type='application/json')
+
     data = run_ephemeral_query(collection, request.specify_user, spquery)
 
     return HttpResponse(toJson(data), content_type='application/json')
@@ -356,4 +422,3 @@ def return_loan_preps(request):
         item['loanpreparations'].append({'loanpreparationid': lp_id, 'quantity': int(quantity)})
 
     return JsonResponse(resp, safe=False)
-

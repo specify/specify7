@@ -1,5 +1,3 @@
-from specifyweb.middleware.general import SpecifyExceptionWrapper
-
 class BusinessRuleException(Exception):
     pass
 

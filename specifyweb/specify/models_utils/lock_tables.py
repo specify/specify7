@@ -2,11 +2,14 @@ from django.db import connection
 from django.conf import settings
 from contextlib import contextmanager
 from typing import Iterable
+import hashlib
 import logging
 import json
 
 logger = logging.getLogger(__name__)
 LOCK_NAME_SEPARATOR = "_"
+LOCK_NAME_MAX_LENGTH = 64
+LOCK_NAME_HASH_LENGTH = 48
 
 
 @contextmanager
@@ -200,7 +203,13 @@ class Lock:
 
 
 class LockDispatcher:
-    def __init__(self, lock_prefix: str | None = None, case_sensitive_names=False):
+    def __init__(
+        self,
+        lock_prefix: str | None = None,
+        case_sensitive_names=False,
+        *,
+        lock_name_separator: str = LOCK_NAME_SEPARATOR,
+    ):
         db_name = getattr(settings, "DATABASE_NAME")
         self.lock_prefix_parts: list[str] = [db_name]
 
@@ -208,6 +217,7 @@ class LockDispatcher:
             self.lock_prefix_parts.append(lock_prefix)
 
         self.case_sensitive_names = case_sensitive_names
+        self.lock_name_separator = lock_name_separator
         self.locks: dict[str, Lock] = dict()
         self.in_context = False
 
@@ -223,10 +233,21 @@ class LockDispatcher:
         self.in_context = False
 
     def lock_name(self, *name_parts: str):
-        final_name = LOCK_NAME_SEPARATOR.join(
-            (*self.lock_prefix_parts, *name_parts))
+        final_name = self.lock_name_separator.join(
+            (*self.lock_prefix_parts, *name_parts)
+        )
 
-        return final_name.lower() if not self.case_sensitive_names else final_name
+        if not self.case_sensitive_names:
+            final_name = final_name.lower()
+
+        if len(final_name) > LOCK_NAME_MAX_LENGTH:
+            prefix_length = LOCK_NAME_MAX_LENGTH - LOCK_NAME_HASH_LENGTH - 1
+            digest = hashlib.sha256(final_name.encode()).hexdigest()[
+                :LOCK_NAME_HASH_LENGTH
+            ]
+            final_name = f"{final_name[:prefix_length]}:{digest}"
+
+        return final_name
 
     @contextmanager
     def lock_and_release(self, name: str, timeout: int = 5):
