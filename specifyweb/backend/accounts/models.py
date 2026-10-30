@@ -2,6 +2,17 @@ from django.db import models
 from functools import partialmethod
 from specifyweb.specify.models import Specifyuser, datamodel, custom_save
 
+
+class UserPresence(models.Model):
+    specifyuser = models.OneToOneField(
+        Specifyuser, on_delete=models.CASCADE, related_name='presence')
+    last_heartbeat = models.DateTimeField()
+    last_activity = models.DateTimeField(null=True)
+
+    class Meta:
+        db_table = 'userpresence'
+
+
 class Spuserexternalid(models.Model):
     """Maps external user identities to Specify user accounts."""
     specify_model = datamodel.get_table('spuserexternalid')
