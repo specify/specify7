@@ -42,6 +42,32 @@ export function ViewSetView(): JSX.Element {
   return <Wrapper mode="viewSets" />;
 }
 
+/**
+ * The skeleton for a resource created via the "New Resource" flow. This is
+ * the record that actually gets saved (the dialog in Create.tsx only collects
+ * the name, then navigates here). S6 hard-fails when opening a label whose
+ * spappresource.Description is NULL, so default description to the resource
+ * name on creation. See ticket #824.
+ */
+const newAppResourceSkeleton = (
+  mode: AppResourceMode,
+  name: string | undefined,
+  mimeType: string | undefined
+): SerializedResource<SpAppResource> =>
+  addMissingFields(
+    mode === 'appResources'
+      ? 'SpAppResource'
+      : ('SpViewSetObj' as 'SpAppResource'),
+    {
+      // I don't think this field is used anywhere
+      level: 0,
+      mimeType,
+      name: name?.trim() ?? '',
+      description: name?.trim() ?? '',
+      specifyUser: userInformation.resource_uri,
+    }
+  );
+
 export function Wrapper({
   mode,
 }: {
@@ -54,19 +80,7 @@ export function Wrapper({
   const { name, mimeType, rawDirectoryKey, clone, templateFile } = useProps();
 
   const newResource = React.useMemo(
-    () =>
-      addMissingFields(
-        mode === 'appResources'
-          ? 'SpAppResource'
-          : ('SpViewSetObj' as 'SpAppResource'),
-        {
-          // I don't think this field is used anywhere
-          level: 0,
-          mimeType,
-          name: name?.trim() ?? '',
-          specifyUser: userInformation.resource_uri,
-        }
-      ),
+    () => newAppResourceSkeleton(mode, name, mimeType),
     [name, mimeType, mode]
   );
   const resource = useAppResource(newResource, resources, mode);
@@ -268,4 +282,5 @@ export const exportsForTests = {
   useAppResource,
   useInitialData,
   useDirectory,
+  newAppResourceSkeleton,
 };
