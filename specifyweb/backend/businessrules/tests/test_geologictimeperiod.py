@@ -5,6 +5,7 @@ from specifyweb.specify import models
 from specifyweb.specify.api.crud import delete_resource, post_resource, update_obj
 from specifyweb.specify.api.serializers import uri_for_model
 from specifyweb.specify.tests.test_api import ApiTests
+from ..exceptions import TreeBusinessRuleException
 
 class Geologictimeperiod(ApiTests):
     def setUp(self):
@@ -70,6 +71,28 @@ class Geologictimeperiod(ApiTests):
         self.assertEqual(period.rankid, self.era_rank.rankid)
 
         period.delete()
+
+    def test_geologictimeperiod_rank_must_be_below_parent(self):
+        period_rank = self.era_rank.children.create(
+            name="Period",
+            rankid=200,
+            treedef=self.geologictimeperiodtreedef,
+        )
+        parent = self.rootgtp.children.create(
+            name="Cenozoic",
+            definition=self.geologictimeperiodtreedef,
+            definitionitem=period_rank,
+            rankid=period_rank.rankid,
+        )
+
+        with self.assertRaises(TreeBusinessRuleException):
+            models.Geologictimeperiod.objects.create(
+                name="Invalid child",
+                parent=parent,
+                definition=self.geologictimeperiodtreedef,
+                definitionitem=self.era_rank,
+                rankid=self.era_rank.rankid,
+            )
 
     def test_clone_geologictimeperiod(self):
         original = self._create_period(
