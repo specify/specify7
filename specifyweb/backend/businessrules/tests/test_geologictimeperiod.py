@@ -119,6 +119,25 @@ class Geologictimeperiod(ApiTests):
             models.Geologictimeperiod.objects.filter(id=period_id)
         )
 
+    def test_edit_geologictimeperiod_created_in_previous_version(self):
+        period = self._create_existing_period("Jurassic")
+
+        update_obj(
+            self.collection,
+            self.agent,
+            "geologictimeperiod",
+            period.id,
+            period.version,
+            {"name": "Jurassic (updated)", "remarks": "Updated remarks"},
+        )
+
+        period.refresh_from_db()
+        self.assertEqual(period.name, "Jurassic (updated)")
+        self.assertEqual(period.remarks, "Updated remarks")
+        self.assertEqual(period.version, 1)
+
+        period.delete()
+
     def test_delete_blocked_by_biostratspaleocontext(self):
         self.rootgtp.biostratspaleocontext.create(
             discipline=self.discipline)
