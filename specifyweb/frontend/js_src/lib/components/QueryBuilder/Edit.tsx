@@ -42,6 +42,7 @@ export function QueryEditButton({
     () => deserializeResource(query),
     [query]
   );
+  if (idFromUrl(query.specifyUser) !== userInformation.id) return <></>;
   return (
     <>
       <DataEntry.Edit onClick={handleOpen} />

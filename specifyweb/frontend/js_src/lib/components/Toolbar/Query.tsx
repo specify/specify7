@@ -108,8 +108,12 @@ export function QueryListDialog({
 
   const [search, setSearch] = React.useState('');
   const searchFilter = search.trim();
-
-  const [data, setData] = useAsyncState(
+  const [section, setSection] = React.useState<
+    'personal' | 'shared' | 'sharing'
+  >('personal');
+  const [refreshToken, setRefreshToken] = React.useState(0);
+  const ownerId = filters?.specifyUser ?? userInformation.id;
+  const [data] = useAsyncState(
     React.useCallback(
       async () =>
         fetchCollection(
@@ -117,15 +121,34 @@ export function QueryListDialog({
           {
             limit,
             domainFilter: false,
-            ...(filters ?? { specifyUser: userInformation.id }),
+            ...(section === 'shared'
+              ? { contextTableId: filters?.contextTableId }
+              : { ...filters, specifyUser: ownerId }),
             offset,
             orderBy,
           },
-          searchFilter === ''
-            ? undefined
-            : backendFilter('name').caseInsensitiveContains(searchFilter)
+          {
+            ...(section === 'shared'
+              ? { share_grants__recipient: userInformation.id }
+              : {
+                  share_grants__isnull:
+                    section === 'personal' ? 'true' : 'false',
+                }),
+            ...(searchFilter === ''
+              ? {}
+              : backendFilter('name').caseInsensitiveContains(searchFilter)),
+          }
         ),
-      [filters, limit, offset, orderBy, searchFilter]
+      [
+        filters,
+        ownerId,
+        limit,
+        offset,
+        orderBy,
+        searchFilter,
+        section,
+        refreshToken,
+      ]
     ),
     false
   );
@@ -135,38 +158,16 @@ export function QueryListDialog({
       resourceEvents.on('deleted', (resource) => {
         if (resource.specifyTable.name !== 'SpQuery' || data === undefined)
           return;
-        // Reconcile against searchFilter rather than current-page membership, since totalCount spans all pages
-        const name = (resource.get('name') as string | undefined) ?? '';
-        const matchesSearch =
-          searchFilter === '' ||
-          name.toLowerCase().includes(searchFilter.toLowerCase());
-        // Mirror every collection filter fetchCollection was called with,
-        // so an out-of-scope deletion doesn't decrement an unrelated count
-        const activeFilters = filters ?? { specifyUser: userInformation.id };
-        const specifyUserId = idFromUrl(
-          (resource.get('specifyUser') as string | null) ?? ''
-        );
-        const matchesSpecifyUser = specifyUserId === activeFilters.specifyUser;
-        const matchesContextTableId =
-          !('contextTableId' in activeFilters) ||
-          resource.get('contextTableId') === activeFilters.contextTableId;
-        if (!matchesSearch || !matchesSpecifyUser || !matchesContextTableId)
-          return;
-        const newTotalCount = Math.max(0, data.totalCount - 1);
-        currentPage[1](
-          Math.min(
-            currentPage[0],
-            Math.max(0, Math.ceil(newTotalCount / limit) - 1)
-          )
-        );
-        setData({
-          records: data.records.filter((query) => query.id !== resource.id),
-          totalCount: newTotalCount,
-        });
+        setRefreshToken((token) => token + 1);
       }),
-    [currentPage, data, filters, limit, searchFilter, setData]
+    [data]
   );
 
+  React.useEffect(() => {
+    if (data === undefined) return;
+    const lastPage = Math.max(0, Math.ceil(data.totalCount / limit) - 1);
+    if (currentPage[0] > lastPage) currentPage[1](lastPage);
+  }, [data, limit, currentPage]);
   const totalCountRef = React.useRef<number | undefined>(undefined);
   totalCountRef.current = data?.totalCount ?? totalCountRef.current;
   const totalCount = totalCountRef.current;
@@ -178,6 +179,28 @@ export function QueryListDialog({
     records: data?.records,
     children: (
       <>
+        <div aria-label={queryText.queries()} className="flex gap-2">
+          {(
+            [
+              ['personal', queryText.personalQueries()],
+              ['shared', queryText.sharedQueries()],
+              ...(userInformation.isadmin
+                ? [['sharing', queryText.queriesIShare()] as const]
+                : []),
+            ] as const
+          ).map(([value, label]) => (
+            <Button.Secondary
+              aria-pressed={section === value}
+              key={value}
+              onClick={(): void => {
+                currentPage[1](0);
+                setSection(value);
+              }}
+            >
+              {label}
+            </Button.Secondary>
+          ))}
+        </div>
         <table className="grid-table grid-cols-[repeat(3,auto)_min-content] gap-2">
           <thead>
             <tr>
@@ -219,7 +242,10 @@ export function QueryListDialog({
             {data?.records.map((query) => (
               <QueryList
                 getQuerySelectCallback={getQuerySelectCallback}
-                isReadOnly={isReadOnly}
+                isReadOnly={
+                  isReadOnly ||
+                  idFromUrl(query.specifyUser) !== userInformation.id
+                }
                 key={query.id}
                 query={query}
               />

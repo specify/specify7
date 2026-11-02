@@ -51,7 +51,9 @@ export function QueryHeader({
   isHorizontal,
   onToggleSplit,
   onToggleOrientation,
+  canCloneShared = false,
 }: {
+  readonly canCloneShared?: boolean;
   readonly recordSet?: SpecifyResource<RecordSet>;
   readonly query: SerializedResource<SpQuery>;
   readonly queryResource: SpecifyResource<SpQuery>;
@@ -110,6 +112,7 @@ export function QueryHeader({
               })}
         </H2>
         {!queryResource.isNew() && <QueryEditButton query={query} />}
+        {canCloneShared && <span>{queryText.sharedQueryReadOnly()}</span>}
         {!isScrolledTop && (
           <Button.Icon
             icon="arrowCircleUp"
@@ -151,11 +154,14 @@ export function QueryHeader({
             : preferencesText.basicView()}
         </Button.Small>
         <ToggleMappingViewButton fields={state.fields} />
-        {hasToolPermission(
-          'queryBuilder',
-          queryResource.isNew() ? 'create' : 'update'
-        ) && !isEmbedded ? (
+        {(canCloneShared ||
+          hasToolPermission(
+            'queryBuilder',
+            queryResource.isNew() ? 'create' : 'update'
+          )) &&
+        !isEmbedded ? (
           <SaveQueryButtons
+            canCloneShared={canCloneShared}
             fields={state.fields}
             getQueryFieldRecords={getQueryFieldRecords}
             isValid={(): boolean => form?.reportValidity() ?? false}

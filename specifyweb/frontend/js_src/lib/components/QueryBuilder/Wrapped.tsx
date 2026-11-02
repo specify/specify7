@@ -20,10 +20,12 @@ import { icons } from '../Atoms/Icons';
 import { ReadOnlyContext } from '../Core/Contexts';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { idFromUrl } from '../DataModel/resource';
 import { getTableById } from '../DataModel/tables';
 import type { RecordSet, SpQuery, SpQueryField } from '../DataModel/types';
 import { useMenuItem } from '../Header/MenuContext';
 import { isTreeTable, treeRanksPromise } from '../InitialContext/treeRanks';
+import { userInformation } from '../InitialContext/userInformation';
 import { useTitle } from '../Molecules/AppTitle';
 import { hasPermission, hasToolPermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
@@ -261,7 +263,11 @@ function Wrapped({
       'queryBuilder',
       queryResource.isNew() ? 'create' : 'update'
     );
-  const isReadOnly = React.useContext(ReadOnlyContext) || !hasAccess;
+  const inheritedReadOnly = React.useContext(ReadOnlyContext);
+  const isShared =
+    !queryResource.isNew() &&
+    idFromUrl(query.specifyUser) !== userInformation.id;
+  const isReadOnly = inheritedReadOnly || !hasAccess || isShared;
   const getMappedFieldsBind = getMappedFields.bind(undefined, state.fields);
   const mapButtonEnabled =
     !isReadOnly &&
@@ -382,6 +388,11 @@ function Wrapped({
            *   See https://github.com/specify/specify7/issues/3000
            */}
           <QueryHeader
+            canCloneShared={
+              isShared &&
+              !inheritedReadOnly &&
+              hasToolPermission('queryBuilder', 'create')
+            }
             form={form}
             getQueryFieldRecords={getQueryFieldRecords}
             isEmbedded={isEmbedded}
@@ -634,37 +645,39 @@ function Wrapped({
                 }}
               />
             </div>
-            <QueryBuilderResults
-              forceCollection={forceCollection}
-              getQueryFieldRecords={getQueryFieldRecords}
-              isCountOnly={isCountOnly}
-              isHorizontal={isHorizontal}
-              isReadOnly={isReadOnly}
-              isSplit={isSplit}
-              maximumPrimaryPaneWidth={maximumPrimaryPaneWidth}
-              query={query}
-              queryResource={queryResource}
-              recordSet={recordSet}
-              resultsRef={resultsRef}
-              saveRequired={saveRequired}
-              selectedIndex={selectedIndex}
-              selectedRows={selectedRows}
-              setSelectedIndex={setSelectedIndex}
-              setSelectedRows={setSelectedRows}
-              splitViewRef={splitViewRef}
-              state={state}
-              table={table}
-              onReRun={(): void => dispatch({ type: 'RunQueryAction' })}
-              onResults={handleSplitViewResults}
-              onSelected={(ids): void => {
-                setSelectedIndex(Math.max(0, ids.length - 1));
-                handleSelected?.(ids);
-              }}
-              onSortChange={(fields): void => {
-                dispatch({ type: 'ChangeFieldsAction', fields });
-                runQuery('regular');
-              }}
-            />
+            <ReadOnlyContext.Provider value={inheritedReadOnly || !hasAccess}>
+              <QueryBuilderResults
+                forceCollection={forceCollection}
+                getQueryFieldRecords={getQueryFieldRecords}
+                isCountOnly={isCountOnly}
+                isHorizontal={isHorizontal}
+                isReadOnly={inheritedReadOnly || !hasAccess}
+                isSplit={isSplit}
+                maximumPrimaryPaneWidth={maximumPrimaryPaneWidth}
+                query={query}
+                queryResource={queryResource}
+                recordSet={recordSet}
+                resultsRef={resultsRef}
+                saveRequired={saveRequired}
+                selectedIndex={selectedIndex}
+                selectedRows={selectedRows}
+                setSelectedIndex={setSelectedIndex}
+                setSelectedRows={setSelectedRows}
+                splitViewRef={splitViewRef}
+                state={state}
+                table={table}
+                onReRun={(): void => dispatch({ type: 'RunQueryAction' })}
+                onResults={handleSplitViewResults}
+                onSelected={(ids): void => {
+                  setSelectedIndex(Math.max(0, ids.length - 1));
+                  handleSelected?.(ids);
+                }}
+                onSortChange={(fields): void => {
+                  dispatch({ type: 'ChangeFieldsAction', fields });
+                  runQuery('regular');
+                }}
+              />
+            </ReadOnlyContext.Provider>
           </Form>
         </Container.Full>
       </IsQueryBasicContext.Provider>

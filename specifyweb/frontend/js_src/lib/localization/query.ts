@@ -9,6 +9,18 @@ import { createDictionary } from './utils';
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
 export const queryText = createDictionary({
+  personalQueries: {
+    'en-us': 'Personal Queries',
+  },
+  sharedQueries: {
+    'en-us': 'Shared Queries',
+  },
+  queriesIShare: {
+    'en-us': 'Queries I Share',
+  },
+  sharedQueryReadOnly: {
+    'en-us': 'This shared query is read-only. Save a personal copy to edit it.',
+  },
   shareQuery: {
     'en-us': 'Share this query',
   },
