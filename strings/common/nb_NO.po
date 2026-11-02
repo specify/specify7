@@ -439,7 +439,7 @@ msgstr "Lagre"
 #: components/KeyboardShortcuts/UrlShortcuts.tsx:488
 #: components/KeyboardShortcuts/__tests__/Conflicts.test.tsx:163
 #: components/Merging/CompareSubView.tsx:184
-#: components/Molecules/AutoComplete.tsx:635
+#: components/Molecules/AutoComplete.tsx:660
 #: components/PickLists/index.tsx:280
 #: components/QueryBuilder/Wrapped.tsx:498
 #: components/SchemaConfig/Format.tsx:299
@@ -550,8 +550,8 @@ msgstr "Verktøy"
 #: components/KeyboardShortcuts/UrlShortcuts.tsx:62
 #: components/Leaflet/index.ts:196
 #: components/Merging/Usages.tsx:50
-#: components/Molecules/AutoComplete.tsx:531
-#: components/Molecules/AutoComplete.tsx:645
+#: components/Molecules/AutoComplete.tsx:552
+#: components/Molecules/AutoComplete.tsx:670
 #: components/Molecules/FormattedResource.tsx:16
 #: components/Molecules/FormattedResource.tsx:31
 #: components/Molecules/LinkedRecords.tsx:61
@@ -563,8 +563,8 @@ msgstr "Verktøy"
 #: components/Preferences/Renderers.tsx:119
 #: components/QueryBuilder/Formatter.tsx:178
 #: components/QueryBuilder/QueryLineFilter.tsx:90
-#: components/QueryBuilder/Results.tsx:496
-#: components/QueryBuilder/Results.tsx:497
+#: components/QueryBuilder/Results.tsx:503
+#: components/QueryBuilder/Results.tsx:504
 #: components/QueryComboBox/index.tsx:538
 #: components/SchemaConfig/Fields.tsx:181
 #: components/SchemaConfig/index.tsx:98
@@ -1057,7 +1057,7 @@ msgstr "Valgt"
 #: components/FormSliders/IntegratedRecordSelector.tsx:112
 #: components/Formatters/Definitions.tsx:244
 #: components/Header/index.tsx:164
-#: components/Molecules/AutoComplete.tsx:661
+#: components/Molecules/AutoComplete.tsx:709
 #: components/SchemaConfig/Tables.tsx:230
 #. Used in: Components > Form Cells > Form Table ⬤ Components > Form Sliders > Integrated Record Selector ⬤ Components > Formatters > Definitions ⬤ Components > Header > Index ⬤ Components > Molecules > Auto Complete ⬤ Components > Schema Config > Tables
 msgid "expand"
@@ -1097,7 +1097,7 @@ msgstr "Tilbakestill"
 #: components/AttachmentsBulkImport/MappingFileSetup.tsx:310
 #: components/BatchIdentify/index.tsx:932
 #: components/FormEditor/Create.tsx:210
-#: components/QueryBuilder/ResultsTable.tsx:194
+#: components/QueryBuilder/ResultsTable.tsx:189
 #: components/SearchDialog/index.tsx:379
 #: components/SetupTool/SetupForm.tsx:219
 #. Used in: Components > Attachments Bulk Import > Mapping File Setup ⬤ Components > Batch Identify > Index ⬤ Components > Form Editor > Create ⬤ Components > Query Builder > Results Table ⬤ Components > Search Dialog > Index ⬤ Components > Setup Tool > Setup Form
@@ -1191,8 +1191,8 @@ msgstr "{header:string}:"
 #: components/Merging/Header.tsx:213
 #: components/Molecules/FilePicker.tsx:113
 #: components/QueryBuilder/Header.tsx:107
-#: components/QueryBuilder/Results.tsx:492
-#: components/QueryBuilder/ResultsTable.tsx:235
+#: components/QueryBuilder/Results.tsx:499
+#: components/QueryBuilder/ResultsTable.tsx:230
 #: components/QueryBuilder/ToForms.tsx:62
 #: components/QueryComboBox/spec.ts:72
 #: components/SchemaConfig/Field.tsx:42

@@ -16,12 +16,13 @@ msgstr ""
 #: components/Preferences/UserDefinitions.tsx:2464
 #: components/QueryBuilder/Header.tsx:108
 #: components/QueryBuilder/Toolbar.tsx:131
+#: components/QueryBuilder/__tests__/Submit.test.tsx:127
 #: components/Reports/RecordSets.tsx:97
 #: components/Toolbar/RecordSetEdit.tsx:52
 #: components/TreeView/Actions.tsx:100
 #: components/TreeView/Actions.tsx:113
 #: components/TreeView/Actions.tsx:259
-#. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Header ⬤ Components > Query Builder > Toolbar ⬤ Components > Reports > Record Sets ⬤ Components > Toolbar > Record Set Edit ⬤ Components > Tree View > Actions
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Header ⬤ Components > Query Builder > Toolbar ⬤ Query Builder > __tests__ > Submit ⬤ Components > Reports > Record Sets ⬤ Components > Toolbar > Record Set Edit ⬤ Components > Tree View > Actions
 #, fuzzy
 msgid "query"
 msgstr "Consulta"
@@ -499,7 +500,7 @@ msgstr "o"
 msgid "yes"
 msgstr "Sí"
 
-#: components/QueryBuilder/ResultsTable.tsx:236
+#: components/QueryBuilder/ResultsTable.tsx:231
 #: components/QueryBuilder/ToForms.tsx:63
 #. Used in: Components > Query Builder > Results Table ⬤ Components > Query Builder > To Forms
 #, fuzzy
@@ -673,7 +674,7 @@ msgid "scrollToEditor"
 msgstr "Desplácese hasta el editor"
 
 #: components/LocalityUpdate/Status.tsx:313
-#: components/QueryBuilder/ResultsTable.tsx:221
+#: components/QueryBuilder/ResultsTable.tsx:216
 #. Used in: Components > Locality Update > Status ⬤ Components > Query Builder > Results Table
 #, fuzzy
 msgid "viewRecords"
