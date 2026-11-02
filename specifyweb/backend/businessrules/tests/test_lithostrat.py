@@ -101,6 +101,34 @@ class LithostratTests(ApiTests):
 
         lithostrat.delete()
 
+    def test_clone_lithostrat(self):
+        original = self._create_lithostrat(
+            "Limestone",
+            remarks="Original remarks",
+            text1="Original text",
+            number1=Decimal("3.5"),
+            yesno1=True,
+        )
+        clone = self._create_lithostrat(
+            "Limestone copy",
+            remarks=original.remarks,
+            text1=original.text1,
+            number1=original.number1,
+            yesno1=original.yesno1,
+        )
+
+        self.assertNotEqual(clone.id, original.id)
+        clone.refresh_from_db()
+        self.assertEqual(clone.parent_id, original.parent_id)
+        self.assertEqual(clone.definitionitem_id, original.definitionitem_id)
+        self.assertEqual(clone.remarks, "Original remarks")
+        self.assertEqual(clone.text1, "Original text")
+        self.assertEqual(clone.number1, Decimal("3.5"))
+        self.assertIs(clone.yesno1, True)
+
+        clone.delete()
+        original.delete()
+
     def test_delete_blocked_by_paleocontext(self):
         self.rootlithostrat.paleocontexts.create(
             discipline=self.discipline)
