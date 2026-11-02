@@ -166,6 +166,22 @@ class LithostratTests(ApiTests):
 
         lithostrat.delete()
 
+    def test_delete_lithostrat_created_in_previous_version(self):
+        lithostrat = self._create_existing_lithostrat("Siltstone")
+        lithostrat_id = lithostrat.id
+
+        delete_resource(
+            self.collection,
+            self.agent,
+            "lithostrat",
+            lithostrat_id,
+            lithostrat.version,
+        )
+
+        self.assertNotExists(
+            models.Lithostrat.objects.filter(id=lithostrat_id)
+        )
+
     def test_delete_blocked_by_paleocontext(self):
         self.rootlithostrat.paleocontexts.create(
             discipline=self.discipline)
