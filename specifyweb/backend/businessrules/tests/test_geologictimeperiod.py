@@ -72,6 +72,12 @@ class Geologictimeperiod(ApiTests):
         self.assertEqual(period.definitionitem_id, self.era_rank.id)
         self.assertEqual(period.rankid, self.era_rank.rankid)
 
+        period.refresh_from_db()
+        self.assertEqual(period.remarks, "Test period")
+        self.assertEqual(period.startperiod, Decimal("251.9"))
+        self.assertEqual(period.endperiod, Decimal("66.0"))
+        self.assertIs(period.isbiostrat, True)
+
         period.delete()
 
     def test_geologictimeperiod_rank_must_be_below_parent(self):
