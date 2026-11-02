@@ -9,6 +9,30 @@ import { createDictionary } from './utils';
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
 export const queryText = createDictionary({
+  shareQuery: {
+    'en-us': 'Share this query',
+  },
+  revokeQuerySharing: {
+    'en-us': 'Revoke sharing',
+  },
+  confirmQuerySharing: {
+    'en-us': 'Confirm query sharing',
+  },
+  querySharingDescription: {
+    'en-us':
+      'Select users who can run this query. The original remains read-only for recipients, and their existing data permissions still apply.',
+  },
+  confirmQuerySharingDescription: {
+    'en-us':
+      'The following users will have access to this query. Users removed from this list will lose access.',
+  },
+  revokeQuerySharingDescription: {
+    'en-us':
+      'Revoke access for all recipients? The original query and existing personal copies will not be deleted.',
+  },
+  noQueryRecipients: {
+    'en-us': 'No recipients selected. Saving will revoke all sharing.',
+  },
   query: {
     'en-us': 'Query',
     'ru-ru': 'Запрос',
