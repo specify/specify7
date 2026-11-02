@@ -41,14 +41,17 @@ const rule: UniquenessRule = {
   isDatabaseConstraint: false,
 };
 
-function renderRow({
-  readOnly = false,
-  databaseConstraint = false,
-  duplicates = false,
-} = {}) {
+function renderRow(
+  {
+    readOnly = false,
+    databaseConstraint = false,
+    duplicates = false,
+  } = {},
+  rowRule: UniquenessRule = rule
+) {
   const onChange = jest.fn();
   const table = tables.CollectionObject;
-  const result = render(
+  const renderRowElement = (currentRule: UniquenessRule): JSX.Element => (
     <table>
       <tbody>
         <UniquenessRuleRow
@@ -67,36 +70,42 @@ function renderRow({
           formId="uniqueness-test"
           isReadOnly={readOnly}
           relationships={table.relationships}
-          rule={{ ...rule, isDatabaseConstraint: databaseConstraint }}
+          rule={{ ...currentRule, isDatabaseConstraint: databaseConstraint }}
           table={table}
           onChange={onChange}
           onRemoved={jest.fn()}
         />
       </tbody>
-    </table>,
-    {
-      wrapper: ({ children }) => (
-        <UnloadProtectsContext.Provider value={[]}>
-          {children}
-        </UnloadProtectsContext.Provider>
-      ),
-    }
+    </table>
   );
-  return { ...result, onChange };
+  const result = render(renderRowElement(rowRule), {
+    wrapper: ({ children }) => (
+      <UnloadProtectsContext.Provider value={[]}>
+        {children}
+      </UnloadProtectsContext.Provider>
+    ),
+  });
+  return {
+    ...result,
+    onChange,
+    rerenderRow: (currentRule: UniquenessRule): void =>
+      result.rerender(renderRowElement(currentRule)),
+  };
 }
 
 test('edits a field and selects a boolean field in the same grouped rule', () => {
-  const { onChange } = renderRow();
+  const { onChange, rerenderRow } = renderRow();
   fireEvent.click(screen.getByRole('button'));
   const select = screen.getByRole('combobox');
   fireEvent.change(select, { target: { value: 'yesNo1' } });
   expect(onChange).toHaveBeenLastCalledWith({ ...rule, fields: ['yesNo1'] });
+  rerenderRow({ ...rule, fields: ['yesNo1'] });
   fireEvent.click(screen.getByRole('button', { name: commonText.add() }));
   const changed = onChange.mock.calls.at(-1)![0];
   expect(changed.id).toBe(rule.id);
   expect(changed.fields).toHaveLength(2);
-  expect(changed.fields[0]).toBe('text1');
-  expect(changed.fields[1]).not.toBe('text1');
+  expect(changed.fields[0]).toBe('yesNo1');
+  expect(changed.fields[1]).not.toBe('yesNo1');
   expect(changed.scopes).toEqual([]);
 });
 
