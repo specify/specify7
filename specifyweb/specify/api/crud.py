@@ -506,13 +506,27 @@ def delete_resource(collection, agent, name, id, version) -> None:
         clean_predelete=clean_predelete,
     )
 
-def get_collection(logged_in_collection, model, checker: ReadPermChecker, control_params=GetCollectionForm.defaults, params={}) -> CollectionPayload:
+def get_collection(
+    logged_in_collection,
+    model,
+    checker: ReadPermChecker,
+    control_params=GetCollectionForm.defaults,
+    params={},
+    query_user_id: int | None = None,
+) -> CollectionPayload:
     from specifyweb.specify.api.serializers import _obj_to_data
     
     """Return a list of structured data for the objects from 'model'
     subject to the request 'params'."""
 
+    if isinstance(model, str):
+        model = get_model_or_404(model)
+
     objs = apply_filters(logged_in_collection, params, model, control_params)
+    if query_user_id is not None and model._meta.model_name == 'spquery':
+        from specifyweb.backend.stored_queries.sharing import filter_queries_for_user
+
+        objs = filter_queries_for_user(objs, query_user_id)
 
     try:
         return objs_to_data_(objs, objs.count(), lambda o: _obj_to_data(o, checker), control_params['offset'], control_params['limit'])

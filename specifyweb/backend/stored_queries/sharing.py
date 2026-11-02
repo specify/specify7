@@ -1,7 +1,9 @@
 import json
 
 from django.db import transaction
+from django.db.models import Q, QuerySet
 from django.http import (
+    Http404,
     HttpRequest,
     HttpResponse,
     HttpResponseBadRequest,
@@ -15,6 +17,21 @@ from django.views.decorators.http import require_http_methods
 from specifyweb.backend.permissions.models import SpqueryShare
 from specifyweb.specify.models import Spquery, Specifyuser
 from specifyweb.specify.views import login_maybe_required
+
+
+def filter_queries_for_user(
+    queries: QuerySet[Spquery], user_id: int
+) -> QuerySet[Spquery]:
+    return queries.filter(
+        Q(specifyuser_id=user_id) | Q(share_grants__recipient_id=user_id)
+    ).distinct()
+
+
+def ensure_query_access(query_id: int, user_id: int) -> None:
+    if not filter_queries_for_user(
+        Spquery.objects.filter(pk=query_id), user_id
+    ).exists():
+        raise Http404("Query not found.")
 
 
 @require_http_methods(["GET", "PUT", "DELETE"])

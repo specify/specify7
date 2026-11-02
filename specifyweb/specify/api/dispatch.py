@@ -41,6 +41,10 @@ def resource_dispatch(request, model, id) -> HttpResponse:
 
     # Dispatch on the request type.
     if request.method == 'GET':
+        if model.lower() == 'spquery':
+            from specifyweb.backend.stored_queries.sharing import ensure_query_access
+
+            ensure_query_access(id, request.specify_user.id)
         data = get_resource(model, id, checker, request.GET.get('recordsetid', None))
         resp = HttpResponse(toJson(data), content_type='application/json')
 
@@ -103,8 +107,14 @@ def collection_dispatch(request, model) -> HttpResponse:
             return HttpResponseBadRequest(toJson(control_params.errors),
                                           content_type='application/json')
         try:
-            data = get_collection(request.specify_collection, model, checker,
-                                  control_params.cleaned_data, request.GET)
+            data = get_collection(
+                request.specify_collection,
+                model,
+                checker,
+                control_params.cleaned_data,
+                request.GET,
+                query_user_id=request.specify_user.id,
+            )
         except (FilterError, OrderByError) as e:
             return HttpResponseBadRequest(e)
         resp = HttpResponse(toJson(data), content_type='application/json')
