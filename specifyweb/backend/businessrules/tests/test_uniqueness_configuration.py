@@ -107,7 +107,7 @@ class UniquenessConfigurationTests(ApiTests):
     def test_duplicate_validation_keeps_case_distinct_groups_separate(self):
         # Existing duplicates must be inspected before enabling a rule. Updates
         # deliberately bypass pre-save enforcement to represent that data.
-        for record, value in zip(self.collectionobjects, ('abc', 'abc', 'ABC', 'ABC', 'ABC')):
+        for record, value in zip(self.collectionobjects, ('abc', 'abc', 'ABC', 'ABC', 'ABC'), strict=True):
             models.Collectionobject.objects.filter(pk=record.pk).update(text1=value)
         self.client.force_login(self.specifyuser)
         response = self.client.post(
