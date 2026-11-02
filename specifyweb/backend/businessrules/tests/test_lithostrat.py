@@ -78,6 +78,29 @@ class LithostratTests(ApiTests):
 
         lithostrat.delete()
 
+    def test_lithostrat_optional_fields_round_trip(self):
+        lithostrat = self._create_lithostrat(
+            "Shale",
+            remarks="Test remarks",
+            text1="Lower unit",
+            text2="Upper unit",
+            number1=Decimal("12.5"),
+            number2=Decimal("7.25"),
+            yesno1=True,
+            yesno2=False,
+        )
+
+        lithostrat.refresh_from_db()
+        self.assertEqual(lithostrat.remarks, "Test remarks")
+        self.assertEqual(lithostrat.text1, "Lower unit")
+        self.assertEqual(lithostrat.text2, "Upper unit")
+        self.assertEqual(lithostrat.number1, Decimal("12.5"))
+        self.assertEqual(lithostrat.number2, Decimal("7.25"))
+        self.assertIs(lithostrat.yesno1, True)
+        self.assertIs(lithostrat.yesno2, False)
+
+        lithostrat.delete()
+
     def test_delete_blocked_by_paleocontext(self):
         self.rootlithostrat.paleocontexts.create(
             discipline=self.discipline)
