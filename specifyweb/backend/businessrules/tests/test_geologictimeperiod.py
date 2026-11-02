@@ -155,6 +155,12 @@ class Geologictimeperiod(ApiTests):
         self.assertEqual(clone.endperiod, original.endperiod)
         self.assertEqual(clone.isbiostrat, original.isbiostrat)
 
+        clone.refresh_from_db()
+        self.assertEqual(clone.remarks, "Original remarks")
+        self.assertEqual(clone.startperiod, Decimal("541.0"))
+        self.assertEqual(clone.endperiod, Decimal("252.0"))
+        self.assertIs(clone.isbiostrat, False)
+
         original.refresh_from_db()
         self.assertEqual(original.name, "Paleozoic")
 
