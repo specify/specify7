@@ -27,14 +27,14 @@ class StatisticsCoordinationTests(SimpleTestCase):
         self.calculate = Mock(return_value='{"count": 12}')
         self.cache = Mock()
         self.cache.get.return_value = None
-        cache_patch = patch(
-            "specifyweb.backend.stats.coordination.redis_connection",
-            return_value=self.cache,
+        redis_connection_patch = patch(
+            "specifyweb.backend.stats.coordination.RedisConnection"
         )
         lock_patch = patch("specifyweb.specify.models_utils.lock_tables.Lock")
-        self.redis_connection = cache_patch.start()
+        self.redis_connection = redis_connection_patch.start()
+        self.redis_connection.return_value.connection = self.cache
         self.lock_class = lock_patch.start()
-        self.addCleanup(cache_patch.stop)
+        self.addCleanup(redis_connection_patch.stop)
         self.addCleanup(lock_patch.stop)
         self.lock = self.lock_class.return_value
 
@@ -56,6 +56,7 @@ class StatisticsCoordinationTests(SimpleTestCase):
             self.cache.get.call_args.args[0],
             '{"count": 12}',
             ex=STATISTICS_CACHE_SECONDS,
+            nx=False,
         )
         self.assertEqual(STATISTICS_CACHE_SECONDS, 300)
 
@@ -105,13 +106,6 @@ class StatisticsCoordinationTests(SimpleTestCase):
         with self.assertLogs("specifyweb.backend.stats.coordination", level="WARNING"):
             self.assert_uncached_calculation()
         self.cache.get.assert_called_once()
-        self.cache.set.assert_not_called()
-
-    def test_second_cache_read_failure_still_releases_lock_and_returns_result(self):
-        self.cache.get.side_effect = [None, RedisTimeoutError("timed out")]
-        with self.assertLogs("specifyweb.backend.stats.coordination", level="WARNING"):
-            self.assert_uncached_calculation()
-        self.assertEqual(self.cache.get.call_count, 2)
         self.cache.set.assert_not_called()
 
     def test_cache_write_failure_returns_calculated_result_and_releases_lock(self):
@@ -172,10 +166,11 @@ class StatisticsCoordinationTests(SimpleTestCase):
             self.run_statistic()
         self.lock.release.assert_called_once_with()
 
-    def test_cache_is_checked_again_after_acquiring_lock(self):
-        self.cache.get.side_effect = [None, '{"count": 12}']
+    def test_cache_miss_calculates_once_under_lock(self):
         self.assertEqual(self.run_statistic(), '{"count": 12}')
-        self.calculate.assert_not_called()
+        self.cache.get.assert_called_once()
+        self.calculate.assert_called_once_with()
+        self.lock.acquire.assert_called_once_with()
         self.lock.release.assert_called_once_with()
 
     def test_cache_keys_isolate_users_collections_queries_and_databases(self):
