@@ -43,11 +43,7 @@ const rule: UniquenessRule = {
 };
 
 function renderRow(
-  {
-    readOnly = false,
-    databaseConstraint = false,
-    duplicates = false,
-  } = {},
+  { readOnly = false, databaseConstraint = false, duplicates = false } = {},
   rowRule: UniquenessRule = rule
 ) {
   const onChange = jest.fn();
