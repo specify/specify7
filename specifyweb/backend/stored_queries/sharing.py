@@ -1,7 +1,8 @@
 import json
 
+from django.core.exceptions import PermissionDenied
 from django.db import transaction
-from django.db.models import Q, QuerySet
+from django.db.models import Model, Q, QuerySet
 from django.http import (
     Http404,
     HttpRequest,
@@ -15,7 +16,7 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_http_methods
 
 from specifyweb.backend.permissions.models import SpqueryShare
-from specifyweb.specify.models import Spquery, Specifyuser
+from specifyweb.specify.models import Spquery, Spqueryfield, Specifyuser
 from specifyweb.specify.views import login_maybe_required
 
 
@@ -32,6 +33,18 @@ def ensure_query_access(query_id: int, user_id: int) -> None:
         Spquery.objects.filter(pk=query_id), user_id
     ).exists():
         raise Http404("Query not found.")
+
+
+def ensure_query_write_access(obj: Model, user_id: int) -> None:
+    if isinstance(obj, Spquery):
+        owner_id = obj.specifyuser_id
+    elif isinstance(obj, Spqueryfield) and obj.query_id is not None:
+        owner_id = obj.query.specifyuser_id
+    else:
+        return
+
+    if owner_id != user_id:
+        raise PermissionDenied("Only the query owner can modify its definition.")
 
 
 @require_http_methods(["GET", "PUT", "DELETE"])
