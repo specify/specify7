@@ -219,9 +219,7 @@ function ModifyUniquenessRule({
                 const rows = fetchedDuplicates.fields.map(
                   ({ duplicates, fields }) => [
                     duplicates.toString(),
-                    ...Object.values(fields).map((fieldValue) =>
-                      JSON.stringify(fieldValue)
-                    ),
+                    ...Object.values(fields),
                   ]
                 );
 

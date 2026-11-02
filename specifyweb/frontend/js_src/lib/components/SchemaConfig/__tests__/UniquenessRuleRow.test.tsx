@@ -5,6 +5,7 @@ import {
   waitFor,
   within,
 } from '@testing-library/react';
+import { parse } from 'csv-parse/browser/esm';
 import React from 'react';
 
 import { commonText } from '../../../localization/common';
@@ -148,8 +149,24 @@ test('exports the actual two-column CSV with headers and every duplicate group',
     screen.getByRole('button', { name: schemaText.exportDuplicates() })
   );
   await waitFor(() => expect(downloadFile).toHaveBeenCalledTimes(1));
-  expect(downloadFile).toHaveBeenCalledWith(
-    expect.stringMatching(/\.csv$/u),
-    'Number of Duplicates,text1\n3,"""alpha,quoted"""\n2,"""beta"""\n'
+  const [fileName, csv] = jest.mocked(downloadFile).mock.calls[0];
+  expect(fileName).toMatch(/\.csv$/u);
+  if (typeof csv !== 'string')
+    throw new TypeError('Expected exported CSV to be a text string');
+  const records = await new Promise<Array<Record<string, string>>>(
+    (resolve, reject) => {
+      parse(
+        csv,
+        { columns: true },
+        (error, data: Array<Record<string, string>>) => {
+          if (error === undefined) resolve(data);
+          else reject(error);
+        }
+      );
+    }
   );
+  expect(records).toEqual([
+    { 'Number of Duplicates': '3', text1: 'alpha,quoted' },
+    { 'Number of Duplicates': '2', text1: 'beta' },
+  ]);
 });
