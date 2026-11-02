@@ -159,3 +159,22 @@ class UniquenessConfigurationTests(ApiTests):
                 self.assertEqual(response.status_code, 403)
                 self.assertEqual(self.client.get(url, {'model': 'Collectionobject'}).json(), before)
 
+        for model in ('UniquenessRule', 'UniquenessRuleField'):
+            collection_url = f'/api/specify/{model.lower()}/'
+            resource_url = f'{collection_url}1/'
+            with self.subTest(model=model, method='GET'):
+                self.assertEqual(self.client.get(collection_url).status_code, 200)
+            for method, url, data in (
+                ('post', collection_url, '{}'),
+                ('put', resource_url, '{}'),
+                ('delete', resource_url, None),
+            ):
+                with self.subTest(model=model, method=method):
+                    response = getattr(self.client, method)(
+                        url, data=data, content_type='application/json',
+                    )
+                    self.assertEqual(response.status_code, 403)
+                    self.assertEqual(
+                        response.content,
+                        b'Specifyuser must be an institution admin',
+                    )
