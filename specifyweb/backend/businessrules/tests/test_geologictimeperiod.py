@@ -202,6 +202,26 @@ class Geologictimeperiod(ApiTests):
 
         period.delete()
 
+    def test_edit_geologictimeperiod_with_nonzero_version(self):
+        period = self._create_existing_period("Triassic")
+        models.Geologictimeperiod.objects.filter(id=period.id).update(version=2)
+        period.refresh_from_db()
+
+        update_obj(
+            self.collection,
+            self.agent,
+            "geologictimeperiod",
+            period.id,
+            period.version,
+            {"name": "Triassic (updated)"},
+        )
+
+        period.refresh_from_db()
+        self.assertEqual(period.name, "Triassic (updated)")
+        self.assertEqual(period.version, 3)
+
+        period.delete()
+
     def test_delete_geologictimeperiod_created_in_previous_version(self):
         period = self._create_existing_period("Cretaceous")
         period_id = period.id
