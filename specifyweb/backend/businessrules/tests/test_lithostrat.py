@@ -1,8 +1,11 @@
+from decimal import Decimal
 from unittest import skip
 
 from django.db.models import ProtectedError
 
 from specifyweb.specify import models
+from specifyweb.specify.api.crud import delete_resource, post_resource, update_obj
+from specifyweb.specify.api.serializers import uri_for_model
 from specifyweb.specify.tests.test_api import ApiTests
 
 class LithostratTests(ApiTests):
@@ -20,6 +23,60 @@ class LithostratTests(ApiTests):
             name="Rocks",
             definition=self.rootlithostrattreedefitem.treedef,
             rankid=self.rootlithostrattreedefitem.rankid)
+
+        self.formation_rank = self.rootlithostrattreedefitem.children.create(
+            name="Formation",
+            rankid=100,
+            treedef=self.lithostrattreedef,
+        )
+
+    def _lithostrat_data(self, name, **overrides):
+        data = {
+            "name": name,
+            "parent": uri_for_model("lithostrat", self.rootlithostrat.id),
+            "definitionitem": uri_for_model(
+                "lithostrattreedefitem", self.formation_rank.id
+            ),
+        }
+        data.update(overrides)
+        return data
+
+    def _create_lithostrat(self, name, **overrides):
+        return post_resource(
+            self.collection,
+            self.agent,
+            "lithostrat",
+            self._lithostrat_data(name, **overrides),
+        )
+
+    def _create_existing_lithostrat(self, name):
+        return self.rootlithostrat.children.create(
+            name=name,
+            definition=self.lithostrattreedef,
+            definitionitem=self.formation_rank,
+            rankid=self.formation_rank.rankid,
+            remarks="Created before this version",
+        )
+
+    def test_create_lithostrat(self):
+        lithostrat = self._create_lithostrat(
+            "Sandstone",
+            remarks="Test lithostrat",
+        )
+
+        self.assertIsNotNone(lithostrat.id)
+        self.assertExists(
+            models.Lithostrat.objects.filter(
+                id=lithostrat.id,
+                name="Sandstone",
+                parent=self.rootlithostrat,
+            )
+        )
+        self.assertEqual(lithostrat.definition_id, self.lithostrattreedef.id)
+        self.assertEqual(lithostrat.definitionitem_id, self.formation_rank.id)
+        self.assertEqual(lithostrat.rankid, self.formation_rank.rankid)
+
+        lithostrat.delete()
 
     def test_delete_blocked_by_paleocontext(self):
         self.rootlithostrat.paleocontexts.create(
