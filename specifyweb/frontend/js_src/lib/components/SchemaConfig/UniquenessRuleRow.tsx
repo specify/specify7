@@ -219,7 +219,12 @@ function ModifyUniquenessRule({
                 const rows = fetchedDuplicates.fields.map(
                   ({ duplicates, fields }) => [
                     duplicates.toString(),
-                    ...Object.values(fields),
+                    ...Object.values(fields).map((fieldValue) =>
+                      typeof fieldValue === 'string' &&
+                      /^[=+\-@\t\r]/u.test(fieldValue)
+                        ? `'${fieldValue}`
+                        : fieldValue
+                    ),
                   ]
                 );
 
