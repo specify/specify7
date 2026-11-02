@@ -145,6 +145,27 @@ class LithostratTests(ApiTests):
             models.Lithostrat.objects.filter(id=lithostrat_id)
         )
 
+    def test_edit_lithostrat_created_in_previous_version(self):
+        lithostrat = self._create_existing_lithostrat("Mudstone")
+        models.Lithostrat.objects.filter(id=lithostrat.id).update(version=2)
+        lithostrat.refresh_from_db()
+
+        update_obj(
+            self.collection,
+            self.agent,
+            "lithostrat",
+            lithostrat.id,
+            lithostrat.version,
+            {"name": "Mudstone (updated)", "remarks": "Updated remarks"},
+        )
+
+        lithostrat.refresh_from_db()
+        self.assertEqual(lithostrat.name, "Mudstone (updated)")
+        self.assertEqual(lithostrat.remarks, "Updated remarks")
+        self.assertEqual(lithostrat.version, 3)
+
+        lithostrat.delete()
+
     def test_delete_blocked_by_paleocontext(self):
         self.rootlithostrat.paleocontexts.create(
             discipline=self.discipline)
