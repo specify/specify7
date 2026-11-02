@@ -3,6 +3,10 @@ import json
 from django.test import Client
 
 from specifyweb.backend.permissions.models import SpqueryShare, UserPolicy
+from specifyweb.backend.stored_queries.sharing import (
+    ensure_query_access,
+    filter_queries_for_user,
+)
 from specifyweb.specify import models
 from specifyweb.specify.tests.test_api import ApiTests
 
@@ -83,3 +87,65 @@ class SharedQueryApiTests(ApiTests):
 
         self.assertEqual(response.status_code, 400)
         self.assertFalse(SpqueryShare.objects.filter(query=self.query).exists())
+
+    def test_only_owners_and_granted_recipients_can_access_queries(self):
+        other_query = models.Spquery.objects.create(
+            name=f"Other query {self.collection.id}",
+            contextname="Collectionobject",
+            contexttableid=models.Collectionobject.specify_model.tableId,
+            specifyuser=self.recipient,
+        )
+
+        visible_ids = set(
+            filter_queries_for_user(
+                models.Spquery.objects.all(), self.specifyuser.id
+            ).values_list("id", flat=True)
+        )
+        self.assertIn(self.query.id, visible_ids)
+        self.assertNotIn(other_query.id, visible_ids)
+
+        SpqueryShare.objects.create(query=other_query, recipient=self.specifyuser)
+        ensure_query_access(other_query.id, self.specifyuser.id)
+
+        visible_ids = set(
+            filter_queries_for_user(
+                models.Spquery.objects.all(), self.specifyuser.id
+            ).values_list("id", flat=True)
+        )
+        self.assertIn(other_query.id, visible_ids)
+
+    def test_direct_query_resource_requires_owner_or_share_grant(self):
+        private_query = models.Spquery.objects.create(
+            name=f"Private query {self.collection.id}",
+            contextname="Collectionobject",
+            contexttableid=models.Collectionobject.specify_model.tableId,
+            specifyuser=self.recipient,
+        )
+        url = f"/api/specify/spquery/{private_query.id}/"
+
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404)
+
+        SpqueryShare.objects.create(query=private_query, recipient=self.specifyuser)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_query_collection_only_lists_owned_or_shared_queries(self):
+        private_query = models.Spquery.objects.create(
+            name=f"Private list query {self.collection.id}",
+            contextname="Collectionobject",
+            contexttableid=models.Collectionobject.specify_model.tableId,
+            specifyuser=self.recipient,
+        )
+        url = "/api/specify/spquery/?domainfilter=false&limit=0"
+
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        query_ids = {query["id"] for query in response.json()["objects"]}
+        self.assertIn(self.query.id, query_ids)
+        self.assertNotIn(private_query.id, query_ids)
+
+        SpqueryShare.objects.create(query=private_query, recipient=self.specifyuser)
+        response = self.client.get(url)
+        query_ids = {query["id"] for query in response.json()["objects"]}
+        self.assertIn(private_query.id, query_ids)
