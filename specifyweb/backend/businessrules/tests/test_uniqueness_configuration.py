@@ -144,6 +144,10 @@ class UniquenessConfigurationTests(ApiTests):
         UserPolicy.objects.filter(specifyuser=self.specifyuser).delete()
         UserPolicy.objects.create(
             specifyuser=self.specifyuser, collection=None, resource='/table/%', action='%')
+        # API requests also require collection access before reaching table checks.
+        UserPolicy.objects.create(
+            specifyuser=self.specifyuser, collection=self.collection,
+            resource='/system/sp7/collection', action='access')
         self.assertFalse(self.specifyuser.is_admin())
         url = f'/businessrules/uniqueness_rules/{self.discipline.id}/'
         before = self.client.get(url, {'model': 'Collectionobject'}).json()
