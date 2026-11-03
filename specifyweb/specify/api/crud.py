@@ -133,21 +133,14 @@ def update_obj(collection, agent, name: str, id, version, data: dict[str, Any], 
     """Update the resource with 'id' in model named 'name' with given
     'data'.
     """
-    from specifyweb.backend.stored_queries.sharing import (
-        QueryWriteDenied,
-        ensure_query_write_access,
-    )
-
     obj = get_object_or_404(name, id=int(id))
     check_table_permissions(collection, agent, obj, "update")
-    ensure_query_write_access(obj, agent.specifyuser_id)
 
     data = cleanData(obj.__class__, data, parent_relationship)
     dependents_to_delete, fk_dirty, handle_remote_to_ones = handle_fk_fields(collection, agent, obj, data)
     dirty = fk_dirty + set_fields_from_data(obj, data)
     if isinstance(obj, (models.Spquery, models.Spqueryfield)) and obj.pk != int(id):
-        raise QueryWriteDenied("Query definition IDs cannot be changed.")
-    ensure_query_write_access(obj, agent.specifyuser_id)
+        raise FieldError("Query definition IDs cannot be changed.")
 
     check_field_permissions(collection, agent, obj, [d['field_name'] for d in dirty], "update")
 
