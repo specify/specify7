@@ -51,6 +51,9 @@ export const queryText = createDictionary({
   noQueryRecipients: {
     'en-us': 'No recipients selected. Saving will revoke all sharing.',
   },
+  usersWithoutCollection: {
+    'en-us': 'Users without collection access',
+  },
   query: {
     'en-us': 'Query',
     'ru-ru': 'Запрос',

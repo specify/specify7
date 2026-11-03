@@ -1,7 +1,7 @@
 import json
 
 from django.core.exceptions import PermissionDenied
-from django.db import transaction
+from django.db import connection, transaction
 from django.db.models import Model, Q, QuerySet
 from django.http import (
     Http404,
@@ -16,8 +16,85 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_http_methods
 
 from specifyweb.backend.permissions.models import SpqueryShare
-from specifyweb.specify.models import Spquery, Spqueryfield, Specifyuser
+from specifyweb.backend.permissions.permissions import CollectionAccessPT
+from specifyweb.specify.models import Collection, Spquery, Spqueryfield, Specifyuser
 from specifyweb.specify.views import login_maybe_required
+
+
+def get_query_share_recipients() -> dict[str, object]:
+    users = list(Specifyuser.objects.order_by("name"))
+    collections = list(
+        Collection.objects.select_related("discipline__division").order_by(
+            "collectionname", "id"
+        )
+    )
+    users_by_collection = {collection.id: [] for collection in collections}
+    users_by_id = {user.id: {"id": user.id, "name": user.name} for user in users}
+    users_with_collection = set()
+
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT DISTINCT collection.usergroupscopeid, specifyuser.specifyuserid
+            FROM collection
+            CROSS JOIN specifyuser
+            WHERE EXISTS (
+                SELECT 1
+                FROM spuserpolicy
+                WHERE (spuserpolicy.collection_id = collection.usergroupscopeid
+                       OR spuserpolicy.collection_id IS NULL)
+                  AND (spuserpolicy.specifyuser_id = specifyuser.specifyuserid
+                       OR spuserpolicy.specifyuser_id IS NULL)
+                  AND %(resource)s LIKE spuserpolicy.resource
+                  AND %(action)s LIKE spuserpolicy.action
+            )
+            OR EXISTS (
+                SELECT 1
+                FROM spuserrole
+                JOIN sprole ON sprole.id = spuserrole.role_id
+                JOIN sprolepolicy ON sprolepolicy.role_id = sprole.id
+                WHERE spuserrole.specifyuser_id = specifyuser.specifyuserid
+                  AND sprole.collection_id = collection.usergroupscopeid
+                  AND %(resource)s LIKE sprolepolicy.resource
+                  AND %(action)s LIKE sprolepolicy.action
+            )
+            ORDER BY collection.usergroupscopeid, specifyuser.specifyuserid
+            """,
+            {
+                "resource": CollectionAccessPT.resource,
+                "action": CollectionAccessPT.access.action(),
+            },
+        )
+        for collection_id, user_id in cursor.fetchall():
+            users_by_collection[collection_id].append(users_by_id[user_id])
+            users_with_collection.add(user_id)
+
+    users_without_collection = [
+        users_by_id[user.id]
+        for user in users
+        if user.id not in users_with_collection
+    ]
+
+    return {
+        "collections": [
+            {
+                "id": collection.id,
+                "name": collection.collectionname or "",
+                "discipline": {
+                    "id": collection.discipline_id,
+                    "name": collection.discipline.name or "",
+                    "division": {
+                        "id": collection.discipline.division_id,
+                        "name": collection.discipline.division.name or "",
+                    },
+                },
+                "users": users_by_collection[collection.id],
+            }
+            for collection in collections
+            if users_by_collection[collection.id]
+        ],
+        "usersWithoutCollection": users_without_collection,
+    }
 
 
 def filter_queries_for_user(
@@ -65,7 +142,12 @@ def manage_query_shares(request: HttpRequest, id: int) -> HttpResponse:
                     "recipient_id", flat=True
                 )
             )
-            return JsonResponse({"recipientIds": recipient_ids})
+            return JsonResponse(
+                {
+                    "recipientIds": recipient_ids,
+                    **get_query_share_recipients(),
+                }
+            )
 
         if request.method == "DELETE":
             query.share_grants.all().delete()

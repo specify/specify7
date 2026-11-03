@@ -9,11 +9,122 @@ import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { LoadingContext } from '../Core/Contexts';
-import { fetchCollection } from '../DataModel/collection';
-import { loadingGif } from '../Molecules';
+import { tables } from '../DataModel/tables';
 import { Dialog } from '../Molecules/Dialog';
+import { CollapsibleSection } from '../SystemConfigurationTool/CollapsibleSection';
+import {
+  colorByKind,
+  type HierarchyNodeKind,
+} from '../SystemConfigurationTool/hierarchyColors';
 
-type QueryShares = { readonly recipientIds: RA<number> };
+type QueryShareUser = { readonly id: number; readonly name: string };
+type QueryShareNode = { readonly id: number; readonly name: string };
+type QueryShareCollection = QueryShareNode & {
+  readonly discipline: QueryShareNode & { readonly division: QueryShareNode };
+  readonly users: RA<QueryShareUser>;
+};
+type QueryShares = {
+  readonly recipientIds: RA<number>;
+  readonly collections: RA<QueryShareCollection>;
+  readonly usersWithoutCollection: RA<QueryShareUser>;
+};
+type QuerySharesUpdate = Pick<QueryShares, 'recipientIds'>;
+
+function groupBy<ITEM>(
+  items: RA<ITEM>,
+  getParent: (item: ITEM) => QueryShareNode
+): RA<QueryShareNode & { readonly children: RA<ITEM> }> {
+  return items.reduce<RA<QueryShareNode & { readonly children: RA<ITEM> }>>(
+    (groups, item) => {
+      const parent = getParent(item);
+      return groups.some(({ id }) => id === parent.id)
+        ? groups.map((group) =>
+            group.id === parent.id
+              ? { ...group, children: [...group.children, item] }
+              : group
+          )
+        : [...groups, { id: parent.id, name: parent.name, children: [item] }];
+    },
+    []
+  );
+}
+
+function QueryShareSectionTitle({
+  kind,
+  label,
+  name,
+}: {
+  readonly kind: HierarchyNodeKind;
+  readonly label: string;
+  readonly name: string;
+}): JSX.Element {
+  return (
+    <span className="flex items-baseline gap-2">
+      <span className="font-semibold" style={{ color: colorByKind[kind] }}>
+        {label}:
+      </span>
+      <span>{name}</span>
+    </span>
+  );
+}
+
+function QueryShareUserCheckbox({
+  user,
+  selected,
+  setSelected,
+  anchor,
+}: {
+  readonly user: QueryShareUser;
+  readonly selected: RA<number>;
+  readonly setSelected: React.Dispatch<React.SetStateAction<RA<number>>>;
+  readonly anchor: React.MutableRefObject<number | undefined>;
+}): JSX.Element {
+  const { id, name } = user;
+  return (
+    <Label.Inline>
+      <Input.Checkbox
+        checked={selected.includes(id)}
+        data-query-share-user-id={id}
+        onChange={(event): void => {
+          const checked = event.target.checked;
+          const isRange =
+            event.nativeEvent instanceof MouseEvent &&
+            event.nativeEvent.shiftKey &&
+            anchor.current !== undefined;
+          const userList = event.currentTarget.closest(
+            '[data-query-share-users]'
+          );
+          const visibleIds =
+            userList === null
+              ? [id]
+              : [
+                  ...userList.querySelectorAll<HTMLInputElement>(
+                    'input[data-query-share-user-id]'
+                  ),
+                ].map(({ dataset }) =>
+                  Number.parseInt(dataset.queryShareUserId ?? '', 10)
+                );
+          const index = visibleIds.indexOf(id);
+          const anchorIndex = visibleIds.indexOf(anchor.current ?? id);
+          const ids =
+            isRange && anchorIndex >= 0
+              ? visibleIds.slice(
+                  Math.min(anchorIndex, index),
+                  Math.max(anchorIndex, index) + 1
+                )
+              : [id];
+          setSelected((previous) =>
+            checked
+              ? [...new Set([...previous, ...ids])]
+              : previous.filter((selectedId) => !ids.includes(selectedId))
+          );
+          anchor.current = id;
+        }}
+      />
+      {name}
+    </Label.Inline>
+  );
+}
 
 export function QuerySharingActions({
   queryId,
@@ -50,9 +161,10 @@ export function QuerySharingActions({
         <QueryShareDialog
           initialRecipients={shares.recipientIds}
           queryId={queryId}
+          recipients={shares}
           onClose={(): void => setMode(undefined)}
           onSaved={(recipientIds): void => {
-            setShares({ recipientIds });
+            setShares({ ...shares, recipientIds });
             setMode(undefined);
           }}
         />
@@ -69,7 +181,11 @@ export function QuerySharingActions({
                       method: 'DELETE',
                       headers: { Accept: 'text/plain' },
                     }).then(() => {
-                      setShares({ recipientIds: [] });
+                      setShares((current) =>
+                        current === undefined
+                          ? current
+                          : { ...current, recipientIds: [] }
+                      );
                       setMode(undefined);
                     })
                   )
@@ -92,30 +208,39 @@ export function QuerySharingActions({
 function QueryShareDialog({
   queryId,
   initialRecipients,
+  recipients,
   onClose,
   onSaved,
 }: {
   readonly queryId: number;
   readonly initialRecipients: RA<number>;
+  readonly recipients: QueryShares;
   readonly onClose: () => void;
   readonly onSaved: (recipientIds: RA<number>) => void;
 }): JSX.Element {
-  const [users] = useAsyncState(
-    React.useCallback(
-      async () =>
-        fetchCollection('SpecifyUser', {
-          limit: 0,
-          domainFilter: false,
-          orderBy: 'name',
-        }).then(({ records }) => records),
-      []
-    ),
-    false
-  );
   const [selected, setSelected] = React.useState(initialRecipients);
   const [review, setReview] = React.useState(false);
   const anchor = React.useRef<number>();
   const loading = React.useContext(LoadingContext);
+  const allUsers = React.useMemo(
+    () =>
+      [
+        ...recipients.collections.flatMap(({ users }) => users),
+        ...recipients.usersWithoutCollection,
+      ].filter(
+        (user, index, users) =>
+          users.findIndex(({ id }) => id === user.id) === index
+      ),
+    [recipients]
+  );
+  const divisions = React.useMemo(
+    () =>
+      groupBy(
+        groupBy(recipients.collections, ({ discipline }) => discipline),
+        ({ children }) => children[0].discipline.division
+      ),
+    [recipients]
+  );
 
   return (
     <Dialog
@@ -129,7 +254,7 @@ function QueryShareDialog({
               <Button.Success
                 onClick={(): void =>
                   loading(
-                    ajax<QueryShares>(
+                    ajax<QuerySharesUpdate>(
                       `/stored_query/query/${queryId}/shares/`,
                       {
                         method: 'PUT',
@@ -146,10 +271,7 @@ function QueryShareDialog({
           ) : (
             <>
               <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-              <Button.Success
-                disabled={users === undefined}
-                onClick={(): void => setReview(true)}
-              >
+              <Button.Success onClick={(): void => setReview(true)}>
                 {commonText.save()}
               </Button.Success>
             </>
@@ -164,14 +286,12 @@ function QueryShareDialog({
           ? queryText.confirmQuerySharingDescription()
           : queryText.querySharingDescription()}
       </p>
-      {users === undefined ? (
-        loadingGif
-      ) : review ? (
+      {review ? (
         selected.length === 0 ? (
           <p>{queryText.noQueryRecipients()}</p>
         ) : (
           <ul>
-            {users
+            {allUsers
               .filter(({ id }) => selected.includes(id))
               .map(({ id, name }) => (
                 <li key={id}>{name}</li>
@@ -182,7 +302,7 @@ function QueryShareDialog({
         <>
           <div className="flex gap-2">
             <Button.Secondary
-              onClick={(): void => setSelected(users.map(({ id }) => id))}
+              onClick={(): void => setSelected(allUsers.map(({ id }) => id))}
             >
               {interactionsText.selectAll()}
             </Button.Secondary>
@@ -190,36 +310,85 @@ function QueryShareDialog({
               {interactionsText.deselectAll()}
             </Button.Secondary>
           </div>
-          <div className="flex flex-col gap-2 overflow-auto">
-            {users.map(({ id, name }, index) => (
-              <Label.Inline key={id}>
-                <Input.Checkbox
-                  checked={selected.includes(id)}
-                  onChange={(event): void => {
-                    const checked = event.target.checked;
-                    const isRange =
-                      event.nativeEvent instanceof MouseEvent &&
-                      event.nativeEvent.shiftKey &&
-                      anchor.current !== undefined;
-                    const ids = isRange
-                      ? users
-                          .slice(
-                            Math.min(anchor.current ?? index, index),
-                            Math.max(anchor.current ?? index, index) + 1
-                          )
-                          .map(({ id }) => id)
-                      : [id];
-                    setSelected((previous) =>
-                      checked
-                        ? [...new Set([...previous, ...ids])]
-                        : previous.filter((id) => !ids.includes(id))
-                    );
-                    anchor.current = index;
-                  }}
-                />
-                {name}
-              </Label.Inline>
+          <div
+            className="flex flex-col gap-2 overflow-auto"
+            data-query-share-users
+          >
+            {divisions.map((division) => (
+              <CollapsibleSection
+                hasChildren={division.children.length > 0}
+                key={division.id}
+                title={
+                  <QueryShareSectionTitle
+                    kind="division"
+                    label={tables.Division.label}
+                    name={division.name}
+                  />
+                }
+              >
+                <div className="mt-2 flex flex-col gap-2">
+                  {division.children.map((discipline) => (
+                    <CollapsibleSection
+                      hasChildren={discipline.children.length > 0}
+                      key={discipline.id}
+                      title={
+                        <QueryShareSectionTitle
+                          kind="discipline"
+                          label={tables.Discipline.label}
+                          name={discipline.name}
+                        />
+                      }
+                    >
+                      <div className="mt-2 flex flex-col gap-2">
+                        {discipline.children.map((collection) => (
+                          <CollapsibleSection
+                            hasChildren={collection.users.length > 0}
+                            key={collection.id}
+                            title={
+                              <QueryShareSectionTitle
+                                kind="collection"
+                                label={tables.Collection.label}
+                                name={collection.name}
+                              />
+                            }
+                          >
+                            <div className="mt-2 flex flex-col gap-2">
+                              {collection.users.map((user) => (
+                                <QueryShareUserCheckbox
+                                  anchor={anchor}
+                                  key={user.id}
+                                  selected={selected}
+                                  setSelected={setSelected}
+                                  user={user}
+                                />
+                              ))}
+                            </div>
+                          </CollapsibleSection>
+                        ))}
+                      </div>
+                    </CollapsibleSection>
+                  ))}
+                </div>
+              </CollapsibleSection>
             ))}
+            {recipients.usersWithoutCollection.length > 0 && (
+              <CollapsibleSection
+                hasChildren
+                title={queryText.usersWithoutCollection()}
+              >
+                <div className="mt-2 flex flex-col gap-2">
+                  {recipients.usersWithoutCollection.map((user) => (
+                    <QueryShareUserCheckbox
+                      anchor={anchor}
+                      key={user.id}
+                      selected={selected}
+                      setSelected={setSelected}
+                      user={user}
+                    />
+                  ))}
+                </div>
+              </CollapsibleSection>
+            )}
           </div>
         </>
       )}

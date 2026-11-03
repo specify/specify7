@@ -4,6 +4,7 @@ from django.core.exceptions import PermissionDenied
 from django.test import Client, SimpleTestCase
 
 from specifyweb.backend.permissions.models import SpqueryShare, UserPolicy
+from specifyweb.backend.permissions.permissions import CollectionAccessPT
 from specifyweb.backend.stored_queries.sharing import (
     ensure_query_access,
     ensure_query_write_access,
@@ -76,7 +77,10 @@ class SharedQueryApiTests(ApiTests):
         )
 
         response = self.client.get(self.url)
-        self.assertEqual(response.json(), {"recipientIds": [self.recipient.id]})
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual(
+            response.json()["recipientIds"], [self.recipient.id]
+        )
 
         response = self.client.delete(self.url)
         self.assertEqual(response.status_code, 204)
@@ -111,6 +115,50 @@ class SharedQueryApiTests(ApiTests):
 
         self.assertEqual(response.status_code, 400)
         self.assertFalse(SpqueryShare.objects.filter(query=self.query).exists())
+
+    def test_share_recipient_list_is_grouped_by_collection_and_discipline(self):
+        unassigned = models.Specifyuser.objects.create(
+            name=f"unassigned{self.collection.id}",
+            password="unusable",
+            isloggedin=False,
+            isloggedinreport=False,
+        )
+        UserPolicy.objects.create(
+            collection=self.collection,
+            specifyuser=self.recipient,
+            resource=CollectionAccessPT.resource,
+            action=CollectionAccessPT.access.action(),
+        )
+
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        collection = next(
+            collection
+            for collection in data["collections"]
+            if collection["id"] == self.collection.id
+        )
+        self.assertEqual(collection["name"], self.collection.collectionname)
+        self.assertEqual(
+            collection["discipline"],
+            {
+                "id": self.discipline.id,
+                "name": self.discipline.name,
+                "division": {
+                    "id": self.discipline.division_id,
+                    "name": self.discipline.division.name,
+                },
+            },
+        )
+        self.assertEqual(
+            {user["id"] for user in collection["users"]},
+            {self.specifyuser.id, self.recipient.id},
+        )
+        self.assertIn(
+            {"id": unassigned.id, "name": unassigned.name},
+            data["usersWithoutCollection"],
+        )
 
     def test_only_owners_and_granted_recipients_can_access_queries(self):
         other_query = models.Spquery.objects.create(
