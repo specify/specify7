@@ -14,34 +14,39 @@ import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
 import * as ajaxModule from '../../../utils/ajax';
 import { LoadingContext } from '../../Core/Contexts';
-import * as collection from '../../DataModel/collection';
-import { serializeResource } from '../../DataModel/serializers';
-import { tables } from '../../DataModel/tables';
-import type { SpecifyUser } from '../../DataModel/types';
 import { UnloadProtectsContext } from '../../Router/UnloadProtect';
 import { QuerySharingActions } from '../Share';
 
 requireContext();
-overrideAjax('/stored_query/query/10/shares/', { recipientIds: [2] });
+const recipients = {
+  recipientIds: [2],
+  collections: [
+    {
+      id: 1,
+      name: 'Collection A',
+      discipline: {
+        id: 2,
+        name: 'Discipline A',
+        division: { id: 3, name: 'Division A' },
+      },
+      users: [
+        { id: 1, name: 'Alice' },
+        { id: 2, name: 'Bob' },
+        { id: 3, name: 'Carol' },
+      ],
+    },
+  ],
+  usersWithoutCollection: [{ id: 4, name: 'No collection user' }],
+};
+overrideAjax('/stored_query/query/10/shares/', recipients);
 overrideAjax(
   '/stored_query/query/10/shares/',
-  { recipientIds: [1, 2, 3] },
-  { method: 'PUT', body: { recipientIds: [1, 2, 3] } }
+  { recipientIds: [1, 2, 3, 4] },
+  { method: 'PUT', body: { recipientIds: [1, 2, 3, 4] } }
 );
 overrideAjax('/stored_query/query/10/shares/', '', {
   method: 'DELETE',
   responseCode: 204,
-});
-
-beforeEach(() => {
-  jest.spyOn(collection, 'fetchCollection').mockResolvedValue({
-    records: ['Alice', 'Bob', 'Carol'].map((name, index) =>
-      serializeResource(
-        new tables.SpecifyUser.Resource<SpecifyUser>({ id: index + 1, name })
-      )
-    ),
-    totalCount: 3,
-  });
 });
 
 afterEach(() => jest.restoreAllMocks());
@@ -87,6 +92,29 @@ test('preselects recipients and preserves selection when returning from confirma
   expect(screen.getByRole('checkbox', { name: 'Bob' })).toBeChecked();
 });
 
+test('displays users under collapsible division, discipline, and collection nodes', async () => {
+  await renderActions();
+  await user.click(
+    await screen.findByRole('button', { name: queryText.shareQuery() })
+  );
+  expect(screen.getByText('Division A')).toBeVisible();
+  expect(screen.getByText('Collection A')).toBeVisible();
+  expect(screen.getByText('Discipline A')).toBeVisible();
+  expect(screen.getByRole('checkbox', { name: 'Alice' })).toBeVisible();
+  expect(
+    screen.getByRole('checkbox', { name: 'No collection user' })
+  ).toBeVisible();
+
+  const collapseButtons = screen.getAllByRole('button', { name: 'collapse' });
+  await user.click(collapseButtons[0]);
+  expect(
+    screen.queryByRole('checkbox', { name: 'Alice' })
+  ).not.toBeInTheDocument();
+
+  await user.click(screen.getAllByRole('button', { name: 'collapse' })[0]);
+  expect(screen.getByRole('checkbox', { name: 'Alice' })).toBeVisible();
+});
+
 test('supports range selection, select all, deselect all, and confirmed saving', async () => {
   const ajax = jest.spyOn(ajaxModule, 'ajax');
   await renderActions();
@@ -120,7 +148,7 @@ test('supports range selection, select all, deselect all, and confirmed saving',
       '/stored_query/query/10/shares/',
       expect.objectContaining({
         method: 'PUT',
-        body: { recipientIds: [1, 2, 3] },
+        body: { recipientIds: [1, 2, 3, 4] },
       })
     )
   );
