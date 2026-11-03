@@ -7,6 +7,7 @@ import {
   subscribeThrottledPromises,
   throttledPromisesAreLoading,
 } from '../../utils/ajax/throttledPromise';
+import { SECOND } from '../Atoms/timeUnits';
 
 const pending = new Set<symbol>();
 const listeners = new Set<() => void>();
@@ -58,7 +59,8 @@ export async function statisticsAjax<T>(
         result.response.headers.get('Specify-Retry-After')
       );
       const delay =
-        (Number.isFinite(retryAfter) && retryAfter > 0 ? retryAfter : 2) * 1000;
+        (Number.isFinite(retryAfter) && retryAfter > 0 ? retryAfter : 2) *
+        SECOND;
       await new Promise<void>((resolve) => {
         const finish = (): void => {
           globalThis.clearTimeout(timer);
