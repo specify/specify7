@@ -10,23 +10,15 @@ from django.http import (
 
 from django.core.exceptions import FieldError
 from django.shortcuts import get_object_or_404
-from django.utils.module_loading import import_string
 
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 from specifyweb.backend.permissions.permissions import enforce, table_permissions_checker
+from specifyweb.backend.stored_queries.access import ensure_query_access
 from specifyweb.specify.api.crud import apply_filters, delete_resource, get_collection, get_resource, post_resource, put_resource
 from specifyweb.specify.api.exceptions import FilterError, OrderByError
 from specifyweb.specify.api.filter_by_col import filter_by_collection
 from specifyweb.specify.api.serializers import _obj_to_data, toJson
 from specifyweb.specify.api.validators import GetCollectionForm, RowsForm
-
-
-def _ensure_stored_query_access(query_id, user_id):
-    ensure_query_access = import_string(
-        'specifyweb.backend.stored_queries.sharing.ensure_query_access'
-    )
-
-    ensure_query_access(query_id, user_id)
 
 
 def resource_dispatch(request, model, id) -> HttpResponse:
@@ -54,14 +46,14 @@ def resource_dispatch(request, model, id) -> HttpResponse:
     # Dispatch on the request type.
     if request.method == 'GET':
         if model.lower() == 'spquery':
-            _ensure_stored_query_access(id, request.specify_user.id)
+            ensure_query_access(id, request.specify_user.id)
         elif model.lower() == 'spqueryfield':
             from specifyweb.specify.models import Spqueryfield
 
             field = get_object_or_404(Spqueryfield, pk=id)
             if field.query_id is None:
                 raise Http404("Query not found.")
-            _ensure_stored_query_access(field.query_id, request.specify_user.id)
+            ensure_query_access(field.query_id, request.specify_user.id)
         data = get_resource(model, id, checker, request.GET.get('recordsetid', None))
         resp = HttpResponse(toJson(data), content_type='application/json')
 

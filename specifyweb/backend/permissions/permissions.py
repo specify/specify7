@@ -19,6 +19,7 @@ from specifyweb.specify.datamodel import Table
 from specifyweb.backend.cache.thread import ThreadCache
 
 from . import models
+from .exceptions import PermissionsException
 
 registry: dict[str, list[str]] = dict()
 
@@ -94,13 +95,6 @@ def has_target_permission(
         return True
     except NoMatchingRuleException:
         return False
-
-
-class PermissionsException(Exception):
-    status_code = 500
-
-    def to_json(self) -> dict:
-        return {"PermissionsException": repr(self)}
 
 
 class NoMatchingRuleException(PermissionsException):

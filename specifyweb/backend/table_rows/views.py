@@ -21,11 +21,11 @@ def rows(request, model: str) -> HttpResponse:
 
     query = apply_filters(request.specify_collection, request.GET, model, form.cleaned_data)
     if model.lower() == 'spquery':
-        from specifyweb.backend.stored_queries.sharing import filter_queries_for_user
+        from specifyweb.backend.stored_queries.access import filter_queries_for_user
 
         query = filter_queries_for_user(query, request.specify_user.id)
     elif model.lower() == 'spqueryfield':
-        from specifyweb.backend.stored_queries.sharing import filter_queries_for_user
+        from specifyweb.backend.stored_queries.access import filter_queries_for_user
         from specifyweb.specify.models import Spquery
 
         visible_queries = filter_queries_for_user(

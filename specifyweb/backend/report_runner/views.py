@@ -21,7 +21,7 @@ from specifyweb.specify.api.serializers import _obj_to_data, obj_to_data, toJson
 from specifyweb.specify.views import login_maybe_required
 from specifyweb.backend.stored_queries.execution import run_ephemeral_query, models
 from specifyweb.backend.stored_queries.queryfield import QueryField
-from specifyweb.backend.stored_queries.sharing import ensure_query_access
+from specifyweb.backend.stored_queries.access import ensure_query_access
 
 
 class ReportException(Exception):

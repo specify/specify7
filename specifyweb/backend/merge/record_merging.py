@@ -189,7 +189,7 @@ def record_merge_fx(model_name: str, old_model_ids: list[int], new_model_id: int
     # Get dependent fields and objects of the target object
     target_object = target_model.objects.get(id=new_model_id)
     if isinstance(target_object, (spmodels.Spquery, spmodels.Spqueryfield)):
-        from specifyweb.backend.stored_queries.sharing import ensure_query_write_access
+        from specifyweb.backend.stored_queries.access import ensure_query_write_access
 
         ensure_query_write_access(target_object, specify_user.id)
         for old_object in target_model.objects.filter(id__in=old_model_ids):

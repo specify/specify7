@@ -13,7 +13,7 @@ from django.utils import timezone
 
 from specifyweb.middleware.general import require_GET
 from specifyweb.backend.stored_queries.batch_edit import run_batch_edit
-from specifyweb.backend.stored_queries.sharing import ensure_query_access
+from specifyweb.backend.stored_queries.access import ensure_query_access
 from specifyweb.specify.models_utils.models_by_table_id import model_names_by_table_id
 from specifyweb.specify.api.serializers import toJson, uri_for_model
 from . import models

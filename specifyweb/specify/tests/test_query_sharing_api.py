@@ -7,7 +7,7 @@ from django.test import Client, SimpleTestCase
 
 from specifyweb.backend.permissions.models import SpqueryShare, UserPolicy
 from specifyweb.backend.permissions.permissions import CollectionAccessPT
-from specifyweb.backend.stored_queries.sharing import (
+from specifyweb.backend.stored_queries.access import (
     ensure_query_access,
     ensure_query_write_access,
     filter_queries_for_user,

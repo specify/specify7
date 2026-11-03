@@ -43,7 +43,7 @@ def get_resource(name, id, checker: ReadPermChecker, recordsetid=None) -> dict:
 
 def create_obj(collection, agent, model, data: dict[str, Any], parent_obj=None, parent_relationship=None):
     """Create a new instance of 'model' and populate it with 'data'."""
-    from specifyweb.backend.stored_queries.sharing import (
+    from specifyweb.backend.stored_queries.access import (
         QueryWriteDenied,
         ensure_query_write_access,
     )
@@ -133,7 +133,7 @@ def update_obj(collection, agent, name: str, id, version, data: dict[str, Any], 
     """Update the resource with 'id' in model named 'name' with given
     'data'.
     """
-    from specifyweb.backend.stored_queries.sharing import (
+    from specifyweb.backend.stored_queries.access import (
         QueryWriteDenied,
         ensure_query_write_access,
     )
@@ -231,7 +231,7 @@ def update_or_create_resource(collection, agent, model, data, parent_obj, parent
 def make_default_deleter(collection=None, agent=None):
     def _deleter(obj, parent_obj):
         if collection and agent:
-            from specifyweb.backend.stored_queries.sharing import ensure_query_write_access
+            from specifyweb.backend.stored_queries.access import ensure_query_write_access
 
             check_table_permissions(collection, agent, obj, "delete")
             ensure_query_write_access(obj, agent.specifyuser_id)
@@ -543,12 +543,12 @@ def get_collection(
 
     objs = apply_filters(logged_in_collection, params, model, control_params)
     if query_user_id is not None and model._meta.model_name == 'spqueryfield':
-        from specifyweb.backend.stored_queries.sharing import filter_queries_for_user
+        from specifyweb.backend.stored_queries.access import filter_queries_for_user
 
         visible_queries = filter_queries_for_user(models.Spquery.objects.all(), query_user_id)
         objs = objs.filter(query__in=visible_queries)
     elif query_user_id is not None and model._meta.model_name == 'spquery':
-        from specifyweb.backend.stored_queries.sharing import filter_queries_for_user
+        from specifyweb.backend.stored_queries.access import filter_queries_for_user
 
         visible_queries = filter_queries_for_user(models.Spquery.objects.all(), query_user_id)
         objs = objs.filter(id__in=visible_queries)
