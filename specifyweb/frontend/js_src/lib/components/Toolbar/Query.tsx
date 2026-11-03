@@ -14,11 +14,13 @@ import { Button } from '../Atoms/Button';
 import { Input } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
-import { ReadOnlyContext } from '../Core/Contexts';
+import { DataEntry } from '../Atoms/DataEntry';
+import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { fetchCollection } from '../DataModel/collection';
 import { backendFilter, getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { idFromUrl, resourceEvents } from '../DataModel/resource';
+import { deserializeResource } from '../DataModel/serializers';
 import { getTableById, tables } from '../DataModel/tables';
 import type { SpQuery } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
@@ -30,10 +32,12 @@ import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasPermission, hasToolPermission } from '../Permissions/helpers';
 import { QueryEditButton } from '../QueryBuilder/Edit';
+import { cloneSharedQuery } from '../QueryBuilder/Save';
 import { OverlayContext } from '../Router/Router';
 import { SafeOutlet } from '../Router/RouterUtils';
 import { DialogListSkeleton } from '../SkeletonLoaders/DialogList';
 import { QueryTablesWrapper } from './QueryTablesWrapper';
+import { interactionsText } from '../../localization/interactions';
 
 export function QueriesOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -246,6 +250,11 @@ export function QueryListDialog({
                   isReadOnly ||
                   idFromUrl(query.specifyUser) !== userInformation.id
                 }
+                canClone={
+                  section === 'shared' &&
+                  !isReadOnly &&
+                  hasToolPermission('queryBuilder', 'create')
+                }
                 key={query.id}
                 query={query}
               />
@@ -310,13 +319,17 @@ export function QueryList({
   query,
   getQuerySelectCallback,
   isReadOnly,
+  canClone = false,
 }: {
   readonly query: SerializedResource<SpQuery>;
   readonly getQuerySelectCallback?: (
     query: SerializedResource<SpQuery>
   ) => string | (() => void);
   readonly isReadOnly: boolean;
+  readonly canClone?: boolean;
 }): JSX.Element {
+  const [confirmClone, setConfirmClone] = React.useState(false);
+  const loading = React.useContext(LoadingContext);
   const callBack =
     getQuerySelectCallback?.(query) ?? `/specify/query/${query.id}/`;
   const text = (
@@ -326,37 +339,71 @@ export function QueryList({
     </>
   );
   return (
-    <tr title={query.remarks ?? undefined}>
-      <td>
-        {typeof callBack === 'string' ? (
-          <Link.Default
-            /*
-             * BUG: consider applying these styles everywhere
-             * className="max-w-full overflow-auto"
-             */
-            className="overflow-x-auto"
-            href={callBack}
-          >
-            {text}
-          </Link.Default>
-        ) : (
-          <Button.LikeLink className="overflow-x-auto" onClick={callBack}>
-            {text}
-          </Button.LikeLink>
-        )}
-      </td>
-      <td>
-        <DateElement date={query.timestampCreated} />
-      </td>
-      <td>
-        {typeof query.timestampModified === 'string' && (
-          <DateElement date={query.timestampModified} />
-        )}
-      </td>
-      <td className="justify-end">
-        {!isReadOnly && <QueryEditButton query={query} />}
-      </td>
-    </tr>
+    <>
+      <tr title={query.remarks ?? undefined}>
+        <td>
+          <div className="flex items-center gap-2">
+            {typeof callBack === 'string' ? (
+              <Link.Default
+                /*
+                 * BUG: consider applying these styles everywhere
+                 * className="max-w-full overflow-auto"
+                 */
+                className="overflow-x-auto"
+                href={callBack}
+              >
+                {text}
+              </Link.Default>
+            ) : (
+              <Button.LikeLink className="overflow-x-auto" onClick={callBack}>
+                {text}
+              </Button.LikeLink>
+            )}
+            {canClone && (
+              <DataEntry.Clone
+                aria-label={queryText.cloneSharedQuery()}
+                onClick={(): void => setConfirmClone(true)}
+              />
+            )}
+          </div>
+        </td>
+        <td>
+          <DateElement date={query.timestampCreated} />
+        </td>
+        <td>
+          {typeof query.timestampModified === 'string' && (
+            <DateElement date={query.timestampModified} />
+          )}
+        </td>
+        <td className="justify-end">
+          {!isReadOnly && <QueryEditButton query={query} />}
+        </td>
+      </tr>
+      {confirmClone && (
+        <Dialog
+          buttons={
+            <>
+              <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+              <Button.Success
+                onClick={(): void =>
+                  loading(
+                    cloneSharedQuery(deserializeResource(query)).then(() =>
+                      setConfirmClone(false)
+                    )
+                  )
+                }
+              >
+                {interactionsText.continue()}
+              </Button.Success>
+            </>
+          }
+          header={queryText.cloneSharedQuery()}
+          onClose={(): void => setConfirmClone(false)}
+        >
+          <p>{queryText.confirmCloneSharedQuery({ queryName: query.name })}</p>
+        </Dialog>
+      )}
+    </>
   );
 }
 

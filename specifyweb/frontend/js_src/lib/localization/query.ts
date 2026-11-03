@@ -21,6 +21,12 @@ export const queryText = createDictionary({
   sharedQueryReadOnly: {
     'en-us': 'This shared query is read-only. Save a personal copy to edit it.',
   },
+  cloneSharedQuery: {
+    'en-us': 'Clone shared query',
+  },
+  confirmCloneSharedQuery: {
+    'en-us': 'Clone "{queryName}" to your personal queries?',
+  },
   shareQuery: {
     'en-us': 'Share this query',
   },
