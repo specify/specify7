@@ -5,6 +5,22 @@ from ..exceptions import BusinessRuleException
 
 class DeterminerTests(ApiTests):
     @skipUnless(hasattr(models, 'Determiner'), "Determiner table added in 6.8.02")
+    def test_add_existing_agent_as_determiner(self):
+        determination = models.Determination.objects.create(
+            collectionobject=self.collectionobjects[0],
+            collectionmemberid=self.collection.id,
+            iscurrent=True,
+        )
+
+        determiner = determination.determiners.create(
+            isprimary=True,
+            ordernumber=0,
+            agent=self.agent,
+        )
+        fetched_determiner = determination.determiners.get(id=determiner.id)
+        self.assertEqual(fetched_determiner.agent_id, self.agent.id)
+
+    @skipUnless(hasattr(models, 'Determiner'), "Determiner table added in 6.8.02")
     def test_agent_unique_in_determination(self):
         determination = models.Determination.objects.create(
             collectionobject=self.collectionobjects[0],
