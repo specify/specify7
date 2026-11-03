@@ -10,12 +10,14 @@ import React from 'react';
 import { commonText } from '../../../localization/common';
 import { queryText } from '../../../localization/query';
 import { requireContext } from '../../../tests/helpers';
+import * as collection from '../../DataModel/collection';
 import { serializeResource } from '../../DataModel/serializers';
 import { tables } from '../../DataModel/tables';
 import type { SpQuery } from '../../DataModel/types';
 import { LoadingContext } from '../../Core/Contexts';
 import { UnloadProtectsContext } from '../../Router/UnloadProtect';
-import { QueryList } from '../Query';
+import * as permissions from '../../Permissions/helpers';
+import { QueryListDialog } from '../Query';
 
 jest.mock('../../QueryBuilder/Save', () => ({
   ...jest.requireActual('../../QueryBuilder/Save'),
@@ -31,10 +33,11 @@ requireContext();
 
 afterEach(() => {
   jest.clearAllMocks();
+  jest.restoreAllMocks();
 });
 
 test.each(['success', 'failure'] as const)(
-  'prevents duplicate shared-query clones and resets pending state on %s',
+  'preserves shared-query clone state across refreshes and resets it on %s',
   async (outcome) => {
     const queryName = 'Useful query';
     const query = new tables.SpQuery.Resource<SpQuery>({
@@ -46,6 +49,27 @@ test.each(['success', 'failure'] as const)(
     });
     const resource = serializeResource(query);
     const handleError = jest.fn();
+    const response = { records: [resource], totalCount: 1 };
+    const fetch = jest
+      .spyOn(collection, 'fetchCollection')
+      .mockResolvedValue(response);
+    jest.spyOn(permissions, 'hasToolPermission').mockReturnValue(true);
+
+    async function startRefresh(): Promise<() => void> {
+      let finishRefresh!: () => void;
+      fetch.mockReturnValueOnce(
+        new Promise((resolve) => {
+          finishRefresh = (): void => resolve(response);
+        })
+      );
+      await act(async () => {
+        fireEvent(window, new Event('focus'));
+      });
+      expect(
+        screen.queryByRole('link', { name: /useful query/i })
+      ).not.toBeInTheDocument();
+      return finishRefresh;
+    }
 
     render(
       <LoadingContext.Provider
@@ -54,20 +78,28 @@ test.each(['success', 'failure'] as const)(
         }}
       >
         <UnloadProtectsContext.Provider value={[]}>
-          <table>
-            <tbody>
-              <QueryList canClone isReadOnly query={resource} />
-            </tbody>
-          </table>
+          <QueryListDialog newQueryUrl="/specify/query/new/" onClose={jest.fn()}>
+            {({ children }) => children}
+          </QueryListDialog>
         </UnloadProtectsContext.Provider>
       </LoadingContext.Provider>
     );
 
     await act(async () => {
       fireEvent.click(
+        screen.getByRole('button', { name: queryText.sharedQueries() })
+      );
+    });
+    await act(async () => {
+      fireEvent.click(
         screen.getByRole('button', { name: queryText.cloneSharedQuery() })
       );
     });
+    expect(
+      screen.getByText(queryText.confirmCloneSharedQuery({ queryName }))
+    ).toBeVisible();
+    const finishConfirmationRefresh = await startRefresh();
+    await act(async () => finishConfirmationRefresh());
     expect(
       screen.getByText(queryText.confirmCloneSharedQuery({ queryName }))
     ).toBeVisible();
@@ -106,6 +138,8 @@ test.each(['success', 'failure'] as const)(
     expect(mockCloneSharedQuery).toHaveBeenCalledWith(
       expect.objectContaining({ id: query.id })
     );
+    const finishPendingRefresh = await startRefresh();
+    await act(async () => finishPendingRefresh());
     const continueButton = screen.getByRole('button', {
       name: interactionsText.continue(),
     });
@@ -113,11 +147,13 @@ test.each(['success', 'failure'] as const)(
     fireEvent.click(continueButton);
     expect(mockCloneSharedQuery).toHaveBeenCalledTimes(1);
 
+    const finishCompletionRefresh = await startRefresh();
     const error = new Error('Clone failed');
     await act(async () => {
       if (outcome === 'success') resolveClone(101);
       else rejectClone(error);
     });
+    await act(async () => finishCompletionRefresh());
     expect(screen.getByRole('link', { name: /useful query/i })).toBeVisible();
     if (outcome === 'success') {
       expect(
@@ -125,7 +161,9 @@ test.each(['success', 'failure'] as const)(
       ).not.toBeInTheDocument();
       expect(handleError).not.toHaveBeenCalled();
     } else {
-      expect(continueButton).toBeEnabled();
+      expect(
+        screen.getByRole('button', { name: interactionsText.continue() })
+      ).toBeEnabled();
       expect(
         screen.getByText(queryText.confirmCloneSharedQuery({ queryName }))
       ).toBeVisible();

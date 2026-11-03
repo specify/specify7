@@ -90,6 +90,16 @@ const defaultChildren: Exclude<QueryListContextType['children'], undefined> = ({
     dialog(children)
   );
 
+type CloneState = {
+  readonly confirmClone: boolean;
+  readonly clonePending: boolean;
+};
+
+const defaultCloneState: CloneState = {
+  confirmClone: false,
+  clonePending: false,
+};
+
 export function QueryListDialog({
   newQueryUrl,
   onClose: handleClose,
@@ -116,6 +126,9 @@ export function QueryListDialog({
     'personal' | 'shared' | 'sharing'
   >('personal');
   const [refreshToken, setRefreshToken] = React.useState(0);
+  const [cloneStates, setCloneStates] = React.useState<
+    Readonly<Record<number, CloneState>>
+  >({});
   const ownerId = filters?.specifyUser ?? userInformation.id;
   const [data] = useAsyncState(
     React.useCallback(
@@ -268,6 +281,16 @@ export function QueryListDialog({
                 }
                 key={query.id}
                 query={query}
+                cloneState={cloneStates[query.id] ?? defaultCloneState}
+                onCloneStateChange={(state): void =>
+                  setCloneStates((states) => ({
+                    ...states,
+                    [query.id]: {
+                      ...(states[query.id] ?? defaultCloneState),
+                      ...state,
+                    },
+                  }))
+                }
               />
             ))}
           </tbody>
@@ -331,6 +354,8 @@ export function QueryList({
   getQuerySelectCallback,
   isReadOnly,
   canClone = false,
+  cloneState: { confirmClone, clonePending },
+  onCloneStateChange: handleCloneStateChange,
 }: {
   readonly query: SerializedResource<SpQuery>;
   readonly getQuerySelectCallback?: (
@@ -338,9 +363,9 @@ export function QueryList({
   ) => string | (() => void);
   readonly isReadOnly: boolean;
   readonly canClone?: boolean;
+  readonly cloneState: CloneState;
+  readonly onCloneStateChange: (state: Partial<CloneState>) => void;
 }): JSX.Element {
-  const [confirmClone, setConfirmClone] = React.useState(false);
-  const [clonePending, setClonePending] = React.useState(false);
   const loading = React.useContext(LoadingContext);
   const callBack =
     getQuerySelectCallback?.(query) ?? `/specify/query/${query.id}/`;
@@ -374,7 +399,9 @@ export function QueryList({
             {canClone && (
               <DataEntry.Clone
                 aria-label={queryText.cloneSharedQuery()}
-                onClick={(): void => setConfirmClone(true)}
+                onClick={(): void =>
+                  handleCloneStateChange({ confirmClone: true })
+                }
               />
             )}
           </div>
@@ -399,11 +426,15 @@ export function QueryList({
               <Button.Success
                 disabled={clonePending}
                 onClick={(): void => {
-                  setClonePending(true);
+                  handleCloneStateChange({ clonePending: true });
                   loading(
                     cloneSharedQuery(deserializeResource(query))
-                      .then(() => setConfirmClone(false))
-                      .finally(() => setClonePending(false))
+                      .then(() =>
+                        handleCloneStateChange({ confirmClone: false })
+                      )
+                      .finally(() =>
+                        handleCloneStateChange({ clonePending: false })
+                      )
                   );
                 }}
               >
@@ -412,7 +443,7 @@ export function QueryList({
             </>
           }
           header={queryText.cloneSharedQuery()}
-          onClose={(): void => setConfirmClone(false)}
+          onClose={(): void => handleCloneStateChange({ confirmClone: false })}
         >
           <p>{queryText.confirmCloneSharedQuery({ queryName: query.name })}</p>
         </Dialog>
