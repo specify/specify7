@@ -178,13 +178,6 @@ function Wrapped({
     'showHiddenFields'
   );
 
-  const promptToSave = saveRequired && !isEmbedded;
-
-  const unsetUnloadProtect = useUnloadProtect(
-    promptToSave,
-    queryText.queryUnloadProtect()
-  );
-
   const handleAddField = (mappingPath = state.mappingView): void =>
     dispatch({
       type: 'ChangeFieldsAction',
@@ -268,6 +261,13 @@ function Wrapped({
     !queryResource.isNew() &&
     idFromUrl(query.specifyUser) !== userInformation.id;
   const isReadOnly = inheritedReadOnly || !hasAccess || isShared;
+  const promptToSave = saveRequired && !isEmbedded && !isReadOnly;
+
+  const unsetUnloadProtect = useUnloadProtect(
+    promptToSave,
+    queryText.queryUnloadProtect()
+  );
+
   const getMappedFieldsBind = getMappedFields.bind(undefined, state.fields);
   const mapButtonEnabled =
     !isReadOnly &&
