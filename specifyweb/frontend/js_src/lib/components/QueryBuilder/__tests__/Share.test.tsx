@@ -176,4 +176,8 @@ test('revocation requires confirmation and hides the action after success', asyn
       screen.queryByRole('button', { name: queryText.revokeQuerySharing() })
     ).not.toBeInTheDocument()
   );
+  expect(ajax).toHaveBeenCalledWith(
+    '/stored_query/query/10/shares/',
+    expect.objectContaining({ method: 'DELETE' })
+  );
 });
