@@ -1,4 +1,5 @@
 import json
+from functools import wraps
 
 from django.core.exceptions import PermissionDenied
 from django.db import connection, transaction
@@ -21,7 +22,16 @@ from specifyweb.backend.permissions.permissions import (
     PermissionsException,
 )
 from specifyweb.specify.models import Collection, Spquery, Spqueryfield, Specifyuser
-from specifyweb.specify.views import login_maybe_required
+
+
+def _login_maybe_required(view_func):
+    @wraps(view_func)
+    def _wrapped(*args, **kwargs):
+        from specifyweb.specify.views import login_maybe_required
+
+        return login_maybe_required(view_func)(*args, **kwargs)
+
+    return _wrapped
 
 
 class QueryWriteDenied(PermissionDenied, PermissionsException):
@@ -135,7 +145,7 @@ def ensure_query_write_access(obj: Model, user_id: int) -> None:
 
 
 @require_http_methods(["GET", "PUT", "DELETE"])
-@login_maybe_required
+@_login_maybe_required
 @never_cache
 def manage_query_shares(request: HttpRequest, id: int) -> HttpResponse:
     with transaction.atomic():
