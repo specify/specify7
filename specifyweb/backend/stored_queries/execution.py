@@ -52,6 +52,11 @@ logger = logging.getLogger(__name__)
 SERIES_MAX_ROWS = 10000
 
 
+def _get_tree_rank_functions():
+    from .tree_rank import prepare_tree_ranks, rank_path, path_key, resolve_page
+    return prepare_tree_ranks, rank_path, path_key, resolve_page
+
+
 class QuerySort:
     SORT_TYPES = [None, asc, desc]
 
@@ -81,6 +86,8 @@ class BuildQueryProps(NamedTuple):
     search_synonymy: bool = False
     implicit_or: bool = True
     formatter_props: ObjectFormatterProps = DefaultQueryFormatterProps()
+    defer_tree_display: bool = False
+    count_only: bool = False
 
 
 def set_group_concat_max_len(connection):
@@ -892,12 +899,14 @@ def execute(
             series=series,
             search_synonymy=search_synonymy,
             formatter_props=formatter_props,
+            defer_tree_display=(count_only or bool(limit)) and not (
+                distinct or series or search_synonymy or formatauditobjs),
+            count_only=count_only,
         ),
     )
 
-    log_sqlalchemy_query(query)
-
     if count_only:
+        log_sqlalchemy_query(query)
         if series:
             cat_num_sort_type = 0
             for query_field in query_fields:
@@ -930,14 +939,20 @@ def execute(
             order_by_exprs.insert(0, text("collectionobject.`CatalogNumber`"))
 
             # query = query.limit(SERIES_MAX_ROWS)
+            log_sqlalchemy_query(query)
             return {'results': series_post_query(query, limit=limit, offset=offset, sort_type=cat_num_sort_type)}
         
         logger.debug("order by: %s", order_by_exprs)
-        query = query.order_by(*order_by_exprs).offset(offset)
+        ranks = query.get_execution_options().get("specify_tree_ranks")
+        if ranks is not None:
+            resolve_page = _get_tree_rank_functions()[3]
+            query = resolve_page(query, order_by_exprs, ranks, limit, offset)
+        else:
+            query = query.order_by(*order_by_exprs).offset(offset)
+            if limit:
+                query = query.limit(limit)
 
-        if limit:
-            query = query.limit(limit)
-
+        log_sqlalchemy_query(query)
         results = list(
             apply_special_post_query_processing(
                 query=query,
@@ -1054,8 +1069,9 @@ def apply_where_condition_to_query(
             where = reduce(sql.and_, implicit_ors)
             query = query.filter(where)
     else:
-        where = reduce(sql.and_, (p for ps in predicates_by_fieldspec.values() for p in ps))
-        query = query.filter(where)
+        predicates = [p for ps in predicates_by_fieldspec.values() for p in ps]
+        if predicates:
+            query = query.filter(reduce(sql.and_, predicates))
     return query
 
 # REFACTOR: Clean up this and the other QueryConstruct functions
@@ -1069,17 +1085,47 @@ def add_fields_to_query(
     query_fields: list[QueryField],
     series: bool = False,
     formatauditobjs: bool = False,
-    use_implicit_ors: bool = True
+    use_implicit_ors: bool = True,
+    defer_tree_display: bool = False,
+    count_only: bool = False,
 ):
+    prepare_tree_ranks, rank_path, path_key, _ = _get_tree_rank_functions()
+    query_fields = list(query_fields)
+    ordinary_predicates = defaultdict(list)
+    if any(rank_path(f.fieldspec) is not None for f in query_fields):
+        for query_field in query_fields:
+            if (rank_path(query_field.fieldspec) is None
+                    and (query_field.op_num != 8 or query_field.negate)):
+                query, _, predicate = query_field.add_to_query(
+                    query, formatauditobjs=formatauditobjs, collection=collection, user=user)
+                if predicate is not None:
+                    ordinary_predicates[query_field.fieldspec].append(predicate)
+        query = apply_where_condition_to_query(query, ordinary_predicates, use_implicit_ors)
+        tree_tables = {
+            rank_path(f.fieldspec)[1].relatedModelName
+            for f in query_fields if rank_path(f.fieldspec) is not None
+        }
+        # Grouped/formatted object queries retain eager resolution. A page may
+        # defer scalar ranks from one tree table without changing row semantics.
+        defer_tree_display = defer_tree_display and len(tree_tables) == 1 and all(
+            not f.fieldspec.is_relationship() and f.fieldspec.get_field() is not None
+            for f in query_fields
+        )
+        query = prepare_tree_ranks(query, query_fields, defer_tree_display, count_only)
+    ranks = query.join_cache.get("tree_ranks")
     order_by_exprs = []
     selected_fields = []
     predicates_by_fieldspec = defaultdict(list)
     for query_field in query_fields:
+        if ranks is not None:
+            ranks.current_field = query_field
+            ranks.current_rank = None
         sort_type = QuerySort.by_id(query_field.sort_type)
 
         if series and query_field.fieldspec.get_field() and query_field.fieldspec.get_field().name.lower() == 'catalognumber':
             _, _, predicate = query_field.add_to_query(query, formatauditobjs=formatauditobjs)
-            predicates_by_fieldspec[query_field.fieldspec].append(predicate) if predicate is not None else None
+            if predicate is not None and query_field.fieldspec not in ordinary_predicates:
+                predicates_by_fieldspec[query_field.fieldspec].append(predicate)
             continue
 
         query, field, predicate = query_field.add_to_query(
@@ -1098,12 +1144,17 @@ def add_fields_to_query(
             formatted_field = query.objectformatter.fieldformat(query_field, field)
             query = query.add_columns(formatted_field)
             selected_fields.append(formatted_field)
+            if (ranks is not None and ranks.current_rank is not None
+                    and rank_path(query_field.fieldspec) is not None
+                    and path_key(query_field.fieldspec) in ranks.deferred):
+                ranks.displays[len(query.query.column_descriptions) - 1] = (
+                    query_field, ranks.current_rank, query.objectformatter)
 
 
         if sort_type is not None:
             order_by_exprs.append(sort_type(field))
 
-        if predicate is not None:
+        if predicate is not None and query_field.fieldspec not in ordinary_predicates:
             predicates_by_fieldspec[query_field.fieldspec].append(predicate)
     query = apply_where_condition_to_query(query, predicates_by_fieldspec, use_implicit_ors)
     return query, selected_fields, order_by_exprs
@@ -1163,6 +1214,10 @@ def build_query(
     Return all record IDs associated with a row.
 
     search_synonymy = if True, search synonym nodes as well, and return all record IDs associated with parent node
+
+    defer_tree_display = internal execution mode: display-only scalar ranks
+    remain unresolved until resolve_page() selects the requested page. Direct
+    callers that execute the returned query must leave this disabled.
     """
     model = models.models_by_tableid[tableid]
     id_field = model._id
@@ -1207,7 +1262,10 @@ def build_query(
         query_fields=query_fields,
         series=props.series,
         formatauditobjs=props.formatauditobjs,
-        use_implicit_ors=props.implicit_or
+        use_implicit_ors=props.implicit_or,
+        defer_tree_display=props.defer_tree_display and not (
+            props.distinct or props.series or props.search_synonymy or props.formatauditobjs),
+        count_only=props.count_only,
     )
 
     if props.series:
@@ -1222,7 +1280,18 @@ def build_query(
     internal_predicate = query.get_internal_filters()
     query = query.filter(internal_predicate)
 
-    return query.query, order_by_exprs
+    ranks = query.join_cache.get("tree_ranks")
+    if ranks is not None and props.defer_tree_display and not (
+            props.distinct or props.series or props.search_synonymy or props.formatauditobjs):
+        ranks.row_ids = [id_field, *[
+            alias._id for key, alias in query.join_cache.items()
+            if isinstance(key, tuple) and len(key) == 2
+            and isinstance(key[1], str)
+            and getattr(key[0], key[1]).property.uselist
+        ]]
+    return query.query.execution_options(
+        specify_tree_ranks=ranks
+    ), order_by_exprs
 
 def series_post_query(query, limit=40, offset=0, sort_type=0, co_id_cat_num_pair_col_index=0, is_count=False):
     """Transform the query results by removing the co_id:catnum pair column
