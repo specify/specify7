@@ -76,3 +76,26 @@ class TectonicunitTests(ApiTests):
 
         tectonicunit.delete()
 
+    def test_tectonicunit_optional_fields_round_trip(self):
+        tectonicunit = self._create_tectonicunit(
+            "Basin",
+            remarks="Test remarks",
+            text1="Lower unit",
+            text2="Upper unit",
+            number1=Decimal("12.5"),
+            number2=Decimal("7.25"),
+            yesno1=True,
+            yesno2=False,
+        )
+
+        tectonicunit.refresh_from_db()
+        self.assertEqual(tectonicunit.remarks, "Test remarks")
+        self.assertEqual(tectonicunit.text1, "Lower unit")
+        self.assertEqual(tectonicunit.text2, "Upper unit")
+        self.assertEqual(tectonicunit.number1, Decimal("12.5"))
+        self.assertEqual(tectonicunit.number2, Decimal("7.25"))
+        self.assertIs(tectonicunit.yesno1, True)
+        self.assertIs(tectonicunit.yesno2, False)
+
+        tectonicunit.delete()
+
