@@ -1,5 +1,6 @@
 import json
 from django.http import (
+    Http404,
     HttpResponse,
     HttpResponseBadRequest,
     HttpResponseForbidden,
@@ -50,7 +51,9 @@ def resource_dispatch(request, model, id) -> HttpResponse:
             from specifyweb.backend.stored_queries.sharing import ensure_query_access
             from specifyweb.specify.models import Spqueryfield
 
-            field = get_object_or_404(Spqueryfield, pk=id, query__isnull=False)
+            field = get_object_or_404(Spqueryfield, pk=id)
+            if field.query_id is None:
+                raise Http404("Query not found.")
             ensure_query_access(field.query_id, request.specify_user.id)
         data = get_resource(model, id, checker, request.GET.get('recordsetid', None))
         resp = HttpResponse(toJson(data), content_type='application/json')
