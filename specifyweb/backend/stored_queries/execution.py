@@ -1069,7 +1069,8 @@ def add_fields_to_query(
     query_fields: list[QueryField],
     series: bool = False,
     formatauditobjs: bool = False,
-    use_implicit_ors: bool = True
+    use_implicit_ors: bool = True,
+    optimize_tree: bool = True,
 ):
     order_by_exprs = []
     selected_fields = []
@@ -1078,12 +1079,20 @@ def add_fields_to_query(
         sort_type = QuerySort.by_id(query_field.sort_type)
 
         if series and query_field.fieldspec.get_field() and query_field.fieldspec.get_field().name.lower() == 'catalognumber':
-            _, _, predicate = query_field.add_to_query(query, formatauditobjs=formatauditobjs)
+            _, _, predicate = query_field.add_to_query(
+                query,
+                formatauditobjs=formatauditobjs,
+                optimize_tree=optimize_tree,
+            )
             predicates_by_fieldspec[query_field.fieldspec].append(predicate) if predicate is not None else None
             continue
 
         query, field, predicate = query_field.add_to_query(
-            query, formatauditobjs=formatauditobjs, collection=collection, user=user
+            query,
+            formatauditobjs=formatauditobjs,
+            collection=collection,
+            user=user,
+            optimize_tree=optimize_tree,
         )
 
         if field is None:
@@ -1165,6 +1174,7 @@ def build_query(
     search_synonymy = if True, search synonym nodes as well, and return all record IDs associated with parent node
     """
     model = models.models_by_tableid[tableid]
+    base_table = datamodel.get_table_by_id_strict(tableid)
     id_field = model._id
     query = build_query_construct_base(
         session=session,
@@ -1200,6 +1210,17 @@ def build_query(
             recordsetid=props.recordsetid
         )
 
+    # Materializing a subtree can cost more than parent lookups when the query
+    # has already been restricted to a small, explicit set of records.
+    optimize_tree = props.recordsetid is None and not any(
+        len(field.fieldspec.join_path) == 1
+        and field.fieldspec.get_field() == base_table.idField
+        and field.op_num in (1, 10)
+        and not field.negate
+        and field.value not in ('', None)
+        for field in query_fields
+    )
+
     query, selected_fields, order_by_exprs = add_fields_to_query(
         collection=collection,
         user=user,
@@ -1207,7 +1228,8 @@ def build_query(
         query_fields=query_fields,
         series=props.series,
         formatauditobjs=props.formatauditobjs,
-        use_implicit_ors=props.implicit_or
+        use_implicit_ors=props.implicit_or,
+        optimize_tree=optimize_tree,
     )
 
     if props.series:
@@ -1216,7 +1238,6 @@ def build_query(
         query = group_by_displayed_fields(query, selected_fields)
 
     if props.search_synonymy:
-        base_table = datamodel.get_table_by_id_strict(tableid)
         query = search_on_synonyms(query, query_fields, base_table)
 
     internal_predicate = query.get_internal_filters()

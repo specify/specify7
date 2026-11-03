@@ -1,13 +1,14 @@
+from __future__ import annotations
+
 from email.policy import strict
 import logging
 from collections import namedtuple
+from importlib import import_module
 from typing import Any, NamedTuple, Literal
 
 from .query_ops import QueryOps, QUERYFIELD_OPERATION_NUMBER
-from .queryfieldspec import QueryFieldSpec
 
 logger = logging.getLogger(__name__)
-
 
 QUREYFIELD_SORT_T = Literal[
     0,  # NONE
@@ -48,7 +49,7 @@ def fields_from_json(json_fields) -> list["QueryField"]:
 
 
 class QueryField(NamedTuple):
-    fieldspec: QueryFieldSpec
+    fieldspec: Any
     op_num: QUERYFIELD_OPERATION_NUMBER
     value: str | None
     negate: bool
@@ -60,7 +61,8 @@ class QueryField(NamedTuple):
     @classmethod
     def from_spqueryfield(cls, field: EphemeralField, value: str | None=None):
         logger.info("processing field from %r", field)
-        fieldspec = QueryFieldSpec.from_stringid(
+        queryfieldspec = import_module(".queryfieldspec", package=__package__)
+        fieldspec = queryfieldspec.QueryFieldSpec.from_stringid(
             field.stringId, field.isRelFld)
 
         if field.isRelFld:
@@ -78,7 +80,7 @@ class QueryField(NamedTuple):
             strict=field.isStrict,
         )
 
-    def add_to_query(self, query, no_filter=False, formatauditobjs=False, collection=None, user=None):
+    def add_to_query(self, query, no_filter=False, formatauditobjs=False, collection=None, user=None, optimize_tree=True):
         logger.info("adding field %s", self)
         value_required_for_filter = QueryOps.OPERATIONS[self.op_num] not in (
             "op_true",  # 6
@@ -92,6 +94,28 @@ class QueryField(NamedTuple):
             self.value == "" and value_required_for_filter and not self.negate
         )
 
+        # Positive scalar filters reject missing ancestors, allowing MariaDB to
+        # start at the matching rank instead of walking up from every specimen.
+        # Empty/negated filters need the existing missing-ancestor semantics;
+        # relationship paths and date transformations retain their usual joins.
+        path = self.fieldspec.join_path
+        use_tree_range = (
+            optimize_tree
+            and not no_filter
+            and not self.negate
+            and (not value_required_for_filter or isinstance(self.value, str))
+            and self.op_num in {0, 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 15, 18}
+            and len(path) >= 2
+            and hasattr(path[-2], "treedef_id")
+            and not path[-1].is_relationship
+            and sum(hasattr(part, "treedef_id") for part in path) == 1
+            and self.fieldspec.date_part is None
+        )
+        # Exact matches can start at the matching ancestor and range over its
+        # descendants. Other operators share a descendant-to-rank lookup so
+        # they do not repeatedly walk every node's parent chain.
+        use_rank_lookup = use_tree_range and self.op_num != 1
+
         return self.fieldspec.add_to_query(
             query,
             value=self.value,
@@ -102,4 +126,6 @@ class QueryField(NamedTuple):
             strict=self.strict,
             collection=collection,
             user=user,
+            use_tree_range=use_tree_range,
+            use_rank_lookup=use_rank_lookup,
         )
