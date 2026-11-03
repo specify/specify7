@@ -116,3 +116,19 @@ class TectonicunitTests(ApiTests):
         synonym.delete()
         accepted.delete()
 
+    def test_delete_new_tectonicunit(self):
+        tectonicunit = self._create_tectonicunit("Terrane")
+        tectonicunit_id = tectonicunit.id
+
+        delete_resource(
+            self.collection,
+            self.agent,
+            "tectonicunit",
+            tectonicunit_id,
+            tectonicunit.version,
+        )
+
+        self.assertNotExists(
+            models.Tectonicunit.objects.filter(id=tectonicunit_id)
+        )
+
