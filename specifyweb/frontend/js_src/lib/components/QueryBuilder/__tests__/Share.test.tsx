@@ -155,6 +155,7 @@ test('supports range selection, select all, deselect all, and confirmed saving',
 });
 
 test('revocation requires confirmation and hides the action after success', async () => {
+  const ajax = jest.spyOn(ajaxModule, 'ajax');
   await renderActions();
   await user.click(
     await screen.findByRole('button', { name: queryText.revokeQuerySharing() })
@@ -162,6 +163,10 @@ test('revocation requires confirmation and hides the action after success', asyn
   expect(
     screen.getByText(queryText.revokeQuerySharingDescription())
   ).toBeVisible();
+  expect(ajax).not.toHaveBeenCalledWith(
+    expect.anything(),
+    expect.objectContaining({ method: 'DELETE' })
+  );
   const buttons = screen.getAllByRole('button', {
     name: queryText.revokeQuerySharing(),
   });
