@@ -149,6 +149,31 @@ def query(request, id):
 
     return HttpResponse(toJson(data), content_type='application/json')
 
+def run_statistic_query(collection, user, spquery):
+    def calculate_statistics() -> str:
+        data = run_ephemeral_query(collection, user, spquery)
+        tables = get_query_tables(fields_from_json(spquery["fields"]))
+        return json.dumps({
+            "content": toJson(data),
+            "tables": sorted(table.name for table in tables),
+        })
+
+    try:
+        # Keep metadata-bearing entries separate from older body-only cache entries.
+        content = statistics_result(
+            collection,
+            user,
+            ephemeral_statistics_cache_key(spquery),
+            calculate_statistics,
+        )
+    except StatisticsBusy:
+        return busy_response()
+    result = json.loads(content)
+    for table_name in result["tables"]:
+        check_table_permissions(
+            collection, user, datamodel.get_table_strict(table_name), "read"
+        )
+    return HttpResponse(result["content"], content_type='application/json')
 
 @require_POST
 @login_maybe_required
@@ -162,30 +187,7 @@ def ephemeral(request):
 
     spquery, collection = get_query(request)
     if request.headers.get("Specify-Statistic") == "true":
-        def calculate_statistics() -> str:
-            data = run_ephemeral_query(collection, request.specify_user, spquery)
-            tables = get_query_tables(fields_from_json(spquery["fields"]))
-            return json.dumps({
-                "content": toJson(data),
-                "tables": sorted(table.name for table in tables),
-            })
-
-        try:
-            # Keep metadata-bearing entries separate from older body-only cache entries.
-            content = statistics_result(
-                collection,
-                request.specify_user,
-                ephemeral_statistics_cache_key(spquery),
-                calculate_statistics,
-            )
-        except StatisticsBusy:
-            return busy_response()
-        result = json.loads(content)
-        for table_name in result["tables"]:
-            check_table_permissions(
-                collection, request.specify_user, datamodel.get_table_strict(table_name), "read"
-            )
-        return HttpResponse(result["content"], content_type='application/json')
+        return run_statistic_query(collection, request.specify_user, spquery)
 
     data = run_ephemeral_query(collection, request.specify_user, spquery)
 
