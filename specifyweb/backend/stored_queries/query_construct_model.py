@@ -9,6 +9,7 @@ import specifyweb.specify.models as spmodels
 from specifyweb.backend.trees.utils import get_treedefs
 
 from specifyweb.backend.stored_queries import models
+from specifyweb.backend.stored_queries.tree_rank import TreeRankQuery
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +39,7 @@ class QueryConstruct(
         self,
         node,
         table,
-        tree_rank: "object",
+        tree_rank: TreeRankQuery,
         next_join_path,
         current_field_spec,
     ):
