@@ -1,0 +1,13 @@
+diff --git a/node_modules/typedoc/dist/lib/utils/fs.js b/node_modules/typedoc/dist/lib/utils/fs.js
+index b75c22c..c9207d6 100644
+--- a/node_modules/typedoc/dist/lib/utils/fs.js
++++ b/node_modules/typedoc/dist/lib/utils/fs.js
+@@ -177,7 +177,7 @@ function glob(pattern, root, options = {}) {
+     };
+     const handleDirectory = (path) => {
+         const childPath = [...dir, path];
+-        if (mini.set.some((row) => mini.matchOne(childPath, row, /* partial */ true))) {
++        if (mini.match(childPath.join("/"), /* partial */ true)) {
+             dirs.push(childPath);
+         }
+     };
