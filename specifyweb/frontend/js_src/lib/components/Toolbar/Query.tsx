@@ -168,6 +168,13 @@ export function QueryListDialog({
   );
 
   React.useEffect(() => {
+    if (section !== 'shared') return;
+    const handleFocus = (): void => setRefreshToken((token) => token + 1);
+    window.addEventListener('focus', handleFocus);
+    return () => window.removeEventListener('focus', handleFocus);
+  }, [section]);
+
+  React.useEffect(() => {
     if (data === undefined) return;
     const lastPage = Math.max(0, Math.ceil(data.totalCount / limit) - 1);
     if (currentPage[0] > lastPage) currentPage[1](lastPage);
