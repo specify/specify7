@@ -167,6 +167,7 @@ RESTRICT_UPDATE_FIELDS = {'spappresourcedata'}
 
 @transaction.atomic
 def record_merge_fx(model_name: str, old_model_ids: list[int], new_model_id: int,
+                    specify_user: spmodels.Specifyuser,
                     progress: Progress | None=None,
                     new_record_info: dict[str, Any]=None):
     """Replaces all the foreign keys referencing the old record ID
@@ -187,6 +188,13 @@ def record_merge_fx(model_name: str, old_model_ids: list[int], new_model_id: int
 
     # Get dependent fields and objects of the target object
     target_object = target_model.objects.get(id=new_model_id)
+    if isinstance(target_object, (spmodels.Spquery, spmodels.Spqueryfield)):
+        from specifyweb.backend.stored_queries.sharing import ensure_query_write_access
+
+        ensure_query_write_access(target_object, specify_user.id)
+        for old_object in target_model.objects.filter(id__in=old_model_ids):
+            ensure_query_write_access(old_object, specify_user.id)
+
     dependant_relationships = [(rel.relatedModelName, rel.name)
         for rel in target_object.specify_model.relationships
         if is_dependent_field(target_object, rel.name)]
@@ -285,7 +293,9 @@ def record_merge_fx(model_name: str, old_model_ids: list[int], new_model_id: int
                     old_record, new_record = sorted([old_record, new_record], key=key_function)
 
                     # Make a recursive call to record_merge to resolve duplication error
-                    record_merge_fx(table_name, [old_record.pk], new_record.pk, progress)
+                    record_merge_fx(
+                        table_name, [old_record.pk], new_record.pk, specify_user, progress
+                    )
                     if old_record.pk != obj.pk:
                         update_record(new_record)
 
@@ -380,7 +390,9 @@ def record_merge_task(self, model_name: str, old_model_ids: list[int], new_model
     logger.info('Starting record merge')
 
     response = resolve_record_merge_response(
-        lambda: record_merge_fx(model_name, old_model_ids, int(new_model_id), progress, new_record_info))
+        lambda: record_merge_fx(
+            model_name, old_model_ids, int(new_model_id), specify_user, progress, new_record_info
+        ))
 
     logger.info('Finishing record merge')
 

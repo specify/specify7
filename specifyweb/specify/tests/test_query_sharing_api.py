@@ -391,6 +391,76 @@ class SharedQueryApiTests(SharedQueryFixture, ApiTests):
         self.assertEqual(response.json()["name"], "Updated by owner")
 
 
+class SharedQueryMergeApiTests(SharedQueryFixture, ApiTests):
+    def test_merging_query_definitions_requires_ownership_of_all_records(self):
+        for model_name in ("spquery", "spqueryfield"):
+            for source_owned, target_owned in (
+                (True, True),
+                (False, True),
+                (True, False),
+                (False, False),
+            ):
+                with self.subTest(
+                    model=model_name,
+                    source_owned=source_owned,
+                    target_owned=target_owned,
+                ):
+                    records = []
+                    for index, owned in enumerate((True, source_owned, target_owned)):
+                        query = models.Spquery.objects.create(
+                            name=f"Merge query {model_name} {index}",
+                            contextname="Collectionobject",
+                            contexttableid=models.Collectionobject.specify_model.tableId,
+                            specifyuser=self.specifyuser if owned else self.recipient,
+                        )
+                        if not owned:
+                            SpqueryShare.objects.create(
+                                query=query, recipient=self.specifyuser
+                            )
+                        record = query
+                        if model_name == "spqueryfield":
+                            record = models.Spqueryfield.objects.create(
+                                query=query,
+                                fieldname="CatalogNumber",
+                                operstart=1,
+                                position=0,
+                                sorttype=0,
+                                startvalue="",
+                                stringid="1.collectionobject.catalognumber",
+                                tablelist="1",
+                            )
+                        records.append(record)
+
+                    owned_source, source, target = records
+                    original_data = [obj_to_data(record) for record in records]
+                    source_ids = [owned_source.id, source.id]
+                    response = self.client.post(
+                        f"/merge/{model_name}/replace/{target.id}/",
+                        data={
+                            "old_record_ids": source_ids,
+                            "background": False,
+                        },
+                        content_type="application/json",
+                    )
+
+                    authorized = source_owned and target_owned
+                    self.assertEqual(
+                        response.status_code,
+                        204 if authorized else 403,
+                        response.content,
+                    )
+                    model = type(target)
+                    self.assertTrue(model.objects.filter(pk=target.id).exists())
+                    self.assertEqual(
+                        model.objects.filter(pk__in=source_ids).count(),
+                        0 if authorized else len(source_ids),
+                    )
+                    if not authorized:
+                        for record, expected in zip(records, original_data):
+                            record.refresh_from_db()
+                            self.assertEqual(obj_to_data(record), expected)
+
+
 class SharedQueryWriteApiTests(ApiTests):
     def setUp(self):
         super().setUp()
