@@ -304,6 +304,65 @@ class StatisticsIntegrationTests(ApiTransactionTests):
         query["fields"][0].update(operstart=1, startvalue="num-0")
         self.assert_count_response(self.post_ephemeral(query), 1)
 
+    def test_count_cache_survives_reordering_unsaved_fields(self):
+        query = self.ephemeral_query()
+        query["fields"].append({
+            **query["fields"][0],
+            "position": 1,
+            "stringid": "1.collectionobject.remarks",
+        })
+        self.assert_count_response(self.post_ephemeral(query), 5)
+        self.make_co(1)
+        query["fields"][0]["position"] = 1
+        query["fields"][1]["position"] = 0
+        query["fields"].reverse()
+        with self.hold_statistics_lock():
+            self.assert_count_response(self.post_ephemeral(query), 5)
+        self.assert_count_response(self.post_ephemeral(query, statistics=False), 6)
+
+    def test_count_cache_handles_reordered_fields_with_same_string_id(self):
+        query = self.ephemeral_query()
+        query["fields"][0].update(operstart=1, startvalue="num-0")
+        query["fields"].append({
+            **query["fields"][0],
+            "position": 1,
+            "operstart": 15,
+            "startvalue": "num-",
+        })
+        self.assert_count_response(self.post_ephemeral(query), 5)
+        query["fields"][0]["position"] = 1
+        query["fields"][1]["position"] = 0
+        with self.hold_statistics_lock():
+            self.assert_count_response(self.post_ephemeral(query), 5)
+            query["fields"][0]["startvalue"] = "num-1"
+            self.assert_busy_response(self.post_ephemeral(query))
+
+    def test_row_cache_preserves_reordered_response_columns(self):
+        obj = self.collectionobjects[0]
+        obj.remarks = "Statistics remark"
+        obj.save()
+        query = self.ephemeral_query(count_only=False)
+        query["fields"].append({
+            **query["fields"][0],
+            "position": 1,
+            "stringid": "1.collectionobject.remarks",
+            "sorttype": 0,
+        })
+        response = self.post_ephemeral(query)
+        self._assertStatusCodeEqual(response, 200)
+        self.assertIn(
+            [obj.id, obj.catalognumber, obj.remarks], response.json()["results"]
+        )
+        query["fields"][0]["position"] = 1
+        query["fields"][1]["position"] = 0
+        with self.hold_statistics_lock():
+            self.assert_busy_response(self.post_ephemeral(query))
+        response = self.post_ephemeral(query)
+        self._assertStatusCodeEqual(response, 200)
+        self.assertIn(
+            [obj.id, obj.remarks, obj.catalognumber], response.json()["results"]
+        )
+
     def test_ephemeral_cached_response_preserves_unicode_and_json_shape(self):
         obj = self.collectionobjects[0]
         obj.catalognumber = "caf\u00e9-\"specimen\""

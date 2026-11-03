@@ -78,7 +78,6 @@ def format_export_file_name(spquery, file_extension = ''):
 
 def ephemeral_statistics_cache_key(spquery):
     """Return a cache key based only on inputs that affect ephemeral query results."""
-    fields = sorted(spquery["fields"], key=lambda field: field["position"])
     execution_fields = (
         "stringid",
         "isrelfld",
@@ -90,6 +89,13 @@ def ephemeral_statistics_cache_key(spquery):
         "formatname",
         "isstrict",
     )
+    fields = [
+        {name: field.get(name) for name in execution_fields}
+        for field in sorted(spquery["fields"], key=lambda field: field["position"])
+    ]
+    if spquery["countonly"]:
+        # Include all execution inputs to break ties between repeated string IDs.
+        fields.sort(key=lambda field: (field["stringid"], json.dumps(field, sort_keys=True)))
     query = {
         "contexttableid": spquery["contexttableid"],
         "selectdistinct": spquery["selectdistinct"],
@@ -100,10 +106,7 @@ def ephemeral_statistics_cache_key(spquery):
         "smushed": spquery.get("smushed"),
         "searchsynonymy": bool(spquery.get("searchsynonymy", False)),
         "formatauditrecids": spquery.get("formatauditrecids", False),
-        "fields": [
-            {name: field.get(name) for name in execution_fields}
-            for field in fields
-        ],
+        "fields": fields,
     }
     return json.dumps(["ephemeral-statistics-v2", query], sort_keys=True)
 
