@@ -126,7 +126,7 @@ def user_collection_access_for_sp6(request, userid): # pragma: no cover
         check_permission_targets(None, request.specify_user.id, [Sp6CollectionAccessPT.update])
         try:
             collections = list(json.loads(request.body))
-        except:
+        except Exception:
             return HttpResponse("Could not parse request body as list", status=400)
         user = Specifyuser.objects.get(id=userid)
         set_users_collections_for_sp6(cursor, user, collections)
