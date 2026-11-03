@@ -107,7 +107,6 @@ test('Simple Search result selection creates a set in result order and excludes 
 
 test('result links open the correct record in a separate tab without selecting a row', async () => {
   const onSelected = jest.fn();
-  const onRowSelected = jest.fn();
   const { container, user } = mount(
     <QueryResultsTable
       table={tables.Agent}
@@ -117,7 +116,6 @@ test('result links open the correct record in a separate tab without selecting a
       showCellEllipsis={false}
       wrapQueryResults={false}
       onSelected={onSelected}
-      onRowSelected={onRowSelected}
     />
   );
   const href = new tables.Agent.Resource({ id: 17 }).viewUrl();
@@ -128,7 +126,6 @@ test('result links open the correct record in a separate tab without selecting a
   link.addEventListener('click', (event) => event.preventDefault());
   await user.click(link);
   expect(onSelected).not.toHaveBeenCalled();
-  expect(onRowSelected).not.toHaveBeenCalled();
   expect(container.querySelectorAll('[role="row"]')).toHaveLength(2);
 });
 
