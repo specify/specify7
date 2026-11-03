@@ -239,6 +239,11 @@ class SharedQueryApiTests(SharedQueryFixture, ApiTests):
         self.assertEqual(response.status_code, 204)
         self.assertFalse(SpqueryShare.objects.filter(query=self.query).exists())
 
+        response = self._recipient_client().get(
+            f"/api/specify/spquery/{self.query.id}/"
+        )
+        self.assertEqual(response.status_code, 404)
+
     def test_non_owner_administrator_cannot_manage_query_shares(self):
         other_admin = models.Specifyuser.objects.create(
             name=f"otheradmin{self.collection.id}",
