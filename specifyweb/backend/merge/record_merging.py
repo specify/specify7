@@ -15,6 +15,7 @@ from specifyweb.backend.notifications.models import Message, Spmerging
 from django.db.models import Q
 
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
+from specifyweb.backend.stored_queries.access import QueryWriteDenied
 from specifyweb.celery_tasks import LogErrorsTask, app
 from specifyweb.specify import models as spmodels
 from specifyweb.specify.models_utils.build_models import orderings
@@ -49,6 +50,9 @@ def resolve_record_merge_response(start_function, silent=True):
     try:
         start_function()
         response = http.HttpResponse('', status=204)
+    except QueryWriteDenied as error:
+        logger.info("Query merge denied: %s", error)
+        return http.JsonResponse(error.to_json(), status=error.status_code)
     except Exception as error:
         # FEATURE: Add traceback here
         if isinstance(error, FailedMergingException):
