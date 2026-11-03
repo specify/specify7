@@ -551,7 +551,7 @@ def get_collection(
         from specifyweb.backend.stored_queries.access import filter_queries_for_user
 
         visible_queries = filter_queries_for_user(models.Spquery.objects.all(), query_user_id)
-        objs = objs.filter(id__in=visible_queries)
+        objs = objs.filter(id__in=visible_queries).distinct()
 
     try:
         return objs_to_data_(objs, objs.count(), lambda o: _obj_to_data(o, checker), control_params['offset'], control_params['limit'])
