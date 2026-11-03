@@ -16,7 +16,6 @@ from django.shortcuts import get_object_or_404
 from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_http_methods
 
-from specifyweb.backend.permissions.models import SpqueryShare
 from specifyweb.backend.permissions.permissions import (
     CollectionAccessPT,
     PermissionsException,
@@ -42,6 +41,8 @@ class QueryWriteDenied(PermissionDenied, PermissionsException):
 
 
 def get_query_share_recipients() -> dict[str, object]:
+    from specifyweb.backend.permissions.models import SpqueryShare
+
     users = list(Specifyuser.objects.order_by("name"))
     collections = list(
         Collection.objects.select_related("discipline__division").order_by(
