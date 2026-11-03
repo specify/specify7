@@ -137,8 +137,10 @@ test('shared originals have no edit button and retain only Save As in read-only 
   ).toBeVisible();
 });
 
-test('read-only definitions still allow query execution but cannot change distinct', async () => {
+test('read-only definitions allow query execution but cannot change distinct, series, or synonyms', async () => {
   const toggle = jest.fn();
+  const toggleSeries = jest.fn();
+  const toggleSearchSynonymy = jest.fn();
   const run = jest.fn();
   render(
     <ReadOnlyContext.Provider value>
@@ -148,15 +150,15 @@ test('read-only definitions still allow query execution but cannot change distin
         isSeries={false}
         searchSynonymy={false}
         showHiddenFields={false}
-        showSeries={false}
+        showSeries
         tableName="CollectionObject"
         onScheduleCountOnlyRun={jest.fn()}
         onScheduleRun={run}
         onSubmitClick={run}
         onToggleDistinct={toggle}
         onToggleHidden={jest.fn()}
-        onToggleSearchSynonymy={jest.fn()}
-        onToggleSeries={jest.fn()}
+        onToggleSearchSynonymy={toggleSearchSynonymy}
+        onToggleSeries={toggleSeries}
       />
     </ReadOnlyContext.Provider>
   );
@@ -164,9 +166,17 @@ test('read-only definitions still allow query execution but cannot change distin
     fireEvent.click(
       screen.getByRole('checkbox', { name: queryText.distinct() })
     );
+    fireEvent.click(
+      screen.getByRole('checkbox', { name: queryText.series() })
+    );
+    fireEvent.click(
+      screen.getByRole('checkbox', { name: queryText.searchSynonyms() })
+    );
     fireEvent.click(screen.getByRole('button', { name: queryText.query() }));
   });
   expect(toggle).not.toHaveBeenCalled();
+  expect(toggleSeries).not.toHaveBeenCalled();
+  expect(toggleSearchSynonymy).not.toHaveBeenCalled();
   expect(run).toHaveBeenCalledTimes(1);
 });
 
