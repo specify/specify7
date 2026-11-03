@@ -6,12 +6,15 @@ import { requireContext } from '../../../tests/helpers';
 import { Http } from '../../../utils/ajax/definitions';
 import type { RA } from '../../../utils/types';
 import { downloadFile } from '../../Molecules/FilePicker';
+import { defaultLayoutGenerated } from '../StatsSpec';
 import type { StatLayout } from '../types';
 import {
+  addPage,
   addPageWithCategory,
   enterEditMode,
   findDefaultStat,
   getCategoryInputs,
+  getPageButtons,
   mockStatsRequests,
   renderEmptyStatsPage,
   type User,
@@ -51,6 +54,26 @@ async function downloadTsv(user: User): Promise<RA<string>> {
   expect(downloadFile).toHaveBeenCalledTimes(1);
   return (jest.mocked(downloadFile).mock.calls[0][1] as string).split('\n');
 }
+
+async function downloadFileName(user: User): Promise<string> {
+  jest.mocked(downloadFile).mockClear();
+  await user.click(
+    screen.getByRole('button', { name: statsText.downloadAsTSV() })
+  );
+  expect(downloadFile).toHaveBeenCalledTimes(1);
+  return jest.mocked(downloadFile).mock.calls[0][0];
+}
+
+const escapeRegExp = (value: string): string =>
+  value.replaceAll(/[$()*+.?[\\\]^{|}]/gu, String.raw`\$&`);
+
+const fileNamePattern = (section: string, page: string): RegExp =>
+  new RegExp(
+    `^Specify 7 Statistics ${escapeRegExp(section)} ${escapeRegExp(
+      page
+    )} \\w{3} \\w{3} \\d{2} \\d{4} \\d{2}:\\d{2}:\\d{2}\\.tsv$`,
+    'u'
+  );
 
 const getStatButton = (label: string): HTMLElement =>
   screen
@@ -102,6 +125,42 @@ describe('Downloading the statistics as a TSV', () => {
     await addPageWithCategory(user);
 
     expect(await downloadTsv(user)).toEqual([header]);
+  });
+});
+
+describe('The downloaded TSV file name', () => {
+  const sharedSection = statsText.shared();
+  const privateSection = statsText.private();
+
+  test('includes the Shared section and the open page name', async () => {
+    const { user } = await renderEmptyStatsPage();
+
+    expect(await downloadFileName(user)).toMatch(
+      fileNamePattern(sharedSection, defaultLayoutGenerated[0].label)
+    );
+  });
+
+  test('includes the Private section and the open page name', async () => {
+    const { user } = await renderEmptyStatsPage();
+    await user.click(getPageButtons(privateSection)[0]);
+
+    expect(await downloadFileName(user)).toMatch(
+      fileNamePattern(privateSection, defaultLayoutGenerated[1].label)
+    );
+  });
+
+  test.each([
+    ['Shared', sharedSection],
+    ['Private', privateSection],
+  ])('reflects a newly added %s page', async (_, section) => {
+    const { user } = await renderEmptyStatsPage();
+    const pageName = 'Herbarium (2026) Summary';
+    await addPage(user, pageName, section);
+
+    const fileName = await downloadFileName(user);
+    expect(fileName).toMatch(fileNamePattern(section, pageName));
+    expect(fileName).not.toContain(defaultLayoutGenerated[0].label);
+    expect(fileName).not.toContain(defaultLayoutGenerated[1].label);
   });
 });
 
