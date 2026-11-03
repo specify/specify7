@@ -8,6 +8,7 @@ from django.http import (
 )
 
 from django.core.exceptions import FieldError
+from django.shortcuts import get_object_or_404
 
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 from specifyweb.backend.permissions.permissions import enforce, table_permissions_checker
@@ -45,6 +46,12 @@ def resource_dispatch(request, model, id) -> HttpResponse:
             from specifyweb.backend.stored_queries.sharing import ensure_query_access
 
             ensure_query_access(id, request.specify_user.id)
+        elif model.lower() == 'spqueryfield':
+            from specifyweb.backend.stored_queries.sharing import ensure_query_access
+            from specifyweb.specify.models import Spqueryfield
+
+            field = get_object_or_404(Spqueryfield, pk=id, query__isnull=False)
+            ensure_query_access(field.query_id, request.specify_user.id)
         data = get_resource(model, id, checker, request.GET.get('recordsetid', None))
         resp = HttpResponse(toJson(data), content_type='application/json')
 

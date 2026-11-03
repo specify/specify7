@@ -183,6 +183,36 @@ class SharedQueryApiTests(SharedQueryFixture, ApiTests):
         self.assertNotIn((private_field.id, private_query.id), rows)
         self.assertNotIn((orphaned_field.id, None), rows)
 
+        client = self._recipient_client()
+        collection_url = "/api/specify/spqueryfield/?domainfilter=false&limit=0"
+        response = client.get(collection_url)
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual(
+            {field["id"] for field in response.json()["objects"]},
+            {visible_field.id, recipient_field.id},
+        )
+
+        for field, status in (
+            (visible_field, 200),
+            (recipient_field, 200),
+            (private_field, 404),
+            (orphaned_field, 404),
+        ):
+            with self.subTest(field=field.fieldname):
+                response = client.get(f"/api/specify/spqueryfield/{field.id}/")
+                self.assertEqual(response.status_code, status, response.content)
+
+        SpqueryShare.objects.filter(
+            query=self.query, recipient=self.recipient
+        ).delete()
+        response = client.get(f"/api/specify/spqueryfield/{visible_field.id}/")
+        self.assertEqual(response.status_code, 404)
+        response = client.get(collection_url)
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual(
+            {field["id"] for field in response.json()["objects"]},
+            {recipient_field.id},
+        )
 
     def test_owner_can_replace_and_revoke_recipient_grants(self):
         response = self.client.put(
