@@ -78,7 +78,10 @@ test.each(['success', 'failure'] as const)(
         }}
       >
         <UnloadProtectsContext.Provider value={[]}>
-          <QueryListDialog newQueryUrl="/specify/query/new/" onClose={jest.fn()}>
+          <QueryListDialog
+            newQueryUrl="/specify/query/new/"
+            onClose={jest.fn()}
+          >
             {({ children }) => children}
           </QueryListDialog>
         </UnloadProtectsContext.Provider>
