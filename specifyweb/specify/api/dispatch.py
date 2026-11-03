@@ -19,6 +19,13 @@ from specifyweb.specify.api.filter_by_col import filter_by_collection
 from specifyweb.specify.api.serializers import _obj_to_data, toJson
 from specifyweb.specify.api.validators import GetCollectionForm, RowsForm
 
+
+def _ensure_stored_query_access(query_id, user_id):
+    from specifyweb.backend.stored_queries.sharing import ensure_query_access
+
+    ensure_query_access(query_id, user_id)
+
+
 def resource_dispatch(request, model, id) -> HttpResponse:
     """Handles requests related to individual resources.
 
@@ -44,17 +51,14 @@ def resource_dispatch(request, model, id) -> HttpResponse:
     # Dispatch on the request type.
     if request.method == 'GET':
         if model.lower() == 'spquery':
-            from specifyweb.backend.stored_queries.sharing import ensure_query_access
-
-            ensure_query_access(id, request.specify_user.id)
+            _ensure_stored_query_access(id, request.specify_user.id)
         elif model.lower() == 'spqueryfield':
-            from specifyweb.backend.stored_queries.sharing import ensure_query_access
             from specifyweb.specify.models import Spqueryfield
 
             field = get_object_or_404(Spqueryfield, pk=id)
             if field.query_id is None:
                 raise Http404("Query not found.")
-            ensure_query_access(field.query_id, request.specify_user.id)
+            _ensure_stored_query_access(field.query_id, request.specify_user.id)
         data = get_resource(model, id, checker, request.GET.get('recordsetid', None))
         resp = HttpResponse(toJson(data), content_type='application/json')
 
