@@ -49,13 +49,13 @@ export async function statisticsAjax<T>(
     while (requestGeneration === generation) {
       const result = await ajax<T>(url, {
         ...options,
-        headers: { ...options.headers, 'X-Specify-Statistics': 'true' },
+        headers: { ...options.headers, 'Specify-Statistic': 'true' },
         expectedErrors: [...(options.expectedErrors ?? []), Http.CONFLICT],
       });
       if (requestGeneration !== generation) return undefined;
       if (result.status !== Http.CONFLICT) return result;
       const retryAfter = Number(
-        result.response.headers.get('X-Specify-Retry-After')
+        result.response.headers.get('Specify-Retry-After')
       );
       const delay =
         (Number.isFinite(retryAfter) && retryAfter > 0 ? retryAfter : 2) * 1000;

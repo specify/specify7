@@ -19,7 +19,7 @@ const result = (status: number, retryAfter?: string) => ({
   response: new Response(undefined, {
     status,
     headers:
-      retryAfter === undefined ? {} : { 'X-Specify-Retry-After': retryAfter },
+      retryAfter === undefined ? {} : { 'Specify-Retry-After': retryAfter },
   }),
 });
 
@@ -50,7 +50,7 @@ test('marks statistics requests and tracks loading through completion', async ()
   expect(ajaxMock).toHaveBeenCalledWith(
     '/stats/collection/preparations/',
     expect.objectContaining({
-      headers: expect.objectContaining({ 'X-Specify-Statistics': 'true' }),
+      headers: expect.objectContaining({ 'Specify-Statistic': 'true' }),
       expectedErrors: [Http.CONFLICT],
     })
   );

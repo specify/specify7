@@ -158,7 +158,7 @@ def ephemeral(request):
     """
 
     spquery, collection = get_query(request)
-    if request.headers.get("X-Specify-Statistics") == "true":
+    if request.headers.get("Specify-Statistic") == "true":
         def calculate_statistics() -> str:
             data = run_ephemeral_query(collection, request.specify_user, spquery)
             tables = get_query_tables(fields_from_json(spquery["fields"]))

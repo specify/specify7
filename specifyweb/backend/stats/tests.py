@@ -138,7 +138,7 @@ class StatisticsCoordinationTests(SimpleTestCase):
         self.lock.release.assert_called_once_with()
         response = busy_response()
         self.assertEqual(response.status_code, 409)
-        self.assertEqual(response["X-Specify-Retry-After"], "2")
+        self.assertEqual(response["Specify-Retry-After"], "2")
         self.assertIn("message", json.loads(response.content))
 
     def test_lock_connection_errors_are_not_reported_as_busy(self):
@@ -248,7 +248,7 @@ class StatisticsCoordinationTests(SimpleTestCase):
             "/stored_query/ephemeral/",
             {},
             content_type="application/json",
-            **({"HTTP_X_SPECIFY_STATISTICS": "true"} if statistics else {}),
+            **({"HTTP_SPECIFY_STATISTIC": "true"} if statistics else {}),
         )
         request.user = SimpleNamespace(is_authenticated=True)
         request.specify_user = self.user
@@ -431,7 +431,7 @@ class StatisticsCoordinationTests(SimpleTestCase):
         self.lock.acquire.side_effect = TimeoutError
         response = ephemeral(self.ephemeral_request())
         self.assertEqual(response.status_code, 409)
-        self.assertEqual(response["X-Specify-Retry-After"], "2")
+        self.assertEqual(response["Specify-Retry-After"], "2")
         execute.assert_not_called()
         check.assert_not_called()
 
