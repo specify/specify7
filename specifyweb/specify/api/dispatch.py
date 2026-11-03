@@ -10,6 +10,7 @@ from django.http import (
 
 from django.core.exceptions import FieldError
 from django.shortcuts import get_object_or_404
+from django.utils.module_loading import import_string
 
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 from specifyweb.backend.permissions.permissions import enforce, table_permissions_checker
@@ -21,7 +22,9 @@ from specifyweb.specify.api.validators import GetCollectionForm, RowsForm
 
 
 def _ensure_stored_query_access(query_id, user_id):
-    from specifyweb.backend.stored_queries.sharing import ensure_query_access
+    ensure_query_access = import_string(
+        'specifyweb.backend.stored_queries.sharing.ensure_query_access'
+    )
 
     ensure_query_access(query_id, user_id)
 
