@@ -1,5 +1,7 @@
 import json
 
+from unittest.mock import patch
+
 from django.core.exceptions import PermissionDenied
 from django.test import Client, SimpleTestCase
 
@@ -10,6 +12,7 @@ from specifyweb.backend.stored_queries.sharing import (
     ensure_query_write_access,
     filter_queries_for_user,
 )
+from specifyweb.backend.stored_queries.tests.tests import SQLAlchemySetup
 from specifyweb.specify import models
 from specifyweb.specify.api.serializers import obj_to_data
 from specifyweb.specify.tests.test_api import ApiTests
@@ -36,7 +39,7 @@ class QueryWriteAccessTests(SimpleTestCase):
         ensure_query_write_access(models.Collectionobject(), 1)
 
 
-class SharedQueryApiTests(ApiTests):
+class SharedQueryFixture:
     def setUp(self):
         super().setUp()
         self.query = models.Spquery.objects.create(
@@ -60,6 +63,52 @@ class SharedQueryApiTests(ApiTests):
         self.client = Client()
         self.client.force_login(self.specifyuser)
         self.url = f"/stored_query/query/{self.query.id}/shares/"
+
+    def _recipient_client(self) -> Client:
+        models.Agent.objects.get_or_create(
+            specifyuser=self.recipient,
+            division=self.division,
+            defaults={"agenttype": 0, "lastname": "Recipient"},
+        )
+        for resource, action in (
+            (CollectionAccessPT.resource, CollectionAccessPT.access.action()),
+            ("/table/spquery", "read"),
+            ("/table/spqueryfield", "read"),
+        ):
+            UserPolicy.objects.get_or_create(
+                collection=self.collection,
+                specifyuser=self.recipient,
+                resource=resource,
+                action=action,
+            )
+        client = Client()
+        client.force_login(self.recipient)
+        client.cookies["collection"] = str(self.collection.id)
+        return client
+
+    def _grant_recipient(self, resource: str, action: str) -> None:
+        UserPolicy.objects.create(
+            collection=self.collection,
+            specifyuser=self.recipient,
+            resource=resource,
+            action=action,
+        )
+
+    def _add_catalog_number_field(self) -> None:
+        models.Spqueryfield.objects.create(
+            query=self.query,
+            fieldname="CatalogNumber",
+            isdisplay=True,
+            operstart=1,
+            position=0,
+            sorttype=0,
+            startvalue="",
+            stringid="1.collectionobject.catalognumber",
+            tablelist="1",
+        )
+
+
+class SharedQueryApiTests(SharedQueryFixture, ApiTests):
 
     def test_owner_can_replace_and_revoke_recipient_grants(self):
         response = self.client.put(
@@ -221,6 +270,21 @@ class SharedQueryApiTests(ApiTests):
         response = self.client.get(url)
         query_ids = {query["id"] for query in response.json()["objects"]}
         self.assertIn(private_query.id, query_ids)
+
+    def test_recipient_sees_owner_updates_to_shared_query(self):
+        SpqueryShare.objects.create(query=self.query, recipient=self.recipient)
+        resource_url = f"/api/specify/spquery/{self.query.id}/"
+
+        response = self.client.put(
+            resource_url,
+            data={"version": self.query.version, "name": "Updated by owner"},
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200, response.content)
+
+        response = self._recipient_client().get(resource_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["name"], "Updated by owner")
 
 
 class SharedQueryWriteApiTests(ApiTests):
@@ -455,3 +519,51 @@ class SharedQueryWriteApiTests(ApiTests):
         self.assertEqual(response.status_code, 200)
         self.shared_query.refresh_from_db()
         self.assertEqual(self.shared_query.name, "Shared original")
+
+
+class SharedQueryExecutionTests(SharedQueryFixture, SQLAlchemySetup):
+    def setUp(self):
+        super().setUp()
+        patcher = patch(
+            "specifyweb.backend.stored_queries.execution.models.session_context",
+            side_effect=lambda: type(self).test_session_context(),
+        )
+        patcher.start()
+        self.addCleanup(patcher.stop)
+
+    def test_direct_links_fail_after_access_is_revoked(self):
+        self._add_catalog_number_field()
+        self._grant_recipient("/querybuilder/query", "execute")
+        self._grant_recipient("/table/collectionobject", "read")
+        self.client.put(
+            self.url,
+            data=json.dumps({"recipientIds": [self.recipient.id]}),
+            content_type="application/json",
+        )
+        recipient = self._recipient_client()
+        resource_url = f"/api/specify/spquery/{self.query.id}/"
+        run_url = f"/stored_query/query/{self.query.id}/"
+
+        self.assertEqual(recipient.get(resource_url).status_code, 200)
+        self.assertEqual(recipient.get(run_url).status_code, 200)
+
+        response = self.client.delete(self.url)
+        self.assertEqual(response.status_code, 204)
+
+        self.assertEqual(recipient.get(resource_url).status_code, 404)
+        self.assertEqual(recipient.get(run_url).status_code, 404)
+
+    def test_shared_query_execution_respects_recipient_permissions(self):
+        self._add_catalog_number_field()
+        SpqueryShare.objects.create(query=self.query, recipient=self.recipient)
+        recipient = self._recipient_client()
+        run_url = f"/stored_query/query/{self.query.id}/"
+
+        self.assertEqual(self.client.get(run_url).status_code, 200)
+        self.assertEqual(recipient.get(run_url).status_code, 403)
+
+        self._grant_recipient("/querybuilder/query", "execute")
+        self.assertEqual(recipient.get(run_url).status_code, 403)
+
+        self._grant_recipient("/table/collectionobject", "read")
+        self.assertEqual(recipient.get(run_url).status_code, 200)
