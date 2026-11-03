@@ -25,7 +25,7 @@ from .coordination import StatisticsBusy, busy_response, statistics_content
                 }
             }
         }
-    }}, )
+    }})
 def collection_preparations(request) -> HttpResponse:
     try:
         content = statistics_content(

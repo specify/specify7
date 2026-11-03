@@ -8,8 +8,11 @@ import json
 
 logger = logging.getLogger(__name__)
 LOCK_NAME_SEPARATOR = "_"
+# MariaDB seemingly doesn't have any length limits on names for locks acquired
+# through GET_LOCK.
+# For saftey though, we're going to assume a maximum length of 64 characters
+# for each lock name
 LOCK_NAME_MAX_LENGTH = 64
-LOCK_NAME_HASH_LENGTH = 48
 
 
 @contextmanager
@@ -71,6 +74,8 @@ def named_lock(raw_lock_name: str, timeout: int = 5, retry_attempts: int = 0):
 
     acquired = acquired_named_lock(lock_name, timeout)
 
+    # FEAT: It might be more useful to add some backoff time where, such that
+    # each attempt does not immediately happen one after the other
     while retry_attempts > 0 and acquired != True:
         acquired = acquired_named_lock(lock_name, timeout)
         retry_attempts -= 1
@@ -206,9 +211,7 @@ class LockDispatcher:
     def __init__(
         self,
         lock_prefix: str | None = None,
-        case_sensitive_names=False,
-        *,
-        lock_name_separator: str = LOCK_NAME_SEPARATOR,
+        case_sensitive_names=False
     ):
         db_name = getattr(settings, "DATABASE_NAME")
         self.lock_prefix_parts: list[str] = [db_name]
@@ -217,7 +220,6 @@ class LockDispatcher:
             self.lock_prefix_parts.append(lock_prefix)
 
         self.case_sensitive_names = case_sensitive_names
-        self.lock_name_separator = lock_name_separator
         self.locks: dict[str, Lock] = dict()
         self.in_context = False
 
@@ -233,19 +235,25 @@ class LockDispatcher:
         self.in_context = False
 
     def lock_name(self, *name_parts: str):
-        final_name = self.lock_name_separator.join(
-            (*self.lock_prefix_parts, *name_parts)
+        final_name = LOCK_NAME_SEPARATOR.join(
+            *self.lock_prefix_parts, *name_parts
         )
 
         if not self.case_sensitive_names:
             final_name = final_name.lower()
 
         if len(final_name) > LOCK_NAME_MAX_LENGTH:
-            prefix_length = LOCK_NAME_MAX_LENGTH - LOCK_NAME_HASH_LENGTH - 1
-            digest = hashlib.sha256(final_name.encode()).hexdigest()[
-                :LOCK_NAME_HASH_LENGTH
+            # We hash the lock name to the length limit.
+            # The hashing operation does not need to be cryptographically
+            # secure, but it should avoid potential collisions where possible.
+            # Because of this, we're still going to use SHA 256. It should use
+            # fast underlying C libraries and be sufficient enough for this use
+            # case (most lock names will be very small)
+            final_name = hashlib.sha256(final_name.encode()).hexdigest()[
+                # The SHA 256 output should already be 64 characters long, but
+                # just in case
+                :LOCK_NAME_MAX_LENGTH
             ]
-            final_name = f"{final_name[:prefix_length]}:{digest}"
 
         return final_name
 

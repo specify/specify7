@@ -76,7 +76,7 @@ def format_export_file_name(spquery, file_extension = ''):
     return non_extension if not file_extension else non_extension + ".%s" % file_extension
   
 
-def ephemeral_statistics_cache_key(spquery):
+def ephemeral_statistics_to_str(spquery):
     """Return a cache key based only on inputs that affect ephemeral query results."""
     execution_fields = (
         "stringid",
@@ -108,7 +108,7 @@ def ephemeral_statistics_cache_key(spquery):
         "formatauditrecids": spquery.get("formatauditrecids", False),
         "fields": fields,
     }
-    return json.dumps(["ephemeral-statistics-v2", query], sort_keys=True)
+    return json.dumps(query, sort_keys=True)
 
 
 @require_GET
@@ -149,7 +149,7 @@ def query(request, id):
 
     return HttpResponse(toJson(data), content_type='application/json')
 
-def run_statistic_query(collection, user, spquery):
+def run_statistic_query(collection, user, spquery) -> HttpResponse:
     def calculate_statistics() -> str:
         data = run_ephemeral_query(collection, user, spquery)
         tables = get_query_tables(fields_from_json(spquery["fields"]))
@@ -163,7 +163,7 @@ def run_statistic_query(collection, user, spquery):
         content = statistics_result(
             collection,
             user,
-            ephemeral_statistics_cache_key(spquery),
+            ephemeral_statistics_to_str(spquery),
             calculate_statistics,
         )
     except StatisticsBusy:
