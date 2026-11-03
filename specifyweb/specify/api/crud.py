@@ -543,15 +543,9 @@ def get_collection(
 
     objs = apply_filters(logged_in_collection, params, model, control_params)
     if query_user_id is not None and model._meta.model_name == 'spqueryfield':
-        from specifyweb.backend.stored_queries.sharing import filter_queries_for_user
-
-        visible_queries = filter_queries_for_user(models.Spquery.objects.all(), query_user_id)
-        objs = objs.filter(query__in=visible_queries)
+        objs = objs.filter(query__specifyuser=query_user_id)
     elif query_user_id is not None and model._meta.model_name == 'spquery':
-        from specifyweb.backend.stored_queries.sharing import filter_queries_for_user
-
-        visible_queries = filter_queries_for_user(models.Spquery.objects.all(), query_user_id)
-        objs = objs.filter(id__in=visible_queries)
+        objs = objs.filter(specifyuser=query_user_id)
 
     try:
         return objs_to_data_(objs, objs.count(), lambda o: _obj_to_data(o, checker), control_params['offset'], control_params['limit'])
