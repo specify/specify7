@@ -168,7 +168,7 @@ export function QueryListDialog({
   );
 
   React.useEffect(() => {
-    if (section !== 'shared') return;
+    if (section !== 'shared' && section !== 'sharing') return;
     const handleFocus = (): void => setRefreshToken((token) => token + 1);
     const interval = window.setInterval(handleFocus, 30_000);
     window.addEventListener('focus', handleFocus);
