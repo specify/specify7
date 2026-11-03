@@ -336,6 +336,7 @@ export function QueryList({
   readonly canClone?: boolean;
 }): JSX.Element {
   const [confirmClone, setConfirmClone] = React.useState(false);
+  const [clonePending, setClonePending] = React.useState(false);
   const loading = React.useContext(LoadingContext);
   const callBack =
     getQuerySelectCallback?.(query) ?? `/specify/query/${query.id}/`;
@@ -392,13 +393,15 @@ export function QueryList({
             <>
               <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
               <Button.Success
-                onClick={(): void =>
+                disabled={clonePending}
+                onClick={(): void => {
+                  setClonePending(true);
                   loading(
-                    cloneSharedQuery(deserializeResource(query)).then(() =>
-                      setConfirmClone(false)
-                    )
-                  )
-                }
+                    cloneSharedQuery(deserializeResource(query))
+                      .then(() => setConfirmClone(false))
+                      .finally(() => setClonePending(false))
+                  );
+                }}
               >
                 {interactionsText.continue()}
               </Button.Success>
