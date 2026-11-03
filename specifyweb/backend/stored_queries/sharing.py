@@ -41,8 +41,6 @@ class QueryWriteDenied(PermissionDenied, PermissionsException):
 
 
 def get_query_share_recipients() -> dict[str, object]:
-    from specifyweb.backend.permissions.models import SpqueryShare
-
     users = list(Specifyuser.objects.order_by("name"))
     collections = list(
         Collection.objects.select_related("discipline__division").order_by(
@@ -149,6 +147,8 @@ def ensure_query_write_access(obj: Model, user_id: int) -> None:
 @_login_maybe_required
 @never_cache
 def manage_query_shares(request: HttpRequest, id: int) -> HttpResponse:
+    from specifyweb.backend.permissions.models import SpqueryShare
+
     with transaction.atomic():
         query = get_object_or_404(Spquery.objects.select_for_update(), pk=id)
         user = request.specify_user
