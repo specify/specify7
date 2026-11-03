@@ -166,3 +166,18 @@ class TectonicunitTests(ApiTests):
 
         tectonicunit.delete()
 
+    def test_delete_tectonicunit_created_in_previous_version(self):
+        tectonicunit = self._create_existing_tectonicunit("Craton")
+        tectonicunit_id = tectonicunit.id
+
+        delete_resource(
+            self.collection,
+            self.agent,
+            "tectonicunit",
+            tectonicunit_id,
+            tectonicunit.version,
+        )
+
+        self.assertNotExists(
+            models.Tectonicunit.objects.filter(id=tectonicunit_id)
+        )
