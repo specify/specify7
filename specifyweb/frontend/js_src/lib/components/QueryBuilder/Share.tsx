@@ -226,14 +226,14 @@ function QueryShareDialog({
   const anchor = React.useRef<HTMLInputElement>();
   const loading = React.useContext(LoadingContext);
   const allUsers = React.useMemo(
-    () =>
-      [
-        ...recipients.collections.flatMap(({ users }) => users),
-        ...recipients.usersWithoutCollection,
-      ].filter(
-        (user, index, users) =>
-          users.findIndex(({ id }) => id === user.id) === index
-      ),
+    () => [
+      ...new Map(
+        [
+          ...recipients.collections.flatMap(({ users }) => users),
+          ...recipients.usersWithoutCollection,
+        ].map((user) => [user.id, user])
+      ).values(),
+    ],
     [recipients]
   );
   const divisions = React.useMemo(
