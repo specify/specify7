@@ -6,7 +6,6 @@ import json
 import os
 import re
 import logging
-from typing import List
 from xml.etree import ElementTree
 
 from django.conf import settings
@@ -26,13 +25,26 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.i18n import LANGUAGE_QUERY_PARAMETER
 
 from specifyweb.middleware.general import require_http_methods
-from specifyweb.backend.permissions.permissions import PermissionTarget, \
-    PermissionTargetAction, \
-    check_permission_targets, skip_collection_access_check, query_pt, \
-    CollectionAccessPT, enforce
-from specifyweb.specify.models import Collection, Discipline, Division, Collectionobject, Institution, \
-    Specifyuser, Spprincipal, Spversion, Collectionobjecttype, Picklist, Splocalecontainer, \
-    Splocalecontaineritem, Splocaleitemstr
+from specifyweb.backend.permissions.permissions import (
+    PermissionTarget,
+    PermissionTargetAction,
+    check_permission_targets,
+    skip_collection_access_check,
+    enforce
+)
+from specifyweb.specify.models import (
+    Collection,
+    Discipline,
+    Division,
+    Collectionobject,
+    Institution,
+    Specifyuser,
+    Spversion,
+    Picklist,
+    Splocalecontainer,
+    Splocalecontaineritem,
+    Splocaleitemstr
+)
 from specifyweb.specify.models_utils.schema import base_schema
 from specifyweb.specify.models_utils.serialize_datamodel import datamodel_to_json
 from specifyweb.specify.api.serializers import uri_for_model
@@ -41,7 +53,7 @@ from specifyweb.specify.views import login_maybe_required, openapi
 from .app_resource import get_app_resource, FORM_RESOURCE_EXCLUDED_LST
 from .schema_localization import get_schema_languages, get_schema_localization
 from .viewsets import get_views
-from .collection_access import users_collections_for_sp6
+from .collection_access import users_collections_for_sp6, users_collections_for_sp7, set_users_collections_for_sp6
 from specifyweb.backend.setup_tool.api import (
     get_config_progress,
     filter_ready_disciplines_for_config_tasks,
@@ -54,64 +66,6 @@ logger = logging.getLogger(__name__)
 def set_collection_cookie(response, collection_id): # pragma: no cover
     response.set_cookie('collection', str(collection_id), max_age=365*24*60*60)
 
-def users_collections_for_sp7(userid: int) -> list: # pragma: no cover
-    return [
-        c
-        for c in Collection.objects.all()
-        if query_pt(c.id, userid, CollectionAccessPT.access).allowed
-    ]
-
-def set_users_collections_for_sp6(cursor, user, collectionids): # pragma: no cover
-    with transaction.atomic():
-
-        # Delete the principals for the user for all collections not
-        # in collectionids. (I think the principal represents the
-        # user's capacity wrt to a collection.)
-
-        # Unset all collections for the user if collectionids is empty
-        if not collectionids:
-            cursor.execute("delete from specifyuser_spprincipal where SpecifyUserID = %s", [user.id])
-            cursor.execute("delete from spprincipal_sppermission where spprincipalid in ("
-                           "select spprincipalid from specifyuser_spprincipal)")
-
-            return
-
-        # First delete the mappings from the user to the principals.
-        cursor.execute("delete specifyuser_spprincipal "
-                       "from specifyuser_spprincipal "
-                       "join spprincipal using (spprincipalid) "
-                       "where specifyuserid = %s and usergroupscopeid not in %s"
-                       "and spprincipal.Name != 'Administrator'",
-                       [user.id, collectionids])
-
-        # Next delete the joins from the principals to any permissions.
-        cursor.execute("delete from spprincipal_sppermission where spprincipalid not in ("
-                       "select spprincipalid from specifyuser_spprincipal)")
-
-        # Finally delete all the principals that aren't connected to
-        # any user. This should just be the ones where the mappings
-        # were deleted above.
-        cursor.execute("delete from spprincipal where grouptype is null and spprincipalid not in ("
-                       "select spprincipalid from specifyuser_spprincipal)")
-
-        # Now to add any new principals. Which ones alerady exist?
-        cursor.execute("select usergroupscopeid from spprincipal "
-                       "join specifyuser_spprincipal using (spprincipalid) "
-                       "where grouptype is null and specifyuserid = %s",
-                       [user.id])
-        already_exist = {r[0] for r in cursor.fetchall()}
-
-        for collectionid in set(collectionids) - already_exist:
-            principal = Spprincipal.objects.create(
-                groupsubclass='edu.ku.brc.af.auth.specify.principal.UserPrincipal',
-                grouptype=None,
-                name=user.name,
-                priority=80,
-            )
-            cursor.execute('update spprincipal set usergroupscopeid = %s where spprincipalid = %s',
-                           [collectionid, principal.id])
-            cursor.execute('insert specifyuser_spprincipal(SpecifyUserID, SpPrincipalID) '
-                           'values (%s, %s)', [user.id, principal.id])
 
 class Sp6CollectionAccessPT(PermissionTarget):
     resource = '/admin/user/sp6/collection_access'
@@ -154,7 +108,8 @@ class Sp6CollectionAccessPT(PermissionTarget):
             }
         },
         "responses": {
-            "200": {"description": "Specify 6 permissions for user set."}
+            "200": {"description": "Specify 6 permissions for user set."},
+            "400": {"description": "For PUT requests, Specify could not parse the provided array of Collection IDs"}
         }
     }
 })
@@ -169,7 +124,10 @@ def user_collection_access_for_sp6(request, userid): # pragma: no cover
 
     if request.method == 'PUT':
         check_permission_targets(None, request.specify_user.id, [Sp6CollectionAccessPT.update])
-        collections = json.loads(request.body)
+        try:
+            collections = list(json.loads(request.body))
+        except:
+            return HttpResponse("Could not parse request body as list", status=400)
         user = Specifyuser.objects.get(id=userid)
         set_users_collections_for_sp6(cursor, user, collections)
 
