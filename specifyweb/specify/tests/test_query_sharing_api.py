@@ -254,10 +254,26 @@ class SharedQueryApiTests(SharedQueryFixture, ApiTests):
         )
         client = Client()
         client.force_login(other_admin)
+        SpqueryShare.objects.create(query=self.query, recipient=self.recipient)
 
         response = client.get(self.url)
 
         self.assertEqual(response.status_code, 403)
+
+        response = client.put(
+            self.url,
+            data=json.dumps({"recipientIds": []}),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 403)
+
+        response = client.delete(self.url)
+        self.assertEqual(response.status_code, 403)
+        self.assertTrue(
+            SpqueryShare.objects.filter(
+                query=self.query, recipient=self.recipient
+            ).exists()
+        )
 
     def test_unknown_recipient_is_rejected_without_changing_grants(self):
         response = self.client.put(
