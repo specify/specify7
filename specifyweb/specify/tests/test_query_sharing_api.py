@@ -110,6 +110,80 @@ class SharedQueryFixture:
 
 class SharedQueryApiTests(SharedQueryFixture, ApiTests):
 
+    def test_query_fields_are_limited_to_owned_or_shared_queries(self):
+        private_query = models.Spquery.objects.create(
+            name=f"Private query {self.collection.id}",
+            contextname="Collectionobject",
+            contexttableid=models.Collectionobject.specify_model.tableId,
+            specifyuser=self.specifyuser,
+        )
+        recipient_query = models.Spquery.objects.create(
+            name=f"Recipient query {self.collection.id}",
+            contextname="Collectionobject",
+            contexttableid=models.Collectionobject.specify_model.tableId,
+            specifyuser=self.recipient,
+        )
+        SpqueryShare.objects.create(query=self.query, recipient=self.recipient)
+
+        visible_field = models.Spqueryfield.objects.create(
+            query=self.query,
+            fieldname="SharedField",
+            operstart=1,
+            position=0,
+            sorttype=0,
+            startvalue="",
+            stringid="1.collectionobject.catalognumber",
+            tablelist="1",
+        )
+        private_field = models.Spqueryfield.objects.create(
+            query=private_query,
+            fieldname="PrivateField",
+            operstart=1,
+            position=0,
+            sorttype=0,
+            startvalue="",
+            stringid="1.collectionobject.catalognumber",
+            tablelist="1",
+        )
+        recipient_field = models.Spqueryfield.objects.create(
+            query=recipient_query,
+            fieldname="RecipientField",
+            operstart=1,
+            position=0,
+            sorttype=0,
+            startvalue="",
+            stringid="1.collectionobject.catalognumber",
+            tablelist="1",
+        )
+        orphaned_field = models.Spqueryfield.objects.create(
+            query=None,
+            fieldname="OrphanedField",
+            operstart=1,
+            position=0,
+            sorttype=0,
+            startvalue="",
+            stringid="1.collectionobject.catalognumber",
+            tablelist="1",
+        )
+
+        response = self._recipient_client().get(
+            "/table_rows/specify_rows/spqueryfield/",
+            {"fields": "id,query_id"},
+        )
+
+        self.assertEqual(response.status_code, 200, response.content)
+        rows = {tuple(row) for row in response.json()}
+        self.assertEqual(
+            rows,
+            {
+                (visible_field.id, self.query.id),
+                (recipient_field.id, recipient_query.id),
+            },
+        )
+        self.assertNotIn((private_field.id, private_query.id), rows)
+        self.assertNotIn((orphaned_field.id, None), rows)
+
+
     def test_owner_can_replace_and_revoke_recipient_grants(self):
         response = self.client.put(
             self.url,

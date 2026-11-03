@@ -24,6 +24,14 @@ def rows(request, model: str) -> HttpResponse:
         from specifyweb.backend.stored_queries.sharing import filter_queries_for_user
 
         query = filter_queries_for_user(query, request.specify_user.id)
+    elif model.lower() == 'spqueryfield':
+        from specifyweb.backend.stored_queries.sharing import filter_queries_for_user
+        from specifyweb.specify.models import Spquery
+
+        visible_queries = filter_queries_for_user(
+            Spquery.objects.all(), request.specify_user.id
+        )
+        query = query.filter(query__in=visible_queries)
 
     fields = form.cleaned_data['fields'].split(',')
     try:
