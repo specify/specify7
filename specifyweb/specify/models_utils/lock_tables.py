@@ -236,7 +236,7 @@ class LockDispatcher:
 
     def lock_name(self, *name_parts: str):
         final_name = LOCK_NAME_SEPARATOR.join(
-            *self.lock_prefix_parts, *name_parts
+            (*self.lock_prefix_parts, *name_parts)
         )
 
         if not self.case_sensitive_names:
