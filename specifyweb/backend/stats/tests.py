@@ -84,7 +84,7 @@ class StatisticsIntegrationTests(ApiTransactionTests):
 
     @contextmanager
     def hold_statistics_lock(self):
-        lock_name = LockDispatcher(lock_name_separator=":").lock_name("statistics")
+        lock_name = LockDispatcher().lock_name("statistics")
         with closing(connection.copy()) as other:
             with other.cursor() as cursor:
                 cursor.execute("SELECT GET_LOCK(%s, 0)", [lock_name])
@@ -206,7 +206,7 @@ class StatisticsIntegrationTests(ApiTransactionTests):
         self.assert_statistics_lock_available()
 
     def test_lock_is_held_until_statistics_context_exits(self):
-        lock_name = LockDispatcher(lock_name_separator=":").lock_name("statistics")
+        lock_name = LockDispatcher().lock_name("statistics")
         with run_statistics_query(self.calculate_count) as result:
             self.assertEqual(json.loads(result), {"count": 5})
             with closing(connection.copy()) as other:

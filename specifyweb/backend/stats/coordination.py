@@ -97,7 +97,7 @@ def run_statistics_query(calculate: Callable[[], str]):
     """
     # A database advisory lock has no lease that could expire during a slow query.
     # Keep the lock database-scoped while letting the dispatcher bound its name.
-    with LockDispatcher(lock_name_separator=":") as locks:
+    with LockDispatcher() as locks:
         try:
             locks.acquire("statistics", timeout=0)
         except TimeoutError as error:
