@@ -1,0 +1,8 @@
+{
+  "name": "@specify/deepmerge",
+  "version": "4.3.1-specify.1",
+  "private": true,
+  "description": "Local security-fixed fork of deepmerge 4.3.1 for Jest",
+  "license": "MIT",
+  "main": "index.cjs"
+}

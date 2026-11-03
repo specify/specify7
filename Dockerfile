@@ -44,6 +44,7 @@ USER node
 WORKDIR /home/node
 
 COPY --chown=node:node specifyweb/frontend/js_src/package*.json ./
+COPY --chown=node:node specifyweb/frontend/js_src/vendor ./vendor
 RUN npm ci
 RUN mkdir dist && chown node:node dist
 COPY --chown=node:node specifyweb/frontend/js_src .
