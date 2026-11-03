@@ -99,3 +99,20 @@ class TectonicunitTests(ApiTests):
 
         tectonicunit.delete()
 
+    def test_add_accepted_tectonicunit(self):
+        accepted = self._create_tectonicunit("Accepted unit")
+        synonym = self._create_tectonicunit(
+            "Synonym unit",
+            acceptedtectonicunit=uri_for_model("tectonicunit", accepted.id),
+            isaccepted=True,
+        )
+
+        accepted.refresh_from_db()
+        synonym.refresh_from_db()
+        self.assertTrue(accepted.isaccepted)
+        self.assertFalse(synonym.isaccepted)
+        self.assertEqual(synonym.acceptedtectonicunit_id, accepted.id)
+
+        synonym.delete()
+        accepted.delete()
+
