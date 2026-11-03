@@ -167,7 +167,7 @@ msgstr "Felt"
 #: components/FormMeta/CarryForward.tsx:405
 #: components/Forms/generateFormDefinition.ts:130
 #: components/SchemaConfig/Fields.tsx:177
-#: components/SchemaConfig/UniquenessRuleRow.tsx:253
+#: components/SchemaConfig/UniquenessRuleRow.tsx:256
 #: components/SchemaViewer/Fields.tsx:42
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Schema Viewer > Fields
 msgid "fields"
@@ -181,7 +181,7 @@ msgstr "Bokstavelige felt"
 #: components/FormMeta/CarryForward.tsx:414
 #: components/Forms/generateFormDefinition.ts:168
 #: components/SchemaConfig/Fields.tsx:211
-#: components/SchemaConfig/UniquenessRuleRow.tsx:254
+#: components/SchemaConfig/UniquenessRuleRow.tsx:257
 #: components/SchemaViewer/Relationships.tsx:44
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Schema Viewer > Relationships
 msgid "relationships"
@@ -189,15 +189,20 @@ msgstr "Relasjoner"
 
 #: components/SchemaConfig/UniquenessRuleRow.tsx:102
 #: components/SchemaConfig/UniquenessRuleRow.tsx:200
-#: components/SchemaConfig/UniquenessRuleRow.tsx:311
+#: components/SchemaConfig/UniquenessRuleRow.tsx:314
 #: components/SchemaConfig/UniquenessRuleScope.tsx:43
-#. Used in: Components > Schema Config > Uniqueness Rule Row ⬤ Components > Schema Config > Uniqueness Rule Scope
+#: components/SchemaConfig/__tests__/TableUniquenessRules.test.tsx:150
+#: components/SchemaConfig/__tests__/TableUniquenessRules.test.tsx:158
+#. Used in: Components > Schema Config > Uniqueness Rule Row ⬤ Components > Schema Config > Uniqueness Rule Scope ⬤ Schema Config > __tests__ > Table Uniqueness Rules
 msgid "database"
 msgstr "Database"
 
 #: components/SchemaConfig/UniquenessRuleScope.tsx:176
 #: components/SchemaConfig/UniquenessRuleScope.tsx:178
-#. Used in: Components > Schema Config > Uniqueness Rule Scope
+#: components/SchemaConfig/__tests__/TableUniquenessRules.test.tsx:152
+#: components/SchemaConfig/__tests__/TableUniquenessRules.test.tsx:220
+#: components/SchemaConfig/__tests__/UniquenessRuleRow.test.tsx:118
+#. Used in: Components > Schema Config > Uniqueness Rule Scope ⬤ Schema Config > __tests__ > Table Uniqueness Rules ⬤ Schema Config > __tests__ > Uniqueness Rule Row
 msgid "setScope"
 msgstr "Angi omfang"
 
@@ -442,23 +447,27 @@ msgid "uniquenessRules"
 msgstr "Unikhetsregler"
 
 #: components/SchemaConfig/TableUniquenessRules.tsx:178
-#: components/SchemaConfig/UniquenessRuleRow.tsx:247
+#: components/SchemaConfig/UniquenessRuleRow.tsx:250
 #. Used in: Components > Schema Config > Table Uniqueness Rules ⬤ Components > Schema Config > Uniqueness Rule Row
 msgid "uniqueFields"
 msgstr "Unike felt"
 
 #: components/SchemaConfig/TableUniquenessRules.tsx:136
-#. Used in: Components > Schema Config > Table Uniqueness Rules
+#: components/SchemaConfig/__tests__/TableUniquenessRules.test.tsx:88
+#: components/SchemaConfig/__tests__/TableUniquenessRules.test.tsx:127
+#: components/SchemaConfig/__tests__/TableUniquenessRules.test.tsx:190
+#. Used in: Components > Schema Config > Table Uniqueness Rules ⬤ Schema Config > __tests__ > Table Uniqueness Rules
 msgid "addUniquenessRule"
 msgstr "Legg til unikhetsregel"
 
-#: components/SchemaConfig/UniquenessRuleRow.tsx:240
-#. Used in: Components > Schema Config > Uniqueness Rule Row
+#: components/SchemaConfig/UniquenessRuleRow.tsx:243
+#: components/SchemaConfig/__tests__/TableUniquenessRules.test.tsx:147
+#. Used in: Components > Schema Config > Uniqueness Rule Row ⬤ Schema Config > __tests__ > Table Uniqueness Rules
 msgid "configureUniquenessRule"
 msgstr "Konfigurer unikhetsregel"
 
 #: components/SchemaConfig/TableUniquenessRules.tsx:179
-#: components/SchemaConfig/UniquenessRuleRow.tsx:300
+#: components/SchemaConfig/UniquenessRuleRow.tsx:303
 #: components/SchemaViewer/Fields.tsx:37
 #. Used in: Components > Schema Config > Table Uniqueness Rules ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Schema Viewer > Fields
 msgid "scope"
@@ -470,8 +479,9 @@ msgstr "Omfang (scope)"
 msgid "uniquenessDuplicatesFound"
 msgstr "Duplikater funnet i databasen"
 
-#: components/SchemaConfig/UniquenessRuleRow.tsx:233
-#. Used in: Components > Schema Config > Uniqueness Rule Row
+#: components/SchemaConfig/UniquenessRuleRow.tsx:236
+#: components/SchemaConfig/__tests__/UniquenessRuleRow.test.tsx:145
+#. Used in: Components > Schema Config > Uniqueness Rule Row ⬤ Schema Config > __tests__ > Uniqueness Rule Row
 msgid "exportDuplicates"
 msgstr "Eksporter duplikater"
 
