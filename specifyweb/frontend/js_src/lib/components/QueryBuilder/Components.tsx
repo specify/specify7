@@ -42,7 +42,9 @@ export function SaveQueryButtons({
   getQueryFieldRecords,
   onSaved: handleSaved,
   onTriedToSave: handleTriedToSave,
+  canCloneShared = false,
 }: {
+  readonly canCloneShared?: boolean;
   readonly fields: RA<QueryField>;
   readonly saveRequired: boolean;
   readonly isValid: () => boolean;
@@ -111,7 +113,7 @@ export function SaveQueryButtons({
           {queryText.saveQuery()}
         </QueryButton>
       )}
-      {isReadOnly || queryResource.isNew() ? undefined : (
+      {(isReadOnly && !canCloneShared) || queryResource.isNew() ? undefined : (
         <QueryButton
           disabled={fields.length === 0}
           showConfirmation={showConfirmation}

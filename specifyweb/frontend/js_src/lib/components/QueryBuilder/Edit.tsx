@@ -18,15 +18,19 @@ import { LoadingContext } from '../Core/Contexts';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { idFromUrl } from '../DataModel/resource';
 import { deserializeResource } from '../DataModel/serializers';
 import { tables } from '../DataModel/tables';
 import type { SpQuery, SpReport } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import { ResourceView } from '../Forms/ResourceView';
+import { userInformation } from '../InitialContext/userInformation';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { downloadFile } from '../Molecules/FilePicker';
 import { hasPermission } from '../Permissions/helpers';
+
+import { QuerySharingActions } from './Share';
 
 export function QueryEditButton({
   query,
@@ -38,6 +42,7 @@ export function QueryEditButton({
     () => deserializeResource(query),
     [query]
   );
+  if (idFromUrl(query.specifyUser) !== userInformation.id) return <></>;
   return (
     <>
       <DataEntry.Edit onClick={handleOpen} />
@@ -91,6 +96,12 @@ function EditQueryDialog({
       {queryResource.isNew() ? undefined : (
         <div className="flex flex-col">
           <p>{commonText.actions()}</p>
+          {userInformation.isadmin &&
+            idFromUrl(queryResource.get('specifyUser')) ===
+              userInformation.id &&
+            queryResource.id !== undefined && (
+              <QuerySharingActions queryId={queryResource.id} />
+            )}
           <Button.LikeLink onClick={(): void => setState('dwcaExport')}>
             {queryText.exportQueryForDwca()}
           </Button.LikeLink>

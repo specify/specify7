@@ -20,6 +20,19 @@ def rows(request, model: str) -> HttpResponse:
         return HttpResponseBadRequest(toJson(form.errors), content_type='application/json')
 
     query = apply_filters(request.specify_collection, request.GET, model, form.cleaned_data)
+    if model.lower() == 'spquery':
+        from specifyweb.backend.stored_queries.access import filter_queries_for_user
+
+        query = filter_queries_for_user(query, request.specify_user.id)
+    elif model.lower() == 'spqueryfield':
+        from specifyweb.backend.stored_queries.access import filter_queries_for_user
+        from specifyweb.specify.models import Spquery
+
+        visible_queries = filter_queries_for_user(
+            Spquery.objects.all(), request.specify_user.id
+        )
+        query = query.filter(query__in=visible_queries)
+
     fields = form.cleaned_data['fields'].split(',')
     try:
         query = query.values_list(*fields).order_by(*fields)

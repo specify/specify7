@@ -14,11 +14,13 @@ import { Button } from '../Atoms/Button';
 import { Input } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
-import { ReadOnlyContext } from '../Core/Contexts';
+import { DataEntry } from '../Atoms/DataEntry';
+import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { fetchCollection } from '../DataModel/collection';
 import { backendFilter, getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { idFromUrl, resourceEvents } from '../DataModel/resource';
+import { deserializeResource } from '../DataModel/serializers';
 import { getTableById, tables } from '../DataModel/tables';
 import type { SpQuery } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
@@ -30,10 +32,12 @@ import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasPermission, hasToolPermission } from '../Permissions/helpers';
 import { QueryEditButton } from '../QueryBuilder/Edit';
+import { cloneSharedQuery } from '../QueryBuilder/Save';
 import { OverlayContext } from '../Router/Router';
 import { SafeOutlet } from '../Router/RouterUtils';
 import { DialogListSkeleton } from '../SkeletonLoaders/DialogList';
 import { QueryTablesWrapper } from './QueryTablesWrapper';
+import { interactionsText } from '../../localization/interactions';
 
 export function QueriesOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -86,6 +90,16 @@ const defaultChildren: Exclude<QueryListContextType['children'], undefined> = ({
     dialog(children)
   );
 
+type CloneState = {
+  readonly confirmClone: boolean;
+  readonly clonePending: boolean;
+};
+
+const defaultCloneState: CloneState = {
+  confirmClone: false,
+  clonePending: false,
+};
+
 export function QueryListDialog({
   newQueryUrl,
   onClose: handleClose,
@@ -108,8 +122,15 @@ export function QueryListDialog({
 
   const [search, setSearch] = React.useState('');
   const searchFilter = search.trim();
-
-  const [data, setData] = useAsyncState(
+  const [section, setSection] = React.useState<
+    'personal' | 'shared' | 'sharing'
+  >('personal');
+  const [refreshToken, setRefreshToken] = React.useState(0);
+  const [cloneStates, setCloneStates] = React.useState<
+    Readonly<Record<number, CloneState>>
+  >({});
+  const ownerId = filters?.specifyUser ?? userInformation.id;
+  const [data] = useAsyncState(
     React.useCallback(
       async () =>
         fetchCollection(
@@ -117,15 +138,34 @@ export function QueryListDialog({
           {
             limit,
             domainFilter: false,
-            ...(filters ?? { specifyUser: userInformation.id }),
+            ...(section === 'shared'
+              ? { contextTableId: filters?.contextTableId }
+              : { ...filters, specifyUser: ownerId }),
             offset,
             orderBy,
           },
-          searchFilter === ''
-            ? undefined
-            : backendFilter('name').caseInsensitiveContains(searchFilter)
+          {
+            ...(section === 'shared'
+              ? { share_grants__recipient: userInformation.id }
+              : {
+                  share_grants__isnull:
+                    section === 'personal' ? 'true' : 'false',
+                }),
+            ...(searchFilter === ''
+              ? {}
+              : backendFilter('name').caseInsensitiveContains(searchFilter)),
+          }
         ),
-      [filters, limit, offset, orderBy, searchFilter]
+      [
+        filters,
+        ownerId,
+        limit,
+        offset,
+        orderBy,
+        searchFilter,
+        section,
+        refreshToken,
+      ]
     ),
     false
   );
@@ -135,38 +175,27 @@ export function QueryListDialog({
       resourceEvents.on('deleted', (resource) => {
         if (resource.specifyTable.name !== 'SpQuery' || data === undefined)
           return;
-        // Reconcile against searchFilter rather than current-page membership, since totalCount spans all pages
-        const name = (resource.get('name') as string | undefined) ?? '';
-        const matchesSearch =
-          searchFilter === '' ||
-          name.toLowerCase().includes(searchFilter.toLowerCase());
-        // Mirror every collection filter fetchCollection was called with,
-        // so an out-of-scope deletion doesn't decrement an unrelated count
-        const activeFilters = filters ?? { specifyUser: userInformation.id };
-        const specifyUserId = idFromUrl(
-          (resource.get('specifyUser') as string | null) ?? ''
-        );
-        const matchesSpecifyUser = specifyUserId === activeFilters.specifyUser;
-        const matchesContextTableId =
-          !('contextTableId' in activeFilters) ||
-          resource.get('contextTableId') === activeFilters.contextTableId;
-        if (!matchesSearch || !matchesSpecifyUser || !matchesContextTableId)
-          return;
-        const newTotalCount = Math.max(0, data.totalCount - 1);
-        currentPage[1](
-          Math.min(
-            currentPage[0],
-            Math.max(0, Math.ceil(newTotalCount / limit) - 1)
-          )
-        );
-        setData({
-          records: data.records.filter((query) => query.id !== resource.id),
-          totalCount: newTotalCount,
-        });
+        setRefreshToken((token) => token + 1);
       }),
-    [currentPage, data, filters, limit, searchFilter, setData]
+    [data]
   );
 
+  React.useEffect(() => {
+    if (section !== 'shared' && section !== 'sharing') return;
+    const handleFocus = (): void => setRefreshToken((token) => token + 1);
+    const interval = window.setInterval(handleFocus, 30_000);
+    window.addEventListener('focus', handleFocus);
+    return () => {
+      window.clearInterval(interval);
+      window.removeEventListener('focus', handleFocus);
+    };
+  }, [section]);
+
+  React.useEffect(() => {
+    if (data === undefined) return;
+    const lastPage = Math.max(0, Math.ceil(data.totalCount / limit) - 1);
+    if (currentPage[0] > lastPage) currentPage[1](lastPage);
+  }, [data, limit, currentPage]);
   const totalCountRef = React.useRef<number | undefined>(undefined);
   totalCountRef.current = data?.totalCount ?? totalCountRef.current;
   const totalCount = totalCountRef.current;
@@ -178,6 +207,28 @@ export function QueryListDialog({
     records: data?.records,
     children: (
       <>
+        <div aria-label={queryText.queries()} className="flex gap-2">
+          {(
+            [
+              ['personal', queryText.personalQueries()],
+              ['shared', queryText.sharedQueries()],
+              ...(userInformation.isadmin
+                ? [['sharing', queryText.queriesIShare()] as const]
+                : []),
+            ] as const
+          ).map(([value, label]) => (
+            <Button.Secondary
+              aria-pressed={section === value}
+              key={value}
+              onClick={(): void => {
+                currentPage[1](0);
+                setSection(value);
+              }}
+            >
+              {label}
+            </Button.Secondary>
+          ))}
+        </div>
         <table className="grid-table grid-cols-[repeat(3,auto)_min-content] gap-2">
           <thead>
             <tr>
@@ -219,9 +270,27 @@ export function QueryListDialog({
             {data?.records.map((query) => (
               <QueryList
                 getQuerySelectCallback={getQuerySelectCallback}
-                isReadOnly={isReadOnly}
+                isReadOnly={
+                  isReadOnly ||
+                  idFromUrl(query.specifyUser) !== userInformation.id
+                }
+                canClone={
+                  section === 'shared' &&
+                  !isReadOnly &&
+                  hasToolPermission('queryBuilder', 'create')
+                }
                 key={query.id}
                 query={query}
+                cloneState={cloneStates[query.id] ?? defaultCloneState}
+                onCloneStateChange={(state): void =>
+                  setCloneStates((states) => ({
+                    ...states,
+                    [query.id]: {
+                      ...(states[query.id] ?? defaultCloneState),
+                      ...state,
+                    },
+                  }))
+                }
               />
             ))}
           </tbody>
@@ -284,13 +353,20 @@ export function QueryList({
   query,
   getQuerySelectCallback,
   isReadOnly,
+  canClone = false,
+  cloneState: { confirmClone, clonePending },
+  onCloneStateChange: handleCloneStateChange,
 }: {
   readonly query: SerializedResource<SpQuery>;
   readonly getQuerySelectCallback?: (
     query: SerializedResource<SpQuery>
   ) => string | (() => void);
   readonly isReadOnly: boolean;
+  readonly canClone?: boolean;
+  readonly cloneState: CloneState;
+  readonly onCloneStateChange: (state: Partial<CloneState>) => void;
 }): JSX.Element {
+  const loading = React.useContext(LoadingContext);
   const callBack =
     getQuerySelectCallback?.(query) ?? `/specify/query/${query.id}/`;
   const text = (
@@ -300,37 +376,79 @@ export function QueryList({
     </>
   );
   return (
-    <tr title={query.remarks ?? undefined}>
-      <td>
-        {typeof callBack === 'string' ? (
-          <Link.Default
-            /*
-             * BUG: consider applying these styles everywhere
-             * className="max-w-full overflow-auto"
-             */
-            className="overflow-x-auto"
-            href={callBack}
-          >
-            {text}
-          </Link.Default>
-        ) : (
-          <Button.LikeLink className="overflow-x-auto" onClick={callBack}>
-            {text}
-          </Button.LikeLink>
-        )}
-      </td>
-      <td>
-        <DateElement date={query.timestampCreated} />
-      </td>
-      <td>
-        {typeof query.timestampModified === 'string' && (
-          <DateElement date={query.timestampModified} />
-        )}
-      </td>
-      <td className="justify-end">
-        {!isReadOnly && <QueryEditButton query={query} />}
-      </td>
-    </tr>
+    <>
+      <tr title={query.remarks ?? undefined}>
+        <td>
+          <div className="flex items-center gap-2">
+            {typeof callBack === 'string' ? (
+              <Link.Default
+                /*
+                 * BUG: consider applying these styles everywhere
+                 * className="max-w-full overflow-auto"
+                 */
+                className="overflow-x-auto"
+                href={callBack}
+              >
+                {text}
+              </Link.Default>
+            ) : (
+              <Button.LikeLink className="overflow-x-auto" onClick={callBack}>
+                {text}
+              </Button.LikeLink>
+            )}
+            {canClone && (
+              <DataEntry.Clone
+                aria-label={queryText.cloneSharedQuery()}
+                onClick={(): void =>
+                  handleCloneStateChange({ confirmClone: true })
+                }
+              />
+            )}
+          </div>
+        </td>
+        <td>
+          <DateElement date={query.timestampCreated} />
+        </td>
+        <td>
+          {typeof query.timestampModified === 'string' && (
+            <DateElement date={query.timestampModified} />
+          )}
+        </td>
+        <td className="justify-end">
+          {!isReadOnly && <QueryEditButton query={query} />}
+        </td>
+      </tr>
+      {confirmClone && (
+        <Dialog
+          buttons={
+            <>
+              <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+              <Button.Success
+                disabled={clonePending}
+                onClick={(): void => {
+                  handleCloneStateChange({ clonePending: true });
+                  loading(
+                    cloneSharedQuery(deserializeResource(query))
+                      .then(() =>
+                        handleCloneStateChange({ confirmClone: false })
+                      )
+                      .finally(() =>
+                        handleCloneStateChange({ clonePending: false })
+                      )
+                  );
+                }}
+              >
+                {interactionsText.continue()}
+              </Button.Success>
+            </>
+          }
+          header={queryText.cloneSharedQuery()}
+          onClose={(): void => handleCloneStateChange({ confirmClone: false })}
+        >
+          <p>{queryText.confirmCloneSharedQuery({ queryName: query.name })}</p>
+        </Dialog>
+      )}
+    </>
   );
 }
 

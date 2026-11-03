@@ -5,6 +5,7 @@ import { wbPlanText } from '../../localization/wbPlan';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
+import { ReadOnlyContext } from '../Core/Contexts';
 import type { Tables } from '../DataModel/types';
 import { isTreeTable } from '../InitialContext/treeRanks';
 import { hasPermission } from '../Permissions/helpers';
@@ -42,12 +43,15 @@ export function QueryToolbar({
   readonly onSubmitClick: () => void;
 }): JSX.Element {
   const canRun = hasPermission('/querybuilder/query', 'execute');
+  const isReadOnly = React.useContext(ReadOnlyContext);
   const canRunDistinct = canRun && !isTreeTable(tableName);
   const runDistinctKeyboardShortcut = userPreferences.useKeyboardShortcut(
     'queryBuilder',
     'actions',
     'distinct',
-    canRunDistinct && !isSeries ? handleToggleDistinct : undefined
+    canRunDistinct && !isSeries && !isReadOnly
+      ? handleToggleDistinct
+      : undefined
   );
   const runCountOnlyKeyboardShortcut = userPreferences.useKeyboardShortcut(
     'queryBuilder',
@@ -78,8 +82,8 @@ export function QueryToolbar({
             <Label.Inline>
               <Input.Checkbox
                 checked={isSeries}
-                isReadOnly={isDistinct}
-                onChange={handleToggleSeries}
+                isReadOnly={isDistinct || isReadOnly}
+                onValueChange={handleToggleSeries}
               />
               {queryText.series()}
             </Label.Inline>
@@ -92,8 +96,8 @@ export function QueryToolbar({
             <Label.Inline title={runDistinctKeyboardShortcut}>
               <Input.Checkbox
                 checked={isDistinct}
-                isReadOnly={isSeries}
-                onChange={handleToggleDistinct}
+                isReadOnly={isSeries || isReadOnly}
+                onValueChange={handleToggleDistinct}
               />
               {queryText.distinct()}
             </Label.Inline>
@@ -102,7 +106,8 @@ export function QueryToolbar({
             <Label.Inline>
               <Input.Checkbox
                 checked={searchSynonymy}
-                onChange={handleToggleSearchSynonymy}
+                isReadOnly={isReadOnly}
+                onValueChange={handleToggleSearchSynonymy}
               />
               {queryText.searchSynonyms()}
             </Label.Inline>

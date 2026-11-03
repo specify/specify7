@@ -1,5 +1,6 @@
 import json
 from django.http import (
+    Http404,
     HttpResponse,
     HttpResponseBadRequest,
     HttpResponseForbidden,
@@ -8,14 +9,17 @@ from django.http import (
 )
 
 from django.core.exceptions import FieldError
+from django.shortcuts import get_object_or_404
 
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 from specifyweb.backend.permissions.permissions import enforce, table_permissions_checker
+from specifyweb.backend.stored_queries.access import ensure_query_access
 from specifyweb.specify.api.crud import apply_filters, delete_resource, get_collection, get_resource, post_resource, put_resource
 from specifyweb.specify.api.exceptions import FilterError, OrderByError
 from specifyweb.specify.api.filter_by_col import filter_by_collection
 from specifyweb.specify.api.serializers import _obj_to_data, toJson
 from specifyweb.specify.api.validators import GetCollectionForm, RowsForm
+
 
 def resource_dispatch(request, model, id) -> HttpResponse:
     """Handles requests related to individual resources.
@@ -41,6 +45,15 @@ def resource_dispatch(request, model, id) -> HttpResponse:
 
     # Dispatch on the request type.
     if request.method == 'GET':
+        if model.lower() == 'spquery':
+            ensure_query_access(id, request.specify_user.id)
+        elif model.lower() == 'spqueryfield':
+            from specifyweb.specify.models import Spqueryfield
+
+            field = get_object_or_404(Spqueryfield, pk=id)
+            if field.query_id is None:
+                raise Http404("Query not found.")
+            ensure_query_access(field.query_id, request.specify_user.id)
         data = get_resource(model, id, checker, request.GET.get('recordsetid', None))
         resp = HttpResponse(toJson(data), content_type='application/json')
 
@@ -103,8 +116,14 @@ def collection_dispatch(request, model) -> HttpResponse:
             return HttpResponseBadRequest(toJson(control_params.errors),
                                           content_type='application/json')
         try:
-            data = get_collection(request.specify_collection, model, checker,
-                                  control_params.cleaned_data, request.GET)
+            data = get_collection(
+                request.specify_collection,
+                model,
+                checker,
+                control_params.cleaned_data,
+                request.GET,
+                query_user_id=request.specify_user.id,
+            )
         except (FilterError, OrderByError) as e:
             return HttpResponseBadRequest(e)
         resp = HttpResponse(toJson(data), content_type='application/json')

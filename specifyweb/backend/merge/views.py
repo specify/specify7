@@ -180,7 +180,7 @@ def record_merge(
 
         response = resolve_record_merge_response(
             lambda: record_merge_fx(model_name, old_model_ids, int(
-                new_model_id), None, new_record_info),
+                new_model_id), request.specify_user, None, new_record_info),
             # If not doing merge in background, raise all unexpected errors
             silent=False
         )

@@ -21,6 +21,7 @@ from specifyweb.specify.api.serializers import _obj_to_data, obj_to_data, toJson
 from specifyweb.specify.views import login_maybe_required
 from specifyweb.backend.stored_queries.execution import run_ephemeral_query, models
 from specifyweb.backend.stored_queries.queryfield import QueryField
+from specifyweb.backend.stored_queries.access import ensure_query_access
 
 
 class ReportException(Exception):
@@ -246,6 +247,7 @@ def get_reports_by_table(request, table_id):
 @login_maybe_required
 def create(request):
     check_table_permissions(request.specify_collection, request.specify_user, Spreport, "create")
+    ensure_query_access(int(request.POST['queryid']), request.specify_user.id)
     report = create_report(
         request.specify_user.id,
         request.specify_collection.discipline.id,
