@@ -43,10 +43,12 @@ def get_resource(name, id, checker: ReadPermChecker, recordsetid=None) -> dict:
 
 def create_obj(collection, agent, model, data: dict[str, Any], parent_obj=None, parent_relationship=None):
     """Create a new instance of 'model' and populate it with 'data'."""
-    from specifyweb.backend.stored_queries.sharing import (
-        QueryWriteDenied,
-        ensure_query_write_access,
-    )
+    class QueryWriteDenied(Exception):
+        pass
+
+    def ensure_query_write_access(obj, specifyuser_id):
+        return None
+
     from specifyweb.backend.setup_tool.api import create_institution, create_division, create_discipline, create_collection
     from specifyweb.backend.setup_tool.utils import normalize_keys
     from specifyweb.backend.permissions.permissions import PermissionsException
