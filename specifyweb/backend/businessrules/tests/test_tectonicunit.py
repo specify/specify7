@@ -132,3 +132,37 @@ class TectonicunitTests(ApiTests):
             models.Tectonicunit.objects.filter(id=tectonicunit_id)
         )
 
+    def test_edit_tectonicunit_created_in_previous_version(self):
+        tectonicunit = self._create_existing_tectonicunit("Massif")
+
+        update_obj(
+            self.collection,
+            self.agent,
+            "tectonicunit",
+            tectonicunit.id,
+            tectonicunit.version,
+            {"name": "Massif (updated)"},
+        )
+
+        tectonicunit.refresh_from_db()
+        self.assertEqual(tectonicunit.name, "Massif (updated)")
+        self.assertEqual(tectonicunit.version, 1)
+
+        models.Tectonicunit.objects.filter(id=tectonicunit.id).update(version=2)
+        tectonicunit.refresh_from_db()
+
+        update_obj(
+            self.collection,
+            self.agent,
+            "tectonicunit",
+            tectonicunit.id,
+            tectonicunit.version,
+            {"remarks": "Updated remarks"},
+        )
+
+        tectonicunit.refresh_from_db()
+        self.assertEqual(tectonicunit.remarks, "Updated remarks")
+        self.assertEqual(tectonicunit.version, 3)
+
+        tectonicunit.delete()
+
