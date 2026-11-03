@@ -210,6 +210,7 @@ export function AutoComplete<T>({
   );
 
   const [input, setInput] = React.useState<HTMLInputElement | null>(null);
+  const inputRef = React.useRef<HTMLInputElement | null>(null);
   const dataListRef = React.useRef<HTMLUListElement | null>(null);
   const [dataList, setDataList] = React.useState<HTMLUListElement | null>(null);
   const dataListRefCallback = React.useCallback(
@@ -245,6 +246,14 @@ export function AutoComplete<T>({
    */
   const ignoreFilter = currentValue === pendingValue;
   const itemSource = ignoreFilter ? (allResults ?? []) : filteredItems;
+  const [lastResultOption, setLastResultOption] =
+    React.useState<HTMLLIElement | null>(null);
+  const [shouldFocusLastResult, setShouldFocusLastResult] =
+    React.useState(false);
+  const lastResultOptionRefCallback = React.useCallback(
+    (option: HTMLLIElement | null): void => setLastResultOption(option),
+    []
+  );
 
   React.useLayoutEffect(() => {
     if (
@@ -282,6 +291,12 @@ export function AutoComplete<T>({
    * (issue #8691)
    */
   React.useEffect(() => setActiveIndex(-1), [pendingValue, results]);
+  React.useLayoutEffect(() => {
+    if (!shouldFocusLastResult || lastResultOption === null) return;
+    lastResultOption.focus();
+    inputRef.current?.focus({ preventScroll: true });
+    setShouldFocusLastResult(false);
+  }, [shouldFocusLastResult, lastResultOption]);
 
   function handleChanged(item: AutoCompleteItem<T>): void {
     handleChange(item);
@@ -304,6 +319,8 @@ export function AutoComplete<T>({
       });
       setActiveIndex(nextIndex);
       scrollToItem(nextIndex);
+    } else if (event.key === 'End' && event.shiftKey) {
+      return;
     } else if (event.key === 'Home' || event.key === 'End') {
       event.preventDefault();
       event.stopPropagation();
@@ -314,6 +331,11 @@ export function AutoComplete<T>({
       });
       setActiveIndex(nextIndex);
       scrollToItem(nextIndex);
+      if (event.key === 'End' && lastResultOption !== null) {
+        // Avoid activating a trailing Add option when the list is focused.
+        event.preventDefault();
+        setShouldFocusLastResult(true);
+      }
     } else if (event.key === 'Enter' && activeIndex >= 0) {
       const item = itemSource[activeIndex];
       if (item !== undefined) {
@@ -410,7 +432,6 @@ export function AutoComplete<T>({
     'highlightMatch'
   );
 
-  const inputRef = React.useRef<HTMLInputElement | null>(null);
   const shouldBlurAfterMouseSelection = React.useRef(false);
   const forwardChildRef: React.RefCallback<HTMLInputElement> =
     React.useCallback(
@@ -599,12 +620,15 @@ export function AutoComplete<T>({
             return (
               <Combobox.Option key={index} as={React.Fragment} value={item}>
                 {({ active, selected }): JSX.Element => (
-                  <li
+                  <AutoCompleteOption
+                    active={active || index === activeIndex}
+                    selected={selected}
                     data-index={index}
-                    className={optionClassName(
-                      active || index === activeIndex,
-                      selected
-                    )}
+                    ref={
+                      index === itemSource.length - 1
+                        ? lastResultOptionRefCallback
+                        : undefined
+                    }
                     onMouseDown={handleOptionMouseDown}
                   >
                     {typeof item.icon === 'string' ? (
@@ -615,7 +639,7 @@ export function AutoComplete<T>({
                     ) : (
                       fullLabel
                     )}
-                  </li>
+                  </AutoCompleteOption>
                 )}
               </Combobox.Option>
             );
@@ -623,8 +647,9 @@ export function AutoComplete<T>({
           {showAdd && (
             <Combobox.Option as={React.Fragment} value={pendingValue}>
               {({ active, selected }): JSX.Element => (
-                <li
-                  className={optionClassName(active, selected)}
+                <AutoCompleteOption
+                  active={active}
+                  selected={selected}
                   onMouseDown={(e: React.MouseEvent): void => {
                     e.stopPropagation();
                     shouldBlurAfterMouseSelection.current = true;
@@ -634,7 +659,7 @@ export function AutoComplete<T>({
                     <span className={className.dataEntryAdd}>{icons.plus}</span>
                     {commonText.add()}
                   </div>
-                </li>
+                </AutoCompleteOption>
               )}
             </Combobox.Option>
           )}
@@ -655,6 +680,29 @@ export function AutoComplete<T>({
     </Combobox>
   );
 }
+
+const AutoCompleteOption = React.forwardRef<
+  HTMLLIElement,
+  TagProps<'li'> & {
+    readonly active: boolean;
+    readonly selected: boolean;
+  }
+>(function AutoCompleteOption(
+  { active, selected, ...props },
+  forwardedRef
+): JSX.Element {
+  const ref = React.useCallback(
+    (option: HTMLLIElement | null): void => {
+      if (typeof forwardedRef === 'function') forwardedRef(option);
+      else if (forwardedRef !== null) forwardedRef.current = option;
+    },
+    [forwardedRef]
+  );
+
+  return (
+    <li {...props} className={optionClassName(active, selected)} ref={ref} />
+  );
+});
 
 const toggleButton = (
   <Combobox.Button
