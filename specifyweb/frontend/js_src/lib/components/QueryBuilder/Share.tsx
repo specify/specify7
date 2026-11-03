@@ -77,7 +77,7 @@ function QueryShareUserCheckbox({
   readonly user: QueryShareUser;
   readonly selected: RA<number>;
   readonly setSelected: React.Dispatch<React.SetStateAction<RA<number>>>;
-  readonly anchor: React.MutableRefObject<number | undefined>;
+  readonly anchor: React.MutableRefObject<HTMLInputElement | undefined>;
 }): JSX.Element {
   const { id, name } = user;
   return (
@@ -94,31 +94,34 @@ function QueryShareUserCheckbox({
           const userList = event.currentTarget.closest(
             '[data-query-share-users]'
           );
-          const visibleIds =
+          const inputs =
             userList === null
-              ? [id]
+              ? [event.currentTarget]
               : [
                   ...userList.querySelectorAll<HTMLInputElement>(
                     'input[data-query-share-user-id]'
                   ),
-                ].map(({ dataset }) =>
-                  Number.parseInt(dataset.queryShareUserId ?? '', 10)
-                );
-          const index = visibleIds.indexOf(id);
-          const anchorIndex = visibleIds.indexOf(anchor.current ?? id);
+                ];
+          const index = inputs.indexOf(event.currentTarget);
+          const anchorIndex =
+            anchor.current === undefined ? -1 : inputs.indexOf(anchor.current);
           const ids =
             isRange && anchorIndex >= 0
-              ? visibleIds.slice(
-                  Math.min(anchorIndex, index),
-                  Math.max(anchorIndex, index) + 1
-                )
+              ? inputs
+                  .slice(
+                    Math.min(anchorIndex, index),
+                    Math.max(anchorIndex, index) + 1
+                  )
+                  .map(({ dataset }) =>
+                    Number.parseInt(dataset.queryShareUserId ?? '', 10)
+                  )
               : [id];
           setSelected((previous) =>
             checked
               ? [...new Set([...previous, ...ids])]
               : previous.filter((selectedId) => !ids.includes(selectedId))
           );
-          anchor.current = id;
+          anchor.current = event.currentTarget;
         }}
       />
       {name}
@@ -220,7 +223,7 @@ function QueryShareDialog({
 }): JSX.Element {
   const [selected, setSelected] = React.useState(initialRecipients);
   const [review, setReview] = React.useState(false);
-  const anchor = React.useRef<number>();
+  const anchor = React.useRef<HTMLInputElement>();
   const loading = React.useContext(LoadingContext);
   const allUsers = React.useMemo(
     () =>
