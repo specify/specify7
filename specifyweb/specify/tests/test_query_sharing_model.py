@@ -21,3 +21,12 @@ class SpqueryShareTests(ApiTests):
             SpqueryShare.objects.create(query=query, recipient=self.specifyuser)
 
         self.assertEqual(query.share_grants.count(), 1)
+
+        other_query = models.Spquery.objects.create(
+            name=f"Second shared query {self.collection.id}",
+            contextname="Collectionobject",
+            contexttableid=models.Collectionobject.specify_model.tableId,
+            specifyuser=self.specifyuser,
+        )
+        SpqueryShare.objects.create(query=other_query, recipient=self.specifyuser)
+        self.assertEqual(self.specifyuser.shared_query_grants.count(), 2)
