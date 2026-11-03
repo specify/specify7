@@ -3,7 +3,7 @@ from typing import Any, Dict
 from collections.abc import Callable
 import json
 from django.db import transaction
-from django.core.exceptions import FieldError, FieldDoesNotExist, PermissionDenied
+from django.core.exceptions import FieldError, FieldDoesNotExist
 from django.db.models import Model, F, Q, Subquery
 from django.db.models.deletion import Collector
 from django.http import (HttpResponseServerError, Http404)
@@ -43,7 +43,10 @@ def get_resource(name, id, checker: ReadPermChecker, recordsetid=None) -> dict:
 
 def create_obj(collection, agent, model, data: dict[str, Any], parent_obj=None, parent_relationship=None):
     """Create a new instance of 'model' and populate it with 'data'."""
-    from specifyweb.backend.stored_queries.sharing import ensure_query_write_access
+    from specifyweb.backend.stored_queries.sharing import (
+        QueryWriteDenied,
+        ensure_query_write_access,
+    )
     from specifyweb.backend.setup_tool.api import create_institution, create_division, create_discipline, create_collection
     from specifyweb.backend.setup_tool.utils import normalize_keys
     from specifyweb.backend.permissions.permissions import PermissionsException
@@ -78,7 +81,7 @@ def create_obj(collection, agent, model, data: dict[str, Any], parent_obj=None, 
     _, _, handle_remote_to_ones = handle_fk_fields(collection, agent, obj, data)
     set_fields_from_data(obj, data)
     if isinstance(obj, (models.Spquery, models.Spqueryfield)) and obj.pk is not None:
-        raise PermissionDenied("New query definitions cannot specify an existing ID.")
+        raise QueryWriteDenied("New query definitions cannot specify an existing ID.")
     ensure_query_write_access(obj, agent.specifyuser_id)
     set_field_if_exists(obj, 'createdbyagent', agent)
     set_field_if_exists(obj, 'collectionmemberid', collection.id)
@@ -130,7 +133,10 @@ def update_obj(collection, agent, name: str, id, version, data: dict[str, Any], 
     """Update the resource with 'id' in model named 'name' with given
     'data'.
     """
-    from specifyweb.backend.stored_queries.sharing import ensure_query_write_access
+    from specifyweb.backend.stored_queries.sharing import (
+        QueryWriteDenied,
+        ensure_query_write_access,
+    )
 
     obj = get_object_or_404(name, id=int(id))
     check_table_permissions(collection, agent, obj, "update")
@@ -140,7 +146,7 @@ def update_obj(collection, agent, name: str, id, version, data: dict[str, Any], 
     dependents_to_delete, fk_dirty, handle_remote_to_ones = handle_fk_fields(collection, agent, obj, data)
     dirty = fk_dirty + set_fields_from_data(obj, data)
     if isinstance(obj, (models.Spquery, models.Spqueryfield)) and obj.pk != int(id):
-        raise PermissionDenied("Query definition IDs cannot be changed.")
+        raise QueryWriteDenied("Query definition IDs cannot be changed.")
     ensure_query_write_access(obj, agent.specifyuser_id)
 
     check_field_permissions(collection, agent, obj, [d['field_name'] for d in dirty], "update")

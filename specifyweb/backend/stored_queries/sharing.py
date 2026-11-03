@@ -16,9 +16,19 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_http_methods
 
 from specifyweb.backend.permissions.models import SpqueryShare
-from specifyweb.backend.permissions.permissions import CollectionAccessPT
+from specifyweb.backend.permissions.permissions import (
+    CollectionAccessPT,
+    PermissionsException,
+)
 from specifyweb.specify.models import Collection, Spquery, Spqueryfield, Specifyuser
 from specifyweb.specify.views import login_maybe_required
+
+
+class QueryWriteDenied(PermissionDenied, PermissionsException):
+    status_code = 403
+
+    def to_json(self) -> dict:
+        return {"QueryWriteDenied": str(self)}
 
 
 def get_query_share_recipients() -> dict[str, object]:
@@ -121,7 +131,7 @@ def ensure_query_write_access(obj: Model, user_id: int) -> None:
         return
 
     if owner_id != user_id:
-        raise PermissionDenied("Only the query owner can modify its definition.")
+        raise QueryWriteDenied("Only the query owner can modify its definition.")
 
 
 @require_http_methods(["GET", "PUT", "DELETE"])
