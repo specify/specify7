@@ -193,9 +193,8 @@ function QueryShareDialog({
           <div className="flex flex-col gap-2 overflow-auto">
             {users.map(({ id, name }, index) => (
               <Label.Inline key={id}>
-                <Input.Generic
+                <Input.Checkbox
                   checked={selected.includes(id)}
-                  type="checkbox"
                   onChange={(event): void => {
                     const checked = event.target.checked;
                     const isRange =
