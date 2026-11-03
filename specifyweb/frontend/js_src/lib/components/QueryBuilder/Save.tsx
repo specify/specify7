@@ -37,7 +37,7 @@ export async function cloneSharedQuery(
   query: SpecifyResource<SpQuery>
 ): Promise<number> {
   const clonedQuery = await query.clone(true);
-  clonedQuery.set('name', `${query.get('name')} - cloned`);
+  clonedQuery.set('name', `${query.get('name').slice(0, 247)} - cloned`);
   clonedQuery.set('specifyUser', userInformation.resource_uri);
   clonedQuery.set('isFavorite', !isModern(query));
   return clonedQuery.save().then(() => clonedQuery.id);
