@@ -48,10 +48,19 @@ overrideAjax('/stored_query/query/10/shares/', '', {
   method: 'DELETE',
   responseCode: 204,
 });
+overrideAjax('/stored_query/query/11/shares/', {
+  ...recipients,
+  recipientIds: [],
+});
+overrideAjax(
+  '/stored_query/query/11/shares/',
+  { recipientIds: [1, 2, 3, 4] },
+  { method: 'PUT', body: { recipientIds: [1, 2, 3, 4] } }
+);
 
 afterEach(() => jest.restoreAllMocks());
 
-async function renderActions(): Promise<void> {
+async function renderActions(queryId = 10): Promise<void> {
   await act(async () => {
     render(
       <LoadingContext.Provider
@@ -60,7 +69,7 @@ async function renderActions(): Promise<void> {
         }}
       >
         <UnloadProtectsContext.Provider value={[]}>
-          <QuerySharingActions queryId={10} />
+          <QuerySharingActions queryId={queryId} />
         </UnloadProtectsContext.Provider>
       </LoadingContext.Provider>
     );
@@ -117,9 +126,12 @@ test('displays users under collapsible division, discipline, and collection node
 
 test('supports range selection, select all, deselect all, and confirmed saving', async () => {
   const ajax = jest.spyOn(ajaxModule, 'ajax');
-  await renderActions();
+  await renderActions(11);
   const share = screen.getByRole('button', { name: queryText.shareQuery() });
   await waitFor(() => expect(share).toBeEnabled());
+  expect(
+    screen.queryByRole('button', { name: queryText.revokeQuerySharing() })
+  ).not.toBeInTheDocument();
   await user.click(share);
   await screen.findByRole('checkbox', { name: 'Alice' });
   await user.click(
@@ -145,13 +157,16 @@ test('supports range selection, select all, deselect all, and confirmed saving',
   await user.click(screen.getByRole('button', { name: commonText.save() }));
   await waitFor(() =>
     expect(ajax).toHaveBeenCalledWith(
-      '/stored_query/query/10/shares/',
+      '/stored_query/query/11/shares/',
       expect.objectContaining({
         method: 'PUT',
         body: { recipientIds: [1, 2, 3, 4] },
       })
     )
   );
+  expect(
+    await screen.findByRole('button', { name: queryText.revokeQuerySharing() })
+  ).toBeVisible();
 });
 
 test('revocation requires confirmation and hides the action after success', async () => {
