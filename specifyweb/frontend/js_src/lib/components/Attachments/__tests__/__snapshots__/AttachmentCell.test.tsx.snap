@@ -123,6 +123,7 @@ exports[`AttachmentCell simple render 2`] = `
       "remarks": null,
       "repositoryagreementattachments": "/api/specify/repositoryagreementattachment/?attachment=5490",
       "resource_uri": "/api/specify/attachment/5490/",
+      "resourceurl": null,
       "scopeid": null,
       "scopetype": null,
       "spdatasetattachments": "/api/specify/spdatasetattachment/?attachment=5490",

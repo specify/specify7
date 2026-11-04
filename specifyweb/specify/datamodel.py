@@ -589,6 +589,7 @@ datamodel = Datamodel(tables=[
             Field(name='mimeType', column='MimeType', indexed=False, unique=False, required=False, type='java.lang.String', length=1024),
             Field(name='origFilename', column='OrigFilename', indexed=False, unique=False, required=True, type='text', length=65535),
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=4096),
+            Field(name='resourceURL', column='ResourceURL', indexed=False, unique=False, required=False, type='java.lang.String', length=1024),
             Field(name='scopeID', column='ScopeID', indexed=True, unique=False, required=False, type='java.lang.Integer'),
             Field(name='scopeType', column='ScopeType', indexed=True, unique=False, required=False, type='java.lang.Byte'),
             Field(name='subjectOrientation', column='SubjectOrientation', indexed=False, unique=False, required=False, type='java.lang.String', length=64),

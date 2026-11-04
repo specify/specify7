@@ -2532,6 +2532,15 @@
         "length": 4096
       },
       {
+        "name": "resourceURL",
+        "column": "ResourceURL",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.String",
+        "length": 1024
+      },
+      {
         "name": "scopeID",
         "column": "ScopeID",
         "indexed": true,

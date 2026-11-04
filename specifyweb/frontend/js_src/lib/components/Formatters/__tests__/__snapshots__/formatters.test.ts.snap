@@ -2203,6 +2203,7 @@ exports[`getMainTableFields 1`] = `
     "guid",
     "licenseLogoUrl",
     "metadataText",
+    "resourceURL",
     "subjectOrientation",
     "subtype",
     "title",
