@@ -1,8 +1,13 @@
 from unittest import skip
+from decimal import Decimal
+
 from django.db.models import ProtectedError
 
 from specifyweb.specify import models
+from specifyweb.specify.api.crud import delete_resource, post_resource, update_obj
+from specifyweb.specify.api.serializers import uri_for_model
 from specifyweb.specify.tests.test_api import ApiTests
+from ..exceptions import TreeBusinessRuleException
 
 class Geologictimeperiod(ApiTests):
     def setUp(self):
@@ -14,6 +19,224 @@ class Geologictimeperiod(ApiTests):
             definitionitem=self.geologictimeperiodtreedef.treedefitems.create(
                 name="root",
                 rankid=0))
+        self.era_rank = self.rootgtp.definitionitem.children.create(
+            name="Era",
+            rankid=100,
+            treedef=self.geologictimeperiodtreedef,
+        )
+
+    def _period_data(self, name, **overrides):
+        data = {
+            "name": name,
+            "parent": uri_for_model("geologictimeperiod", self.rootgtp.id),
+            "definitionitem": uri_for_model(
+                "geologictimeperiodtreedefitem", self.era_rank.id
+            ),
+            "remarks": "Test period",
+            "startperiod": 251.9,
+            "endperiod": 66.0,
+            "isbiostrat": True,
+        }
+        data.update(overrides)
+        return data
+
+    def _create_period(self, name, **overrides):
+        return post_resource(
+            self.collection,
+            self.agent,
+            "geologictimeperiod",
+            self._period_data(name, **overrides),
+        )
+
+    def _create_existing_period(self, name):
+        return self.rootgtp.children.create(
+            name=name,
+            definition=self.geologictimeperiodtreedef,
+            definitionitem=self.era_rank,
+            rankid=self.era_rank.rankid,
+            remarks="Created before this version",
+        )
+
+    def test_add_geologictimeperiod(self):
+        period = self._create_period("Mesozoic")
+
+        self.assertIsNotNone(period.id)
+        self.assertExists(
+            models.Geologictimeperiod.objects.filter(
+                id=period.id,
+                name="Mesozoic",
+                parent=self.rootgtp,
+            )
+        )
+        self.assertEqual(period.definition_id, self.geologictimeperiodtreedef.id)
+        self.assertEqual(period.definitionitem_id, self.era_rank.id)
+        self.assertEqual(period.rankid, self.era_rank.rankid)
+
+        period.refresh_from_db()
+        self.assertEqual(period.remarks, "Test period")
+        self.assertEqual(period.startperiod, Decimal("251.9"))
+        self.assertEqual(period.endperiod, Decimal("66.0"))
+        self.assertIs(period.isbiostrat, True)
+
+        period.delete()
+
+    def test_geologictimeperiod_rank_must_be_below_parent(self):
+        period_rank = self.era_rank.children.create(
+            name="Period",
+            rankid=200,
+            treedef=self.geologictimeperiodtreedef,
+        )
+        parent = self.rootgtp.children.create(
+            name="Cenozoic",
+            definition=self.geologictimeperiodtreedef,
+            definitionitem=period_rank,
+            rankid=period_rank.rankid,
+        )
+
+        with self.assertRaises(TreeBusinessRuleException):
+            models.Geologictimeperiod.objects.create(
+                name="Invalid child",
+                parent=parent,
+                definition=self.geologictimeperiodtreedef,
+                definitionitem=self.era_rank,
+                rankid=self.era_rank.rankid,
+            )
+
+    def test_geologictimeperiod_optional_fields_round_trip(self):
+        period = self._create_period(
+            "Cenozoic",
+            remarks="Optional fields",
+            startperiod=66.0,
+            endperiod=23.03,
+            startuncertainty=0.5,
+            enduncertainty=0.2,
+            standard="ICS",
+            text1="Text one",
+            text2="Text two",
+            isbiostrat=False,
+        )
+
+        period.refresh_from_db()
+        self.assertEqual(period.remarks, "Optional fields")
+        self.assertEqual(period.startperiod, Decimal("66.0"))
+        self.assertEqual(period.endperiod, Decimal("23.03"))
+        self.assertEqual(period.startuncertainty, Decimal("0.5"))
+        self.assertEqual(period.enduncertainty, Decimal("0.2"))
+        self.assertEqual(period.standard, "ICS")
+        self.assertEqual(period.text1, "Text one")
+        self.assertEqual(period.text2, "Text two")
+        self.assertFalse(period.isbiostrat)
+
+        period.delete()
+
+    def test_clone_geologictimeperiod(self):
+        original = self._create_period(
+            "Paleozoic",
+            remarks="Original remarks",
+            startperiod=541.0,
+            endperiod=252.0,
+            isbiostrat=False,
+        )
+
+        clone = self._create_period(
+            original.name,
+            remarks=original.remarks,
+            startperiod=original.startperiod,
+            endperiod=original.endperiod,
+            isbiostrat=original.isbiostrat,
+        )
+
+        self.assertNotEqual(clone.id, original.id)
+        self.assertEqual(clone.name, original.name)
+        self.assertEqual(clone.parent_id, original.parent_id)
+        self.assertEqual(clone.definitionitem_id, original.definitionitem_id)
+        self.assertEqual(clone.remarks, original.remarks)
+        self.assertEqual(clone.startperiod, original.startperiod)
+        self.assertEqual(clone.endperiod, original.endperiod)
+        self.assertEqual(clone.isbiostrat, original.isbiostrat)
+
+        clone.refresh_from_db()
+        self.assertEqual(clone.remarks, "Original remarks")
+        self.assertEqual(clone.startperiod, Decimal("541.0"))
+        self.assertEqual(clone.endperiod, Decimal("252.0"))
+        self.assertIs(clone.isbiostrat, False)
+
+        original.refresh_from_db()
+        self.assertEqual(original.name, "Paleozoic")
+
+        clone.delete()
+        original.delete()
+
+    def test_delete_new_geologictimeperiod(self):
+        period = self._create_period("Triassic")
+        period_id = period.id
+
+        delete_resource(
+            self.collection,
+            self.agent,
+            "geologictimeperiod",
+            period_id,
+            period.version,
+        )
+
+        self.assertNotExists(
+            models.Geologictimeperiod.objects.filter(id=period_id)
+        )
+
+    def test_edit_geologictimeperiod_created_in_previous_version(self):
+        period = self._create_existing_period("Jurassic")
+
+        update_obj(
+            self.collection,
+            self.agent,
+            "geologictimeperiod",
+            period.id,
+            period.version,
+            {"name": "Jurassic (updated)", "remarks": "Updated remarks"},
+        )
+
+        period.refresh_from_db()
+        self.assertEqual(period.name, "Jurassic (updated)")
+        self.assertEqual(period.remarks, "Updated remarks")
+        self.assertEqual(period.version, 1)
+
+        period.delete()
+
+    def test_edit_geologictimeperiod_with_nonzero_version(self):
+        period = self._create_existing_period("Triassic")
+        models.Geologictimeperiod.objects.filter(id=period.id).update(version=2)
+        period.refresh_from_db()
+
+        update_obj(
+            self.collection,
+            self.agent,
+            "geologictimeperiod",
+            period.id,
+            period.version,
+            {"name": "Triassic (updated)"},
+        )
+
+        period.refresh_from_db()
+        self.assertEqual(period.name, "Triassic (updated)")
+        self.assertEqual(period.version, 3)
+
+        period.delete()
+
+    def test_delete_geologictimeperiod_created_in_previous_version(self):
+        period = self._create_existing_period("Cretaceous")
+        period_id = period.id
+
+        delete_resource(
+            self.collection,
+            self.agent,
+            "geologictimeperiod",
+            period_id,
+            period.version,
+        )
+
+        self.assertNotExists(
+            models.Geologictimeperiod.objects.filter(id=period_id)
+        )
 
     def test_delete_blocked_by_biostratspaleocontext(self):
         self.rootgtp.biostratspaleocontext.create(
