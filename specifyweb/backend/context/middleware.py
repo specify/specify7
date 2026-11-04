@@ -7,7 +7,7 @@ from django.utils.functional import SimpleLazyObject
 
 from specifyweb.specify.api.filter_by_col import filter_by_collection
 from specifyweb.specify.models import Collection, Specifyuser, Agent
-from specifyweb.backend.context.views import users_collections_for_sp7
+from specifyweb.backend.context.collection_access import users_collections_for_sp7
 
 
 def get_cached(attr, func, request):

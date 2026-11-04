@@ -24,7 +24,7 @@ import { ProtectedAction } from '../Permissions/PermissionDenied';
 import { collectionPreferences } from '../Preferences/collectionPreferences';
 import { userPreferences } from '../Preferences/userPreferences';
 import { AddStatDialog } from './AddStatDialog';
-import { StatsAsideButton } from './Buttons';
+import { StatsAsideButton, StatsRefreshButton } from './Buttons';
 import { Categories } from './Categories';
 import {
   applyRefreshLayout,
@@ -41,6 +41,7 @@ import {
   useDynamicCategorySetter,
   useDynamicGroups,
 } from './hooks';
+import { cancelStatisticsRequests, statisticsAreLoading } from './requests';
 import { StatsPageEditing } from './StatsPageEditing';
 import {
   backEndStatsSpec,
@@ -296,7 +297,10 @@ function ProtectedStatsPage(): JSX.Element | null {
   /* Set Default Layout every time page is started from scratch*/
   React.useEffect(() => {
     setDefaultLayout(defaultLayoutGenerated);
-    return cleanThrottledPromises;
+    return () => {
+      cancelStatisticsRequests();
+      cleanThrottledPromises();
+    };
   }, [setDefaultLayout]);
 
   const pageLastUpdated = activePage.isShared
@@ -477,6 +481,7 @@ function ProtectedStatsPage(): JSX.Element | null {
   );
 
   const refreshPage = () => {
+    if (statisticsAreLoading()) return;
     cleanThrottledPromises(false);
     setCurrentLayout((layout) =>
       layout === undefined
@@ -517,9 +522,7 @@ function ProtectedStatsPage(): JSX.Element | null {
             <DateElement date={pageLastUpdated} />
           </span>
         )}
-        <Button.BorderedGray onClick={(): void => refreshPage()}>
-          {statsText.refresh()}
-        </Button.BorderedGray>
+        <StatsRefreshButton onClick={refreshPage} />
         {Object.values(layout).every((layouts) => layouts !== undefined) && (
           <Button.BorderedGray
             onClick={(): void => {

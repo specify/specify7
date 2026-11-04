@@ -9,6 +9,15 @@ Many folders have a README.md file that provides context specific documentation.
 Additionally, files have TSDoc comments at the top and before function
 declarations where applicable.
 
+Run `npx typedoc` from this directory to generate API documentation in `docs/`.
+The TypeDoc minimatch override requires version 11.0.1 or later for the
+globparts-amplification security fix. `npm ci` / `npm install` applies the
+tracked TypeDoc compatibility patch using `patch-package`: directory traversal
+uses minimatch's supported partial matching API instead of the removed
+`matchOne`. If installing with `--ignore-scripts`, run `npx patch-package`
+before generating documentation. Revisit the patch and TypeDoc version pin when
+upgrading TypeDoc.
+
 ## Configuring development environment
 
 ### Configuring Git

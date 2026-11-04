@@ -11,7 +11,7 @@ from django.conf import settings
 
 from specifyweb.specify.models import Collection, Specifyuser
 from specifyweb.backend.cache.redis.connect import RedisConnection, RedisString
-from specifyweb.backend.context.views import has_collection_access
+from specifyweb.backend.context.collection_access import has_collection_access
 
 DEFAULT_AUTH_LIFESPAN_SECONDS = 1800
 

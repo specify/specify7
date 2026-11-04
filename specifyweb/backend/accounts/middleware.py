@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from specifyweb.specify.models import Collection, Specifyuser, Agent
 from specifyweb.specify.api.filter_by_col import filter_by_collection
 from specifyweb.backend.accounts.access_token_utils import get_token_from_request, token_is_revoked
-from specifyweb.backend.context.views import has_collection_access
+from specifyweb.backend.context.collection_access import has_collection_access
 
 
 def get_agent(request):

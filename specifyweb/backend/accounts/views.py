@@ -28,7 +28,8 @@ from specifyweb.backend.accounts.forms_types import CollectionChoiceField
 from specifyweb.backend.accounts.permissions_types import InviteLinkPT, SetPasswordPT, SetUserAgentsPT, Sp6AdminPT, UserOICProvidersPT
 from specifyweb.backend.accounts.types import ExternalUser, InviteToken, OAuthLogin, ProviderConf, ProviderInfo
 from specifyweb.middleware.general import require_GET, require_http_methods
-from specifyweb.backend.context.views import has_collection_access, set_collection_cookie, users_collections_for_sp7
+from specifyweb.backend.context.collection_access import users_collections_for_sp7
+from specifyweb.backend.context.views import set_collection_cookie
 
 from specifyweb.backend.permissions.permissions import check_permission_targets
 from specifyweb.specify.views import login_maybe_required, openapi
