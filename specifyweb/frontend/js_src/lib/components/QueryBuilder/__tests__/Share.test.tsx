@@ -8,6 +8,7 @@ import {
 import React from 'react';
 
 import { commonText } from '../../../localization/common';
+import { formsText } from '../../../localization/forms';
 import { interactionsText } from '../../../localization/interactions';
 import { queryText } from '../../../localization/query';
 import { overrideAjax } from '../../../tests/ajax';
@@ -20,6 +21,7 @@ import { QuerySharingActions } from '../Share';
 requireContext();
 const recipients = {
   recipientIds: [2],
+  version: 0,
   collections: [
     {
       id: 1,
@@ -41,8 +43,8 @@ const recipients = {
 overrideAjax('/stored_query/query/10/shares/', recipients);
 overrideAjax(
   '/stored_query/query/10/shares/',
-  { recipientIds: [1, 2, 3, 4] },
-  { method: 'PUT', body: { recipientIds: [1, 2, 3, 4] } }
+  { recipientIds: [1, 2, 3, 4], version: 1 },
+  { method: 'PUT', body: { recipientIds: [1, 2, 3, 4], version: 0 } }
 );
 overrideAjax('/stored_query/query/10/shares/', '', {
   method: 'DELETE',
@@ -54,8 +56,8 @@ overrideAjax('/stored_query/query/11/shares/', {
 });
 overrideAjax(
   '/stored_query/query/11/shares/',
-  { recipientIds: [1, 2, 3, 4] },
-  { method: 'PUT', body: { recipientIds: [1, 2, 3, 4] } }
+  { recipientIds: [1, 2, 3, 4], version: 1 },
+  { method: 'PUT', body: { recipientIds: [1, 2, 3, 4], version: 0 } }
 );
 
 afterEach(() => jest.restoreAllMocks());
@@ -160,7 +162,7 @@ test('supports range selection, select all, deselect all, and confirmed saving',
       '/stored_query/query/11/shares/',
       expect.objectContaining({
         method: 'PUT',
-        body: { recipientIds: [1, 2, 3, 4] },
+        body: { recipientIds: [1, 2, 3, 4], version: 0 },
       })
     )
   );
@@ -185,6 +187,16 @@ test('revocation requires confirmation and hides the action after success', asyn
   const buttons = screen.getAllByRole('button', {
     name: queryText.revokeQuerySharing(),
   });
+  ajax.mockResolvedValueOnce({
+    data: '',
+    status: 204,
+    response: {} as Response,
+  });
+  ajax.mockResolvedValueOnce({
+    data: { ...recipients, recipientIds: [], version: 1 },
+    status: 200,
+    response: {} as Response,
+  });
   await user.click(buttons[buttons.length - 1]);
   await waitFor(() =>
     expect(
@@ -195,4 +207,56 @@ test('revocation requires confirmation and hides the action after success', asyn
     '/stored_query/query/10/shares/',
     expect.objectContaining({ method: 'DELETE' })
   );
+});
+
+test('reloads recipients and version after a conflict before allowing another save', async () => {
+  const ajax = jest.spyOn(ajaxModule, 'ajax');
+  await renderActions();
+  await user.click(
+    screen.getByRole('button', { name: queryText.shareQuery() })
+  );
+  await user.click(screen.getByRole('checkbox', { name: 'Alice' }));
+  await user.click(screen.getByRole('button', { name: commonText.save() }));
+  ajax.mockResolvedValueOnce({
+    data: 'out of date',
+    status: 409,
+    response: {} as Response,
+  });
+  ajax.mockResolvedValueOnce({
+    data: { ...recipients, recipientIds: [3], version: 7 },
+    status: 200,
+    response: {} as Response,
+  });
+
+  await user.click(screen.getByRole('button', { name: commonText.save() }));
+  expect(await screen.findByRole('alert')).toHaveTextContent(
+    formsText.saveConflict()
+  );
+  expect(screen.getByRole('checkbox', { name: 'Alice' })).not.toBeChecked();
+  expect(screen.getByRole('checkbox', { name: 'Bob' })).not.toBeChecked();
+  expect(screen.getByRole('checkbox', { name: 'Carol' })).toBeChecked();
+  expect(ajax).toHaveBeenCalledWith(
+    '/stored_query/query/10/shares/',
+    expect.objectContaining({
+      method: 'PUT',
+      body: { recipientIds: [2, 1], version: 0 },
+      expectedErrors: [409],
+    })
+  );
+
+  ajax.mockResolvedValueOnce({
+    data: { recipientIds: [3], version: 8 },
+    status: 200,
+    response: {} as Response,
+  });
+  await user.click(screen.getByRole('button', { name: commonText.save() }));
+  await user.click(screen.getByRole('button', { name: commonText.save() }));
+  expect(ajax).toHaveBeenLastCalledWith(
+    '/stored_query/query/10/shares/',
+    expect.objectContaining({
+      method: 'PUT',
+      body: { recipientIds: [3], version: 7 },
+    })
+  );
+  expect(screen.queryByRole('alert')).not.toBeInTheDocument();
 });

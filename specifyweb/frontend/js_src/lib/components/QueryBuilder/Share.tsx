@@ -2,9 +2,11 @@ import React from 'react';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
+import { formsText } from '../../localization/forms';
 import { interactionsText } from '../../localization/interactions';
 import { queryText } from '../../localization/query';
 import { ajax } from '../../utils/ajax';
+import { Http } from '../../utils/ajax/definitions';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
@@ -25,10 +27,11 @@ type QueryShareCollection = QueryShareNode & {
 };
 type QueryShares = {
   readonly recipientIds: RA<number>;
+  readonly version: number;
   readonly collections: RA<QueryShareCollection>;
   readonly usersWithoutCollection: RA<QueryShareUser>;
 };
-type QuerySharesUpdate = Pick<QueryShares, 'recipientIds'>;
+type QuerySharesUpdate = Pick<QueryShares, 'recipientIds' | 'version'>;
 
 function groupBy<ITEM>(
   items: RA<ITEM>,
@@ -166,8 +169,9 @@ export function QuerySharingActions({
           queryId={queryId}
           recipients={shares}
           onClose={(): void => setMode(undefined)}
-          onSaved={(recipientIds): void => {
-            setShares({ ...shares, recipientIds });
+          onReload={setShares}
+          onSaved={(updated): void => {
+            setShares({ ...shares, ...updated });
             setMode(undefined);
           }}
         />
@@ -183,12 +187,12 @@ export function QuerySharingActions({
                     ajax(`/stored_query/query/${queryId}/shares/`, {
                       method: 'DELETE',
                       headers: { Accept: 'text/plain' },
-                    }).then(() => {
-                      setShares((current) =>
-                        current === undefined
-                          ? current
-                          : { ...current, recipientIds: [] }
+                    }).then(async () => {
+                      const { data } = await ajax<QueryShares>(
+                        `/stored_query/query/${queryId}/shares/`,
+                        { headers: { Accept: 'application/json' } }
                       );
+                      setShares(data);
                       setMode(undefined);
                     })
                   )
@@ -213,16 +217,19 @@ function QueryShareDialog({
   initialRecipients,
   recipients,
   onClose,
+  onReload,
   onSaved,
 }: {
   readonly queryId: number;
   readonly initialRecipients: RA<number>;
   readonly recipients: QueryShares;
   readonly onClose: () => void;
-  readonly onSaved: (recipientIds: RA<number>) => void;
+  readonly onReload: (shares: QueryShares) => void;
+  readonly onSaved: (shares: QuerySharesUpdate) => void;
 }): JSX.Element {
   const [selected, setSelected] = React.useState(initialRecipients);
   const [review, setReview] = React.useState(false);
+  const [conflict, setConflict] = React.useState(false);
   const anchor = React.useRef<HTMLInputElement>();
   const loading = React.useContext(LoadingContext);
   const allUsers = React.useMemo(
@@ -262,9 +269,25 @@ function QueryShareDialog({
                       {
                         method: 'PUT',
                         headers: { Accept: 'application/json' },
-                        body: { recipientIds: selected },
+                        expectedErrors: [Http.CONFLICT],
+                        body: {
+                          recipientIds: selected,
+                          version: recipients.version,
+                        },
                       }
-                    ).then(({ data }) => onSaved(data.recipientIds))
+                    ).then(async ({ data, status }) => {
+                      if (status === Http.CONFLICT) {
+                        const { data: current } = await ajax<QueryShares>(
+                          `/stored_query/query/${queryId}/shares/`,
+                          { headers: { Accept: 'application/json' } }
+                        );
+                        onReload(current);
+                        setSelected(current.recipientIds);
+                        anchor.current = undefined;
+                        setReview(false);
+                        setConflict(true);
+                      } else onSaved(data);
+                    })
                   )
                 }
               >
@@ -281,9 +304,11 @@ function QueryShareDialog({
           )}
         </>
       }
+      dimensionsKey="QueryShareDialog"
       header={review ? queryText.confirmQuerySharing() : queryText.shareQuery()}
       onClose={review ? (): void => setReview(false) : onClose}
     >
+      {conflict && <p role="alert">{formsText.saveConflict()}</p>}
       <p>
         {review
           ? queryText.confirmQuerySharingDescription()

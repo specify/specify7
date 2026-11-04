@@ -13,8 +13,10 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_http_methods
 
 from specifyweb.backend.permissions.permissions import CollectionAccessPT
+from specifyweb.specify.api.crud import bump_version
+from specifyweb.specify.api.exceptions import MissingVersionException, StaleObjectException
 from specifyweb.specify.models import Collection, Spquery, Specifyuser
-from specifyweb.specify.views import login_maybe_required
+from specifyweb.specify.views import HttpResponseConflict, login_maybe_required
 
 
 def get_query_share_recipients() -> dict[str, object]:
@@ -116,11 +118,13 @@ def manage_query_shares(request: HttpRequest, id: int) -> HttpResponse:
             return JsonResponse(
                 {
                     "recipientIds": recipient_ids,
+                    "version": query.version,
                     **get_query_share_recipients(),
                 }
             )
 
         if request.method == "DELETE":
+            bump_version(query, query.version)
             query.share_grants.all().delete()
             return HttpResponse(status=204)
 
@@ -152,6 +156,15 @@ def manage_query_shares(request: HttpRequest, id: int) -> HttpResponse:
                 "recipientIds contains a user that does not exist."
             )
 
+        # Use the query's optimistic locking version while holding its row lock.
+        # A stale save must leave the current grants untouched.
+        try:
+            bump_version(query, data.get("version"))
+        except MissingVersionException as error:
+            return HttpResponseBadRequest(error)
+        except StaleObjectException as error:
+            return HttpResponseConflict(error)
+
         query.share_grants.all().delete()
         SpqueryShare.objects.bulk_create(
             [
@@ -160,4 +173,4 @@ def manage_query_shares(request: HttpRequest, id: int) -> HttpResponse:
             ]
         )
 
-        return JsonResponse({"recipientIds": recipient_ids})
+        return JsonResponse({"recipientIds": recipient_ids, "version": query.version})

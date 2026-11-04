@@ -217,12 +217,13 @@ class SharedQueryApiTests(SharedQueryFixture, ApiTests):
     def test_owner_can_replace_and_revoke_recipient_grants(self):
         response = self.client.put(
             self.url,
-            data=json.dumps({"recipientIds": [self.recipient.id]}),
+            data=json.dumps({"recipientIds": [self.recipient.id], "version": self.query.version}),
             content_type="application/json",
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), {"recipientIds": [self.recipient.id]})
+        self.query.refresh_from_db()
+        self.assertEqual(response.json(), {"recipientIds": [self.recipient.id], "version": self.query.version})
         self.assertTrue(
             SpqueryShare.objects.filter(
                 query=self.query, recipient=self.recipient
@@ -288,6 +289,60 @@ class SharedQueryApiTests(SharedQueryFixture, ApiTests):
         )
 
         self.assertEqual(response.status_code, 400)
+        self.assertFalse(SpqueryShare.objects.filter(query=self.query).exists())
+
+    def test_stale_share_save_preserves_current_grants_and_can_retry_after_reload(self):
+        initial = self.client.get(self.url).json()
+        response = self.client.put(
+            self.url,
+            data={"recipientIds": [self.recipient.id], "version": initial["version"]},
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200, response.content)
+        grant = SpqueryShare.objects.get(query=self.query, recipient=self.recipient)
+        current_version = response.json()["version"]
+        self.assertEqual(current_version, initial["version"] + 1)
+
+        response = self.client.put(
+            self.url,
+            data={"recipientIds": [], "version": initial["version"]},
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 409, response.content)
+        self.assertTrue(SpqueryShare.objects.filter(pk=grant.id).exists())
+        current = self.client.get(self.url).json()
+        self.assertEqual(current["recipientIds"], [self.recipient.id])
+        self.assertEqual(current["version"], current_version)
+
+        response = self.client.put(
+            self.url,
+            data={"recipientIds": [], "version": current["version"]},
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertFalse(SpqueryShare.objects.filter(query=self.query).exists())
+
+    def test_missing_or_invalid_version_preserves_grants(self):
+        grant = SpqueryShare.objects.create(query=self.query, recipient=self.recipient)
+        for version in (None, "invalid"):
+            with self.subTest(version=version):
+                data = {"recipientIds": []}
+                if version is not None:
+                    data["version"] = version
+                response = self.client.put(self.url, data=data, content_type="application/json")
+                self.assertEqual(response.status_code, 400, response.content)
+                self.assertTrue(SpqueryShare.objects.filter(pk=grant.id).exists())
+
+    def test_revoking_shares_invalidates_pending_save(self):
+        version = self.client.get(self.url).json()["version"]
+        SpqueryShare.objects.create(query=self.query, recipient=self.recipient)
+        self.assertEqual(self.client.delete(self.url).status_code, 204)
+        response = self.client.put(
+            self.url,
+            data={"recipientIds": [self.recipient.id], "version": version},
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 409, response.content)
         self.assertFalse(SpqueryShare.objects.filter(query=self.query).exists())
 
     def test_share_recipient_list_is_grouped_by_collection_and_discipline(self):
@@ -856,7 +911,7 @@ class SharedQueryExecutionTests(SharedQueryFixture, SQLAlchemySetup):
         self._grant_recipient("/table/collectionobject", "read")
         self.client.put(
             self.url,
-            data=json.dumps({"recipientIds": [self.recipient.id]}),
+            data=json.dumps({"recipientIds": [self.recipient.id], "version": self.query.version}),
             content_type="application/json",
         )
         recipient = self._recipient_client()
