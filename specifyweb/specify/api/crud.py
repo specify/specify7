@@ -141,6 +141,8 @@ def update_obj(collection, agent, name: str, id, version, data: dict[str, Any], 
     obj = get_object_or_404(name, id=int(id))
     check_table_permissions(collection, agent, obj, "update")
     ensure_query_write_access(obj, agent.specifyuser_id)
+    if isinstance(obj, models.Spqueryfield) and obj.query_id is None:
+        raise QueryWriteDenied("Orphaned query fields cannot be updated.")
 
     data = cleanData(obj.__class__, data, parent_relationship)
     dependents_to_delete, fk_dirty, handle_remote_to_ones = handle_fk_fields(collection, agent, obj, data)
