@@ -27,8 +27,8 @@ from specifyweb.backend.trees.utils import get_search_filters
 
 from . import models
 from .format import ObjectFormatter, ObjectFormatterProps
-from .query_construct import QueryConstruct
 from .field_spec_maps import transform_field_specs
+from .query_path import tables_in_path
 from .web_portal_export import query_to_web_portal_zip as _query_to_web_portal_zip, WebportalQueryResultProcessors
 from specifyweb.backend.notifications.models import Message
 from specifyweb.backend.permissions.permissions import check_table_permissions
@@ -46,6 +46,7 @@ from specifyweb.specify.models_utils.load_datamodel import Table
 # import it would already be handled.
 if TYPE_CHECKING:
     from specifyweb.backend.stored_queries.queryfield import QueryField
+    from specifyweb.backend.stored_queries.query_construct_model import QueryConstruct
 
 logger = logging.getLogger(__name__)
 
@@ -677,6 +678,25 @@ def createPlacemark(kmlDoc, row, coord_cols, table, captions, host):
     return placemarkElement
 
 
+def get_query_tables(query_fields: Iterable[QueryField]) -> set[Table]:
+    """Return the tables referenced by query field paths."""
+    return {
+        table
+        for field in query_fields
+        for table in tables_in_path(field.fieldspec.root_table, field.fieldspec.join_path)
+    }
+
+
+def check_query_permissions(collection, user, query_fields: Iterable[QueryField]) -> None:
+    """Check read permissions for query field paths without building the data query.
+
+    Permission failures propagate from check_table_permissions. This checks current
+    authorization, not query validity.
+    """
+    for table_to_read in get_query_tables(query_fields):
+        check_table_permissions(collection, user, table_to_read, "read")
+
+
 def run_ephemeral_query(collection, user, spquery):
     """Execute a Specify query from deserialized json and return the results
     as an array for json serialization to the web app.
@@ -963,6 +983,8 @@ def build_query_construct_base(
     model,
     props: BuildQueryProps,
 ):
+    from .query_construct_model import QueryConstruct
+
     id_field = model._id
     catalognumber_field = model.catalogNumber if hasattr(model, 'catalogNumber') else None
     query_construct_query = session.query(id_field)
@@ -1176,16 +1198,7 @@ def build_query(
 
     query_fields = list(transform_field_specs(query_fields, user))
 
-    tables_to_read = {
-            table
-            for field in query_fields
-            for table in query.tables_in_path(
-                field.fieldspec.root_table, field.fieldspec.join_path
-            )
-    }
-
-    for table_to_read in tables_to_read:
-        check_table_permissions(collection, user, table_to_read, "read")
+    check_query_permissions(collection, user, query_fields)
 
     query = filter_by_collection(model, query, collection)
 
