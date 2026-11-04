@@ -232,6 +232,7 @@ describe('Resource initialization preferences', () => {
     'GeologicTimePeriodTreeDefItem',
     'LithoStratTreeDefItem',
     'TectonicUnitTreeDefItem',
+    'TectonicUnit',
     'Agent',
     'CollectingEvent',
     'Geography',
