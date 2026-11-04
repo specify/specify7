@@ -132,8 +132,8 @@ msgstr "Collection"
 msgid "personal"
 msgstr "Espace personnel"
 
-#: components/Statistics/index.tsx:141
-#: components/Statistics/index.tsx:494
+#: components/Statistics/index.tsx:142
+#: components/Statistics/index.tsx:499
 #. Used in: Components > Statistics > Index
 msgid "private"
 msgstr "Privé"
@@ -149,33 +149,33 @@ msgstr "Objets informatisés"
 msgid "collectionObjectsDetermined"
 msgstr "Objets de la collection déterminés"
 
-#: components/Statistics/index.tsx:516
+#: components/Statistics/index.tsx:521
 #. Used in: Components > Statistics > Index
 msgid "lastRefreshed"
 msgstr "Dernière mise à jour"
 
-#: components/Statistics/hooks.tsx:376
+#: components/Statistics/hooks.tsx:389
 #. Used in: Components > Statistics > Hooks
 msgid "categoryName"
 msgstr "Nom de la catégorie"
 
-#: components/Statistics/hooks.tsx:377
+#: components/Statistics/hooks.tsx:390
 #. Used in: Components > Statistics > Hooks
 msgid "itemName"
 msgstr "Nom de l'article"
 
-#: components/Statistics/hooks.tsx:378
+#: components/Statistics/hooks.tsx:391
 #. Used in: Components > Statistics > Hooks
 msgid "itemValue"
 msgstr "Valeur de l'article"
 
-#: components/Statistics/index.tsx:545
+#: components/Statistics/index.tsx:548
 #. Used in: Components > Statistics > Index
 msgid "downloadAsTSV"
 msgstr "Télécharger au format TSV"
 
-#: components/Statistics/index.tsx:140
-#: components/Statistics/index.tsx:494
+#: components/Statistics/index.tsx:141
+#: components/Statistics/index.tsx:499
 #. Used in: Components > Statistics > Index
 msgid "shared"
 msgstr "Commun"
@@ -184,8 +184,8 @@ msgstr "Commun"
 #: components/Preferences/CollectionDefinitions.tsx:147
 #: components/Preferences/UserDefinitions.tsx:2391
 #: components/Router/Routes.tsx:500
-#: components/Statistics/hooks.tsx:118
-#: components/Statistics/index.tsx:512
+#: components/Statistics/hooks.tsx:120
+#: components/Statistics/index.tsx:517
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Statistics > Hooks ⬤ Components > Statistics > Index
 msgid "statistics"
 msgstr "Statistiques"
@@ -211,8 +211,10 @@ msgstr "Ajouter une page"
 msgid "addACategory"
 msgstr "Ajouter une catégorie"
 
-#: components/Statistics/index.tsx:521
-#. Used in: Components > Statistics > Index
+#: components/Statistics/Buttons.tsx:22
+#: components/Statistics/__tests__/Buttons.test.tsx:32
+#: components/Statistics/__tests__/Buttons.test.tsx:70
+#. Used in: Components > Statistics > Buttons ⬤ Statistics > __tests__ > Buttons
 msgid "refresh"
 msgstr "Rafraîchir"
 
@@ -226,7 +228,7 @@ msgstr "Objets de collection avec images"
 msgid "collectionObjectsWithAttachments"
 msgstr "Objets de collection avec pièces jointes"
 
-#: components/Statistics/StatItems.tsx:271
+#: components/Statistics/StatItems.tsx:274
 #. Used in: Components > Statistics > Stat Items
 msgid "error"
 msgstr "Erreur"

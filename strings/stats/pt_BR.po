@@ -154,8 +154,8 @@ msgstr "Coleção"
 msgid "personal"
 msgstr "Pessoal"
 
-#: components/Statistics/index.tsx:141
-#: components/Statistics/index.tsx:494
+#: components/Statistics/index.tsx:142
+#: components/Statistics/index.tsx:499
 #. Used in: Components > Statistics > Index
 #, fuzzy
 msgid "private"
@@ -174,38 +174,38 @@ msgstr "Objetos da Coleção Catalogados"
 msgid "collectionObjectsDetermined"
 msgstr "Objetos da Coleção Determinados"
 
-#: components/Statistics/index.tsx:516
+#: components/Statistics/index.tsx:521
 #. Used in: Components > Statistics > Index
 #, fuzzy
 msgid "lastRefreshed"
 msgstr "Última atualização"
 
-#: components/Statistics/hooks.tsx:376
+#: components/Statistics/hooks.tsx:389
 #. Used in: Components > Statistics > Hooks
 #, fuzzy
 msgid "categoryName"
 msgstr "Nome da categoria"
 
-#: components/Statistics/hooks.tsx:377
+#: components/Statistics/hooks.tsx:390
 #. Used in: Components > Statistics > Hooks
 #, fuzzy
 msgid "itemName"
 msgstr "Nome do item"
 
-#: components/Statistics/hooks.tsx:378
+#: components/Statistics/hooks.tsx:391
 #. Used in: Components > Statistics > Hooks
 #, fuzzy
 msgid "itemValue"
 msgstr "Valor do item"
 
-#: components/Statistics/index.tsx:545
+#: components/Statistics/index.tsx:548
 #. Used in: Components > Statistics > Index
 #, fuzzy
 msgid "downloadAsTSV"
 msgstr "Baixar como TSV"
 
-#: components/Statistics/index.tsx:140
-#: components/Statistics/index.tsx:494
+#: components/Statistics/index.tsx:141
+#: components/Statistics/index.tsx:499
 #. Used in: Components > Statistics > Index
 #, fuzzy
 msgid "shared"
@@ -215,8 +215,8 @@ msgstr "Compartilhado"
 #: components/Preferences/CollectionDefinitions.tsx:147
 #: components/Preferences/UserDefinitions.tsx:2391
 #: components/Router/Routes.tsx:500
-#: components/Statistics/hooks.tsx:118
-#: components/Statistics/index.tsx:512
+#: components/Statistics/hooks.tsx:120
+#: components/Statistics/index.tsx:517
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Statistics > Hooks ⬤ Components > Statistics > Index
 #, fuzzy
 msgid "statistics"
@@ -247,8 +247,10 @@ msgstr "Adicionar página"
 msgid "addACategory"
 msgstr "Adicionar uma categoria"
 
-#: components/Statistics/index.tsx:521
-#. Used in: Components > Statistics > Index
+#: components/Statistics/Buttons.tsx:22
+#: components/Statistics/__tests__/Buttons.test.tsx:32
+#: components/Statistics/__tests__/Buttons.test.tsx:70
+#. Used in: Components > Statistics > Buttons ⬤ Statistics > __tests__ > Buttons
 #, fuzzy
 msgid "refresh"
 msgstr "Atualizar"
@@ -265,7 +267,7 @@ msgstr "Objetos de coleção com imagens"
 msgid "collectionObjectsWithAttachments"
 msgstr "Objetos de coleção com anexos"
 
-#: components/Statistics/StatItems.tsx:271
+#: components/Statistics/StatItems.tsx:274
 #. Used in: Components > Statistics > Stat Items
 #, fuzzy
 msgid "error"

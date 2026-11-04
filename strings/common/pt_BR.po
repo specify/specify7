@@ -85,7 +85,7 @@ msgstr "Não"
 #: components/Security/User.tsx:463
 #: components/SetupTool/SetupForm.tsx:329
 #: components/Statistics/DeleteCategory.tsx:41
-#: components/Statistics/index.tsx:592
+#: components/Statistics/index.tsx:595
 #: components/SystemConfigurationTool/Hierarchy.tsx:369
 #: components/Toolbar/Language.tsx:101
 #: components/Toolbar/MasterKey.tsx:39
@@ -441,7 +441,7 @@ msgstr "Excluir colunas não mapeadas"
 #: components/Security/UserCollections.tsx:74
 #: components/Statistics/ResultsDialog.tsx:85
 #: components/Statistics/StatsPageEditing.tsx:47
-#: components/Statistics/index.tsx:594
+#: components/Statistics/index.tsx:597
 #: components/SystemConfigurationTool/Hierarchy.tsx:371
 #: components/WbActions/WbSave.tsx:81
 #: components/WbPlanView/Mapper.tsx:482
@@ -480,7 +480,7 @@ msgstr "Salvar"
 #: components/Security/Policies.tsx:184
 #: components/Statistics/Categories.tsx:285
 #: components/Statistics/StatsPageEditing.tsx:48
-#: components/Statistics/index.tsx:636
+#: components/Statistics/index.tsx:639
 #: components/Toolbar/ListEdit.tsx:144
 #: components/WbPlanView/navigator.ts:356
 #: components/WebLinks/Definition.tsx:116
@@ -617,6 +617,7 @@ msgstr "Ferramentas"
 #: components/Security/UserComponents.tsx:89
 #: components/Security/UserComponents.tsx:165
 #: components/SkeletonLoaders/Skeleton.tsx:8
+#: components/Statistics/Buttons.tsx:17
 #: components/Statistics/Categories.tsx:77
 #: components/Statistics/StatsResult.tsx:57
 #: components/Statistics/StatsResult.tsx:67
@@ -626,7 +627,7 @@ msgstr "Ferramentas"
 #: components/Toolbar/Language.tsx:258
 #: components/TreeView/Row.tsx:276
 #: components/WorkBench/Disambiguation.tsx:124
-#. Used in: Components > Core > Context Loader ⬤ Components > Core > Contexts ⬤ Core > __tests__ > Contexts ⬤ Components > Delete Blockers > Delete Blockers Aside ⬤ Components > Form Cells > Form Table ⬤ Components > Form Commands > Show Transactions ⬤ Components > Form Fields > Combo Box ⬤ Components > Form Fields > Field ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Form Plugins > Collection Rel One To One ⬤ Components > Formatters > Preview ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Delete Button ⬤ Components > Forms > Sub View ⬤ Components > Home Page > About Specify ⬤ Components > Interactions > Prep Return Row ⬤ Components > Keyboard Shortcuts > Url Shortcuts ⬤ Components > Leaflet > Index ⬤ Components > Merging > Usages ⬤ Components > Molecules > Auto Complete ⬤ Components > Molecules > Formatted Resource ⬤ Components > Molecules > Linked Records ⬤ Components > Molecules > Index ⬤ Components > Permissions > Format Error ⬤ Components > Preferences > Renderers ⬤ Components > Query Builder > Formatter ⬤ Components > Query Builder > Query Line Filter ⬤ Components > Query Builder > Results ⬤ Components > Query Combo Box > Index ⬤ Components > Schema Config > Fields ⬤ Components > Schema Config > Index ⬤ Components > Search Dialog > Index ⬤ Components > Security > Collection ⬤ Components > Security > Collection Components ⬤ Components > Security > Collection Role ⬤ Components > Security > Institution ⬤ Components > Security > Policies ⬤ Components > Security > Preview ⬤ Components > Security > Role Template ⬤ Components > Security > User Collections ⬤ Components > Security > User Components ⬤ Components > Skeleton Loaders > Skeleton ⬤ Components > Statistics > Categories ⬤ Components > Statistics > Stats Result ⬤ Components > Toolbar > Backup Database ⬤ Components > Toolbar > Language ⬤ Components > Tree View > Row ⬤ Components > Work Bench > Disambiguation
+#. Used in: Components > Core > Context Loader ⬤ Components > Core > Contexts ⬤ Core > __tests__ > Contexts ⬤ Components > Delete Blockers > Delete Blockers Aside ⬤ Components > Form Cells > Form Table ⬤ Components > Form Commands > Show Transactions ⬤ Components > Form Fields > Combo Box ⬤ Components > Form Fields > Field ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Form Plugins > Collection Rel One To One ⬤ Components > Formatters > Preview ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Delete Button ⬤ Components > Forms > Sub View ⬤ Components > Home Page > About Specify ⬤ Components > Interactions > Prep Return Row ⬤ Components > Keyboard Shortcuts > Url Shortcuts ⬤ Components > Leaflet > Index ⬤ Components > Merging > Usages ⬤ Components > Molecules > Auto Complete ⬤ Components > Molecules > Formatted Resource ⬤ Components > Molecules > Linked Records ⬤ Components > Molecules > Index ⬤ Components > Permissions > Format Error ⬤ Components > Preferences > Renderers ⬤ Components > Query Builder > Formatter ⬤ Components > Query Builder > Query Line Filter ⬤ Components > Query Builder > Results ⬤ Components > Query Combo Box > Index ⬤ Components > Schema Config > Fields ⬤ Components > Schema Config > Index ⬤ Components > Search Dialog > Index ⬤ Components > Security > Collection ⬤ Components > Security > Collection Components ⬤ Components > Security > Collection Role ⬤ Components > Security > Institution ⬤ Components > Security > Policies ⬤ Components > Security > Preview ⬤ Components > Security > Role Template ⬤ Components > Security > User Collections ⬤ Components > Security > User Components ⬤ Components > Skeleton Loaders > Skeleton ⬤ Components > Statistics > Buttons ⬤ Components > Statistics > Categories ⬤ Components > Statistics > Stats Result ⬤ Components > Toolbar > Backup Database ⬤ Components > Toolbar > Language ⬤ Components > Tree View > Row ⬤ Components > Work Bench > Disambiguation
 #, fuzzy
 msgid "loading"
 msgstr "Carregando…"
@@ -768,8 +769,8 @@ msgstr "Novo"
 #: components/SchemaConfig/Table.tsx:165
 #: components/Security/UserComponents.tsx:154
 #: components/Security/UserComponents.tsx:158
-#: components/Statistics/Buttons.tsx:33
-#: components/Statistics/index.tsx:609
+#: components/Statistics/Buttons.tsx:54
+#: components/Statistics/index.tsx:612
 #: components/SystemConfigurationTool/Hierarchy.tsx:412
 #: components/Toolbar/QueryTablesWrapper.tsx:140
 #: components/Toolbar/RecordSets.tsx:323
@@ -1172,7 +1173,7 @@ msgstr "Recolher tudo"
 #: components/Attachments/LeafletImageViewer.tsx:83
 #: components/Attachments/Viewer.tsx:418
 #: components/Preferences/index.tsx:456
-#: components/Statistics/index.tsx:564
+#: components/Statistics/index.tsx:567
 #: components/Toolbar/QueryTablesEdit.tsx:71
 #. Used in: Components > Attachments > Image Viewer ⬤ Components > Attachments > Leaflet Image Viewer ⬤ Components > Attachments > Viewer ⬤ Components > Preferences > Index ⬤ Components > Statistics > Index ⬤ Components > Toolbar > Query Tables Edit
 #, fuzzy
