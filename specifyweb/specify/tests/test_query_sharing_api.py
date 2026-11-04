@@ -413,6 +413,67 @@ class SharedQueryApiTests(SharedQueryFixture, ApiTests):
 
 
 class SharedQueryMergeApiTests(SharedQueryFixture, ApiTests):
+    def test_user_merge_cannot_transfer_another_users_queries(self):
+        for shared in (False, True):
+            with self.subTest(shared=shared):
+                query = models.Spquery.objects.create(
+                    name=f"User merge query {shared}",
+                    contextname="Collectionobject",
+                    contexttableid=models.Collectionobject.specify_model.tableId,
+                    specifyuser=self.recipient,
+                )
+                if shared:
+                    SpqueryShare.objects.create(query=query, recipient=self.specifyuser)
+
+                response = self.client.post(
+                    f"/merge/specifyuser/replace/{self.specifyuser.id}/",
+                    data={
+                        "old_record_ids": [self.recipient.id],
+                        "background": False,
+                    },
+                    content_type="application/json",
+                )
+
+                self.assertEqual(response.status_code, 403, response.content)
+                self.assertIn("QueryWriteDenied", response.json())
+                query.refresh_from_db()
+                self.assertEqual(query.specifyuser_id, self.recipient.id)
+                self.assertEqual(query.share_grants.count(), int(shared))
+                self.assertTrue(
+                    models.Specifyuser.objects.filter(pk=self.recipient.id).exists()
+                )
+                query.delete()
+
+    def test_user_merge_checks_queries_of_every_source_user(self):
+        other_owner = models.Specifyuser.objects.create(
+            name="other_query_owner", password="unusable"
+        )
+        other_query = models.Spquery.objects.create(
+            name="Other user's query",
+            contextname="Collectionobject",
+            contexttableid=models.Collectionobject.specify_model.tableId,
+            specifyuser=other_owner,
+        )
+        response = self.client.post(
+            f"/merge/specifyuser/replace/{self.recipient.id}/",
+            data={
+                "old_record_ids": [self.specifyuser.id, other_owner.id],
+                "background": False,
+            },
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 403, response.content)
+        self.assertIn("QueryWriteDenied", response.json())
+        self.query.refresh_from_db()
+        self.assertEqual(self.query.specifyuser_id, self.specifyuser.id)
+        self.assertTrue(models.Specifyuser.objects.filter(pk=self.specifyuser.id).exists())
+        self.agent.refresh_from_db()
+        self.assertEqual(self.agent.specifyuser_id, self.specifyuser.id)
+        other_query.refresh_from_db()
+        self.assertEqual(other_query.specifyuser_id, other_owner.id)
+        self.assertTrue(models.Specifyuser.objects.filter(pk=other_owner.id).exists())
+
     def test_merging_query_definitions_requires_ownership_of_all_records(self):
         for model_name in ("spquery", "spqueryfield"):
             for source_owned, target_owned in (

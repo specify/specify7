@@ -15,7 +15,7 @@ from specifyweb.backend.notifications.models import Message, Spmerging
 from django.db.models import Q
 
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
-from specifyweb.backend.stored_queries.access import QueryWriteDenied
+from specifyweb.backend.stored_queries.access import QueryWriteDenied, ensure_query_write_access
 from specifyweb.celery_tasks import LogErrorsTask, app
 from specifyweb.specify import models as spmodels
 from specifyweb.specify.models_utils.build_models import orderings
@@ -193,11 +193,15 @@ def record_merge_fx(model_name: str, old_model_ids: list[int], new_model_id: int
     # Get dependent fields and objects of the target object
     target_object = target_model.objects.get(id=new_model_id)
     if isinstance(target_object, (spmodels.Spquery, spmodels.Spqueryfield)):
-        from specifyweb.backend.stored_queries.access import ensure_query_write_access
-
         ensure_query_write_access(target_object, specify_user.id)
         for old_object in target_model.objects.filter(id__in=old_model_ids):
             ensure_query_write_access(old_object, specify_user.id)
+    elif isinstance(target_object, spmodels.Specifyuser):
+        # Reassigning query ownership requires write access to every original.
+        for query in spmodels.Spquery.objects.filter(
+            specifyuser_id__in=old_model_ids
+        ).select_for_update():
+            ensure_query_write_access(query, specify_user.id)
 
     dependant_relationships = [(rel.relatedModelName, rel.name)
         for rel in target_object.specify_model.relationships
