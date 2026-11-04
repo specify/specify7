@@ -135,6 +135,20 @@ class TaxonTests(ApiTests):
 
         taxon.delete()
 
+    def test_delete_taxon_created_in_previous_version(self):
+        taxon = self._create_existing_taxon("Animalia")
+        taxon_id = taxon.id
+
+        delete_resource(
+            self.collection,
+            self.agent,
+            "taxon",
+            taxon_id,
+            taxon.version,
+        )
+
+        self.assertNotExists(models.Taxon.objects.filter(id=taxon_id))
+
     def test_delete_blocked_by_collectingeventattributes(self):
         collectingeventattribute = models.Collectingeventattribute.objects.create(
             discipline=self.discipline,
