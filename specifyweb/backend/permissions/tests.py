@@ -1,6 +1,7 @@
 import json
 
 from django.test import Client
+from django.utils import timezone
 
 from specifyweb.specify.tests.test_api import ApiTests
 from specifyweb.specify import models as spmodels
@@ -38,6 +39,25 @@ class PermissionsApiTest(ApiTests):
         data = json.loads(response.content)
         self.assertEqual(data['/table/%'], ['%'])
         self.assertEqual(data['/field/%'], ['%'])
+
+    def test_all_user_roles_includes_presence_for_collection_users(self) -> None:
+        from specifyweb.backend.accounts.models import UserPresence
+
+        UserPresence.objects.create(
+            specifyuser=self.specifyuser,
+            last_heartbeat=timezone.now(),
+            last_activity=timezone.now(),
+        )
+
+        c = Client()
+        c.force_login(self.specifyuser)
+        response = c.get(f'/permissions/user_roles/{self.collection.id}/')
+
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.content)
+        current_user = next(
+            user for user in data if user['userid'] == self.specifyuser.id)
+        self.assertEqual(current_user['presence'], 'active')
 
     def test_set_user_policies_institution(self) -> None:
         c = Client()
@@ -619,3 +639,63 @@ class PermissionsApiTest(ApiTests):
 
         self.assertFalse(spmodels.Specifyuser.objects.filter(id=user2.id).exists())
         self.assertFalse(models.UserPolicy.objects.filter(specifyuser_id=user2.id).exists())
+
+
+    def test_no_access_to_other_collection(self) -> None:
+    # making a second collection
+        other_collection = spmodels.Collection.objects.create(
+            catalognumformatname="test",
+            collectionname="Other Test Collection",
+            isembeddedcollectingevent=False,
+            discipline=self.discipline
+        )
+
+        # creating a new user
+        user2 = spmodels.Specifyuser.objects.create( # type: ignore
+            isloggedin=False,
+            isloggedinreport=False,
+            name="testuser2",
+            password=""
+        )
+        user2.set_password('testuser2password')
+        user2.save()
+
+        spmodels.Agent.objects.create(
+            agenttype=0,
+            firstname="Test",
+            lastname="User",
+            division=self.division,
+            specifyuser=user2
+        )
+
+        models.UserPolicy.objects.create(
+            collection=self.collection,
+            specifyuser=user2,
+            resource=permissions.CollectionAccessPT.resource,
+            action="access")
+        models.UserPolicy.objects.create(
+            collection=self.collection,
+            specifyuser=user2,
+            resource="/table/collectionobject",
+            action="read")
+
+        c = Client()
+        self.assertTrue(c.login(name='testuser2', password='testuser2password'))
+
+        # the user has access to this collection
+        c.cookies['collection'] = str(self.collection.id)
+        response = c.get('/api/specify/collectionobject/')
+        self.assertEqual(response.status_code, 200)
+
+        # but not to another collection, even if the collection cookie is changed
+        c.cookies['collection'] = str(other_collection.id)
+        response = c.get('/api/specify/collectionobject/')
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(json.loads(response.content), {
+            'NoMatchingRuleException': [{
+                'collectionid': other_collection.id,
+                'userid': user2.id,
+                'resource': permissions.CollectionAccessPT.resource,
+                'action': 'access',
+            }]
+        })

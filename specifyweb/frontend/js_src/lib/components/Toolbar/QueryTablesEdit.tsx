@@ -7,7 +7,7 @@ import { schemaText } from '../../localization/schema';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import type { SpecifyTable } from '../DataModel/specifyTable';
-import { genericTables } from '../DataModel/tables';
+import { genericTables, sortTablesByCaption } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import { userPreferences } from '../Preferences/userPreferences';
@@ -54,11 +54,12 @@ export function TablesListEdit({
   readonly onClose: () => void;
 }): JSX.Element {
   const selectedValues = selectedTables.map(({ name }) => name);
-  const allTables = Object.values(genericTables)
-    .filter((table) =>
+  const allTables = sortTablesByCaption(
+    Object.values(genericTables).filter((table) =>
       tablesFilter(showHiddenTables, false, true, table, selectedValues)
-    )
-    .map(({ name, label }) => ({ name, label }));
+    ),
+    ({ name }) => name
+  ).map(({ name, label }) => ({ name, label }));
 
   const handleChanged = (items: RA<keyof Tables>): void =>
     handleChange(items.map((name) => genericTables[name]));

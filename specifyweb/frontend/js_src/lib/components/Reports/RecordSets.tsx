@@ -21,12 +21,14 @@ export function ReportRecordSets({
   appResource,
   definition,
   parameters,
+  reportId,
   onClose: handleClose,
 }: {
   readonly query: SerializedResource<SpQuery>;
   readonly appResource: SerializedResource<SpAppResource>;
   readonly definition: Element;
   readonly parameters: IR<string>;
+  readonly reportId: number | undefined;
   readonly onClose: () => void;
 }): JSX.Element {
   const table = React.useMemo(
@@ -105,6 +107,7 @@ export function ReportRecordSets({
       parameters={parameters}
       query={query}
       recordSetId={state.type === 'RecordSet' ? state.recordSet.id : undefined}
+      reportId={reportId}
       onClose={handleClose}
     />
   );

@@ -271,8 +271,23 @@ else
 fi
 fi
 
-# BUG: this should probably be skipped if the app user is the same as the
-# master or migrator
+########################################
+# APP USER
+########################################
+
+if [[ "$SAME_MASTER_AND_APP" == true ]]; then
+  echo "App user '$APP_USER_NAME' uses the same credentials as master."
+  echo "Skipping creation/grant steps for a separate app account."
+  echo "Relying on master privileges for runtime connections."
+
+elif [[ "$SAME_MIGRATOR_AND_APP" == true ]]; then
+  echo "App user '$APP_USER_NAME' uses the same credentials as migrator."
+  echo "Skipping creation/grant steps for a separate app account."
+  echo "Relying on migrator privileges for runtime connections."
+
+else
+  echo "Ensuring app user '$APP_USER_NAME' exists for relevant hosts..."
+
 # Create app user if it doesn't exist
 USER_EXISTS=$(mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -sse \
 "SELECT COUNT(*) FROM mysql.user WHERE user = '$SQL_APP_USER_NAME' AND host = '$APP_USER_HOST';")
@@ -290,23 +305,6 @@ if [[ "$USER_EXISTS" -eq 0 && "$APP_USER_NAME" != "root" ]]; then
     APP_USER_PASSWORD="$MIGRATOR_PASSWORD"
   fi
 fi
-
-########################################
-# APP USER
-########################################
-
-if [[ "$SAME_MASTER_AND_APP" == true ]]; then
-  echo "App user '$APP_USER_NAME' uses the same credentials as master."
-  echo "Skipping creation/grant steps for a separate app account."
-  echo "Relying on master privileges for runtime connections."
-
-elif [[ "$SAME_MIGRATOR_AND_APP" == true ]]; then
-  echo "App user '$APP_USER_NAME' uses the same credentials as migrator."
-  echo "Skipping creation/grant steps for a separate app account."
-  echo "Relying on migrator privileges for runtime connections."
-
-else
-  echo "Ensuring app user '$APP_USER_NAME' exists for relevant hosts..."
 
 if [[ "$NEW_APP_USER_CREATED" -eq 1 ]]; then
   echo "Granting privileges to new user..."

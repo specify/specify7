@@ -232,7 +232,7 @@ def get_tables_from_field_path(model: str, field_path: str) -> list[str]:
     relationships = field_path.split('__')
 
     for relationship in relationships:
-        other_model = table.get_relationship(
+        other_model = table.get_relationship_strict(
             relationship).relatedModelName.lower()
         tables.append(other_model)
         table = datamodel.get_table_strict(other_model)

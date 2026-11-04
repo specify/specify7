@@ -5,6 +5,8 @@ import re
 from collections import namedtuple, deque
 from typing import TypedDict, Iterable
 
+from django.db.models import Q
+
 from specifyweb.backend.inheritance.utils import get_cat_num_inheritance_setting, get_parent_cat_num_inheritance_setting
 from specifyweb.specify.utils.uiformatters import get_uiformatter
 from sqlalchemy import sql, Table as SQLTable
@@ -18,6 +20,7 @@ from specifyweb.backend.stored_queries.models import Component as sq_Component
 
 from . import models
 from .query_ops import QueryOps
+from .tree_rank import TreeRankQuery
 
 logger = logging.getLogger(__name__)
 
@@ -130,41 +133,6 @@ def make_stringid(fs: "QueryFieldSpec", table_list: list[str]) -> tuple[list[str
     return table_list, fs.table.name.lower(), field_name.strip()
 
 
-class TreeRankQuery(Relationship):
-    # FUTURE: used to remember what the previous value was. Useless after 6 retires
-    original_field: str
-    # This is used to query a particular treedef. If this is none, all treedefs are searched, otherwise a specific treedef is searched.
-    treedef_id: int | None
-    # Yeah this can be inferred from treedef_id but doing it this way avoids a database lookup because we already fetch it once.
-    treedef_name: str | None
-
-    def __hash__(self):
-        return hash((TreeRankQuery, self.relatedModelName, self.name))
-
-    def __eq__(self, value):
-        return (
-            isinstance(value, TreeRankQuery)
-            and value.name == self.name
-            and value.relatedModelName == self.relatedModelName
-        )
-
-    @staticmethod
-    def create(name, table_name, treedef_id=None, treedef_name=None):
-        obj = TreeRankQuery(
-            name=name,
-            relatedModelName=table_name,
-            type="many-to-one",
-            column=datamodel.get_table_strict(table_name).idFieldName
-        )
-        obj.treedef_id = treedef_id
-        obj.treedef_name = treedef_name
-        return obj
-
-    def get_workbench_name(self):
-        from specifyweb.backend.workbench.upload.treerecord import RANK_KEY_DELIMITER
-        # Treedef id included to make it easier to pass it to batch edit
-        return f"{self.treedef_name}{RANK_KEY_DELIMITER}{self.name}{RANK_KEY_DELIMITER}{self.treedef_id}"
-
 def null_safe_not(field_expr, predicate):
 
     """Return a NOT clause that still matches NULL values on the target field.
@@ -186,6 +154,7 @@ def null_safe_not(field_expr, predicate):
 
 QueryNode = Field | Relationship | TreeRankQuery
 FieldSpecJoinPath = tuple[QueryNode]
+
 
 class QueryFieldSpec(
     namedtuple(
@@ -487,14 +456,20 @@ class QueryFieldSpec(
                 f = op(
                     orm_field, value, query, is_strict=strict
                 )  # Needed if using op_age_range_simple
-                # Handle modifying query from op_age_range
-                # new_query = op(orm_field, value, query, is_strict=strict)
-                # query = query._replace(query=new_query)
-                # f = None
                 if isinstance(f, Query):
+                    original_columns = query.query.column_descriptions
+                    added_columns = f.column_descriptions[len(original_columns):]
+                    orm_field = None
+                    if added_columns:
+                        # Let add_fields_to_query handle display, position and sorting.
+                        [computed_column] = added_columns
+                        orm_field = computed_column["expr"]
+                        f = f.with_entities(*(
+                            column["expr"] for column in original_columns
+                        ))
                     query = query._replace(query=f)
                     query = query.reset_joinpoint()
-                    return query, None, None
+                    return query, orm_field, None
             else:
                 op, mod_orm_field, value = apply_special_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection, user)
                 f = op(mod_orm_field, value)
@@ -715,27 +690,27 @@ def cog_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uif
     return op, orm_field, value
 
 def cog_primary_co_sibling_ids(cat_num, collection):
-    # Get the collection object with the given catalog number
-    co = Collectionobject.objects.filter(catalognumber=cat_num, collection=collection).first()
-    if not co:
+    # Keep every explicit match, including COs that are not a group's primary.
+    matching_co_ids = list(Collectionobject.objects.filter(
+        catalognumber=cat_num, collection=collection
+    ).values_list('id', flat=True))
+    if not matching_co_ids:
         return []
 
-    # Get the primary group join for the collection object
-    cojo = Collectionobjectgroupjoin.objects.filter(childco=co, isprimary=True).first()
-    if not cojo:
-        return []
+    primary_group_ids = Collectionobjectgroupjoin.objects.filter(
+        childco_id__in=matching_co_ids, isprimary=True
+    ).values_list('parentcog_id', flat=True)
 
-    # Get sibling collection objects in the same parent group
     sibling_co_ids = Collectionobjectgroupjoin.objects.filter(
-        parentcog=cojo.parentcog, childco__isnull=False
-    ).exclude(childco=co).values_list('childco_id', flat=True)
+        parentcog_id__in=primary_group_ids, childco__isnull=False
+    ).values_list('childco_id', flat=True)
 
-    # Filter siblings with no catalog number and return all IDs as strings
+    # Explicit sibling numbers override inheritance.
     target_sibling_co_ids = Collectionobject.objects.filter(
-        id__in=sibling_co_ids, catalognumber=None
+        id__in=sibling_co_ids, catalognumber=None, collection=collection
     ).values_list('id', flat=True)
 
-    return [str(i) for i in [co.id] + list(target_sibling_co_ids)]
+    return [str(i) for i in set(matching_co_ids).union(target_sibling_co_ids)]
 
 def parent_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection=None, user=None):
     if (
@@ -753,25 +728,11 @@ def parent_inheritance_filter_cases(orm_field, field, table, value, op, op_num, 
     return op, orm_field, value
 
 def co_components_ids(cat_num, collection):
-    # Get the collection object with the given catalog number
-    coparent = Collectionobject.objects.filter(catalognumber=cat_num, collection=collection).first()
-
-    if not coparent:
-        return []
-    
-    # Get component objects with the same cat num than the CO parent
-    components_with_cat_num = Component.objects.filter(catalognumber=cat_num)
-
-    # Get component objects directly from the parent CO
-    empty_cat_num_components = coparent.components.filter(catalognumber=None)
-
-    # Get component ids
-    ids_with_cat_num = components_with_cat_num.values_list('id', flat=True)
-    ids_with_no_cat_num = empty_cat_num_components.values_list('id', flat=True)
-
-    # Combine all IDs and add the parent ID, convert to strings and remove duplicates
-    all_ids = {str(coparent.id)}
-    all_ids.update(str(i) for i in ids_with_cat_num)
-    all_ids.update(str(i) for i in ids_with_no_cat_num)
-
-    return list(all_ids)
+    # Match explicit numbers and blank Components of every matching parent.
+    component_ids = Component.objects.filter(
+        collectionobject__collection=collection
+    ).filter(
+        Q(catalognumber=cat_num)
+        | Q(catalognumber=None, collectionobject__catalognumber=cat_num)
+    ).values_list('id', flat=True)
+    return [str(i) for i in component_ids]

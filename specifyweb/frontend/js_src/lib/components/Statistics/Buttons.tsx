@@ -1,7 +1,28 @@
 import React from 'react';
 
 import { commonText } from '../../localization/common';
+import { statsText } from '../../localization/stats';
 import { Button } from '../Atoms/Button';
+import { statisticsAreLoading, useStatisticsLoading } from './requests';
+
+export function StatsRefreshButton({
+  onClick: handleClick,
+}: {
+  readonly onClick: () => void;
+}): JSX.Element {
+  const isLoading = useStatisticsLoading();
+  return (
+    <Button.BorderedGray
+      disabled={isLoading}
+      title={isLoading ? commonText.loading() : undefined}
+      onClick={() => {
+        if (!statisticsAreLoading()) handleClick();
+      }}
+    >
+      {statsText.refresh()}
+    </Button.BorderedGray>
+  );
+}
 
 export function StatsAsideButton({
   label,

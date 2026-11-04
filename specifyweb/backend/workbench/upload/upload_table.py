@@ -6,6 +6,7 @@ from django.db import transaction, IntegrityError
 
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 from specifyweb.specify import models
+from specifyweb.specify.models_utils.model_extras import ModelWithTable
 from specifyweb.specify.utils.func import Func
 from specifyweb.specify.utils.field_change_info import FieldChangeInfo
 from specifyweb.specify.utils.autonumbering import AutonumberingLockDispatcher
@@ -366,7 +367,7 @@ class BoundUploadTable(NamedTuple):
         return isinstance(self.current_id, int)
 
     @property
-    def django_model(self) -> models.ModelWithTable:
+    def django_model(self) -> ModelWithTable:
         return getattr(models, self.name.capitalize())
 
     @property
@@ -394,7 +395,7 @@ class BoundUploadTable(NamedTuple):
         model = self.django_model
 
         if self.disambiguation is not None:
-            if model.objects.filter(id=self.disambiguation).exists():
+            if model.objects.filter(pk=self.disambiguation).exists():
                 return DjangoPredicates(filters={"id": self.disambiguation})
 
         # here's why the line below matters: If some records were added during record epansion, we cannot _filter_ or _eclude_ on them.
@@ -509,8 +510,8 @@ class BoundUploadTable(NamedTuple):
             else update_table.process_row_with_null()
         )
 
-    def _get_reference(self, should_cache=True) -> models.ModelWithTable | None:
-        model: models.ModelWithTable = self.django_model
+    def _get_reference(self, should_cache=True) -> ModelWithTable | None:
+        model: ModelWithTable = self.django_model
         current_id = self.current_id
 
         if current_id is None:
@@ -553,7 +554,7 @@ class BoundUploadTable(NamedTuple):
     def _handle_row(self, skip_match: bool, allow_null: bool) -> UploadResult:
         model = self.django_model
         if self.disambiguation is not None:
-            if model.objects.filter(id=self.disambiguation).exists():
+            if model.objects.filter(pk=self.disambiguation).exists():
                 return UploadResult(
                     Matched(
                         id=self.disambiguation, info=ReportInfo(self.name, [], None)
@@ -712,7 +713,7 @@ class BoundUploadTable(NamedTuple):
 
     def _do_upload(
         self,
-        model: models.ModelWithTable,
+        model: ModelWithTable,
         to_one_results: dict[str, UploadResult],
         info: ReportInfo,
     ) -> UploadResult:
@@ -786,7 +787,7 @@ class BoundUploadTable(NamedTuple):
         return UploadResult(record, to_one_results, to_many_results)
 
     def _handle_to_many(
-        self, update: bool, parent_id: int, model: models.ModelWithTable
+        self, update: bool, parent_id: int, model: ModelWithTable
     ):
         return {
             fieldname: _upload_to_manys(
@@ -897,7 +898,7 @@ class BoundUploadTable(NamedTuple):
         if field_name in self.toOne and self.toOne[field_name].is_one_to_one():
             return True
         
-        return django_model.specify_model.get_relationship(field_name).dependent
+        return django_model.specify_model.get_relationship_strict(field_name).dependent
 
 
 class BoundOneToOneTable(BoundUploadTable):

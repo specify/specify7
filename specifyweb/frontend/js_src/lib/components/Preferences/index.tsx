@@ -9,11 +9,14 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { usePromise } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
+import { formsText } from '../../localization/forms';
 import { headerText } from '../../localization/header';
 import { preferencesText } from '../../localization/preferences';
+import { queryText } from '../../localization/query';
+import { resourcesText } from '../../localization/resources';
 import { StringToJsx } from '../../localization/utils';
 import { f } from '../../utils/functools';
-import type { IR } from '../../utils/types';
+import type { IR, RA } from '../../utils/types';
 import { Container, H2, Key } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
@@ -22,6 +25,7 @@ import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
+import { ShortcutConflictProvider } from '../KeyboardShortcuts/Conflicts';
 import { hasPermission } from '../Permissions/helpers';
 import {
   ProtectedAction,
@@ -31,6 +35,8 @@ import { PreferencesAside } from './Aside';
 import type { BasePreferences } from './BasePreferences';
 import { collectionPreferenceDefinitions } from './CollectionDefinitions';
 import { collectionPreferences } from './collectionPreferences';
+import { globalPreferenceDefinitions } from './GlobalDefinitions';
+import { globalPreferences } from './globalPreferences';
 import { useDarkMode } from './Hooks';
 import { DefaultPreferenceItemRender } from './Renderers';
 import type { GenericPreferences, PreferenceItem } from './types';
@@ -43,17 +49,37 @@ export type PreferenceType = keyof typeof preferenceInstances;
 const preferenceInstances: IR<BasePreferences<any>> = {
   user: userPreferences,
   collection: collectionPreferences,
+  global: globalPreferences,
 };
 
 const preferenceDefinitions: IR<GenericPreferences> = {
   user: userPreferenceDefinitions,
   collection: collectionPreferenceDefinitions,
+  global: globalPreferenceDefinitions,
 };
 
 type SubcategoryDocumentation = {
   readonly href: string;
   readonly label: LocalizedString | (() => LocalizedString);
 };
+
+type VisiblePreferenceSubcategory = readonly [
+  string,
+  {
+    readonly title: GenericPreferences[string]['subCategories'][string]['title'];
+    readonly description?: GenericPreferences[string]['subCategories'][string]['description'];
+    readonly items: RA<readonly [string, PreferenceItem<any>]>;
+  },
+];
+
+type VisiblePreferenceCategory = readonly [
+  string,
+  {
+    readonly title: GenericPreferences[string]['title'];
+    readonly description?: GenericPreferences[string]['description'];
+    readonly subCategories: RA<VisiblePreferenceSubcategory>;
+  },
+];
 
 const SUBCATEGORY_DOCS_MAP: Record<
   string,
@@ -84,6 +110,7 @@ const preferencesPromise = Promise.all([
   userPreferences.fetch(),
   collectionPreferences.fetch(),
 ]).then(f.true);
+const globalPreferencesPromise = globalPreferences.fetch().then(f.true);
 
 function Preferences({
   prefType = 'user',
@@ -97,10 +124,13 @@ function Preferences({
   const navigate = useNavigate();
 
   const basePreferences = preferenceInstances[prefType];
+  const definitions = usePrefDefinitions(prefType);
   const heading =
     prefType === 'collection'
       ? preferencesText.collectionPreferences()
-      : preferencesText.preferences();
+      : prefType === 'global'
+        ? resourcesText.globalPreferences()
+        : preferencesText.preferences();
 
   React.useEffect(
     () =>
@@ -142,12 +172,16 @@ function Preferences({
         >
           <PreferencesAside
             activeCategory={visibleChild}
+            definitions={definitions}
             prefType={prefType}
             references={references}
             setActiveCategory={setVisibleChild}
           />
-          <PreferencesContent forwardRefs={forwardRefs} prefType={prefType} />
-          <span className="flex-1" />
+          <PreferencesContent
+            definitions={definitions}
+            forwardRefs={forwardRefs}
+            prefType={prefType}
+          />
         </div>
         <div className="flex justify-end">
           {changesMade ? (
@@ -177,52 +211,200 @@ export function usePrefDefinitions(prefType: PreferenceType = 'user') {
 
   const definitions = preferenceDefinitions[prefType];
 
-  return React.useMemo(
-    () =>
-      Object.entries(definitions)
-        .map(
-          ([category, { subCategories, ...categoryData }]) =>
-            [
-              category,
-              {
-                ...categoryData,
-                subCategories: Object.entries(subCategories)
-                  .map(
-                    ([subCategory, { items, ...subCategoryData }]) =>
-                      [
-                        subCategory,
-                        {
-                          ...subCategoryData,
-                          items: Object.entries(items).filter(
-                            ([_name, { visible }]) =>
-                              typeof visible === 'function'
-                                ? visible(preferencesVisibilityContext)
-                                : visible !== false
-                          ),
-                        },
-                      ] as const
-                  )
-                  .filter(([_name, { items }]) => items.length > 0),
-              },
-            ] as const
-        )
-        .filter(([_name, { subCategories }]) => subCategories.length > 0),
-    [definitions, preferencesVisibilityContext]
-  );
+  return React.useMemo<RA<VisiblePreferenceCategory>>(() => {
+    const visibleDefinitions: RA<VisiblePreferenceCategory> = Object.entries(
+      definitions
+    )
+      .map(([category, { subCategories, ...categoryData }]) => {
+        const visibleSubCategories = Object.entries(subCategories)
+          .map(([subCategory, { items, ...subCategoryData }]) => {
+            const visibleItems = Object.entries(items).filter(
+              ([_name, item]) =>
+                typeof item.visible === 'function'
+                  ? item.visible(preferencesVisibilityContext)
+                  : item.visible !== false
+            );
+            return [
+              subCategory,
+              { ...subCategoryData, items: visibleItems },
+            ] as const;
+          })
+          .filter(([_name, { items }]) => items.length > 0);
+        return [
+          category,
+          { ...categoryData, subCategories: visibleSubCategories },
+        ] as const;
+      })
+      .filter(
+        ([_name, { subCategories }]) => subCategories.length > 0
+      ) as unknown as RA<VisiblePreferenceCategory>;
+
+    if (prefType !== 'user') return visibleDefinitions;
+
+    const shortcutSubCategories = visibleDefinitions.flatMap(
+      ([category, { subCategories }]) =>
+        subCategories.flatMap(([subCategory, subCategoryData]) => {
+          const shortcutItems = subCategoryData.items.filter(
+            ([_name, item]) =>
+              'renderer' in item &&
+              item.renderer.name === 'KeyboardShortcutPreferenceItem'
+          );
+          return shortcutItems.length === 0
+            ? []
+            : [
+                [
+                  `${category}.${subCategory}`,
+                  {
+                    ...subCategoryData,
+                    ...(category === 'form' && subCategory === 'actions'
+                      ? {
+                          title: `${formsText.forms()} ${commonText.actions()}`,
+                          description: preferencesText.formActionsDescription(),
+                        }
+                      : category === 'form' && subCategory === 'dialogs'
+                        ? {
+                            title: `${preferencesText.dialogs()} ${commonText.actions()}`,
+                            description:
+                              preferencesText.dialogActionsDescription(),
+                          }
+                        : category === 'treeEditor' && subCategory === 'actions'
+                          ? {
+                              title: `${preferencesText.treeEditor()} ${commonText.actions()}`,
+                              description:
+                                preferencesText.treeActionsDescription(),
+                            }
+                          : category === 'queryBuilder' &&
+                              subCategory === 'actions'
+                            ? {
+                                title: `${queryText.queryBuilder()} ${commonText.actions()}`,
+                                description:
+                                  preferencesText.queryBuilderActionsDescription(),
+                              }
+                            : {}),
+                    items: shortcutItems,
+                  },
+                ] as const,
+              ];
+        })
+    );
+
+    const urlShortcutSubCategories = visibleDefinitions.flatMap(
+      ([category, { subCategories }]) =>
+        subCategories.flatMap(([subCategory, subCategoryData]) => {
+          const urlShortcutItems = subCategoryData.items.filter(
+            ([_name, item]) =>
+              'renderer' in item && item.renderer.name === 'UrlShortcutsEditor'
+          );
+          return urlShortcutItems.length === 0
+            ? []
+            : [
+                [
+                  `${category}.${subCategory}`,
+                  {
+                    ...subCategoryData,
+                    title: preferencesText.navigationAndTools(),
+                    items: urlShortcutItems,
+                  },
+                ] as const,
+              ];
+        })
+    );
+
+    const shortcutToggleSubCategory = visibleDefinitions.flatMap(
+      ([category, { subCategories }]) =>
+        subCategories.flatMap(([subCategory, subCategoryData]) => {
+          const shortcutToggle = subCategoryData.items.find(
+            ([name]) =>
+              category === 'header' &&
+              subCategory === 'actions' &&
+              name === 'shortcutsEnabled'
+          );
+          return shortcutToggle === undefined
+            ? []
+            : [
+                [
+                  `${category}.${subCategory}.shortcutsEnabled`,
+                  {
+                    title: preferencesText.keyboardShortcuts(),
+                    items: [shortcutToggle],
+                  },
+                ] as const,
+              ];
+        })
+    );
+
+    const regularDefinitions = visibleDefinitions.map(
+      ([category, categoryData]) =>
+        [
+          category,
+          {
+            ...categoryData,
+            subCategories: categoryData.subCategories
+              .map(
+                ([subCategory, subCategoryData]) =>
+                  [
+                    subCategory,
+                    {
+                      ...subCategoryData,
+                      items: subCategoryData.items.filter(([_name, item]) => {
+                        const isShortcutToggle =
+                          category === 'header' &&
+                          subCategory === 'actions' &&
+                          _name === 'shortcutsEnabled';
+                        return (
+                          !isShortcutToggle &&
+                          (!('renderer' in item) ||
+                            (item.renderer.name !==
+                              'KeyboardShortcutPreferenceItem' &&
+                              item.renderer.name !== 'UrlShortcutsEditor'))
+                        );
+                      }),
+                    },
+                  ] as const
+              )
+              .filter(([_subCategory, { items }]) => items.length > 0),
+          },
+        ] as const
+    );
+
+    return [
+      ...regularDefinitions,
+      [
+        'keyboardShortcuts',
+        {
+          title: preferencesText.keyboardShortcuts(),
+          subCategories: [
+            ...shortcutToggleSubCategory,
+            ...shortcutSubCategories,
+            ...urlShortcutSubCategories,
+          ],
+        },
+      ] as const,
+    ].filter(
+      ([_name, { subCategories }]) => subCategories.length > 0
+    ) as unknown as RA<VisiblePreferenceCategory>;
+  }, [definitions, preferencesVisibilityContext, prefType]);
 }
 
 export function PreferencesContent({
   forwardRefs,
   prefType = 'user',
+  definitions: passedDefinitions,
 }: {
   readonly forwardRefs?: (index: number, element: HTMLElement | null) => void;
   readonly prefType?: PreferenceType;
+  readonly definitions?: ReturnType<typeof usePrefDefinitions>;
 }): JSX.Element {
   const isReadOnly = React.useContext(ReadOnlyContext);
 
-  const definitions = usePrefDefinitions(prefType);
+  const hookDefinitions = usePrefDefinitions(prefType);
+  const definitions = passedDefinitions ?? hookDefinitions;
 
   const basePreferences = preferenceInstances[prefType];
+  const sectionRefs = React.useMemo(
+    () => definitions.map((_, index) => forwardRefs?.bind(undefined, index)),
+    [definitions, forwardRefs]
+  );
 
   const renderSubCategory = React.useCallback(
     (
@@ -238,13 +420,16 @@ export function PreferencesContent({
         readonly items: readonly (readonly [string, PreferenceItem<any>])[];
       }
     ): JSX.Element => {
+      const renderedSubcategoryKey = subcategoryKey;
+      if (categoryKey === 'keyboardShortcuts')
+        [categoryKey, subcategoryKey] = subcategoryKey.split('.');
       const subcategoryDocument =
         SUBCATEGORY_DOCS_MAP[categoryKey]?.[subcategoryKey];
 
       return (
         <section
           className="flex flex-col items-start gap-4 md:items-stretch"
-          key={`${categoryKey}-${subcategoryKey}`}
+          key={`${categoryKey}-${renderedSubcategoryKey}`}
         >
           <div className="flex items-center gap-2">
             <h4 className={`${className.headerGray} text-xl md:text-center`}>
@@ -291,6 +476,8 @@ export function PreferencesContent({
             </p>
           )}
           {items.map(([name, item]) => {
+            const isUrlShortcutEditor =
+              'renderer' in item && item.renderer.name === 'UrlShortcutsEditor';
             const canEdit =
               !isReadOnly &&
               (item.visible !== 'protected' ||
@@ -298,6 +485,7 @@ export function PreferencesContent({
             const props = {
               className: `
                 flex items-start gap-2 md:flex-row flex-col
+                ${isUrlShortcutEditor ? 'w-full' : ''}
                 ${canEdit ? '' : '!cursor-not-allowed'}
               `,
               key: name,
@@ -307,39 +495,41 @@ export function PreferencesContent({
             };
             const children = (
               <>
-                <div className="flex flex-col items-start gap-2 md:flex-1 md:items-stretch">
-                  <p
-                    className={`
+                {!isUrlShortcutEditor && (
+                  <div className="flex flex-col items-start gap-2 md:flex-1 md:items-stretch">
+                    <p
+                      className={`
                     flex min-h-[theme(spacing.8)] flex-1 items-center
                     justify-end md:text-right
                   `}
-                  >
-                    <FormatString
-                      text={
-                        typeof item.title === 'function'
-                          ? item.title()
-                          : item.title
-                      }
-                    />
-                  </p>
-                  {item.description !== undefined && (
-                    <p className="flex flex-1 text-gray-500 md:text-right justify-end">
-                      {item.description !== undefined && (
-                        <FormatString
-                          text={
-                            typeof item.description === 'function'
-                              ? item.description()
-                              : item.description
-                          }
-                        />
-                      )}
+                    >
+                      <FormatString
+                        text={
+                          typeof item.title === 'function'
+                            ? item.title()
+                            : item.title
+                        }
+                      />
                     </p>
-                  )}
-                </div>
+                    {item.description !== undefined && (
+                      <p className="flex flex-1 text-gray-500 md:text-right justify-end">
+                        {item.description !== undefined && (
+                          <FormatString
+                            text={
+                              typeof item.description === 'function'
+                                ? item.description()
+                                : item.description
+                            }
+                          />
+                        )}
+                      </p>
+                    )}
+                  </div>
+                )}
                 <div
                   className={`
                   flex min-h-[theme(spacing.8)] flex-1 flex-col justify-center
-                  gap-2
+                  gap-2 ${isUrlShortcutEditor ? 'w-full min-w-0' : ''}
                 `}
                 >
                   <ReadOnlyContext.Provider value={!canEdit}>
@@ -351,8 +541,15 @@ export function PreferencesContent({
                         name={name}
                         subcategory={subcategoryKey}
                       />
-                    ) : (
+                    ) : prefType === 'collection' ? (
                       <CollectionPrefItem
+                        category={categoryKey}
+                        item={item}
+                        name={name}
+                        subcategory={subcategoryKey}
+                      />
+                    ) : (
+                      <GlobalPrefItem
                         category={categoryKey}
                         item={item}
                         name={name}
@@ -376,36 +573,41 @@ export function PreferencesContent({
   );
 
   return (
-    <div className="flex h-fit flex-col gap-6">
-      {definitions.map(
-        (
-          [category, { title, description = undefined, subCategories }],
-          index
-        ) => (
-          <ErrorBoundary dismissible key={category}>
-            <Container.Center
-              className="gap-8 overflow-y-visible"
-              forwardRef={forwardRefs?.bind(undefined, index)}
-              id={category}
-            >
-              <h3 className="text-2xl">
-                {typeof title === 'function' ? title() : title}
-              </h3>
-              {description !== undefined && (
-                <p>
-                  {typeof description === 'function'
-                    ? description()
-                    : description}
-                </p>
-              )}
-              {subCategories.map(([subcategory, data]) =>
-                renderSubCategory(category, subcategory, data)
-              )}
-            </Container.Center>
-          </ErrorBoundary>
-        )
-      )}
-    </div>
+    <ShortcutConflictProvider
+      preferences={basePreferences}
+      definitions={preferenceDefinitions[prefType]}
+    >
+      <div className="flex h-fit min-w-0 flex-1 flex-col gap-6">
+        {definitions.map(
+          (
+            [category, { title, description = undefined, subCategories }],
+            index
+          ) => (
+            <ErrorBoundary dismissible key={category}>
+              <Container.Center
+                className="gap-8 overflow-y-visible"
+                forwardRef={sectionRefs[index]}
+                id={category}
+              >
+                <h3 className="text-2xl">
+                  {typeof title === 'function' ? title() : title}
+                </h3>
+                {description !== undefined && (
+                  <p>
+                    {typeof description === 'function'
+                      ? description()
+                      : description}
+                  </p>
+                )}
+                {subCategories.map(([subcategory, data]) =>
+                  renderSubCategory(category, subcategory, data)
+                )}
+              </Container.Center>
+            </ErrorBoundary>
+          )
+        )}
+      </div>
+    </ShortcutConflictProvider>
   );
 }
 
@@ -492,6 +694,15 @@ function CollectionPrefItem<T>(props: PreferenceItemProps<T>) {
   return <ItemBase {...props} setValue={setValue} value={value} />;
 }
 
+function GlobalPrefItem<T>(props: PreferenceItemProps<T>) {
+  const [value, setValue] = globalPreferences.use(
+    props.category as any,
+    props.subcategory as any,
+    props.name as any
+  );
+  return <ItemBase {...props} setValue={setValue} value={value} />;
+}
+
 function CollectionPreferences(): JSX.Element {
   return (
     <ProtectedAction
@@ -505,14 +716,40 @@ function CollectionPreferences(): JSX.Element {
   );
 }
 
-function createPreferencesWrapper(Component: React.ComponentType) {
+function createPreferencesWrapper(
+  Component: React.ComponentType,
+  promise: Promise<boolean>
+) {
   return function Wrapper(): JSX.Element | null {
-    const [hasFetched] = usePromise(preferencesPromise, true);
+    const [hasFetched] = usePromise(promise, true);
     return hasFetched ? <Component /> : null;
   };
 }
 
-export const PreferencesWrapper = createPreferencesWrapper(Preferences);
+export const PreferencesWrapper = createPreferencesWrapper(
+  Preferences,
+  preferencesPromise
+);
+export const UserPreferencesWrapper = createPreferencesWrapper(
+  Preferences,
+  preferencesPromise
+);
 export const CollectionPreferencesWrapper = createPreferencesWrapper(
-  CollectionPreferences
+  CollectionPreferences,
+  preferencesPromise
+);
+
+function GlobalPreferences(): JSX.Element {
+  return (
+    <ProtectedAction action="update" resource="/preferences/global">
+      <ProtectedTool action="update" tool="resources">
+        <Preferences prefType="global" />
+      </ProtectedTool>
+    </ProtectedAction>
+  );
+}
+
+export const GlobalPreferencesWrapper = createPreferencesWrapper(
+  GlobalPreferences,
+  globalPreferencesPromise
 );

@@ -78,6 +78,10 @@ type FocusLineAction = Action<
 >;
 
 type MappingViewMapAction = Action<'MappingViewMapAction'>;
+type SetMappingViewAction = Action<
+  'SetMappingViewAction',
+  { readonly mappingPath: MappingPath }
+>;
 
 type AddNewHeaderAction = Action<
   'AddNewHeaderAction',
@@ -198,6 +202,7 @@ export type MappingActions =
   | CloseSelectElementAction
   | FocusLineAction
   | MappingViewMapAction
+  | SetMappingViewAction
   | OpenSelectElementAction
   | ReRunAutoMapperAction
   | ResetMappingsAction
@@ -285,6 +290,10 @@ export const reducer = generateReducer<MappingState, MappingActions>({
       mappingsAreValidated: false,
     };
   },
+  SetMappingViewAction: ({ state, action }) => ({
+    ...state,
+    mappingView: action.mappingPath,
+  }),
   AddNewHeaderAction: ({ action: { newHeaderName }, state }) => ({
     ...state,
     lines: [

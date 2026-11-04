@@ -16,7 +16,7 @@ import {
   IndependentCollection,
   isRelationshipCollection,
 } from './collectionApi';
-import { backboneFieldSeparator } from './helpers';
+import { backboneFieldSeparator, gatherAllDependents } from './helpers';
 import type {
   AnySchema,
   SerializedRecord,
@@ -976,6 +976,15 @@ export const ResourceBase = Backbone.Model.extend({
     const promise = await Backbone.Model.prototype.destroy.apply(this, ...args);
     this.deleted = true;
     resourceEvents.trigger('deleted', this);
+    // BUG: Is there ever a case where a dependent is not deleted when the
+    // parent is deleted?
+    // We could be smarter about this and ask the DB whether the dependents
+    // were deleted or not after this resource was deleted
+    gatherAllDependents(this).forEach((dependent) => {
+      resourceEvents.trigger('deleted', dependent);
+    });
+    // BUG:? Do we need to reset the dependent resources here?
+    // They could be used by some component, so keeping them as-is for now
     return promise;
   },
   toJSON() {

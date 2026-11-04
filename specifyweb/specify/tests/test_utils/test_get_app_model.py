@@ -19,7 +19,7 @@ class TestGetAppModel(ApiTests):
 
         models = [
             (spmodels, ['Absoluteage', 'Absoluteageattachment', 'Absoluteagecitation', 'Accession']),
-            (acccounts_models, ['Specifyuser', 'Spuserexternalid']),
+            (acccounts_models, ['Specifyuser', 'Spuserexternalid', 'UserPresence']),
             (attachment_gw_models, ['Spattachmentdataset']),
             (businessrules_models, ['UniquenessRule', 'UniquenessRuleField']),
             (context_models, []),
@@ -39,6 +39,4 @@ class TestGetAppModel(ApiTests):
     
     def test_model_not_found(self):
         self.assertIsNone(get_app_model("TableThatDoesNotExist"))
-
-
 
