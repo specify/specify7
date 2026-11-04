@@ -58,7 +58,11 @@ export function QuerySaveDialog({
   const id = useId('id');
   const [name, setName] = React.useState<string>((): string =>
     isSaveAs
-      ? getUniqueName(query.get('name'), [query.get('name')])
+      ? getUniqueName(
+          query.get('name'),
+          [query.get('name')],
+          getField(tables.SpQuery, 'name').length
+        )
       : query.get('name')
   );
 
