@@ -21,8 +21,11 @@ msgstr "Slå sammen poster"
 #: components/Merging/index.tsx:97
 #: components/Merging/index.tsx:408
 #: components/Merging/index.tsx:421
+#: components/QueryBuilder/__tests__/SearchResultsActions.test.tsx:191
+#: components/QueryBuilder/__tests__/SearchResultsActions.test.tsx:197
+#: components/QueryBuilder/__tests__/SearchResultsActions.test.tsx:200
 #: components/Router/OverlayRoutes.tsx:249
-#. Used in: Components > Form Meta > Merge Record ⬤ Components > Merging > Index ⬤ Components > Router > Overlay Routes
+#. Used in: Components > Form Meta > Merge Record ⬤ Components > Merging > Index ⬤ Query Builder > __tests__ > Search Results Actions ⬤ Components > Router > Overlay Routes
 msgid "mergeRecords"
 msgstr "Slå sammen poster"
 

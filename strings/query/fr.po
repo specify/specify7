@@ -238,7 +238,9 @@ msgstr ""
 #: components/BatchIdentify/index.tsx:769
 #: components/QueryBuilder/Components.tsx:236
 #: components/QueryBuilder/CreateRecordSet.tsx:68
-#. Used in: Components > Batch Identify > Index ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Create Record Set
+#: components/QueryBuilder/__tests__/SearchResultsActions.test.tsx:72
+#: components/QueryBuilder/__tests__/SearchResultsActions.test.tsx:230
+#. Used in: Components > Batch Identify > Index ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Create Record Set ⬤ Query Builder > __tests__ > Search Results Actions
 msgid "createRecordSet"
 msgstr "Créer {recordSetTable:string}"
 
@@ -1049018,7 +1049020,9 @@ msgstr "Résultats de la requête"
 #: components/LocalityUpdate/Status.tsx:371
 #: components/Preferences/UserDefinitions.tsx:2023
 #: components/QueryBuilder/ToForms.tsx:50
-#. Used in: Components > Batch Identify > Index ⬤ Components > Locality Update > Status ⬤ Components > Preferences > User Definitions ⬤ Components > Query Builder > To Forms
+#: components/QueryBuilder/__tests__/SearchResultsActions.test.tsx:146
+#: components/QueryBuilder/__tests__/SearchResultsActions.test.tsx:174
+#. Used in: Components > Batch Identify > Index ⬤ Components > Locality Update > Status ⬤ Components > Preferences > User Definitions ⬤ Components > Query Builder > To Forms ⬤ Query Builder > __tests__ > Search Results Actions
 msgid "browseInForms"
 msgstr "Parcourir dans les formulaires"
 
