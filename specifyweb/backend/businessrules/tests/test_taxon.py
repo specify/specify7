@@ -59,6 +59,23 @@ class TaxonTests(ApiTests):
             remarks="Created before this version",
         )
 
+    def test_add_taxon(self):
+        taxon = self._create_taxon("Animalia")
+
+        self.assertIsNotNone(taxon.id)
+        self.assertExists(
+            models.Taxon.objects.filter(
+                id=taxon.id,
+                name="Animalia",
+                parent=self.roottaxon,
+            )
+        )
+        self.assertEqual(taxon.definition_id, self.taxontreedef.id)
+        self.assertEqual(taxon.definitionitem_id, self.kingdom.id)
+        self.assertEqual(taxon.rankid, self.kingdom.rankid)
+
+        taxon.delete()
+
     def test_clone_taxon(self):
         original = self._create_taxon(
             "Animalia",
