@@ -56,3 +56,35 @@ class DeterminerTests(ApiTests):
                 isprimary=False,
                 ordernumber=1,
                 agent=self.agent)
+
+    @skipUnless(hasattr(models, 'Determiner'), "Determiner table added in 6.8.02")
+    def test_same_agent_can_determine_second_determination(self):
+        collection_object = self.collectionobjects[0]
+        first_determination = collection_object.determinations.create(
+            collectionmemberid=self.collection.id,
+            iscurrent=True,
+        )
+        second_determination = collection_object.determinations.create(
+            collectionmemberid=self.collection.id,
+            iscurrent=False,
+        )
+
+        first_determination.determiners.create(
+            isprimary=True,
+            ordernumber=0,
+            agent=self.agent,
+        )
+        second_determination.determiners.create(
+            isprimary=True,
+            ordernumber=0,
+            agent=self.agent,
+        )
+
+        self.assertEqual(
+            first_determination.determiners.get().agent_id,
+            self.agent.id,
+        )
+        self.assertEqual(
+            second_determination.determiners.get().agent_id,
+            self.agent.id,
+        )
