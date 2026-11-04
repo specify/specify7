@@ -116,6 +116,25 @@ class TaxonTests(ApiTests):
 
         self.assertNotExists(models.Taxon.objects.filter(id=taxon_id))
 
+    def test_edit_taxon_created_in_previous_version(self):
+        taxon = self._create_existing_taxon("Animalia")
+
+        update_obj(
+            self.collection,
+            self.agent,
+            "taxon",
+            taxon.id,
+            taxon.version,
+            {"name": "Animalia updated", "author": "New author"},
+        )
+
+        taxon.refresh_from_db()
+        self.assertEqual(taxon.name, "Animalia updated")
+        self.assertEqual(taxon.author, "New author")
+        self.assertEqual(taxon.version, 1)
+
+        taxon.delete()
+
     def test_delete_blocked_by_collectingeventattributes(self):
         collectingeventattribute = models.Collectingeventattribute.objects.create(
             discipline=self.discipline,
