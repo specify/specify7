@@ -196,6 +196,12 @@ def record_merge_fx(model_name: str, old_model_ids: list[int], new_model_id: int
         ensure_query_write_access(target_object, specify_user.id)
         for old_object in target_model.objects.filter(id__in=old_model_ids):
             ensure_query_write_access(old_object, specify_user.id)
+            # Deleting a shared source would cascade its grants. Do not silently
+            # revoke access or extend it to a different query definition.
+            if isinstance(old_object, spmodels.Spquery) and old_object.share_grants.exists():
+                raise QueryWriteDenied(
+                    "Shared source queries cannot be merged. Remove their sharing grants first."
+                )
     elif isinstance(target_object, spmodels.Specifyuser):
         # Reassigning query ownership requires write access to every original.
         for query in spmodels.Spquery.objects.filter(

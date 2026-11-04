@@ -413,6 +413,69 @@ class SharedQueryApiTests(SharedQueryFixture, ApiTests):
 
 
 class SharedQueryMergeApiTests(SharedQueryFixture, ApiTests):
+    def test_shared_source_blocks_entire_query_merge_without_losing_access(self):
+        sources = [
+            models.Spquery.objects.create(
+                name=f"Merge source {index}",
+                contextname="Collectionobject",
+                contexttableid=models.Collectionobject.specify_model.tableId,
+                specifyuser=self.specifyuser,
+            )
+            for index in range(2)
+        ]
+        SpqueryShare.objects.create(query=self.query, recipient=self.recipient)
+        recipient_client = self._recipient_client()
+        original_data = [obj_to_data(query) for query in [*sources, self.query]]
+
+        for shared_source in sources:
+            with self.subTest(shared_source=shared_source.id):
+                grant = SpqueryShare.objects.create(
+                    query=shared_source, recipient=self.recipient
+                )
+                response = self.client.post(
+                    f"/merge/spquery/replace/{self.query.id}/",
+                    data={
+                        "old_record_ids": [source.id for source in sources],
+                        "background": False,
+                    },
+                    content_type="application/json",
+                )
+
+                self.assertEqual(response.status_code, 403, response.content)
+                self.assertIn("Shared source queries cannot be merged", response.json()["QueryWriteDenied"])
+                for query, expected in zip([*sources, self.query], original_data):
+                    query.refresh_from_db()
+                    self.assertEqual(obj_to_data(query), expected)
+                self.assertTrue(SpqueryShare.objects.filter(pk=grant.id).exists())
+                for query in (shared_source, self.query):
+                    self.assertEqual(
+                        recipient_client.get(f"/api/specify/spquery/{query.id}/").status_code,
+                        200,
+                    )
+                grant.delete()
+
+    def test_unshared_source_can_merge_into_shared_target(self):
+        source = models.Spquery.objects.create(
+            name="Unshared merge source",
+            contextname="Collectionobject",
+            contexttableid=models.Collectionobject.specify_model.tableId,
+            specifyuser=self.specifyuser,
+        )
+        grant = SpqueryShare.objects.create(query=self.query, recipient=self.recipient)
+        response = self.client.post(
+            f"/merge/spquery/replace/{self.query.id}/",
+            data={"old_record_ids": [source.id], "background": False},
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 204, response.content)
+        self.assertFalse(models.Spquery.objects.filter(pk=source.id).exists())
+        self.assertTrue(SpqueryShare.objects.filter(pk=grant.id, query=self.query).exists())
+        self.assertEqual(
+            self._recipient_client().get(f"/api/specify/spquery/{self.query.id}/").status_code,
+            200,
+        )
+
     def test_user_merge_cannot_transfer_another_users_queries(self):
         for shared in (False, True):
             with self.subTest(shared=shared):
