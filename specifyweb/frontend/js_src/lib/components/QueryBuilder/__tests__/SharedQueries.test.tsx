@@ -10,6 +10,8 @@ import { MemoryRouter } from 'react-router-dom';
 
 import { queryText } from '../../../localization/query';
 import { commonText } from '../../../localization/common';
+import { headerText } from '../../../localization/header';
+import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
 import * as collection from '../../DataModel/collection';
 import { serializeResource } from '../../DataModel/serializers';
@@ -23,6 +25,7 @@ import { userInformation } from '../../InitialContext/userInformation';
 import { QueryListDialog } from '../../Toolbar/Query';
 import { SaveQueryButtons } from '../Components';
 import { QueryEditButton } from '../Edit';
+import * as filePicker from '../../Molecules/FilePicker';
 import { LoadingContext, ReadOnlyContext } from '../../Core/Contexts';
 import { QueryBuilder } from '../Wrapped';
 import { QueryFieldSpec } from '../fieldSpec';
@@ -103,7 +106,7 @@ test('switches between personal, incoming shared, and outgoing shared query filt
   }
 });
 
-test('shared originals have no edit button and retain only Save As in read-only mode', () => {
+test('shared originals retain exports and Save As in read-only mode', () => {
   const query = new tables.SpQuery.Resource<SpQuery>({
     id: 100,
     specifyUser: `/api/specify/specifyuser/${userInformation.id + 1}/`,
@@ -131,11 +134,89 @@ test('shared originals have no edit button and retain only Save As in read-only 
   expect(
     screen.queryByRole('button', { name: queryText.saveQuery() })
   ).not.toBeInTheDocument();
-  expect(screen.getAllByRole('button')).toHaveLength(1);
+  expect(screen.getAllByRole('button')).toHaveLength(2);
+  expect(
+    screen.queryByRole('button', { name: commonText.edit() })
+  ).not.toBeInTheDocument();
+  expect(
+    screen.getByRole('button', { name: commonText.export() })
+  ).toBeVisible();
   expect(
     screen.getByRole('button', { name: queryText.saveAs() })
   ).toBeVisible();
 });
+
+overrideAjax('/export/extract_query/100/', '<query />');
+
+test.each(['json', 'dwca', 'report', 'label'] as const)(
+  'non-owners can export %s without editing or sharing controls',
+  async (format) => {
+    jest.spyOn(permissions, 'hasPermission').mockReturnValue(true);
+    const download = jest
+      .spyOn(filePicker, 'downloadFile')
+      .mockResolvedValue(undefined);
+    const query = new tables.SpQuery.Resource<SpQuery>({
+      id: 100,
+      name: 'Shared query',
+      specifyUser: `/api/specify/specifyuser/${userInformation.id + 1}/`,
+    });
+    render(
+      <MemoryRouter>
+        <LoadingContext.Provider
+          value={(promise): void => {
+            void promise;
+          }}
+        >
+          <UnloadProtectsContext.Provider value={[]}>
+            <ReadOnlyContext.Provider value>
+              <QueryEditButton query={serializeResource(query)} />
+            </ReadOnlyContext.Provider>
+          </UnloadProtectsContext.Provider>
+        </LoadingContext.Provider>
+      </MemoryRouter>
+    );
+    await act(async () => {
+      fireEvent.click(
+        screen.getByRole('button', { name: commonText.export() })
+      );
+    });
+    expect(
+      screen.queryByRole('button', { name: commonText.save() })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: commonText.delete() })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: queryText.shareQuery() })
+    ).not.toBeInTheDocument();
+    const action = {
+      json: commonText.export(),
+      dwca: queryText.exportQueryForDwca(),
+      report: queryText.exportQueryAsReport(),
+      label: queryText.exportQueryAsLabel(),
+    }[format];
+    await act(async () => {
+      fireEvent.click(screen.getAllByRole('button', { name: action }).at(-1)!);
+    });
+    if (format === 'json') {
+      expect(download).toHaveBeenCalledWith(
+        'Shared query.json',
+        expect.any(String)
+      );
+    } else if (format === 'dwca') {
+      expect(await screen.findByRole('textbox')).toHaveValue('<query />');
+    } else {
+      expect(
+        await screen.findByRole('textbox', {
+          name:
+            format === 'label'
+              ? headerText.labelName()
+              : headerText.reportName(),
+        })
+      ).toBeVisible();
+    }
+  }
+);
 
 test('read-only definitions allow query execution but cannot change distinct, series, or synonyms', async () => {
   const toggle = jest.fn();
@@ -166,9 +247,7 @@ test('read-only definitions allow query execution but cannot change distinct, se
     fireEvent.click(
       screen.getByRole('checkbox', { name: queryText.distinct() })
     );
-    fireEvent.click(
-      screen.getByRole('checkbox', { name: queryText.series() })
-    );
+    fireEvent.click(screen.getByRole('checkbox', { name: queryText.series() }));
     fireEvent.click(
       screen.getByRole('checkbox', { name: queryText.searchSynonyms() })
     );

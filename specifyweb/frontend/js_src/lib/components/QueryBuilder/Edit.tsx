@@ -42,21 +42,33 @@ export function QueryEditButton({
     () => deserializeResource(query),
     [query]
   );
-  if (idFromUrl(query.specifyUser) !== userInformation.id) return <></>;
+  const isOwner = idFromUrl(query.specifyUser) === userInformation.id;
   return (
     <>
-      <DataEntry.Edit onClick={handleOpen} />
+      {isOwner ? (
+        <DataEntry.Edit onClick={handleOpen} />
+      ) : (
+        <Button.LikeLink onClick={handleOpen}>
+          {commonText.export()}
+        </Button.LikeLink>
+      )}
       {isOpen && (
-        <EditQueryDialog queryResource={queryResource} onClose={handleClose} />
+        <EditQueryDialog
+          isOwner={isOwner}
+          queryResource={queryResource}
+          onClose={handleClose}
+        />
       )}
     </>
   );
 }
 
 function EditQueryDialog({
+  isOwner,
   queryResource,
   onClose: handleClose,
 }: {
+  readonly isOwner: boolean;
   readonly queryResource: SpecifyResource<SpQuery>;
   readonly onClose: () => void;
 }): JSX.Element {
@@ -65,64 +77,83 @@ function EditQueryDialog({
   >('default');
 
   const loading = React.useContext(LoadingContext);
-  return state === 'default' ? (
-    <ResourceView
-      dialog="modal"
-      extraButtons={
-        <>
-          <span className="-ml-2 flex-1" />
-          <Button.Success
-            onClick={(): void => {
-              loading(
-                downloadFile(
-                  `${queryResource.get('name')}.json`,
-                  JSON.stringify(queryResource.toJSON(), null, '\t')
-                )
-              );
-            }}
-          >
-            {commonText.export()}
-          </Button.Success>
-        </>
-      }
-      isDependent={false}
-      isSubForm={false}
-      resource={queryResource}
-      onAdd={undefined}
-      onClose={handleClose}
-      onDeleted={handleClose}
-      onSaved={(): void => globalThis.location.reload()}
+  const exportButton = (
+    <Button.Success
+      onClick={(): void => {
+        loading(
+          downloadFile(
+            `${queryResource.get('name')}.json`,
+            JSON.stringify(queryResource.toJSON(), null, '\t')
+          )
+        );
+      }}
     >
-      {queryResource.isNew() ? undefined : (
-        <div className="flex flex-col">
-          <p>{commonText.actions()}</p>
-          {userInformation.isadmin &&
-            idFromUrl(queryResource.get('specifyUser')) ===
-              userInformation.id &&
-            queryResource.id !== undefined && (
-              <QuerySharingActions
-                queryId={queryResource.id}
-                onVersionChange={(version): void => {
-                  queryResource.set('version', version);
-                }}
-              />
-            )}
-          <Button.LikeLink onClick={(): void => setState('dwcaExport')}>
-            {queryText.exportQueryForDwca()}
+      {commonText.export()}
+    </Button.Success>
+  );
+  const actions = queryResource.isNew() ? undefined : (
+    <div className="flex flex-col">
+      <p>{commonText.actions()}</p>
+      {isOwner &&
+        userInformation.isadmin &&
+        idFromUrl(queryResource.get('specifyUser')) === userInformation.id &&
+        queryResource.id !== undefined && (
+          <QuerySharingActions
+            queryId={queryResource.id}
+            onVersionChange={(version): void => {
+              queryResource.set('version', version);
+            }}
+          />
+        )}
+      <Button.LikeLink onClick={(): void => setState('dwcaExport')}>
+        {queryText.exportQueryForDwca()}
+      </Button.LikeLink>
+      {hasPermission('/report', 'execute') && (
+        <>
+          <Button.LikeLink onClick={(): void => setState('reportExport')}>
+            {queryText.exportQueryAsReport()}
           </Button.LikeLink>
-          {hasPermission('/report', 'execute') && (
-            <>
-              <Button.LikeLink onClick={(): void => setState('reportExport')}>
-                {queryText.exportQueryAsReport()}
-              </Button.LikeLink>
-              <Button.LikeLink onClick={(): void => setState('labelExport')}>
-                {queryText.exportQueryAsLabel()}
-              </Button.LikeLink>
-            </>
-          )}
-        </div>
+          <Button.LikeLink onClick={(): void => setState('labelExport')}>
+            {queryText.exportQueryAsLabel()}
+          </Button.LikeLink>
+        </>
       )}
-    </ResourceView>
+    </div>
+  );
+  return state === 'default' ? (
+    isOwner ? (
+      <ResourceView
+        dialog="modal"
+        extraButtons={
+          <>
+            <span className="-ml-2 flex-1" />
+            {exportButton}
+          </>
+        }
+        isDependent={false}
+        isSubForm={false}
+        resource={queryResource}
+        onAdd={undefined}
+        onClose={handleClose}
+        onDeleted={handleClose}
+        onSaved={(): void => globalThis.location.reload()}
+      >
+        {actions}
+      </ResourceView>
+    ) : (
+      <Dialog
+        buttons={
+          <>
+            <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+            {exportButton}
+          </>
+        }
+        header={commonText.export()}
+        onClose={handleClose}
+      >
+        {actions}
+      </Dialog>
+    )
   ) : state === 'dwcaExport' ? (
     <DwcaQueryExport queryResource={queryResource} onClose={handleClose} />
   ) : state === 'reportExport' || state === 'labelExport' ? (
