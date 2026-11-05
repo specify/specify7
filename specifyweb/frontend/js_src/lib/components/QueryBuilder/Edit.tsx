@@ -19,7 +19,6 @@ import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { idFromUrl } from '../DataModel/resource';
-import { deserializeResource } from '../DataModel/serializers';
 import { tables } from '../DataModel/tables';
 import type { SpQuery, SpReport } from '../DataModel/types';
 import { error } from '../Errors/assert';
@@ -29,20 +28,18 @@ import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { downloadFile } from '../Molecules/FilePicker';
 import { hasPermission } from '../Permissions/helpers';
-
 import { QuerySharingActions } from './Share';
 
 export function QueryEditButton({
-  query,
+  queryResource,
+  onRefresh,
 }: {
-  readonly query: SerializedResource<SpQuery>;
+  readonly queryResource: SpecifyResource<SpQuery>;
+  readonly onRefresh: () => void;
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
-  const queryResource = React.useMemo(
-    () => deserializeResource(query),
-    [query]
-  );
-  const isOwner = idFromUrl(query.specifyUser) === userInformation.id;
+  const isOwner =
+    idFromUrl(queryResource.get('specifyUser')) === userInformation.id;
   return (
     <>
       {isOwner ? (
@@ -57,6 +54,7 @@ export function QueryEditButton({
           isOwner={isOwner}
           queryResource={queryResource}
           onClose={handleClose}
+          onVersionChange={onRefresh}
         />
       )}
     </>
@@ -67,10 +65,12 @@ function EditQueryDialog({
   isOwner,
   queryResource,
   onClose: handleClose,
+  onVersionChange,
 }: {
   readonly isOwner: boolean;
   readonly queryResource: SpecifyResource<SpQuery>;
   readonly onClose: () => void;
+  readonly onVersionChange: () => void;
 }): JSX.Element {
   const [state, setState] = React.useState<
     'default' | 'dwcaExport' | 'labelExport' | 'report' | 'reportExport'
@@ -100,17 +100,7 @@ function EditQueryDialog({
         queryResource.id !== undefined && (
           <QuerySharingActions
             queryId={queryResource.id}
-            onVersionChange={(version): void => {
-              // Fetch a fresh resource: fetch() skips already-populated instances.
-              loading(
-                new tables.SpQuery.Resource({ id: queryResource.id })
-                  .fetch()
-                  .then((reloaded): void => {
-                    queryResource.bulkSet(reloaded.toJSON());
-                    queryResource.set('version', version);
-                  })
-              );
-            }}
+            onVersionChange={onVersionChange}
           />
         )}
       <Button.LikeLink onClick={(): void => setState('dwcaExport')}>

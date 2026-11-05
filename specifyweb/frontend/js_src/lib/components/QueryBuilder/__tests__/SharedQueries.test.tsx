@@ -28,9 +28,13 @@ import { QueryEditButton } from '../Edit';
 import * as filePicker from '../../Molecules/FilePicker';
 import { LoadingContext, ReadOnlyContext } from '../../Core/Contexts';
 import { QueryBuilder } from '../Wrapped';
+import { QueryFields } from '../Fields';
 import { QueryFieldSpec } from '../fieldSpec';
 import { QueryToolbar } from '../Toolbar';
-import { UnloadProtectsContext } from '../../Router/UnloadProtect';
+import {
+  SetUnloadProtectsContext,
+  UnloadProtectsContext,
+} from '../../Router/UnloadProtect';
 
 requireContext();
 
@@ -46,7 +50,34 @@ jest.mock('../../WbPlanView/MapperComponents', () => ({
   MappingView: () => null,
 }));
 jest.mock('../CheckReadAccess', () => ({ CheckReadAccess: () => null }));
-jest.mock('../Fields', () => ({ QueryFields: () => null }));
+jest.mock('../Fields', () => ({ QueryFields: jest.fn(() => null) }));
+jest.mock('../../Forms/ResourceView', () => ({
+  ResourceView: ({
+    children,
+    onClose,
+  }: {
+    readonly children: React.ReactNode;
+    readonly onClose: () => void;
+  }) => (
+    <>
+      {children}
+      <button type="button" onClick={onClose}>
+        Close editor
+      </button>
+    </>
+  ),
+}));
+jest.mock('../Share', () => ({
+  QuerySharingActions: ({
+    onVersionChange,
+  }: {
+    readonly onVersionChange: (version: number) => void;
+  }) => (
+    <button type="button" onClick={() => onVersionChange(7)}>
+      Update sharing
+    </button>
+  ),
+}));
 jest.mock('../QueryBuilderResults', () => ({
   QueryBuilderResults: () => null,
 }));
@@ -64,6 +95,212 @@ jest.mock('../../Molecules/Paginator', () => ({
 }));
 
 afterEach(() => jest.restoreAllMocks());
+
+test.each([
+  'fields',
+  'options',
+  'unfinished',
+  'clean',
+  'conflict',
+  'in-flight',
+] as const)(
+  'sharing refresh reconciles %s changes before the next save',
+  async (mode) => {
+    jest.spyOn(permissions, 'hasToolPermission').mockReturnValue(true);
+    jest.spyOn(permissions, 'hasPermission').mockReturnValue(true);
+    const fields = ['lastName', 'firstName'].map((name, index) => {
+      const field = QueryFieldSpec.fromPath('Agent', [name]).toSpQueryField();
+      field.set('position', index);
+      field.set('operStart', 1);
+      field.set('startValue', index === 0 ? 'Smith' : 'Alice');
+      return serializeResource(field);
+    });
+    const query = makeDataViewQuery('Agent', {
+      fields,
+      selectDistinct: false,
+      searchSynonymy: false,
+      smushed: false,
+    });
+    query.set('id', 100);
+    query.set('version', 1);
+    query.set('name', 'Original query');
+    query.set('specifyUser', userInformation.resource_uri);
+    const server = new tables.SpQuery.Resource<SpQuery>({
+      ...serializeResource(query),
+      version: 8,
+      name: 'Server query',
+      fields: fields.map((field, index) =>
+        index === 1
+          ? {
+              ...field,
+              id: 201,
+              version: 12,
+              startValue: 'Bob',
+              columnAlias: 'Server alias',
+              allowNulls: true,
+            }
+          : mode === 'conflict'
+            ? { ...field, startValue: 'Server filter' }
+            : field
+      ),
+    });
+    if (mode === 'unfinished') {
+      const added = QueryFieldSpec.fromPath('Agent', [
+        'remarks',
+      ]).toSpQueryField();
+      added.set('position', 2);
+      added.set('operStart', 1);
+      server.set('fields', [
+        ...serializeResource(server).fields,
+        serializeResource(added),
+      ]);
+    }
+    const expectedFilters = [
+      mode === 'fields' || mode === 'conflict' || mode === 'in-flight'
+        ? 'Jones'
+        : 'Smith',
+      'Bob',
+    ];
+    const change = jest.fn();
+    const setUnloadProtects = jest.fn();
+    render(
+      <MemoryRouter>
+        <LoadingContext.Provider
+          value={(promise): void => {
+            void promise;
+          }}
+        >
+          <UnloadProtectsContext.Provider value={[]}>
+            <SetUnloadProtectsContext.Provider value={setUnloadProtects}>
+              <QueryBuilder
+                query={query}
+                forceCollection={undefined}
+                onChange={change}
+              />
+            </SetUnloadProtectsContext.Provider>
+          </UnloadProtectsContext.Provider>
+        </LoadingContext.Provider>
+      </MemoryRouter>
+    );
+    await screen.findByRole('button', { name: commonText.edit() });
+    await waitFor(() =>
+      expect(
+        jest.mocked(QueryFields).mock.calls.at(-1)![0].fields
+      ).toHaveLength(2)
+    );
+    const editor = jest.mocked(QueryFields).mock.calls.at(-1)![0];
+    await act(async () => {
+      if (mode === 'fields' || mode === 'conflict') {
+        editor.onChangeField!(0, {
+          ...editor.fields[0],
+          filters: editor.fields[0].filters.map((filter) => ({
+            ...filter,
+            startValue: 'Jones',
+          })),
+        });
+        query.set('remarks', 'Unsaved remarks');
+      } else if (mode === 'options') {
+        fireEvent.click(
+          screen.getByRole('checkbox', { name: queryText.distinct() })
+        );
+      } else if (mode === 'unfinished') {
+        editor.onChangeFields!([
+          ...editor.fields,
+          { ...editor.fields[0], id: 2, mappingPath: ['0'] },
+        ]);
+      }
+      fireEvent.click(screen.getByRole('button', { name: commonText.edit() }));
+    });
+    let finishReload!: (resource: SpecifyResource<SpQuery>) => void;
+    jest.spyOn(tables.SpQuery.Resource.prototype, 'fetch').mockReturnValue(
+      new Promise((resolve) => {
+        finishReload = resolve;
+      })
+    );
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Update sharing' }));
+    });
+    if (mode === 'in-flight') {
+      const current = jest.mocked(QueryFields).mock.calls.at(-1)![0];
+      await act(async () => {
+        current.onChangeField!(0, {
+          ...current.fields[0],
+          filters: current.fields[0].filters.map((filter) => ({
+            ...filter,
+            startValue: 'Jones',
+          })),
+        });
+      });
+    }
+    await act(async () => finishReload(server));
+    if (mode === 'conflict') {
+      expect(query.get('version')).toBe(1);
+      fireEvent.change(screen.getByRole('combobox'), {
+        target: { value: 'local' },
+      });
+      fireEvent.click(screen.getByRole('button', { name: commonText.apply() }));
+    }
+    expect(query.get('version')).toBe(8);
+    expect(query.get('name')).toBe('Server query');
+    expect(
+      screen.getByRole('heading', { name: /Server query/u })
+    ).toBeVisible();
+    if (mode === 'unfinished') {
+      const refreshedFields = jest.mocked(QueryFields).mock.calls.at(-1)![0]
+        .fields;
+      expect(refreshedFields).toHaveLength(4);
+      expect(new Set(refreshedFields.map(({ id }) => id)).size).toBe(4);
+      expect(refreshedFields[3].mappingPath).toEqual(['0']);
+      return;
+    }
+    expect(
+      change.mock.calls
+        .at(-1)![0]
+        .fields.map(
+          (field: { readonly startValue: string }) => field.startValue
+        )
+    ).toEqual(expectedFilters);
+    const save = jest
+      .spyOn(tables.SpQuery.Resource.prototype, 'save')
+      .mockImplementation(async function (this: SpecifyResource<SpQuery>) {
+        expect(this).toBe(query);
+        expect(this.get('version')).toBe(8);
+        expect(this.get('name')).toBe('Server query');
+        if (mode === 'fields' || mode === 'conflict')
+          expect(this.get('remarks')).toBe('Unsaved remarks');
+        expect(this.get('selectDistinct')).toBe(mode === 'options');
+        expect(
+          serializeResource(this).fields.map(({ startValue }) => startValue)
+        ).toEqual(expectedFilters);
+        expect(serializeResource(this).fields[1]).toMatchObject({
+          id: 201,
+          version: 12,
+          columnAlias: 'Server alias',
+          allowNulls: true,
+        });
+        return this;
+      });
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Close editor' }));
+    });
+    const saveButton = screen.getByRole('button', {
+      name: queryText.saveQuery(),
+    });
+    if (mode === 'clean') {
+      await waitFor(() => expect(saveButton).toBeDisabled());
+      expect(setUnloadProtects).not.toHaveBeenCalled();
+      return;
+    }
+    await waitFor(() => expect(saveButton).toBeEnabled());
+    expect(setUnloadProtects.mock.calls.at(-1)![0]([])).toContain(
+      queryText.queryUnloadProtect()
+    );
+    await act(async () => {
+      fireEvent.click(saveButton);
+    });
+    await waitFor(() => expect(save).toHaveBeenCalledTimes(1));
+  }
+);
 
 test('switches between personal, incoming shared, and outgoing shared query filters', async () => {
   const fetch = jest.spyOn(collection, 'fetchCollection').mockResolvedValue({
@@ -115,7 +352,7 @@ test('shared originals retain exports and Save As in read-only mode', () => {
     <MemoryRouter>
       <UnloadProtectsContext.Provider value={[]}>
         <ReadOnlyContext.Provider value>
-          <QueryEditButton query={serializeResource(query)} />
+          <QueryEditButton queryResource={query} onRefresh={jest.fn()} />
           <SaveQueryButtons
             canCloneShared
             fields={[]}
@@ -169,7 +406,7 @@ test.each(['json', 'dwca', 'report', 'label'] as const)(
         >
           <UnloadProtectsContext.Provider value={[]}>
             <ReadOnlyContext.Provider value>
-              <QueryEditButton query={serializeResource(query)} />
+              <QueryEditButton queryResource={query} onRefresh={jest.fn()} />
             </ReadOnlyContext.Provider>
           </UnloadProtectsContext.Provider>
         </LoadingContext.Provider>

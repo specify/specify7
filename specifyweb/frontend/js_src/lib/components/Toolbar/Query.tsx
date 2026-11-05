@@ -33,6 +33,7 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { hasPermission, hasToolPermission } from '../Permissions/helpers';
 import { QueryEditButton } from '../QueryBuilder/Edit';
 import { cloneSharedQuery } from '../QueryBuilder/Save';
+import { useQueryRefresh } from '../QueryBuilder/useQueryRefresh';
 import { OverlayContext } from '../Router/Router';
 import { SafeOutlet } from '../Router/RouterUtils';
 import { DialogListSkeleton } from '../SkeletonLoaders/DialogList';
@@ -367,6 +368,11 @@ export function QueryList({
   readonly onCloneStateChange: (state: Partial<CloneState>) => void;
 }): JSX.Element {
   const loading = React.useContext(LoadingContext);
+  const queryResource = React.useMemo(
+    () => deserializeResource(query),
+    [query]
+  );
+  const { refreshQuery, conflictDialog } = useQueryRefresh(queryResource);
   const callBack =
     getQuerySelectCallback?.(query) ?? `/specify/query/${query.id}/`;
   const text = (
@@ -415,9 +421,15 @@ export function QueryList({
           )}
         </td>
         <td className="justify-end">
-          {!isReadOnly && <QueryEditButton query={query} />}
+          {!isReadOnly && (
+            <QueryEditButton
+              queryResource={queryResource}
+              onRefresh={refreshQuery}
+            />
+          )}
         </td>
       </tr>
+      {conflictDialog}
       {confirmClone && (
         <Dialog
           buttons={

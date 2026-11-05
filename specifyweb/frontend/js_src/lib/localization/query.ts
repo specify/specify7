@@ -9,6 +9,13 @@ import { createDictionary } from './utils';
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
 export const queryText = createDictionary({
+  queryRefreshConflict: {
+    'en-us':
+      'The query changed on the server while you were editing it. Choose which value to keep for each conflicting field. Other changes will be combined.',
+  },
+  localQueryChanges: { 'en-us': 'Your changes' },
+  serverQueryChanges: { 'en-us': 'Server changes' },
+  chooseQueryChanges: { 'en-us': 'Choose a value' },
   personalQueries: {
     'en-us': 'Personal Queries',
   },

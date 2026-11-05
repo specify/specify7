@@ -52,8 +52,10 @@ export function QueryHeader({
   onToggleSplit,
   onToggleOrientation,
   canCloneShared = false,
+  onRefresh,
 }: {
   readonly canCloneShared?: boolean;
+  readonly onRefresh: () => void;
   readonly recordSet?: SpecifyResource<RecordSet>;
   readonly query: SerializedResource<SpQuery>;
   readonly queryResource: SpecifyResource<SpQuery>;
@@ -111,7 +113,12 @@ export function QueryHeader({
                 value: query.name,
               })}
         </H2>
-        {!queryResource.isNew() && <QueryEditButton query={query} />}
+        {!queryResource.isNew() && (
+          <QueryEditButton
+            queryResource={queryResource}
+            onRefresh={onRefresh}
+          />
+        )}
         {canCloneShared && <span>{queryText.sharedQueryReadOnly()}</span>}
         {!isScrolledTop && (
           <Button.Icon

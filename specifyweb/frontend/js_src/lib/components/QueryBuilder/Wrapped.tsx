@@ -21,6 +21,7 @@ import { ReadOnlyContext } from '../Core/Contexts';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { idFromUrl } from '../DataModel/resource';
+import { serializeResource } from '../DataModel/serializers';
 import { getTableById } from '../DataModel/tables';
 import type { RecordSet, SpQuery, SpQueryField } from '../DataModel/types';
 import { useMenuItem } from '../Header/MenuContext';
@@ -47,12 +48,14 @@ import { IsQueryBasicContext, useQueryViewPref } from './Context';
 import { QueryFields } from './Fields';
 import { QueryFromMap } from './FromMap';
 import { QueryHeader } from './Header';
-import { unParseQueryFields } from './helpers';
+import { parseQueryFields, unParseQueryFields } from './helpers';
+import { QueryBuilderResults } from './QueryBuilderResults';
+import { completeQueryFields, queryPropertiesEqual } from './reconcileQuery';
 import { getInitialState, reducer } from './reducer';
 import type { QueryResultRow } from './Results';
-import { QueryBuilderResults } from './QueryBuilderResults';
 import { QueryToolbar } from './Toolbar';
 import { useQueryExecution } from './useQueryExecution';
+import { useQueryRefresh } from './useQueryRefresh';
 import { useQuerySplitView } from './useQuerySplitView';
 
 const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
@@ -125,7 +128,6 @@ function Wrapped({
   const [state, dispatch] = React.useReducer(reducer, pendingState);
 
   const initialFields = React.useRef<string>('');
-
   const [saveRequired, setSaveRequired] = React.useState(false);
 
   React.useEffect(() => {
@@ -137,22 +139,6 @@ function Wrapped({
     initialFields.current = JSON.stringify(initialState.fields);
   }, [buildInitialState]);
   useErrorContext('state', state);
-
-  const checkForChanges = React.useMemo(
-    () =>
-      throttle(
-        () =>
-          setSaveRequired(
-            (state !== pendingState &&
-              initialFields.current !== JSON.stringify(state.fields)) ||
-              autoRun
-          ),
-        200
-      ),
-    [initialFields.current, state.fields, autoRun]
-  );
-
-  React.useEffect(checkForChanges, [state.fields]);
 
   React.useEffect(() => {
     if (state === pendingState) return;
@@ -203,7 +189,49 @@ function Wrapped({
   const serializeQueryFields = (
     fields: typeof state.fields = state.fields
   ): ReturnType<typeof unParseQueryFields> =>
-    unParseQueryFields(state.baseTableName, fields);
+    completeQueryFields(
+      serializeResource(queryResource),
+      unParseQueryFields(state.baseTableName, fields)
+    );
+
+  const { savedQuery, refreshQuery, conflictDialog } = useQueryRefresh(
+    queryResource,
+    () => ({
+      ...serializeResource(queryResource),
+      fields: serializeQueryFields(),
+    }),
+    (definition): void => {
+      const fields = parseQueryFields(definition.fields);
+      const nextId = Math.max(-1, ...fields.map(({ id }) => id)) + 1;
+      initialFields.current = JSON.stringify(
+        parseQueryFields(savedQuery.current.fields)
+      );
+      dispatch({
+        type: 'ChangeFieldsAction',
+        fields: [
+          ...fields,
+          ...state.fields
+            .filter(({ mappingPath }) => !mappingPathIsComplete(mappingPath))
+            .map((field, index) => ({ ...field, id: nextId + index })),
+        ],
+      });
+    }
+  );
+  const checkForChanges = React.useMemo(
+    () =>
+      throttle(
+        () =>
+          setSaveRequired(
+            autoRun ||
+              (state !== pendingState &&
+                (initialFields.current !== JSON.stringify(state.fields) ||
+                  !queryPropertiesEqual(savedQuery.current, query)))
+          ),
+        200
+      ),
+    [query, state.fields, autoRun]
+  );
+  React.useEffect(checkForChanges, [checkForChanges]);
 
   /*
    * That function does not need to be called most of the time if query
@@ -403,9 +431,11 @@ function Wrapped({
             saveRequired={saveRequired}
             state={state}
             unsetUnloadProtect={unsetUnloadProtect}
+            onRefresh={refreshQuery}
             onSaved={(): void => {
               setSaveRequired(false);
               initialFields.current = JSON.stringify(state.fields);
+              savedQuery.current = serializeResource(queryResource);
               dispatch({ type: 'SavedQueryAction' });
             }}
             onTriedToSave={handleTriedToSave}
@@ -415,6 +445,7 @@ function Wrapped({
             onToggleSplit={toggleSplit}
             onToggleOrientation={toggleOrientation}
           />
+          {conflictDialog}
           <CheckReadAccess query={query} />
           <Form
             className={`
