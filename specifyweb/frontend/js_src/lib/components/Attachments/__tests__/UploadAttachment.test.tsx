@@ -13,6 +13,7 @@ import { deserializeResource } from '../../DataModel/serializers';
 import type { Attachment } from '../../DataModel/types';
 import { overrideAttachmentSettings } from '../attachments';
 import * as Attachments from '../attachments';
+import { collectionPreferences } from '../../Preferences/collectionPreferences';
 import { UploadAttachment } from '../Plugin';
 import { testAttachment } from './utils';
 
@@ -24,6 +25,17 @@ async function uploadFileMock(): Promise<SpecifyResource<Attachment>> {
 
 beforeEach(() => {
   clearIdStore();
+});
+
+let originalPreferences: ReturnType<typeof collectionPreferences.getRaw>;
+
+beforeEach(() => {
+  originalPreferences = collectionPreferences.getRaw();
+});
+
+afterEach(() => {
+  jest.restoreAllMocks();
+  collectionPreferences.setRaw(originalPreferences);
 });
 
 describe('UploadAttachment', () => {
@@ -59,6 +71,38 @@ describe('UploadAttachment', () => {
 
     await waitFor(() => {
       expect(handleUploaded).toHaveBeenCalled();
+    });
+  });
+
+  test('uses the collection public attachment preference', async () => {
+    collectionPreferences.setRaw({
+      general: {
+        attachments: { 'attachment.is_public_default': true },
+      },
+    });
+    const uploadFile = jest
+      .spyOn(Attachments, 'uploadFile')
+      .mockImplementation(uploadFileMock);
+    const handleUploaded = jest.fn();
+
+    overrideAttachmentSettings(attachmentSettings);
+    const { container, user } = mount(
+      <LoadingContext.Provider value={f.void}>
+        <UploadAttachment onUploaded={handleUploaded} />
+      </LoadingContext.Provider>
+    );
+
+    const input = Array.from(container.getElementsByTagName('input'))[0];
+    const testFile = new File(['Some Text Contents'], 'testName', {
+      type: 'text/plain',
+    });
+
+    await user.upload(input, testFile);
+
+    await waitFor(() => {
+      expect(uploadFile).toHaveBeenCalledWith(
+        expect.objectContaining({ attachmentIsPublicDefault: true })
+      );
     });
   });
 });
