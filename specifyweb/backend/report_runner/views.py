@@ -5,7 +5,7 @@ import requests
 from django.conf import settings
 from django.db import transaction
 from django.db.models import Q
-from django.http import HttpResponse
+from django.http import Http404, HttpResponse
 from django.template import loader
 from django.utils.translation import gettext as _
 from django.views.decorators.cache import cache_control
@@ -218,17 +218,19 @@ def get_reports_by_table(request, table_id):
     if table_id is not None:
         reports = reports.filter(Q(spreports__query__contexttableid=table_id))
 
-    def map(app_resource):
+    response = []
+    for app_resource in reports:
         report = app_resource.spreports.first()
-        return dict(
+        if report is not None and report.query_id is not None:
+            try:
+                ensure_query_access(report.query_id, request.specify_user.id)
+            except Http404:
+                continue
+        response.append(dict(
             app_resource=app_resource,
             report=report,
             query=None if report is None else report.query
-        )
-
-    response = [
-        map(app_resource) for app_resource in reports
-    ]
+        ))
 
     data = objs_to_data_(
         response,
