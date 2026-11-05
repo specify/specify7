@@ -7,7 +7,26 @@ from specifyweb.specify.api.validators import RowsForm
 from specifyweb.specify.views import login_maybe_required
 from django.http import (HttpResponse, HttpResponseBadRequest)
 from specifyweb.backend.permissions.permissions import enforce
-from django.core.exceptions import FieldError
+from django.core.exceptions import FieldDoesNotExist, FieldError
+from specifyweb.specify.models import Spquery, Spqueryfield
+
+
+def _has_unfiltered_query_projection(model, path: str) -> bool:
+    """Root visibility filters only cover paths within queries and their fields."""
+    query_models = (Spquery, Spqueryfield)
+    for name in path.split('__'):
+        try:
+            field = model._meta.get_field(name)
+        except FieldDoesNotExist:
+            # Let values_list report invalid fields and handle field transforms.
+            return False
+        related_model = field.related_model
+        if related_model is None:
+            return False
+        if related_model in query_models and model not in query_models:
+            return True
+        model = related_model
+    return False
 
 @login_maybe_required
 @require_http_methods(['GET', 'HEAD'])
@@ -34,6 +53,10 @@ def rows(request, model: str) -> HttpResponse:
         query = query.filter(query__in=visible_queries)
 
     fields = form.cleaned_data['fields'].split(',')
+    if any(_has_unfiltered_query_projection(query.model, field) for field in fields):
+        return HttpResponseBadRequest(
+            "Query-related projections must use a query or query-field root with visibility checks."
+        )
     try:
         query = query.values_list(*fields).order_by(*fields)
     except FieldError as e:

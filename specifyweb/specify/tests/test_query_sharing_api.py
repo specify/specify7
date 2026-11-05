@@ -110,6 +110,19 @@ class SharedQueryFixture:
 
 class SharedQueryApiTests(SharedQueryFixture, ApiTests):
 
+    def test_table_rows_rejects_query_projections_from_other_roots(self):
+        for root, fields in (
+            ("specifyuser", "id,spquerys__name"),
+            ("specifyuser", "id,spquerys__sqlstr"),
+            ("agent", "id,specifyuser__spquerys__sqlstr"),
+            ("spquery", "id,specifyuser__spquerys__name"),
+        ):
+            with self.subTest(root=root, fields=fields):
+                response = self.client.get(
+                    f"/table_rows/specify_rows/{root}/", {"fields": fields}
+                )
+                self.assertEqual(response.status_code, 400, response.content)
+
     def test_query_fields_are_limited_to_owned_or_shared_queries(self):
         private_query = models.Spquery.objects.create(
             name=f"Private query {self.collection.id}",
