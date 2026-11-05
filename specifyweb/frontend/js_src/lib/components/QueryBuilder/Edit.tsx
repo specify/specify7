@@ -102,9 +102,9 @@ function EditQueryDialog({
             queryResource.id !== undefined && (
               <QuerySharingActions
                 queryId={queryResource.id}
-                onVersionChange={(version): void =>
-                  queryResource.set('version', version)
-                }
+                onVersionChange={(version): void => {
+                  queryResource.set('version', version);
+                }}
               />
             )}
           <Button.LikeLink onClick={(): void => setState('dwcaExport')}>

@@ -62,7 +62,10 @@ overrideAjax(
 
 afterEach(() => jest.restoreAllMocks());
 
-async function renderActions(queryId = 10): Promise<void> {
+async function renderActions(
+  queryId = 10,
+  onVersionChange: (version: number) => void = jest.fn()
+): Promise<void> {
   await act(async () => {
     render(
       <LoadingContext.Provider
@@ -71,7 +74,10 @@ async function renderActions(queryId = 10): Promise<void> {
         }}
       >
         <UnloadProtectsContext.Provider value={[]}>
-          <QuerySharingActions queryId={queryId} />
+          <QuerySharingActions
+            queryId={queryId}
+            onVersionChange={onVersionChange}
+          />
         </UnloadProtectsContext.Provider>
       </LoadingContext.Provider>
     );
@@ -128,7 +134,9 @@ test('displays users under collapsible division, discipline, and collection node
 
 test('supports range selection, select all, deselect all, and confirmed saving', async () => {
   const ajax = jest.spyOn(ajaxModule, 'ajax');
-  await renderActions(11);
+  const onVersionChange = jest.fn();
+  await renderActions(11, onVersionChange);
+  expect(onVersionChange).not.toHaveBeenCalled();
   const share = screen.getByRole('button', { name: queryText.shareQuery() });
   await waitFor(() => expect(share).toBeEnabled());
   expect(
@@ -169,11 +177,14 @@ test('supports range selection, select all, deselect all, and confirmed saving',
   expect(
     await screen.findByRole('button', { name: queryText.revokeQuerySharing() })
   ).toBeVisible();
+  expect(onVersionChange).toHaveBeenCalledTimes(1);
+  expect(onVersionChange).toHaveBeenCalledWith(1);
 });
 
 test('revocation requires confirmation and hides the action after success', async () => {
   const ajax = jest.spyOn(ajaxModule, 'ajax');
-  await renderActions();
+  const onVersionChange = jest.fn();
+  await renderActions(10, onVersionChange);
   await user.click(
     await screen.findByRole('button', { name: queryText.revokeQuerySharing() })
   );
@@ -184,6 +195,7 @@ test('revocation requires confirmation and hides the action after success', asyn
     expect.anything(),
     expect.objectContaining({ method: 'DELETE' })
   );
+  expect(onVersionChange).not.toHaveBeenCalled();
   const buttons = screen.getAllByRole('button', {
     name: queryText.revokeQuerySharing(),
   });
@@ -207,11 +219,14 @@ test('revocation requires confirmation and hides the action after success', asyn
     '/stored_query/query/10/shares/',
     expect.objectContaining({ method: 'DELETE' })
   );
+  expect(onVersionChange).toHaveBeenCalledTimes(1);
+  expect(onVersionChange).toHaveBeenCalledWith(1);
 });
 
 test('reloads recipients and version after a conflict before allowing another save', async () => {
   const ajax = jest.spyOn(ajaxModule, 'ajax');
-  await renderActions();
+  const onVersionChange = jest.fn();
+  await renderActions(10, onVersionChange);
   await user.click(
     screen.getByRole('button', { name: queryText.shareQuery() })
   );
@@ -232,6 +247,7 @@ test('reloads recipients and version after a conflict before allowing another sa
   expect(await screen.findByRole('alert')).toHaveTextContent(
     formsText.saveConflict()
   );
+  expect(onVersionChange).not.toHaveBeenCalled();
   expect(screen.getByRole('checkbox', { name: 'Alice' })).not.toBeChecked();
   expect(screen.getByRole('checkbox', { name: 'Bob' })).not.toBeChecked();
   expect(screen.getByRole('checkbox', { name: 'Carol' })).toBeChecked();
@@ -259,4 +275,6 @@ test('reloads recipients and version after a conflict before allowing another sa
     })
   );
   expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  expect(onVersionChange).toHaveBeenCalledTimes(1);
+  expect(onVersionChange).toHaveBeenCalledWith(8);
 });

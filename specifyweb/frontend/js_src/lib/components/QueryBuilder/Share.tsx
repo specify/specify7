@@ -134,8 +134,10 @@ function QueryShareUserCheckbox({
 
 export function QuerySharingActions({
   queryId,
+  onVersionChange,
 }: {
   readonly queryId: number;
+  readonly onVersionChange: (version: number) => void;
 }): JSX.Element {
   const [shares, setShares] = useAsyncState(
     React.useCallback(
@@ -172,6 +174,7 @@ export function QuerySharingActions({
           onReload={setShares}
           onSaved={(updated): void => {
             setShares({ ...shares, ...updated });
+            onVersionChange(updated.version);
             setMode(undefined);
           }}
         />
@@ -193,6 +196,7 @@ export function QuerySharingActions({
                         { headers: { Accept: 'application/json' } }
                       );
                       setShares(data);
+                      onVersionChange(data.version);
                       setMode(undefined);
                     })
                   )
