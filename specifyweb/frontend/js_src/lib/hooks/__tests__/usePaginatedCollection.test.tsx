@@ -42,6 +42,70 @@ test('replaces the current result page when initial records change', () => {
   expect(result.current.canFetchMore).toBe(true);
 });
 
+test.each([
+  { initialRecords: [3], totalCount: 1, canFetchMore: false },
+  { initialRecords: [], totalCount: 0, canFetchMore: false },
+  { initialRecords: undefined, totalCount: 1, canFetchMore: true },
+])('returns replacement records and count on the first render: %j', (next) => {
+  const renders: {
+    readonly records: ReadonlyArray<number | undefined> | undefined;
+    readonly totalCount: number | undefined;
+    readonly canFetchMore: boolean;
+  }[] = [];
+  const initialProps: {
+    readonly initialRecords: readonly number[] | undefined;
+    readonly totalCount: number;
+  } = { initialRecords: [1, 2], totalCount: 4 };
+  const { rerender } = renderHook(
+    ({ initialRecords, totalCount }) => {
+      const collection = usePaginatedCollection({
+        initialRecords,
+        totalCount,
+        fetchMore: undefined,
+      });
+      renders.push({
+        records: collection.results[0],
+        totalCount: collection.totalCount[0],
+        canFetchMore: collection.canFetchMore,
+      });
+      return collection;
+    },
+    { initialProps }
+  );
+
+  renders.length = 0;
+  rerender(next);
+
+  expect(renders.length).toBeGreaterThan(0);
+  expect(renders).toEqual(
+    renders.map(() => ({
+      records: next.initialRecords,
+      totalCount: next.totalCount,
+      canFetchMore: next.canFetchMore,
+    }))
+  );
+});
+
+test('preserves edited records when only the total count changes', () => {
+  const initialRecords = [1, 2];
+  const { result, rerender } = renderHook(
+    ({ totalCount }) =>
+      usePaginatedCollection({
+        initialRecords,
+        totalCount,
+        fetchMore: undefined,
+      }),
+    { initialProps: { totalCount: 2 } }
+  );
+
+  act(() => result.current.results[1]([2]));
+  rerender({ totalCount: 1 });
+
+  expect(result.current.results[0]).toEqual([2]);
+  expect(result.current.totalCount[0]).toBe(1);
+  expect(result.current.canFetchMore).toBe(false);
+});
+
 test('ignores page requests from the previous result set', async () => {
   let resolveFetch: ((rows: number[]) => void) | undefined;
   const fetchMore = jest.fn(
