@@ -1,15 +1,46 @@
+import { render, screen } from '@testing-library/react';
+import React from 'react';
+
 import { requireContext } from '../../../tests/helpers';
 import { addMissingFields } from '../../DataModel/addMissingFields';
+import { getField } from '../../DataModel/helpers';
 import type { SpecifyResource } from '../../DataModel/legacyTypes';
 import { serializeResource } from '../../DataModel/serializers';
 import { tables } from '../../DataModel/tables';
 import type { SpQuery } from '../../DataModel/types';
 import { userInformation } from '../../InitialContext/userInformation';
-import { cloneSharedQuery } from '../Save';
+import { UnloadProtectsContext } from '../../Router/UnloadProtect';
+import { cloneSharedQuery, QuerySaveDialog } from '../Save';
 
 requireContext();
 
 afterEach(() => jest.restoreAllMocks());
+
+test('Save As default name preserves surrogate pairs within the field length', () => {
+  const query = new tables.SpQuery.Resource<SpQuery>(
+    addMissingFields('SpQuery', {
+      id: 33,
+      name: `${'😀'.repeat(128)}x`,
+    })
+  );
+
+  render(
+    <UnloadProtectsContext.Provider value={[]}>
+      <QuerySaveDialog
+        isSaveAs
+        query={query}
+        onClose={jest.fn()}
+        onSaved={jest.fn()}
+      />
+    </UnloadProtectsContext.Provider>
+  );
+
+  const input = screen.getByRole<HTMLInputElement>('textbox');
+  expect(input.value).not.toBe('');
+  expect(input.value).not.toMatch(/[\uD800-\uDFFF]/u);
+  expect(input.maxLength).toBe(getField(tables.SpQuery, 'name').length);
+  expect(input.value.length).toBeLessThanOrEqual(input.maxLength);
+});
 
 test.each(['Shared query', 'a'.repeat(256), '😀'.repeat(256)])(
   'clones query fields and saves the expected metadata for %s',

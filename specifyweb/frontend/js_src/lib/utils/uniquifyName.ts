@@ -57,7 +57,9 @@ export function getUniqueName(
 
   return newName.length > maxLength
     ? getUniqueName(
-        name.slice(0, -1 * uniquePart.length),
+        Array.from(name)
+          .slice(0, -1 * uniquePart.length)
+          .join(''),
         usedNames,
         maxLength,
         type
