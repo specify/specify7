@@ -74,35 +74,38 @@ describe('UploadAttachment', () => {
     });
   });
 
-  test('uses the collection public attachment preference', async () => {
-    collectionPreferences.setRaw({
-      general: {
-        attachments: { 'attachment.is_public_default': true },
-      },
-    });
-    const uploadFile = jest
-      .spyOn(Attachments, 'uploadFile')
-      .mockImplementation(uploadFileMock);
-    const handleUploaded = jest.fn();
+  test.each([false, true])(
+    'uses the collection public attachment preference (%s)',
+    async (isPublic) => {
+      collectionPreferences.setRaw({
+        general: {
+          attachments: { 'attachment.is_public_default': isPublic },
+        },
+      });
+      const uploadFile = jest
+        .spyOn(Attachments, 'uploadFile')
+        .mockImplementation(uploadFileMock);
+      const handleUploaded = jest.fn();
 
-    overrideAttachmentSettings(attachmentSettings);
-    const { container, user } = mount(
-      <LoadingContext.Provider value={f.void}>
-        <UploadAttachment onUploaded={handleUploaded} />
-      </LoadingContext.Provider>
-    );
-
-    const input = Array.from(container.getElementsByTagName('input'))[0];
-    const testFile = new File(['Some Text Contents'], 'testName', {
-      type: 'text/plain',
-    });
-
-    await user.upload(input, testFile);
-
-    await waitFor(() => {
-      expect(uploadFile).toHaveBeenCalledWith(
-        expect.objectContaining({ attachmentIsPublicDefault: true })
+      overrideAttachmentSettings(attachmentSettings);
+      const { container, user } = mount(
+        <LoadingContext.Provider value={f.void}>
+          <UploadAttachment onUploaded={handleUploaded} />
+        </LoadingContext.Provider>
       );
-    });
-  });
+
+      const input = Array.from(container.getElementsByTagName('input'))[0];
+      const testFile = new File(['Some Text Contents'], 'testName', {
+        type: 'text/plain',
+      });
+
+      await user.upload(input, testFile);
+
+      await waitFor(() => {
+        expect(uploadFile).toHaveBeenCalledWith(
+          expect.objectContaining({ attachmentIsPublicDefault: isPublic })
+        );
+      });
+    }
+  );
 });
