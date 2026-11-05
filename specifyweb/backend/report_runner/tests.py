@@ -48,7 +48,8 @@ class TestReportListingQueryAccess(ApiTests):
 
     def _make_report(self, query):
         resource = self.appdir.sppersistedappresources.create(
-            name=f'Report {query.id}', mimetype='jrxml/report', level=0
+            name=f'Report {query.id}', mimetype='jrxml/report', level=0,
+            specifyuser=self.specifyuser,
         )
         return Spreport.objects.create(
             name=resource.name, appresource=resource, query=query,
