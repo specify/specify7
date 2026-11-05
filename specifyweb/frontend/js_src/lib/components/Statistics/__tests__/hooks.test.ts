@@ -10,6 +10,7 @@ import {
   getDefaultLayoutFlagged,
   getOffsetOne,
 } from '../hooks';
+import { statsSpec } from '../StatsSpec';
 import type { StatLayout } from '../types';
 import { defaultLayoutTest, statsSpecTest } from './layout.tests';
 
@@ -297,3 +298,23 @@ theories(generateStatUrl, [
     out: '/stats/collection/user/preparations/',
   },
 ]);
+
+test('preparation totals follow the collection preference', () => {
+  const spec =
+    statsSpec.collection.categories.preparations.items.phantomItem.spec;
+
+  if (spec.type !== 'BackEndStat') throw new Error('Expected BackEndStat');
+
+  expect(
+    spec.formatterGenerator({ showPreparationsTotal: true })({
+      lots: 826,
+      total: 430,
+    })
+  ).toBe('826 / 430');
+  expect(
+    spec.formatterGenerator({ showPreparationsTotal: false })({
+      lots: 826,
+      total: 430,
+    })
+  ).toBe('826');
+});
