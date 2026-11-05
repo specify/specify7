@@ -101,7 +101,15 @@ function EditQueryDialog({
           <QuerySharingActions
             queryId={queryResource.id}
             onVersionChange={(version): void => {
-              queryResource.set('version', version);
+              // Fetch a fresh resource: fetch() skips already-populated instances.
+              loading(
+                new tables.SpQuery.Resource({ id: queryResource.id })
+                  .fetch()
+                  .then((reloaded): void => {
+                    queryResource.bulkSet(reloaded.toJSON());
+                    queryResource.set('version', version);
+                  })
+              );
             }}
           />
         )}
