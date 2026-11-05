@@ -468,6 +468,68 @@ class SharedQueryApiTests(SharedQueryFixture, ApiTests):
 
 
 class SharedQueryMergeApiTests(SharedQueryFixture, ApiTests):
+    def test_user_merge_transfers_recipient_grants(self):
+        SpqueryShare.objects.create(query=self.query, recipient=self.recipient)
+        existing_grant = SpqueryShare.objects.create(
+            query=self.query, recipient=self.specifyuser
+        )
+        survivor = models.Specifyuser.objects.create(
+            name="surviving_recipient", password="unusable"
+        )
+        response = self.client.post(
+            f"/merge/specifyuser/replace/{survivor.id}/",
+            data={"old_record_ids": [self.recipient.id], "background": False},
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 204, response.content)
+        self.assertFalse(models.Specifyuser.objects.filter(pk=self.recipient.id).exists())
+        self.assertCountEqual(
+            self.query.share_grants.values_list("recipient_id", flat=True),
+            [survivor.id, self.specifyuser.id],
+        )
+        self.assertTrue(SpqueryShare.objects.filter(pk=existing_grant.id).exists())
+        self.query.refresh_from_db()
+        self.assertEqual(self.query.specifyuser_id, self.specifyuser.id)
+        ensure_query_access(self.query.id, survivor.id)
+
+    def test_user_merge_skips_duplicate_recipient_grants(self):
+        other_recipient = models.Specifyuser.objects.create(
+            name="other_recipient", password="unusable"
+        )
+        other_query = models.Spquery.objects.create(
+            name="Another shared query",
+            contextname="Collectionobject",
+            contexttableid=models.Collectionobject.specify_model.tableId,
+            specifyuser=self.specifyuser,
+        )
+        existing_grant = SpqueryShare.objects.create(
+            query=self.query, recipient=self.specifyuser
+        )
+        for query in (self.query, other_query):
+            for recipient in (self.recipient, other_recipient):
+                SpqueryShare.objects.create(query=query, recipient=recipient)
+
+        response = self.client.post(
+            f"/merge/specifyuser/replace/{self.specifyuser.id}/",
+            data={
+                "old_record_ids": [self.recipient.id, other_recipient.id],
+                "background": False,
+            },
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 204, response.content)
+        self.assertFalse(models.Specifyuser.objects.filter(
+            pk__in=[self.recipient.id, other_recipient.id]
+        ).exists())
+        for query in (self.query, other_query):
+            self.assertEqual(
+                list(query.share_grants.values_list("recipient_id", flat=True)),
+                [self.specifyuser.id],
+            )
+        self.assertTrue(SpqueryShare.objects.filter(pk=existing_grant.id).exists())
+
     def test_shared_source_blocks_entire_query_merge_without_losing_access(self):
         sources = [
             models.Spquery.objects.create(
@@ -532,6 +594,9 @@ class SharedQueryMergeApiTests(SharedQueryFixture, ApiTests):
         )
 
     def test_user_merge_cannot_transfer_another_users_queries(self):
+        recipient_grant = SpqueryShare.objects.create(
+            query=self.query, recipient=self.recipient
+        )
         for shared in (False, True):
             with self.subTest(shared=shared):
                 query = models.Spquery.objects.create(
@@ -554,6 +619,11 @@ class SharedQueryMergeApiTests(SharedQueryFixture, ApiTests):
 
                 self.assertEqual(response.status_code, 403, response.content)
                 self.assertIn("QueryWriteDenied", response.json())
+                recipient_grant.refresh_from_db()
+                self.assertEqual(recipient_grant.recipient_id, self.recipient.id)
+                self.assertFalse(SpqueryShare.objects.filter(
+                    query=self.query, recipient=self.specifyuser
+                ).exists())
                 query.refresh_from_db()
                 self.assertEqual(query.specifyuser_id, self.recipient.id)
                 self.assertEqual(query.share_grants.count(), int(shared))

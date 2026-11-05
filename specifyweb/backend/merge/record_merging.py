@@ -12,6 +12,7 @@ from django import http
 from django.db import IntegrityError, transaction, models
 from specifyweb.backend.merge.utils import get_app_model
 from specifyweb.backend.notifications.models import Message, Spmerging
+from specifyweb.backend.permissions.models import SpqueryShare
 from django.db.models import Q
 
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
@@ -208,6 +209,14 @@ def record_merge_fx(model_name: str, old_model_ids: list[int], new_model_id: int
             specifyuser_id__in=old_model_ids
         ).select_for_update():
             ensure_query_write_access(query, specify_user.id)
+
+        # Copy missing grants before source-user deletion cascades the originals.
+        for grant in SpqueryShare.objects.filter(
+            recipient_id__in=old_model_ids
+        ).select_for_update():
+            SpqueryShare.objects.get_or_create(
+                query_id=grant.query_id, recipient_id=new_model_id
+            )
 
     dependant_relationships = [(rel.relatedModelName, rel.name)
         for rel in target_object.specify_model.relationships
