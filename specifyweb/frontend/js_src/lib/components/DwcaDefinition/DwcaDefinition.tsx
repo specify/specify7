@@ -46,7 +46,11 @@ import type { QueryField } from '../QueryBuilder/helpers';
 import { Dialog, dialogClassNames, LoadingScreen } from '../Molecules/Dialog';
 import { CollapsibleAlert } from '../Molecules/CollapsibleAlert';
 import gbifCores from './data/gbifCores.json';
-import { defaultTemplates, type DwcaTemplate } from './data/defaultTemplates';
+import {
+  defaultTemplates,
+  disciplineNames,
+  type DwcaTemplate,
+} from './data/defaultTemplates';
 import { getCoreTermPatterns, occurrenceIdTerm } from './data/coreTermPatterns';
 import gbifExtensions from './data/gbifExtensions.json';
 
@@ -480,7 +484,7 @@ export function getTemplateMapping(
     return undefined;
   if (
     coreRowType !== undefined &&
-    !isTemplateApplicableToCore(template, coreRowType)
+    !isTemplateApplicableToCore(template, coreRowType, null)
   )
     return undefined;
   return parseDefinition(template.definition).find(
@@ -493,10 +497,11 @@ export function getTemplateMapping(
 export function isTemplateApplicableToCore(
   template: DwcaTemplate,
   coreRowType: string,
-  disciplineType = getSystemInfo()?.discipline_type
+  disciplineType: string | null | undefined = getSystemInfo()?.discipline_type
 ): boolean {
   if (
     template.disciplineTypes !== undefined &&
+    disciplineType !== null &&
     (disciplineType == null ||
       !template.disciplineTypes.includes(disciplineType.toLowerCase()))
   )
@@ -1529,12 +1534,25 @@ export function QueryMapping({
       ? []
       : defaultTemplates.filter(
           (template) =>
-            isTemplateApplicableToCore(template, mapping.coreRowType) &&
+            isTemplateApplicableToCore(template, mapping.coreRowType, null) &&
             template.targets.some(
               ({ extension, rowType }) =>
                 extension === mapping.extension && rowType === mapping.rowType
             )
         );
+  const templateGroups = availableTemplates.reduce<
+    Array<{ readonly label: string; readonly templates: DwcaTemplate[] }>
+  >((groups, template) => {
+    const disciplineType = template.disciplineTypes?.[0];
+    const label =
+      disciplineType === undefined
+        ? dwcaText.dwcaGeneric()
+        : (disciplineNames[disciplineType] ?? disciplineType);
+    const group = groups.find((candidate) => candidate.label === label);
+    if (group === undefined) groups.push({ label, templates: [template] });
+    else group.templates.push(template);
+    return groups;
+  }, []);
   const applyReplacement = (
     replacement: NonNullable<typeof pendingReplacement>
   ): void => {
@@ -1653,9 +1671,9 @@ export function QueryMapping({
             }}
           >
             <option value="">{dwcaText.dwcaChooseQuery()}</option>
-            {availableTemplates.length > 0 && (
-              <optgroup label={dwcaText.dwcaTemplates()}>
-                {availableTemplates.map((template) => (
+            {templateGroups.map(({ label, templates }) => (
+              <optgroup key={label} label={label}>
+                {templates.map((template) => (
                   <option
                     key={`template:${template.name}`}
                     value={`template:${template.name}`}
@@ -1664,7 +1682,7 @@ export function QueryMapping({
                   </option>
                 ))}
               </optgroup>
-            )}
+            ))}
             {collectionObjectQueries.length > 0 && (
               <optgroup label={dwcaText.dwcaSavedQueries()}>
                 {collectionObjectQueries.map((query) => (

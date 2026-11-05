@@ -13,7 +13,7 @@ export type DwcaTemplate = {
  * visual editor can load them using the same path as user-created resources.
  */
 const occurrenceTemplate: DwcaTemplate = {
-  name: 'Specify → Darwin Core Occurrence',
+  name: 'Darwin Core Occurrence',
   coreRowTypes: ['http://rs.tdwg.org/dwc/terms/Occurrence'],
   targets: [
     {
@@ -82,7 +82,7 @@ const occurrenceTemplate: DwcaTemplate = {
 };
 
 const eventTemplate: DwcaTemplate = {
-  name: 'Specify → Darwin Core Event',
+  name: 'Darwin Core Event',
   coreRowTypes: ['http://rs.tdwg.org/dwc/terms/Event'],
   targets: [
     {
@@ -121,7 +121,7 @@ const eventTemplate: DwcaTemplate = {
 };
 
 const taxonTemplate: DwcaTemplate = {
-  name: 'Specify → Darwin Core Taxon',
+  name: 'Darwin Core Taxon',
   coreRowTypes: ['http://rs.tdwg.org/dwc/terms/Taxon'],
   targets: [
     {
@@ -239,7 +239,7 @@ const disciplineFields: Readonly<Record<string, readonly DisciplineField[]>> = {
   ],
 };
 
-const disciplineNames: Readonly<Record<string, string>> = {
+export const disciplineNames: Readonly<Record<string, string>> = {
   bird: 'Bird',
   fish: 'Fish',
   herpetology: 'Herpetology',
@@ -260,7 +260,7 @@ function makeDisciplineOccurrenceTemplate(
     .join('\n');
   return {
     ...occurrenceTemplate,
-    name: `Specify → Darwin Core Occurrence (${disciplineNames[disciplineType]})`,
+    name: `Darwin Core Occurrence (${disciplineNames[disciplineType]})`,
     disciplineTypes: [disciplineType],
     definition: occurrenceTemplate.definition.replace(
       '      </query>',
@@ -270,7 +270,7 @@ function makeDisciplineOccurrenceTemplate(
 }
 
 const identificationHistoryTemplate: DwcaTemplate = {
-  name: 'Specify → Identification History Extension',
+  name: 'Identification History Extension',
   coreRowTypes: ['http://rs.tdwg.org/dwc/terms/Occurrence'],
   targets: [
     {
@@ -338,7 +338,7 @@ function withPluralDeterminers(template: DwcaTemplate): DwcaTemplate {
 export const defaultTemplates: readonly DwcaTemplate[] = [
   occurrenceTemplate,
   {
-    name: 'Specify → Audiovisual Core',
+    name: 'Audiovisual Core',
     coreRowTypes: ['http://rs.tdwg.org/dwc/terms/Occurrence'],
     targets: [
       {
@@ -369,7 +369,7 @@ export const defaultTemplates: readonly DwcaTemplate[] = [
 </archive>`,
   },
   {
-    name: 'Specify → EOL References Extension',
+    name: 'EOL References Extension',
     coreRowTypes: ['http://rs.tdwg.org/dwc/terms/Occurrence'],
     targets: [
       {

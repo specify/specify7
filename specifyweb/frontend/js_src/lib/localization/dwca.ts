@@ -125,6 +125,9 @@ export const dwcaText = createDictionary({
   dwcaTemplates: {
     'en-us': 'Templates',
   },
+  dwcaGeneric: {
+    'en-us': 'Generic',
+  },
   dwcaSavedQueries: {
     'en-us': 'Saved Queries',
   },

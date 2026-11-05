@@ -147,10 +147,10 @@ describe('DwCA query field term mapping', () => {
 
   test('lists discipline occurrence defaults independently', () => {
     const bird = defaultTemplates.find(
-      ({ name }) => name === 'Specify → Darwin Core Occurrence (Bird)'
+      ({ name }) => name === 'Darwin Core Occurrence (Bird)'
     );
     const fish = defaultTemplates.find(
-      ({ name }) => name === 'Specify → Darwin Core Occurrence (Fish)'
+      ({ name }) => name === 'Darwin Core Occurrence (Fish)'
     );
     expect(bird).toBeDefined();
     expect(fish).toBeDefined();
@@ -163,7 +163,7 @@ describe('DwCA query field term mapping', () => {
 
   test('includes the current determination in the Occurrence template', () => {
     const template = defaultTemplates.find(
-      ({ name }) => name === 'Specify → Darwin Core Occurrence'
+      ({ name }) => name === 'Darwin Core Occurrence'
     );
     expect(template?.definition).toContain(
       'stringId="1,9-determinations.determination.isCurrent" oper="6" value="" isNot="false" isRelFld="false" formatName=""/'
@@ -172,19 +172,17 @@ describe('DwCA query field term mapping', () => {
 
   test('maps agent identifiers with available default and ID aggregations', () => {
     const occurrence = defaultTemplates.find(
-      ({ name }) => name === 'Specify → Darwin Core Occurrence'
+      ({ name }) => name === 'Darwin Core Occurrence'
     );
     const history = defaultTemplates.find(
-      ({ name }) => name === 'Specify → Identification History Extension'
+      ({ name }) => name === 'Identification History Extension'
     );
     const pluralOccurrence = defaultTemplates.find(
-      ({ name }) =>
-        name === 'Specify → Darwin Core Occurrence (Plural Determiners)'
+      ({ name }) => name === 'Darwin Core Occurrence (Plural Determiners)'
     );
     const pluralHistory = defaultTemplates.find(
       ({ name }) =>
-        name ===
-        'Specify → Identification History Extension (Plural Determiners)'
+        name === 'Identification History Extension (Plural Determiners)'
     );
     expect(occurrence).toBeDefined();
     expect(history).toBeDefined();
@@ -193,8 +191,7 @@ describe('DwCA query field term mapping', () => {
     expect(
       defaultTemplates.find(
         ({ name }) =>
-          name ===
-          'Specify → Darwin Core Occurrence (Bird) (Plural Determiners)'
+          name === 'Darwin Core Occurrence (Bird) (Plural Determiners)'
       )?.disciplineTypes
     ).toEqual(['bird']);
 
@@ -288,7 +285,7 @@ describe('DwCA query field term mapping', () => {
 
   test('provides an Event core default mapping', () => {
     const template = defaultTemplates.find(
-      ({ name }) => name === 'Specify → Darwin Core Event'
+      ({ name }) => name === 'Darwin Core Event'
     );
     expect(template?.coreRowTypes).toEqual([
       'http://rs.tdwg.org/dwc/terms/Event',
@@ -301,7 +298,7 @@ describe('DwCA query field term mapping', () => {
 
   test('provides a Taxon core default mapping', () => {
     const template = defaultTemplates.find(
-      ({ name }) => name === 'Specify → Darwin Core Taxon'
+      ({ name }) => name === 'Darwin Core Taxon'
     );
     expect(template?.coreRowTypes).toEqual([
       'http://rs.tdwg.org/dwc/terms/Taxon',
@@ -340,7 +337,7 @@ describe('DwCA query field term mapping', () => {
 
   test('includes the current determination in the Identification template', () => {
     const template = defaultTemplates.find(
-      ({ name }) => name === 'Specify → Identification History Extension'
+      ({ name }) => name === 'Identification History Extension'
     );
     const mapping = getTemplateMapping(
       template!,
@@ -1020,7 +1017,7 @@ describe('DwCA query field term mapping', () => {
 
   test('filters discipline-specific templates by the current discipline', () => {
     const bird = defaultTemplates.find(
-      ({ name }) => name === 'Specify → Darwin Core Occurrence (Bird)'
+      ({ name }) => name === 'Darwin Core Occurrence (Bird)'
     )!;
     expect(
       isTemplateApplicableToCore(
@@ -1177,7 +1174,7 @@ describe('DwCA query field term mapping', () => {
       })
     ).toBe(undefined);
     const eolTemplate = defaultTemplates.find(
-      ({ name }) => name === 'Specify → EOL References Extension'
+      ({ name }) => name === 'EOL References Extension'
     );
     expect(
       getTemplateMapping(eolTemplate!, {
@@ -1189,7 +1186,7 @@ describe('DwCA query field term mapping', () => {
 
   test('maps the EOL reference DOI term to the DOI field', () => {
     const template = defaultTemplates.find(
-      ({ name }) => name === 'Specify → EOL References Extension'
+      ({ name }) => name === 'EOL References Extension'
     );
     const [mapping] = parseDefinition(template?.definition ?? '');
     const doiIndex = mapping?.terms.indexOf(
