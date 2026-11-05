@@ -1565,18 +1565,7 @@ export function QueryMapping({
           {mapping.extension
             ? dwcaText.dwcaExtension()
             : dwcaText.dwcaRowType()}
-          {isCustomRowType || (isEditingRowType && mapping.rowType === '') ? (
-            <Input.Text
-              aria-label={dwcaText.dwcaRowType()}
-              autoFocus={isEditingRowType}
-              required
-              value={mapping.rowType}
-              onBlur={(): void => {
-                if (mapping.rowType === '') setIsEditingRowType(false);
-              }}
-              onValueChange={(rowType): void => handleRowTypeChange(rowType)}
-            />
-          ) : (
+          <div className="flex items-center gap-2">
             <Select
               aria-label={
                 mapping.extension
@@ -1584,7 +1573,11 @@ export function QueryMapping({
                   : dwcaText.dwcaRowType()
               }
               required
-              value={mapping.rowType}
+              value={
+                isCustomRowType || (isEditingRowType && mapping.rowType === '')
+                  ? customRowTypeOption
+                  : mapping.rowType
+              }
               onValueChange={(rowType): void => {
                 if (rowType === customRowTypeOption) {
                   if (!mapping.extension && hasMappingsToReset) {
@@ -1623,7 +1616,18 @@ export function QueryMapping({
                 {resourcesText.custom()}
               </option>
             </Select>
-          )}
+            {(isCustomRowType ||
+              (isEditingRowType && mapping.rowType === '')) && (
+              <Input.Text
+                aria-label={dwcaText.dwcaRowType()}
+                autoFocus={isEditingRowType}
+                placeholder={dwcaText.dwcaCustomRowTypePlaceholder()}
+                required
+                value={mapping.rowType}
+                onValueChange={(rowType): void => handleRowTypeChange(rowType)}
+              />
+            )}
+          </div>
         </Label.Block>
         <Label.Block>
           {dwcaText.dwcaChooseTemplateOrQuery()}
@@ -1941,24 +1945,31 @@ function DwcaDefinitionEditorLoaded({
     );
     return (): void => setSaveBlockers([], key);
   }, [appResourceDataField, hasDuplicateFileNames, setSaveBlockers]);
-  const hasEmptyRequiredValues = React.useMemo(
-    () =>
-      hasEmptyRequiredMappingValues(
-        mappings.filter((mapping) => !mapping.invalidExtensionXml)
-      ),
-    [mappings]
-  );
+  const emptyRequiredValues = React.useMemo(() => {
+    const validMappings = mappings.filter(
+      (mapping) => !mapping.invalidExtensionXml
+    );
+    return {
+      fileName: validMappings.some(({ fileName }) => fileName.trim() === ''),
+      rowType: validMappings.some(({ rowType }) => rowType.trim() === ''),
+    };
+  }, [mappings]);
   React.useEffect(() => {
     const key = getFieldBlockerKey(
       appResourceDataField,
       'dwca-required-values'
     );
     setSaveBlockers(
-      hasEmptyRequiredValues ? [formsText.requiredField()] : [],
+      [
+        ...(emptyRequiredValues.fileName ? [formsText.requiredField()] : []),
+        ...(emptyRequiredValues.rowType
+          ? [dwcaText.dwcaRowTypeRequired()]
+          : []),
+      ],
       key
     );
     return (): void => setSaveBlockers([], key);
-  }, [appResourceDataField, hasEmptyRequiredValues, setSaveBlockers]);
+  }, [appResourceDataField, emptyRequiredValues, setSaveBlockers]);
   React.useEffect(() => {
     if (tabValue !== undefined && tabValues[tab] !== tabValue)
       setTabValue(tabValues[tab]);

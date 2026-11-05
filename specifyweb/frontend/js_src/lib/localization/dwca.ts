@@ -79,6 +79,12 @@ export const dwcaText = createDictionary({
   dwcaRowType: {
     'en-us': 'Row type',
   },
+  dwcaRowTypeRequired: {
+    'en-us': 'Row type is required.',
+  },
+  dwcaCustomRowTypePlaceholder: {
+    'en-us': 'http://rs.tdwg.org/dwc/terms/custom',
+  },
   dwcaFileNamesMustBeUnique: {
     'en-us': 'File names must be unique.',
   },
