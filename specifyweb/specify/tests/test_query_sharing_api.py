@@ -469,6 +469,7 @@ class SharedQueryApiTests(SharedQueryFixture, ApiTests):
 
 class SharedQueryMergeApiTests(SharedQueryFixture, ApiTests):
     def test_user_merge_transfers_recipient_grants(self):
+        original_version = self.query.version
         SpqueryShare.objects.create(query=self.query, recipient=self.recipient)
         existing_grant = SpqueryShare.objects.create(
             query=self.query, recipient=self.specifyuser
@@ -491,6 +492,21 @@ class SharedQueryMergeApiTests(SharedQueryFixture, ApiTests):
         self.assertTrue(SpqueryShare.objects.filter(pk=existing_grant.id).exists())
         self.query.refresh_from_db()
         self.assertEqual(self.query.specifyuser_id, self.specifyuser.id)
+        self.assertEqual(self.query.version, original_version + 1)
+        ensure_query_access(self.query.id, survivor.id)
+
+        response = self.client.put(
+            f"/api/specify/spquery/{self.query.id}/",
+            data={"version": original_version, "name": "Stale edit"},
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 409, response.content)
+        response = self.client.put(
+            f"/stored_query/query/{self.query.id}/shares/",
+            data={"version": original_version, "recipientIds": []},
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 409, response.content)
         ensure_query_access(self.query.id, survivor.id)
 
     def test_user_merge_skips_duplicate_recipient_grants(self):
@@ -510,6 +526,8 @@ class SharedQueryMergeApiTests(SharedQueryFixture, ApiTests):
             for recipient in (self.recipient, other_recipient):
                 SpqueryShare.objects.create(query=query, recipient=recipient)
 
+        original_version = self.query.version
+        other_original_version = other_query.version
         response = self.client.post(
             f"/merge/specifyuser/replace/{self.specifyuser.id}/",
             data={
@@ -529,6 +547,10 @@ class SharedQueryMergeApiTests(SharedQueryFixture, ApiTests):
                 [self.specifyuser.id],
             )
         self.assertTrue(SpqueryShare.objects.filter(pk=existing_grant.id).exists())
+        self.query.refresh_from_db()
+        other_query.refresh_from_db()
+        self.assertEqual(self.query.version, original_version)
+        self.assertEqual(other_query.version, other_original_version + 1)
 
     def test_shared_source_blocks_entire_query_merge_without_losing_access(self):
         sources = [

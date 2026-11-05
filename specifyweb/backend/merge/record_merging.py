@@ -20,7 +20,7 @@ from specifyweb.backend.stored_queries.access import QueryWriteDenied, ensure_qu
 from specifyweb.celery_tasks import LogErrorsTask, app
 from specifyweb.specify import models as spmodels
 from specifyweb.specify.models_utils.build_models import orderings
-from specifyweb.specify.api.crud import delete_obj, put_resource
+from specifyweb.specify.api.crud import bump_version, delete_obj, put_resource
 from specifyweb.specify.models_utils.load_datamodel import Table, FieldDoesNotExistError
 from celery.utils.log import get_task_logger # type: ignore
 from specifyweb.specify.models_utils.relationships import is_dependent_field
@@ -214,9 +214,12 @@ def record_merge_fx(model_name: str, old_model_ids: list[int], new_model_id: int
         for grant in SpqueryShare.objects.filter(
             recipient_id__in=old_model_ids
         ).select_for_update():
-            SpqueryShare.objects.get_or_create(
+            _, created = SpqueryShare.objects.get_or_create(
                 query_id=grant.query_id, recipient_id=new_model_id
             )
+            if created:
+                query = spmodels.Spquery.objects.select_for_update().get(pk=grant.query_id)
+                bump_version(query, query.version)
 
     dependant_relationships = [(rel.relatedModelName, rel.name)
         for rel in target_object.specify_model.relationships
