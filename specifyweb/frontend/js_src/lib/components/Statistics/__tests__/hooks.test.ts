@@ -4,6 +4,7 @@ import type { RA } from '../../../utils/types';
 import { localized } from '../../../utils/types';
 import { formatNumber } from '../../Atoms/Internationalization';
 import {
+  applyRefreshLayout,
   applyStatBackendResponse,
   generateStatUrl,
   getBackendUrlToFetch,
@@ -317,4 +318,35 @@ test('preparation totals follow the collection preference', () => {
       total: 430,
     })
   ).toBe('826');
+});
+
+test('stale statistics are cleared after the refresh interval', () => {
+  const layout: StatLayout = {
+    label: 'page',
+    categories: [
+      {
+        label: 'category',
+        items: [
+          {
+            type: 'DefaultStat',
+            itemType: 'BackEndStat',
+            pageName: 'collection',
+            categoryName: 'preparations',
+            itemName: 'phantomItem',
+            label: localized('preparations'),
+            itemValue: '826 / 430',
+          },
+        ],
+      },
+    ],
+    lastUpdated: new Date('2024-01-01T00:00:00Z').toJSON(),
+  };
+  jest
+    .spyOn(Date, 'now')
+    .mockReturnValue(new Date('2024-01-01T01:00:00Z').valueOf());
+
+  const [refreshed] = applyRefreshLayout([layout], 30) ?? [];
+
+  expect(refreshed.lastUpdated).toBeUndefined();
+  expect(refreshed.categories[0].items?.[0].itemValue).toBeUndefined();
 });
