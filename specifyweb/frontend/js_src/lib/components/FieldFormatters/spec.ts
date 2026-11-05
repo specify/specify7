@@ -193,7 +193,8 @@ export function trimRegexString(regexString: string): string {
    * BUG: If the user expects to use a regular expression that starts with a
    * literal "/" and ends with a literal "/", they will be implictly removed
    * from the expression
-   * */
+   * 
+   */
   /**
    * Ugh, this isn't a great way to determine the user received the regex in a
    * Javascript style (generally contained in forward slashes), but it might be
@@ -201,9 +202,11 @@ export function trimRegexString(regexString: string): string {
    */
   if (pattern.length >= 2 && pattern.startsWith('/') && pattern.endsWith('/'))
     pattern = pattern.slice(1, -1);
-  // Finally, trim start and end tags so Specify 7 can smush the regular
-  // expression with the expressions of other parts in the field format if
-  // needed
+  /*
+   * Finally, trim start and end tags so Specify 7 can smush the regular
+   * expression with the expressions of other parts in the field format if
+   * needed
+   */
   if (pattern.startsWith('^')) pattern = pattern.slice(1);
   if (pattern.endsWith('$')) pattern = pattern.slice(0, -1);
   return pattern;

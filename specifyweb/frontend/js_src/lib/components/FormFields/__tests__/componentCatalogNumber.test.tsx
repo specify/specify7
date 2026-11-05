@@ -47,10 +47,10 @@ test.each([false, true])(
     );
     const { getByRole, user } = mount(
       <UiField
-        resource={component}
         field={tables.Component.strictGetLiteralField('catalogNumber')}
         id="catalog-number"
         name="catalogNumber"
+        resource={component}
       />
     );
     const input = getByRole('textbox');
@@ -104,10 +104,10 @@ test('explicit number is displayed without an inherited placeholder', async () =
     );
   const { getByRole } = mount(
     <UiField
-      resource={component}
       field={tables.Component.strictGetLiteralField('catalogNumber')}
       id="catalog-number"
       name="catalogNumber"
+      resource={component}
     />
   );
   await waitFor(() =>

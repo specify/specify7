@@ -1,14 +1,14 @@
 import { mockTime, requireContext } from '../../../tests/helpers';
+import { localized } from '../../../utils/types';
 import { getField } from '../../DataModel/helpers';
 import { tables } from '../../DataModel/tables';
 import {
-  UiFormatter,
   fetchContext,
   fieldFormatterTypeMapper,
   getUiFormatters,
+  UiFormatter,
 } from '..';
 import { exportsForTests } from '../spec';
-import { localized } from '../../../utils/types';
 
 const { trimRegexString } = exportsForTests;
 

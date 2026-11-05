@@ -26,8 +26,8 @@ describe('SchemaConfigRedirect', () => {
 
     render(
       <MemoryRouter
-        useTransitions={true}
         initialEntries={['/specify/schema-config/en-us/']}
+        useTransitions
       >
         <Routes>
           <Route
