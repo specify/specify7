@@ -350,3 +350,34 @@ test('stale statistics are cleared after the refresh interval', () => {
   expect(refreshed.lastUpdated).toBeUndefined();
   expect(refreshed.categories[0].items?.[0].itemValue).toBeUndefined();
 });
+
+test('fresh statistics are kept before the refresh interval', () => {
+  const layout: StatLayout = {
+    label: 'page',
+    categories: [
+      {
+        label: 'category',
+        items: [
+          {
+            type: 'DefaultStat',
+            itemType: 'BackEndStat',
+            pageName: 'collection',
+            categoryName: 'preparations',
+            itemName: 'phantomItem',
+            label: localized('preparations'),
+            itemValue: '826 / 430',
+          },
+        ],
+      },
+    ],
+    lastUpdated: new Date('2024-01-01T00:00:00Z').toJSON(),
+  };
+  jest
+    .spyOn(Date, 'now')
+    .mockReturnValue(new Date('2024-01-01T00:10:00Z').valueOf());
+
+  const [refreshed] = applyRefreshLayout([layout], 30) ?? [];
+
+  expect(refreshed.lastUpdated).toBe(layout.lastUpdated);
+  expect(refreshed.categories[0].items?.[0].itemValue).toBe('826 / 430');
+});
