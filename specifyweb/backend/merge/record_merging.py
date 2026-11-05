@@ -210,10 +210,16 @@ def record_merge_fx(model_name: str, old_model_ids: list[int], new_model_id: int
         ).select_for_update():
             ensure_query_write_access(query, specify_user.id)
 
-        # Copy missing grants before source-user deletion cascades the originals.
-        for grant in SpqueryShare.objects.filter(
+        source_grants = list(SpqueryShare.objects.filter(
             recipient_id__in=old_model_ids
-        ).select_for_update():
+        ).select_for_update())
+        if source_grants and not target_object.is_admin():
+            raise QueryWriteDenied(
+                "Query sharing grants can only be transferred to a Specify Administrator."
+            )
+
+        # Copy missing grants before source-user deletion cascades the originals.
+        for grant in source_grants:
             _, created = SpqueryShare.objects.get_or_create(
                 query_id=grant.query_id, recipient_id=new_model_id
             )

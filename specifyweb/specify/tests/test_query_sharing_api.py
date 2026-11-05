@@ -477,6 +477,9 @@ class SharedQueryMergeApiTests(SharedQueryFixture, ApiTests):
         survivor = models.Specifyuser.objects.create(
             name="surviving_recipient", password="unusable"
         )
+        UserPolicy.objects.create(
+            collection=None, specifyuser=survivor, resource="%", action="%"
+        )
         response = self.client.post(
             f"/merge/specifyuser/replace/{survivor.id}/",
             data={"old_record_ids": [self.recipient.id], "background": False},
@@ -551,6 +554,66 @@ class SharedQueryMergeApiTests(SharedQueryFixture, ApiTests):
         other_query.refresh_from_db()
         self.assertEqual(self.query.version, original_version)
         self.assertEqual(other_query.version, other_original_version + 1)
+
+    def test_user_merge_denies_grants_to_non_admin_survivor(self):
+        survivor = models.Specifyuser.objects.create(
+            name="non_admin_survivor", password="unusable"
+        )
+        source = models.Specifyuser.objects.create(
+            name="another_merge_source", password="unusable"
+        )
+        grant = SpqueryShare.objects.create(query=self.query, recipient=source)
+        original_version = self.query.version
+        self.assertFalse(survivor.is_admin())
+
+        for duplicate in (False, True):
+            with self.subTest(duplicate=duplicate):
+                if duplicate:
+                    SpqueryShare.objects.create(query=self.query, recipient=survivor)
+                original_grants = set(self.query.share_grants.values_list("id", flat=True))
+                response = self.client.post(
+                    f"/merge/specifyuser/replace/{survivor.id}/",
+                    data={
+                        "old_record_ids": [self.recipient.id, source.id],
+                        "background": False,
+                    },
+                    content_type="application/json",
+                )
+
+                self.assertEqual(response.status_code, 403, response.content)
+                self.assertIn("Specify Administrator", response.json()["QueryWriteDenied"])
+                self.assertEqual(
+                    models.Specifyuser.objects.filter(
+                        pk__in=[self.recipient.id, source.id, survivor.id]
+                    ).count(),
+                    3,
+                )
+                grant.refresh_from_db()
+                self.assertEqual(grant.recipient_id, source.id)
+                self.assertEqual(
+                    set(self.query.share_grants.values_list("id", flat=True)),
+                    original_grants,
+                )
+                self.query.refresh_from_db()
+                self.assertEqual(self.query.version, original_version)
+
+    def test_user_merge_without_grants_allows_non_admin_survivor(self):
+        survivor = models.Specifyuser.objects.create(
+            name="non_admin_survivor", password="unusable"
+        )
+        self.assertFalse(survivor.is_admin())
+        original_version = self.query.version
+        response = self.client.post(
+            f"/merge/specifyuser/replace/{survivor.id}/",
+            data={"old_record_ids": [self.recipient.id], "background": False},
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 204, response.content)
+        self.assertFalse(models.Specifyuser.objects.filter(pk=self.recipient.id).exists())
+        self.assertTrue(models.Specifyuser.objects.filter(pk=survivor.id).exists())
+        self.query.refresh_from_db()
+        self.assertEqual(self.query.version, original_version)
 
     def test_shared_source_blocks_entire_query_merge_without_losing_access(self):
         sources = [
