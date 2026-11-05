@@ -376,10 +376,10 @@ describe('AutoComplete keyboard navigation', () => {
     const { getByRole, user } = mount(
       <AutoComplete
         filterItems={false}
-        onChange={onChange}
-        onNewValue={onNewValue}
         source={makeItems(3)}
         value=""
+        onChange={onChange}
+        onNewValue={onNewValue}
       />
     );
 

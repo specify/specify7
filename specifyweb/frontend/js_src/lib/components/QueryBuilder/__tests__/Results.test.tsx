@@ -77,15 +77,15 @@ test.each([
   );
 
   for (const value of values)
-    expect(await screen.findByText(value)).toBeInTheDocument();
+    await expect(screen.findByText(value)).resolves.toBeInTheDocument();
   expect(screen.queryByText('Old first')).not.toBeInTheDocument();
   expect(screen.queryByText('Old last')).not.toBeInTheDocument();
   expect(
-    document.querySelectorAll('[data-query-results-cell-col]').length
-  ).toBe(names.length);
+    document.querySelectorAll('[data-query-results-cell-col]')
+  ).toHaveLength(names.length);
 
   rerender(<QueryResults {...props} />);
-  expect(await screen.findByText('Old first')).toBeInTheDocument();
+  await expect(screen.findByText('Old first')).resolves.toBeInTheDocument();
   expect(screen.getByText('Old last')).toBeInTheDocument();
 });
 
@@ -151,25 +151,21 @@ test.each([1, 3])(
     ]);
     render(
       <QueryResults
-        table={tables.Agent}
-        queryResource={undefined}
-        fetchSize={2}
-        fetchResults={fetchResults}
+        allFields={fields}
+        createRecordSet={undefined}
+        displayedFields={fields}
+        extraButtons={undefined}
         fetchCount={undefined}
-        totalCount={4}
+        fetchResults={fetchResults}
+        fetchSize={2}
         fieldSpecs={queryFieldsToFieldSpecs('Agent', fields).map(
           ([, fieldSpec]) => fieldSpec
         )}
-        displayedFields={fields}
-        allFields={fields}
         initialData={[
           [1, 'First'],
           [2, 'Second'],
         ]}
-        selectedRows={[new Set<number>(), jest.fn()]}
-        onReRun={jest.fn()}
-        createRecordSet={undefined}
-        extraButtons={undefined}
+        queryResource={undefined}
         renderSplitPane={({ onDelete, onFetchMore }) => (
           <>
             <button onClick={() => onDelete(deletedId)}>Delete record</button>
@@ -181,6 +177,10 @@ test.each([1, 3])(
             </button>
           </>
         )}
+        selectedRows={[new Set<number>(), jest.fn()]}
+        table={tables.Agent}
+        totalCount={4}
+        onReRun={jest.fn()}
       />
     );
 

@@ -37,7 +37,7 @@ test('marks statistics requests and tracks loading through completion', async ()
   const { result: loading } = renderHook(useStatisticsLoading);
   let resolveRequest!: (value: ReturnType<typeof result>) => void;
   ajaxMock.mockImplementationOnce(
-    () =>
+    async () =>
       new Promise((resolve) => {
         resolveRequest = resolve;
       })
@@ -81,7 +81,7 @@ test('navigation cancels retries instead of starting more database work', async 
   await jest.advanceTimersByTimeAsync(0);
   cancelStatisticsRequests();
   await jest.advanceTimersByTimeAsync(2000);
-  expect(await request).toBeUndefined();
+  await expect(request).resolves.toBeUndefined();
   expect(ajaxMock).toHaveBeenCalledTimes(1);
   expect(statisticsAreLoading()).toBe(false);
 });
@@ -90,7 +90,7 @@ test('loading stays true until every concurrent request finishes', async () => {
   let finish!: (value: ReturnType<typeof result>) => void;
   ajaxMock
     .mockImplementationOnce(
-      () =>
+      async () =>
         new Promise((resolve) => {
           finish = resolve;
         })

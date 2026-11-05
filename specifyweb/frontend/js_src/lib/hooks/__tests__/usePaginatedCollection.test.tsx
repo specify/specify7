@@ -48,7 +48,7 @@ test.each([
   { initialRecords: undefined, totalCount: 1, canFetchMore: true },
 ])('returns replacement records and count on the first render: %j', (next) => {
   const renders: {
-    readonly records: ReadonlyArray<number | undefined> | undefined;
+    readonly records: readonly (number | undefined)[] | undefined;
     readonly totalCount: number | undefined;
     readonly canFetchMore: boolean;
   }[] = [];

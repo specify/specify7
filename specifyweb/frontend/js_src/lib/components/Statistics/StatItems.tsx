@@ -48,8 +48,7 @@ export function StatItem({
   readonly onRemove: (() => void) | undefined;
   readonly onClick: (() => void) | undefined;
   readonly onEdit:
-    | ((querySpec: QuerySpec, itemName: LocalizedString) => void)
-    | undefined;
+    ((querySpec: QuerySpec, itemName: LocalizedString) => void) | undefined;
   readonly onLoad:
     | ((
         categoryIndex: number,

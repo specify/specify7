@@ -11,17 +11,17 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 
 import { commonText } from '../../../localization/common';
 import { schemaText } from '../../../localization/schema';
-import * as ajax from '../../../utils/ajax';
 import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
+import * as ajax from '../../../utils/ajax';
 import { LoadingContext } from '../../Core/Contexts';
 import { schema } from '../../DataModel/schema';
 import { tables } from '../../DataModel/tables';
+import type { UniquenessRules } from '../../DataModel/uniquenessRules';
 import {
   getUniquenessRules,
   useTableUniquenessRules,
 } from '../../DataModel/uniquenessRules';
-import type { UniquenessRules } from '../../DataModel/uniquenessRules';
 import { userInformation } from '../../InitialContext/userInformation';
 import {
   SetUnloadProtectsContext,
@@ -62,7 +62,7 @@ afterEach(() => {
 
 function renderConfiguration() {
   return render(
-    <MemoryRouter useTransitions={true} initialEntries={['/CollectionObject']}>
+    <MemoryRouter initialEntries={['/CollectionObject']} useTransitions>
       <UnloadProtectsContext.Provider value={[]}>
         <SetUnloadProtectsContext.Provider value={jest.fn()}>
           <LoadingContext.Provider
@@ -71,7 +71,7 @@ function renderConfiguration() {
             }}
           >
             <Routes>
-              <Route path="/:tableName" element={<TableUniquenessRules />} />
+              <Route element={<TableUniquenessRules />} path="/:tableName" />
             </Routes>
           </LoadingContext.Provider>
         </SetUnloadProtectsContext.Provider>
@@ -98,9 +98,8 @@ test('adds a rule through the configuration interface and saves its configuratio
     id: null,
     modelName: 'CollectionObject',
     fields: [
-      tables.CollectionObject.literalFields.filter(
-        (field) => !field.isVirtual
-      )[0].name,
+      tables.CollectionObject.literalFields.find((field) => !field.isVirtual)
+        .name,
     ],
     scopes: [],
     isDatabaseConstraint: false,
