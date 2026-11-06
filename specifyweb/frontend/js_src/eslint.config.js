@@ -111,6 +111,7 @@ const base_config = [
   //...compat.config(functional.configs.stylistic),
   ...compat.config(promise.configs.recommended),
   {
+	files: ['**/*.{ts,tsx,js,jsx,mjs,cjs}'],
     languageOptions: {
       parser,
     },
