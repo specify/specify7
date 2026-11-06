@@ -11,7 +11,7 @@ exports[`AppResourcesAside (expanded case) expanded case 1`] = `
       "
   >
     <ul
-      class=" flex flex-1 flex-col gap-1 overflow-auto"
+      class=" flex min-h-0 flex-1 flex-col gap-1 overflow-auto rounded p-1 shadow-sm ring-1 ring-gray-400 dark:ring-0"
       role="tree"
     >
       <li
@@ -85,16 +85,24 @@ exports[`AppResourcesAside (expanded case) expanded case 1`] = `
       </li>
     </ul>
     <div
-      class="flex shrink-0 flex-wrap gap-2 border-t border-gray-300 pt-2 dark:border-neutral-700"
+      class="flex shrink-0 flex-wrap gap-2"
     >
       <button
-        class="link grow justify-center rounded p-1"
+        class="button rounded cursor-pointer active:brightness-80 px-4 py-2
+    disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
+    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm !py-1 !px-2 grow button hover:brightness-90 dark:hover:brightness-125 bg-[color:var(--secondary-button-color)] text-gray-800
+dark:text-gray-100 ring-1 ring-gray-400 shadow-sm dark:ring-0
+    disabled:ring-gray-400 disabled:dark:ring-neutral-500"
         type="button"
       >
         Expand All
       </button>
       <button
-        class="link grow justify-center rounded p-1"
+        class="button rounded cursor-pointer active:brightness-80 px-4 py-2
+    disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
+    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm !py-1 !px-2 grow button hover:brightness-90 dark:hover:brightness-125 bg-[color:var(--secondary-button-color)] text-gray-800
+dark:text-gray-100 ring-1 ring-gray-400 shadow-sm dark:ring-0
+    disabled:ring-gray-400 disabled:dark:ring-neutral-500"
         type="button"
       >
         Collapse All
@@ -115,7 +123,7 @@ exports[`AppResourcesAside (expanded case) expanded case 2`] = `
       "
   >
     <ul
-      class=" flex flex-1 flex-col gap-1 overflow-auto"
+      class=" flex min-h-0 flex-1 flex-col gap-1 overflow-auto rounded p-1 shadow-sm ring-1 ring-gray-400 dark:ring-0"
       role="tree"
     >
       <li
@@ -691,16 +699,24 @@ exports[`AppResourcesAside (expanded case) expanded case 2`] = `
       </li>
     </ul>
     <div
-      class="flex shrink-0 flex-wrap gap-2 border-t border-gray-300 pt-2 dark:border-neutral-700"
+      class="flex shrink-0 flex-wrap gap-2"
     >
       <button
-        class="link grow justify-center rounded p-1"
+        class="button rounded cursor-pointer active:brightness-80 px-4 py-2
+    disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
+    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm !py-1 !px-2 grow button hover:brightness-90 dark:hover:brightness-125 bg-[color:var(--secondary-button-color)] text-gray-800
+dark:text-gray-100 ring-1 ring-gray-400 shadow-sm dark:ring-0
+    disabled:ring-gray-400 disabled:dark:ring-neutral-500"
         type="button"
       >
         Expand All
       </button>
       <button
-        class="link grow justify-center rounded p-1"
+        class="button rounded cursor-pointer active:brightness-80 px-4 py-2
+    disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
+    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm !py-1 !px-2 grow button hover:brightness-90 dark:hover:brightness-125 bg-[color:var(--secondary-button-color)] text-gray-800
+dark:text-gray-100 ring-1 ring-gray-400 shadow-sm dark:ring-0
+    disabled:ring-gray-400 disabled:dark:ring-neutral-500"
         type="button"
       >
         Collapse All
@@ -721,7 +737,7 @@ exports[`AppResourcesAside (simple no conformation case) simple no conformation 
       "
   >
     <ul
-      class=" flex flex-1 flex-col gap-1 overflow-auto"
+      class=" flex min-h-0 flex-1 flex-col gap-1 overflow-auto rounded p-1 shadow-sm ring-1 ring-gray-400 dark:ring-0"
       role="tree"
     >
       <li
@@ -768,16 +784,24 @@ exports[`AppResourcesAside (simple no conformation case) simple no conformation 
       </li>
     </ul>
     <div
-      class="flex shrink-0 flex-wrap gap-2 border-t border-gray-300 pt-2 dark:border-neutral-700"
+      class="flex shrink-0 flex-wrap gap-2"
     >
       <button
-        class="link grow justify-center rounded p-1"
+        class="button rounded cursor-pointer active:brightness-80 px-4 py-2
+    disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
+    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm !py-1 !px-2 grow button hover:brightness-90 dark:hover:brightness-125 bg-[color:var(--secondary-button-color)] text-gray-800
+dark:text-gray-100 ring-1 ring-gray-400 shadow-sm dark:ring-0
+    disabled:ring-gray-400 disabled:dark:ring-neutral-500"
         type="button"
       >
         Expand All
       </button>
       <button
-        class="link grow justify-center rounded p-1"
+        class="button rounded cursor-pointer active:brightness-80 px-4 py-2
+    disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
+    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm !py-1 !px-2 grow button hover:brightness-90 dark:hover:brightness-125 bg-[color:var(--secondary-button-color)] text-gray-800
+dark:text-gray-100 ring-1 ring-gray-400 shadow-sm dark:ring-0
+    disabled:ring-gray-400 disabled:dark:ring-neutral-500"
         type="button"
       >
         Collapse All
@@ -798,7 +822,7 @@ exports[`Missing Collection Preferences Permission simple no conformation test 1
       "
   >
     <ul
-      class=" flex flex-1 flex-col gap-1 overflow-auto"
+      class=" flex min-h-0 flex-1 flex-col gap-1 overflow-auto rounded p-1 shadow-sm ring-1 ring-gray-400 dark:ring-0"
       role="tree"
     >
       <li
@@ -845,16 +869,24 @@ exports[`Missing Collection Preferences Permission simple no conformation test 1
       </li>
     </ul>
     <div
-      class="flex shrink-0 flex-wrap gap-2 border-t border-gray-300 pt-2 dark:border-neutral-700"
+      class="flex shrink-0 flex-wrap gap-2"
     >
       <button
-        class="link grow justify-center rounded p-1"
+        class="button rounded cursor-pointer active:brightness-80 px-4 py-2
+    disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
+    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm !py-1 !px-2 grow button hover:brightness-90 dark:hover:brightness-125 bg-[color:var(--secondary-button-color)] text-gray-800
+dark:text-gray-100 ring-1 ring-gray-400 shadow-sm dark:ring-0
+    disabled:ring-gray-400 disabled:dark:ring-neutral-500"
         type="button"
       >
         Expand All
       </button>
       <button
-        class="link grow justify-center rounded p-1"
+        class="button rounded cursor-pointer active:brightness-80 px-4 py-2
+    disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
+    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm !py-1 !px-2 grow button hover:brightness-90 dark:hover:brightness-125 bg-[color:var(--secondary-button-color)] text-gray-800
+dark:text-gray-100 ring-1 ring-gray-400 shadow-sm dark:ring-0
+    disabled:ring-gray-400 disabled:dark:ring-neutral-500"
         type="button"
       >
         Collapse All

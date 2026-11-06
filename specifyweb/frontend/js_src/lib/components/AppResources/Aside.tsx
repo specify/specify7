@@ -101,11 +101,17 @@ export function AppResourcesAside({
       `.concat(extraClassName === undefined ? '' : ` ${extraClassName}`)}
     >
       {isSearching && resourcesTree.length === 0 ? (
-        <p className="flex-1" role="status">
+        <p
+          className="min-h-0 flex-1 rounded p-1 shadow-sm ring-1 ring-gray-400 dark:ring-0"
+          role="status"
+        >
           {commonText.noResults()}
         </p>
       ) : (
-        <Ul className="flex flex-1 flex-col gap-1 overflow-auto" role="tree">
+        <Ul
+          className="flex min-h-0 flex-1 flex-col gap-1 overflow-auto rounded p-1 shadow-sm ring-1 ring-gray-400 dark:ring-0"
+          role="tree"
+        >
           {resourcesTree.map((resources) => (
             <TreeItem
               conformations={visibleConformations}
@@ -117,7 +123,7 @@ export function AppResourcesAside({
           ))}
         </Ul>
       )}
-      <div className="flex shrink-0 flex-wrap gap-2 border-t border-gray-300 pt-2 dark:border-neutral-700">
+      <div className="flex shrink-0 flex-wrap gap-2">
         <AppResourcesExpand
           resourcesTree={resourcesTree}
           onChange={handleFold}
@@ -207,20 +213,17 @@ function AppResourcesExpand({
 }): JSX.Element {
   return (
     <>
-      <Button.LikeLink
-        className="grow justify-center rounded p-1"
+      <Button.Small
+        className="grow"
         onClick={(): void =>
           handleChange(buildAppResourceConformation(resourcesTree))
         }
       >
         {commonText.expandAll()}
-      </Button.LikeLink>
-      <Button.LikeLink
-        className="grow justify-center rounded p-1"
-        onClick={(): void => handleChange([])}
-      >
+      </Button.Small>
+      <Button.Small className="grow" onClick={(): void => handleChange([])}>
         {commonText.collapseAll()}
-      </Button.LikeLink>
+      </Button.Small>
     </>
   );
 }
