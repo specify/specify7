@@ -179,22 +179,26 @@ export function TableUniquenessRules(): JSX.Element {
               <td>{schemaText.scope()}</td>
             </tr>
           </thead>
-          {tableRules?.map(({ rule, duplicates }, index) => (
-            <UniquenessRuleRow
-              fetchedDuplicates={duplicates}
-              fields={fields}
-              formId={formId}
-              isReadOnly={isReadOnly}
-              key={index}
-              relationships={relationships}
-              rule={rule}
-              table={table}
-              onChange={(newRule): void => handleRuleValidation(newRule, index)}
-              onRemoved={(): void =>
-                setTableRules(removeItem(tableRules, index))
-              }
-            />
-          ))}
+          <tbody>
+            {tableRules?.map(({ rule, duplicates }, index) => (
+              <UniquenessRuleRow
+                fetchedDuplicates={duplicates}
+                fields={fields}
+                formId={formId}
+                isReadOnly={isReadOnly}
+                key={index}
+                relationships={relationships}
+                rule={rule}
+                table={table}
+                onChange={(newRule): void =>
+                  handleRuleValidation(newRule, index)
+                }
+                onRemoved={(): void =>
+                  setTableRules(removeItem(tableRules, index))
+                }
+              />
+            ))}
+          </tbody>
         </table>
       </Form>
       {unloadProtected && (

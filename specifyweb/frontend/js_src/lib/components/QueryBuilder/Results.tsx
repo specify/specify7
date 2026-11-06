@@ -395,7 +395,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
         if (resultsRef !== undefined) resultsRef.current = newResults;
         return newResults;
       }
-      setResults(newResults(results));
+      setResults(newResults);
       // Delete deletingRef if no records are able to be removed
       if (removeCount === 0) {
         deletingRef.current.delete(recordId);
@@ -411,7 +411,14 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
       setSelectedRows(newSelectedRows(selectedRows));
       setTimeout(() => deletingRef.current.delete(recordId), 100); // Remove the record from the deletingRef
     },
-    [setResults, setTotalCount, totalCount]
+    [
+      resultsRef,
+      selectedRows,
+      setResults,
+      setSelectedRows,
+      setTotalCount,
+      totalCount,
+    ]
   );
 
   const [showLineNumber] = userPreferences.use(
@@ -746,17 +753,6 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
                 setSelectedRows(new Set(newSelectedRows));
                 handleSelected?.(uniqueSelectedRows);
 
-                lastSelectedRow.current = rowIndex;
-              }}
-              onRowSelected={(rowIndex): void => {
-                const rawId = loadedResults[rowIndex][queryIdField];
-                if (typeof rawId !== 'number') return;
-                const id = rawId;
-                if (typeof id !== 'number' || !Number.isFinite(id)) return;
-
-                const newSelectedRows = new Set([id]);
-                setSelectedRows(newSelectedRows);
-                handleSelected?.(Array.from(newSelectedRows));
                 lastSelectedRow.current = rowIndex;
               }}
             />

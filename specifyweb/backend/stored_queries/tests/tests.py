@@ -57,7 +57,6 @@ def setup_sqlalchemy(url: str, use_blank_nulls=False, use_decimal_format=False):
         connect_args={"cursorclass": SSCursor},
     )
 
-    # BUG: Raise 0-row exception somewhere here.
     @event.listens_for(engine, "before_cursor_execute", retval=True)
     # Listen to low-level cursor execution events. Just before query is executed by SQLAlchemy, run it instead
     # by Django, and then return a wrapped sql statement which will return the same result set.
@@ -70,6 +69,13 @@ def setup_sqlalchemy(url: str, use_blank_nulls=False, use_decimal_format=False):
         django_cursor.execute(statement, parameters)
         result_set = django_cursor.fetchall()
         columns = django_cursor.description
+        if not result_set:
+            # Preserve the result columns without constructing an empty UNION.
+            empty_query = sqlalchemy.select([
+                sqlalchemy.null().label(column[0]) for column in columns
+            ]).where(sqlalchemy.false())
+            return str(empty_query.compile(dialect=mysql.dialect())), ()
+
         # SqlAlchemy needs to find columns back in the rows, hence adding label to columns
         selects = [
             sqlalchemy.select(
