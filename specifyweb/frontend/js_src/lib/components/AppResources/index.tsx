@@ -6,12 +6,14 @@ import { useErrorContext } from '../../hooks/useErrorContext';
 import { useId } from '../../hooks/useId';
 import { useScreenSize } from '../../hooks/useScreenSize';
 import { commonText } from '../../localization/common';
+import { headerText } from '../../localization/header';
 import { resourcesText } from '../../localization/resources';
 import type { GetOrSet } from '../../utils/types';
 import { Container, H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
+import { Link } from '../Atoms/Link';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { ProtectedTable, ProtectedTool } from '../Permissions/PermissionDenied';
 import { SafeOutlet } from '../Router/RouterUtils';
@@ -124,6 +126,16 @@ export function AppResourcesView({
               <H2 className={sidebarCollapsed ? 'sr-only' : 'pl-1 text-lg'}>
                 {resourcesText.browseResources()}
               </H2>
+              {!sidebarCollapsed && (
+                <Link.Icon
+                  className="[&>svg]:h-4 [&>svg]:w-4"
+                  href="https://speciforum.org/t/app-resources/582"
+                  icon="informationCircle"
+                  rel="noopener"
+                  target="_blank"
+                  title={headerText.documentation()}
+                />
+              )}
               <Button.LikeLink
                 aria-controls={id('sidebar')}
                 aria-expanded={!sidebarCollapsed}
@@ -179,6 +191,16 @@ export function AppResourcesView({
           }}
           dimensionsKey={false}
           header={resourcesText.browseResources()}
+          headerButtons={
+            <Link.Icon
+              className="[&>svg]:h-4 [&>svg]:w-4"
+              href="https://speciforum.org/t/app-resources/582"
+              icon="questionCircle"
+              rel="noopener"
+              target="_blank"
+              title={headerText.documentation()}
+            />
+          }
           onClose={(): void => setIsBrowserOpen(false)}
         >
           {browser}

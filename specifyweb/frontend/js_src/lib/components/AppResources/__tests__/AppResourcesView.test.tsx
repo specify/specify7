@@ -4,6 +4,7 @@ import { MemoryRouter, Route, Routes, useNavigate } from 'react-router-dom';
 
 import { useScreenSize } from '../../../hooks/useScreenSize';
 import { commonText } from '../../../localization/common';
+import { headerText } from '../../../localization/header';
 import { resourcesText } from '../../../localization/resources';
 import { requireContext } from '../../../tests/helpers';
 import { mount } from '../../../tests/reactUtils';
@@ -76,6 +77,12 @@ test('hides and restores the sidebar without resetting the tree or editor', asyn
   expect(
     getByRole('heading', { name: resourcesText.browseResources() })
   ).toBeVisible();
+  expect(
+    getByRole('link', { name: headerText.documentation() })
+  ).toHaveAttribute('href', 'https://speciforum.org/t/app-resources/582');
+  expect(
+    getByRole('link', { name: headerText.documentation() })
+  ).toHaveAttribute('target', '_blank');
   const tree = getByRole('tree');
   const editor = getByRole('textbox', { name: 'Resource data' });
   const appResourcesFilter = getByRole('radio', { name: 'App Resources' });
@@ -221,6 +228,9 @@ describe('small-screen resource picker', () => {
       name: resourcesText.browseResources(),
     });
     expect(picker).toHaveAttribute('aria-modal', 'true');
+    expect(
+      within(picker).getByRole('link', { name: headerText.documentation() })
+    ).toHaveAttribute('href', 'https://speciforum.org/t/app-resources/582');
     expect(within(picker).getByRole('tree')).toBeInTheDocument();
     expect(within(picker).getByRole('searchbox')).toHaveFocus();
     expect(editor).toHaveValue('Unsaved changes');
