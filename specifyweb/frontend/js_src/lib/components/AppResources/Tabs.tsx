@@ -127,7 +127,7 @@ export function useEditorTabs(
                   component(props): JSX.Element {
                     if (type === 'visual' && subType === 'dwcaDefinition')
                       return (
-                        <div className="flex min-h-0 flex-1 flex-col gap-1">
+                        <div className="flex min-h-0 min-w-0 max-w-full flex-1 flex-col gap-1">
                           <OtherCollectionWarning directory={props.directory} />
                           <Editor {...props} />
                         </div>
@@ -220,9 +220,12 @@ export function Tabs({
           </Tab>
         ))}
       </Tab.List>
-      <Tab.Panels className="flex flex-1 overflow-hidden">
+      <Tab.Panels className="flex min-w-0 flex-1 overflow-hidden">
         {Object.values(tabs).map((element, index) => (
-          <Tab.Panel className="flex flex-1 flex-col gap-4" key={index}>
+          <Tab.Panel
+            className="flex min-w-0 max-w-full flex-1 flex-col gap-4"
+            key={index}
+          >
             <ErrorBoundary dismissible>{element}</ErrorBoundary>
           </Tab.Panel>
         ))}

@@ -1577,7 +1577,7 @@ export function QueryMapping({
     setPendingReplacement(replacement);
   };
   return (
-    <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-auto">
+    <div className="flex min-h-0 min-w-0 max-w-full flex-1 flex-col gap-3 overflow-auto">
       <div className="flex flex-wrap items-end gap-3">
         <Label.Block>
           {mapping.extension
@@ -1742,7 +1742,7 @@ export function QueryMapping({
           prefix: dwcaText.dwcaTerm(),
         }}
         key={mapping.query.cid}
-        className="!gap-2 !p-0"
+        className="min-w-0 max-w-full !gap-2 !p-0"
         defaultBasicView
         forceCollection={undefined}
         isEmbedded
@@ -2095,7 +2095,7 @@ function DwcaDefinitionEditorLoaded({
     }
   };
   return (
-    <div className="flex min-h-0 flex-1 flex-col gap-1 overflow-hidden">
+    <div className="flex min-h-0 min-w-0 max-w-full flex-1 flex-col gap-1 overflow-hidden">
       {invalidExtensions.length > 0 && (
         <CollapsibleAlert
           expanded={showInvalidExtensions}

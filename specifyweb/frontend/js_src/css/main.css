@@ -265,7 +265,21 @@
 
 @layer components {
   .query-fields-container {
-    @apply flex w-full min-w-0 max-w-full flex-col overflow-auto;
+    scrollbar-color: theme('colors.gray.500') theme('colors.gray.200');
+    scrollbar-width: auto;
+    @apply flex w-full min-w-0 max-w-full flex-col overflow-auto overscroll-x-contain [scrollbar-gutter:stable];
+  }
+
+  .query-fields-container::-webkit-scrollbar {
+    @apply h-3;
+  }
+
+  .query-fields-container::-webkit-scrollbar-track {
+    @apply rounded bg-gray-200 dark:bg-neutral-800;
+  }
+
+  .query-fields-container::-webkit-scrollbar-thumb {
+    @apply rounded bg-gray-500 dark:bg-neutral-500;
   }
 
   .query-fields-table {
@@ -330,6 +344,10 @@
     grid-area: prefix;
   }
 
+  .query-field-row--with-prefix .query-field-prefix {
+    @apply pl-2;
+  }
+
   .query-field-header-field,
   .query-field-mapping {
     grid-area: field;
@@ -337,6 +355,10 @@
 
   .query-field-row--without-prefix .query-field-mapping {
     @apply pl-2;
+  }
+
+  .query-field-row--with-prefix .query-field-mapping {
+    @apply pl-1;
   }
 
   .query-field-header-filter,

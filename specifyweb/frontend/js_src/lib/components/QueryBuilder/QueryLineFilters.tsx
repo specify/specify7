@@ -152,6 +152,8 @@ function QueryLineFilterWrapper({
       ? undefined
       : fieldFormatterToParser(terminatingField, fieldFormatter)) ??
     fieldMeta.parser;
+  const hasFilterValue =
+    queryFieldFilterSpecs[filter.type].component !== undefined;
 
   return (
     <div
@@ -251,7 +253,9 @@ function QueryLineFilterWrapper({
       <div
         className={
           isBasic
-            ? 'order-2 flex min-w-32 flex-1 items-center gap-2'
+            ? hasFilterValue
+              ? 'order-2 flex min-w-32 flex-1 items-center gap-2'
+              : 'order-2 hidden'
             : 'contents'
         }
       >

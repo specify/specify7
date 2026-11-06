@@ -448,7 +448,7 @@ function Wrapped({
     <ReadOnlyContext.Provider value={isReadOnly}>
       <IsQueryBasicContext.Provider value={isBasic}>
         <Container.Full
-          className={`overflow-hidden ${isEmbedded ? 'py-0' : ''} ${className}`}
+          className={`min-w-0 max-w-full overflow-hidden ${isEmbedded ? 'py-0' : ''} ${className}`}
           onClick={
             state.openedElement.index === undefined
               ? undefined
