@@ -5,6 +5,7 @@ import { statsText } from '../../../localization/stats';
 import { requireContext } from '../../../tests/helpers';
 import type { RA } from '../../../utils/types';
 import {
+  enterEditMode,
   findDefaultStat,
   getCurrentPageName,
   getPageButtons,
@@ -53,6 +54,9 @@ const queryEditButton = (): HTMLElement | undefined =>
     .queryAllByRole('button', { name: commonText.edit() })
     .find(({ textContent }) => textContent === commonText.edit());
 
+const getSharedSection = (): HTMLElement =>
+  screen.getByRole('heading', { name: sharedSection }).closest('li')!;
+
 describe('Without permission to edit shared statistics', () => {
   test('the Edit button is not visible on the shared page', async () => {
     await renderEmptyStatsPage();
@@ -74,6 +78,32 @@ describe('Without permission to edit shared statistics', () => {
 
     expect(getCurrentPageName(sharedSection)).toBeDefined();
     expect(queryEditButton()).toBeUndefined();
+  });
+
+  test('shared layout pages have no pencil or "+" icon while editing', async () => {
+    const { user } = await renderEmptyStatsPage();
+    // The Edit button is only available from a private page
+    await user.click(getPageButtons(statsText.private())[0]);
+    await enterEditMode(user);
+    expect(
+      screen.getByRole('button', { name: commonText.save() })
+    ).toBeInTheDocument();
+
+    expect(
+      within(getSharedSection()).queryByRole('button', {
+        name: commonText.add(),
+      })
+    ).not.toBeInTheDocument();
+
+    const sharedPages = within(getSharedSection()).getAllByRole('listitem');
+    expect(sharedPages.length).toBeGreaterThan(0);
+    sharedPages.forEach((page) => {
+      const pencil = within(page).getByRole('button', {
+        name: commonText.edit(),
+      });
+      expect(pencil).toBeDisabled();
+      expect(pencil).toHaveClass('invisible');
+    });
   });
 });
 
