@@ -1,14 +1,36 @@
-import { screen } from '@testing-library/react';
+import { screen, within } from '@testing-library/react';
 import { commonText } from '../../../localization/common';
+import { formsText } from '../../../localization/forms';
 import { statsText } from '../../../localization/stats';
 import { requireContext } from '../../../tests/helpers';
 import type { RA } from '../../../utils/types';
 import {
+  findDefaultStat,
   getCurrentPageName,
   getPageButtons,
   mockStatsRequests,
   renderEmptyStatsPage,
+  type User,
 } from './statsPageTestUtils';
+
+const mockQueryBuilderRenders: Array<{
+  readonly isReadOnly: boolean;
+  readonly autoRun: boolean | undefined;
+}> = [];
+
+jest.mock('../../QueryBuilder/Wrapped', () => {
+  const React = jest.requireActual('react');
+  const { ReadOnlyContext } = jest.requireActual('../../Core/Contexts');
+  return {
+    QueryBuilder: ({ autoRun }: { readonly autoRun?: boolean }) => {
+      mockQueryBuilderRenders.push({
+        isReadOnly: React.useContext(ReadOnlyContext),
+        autoRun,
+      });
+      return React.createElement('div', {}, 'Query Builder');
+    },
+  };
+});
 
 jest.mock('../../Permissions/helpers', () => {
   const actual = jest.requireActual('../../Permissions/helpers');
@@ -26,7 +48,6 @@ mockStatsRequests();
 
 const sharedSection = statsText.shared();
 
-/** The "Edit" text button, not the pencil icons that share its title */
 const queryEditButton = (): HTMLElement | undefined =>
   screen
     .queryAllByRole('button', { name: commonText.edit() })
@@ -53,5 +74,50 @@ describe('Without permission to edit shared statistics', () => {
 
     expect(getCurrentPageName(sharedSection)).toBeDefined();
     expect(queryEditButton()).toBeUndefined();
+  });
+});
+
+describe('Opening a shared query statistic without edit permission', () => {
+  const queryStat = findDefaultStat('loans', 'openLoansCount');
+
+  async function openQueryStat(user: User): Promise<HTMLElement> {
+    const statButton = screen
+      .getAllByRole('button')
+      .find(
+        (button) => button.firstElementChild?.textContent === queryStat.label
+      )!;
+    await user.click(statButton);
+    return screen.getByRole('dialog', { name: queryStat.label });
+  }
+
+  beforeEach(() => {
+    mockQueryBuilderRenders.length = 0;
+  });
+
+  test('Save is not available and Clone is disabled', async () => {
+    const { user } = await renderEmptyStatsPage();
+    const dialog = await openQueryStat(user);
+
+    expect(
+      within(dialog).queryByRole('button', { name: commonText.save() })
+    ).not.toBeInTheDocument();
+    expect(
+      within(dialog).getByRole('button', { name: formsText.clone() })
+    ).toBeDisabled();
+    expect(
+      within(dialog).getByRole('button', { name: commonText.close() })
+    ).toBeEnabled();
+  });
+
+  test('the query can still be modified and is run', async () => {
+    const { user } = await renderEmptyStatsPage();
+    const dialog = await openQueryStat(user);
+
+    expect(within(dialog).getByText('Query Builder')).toBeInTheDocument();
+    expect(mockQueryBuilderRenders.length).toBeGreaterThan(0);
+    mockQueryBuilderRenders.forEach(({ isReadOnly, autoRun }) => {
+      expect(isReadOnly).toBe(false);
+      expect(autoRun).toBe(true);
+    });
   });
 });
