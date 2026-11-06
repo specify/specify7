@@ -1,5 +1,5 @@
 from specifyweb.specify import models
-from specifyweb.specify.api.crud import post_resource
+from specifyweb.specify.api.crud import post_resource, update_obj
 from specifyweb.specify.tests.test_api import ApiTests
 from ..exceptions import BusinessRuleException
 
@@ -51,3 +51,30 @@ class PicklistTests(ApiTests):
             list(saved.picklistitems.values_list('title', 'value')),
             [('First', 'first'), ('Second', 'second')],
         )
+
+    def test_update_existing_picklist_item(self):
+        picklist = models.Picklist.objects.create(
+            collection=self.collection,
+            issystem=False,
+            name='Existing',
+            readonly=False,
+            type=0,
+        )
+        item = picklist.picklistitems.create(
+            title='Old title',
+            value='old',
+            ordinal=0,
+        )
+
+        update_obj(
+            self.collection,
+            self.agent,
+            'picklistitem',
+            item.id,
+            item.version,
+            {'title': 'New title', 'value': 'new'},
+        )
+
+        item.refresh_from_db()
+        self.assertEqual(item.title, 'New title')
+        self.assertEqual(item.value, 'new')
