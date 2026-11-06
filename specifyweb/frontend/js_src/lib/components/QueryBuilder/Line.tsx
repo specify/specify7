@@ -298,22 +298,18 @@ export function QueryLine({
         ${isBasic ? 'contents' : ''}
       `}
       >
-        {typeof handleRemove === 'function' ? (
-          <Button.Small
-            aria-label={commonText.remove()}
-            className={`
-            w-16 shrink-0 ${isBasic ? 'h-full' : ''} print:hidden
-          `}
-            title={commonText.remove()}
-            variant={className.dangerButton}
-            onClick={handleRemove}
-          >
-            {icons.trash}
-          </Button.Small>
-        ) : isBasic ? (
-          // Keep the basic-view grid aligned when a field cannot be removed.
-          <span aria-hidden="true" className="w-16 shrink-0" />
-        ) : undefined}
+        <Button.Small
+          aria-label={commonText.remove()}
+          className={`
+          w-16 shrink-0 ${isBasic ? 'h-full' : ''} print:hidden
+        `}
+          disabled={handleRemove === undefined}
+          title={commonText.remove()}
+          variant={className.dangerButton}
+          onClick={handleRemove}
+        >
+          {icons.trash}
+        </Button.Small>
         {renderFieldPrefix?.()}
         {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
         <div
