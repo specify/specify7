@@ -78,3 +78,6 @@ class PicklistTests(ApiTests):
         item.refresh_from_db()
         self.assertEqual(item.title, 'New title')
         self.assertEqual(item.value, 'new')
+        self.assertEqual(item.version, 1)
+        self.assertEqual(item.ordinal, 0)
+        self.assertEqual(item.picklist_id, picklist.id)
