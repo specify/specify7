@@ -71,3 +71,54 @@ class CogCreationTests(DefaultsSetup):
         self.assertEqual(join.childcog.name, 'Child COG')
         self.assertIs(join.isprimary, False)
         self.assertIs(join.issubstrate, False)
+
+    def test_add_existing_cog_child(self):
+        parent = post_resource(
+            self.collection,
+            self.agent,
+            'collectionobjectgroup',
+            {
+                'collection': uri_for_model('collection', self.collection.id),
+                'cogtype': uri_for_model(
+                    'collectionobjectgrouptype', self.cogtype.id
+                ),
+                'name': 'Parent COG',
+            },
+        )
+        child = post_resource(
+            self.collection,
+            self.agent,
+            'collectionobjectgroup',
+            {
+                'collection': uri_for_model('collection', self.collection.id),
+                'cogtype': uri_for_model(
+                    'collectionobjectgrouptype', self.cogtype.id
+                ),
+                'name': 'Existing COG',
+            },
+        )
+
+        update_obj(
+            self.collection,
+            self.agent,
+            'collectionobjectgroup',
+            parent.id,
+            parent.version,
+            {
+                'children': [
+                    {
+                        'isPrimary': False,
+                        'isSubstrate': False,
+                        'childCog': uri_for_model(
+                            'collectionobjectgroup', child.id
+                        ),
+                    }
+                ],
+            },
+        )
+
+        join = models.Collectionobjectgroupjoin.objects.get(
+            parentcog=parent, childcog=child
+        )
+        self.assertIs(join.isprimary, False)
+        self.assertIs(join.issubstrate, False)
