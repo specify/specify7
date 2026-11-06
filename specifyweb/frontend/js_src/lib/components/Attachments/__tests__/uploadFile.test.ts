@@ -115,6 +115,18 @@ describe('uploadFile', () => {
     expect(attachment?.get('title')).toBe(testFileName);
   });
 
+  test.each([false, true])(
+    'preserves the public attachment default (%s)',
+    async (isPublic) => {
+      const attachment = await uploadFile({
+        file: testFile,
+        attachmentIsPublicDefault: isPublic,
+      });
+
+      expect(attachment?.get('isPublic')).toBe(isPublic);
+    }
+  );
+
   test('sends request correctly (override spec)', async () => {
     const newToken = 'newTestToken';
     const newLocation = 'newTestLocation';
