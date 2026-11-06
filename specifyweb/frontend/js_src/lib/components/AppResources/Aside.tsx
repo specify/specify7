@@ -207,17 +207,20 @@ function AppResourcesExpand({
 }): JSX.Element {
   return (
     <>
-      <Button.Small
-        className="grow"
+      <Button.LikeLink
+        className="grow justify-center rounded p-1"
         onClick={(): void =>
           handleChange(buildAppResourceConformation(resourcesTree))
         }
       >
         {commonText.expandAll()}
-      </Button.Small>
-      <Button.Small className="grow" onClick={(): void => handleChange([])}>
+      </Button.LikeLink>
+      <Button.LikeLink
+        className="grow justify-center rounded p-1"
+        onClick={(): void => handleChange([])}
+      >
         {commonText.collapseAll()}
-      </Button.Small>
+      </Button.LikeLink>
     </>
   );
 }

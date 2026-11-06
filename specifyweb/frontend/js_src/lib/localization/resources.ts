@@ -9,6 +9,9 @@ import { createDictionary } from './utils';
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
 export const resourcesText = createDictionary({
+  browseResources: {
+    'en-us': 'Browse Resources',
+  },
   searchResources: {
     'en-us': 'Search Resources',
   },

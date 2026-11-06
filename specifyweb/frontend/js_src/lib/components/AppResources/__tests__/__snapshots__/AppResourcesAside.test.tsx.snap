@@ -88,21 +88,13 @@ exports[`AppResourcesAside (expanded case) expanded case 1`] = `
       class="flex shrink-0 flex-wrap gap-2 border-t border-gray-300 pt-2 dark:border-neutral-700"
     >
       <button
-        class="button rounded cursor-pointer active:brightness-80 px-4 py-2
-    disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
-    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm !py-1 !px-2 grow button hover:brightness-90 dark:hover:brightness-125 bg-[color:var(--secondary-button-color)] text-gray-800
-dark:text-gray-100 ring-1 ring-gray-400 shadow-sm dark:ring-0
-    disabled:ring-gray-400 disabled:dark:ring-neutral-500"
+        class="link grow justify-center rounded p-1"
         type="button"
       >
         Expand All
       </button>
       <button
-        class="button rounded cursor-pointer active:brightness-80 px-4 py-2
-    disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
-    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm !py-1 !px-2 grow button hover:brightness-90 dark:hover:brightness-125 bg-[color:var(--secondary-button-color)] text-gray-800
-dark:text-gray-100 ring-1 ring-gray-400 shadow-sm dark:ring-0
-    disabled:ring-gray-400 disabled:dark:ring-neutral-500"
+        class="link grow justify-center rounded p-1"
         type="button"
       >
         Collapse All
@@ -702,21 +694,13 @@ exports[`AppResourcesAside (expanded case) expanded case 2`] = `
       class="flex shrink-0 flex-wrap gap-2 border-t border-gray-300 pt-2 dark:border-neutral-700"
     >
       <button
-        class="button rounded cursor-pointer active:brightness-80 px-4 py-2
-    disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
-    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm !py-1 !px-2 grow button hover:brightness-90 dark:hover:brightness-125 bg-[color:var(--secondary-button-color)] text-gray-800
-dark:text-gray-100 ring-1 ring-gray-400 shadow-sm dark:ring-0
-    disabled:ring-gray-400 disabled:dark:ring-neutral-500"
+        class="link grow justify-center rounded p-1"
         type="button"
       >
         Expand All
       </button>
       <button
-        class="button rounded cursor-pointer active:brightness-80 px-4 py-2
-    disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
-    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm !py-1 !px-2 grow button hover:brightness-90 dark:hover:brightness-125 bg-[color:var(--secondary-button-color)] text-gray-800
-dark:text-gray-100 ring-1 ring-gray-400 shadow-sm dark:ring-0
-    disabled:ring-gray-400 disabled:dark:ring-neutral-500"
+        class="link grow justify-center rounded p-1"
         type="button"
       >
         Collapse All
@@ -787,21 +771,13 @@ exports[`AppResourcesAside (simple no conformation case) simple no conformation 
       class="flex shrink-0 flex-wrap gap-2 border-t border-gray-300 pt-2 dark:border-neutral-700"
     >
       <button
-        class="button rounded cursor-pointer active:brightness-80 px-4 py-2
-    disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
-    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm !py-1 !px-2 grow button hover:brightness-90 dark:hover:brightness-125 bg-[color:var(--secondary-button-color)] text-gray-800
-dark:text-gray-100 ring-1 ring-gray-400 shadow-sm dark:ring-0
-    disabled:ring-gray-400 disabled:dark:ring-neutral-500"
+        class="link grow justify-center rounded p-1"
         type="button"
       >
         Expand All
       </button>
       <button
-        class="button rounded cursor-pointer active:brightness-80 px-4 py-2
-    disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
-    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm !py-1 !px-2 grow button hover:brightness-90 dark:hover:brightness-125 bg-[color:var(--secondary-button-color)] text-gray-800
-dark:text-gray-100 ring-1 ring-gray-400 shadow-sm dark:ring-0
-    disabled:ring-gray-400 disabled:dark:ring-neutral-500"
+        class="link grow justify-center rounded p-1"
         type="button"
       >
         Collapse All
@@ -872,21 +848,13 @@ exports[`Missing Collection Preferences Permission simple no conformation test 1
       class="flex shrink-0 flex-wrap gap-2 border-t border-gray-300 pt-2 dark:border-neutral-700"
     >
       <button
-        class="button rounded cursor-pointer active:brightness-80 px-4 py-2
-    disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
-    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm !py-1 !px-2 grow button hover:brightness-90 dark:hover:brightness-125 bg-[color:var(--secondary-button-color)] text-gray-800
-dark:text-gray-100 ring-1 ring-gray-400 shadow-sm dark:ring-0
-    disabled:ring-gray-400 disabled:dark:ring-neutral-500"
+        class="link grow justify-center rounded p-1"
         type="button"
       >
         Expand All
       </button>
       <button
-        class="button rounded cursor-pointer active:brightness-80 px-4 py-2
-    disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
-    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm !py-1 !px-2 grow button hover:brightness-90 dark:hover:brightness-125 bg-[color:var(--secondary-button-color)] text-gray-800
-dark:text-gray-100 ring-1 ring-gray-400 shadow-sm dark:ring-0
-    disabled:ring-gray-400 disabled:dark:ring-neutral-500"
+        class="link grow justify-center rounded p-1"
         type="button"
       >
         Collapse All

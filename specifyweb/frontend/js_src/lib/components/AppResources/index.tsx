@@ -1,8 +1,10 @@
 import React from 'react';
+import { useLocation } from 'react-router-dom';
 
 import { useCachedState } from '../../hooks/useCachedState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { useId } from '../../hooks/useId';
+import { useScreenSize } from '../../hooks/useScreenSize';
 import { commonText } from '../../localization/common';
 import { resourcesText } from '../../localization/resources';
 import type { GetOrSet } from '../../utils/types';
@@ -10,6 +12,7 @@ import { Container, H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { ProtectedTable, ProtectedTool } from '../Permissions/PermissionDenied';
 import { SafeOutlet } from '../Router/RouterUtils';
 import { AppResourcesAside } from './Aside';
@@ -53,6 +56,13 @@ export function AppResourcesView({
   const conformations = useCachedState('appResources', 'conformation');
   const [filters] = useCachedState('appResources', 'filters');
   const [searchQuery, setSearchQuery] = React.useState('');
+  const isDesktop = useScreenSize('md');
+  const [isBrowserOpen, setIsBrowserOpen] = React.useState(false);
+  const location = useLocation();
+  // Close only after navigation commits, preserving the router's unload protection.
+  React.useEffect(() => {
+    setIsBrowserOpen(false);
+  }, [isDesktop, location.key]);
   const [sidebarCollapsed = false, setSidebarCollapsed] = useCachedState(
     'appResources',
     'sidebarCollapsed'
@@ -62,81 +72,121 @@ export function AppResourcesView({
     ? resourcesText.showResourceSidebar()
     : resourcesText.hideResourceSidebar();
 
+  const browser = (
+    <div
+      className={
+        isDesktop && sidebarCollapsed
+          ? 'hidden'
+          : `flex flex-col gap-2 p-2 ${
+              isDesktop ? 'min-h-0 flex-1' : 'shrink-0'
+            }`
+      }
+      hidden={isDesktop && sidebarCollapsed}
+      id={id('sidebar')}
+    >
+      <Label.Block className="shrink-0 gap-1">
+        <span className="text-sm text-gray-600 dark:text-neutral-400">
+          {resourcesText.searchResources()}
+        </span>
+        <Input.Generic
+          autoFocus={!isDesktop}
+          type="search"
+          placeholder={commonText.search()}
+          value={searchQuery}
+          onValueChange={setSearchQuery}
+        />
+      </Label.Block>
+      <div className="shrink-0">
+        <AppResourcesFilters initialResources={resources} />
+      </div>
+      <AppResourcesAside
+        className={
+          isDesktop ? 'flex-1 !overflow-hidden' : 'shrink-0 !overflow-visible'
+        }
+        conformations={conformations}
+        filters={filters}
+        isEmbedded
+        resources={resources}
+        searchQuery={searchQuery}
+      />
+    </div>
+  );
+
   return (
     <Container.FullGray className="min-h-0 min-w-0 !gap-2 !p-2">
       <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2 sm:h-0 sm:overflow-auto md:flex-row">
-        <Container.Base
-          className={`min-h-0 min-w-0 shrink-0 !gap-0 !overflow-hidden !p-0 ${
-            sidebarCollapsed ? 'md:w-10' : 'md:w-64 lg:w-72'
-          }`}
-        >
-          <div
-            className={`flex shrink-0 items-center gap-2 p-1 ${sidebarCollapsed ? 'md:flex-1' : 'border-b border-gray-300 dark:border-neutral-700'}`}
+        {isDesktop ? (
+          <Container.Base
+            className={`min-h-0 min-w-0 shrink-0 !gap-0 !overflow-hidden !p-0 ${
+              sidebarCollapsed ? 'md:w-10' : 'md:w-64 lg:w-72'
+            }`}
           >
-            <H2 className={sidebarCollapsed ? 'sr-only' : 'pl-1 text-lg'}>
-              {resourcesText.resources()}
-            </H2>
-            <Button.Small
-              aria-controls={id('sidebar')}
-              aria-expanded={!sidebarCollapsed}
-              aria-label={sidebarLabel}
-              className={
-                sidebarCollapsed
-                  ? 'w-full md:h-full md:flex-col md:!justify-start !px-1'
-                  : 'ml-auto !px-1'
-              }
-              title={sidebarLabel}
-              onClick={(): void => setSidebarCollapsed(!sidebarCollapsed)}
+            <div
+              className={`flex shrink-0 items-center gap-2 p-1 ${sidebarCollapsed ? 'md:flex-1' : 'border-b border-gray-300 dark:border-neutral-700'}`}
             >
-              {sidebarCollapsed
-                ? icons.chevronDoubleRight
-                : icons.chevronDoubleLeft}
-              <span
-                className={
-                  sidebarCollapsed ? 'md:[writing-mode:vertical-rl]' : 'sr-only'
-                }
-              >
+              <H2 className={sidebarCollapsed ? 'sr-only' : 'pl-1 text-lg'}>
                 {resourcesText.resources()}
-              </span>
-            </Button.Small>
-          </div>
-          <div
-            className={
-              sidebarCollapsed
-                ? 'hidden'
-                : 'flex max-h-[40vh] min-h-0 flex-1 flex-col gap-2 p-2 md:max-h-none'
-            }
-            hidden={sidebarCollapsed}
-            id={id('sidebar')}
-          >
-            <Label.Block className="shrink-0 gap-1">
-              <span className="text-sm text-gray-600 dark:text-neutral-400">
-                {resourcesText.searchResources()}
-              </span>
-              <Input.Generic
-                type="search"
-                placeholder={commonText.search()}
-                value={searchQuery}
-                onValueChange={setSearchQuery}
-              />
-            </Label.Block>
-            <div className="shrink-0">
-              <AppResourcesFilters initialResources={resources} />
+              </H2>
+              <Button.LikeLink
+                aria-controls={id('sidebar')}
+                aria-expanded={!sidebarCollapsed}
+                aria-label={sidebarLabel}
+                className={
+                  sidebarCollapsed
+                    ? 'w-full rounded p-1 md:h-full md:flex-col md:justify-start'
+                    : 'ml-auto rounded p-1'
+                }
+                title={sidebarLabel}
+                onClick={(): void => setSidebarCollapsed(!sidebarCollapsed)}
+              >
+                {sidebarCollapsed
+                  ? icons.chevronDoubleRight
+                  : icons.chevronDoubleLeft}
+                <span
+                  className={
+                    sidebarCollapsed
+                      ? 'md:[writing-mode:vertical-rl]'
+                      : 'sr-only'
+                  }
+                >
+                  {resourcesText.resources()}
+                </span>
+              </Button.LikeLink>
             </div>
-            <AppResourcesAside
-              className="flex-1 !overflow-hidden"
-              conformations={conformations}
-              filters={filters}
-              isEmbedded
-              resources={resources}
-              searchQuery={searchQuery}
-            />
-          </div>
-        </Container.Base>
+            {browser}
+          </Container.Base>
+        ) : (
+          <Button.Small
+            aria-haspopup="dialog"
+            className="shrink-0 self-start"
+            onClick={(): void => setIsBrowserOpen(true)}
+          >
+            {icons.search}
+            {resourcesText.browseResources()}
+          </Button.Small>
+        )}
         <SafeOutlet<AppResourcesOutlet>
           getSet={getSet as GetOrSet<AppResources>}
         />
       </div>
+      {!isDesktop && isBrowserOpen && (
+        <Dialog
+          buttons={
+            <Button.Small onClick={(): void => setIsBrowserOpen(false)}>
+              {commonText.close()}
+            </Button.Small>
+          }
+          className={{
+            container: `${dialogClassNames.fullScreen} !p-2`,
+            content: `${dialogClassNames.flexContent} min-h-0 !py-0`,
+          }}
+          dimensionsKey={false}
+          header={resourcesText.browseResources()}
+          onClose={(): void => setIsBrowserOpen(false)}
+        >
+          {browser}
+        </Dialog>
+      )}
     </Container.FullGray>
   );
 }
