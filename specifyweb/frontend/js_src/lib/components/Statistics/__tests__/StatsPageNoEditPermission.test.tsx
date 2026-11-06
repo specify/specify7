@@ -140,6 +140,43 @@ describe('Without permission to edit shared statistics', () => {
       expect(pencil).toHaveClass('invisible');
     });
   });
+
+  test('switching to a shared page while editing disables it and its statistics', async () => {
+    const { user, sharedLayout } = await renderEmptyStatsPage();
+    await user.click(getPageButtons(statsText.private())[0]);
+    await enterEditMode(user);
+    await user.click(getPageButtons(sharedSection)[0]);
+
+    expect(getCurrentPageName(sharedSection)).toBe(sharedLayout[0].label);
+    expect(
+      screen.getByRole('button', { name: commonText.save() })
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: statsText.addACategory() })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: statsText.deleteCategory() })
+    ).not.toBeInTheDocument();
+
+    const statLabels = sharedLayout[0].categories.flatMap(({ items }) =>
+      items.map(({ label }) => label)
+    );
+    const statButtons = screen
+      .getAllByRole('button')
+      .filter((button) =>
+        statLabels.includes(button.firstElementChild?.textContent ?? '')
+      );
+    expect(statButtons).toHaveLength(statLabels.length);
+    statButtons.forEach((button) => expect(button).toBeDisabled());
+
+    const queryStat = findDefaultStat('loans', 'openLoansCount');
+    await user.click(
+      statButtons.find(
+        (button) => button.firstElementChild?.textContent === queryStat.label
+      )!
+    );
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
 });
 
 describe('Opening a shared query statistic without edit permission', () => {
