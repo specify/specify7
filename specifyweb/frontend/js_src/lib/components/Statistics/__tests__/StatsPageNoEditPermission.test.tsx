@@ -4,6 +4,8 @@ import { formsText } from '../../../localization/forms';
 import { statsText } from '../../../localization/stats';
 import { requireContext } from '../../../tests/helpers';
 import type { RA } from '../../../utils/types';
+import { defaultLayoutGenerated } from '../StatsSpec';
+import type { CustomStat } from '../types';
 import {
   enterEditMode,
   findDefaultStat,
@@ -23,12 +25,41 @@ jest.mock('../../QueryBuilder/Wrapped', () => {
   const React = jest.requireActual('react');
   const { ReadOnlyContext } = jest.requireActual('../../Core/Contexts');
   return {
-    QueryBuilder: ({ autoRun }: { readonly autoRun?: boolean }) => {
+    QueryBuilder: ({
+      autoRun,
+      onChange: handleChange,
+    }: {
+      readonly autoRun?: boolean;
+      readonly onChange?: (query: {
+        readonly fields: RA<unknown>;
+        readonly isDistinct: boolean;
+      }) => void;
+    }) => {
       mockQueryBuilderRenders.push({
         isReadOnly: React.useContext(ReadOnlyContext),
         autoRun,
       });
-      return React.createElement('div', {}, 'Query Builder');
+      return React.createElement(
+        React.Fragment,
+        {},
+        React.createElement('div', {}, 'Query Builder'),
+        React.createElement(
+          'button',
+          {
+            type: 'button',
+            onClick: () =>
+              handleChange?.({
+                fields: jest
+                  .requireActual('../hooks')
+                  .makeSerializedFieldsFromPaths('CollectionObject', [
+                    { path: 'catalogNumber' },
+                  ]),
+                isDistinct: false,
+              }),
+          },
+          'Add a field'
+        )
+      );
     },
   };
 });
@@ -149,5 +180,41 @@ describe('Opening a shared query statistic without edit permission', () => {
       expect(isReadOnly).toBe(false);
       expect(autoRun).toBe(true);
     });
+  });
+});
+
+describe('Private pages without permission to edit shared statistics', () => {
+  const privateStat = defaultLayoutGenerated[1].categories[0].items[0];
+
+  test('the query on a statistic can be modified and saved', async () => {
+    const { user, getPersonalLayout } = await renderEmptyStatsPage();
+    await user.click(getPageButtons(statsText.private())[0]);
+    const statButton = screen
+      .getAllByRole('button')
+      .find(
+        (button) => button.firstElementChild?.textContent === privateStat.label
+      )!;
+    await user.click(statButton);
+    const dialog = screen.getByRole('dialog', { name: privateStat.label });
+    const save = within(dialog).getByRole('button', {
+      name: commonText.save(),
+    });
+
+    await user.click(
+      within(dialog).getByRole('button', { name: 'Add a field' })
+    );
+    expect(save).toBeEnabled();
+    await user.click(save);
+
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    const stat = getPersonalLayout()![0].categories[0].items[0] as CustomStat;
+    expect(stat).toMatchObject({
+      type: 'CustomStat',
+      label: privateStat.label,
+      querySpec: { tableName: 'CollectionObject' },
+    });
+    expect(stat.querySpec.fields.map(({ path }) => path)).toEqual([
+      'catalogNumber',
+    ]);
   });
 });
