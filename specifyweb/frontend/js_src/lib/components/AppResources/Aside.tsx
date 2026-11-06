@@ -421,7 +421,7 @@ function ResourceItem({
 
   return (
     <ActiveLink
-      className="w-full min-w-0 rounded px-1 py-0.5 [&[aria-current]]:bg-brand-100 dark:[&[aria-current]]:bg-neutral-700 [&:not([aria-current]):not(:hover)]:!text-neutral-500"
+      className="w-full min-w-0 rounded px-1 py-0.5 [&[aria-current]]:bg-brand-100 [&[aria-current]]:!text-black dark:[&[aria-current]]:bg-neutral-700 dark:[&[aria-current]]:!text-white [&:not([aria-current]):not(:hover)]:!text-neutral-500"
       forwardRef={setLink}
       href={url}
       mode="startsWith"
