@@ -67,8 +67,8 @@ export function QueryLineFilters({
     <div
       className={
         fieldFilters.length > 1
-          ? 'flex min-w-0 flex-col gap-2'
-          : 'flex min-w-0 items-center gap-2 flex-wrap'
+          ? 'flex w-full min-w-0 flex-col gap-2'
+          : 'flex w-full min-w-0 items-center gap-2 flex-wrap'
       }
     >
       {fieldFilters.map((_, index) => (
@@ -157,7 +157,7 @@ function QueryLineFilterWrapper({
     <div
       className={
         isBasic
-          ? 'flex min-w-max flex-nowrap items-center gap-2'
+          ? 'flex w-full min-w-0 flex-nowrap items-center gap-2'
           : fieldFilters.length > 1
             ? 'flex flex-wrap gap-2'
             : 'contents'
@@ -250,7 +250,9 @@ function QueryLineFilterWrapper({
       </div>
       <div
         className={
-          isBasic ? 'order-2 flex min-w-max items-center gap-2' : 'contents'
+          isBasic
+            ? 'order-2 flex min-w-32 flex-1 items-center gap-2'
+            : 'contents'
         }
       >
         {typeof parser === 'object' && (
