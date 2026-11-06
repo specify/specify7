@@ -147,10 +147,10 @@ describe('DwCA query field term mapping', () => {
 
   test('lists discipline occurrence defaults independently', () => {
     const bird = defaultTemplates.find(
-      ({ name }) => name === 'Darwin Core Occurrence (Bird)'
+      ({ name }) => name === 'Darwin Core Occurrence (Ornithology)'
     );
     const fish = defaultTemplates.find(
-      ({ name }) => name === 'Darwin Core Occurrence (Fish)'
+      ({ name }) => name === 'Darwin Core Occurrence (Ichthyology)'
     );
     expect(bird).toBeDefined();
     expect(fish).toBeDefined();
@@ -191,7 +191,7 @@ describe('DwCA query field term mapping', () => {
     expect(
       defaultTemplates.find(
         ({ name }) =>
-          name === 'Darwin Core Occurrence (Bird) (Plural Determiners)'
+          name === 'Darwin Core Occurrence (Ornithology) (Plural Determiners)'
       )?.disciplineTypes
     ).toEqual(['bird']);
 
@@ -1017,7 +1017,7 @@ describe('DwCA query field term mapping', () => {
 
   test('filters discipline-specific templates by the current discipline', () => {
     const bird = defaultTemplates.find(
-      ({ name }) => name === 'Darwin Core Occurrence (Bird)'
+      ({ name }) => name === 'Darwin Core Occurrence (Ornithology)'
     )!;
     expect(
       isTemplateApplicableToCore(

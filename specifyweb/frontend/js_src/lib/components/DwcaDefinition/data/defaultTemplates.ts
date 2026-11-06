@@ -1,3 +1,5 @@
+import sharedDisciplineNames from '../../../disciplineNames.json';
+
 export type DwcaTemplate = {
   readonly name: string;
   readonly coreRowTypes?: readonly string[];
@@ -239,14 +241,8 @@ const disciplineFields: Readonly<Record<string, readonly DisciplineField[]>> = {
   ],
 };
 
-export const disciplineNames: Readonly<Record<string, string>> = {
-  bird: 'Bird',
-  fish: 'Fish',
-  herpetology: 'Herpetology',
-  insect: 'Insect',
-  invertebrate: 'Invertebrate',
-  mammal: 'Mammal',
-};
+export const disciplineNames: Readonly<Record<string, string>> =
+  sharedDisciplineNames;
 
 function makeDisciplineOccurrenceTemplate(
   disciplineType: string,

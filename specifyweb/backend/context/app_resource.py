@@ -37,19 +37,13 @@ DISCIPLINE_DIRS = {
     "invertebrate": "invertebrate",
     "geology": "geology",
 }
-DISCIPLINE_NAMES = {
-    'fish': 'Ichthyology',
-    'herpetology': 'Herpetology',
-    'paleobotany': 'Paleobotany',
-    'invertpaleo': 'Invertebrate Paleontology',
-    'vertpaleo': 'Vertebrate Paleontology',
-    'bird': 'Ornithology',
-    'mammal': 'Mammalogy',
-    'insect': 'Entomology',
-    'botany': 'Botany',
-    'invertebrate': 'Invertebrate Zoology',
-    'geology': 'Geology',
-}
+# This makes it easy to look up the discipline name from the discipline type 
+# in the same place on the frontend and backend.
+with open(
+    'specifyweb/frontend/js_src/lib/disciplineNames.json',
+    encoding='utf-8',
+) as discipline_names_file:
+    DISCIPLINE_NAMES = json.load(discipline_names_file)
 
 FORM_RESOURCE_EXCLUDED_LST = [
     "backstop/system.views.xml",
