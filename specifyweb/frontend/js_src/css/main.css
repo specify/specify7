@@ -264,6 +264,135 @@
 @tailwind components;
 
 @layer components {
+  .query-fields-container {
+    @apply flex w-full min-w-0 max-w-full flex-col overflow-auto;
+  }
+
+  .query-fields-table {
+    width: max-content;
+    min-width: 100%;
+    @apply grid flex-1 content-start gap-x-2;
+  }
+
+  .query-fields-list {
+    grid-column: 1 / -1;
+    grid-template-columns: subgrid;
+    @apply grid flex-1;
+  }
+
+  .query-fields-header,
+  .query-field-row {
+    grid-column: 1 / -1;
+    grid-template-columns: subgrid;
+    @apply grid min-w-0 items-center gap-2;
+  }
+
+  .query-fields-header {
+    @apply px-2 pb-2 font-semibold;
+  }
+
+  .query-fields-table--with-prefix {
+    grid-template-columns:
+      2.5rem minmax(12rem, 18rem) fit-content(28rem)
+      minmax(max-content, 1fr) max-content;
+  }
+
+  .query-fields-header--with-prefix,
+  .query-field-row--with-prefix {
+    grid-template-areas: 'remove prefix field filter options';
+  }
+
+  .query-fields-table--without-prefix {
+    grid-template-columns:
+      2.5rem fit-content(28rem) minmax(max-content, 1fr)
+      max-content;
+  }
+
+  .query-fields-header--without-prefix,
+  .query-field-row--without-prefix {
+    grid-template-areas: 'remove field filter options';
+  }
+
+  .query-field-row {
+    @apply bg-[color:var(--form-foreground)] px-2 py-2;
+  }
+
+  .query-field-row--focused {
+    @apply rounded bg-gray-300 dark:bg-neutral-700;
+  }
+
+  .query-field-separator {
+    grid-column: 1 / -1;
+  }
+
+  .query-field-header-prefix,
+  .query-field-prefix {
+    grid-area: prefix;
+  }
+
+  .query-field-header-field,
+  .query-field-mapping {
+    grid-area: field;
+  }
+
+  .query-field-row--without-prefix .query-field-mapping {
+    @apply pl-2;
+  }
+
+  .query-field-header-filter,
+  .query-field-filter {
+    grid-area: filter;
+  }
+
+  .query-field-header-options,
+  .query-field-options {
+    grid-area: options;
+  }
+
+  .query-field-header-options {
+    @apply text-right;
+  }
+
+  .query-field-remove {
+    grid-area: remove;
+  }
+
+  .query-field-prefix,
+  .query-field-mapping,
+  .query-field-filter,
+  .query-field-options {
+    @apply min-w-0;
+  }
+
+  .query-field-label {
+    @apply mb-1 hidden text-sm font-semibold text-gray-700 dark:text-neutral-300;
+  }
+
+  .wb-mapping-row {
+    min-width: 56rem;
+    @apply grid min-w-0 items-start gap-2 border-t border-t-gray-500 py-2;
+    grid-template-columns: 2.5rem minmax(10rem, 22rem) minmax(0, 1fr);
+    grid-template-areas: 'clear header path';
+  }
+
+  .wb-mapping-row--focused {
+    @apply bg-gray-300 dark:bg-neutral-700;
+  }
+
+  .wb-mapping-clear {
+    grid-area: clear;
+  }
+
+  .wb-mapping-header {
+    grid-area: header;
+    @apply flex min-w-0 justify-end break-words p-2 text-right;
+  }
+
+  .wb-mapping-path {
+    grid-area: path;
+    @apply flex min-w-0 flex-wrap items-center gap-2 print:gap-1;
+  }
+
   .wbs-form {
     --new-cell: theme('colors.indigo.350');
     --invalid-cell: theme('colors.red.300');

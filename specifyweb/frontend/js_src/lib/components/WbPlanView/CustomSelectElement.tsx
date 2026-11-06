@@ -751,11 +751,18 @@ export function CustomSelectElement({
     <article
       aria-live={has('interactive') ? 'polite' : 'off'}
       className={`
-        custom-select relative flex ${fieldSearch ? 'h-auto w-full' : 'h-8'} flex-col
+        custom-select relative flex
+        ${fieldSearch ? 'h-auto shrink-0' : 'h-8'}
+        flex-col
         custom-select-${upperToKebab(customSelectType)}
         ${customSelectClassNames[customSelectType] ?? ''}
       `}
       ref={customSelectElementRef}
+      style={
+        fieldSearch
+          ? { width: '20rem', maxWidth: 'calc(100vw - 4rem)' }
+          : undefined
+      }
       tabIndex={has('tabIndex') ? 0 : has('interactive') ? -1 : undefined}
       title={selectLabel}
       {...{ [titlePosition]: 'top' }}

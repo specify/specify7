@@ -49,6 +49,7 @@ import { navigatorSpecs } from '../WbPlanView/navigatorSpecs';
 import { CheckReadAccess } from './CheckReadAccess';
 import { IsQueryBasicContext, useQueryViewPref } from './Context';
 import { QueryFields } from './Fields';
+import type { BasicViewLabels } from './Fields';
 import { fetchFormatters } from '../Formatters/formatters';
 import { QueryFieldSpec } from './fieldSpec';
 import { QueryFromMap } from './FromMap';
@@ -99,6 +100,7 @@ function Wrapped({
   onSelected: handleSelected,
   onChange: handleChange,
   renderFieldPrefix,
+  basicViewLabels,
   canRemoveField,
   isFieldReadOnly,
 }: {
@@ -117,6 +119,7 @@ function Wrapped({
     readonly isSeries: boolean | null;
   }) => void;
   readonly renderFieldPrefix?: (field: QueryField, line: number) => JSX.Element;
+  readonly basicViewLabels?: Partial<BasicViewLabels>;
   readonly canRemoveField?: (field: QueryField, line: number) => boolean;
   readonly isFieldReadOnly?: (field: QueryField, line: number) => boolean;
 }): JSX.Element {
@@ -505,7 +508,7 @@ function Wrapped({
           <CheckReadAccess query={query} />
           <Form
             className={`
-              -mx-4 grid h-full gap-4 overflow-y-auto px-4
+              -mx-4 grid h-full min-w-0 gap-4 overflow-y-auto px-4
               ${stickyScrolling ? 'snap-y snap-proximity' : ''}
               ${resultsShown ? 'sm:grid-rows-[100%_100%]' : 'grid-rows-[100%]'}
             `}
@@ -521,7 +524,7 @@ function Wrapped({
             }
             onSubmit={(): void => scheduleRun('regular')}
           >
-            <div className="flex snap-start flex-col gap-4 overflow-y-auto">
+            <div className="flex min-w-0 snap-start flex-col gap-4 overflow-y-auto">
               {showMappingView && (
                 <MappingView
                   baseTableName={state.baseTableName}
@@ -601,6 +604,12 @@ function Wrapped({
                 </MappingView>
               )}
               <QueryFields
+                basicViewLabels={{
+                  field: basicViewLabels?.field ?? queryText.queryField(),
+                  filter: basicViewLabels?.filter ?? commonText.filter(),
+                  options: basicViewLabels?.options ?? queryText.queryOptions(),
+                  prefix: basicViewLabels?.prefix,
+                }}
                 baseTableName={state.baseTableName}
                 enforceLengthLimit={triedToSave}
                 fields={state.fields}

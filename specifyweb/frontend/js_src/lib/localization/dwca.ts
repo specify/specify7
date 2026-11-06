@@ -49,11 +49,11 @@ export const dwcaText = createDictionary({
   dwcaSpecifyField: {
     'en-us': 'Specify Field',
   },
-  dwcaOperator: {
-    'en-us': 'Operator',
+  dwcaFilter: {
+    'en-us': 'Filter',
   },
-  dwcaDisplay: {
-    'en-us': 'Display Options',
+  dwcaOptions: {
+    'en-us': 'Options',
   },
   dwcaVocabulary: {
     'en-us': 'Vocabulary',

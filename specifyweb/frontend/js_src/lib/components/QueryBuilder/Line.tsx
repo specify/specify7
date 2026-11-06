@@ -33,6 +33,7 @@ import {
 } from '../WbPlanView/navigator';
 import { navigatorSpecs } from '../WbPlanView/navigatorSpecs';
 import { IsQueryBasicContext } from './Context';
+import type { BasicViewLabels } from './Fields';
 import type { QueryFieldType } from './FieldFilterSpec';
 import type { DatePart } from './fieldSpec';
 import { QueryFieldSpec } from './fieldSpec';
@@ -66,6 +67,7 @@ export function QueryLine({
   onMoveDown: handleMoveDown,
   onOpenMap: handleOpenMap,
   renderFieldPrefix,
+  basicViewLabels,
 }: {
   readonly isLast: boolean;
   readonly baseTableName: keyof Tables;
@@ -99,6 +101,7 @@ export function QueryLine({
   readonly onMoveDown: (() => void) | undefined;
   readonly onOpenMap: (() => void) | undefined;
   readonly renderFieldPrefix?: (() => JSX.Element) | undefined;
+  readonly basicViewLabels: BasicViewLabels;
 }): JSX.Element {
   const lineRef = React.useRef<HTMLDivElement>(null);
   const queryFieldFilterSpecs = useQueryFieldFilterSpecs();
@@ -289,156 +292,211 @@ export function QueryLine({
 
   const isBasic = React.useContext(IsQueryBasicContext);
 
-  return (
-    <>
-      <div
-        aria-current={isFocused ? 'location' : undefined}
-        className={`
-        flex flex-1 gap-2 border-t border-t-gray-500 bg-[color:var(--form-foreground)] py-2
-        ${isBasic ? 'contents' : ''}
-      `}
-      >
-        <Button.Small
-          aria-label={commonText.remove()}
-          className={`
-          w-16 shrink-0 ${isBasic ? 'h-full' : ''} print:hidden
-        `}
-          disabled={handleRemove === undefined}
-          title={commonText.remove()}
-          variant={className.dangerButton}
-          onClick={handleRemove}
-        >
-          {icons.trash}
-        </Button.Small>
-        {renderFieldPrefix?.()}
+  const handleKeyDown = ({
+    target,
+    key,
+  }: React.KeyboardEvent<HTMLDivElement>): void => {
+    if ((target as HTMLElement).closest('input, select') !== null) return;
+    if (typeof openedElement === 'number') {
+      if (key === 'ArrowLeft')
+        if (openedElement > 0) handleOpen?.(openedElement - 1);
+        else handleClose?.();
+      else if (key === 'ArrowRight')
+        if (openedElement + 1 < mappingLineProps.length)
+          handleOpen?.(openedElement + 1);
+        else handleClose?.();
+
+      return;
+    }
+
+    if (key === 'ArrowLeft') handleOpen?.(mappingLineProps.length - 1);
+    else if (key === 'ArrowRight' || key === 'Enter') handleOpen?.(0);
+    else if (key === 'ArrowUp') handleLineFocus('previous');
+    else if (key === 'ArrowDown') handleLineFocus('next');
+  };
+
+  const recordFormatter =
+    (fieldMeta.fieldType === 'formatter' ||
+      fieldMeta.fieldType === 'aggregator') &&
+    typeof fieldMeta.tableName === 'string' &&
+    hasAny ? (
+      <QueryFieldRecordFormatter
+        formatSelectionRequest={formatSelectionRequest}
+        usedFormats={usedFormats}
+        formatter={
+          field.filters.find(({ type }) => type === 'any')?.fieldFormat
+        }
+        tableName={fieldMeta.tableName}
+        type={fieldMeta.fieldType}
+        onChange={
+          handleChange === undefined
+            ? undefined
+            : (dataObjectFormatter): void => {
+                const filterIndex = field.filters.findIndex(
+                  ({ type }) => type === 'any'
+                );
+                handleFilterChange(filterIndex, {
+                  ...field.filters[filterIndex],
+                  fieldFormat: dataObjectFormatter,
+                });
+              }
+        }
+      />
+    ) : undefined;
+
+  if (isBasic)
+    return (
+      <>
         {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
         <div
-          className={`
-          flex flex-1 flex-wrap gap-2 overflow-auto sm:overflow-visible print:gap-1
-          ${field.filters.length > 1 ? 'items-baseline' : 'items-center'}
-          ${isFocused ? 'rounded bg-gray-300 dark:bg-neutral-700' : ''}
-          ${isBasic ? 'contents' : ''}
-        `}
+          aria-current={isFocused ? 'location' : undefined}
+          className={`query-field-row ${
+            renderFieldPrefix === undefined
+              ? 'query-field-row--without-prefix'
+              : 'query-field-row--with-prefix'
+          } ${isFocused ? 'query-field-row--focused' : ''}`}
           ref={lineRef}
           role="list"
           tabIndex={0}
-          // Same key bindings as in WbPlanView
           onClick={(): void => handleLineFocus('current')}
-          onKeyDown={({ target, key }): void => {
-            if ((target as HTMLElement).closest('input, select') !== null)
-              return;
-            if (typeof openedElement === 'number') {
-              if (key === 'ArrowLeft')
-                if (openedElement > 0) handleOpen?.(openedElement - 1);
-                else handleClose?.();
-              else if (key === 'ArrowRight')
-                if (openedElement + 1 < mappingLineProps.length)
-                  handleOpen?.(openedElement + 1);
-                else handleClose?.();
-
-              return;
-            }
-
-            if (key === 'ArrowLeft') handleOpen?.(mappingLineProps.length - 1);
-            else if (key === 'ArrowRight' || key === 'Enter') handleOpen?.(0);
-            else if (key === 'ArrowUp') handleLineFocus('previous');
-            else if (key === 'ArrowDown') handleLineFocus('next');
-          }}
+          onKeyDown={handleKeyDown}
         >
-          <div
-            className={`flex flex-wrap items-center gap-2 px-2 
-              ${
-                isFocused && isBasic
-                  ? 'rounded bg-gray-300 dark:bg-neutral-700'
-                  : ''
-              }
-              ${isBasic ? 'pb-1 pt-1' : ''}
-            `}
-          >
-            {isBasic ? (
-              <div className="flex contents items-center gap-2">
-                <TableIcon
-                  className="h-7 w-7"
-                  label
-                  name={
-                    mappingLineProps.at(-1)?.tableName ?? baseTableName ?? ''
-                  }
-                />
-                <p>
-                  {rowTableName}{' '}
-                  {field.mappingPath.at(-1) === formattedEntry
-                    ? mappingLineProps.at(-1)?.fieldsData[formattedEntry]
-                        ?.optionLabel
-                    : ''}
-                </p>
-              </div>
-            ) : (
-              join(
-                mappingLineProps.map((mappingDetails) => (
-                  <div>
-                    <MappingElement {...mappingDetails} role="listitem" />
-                  </div>
-                )),
-                mappingElementDivider
-              )
-            )}
-            {(fieldMeta.fieldType === 'formatter' ||
-              fieldMeta.fieldType === 'aggregator') &&
-            typeof fieldMeta.tableName === 'string' &&
-            hasAny ? (
-              // REFACTOR: move this to the field.filters map
-              <QueryFieldRecordFormatter
-                formatSelectionRequest={formatSelectionRequest}
-                usedFormats={usedFormats}
-                formatter={
-                  field.filters.find(({ type }) => type === 'any')?.fieldFormat
-                }
-                tableName={fieldMeta.tableName}
-                type={fieldMeta.fieldType}
-                onChange={
-                  handleChange === undefined
-                    ? undefined
-                    : (dataObjectFormatter): void => {
-                        const filterIndex = field.filters.findIndex(
-                          ({ type }) => type === 'any'
-                        );
-                        handleFilterChange(filterIndex, {
-                          ...field.filters[filterIndex],
-                          fieldFormat: dataObjectFormatter,
-                        });
-                      }
-                }
-              />
-            ) : undefined}
+          <div className="query-field-remove print:hidden">
+            <Button.Small
+              aria-label={commonText.remove()}
+              className="h-10 w-10 shrink-0 p-2"
+              disabled={handleRemove === undefined}
+              title={commonText.remove()}
+              variant={className.dangerButton}
+              onClick={handleRemove}
+            >
+              {icons.trash}
+            </Button.Small>
           </div>
-          <QueryLineFilters
-            baseTableName={baseTableName}
-            enforceLengthLimit={enforceLengthLimit}
-            fieldFilters={field.filters}
-            fieldMeta={fieldMeta}
-            hasAny={hasAny}
-            isBasic={isBasic}
-            isFieldComplete={isFieldComplete}
-            mappingPath={field.mappingPath}
-            queryFieldFilterSpecs={queryFieldFilterSpecs}
-            onFilterChange={handleFilterChange}
-            onQueryFieldChange={handleChange}
-          />
+          {renderFieldPrefix === undefined ? null : (
+            <div className="query-field-prefix">
+              <span className="query-field-label">
+                {basicViewLabels.prefix}
+              </span>
+              <div className="min-w-0">{renderFieldPrefix()}</div>
+            </div>
+          )}
+          <div className="query-field-mapping">
+            <span className="query-field-label">{basicViewLabels.field}</span>
+            <div className="flex min-w-0 items-center gap-2">
+              <TableIcon
+                className="h-7 w-7 shrink-0"
+                label
+                name={mappingLineProps.at(-1)?.tableName ?? baseTableName ?? ''}
+              />
+              <p className="min-w-0 break-words">
+                {rowTableName}{' '}
+                {field.mappingPath.at(-1) === formattedEntry
+                  ? mappingLineProps.at(-1)?.fieldsData[formattedEntry]
+                      ?.optionLabel
+                  : ''}
+              </p>
+              {recordFormatter}
+            </div>
+          </div>
+          <div className="query-field-filter">
+            <span className="query-field-label">{basicViewLabels.filter}</span>
+            <QueryLineFilters
+              baseTableName={baseTableName}
+              enforceLengthLimit={enforceLengthLimit}
+              fieldFilters={field.filters}
+              fieldMeta={fieldMeta}
+              hasAny={hasAny}
+              isBasic
+              isFieldComplete={isFieldComplete}
+              mappingPath={field.mappingPath}
+              queryFieldFilterSpecs={queryFieldFilterSpecs}
+              onFilterChange={handleFilterChange}
+              onQueryFieldChange={handleChange}
+            />
+          </div>
+          <div className="query-field-options">
+            <span className="query-field-label">{basicViewLabels.options}</span>
+            <QueryLineTools
+              field={field}
+              fieldMeta={fieldMeta}
+              isFieldComplete={isFieldComplete}
+              onChange={handleChange}
+              onMoveDown={handleMoveDown}
+              onMoveUp={handleMoveUp}
+              onOpenMap={handleOpenMap}
+            />
+          </div>
         </div>
-        <QueryLineTools
-          field={field}
+        {!isLast && <div className="query-field-separator h-px bg-gray-400" />}
+      </>
+    );
+
+  return (
+    <div
+      aria-current={isFocused ? 'location' : undefined}
+      className="flex flex-1 gap-2 border-t border-t-gray-500 bg-[color:var(--form-foreground)] py-2"
+    >
+      <Button.Small
+        aria-label={commonText.remove()}
+        className="w-16 shrink-0 print:hidden"
+        disabled={handleRemove === undefined}
+        title={commonText.remove()}
+        variant={className.dangerButton}
+        onClick={handleRemove}
+      >
+        {icons.trash}
+      </Button.Small>
+      {renderFieldPrefix?.()}
+      {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
+      <div
+        className={`
+          flex flex-1 flex-wrap gap-2 overflow-auto sm:overflow-visible print:gap-1
+          ${field.filters.length > 1 ? 'items-baseline' : 'items-center'}
+          ${isFocused ? 'rounded bg-gray-300 dark:bg-neutral-700' : ''}
+        `}
+        ref={lineRef}
+        role="list"
+        tabIndex={0}
+        // Same key bindings as in WbPlanView
+        onClick={(): void => handleLineFocus('current')}
+        onKeyDown={handleKeyDown}
+      >
+        <div className="flex flex-wrap items-center gap-2 px-2">
+          {join(
+            mappingLineProps.map((mappingDetails) => (
+              <div>
+                <MappingElement {...mappingDetails} role="listitem" />
+              </div>
+            )),
+            mappingElementDivider
+          )}
+          {recordFormatter}
+        </div>
+        <QueryLineFilters
+          baseTableName={baseTableName}
+          enforceLengthLimit={enforceLengthLimit}
+          fieldFilters={field.filters}
           fieldMeta={fieldMeta}
+          hasAny={hasAny}
+          isBasic={false}
           isFieldComplete={isFieldComplete}
-          onChange={handleChange}
-          onMoveDown={handleMoveDown}
-          onMoveUp={handleMoveUp}
-          onOpenMap={handleOpenMap}
+          mappingPath={field.mappingPath}
+          queryFieldFilterSpecs={queryFieldFilterSpecs}
+          onFilterChange={handleFilterChange}
+          onQueryFieldChange={handleChange}
         />
       </div>
-      {isBasic && !isLast ? (
-        <div className="col-span-full h-px bg-gray-400" />
-      ) : null}
-    </>
+      <QueryLineTools
+        field={field}
+        fieldMeta={fieldMeta}
+        isFieldComplete={isFieldComplete}
+        onChange={handleChange}
+        onMoveDown={handleMoveDown}
+        onMoveUp={handleMoveUp}
+        onOpenMap={handleOpenMap}
+      />
+    </div>
   );
 }
 

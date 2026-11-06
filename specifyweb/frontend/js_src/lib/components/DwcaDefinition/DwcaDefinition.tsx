@@ -1735,6 +1735,12 @@ export function QueryMapping({
         </Dialog>
       )}
       <QueryBuilder
+        basicViewLabels={{
+          field: dwcaText.dwcaSpecifyField(),
+          filter: dwcaText.dwcaFilter(),
+          options: dwcaText.dwcaOptions(),
+          prefix: dwcaText.dwcaTerm(),
+        }}
         key={mapping.query.cid}
         className="!gap-2 !p-0"
         defaultBasicView

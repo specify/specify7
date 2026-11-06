@@ -66,6 +66,12 @@ test('deletes only unmapped columns', async () => {
 
   expect(screen.getByText('Unmapped Column')).toBeInTheDocument();
   expect(screen.getByText('Mapped Column')).toBeInTheDocument();
+  expect(screen.getByText('Mapped Column').closest('li')).toHaveClass(
+    'wb-mapping-row'
+  );
+  expect(
+    screen.getByText('Mapped Column').closest('li')?.querySelector('ul')
+  ).toHaveClass('wb-mapping-path');
 
   await user.click(
     screen.getByRole('button', {

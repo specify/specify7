@@ -145,12 +145,12 @@ export function MappingLineComponent({
     <li
       aria-current={isFocused ? 'location' : undefined}
       aria-labelledby={id('header')}
-      className="contents"
+      className={`wb-mapping-row ${isFocused ? 'wb-mapping-row--focused' : ''}`}
     >
-      <div className="border-t border-t-gray-500 py-2 print:hidden">
+      <div className="wb-mapping-clear print:hidden">
         <Button.Small
           aria-label={wbPlanText.clearMapping()}
-          className="h-full w-full p-2"
+          className="h-10 w-10 p-2"
           disabled={isReadOnly}
           title={wbPlanText.clearMapping()}
           onClick={handleClearMapping}
@@ -160,8 +160,7 @@ export function MappingLineComponent({
       </div>
       <div
         className={`
-          flex max-w-[25vw] items-center justify-end border-t border-t-gray-500
-          p-2 ${isComplete ? '' : 'font-extrabold text-red-600'}
+          wb-mapping-header ${isComplete ? '' : 'font-extrabold text-red-600'}
         `}
         id={id('header')}
       >
@@ -170,11 +169,7 @@ export function MappingLineComponent({
       {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
       <ul
         aria-label={wbPlanText.columnMapping()}
-        className={`
-          flex flex-wrap items-center gap-2 border-t border-t-gray-500
-          py-2 print:gap-1
-          ${isFocused ? 'bg-gray-300 dark:bg-neutral-700' : ''}
-        `}
+        className="wb-mapping-path"
         ref={lineRef}
         tabIndex={0}
         onClick={handleFocus}
