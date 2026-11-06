@@ -89,6 +89,9 @@ const queryEditButton = (): HTMLElement | undefined =>
 const getSharedSection = (): HTMLElement =>
   screen.getByRole('heading', { name: sharedSection }).closest('li')!;
 
+const getPrivateSection = (): HTMLElement =>
+  screen.getByRole('heading', { name: statsText.private() }).closest('li')!;
+
 describe('Without permission to edit shared statistics', () => {
   test('the Edit button is not visible on the shared page', async () => {
     await renderEmptyStatsPage();
@@ -250,6 +253,28 @@ describe('Private pages without permission to edit shared statistics', () => {
     expect(items.at(-1)).toMatchObject({
       type: privateStat.type,
       label: getUniqueName(privateStat.label, [privateStat.label]),
+    });
+  });
+
+  test('private layout pages have a pencil and "+" icon while editing', async () => {
+    const { user } = await renderEmptyStatsPage();
+    await user.click(getPageButtons(statsText.private())[0]);
+    await enterEditMode(user);
+
+    expect(
+      within(getPrivateSection()).getByRole('button', {
+        name: commonText.add(),
+      })
+    ).toBeEnabled();
+
+    const privatePages = within(getPrivateSection()).getAllByRole('listitem');
+    expect(privatePages.length).toBeGreaterThan(0);
+    privatePages.forEach((page) => {
+      const pencil = within(page).getByRole('button', {
+        name: commonText.edit(),
+      });
+      expect(pencil).toBeEnabled();
+      expect(pencil).not.toHaveClass('invisible');
     });
   });
 });
