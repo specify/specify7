@@ -2181,7 +2181,9 @@ def reverse_hide_component_fields(apps, schema_editor=None):
 # Used in 0042_discipline_type_picklist.py
 # ##########################################
 
-from specifyweb.backend.context.app_resource import DISCIPLINE_NAMES
+from specifyweb.backend.discipline_names import get_discipline_names
+
+DISCIPLINE_NAMES = get_discipline_names()
 
 DISCIPLINE_TYPE_PICKLIST_NAME = 'DisciplineType'
 
