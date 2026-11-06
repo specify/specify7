@@ -4,6 +4,7 @@ import { formsText } from '../../../localization/forms';
 import { statsText } from '../../../localization/stats';
 import { requireContext } from '../../../tests/helpers';
 import type { RA } from '../../../utils/types';
+import { getUniqueName } from '../../../utils/uniquifyName';
 import { defaultLayoutGenerated } from '../StatsSpec';
 import type { CustomStat } from '../types';
 import {
@@ -186,8 +187,7 @@ describe('Opening a shared query statistic without edit permission', () => {
 describe('Private pages without permission to edit shared statistics', () => {
   const privateStat = defaultLayoutGenerated[1].categories[0].items[0];
 
-  test('the query on a statistic can be modified and saved', async () => {
-    const { user, getPersonalLayout } = await renderEmptyStatsPage();
+  async function openPrivateStat(user: User): Promise<HTMLElement> {
     await user.click(getPageButtons(statsText.private())[0]);
     const statButton = screen
       .getAllByRole('button')
@@ -195,7 +195,12 @@ describe('Private pages without permission to edit shared statistics', () => {
         (button) => button.firstElementChild?.textContent === privateStat.label
       )!;
     await user.click(statButton);
-    const dialog = screen.getByRole('dialog', { name: privateStat.label });
+    return screen.getByRole('dialog', { name: privateStat.label });
+  }
+
+  test('the query on a statistic can be modified and saved', async () => {
+    const { user, getPersonalLayout } = await renderEmptyStatsPage();
+    const dialog = await openPrivateStat(user);
     const save = within(dialog).getByRole('button', {
       name: commonText.save(),
     });
@@ -216,5 +221,35 @@ describe('Private pages without permission to edit shared statistics', () => {
     expect(stat.querySpec.fields.map(({ path }) => path)).toEqual([
       'catalogNumber',
     ]);
+  });
+
+  test('Save and Clone are available', async () => {
+    const { user } = await renderEmptyStatsPage();
+    const dialog = await openPrivateStat(user);
+
+    expect(
+      within(dialog).getByRole('button', { name: commonText.save() })
+    ).toBeInTheDocument();
+    expect(
+      within(dialog).getByRole('button', { name: formsText.clone() })
+    ).toBeEnabled();
+  });
+
+  test('Clone adds a copy of the statistic to the category', async () => {
+    const { user, getPersonalLayout } = await renderEmptyStatsPage();
+    const itemCount = getPersonalLayout()![0].categories[0].items.length;
+    const dialog = await openPrivateStat(user);
+    await user.click(
+      within(dialog).getByRole('button', { name: formsText.clone() })
+    );
+
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    const items = getPersonalLayout()![0].categories[0].items;
+    expect(items).toHaveLength(itemCount + 1);
+    expect(items[0].label).toBe(privateStat.label);
+    expect(items.at(-1)).toMatchObject({
+      type: privateStat.type,
+      label: getUniqueName(privateStat.label, [privateStat.label]),
+    });
   });
 });
