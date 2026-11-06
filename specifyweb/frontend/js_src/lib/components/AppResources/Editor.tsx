@@ -179,6 +179,7 @@ export function AppResourceEditor({
       {tabs.length > 1 && (
         <div className="flex">
           <Select
+            aria-label={commonText.select()}
             className="py-2"
             value={tab}
             onValueChange={(index): void =>
