@@ -37,12 +37,14 @@ import { appResourceSubTypes } from './types';
 const emptyArray = [] as const;
 
 export function AppResourcesAside({
+  className: extraClassName,
   resources: unfilteredResources,
   filters = defaultAppResourceFilters,
   isEmbedded,
   onOpen: handleOpen,
   conformations: [initialConformations = emptyArray, setConformations],
 }: {
+  readonly className?: string;
   readonly resources: AppResources;
   readonly filters: AppResourceFiltersType | undefined;
   readonly isEmbedded: boolean;
@@ -69,12 +71,15 @@ export function AppResourcesAside({
 
   return (
     <aside
+      aria-label={resourcesText.resources()}
       className={`
-        !gap-2 sm:overflow-visible
+        min-h-0 min-w-0 !gap-2
         ${
-          isEmbedded ? className.containerBaseUnstyled : className.containerBase
+          isEmbedded
+            ? className.containerBaseUnstyled
+            : `${className.containerBase} max-h-[40vh] flex-1 !overflow-hidden !p-2 md:max-h-none`
         } 
-      `}
+      `.concat(extraClassName === undefined ? '' : ` ${extraClassName}`)}
     >
       <Ul className="flex flex-1 flex-col gap-1 overflow-auto" role="tree">
         {resourcesTree.map((resources) => (
@@ -87,7 +92,7 @@ export function AppResourcesAside({
           />
         ))}
       </Ul>
-      <div className="flex flex-wrap gap-2">
+      <div className="flex shrink-0 flex-wrap gap-2 border-t border-gray-300 pt-2 dark:border-neutral-700">
         <AppResourcesExpand
           resourcesTree={resourcesTree}
           onChange={setConformations}
@@ -177,17 +182,17 @@ function AppResourcesExpand({
 }): JSX.Element {
   return (
     <>
-      <Button.Info
+      <Button.Small
         className="grow"
         onClick={(): void =>
           handleChange(buildAppResourceConformation(resourcesTree))
         }
       >
         {commonText.expandAll()}
-      </Button.Info>
-      <Button.Info className="grow" onClick={(): void => handleChange([])}>
+      </Button.Small>
+      <Button.Small className="grow" onClick={(): void => handleChange([])}>
         {commonText.collapseAll()}
-      </Button.Info>
+      </Button.Small>
     </>
   );
 }
@@ -220,7 +225,7 @@ function TreeItem({
     <li
       aria-expanded={isExpanded}
       aria-labelledby={id('label')}
-      className="flex flex-col gap-2"
+      className="flex min-w-0 flex-col gap-1"
       id={id('li')}
       /*
        * LOW: add aria-selected for focused row (currently that is denoted by
@@ -262,7 +267,7 @@ function TreeItem({
           {subCategories.length > 0 && (
             <Ul
               aria-label={resourcesText.subCategories()}
-              className="flex flex-col gap-2 pl-4"
+              className="flex min-w-0 flex-col gap-1 pl-3"
               role="group"
             >
               {subCategories.map((resources) => (
@@ -318,7 +323,11 @@ function TreeItemResources({
 
   return typeof directory === 'object' &&
     (resources.length > 0 || canCreate) ? (
-    <Ul aria-label={resourcesText.resources()} className="pl-4" role="group">
+    <Ul
+      aria-label={resourcesText.resources()}
+      className="min-w-0 pl-3"
+      role="group"
+    >
       {resources.map((resource, index) => (
         <li key={index}>
           <ResourceItem resource={resource} onOpen={handleOpen} />
@@ -381,7 +390,7 @@ function ResourceItem({
 
   return (
     <ActiveLink
-      className="[&:not([aria-current]):not(:hover)]:!text-neutral-500"
+      className="w-full min-w-0 rounded px-1 py-0.5 [&[aria-current]]:bg-brand-100 dark:[&[aria-current]]:bg-neutral-700 [&:not([aria-current]):not(:hover)]:!text-neutral-500"
       forwardRef={setLink}
       href={url}
       mode="startsWith"
@@ -395,9 +404,11 @@ function ResourceItem({
       }
     >
       {appResourceIcon(resource.type)}
-      {('label' in resource ? resource.label : undefined) ??
-        localized(resource.name) ??
-        commonText.nullInline()}
+      <span className="truncate" title={resource.name}>
+        {('label' in resource ? resource.label : undefined) ??
+          localized(resource.name) ??
+          commonText.nullInline()}
+      </span>
     </ActiveLink>
   );
 }

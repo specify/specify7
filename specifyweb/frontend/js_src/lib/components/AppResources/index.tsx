@@ -2,9 +2,12 @@ import React from 'react';
 
 import { useCachedState } from '../../hooks/useCachedState';
 import { useErrorContext } from '../../hooks/useErrorContext';
+import { useId } from '../../hooks/useId';
 import { resourcesText } from '../../localization/resources';
 import type { GetOrSet } from '../../utils/types';
 import { Container, H2 } from '../Atoms';
+import { Button } from '../Atoms/Button';
+import { icons } from '../Atoms/Icons';
 import { ProtectedTable, ProtectedTool } from '../Permissions/PermissionDenied';
 import { SafeOutlet } from '../Router/RouterUtils';
 import { AppResourcesAside } from './Aside';
@@ -38,7 +41,7 @@ function AppResourcesDataFetcher(): JSX.Element | null {
 
 export type AppResourcesOutlet = { readonly getSet: GetOrSet<AppResources> };
 
-function AppResourcesView({
+export function AppResourcesView({
   getSet,
 }: {
   readonly getSet: GetOrSet<AppResources>;
@@ -47,22 +50,74 @@ function AppResourcesView({
 
   const conformations = useCachedState('appResources', 'conformation');
   const [filters] = useCachedState('appResources', 'filters');
+  const [sidebarCollapsed = false, setSidebarCollapsed] = useCachedState(
+    'appResources',
+    'sidebarCollapsed'
+  );
+  const id = useId('app-resources');
+  const sidebarLabel = sidebarCollapsed
+    ? resourcesText.showResourceSidebar()
+    : resourcesText.hideResourceSidebar();
 
   return (
-    <Container.FullGray>
-      <div className="flex flex-wrap items-center gap-4">
-        <H2 className="text-2xl">{resourcesText.resources()}</H2>
-        <div className="flex gap-2">
-          <AppResourcesFilters initialResources={resources} />
-        </div>
-      </div>
-      <div className="flex flex-1 flex-col gap-4 sm:h-0 sm:overflow-scroll md:flex-row">
-        <AppResourcesAside
-          conformations={conformations}
-          filters={filters}
-          isEmbedded={false}
-          resources={resources}
-        />
+    <Container.FullGray className="min-h-0 min-w-0 !gap-2 !p-2">
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2 sm:h-0 sm:overflow-auto md:flex-row">
+        <Container.Base
+          className={`min-h-0 min-w-0 shrink-0 !gap-0 !overflow-hidden !p-0 ${
+            sidebarCollapsed ? 'md:w-10' : 'md:w-64 lg:w-72'
+          }`}
+        >
+          <div
+            className={`flex shrink-0 items-center gap-2 p-1 ${sidebarCollapsed ? 'md:flex-1' : 'border-b border-gray-300 dark:border-neutral-700'}`}
+          >
+            <H2 className={sidebarCollapsed ? 'sr-only' : 'pl-1 text-lg'}>
+              {resourcesText.resources()}
+            </H2>
+            <Button.Small
+              aria-controls={id('sidebar')}
+              aria-expanded={!sidebarCollapsed}
+              aria-label={sidebarLabel}
+              className={
+                sidebarCollapsed
+                  ? 'w-full md:h-full md:flex-col md:!justify-start !px-1'
+                  : 'ml-auto !px-1'
+              }
+              title={sidebarLabel}
+              onClick={(): void => setSidebarCollapsed(!sidebarCollapsed)}
+            >
+              {sidebarCollapsed
+                ? icons.chevronDoubleRight
+                : icons.chevronDoubleLeft}
+              <span
+                className={
+                  sidebarCollapsed ? 'md:[writing-mode:vertical-rl]' : 'sr-only'
+                }
+              >
+                {resourcesText.resources()}
+              </span>
+            </Button.Small>
+          </div>
+          <div
+            className={
+              sidebarCollapsed
+                ? 'hidden'
+                : 'flex max-h-[40vh] min-h-0 flex-1 flex-col gap-2 p-2 md:max-h-none'
+            }
+            hidden={sidebarCollapsed}
+            id={id('sidebar')}
+          >
+            <div className="shrink-0">
+              <AppResourcesFilters initialResources={resources} />
+            </div>
+            <AppResourcesAside
+              className="flex-1 !overflow-hidden"
+              conformations={conformations}
+              filters={filters}
+              isEmbedded
+              resources={resources}
+            />
+          </div>
+        </Container.Base>
         <SafeOutlet<AppResourcesOutlet>
           getSet={getSet as GetOrSet<AppResources>}
         />

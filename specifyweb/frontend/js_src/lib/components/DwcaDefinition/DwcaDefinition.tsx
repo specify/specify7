@@ -1736,6 +1736,7 @@ export function QueryMapping({
       )}
       <QueryBuilder
         key={mapping.query.cid}
+        className="!gap-2 !p-0"
         defaultBasicView
         forceCollection={undefined}
         isEmbedded

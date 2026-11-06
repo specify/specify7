@@ -2,60 +2,86 @@
 
 exports[`AppResourcesFilters simple render 1`] = `
 <DocumentFragment>
-  <div
-    class="flex flex-wrap gap-2 rounded bg-[color:var(--background)]"
+  <fieldset
+    class="min-w-0"
   >
-    <span
-      class="sr-only"
+    <legend
+      class="mb-1 text-sm text-gray-600 dark:text-neutral-400"
     >
-      Filters
-    </span>
-    <button
-      aria-pressed="false"
-      class="
-  button rounded cursor-pointer active:brightness-80 px-4 py-2
-    disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
-    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm aria-handled
-  hover:bg-gray-300 hover:dark:bg-neutral-600
-"
-      type="button"
+      Show resources
+    </legend>
+    <div
+      class="grid min-w-0 grid-cols-[auto_auto_auto_2rem] items-stretch gap-0.5 rounded border border-gray-300 bg-[color:var(--form-background)] p-0.5 dark:border-neutral-700"
     >
-      Form Definition
-    </button>
-    <button
-      aria-pressed="false"
-      class="
-  button rounded cursor-pointer active:brightness-80 px-4 py-2
-    disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
-    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm aria-handled
-  hover:bg-gray-300 hover:dark:bg-neutral-600
-"
-      type="button"
-    >
-      App Resources
-    </button>
-    <button
-      aria-label="Custom"
-      class="button rounded cursor-pointer active:brightness-80 px-4 py-2
-    disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
-    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm dialog-icon-info hover:brightness-90 dark:hover:brightness-140 bg-[color:var(--info-button-color)] text-white"
-      title="Custom"
-      type="button"
-    >
-      <svg
-        aria-hidden="true"
-        class="w-6 h-6 flex-shrink-0"
-        fill="currentColor"
-        viewBox="0 0 20 20"
-        xmlns="http://www.w3.org/2000/svg"
+      <label
+        class="min-w-0 cursor-pointer"
       >
-        <path
-          clip-rule="evenodd"
-          d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
-          fill-rule="evenodd"
+        <input
+          aria-label="All resources"
+          checked=""
+          class="not-touched peer sr-only"
+          name="resource-filters-0-visibility"
+          type="radio"
+          value="all"
         />
-      </svg>
-    </button>
-  </div>
+        <span
+          class="flex h-full items-center justify-center rounded px-1 py-1 text-center hover:bg-gray-200 dark:hover:bg-neutral-700 peer-checked:bg-[color:var(--info-button-color)] peer-checked:text-white peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-brand-300"
+        >
+          All
+        </span>
+      </label>
+      <label
+        class="min-w-0 cursor-pointer"
+      >
+        <input
+          class="not-touched peer sr-only"
+          name="resource-filters-0-visibility"
+          type="radio"
+          value="forms"
+        />
+        <span
+          class="flex h-full items-center justify-center rounded px-1 py-1 text-center hover:bg-gray-200 dark:hover:bg-neutral-700 peer-checked:bg-[color:var(--info-button-color)] peer-checked:text-white peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-brand-300"
+        >
+          Forms
+        </span>
+      </label>
+      <label
+        class="min-w-0 cursor-pointer"
+      >
+        <input
+          class="not-touched peer sr-only"
+          name="resource-filters-0-visibility"
+          type="radio"
+          value="appResources"
+        />
+        <span
+          class="flex h-full items-center justify-center rounded px-1 py-1 text-center hover:bg-gray-200 dark:hover:bg-neutral-700 peer-checked:bg-[color:var(--info-button-color)] peer-checked:text-white peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-brand-300"
+        >
+          App Resources
+        </span>
+      </label>
+      <button
+        aria-label="Filter by type…"
+        aria-pressed="false"
+        class="icon link rounded self-stretch p-1 aria-handled hover:bg-gray-200 dark:hover:bg-neutral-700"
+        title="Filter by type…"
+        type="button"
+      >
+        <svg
+          aria-hidden="true"
+          class="w-6 h-6 flex-shrink-0"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            clip-rule="evenodd"
+            d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
+            fill-rule="evenodd"
+          />
+        </svg>
+      </button>
+    </div>
+  </fieldset>
 </DocumentFragment>
 `;

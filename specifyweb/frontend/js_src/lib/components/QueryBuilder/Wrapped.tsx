@@ -92,6 +92,7 @@ function Wrapped({
   recordSet,
   forceCollection,
   isEmbedded = false,
+  className = '',
   autoRun = false,
   defaultBasicView = false,
   // If present, this callback is called when query results are selected
@@ -105,6 +106,7 @@ function Wrapped({
   readonly recordSet?: SpecifyResource<RecordSet>;
   readonly forceCollection: number | undefined;
   readonly isEmbedded?: boolean;
+  readonly className?: string;
   readonly autoRun?: boolean;
   readonly defaultBasicView?: boolean;
   readonly onSelected?: (selected: RA<number>) => void;
@@ -443,7 +445,7 @@ function Wrapped({
     <ReadOnlyContext.Provider value={isReadOnly}>
       <IsQueryBasicContext.Provider value={isBasic}>
         <Container.Full
-          className={`overflow-hidden ${isEmbedded ? 'py-0' : ''}`}
+          className={`overflow-hidden ${isEmbedded ? 'py-0' : ''} ${className}`}
           onClick={
             state.openedElement.index === undefined
               ? undefined

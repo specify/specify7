@@ -177,7 +177,7 @@ export function AppResourceEditor({
     appResource.get('mimeType') !== 'application/vnd.specify.dwca+xml';
 
   const headerButtons = (
-    <div className="flex flex-wrap gap-3">
+    <div className="ml-auto flex flex-wrap items-center gap-2">
       {tabs.length > 1 && (
         <div className="flex">
           <Select
@@ -204,7 +204,6 @@ export function AppResourceEditor({
           {isFullScreen ? icons.arrowsCollapse : icons.arrowsExpand}
         </Button.Info>
       )}
-      <span className="-ml-4 md:flex-1" />
       {typeof resourceData === 'object' && (
         <AppResourceLoad
           onLoaded={(data: string, mimeType: string): void => {
@@ -394,12 +393,12 @@ export function AppResourceEditor({
   return children({
     headerString: formatted,
     headerJsx: (
-      <div className="flex items-center justify-center gap-2">
+      <div className="flex min-w-0 max-w-full items-center gap-2">
         <div className="hidden md:block">
           {appResourceIcon(getResourceType(resource))}
         </div>
-        <div className="flex max-w-[90%] gap-1">
-          <h3 className="overflow-auto whitespace-nowrap text-2xl">
+        <div className="flex min-w-0 items-center gap-1">
+          <h3 className="truncate text-lg font-semibold" title={formatted}>
             {formatted}
           </h3>
           <AppResourceEditButton
@@ -416,11 +415,14 @@ export function AppResourceEditor({
     ),
     headerButtons,
     form: renderInForm ? (
-      <Form className="flex-1 overflow-auto" forwardRef={setForm}>
+      <Form
+        className="min-h-0 min-w-0 flex-1 !gap-2 overflow-auto"
+        forwardRef={setForm}
+      >
         {content}
       </Form>
     ) : (
-      <div className="flex flex-1 flex-col gap-4 overflow-auto">
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2 overflow-auto">
         {/* A blank form just for the <SaveButton< component */}
         <Form className="contents" forwardRef={setForm} />
         {content}

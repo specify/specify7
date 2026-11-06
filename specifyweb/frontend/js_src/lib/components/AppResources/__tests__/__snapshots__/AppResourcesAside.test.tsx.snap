@@ -3,8 +3,9 @@
 exports[`AppResourcesAside (expanded case) expanded case 1`] = `
 <DocumentFragment>
   <aside
+    aria-label="Resources"
     class="
-        !gap-2 sm:overflow-visible
+        min-h-0 min-w-0 !gap-2
         flex flex-col gap-4 overflow-scroll
   overflow-x-auto [overflow-y:overlay] [scrollbar-gutter:auto] 
       "
@@ -16,7 +17,7 @@ exports[`AppResourcesAside (expanded case) expanded case 1`] = `
       <li
         aria-expanded="false"
         aria-labelledby="app-resources-tree-6-label"
-        class="flex flex-col gap-2"
+        class="flex min-w-0 flex-col gap-1"
         id="app-resources-tree-6-li"
         role="treeitem"
       >
@@ -37,7 +38,7 @@ exports[`AppResourcesAside (expanded case) expanded case 1`] = `
       <li
         aria-expanded="true"
         aria-labelledby="app-resources-tree-7-label"
-        class="flex flex-col gap-2"
+        class="flex min-w-0 flex-col gap-1"
         id="app-resources-tree-7-li"
         role="treeitem"
       >
@@ -56,13 +57,13 @@ exports[`AppResourcesAside (expanded case) expanded case 1`] = `
         </button>
         <ul
           aria-label="Sub-categories"
-          class=" flex flex-col gap-2 pl-4"
+          class=" flex min-w-0 flex-col gap-1 pl-3"
           role="group"
         >
           <li
             aria-expanded="false"
             aria-labelledby="app-resources-tree-8-label"
-            class="flex flex-col gap-2"
+            class="flex min-w-0 flex-col gap-1"
             id="app-resources-tree-8-li"
             role="treeitem"
           >
@@ -84,12 +85,14 @@ exports[`AppResourcesAside (expanded case) expanded case 1`] = `
       </li>
     </ul>
     <div
-      class="flex flex-wrap gap-2"
+      class="flex shrink-0 flex-wrap gap-2 border-t border-gray-300 pt-2 dark:border-neutral-700"
     >
       <button
         class="button rounded cursor-pointer active:brightness-80 px-4 py-2
     disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
-    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm dialog-icon-info hover:brightness-90 dark:hover:brightness-140 bg-[color:var(--info-button-color)] text-white grow"
+    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm !py-1 !px-2 grow button hover:brightness-90 dark:hover:brightness-125 bg-[color:var(--secondary-button-color)] text-gray-800
+dark:text-gray-100 ring-1 ring-gray-400 shadow-sm dark:ring-0
+    disabled:ring-gray-400 disabled:dark:ring-neutral-500"
         type="button"
       >
         Expand All
@@ -97,7 +100,9 @@ exports[`AppResourcesAside (expanded case) expanded case 1`] = `
       <button
         class="button rounded cursor-pointer active:brightness-80 px-4 py-2
     disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
-    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm dialog-icon-info hover:brightness-90 dark:hover:brightness-140 bg-[color:var(--info-button-color)] text-white grow"
+    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm !py-1 !px-2 grow button hover:brightness-90 dark:hover:brightness-125 bg-[color:var(--secondary-button-color)] text-gray-800
+dark:text-gray-100 ring-1 ring-gray-400 shadow-sm dark:ring-0
+    disabled:ring-gray-400 disabled:dark:ring-neutral-500"
         type="button"
       >
         Collapse All
@@ -110,8 +115,9 @@ exports[`AppResourcesAside (expanded case) expanded case 1`] = `
 exports[`AppResourcesAside (expanded case) expanded case 2`] = `
 <DocumentFragment>
   <aside
+    aria-label="Resources"
     class="
-        !gap-2 sm:overflow-visible
+        min-h-0 min-w-0 !gap-2
         flex flex-col gap-4 overflow-scroll
   overflow-x-auto [overflow-y:overlay] [scrollbar-gutter:auto] 
       "
@@ -123,7 +129,7 @@ exports[`AppResourcesAside (expanded case) expanded case 2`] = `
       <li
         aria-expanded="true"
         aria-labelledby="app-resources-tree-11-label"
-        class="flex flex-col gap-2"
+        class="flex min-w-0 flex-col gap-1"
         id="app-resources-tree-11-li"
         role="treeitem"
       >
@@ -142,12 +148,12 @@ exports[`AppResourcesAside (expanded case) expanded case 2`] = `
         </button>
         <ul
           aria-label="Resources"
-          class=" pl-4"
+          class=" min-w-0 pl-3"
           role="group"
         >
           <li>
             <a
-              class="link [&:not([aria-current]):not(:hover)]:!text-neutral-500"
+              class="link w-full min-w-0 rounded px-1 py-0.5 [&[aria-current]]:bg-brand-100 dark:[&[aria-current]]:bg-neutral-700 [&:not([aria-current]):not(:hover)]:!text-neutral-500"
               href="/specify/resources/app-resource/1/"
             >
               <span
@@ -168,12 +174,17 @@ exports[`AppResourcesAside (expanded case) expanded case 2`] = `
                   />
                 </svg>
               </span>
-              Global Preferences
+              <span
+                class="truncate"
+                title="preferences"
+              >
+                Global Preferences
+              </span>
             </a>
           </li>
           <li>
             <a
-              class="link [&:not([aria-current]):not(:hover)]:!text-neutral-500"
+              class="link w-full min-w-0 rounded px-1 py-0.5 [&[aria-current]]:bg-brand-100 dark:[&[aria-current]]:bg-neutral-700 [&:not([aria-current]):not(:hover)]:!text-neutral-500"
               href="/specify/resources/app-resource/2/"
             >
               <span
@@ -194,7 +205,12 @@ exports[`AppResourcesAside (expanded case) expanded case 2`] = `
                   />
                 </svg>
               </span>
-              Remote Preferences
+              <span
+                class="truncate"
+                title="preferences"
+              >
+                Remote Preferences
+              </span>
             </a>
           </li>
           <li>
@@ -227,7 +243,7 @@ exports[`AppResourcesAside (expanded case) expanded case 2`] = `
       <li
         aria-expanded="true"
         aria-labelledby="app-resources-tree-12-label"
-        class="flex flex-col gap-2"
+        class="flex min-w-0 flex-col gap-1"
         id="app-resources-tree-12-li"
         role="treeitem"
       >
@@ -246,13 +262,13 @@ exports[`AppResourcesAside (expanded case) expanded case 2`] = `
         </button>
         <ul
           aria-label="Sub-categories"
-          class=" flex flex-col gap-2 pl-4"
+          class=" flex min-w-0 flex-col gap-1 pl-3"
           role="group"
         >
           <li
             aria-expanded="true"
             aria-labelledby="app-resources-tree-13-label"
-            class="flex flex-col gap-2"
+            class="flex min-w-0 flex-col gap-1"
             id="app-resources-tree-13-li"
             role="treeitem"
           >
@@ -271,7 +287,7 @@ exports[`AppResourcesAside (expanded case) expanded case 2`] = `
             </button>
             <ul
               aria-label="Resources"
-              class=" pl-4"
+              class=" min-w-0 pl-3"
               role="group"
             >
               <li>
@@ -302,13 +318,13 @@ exports[`AppResourcesAside (expanded case) expanded case 2`] = `
             </ul>
             <ul
               aria-label="Sub-categories"
-              class=" flex flex-col gap-2 pl-4"
+              class=" flex min-w-0 flex-col gap-1 pl-3"
               role="group"
             >
               <li
                 aria-expanded="true"
                 aria-labelledby="app-resources-tree-14-label"
-                class="flex flex-col gap-2"
+                class="flex min-w-0 flex-col gap-1"
                 id="app-resources-tree-14-li"
                 role="treeitem"
               >
@@ -327,12 +343,12 @@ exports[`AppResourcesAside (expanded case) expanded case 2`] = `
                 </button>
                 <ul
                   aria-label="Resources"
-                  class=" pl-4"
+                  class=" min-w-0 pl-3"
                   role="group"
                 >
                   <li>
                     <a
-                      class="link [&:not([aria-current]):not(:hover)]:!text-neutral-500"
+                      class="link w-full min-w-0 rounded px-1 py-0.5 [&[aria-current]]:bg-brand-100 dark:[&[aria-current]]:bg-neutral-700 [&:not([aria-current]):not(:hover)]:!text-neutral-500"
                       href="/specify/resources/app-resource/6/"
                     >
                       <span
@@ -353,7 +369,12 @@ exports[`AppResourcesAside (expanded case) expanded case 2`] = `
                           />
                         </svg>
                       </span>
-                      Collection Preferences
+                      <span
+                        class="truncate"
+                        title="CollectionPreferences"
+                      >
+                        Collection Preferences
+                      </span>
                     </a>
                   </li>
                   <li>
@@ -384,13 +405,13 @@ exports[`AppResourcesAside (expanded case) expanded case 2`] = `
                 </ul>
                 <ul
                   aria-label="Sub-categories"
-                  class=" flex flex-col gap-2 pl-4"
+                  class=" flex min-w-0 flex-col gap-1 pl-3"
                   role="group"
                 >
                   <li
                     aria-expanded="true"
                     aria-labelledby="app-resources-tree-15-label"
-                    class="flex flex-col gap-2"
+                    class="flex min-w-0 flex-col gap-1"
                     id="app-resources-tree-15-li"
                     role="treeitem"
                   >
@@ -409,13 +430,13 @@ exports[`AppResourcesAside (expanded case) expanded case 2`] = `
                     </button>
                     <ul
                       aria-label="Sub-categories"
-                      class=" flex flex-col gap-2 pl-4"
+                      class=" flex min-w-0 flex-col gap-1 pl-3"
                       role="group"
                     >
                       <li
                         aria-expanded="true"
                         aria-labelledby="app-resources-tree-16-label"
-                        class="flex flex-col gap-2"
+                        class="flex min-w-0 flex-col gap-1"
                         id="app-resources-tree-16-li"
                         role="treeitem"
                       >
@@ -434,12 +455,12 @@ exports[`AppResourcesAside (expanded case) expanded case 2`] = `
                         </button>
                         <ul
                           aria-label="Resources"
-                          class=" pl-4"
+                          class=" min-w-0 pl-3"
                           role="group"
                         >
                           <li>
                             <a
-                              class="link [&:not([aria-current]):not(:hover)]:!text-neutral-500"
+                              class="link w-full min-w-0 rounded px-1 py-0.5 [&[aria-current]]:bg-brand-100 dark:[&[aria-current]]:bg-neutral-700 [&:not([aria-current]):not(:hover)]:!text-neutral-500"
                               href="/specify/resources/app-resource/5/"
                             >
                               <span
@@ -460,12 +481,17 @@ exports[`AppResourcesAside (expanded case) expanded case 2`] = `
                                   />
                                 </svg>
                               </span>
-                              User Preferences
+                              <span
+                                class="truncate"
+                                title="UserPreferences"
+                              >
+                                User Preferences
+                              </span>
                             </a>
                           </li>
                           <li>
                             <a
-                              class="link [&:not([aria-current]):not(:hover)]:!text-neutral-500"
+                              class="link w-full min-w-0 rounded px-1 py-0.5 [&[aria-current]]:bg-brand-100 dark:[&[aria-current]]:bg-neutral-700 [&:not([aria-current]):not(:hover)]:!text-neutral-500"
                               href="/specify/resources/app-resource/4/"
                             >
                               <span
@@ -486,12 +512,17 @@ exports[`AppResourcesAside (expanded case) expanded case 2`] = `
                                   />
                                 </svg>
                               </span>
-                              QueryExtraList
+                              <span
+                                class="truncate"
+                                title="QueryExtraList"
+                              >
+                                QueryExtraList
+                              </span>
                             </a>
                           </li>
                           <li>
                             <a
-                              class="link [&:not([aria-current]):not(:hover)]:!text-neutral-500"
+                              class="link w-full min-w-0 rounded px-1 py-0.5 [&[aria-current]]:bg-brand-100 dark:[&[aria-current]]:bg-neutral-700 [&:not([aria-current]):not(:hover)]:!text-neutral-500"
                               href="/specify/resources/app-resource/3/"
                             >
                               <span
@@ -512,7 +543,12 @@ exports[`AppResourcesAside (expanded case) expanded case 2`] = `
                                   />
                                 </svg>
                               </span>
-                              QueryFreqList
+                              <span
+                                class="truncate"
+                                title="QueryFreqList"
+                              >
+                                QueryFreqList
+                              </span>
                             </a>
                           </li>
                           <li>
@@ -547,7 +583,7 @@ exports[`AppResourcesAside (expanded case) expanded case 2`] = `
                   <li
                     aria-expanded="true"
                     aria-labelledby="app-resources-tree-17-label"
-                    class="flex flex-col gap-2"
+                    class="flex min-w-0 flex-col gap-1"
                     id="app-resources-tree-17-li"
                     role="treeitem"
                   >
@@ -566,13 +602,13 @@ exports[`AppResourcesAside (expanded case) expanded case 2`] = `
                     </button>
                     <ul
                       aria-label="Sub-categories"
-                      class=" flex flex-col gap-2 pl-4"
+                      class=" flex min-w-0 flex-col gap-1 pl-3"
                       role="group"
                     >
                       <li
                         aria-expanded="false"
                         aria-labelledby="app-resources-tree-18-label"
-                        class="flex flex-col gap-2"
+                        class="flex min-w-0 flex-col gap-1"
                         id="app-resources-tree-18-li"
                         role="treeitem"
                       >
@@ -593,7 +629,7 @@ exports[`AppResourcesAside (expanded case) expanded case 2`] = `
                       <li
                         aria-expanded="false"
                         aria-labelledby="app-resources-tree-19-label"
-                        class="flex flex-col gap-2"
+                        class="flex min-w-0 flex-col gap-1"
                         id="app-resources-tree-19-li"
                         role="treeitem"
                       >
@@ -614,7 +650,7 @@ exports[`AppResourcesAside (expanded case) expanded case 2`] = `
                       <li
                         aria-expanded="false"
                         aria-labelledby="app-resources-tree-20-label"
-                        class="flex flex-col gap-2"
+                        class="flex min-w-0 flex-col gap-1"
                         id="app-resources-tree-20-li"
                         role="treeitem"
                       >
@@ -635,7 +671,7 @@ exports[`AppResourcesAside (expanded case) expanded case 2`] = `
                       <li
                         aria-expanded="false"
                         aria-labelledby="app-resources-tree-21-label"
-                        class="flex flex-col gap-2"
+                        class="flex min-w-0 flex-col gap-1"
                         id="app-resources-tree-21-li"
                         role="treeitem"
                       >
@@ -663,12 +699,14 @@ exports[`AppResourcesAside (expanded case) expanded case 2`] = `
       </li>
     </ul>
     <div
-      class="flex flex-wrap gap-2"
+      class="flex shrink-0 flex-wrap gap-2 border-t border-gray-300 pt-2 dark:border-neutral-700"
     >
       <button
         class="button rounded cursor-pointer active:brightness-80 px-4 py-2
     disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
-    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm dialog-icon-info hover:brightness-90 dark:hover:brightness-140 bg-[color:var(--info-button-color)] text-white grow"
+    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm !py-1 !px-2 grow button hover:brightness-90 dark:hover:brightness-125 bg-[color:var(--secondary-button-color)] text-gray-800
+dark:text-gray-100 ring-1 ring-gray-400 shadow-sm dark:ring-0
+    disabled:ring-gray-400 disabled:dark:ring-neutral-500"
         type="button"
       >
         Expand All
@@ -676,7 +714,9 @@ exports[`AppResourcesAside (expanded case) expanded case 2`] = `
       <button
         class="button rounded cursor-pointer active:brightness-80 px-4 py-2
     disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
-    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm dialog-icon-info hover:brightness-90 dark:hover:brightness-140 bg-[color:var(--info-button-color)] text-white grow"
+    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm !py-1 !px-2 grow button hover:brightness-90 dark:hover:brightness-125 bg-[color:var(--secondary-button-color)] text-gray-800
+dark:text-gray-100 ring-1 ring-gray-400 shadow-sm dark:ring-0
+    disabled:ring-gray-400 disabled:dark:ring-neutral-500"
         type="button"
       >
         Collapse All
@@ -689,8 +729,9 @@ exports[`AppResourcesAside (expanded case) expanded case 2`] = `
 exports[`AppResourcesAside (simple no conformation case) simple no conformation case 1`] = `
 <DocumentFragment>
   <aside
+    aria-label="Resources"
     class="
-        !gap-2 sm:overflow-visible
+        min-h-0 min-w-0 !gap-2
         flex flex-col gap-4 overflow-scroll
   overflow-x-auto [overflow-y:overlay] [scrollbar-gutter:auto] 
       "
@@ -702,7 +743,7 @@ exports[`AppResourcesAside (simple no conformation case) simple no conformation 
       <li
         aria-expanded="false"
         aria-labelledby="app-resources-tree-0-label"
-        class="flex flex-col gap-2"
+        class="flex min-w-0 flex-col gap-1"
         id="app-resources-tree-0-li"
         role="treeitem"
       >
@@ -723,7 +764,7 @@ exports[`AppResourcesAside (simple no conformation case) simple no conformation 
       <li
         aria-expanded="false"
         aria-labelledby="app-resources-tree-1-label"
-        class="flex flex-col gap-2"
+        class="flex min-w-0 flex-col gap-1"
         id="app-resources-tree-1-li"
         role="treeitem"
       >
@@ -743,12 +784,14 @@ exports[`AppResourcesAside (simple no conformation case) simple no conformation 
       </li>
     </ul>
     <div
-      class="flex flex-wrap gap-2"
+      class="flex shrink-0 flex-wrap gap-2 border-t border-gray-300 pt-2 dark:border-neutral-700"
     >
       <button
         class="button rounded cursor-pointer active:brightness-80 px-4 py-2
     disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
-    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm dialog-icon-info hover:brightness-90 dark:hover:brightness-140 bg-[color:var(--info-button-color)] text-white grow"
+    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm !py-1 !px-2 grow button hover:brightness-90 dark:hover:brightness-125 bg-[color:var(--secondary-button-color)] text-gray-800
+dark:text-gray-100 ring-1 ring-gray-400 shadow-sm dark:ring-0
+    disabled:ring-gray-400 disabled:dark:ring-neutral-500"
         type="button"
       >
         Expand All
@@ -756,7 +799,9 @@ exports[`AppResourcesAside (simple no conformation case) simple no conformation 
       <button
         class="button rounded cursor-pointer active:brightness-80 px-4 py-2
     disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
-    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm dialog-icon-info hover:brightness-90 dark:hover:brightness-140 bg-[color:var(--info-button-color)] text-white grow"
+    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm !py-1 !px-2 grow button hover:brightness-90 dark:hover:brightness-125 bg-[color:var(--secondary-button-color)] text-gray-800
+dark:text-gray-100 ring-1 ring-gray-400 shadow-sm dark:ring-0
+    disabled:ring-gray-400 disabled:dark:ring-neutral-500"
         type="button"
       >
         Collapse All
@@ -769,8 +814,9 @@ exports[`AppResourcesAside (simple no conformation case) simple no conformation 
 exports[`Missing Collection Preferences Permission simple no conformation test 1`] = `
 <DocumentFragment>
   <aside
+    aria-label="Resources"
     class="
-        !gap-2 sm:overflow-visible
+        min-h-0 min-w-0 !gap-2
         flex flex-col gap-4 overflow-scroll
   overflow-x-auto [overflow-y:overlay] [scrollbar-gutter:auto] 
       "
@@ -782,7 +828,7 @@ exports[`Missing Collection Preferences Permission simple no conformation test 1
       <li
         aria-expanded="false"
         aria-labelledby="app-resources-tree-2-label"
-        class="flex flex-col gap-2"
+        class="flex min-w-0 flex-col gap-1"
         id="app-resources-tree-2-li"
         role="treeitem"
       >
@@ -803,7 +849,7 @@ exports[`Missing Collection Preferences Permission simple no conformation test 1
       <li
         aria-expanded="false"
         aria-labelledby="app-resources-tree-3-label"
-        class="flex flex-col gap-2"
+        class="flex min-w-0 flex-col gap-1"
         id="app-resources-tree-3-li"
         role="treeitem"
       >
@@ -823,12 +869,14 @@ exports[`Missing Collection Preferences Permission simple no conformation test 1
       </li>
     </ul>
     <div
-      class="flex flex-wrap gap-2"
+      class="flex shrink-0 flex-wrap gap-2 border-t border-gray-300 pt-2 dark:border-neutral-700"
     >
       <button
         class="button rounded cursor-pointer active:brightness-80 px-4 py-2
     disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
-    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm dialog-icon-info hover:brightness-90 dark:hover:brightness-140 bg-[color:var(--info-button-color)] text-white grow"
+    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm !py-1 !px-2 grow button hover:brightness-90 dark:hover:brightness-125 bg-[color:var(--secondary-button-color)] text-gray-800
+dark:text-gray-100 ring-1 ring-gray-400 shadow-sm dark:ring-0
+    disabled:ring-gray-400 disabled:dark:ring-neutral-500"
         type="button"
       >
         Expand All
@@ -836,7 +884,9 @@ exports[`Missing Collection Preferences Permission simple no conformation test 1
       <button
         class="button rounded cursor-pointer active:brightness-80 px-4 py-2
     disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
-    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm dialog-icon-info hover:brightness-90 dark:hover:brightness-140 bg-[color:var(--info-button-color)] text-white grow"
+    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm !py-1 !px-2 grow button hover:brightness-90 dark:hover:brightness-125 bg-[color:var(--secondary-button-color)] text-gray-800
+dark:text-gray-100 ring-1 ring-gray-400 shadow-sm dark:ring-0
+    disabled:ring-gray-400 disabled:dark:ring-neutral-500"
         type="button"
       >
         Collapse All

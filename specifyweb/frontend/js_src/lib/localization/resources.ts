@@ -9,6 +9,21 @@ import { createDictionary } from './utils';
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
 export const resourcesText = createDictionary({
+  showResources: {
+    'en-us': 'Filter Resources',
+  },
+  allResources: {
+    'en-us': 'All Resources',
+  },
+  filterByType: {
+    'en-us': 'Filter by type…',
+  },
+  showResourceSidebar: {
+    'en-us': 'Show Resource Sidebar',
+  },
+  hideResourceSidebar: {
+    'en-us': 'Hide Resource Sidebar',
+  },
   appResources: {
     'en-us': 'App Resources',
     'ru-ru': 'Ресурсы приложения',
