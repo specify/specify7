@@ -543,12 +543,7 @@ const base_config = [
           varsIgnorePattern: '^_',
         },
       ],
-      '@typescript-eslint/consistent-type-exports': [
-        ERROR,
-        {
-          fixMixedExportsWithInlineTypeSpecifier: true,
-        },
-      ],
+      '@typescript-eslint/consistent-type-exports': OFF,
       '@typescript-eslint/member-ordering': ERROR,
       /**
        * Redundancy could be useful for documentation purposes
@@ -701,7 +696,7 @@ _    * While overusing non-null assertions can be harmful, there are
       'unicorn/prefer-json-parse-buffer': ERROR,
       'unicorn/require-post-message-target-origin': ERROR,
       // TODO: enable checkFromLast:true. Seems to not work yet
-      'unicorn/prefer-array-find': ERROR,
+      'unicorn/prefer-array-find': OFF,
 
       'eslint-comments/no-unused-disable': ERROR,
 

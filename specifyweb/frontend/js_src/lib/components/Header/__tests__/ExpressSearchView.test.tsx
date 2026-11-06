@@ -93,7 +93,8 @@ test('Simple Search passes records, fields, pagination and independent selection
     jest
       .mocked(QueryResults)
       .mock.calls.map(([props]) => props)
-      .findLast(({ table }) => table.name === name)!;
+	  .filter(({ table }) => table.name === name)
+      .at(-1)!;
   await waitFor(() => expect(latestProps('CollectionObject')).toBeDefined());
   expect(latestProps('Agent')).toEqual(
     expect.objectContaining({
