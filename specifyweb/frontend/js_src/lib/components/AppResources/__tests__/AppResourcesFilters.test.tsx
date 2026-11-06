@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { resourcesText } from '../../../localization/resources';
 import { mount } from '../../../tests/reactUtils';
 import { getCache, setCache } from '../../../utils/cache';
 import { hasPermission } from '../../Permissions/helpers';
@@ -28,8 +29,12 @@ function Filters(): JSX.Element {
 describe('AppResourcesFilters', () => {
   test('simple render', () => {
     const { asFragment, getByRole, queryByRole } = mount(<Filters />);
-    expect(getByRole('group', { name: 'Show resources' })).toBeInTheDocument();
-    expect(getByRole('radio', { name: 'All resources' })).toBeChecked();
+    expect(
+      getByRole('group', { name: resourcesText.showResources() })
+    ).toBeInTheDocument();
+    expect(
+      getByRole('radio', { name: resourcesText.allResources() })
+    ).toBeChecked();
     expect(getByRole('button', { name: 'Filter by type…' })).toHaveAttribute(
       'aria-pressed',
       'false'
@@ -59,7 +64,7 @@ describe('AppResourcesFilters', () => {
       appResources: allAppResources,
     });
 
-    const all = getByRole('radio', { name: 'All resources' });
+    const all = getByRole('radio', { name: resourcesText.allResources() });
     await user.click(all);
     await user.click(all);
     expect(all).toBeChecked();
@@ -106,10 +111,14 @@ describe('AppResourcesFilters', () => {
         (radio) => !(radio as HTMLInputElement).checked
       )
     ).toBe(true);
-    await user.click(getByRole('radio', { name: 'All resources' }));
+    await user.click(
+      getByRole('radio', { name: resourcesText.allResources() })
+    );
     expect(queryByRole('status')).not.toBeInTheDocument();
     expect(customFilter).toHaveAttribute('aria-pressed', 'false');
-    expect(getByRole('radio', { name: 'All resources' })).toBeChecked();
+    expect(
+      getByRole('radio', { name: resourcesText.allResources() })
+    ).toBeChecked();
     expect(getCache('appResources', 'filters')).toEqual(
       defaultAppResourceFilters
     );
@@ -127,8 +136,12 @@ describe('AppResourcesFilters', () => {
         'aria-pressed',
         'true'
       );
-      await user.click(getByRole('radio', { name: 'All resources' }));
-      expect(getByRole('radio', { name: 'All resources' })).toBeChecked();
+      await user.click(
+        getByRole('radio', { name: resourcesText.allResources() })
+      );
+      expect(
+        getByRole('radio', { name: resourcesText.allResources() })
+      ).toBeChecked();
       expect(getCache('appResources', 'filters')).toEqual(
         defaultAppResourceFilters
       );
@@ -138,15 +151,21 @@ describe('AppResourcesFilters', () => {
   test('recognizes presets using only permitted resource types', async () => {
     (hasPermission as jest.Mock).mockReturnValue(false);
     const { getByRole, queryByRole, user } = mount(<Filters />);
-    expect(getByRole('radio', { name: 'All resources' })).toBeChecked();
+    expect(
+      getByRole('radio', { name: resourcesText.allResources() })
+    ).toBeChecked();
     await user.click(getByRole('radio', { name: 'App Resources' }));
     expect(getByRole('radio', { name: 'App Resources' })).toBeChecked();
     expect(queryByRole('status')).not.toBeInTheDocument();
     expect(getCache('appResources', 'filters')?.appResources).not.toContain(
       'collectionPreferences'
     );
-    await user.click(getByRole('radio', { name: 'All resources' }));
-    expect(getByRole('radio', { name: 'All resources' })).toBeChecked();
+    await user.click(
+      getByRole('radio', { name: resourcesText.allResources() })
+    );
+    expect(
+      getByRole('radio', { name: resourcesText.allResources() })
+    ).toBeChecked();
     expect(queryByRole('status')).not.toBeInTheDocument();
     await user.click(getByRole('button', { name: 'Filter by type…' }));
     expect(

@@ -24,7 +24,7 @@ import type { AppResources } from './hooks';
 import { appResourceSubTypes, appResourceTypes } from './types';
 
 const filterOptionClassName =
-  'flex h-full items-center justify-center rounded px-1 py-1 text-center hover:bg-gray-200 dark:hover:bg-neutral-700 peer-checked:bg-[color:var(--info-button-color)] peer-checked:text-white peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-brand-300';
+  'flex h-full items-center justify-center rounded px-1 py-0.5 text-center hover:bg-gray-200 dark:hover:bg-neutral-700 peer-checked:bg-[color:var(--info-button-color)] peer-checked:text-white peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-brand-300';
 
 export function AppResourcesFilters({
   initialResources,
@@ -75,7 +75,7 @@ export function AppResourcesFilters({
         <legend className="mb-1 text-sm text-gray-600 dark:text-neutral-400">
           {resourcesText.showResources()}
         </legend>
-        <div className="grid min-w-0 grid-cols-[auto_auto_auto_2rem] items-stretch gap-0.5 rounded border border-gray-300 bg-[color:var(--form-background)] p-0.5 dark:border-neutral-700">
+        <div className="grid min-w-0 grid-cols-[auto_auto_auto_2rem] items-stretch gap-0.5 rounded bg-[color:var(--field-background)] p-0.5 shadow-sm ring-1 ring-gray-400 dark:ring-0">
           <label className="min-w-0 cursor-pointer">
             <Input.Radio
               aria-label={resourcesText.allResources()}

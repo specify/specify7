@@ -4,6 +4,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { useId } from '../../hooks/useId';
+import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
 import { resourcesText } from '../../localization/resources';
 import { StringToJsx } from '../../localization/utils';
@@ -32,6 +33,7 @@ import {
 import { buildAppResourceConformation, getAppResourceMode } from './helpers';
 import type { AppResources, AppResourcesTree } from './hooks';
 import { useAppResourceCount, useResourcesTree } from './hooks';
+import { searchAppResourcesTree } from './tree';
 import { appResourceSubTypes } from './types';
 
 const emptyArray = [] as const;
@@ -41,6 +43,7 @@ export function AppResourcesAside({
   resources: unfilteredResources,
   filters = defaultAppResourceFilters,
   isEmbedded,
+  searchQuery = '',
   onOpen: handleOpen,
   conformations: [initialConformations = emptyArray, setConformations],
 }: {
@@ -48,6 +51,7 @@ export function AppResourcesAside({
   readonly resources: AppResources;
   readonly filters: AppResourceFiltersType | undefined;
   readonly isEmbedded: boolean;
+  readonly searchQuery?: string;
   readonly onOpen?: (
     resource: SerializedResource<SpAppResource | SpViewSetObj>
   ) => void;
@@ -57,17 +61,32 @@ export function AppResourcesAside({
     () => filterAppResources(unfilteredResources, filters),
     [filters, unfilteredResources]
   );
-  const resourcesTree = useResourcesTree(resources);
+  const fullResourcesTree = useResourcesTree(resources);
+  const resourcesTree = React.useMemo(
+    () => searchAppResourcesTree(fullResourcesTree, searchQuery),
+    [fullResourcesTree, searchQuery]
+  );
+  const isSearching = searchQuery.trim() !== '';
   useErrorContext('appResourcesTree', resourcesTree);
 
   const conformations = React.useMemo(
     () =>
       initialConformations === emptyArray
-        ? buildAppResourceConformation(resourcesTree)
+        ? buildAppResourceConformation(fullResourcesTree)
         : initialConformations,
-    [initialConformations, resourcesTree]
+    [initialConformations, fullResourcesTree]
   );
-  useOpenCurrent(conformations, setConformations, resourcesTree);
+  useOpenCurrent(conformations, setConformations, fullResourcesTree);
+  const [searchConformations, setSearchConformations] = useLiveState(
+    React.useCallback(
+      () => buildAppResourceConformation(resourcesTree),
+      [resourcesTree]
+    )
+  );
+  const visibleConformations = isSearching
+    ? searchConformations
+    : conformations;
+  const handleFold = isSearching ? setSearchConformations : setConformations;
 
   return (
     <aside
@@ -81,21 +100,27 @@ export function AppResourcesAside({
         } 
       `.concat(extraClassName === undefined ? '' : ` ${extraClassName}`)}
     >
-      <Ul className="flex flex-1 flex-col gap-1 overflow-auto" role="tree">
-        {resourcesTree.map((resources) => (
-          <TreeItem
-            conformations={conformations}
-            key={resources.key}
-            resourcesTree={resources}
-            onFold={setConformations}
-            onOpen={handleOpen}
-          />
-        ))}
-      </Ul>
+      {isSearching && resourcesTree.length === 0 ? (
+        <p className="flex-1" role="status">
+          {commonText.noResults()}
+        </p>
+      ) : (
+        <Ul className="flex flex-1 flex-col gap-1 overflow-auto" role="tree">
+          {resourcesTree.map((resources) => (
+            <TreeItem
+              conformations={visibleConformations}
+              key={resources.key}
+              resourcesTree={resources}
+              onFold={handleFold}
+              onOpen={handleOpen}
+            />
+          ))}
+        </Ul>
+      )}
       <div className="flex shrink-0 flex-wrap gap-2 border-t border-gray-300 pt-2 dark:border-neutral-700">
         <AppResourcesExpand
           resourcesTree={resourcesTree}
-          onChange={setConformations}
+          onChange={handleFold}
         />
       </div>
     </aside>

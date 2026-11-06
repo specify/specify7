@@ -3,10 +3,12 @@ import React from 'react';
 import { useCachedState } from '../../hooks/useCachedState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { useId } from '../../hooks/useId';
+import { commonText } from '../../localization/common';
 import { resourcesText } from '../../localization/resources';
 import type { GetOrSet } from '../../utils/types';
 import { Container, H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
+import { Input, Label } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { ProtectedTable, ProtectedTool } from '../Permissions/PermissionDenied';
 import { SafeOutlet } from '../Router/RouterUtils';
@@ -50,6 +52,7 @@ export function AppResourcesView({
 
   const conformations = useCachedState('appResources', 'conformation');
   const [filters] = useCachedState('appResources', 'filters');
+  const [searchQuery, setSearchQuery] = React.useState('');
   const [sidebarCollapsed = false, setSidebarCollapsed] = useCachedState(
     'appResources',
     'sidebarCollapsed'
@@ -106,6 +109,17 @@ export function AppResourcesView({
             hidden={sidebarCollapsed}
             id={id('sidebar')}
           >
+            <Label.Block className="shrink-0 gap-1">
+              <span className="text-sm text-gray-600 dark:text-neutral-400">
+                {resourcesText.searchResources()}
+              </span>
+              <Input.Generic
+                type="search"
+                placeholder={commonText.search()}
+                value={searchQuery}
+                onValueChange={setSearchQuery}
+              />
+            </Label.Block>
             <div className="shrink-0">
               <AppResourcesFilters initialResources={resources} />
             </div>
@@ -115,6 +129,7 @@ export function AppResourcesView({
               filters={filters}
               isEmbedded
               resources={resources}
+              searchQuery={searchQuery}
             />
           </div>
         </Container.Base>
