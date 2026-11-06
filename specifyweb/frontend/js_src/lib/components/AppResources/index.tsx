@@ -145,7 +145,6 @@ export function AppResourcesView({
                     ? 'w-full rounded p-1 md:h-full md:flex-col md:justify-start'
                     : 'ml-auto rounded p-1'
                 }
-                title={resourcesText.browseResources()}
                 onClick={(): void => setSidebarCollapsed(!sidebarCollapsed)}
               >
                 {sidebarCollapsed
