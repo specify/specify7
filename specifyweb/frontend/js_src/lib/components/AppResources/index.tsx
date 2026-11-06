@@ -111,7 +111,7 @@ export function AppResourcesView({
 
   return (
     <Container.FullGray className="min-h-0 min-w-0 !gap-2 !p-2">
-      <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2 sm:h-0 sm:overflow-auto md:flex-row">
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2 p-px sm:h-0 sm:overflow-auto md:flex-row">
         {isDesktop ? (
           <Container.Base
             className={`min-h-0 min-w-0 shrink-0 !gap-0 !overflow-hidden !p-0 ${
