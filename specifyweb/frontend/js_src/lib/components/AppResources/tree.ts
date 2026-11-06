@@ -61,6 +61,31 @@ export const sortTree = (tree: AppResourcesTree): AppResourcesTree =>
       subCategories: sortTree(subCategories),
     }));
 
+/** Keep matching resources and their ancestor groups, searching displayed and raw names. */
+export function searchAppResourcesTree(
+  tree: AppResourcesTree,
+  searchQuery: string
+): AppResourcesTree {
+  const query = searchQuery.trim().toLowerCase();
+  if (query === '') return tree;
+  const matches = (resource: {
+    readonly name: string;
+    readonly label?: string;
+  }): boolean =>
+    resource.name.toLowerCase().includes(query) ||
+    (resource.label?.toLowerCase().includes(query) ?? false);
+  const search = (nodes: AppResourcesTree): AppResourcesTree =>
+    nodes.flatMap((node) => {
+      const appResources = node.appResources.filter(matches);
+      const viewSets = node.viewSets.filter(matches);
+      const subCategories = search(node.subCategories);
+      return appResources.length + viewSets.length + subCategories.length === 0
+        ? []
+        : [{ ...node, appResources, viewSets, subCategories }];
+    });
+  return search(tree);
+}
+
 function getGlobalAllResources(resources: AppResources): {
   readonly directory: ScopedAppResourceDir;
   readonly appResources: RA<SerializedResource<SpAppResource>>;

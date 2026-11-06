@@ -1,15 +1,119 @@
-from django.test import Client
-
-from specifyweb.specify.tests.test_api import ApiTests
+from pathlib import Path
 from unittest.mock import Mock, patch
+from xml.etree import ElementTree
 
-from specifyweb.backend.context.app_resource import get_data_view_queries_resource
+from django.conf import settings
+from django.test import Client, SimpleTestCase
+
+from specifyweb.backend.context.app_resource import (
+    get_app_resource,
+    get_data_view_queries_resource,
+    merge_formatters,
+)
+from specifyweb.specify.tests.test_api import ApiTests
 
 
 FOUND_RESOURCE = ('<resource><text>"Value"</text></resource>', "text/xml", 4)
 
 
+class TestMergeFormatters(SimpleTestCase):
+    def test_inherits_named_formats_and_aggregators_without_replacing_custom_ones(self):
+        custom = '''<formatters>
+          <format class="Collector" name="Collector" default="true" title="Custom"/>
+          <aggregators>
+            <aggregator class="Collector" name="Collector" default="true" title="Custom"/>
+          </aggregators>
+        </formatters>'''
+        defaults = '''<formatters>
+          <format class="Collector" name="Collector" default="true" title="Default"/>
+          <format class="Collector" name="CollectorID" default="false"/>
+          <format class="Collector" name="Other" default="false"/>
+          <aggregators>
+            <aggregator class="Collector" name="Collector" default="true" title="Default"/>
+            <aggregator class="Collector" name="Collector Identifiers" default="false" format="CollectorID"/>
+            <aggregator class="Collector" name="Other" default="false"/>
+          </aggregators>
+        </formatters>'''
+
+        merged = ElementTree.fromstring(merge_formatters(custom, defaults))
+        self.assertEqual(
+            [(node.get('name'), node.get('title')) for node in merged.findall('format')],
+            [('Collector', 'Custom'), ('CollectorID', None)],
+        )
+        self.assertEqual(
+            [
+                (node.get('name'), node.get('title'))
+                for node in merged.findall('aggregators/aggregator')
+            ],
+            [('Collector', 'Custom'), ('Collector Identifiers', None)],
+        )
+        self.assertEqual(
+            [node.get('name') for node in merged.findall('format[@default="true"]')],
+            ['Collector'],
+        )
+        without_aggregators = '''<formatters>
+          <format class="Collector" name="Collector" default="true"/>
+        </formatters>'''
+        inherited = ElementTree.fromstring(
+            merge_formatters(without_aggregators, defaults)
+        )
+        self.assertIsNotNone(
+            inherited.find('aggregators/aggregator[@name="Collector Identifiers"]')
+        )
+
+    def test_backstop_id_formats_survive_custom_formatters(self):
+        custom = '''<formatters>
+          <format class="edu.ku.brc.specify.datamodel.Collector" name="Collector" default="true"/>
+          <format class="edu.ku.brc.specify.datamodel.Determiner" name="Determiner" default="true"/>
+          <format class="edu.ku.brc.specify.datamodel.AgentIdentifier" name="CustomIdentifier" default="true"/>
+          <aggregators>
+            <aggregator class="edu.ku.brc.specify.datamodel.Collector" name="Collector" default="true"/>
+            <aggregator class="edu.ku.brc.specify.datamodel.Determiner" name="Determiner" default="true"/>
+          </aggregators>
+        </formatters>'''
+        backstop = (
+            Path(settings.SPECIFY_CONFIG_DIR) / 'backstop' / 'dataobj_formatters.xml'
+        ).read_text()
+        merged = ElementTree.fromstring(merge_formatters(custom, backstop))
+
+        for name in ('AgentIdentifier', 'CollectorID', 'DeterminerID'):
+            self.assertIsNotNone(merged.find(f'format[@name="{name}"]'))
+        for name in ('AgentIdentifier', 'Collector Identifiers', 'Determiner Identifiers'):
+            self.assertIsNotNone(merged.find(f'aggregators/aggregator[@name="{name}"]'))
+
+
 class TestAppResource(ApiTests):
+
+    @patch("specifyweb.backend.context.app_resource.load_resource_at_level")
+    @patch("specifyweb.backend.context.app_resource.get_app_resource_from_db")
+    def test_custom_formatters_inherit_backstop_aggregations(
+        self, get_from_db: Mock, load_from_filesystem: Mock
+    ):
+        custom = '''<formatters>
+          <format class="edu.ku.brc.specify.datamodel.Collector" name="Collector" default="true"/>
+          <aggregators>
+            <aggregator class="edu.ku.brc.specify.datamodel.Collector" name="Collector" default="true"/>
+          </aggregators>
+        </formatters>'''
+        backstop = (
+            Path(settings.SPECIFY_CONFIG_DIR) / 'backstop' / 'dataobj_formatters.xml'
+        ).read_text()
+        get_from_db.side_effect = lambda _collection, _user, level, _name: (
+            (custom, 'text/xml', 1) if level == 'Collection' else None
+        )
+        load_from_filesystem.side_effect = lambda _collection, _user, level, _name: (
+            (backstop, 'text/xml', 2) if level == 'Backstop' else None
+        )
+
+        result = get_app_resource(self.collection, self.specifyuser, 'DataObjFormatters')
+        self.assertIsNotNone(result)
+        merged = ElementTree.fromstring(result[0])
+        self.assertIsNotNone(
+            merged.find('aggregators/aggregator[@name="Collector Identifiers"]')
+        )
+        self.assertIsNotNone(
+            merged.find('aggregators/aggregator[@name="Determiner Identifiers"]')
+        )
 
     @patch("specifyweb.backend.context.app_resource.load_resource_at_level")
     @patch("specifyweb.backend.context.app_resource.get_app_resource_from_db")

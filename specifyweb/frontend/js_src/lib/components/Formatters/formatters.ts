@@ -35,9 +35,7 @@ import { fieldFormat } from './fieldFormat';
 import type { Aggregator, Formatter } from './spec';
 import { formattersSpec } from './spec';
 
-const loadFormatters = (
-  refresh = false
-): Promise<{
+const loadFormatters = (): Promise<{
   readonly formatters: RA<Formatter>;
   readonly aggregators: RA<Aggregator>;
 }> =>
@@ -46,7 +44,8 @@ const loadFormatters = (
       ? Promise.all([
           ajax<Element>(cacheableUrl(getAppResourceUrl('DataObjFormatters')), {
             headers: { Accept: 'text/xml' },
-            cache: refresh ? 'no-cache' : undefined,
+            // Formatter resources can change while the browser cache is fresh.
+            cache: 'no-cache',
           }).then(({ data }) => data),
           fetchSchema,
           fetchDomain,
@@ -61,7 +60,7 @@ export const refreshFormatters = async (): Promise<
   Awaited<typeof fetchFormatters>
 > => {
   const previous = fetchFormatters;
-  const refreshed = loadFormatters(true);
+  const refreshed = loadFormatters();
   try {
     const result = await refreshed;
     fetchFormatters = refreshed;

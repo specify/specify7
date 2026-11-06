@@ -156,6 +156,7 @@ export type CacheDefinitions = {
     readonly institutionPoliciesExpanded: boolean;
   };
   readonly appResources: {
+    readonly sidebarCollapsed: boolean;
     readonly conformation: RA<AppResourcesConformation>;
     readonly filters: AppResourceFilters;
     readonly showHiddenTables: boolean;

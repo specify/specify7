@@ -20,6 +20,7 @@ import type {
   SpViewSetObj,
 } from '../DataModel/types';
 import { RssExportFeedEditor } from '../ExportFeed';
+import { DwcaDefinitionEditor } from '../DwcaDefinition/DwcaDefinition';
 import { exportFeedSpec } from '../ExportFeed/spec';
 import { ExpressSearchConfigResourceEditor } from '../ExpressSearchConfig/ExpressSearchConfigEditor';
 import { FieldFormattersEditor } from '../FieldFormatters/Editor';
@@ -49,6 +50,7 @@ export type AppResourceTabProps = {
   readonly appResource: SpecifyResource<SpAppResource | SpViewSetObj>;
   readonly directory: SerializedResource<SpAppResourceDir>;
   readonly data: string | null;
+  readonly onSwitchToXmlEditor?: () => void;
   /**
    * Instead of returning a string value on change, you return a function
    * that returns a string value. This way, if new value is stored in an
@@ -177,6 +179,10 @@ export const visualAppResourceEditors = f.store<
   rssExportFeed: {
     visual: RssExportFeedEditor,
     xml: generateXmlEditor(exportFeedSpec),
+  },
+  dwcaDefinition: {
+    visual: DwcaDefinitionEditor,
+    xml: generateXmlEditor(undefined),
   },
   expressSearchConfig: {
     visual: ExpressSearchConfigResourceEditor,

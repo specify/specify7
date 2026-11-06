@@ -4,6 +4,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { useId } from '../../hooks/useId';
+import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
 import { resourcesText } from '../../localization/resources';
 import { StringToJsx } from '../../localization/utils';
@@ -32,20 +33,25 @@ import {
 import { buildAppResourceConformation, getAppResourceMode } from './helpers';
 import type { AppResources, AppResourcesTree } from './hooks';
 import { useAppResourceCount, useResourcesTree } from './hooks';
+import { searchAppResourcesTree } from './tree';
 import { appResourceSubTypes } from './types';
 
 const emptyArray = [] as const;
 
 export function AppResourcesAside({
+  className: extraClassName,
   resources: unfilteredResources,
   filters = defaultAppResourceFilters,
   isEmbedded,
+  searchQuery = '',
   onOpen: handleOpen,
   conformations: [initialConformations = emptyArray, setConformations],
 }: {
+  readonly className?: string;
   readonly resources: AppResources;
   readonly filters: AppResourceFiltersType | undefined;
   readonly isEmbedded: boolean;
+  readonly searchQuery?: string;
   readonly onOpen?: (
     resource: SerializedResource<SpAppResource | SpViewSetObj>
   ) => void;
@@ -55,42 +61,72 @@ export function AppResourcesAside({
     () => filterAppResources(unfilteredResources, filters),
     [filters, unfilteredResources]
   );
-  const resourcesTree = useResourcesTree(resources);
+  const fullResourcesTree = useResourcesTree(resources);
+  const resourcesTree = React.useMemo(
+    () => searchAppResourcesTree(fullResourcesTree, searchQuery),
+    [fullResourcesTree, searchQuery]
+  );
+  const isSearching = searchQuery.trim() !== '';
   useErrorContext('appResourcesTree', resourcesTree);
 
   const conformations = React.useMemo(
     () =>
       initialConformations === emptyArray
-        ? buildAppResourceConformation(resourcesTree)
+        ? buildAppResourceConformation(fullResourcesTree)
         : initialConformations,
-    [initialConformations, resourcesTree]
+    [initialConformations, fullResourcesTree]
   );
-  useOpenCurrent(conformations, setConformations, resourcesTree);
+  useOpenCurrent(conformations, setConformations, fullResourcesTree);
+  const [searchConformations, setSearchConformations] = useLiveState(
+    React.useCallback(
+      () => buildAppResourceConformation(resourcesTree),
+      [resourcesTree]
+    )
+  );
+  const visibleConformations = isSearching
+    ? searchConformations
+    : conformations;
+  const handleFold = isSearching ? setSearchConformations : setConformations;
 
   return (
     <aside
+      aria-label={resourcesText.browseResources()}
       className={`
-        !gap-2 sm:overflow-visible
+        min-h-0 min-w-0 !gap-2
         ${
-          isEmbedded ? className.containerBaseUnstyled : className.containerBase
+          isEmbedded
+            ? className.containerBaseUnstyled
+            : `${className.containerBase} max-h-[40vh] flex-1 !overflow-hidden !p-2 md:max-h-none`
         } 
-      `}
+      `.concat(extraClassName === undefined ? '' : ` ${extraClassName}`)}
     >
-      <Ul className="flex flex-1 flex-col gap-1 overflow-auto" role="tree">
-        {resourcesTree.map((resources) => (
-          <TreeItem
-            conformations={conformations}
-            key={resources.key}
-            resourcesTree={resources}
-            onFold={setConformations}
-            onOpen={handleOpen}
-          />
-        ))}
-      </Ul>
-      <div className="flex flex-wrap gap-2">
+      {isSearching && resourcesTree.length === 0 ? (
+        <p
+          className="min-h-0 flex-1 rounded p-1 shadow-sm ring-1 ring-gray-400 dark:ring-0"
+          role="status"
+        >
+          {commonText.noResults()}
+        </p>
+      ) : (
+        <Ul
+          className="flex min-h-0 flex-1 flex-col gap-1 overflow-auto rounded p-1 shadow-sm ring-1 ring-gray-400 dark:ring-0"
+          role="tree"
+        >
+          {resourcesTree.map((resources) => (
+            <TreeItem
+              conformations={visibleConformations}
+              key={resources.key}
+              resourcesTree={resources}
+              onFold={handleFold}
+              onOpen={handleOpen}
+            />
+          ))}
+        </Ul>
+      )}
+      <div className="flex shrink-0 flex-wrap gap-2">
         <AppResourcesExpand
           resourcesTree={resourcesTree}
-          onChange={setConformations}
+          onChange={handleFold}
         />
       </div>
     </aside>
@@ -177,17 +213,17 @@ function AppResourcesExpand({
 }): JSX.Element {
   return (
     <>
-      <Button.Info
+      <Button.Small
         className="grow"
         onClick={(): void =>
           handleChange(buildAppResourceConformation(resourcesTree))
         }
       >
         {commonText.expandAll()}
-      </Button.Info>
-      <Button.Info className="grow" onClick={(): void => handleChange([])}>
+      </Button.Small>
+      <Button.Small className="grow" onClick={(): void => handleChange([])}>
         {commonText.collapseAll()}
-      </Button.Info>
+      </Button.Small>
     </>
   );
 }
@@ -220,7 +256,7 @@ function TreeItem({
     <li
       aria-expanded={isExpanded}
       aria-labelledby={id('label')}
-      className="flex flex-col gap-2"
+      className="flex min-w-0 flex-col gap-1"
       id={id('li')}
       /*
        * LOW: add aria-selected for focused row (currently that is denoted by
@@ -262,7 +298,7 @@ function TreeItem({
           {subCategories.length > 0 && (
             <Ul
               aria-label={resourcesText.subCategories()}
-              className="flex flex-col gap-2 pl-4"
+              className="flex min-w-0 flex-col gap-1 pl-3"
               role="group"
             >
               {subCategories.map((resources) => (
@@ -318,7 +354,11 @@ function TreeItemResources({
 
   return typeof directory === 'object' &&
     (resources.length > 0 || canCreate) ? (
-    <Ul aria-label={resourcesText.resources()} className="pl-4" role="group">
+    <Ul
+      aria-label={resourcesText.browseResources()}
+      className="min-w-0 pl-3"
+      role="group"
+    >
       {resources.map((resource, index) => (
         <li key={index}>
           <ResourceItem resource={resource} onOpen={handleOpen} />
@@ -381,7 +421,7 @@ function ResourceItem({
 
   return (
     <ActiveLink
-      className="[&:not([aria-current]):not(:hover)]:!text-neutral-500"
+      className="w-full min-w-0 rounded px-1 py-0.5 [&[aria-current]]:bg-brand-100 [&[aria-current]]:!text-black dark:[&[aria-current]]:bg-neutral-700 dark:[&[aria-current]]:!text-white [&:not([aria-current]):not(:hover)]:!text-neutral-500"
       forwardRef={setLink}
       href={url}
       mode="startsWith"
@@ -395,9 +435,11 @@ function ResourceItem({
       }
     >
       {appResourceIcon(resource.type)}
-      {('label' in resource ? resource.label : undefined) ??
-        localized(resource.name) ??
-        commonText.nullInline()}
+      <span className="truncate" title={resource.name}>
+        {('label' in resource ? resource.label : undefined) ??
+          localized(resource.name) ??
+          commonText.nullInline()}
+      </span>
     </ActiveLink>
   );
 }
