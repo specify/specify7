@@ -39,8 +39,8 @@ class PicklistTests(ApiTests):
                 'issystem': False,
                 'collection': f'/api/specify/collection/{self.collection.id}/',
                 'picklistitems': [
-                    {'title': 'First', 'value': 'first', 'ordinal': 0},
-                    {'title': 'Second', 'value': 'second', 'ordinal': 1},
+                    {'title': 'First', 'value': 'first', 'ordinal': 10},
+                    {'title': 'Second', 'value': 'second', 'ordinal': 20},
                 ],
             },
         )
@@ -48,8 +48,8 @@ class PicklistTests(ApiTests):
         saved = models.Picklist.objects.get(id=picklist.id)
         self.assertEqual(saved.name, 'UserDefined')
         self.assertEqual(
-            list(saved.picklistitems.values_list('title', 'value')),
-            [('First', 'first'), ('Second', 'second')],
+            list(saved.picklistitems.values_list('title', 'value', 'ordinal')),
+            [('First', 'first', 10), ('Second', 'second', 20)],
         )
 
     def test_update_existing_picklist_item(self):
