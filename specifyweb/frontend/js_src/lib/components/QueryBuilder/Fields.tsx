@@ -2,6 +2,7 @@ import { Sortable } from '@shopify/draggable';
 import React from 'react';
 
 import { useReadyEffect } from '../../hooks/useReadyEffect';
+import { dwcaText } from '../../localization/dwca';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Ul } from '../Atoms';
@@ -264,6 +265,15 @@ export function QueryFields({
         `}
       forwardRef={fieldsContainerRef}
     >
+      {isBasic && renderFieldPrefix !== undefined && (
+        <li aria-hidden="true" className="contents text-center font-semibold">
+          <span />
+          <span>{dwcaText.dwcaTerm()}</span>
+          <span>{dwcaText.dwcaSpecifyField()}</span>
+          <span>{dwcaText.dwcaOperator()}</span>
+          <span>{dwcaText.dwcaDisplay()}</span>
+        </li>
+      )}
       {fields.map((field, line, { length }) => (
         <ErrorBoundary dismissible key={field.id}>
           <li className={`${isBasic ? 'contents' : ''}`} key={line}>

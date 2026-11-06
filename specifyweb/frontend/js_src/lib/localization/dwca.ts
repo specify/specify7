@@ -46,6 +46,15 @@ export const dwcaText = createDictionary({
   dwcaTerm: {
     'en-us': 'Term',
   },
+  dwcaSpecifyField: {
+    'en-us': 'Specify Field',
+  },
+  dwcaOperator: {
+    'en-us': 'Operator',
+  },
+  dwcaDisplay: {
+    'en-us': 'Display Options',
+  },
   dwcaVocabulary: {
     'en-us': 'Vocabulary',
   },
