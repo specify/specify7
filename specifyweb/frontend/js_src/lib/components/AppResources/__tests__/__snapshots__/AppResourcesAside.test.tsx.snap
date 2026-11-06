@@ -3,7 +3,7 @@
 exports[`AppResourcesAside (expanded case) expanded case 1`] = `
 <DocumentFragment>
   <aside
-    aria-label="Resources"
+    aria-label="Browse Resources"
     class="
         min-h-0 min-w-0 !gap-2
         flex flex-col gap-4 overflow-scroll
@@ -107,7 +107,7 @@ exports[`AppResourcesAside (expanded case) expanded case 1`] = `
 exports[`AppResourcesAside (expanded case) expanded case 2`] = `
 <DocumentFragment>
   <aside
-    aria-label="Resources"
+    aria-label="Browse Resources"
     class="
         min-h-0 min-w-0 !gap-2
         flex flex-col gap-4 overflow-scroll
@@ -139,7 +139,7 @@ exports[`AppResourcesAside (expanded case) expanded case 2`] = `
           </span>
         </button>
         <ul
-          aria-label="Resources"
+          aria-label="Browse Resources"
           class=" min-w-0 pl-3"
           role="group"
         >
@@ -278,7 +278,7 @@ exports[`AppResourcesAside (expanded case) expanded case 2`] = `
               </span>
             </button>
             <ul
-              aria-label="Resources"
+              aria-label="Browse Resources"
               class=" min-w-0 pl-3"
               role="group"
             >
@@ -334,7 +334,7 @@ exports[`AppResourcesAside (expanded case) expanded case 2`] = `
                   </span>
                 </button>
                 <ul
-                  aria-label="Resources"
+                  aria-label="Browse Resources"
                   class=" min-w-0 pl-3"
                   role="group"
                 >
@@ -446,7 +446,7 @@ exports[`AppResourcesAside (expanded case) expanded case 2`] = `
                           </span>
                         </button>
                         <ul
-                          aria-label="Resources"
+                          aria-label="Browse Resources"
                           class=" min-w-0 pl-3"
                           role="group"
                         >
@@ -713,7 +713,7 @@ exports[`AppResourcesAside (expanded case) expanded case 2`] = `
 exports[`AppResourcesAside (simple no conformation case) simple no conformation case 1`] = `
 <DocumentFragment>
   <aside
-    aria-label="Resources"
+    aria-label="Browse Resources"
     class="
         min-h-0 min-w-0 !gap-2
         flex flex-col gap-4 overflow-scroll
@@ -790,7 +790,7 @@ exports[`AppResourcesAside (simple no conformation case) simple no conformation 
 exports[`Missing Collection Preferences Permission simple no conformation test 1`] = `
 <DocumentFragment>
   <aside
-    aria-label="Resources"
+    aria-label="Browse Resources"
     class="
         min-h-0 min-w-0 !gap-2
         flex flex-col gap-4 overflow-scroll

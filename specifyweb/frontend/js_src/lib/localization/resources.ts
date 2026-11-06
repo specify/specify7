@@ -24,12 +24,6 @@ export const resourcesText = createDictionary({
   filterByType: {
     'en-us': 'Filter by type…',
   },
-  showResourceSidebar: {
-    'en-us': 'Show Resource Sidebar',
-  },
-  hideResourceSidebar: {
-    'en-us': 'Hide Resource Sidebar',
-  },
   appResources: {
     'en-us': 'App Resources',
     'ru-ru': 'Ресурсы приложения',
@@ -128,17 +122,6 @@ export const resourcesText = createDictionary({
     'pt-br': 'Tipos de usuários',
     'hr-hr': 'Vrste korisnika',
     nb: 'Bruker Format',
-  },
-  resources: {
-    'en-us': 'Resources',
-    'ru-ru': 'Ресурсы',
-    'es-es': 'Recursos',
-    'fr-fr': 'Ressources',
-    'uk-ua': 'Ресурси',
-    'de-ch': 'Ressourcen',
-    'pt-br': 'Recursos',
-    'hr-hr': 'Resursi',
-    nb: 'Ressurser',
   },
   subCategories: {
     'en-us': 'Sub-categories',

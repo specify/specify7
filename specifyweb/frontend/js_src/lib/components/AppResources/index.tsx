@@ -68,9 +68,6 @@ export function AppResourcesView({
     'sidebarCollapsed'
   );
   const id = useId('app-resources');
-  const sidebarLabel = sidebarCollapsed
-    ? resourcesText.showResourceSidebar()
-    : resourcesText.hideResourceSidebar();
 
   const browser = (
     <div
@@ -125,18 +122,18 @@ export function AppResourcesView({
               className={`flex shrink-0 items-center gap-2 p-1 ${sidebarCollapsed ? 'md:flex-1' : 'border-b border-gray-300 dark:border-neutral-700'}`}
             >
               <H2 className={sidebarCollapsed ? 'sr-only' : 'pl-1 text-lg'}>
-                {resourcesText.resources()}
+                {resourcesText.browseResources()}
               </H2>
               <Button.LikeLink
                 aria-controls={id('sidebar')}
                 aria-expanded={!sidebarCollapsed}
-                aria-label={sidebarLabel}
+                aria-label={resourcesText.browseResources()}
                 className={
                   sidebarCollapsed
                     ? 'w-full rounded p-1 md:h-full md:flex-col md:justify-start'
                     : 'ml-auto rounded p-1'
                 }
-                title={sidebarLabel}
+                title={resourcesText.browseResources()}
                 onClick={(): void => setSidebarCollapsed(!sidebarCollapsed)}
               >
                 {sidebarCollapsed
@@ -149,7 +146,7 @@ export function AppResourcesView({
                       : 'sr-only'
                   }
                 >
-                  {resourcesText.resources()}
+                  {resourcesText.browseResources()}
                 </span>
               </Button.LikeLink>
             </div>

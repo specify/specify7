@@ -70,7 +70,12 @@ function Workspace({
 
 test('hides and restores the sidebar without resetting the tree or editor', async () => {
   const { getByRole, queryByRole, user } = mount(<Workspace />);
-  const sidebar = getByRole('complementary', { name: 'Resources' });
+  const sidebar = getByRole('complementary', {
+    name: resourcesText.browseResources(),
+  });
+  expect(
+    getByRole('heading', { name: resourcesText.browseResources() })
+  ).toBeVisible();
   const tree = getByRole('tree');
   const editor = getByRole('textbox', { name: 'Resource data' });
   const appResourcesFilter = getByRole('radio', { name: 'App Resources' });
@@ -84,9 +89,9 @@ test('hides and restores the sidebar without resetting the tree or editor', asyn
   );
 
   const toggle = getByRole('button', {
-    name: resourcesText.hideResourceSidebar(),
+    name: resourcesText.browseResources(),
   });
-  expect(toggle).toHaveTextContent('Resources');
+  expect(toggle).toHaveTextContent(resourcesText.browseResources());
   expect(toggle).toHaveAttribute('aria-controls', sidebar.parentElement!.id);
   expect(toggle).toHaveAttribute('aria-expanded', 'true');
   await user.click(toggle);
@@ -96,7 +101,7 @@ test('hides and restores the sidebar without resetting the tree or editor', asyn
   ).not.toBeInTheDocument();
   expect(toggle).toHaveFocus();
   expect(toggle).toHaveAttribute('aria-expanded', 'false');
-  expect(toggle).toHaveTextContent('Resources');
+  expect(toggle).toHaveTextContent(resourcesText.browseResources());
   expect(editor).toHaveValue('Unsaved changes');
   expect(getCache('appResources', 'sidebarCollapsed')).toBe(true);
 
@@ -118,7 +123,7 @@ test('remembers the collapsed sidebar when the workspace is reopened', () => {
   setCache('appResources', 'sidebarCollapsed', true, false);
   const { getByRole, queryByRole } = mount(<Workspace />);
   expect(
-    getByRole('button', { name: resourcesText.showResourceSidebar() })
+    getByRole('button', { name: resourcesText.browseResources() })
   ).toHaveAttribute('aria-expanded', 'false');
   expect(queryByRole('complementary')).not.toBeInTheDocument();
   expect(getByRole('textbox', { name: 'Resource data' })).toBeInTheDocument();
@@ -318,7 +323,7 @@ describe('small-screen resource picker', () => {
     rerender(renderWorkspace());
     expect(queryByRole('dialog')).not.toBeInTheDocument();
     const toggle = getByRole('button', {
-      name: resourcesText.showResourceSidebar(),
+      name: resourcesText.browseResources(),
     });
     expect(toggle).toHaveAttribute('aria-expanded', 'false');
     await user.click(toggle);

@@ -90,7 +90,7 @@ export function AppResourcesAside({
 
   return (
     <aside
-      aria-label={resourcesText.resources()}
+      aria-label={resourcesText.browseResources()}
       className={`
         min-h-0 min-w-0 !gap-2
         ${
@@ -352,7 +352,7 @@ function TreeItemResources({
   return typeof directory === 'object' &&
     (resources.length > 0 || canCreate) ? (
     <Ul
-      aria-label={resourcesText.resources()}
+      aria-label={resourcesText.browseResources()}
       className="min-w-0 pl-3"
       role="group"
     >
