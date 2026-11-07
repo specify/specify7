@@ -1890,18 +1890,31 @@ export function DwcaDefinitionEditor(props: AppResourceTabProps): JSX.Element {
   );
 }
 
+const parseMappings = (data: string): RA<Mapping> => {
+  const parsed = parseDefinition(data);
+  return parsed.some(({ extension }) => !extension)
+    ? parsed
+    : [newMapping(false, occurrenceCore), ...parsed];
+};
+
 function DwcaDefinitionEditorLoaded({
   appResource,
   data,
   onChange: handleChange,
   onSetSaveConfirmation,
 }: AppResourceTabProps): JSX.Element {
-  const [mappings, setMappings] = React.useState<RA<Mapping>>(() => {
-    const parsed = parseDefinition(data);
-    return parsed.some(({ extension }) => !extension)
-      ? parsed
-      : [newMapping(false, occurrenceCore), ...parsed];
-  });
+  const [mappings, setMappings] = React.useState<RA<Mapping>>(() =>
+    parseMappings(data)
+  );
+  const previousData = React.useRef(data);
+  const editorData = React.useRef(new Set<string>());
+  React.useEffect(() => {
+    if (data === previousData.current) return;
+    previousData.current = data;
+    if (editorData.current.delete(data)) return;
+    editorData.current.clear();
+    setMappings(parseMappings(data));
+  }, [data]);
   const [tabValue, setTabValue] = useSearchParameter(dwcaTabParameter);
   const tabValues = React.useMemo(
     () => getMappingTabValues(mappings),
@@ -2087,7 +2100,9 @@ function DwcaDefinitionEditorLoaded({
         ];
       if (nextTabValue !== tabValue) setTabValue(nextTabValue);
     }
-    handleChange(serializeDefinition(normalized));
+    const serialized = serializeDefinition(normalized);
+    editorData.current.add(serialized);
+    handleChange(serialized);
   };
   const availableExtensions = gbifExtensions.filter(
     (extension) =>

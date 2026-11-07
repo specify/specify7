@@ -113,3 +113,42 @@ test('hides a mismatched extension and lets the user remove it', async () => {
     expect.not.stringContaining('rowType="custom"')
   );
 });
+
+test('refreshes mappings when definition data is loaded externally', async () => {
+  jest
+    .spyOn(collectionModule, 'fetchCollection')
+    .mockImplementation(() => new Promise(() => undefined));
+  const appResource = new tables.SpAppResource.Resource({ name: 'DwCA' });
+  const onChange = jest.fn();
+  const occurrence =
+    '<archive><core rowType="http://rs.tdwg.org/dwc/terms/Occurrence"><queries><query contextTableId="1" name="occurrence.csv" /></queries></core></archive>';
+  const taxon =
+    '<archive><core rowType="http://rs.tdwg.org/dwc/terms/Taxon"><queries><query contextTableId="4" name="taxon.csv" /></queries></core></archive>';
+  const view = (data: string): JSX.Element => (
+    <MemoryRouter>
+      <LoadingContext.Provider value={() => undefined}>
+        <UnloadProtectsContext.Provider value={[]}>
+          <DwcaDefinitionEditor
+            {...({
+              appResource,
+              data,
+              onChange,
+              onSetSaveConfirmation: jest.fn(),
+            } as unknown as Parameters<typeof DwcaDefinitionEditor>[0])}
+          />
+        </UnloadProtectsContext.Provider>
+      </LoadingContext.Provider>
+    </MemoryRouter>
+  );
+  const { rerender } = render(view(occurrence));
+  expect(await screen.findByRole('combobox', { name: 'Row type' })).toHaveValue(
+    'http://rs.tdwg.org/dwc/terms/Occurrence'
+  );
+
+  await act(async () => rerender(view(taxon)));
+
+  expect(await screen.findByRole('combobox', { name: 'Row type' })).toHaveValue(
+    'http://rs.tdwg.org/dwc/terms/Taxon'
+  );
+  expect(onChange).not.toHaveBeenCalled();
+});
