@@ -214,7 +214,10 @@ export function QueryFields({
         if (isFieldReadOnlyRef.current?.(field, index) !== true) return false;
         return newItems.indexOf(field) !== index;
       });
-      if (readOnlyFieldMoved) return;
+      if (readOnlyFieldMoved) {
+        event.cancel();
+        return;
+      }
 
       handleChangeFieldRef.current?.(newItems);
       handleLineFocus?.(newIndex);
