@@ -281,7 +281,7 @@ const identificationHistoryTemplate: DwcaTemplate = {
       <query name="Identification.csv" contextTableId="1">
         <id stringId="1.collectionobject.guid" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/occurrenceID"/>
         <field stringId="1,9-determinations.determination.guid" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/identificationID"/>
-        <field stringId="1,9-determinations.determination.isCurrent" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/identificationVerificationStatus"/>
+        <field stringId="1,9-determinations.determination.isCurrent" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/isAcceptedIdentification"/>
         <field stringId="1,9-determinations.determination.remarks" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/identificationRemarks"/>
         <field stringId="1,9-determinations.determination.determinedDate" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/dateIdentified"/>
         <field stringId="1,9-determinations,5-determiner.agent.determiner" oper="8" value="" isNot="false" isRelFld="true" formatName="" term="http://rs.tdwg.org/dwc/terms/identifiedBy"/>

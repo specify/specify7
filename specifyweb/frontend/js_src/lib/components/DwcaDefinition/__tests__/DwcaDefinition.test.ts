@@ -133,6 +133,23 @@ test('detects displayed query fields without a Darwin Core term', () => {
 requireContext();
 
 describe('DwCA query field term mapping', () => {
+  test('maps current determinations to accepted identifications', () => {
+    const template = defaultTemplates.find(
+      ({ name }) => name === 'Identification History Extension'
+    );
+    expect(template).toBeDefined();
+    const document = new DOMParser().parseFromString(
+      template!.definition,
+      'text/xml'
+    );
+
+    expect(
+      document
+        .querySelector('field[stringId$=".isCurrent"]')
+        ?.getAttribute('term')
+    ).toBe('http://rs.tdwg.org/dwc/terms/isAcceptedIdentification');
+  });
+
   test('uses semantically correct shared Darwin Core sources', () => {
     expect(coreTermPatterns['http://rs.tdwg.org/dwc/terms/basisOfRecord']).toBe(
       undefined
