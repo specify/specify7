@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react';
+import { screen, within } from '@testing-library/react';
 import React from 'react';
 
 import { commonText } from '../../../localization/common';
@@ -66,12 +66,9 @@ test('deletes only unmapped columns', async () => {
 
   expect(screen.getByText('Unmapped Column')).toBeInTheDocument();
   expect(screen.getByText('Mapped Column')).toBeInTheDocument();
-  expect(screen.getByText('Mapped Column').closest('li')).toHaveClass(
-    'wb-mapping-row'
-  );
-  expect(
-    screen.getByText('Mapped Column').closest('li')?.querySelector('ul')
-  ).toHaveClass('wb-mapping-path');
+  const mappedRow = screen.getByText('Mapped Column').closest('li');
+  expect(mappedRow).toHaveClass('wb-mapping-row');
+  expect(within(mappedRow!).getByRole('list')).toHaveClass('wb-mapping-path');
 
   await user.click(
     screen.getByRole('button', {
