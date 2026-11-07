@@ -583,10 +583,10 @@
 				<field>identifier</field>
 			</fields>
 			<fields value="ORCID">
-				<field sep="https://orcid.org/">identifier</field>
+				<field format="https://orcid.org/%s">identifier</field>
 			</fields>
 			<fields value="Wikidata">
-				<field sep="https://www.wikidata.org/entity/">identifier</field>
+				<field format="https://www.wikidata.org/entity/%s">identifier</field>
 			</fields>
 		</switch>
 	</format>

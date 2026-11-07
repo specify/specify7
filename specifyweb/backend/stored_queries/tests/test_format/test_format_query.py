@@ -160,6 +160,61 @@ class FormatterAggregatorTests(SQLAlchemySetup):
                 'https://orcid.org/id-0',
             )
 
+    def test_agent_identifier_formatter_urls_and_fallback(self):
+        formatter = ObjectFormatter(self.collection, self.specifyuser, False)
+        agent = spmodels.Agent.objects.create(
+            agenttype=1,
+            lastname='Identifiers',
+            division=self.division,
+        )
+        identifiers = [
+            spmodels.Agentidentifier.objects.create(
+                agent=agent,
+                identifiertype=identifier_type,
+                identifier=identifier,
+            )
+            for identifier_type, identifier in [
+                ('ORCID', '0000-0001'),
+                ('ORCID', 'https://orcid.org/0000-0002'),
+                ('Wikidata', 'Q123'),
+                ('Wikidata', 'https://www.wikidata.org/entity/Q456'),
+                ('Other', 'custom-id'),
+                (None, 'untyped-id'),
+            ]
+        ]
+
+        with FormatterAggregatorTests.test_session_context() as session:
+            query = QueryConstruct(
+                collection=self.collection,
+                objectformatter=formatter,
+                query=session.query(),
+            )
+            _, expression = formatter.objformat(
+                query, models.AgentIdentifier, None
+            )
+            results = dict(
+                session.query(models.AgentIdentifier._id, expression)
+                .filter(
+                    models.AgentIdentifier._id.in_(
+                        [identifier.id for identifier in identifiers]
+                    )
+                )
+                .all()
+            )
+
+        self.assertEqual(results[identifiers[0].id], 'https://orcid.org/0000-0001')
+        self.assertEqual(results[identifiers[1].id], 'https://orcid.org/0000-0002')
+        self.assertEqual(
+            results[identifiers[2].id],
+            'https://www.wikidata.org/entity/Q123',
+        )
+        self.assertEqual(
+            results[identifiers[3].id],
+            'https://www.wikidata.org/entity/Q456',
+        )
+        self.assertEqual(results[identifiers[4].id], 'custom-id')
+        self.assertEqual(results[identifiers[5].id], 'untyped-id')
+
     def test_aggregator_skips_empty_nested_formatter_values(self):
         object_formatter = self.get_formatter("""
             <formatters>

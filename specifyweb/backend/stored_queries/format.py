@@ -177,7 +177,12 @@ class ObjectFormatter:
         """
         if '%s' in format:
             before, after = format.split('%s')
-            return concat(before, expr, after)
+            formatted = concat(before, expr, after)
+            return (
+                case((expr.startswith(before), expr), else_=formatted)
+                if before and not after
+                else formatted
+            )
         elif '%d' in format:
             before, after = format.split('%d')
             return concat(before, expr, after)
@@ -356,8 +361,13 @@ class ObjectFormatter:
         else:
             query, formatted, switch_field_spec = self.make_expr(query, switchNode.attrib['field'], {}, orm_table, specify_model)
             def case_value_convert(value): return value == 'true' if switch_field_spec.get_field().type == 'java.lang.Boolean' else value
-            cases = [(case_value_convert(value), expr) for (value, expr) in cases]
-            expr = case(*cases, value=formatted)
+            default = next((expr for value, expr in cases if value is None), None)
+            cases = [
+                (case_value_convert(value), expr)
+                for value, expr in cases
+                if value is not None
+            ]
+            expr = case(*cases, value=formatted, else_=default)
         return query, blank_nulls(expr)
 
     def aggregate(self, query: QueryConstruct,
