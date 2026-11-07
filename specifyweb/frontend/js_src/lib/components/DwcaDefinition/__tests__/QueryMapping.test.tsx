@@ -1,8 +1,9 @@
-import { fireEvent, render, screen, within } from '@testing-library/react';
+import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import React from 'react';
 
 import { requireContext } from '../../../tests/helpers';
 import * as resourceModule from '../../DataModel/resource';
+import { serializeResource } from '../../DataModel/serializers';
 import { parseQueryFields } from '../../QueryBuilder/helpers';
 import { UnloadProtectsContext } from '../../Router/UnloadProtect';
 import { parseDefinition, QueryMapping, TermPicker } from '../DwcaDefinition';
@@ -302,6 +303,51 @@ test('confirms before fetching a replacement saved query', () => {
   selectQuery();
   fireEvent.click(screen.getByRole('button', { name: 'Replace mapping' }));
   expect(fetchQuery).toHaveBeenCalledWith('SpQuery', 42);
+});
+
+test('discards a saved-query replacement after the mapping changes', async () => {
+  const [mapping] = parseDefinition(defaultTemplates[0]!.definition);
+  expect(mapping).toBeDefined();
+  mockSavedQueries = {
+    records: [
+      {
+        id: 42,
+        name: 'Replacement query',
+        contextTableId: mapping!.baseTable.tableId,
+      },
+    ],
+  };
+  let resolveFetch: ((resource: unknown) => void) | undefined;
+  jest.spyOn(resourceModule, 'fetchResource').mockReturnValue(
+    new Promise((resolve) => {
+      resolveFetch = resolve;
+    }) as never
+  );
+  const onChange = jest.fn();
+  const view = (currentMapping: NonNullable<typeof mapping>): JSX.Element => (
+    <UnloadProtectsContext.Provider value={[]}>
+      <QueryMapping
+        mapping={currentMapping}
+        hasMappingsToReset
+        hasFileNameError={false}
+        onCoreChange={jest.fn()}
+        onChange={onChange}
+      />
+    </UnloadProtectsContext.Provider>
+  );
+  const { rerender } = render(view(mapping!));
+
+  fireEvent.change(
+    screen.getByRole('combobox', { name: 'Choose Template or Query' }),
+    { target: { value: 'query:42' } }
+  );
+  fireEvent.click(screen.getByRole('button', { name: 'Replace mapping' }));
+  rerender(view({ ...mapping!, fileName: 'edited.csv' }));
+  await act(async () => {
+    resolveFetch?.(serializeResource(mapping!.query));
+  });
+
+  expect(onChange).not.toHaveBeenCalled();
 });
 
 test('flags a file-name problem on the settings control', () => {

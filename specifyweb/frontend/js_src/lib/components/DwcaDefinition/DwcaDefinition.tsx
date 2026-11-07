@@ -1526,6 +1526,15 @@ export function QueryMapping({
     | { readonly type: 'query'; readonly id: number }
     | undefined
   >();
+  const currentMapping = React.useRef(mapping);
+  currentMapping.current = mapping;
+  const replacementRequest = React.useRef(0);
+  React.useEffect(
+    () => (): void => {
+      replacementRequest.current += 1;
+    },
+    []
+  );
   const isIdentifierField = (field: QueryField): boolean =>
     getMappingFieldIndex(mapping, field) === 0;
   const handleRowTypeChange = (rowType: string): void => {
@@ -1581,6 +1590,8 @@ export function QueryMapping({
   const applyReplacement = (
     replacement: NonNullable<typeof pendingReplacement>
   ): void => {
+    const request = ++replacementRequest.current;
+    const mappingBeforeRequest = currentMapping.current;
     setPendingReplacement(undefined);
     setShowSettings(false);
     if (replacement.type === 'template') {
@@ -1588,11 +1599,16 @@ export function QueryMapping({
       return;
     }
     void fetchResource('SpQuery', replacement.id).then((resource) => {
-      if (resource === undefined) return;
+      if (
+        resource === undefined ||
+        replacementRequest.current !== request ||
+        currentMapping.current !== mappingBeforeRequest
+      )
+        return;
       const query = deserializeResource(
         resource as SerializedResource<SpQuery>
       );
-      handleChange(mappingFromQuery(mapping, query));
+      handleChange(mappingFromQuery(currentMapping.current, query));
     });
   };
   const requestReplacement = (
