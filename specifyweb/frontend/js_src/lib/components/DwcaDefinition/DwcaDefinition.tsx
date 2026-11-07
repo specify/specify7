@@ -803,6 +803,17 @@ export function getMissingRequiredTerms(
   });
 }
 
+export const hasUnmappedDisplayedFields = (mappings: RA<Mapping>): boolean =>
+  mappings.some(
+    (mapping) =>
+      mapping.invalidExtensionXml === undefined &&
+      mapping.fields.some(
+        (field, index) =>
+          field.isDisplay === true &&
+          (getSerializedMappingTerm(mapping, field, index)?.trim() ?? '') === ''
+      )
+  );
+
 export function MissingRequiredTermsError({
   terms,
   expanded,
@@ -1310,7 +1321,7 @@ export function serializeDefinition(mappings: RA<Mapping>): string {
   return prettyXml(new XMLSerializer().serializeToString(root));
 }
 
-function TermPicker({
+export function TermPicker({
   mapping,
   field,
   fieldIndex,
@@ -1341,6 +1352,11 @@ function TermPicker({
       ]
     : (mapping.extensionDefinition?.fields ?? occurrenceCore.fields);
   const value = getMappingTerm(mapping, field) ?? '';
+  const isUnmapped = field.isDisplay && value.trim() === '';
+  const unmappedDescriptionId = React.useId();
+  const unmappedClassName = isUnmapped
+    ? '!bg-amber-100 !ring-amber-600 dark:!bg-amber-950 dark:!ring-amber-400'
+    : undefined;
   const options: RA<TermDefinition> = terms.map(
     ({
       name,
@@ -1373,8 +1389,10 @@ function TermPicker({
     <div className="w-72 shrink-0">
       {isEditing || isCustomTerm ? (
         <Input.Text
+          aria-describedby={isUnmapped ? unmappedDescriptionId : undefined}
           aria-label={dwcaText.dwcaTerm()}
           autoFocus={isEditing}
+          className={unmappedClassName}
           value={value}
           onBlur={(): void => {
             if (value === '') {
@@ -1389,7 +1407,9 @@ function TermPicker({
       ) : (
         <div className="flex items-center gap-1">
           <Select
+            aria-describedby={isUnmapped ? unmappedDescriptionId : undefined}
             aria-label={dwcaText.dwcaVocabulary()}
+            className={`min-w-0 flex-1 ${unmappedClassName ?? ''}`}
             disabled={!field.isDisplay || isIdentifier}
             value={value}
             onValueChange={(term): void => {
@@ -1435,6 +1455,11 @@ function TermPicker({
             onClick={(): void => setShowInfo(true)}
           />
         </div>
+      )}
+      {isUnmapped && (
+        <span className="sr-only" id={unmappedDescriptionId}>
+          {dwcaText.dwcaUnmappedTerm()}
+        </span>
       )}
       {showInfo && selectedTerm !== undefined && (
         <TermInfoDialog
@@ -1853,6 +1878,7 @@ function DwcaDefinitionEditorLoaded({
   appResource,
   data,
   onChange: handleChange,
+  onSetSaveConfirmation,
 }: AppResourceTabProps): JSX.Element {
   const [mappings, setMappings] = React.useState<RA<Mapping>>(() => {
     const parsed = parseDefinition(data);
@@ -1912,6 +1938,21 @@ function DwcaDefinitionEditorLoaded({
     () => getMissingRequiredTerms(mappings),
     [mappings]
   );
+  const hasUnmappedTerms = React.useMemo(
+    () => hasUnmappedDisplayedFields(mappings),
+    [mappings]
+  );
+  React.useEffect(() => {
+    onSetSaveConfirmation(
+      hasUnmappedTerms
+        ? {
+            header: dwcaText.dwcaSaveWithUnmappedFields(),
+            message: dwcaText.dwcaSaveWithUnmappedFieldsDescription(),
+          }
+        : undefined
+    );
+    return (): void => onSetSaveConfirmation(undefined);
+  }, [hasUnmappedTerms, onSetSaveConfirmation]);
   const [showRequiredTerms, setShowRequiredTerms] = React.useState(false);
   const tabButtons = React.useRef<(HTMLButtonElement | null)[]>([]);
   const requiredTermsMessage = dwcaText.dwcaMapRequiredTerms({

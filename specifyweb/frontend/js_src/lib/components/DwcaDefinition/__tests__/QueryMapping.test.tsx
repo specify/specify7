@@ -3,8 +3,9 @@ import React from 'react';
 
 import { requireContext } from '../../../tests/helpers';
 import * as resourceModule from '../../DataModel/resource';
+import { parseQueryFields } from '../../QueryBuilder/helpers';
 import { UnloadProtectsContext } from '../../Router/UnloadProtect';
-import { parseDefinition, QueryMapping } from '../DwcaDefinition';
+import { parseDefinition, QueryMapping, TermPicker } from '../DwcaDefinition';
 import { defaultTemplates } from '../data/defaultTemplates';
 
 jest.mock('../../QueryBuilder/Wrapped', () => ({
@@ -29,6 +30,53 @@ beforeEach(() => {
 });
 afterEach(() => {
   jest.restoreAllMocks();
+});
+
+test('highlights displayed fields without a Darwin Core term', () => {
+  const [mapping] = parseDefinition(`
+    <archive>
+      <core rowType="http://rs.tdwg.org/dwc/terms/Occurrence">
+        <queries>
+          <query name="occurrence.csv" contextTableId="1">
+            <field
+              stringId="1.collectionobject.guid"
+              isDisplay="true"
+              term="http://rs.tdwg.org/dwc/terms/occurrenceID"
+            />
+            <field stringId="1.collectionobject.text1" isDisplay="true" />
+          </query>
+        </queries>
+      </core>
+    </archive>
+  `);
+  expect(mapping).toBeDefined();
+  const field = parseQueryFields(mapping!.fields)[1];
+  expect(field).toBeDefined();
+  const unmapped = {
+    ...mapping!,
+    terms: mapping!.terms.map((term, index) =>
+      index === field!.sourceIndex ? undefined : term
+    ),
+  };
+
+  const view = (isDisplay: boolean): JSX.Element => (
+    <TermPicker
+      field={{ ...field!, isDisplay }}
+      fieldIndex={field!.id}
+      mapping={unmapped}
+      onChange={jest.fn()}
+    />
+  );
+  const { rerender } = render(view(true));
+
+  const term = screen.getByRole('combobox', { name: 'Vocabulary' });
+  expect(term).toHaveValue('');
+  expect(term).toHaveClass('!bg-amber-100', '!ring-amber-600');
+  expect(term).toHaveAccessibleDescription('Unmapped Darwin Core term');
+
+  rerender(view(false));
+  expect(term).not.toHaveClass('!bg-amber-100', '!ring-amber-600');
+  expect(term).not.toHaveAccessibleDescription();
 });
 
 test('shows the template selector on the page for empty and populated mappings', () => {

@@ -56,6 +56,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   disabled = false,
   saveRequired: externalSaveRequired = false,
   filterBlockers,
+  onBeforeSaving: handleBeforeSaving,
   onSaving: handleSaving,
   onSaved: handleSaved,
   onAdd: handleAdd,
@@ -74,6 +75,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   readonly onSaving?: (
     unsetUnloadProtect: () => void
   ) => false | undefined | void;
+  readonly onBeforeSaving?: () => Promise<boolean>;
   readonly onSaved?: () => void;
   readonly onAdd?: (resources: RA<SpecifyResource<SCHEMA>>) => void;
   // Only display save blockers for a given field
@@ -138,52 +140,52 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
        */
       !resource.isNew());
 
-  function handleSubmit(): void {
+  async function handleSubmit(): Promise<void> {
     if (typeof setFormContext === 'function')
       setFormContext((formContext) =>
         replaceKey(formContext, 'triedToSubmit', true)
       );
 
-    loading(
-      (resource.businessRuleManager?.pendingPromise ?? Promise.resolve()).then(
-        async () => {
-          if (blockers.length > 0) {
-            const blocker = findUnclaimedBlocker(blockers);
-            if (blocker === undefined) return undefined;
-            console.error(
-              'Unclaimed blocker discovered (is not handled by any react component)',
-              {
-                blocker,
-                resource,
-              }
-            );
-            setShownBlocker(blocker);
-            return undefined;
-          }
-
-          /*
-           * Save process is canceled if false was returned. This also allows to
-           * implement custom save behavior
-           */
-          if (handleSaving?.(unsetUnloadProtect) === false) return undefined;
-
-          setIsSaving(true);
-          return resource
-            .save({ onSaveConflict: hasSaveConflict })
-            .catch((error_) =>
-              // FEATURE: if form save fails, should make the error message dismissible (if safe)
-              Object.getOwnPropertyDescriptor(error_ ?? {}, errorHandledBy)
-                ?.value === hasSaveConflict
-                ? undefined
-                : error(error_)
-            )
-            .then(handleSaved)
-            .finally(() => {
-              unsetUnloadProtect();
-              setIsSaving(false);
-            });
+    await (resource.businessRuleManager?.pendingPromise ?? Promise.resolve());
+    if (blockers.length > 0) {
+      const blocker = findUnclaimedBlocker(blockers);
+      if (blocker === undefined) return;
+      console.error(
+        'Unclaimed blocker discovered (is not handled by any react component)',
+        {
+          blocker,
+          resource,
         }
-      )
+      );
+      setShownBlocker(blocker);
+      return;
+    }
+
+    // Confirm before entering the loading state so the prompt remains interactive.
+    if ((await handleBeforeSaving?.()) === false) return;
+
+    /*
+     * Save process is canceled if false was returned. This also allows to
+     * implement custom save behavior
+     */
+    if (handleSaving?.(unsetUnloadProtect) === false) return;
+
+    setIsSaving(true);
+    loading(
+      resource
+        .save({ onSaveConflict: hasSaveConflict })
+        .catch((error_) =>
+          // FEATURE: if form save fails, should make the error message dismissible (if safe)
+          Object.getOwnPropertyDescriptor(error_ ?? {}, errorHandledBy)
+            ?.value === hasSaveConflict
+            ? undefined
+            : error(error_)
+        )
+        .then(handleSaved)
+        .finally(() => {
+          unsetUnloadProtect();
+          setIsSaving(false);
+        })
     );
   }
 
@@ -195,7 +197,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
       listen(form, 'submit', (event) => {
         event.preventDefault();
         event.stopPropagation();
-        handleSubmitRef.current();
+        void handleSubmitRef.current();
       }),
     [loading, form]
   );
@@ -279,7 +281,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     'form',
     'actions',
     'save',
-    canSave && !isSaveDisabled ? handleSubmit : undefined
+    canSave && !isSaveDisabled ? () => void handleSubmit() : undefined
   );
   userPreferences.useKeyboardShortcut(
     'form',

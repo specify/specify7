@@ -49,6 +49,7 @@ test('clears visual editor save blockers when switching editors', async () => {
               appResource,
               data: '<archive><core rowType="http://rs.tdwg.org/dwc/terms/Occurrence"><queries><query contextTableId="1" name=""><id stringId="1.collectionobject.guid" /></query></queries></core></archive>',
               onChange: jest.fn(),
+              onSetSaveConfirmation: jest.fn(),
             } as unknown as Parameters<typeof DwcaDefinitionEditor>[0])}
           />
         </UnloadProtectsContext.Provider>
@@ -80,6 +81,7 @@ test('hides a mismatched extension and lets the user remove it', async () => {
               appResource,
               data: '<archive><core rowType="http://rs.tdwg.org/dwc/terms/Occurrence"><queries><query contextTableId="1" /></queries></core><extension rowType="custom"><queries><query contextTableId="121" /></queries></extension><extension rowType="second"><queries><query contextTableId="1" /></queries></extension></archive>',
               onChange,
+              onSetSaveConfirmation: jest.fn(),
             } as unknown as Parameters<typeof DwcaDefinitionEditor>[0])}
           />
         </UnloadProtectsContext.Provider>

@@ -32,6 +32,7 @@ import type {
 import { useResourceView } from '../Forms/BaseResourceView';
 import { SaveButton } from '../Forms/Save';
 import { AppTitle } from '../Molecules/AppTitle';
+import { Dialog } from '../Molecules/Dialog';
 import { hasPermission, hasToolPermission } from '../Permissions/helpers';
 import { isOverlay, OverlayContext } from '../Router/Router';
 import { clearUrlCache } from '../RouterCommands/CacheBuster';
@@ -45,6 +46,7 @@ import {
 import { getAppResourceType, getResourceType } from './filtersHelpers';
 import { useAppResourceData } from './hooks';
 import { AppResourcesTab, useEditorTabs } from './Tabs';
+import type { SaveConfirmation } from './TabDefinitions';
 import { getScope } from './tree';
 import type { ScopedAppResourceDir } from './types';
 import { appResourceSubTypes } from './types';
@@ -75,7 +77,8 @@ export function AppResourceEditor({
   children,
 }: {
   readonly resource:
-    SerializedResource<SpAppResource> | SerializedResource<SpViewSetObject>;
+    | SerializedResource<SpAppResource>
+    | SerializedResource<SpViewSetObject>;
   readonly directory: ScopedAppResourceDir;
   readonly initialData: string | undefined;
   readonly onDeleted: (() => void) | undefined;
@@ -89,7 +92,8 @@ export function AppResourceEditor({
     | undefined;
   readonly onSaved: (
     resource:
-      SerializedResource<SpAppResource> | SerializedResource<SpViewSetObject>,
+      | SerializedResource<SpAppResource>
+      | SerializedResource<SpViewSetObject>,
     directory: ScopedAppResourceDir
   ) => void;
   readonly children: (renderProps: {
@@ -241,6 +245,36 @@ export function AppResourceEditor({
     (callback: (() => Promise<void>) | undefined) => setCleanup(() => callback),
     []
   );
+  const [saveConfirmation, setSaveConfirmation] = React.useState<
+    SaveConfirmation | undefined
+  >(undefined);
+  const [showSaveConfirmation, setShowSaveConfirmation] = React.useState(false);
+  const saveConfirmationResolver = React.useRef<
+    ((confirmed: boolean) => void) | undefined
+  >(undefined);
+  const handleBeforeSaving = React.useCallback(async (): Promise<boolean> => {
+    if (saveConfirmation === undefined) return true;
+    if (saveConfirmationResolver.current !== undefined) return false;
+    return new Promise<boolean>((resolve) => {
+      saveConfirmationResolver.current = resolve;
+      setShowSaveConfirmation(true);
+    });
+  }, [saveConfirmation]);
+  const resolveSaveConfirmation = React.useCallback(
+    (confirmed: boolean): void => {
+      setShowSaveConfirmation(false);
+      saveConfirmationResolver.current?.(confirmed);
+      saveConfirmationResolver.current = undefined;
+    },
+    []
+  );
+  React.useEffect(() => {
+    if (
+      saveConfirmation === undefined &&
+      saveConfirmationResolver.current !== undefined
+    )
+      resolveSaveConfirmation(false);
+  }, [resolveSaveConfirmation, saveConfirmation]);
 
   if (resourceData === undefined) return null;
 
@@ -268,6 +302,7 @@ export function AppResourceEditor({
           form={formElement}
           resource={appResource}
           saveRequired={isChanged || possiblyChanged}
+          onBeforeSaving={handleBeforeSaving}
           onAdd={
             hasToolPermission('resources', 'create') &&
             typeof handleClone === 'function'
@@ -363,6 +398,22 @@ export function AppResourceEditor({
           }}
         />
       ) : undefined}
+      {showSaveConfirmation && saveConfirmation !== undefined && (
+        <Dialog
+          buttons={
+            <>
+              <Button.Save onClick={(): void => resolveSaveConfirmation(true)}>
+                {commonText.save()}
+              </Button.Save>
+              <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+            </>
+          }
+          header={saveConfirmation.header}
+          onClose={(): void => resolveSaveConfirmation(false)}
+        >
+          {saveConfirmation.message}
+        </Dialog>
+      )}
     </>
   );
 
@@ -385,6 +436,7 @@ export function AppResourceEditor({
           }}
           onSwitchToXmlEditor={(): void => handleChangeTab(1)}
           onSetCleanup={handleSetCleanup}
+          onSetSaveConfirmation={setSaveConfirmation}
         />
       </AppResourceContext.Provider>
     </ReadOnlyContext.Provider>

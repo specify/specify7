@@ -106,6 +106,16 @@ export const dwcaText = createDictionary({
   dwcaChooseTerm: {
     'en-us': 'Choose a term',
   },
+  dwcaUnmappedTerm: {
+    'en-us': 'Unmapped Darwin Core term',
+  },
+  dwcaSaveWithUnmappedFields: {
+    'en-us': 'Save with unmapped fields?',
+  },
+  dwcaSaveWithUnmappedFieldsDescription: {
+    'en-us':
+      'Any fields that are not mapped to a term will be hidden in the query and not included in the export.',
+  },
   dwcaChooseRowType: {
     'en-us': 'Choose a row type',
   },

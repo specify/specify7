@@ -43,6 +43,7 @@ export function AppResourcesTab({
   onChange: handleChange,
   onSwitchToXmlEditor,
   onSetCleanup: setCleanup,
+  onSetSaveConfirmation: setSaveConfirmation,
   footer,
 }: {
   readonly tab: Component;
@@ -58,6 +59,7 @@ export function AppResourcesTab({
   ) => void;
   readonly onSwitchToXmlEditor?: () => void;
   readonly onSetCleanup: (callback: () => Promise<void>) => void;
+  readonly onSetSaveConfirmation: AppResourceTabProps['onSetSaveConfirmation'];
   readonly footer: JSX.Element;
 }): JSX.Element {
   const children = (
@@ -70,6 +72,7 @@ export function AppResourcesTab({
         onChange={handleChange}
         onSwitchToXmlEditor={onSwitchToXmlEditor}
         onSetCleanup={setCleanup}
+        onSetSaveConfirmation={setSaveConfirmation}
       />
     </ErrorBoundary>
   );

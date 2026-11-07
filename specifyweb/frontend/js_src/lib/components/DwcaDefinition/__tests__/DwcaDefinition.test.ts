@@ -24,6 +24,7 @@ import {
   getDefaultMappingFileName,
   formatTermExampleText,
   hasEmptyRequiredMappingValues,
+  hasUnmappedDisplayedFields,
   getMissingRequiredTerms,
   MissingRequiredTermsError,
   isExtensionApplicableToCore,
@@ -93,6 +94,38 @@ test('detects empty required mapping values', () => {
   expect(
     hasEmptyRequiredMappingValues([
       { fileName: 'data.csv', rowType: 'row-type' },
+    ])
+  ).toBe(false);
+});
+
+test('detects displayed query fields without a Darwin Core term', () => {
+  const [mapping] = parseDefinition(`
+    <archive>
+      <core rowType="http://rs.tdwg.org/dwc/terms/Occurrence">
+        <queries>
+          <query contextTableId="1">
+            <field stringId="1.collectionobject.catalogNumber" />
+          </query>
+        </queries>
+      </core>
+    </archive>
+  `);
+  const displayedMapping = {
+    ...mapping!,
+    fields: mapping!.fields.map((field) => ({ ...field, isDisplay: true })),
+    terms: mapping!.terms.map(() => undefined),
+  };
+
+  expect(hasUnmappedDisplayedFields([displayedMapping])).toBe(true);
+  expect(
+    hasUnmappedDisplayedFields([
+      {
+        ...displayedMapping,
+        fields: displayedMapping.fields.map((field) => ({
+          ...field,
+          isDisplay: false,
+        })),
+      },
     ])
   ).toBe(false);
 });
