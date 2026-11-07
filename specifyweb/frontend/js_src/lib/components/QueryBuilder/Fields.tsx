@@ -50,6 +50,21 @@ export const isReadOnlyFieldIndex = (
   index < fields.length &&
   isFieldReadOnly?.(fields[index]!, index) === true;
 
+export const wouldMoveReadOnlyField = (
+  fields: RA<QueryField>,
+  currentIndex: number,
+  overIndex: number,
+  isFieldReadOnly: ((field: QueryField, line: number) => boolean) | undefined
+): boolean => {
+  if (currentIndex === overIndex || currentIndex < 0 || overIndex < 0)
+    return false;
+  const first = Math.min(currentIndex, overIndex);
+  const last = Math.max(currentIndex, overIndex);
+  return fields
+    .slice(first, last + 1)
+    .some((field, index) => isFieldReadOnly?.(field, first + index) === true);
+};
+
 export function QueryFields({
   baseTableName,
   fields,
@@ -89,8 +104,7 @@ export function QueryFields({
   };
   readonly showHiddenFields: boolean;
   readonly getMappedFields: (mappingPathFilter: MappingPath) => RA<string>;
-  readonly onChangeField:
-    ((line: number, field: QueryField) => void) | undefined;
+  readonly onChangeField: ((line: number, field: QueryField) => void) | undefined;
   readonly onMappingChange:
     | ((
         line: number,
@@ -106,19 +120,15 @@ export function QueryFields({
       ) => void)
     | undefined;
   readonly onRemoveField: ((line: number) => void) | undefined;
-  readonly canRemoveField?:
-    ((field: QueryField, line: number) => boolean) | undefined;
-  readonly isFieldReadOnly?:
-    ((field: QueryField, line: number) => boolean) | undefined;
+  readonly canRemoveField?: ((field: QueryField, line: number) => boolean) | undefined;
+  readonly isFieldReadOnly?: ((field: QueryField, line: number) => boolean) | undefined;
   readonly onOpen: ((line: number, index: number) => void) | undefined;
   readonly onClose: (() => void) | undefined;
   readonly onLineFocus: ((line: number) => void) | undefined;
-  readonly onLineMove:
-    ((line: number, direction: 'down' | 'up') => void) | undefined;
+  readonly onLineMove: ((line: number, direction: 'down' | 'up') => void) | undefined;
   readonly onOpenMap: ((line: number) => void) | undefined;
   readonly onChangeFields?: ((fields: RA<QueryField>) => void) | undefined;
-  readonly renderFieldPrefix?:
-    ((field: QueryField, line: number) => JSX.Element) | undefined;
+  readonly renderFieldPrefix?: ((field: QueryField, line: number) => JSX.Element) | undefined;
   readonly basicViewLabels?: BasicViewLabels;
 }): JSX.Element {
   const fieldsContainerRef = React.useRef<HTMLUListElement | null>(null);
@@ -180,15 +190,21 @@ export function QueryFields({
     });
 
     sortable.on('sortable:sort', (event) => {
-      // `over` is available at runtime, but is not included in the bundled
-      // SortableSortEvent type yet.
-      const over = (event as unknown as { readonly over: HTMLElement }).over;
-      const parent = over.parentElement;
+      // These properties are available at runtime, but are not included in the
+      // package's top-level SortableSortEvent type.
+      const { currentIndex, over } = event as unknown as {
+        readonly currentIndex: number;
+        readonly over: HTMLElement | null;
+      };
+      const parent = over?.parentElement ?? null;
       const overIndex =
-        parent === null ? -1 : Array.from(parent.children).indexOf(over);
+        over === null || parent === null
+          ? -1
+          : Array.from(parent.children).indexOf(over);
       if (
-        isReadOnlyFieldIndex(
+        wouldMoveReadOnlyField(
           fieldsRef.current,
+          currentIndex,
           overIndex,
           isFieldReadOnlyRef.current
         )
@@ -208,15 +224,6 @@ export function QueryFields({
       } else if (oldIndex > newIndex) {
         newItems.splice(newIndex, 0, fieldsRef.current[oldIndex]);
         newItems.splice(oldIndex + 1, 1);
-      }
-
-      const readOnlyFieldMoved = fieldsRef.current.some((field, index) => {
-        if (isFieldReadOnlyRef.current?.(field, index) !== true) return false;
-        return newItems.indexOf(field) !== index;
-      });
-      if (readOnlyFieldMoved) {
-        event.cancel();
-        return;
       }
 
       handleChangeFieldRef.current?.(newItems);

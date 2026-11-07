@@ -1,4 +1,8 @@
-import { canMoveField, isReadOnlyFieldIndex } from '../Fields';
+import {
+  canMoveField,
+  isReadOnlyFieldIndex,
+  wouldMoveReadOnlyField,
+} from '../Fields';
 import type { QueryField } from '../helpers';
 
 const fields: readonly QueryField[] = [0, 1, 2].map((id) => ({
@@ -42,6 +46,31 @@ describe('isReadOnlyFieldIndex', () => {
   test('rejects indexes outside the field collection', () => {
     expect(isReadOnlyFieldIndex(fields, -1, isFieldReadOnly)).toBe(false);
     expect(isReadOnlyFieldIndex(fields, fields.length, isFieldReadOnly)).toBe(
+      false
+    );
+  });
+});
+
+describe('wouldMoveReadOnlyField', () => {
+  const sortableFields = [0, 1, 2, 3].map((id) => ({
+    ...fields[0]!,
+    id,
+  }));
+
+  test('detects moves across or from a read-only position', () => {
+    expect(wouldMoveReadOnlyField(sortableFields, 0, 2, isFieldReadOnly)).toBe(
+      true
+    );
+    expect(wouldMoveReadOnlyField(sortableFields, 1, 0, isFieldReadOnly)).toBe(
+      true
+    );
+  });
+
+  test('allows moves that leave read-only positions unchanged', () => {
+    expect(wouldMoveReadOnlyField(sortableFields, 2, 3, isFieldReadOnly)).toBe(
+      false
+    );
+    expect(wouldMoveReadOnlyField(sortableFields, 2, 2, isFieldReadOnly)).toBe(
       false
     );
   });
