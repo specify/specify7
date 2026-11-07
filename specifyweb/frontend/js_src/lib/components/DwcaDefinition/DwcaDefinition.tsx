@@ -1890,7 +1890,7 @@ export function DwcaDefinitionEditor(props: AppResourceTabProps): JSX.Element {
   );
 }
 
-const parseMappings = (data: string): RA<Mapping> => {
+const parseMappings = (data: AppResourceTabProps['data']): RA<Mapping> => {
   const parsed = parseDefinition(data);
   return parsed.some(({ extension }) => !extension)
     ? parsed
@@ -1907,7 +1907,7 @@ function DwcaDefinitionEditorLoaded({
     parseMappings(data)
   );
   const previousData = React.useRef(data);
-  const editorData = React.useRef(new Set<string>());
+  const editorData = React.useRef(new Set<AppResourceTabProps['data']>());
   React.useEffect(() => {
     if (data === previousData.current) return;
     previousData.current = data;
