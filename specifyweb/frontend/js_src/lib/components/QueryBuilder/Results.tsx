@@ -7,11 +7,12 @@ import { usePaginatedCollection } from '../../hooks/usePaginatedCollection';
 import { commonText } from '../../localization/common';
 import { interactionsText } from '../../localization/interactions';
 import { f } from '../../utils/functools';
-import { type GetSet, type RA } from '../../utils/types';
+import { defined, type GetSet, type RA } from '../../utils/types';
 import { Container, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { RecordMergingContext } from '../Core/Contexts';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { serializeResource } from '../DataModel/serializers';
 import { schema } from '../DataModel/schema';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { SpQuery } from '../DataModel/types';
@@ -34,7 +35,7 @@ import { recordSetFromQueryLoading } from './Components';
 import { CreateRecordSet } from './CreateRecordSet';
 import type { QueryFieldSpec } from './fieldSpec';
 import type { QueryField } from './helpers';
-import { queryFieldFormatType, sortTypes } from './helpers';
+import { parseQueryFields, queryFieldFormatType, sortTypes } from './helpers';
 import { QueryResultsTable } from './ResultsTable';
 import { QueryToForms } from './ToForms';
 import { QueryToMap } from './ToMap';
@@ -119,6 +120,7 @@ export type QueryResultsProps = {
   readonly totalCount: number | undefined;
   readonly fieldSpecs: RA<QueryFieldSpec>;
   readonly displayedFields: RA<QueryField>;
+  readonly isExpressSearch?: boolean;
   readonly allFields: RA<QueryField>;
   // This is undefined when running query in countOnly mode
   readonly initialData: RA<QueryResultRow> | undefined;
@@ -191,6 +193,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     refreshToken,
     resultsRef,
     displayedFields,
+    isExpressSearch = false,
     isLoading = false,
   } = props;
 
@@ -290,9 +293,22 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
         .map((column, visibleIndex) => ({ ...column, visibleIndex })),
     [fieldSpecs]
   );
+  const resultFields = React.useMemo(
+    () =>
+      isExpressSearch
+        ? fieldSpecs.map((fieldSpec) =>
+            defined(
+              parseQueryFields([
+                serializeResource(fieldSpec.toSpQueryField()),
+              ])[0]
+            )
+          )
+        : displayedFields,
+    [displayedFields, fieldSpecs, isExpressSearch]
+  );
   const [formatters] = usePromise(fetchFormatters, false);
   const visibleFields = visibleColumns.map(
-    ({ fieldIndex }) => displayedFields[fieldIndex]
+    ({ fieldIndex }) => resultFields[fieldIndex]
   );
   if (resultsRef !== undefined) resultsRef.current = results;
 
@@ -562,7 +578,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
           </Button.Small>
         )}
         <div className="-ml-2 flex-1" />
-        {displayedFields.length > 0 &&
+        {resultFields.length > 0 &&
         visibleColumns.length > 0 &&
         totalCount !== 0
           ? extraButtons
@@ -691,7 +707,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
                   columnIndex={visibleIndex}
                   fieldSpec={fieldSpec}
                   formatSuffix={getResultHeaderFormatSuffix(
-                    displayedFields[fieldIndex],
+                    defined(resultFields[fieldIndex]),
                     visibleFields,
                     fieldSpec.table.name,
                     formatters
