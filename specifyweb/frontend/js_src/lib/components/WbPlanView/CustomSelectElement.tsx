@@ -325,7 +325,7 @@ function Option({
           tableName={tableName}
         />
       )}
-      <span className="flex-1">
+      <span className="min-w-0 flex-1 whitespace-normal break-words">
         {optionLabel === emptyMapping ? wbPlanText.unmap() : optionLabel}
       </span>
       {hasArrow &&
@@ -704,7 +704,11 @@ export function CustomSelectElement({
         ${has('preview') ? 'z-[2]' : ''}
         ${has('scroll') ? 'overflow-y-scroll' : 'overflow-y-auto'}
         ${has('shadow') ? 'max-h-[theme(spacing.64)] shadow-md' : ''}
-        ${customSelectType === 'SUGGESTION_LIST' ? '' : 'min-w-max'}
+        ${
+          customSelectType === 'SUGGESTION_LIST' || fieldSearch
+            ? 'min-w-0'
+            : 'min-w-max'
+        }
       `}
       id={id('options')}
       ref={listOfOptionsRef}
@@ -752,7 +756,7 @@ export function CustomSelectElement({
       aria-live={has('interactive') ? 'polite' : 'off'}
       className={`
         custom-select relative flex
-        ${fieldSearch ? 'h-auto shrink-0' : 'h-8'}
+        ${fieldSearch ? 'h-auto min-w-0 shrink-0' : 'h-8'}
         flex-col
         custom-select-${upperToKebab(customSelectType)}
         ${customSelectClassNames[customSelectType] ?? ''}
@@ -760,7 +764,10 @@ export function CustomSelectElement({
       ref={customSelectElementRef}
       style={
         fieldSearch
-          ? { width: '20rem', maxWidth: 'calc(100vw - 4rem)' }
+          ? {
+              width: '20rem',
+              maxWidth: 'min(100%, calc(100vw - 4rem))',
+            }
           : undefined
       }
       tabIndex={has('tabIndex') ? 0 : has('interactive') ? -1 : undefined}
