@@ -326,10 +326,17 @@ class ObjectFormatter:
                 if node.text is not None and 'sep' in node.attrib:
                     # A separator belongs between populated fields. A static
                     # field uses sep as its literal value instead.
-                    has_value = expr != ''
                     if field_values:
-                        has_value = and_(has_value, or_(*(value != '' for value in field_values)))
-                    expr_with_sep = case((has_value, concat(node.attrib['sep'], expr)), else_=expr)
+                        has_value = and_(
+                            expr != '',
+                            or_(*(value != '' for value in field_values)),
+                        )
+                        expr_with_sep = case(
+                            (has_value, concat(node.attrib['sep'], expr)),
+                            else_=expr,
+                        )
+                    else:
+                        expr_with_sep = expr
                 else:
                     expr_with_sep = expr
                 field_values.append(expr)
