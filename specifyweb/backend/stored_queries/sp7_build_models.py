@@ -177,6 +177,7 @@ def gen_sqlalchemy_table_classes_code(datamodel: Datamodel):
         "from sqlalchemy.ext.declarative import declarative_base\n"
         "from sqlalchemy.dialects.mysql import BIT as mysql_bit_type\n\n"
         "engine = create_engine(settings.SA_DATABASE_URL, pool_recycle=settings.SA_POOL_RECYCLE,\n"
+        "               pool_pre_ping=settings.SA_POOL_PRE_PING,\n"
         "               connect_args={'cursorclass': SSCursor})\n"
         "Session = sessionmaker(bind=engine)\n\n"
         "def make_session_context(session_maker):\n"
