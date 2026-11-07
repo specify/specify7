@@ -105,6 +105,33 @@ class TestFormatSprintf(SQLAlchemySetup):
             (accession.id, "first"),
             self._get_results(table, query_fields),
         )
+
+    @patch('specifyweb.backend.stored_queries.format.app_resource.get_app_resource')
+    def test_format_prefix_treats_like_wildcards_literally(self, get_app_resource: Mock):
+        get_app_resource.return_value = ("""
+            <formatters>
+                <format name="Accession" class="edu.ku.brc.specify.datamodel.Accession"
+                    default="true">
+                    <switch single="true"><fields>
+                        <field format="SP_%s">accessionNumber</field>
+                    </fields></switch>
+                </format>
+            </formatters>
+        """, None, None)
+        prefixed = Accession.objects.create(
+            division=self.division,
+            accessionnumber="SP_123",
+        )
+        wildcard_match = Accession.objects.create(
+            division=self.division,
+            accessionnumber="SPX123",
+        )
+
+        table, query_fields = make_query_fields_test("Accession", [[]])
+        results = self._get_results(table, query_fields)
+
+        self.assertIn((prefixed.id, "SP_123"), results)
+        self.assertIn((wildcard_match.id, "SP_SPX123"), results)
     
     @patch('specifyweb.backend.stored_queries.format.app_resource.get_app_resource')
     def test_accession(self, get_app_resource: Mock):

@@ -179,7 +179,10 @@ class ObjectFormatter:
             before, after = format.split('%s')
             formatted = concat(before, expr, after)
             return (
-                case((expr.startswith(before), expr), else_=formatted)
+                case(
+                    (expr.startswith(before, autoescape=True), expr),
+                    else_=formatted,
+                )
                 if before and not after
                 else formatted
             )
