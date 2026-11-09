@@ -263,6 +263,40 @@ class SharedQueryApiTests(SharedQueryFixture, ApiTests):
         )
         self.assertEqual(response.status_code, 404)
 
+    def test_non_admin_owner_can_manage_query_shares(self):
+        UserPolicy.objects.filter(
+            specifyuser=self.specifyuser,
+            collection=None,
+            resource="%",
+            action="%",
+        ).delete()
+        self.assertFalse(self.specifyuser.is_admin())
+        UserPolicy.objects.create(
+            collection=self.collection,
+            specifyuser=self.specifyuser,
+            resource=CollectionAccessPT.resource,
+            action=CollectionAccessPT.access.action(),
+        )
+
+        response = self.client.put(
+            self.url,
+            data=json.dumps(
+                {"recipientIds": [self.recipient.id], "version": self.query.version}
+            ),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual(response.json()["recipientIds"], [self.recipient.id])
+
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual(response.json()["recipientIds"], [self.recipient.id])
+
+        response = self.client.delete(self.url)
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual(response.json()["recipientIds"], [])
+        self.assertFalse(SpqueryShare.objects.filter(query=self.query).exists())
+
     def test_non_owner_administrator_cannot_manage_query_shares(self):
         other_admin = models.Specifyuser.objects.create(
             name=f"otheradmin{self.collection.id}",
@@ -1097,7 +1131,7 @@ class SharedQueryExecutionTests(SharedQueryFixture, SQLAlchemySetup):
         self.assertEqual(recipient.get(run_url).status_code, 200)
 
         response = self.client.delete(self.url)
-        self.assertEqual(response.status_code, 204)
+        self.assertEqual(response.status_code, 200)
 
         self.assertEqual(recipient.get(resource_url).status_code, 404)
         self.assertEqual(recipient.get(run_url).status_code, 404)

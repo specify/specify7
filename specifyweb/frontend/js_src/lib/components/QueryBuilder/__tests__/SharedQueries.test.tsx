@@ -94,7 +94,16 @@ jest.mock('../../Molecules/Paginator', () => ({
   },
 }));
 
-afterEach(() => jest.restoreAllMocks());
+const isAdminDescriptor = Object.getOwnPropertyDescriptor(
+  userInformation,
+  'isadmin'
+);
+
+afterEach(() => {
+  jest.restoreAllMocks();
+  if (isAdminDescriptor !== undefined)
+    Object.defineProperty(userInformation, 'isadmin', isAdminDescriptor);
+});
 
 test.each([
   'fields',
@@ -303,6 +312,10 @@ test.each([
 );
 
 test('switches between personal, incoming shared, and outgoing shared query filters', async () => {
+  Object.defineProperty(userInformation, 'isadmin', {
+    configurable: true,
+    value: false,
+  });
   const fetch = jest.spyOn(collection, 'fetchCollection').mockResolvedValue({
     records: [],
     totalCount: 0,
@@ -329,18 +342,16 @@ test('switches between personal, incoming shared, and outgoing shared query filt
     expect.not.objectContaining({ specifyUser: userInformation.id }),
     expect.objectContaining({ share_grants__recipient: userInformation.id })
   );
-  if (userInformation.isadmin) {
-    await act(async () => {
-      fireEvent.click(
-        screen.getByRole('button', { name: queryText.queriesIShare() })
-      );
-    });
-    expect(fetch).toHaveBeenLastCalledWith(
-      'SpQuery',
-      expect.objectContaining({ specifyUser: userInformation.id }),
-      expect.objectContaining({ share_grants__isnull: 'false' })
+  await act(async () => {
+    fireEvent.click(
+      screen.getByRole('button', { name: queryText.queriesIShare() })
     );
-  }
+  });
+  expect(fetch).toHaveBeenLastCalledWith(
+    'SpQuery',
+    expect.objectContaining({ specifyUser: userInformation.id }),
+    expect.objectContaining({ share_grants__isnull: 'false' })
+  );
 });
 
 test('shared originals retain exports and Save As in read-only mode', () => {

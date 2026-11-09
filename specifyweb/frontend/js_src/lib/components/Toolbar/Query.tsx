@@ -220,9 +220,7 @@ export function QueryListDialog({
             [
               ['personal', queryText.personalQueries()],
               ['shared', queryText.sharedQueries()],
-              ...(userInformation.isadmin
-                ? [['sharing', queryText.queriesIShare()] as const]
-                : []),
+              ['sharing', queryText.queriesIShare()],
             ] as const
           ).map(([value, label]) => (
             <Button.Secondary

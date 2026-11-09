@@ -104,9 +104,9 @@ def manage_query_shares(request: HttpRequest, id: int) -> HttpResponse:
     with transaction.atomic():
         query = get_object_or_404(Spquery.objects.select_for_update(), pk=id)
         user = request.specify_user
-        if query.specifyuser_id != user.id or not user.is_admin():
+        if query.specifyuser_id != user.id:
             return HttpResponseForbidden(
-                "Only the owning Specify Administrator can manage query sharing."
+                "Only the query owner can manage query sharing."
             )
 
         if request.method == "GET":
