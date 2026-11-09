@@ -12,14 +12,49 @@ environment, install host dependencies, or create a new virtual environment.
   workspace's `specifyweb` directory at `/opt/specify7/specifyweb`; it does not
   mount the workspace root. Changes under `specifyweb` are picked up without
   rebuilding, but `manage.py` is copied into the image. After changing
-  `manage.py`, ensure `mariadb` and `webpack` are running, rebuild the image,
-  then recreate only the `specify7` service before running tests so they use
-  the updated file:
+  `manage.py`, ensure `mariadb`, `redis`, and `webpack` are running, rebuild the
+  image, then recreate only the `specify7` service before running tests so they
+  use the updated file:
 
   ```sh
-  docker compose up -d mariadb webpack
-  docker compose build specify7
-  docker compose up -d --force-recreate --no-deps specify7
+  set -e
+  docker compose -p specify7 up -d mariadb redis webpack
+  attempt=0
+  until docker compose -p specify7 exec -T mariadb mariadb-admin ping --protocol=tcp --host=127.0.0.1 --silent >/dev/null 2>&1; do
+    attempt=$((attempt + 1))
+    if [ "$attempt" -ge 30 ]; then
+      echo "MariaDB did not accept connections within 30 seconds; specify7 was not recreated" >&2
+      exit 1
+    fi
+    sleep 1
+  done
+  docker compose -p specify7 build specify7
+  docker compose -p specify7 up -d --force-recreate --no-deps specify7
+  ```
+- Before every backend test run, start the required dependencies and explicitly
+  wait for MariaDB to accept TCP connections and Redis to respond to `PING`.
+  Stop with an error if either service is not ready within 30 seconds:
+
+  ```sh
+  docker compose -p specify7 up -d mariadb redis webpack
+  attempt=0
+  until docker compose -p specify7 exec -T mariadb mariadb-admin ping --protocol=tcp --host=127.0.0.1 --silent >/dev/null 2>&1; do
+    attempt=$((attempt + 1))
+    if [ "$attempt" -ge 30 ]; then
+      echo "MariaDB did not accept connections within 30 seconds" >&2
+      exit 1
+    fi
+    sleep 1
+  done
+  attempt=0
+  until [ "$(docker compose -p specify7 exec -T redis redis-cli ping 2>/dev/null)" = "PONG" ]; do
+    attempt=$((attempt + 1))
+    if [ "$attempt" -ge 30 ]; then
+      echo "Redis did not become ready within 30 seconds" >&2
+      exit 1
+    fi
+    sleep 1
+  done
   ```
 - For ordinary test runs, pass `--keepdb` to preserve the test database
   between runs. After applying a migration, omit `--keepdb` so Django recreates
