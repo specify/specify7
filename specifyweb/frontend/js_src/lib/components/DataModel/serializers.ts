@@ -82,9 +82,9 @@ function serializeRecord<SCHEMA extends AnySchema>(
         ) {
           const field = table.getField(rawFieldName);
           const tableName =
-            field === undefined || !field.isRelationship
-              ? undefined
-              : field.relatedTable.name;
+            field?.isRelationship
+              ? field.relatedTable.name
+              : undefined;
           return [
             camelFieldName,
             Array.isArray(value)

@@ -59,7 +59,7 @@ export const Form = wrap(
  * Don't highlight missing required and pattern mismatch fields until focus
  * loss
  */
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+ 
 export const withHandleBlur = <TYPE extends InputType>(
   handleBlur: ((event: React.FocusEvent<TYPE>) => void) | undefined
 ) => ({
@@ -76,7 +76,7 @@ export const withHandleBlur = <TYPE extends InputType>(
  *
  * See https://stackoverflow.com/a/69497807/8584605
  */
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+ 
 export const withPreventWheel = <TYPE extends InputType>(
   handleWheel: ((event: React.WheelEvent<TYPE>) => void) | undefined
 ) => ({

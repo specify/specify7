@@ -367,8 +367,10 @@ export function AutoComplete<T>({
      */
     const listHeight = dataList.getBoundingClientRect().height;
 
-    // The options are rendered in a fixed portal, so form-table overflow must
-    // not determine whether the list is visible.
+    /*
+     * The options are rendered in a fixed portal, so form-table overflow must
+     * not determine whether the list is visible.
+     */
     const parentTop = 0;
     const parentBottom = globalThis.innerHeight;
 
@@ -618,17 +620,17 @@ export function AutoComplete<T>({
                 label
               );
             return (
-              <Combobox.Option key={index} as={React.Fragment} value={item}>
+              <Combobox.Option as={React.Fragment} key={index} value={item}>
                 {({ active, selected }): JSX.Element => (
                   <AutoCompleteOption
                     active={active || index === activeIndex}
-                    selected={selected}
                     data-index={index}
                     ref={
                       index === itemSource.length - 1
                         ? lastResultOptionRefCallback
                         : undefined
                     }
+                    selected={selected}
                     onMouseDown={handleOptionMouseDown}
                   >
                     {typeof item.icon === 'string' ? (

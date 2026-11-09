@@ -50,10 +50,10 @@ export function SchemaConfigHeader({
       {handleImport !== undefined && (
         <>
           <input
-            ref={importInput}
             accept=".json,application/json"
             className="sr-only"
             disabled={importDisabled}
+            ref={importInput}
             type="file"
             onChange={(event): void => {
               const file = event.target.files?.[0];

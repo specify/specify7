@@ -1,23 +1,23 @@
 import React from 'react';
 
+import { useCachedState } from '../../hooks/useCachedState';
 import { dataViewsText } from '../../localization/dataViews';
 import type { RA } from '../../utils/types';
 import type { AppResourceTabProps } from '../AppResources/TabDefinitions';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpQueryField, Tables } from '../DataModel/types';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
+import { CollapsibleTableList } from '../SchemaConfig/Tables';
 import { defaultDataViewTablesConfig } from './config';
 import {
+  type DataViewQueriesFile,
   getDataViewQueryDefinition,
   getStoredDataViewQueryDefinition,
   makeDataViewQuery,
   parseDataViewQueries,
   serializeDataViewQueries,
   serializeStableDataViewQueries,
-  type DataViewQueriesFile,
 } from './queries';
-import { CollapsibleTableList } from '../SchemaConfig/Tables';
-import { useCachedState } from '../../hooks/useCachedState';
 
 export function DataViewQueryEditor({
   data,
@@ -71,9 +71,11 @@ export function DataViewQueryEditorContent({
         tableName,
         getDataViewQueryDefinition(fileRef.current, tableName)
       ),
-    // The Query Builder owns its live field state. Replacing its query
-    // resource for every field change resets that state and the field list's
-    // scroll position. Rebuild only when changing tables.
+    /*
+     * The Query Builder owns its live field state. Replacing its query
+     * resource for every field change resets that state and the field list's
+     * scroll position. Rebuild only when changing tables.
+     */
     [tableName]
   );
 

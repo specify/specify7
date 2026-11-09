@@ -98,8 +98,9 @@ test('adds a rule through the configuration interface and saves its configuratio
     id: null,
     modelName: 'CollectionObject',
     fields: [
-      tables.CollectionObject.literalFields.find((field) => !field.isVirtual)
-        .name,
+      tables.CollectionObject.literalFields.filter(
+        (field) => !field.isVirtual
+      )[0].name,
     ],
     scopes: [],
     isDatabaseConstraint: false,

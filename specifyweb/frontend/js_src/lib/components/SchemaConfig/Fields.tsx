@@ -85,8 +85,10 @@ export function SchemaConfigFields({
     [items]
   );
 
-  // Navigate the fields list with the arrow keys!!!
-  // Nice QoL and accessibility feature that matches the previous selectable list behavior pre-table.
+  /*
+   * Navigate the fields list with the arrow keys!!!
+   * Nice QoL and accessibility feature that matches the previous selectable list behavior pre-table.
+   */
   const listRef = React.useRef<HTMLDivElement | null>(null);
   const searchBuffer = React.useRef('');
   const searchTimeout = React.useRef<number | undefined>(undefined);
@@ -180,35 +182,35 @@ export function SchemaConfigFields({
       {typeof items === 'undefined' ? (
         commonText.loading()
       ) : (
-        // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
+         
         <div
           className="flex flex-col gap-4 overflow-y-auto [scrollbar-gutter:stable]"
-          onKeyDown={handleKeyDown}
           ref={listRef}
           tabIndex={0}
+          onKeyDown={handleKeyDown}
         >
           <SchemaConfigFieldsTable
             index={index}
             isDescending={isDescending}
             itemIndexes={itemIndexes}
-            onChange={handleSelect}
-            onSort={handleSort}
             rows={fields}
             sortField={sortField}
             table={table}
             title={schemaText.literalFields()}
+            onChange={handleSelect}
+            onSort={handleSort}
           />
           {relationships.length > 0 && (
             <SchemaConfigFieldsTable
               index={index}
               isDescending={isDescending}
               itemIndexes={itemIndexes}
-              onChange={handleSelect}
-              onSort={handleSort}
               rows={relationships}
               sortField={sortField}
               table={table}
               title={schemaText.relationships()}
+              onChange={handleSelect}
+              onSort={handleSort}
             />
           )}
         </div>
@@ -262,23 +264,23 @@ function SchemaConfigFieldsTable({
               field="name"
               isDescending={isDescending}
               label={getField(tables.SpLocaleContainerItem, 'name').label}
-              onSort={handleSort}
               sortField={sortField}
+              onSort={handleSort}
             />
             <SortableTh
               field="caption"
               isDescending={isDescending}
               label={schemaText.caption()}
-              onSort={handleSort}
               sortField={sortField}
+              onSort={handleSort}
             />
             <SortableTh
               field="isHidden"
               icon={icons.eye}
               isDescending={isDescending}
               label={schemaText.visible()}
-              onSort={handleSort}
               sortField={sortField}
+              onSort={handleSort}
             />
           </tr>
         </thead>

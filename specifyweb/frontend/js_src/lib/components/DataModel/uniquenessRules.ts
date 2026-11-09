@@ -4,11 +4,11 @@ import { formsText } from '../../localization/forms';
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
 import {
+  filterArray,
   type GetOrSet,
   type IR,
   type RA,
   type RR,
-  filterArray,
   setDevelopmentGlobal,
 } from '../../utils/types';
 import { formatConjunction } from '../Atoms/Internationalization';
@@ -157,7 +157,7 @@ export async function validateUniqueness<
   return ajax<UniquenessRuleValidation>(
     '/businessrules/uniqueness_rules/validate/',
     {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+       
       headers: { Accept: 'application/json' },
       method: 'POST',
       body: {

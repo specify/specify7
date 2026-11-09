@@ -221,7 +221,7 @@ function ModifyUniquenessRule({
                     duplicates.toString(),
                     ...Object.values(fields).map((fieldValue) =>
                       typeof fieldValue === 'string' &&
-                      /^[=+\-@\t\r]/u.test(fieldValue)
+                      /^[\t\r+\-=@]/u.test(fieldValue)
                         ? `'${fieldValue}`
                         : fieldValue
                     ),

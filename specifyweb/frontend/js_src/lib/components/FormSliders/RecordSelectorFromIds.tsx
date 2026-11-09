@@ -140,7 +140,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                * Since React's setState has a special behavior when a function
                * argument is passed, need to wrap a function in a function
                */
-              // eslint-disable-next-line unicorn/consistent-function-scoping
+               
               setUnloadProtect(() => () => handleAdd(resources));
             else handleAdd(resources);
           }

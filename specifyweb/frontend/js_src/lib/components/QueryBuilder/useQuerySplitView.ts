@@ -47,8 +47,10 @@ export function useQuerySplitView(queryRunCount: number): {
     maximumPrimaryPaneWidth,
   } = useResponsiveSplitView(preferredIsHorizontal);
 
-  // Clear the parent-owned selection on a new query run, but not on
-  // orientation changes (isSplit/isHorizontal don't affect this effect)
+  /*
+   * Clear the parent-owned selection on a new query run, but not on
+   * orientation changes (isSplit/isHorizontal don't affect this effect)
+   */
   const previousQueryRunCountRef = React.useRef(queryRunCount);
   React.useEffect(() => {
     if (queryRunCount === previousQueryRunCountRef.current) return;

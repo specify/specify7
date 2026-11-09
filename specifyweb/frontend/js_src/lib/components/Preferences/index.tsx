@@ -401,7 +401,7 @@ export function PreferencesContent({
   const definitions = passedDefinitions ?? hookDefinitions;
 
   const basePreferences = preferenceInstances[prefType];
-  const sectionRefs = React.useMemo(
+  const sectionReferences = React.useMemo(
     () => definitions.map((_, index) => forwardRefs?.bind(undefined, index)),
     [definitions, forwardRefs]
   );
@@ -574,8 +574,8 @@ export function PreferencesContent({
 
   return (
     <ShortcutConflictProvider
-      preferences={basePreferences}
       definitions={preferenceDefinitions[prefType]}
+      preferences={basePreferences}
     >
       <div className="flex h-fit min-w-0 flex-1 flex-col gap-6">
         {definitions.map(
@@ -586,7 +586,7 @@ export function PreferencesContent({
             <ErrorBoundary dismissible key={category}>
               <Container.Center
                 className="gap-8 overflow-y-visible"
-                forwardRef={sectionRefs[index]}
+                forwardRef={sectionReferences[index]}
                 id={category}
               >
                 <h3 className="text-2xl">

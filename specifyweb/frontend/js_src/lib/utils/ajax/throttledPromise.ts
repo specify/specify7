@@ -1,13 +1,13 @@
 import type { RR, WritableArray } from '../types';
 
 export type PromiseWithSpec<T> = Promise<T> & {
-  // eslint-disable-next-line functional/prefer-readonly-type
+   
   spec: number | string;
 };
 
 type KillablePromise<T> = PromiseWithSpec<T> & {
   readonly group: string;
-  // eslint-disable-next-line functional/prefer-readonly-type
+   
   killPromise: () => void;
 };
 const currentRequestsGenerator = <T>(): WritableArray<PromiseWithSpec<T>> => [];
@@ -36,7 +36,7 @@ export const cleanThrottledPromises = (killPromises = true): void => {
 export const networkRequestsSpec: RR<
   'backendStats' | 'queryStats',
   {
-    // eslint-disable-next-line functional/prefer-readonly-type
+     
     currentRequests: WritableArray<Promise<any>>;
     readonly maxFetchCount: number;
   }
@@ -66,7 +66,7 @@ export async function throttledPromise<T>(
   const run = async (): Promise<T | undefined> => {
     while (currentRequests.length >= maxFetchCount && !promiseKilled) {
       await Promise.race(
-        currentRequests.map((promise) =>
+        currentRequests.map(async (promise) =>
           promise.then(
             () => undefined,
             () => undefined

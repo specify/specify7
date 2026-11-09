@@ -41,7 +41,7 @@ export const getSelectedCells = (
         )
       )
       .flat()
-      // eslint-disable-next-line functional/prefer-readonly-type
+       
       .reduce<Record<number, Set<number>>>(
         (indexedCells, [visualRow, visualCol]) => {
           if (!columnsToWorkWith.includes(visualCol)) return indexedCells;
@@ -82,7 +82,7 @@ export const setHotData = (
     readonly [visualCol: number, visualRow: number, value: string | null]
   >
 ): void =>
-  // eslint-disable-next-line functional/prefer-readonly-type
+   
   hot.setDataAtCell(changes as WritableArray<[number, number, string | null]>);
 
 export const getPhysicalColToMappingCol =

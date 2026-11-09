@@ -10,7 +10,7 @@ import { capitalize } from '../../utils/utils';
 import { DAY, HOUR, MINUTE, MONTH, SECOND, WEEK, YEAR } from './timeUnits';
 
 /* This is an incomplete definition. For complete, see MDN Docs */
-// eslint-disable-next-line @typescript-eslint/no-namespace
+ 
 declare namespace Intl {
   // eslint-disable-next-line functional/no-class
   class ListFormat {

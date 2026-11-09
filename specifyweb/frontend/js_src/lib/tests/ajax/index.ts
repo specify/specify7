@@ -15,17 +15,12 @@ import type { IR, RA } from '../../utils/types';
 
 type ResponseType = Document | IR<unknown> | RA<unknown> | string;
 
-// eslint-disable-next-line functional/prefer-readonly-type
-const overrides: {
-  // eslint-disable-next-line functional/prefer-readonly-type
-  [URL in string]?: {
-    [METHOD in string]?: {
+ 
+const overrides: Partial<Record<string, Partial<Record<string, {
       readonly data: () => ResponseType;
       readonly responseCode: number | undefined;
       readonly body: unknown;
-    };
-  };
-} = {};
+    }>>>> = {};
 
 /**
  * Overwrite the response to an ajax response for all fetch requests originating

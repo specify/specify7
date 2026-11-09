@@ -35,7 +35,7 @@ export const unCapitalize = <T extends string>(string: T): Uncapitalize<T> =>
   (string.charAt(0).toLowerCase() + string.slice(1)) as Uncapitalize<T>;
 
 export const upperToKebab = (value: string): string =>
-  value.toLowerCase().split('_').join('-');
+  value.toLowerCase().replaceAll('_', '-');
 
 export const lowerToHuman = (value: string): LocalizedString =>
   localized(value.toLowerCase().split('_').map(capitalize).join(' '));
@@ -224,7 +224,7 @@ export const group = <KEY, VALUE>(
 ): RA<readonly [key: KEY, values: RA<VALUE>]> =>
   Array.from(
     entries
-      // eslint-disable-next-line functional/prefer-readonly-type
+      // // eslint-disable-next-line functional/prefer-readonly-type
       .reduce<Map<KEY, RA<VALUE>>>(
         (grouped, [key, value]) =>
           grouped.set(key, [...(grouped.get(key) ?? []), value]),

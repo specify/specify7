@@ -197,7 +197,7 @@ function setSort(hot: Handsontable, dataset: Dataset): void {
  */
 const hotPlugins = new WeakMap<
   Handsontable,
-  // eslint-disable-next-line functional/prefer-readonly-type
+   
   {
     [key in keyof Plugins]?: Plugins[key] | undefined;
   }

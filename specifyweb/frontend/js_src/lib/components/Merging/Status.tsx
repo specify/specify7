@@ -49,7 +49,7 @@ export function MergeStatus({
         readonly taskid: string;
         readonly response: string;
       }>(`/merge/status/${mergingId}/`, {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
+         
         headers: { Accept: 'application/json' },
       })
         .then(

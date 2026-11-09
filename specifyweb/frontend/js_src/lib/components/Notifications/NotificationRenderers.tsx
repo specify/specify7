@@ -87,7 +87,7 @@ const notificationHeadings: IR<
 export const getNotificationHeading = (
   notification: GenericNotification
 ): LocalizedString => {
-  const heading = Object.prototype.hasOwnProperty.call(
+  const heading = Object.hasOwn(
     notificationHeadings,
     notification.type
   )

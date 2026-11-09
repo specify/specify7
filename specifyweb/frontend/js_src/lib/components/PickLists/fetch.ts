@@ -130,10 +130,12 @@ async function fetchFromTable(
     'sp7_scope_table_picklists'
   );
 
-  // REFACTOR: Prefer letting the backend work with the nitty-gritty scoping
-  // details. Frontend should just tell the backend it wants a result scoped.
-  // getScopingRelationship is to avoid HierarchyExceptions.
-  // See #4989
+  /*
+   * REFACTOR: Prefer letting the backend work with the nitty-gritty scoping
+   * details. Frontend should just tell the backend it wants a result scoped.
+   * getScopingRelationship is to avoid HierarchyExceptions.
+   * See #4989
+   */
   const canBeScoped =
     scopeTablePicklistsPref && table.getScopingRelationship() !== undefined;
 
@@ -174,8 +176,10 @@ async function fetchFromField(
     | SpecifyTable
     | undefined;
 
-  // REFACTOR: Prefer letting the backend work with the nitty-gritty scoping
-  // details. Frontend should just tell the backend it wants a result scoped.
+  /*
+   * REFACTOR: Prefer letting the backend work with the nitty-gritty scoping
+   * details. Frontend should just tell the backend it wants a result scoped.
+   */
   const canBeScoped =
     f.includes(Object.keys(schema.domainLevelIds), toLowerCase(tableName)) ||
     table?.getScopingRelationship() !== undefined;

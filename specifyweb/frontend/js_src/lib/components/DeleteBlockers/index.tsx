@@ -1,13 +1,14 @@
 import React from 'react';
-import { SpecifyResource } from '../DataModel/legacyTypes';
-import { AnySchema } from '../DataModel/helperTypes';
-import { Relationship } from '../DataModel/specifyField';
+
+import { useLiveState } from '../../hooks/useLiveState';
 import { useScreenSize } from '../../hooks/useScreenSize';
+import type { RA } from '../../utils/types';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { Relationship } from '../DataModel/specifyField';
 import { DeleteBlockersAside } from './DeleteBlockersAside';
 import { DeleteBlockersPaginator } from './DeleteBlockersPaginator';
-import { DeleteBlockerResource } from './store';
-import { RA } from '../../utils/types';
-import { useLiveState } from '../../hooks/useLiveState';
+import type { DeleteBlockerResource } from './store';
 
 export const MIN_DELETEBLOCKER_CONTAINER_WIDTH = 768;
 
@@ -56,19 +57,19 @@ export function DeleteBlockers({
     <>
       <div className="relative flex flex-1 gap-4 overflow-x-auto md:flex-row">
         <DeleteBlockersAside
-          resource={resource}
-          records={blockers}
           activeRelationshipKey={paginatorKey?.relationshipKey}
+          records={blockers}
+          resource={resource}
           useSmallLayout={useSmallLayout}
           onRelationshipActive={handleSetPaginatorKey}
         />
         {!useSmallLayout && paginatorKey !== undefined && (
           <DeleteBlockersPaginator
             dialog={false}
-            onClose={() => setPaginatorDialogOpen(false)}
-            onAllBlockersDeleted={() => setPaginatorKey(undefined)}
             parentResource={paginatorKey.resource}
             relationship={paginatorKey.relationship}
+            onAllBlockersDeleted={() => setPaginatorKey(undefined)}
+            onClose={() => setPaginatorDialogOpen(false)}
           />
         )}
       </div>
@@ -76,11 +77,11 @@ export function DeleteBlockers({
         paginatorKey !== undefined &&
         isPaginatorDialogOpen && (
           <DeleteBlockersPaginator
-            dialog={'nonModal'}
-            onClose={() => setPaginatorKey(undefined)}
-            onAllBlockersDeleted={() => setPaginatorKey(undefined)}
+            dialog="nonModal"
             parentResource={paginatorKey.resource}
             relationship={paginatorKey.relationship}
+            onAllBlockersDeleted={() => setPaginatorKey(undefined)}
+            onClose={() => setPaginatorKey(undefined)}
           />
         )}
     </>

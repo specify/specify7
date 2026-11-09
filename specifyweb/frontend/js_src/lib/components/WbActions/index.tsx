@@ -105,11 +105,11 @@ export function WbActions({
         <ErrorBoundary dismissible>
           <WbValidate
             hasUnsavedChanges={hasUnsavedChanges}
+            isInWorkBench={!dataset.isupdate}
             isMapped={isMapped}
             isResultsOpen={isResultsOpen}
             startUpload={startUpload}
             validation={workbench.validation}
-            isInWorkBench={!dataset.isupdate}
           />
         </ErrorBoundary>
       ) : undefined}
@@ -203,17 +203,6 @@ export function WbActions({
       ) : undefined}
       {operationCompleted && (
         <Dialog
-          icon={
-            mode === 'validate'
-              ? cellCounts.invalidCells === 0
-                ? dialogIcons.success
-                : dialogIcons.error
-              : mode === 'upload'
-                ? cellCounts.invalidCells === 0
-                  ? dialogIcons.success
-                  : dialogIcons.error
-                : dialogIcons.success
-          }
           buttons={
             <>
               {cellCounts.invalidCells === 0 && mode === 'upload' && (
@@ -233,6 +222,17 @@ export function WbActions({
             </>
           }
           header={message!.header}
+          icon={
+            mode === 'validate'
+              ? cellCounts.invalidCells === 0
+                ? dialogIcons.success
+                : dialogIcons.error
+              : mode === 'upload'
+                ? cellCounts.invalidCells === 0
+                  ? dialogIcons.success
+                  : dialogIcons.error
+                : dialogIcons.success
+          }
           onClose={closeOperationCompleted}
         >
           <div className="flex flex-col gap-4">
@@ -281,7 +281,6 @@ export function WbActions({
       )}
       {operationAborted && (
         <Dialog
-          icon={dialogIcons.failure}
           buttons={commonText.close()}
           header={
             mode === 'validate'
@@ -290,6 +289,7 @@ export function WbActions({
                 ? wbText.rollbackCanceled()
                 : viewerLocalization.doCancelled
           }
+          icon={dialogIcons.failure}
           onClose={closeAbortedMessage}
         >
           {mode === 'validate'

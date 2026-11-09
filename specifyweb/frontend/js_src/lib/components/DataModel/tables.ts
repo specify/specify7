@@ -21,7 +21,7 @@ import type { AnySchema, AnyTree } from './helperTypes';
 import { fetchContext as fetchSchema } from './schema';
 import { schemaExtras } from './schemaExtras';
 import { LiteralField, Relationship } from './specifyField';
-import { type TableDefinition, SpecifyTable } from './specifyTable';
+import { SpecifyTable,type TableDefinition } from './specifyTable';
 import type { Agent, Tables } from './types';
 
 export type SchemaLocalization = {
@@ -61,14 +61,16 @@ const processFields = <FIELD_TYPE extends LiteralField | Relationship>(
 let schemaLocalization: IR<SchemaLocalization> = undefined!;
 const fetchSchemaLocalization = f.store(async () =>
   import('../Preferences/userPreferences').then(async ({ userPreferences }) =>
-    // Preferences are fetched independently of the initial context. Reading
-    // the schema language before that fetch completes can request the default
-    // language, and f.store() would then keep that localization for the life
-    // of the page.
+    /*
+     * Preferences are fetched independently of the initial context. Reading
+     * the schema language before that fetch completes can request the default
+     * language, and f.store() would then keep that localization for the life
+     * of the page.
+     */
     userPreferences
       .fetch()
       .catch(() => undefined)
-      .then(() =>
+      .then(async () =>
         load<IR<SchemaLocalization>>(
           formatUrl('/context/schema_localization.json', {
             lang: userPreferences.get('form', 'schema', 'language'),
@@ -112,8 +114,10 @@ export const fetchContext = f
       })
       .sort(([, a], [, b]) => a.name.localeCompare(b.name));
 
-    // First, register all tables so lookups from Relationship constructors
-    // (which call `strictGetTable`) can find any related table.
+    /*
+     * First, register all tables so lookups from Relationship constructors
+     * (which call `strictGetTable`) can find any related table.
+     */
     tablePairs.forEach(([, table]) => {
       overwriteReadOnly(genericTables, table.name, table);
     });

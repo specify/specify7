@@ -77,7 +77,7 @@ export const fetchFormatters: Promise<{
           formatUrl('/context/app.resource', { name: 'DataObjFormatters' })
         ),
         {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
+           
           headers: { Accept: 'text/xml' },
         }
       ).then(({ data: definitions }) => ({

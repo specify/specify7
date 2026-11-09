@@ -45,9 +45,9 @@ export function AttachmentCell({
   const [originalUrl] = useAsyncState(
     React.useCallback(
       async () =>
-        attachmentServerStatus !== 'unavailable'
-          ? fetchOriginalUrl(attachment)
-          : undefined,
+        attachmentServerStatus === 'unavailable'
+          ? undefined
+          : fetchOriginalUrl(attachment),
       [attachment, attachmentServerStatus]
     ),
     false

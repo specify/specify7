@@ -141,7 +141,7 @@ export function parsePartialField<PART extends string>(
 ): readonly [fieldName: string, part: PART] {
   const split = value.split(schema.fieldPartSeparator);
   if (split.length !== 2) throw new Error('failed to parse partial field');
-  // eslint-disable-next-line functional/prefer-readonly-type
+   
   return split as [string, PART];
 }
 
@@ -255,7 +255,7 @@ export function deflateMappingPaths(
                   mappingPathToString(mappingPath.slice(0, -1)) ===
                   mappingPathToString(newMappingPath.slice(0, partIndex))
               )
-              ?.slice(-1)[0] ?? formatToManyIndex(0)
+              ?.at(-1) ?? formatToManyIndex(0)
           ) + 1;
         if (newIndex >= getNumberFromToManyIndex(mappingPathPart)) return;
         resetToManys = true;

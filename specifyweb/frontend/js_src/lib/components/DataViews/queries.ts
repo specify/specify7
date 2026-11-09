@@ -1,22 +1,22 @@
 import React from 'react';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
+import { ajax } from '../../utils/ajax';
+import { Http } from '../../utils/ajax/definitions';
+import { getAppResourceUrl } from '../../utils/ajax/helpers';
+import { ping } from '../../utils/ajax/ping';
+import type { RA, RR } from '../../utils/types';
+import { keysToLowerCase } from '../../utils/utils';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { serializeResource } from '../DataModel/serializers';
 import { strictGetTable } from '../DataModel/tables';
 import type { SpQuery, SpQueryField, Tables } from '../DataModel/types';
-import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
-import { queryFieldFilterSpecs } from '../QueryBuilder/FieldFilterSpec';
 import { createQuery } from '../QueryBuilder';
-import { getAppResourceUrl } from '../../utils/ajax/helpers';
-import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/definitions';
-import { ping } from '../../utils/ajax/ping';
+import { queryFieldFilterSpecs } from '../QueryBuilder/FieldFilterSpec';
+import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { clearUrlCache } from '../RouterCommands/CacheBuster';
-import { keysToLowerCase } from '../../utils/utils';
-import type { RA, RR } from '../../utils/types';
 
 export const dataViewQueriesResourceName = 'DataViewQueries';
 

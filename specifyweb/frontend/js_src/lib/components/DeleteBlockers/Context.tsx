@@ -1,8 +1,9 @@
 import React from 'react';
-import { DeleteBlockerState } from './state';
-import { error } from '../Errors/assert';
-import { DeleteBlockerStore } from './store';
+
 import { resourceEvents } from '../DataModel/resource';
+import { error } from '../Errors/assert';
+import type { DeleteBlockerState } from './state';
+import { DeleteBlockerStore } from './store';
 
 const DeleteBlockerContext = React.createContext<DeleteBlockerStore | null>(
   null
@@ -26,14 +27,12 @@ export function DeleteBlockerProvider({
   );
 
   const store = deleteBlockerStore.current;
-  React.useEffect(() => {
-    return () => {
+  React.useEffect(() => () => {
       if (store === null) {
         return;
       }
       store.clearState();
-    };
-  }, [store]);
+    }, [store]);
 
   return (
     <DeleteBlockerContext.Provider value={store}>

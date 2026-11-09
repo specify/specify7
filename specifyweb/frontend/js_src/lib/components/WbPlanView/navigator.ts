@@ -45,8 +45,8 @@ import {
 } from './mappingHelpers';
 import { getMaxToManyIndex, isCircularRelationship } from './modelHelpers';
 import type { NavigatorSpec } from './navigatorSpecs';
-export { searchFields } from './fieldSearch';
 export type { FieldSearchResult } from './fieldSearch';
+export { searchFields } from './fieldSearch';
 
 const geoPaleoDisciplines: readonly string[] = [
   'geology',
@@ -271,14 +271,14 @@ export function getMappingLineData({
   const ensurePermission = spec.ensurePermission();
 
   const internalState: {
-    // eslint-disable-next-line functional/prefer-readonly-type
+     
     position: number;
     readonly mappingLineData: WritableArray<MappingLineData>;
-    // eslint-disable-next-line functional/prefer-readonly-type
+     
     mappedFields: RA<string>;
-    // eslint-disable-next-line functional/prefer-readonly-type
+     
     defaultValue: string;
-    // eslint-disable-next-line functional/prefer-readonly-type
+     
     parsedDefaultValue: readonly [fieldName: string, part: string | undefined];
   } = {
     position: -1,

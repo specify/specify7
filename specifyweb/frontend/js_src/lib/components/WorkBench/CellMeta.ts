@@ -38,7 +38,7 @@ export type WbCellCounts = {
 };
 
 // REFACTOR: replace usages of WbMetaArray with WbMeta and test performance/memory
-// eslint-disable-next-line functional/prefer-readonly-type
+ 
 export type WbMetaArray = [
   isNew: boolean,
   isModified: boolean,
@@ -64,11 +64,11 @@ const defaultMetaValues = Object.freeze([
 /* eslint-disable functional/no-this-expression */
 export class WbCellMeta {
   // Meta data for each cell (indexed by physical columns)
-  // eslint-disable-next-line functional/prefer-readonly-type
+   
   public cellMeta: WritableArray<WritableArray<WbMetaArray>> = [];
 
   // Meta data for each cell (indexed by visual columns)
-  // eslint-disable-next-line functional/prefer-readonly-type
+   
   public indexedCellMeta: RA<RA<WbMetaArray>> | undefined = undefined;
 
   public constructor(private readonly workbench: Workbench) {

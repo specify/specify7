@@ -59,16 +59,16 @@ export type ActiveKeyboardShortcut = {
 };
 
 export const getActiveKeyboardShortcuts = (): RA<ActiveKeyboardShortcut> =>
-  !shortcutsEnabled
-    ? []
-    : Array.from(listeners.entries()).flatMap(
+  shortcutsEnabled
+    ? Array.from(listeners.entries()).flatMap(
         ([shortcut, shortcutListeners]) => {
           const listener = shortcutListeners.at(-1);
           return listener?.label === undefined
             ? []
             : [{ label: listener.label, scope: listener.scope, shortcut }];
         }
-      );
+      )
+    : [];
 
 /**
  * When setting a keyboard shortcut in user preferences, we want to:
@@ -116,7 +116,7 @@ const keysToString = (modifiers: RA<ModifierKey>, keys: RA<string>): string =>
   [...modifiers, ...keys].join(keyJoinSymbol);
 export const keyJoinSymbol = '+';
 
-// eslint-disable-next-line functional/prefer-readonly-type
+ 
 const pressedKeys: string[] = [];
 
 // Keep this code fast as it's in the hot path

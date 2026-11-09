@@ -1,12 +1,16 @@
 import React from 'react';
-import { GetOrSet, R, RA } from '../utils/types';
-import { useTriggerState } from './useTriggerState';
-import { removeKey, SET } from '../utils/utils';
+
 import { DEFAULT_FETCH_LIMIT } from '../components/DataModel/collection';
 import { raise, softFail } from '../components/Errors/Crash';
+import type { GetOrSet, R, RA } from '../utils/types';
+import type { SET } from '../utils/utils';
+import { removeKey } from '../utils/utils';
+import { useTriggerState } from './useTriggerState';
 
-// REFACTOR: clean this up. See the changes in
-// 3c6eea450a0d64acde19574d66f0bdd5ed4731c1 for an exmaple
+/*
+ * REFACTOR: clean this up. See the changes in
+ * 3c6eea450a0d64acde19574d66f0bdd5ed4731c1 for an exmaple
+ */
 export function usePaginatedCollection<COLLECTION_TYPE>({
   initialRecords,
   totalCount: initialTotalCount,

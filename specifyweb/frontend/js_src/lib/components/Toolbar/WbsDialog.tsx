@@ -60,7 +60,7 @@ export const createEmptyDataSet = async <
       ...props,
     },
     headers: {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+       
       Accept: 'application/json',
     },
   }).then(({ data }) => data);

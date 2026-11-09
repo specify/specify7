@@ -1,5 +1,5 @@
-import React from 'react';
 import { parse } from 'csv-parse/browser/esm';
+import React from 'react';
 
 import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
@@ -7,8 +7,8 @@ import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { escapeRegExp } from '../../utils/utils';
 import { Select } from '../Atoms/Form';
-import { FilePicker } from '../Molecules/FilePicker';
 import { strictGetTable } from '../DataModel/tables';
+import { FilePicker } from '../Molecules/FilePicker';
 import { staticAttachmentImportPaths } from './importPaths';
 import type { MappingFileColumns, MappingFileRow } from './types';
 
@@ -178,13 +178,13 @@ export function MappingFileSetup({
         setMatchValueIndex(detected.matchValueIndex);
       if (detected.fileNameIndex !== undefined)
         setFileNameIndex(detected.fileNameIndex);
-    } catch (err) {
+    } catch (error_) {
       if (generation !== selectionGenerationRef.current) return;
       setHeaders(undefined);
       setRows(undefined);
       setError(
-        err instanceof Error
-          ? err.message
+        error_ instanceof Error
+          ? error_.message
           : attachmentsText.csvParseError().toString()
       );
     }

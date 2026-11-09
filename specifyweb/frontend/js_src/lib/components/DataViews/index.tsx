@@ -1,9 +1,9 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 
+import { useResponsiveSplitView } from '../../hooks/useResponsiveSplitView';
 import { commonText } from '../../localization/common';
 import { dataViewsText } from '../../localization/dataViews';
-import { useResponsiveSplitView } from '../../hooks/useResponsiveSplitView';
 import { H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
@@ -47,11 +47,11 @@ export function TableDataView(): JSX.Element {
     <NotFoundView />
   ) : (
     <RecordMergingContext.Provider value={false}>
-      <ProtectedTable tableName={table.name} action="read">
+      <ProtectedTable action="read" tableName={table.name}>
         {hasPermission('/querybuilder/query', 'execute') ? (
           <DataViewFromTable tableName={table.name} />
         ) : (
-          <PermissionDenied resource="/querybuilder/query" action="execute" />
+          <PermissionDenied action="execute" resource="/querybuilder/query" />
         )}
       </ProtectedTable>
     </RecordMergingContext.Provider>
@@ -82,9 +82,9 @@ function DataViewFromTable({
   return loadedQueries === undefined ? null : (
     <LoadedDataViewFromTable
       key={tableName}
-      tableName={tableName}
       queries={loadedQueries}
       reloadQueries={reloadQueries}
+      tableName={tableName}
     />
   );
 }
@@ -99,12 +99,12 @@ function LoadedDataViewFromTable({
   readonly reloadQueries: () => void;
 }): JSX.Element | null {
   const table = getTable(tableName);
-  const [selectedIds, setSelectedIds] = React.useState<ReadonlyArray<number>>(
+  const [selectedIds, setSelectedIds] = React.useState<readonly number[]>(
     []
   );
   const selectedIdsRef = React.useRef(selectedIds);
   selectedIdsRef.current = selectedIds;
-  const resultOrderRef = React.useRef<ReadonlyArray<number>>([]);
+  const resultOrderRef = React.useRef<readonly number[]>([]);
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const selectedIndexRef = React.useRef(selectedIndex);
   selectedIndexRef.current = selectedIndex;
@@ -148,7 +148,7 @@ function LoadedDataViewFromTable({
   }, [tableName]);
 
   const handleResults = React.useCallback(
-    (rows: ReadonlyArray<ReadonlyArray<unknown> | undefined>): void => {
+    (rows: readonly (readonly unknown[] | undefined)[]): void => {
       const focusedId = selectedIdsRef.current[selectedIndexRef.current];
       const orderedIds = rows.flatMap((row) => {
         const id = getNumericResultId(row?.[queryIdField]);
@@ -262,18 +262,54 @@ function LoadedDataViewFromTable({
 
   const results = (
     <QueryResultsWrapper
-      key={`${tableName}:${JSON.stringify(definition)}`}
+      containerClassName="!rounded-none"
       createRecordSet={undefined}
       extraButtons={undefined}
-      onReRun={handleRefresh}
+      fields={fields}
+      forceCollection={undefined}
+      isSplit={isSplit}
+      key={`${tableName}:${JSON.stringify(definition)}`}
+      queryResource={query}
+      queryRunCount={queryRunCount}
+      recordSetId={undefined}
+      refreshToken={refreshToken}
+      renderSplitPane={({
+        results,
+        selectedRows: resultSelection,
+        totalCount,
+        onFetchMore,
+        onDelete,
+      }) => (
+        <QueryFormView
+          results={results}
+          selectedIndex={selectedIndex}
+          selectedRows={resultSelection}
+          table={table}
+          title={dataViewsText.tableRecords({ tableLabel: table.label })}
+          totalCount={totalCount}
+          onClose={(): void => {
+            setSelectedIds([]);
+            setSelectedIndex(0);
+          }}
+          onDelete={onDelete}
+          onFetchMore={onFetchMore}
+          onSaved={handleRefresh}
+          onSlide={setSelectedIndex}
+        />
+      )}
+      restoreScrollTopRef={restoreScrollTopRef}
+      scrollRef={resultsScrollRef}
+      selectedRows={selectedRows}
+      splitHorizontal={isHorizontal}
+      splitPrimaryPaneMaxWidth={`${maximumPrimaryPaneWidth}px`}
+      table={table}
+      tableClassName="rounded-none"
       onDeleted={(): void => {
         setSelectedIds([]);
         setSelectedIndex(0);
       }}
-      onSortChange={(newFields): void => {
-        setRuntimeFields(unParseQueryFields(table.name, newFields));
-        setQueryRunCount((count) => count + 1);
-      }}
+      onReRun={handleRefresh}
+      onResults={handleResults}
       onSelected={(ids): void => {
         const positions = new Map(
           resultOrderRef.current.map((id, index) => [id, index] as const)
@@ -291,46 +327,10 @@ function LoadedDataViewFromTable({
             : Math.max(0, orderedIds.indexOf(focusedId))
         );
       }}
-      queryRunCount={queryRunCount}
-      queryResource={query}
-      recordSetId={undefined}
-      forceCollection={undefined}
-      containerClassName="!rounded-none"
-      tableClassName="rounded-none"
-      fields={fields}
-      selectedRows={selectedRows}
-      table={table}
-      onResults={handleResults}
-      refreshToken={refreshToken}
-      isSplit={isSplit}
-      splitHorizontal={isHorizontal}
-      splitPrimaryPaneMaxWidth={`${maximumPrimaryPaneWidth}px`}
-      renderSplitPane={({
-        results,
-        selectedRows: resultSelection,
-        totalCount,
-        onFetchMore,
-        onDelete,
-      }) => (
-        <QueryFormView
-          results={results}
-          selectedRows={resultSelection}
-          selectedIndex={selectedIndex}
-          table={table}
-          title={dataViewsText.tableRecords({ tableLabel: table.label })}
-          totalCount={totalCount}
-          onClose={(): void => {
-            setSelectedIds([]);
-            setSelectedIndex(0);
-          }}
-          onDelete={onDelete}
-          onFetchMore={onFetchMore}
-          onSaved={handleRefresh}
-          onSlide={setSelectedIndex}
-        />
-      )}
-      restoreScrollTopRef={restoreScrollTopRef}
-      scrollRef={resultsScrollRef}
+      onSortChange={(newFields): void => {
+        setRuntimeFields(unParseQueryFields(table.name, newFields));
+        setQueryRunCount((count) => count + 1);
+      }}
     />
   );
 

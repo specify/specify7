@@ -37,7 +37,7 @@ export function SchemaViewerTableList<
   const data = React.useMemo(
     () =>
       applySortConfig(unsortedData, (row) => {
-        /* eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion */
+         
         const data = row[sortConfig.sortField] as SchemaViewerValue;
         return Array.isArray(data) ? data[0] : data;
       }),

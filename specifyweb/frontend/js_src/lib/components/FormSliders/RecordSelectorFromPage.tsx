@@ -1,23 +1,24 @@
 import React from 'react';
-import { RA } from '../../utils/types';
-import { ResourceView } from '../Forms/ResourceView';
-import { SpecifyTable } from '../DataModel/specifyTable';
-import { useLiveState } from '../../hooks/useLiveState';
-import { SpecifyResource } from '../DataModel/legacyTypes';
-import { AnySchema } from '../DataModel/helperTypes';
-import { LocalizedString } from 'typesafe-i18n';
-import { hasTablePermission } from '../Permissions/helpers';
-import { BasicSlider } from './BasicSlider';
-import { DataEntry } from '../Atoms/DataEntry';
-import { commonText } from '../../localization/common';
-import { clamp } from '../../utils/utils';
-import { SetUnloadProtectsContext } from '../Router/UnloadProtect';
-import { Dialog } from '../Molecules/Dialog';
-import { Button } from '../Atoms/Button';
+import type { LocalizedString } from 'typesafe-i18n';
+
 import { unsetUnloadProtect } from '../../hooks/navigation';
-import { saveFormUnloadProtect } from '../Forms/Save';
-import { formsText } from '../../localization/forms';
+import { useLiveState } from '../../hooks/useLiveState';
 import { useTriggerState } from '../../hooks/useTriggerState';
+import { commonText } from '../../localization/common';
+import { formsText } from '../../localization/forms';
+import type { RA } from '../../utils/types';
+import { clamp } from '../../utils/utils';
+import { Button } from '../Atoms/Button';
+import { DataEntry } from '../Atoms/DataEntry';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { ResourceView } from '../Forms/ResourceView';
+import { saveFormUnloadProtect } from '../Forms/Save';
+import { Dialog } from '../Molecules/Dialog';
+import { hasTablePermission } from '../Permissions/helpers';
+import { SetUnloadProtectsContext } from '../Router/UnloadProtect';
+import { BasicSlider } from './BasicSlider';
 
 type Page = {
   readonly ids: RA<number>;
@@ -50,16 +51,16 @@ function usePagedRecordSelector<SCHEMA extends AnySchema>({
   return {
     slider: (
       <BasicSlider
-        onChange={handleSlide}
         buttonsDisabled={{
           first: disablePreviousButtons,
           next: disableNextButtons,
           previous: disablePreviousButtons,
           last: disableNextButtons,
         }}
+        onChange={handleSlide}
       />
     ),
-    isLoading: records == undefined || records[index] === undefined,
+    isLoading: records?.[index] === undefined,
     resource: records?.[index],
     onRemove: () => {
       handleDelete?.(index);
@@ -151,11 +152,11 @@ export function RecordSelectorFromPage<
     }
     if (direction === 'first') {
       setIndexInPage(0);
-      return handleNextPageFetch(page, 'first');
+      return void handleNextPageFetch(page, 'first');
     }
     if (direction === 'last') {
       setIndexInPage(pageSize - 1);
-      return handleNextPageFetch(page, 'last');
+      return void handleNextPageFetch(page, 'last');
     }
     if (
       indexInPage === 0 &&
@@ -164,12 +165,12 @@ export function RecordSelectorFromPage<
       pageMetaData !== 'first'
     ) {
       setIndexInPage(pageSize - 1);
-      return handleNextPageFetch(page, 'previous');
+      return void handleNextPageFetch(page, 'previous');
     }
 
     if (indexInPage === records.length - 1 && direction === 'next') {
       setIndexInPage(0);
-      return handleNextPageFetch(page, 'next');
+      return void handleNextPageFetch(page, 'next');
     }
     setIndexInPage((oldIndex) =>
       clamp(0, direction === 'next' ? oldIndex + 1 : oldIndex - 1, pageSize - 1)
@@ -226,13 +227,13 @@ export function RecordSelectorFromPage<
         resource={resource}
         title={title}
         viewName={viewName}
+        onAdd={undefined}
         onClose={handleClose}
         onDeleted={
           hasTablePermission(table.name, 'delete') ? handleRemove : undefined
         }
-        onSaved={() => handleSaved(currentResource!)}
         onParentDeleted={handleParentDeleted}
-        onAdd={undefined}
+        onSaved={() => handleSaved(currentResource!)}
       />
       {typeof unloadProtect === 'function' && (
         <Dialog

@@ -47,7 +47,7 @@ export function AttachmentsView({
 
   if (isConfigured === undefined) return null;
 
-  if (isConfigured === false)
+  if (!isConfigured)
     return (
       <Dialog
         buttons={commonText.close()}

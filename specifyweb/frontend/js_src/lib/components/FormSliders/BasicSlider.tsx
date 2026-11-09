@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { useSliderButtons } from './useSliderButtons';
 
 type DisabledProps = {

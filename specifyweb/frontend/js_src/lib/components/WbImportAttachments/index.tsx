@@ -31,9 +31,9 @@ import {
   ATTACHMENTS_COLUMN,
   attachmentsToCell,
   BASE_TABLE_NAME,
-  uploadFiles,
   createDataSetAttachments,
   saveDataSetAttachments,
+  uploadFiles,
 } from '../WorkBench/attachmentHelpers';
 
 export function WbImportAttachmentsView(): JSX.Element {

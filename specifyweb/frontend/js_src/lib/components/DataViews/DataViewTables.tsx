@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { dataViewsText } from '../../localization/dataViews';
@@ -9,7 +10,7 @@ import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
 import { icons } from '../Atoms/Icons';
 import { serializeResource } from '../DataModel/serializers';
-import { SpecifyTable } from '../DataModel/specifyTable';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { Tables } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
@@ -21,13 +22,13 @@ import {
 import { TablesListEdit } from '../Toolbar/QueryTablesEdit';
 import { QueryTables } from '../Toolbar/QueryTablesWrapper';
 import { defaultDataViewTablesConfig, useDataViewTables } from './config';
-import { DataViewQueryEditorContent } from './QueryEditor';
 import {
   getDataViewQueryDefinition,
   saveUserDataViewQueries,
   serializeDataViewQueries,
   useDataViewQueries,
 } from './queries';
+import { DataViewQueryEditorContent } from './QueryEditor';
 
 export function DataViewTables(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -112,7 +113,6 @@ export function DataViewTables(): JSX.Element {
     />
   ) : (
     <Dialog
-      header={dataViewsText.dataViewsTitle()}
       buttons={
         <>
           <span className="-ml-2 flex-1" />
@@ -124,6 +124,7 @@ export function DataViewTables(): JSX.Element {
       className={{
         container: dialogClassNames.narrowContainer,
       }}
+      header={dataViewsText.dataViewsTitle()}
       headerButtons={
         <div className="flex gap-2">
           <DataEntry.Edit onClick={handleEditing} />

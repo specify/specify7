@@ -18,6 +18,7 @@ import { ReadOnlyContext, SearchDialogContext } from '../Core/Contexts';
 import { backboneFieldSeparator } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { schema } from '../DataModel/schema';
 import type { Relationship } from '../DataModel/specifyField';
 import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
 import type { CollectionObjectGroup } from '../DataModel/types';
@@ -29,7 +30,6 @@ import { SubViewContext } from '../Forms/SubView';
 import { propsToFormMode, useViewDefinition } from '../Forms/useViewDefinition';
 import { shouldBeToOne } from '../FormSliders/helpers';
 import { getCollectionPref } from '../InitialContext/remotePrefs';
-import { schema } from '../DataModel/schema';
 import { loadingGif } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
 import type { SortConfig } from '../Molecules/Sorting';
@@ -353,12 +353,12 @@ export function FormTable<SCHEMA extends AnySchema>({
               const label = (
                 <span
                   className="block min-w-0 overflow-hidden whitespace-normal break-normal text-center"
+                  data-subview-header-label
                   style={{
                     display: '-webkit-box',
                     WebkitBoxOrient: 'vertical',
                     WebkitLineClamp: 2,
                   }}
-                  data-subview-header-label
                   title={text}
                 >
                   {text}
@@ -369,8 +369,8 @@ export function FormTable<SCHEMA extends AnySchema>({
                   align="center"
                   className={`${cellClassName} relative min-w-0 justify-center`}
                   colSpan={cell.colSpan}
-                  key={index}
                   data-subview-header-col={columnIndex}
+                  key={index}
                   role="columnheader"
                   title={title}
                   verticalAlign={cell.verticalAlign}
@@ -524,8 +524,8 @@ export function FormTable<SCHEMA extends AnySchema>({
                                   align={align}
                                   className="min-w-0 [&_input]:min-w-0 [&_input]:max-w-full [&_input]:text-ellipsis [&_select]:min-w-0 [&_select]:max-w-full [&_textarea]:min-w-0 [&_textarea]:max-w-full"
                                   colSpan={colSpan}
-                                  key={index}
                                   data-subview-cell-col={index}
+                                  key={index}
                                   role="cell"
                                   verticalAlign={verticalAlign}
                                   visible={visible}

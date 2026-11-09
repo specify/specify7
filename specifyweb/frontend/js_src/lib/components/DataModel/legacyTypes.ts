@@ -31,9 +31,7 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   readonly deleted: boolean;
   readonly parent?: SpecifyResource<SCHEMA>;
   readonly noBusinessRules: boolean;
-  readonly changed?: {
-    readonly [FIELD_NAME in TableFields<AnySchema>]?: number | string;
-  };
+  readonly changed?: Readonly<Partial<Record<TableFields<AnySchema>, number | string>>>;
   readonly collection: Collection<SCHEMA> | undefined;
   readonly businessRuleManager?: BusinessRuleManager<SCHEMA>;
   /*
@@ -59,7 +57,7 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
       SCHEMA['toOneIndependent'])[FIELD_NAME],
   >(
     fieldName: FIELD_NAME
-    // eslint-disable-next-line functional/prefer-readonly-type
+     
   ): [VALUE] extends [never]
     ? never
     : VALUE extends AnySchema

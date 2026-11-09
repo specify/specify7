@@ -12,7 +12,7 @@ export type SchemaStrings = IR<{
 }>;
 
 type WritableSchemaStructure = R<{
-  // eslint-disable-next-line functional/prefer-readonly-type
+   
   strings: IR<string>;
   readonly locations: WritableArray<SchemaLocation>;
 }>;

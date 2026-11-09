@@ -1,5 +1,6 @@
 import type { LocalizedString } from 'typesafe-i18n';
 
+import { dataViewsText } from '../../localization/dataViews';
 import { preferencesText } from '../../localization/preferences';
 import { reportsText } from '../../localization/report';
 import { resourcesText } from '../../localization/resources';
@@ -9,7 +10,6 @@ import { icons } from '../Atoms/Icons';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpAppResourceDir, Tables } from '../DataModel/types';
 import type { AppResourceMode } from './helpers';
-import { dataViewsText } from '../../localization/dataViews';
 
 export type AppResourceScope =
   | 'collection'
@@ -98,7 +98,7 @@ export const appResourceSubTypes = ensure<IR<AppResourceSubType>>()({
   globalPreferences: {
     mimeType: 'application/json',
     name: 'GlobalPreferences',
-    //TODO: Update the documentation URL
+    // TODO: Update the documentation URL
     documentationUrl:
       'https://discourse.specifysoftware.org/t/configure-database-date-format/1109',
     icon: icons.library,

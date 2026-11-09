@@ -1,18 +1,20 @@
-import { RA, Writable, WritableArray } from '../../utils/types';
-import { AnySchema } from '../DataModel/helperTypes';
-import { SpecifyResource } from '../DataModel/legacyTypes';
-import { Relationship } from '../DataModel/specifyField';
-import { Tables } from '../DataModel/types';
-import {
+import type { RA, Writable, WritableArray } from '../../utils/types';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { Relationship } from '../DataModel/specifyField';
+import type { Tables } from '../DataModel/types';
+import type {
   BlockerPageCacheKey,
+  DeleteBlockerLRUPage} from './pageCache';
+import {
   buildPageCacheKey,
-  DeleteBlockerLRUPage,
   makeBlockerKey,
 } from './pageCache';
-import {
+import type {
   BlockerNode,
+  ResourceIdentifier} from './state';
+import {
   DeleteBlockerState,
-  ResourceIdentifier,
   resourceToStringIdentifier,
 } from './state';
 
@@ -47,18 +49,18 @@ export class DeleteBlockerStore {
   private readonly listeners = new Set<() => void>();
 
   public constructor(
-    blockerStateParams: ConstructorParameters<
+    blockerStateParameters: ConstructorParameters<
       typeof DeleteBlockerState
     >[0] = undefined
   ) {
-    const params: ConstructorParameters<typeof DeleteBlockerState>[0] = {
-      ...blockerStateParams,
+    const parameters: ConstructorParameters<typeof DeleteBlockerState>[0] = {
+      ...blockerStateParameters,
       onChange: () => {
-        blockerStateParams?.onChange?.();
+        blockerStateParameters?.onChange?.();
         this.notify();
       },
     };
-    this.state = new DeleteBlockerState(params);
+    this.state = new DeleteBlockerState(parameters);
   }
 
   public readonly subscribe = (listener: () => void): (() => void) => {
@@ -118,7 +120,7 @@ export class DeleteBlockerStore {
     return blockerRelationship?.count;
   }
 
-  public filterBlockers(
+  public async filterBlockers(
     resource: SpecifyResource<AnySchema>,
     relationship: Relationship,
     anchor: number | null | 'last' = null,

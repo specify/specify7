@@ -236,10 +236,12 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           }
         ).then(({ totalCount }) => totalCount !== 0);
 
-        // BUG: When a local Component is modified to have a catalogNumber that
-        // matches this CollectionObject, a change event is being triggered on
-        // the CO -> catalogNumber and triggering this rule as well
-        // Found out what is causing the change event...
+        /*
+         * BUG: When a local Component is modified to have a catalogNumber that
+         * matches this CollectionObject, a change event is being triggered on
+         * the CO -> catalogNumber and triggering this rule as well
+         * Found out what is causing the change event...
+         */
         const localCollectionContainsComponentDuplicates = resource
           .getDependentResource('components')
           ?.models.some(
@@ -476,18 +478,22 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
 
         const catalogNumberValue = resource.get('catalogNumber');
 
-        // Check the Database for CollectionObject records that have the same
-        // catalogNumber
-        const containsCoDuplicates = () =>
+        /*
+         * Check the Database for CollectionObject records that have the same
+         * catalogNumber
+         */
+        const containsCoDuplicates = async () =>
           fetchCollection('CollectionObject', {
             domainFilter: true,
             catalogNumber: catalogNumberValue,
             limit: 1,
           }).then(({ totalCount }) => totalCount !== 0);
 
-        // Check the Database for other existing Component records with the
-        // same catalogNumber
-        const containsComponentDuplicates = () =>
+        /*
+         * Check the Database for other existing Component records with the
+         * same catalogNumber
+         */
+        const containsComponentDuplicates = async () =>
           fetchCollection('Component', {
             catalogNumber: catalogNumberValue,
             domainFilter: true,
@@ -497,18 +503,20 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
               : backendFilter('id').not.equals(resource.id)),
           }).then(({ totalCount }) => totalCount !== 0);
 
-        // If the Components are in a collection (such as when viewing the
-        // Components SubView from CollectionObject), then make sure that no
-        // unsaved Component in the collection has the same catalogNumber as
-        // this Component
-        // BUG: Consider the following case:
-        // - There's a Component collection with a saved Component (1) with
-        //   catalogNumber A
-        // - a Component (2) is added to the Collection with catalogNumber A
-        // - Component 1's catalogNumber is changed from A
-        // - a saveblocker will be set on Component 2, even though we know the
-        //   existing duplicate has been locally changed
-        const localComponentCollectionHasValue = () =>
+        /*
+         * If the Components are in a collection (such as when viewing the
+         * Components SubView from CollectionObject), then make sure that no
+         * unsaved Component in the collection has the same catalogNumber as
+         * this Component
+         * BUG: Consider the following case:
+         * - There's a Component collection with a saved Component (1) with
+         *   catalogNumber A
+         * - a Component (2) is added to the Collection with catalogNumber A
+         * - Component 1's catalogNumber is changed from A
+         * - a saveblocker will be set on Component 2, even though we know the
+         *   existing duplicate has been locally changed
+         */
+        const localComponentCollectionHasValue = async () =>
           Promise.resolve(
             resource.collection === undefined || catalogNumberValue === null
               ? false
@@ -524,9 +532,11 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
                   ).length >= 1
           );
 
-        // Finally, check whether the Component's CollectionObject has the same
-        // catalogNumber as the Component
-        const collectionObjectHasValue = () =>
+        /*
+         * Finally, check whether the Component's CollectionObject has the same
+         * catalogNumber as the Component
+         */
+        const collectionObjectHasValue = async () =>
           resource.collection?.related?.specifyTable.name === 'CollectionObject'
             ? Promise.resolve(
                 catalogNumberValue !== null &&
@@ -536,7 +546,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
                   ).get('catalogNumber') === catalogNumberValue
               )
             : // This case should be subsumed by the prior check in
-              // containsCoDuplicates, but leaving this here just in case
+              // ContainsCoDuplicates, but leaving this here just in case
               resource
                 .rgetPromise('collectionObject')
                 .then(
@@ -544,12 +554,14 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
                     collectionObject !== null &&
                     collectionObject.get('catalogNumber') === catalogNumberValue
                 );
-        // REFACTOR: Change this when we upgrade to HTTP 2+
-        // Aggregate all of the invalid checks into a singe array to be
-        // processed sequentially
-        // It would be slightly more performant to have these all executing at
-        // the same time, but don't want to overwhelm the browser with the 6
-        // in-flight request limit of HTTP 1.1
+        /*
+         * REFACTOR: Change this when we upgrade to HTTP 2+
+         * Aggregate all of the invalid checks into a singe array to be
+         * processed sequentially
+         * It would be slightly more performant to have these all executing at
+         * the same time, but don't want to overwhelm the browser with the 6
+         * in-flight request limit of HTTP 1.1
+         */
         const invalidChecks: RA<() => Promise<boolean>> = [
           containsCoDuplicates,
           containsComponentDuplicates,

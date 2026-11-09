@@ -118,9 +118,11 @@ export function QueryToolbar({
             onClick={
               isEmbedded
                 ? (event): void => {
-                    // Do not let this submit the parent form when the Query
-                    // Builder is embedded inside another form (for example
-                    // the DataViewQueries app resource editor).
+                    /*
+                     * Do not let this submit the parent form when the Query
+                     * Builder is embedded inside another form (for example
+                     * the DataViewQueries app resource editor).
+                     */
                     event.preventDefault();
                     event.stopPropagation();
                     handleSubmitClick();

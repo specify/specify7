@@ -5,7 +5,7 @@ import { attachmentsText } from '../../localization/attachments';
 import { wbPlanText } from '../../localization/wbPlan';
 import { ReadOnlyContext } from '../Core/Contexts';
 import { getIcon } from '../InitialContext/icons';
-import { tableIconUndefined, TableIcon } from '../Molecules/TableIcon';
+import { TableIcon,tableIconUndefined } from '../Molecules/TableIcon';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { getAttachmentsColumn } from '../WorkBench/attachmentHelpers';

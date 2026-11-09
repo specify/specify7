@@ -25,7 +25,7 @@ import { fieldFormattersSpec, trimRegexString } from './spec';
 let uiFormatters: IR<UiFormatter>;
 let uiFormattersGeneration = 0;
 
-const loadUiFormatters = (refresh = false): Promise<IR<UiFormatter>> => {
+const loadUiFormatters = async (refresh = false): Promise<IR<UiFormatter>> => {
   const generation = ++uiFormattersGeneration;
   return Promise.all([
     load<Element>(getAppResourceUrl('UIFormatters'), 'text/xml', refresh),

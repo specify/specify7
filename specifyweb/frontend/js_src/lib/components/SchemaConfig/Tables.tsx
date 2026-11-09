@@ -51,7 +51,7 @@ export function tablesFilter(
   const hasAccess = hasTablePermission(name, 'read');
   if (!showNoAccessTables && !hasAccess) return false;
   const isAdvanced = !overrides.isCommon;
-  // eslint-disable-next-line sonarjs/prefer-single-boolean-return
+   
   if (!showAdvancedTables && isAdvanced) return false;
 
   return true;
@@ -257,8 +257,6 @@ export function CollapsibleTableList({
         badge={badge}
         cacheKey={cacheKey}
         currentTableName={currentTableName}
-        showAllTables={showAllTables}
-        showTableCaptionToggle={showTableCaptionToggle}
         filter={(showHiddenTables, table): boolean => {
           const searchText = search.toLowerCase();
           return (
@@ -271,6 +269,8 @@ export function CollapsibleTableList({
         }}
         getAction={getAction}
         localizeTableNames={localizeTableNames}
+        showAllTables={showAllTables}
+        showTableCaptionToggle={showTableCaptionToggle}
       />
     </Wrapper>
   );

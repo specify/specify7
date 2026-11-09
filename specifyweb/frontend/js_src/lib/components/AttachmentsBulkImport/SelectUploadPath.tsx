@@ -69,9 +69,11 @@ export function generateUploadSpec(
     const rawValue = value.toString();
     const fieldFormatter = field?.getUiFormatter();
     if (fieldFormatter !== undefined)
-      // Catalog number formatting can vary by Collection Object Type. The
-      // query field only has the schema-level formatter, so preserve database
-      // values that do not match that formatter instead of dropping them.
+      /*
+       * Catalog number formatting can vary by Collection Object Type. The
+       * query field only has the schema-level formatter, so preserve database
+       * values that do not match that formatter instead of dropping them.
+       */
       return fieldFormatter.format(rawValue) ?? rawValue;
 
     return (

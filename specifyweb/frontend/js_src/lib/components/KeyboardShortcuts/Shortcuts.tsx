@@ -14,9 +14,9 @@ import { removeItem, replaceItem, replaceKey } from '../../utils/utils';
 import { Key } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import type { PreferenceRendererProps } from '../Preferences/types';
-import { ShortcutConflictWarning } from './Conflicts';
 import type { KeyboardShortcuts } from './config';
 import { keyboardPlatform } from './config';
+import { ShortcutConflictWarning } from './Conflicts';
 import { keyJoinSymbol, setKeyboardEventInterceptor } from './context';
 import {
   cleanupEmptyShortcuts,
@@ -87,6 +87,14 @@ export function KeyboardShortcutPreferenceItem({
         <EditKeyboardShortcut
           key={index}
           shortcut={shortcut}
+          onCancel={
+            editingIndex === index
+              ? (): void => {
+                  setLocalValue(cleanupEmptyShortcuts(localValue));
+                  setEditingIndex(false);
+                }
+              : undefined
+          }
           onEditStart={
             !isEditing &&
             !globalIsEditingElsewhere &&
@@ -95,14 +103,6 @@ export function KeyboardShortcutPreferenceItem({
                   currentlyEditingShortcut = key;
                   editingEvent.trigger('change');
                   setEditingIndex(index);
-                }
-              : undefined
-          }
-          onCancel={
-            editingIndex === index
-              ? (): void => {
-                  setLocalValue(cleanupEmptyShortcuts(localValue));
-                  setEditingIndex(false);
                 }
               : undefined
           }

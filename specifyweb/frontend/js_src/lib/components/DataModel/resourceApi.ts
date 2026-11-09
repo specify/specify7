@@ -126,9 +126,9 @@ export const ResourceBase = Backbone.Model.extend({
     Reflect.apply(Backbone.Model, this, arguments); // TEST: check if this is necessary
   },
   initialize(attributes, options) {
-    this.noBusinessRules = options && options.noBusinessRules;
-    this.noValidation = options && options.noValidation;
-    this.createdBy = options && options.createdBy;
+    this.noBusinessRules = options?.noBusinessRules;
+    this.noValidation = options?.noValidation;
+    this.createdBy = options?.createdBy;
 
     /*
      * If initialized with some attributes that include a resource_uri,
@@ -269,7 +269,7 @@ export const ResourceBase = Backbone.Model.extend({
 
     if (oldRelated && oldRelated.cid === related.cid) return;
 
-    oldRelated && oldRelated.off('all', null, this);
+    oldRelated?.off('all', null, this);
 
     related.on('all', eventHandlerForToOne(related, field), this);
     related.parent = this; // REFACTOR: this doesn't belong here
@@ -298,7 +298,7 @@ export const ResourceBase = Backbone.Model.extend({
   },
   _setDependentToMany(field: Relationship, toMany: Collection<AnySchema>) {
     const oldToMany = this.dependentResources[field.name.toLowerCase()];
-    oldToMany && oldToMany.off('all', null, this);
+    oldToMany?.off('all', null, this);
 
     // Cache it and set up event handlers
     this.dependentResources[field.name.toLowerCase()] = toMany;
@@ -330,7 +330,7 @@ export const ResourceBase = Backbone.Model.extend({
 
     if (oldRelated && oldRelated.cid === related.cid) return;
 
-    oldRelated && oldRelated.off('all', null, this);
+    oldRelated?.off('all', null, this);
 
     related.on('all', eventHandlerForToOne(related, field), this);
 
@@ -759,7 +759,7 @@ export const ResourceBase = Backbone.Model.extend({
      * If field represents a value, then return that if we are done,
      * otherwise we can't traverse any farther...
      */
-    if (!field || !field.isRelationship) {
+    if (!field?.isRelationship) {
       if (path.length > 1) {
         softFail('expected related field');
         return undefined;
@@ -976,15 +976,19 @@ export const ResourceBase = Backbone.Model.extend({
     const promise = await Backbone.Model.prototype.destroy.apply(this, ...args);
     this.deleted = true;
     resourceEvents.trigger('deleted', this);
-    // BUG: Is there ever a case where a dependent is not deleted when the
-    // parent is deleted?
-    // We could be smarter about this and ask the DB whether the dependents
-    // were deleted or not after this resource was deleted
+    /*
+     * BUG: Is there ever a case where a dependent is not deleted when the
+     * parent is deleted?
+     * We could be smarter about this and ask the DB whether the dependents
+     * were deleted or not after this resource was deleted
+     */
     gatherAllDependents(this).forEach((dependent) => {
       resourceEvents.trigger('deleted', dependent);
     });
-    // BUG:? Do we need to reset the dependent resources here?
-    // They could be used by some component, so keeping them as-is for now
+    /*
+     * BUG:? Do we need to reset the dependent resources here?
+     * They could be used by some component, so keeping them as-is for now
+     */
     return promise;
   },
   toJSON() {

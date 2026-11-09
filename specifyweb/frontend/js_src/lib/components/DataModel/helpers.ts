@@ -260,8 +260,8 @@ export function gatherAllDependents(
       isRelationshipCollection(related)
         ? related.models
         : // Typescript still thinks related can be undefined or null here, so
-          // using a cast
-          (related as SpecifyResource<AnySchema>)
+          // Using a cast
+          (related!)
     );
   const cascadedDependents = directDependents.flatMap(gatherAllDependents);
   return [...directDependents, ...cascadedDependents];

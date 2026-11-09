@@ -93,10 +93,10 @@ function makeLatLong(
 }
 
 export class Coord {
-  // eslint-disable-next-line functional/prefer-readonly-type
+   
   public sign;
 
-  // eslint-disable-next-line functional/prefer-readonly-type
+   
   public components: RA<number>;
 
   public constructor(float = 0) {

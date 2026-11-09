@@ -95,11 +95,9 @@ type AutoMapperDefinitions = {
    *   a mapping even if a shortcut, or a synonym was used
    */
   readonly dontMatch: {
-    readonly [TABLE_NAME in keyof Tables]?: {
-      readonly [FIELD_NAME in TableFields<
+    readonly [TABLE_NAME in keyof Tables]?: Readonly<Partial<Record<TableFields<
         Tables[TABLE_NAME]
-      >]?: RA<AutoMapperScope>;
-    };
+      >, RA<AutoMapperScope>>>>;
   };
 
   /*
@@ -156,8 +154,7 @@ type AutoMapperDefinitions = {
    *   and there exists a path from tableName to baseTableName
    */
   readonly synonyms: {
-    readonly [TABLE_NAME in keyof Tables]?: {
-      readonly [FIELD_NAME in TableFields<Tables[TABLE_NAME]>]?: Partial<
+    readonly [TABLE_NAME in keyof Tables]?: Readonly<Partial<Record<TableFields<Tables[TABLE_NAME]>, Partial<
         RR<
           AutoMapperScope,
           {
@@ -178,8 +175,7 @@ type AutoMapperDefinitions = {
             };
           }
         >
-      >;
-    };
+      >>>>;
   };
 };
 

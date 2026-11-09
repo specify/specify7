@@ -3,12 +3,12 @@ import React from 'react';
 import { commonText } from '../../localization/common';
 import { expressSearchConfigText } from '../../localization/expressSearchConfig';
 import { getListKeyboardNavigationIndex } from '../../utils/keyboardNavigation';
-import type { Tables } from '../DataModel/types';
 import { Button } from '../Atoms/Button';
 import { Input } from '../Atoms/Form';
+import type { Tables } from '../DataModel/types';
 import { TableIcon } from '../Molecules/TableIcon';
-import type { MappingPath } from './Mapper';
 import { searchFields } from './fieldSearch';
+import type { MappingPath } from './Mapper';
 import type { NavigatorSpec } from './navigatorSpecs';
 
 const fieldSearchDebounceRate = 200;

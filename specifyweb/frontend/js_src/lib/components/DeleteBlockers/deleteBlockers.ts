@@ -1,7 +1,7 @@
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
-import { RA } from '../../utils/types';
-import { Tables } from '../DataModel/types';
+import type { RA } from '../../utils/types';
+import type { Tables } from '../DataModel/types';
 import { formatUrl } from '../Router/queryString';
 
 export const DELETE_BLOCKER_LIMIT = 40;
@@ -98,7 +98,5 @@ export async function fetchReferenceCounts(
       headers: { Accept: 'application/json' },
       expectedErrors: expectFailure ? [Http.NOT_FOUND] : [],
     }
-  ).then((result) => {
-    return result.status === Http.NOT_FOUND ? undefined : result.data;
-  });
+  ).then((result) => result.status === Http.NOT_FOUND ? undefined : result.data);
 }

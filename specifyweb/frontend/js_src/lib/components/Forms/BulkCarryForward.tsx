@@ -295,8 +295,7 @@ export function BulkCarryRangeBlockedDialog({
           {formsText.bulkCarryForwardRangeExistingRecords({
             field: numberField.label,
           })}
-          {invalidNumbers &&
-            invalidNumbers.map((number, index) => <p key={index}>{number}</p>)}
+          {invalidNumbers?.map((number, index) => <p key={index}>{number}</p>)}
         </>
       ) : error === 'LimitExceeded' ? (
         <>

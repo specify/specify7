@@ -13,8 +13,8 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { tables } from '../DataModel/tables';
 import type { Attachment } from '../DataModel/types';
 import { load } from '../InitialContext';
-import { globalPreferences } from '../Preferences/globalPreferences';
 import { downloadFile } from '../Molecules/FilePicker';
+import { globalPreferences } from '../Preferences/globalPreferences';
 import { formatUrl } from '../Router/queryString';
 // Import SVG icons, but better than in Icons.tsx
 import applicationJsonIcon from './MimetypeIcons/application-json.svg';

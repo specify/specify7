@@ -4,6 +4,7 @@ import { attachmentsText } from '../../localization/attachments';
 import { batchEditText } from '../../localization/batchEdit';
 import { batchIdentifyText } from '../../localization/batchIdentify';
 import { commonText } from '../../localization/common';
+import { dataViewsText } from '../../localization/dataViews';
 import { headerText } from '../../localization/header';
 import { interactionsText } from '../../localization/interactions';
 import { mergingText } from '../../localization/merging';
@@ -14,12 +15,11 @@ import { treeText } from '../../localization/tree';
 import { userText } from '../../localization/user';
 import { welcomeText } from '../../localization/welcome';
 import { wbText } from '../../localization/workbench';
-import { RA } from '../../utils/types';
+import type { RA } from '../../utils/types';
 import { Redirect } from './Redirect';
 import type { EnhancedRoute } from './RouterUtils';
-import { dataViewsText } from '../../localization/dataViews';
 
-/* eslint-disable @typescript-eslint/promise-function-async */
+ 
 /**
  * Overlay routes are rendered inside of a <Dialog>.
  * When linking to an overlay route, the previous route remains visible in
@@ -287,4 +287,4 @@ export const overlayRoutes: RA<EnhancedRoute> = [
   },
 ];
 
-/* eslint-enable @typescript-eslint/promise-function-async */
+ 

@@ -64,7 +64,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
       );
 
       const fetchCount = records.findIndex(
-        (record) => record === undefined || !record.populated
+        (record) => !record?.populated
       );
 
       fetchedCount.current = fetchCount === -1 ? records.length : fetchCount;

@@ -110,7 +110,7 @@ export function TableUniquenessRules(): JSX.Element {
     [loading, table.name, tableRules, setTableRules]
   );
 
-  // eslint-disable-next-line @typescript-eslint/naming-convention
+   
   const SaveButton = saveBlocked ? Submit.Danger : Submit.Save;
 
   return (
@@ -157,7 +157,7 @@ export function TableUniquenessRules(): JSX.Element {
             ajax(
               `/businessrules/uniqueness_rules/${schema.domainLevelIds.discipline}/`,
               {
-                // eslint-disable-next-line @typescript-eslint/naming-convention
+                 
                 headers: { Accept: 'application/json' },
                 method: 'PUT',
                 body: {

@@ -45,7 +45,7 @@ export function AttachmentsCollection({
             const record = serializeResource(
               model
             ) as SerializedResource<CollectionObjectAttachment>;
-            // eslint-disable-next-line
+             
             return serializeResource(
               record.attachment
             ) as SerializedResource<Attachment>;

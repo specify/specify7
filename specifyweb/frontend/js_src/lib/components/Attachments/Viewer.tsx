@@ -61,9 +61,9 @@ export function AttachmentViewer({
   const [originalUrl] = useAsyncState(
     React.useCallback(
       async () =>
-        attachmentServerStatus !== 'unavailable'
-          ? fetchOriginalUrl(serialized)
-          : undefined,
+        attachmentServerStatus === 'unavailable'
+          ? undefined
+          : fetchOriginalUrl(serialized),
       [attachmentServerStatus, serialized]
     ),
     false
@@ -118,9 +118,9 @@ export function AttachmentViewer({
   const [thumbnail] = useAsyncState(
     React.useCallback(
       async () =>
-        attachmentServerStatus !== 'unavailable'
-          ? fetchThumbnail(serialized)
-          : undefined,
+        attachmentServerStatus === 'unavailable'
+          ? undefined
+          : fetchThumbnail(serialized),
       [attachmentServerStatus, serialized]
     ),
     false

@@ -11,10 +11,10 @@ import type { MappingPath } from './Mapper';
 import {
   anyTreeRank,
   formatPartialField,
+  formattedEntry,
   formatToManyIndex,
   formatTreeDefinition,
   formatTreeRank,
-  formattedEntry,
   relationshipIsRemoteToOne,
   relationshipIsToMany,
   valueIsTreeMeta,
@@ -45,8 +45,10 @@ type FieldSearchPathPreference = {
   readonly priority: number;
 };
 
-// Lower priorities are shown first. Keep all matching paths; these only affect
-// ordering. Paths omit to-many indexes and special mapping fields.
+/*
+ * Lower priorities are shown first. Keep all matching paths; these only affect
+ * ordering. Paths omit to-many indexes and special mapping fields.
+ */
 const fieldSearchPathPreferences: readonly FieldSearchPathPreference[] = [
   {
     baseTableName: 'CollectionObject',
@@ -212,8 +214,10 @@ export function searchFields({
           const rankLabel = fieldSearchLabel(rank.title ?? rank.name);
           const rankMatches = matches([rank.name, rankLabel]);
 
-          // A field-name match applies to every rank. Use one canonical path
-          // instead of returning the same field once for every concrete rank.
+          /*
+           * A field-name match applies to every rank. Use one canonical path
+           * instead of returning the same field once for every concrete rank.
+           */
           if (!rankMatches && rank !== ranks[1]) return;
 
           const rankPath = [
@@ -276,8 +280,10 @@ export function searchFields({
     current.table.fields
       .filter((field): field is Relationship => field.isRelationship)
       .filter((relationship) => {
-        // Someday when we support virtual fields in the Query Builder,
-        // this should be re-enabled.
+        /*
+         * Someday when we support virtual fields in the Query Builder,
+         * this should be re-enabled.
+         */
         if (
           relationship.isVirtual ||
           fieldSearchExcludedTables.has(relationship.relatedTable.name)
@@ -356,8 +362,10 @@ export function searchFields({
             searchRank: 1,
           });
 
-        // Return matching self-referential relationships, but do not traverse
-        // through them or the search could revisit the same table forever.
+        /*
+         * Return matching self-referential relationships, but do not traverse
+         * through them or the search could revisit the same table forever.
+         */
         if (current.tablePath.includes(relationship.relatedTable.name)) return;
 
         if (queue.length >= fieldSearchVisitedStateLimit) return;

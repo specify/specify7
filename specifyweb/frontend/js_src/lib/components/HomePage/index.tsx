@@ -4,16 +4,16 @@ import { useHueDifference } from '../../hooks/useHueDifference';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { welcomeText } from '../../localization/welcome';
+import { Button } from '../Atoms/Button';
+import { icons } from '../Atoms/Icons';
 import { Submit } from '../Atoms/Submit';
+import { ExpressSearchConfigDialog } from '../ExpressSearchConfig/ExpressSearchConfigDialog';
 import { SearchForm } from '../Header/ExpressSearchTask';
+import { hasToolPermission } from '../Permissions/helpers';
 import { useDarkMode } from '../Preferences/Hooks';
 import { getDefaultWelcomePageImage } from '../Preferences/Renderers';
 import { userPreferences } from '../Preferences/userPreferences';
-import { icons } from '../Atoms/Icons';
-import { Button } from '../Atoms/Button';
 import { ReactLazy } from '../Router/ReactLazy';
-import { ExpressSearchConfigDialog } from '../ExpressSearchConfig/ExpressSearchConfigDialog';
-import { hasToolPermission } from '../Permissions/helpers';
 
 const TaxonTiles = ReactLazy(async () =>
   import('./TaxonTiles').then(({ TaxonTiles }) => TaxonTiles)
@@ -44,9 +44,9 @@ export function WelcomeView({
         <div className="flex justify-end gap-2 pr-4 pt-4 items-center">
           {canEditExpressSearchConfig && (
             <Button.BorderedGray
+              className="!px-2"
               title={commonText.configureExpressSearch()}
               onClick={() => setIsConfigOpen(true)}
-              className="!px-2"
             >
               {icons.cog}
             </Button.BorderedGray>
