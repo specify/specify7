@@ -4,12 +4,14 @@ import type { RA } from '../../../utils/types';
 import { localized } from '../../../utils/types';
 import { formatNumber } from '../../Atoms/Internationalization';
 import {
+  applyRefreshLayout,
   applyStatBackendResponse,
   generateStatUrl,
   getBackendUrlToFetch,
   getDefaultLayoutFlagged,
   getOffsetOne,
 } from '../hooks';
+import { statsSpec } from '../StatsSpec';
 import type { StatLayout } from '../types';
 import { defaultLayoutTest, statsSpecTest } from './layout.tests';
 
@@ -297,3 +299,85 @@ theories(generateStatUrl, [
     out: '/stats/collection/user/preparations/',
   },
 ]);
+
+test('preparation totals follow the collection preference', () => {
+  const spec =
+    statsSpec.collection.categories.preparations.items.phantomItem.spec;
+
+  if (spec.type !== 'BackEndStat') throw new Error('Expected BackEndStat');
+
+  expect(
+    spec.formatterGenerator({ showPreparationsTotal: true })({
+      lots: 826,
+      total: 430,
+    })
+  ).toBe('826 / 430');
+  expect(
+    spec.formatterGenerator({ showPreparationsTotal: false })({
+      lots: 826,
+      total: 430,
+    })
+  ).toBe('826');
+});
+
+test('stale statistics are cleared after the refresh interval', () => {
+  const layout: StatLayout = {
+    label: 'page',
+    categories: [
+      {
+        label: 'category',
+        items: [
+          {
+            type: 'DefaultStat',
+            itemType: 'BackEndStat',
+            pageName: 'collection',
+            categoryName: 'preparations',
+            itemName: 'phantomItem',
+            label: localized('preparations'),
+            itemValue: '826 / 430',
+          },
+        ],
+      },
+    ],
+    lastUpdated: new Date('2024-01-01T00:00:00Z').toJSON(),
+  };
+  jest
+    .spyOn(Date, 'now')
+    .mockReturnValue(new Date('2024-01-01T01:00:00Z').valueOf());
+
+  const [refreshed] = applyRefreshLayout([layout], 30) ?? [];
+
+  expect(refreshed.lastUpdated).toBeUndefined();
+  expect(refreshed.categories[0].items?.[0].itemValue).toBeUndefined();
+});
+
+test('fresh statistics are kept before the refresh interval', () => {
+  const layout: StatLayout = {
+    label: 'page',
+    categories: [
+      {
+        label: 'category',
+        items: [
+          {
+            type: 'DefaultStat',
+            itemType: 'BackEndStat',
+            pageName: 'collection',
+            categoryName: 'preparations',
+            itemName: 'phantomItem',
+            label: localized('preparations'),
+            itemValue: '826 / 430',
+          },
+        ],
+      },
+    ],
+    lastUpdated: new Date('2024-01-01T00:00:00Z').toJSON(),
+  };
+  jest
+    .spyOn(Date, 'now')
+    .mockReturnValue(new Date('2024-01-01T00:10:00Z').valueOf());
+
+  const [refreshed] = applyRefreshLayout([layout], 30) ?? [];
+
+  expect(refreshed.lastUpdated).toBe(layout.lastUpdated);
+  expect(refreshed.categories[0].items?.[0].itemValue).toBe('826 / 430');
+});

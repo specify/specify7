@@ -706,7 +706,7 @@ class RowPlanCanonical(NamedTuple):
         # Yuk, finally.
 
         # Whether we are something like [det-> (T -- what we are) -> tree].
-        # Set break points in handle_tree_field in query_construct.py to figure out what this means.
+        # Set break points in handle_tree_field in query_construct_model.py to figure out what this means.
         intermediary_to_tree = any(
             canonical.batch_edit_pack is not None
             and canonical.batch_edit_pack.is_part_of_tree(query_fields)

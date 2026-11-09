@@ -21,6 +21,15 @@ from specifyweb.specify.api.serializers import _obj_to_data, toJson
 from specifyweb.specify.api.validators import GetCollectionForm, RowsForm
 
 
+UNIQUENESS_RULE_MODELS = {'uniquenessrule', 'uniquenessrulefield'}
+
+
+def _uniqueness_rule_write_forbidden(request, model: str) -> HttpResponse | None:
+    if model.lower() in UNIQUENESS_RULE_MODELS and not request.specify_user.is_admin():
+        return HttpResponseForbidden('Specifyuser must be an institution admin')
+    return None
+
+
 def resource_dispatch(request, model, id) -> HttpResponse:
     """Handles requests related to individual resources.
 
@@ -58,6 +67,10 @@ def resource_dispatch(request, model, id) -> HttpResponse:
         resp = HttpResponse(toJson(data), content_type='application/json')
 
     elif request.method == 'PUT':
+        forbidden = _uniqueness_rule_write_forbidden(request, model)
+        if forbidden is not None:
+            return forbidden
+
         data = json.load(request)
         # Look for a version field in the resource data itself.
         try:
@@ -73,6 +86,10 @@ def resource_dispatch(request, model, id) -> HttpResponse:
                             content_type='application/json')
 
     elif request.method == 'DELETE':
+        forbidden = _uniqueness_rule_write_forbidden(request, model)
+        if forbidden is not None:
+            return forbidden
+
         if model.lower() == 'discipline' and not request.specify_user.is_admin():
             return HttpResponseForbidden('Specifyuser must be an institution admin')
 
@@ -129,6 +146,10 @@ def collection_dispatch(request, model) -> HttpResponse:
         resp = HttpResponse(toJson(data), content_type='application/json')
 
     elif request.method == 'POST':
+        forbidden = _uniqueness_rule_write_forbidden(request, model)
+        if forbidden is not None:
+            return forbidden
+
         obj = post_resource(request.specify_collection,
                             request.specify_user_agent,
                             model, json.loads(request.body),
