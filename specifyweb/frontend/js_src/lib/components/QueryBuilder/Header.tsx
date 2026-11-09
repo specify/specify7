@@ -183,7 +183,7 @@ export function QueryHeader({
                 Number.POSITIVE_INFINITY;
               return state.fields.every((field) =>
                 field.filters.every(
-                  ({ startValue }) => startValue.length < fieldLengthLimit
+                  ({ startValue }) => startValue.length <= fieldLengthLimit
                 )
               );
             }}
