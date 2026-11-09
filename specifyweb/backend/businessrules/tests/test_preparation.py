@@ -118,6 +118,8 @@ class PreparationTests(ApiTests):
         self.assertEqual(storage.name, 'New Storage')
         self.assertEqual(storage.parent_id, self.rootstorage.id)
         self.assertEqual(storage.definitionitem_id, site.id)
+        self.assertEqual(storage.definition_id, self.storagetreedef.id)
+        self.assertEqual(storage.rankid, 100)
 
     def test_add_multiple_preparations_to_collection_object(self):
         first = post_resource(
