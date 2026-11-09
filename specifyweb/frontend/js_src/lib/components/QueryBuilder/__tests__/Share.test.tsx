@@ -46,10 +46,16 @@ overrideAjax(
   { recipientIds: [1, 2, 3, 4], version: 1 },
   { method: 'PUT', body: { recipientIds: [1, 2, 3, 4], version: 0 } }
 );
-overrideAjax('/stored_query/query/10/shares/', '', {
-  method: 'DELETE',
-  responseCode: 204,
-});
+overrideAjax(
+  '/stored_query/query/10/shares/',
+  {
+    recipientIds: [],
+    version: 1,
+  },
+  {
+    method: 'DELETE',
+  }
+);
 overrideAjax('/stored_query/query/11/shares/', {
   ...recipients,
   recipientIds: [],
@@ -183,7 +189,10 @@ test('supports range selection, select all, deselect all, and confirmed saving',
 
 test('revocation requires confirmation and hides the action after success', async () => {
   const ajax = jest.spyOn(ajaxModule, 'ajax');
-  const onVersionChange = jest.fn();
+  const onVersionChange = jest.fn((version: number) => {
+    expect(version).toBe(1);
+    expect(ajax).toHaveBeenCalledTimes(2);
+  });
   await renderActions(10, onVersionChange);
   await user.click(
     await screen.findByRole('button', { name: queryText.revokeQuerySharing() })
@@ -200,24 +209,44 @@ test('revocation requires confirmation and hides the action after success', asyn
     name: queryText.revokeQuerySharing(),
   });
   ajax.mockResolvedValueOnce({
-    data: '',
-    status: 204,
-    response: {} as Response,
-  });
-  ajax.mockResolvedValueOnce({
-    data: { ...recipients, recipientIds: [], version: 1 },
+    data: { recipientIds: [], version: 1 },
     status: 200,
     response: {} as Response,
+  });
+  let releaseRefresh: (() => void) | undefined;
+  const refreshGate = new Promise<void>((resolve) => {
+    releaseRefresh = resolve;
+  });
+  ajax.mockImplementationOnce(async () => {
+    await refreshGate;
+    return {
+      data: { ...recipients, recipientIds: [], version: 1 },
+      status: 200,
+      response: {} as Response,
+    };
   });
   await user.click(buttons[buttons.length - 1]);
   await waitFor(() =>
     expect(
-      screen.queryByRole('button', { name: queryText.revokeQuerySharing() })
+      screen.getAllByRole('button', { name: queryText.revokeQuerySharing() })
+    ).toHaveLength(1)
+  );
+  expect(
+    screen.getByText(queryText.revokeQuerySharingDescription())
+  ).toBeVisible();
+  expect(ajax).toHaveBeenCalledTimes(3);
+  releaseRefresh?.();
+  await waitFor(() =>
+    expect(
+      screen.queryByText(queryText.revokeQuerySharingDescription())
     ).not.toBeInTheDocument()
   );
   expect(ajax).toHaveBeenCalledWith(
     '/stored_query/query/10/shares/',
-    expect.objectContaining({ method: 'DELETE' })
+    expect.objectContaining({
+      method: 'DELETE',
+      headers: { Accept: 'application/json' },
+    })
   );
   expect(onVersionChange).toHaveBeenCalledTimes(1);
   expect(onVersionChange).toHaveBeenCalledWith(1);

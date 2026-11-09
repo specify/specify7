@@ -187,16 +187,24 @@ export function QuerySharingActions({
               <Button.Danger
                 onClick={(): void =>
                   loading(
-                    ajax(`/stored_query/query/${queryId}/shares/`, {
-                      method: 'DELETE',
-                      headers: { Accept: 'text/plain' },
-                    }).then(async () => {
+                    ajax<QuerySharesUpdate>(
+                      `/stored_query/query/${queryId}/shares/`,
+                      {
+                        method: 'DELETE',
+                        headers: { Accept: 'application/json' },
+                      }
+                    ).then(async ({ data: revokedShares }) => {
+                      setShares((current) =>
+                        current === undefined
+                          ? current
+                          : { ...current, ...revokedShares }
+                      );
+                      onVersionChange(revokedShares.version);
                       const { data } = await ajax<QueryShares>(
                         `/stored_query/query/${queryId}/shares/`,
                         { headers: { Accept: 'application/json' } }
                       );
                       setShares(data);
-                      onVersionChange(data.version);
                       setMode(undefined);
                     })
                   )

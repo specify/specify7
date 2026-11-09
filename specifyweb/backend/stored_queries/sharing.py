@@ -126,7 +126,7 @@ def manage_query_shares(request: HttpRequest, id: int) -> HttpResponse:
         if request.method == "DELETE":
             bump_version(query, query.version)
             query.share_grants.all().delete()
-            return HttpResponse(status=204)
+            return JsonResponse({"recipientIds": [], "version": query.version})
 
         try:
             data = json.loads(request.body)

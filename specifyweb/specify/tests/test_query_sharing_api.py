@@ -250,7 +250,12 @@ class SharedQueryApiTests(SharedQueryFixture, ApiTests):
         )
 
         response = self.client.delete(self.url)
-        self.assertEqual(response.status_code, 204)
+        self.assertEqual(response.status_code, 200)
+        self.query.refresh_from_db()
+        self.assertEqual(
+            response.json(),
+            {"recipientIds": [], "version": self.query.version},
+        )
         self.assertFalse(SpqueryShare.objects.filter(query=self.query).exists())
 
         response = self._recipient_client().get(
@@ -349,7 +354,9 @@ class SharedQueryApiTests(SharedQueryFixture, ApiTests):
     def test_revoking_shares_invalidates_pending_save(self):
         version = self.client.get(self.url).json()["version"]
         SpqueryShare.objects.create(query=self.query, recipient=self.recipient)
-        self.assertEqual(self.client.delete(self.url).status_code, 204)
+        response = self.client.delete(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["version"], version + 1)
         response = self.client.put(
             self.url,
             data={"recipientIds": [self.recipient.id], "version": version},
