@@ -704,6 +704,60 @@ class SharedQueryMergeApiTests(SharedQueryFixture, ApiTests):
                 other_query.refresh_from_db()
                 self.assertEqual(other_query.version, original_version)
 
+    def test_user_merge_does_not_transfer_unowned_query_grants_to_admin(self):
+        source = models.Specifyuser.objects.create(
+            name="unowned_query_source",
+            password="test",
+            isloggedin=False,
+            isloggedinreport=False,
+        )
+        admin_survivor = models.Specifyuser.objects.create(
+            name="admin_survivor",
+            password="test",
+            isloggedin=False,
+            isloggedinreport=False,
+        )
+        UserPolicy.objects.create(
+            collection=None,
+            specifyuser=admin_survivor,
+            resource="%",
+            action="%",
+        )
+        query_owner = models.Specifyuser.objects.create(
+            name="query_owner",
+            password="test",
+            isloggedin=False,
+            isloggedinreport=False,
+        )
+        other_query = models.Spquery.objects.create(
+            name="Query not owned by merge caller",
+            contextname="Collectionobject",
+            contexttableid=models.Collectionobject.specify_model.tableId,
+            specifyuser=query_owner,
+        )
+        grant = SpqueryShare.objects.create(query=other_query, recipient=source)
+        original_version = other_query.version
+        self.assertTrue(admin_survivor.is_admin())
+
+        response = self.client.post(
+            f"/merge/specifyuser/replace/{admin_survivor.id}/",
+            data={"old_record_ids": [source.id], "background": False},
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 403, response.content)
+        self.assertIn("Only the query owner", response.json()["QueryWriteDenied"])
+        self.assertTrue(models.Specifyuser.objects.filter(pk=source.id).exists())
+        grant.refresh_from_db()
+        self.assertEqual(grant.recipient_id, source.id)
+        self.assertFalse(
+            SpqueryShare.objects.filter(
+                query=other_query, recipient=admin_survivor
+            ).exists()
+        )
+        other_query.refresh_from_db()
+        self.assertEqual(other_query.version, original_version)
+
     def test_user_merge_without_grants_allows_non_admin_survivor(self):
         survivor = models.Specifyuser.objects.create(
             name="non_admin_survivor", password="unusable"

@@ -272,13 +272,14 @@ def _record_merge(model_name: str, old_model_ids: list[int], new_model_id: int,
 
         # Copy missing grants before source-user deletion cascades the originals.
         for grant in source_grants:
+            query = locked_queries_by_id[grant.query_id]
+            ensure_query_write_access(query, specify_user.id)
             _, created = SpqueryShare.objects.get_or_create(
                 query_id=grant.query_id, recipient_id=new_model_id
             )
             if created:
                 # The row lock on this query is already held from the ordered
                 # locking pass above, so this cannot acquire locks out of order.
-                query = spmodels.Spquery.objects.select_for_update().get(pk=grant.query_id)
                 bump_version(query, query.version)
 
     dependant_relationships = [(rel.relatedModelName, rel.name)
