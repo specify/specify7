@@ -27,11 +27,13 @@
 
   body.dark {
     color-scheme: dark;
+    --hierarchy-collection-color: #ffb74d;
     @apply text-white;
   }
 
   body:not(.dark) {
     color-scheme: light;
+    --hierarchy-collection-color: #8a4b00;
     @apply text-black;
   }
 
