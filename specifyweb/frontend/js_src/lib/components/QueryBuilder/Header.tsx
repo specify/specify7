@@ -51,9 +51,11 @@ export function QueryHeader({
   isHorizontal,
   onToggleSplit,
   onToggleOrientation,
+  isShared = false,
   canCloneShared = false,
   onRefresh,
 }: {
+  readonly isShared?: boolean;
   readonly canCloneShared?: boolean;
   readonly onRefresh: () => void;
   readonly recordSet?: SpecifyResource<RecordSet>;
@@ -119,7 +121,10 @@ export function QueryHeader({
             onRefresh={onRefresh}
           />
         )}
-        {canCloneShared && <span>{queryText.sharedQueryReadOnly()}</span>}
+        {isShared && <span>{queryText.sharedQueryReadOnly()}</span>}
+        {isShared && canCloneShared && (
+          <span>{queryText.sharedQuerySaveCopy()}</span>
+        )}
         {!isScrolledTop && (
           <Button.Icon
             icon="arrowCircleUp"

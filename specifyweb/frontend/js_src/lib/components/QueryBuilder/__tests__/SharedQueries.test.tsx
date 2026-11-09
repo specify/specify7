@@ -507,6 +507,47 @@ test('read-only definitions allow query execution but cannot change distinct, se
   expect(run).toHaveBeenCalledTimes(1);
 });
 
+test('shared query notice remains visible when cloning is not permitted', async () => {
+  jest.spyOn(permissions, 'hasToolPermission').mockReturnValue(false);
+  jest.spyOn(permissions, 'hasPermission').mockReturnValue(true);
+  const query = makeDataViewQuery('Agent', {
+    fields: [],
+    selectDistinct: false,
+    searchSynonymy: false,
+    smushed: false,
+  });
+  query.set('id', 100);
+  query.set('name', 'Shared agents');
+  query.set(
+    'specifyUser',
+    `/api/specify/specifyuser/${userInformation.id + 1}/`
+  );
+
+  render(
+    <MemoryRouter>
+      <LoadingContext.Provider
+        value={(promise): void => {
+          void promise;
+        }}
+      >
+        <UnloadProtectsContext.Provider value={[]}>
+          <QueryBuilder forceCollection={undefined} query={query} />
+        </UnloadProtectsContext.Provider>
+      </LoadingContext.Provider>
+    </MemoryRouter>
+  );
+
+  expect(
+    await screen.findByText(queryText.sharedQueryReadOnly())
+  ).toBeVisible();
+  expect(
+    screen.queryByText(queryText.sharedQuerySaveCopy())
+  ).not.toBeInTheDocument();
+  expect(
+    screen.queryByRole('button', { name: queryText.saveAs() })
+  ).not.toBeInTheDocument();
+});
+
 test('shared QueryBuilder enables Save As through the Header gate and saves a personal copy', async () => {
   jest
     .spyOn(permissions, 'hasToolPermission')

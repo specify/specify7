@@ -416,6 +416,7 @@ function Wrapped({
            *   See https://github.com/specify/specify7/issues/3000
            */}
           <QueryHeader
+            isShared={isShared}
             canCloneShared={
               isShared &&
               !inheritedReadOnly &&
