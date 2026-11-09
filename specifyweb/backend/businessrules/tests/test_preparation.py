@@ -86,6 +86,39 @@ class PreparationTests(ApiTests):
         preparation.refresh_from_db()
         self.assertEqual(preparation.storage_id, self.rootstorage.id)
 
+    def test_create_preparation_with_new_storage(self):
+        site = self.rootstoragetreedefitem.children.create(
+            name='Site',
+            rankid=100,
+            treedef=self.storagetreedef,
+        )
+
+        preparation = post_resource(
+            self.collection,
+            self.agent,
+            'preparation',
+            self._preparation_data(
+                storage={
+                    'name': 'New Storage',
+                    'parent': uri_for_model('storage', self.rootstorage.id),
+                    'definition': uri_for_model(
+                        'storagetreedef', self.storagetreedef.id
+                    ),
+                    'definitionitem': uri_for_model(
+                        'storagetreedefitem', site.id
+                    ),
+                    'rankid': 100,
+                }
+            ),
+        )
+
+        preparation.refresh_from_db()
+        storage = preparation.storage
+        self.assertIsNotNone(storage)
+        self.assertEqual(storage.name, 'New Storage')
+        self.assertEqual(storage.parent_id, self.rootstorage.id)
+        self.assertEqual(storage.definitionitem_id, site.id)
+
     def test_barcode_unique_to_collection(self):
         prep_type = models.Preptype.objects.create(
             name='testPrepType',
