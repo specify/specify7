@@ -814,9 +814,27 @@ export const resourcesText = createDictionary({
   },
   wrongScopeWarningSummary: {
     'en-us': 'Different collection or discipline',
+    'de-ch': 'Andere Sammlung oder Disziplin',
+    'es-es': 'Colección o disciplina diferente',
+    'fr-fr': 'Collection ou discipline différente',
+    'ru-ru': 'Другая коллекция или дисциплина',
+    'uk-ua': 'Інша колекція або дисципліна',
+    'pt-br': 'Coleção ou disciplina diferente',
+    'hr-hr': 'Druga zbirka ili disciplina',
+    nb: 'Annen samling eller disiplin',
   },
   wrongScopeWarningDetails: {
     'en-us': 'Switch to that collection before editing this resource.',
+    'de-ch':
+      'Wechseln Sie zu dieser Sammlung, bevor Sie diese Ressource bearbeiten.',
+    'es-es': 'Cambia a esa colección antes de editar este recurso.',
+    'fr-fr': 'Passez à cette collection avant de modifier cette ressource.',
+    'ru-ru':
+      'Переключитесь на эту коллекцию перед редактированием этого ресурса.',
+    'uk-ua': 'Перейдіть до цієї колекції, перш ніж редагувати цей ресурс.',
+    'pt-br': 'Mude para essa coleção antes de editar este recurso.',
+    'hr-hr': 'Prije uređivanja ovog resursa prijeđite na tu zbirku.',
+    nb: 'Bytt til denne samlingen før du redigerer denne ressursen.',
   },
   thisFieldName: {
     'en-us': 'This field name (for preview purposes only)',
