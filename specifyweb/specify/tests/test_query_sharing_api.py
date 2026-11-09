@@ -1221,6 +1221,113 @@ class SharedQueryExecutionTests(SharedQueryFixture, SQLAlchemySetup):
         patcher.start()
         self.addCleanup(patcher.stop)
 
+    def test_query_results_hide_unshared_queries_and_relationship_values(self):
+        private_query = models.Spquery.objects.create(
+            name="Unshared result query",
+            contextname="Collectionobject",
+            contexttableid=models.Collectionobject.specify_model.tableId,
+            specifyuser=self.specifyuser,
+        )
+        shared_result_query = models.Spquery.objects.create(
+            name="Shared result query",
+            contextname="Collectionobject",
+            contexttableid=models.Collectionobject.specify_model.tableId,
+            specifyuser=self.specifyuser,
+        )
+        SpqueryShare.objects.create(
+            query=shared_result_query, recipient=self.recipient
+        )
+        for query, fieldname in (
+            (private_query, "Unshared result field"),
+            (shared_result_query, "Shared result field"),
+        ):
+            models.Spqueryfield.objects.create(
+                query=query,
+                fieldname=fieldname,
+                isdisplay=True,
+                operstart=1,
+                position=0,
+                sorttype=0,
+                startvalue="",
+                stringid="1.collectionobject.catalogNumber",
+                tablelist="1",
+            )
+        recipient = self._recipient_client()
+        self._grant_recipient("/querybuilder/query", "execute")
+        self._grant_recipient("/table/spquery", "read")
+        self._grant_recipient("/table/specifyuser", "read")
+
+        def create_results_query(root_table, stringid, tablelist):
+            query = models.Spquery.objects.create(
+                name=f"Results through {root_table.name}",
+                contextname=root_table.name,
+                contexttableid=root_table.tableId,
+                specifyuser=self.specifyuser,
+            )
+            SpqueryShare.objects.create(query=query, recipient=self.recipient)
+            models.Spqueryfield.objects.create(
+                query=query,
+                fieldname="name",
+                isdisplay=True,
+                operstart=1,
+                position=0,
+                sorttype=0,
+                startvalue="",
+                stringid=stringid,
+                tablelist=tablelist,
+            )
+            return query
+
+        spquery_table = models.Spquery.specify_model
+        specifyuser_table = models.Specifyuser.specify_model
+        direct_query = create_results_query(
+            spquery_table,
+            f"{spquery_table.tableId}.spquery.name",
+            str(spquery_table.tableId),
+        )
+        relationship_query = create_results_query(
+            specifyuser_table,
+            (
+                f"{specifyuser_table.tableId},"
+                f"{spquery_table.tableId}-spquerys.spquery.name"
+            ),
+            f"{specifyuser_table.tableId},"
+            f"{spquery_table.tableId}-spquerys",
+        )
+        spqueryfield_table = models.Spqueryfield.specify_model
+        field_query = create_results_query(
+            spqueryfield_table,
+            f"{spqueryfield_table.tableId}.spqueryfield.fieldname",
+            str(spqueryfield_table.tableId),
+        )
+
+        for query in (direct_query, relationship_query, field_query):
+            with self.subTest(root=query.contextname):
+                response = recipient.get(f"/stored_query/query/{query.id}/")
+                self.assertEqual(response.status_code, 200, response.content)
+                result_content = response.content.decode()
+                if query is field_query:
+                    self.assertIn("Shared result field", result_content)
+                    self.assertNotIn("Unshared result field", result_content)
+                else:
+                    self.assertIn("Shared result query", result_content)
+                    self.assertNotIn("Unshared result query", result_content)
+
+        SpqueryShare.objects.filter(
+            query=shared_result_query, recipient=self.recipient
+        ).delete()
+        for query in (direct_query, relationship_query, field_query):
+            with self.subTest(root=query.contextname, revoked=True):
+                response = recipient.get(f"/stored_query/query/{query.id}/")
+                self.assertEqual(response.status_code, 200, response.content)
+                result_content = response.content.decode()
+                if query is field_query:
+                    self.assertNotIn("Shared result field", result_content)
+                    self.assertNotIn("Unshared result field", result_content)
+                else:
+                    self.assertNotIn("Shared result query", result_content)
+                    self.assertNotIn("Unshared result query", result_content)
+
     def test_direct_links_fail_after_access_is_revoked(self):
         self._add_catalog_number_field()
         self._grant_recipient("/querybuilder/query", "execute")

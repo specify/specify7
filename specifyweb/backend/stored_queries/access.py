@@ -33,6 +33,22 @@ def ensure_query_access(query_id: int, user_id: int) -> None:
         raise Http404("Query not found.")
 
 
+def visible_query_ids(user_id: int) -> tuple[list[int], list[int]]:
+    query_model = apps.get_model("specify", "Spquery")
+    field_model = apps.get_model("specify", "Spqueryfield")
+    query_ids = list(
+        filter_queries_for_user(query_model.objects.all(), user_id).values_list(
+            "pk", flat=True
+        )
+    )
+    field_ids = list(
+        field_model.objects.filter(query_id__in=query_ids).values_list(
+            "pk", flat=True
+        )
+    )
+    return query_ids, field_ids
+
+
 def ensure_query_write_access(obj: Model, user_id: int) -> None:
     if isinstance(obj, apps.get_model("specify", "Spquery")):
         owner_id = getattr(obj, "specifyuser_id")
