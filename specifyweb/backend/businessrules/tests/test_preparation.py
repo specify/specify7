@@ -140,6 +140,7 @@ class PreparationTests(ApiTests):
                 'id', flat=True
             )
         )
+        self.assertNotEqual(first.id, second.id)
         self.assertEqual(preparation_ids, {first.id, second.id})
 
     def test_add_preparation_with_prep_type(self):
