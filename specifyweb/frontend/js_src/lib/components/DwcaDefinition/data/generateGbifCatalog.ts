@@ -55,7 +55,10 @@ const parser = new XMLParser({
   ignoreAttributes: false,
   attributeNamePrefix: '@_',
   preserveOrder: true,
-  processEntities: { maxTotalExpansions: Number.POSITIVE_INFINITY },
+  processEntities: {
+    maxTotalExpansions: 10_000,
+    maxExpandedLength: 100_000,
+  },
 });
 
 function getChildren(node: XmlNode, name: string): readonly XmlNode[] {
