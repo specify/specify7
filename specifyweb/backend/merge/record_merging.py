@@ -9,7 +9,7 @@ from collections.abc import Callable
 import traceback
 
 from django import http
-from django.db import IntegrityError, transaction, models
+from django.db import IntegrityError, OperationalError, transaction, models
 from specifyweb.backend.merge.utils import get_app_model
 from specifyweb.backend.notifications.models import Message, Spmerging
 from specifyweb.backend.permissions.models import SpqueryShare
@@ -170,14 +170,43 @@ def fix_record_data(new_record_data, current_model: Table, target_model_name: st
 
 RESTRICT_UPDATE_FIELDS = {'spappresourcedata'}
 
-@transaction.atomic
+MYSQL_DEADLOCK_ERROR = 1213
+MERGE_DEADLOCK_ATTEMPTS = 3
+
 def record_merge_fx(model_name: str, old_model_ids: list[int], new_model_id: int,
                     specify_user: spmodels.Specifyuser,
                     progress: Progress | None=None,
                     new_record_info: dict[str, Any]=None):
     """Replaces all the foreign keys referencing the old record ID
     with the new record ID, and deletes the old record.
+
+    Retries the entire merge transaction if the database aborts it with a
+    deadlock. InnoDB rolls back the whole transaction on a deadlock, so
+    re-running the complete merge preserves atomicity; partial retries are
+    never performed.
     """
+    for attempt in range(MERGE_DEADLOCK_ATTEMPTS):
+        try:
+            return _record_merge(model_name, old_model_ids, new_model_id,
+                                 specify_user, progress, new_record_info)
+        except OperationalError as error:
+            is_deadlock = bool(error.args) and error.args[0] == MYSQL_DEADLOCK_ERROR
+            # Only retry when this is the outermost transaction: inside an
+            # enclosing atomic block the rollback is not under our control.
+            can_retry = (is_deadlock
+                         and attempt + 1 < MERGE_DEADLOCK_ATTEMPTS
+                         and not transaction.get_connection().in_atomic_block)
+            if not can_retry:
+                raise
+            logger.warning(
+                'Deadlock during record merge of %s; retrying transaction (attempt %d of %d)',
+                model_name, attempt + 2, MERGE_DEADLOCK_ATTEMPTS)
+
+@transaction.atomic
+def _record_merge(model_name: str, old_model_ids: list[int], new_model_id: int,
+                  specify_user: spmodels.Specifyuser,
+                  progress: Progress | None=None,
+                  new_record_info: dict[str, Any]=None):
     # Confirm the target model table exists
     model_name = model_name.lower().title()
     target_model = get_app_model(model_name)
@@ -210,6 +239,24 @@ def record_merge_fx(model_name: str, old_model_ids: list[int], new_model_id: int
         ).select_for_update():
             ensure_query_write_access(query, specify_user.id)
 
+        # manage_query_shares locks the Spquery row before touching its grant
+        # rows. Acquire locks in the same order here (queries first, then
+        # grants) so a concurrent share change cannot deadlock with this
+        # merge. The affected queries are only known from the grants, so read
+        # them without locking and re-read until the locked set is stable.
+        locked_query_ids: set[int] = set()
+        while True:
+            grant_query_ids = set(SpqueryShare.objects.filter(
+                recipient_id__in=old_model_ids
+            ).values_list('query_id', flat=True))
+            if grant_query_ids <= locked_query_ids:
+                break
+            locked_query_ids |= grant_query_ids
+            # Evaluate the queryset to acquire the row locks in pk order.
+            list(spmodels.Spquery.objects.filter(
+                id__in=locked_query_ids
+            ).order_by('pk').select_for_update())
+
         source_grants = list(SpqueryShare.objects.filter(
             recipient_id__in=old_model_ids
         ).select_for_update())
@@ -224,6 +271,8 @@ def record_merge_fx(model_name: str, old_model_ids: list[int], new_model_id: int
                 query_id=grant.query_id, recipient_id=new_model_id
             )
             if created:
+                # The row lock on this query is already held from the ordered
+                # locking pass above, so this cannot acquire locks out of order.
                 query = spmodels.Spquery.objects.select_for_update().get(pk=grant.query_id)
                 bump_version(query, query.version)
 
@@ -324,8 +373,10 @@ def record_merge_fx(model_name: str, old_model_ids: list[int], new_model_id: int
                     new_record = foreign_record_lst.first()
                     old_record, new_record = sorted([old_record, new_record], key=key_function)
 
-                    # Make a recursive call to record_merge to resolve duplication error
-                    record_merge_fx(
+                    # Make a recursive call to record_merge to resolve duplication error.
+                    # Call the inner atomic function directly: a deadlock must
+                    # never retry only this nested part of the merge.
+                    _record_merge(
                         table_name, [old_record.pk], new_record.pk, specify_user, progress
                     )
                     if old_record.pk != obj.pk:
