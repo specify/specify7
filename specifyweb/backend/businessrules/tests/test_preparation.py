@@ -140,6 +140,26 @@ class PreparationTests(ApiTests):
         )
         self.assertEqual(preparation_ids, {first.id, second.id})
 
+    def test_add_preparation_with_prep_type(self):
+        other_preptype = models.Preptype.objects.create(
+            name='Other Prep Type',
+            isloanable=False,
+            collection=self.collection,
+        )
+
+        preparation = post_resource(
+            self.collection,
+            self.agent,
+            'preparation',
+            self._preparation_data(
+                preptype=uri_for_model('preptype', self.preptype.id)
+            ),
+        )
+
+        preparation.refresh_from_db()
+        self.assertEqual(preparation.preptype_id, self.preptype.id)
+        self.assertNotEqual(preparation.preptype_id, other_preptype.id)
+
     def test_barcode_unique_to_collection(self):
         prep_type = models.Preptype.objects.create(
             name='testPrepType',
