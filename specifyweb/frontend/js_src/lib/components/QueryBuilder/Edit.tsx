@@ -95,10 +95,10 @@ function EditQueryDialog({
     <div className="flex flex-col">
       <p>{commonText.actions()}</p>
       {isOwner &&
-        userInformation.isadmin &&
         idFromUrl(queryResource.get('specifyUser')) === userInformation.id &&
         queryResource.id !== undefined && (
           <QuerySharingActions
+            canShare={userInformation.isadmin}
             queryId={queryResource.id}
             onVersionChange={onVersionChange}
           />

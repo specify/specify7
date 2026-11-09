@@ -70,7 +70,8 @@ afterEach(() => jest.restoreAllMocks());
 
 async function renderActions(
   queryId = 10,
-  onVersionChange: (version: number) => void = jest.fn()
+  onVersionChange: (version: number) => void = jest.fn(),
+  canShare = true
 ): Promise<void> {
   await act(async () => {
     render(
@@ -81,6 +82,7 @@ async function renderActions(
       >
         <UnloadProtectsContext.Provider value={[]}>
           <QuerySharingActions
+            canShare={canShare}
             queryId={queryId}
             onVersionChange={onVersionChange}
           />
@@ -97,6 +99,53 @@ const user = {
     });
   },
 };
+
+test('non-admin owners can revoke existing grants but cannot change them', async () => {
+  const ajax = jest.spyOn(ajaxModule, 'ajax');
+  ajax
+    .mockResolvedValueOnce({
+      data: { recipientIds: [2], version: 5 },
+      status: 200,
+      response: {} as Response,
+    })
+    .mockResolvedValueOnce({
+      data: { recipientIds: [], version: 6 },
+      status: 200,
+      response: {} as Response,
+    })
+    .mockResolvedValueOnce({
+      data: { recipientIds: [], version: 6 },
+      status: 200,
+      response: {} as Response,
+    });
+  const onVersionChange = jest.fn();
+  await renderActions(12, onVersionChange, false);
+
+  expect(
+    screen.queryByRole('button', { name: queryText.shareQuery() })
+  ).not.toBeInTheDocument();
+  await user.click(
+    await screen.findByRole('button', { name: queryText.revokeQuerySharing() })
+  );
+  const buttons = screen.getAllByRole('button', {
+    name: queryText.revokeQuerySharing(),
+  });
+  await user.click(buttons[buttons.length - 1]);
+
+  await waitFor(() =>
+    expect(
+      screen.queryByRole('button', { name: queryText.revokeQuerySharing() })
+    ).not.toBeInTheDocument()
+  );
+  expect(ajax).toHaveBeenCalledWith(
+    '/stored_query/query/12/shares/',
+    expect.objectContaining({ method: 'DELETE' })
+  );
+  expect(ajax.mock.calls.some(([, options]) => options.method === 'PUT')).toBe(
+    false
+  );
+  expect(onVersionChange).toHaveBeenCalledWith(6);
+});
 
 test('preselects recipients and preserves selection when returning from confirmation', async () => {
   await renderActions();

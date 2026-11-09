@@ -32,6 +32,17 @@ type QueryShares = {
   readonly usersWithoutCollection: RA<QueryShareUser>;
 };
 type QuerySharesUpdate = Pick<QueryShares, 'recipientIds' | 'version'>;
+type QuerySharesResponse = QuerySharesUpdate &
+  Partial<Pick<QueryShares, 'collections' | 'usersWithoutCollection'>>;
+
+function hasRecipientOptions(
+  shares: QuerySharesResponse | undefined
+): shares is QueryShares {
+  return (
+    shares?.collections !== undefined &&
+    shares.usersWithoutCollection !== undefined
+  );
+}
 
 function groupBy<ITEM>(
   items: RA<ITEM>,
@@ -133,16 +144,18 @@ function QueryShareUserCheckbox({
 }
 
 export function QuerySharingActions({
+  canShare,
   queryId,
   onVersionChange,
 }: {
+  readonly canShare: boolean;
   readonly queryId: number;
   readonly onVersionChange: (version: number) => void;
 }): JSX.Element {
-  const [shares, setShares] = useAsyncState(
+  const [shares, setShares] = useAsyncState<QuerySharesResponse>(
     React.useCallback(
       async () =>
-        ajax<QueryShares>(`/stored_query/query/${queryId}/shares/`, {
+        ajax<QuerySharesResponse>(`/stored_query/query/${queryId}/shares/`, {
           headers: { Accept: 'application/json' },
         }).then(({ data }) => data),
       [queryId]
@@ -154,18 +167,20 @@ export function QuerySharingActions({
 
   return (
     <>
-      <Button.LikeLink
-        disabled={shares === undefined}
-        onClick={(): void => setMode('share')}
-      >
-        {queryText.shareQuery()}
-      </Button.LikeLink>
+      {canShare && (
+        <Button.LikeLink
+          disabled={shares === undefined}
+          onClick={(): void => setMode('share')}
+        >
+          {queryText.shareQuery()}
+        </Button.LikeLink>
+      )}
       {shares !== undefined && shares.recipientIds.length > 0 && (
         <Button.LikeLink onClick={(): void => setMode('revoke')}>
           {queryText.revokeQuerySharing()}
         </Button.LikeLink>
       )}
-      {mode === 'share' && shares !== undefined && (
+      {mode === 'share' && canShare && hasRecipientOptions(shares) && (
         <QueryShareDialog
           initialRecipients={shares.recipientIds}
           queryId={queryId}
@@ -200,7 +215,7 @@ export function QuerySharingActions({
                           : { ...current, ...revokedShares }
                       );
                       onVersionChange(revokedShares.version);
-                      const { data } = await ajax<QueryShares>(
+                      const { data } = await ajax<QuerySharesResponse>(
                         `/stored_query/query/${queryId}/shares/`,
                         { headers: { Accept: 'application/json' } }
                       );

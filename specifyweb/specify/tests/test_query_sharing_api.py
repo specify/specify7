@@ -263,7 +263,16 @@ class SharedQueryApiTests(SharedQueryFixture, ApiTests):
         )
         self.assertEqual(response.status_code, 404)
 
-    def test_non_admin_owner_can_manage_query_shares(self):
+    def test_non_admin_owner_can_only_revoke_query_shares(self):
+        create_response = self.client.put(
+            self.url,
+            data=json.dumps(
+                {"recipientIds": [self.recipient.id], "version": self.query.version}
+            ),
+            content_type="application/json",
+        )
+        self.assertEqual(create_response.status_code, 200, create_response.content)
+
         UserPolicy.objects.filter(
             specifyuser=self.specifyuser,
             collection=None,
@@ -278,19 +287,25 @@ class SharedQueryApiTests(SharedQueryFixture, ApiTests):
             action=CollectionAccessPT.access.action(),
         )
 
-        response = self.client.put(
+        get_response = self.client.get(self.url)
+        self.assertEqual(get_response.status_code, 200, get_response.content)
+        self.assertEqual(get_response.json()["recipientIds"], [self.recipient.id])
+        self.assertNotIn("collections", get_response.json())
+        self.assertNotIn("usersWithoutCollection", get_response.json())
+
+        update_response = self.client.put(
             self.url,
             data=json.dumps(
-                {"recipientIds": [self.recipient.id], "version": self.query.version}
+                {"recipientIds": [], "version": get_response.json()["version"]}
             ),
             content_type="application/json",
         )
-        self.assertEqual(response.status_code, 200, response.content)
-        self.assertEqual(response.json()["recipientIds"], [self.recipient.id])
-
-        response = self.client.get(self.url)
-        self.assertEqual(response.status_code, 200, response.content)
-        self.assertEqual(response.json()["recipientIds"], [self.recipient.id])
+        self.assertEqual(update_response.status_code, 403, update_response.content)
+        self.assertTrue(
+            SpqueryShare.objects.filter(
+                query=self.query, recipient=self.recipient
+            ).exists()
+        )
 
         response = self.client.delete(self.url)
         self.assertEqual(response.status_code, 200, response.content)

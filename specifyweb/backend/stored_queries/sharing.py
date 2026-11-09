@@ -115,18 +115,20 @@ def manage_query_shares(request: HttpRequest, id: int) -> HttpResponse:
                     "recipient_id", flat=True
                 )
             )
-            return JsonResponse(
-                {
-                    "recipientIds": recipient_ids,
-                    "version": query.version,
-                    **get_query_share_recipients(),
-                }
-            )
+            response = {"recipientIds": recipient_ids, "version": query.version}
+            if user.is_admin():
+                response.update(get_query_share_recipients())
+            return JsonResponse(response)
 
         if request.method == "DELETE":
             bump_version(query, query.version)
             query.share_grants.all().delete()
             return JsonResponse({"recipientIds": [], "version": query.version})
+
+        if not user.is_admin():
+            return HttpResponseForbidden(
+                "Only a Specify Administrator can change query sharing."
+            )
 
         try:
             data = json.loads(request.body)
