@@ -143,6 +143,11 @@ class PreparationTests(ApiTests):
         self.assertNotEqual(first.id, second.id)
         self.assertEqual(preparation_ids, {first.id, second.id})
 
+        first.refresh_from_db()
+        second.refresh_from_db()
+        self.assertEqual(first.countamt, 1)
+        self.assertEqual(second.countamt, 2)
+
     def test_add_preparation_with_prep_type(self):
         other_preptype = models.Preptype.objects.create(
             name='Other Prep Type',
