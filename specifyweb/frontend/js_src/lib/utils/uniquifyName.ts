@@ -16,6 +16,22 @@ const format = {
   },
 } as const;
 
+const isHighSurrogate = (codeUnit: number): boolean =>
+  codeUnit >= 0xd8_00 && codeUnit <= 0xdb_ff;
+
+/**
+ * Truncate a string to at most maxLength UTF-16 code units, without splitting
+ * a surrogate pair
+ */
+function truncateName(name: string, maxLength: number): string {
+  if (name.length <= maxLength) return name;
+  const safeLength =
+    maxLength > 0 && isHighSurrogate(name.charCodeAt(maxLength - 1))
+      ? maxLength - 1
+      : maxLength;
+  return name.slice(0, safeLength);
+}
+
 export function getUniqueName(
   name: string,
   usedNames: RA<string>,
@@ -29,15 +45,17 @@ export function getUniqueName(
   maxLength: number = Number.POSITIVE_INFINITY,
   type: keyof typeof format = 'title'
 ): LocalizedString {
-  if (!usedNames.includes(name)) return localized(name);
+  const truncatedName = truncateName(name, maxLength);
+  if (!usedNames.includes(truncatedName)) return localized(truncatedName);
   const { prefix, suffix } = format[type];
   const reSuffix = new RegExp(
     `${escapeRegExp(prefix)}(\\d+)${escapeRegExp(suffix)}$`,
     'u'
   );
-  const matchedSuffix = reSuffix.exec(name);
+  const matchedSuffix = reSuffix.exec(truncatedName);
   const [{ length }, indexString] = matchedSuffix ?? ([[], '0'] as const);
-  const strippedName = length > 0 ? name.slice(0, -1 * length) : name;
+  const strippedName =
+    length > 0 ? truncatedName.slice(0, -1 * length) : truncatedName;
   const indexRegex = new RegExp(
     `^${escapeRegExp(strippedName)}${reSuffix.source}`,
     'u'
@@ -57,9 +75,7 @@ export function getUniqueName(
 
   return newName.length > maxLength
     ? getUniqueName(
-        Array.from(name)
-          .slice(0, -1 * uniquePart.length)
-          .join(''),
+        truncateName(truncatedName, Math.max(maxLength - uniquePart.length, 0)),
         usedNames,
         maxLength,
         type
