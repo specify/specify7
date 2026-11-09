@@ -581,6 +581,30 @@ class SharedQueryMergeApiTests(SharedQueryFixture, ApiTests):
         self.assertEqual(response.status_code, 409, response.content)
         ensure_query_access(self.query.id, survivor.id)
 
+    def test_query_owner_can_transfer_grants_to_non_admin_survivor(self):
+        source = models.Specifyuser.objects.create(
+            name="merge_source_recipient",
+            password="test",
+            isloggedin=False,
+            isloggedinreport=False,
+        )
+        SpqueryShare.objects.create(query=self.query, recipient=source)
+        self.assertFalse(self.recipient.is_admin())
+
+        response = self.client.post(
+            f"/merge/specifyuser/replace/{self.recipient.id}/",
+            data={"old_record_ids": [source.id], "background": False},
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 204, response.content)
+        self.assertFalse(models.Specifyuser.objects.filter(pk=source.id).exists())
+        self.assertTrue(
+            SpqueryShare.objects.filter(
+                query=self.query, recipient=self.recipient
+            ).exists()
+        )
+
     def test_user_merge_skips_duplicate_recipient_grants(self):
         other_recipient = models.Specifyuser.objects.create(
             name="other_recipient", password="unusable"
@@ -631,15 +655,29 @@ class SharedQueryMergeApiTests(SharedQueryFixture, ApiTests):
         source = models.Specifyuser.objects.create(
             name="another_merge_source", password="unusable"
         )
-        grant = SpqueryShare.objects.create(query=self.query, recipient=source)
-        original_version = self.query.version
+        query_owner = models.Specifyuser.objects.create(
+            name="another_query_owner",
+            password="test",
+            isloggedin=False,
+            isloggedinreport=False,
+        )
+        other_query = models.Spquery.objects.create(
+            name="Query owned by another user",
+            contextname="Collectionobject",
+            contexttableid=models.Collectionobject.specify_model.tableId,
+            specifyuser=query_owner,
+        )
+        grant = SpqueryShare.objects.create(query=other_query, recipient=source)
+        original_version = other_query.version
         self.assertFalse(survivor.is_admin())
 
         for duplicate in (False, True):
             with self.subTest(duplicate=duplicate):
                 if duplicate:
-                    SpqueryShare.objects.create(query=self.query, recipient=survivor)
-                original_grants = set(self.query.share_grants.values_list("id", flat=True))
+                    SpqueryShare.objects.create(query=other_query, recipient=survivor)
+                original_grants = set(
+                    other_query.share_grants.values_list("id", flat=True)
+                )
                 response = self.client.post(
                     f"/merge/specifyuser/replace/{survivor.id}/",
                     data={
@@ -660,11 +698,11 @@ class SharedQueryMergeApiTests(SharedQueryFixture, ApiTests):
                 grant.refresh_from_db()
                 self.assertEqual(grant.recipient_id, source.id)
                 self.assertEqual(
-                    set(self.query.share_grants.values_list("id", flat=True)),
+                    set(other_query.share_grants.values_list("id", flat=True)),
                     original_grants,
                 )
-                self.query.refresh_from_db()
-                self.assertEqual(self.query.version, original_version)
+                other_query.refresh_from_db()
+                self.assertEqual(other_query.version, original_version)
 
     def test_user_merge_without_grants_allows_non_admin_survivor(self):
         survivor = models.Specifyuser.objects.create(

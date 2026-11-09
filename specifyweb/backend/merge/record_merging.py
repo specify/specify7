@@ -245,6 +245,7 @@ def _record_merge(model_name: str, old_model_ids: list[int], new_model_id: int,
         # merge. The affected queries are only known from the grants, so read
         # them without locking and re-read until the locked set is stable.
         locked_query_ids: set[int] = set()
+        locked_queries: list[spmodels.Spquery] = []
         while True:
             grant_query_ids = set(SpqueryShare.objects.filter(
                 recipient_id__in=old_model_ids
@@ -253,16 +254,20 @@ def _record_merge(model_name: str, old_model_ids: list[int], new_model_id: int,
                 break
             locked_query_ids |= grant_query_ids
             # Evaluate the queryset to acquire the row locks in pk order.
-            list(spmodels.Spquery.objects.filter(
+            locked_queries = list(spmodels.Spquery.objects.filter(
                 id__in=locked_query_ids
             ).order_by('pk').select_for_update())
+        locked_queries_by_id = {query.pk: query for query in locked_queries}
 
         source_grants = list(SpqueryShare.objects.filter(
             recipient_id__in=old_model_ids
         ).select_for_update())
-        if source_grants and not target_object.is_admin():
+        if source_grants and not target_object.is_admin() and any(
+            locked_queries_by_id[grant.query_id].specifyuser_id != specify_user.id
+            for grant in source_grants
+        ):
             raise QueryWriteDenied(
-                "Query sharing grants can only be transferred to a Specify Administrator."
+                "Only a query owner or a Specify Administrator can transfer sharing grants."
             )
 
         # Copy missing grants before source-user deletion cascades the originals.
