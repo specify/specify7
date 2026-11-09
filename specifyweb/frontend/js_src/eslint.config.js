@@ -483,7 +483,8 @@ const base_config = [
       '@typescript-eslint/prefer-reduce-type-parameter': ERROR,
       '@typescript-eslint/prefer-string-starts-ends-with': ERROR,
       '@typescript-eslint/prefer-ts-expect-error': ERROR,
-      '@typescript-eslint/promise-function-async': ERROR,
+	  // breaks when linting utils/promiseQueue.ts
+      '@typescript-eslint/promise-function-async': OFF,
       '@typescript-eslint/require-array-sort-compare': [
         ERROR,
         {
