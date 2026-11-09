@@ -8,9 +8,22 @@ environment, install host dependencies, or create a new virtual environment.
 
 - Find the application container with `docker ps` (service defined in
   `docker-compose.yml`; currently named `specify7`).
-- The container's working directory is `/opt/specify7`, with the source mounted
-  from this workspace, so code changes are picked up without rebuilding.
-- Always pass `--keepdb` to preserve the test database between runs.
+- The container's working directory is `/opt/specify7`. Compose mounts only this
+  workspace's `specifyweb` directory at `/opt/specify7/specifyweb`; it does not
+  mount the workspace root. Changes under `specifyweb` are picked up without
+  rebuilding, but `manage.py` is copied into the image. After changing
+  `manage.py`, rebuild the image and recreate the application container before
+  running tests so they use the updated file:
+
+  ```sh
+  docker compose build specify7
+  docker compose up -d --force-recreate specify7
+  ```
+- For ordinary test runs, pass `--keepdb` to preserve the test database
+  between runs. After applying a migration, omit `--keepdb` so Django recreates
+  the test database with the updated schema. If Django asks whether to delete
+  the existing test database, answer `yes` (or type `yes` at the prompt) to
+  allow recreation.
 
 Interactive workflow:
 
@@ -20,10 +33,13 @@ source ve/bin/activate
 python manage.py test TEST_MODULE --keepdb
 ```
 
+Replace `CONTAINER_ID_NAME` with the application container name found using
+`docker ps`.
+
 Non-interactive (preferred for automation):
 
 ```sh
-docker exec specify7 /bin/bash -c 'source ve/bin/activate && python manage.py test TEST_MODULE --keepdb -v3'
+docker exec CONTAINER_ID_NAME /bin/bash -c 'source ve/bin/activate && python manage.py test TEST_MODULE --keepdb -v3'
 ```
 
 Replace `TEST_MODULE` with the relevant dotted module path, for example
