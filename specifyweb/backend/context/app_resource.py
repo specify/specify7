@@ -4,6 +4,7 @@ Logic for finding App Resources
 Specify Application resources are hierarchical in nature and may be stored in either the
 database or the filesystem with database resources taking precedence over the filesystem.
 """
+import copy
 import errno
 import json
 import logging
@@ -329,6 +330,9 @@ def merge_formatters(custom_xml, default_xml):
         if class_name and key not in custom_keys and (
             class_name not in custom_classes or element.get('name') in required_formats
         ):
+            if class_name in custom_classes and element.get('default') is not None:
+                element = copy.deepcopy(element)
+                element.attrib.pop('default')
             custom_root.append(element)
             custom_keys.add(key)
 
@@ -342,6 +346,14 @@ def merge_formatters(custom_xml, default_xml):
             }
             if custom_aggregators is not None else set()
         )
+        custom_default_classes = (
+            {
+                element.get('class')
+                for element in custom_aggregators.findall('aggregator')
+                if element.get('default') == 'true'
+            }
+            if custom_aggregators is not None else set()
+        )
         for element in default_aggregators.findall('aggregator'):
             if element.get('name') not in required_aggregators or (
                 element.get('class'), element.get('name')
@@ -349,6 +361,12 @@ def merge_formatters(custom_xml, default_xml):
                 continue
             if custom_aggregators is None:
                 custom_aggregators = ElementTree.SubElement(custom_root, 'aggregators')
+            if (
+                element.get('class') in custom_default_classes
+                and element.get('default') is not None
+            ):
+                element = copy.deepcopy(element)
+                element.attrib.pop('default')
             custom_aggregators.append(element)
             existing.add((element.get('class'), element.get('name')))
     

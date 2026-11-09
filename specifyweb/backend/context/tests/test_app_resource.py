@@ -69,6 +69,7 @@ class TestMergeFormatters(SimpleTestCase):
           <aggregators>
             <aggregator class="edu.ku.brc.specify.datamodel.Collector" name="Collector" default="true"/>
             <aggregator class="edu.ku.brc.specify.datamodel.Determiner" name="Determiner" default="true"/>
+            <aggregator class="edu.ku.brc.specify.datamodel.AgentIdentifier" name="Custom Identifier" default="true"/>
           </aggregators>
         </formatters>'''
         backstop = (
@@ -80,6 +81,24 @@ class TestMergeFormatters(SimpleTestCase):
             self.assertIsNotNone(merged.find(f'format[@name="{name}"]'))
         for name in ('AgentIdentifier', 'Collector Identifiers', 'Determiner Identifiers'):
             self.assertIsNotNone(merged.find(f'aggregators/aggregator[@name="{name}"]'))
+        self.assertEqual(
+            [
+                node.get('name')
+                for node in merged.findall(
+                    'format[@class="edu.ku.brc.specify.datamodel.AgentIdentifier"][@default="true"]'
+                )
+            ],
+            ['CustomIdentifier'],
+        )
+        self.assertEqual(
+            [
+                node.get('name')
+                for node in merged.findall(
+                    'aggregators/aggregator[@class="edu.ku.brc.specify.datamodel.AgentIdentifier"][@default="true"]'
+                )
+            ],
+            ['Custom Identifier'],
+        )
 
 
 class TestAppResource(ApiTests):
