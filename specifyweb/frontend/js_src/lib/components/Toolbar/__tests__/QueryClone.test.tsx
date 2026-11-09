@@ -55,7 +55,9 @@ test.each(['success', 'failure'] as const)(
       .mockResolvedValue(response);
     jest.spyOn(permissions, 'hasToolPermission').mockReturnValue(true);
 
-    async function startRefresh(): Promise<() => void> {
+    async function startRefresh(
+      expectCloneDialog = false
+    ): Promise<() => void> {
       let finishRefresh!: () => void;
       fetch.mockReturnValueOnce(
         new Promise((resolve) => {
@@ -65,9 +67,11 @@ test.each(['success', 'failure'] as const)(
       await act(async () => {
         fireEvent(window, new Event('focus'));
       });
-      expect(
-        screen.queryByRole('link', { name: /useful query/i })
-      ).not.toBeInTheDocument();
+      expect(screen.getByRole('link', { name: /useful query/i })).toBeVisible();
+      if (expectCloneDialog)
+        expect(
+          screen.getByText(queryText.confirmCloneSharedQuery({ queryName }))
+        ).toBeVisible();
       return finishRefresh;
     }
 
@@ -101,7 +105,7 @@ test.each(['success', 'failure'] as const)(
     expect(
       screen.getByText(queryText.confirmCloneSharedQuery({ queryName }))
     ).toBeVisible();
-    const finishConfirmationRefresh = await startRefresh();
+    const finishConfirmationRefresh = await startRefresh(true);
     await act(async () => finishConfirmationRefresh());
     expect(
       screen.getByText(queryText.confirmCloneSharedQuery({ queryName }))
@@ -141,7 +145,7 @@ test.each(['success', 'failure'] as const)(
     expect(mockCloneSharedQuery).toHaveBeenCalledWith(
       expect.objectContaining({ id: query.id })
     );
-    const finishPendingRefresh = await startRefresh();
+    const finishPendingRefresh = await startRefresh(true);
     await act(async () => finishPendingRefresh());
     const continueButton = screen.getByRole('button', {
       name: interactionsText.continue(),
@@ -150,7 +154,7 @@ test.each(['success', 'failure'] as const)(
     fireEvent.click(continueButton);
     expect(mockCloneSharedQuery).toHaveBeenCalledTimes(1);
 
-    const finishCompletionRefresh = await startRefresh();
+    const finishCompletionRefresh = await startRefresh(true);
     const error = new Error('Clone failed');
     await act(async () => {
       if (outcome === 'success') resolveClone(101);

@@ -10,6 +10,7 @@ import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
+import { raise } from '../Errors/Crash';
 import { Button } from '../Atoms/Button';
 import { Input } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
@@ -131,45 +132,33 @@ export function QueryListDialog({
     Readonly<Record<number, CloneState>>
   >({});
   const ownerId = filters?.specifyUser ?? userInformation.id;
-  const [data] = useAsyncState(
-    React.useCallback(
-      async () =>
-        fetchCollection(
-          'SpQuery',
-          {
-            limit,
-            domainFilter: false,
-            ...(section === 'shared'
-              ? { contextTableId: filters?.contextTableId }
-              : { ...filters, specifyUser: ownerId }),
-            offset,
-            orderBy,
-          },
-          {
-            ...(section === 'shared'
-              ? { share_grants__recipient: userInformation.id }
-              : {
-                  share_grants__isnull:
-                    section === 'personal' ? 'true' : 'false',
-                }),
-            ...(searchFilter === ''
-              ? {}
-              : backendFilter('name').caseInsensitiveContains(searchFilter)),
-          }
-        ),
-      [
-        filters,
-        ownerId,
-        limit,
-        offset,
-        orderBy,
-        searchFilter,
-        section,
-        refreshToken,
-      ]
-    ),
-    false
+  const fetchQueries = React.useCallback(
+    async () =>
+      fetchCollection(
+        'SpQuery',
+        {
+          limit,
+          domainFilter: false,
+          ...(section === 'shared'
+            ? { contextTableId: filters?.contextTableId }
+            : { ...filters, specifyUser: ownerId }),
+          offset,
+          orderBy,
+        },
+        {
+          ...(section === 'shared'
+            ? { share_grants__recipient: userInformation.id }
+            : {
+                share_grants__isnull: section === 'personal' ? 'true' : 'false',
+              }),
+          ...(searchFilter === ''
+            ? {}
+            : backendFilter('name').caseInsensitiveContains(searchFilter)),
+        }
+      ),
+    [filters, ownerId, limit, offset, orderBy, searchFilter, section]
   );
+  const [data, setData] = useAsyncState(fetchQueries, false);
 
   React.useEffect(
     () =>
@@ -191,6 +180,22 @@ export function QueryListDialog({
       window.removeEventListener('focus', handleFocus);
     };
   }, [section]);
+
+  const lastRefreshToken = React.useRef(refreshToken);
+  React.useEffect(() => {
+    if (lastRefreshToken.current === refreshToken) return;
+    lastRefreshToken.current = refreshToken;
+
+    let isCurrent = true;
+    void fetchQueries()
+      .then((newData) => {
+        if (isCurrent) setData(newData);
+      })
+      .catch(raise);
+    return (): void => {
+      isCurrent = false;
+    };
+  }, [fetchQueries, refreshToken, setData]);
 
   React.useEffect(() => {
     if (data === undefined) return;
