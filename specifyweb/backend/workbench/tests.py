@@ -369,7 +369,6 @@ class AuditLogTests(ApiTests):
         }
         collection_object=create_obj(self.collection, self.agent, "Collectionobject", obj_data)
 
-        Collectionobject.objects.get()
 
         plan = UploadTable(
             name="Collectionobject",
@@ -380,7 +379,7 @@ class AuditLogTests(ApiTests):
             toOne={
                 "collectingevent":UploadTable(
                     name="Collectingevent",
-                    wbcols={"collectingEventId":parse_column_options("eventid")},
+                    wbcols={"stationfieldnumber":parse_column_options("eventid")},
                     overrideScope=None,
                     static={},
                     toOne={},
@@ -389,10 +388,15 @@ class AuditLogTests(ApiTests):
             }
         )
         data = [
-                {"catno":"111111111", "eventid":str(event_1)}
+                {"catno":collection_object.catalognumber, "eventid":event_1.stationfieldnumber}
         ]
-        upload_results=uploader.do_upload(self.collection, data, plan, self.agent.id)
+
+        batch_edit_packs=[
+                {"self": {"id": collection_object.id, "version":collection_object.version}}
+        ]
+
+        upload_results=uploader.do_upload(self.collection, data, plan, self.agent.id, batch_edit_packs=batch_edit_packs)
         self.assertFalse(any(map(lambda obj : obj.contains_failure(), upload_results)))
         latest_update=Spauditlogfield.objects.order_by("timestampcreated")[0]
-        self.assertEqual(latest_update.spauditlog.recordid, get_table_id_by_model_name(collection_object.Meta.db_table))
-        self.assertEqual(latest_update.feildname, "collectingevent")
+        self.assertEqual(latest_update.spauditlog.recordid, collection_object.id)
+        self.assertEqual(latest_update.fieldname, "collectingevent")
