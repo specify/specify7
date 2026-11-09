@@ -12,12 +12,14 @@ environment, install host dependencies, or create a new virtual environment.
   workspace's `specifyweb` directory at `/opt/specify7/specifyweb`; it does not
   mount the workspace root. Changes under `specifyweb` are picked up without
   rebuilding, but `manage.py` is copied into the image. After changing
-  `manage.py`, rebuild the image and recreate the application container before
-  running tests so they use the updated file:
+  `manage.py`, ensure `mariadb` and `webpack` are running, rebuild the image,
+  then recreate only the `specify7` service before running tests so they use
+  the updated file:
 
   ```sh
+  docker compose up -d mariadb webpack
   docker compose build specify7
-  docker compose up -d --force-recreate specify7
+  docker compose up -d --force-recreate --no-deps specify7
   ```
 - For ordinary test runs, pass `--keepdb` to preserve the test database
   between runs. After applying a migration, omit `--keepdb` so Django recreates
