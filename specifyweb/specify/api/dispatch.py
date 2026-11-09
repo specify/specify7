@@ -14,11 +14,15 @@ from django.shortcuts import get_object_or_404
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 from specifyweb.backend.permissions.permissions import enforce, table_permissions_checker
 from specifyweb.backend.stored_queries.access import ensure_query_access
-from specifyweb.specify.api.crud import apply_filters, delete_resource, get_collection, get_resource, post_resource, put_resource
+from specifyweb.specify.api.crud import apply_filters, delete_resource, get_collection, get_model_or_404, get_resource, post_resource, put_resource
 from specifyweb.specify.api.exceptions import FilterError, OrderByError
 from specifyweb.specify.api.filter_by_col import filter_by_collection
 from specifyweb.specify.api.serializers import _obj_to_data, toJson
-from specifyweb.specify.api.validators import GetCollectionForm, RowsForm
+from specifyweb.specify.api.validators import (
+    GetCollectionForm,
+    RowsForm,
+    has_unfiltered_query_path,
+)
 
 
 UNIQUENESS_RULE_MODELS = {'uniquenessrule', 'uniquenessrulefield'}
@@ -132,6 +136,17 @@ def collection_dispatch(request, model) -> HttpResponse:
         if not control_params.is_valid():
             return HttpResponseBadRequest(toJson(control_params.errors),
                                           content_type='application/json')
+        query_model = get_model_or_404(model)
+        filter_paths = [
+            key for key in request.GET.keys() if key not in control_params.cleaned_data
+        ]
+        if any(
+            has_unfiltered_query_path(query_model, filter_path)
+            for filter_path in filter_paths
+        ):
+            return HttpResponseBadRequest(
+                "Query-related filters must use a query or query-field root with visibility checks."
+            )
         try:
             data = get_collection(
                 request.specify_collection,

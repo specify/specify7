@@ -123,6 +123,34 @@ class SharedQueryApiTests(SharedQueryFixture, ApiTests):
                 )
                 self.assertEqual(response.status_code, 400, response.content)
 
+    def test_rows_and_collection_reject_query_filters_from_other_roots(self):
+        row_url = "/table_rows/specify_rows/specifyuser/"
+        collection_url = "/api/specify/specifyuser/"
+        for url, params in (
+            (
+                row_url,
+                {"fields": "id", "spquerys__name__icontains": "Shared"},
+            ),
+            (
+                collection_url,
+                {"domainfilter": "false", "spquerys__name__icontains": "Shared"},
+            ),
+        ):
+            with self.subTest(url=url):
+                response = self.client.get(url, params)
+                self.assertEqual(response.status_code, 400, response.content)
+
+        for url, params in (
+            (row_url, {"fields": "id", "name": self.specifyuser.name}),
+            (
+                collection_url,
+                {"domainfilter": "false", "name": self.specifyuser.name},
+            ),
+        ):
+            with self.subTest(url=url, unrelated_filter=True):
+                response = self.client.get(url, params)
+                self.assertEqual(response.status_code, 200, response.content)
+
     def test_query_fields_are_limited_to_owned_or_shared_queries(self):
         private_query = models.Spquery.objects.create(
             name=f"Private query {self.collection.id}",

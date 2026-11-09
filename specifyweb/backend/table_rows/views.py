@@ -3,30 +3,15 @@ from specifyweb.specify.api.crud import apply_filters
 from specifyweb.specify.api.exceptions import OrderByError
 from specifyweb.specify.api.filter_by_col import filter_by_collection
 from specifyweb.specify.api.serializers import toJson
-from specifyweb.specify.api.validators import RowsForm
+from specifyweb.specify.api.validators import RowsForm, has_unfiltered_query_path
 from specifyweb.specify.views import login_maybe_required
 from django.http import (HttpResponse, HttpResponseBadRequest)
 from specifyweb.backend.permissions.permissions import enforce
-from django.core.exceptions import FieldDoesNotExist, FieldError
-from specifyweb.specify.models import Spquery, Spqueryfield
+from django.core.exceptions import FieldError
 
 
-def _has_unfiltered_query_projection(model, path: str) -> bool:
-    """Root visibility filters only cover paths within queries and their fields."""
-    query_models = (Spquery, Spqueryfield)
-    for name in path.split('__'):
-        try:
-            field = model._meta.get_field(name)
-        except FieldDoesNotExist:
-            # Let values_list report invalid fields and handle field transforms.
-            return False
-        related_model = field.related_model
-        if related_model is None:
-            return False
-        if related_model in query_models and model not in query_models:
-            return True
-        model = related_model
-    return False
+_has_unfiltered_query_projection = has_unfiltered_query_path
+_has_unfiltered_query_filter = has_unfiltered_query_path
 
 @login_maybe_required
 @require_http_methods(['GET', 'HEAD'])
@@ -53,9 +38,17 @@ def rows(request, model: str) -> HttpResponse:
         query = query.filter(query__in=visible_queries)
 
     fields = form.cleaned_data['fields'].split(',')
-    if any(_has_unfiltered_query_projection(query.model, field) for field in fields):
+    filter_paths = [
+        key for key in request.GET.keys() if key not in form.cleaned_data
+    ]
+    if any(
+        _has_unfiltered_query_projection(query.model, field) for field in fields
+    ) or any(
+        _has_unfiltered_query_filter(query.model, filter_path)
+        for filter_path in filter_paths
+    ):
         return HttpResponseBadRequest(
-            "Query-related projections must use a query or query-field root with visibility checks."
+            "Query-related projections and filters must use a query or query-field root with visibility checks."
         )
     try:
         query = query.values_list(*fields).order_by(*fields)
