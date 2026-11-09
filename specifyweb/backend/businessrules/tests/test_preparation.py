@@ -73,6 +73,19 @@ class PreparationTests(ApiTests):
         self.assertEqual(preparation.prepareddate, prepared_date)
         self.assertEqual(preparation.prepareddateprecision, 2)
 
+    def test_add_preparation_with_existing_storage(self):
+        preparation = post_resource(
+            self.collection,
+            self.agent,
+            'preparation',
+            self._preparation_data(
+                storage=uri_for_model('storage', self.rootstorage.id)
+            ),
+        )
+
+        preparation.refresh_from_db()
+        self.assertEqual(preparation.storage_id, self.rootstorage.id)
+
     def test_barcode_unique_to_collection(self):
         prep_type = models.Preptype.objects.create(
             name='testPrepType',
