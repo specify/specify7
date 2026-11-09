@@ -2,6 +2,7 @@ import { screen } from '@testing-library/react';
 import { statsText } from '../../../localization/stats';
 import { requireContext } from '../../../tests/helpers';
 import type { RA } from '../../../utils/types';
+import { formatNumber } from '../../Atoms/Internationalization';
 import { defaultLayoutGenerated } from '../StatsSpec';
 import type { StatLayout } from '../types';
 import { mockStatsRequests, renderEmptyStatsPage } from './statsPageTestUtils';
@@ -99,7 +100,7 @@ describe('Statistics initial load with no saved layout', () => {
       'Neotype',
     ]);
     typeSpecimens?.items.forEach((item) =>
-      expect(item.itemValue).toBeDefined()
+      expect(item.itemValue).toBe(formatNumber(7))
     );
   });
 });

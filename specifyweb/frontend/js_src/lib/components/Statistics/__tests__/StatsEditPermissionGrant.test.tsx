@@ -152,7 +152,7 @@ describe('Granting Statistics edit access to a role', () => {
   });
 
   test('unchecking "Edit Shared" does not grant the access', async () => {
-    const { user } = renderRoleView({
+    const { user, handleSave } = renderRoleView({
       ...statsEditor,
       id: undefined,
       policies: [],
@@ -163,6 +163,8 @@ describe('Granting Statistics edit access to a role', () => {
 
     expect(checkbox).not.toBeChecked();
     expect(checkbox).toBeRequired();
+    await user.click(screen.getByRole('button', { name: commonText.save() }));
+    expect(handleSave).not.toHaveBeenCalled();
   });
 });
 
