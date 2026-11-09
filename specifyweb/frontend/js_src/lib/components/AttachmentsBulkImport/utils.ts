@@ -407,7 +407,6 @@ const validationPromiseGenerator = async (
   }>('/stored_query/ephemeral/', {
     method: 'POST',
     headers: {
-       
       Accept: 'application/json',
     },
     body: keysToLowerCase({

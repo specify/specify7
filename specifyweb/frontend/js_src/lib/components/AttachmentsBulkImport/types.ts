@@ -89,9 +89,8 @@ export type AttachmentWorkProgress = {
 };
 
 export type AttachmentWorkRef = {
-   
   mappedFiles: RA<PartialUploadableFileSpec>;
-   
+
   uploadPromise: Promise<number | undefined>;
   readonly retrySpec: Record<number, number>;
 };

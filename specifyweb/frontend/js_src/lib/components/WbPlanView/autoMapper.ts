@@ -95,8 +95,7 @@ type AutoMapperHeadersToMapActions = Action<
 >;
 
 type AutoMapperSearchedTablesActions =
-  | Action<'add', { readonly tableName: keyof Tables }>
-  | Action<'reset'>;
+  Action<'add', { readonly tableName: keyof Tables }> | Action<'reset'>;
 
 type AutoMapperFindMappingsQueueActions =
   | Action<
@@ -222,7 +221,6 @@ export class AutoMapper {
   private readonly getMappedFields: (mappingPath: MappingPath) => RA<string>;
 
   private readonly headersToMap: IR<{
-     
     isMapped: boolean;
     // OriginalHeaderName.toLowerCase() and trimmed
     readonly lowercaseHeaderName: string;
@@ -235,14 +233,13 @@ export class AutoMapper {
     readonly finalHeaderName: string;
   }> = {};
 
-   
   private searchedTables: WritableArray<string> = [];
 
   /*
    * Used to enforce higher priority for closer mappings
    * (breadth-first-search)
    */
-   
+
   private findMappingsQueue: WritableArray<
     WritableArray<FindMappingsParameters>
   > = [];
@@ -322,7 +319,8 @@ export class AutoMapper {
             .replaceAll(regexRemoveParentheses, ' ')
             .replaceAll(regexRemoveNonAz, ' ')
             .replaceAll(regexReplaceWhiteSpace, ' ')
-            .trim().replaceAll(' ', '');
+            .trim()
+            .replaceAll(' ', '');
 
           return {
             originalName,
@@ -780,8 +778,7 @@ export class AutoMapper {
                         const match =
                           regularExpression.exec(lowercaseHeaderName);
 
-                        if (match?.[1] === undefined)
-                          return false;
+                        if (match?.[1] === undefined) return false;
 
                         toManyIndex = Number(match[1]);
                         return true;

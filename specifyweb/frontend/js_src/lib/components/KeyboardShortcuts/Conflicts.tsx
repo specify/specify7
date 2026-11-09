@@ -31,7 +31,9 @@ const ShortcutLabels = React.createContext<
   Readonly<Record<string, React.ReactNode>>
 >({});
 const fetchShortcutLabels = async () =>
-  import('./UrlShortcuts').then(async ({ getShortcutLabels }) => getShortcutLabels());
+  import('./UrlShortcuts').then(async ({ getShortcutLabels }) =>
+    getShortcutLabels()
+  );
 
 const ShortcutAssignments = React.createContext<RA<Assignment>>([]);
 

@@ -167,10 +167,12 @@ type RecordResultTypes =
 
 // Records the specific result of attempting to upload a particular record
 type WbRecordResult = {
-  readonly [recordResultType in RecordResultTypes['type']]: Readonly<Record<recordResultType, Omit<
-      Extract<RecordResultTypes, State<recordResultType>>,
-      'type'
-    >>>;
+  readonly [recordResultType in RecordResultTypes['type']]: Readonly<
+    Record<
+      recordResultType,
+      Omit<Extract<RecordResultTypes, State<recordResultType>>, 'type'>
+    >
+  >;
 }[RecordResultTypes['type']];
 
 export type UploadResult = {

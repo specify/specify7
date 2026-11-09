@@ -49,8 +49,7 @@ export const f = {
   /** Like Promise.all, but accepts a dictionary instead of an array */
   all: async <T extends IR<unknown>>(dictionary: {
     readonly [PROMISE_NAME in keyof T]:
-      | Promise<T[PROMISE_NAME]>
-      | T[PROMISE_NAME];
+      Promise<T[PROMISE_NAME]> | T[PROMISE_NAME];
   }): Promise<T> =>
     Object.fromEntries(
       await Promise.all(

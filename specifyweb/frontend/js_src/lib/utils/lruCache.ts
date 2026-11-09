@@ -9,9 +9,9 @@ const MISSING = {};
 // eslint-disable-next-line functional/no-class
 export class LRUCache<K, V> {
   private readonly cache: Map<K, V>;
-   
+
   private maxSize: number;
-   
+
   private size: number;
   private readonly getItemSize: ((item: V) => number) | undefined;
   private readonly onEvict?: (key: K, item: V) => void;

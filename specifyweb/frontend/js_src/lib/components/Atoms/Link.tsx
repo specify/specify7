@@ -12,7 +12,7 @@ import { wrap } from './wrapper';
 /**
  * A wrapper for wrap() to generate links that have [href] attribute required
  */
- 
+
 const linkComponent = <EXTRA_PROPS extends IR<unknown> = RR<never, never>>(
   name: string,
   className: string,

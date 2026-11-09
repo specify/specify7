@@ -54,7 +54,7 @@ type WritableRegistry = {
   readonly children: R<WritableRegistry>;
   readonly actions: RA<string>;
   readonly groupName: LocalizedString;
-   
+
   isInstitutional: boolean;
 };
 

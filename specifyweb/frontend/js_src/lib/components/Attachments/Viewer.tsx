@@ -50,8 +50,7 @@ export function AttachmentViewer({
   readonly showMeta?: boolean;
   readonly onToggleSidebar?: (() => void) | undefined;
   readonly onViewRecord:
-    | ((table: SpecifyTable, recordId: number) => void)
-    | undefined;
+    ((table: SpecifyTable, recordId: number) => void) | undefined;
 }): JSX.Element {
   const attachmentServerStatus = useAttachmentServerStatus();
   const serialized = React.useMemo(

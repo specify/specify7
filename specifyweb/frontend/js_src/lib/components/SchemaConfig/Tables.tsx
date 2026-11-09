@@ -51,7 +51,7 @@ export function tablesFilter(
   const hasAccess = hasTablePermission(name, 'read');
   if (!showNoAccessTables && !hasAccess) return false;
   const isAdvanced = !overrides.isCommon;
-   
+
   if (!showAdvancedTables && isAdvanced) return false;
 
   return true;

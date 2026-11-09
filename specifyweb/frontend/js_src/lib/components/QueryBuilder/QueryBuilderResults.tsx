@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { localized,type RA } from '../../utils/types';
+import { localized, type RA } from '../../utils/types';
 import { BatchEditFromQuery } from '../BatchEdit';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -51,8 +51,7 @@ export function QueryBuilderResults({
   readonly saveRequired: boolean;
   readonly isCountOnly: boolean;
   readonly getQueryFieldRecords:
-    | (() => RA<SerializedResource<SpQueryField>>)
-    | undefined;
+    (() => RA<SerializedResource<SpQueryField>>) | undefined;
   readonly selectedRows: ReadonlySet<number>;
   readonly setSelectedRows: React.Dispatch<
     React.SetStateAction<ReadonlySet<number>>

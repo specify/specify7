@@ -31,7 +31,9 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   readonly deleted: boolean;
   readonly parent?: SpecifyResource<SCHEMA>;
   readonly noBusinessRules: boolean;
-  readonly changed?: Readonly<Partial<Record<TableFields<AnySchema>, number | string>>>;
+  readonly changed?: Readonly<
+    Partial<Record<TableFields<AnySchema>, number | string>>
+  >;
   readonly collection: Collection<SCHEMA> | undefined;
   readonly businessRuleManager?: BusinessRuleManager<SCHEMA>;
   /*
@@ -57,7 +59,6 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
       SCHEMA['toOneIndependent'])[FIELD_NAME],
   >(
     fieldName: FIELD_NAME
-     
   ): [VALUE] extends [never]
     ? never
     : VALUE extends AnySchema
@@ -70,8 +71,7 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   // Case-insensitive fetch of a -to-one resource
   rgetPromise<
     FIELD_NAME extends
-      | keyof SCHEMA['toOneDependent']
-      | keyof SCHEMA['toOneIndependent'],
+      keyof SCHEMA['toOneDependent'] | keyof SCHEMA['toOneIndependent'],
     VALUE = (IR<never> &
       SCHEMA['toOneDependent'] &
       SCHEMA['toOneIndependent'])[FIELD_NAME],
@@ -88,8 +88,7 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
       >;
   getRelated<
     FIELD_NAME extends
-      | keyof SCHEMA['toOneDependent']
-      | keyof SCHEMA['toOneIndependent'],
+      keyof SCHEMA['toOneDependent'] | keyof SCHEMA['toOneIndependent'],
     VALUE = (IR<never> &
       SCHEMA['toOneDependent'] &
       SCHEMA['toOneIndependent'])[FIELD_NAME],
@@ -138,24 +137,20 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
     fieldName: FIELD_NAME,
     value: readonly [VALUE] extends readonly [never]
       ? never
-      :
-          | VALUE
-          | (FIELD_NAME extends
-              | keyof SCHEMA['toManyIndependent']
-              | keyof SCHEMA['toOneIndependent']
-              ? string
-              : never)
-          | (VALUE extends RA<AnySchema>
-              ?
-                  | Collection<VALUE[number]>
-                  | RA<SerializedResource<VALUE[number]>>
-                  | RA<SpecifyResource<VALUE[number]>>
-              : null extends VALUE
-                ?
-                    | SerializedResource<Exclude<VALUE, null>>
-                    | SpecifyResource<Exclude<VALUE, null>>
-                    | null
-                : SerializedResource<VALUE> | SpecifyResource<VALUE>),
+      : | VALUE
+        | (FIELD_NAME extends
+            keyof SCHEMA['toManyIndependent'] | keyof SCHEMA['toOneIndependent']
+            ? string
+            : never)
+        | (VALUE extends RA<AnySchema>
+            ? | Collection<VALUE[number]>
+              | RA<SerializedResource<VALUE[number]>>
+              | RA<SpecifyResource<VALUE[number]>>
+            : null extends VALUE
+              ? | SerializedResource<Exclude<VALUE, null>>
+                | SpecifyResource<Exclude<VALUE, null>>
+                | null
+              : SerializedResource<VALUE> | SpecifyResource<VALUE>),
     options?: { readonly silent: boolean }
   ): SpecifyResource<SCHEMA>;
   // Not type safe

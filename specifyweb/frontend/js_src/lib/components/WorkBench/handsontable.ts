@@ -197,7 +197,6 @@ function setSort(hot: Handsontable, dataset: Dataset): void {
  */
 const hotPlugins = new WeakMap<
   Handsontable,
-   
   {
     [key in keyof Plugins]?: Plugins[key] | undefined;
   }

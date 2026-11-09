@@ -14,8 +14,7 @@ export function SelectUploadPath({
   currentKey,
 }: {
   readonly onCommit:
-    | ((commitableSpec: PartialAttachmentUploadSpec) => void)
-    | undefined;
+    ((commitableSpec: PartialAttachmentUploadSpec) => void) | undefined;
   readonly currentKey: keyof typeof staticAttachmentImportPaths | undefined;
 }): JSX.Element {
   const [staticKey, setStaticKey] = React.useState<

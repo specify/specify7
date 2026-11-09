@@ -77,7 +77,6 @@ export const fetchFormatters: Promise<{
           formatUrl('/context/app.resource', { name: 'DataObjFormatters' })
         ),
         {
-           
           headers: { Accept: 'text/xml' },
         }
       ).then(({ data: definitions }) => ({

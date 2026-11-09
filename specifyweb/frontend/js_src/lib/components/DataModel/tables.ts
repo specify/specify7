@@ -21,7 +21,7 @@ import type { AnySchema, AnyTree } from './helperTypes';
 import { fetchContext as fetchSchema } from './schema';
 import { schemaExtras } from './schemaExtras';
 import { LiteralField, Relationship } from './specifyField';
-import { SpecifyTable,type TableDefinition } from './specifyTable';
+import { SpecifyTable, type TableDefinition } from './specifyTable';
 import type { Agent, Tables } from './types';
 
 export type SchemaLocalization = {
@@ -253,8 +253,8 @@ export const getTableById = <SCHEMA extends AnySchema>(
   tableId: number
 ): SpecifyTable<SCHEMA> =>
   (Object.values(genericTables).find((table) => table.tableId === tableId) as
-    | SpecifyTable<SCHEMA>
-    | undefined) ?? error(`Table with id ${tableId} does not exist`);
+    SpecifyTable<SCHEMA> | undefined) ??
+  error(`Table with id ${tableId} does not exist`);
 
 // If this is true, then you can use {domainfilter:true} when fetching that table
 export const hasHierarchyField = (table: SpecifyTable): boolean =>

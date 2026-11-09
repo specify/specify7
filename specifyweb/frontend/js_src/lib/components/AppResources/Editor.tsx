@@ -75,8 +75,7 @@ export function AppResourceEditor({
   children,
 }: {
   readonly resource:
-    | SerializedResource<SpAppResource>
-    | SerializedResource<SpViewSetObject>;
+    SerializedResource<SpAppResource> | SerializedResource<SpViewSetObject>;
   readonly directory: ScopedAppResourceDir;
   readonly initialData: string | undefined;
   readonly onDeleted: (() => void) | undefined;
@@ -90,8 +89,7 @@ export function AppResourceEditor({
     | undefined;
   readonly onSaved: (
     resource:
-      | SerializedResource<SpAppResource>
-      | SerializedResource<SpViewSetObject>,
+      SerializedResource<SpAppResource> | SerializedResource<SpViewSetObject>,
     directory: ScopedAppResourceDir
   ) => void;
   readonly children: (renderProps: {

@@ -82,12 +82,13 @@ export type CacheDefinitions = {
   } & {
     /** Open nodes in a given tree */
     readonly [key in `conformations${AnyTree['tableName']}`]: Conformations;
-  } & Readonly<Record<`definition${AnyTree['tableName']}`, number>> & Readonly<Record<`focusPath${AnyTree['tableName']}`, RA<number>>> & {
-    readonly hideEmptyNodes: boolean;
-    readonly isSplit: boolean;
-    readonly isHorizontal: boolean;
-    readonly biostratFilter: 'all' | 'bio' | 'chrono';
-  };
+  } & Readonly<Record<`definition${AnyTree['tableName']}`, number>> &
+    Readonly<Record<`focusPath${AnyTree['tableName']}`, RA<number>>> & {
+      readonly hideEmptyNodes: boolean;
+      readonly isSplit: boolean;
+      readonly isHorizontal: boolean;
+      readonly biostratFilter: 'all' | 'bio' | 'chrono';
+    };
   readonly workBenchSortConfig: {
     /**
      * WorkBench column sort setting in a given dataset

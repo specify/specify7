@@ -122,11 +122,7 @@ export const caseInsensitiveHash = <
 >(
   dictionary: DICTIONARY,
   searchKey:
-    | Capitalize<KEY>
-    | KEY
-    | Lowercase<KEY>
-    | Uncapitalize<KEY>
-    | Uppercase<KEY>
+    Capitalize<KEY> | KEY | Lowercase<KEY> | Uncapitalize<KEY> | Uppercase<KEY>
 ): DICTIONARY[KEY] =>
   searchKey in dictionary
     ? dictionary[searchKey as KEY]
@@ -156,8 +152,7 @@ export const sortFunction =
 export const multiSortFunction =
   <ORIGINAL_TYPE>(
     ...payload: readonly (
-      | true
-      | ((value: ORIGINAL_TYPE) => Date | boolean | number | string)
+      true | ((value: ORIGINAL_TYPE) => Date | boolean | number | string)
     )[]
   ): ((left: ORIGINAL_TYPE, right: ORIGINAL_TYPE) => -1 | 0 | 1) =>
   (left: ORIGINAL_TYPE, right: ORIGINAL_TYPE): -1 | 0 | 1 => {

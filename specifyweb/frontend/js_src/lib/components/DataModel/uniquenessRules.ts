@@ -157,7 +157,6 @@ export async function validateUniqueness<
   return ajax<UniquenessRuleValidation>(
     '/businessrules/uniqueness_rules/validate/',
     {
-       
       headers: { Accept: 'application/json' },
       method: 'POST',
       body: {

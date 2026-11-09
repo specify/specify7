@@ -31,7 +31,7 @@ export type ValueOf<T> = T[keyof T];
  * - It makes it explicitly known that the value is meant to be mutated
  * - It doesn't trigger the "functional/prefer-readonly-type" ESLint rule.
  */
- 
+
 export type WritableArray<T> = T[];
 
 /** Cast a type as defined. Throws at runtime if it is not defined */
@@ -62,7 +62,6 @@ export type DeepPartial<RECORD extends IR<unknown>> = {
       : RECORD[KEY];
 };
 
- 
 export type Writable<T> = {
   -readonly [K in keyof T]: T[K];
 };

@@ -443,7 +443,6 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
     return this.localization.aggregator ?? undefined;
   }
 
-   
   private scopingRelationship: Relationship | false | undefined;
 
   /**

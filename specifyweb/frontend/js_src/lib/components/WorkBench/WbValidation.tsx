@@ -87,16 +87,12 @@ const hasUploadInfo = (
 
 /* eslint-disable functional/no-this-expression */
 export class WbValidation {
-   
   public liveValidationStack: WritableArray<number> = [];
 
-   
   private liveValidationActive: boolean = false;
 
-   
   public validationMode: 'live' | 'off' | 'static';
 
-   
   public uploadResults: UploadResults = {
     ambiguousMatches: [],
     recordCounts: {},

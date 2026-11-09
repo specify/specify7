@@ -39,7 +39,7 @@ let globalErrors: RA<JSX.Element> = [];
  * REFACTOR: remove this once everything is using react
  */
 let legacyContext: (promise: Promise<unknown>) => void;
- 
+
 export const legacyLoadingContext = (promise: Promise<unknown>): void =>
   legacyContext(promise);
 

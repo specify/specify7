@@ -59,7 +59,7 @@ export const Form = wrap(
  * Don't highlight missing required and pattern mismatch fields until focus
  * loss
  */
- 
+
 export const withHandleBlur = <TYPE extends InputType>(
   handleBlur: ((event: React.FocusEvent<TYPE>) => void) | undefined
 ) => ({
@@ -76,7 +76,7 @@ export const withHandleBlur = <TYPE extends InputType>(
  *
  * See https://stackoverflow.com/a/69497807/8584605
  */
- 
+
 export const withPreventWheel = <TYPE extends InputType>(
   handleWheel: ((event: React.WheelEvent<TYPE>) => void) | undefined
 ) => ({

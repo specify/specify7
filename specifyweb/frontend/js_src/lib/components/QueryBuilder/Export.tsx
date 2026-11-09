@@ -37,8 +37,7 @@ export function QueryExportButtons({
   readonly fields: RA<QueryField>;
   readonly queryResource: SpecifyResource<SpQuery>;
   readonly getQueryFieldRecords:
-    | (() => RA<SerializedResource<SpQueryField>>)
-    | undefined;
+    (() => RA<SerializedResource<SpQueryField>>) | undefined;
   readonly recordSetId: number | undefined;
   readonly results: React.MutableRefObject<
     RA<QueryResultRow | undefined> | undefined

@@ -232,7 +232,6 @@ export function LatLongUi({
         'change:latLongType',
         (): void =>
           setCoordinateType(
-             
             (resource.get('latLongType') as CoordinateType) ?? 'Point'
           ),
         false

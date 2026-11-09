@@ -27,12 +27,15 @@ export function DeleteBlockerProvider({
   );
 
   const store = deleteBlockerStore.current;
-  React.useEffect(() => () => {
+  React.useEffect(
+    () => () => {
       if (store === null) {
         return;
       }
       store.clearState();
-    }, [store]);
+    },
+    [store]
+  );
 
   return (
     <DeleteBlockerContext.Provider value={store}>

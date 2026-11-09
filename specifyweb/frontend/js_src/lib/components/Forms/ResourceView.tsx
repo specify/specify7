@@ -136,8 +136,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
   readonly onSaving?: (unsetUnloadProtect: () => void) => false | void;
   readonly onSaved: (() => void) | undefined;
   readonly onAdd:
-    | ((resources: RA<SpecifyResource<SCHEMA>>) => void)
-    | undefined;
+    ((resources: RA<SpecifyResource<SCHEMA>>) => void) | undefined;
   readonly onDeleted: (() => void) | undefined;
   readonly onClose: () => void;
   readonly onParentDeleted?: () => void;
@@ -146,8 +145,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
   readonly isSubForm: boolean;
   readonly isDependent: boolean;
   readonly title?:
-    | LocalizedString
-    | ((formatted: LocalizedString) => LocalizedString);
+    LocalizedString | ((formatted: LocalizedString) => LocalizedString);
   readonly isCollapsed?: boolean;
   readonly preHeaderButtons?: JSX.Element | undefined;
   readonly containerRef?: React.RefObject<HTMLDivElement>;

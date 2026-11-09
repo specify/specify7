@@ -32,8 +32,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
   readonly records: RA<SpecifyResource<SCHEMA> | undefined>;
   readonly recordCount: number;
   readonly onFetch:
-    | ((index: number) => Promise<RA<number | undefined> | void>)
-    | undefined;
+    ((index: number) => Promise<RA<number | undefined> | void>) | undefined;
   readonly name: string | undefined;
   readonly recordSetId: number | undefined;
 }): JSX.Element {
@@ -63,9 +62,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
         )
       );
 
-      const fetchCount = records.findIndex(
-        (record) => !record?.populated
-      );
+      const fetchCount = records.findIndex((record) => !record?.populated);
 
       fetchedCount.current = fetchCount === -1 ? records.length : fetchCount;
 

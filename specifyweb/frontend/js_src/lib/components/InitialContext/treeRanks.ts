@@ -22,12 +22,19 @@ import { serializeResource } from '../DataModel/serializers';
 import { genericTables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 
-export type TreeInformation = Readonly<Record<AnyTree['tableName'], RA<{
-    readonly definition: SerializedResource<FilterTablesByEndsWith<'TreeDef'>>;
-    readonly ranks: RA<
-      SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>
-    >;
-  }>>>;
+export type TreeInformation = Readonly<
+  Record<
+    AnyTree['tableName'],
+    RA<{
+      readonly definition: SerializedResource<
+        FilterTablesByEndsWith<'TreeDef'>
+      >;
+      readonly ranks: RA<
+        SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>
+      >;
+    }>
+  >
+>;
 
 let treeDefinitions: TreeInformation = undefined!;
 

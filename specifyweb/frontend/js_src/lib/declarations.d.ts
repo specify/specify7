@@ -17,7 +17,6 @@ import type { IR, RA, RR, ValueOf } from './utils/types';
 /* eslint-disable @typescript-eslint/method-signature-style */
 /* eslint-disable functional/no-method-signature */
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
- 
 
 declare global {
   /**
@@ -103,4 +102,3 @@ declare module 'react-router' {
 /* eslint-enable @typescript-eslint/method-signature-style */
 /* eslint-enable functional/no-method-signature */
 /* eslint-enable @typescript-eslint/consistent-type-definitions */
- 

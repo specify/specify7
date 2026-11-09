@@ -1,7 +1,6 @@
 export type ResolvablePromise<T = undefined> = Promise<T> & {
-   
   resolve: T extends undefined ? (value?: T) => void : (value: T) => void;
-   
+
   reject: (value?: unknown) => void;
 };
 

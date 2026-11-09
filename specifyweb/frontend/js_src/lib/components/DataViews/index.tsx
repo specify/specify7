@@ -99,9 +99,7 @@ function LoadedDataViewFromTable({
   readonly reloadQueries: () => void;
 }): JSX.Element | null {
   const table = getTable(tableName);
-  const [selectedIds, setSelectedIds] = React.useState<readonly number[]>(
-    []
-  );
+  const [selectedIds, setSelectedIds] = React.useState<readonly number[]>([]);
   const selectedIdsRef = React.useRef(selectedIds);
   selectedIdsRef.current = selectedIds;
   const resultOrderRef = React.useRef<readonly number[]>([]);

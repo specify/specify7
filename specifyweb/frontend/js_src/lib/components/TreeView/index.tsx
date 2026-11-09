@@ -55,8 +55,7 @@ export function TreeViewWrapper(): JSX.Element | null {
   useMenuItem('trees');
   const { tableName = '' } = useParams();
   const treeName = getTable(tableName)?.name as
-    | AnyTree['tableName']
-    | undefined;
+    AnyTree['tableName'] | undefined;
 
   const [treeDefinitions] = usePromise(treeRanksPromise, true);
   useErrorContext('treeDefinitions', treeDefinitions);

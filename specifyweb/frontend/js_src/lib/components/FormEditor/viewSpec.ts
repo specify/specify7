@@ -353,7 +353,6 @@ const borderSpec = f.store(() =>
   })
 );
 
- 
 const subViewSpec = (
   cell: SpecToJson<ReturnType<typeof cellSpec>>,
   table: SpecifyTable | undefined
@@ -489,7 +488,6 @@ const subViewSpec = (
     ...borderSpec(),
   });
 
- 
 const panelSpec = (
   _cell: SpecToJson<ReturnType<typeof cellSpec>>,
   table: SpecifyTable | undefined
@@ -590,7 +588,6 @@ const iconViewSpec = f.store(() =>
 // FIXME: when changing cell type, remove attributes
 const emptySpec = f.store(() => createXmlSpec({}));
 
- 
 const fieldSpec = (
   cell: SpecToJson<ReturnType<typeof cellSpec>>,
   table: SpecifyTable | undefined
@@ -794,7 +791,6 @@ const textSpec = f.store(() =>
   })
 );
 
- 
 const textAreaSpec = (
   _field: SpecToJson<ReturnType<typeof rawFieldSpec>>,
   _: unknown,

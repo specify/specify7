@@ -96,8 +96,7 @@ export function QueryComboBox({
   readonly defaultRecord?: string | undefined;
   readonly relatedTable?: SpecifyTable | undefined;
   readonly onSavingNewRecord?:
-    | ((resource: SpecifyResource<AnySchema>) => void)
-    | undefined;
+    ((resource: SpecifyResource<AnySchema>) => void) | undefined;
 }): JSX.Element {
   React.useEffect(() => {
     useQueryComboBoxDefaults({ resource, field, defaultRecord });
@@ -280,8 +279,7 @@ export function QueryComboBox({
               .then(
                 (
                   collectionObjectType:
-                    | SpecifyResource<CollectionObjectType>
-                    | undefined
+                    SpecifyResource<CollectionObjectType> | undefined
                 ) => collectionObjectType?.get('taxonTreeDef')
               )
           : undefined;

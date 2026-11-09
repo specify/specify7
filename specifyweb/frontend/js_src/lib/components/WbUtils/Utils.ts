@@ -22,13 +22,10 @@ const HOT_OFFSET = 3;
 
 /* eslint-disable functional/no-this-expression */
 export class WbUtils {
-   
   public searchQuery: RegExp | string | undefined = undefined;
 
-   
   private rawSearchQuery: string | undefined = undefined;
 
-   
   public searchPreferences: WbSearchPreferences = getInitialSearchPreferences();
 
   public constructor(
@@ -380,7 +377,6 @@ export class WbUtils {
             : cellValue.split(this.searchQuery ?? '').join(replacementValue);
 
     if (this.searchPreferences.replace.replaceMode === 'replaceAll') {
-       
       const modifications: WritableArray<[number, number, string]> = [];
       Object.entries(this.workbench.cells.cellMeta).forEach(
         ([physicalRow, metaRow]) =>

@@ -25,11 +25,10 @@ const fetchTreeRoot = async (
   treeName: AnyTree['tableName'],
   treeDefinitionId: number
 ): Promise<SerializedResource<TreeDefItem<AnyTree>>> =>
-  treeRanksPromise.then(
-    () =>
-      strictGetTreeDefinitionItems(treeName, true, treeDefinitionId).find(
-        ({ rankId }) => rankId === 0
-      )!
+  treeRanksPromise.then(() =>
+    strictGetTreeDefinitionItems(treeName, true, treeDefinitionId).find(
+      ({ rankId }) => rankId === 0
+    )!
   );
 
 export const fetchPossibleRanks = async (
@@ -142,8 +141,7 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
     const resource = toTreeTable(props.resource);
     const definitionItem = resource?.get('definitionItem');
 
-    const newDefinitionItem =
-      props.defaultValue ?? items?.at(-1)?.value ?? '';
+    const newDefinitionItem = props.defaultValue ?? items?.at(-1)?.value ?? '';
 
     const isDifferentDefinitionItem =
       newDefinitionItem !== (definitionItem ?? '');

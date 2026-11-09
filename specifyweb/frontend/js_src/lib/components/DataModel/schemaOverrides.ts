@@ -97,9 +97,9 @@ const tableOverwrites: Partial<RR<keyof Tables, TableConfigOverwrite>> = {
 
 // These field overrides apply to entire front-end
 const globalFieldOverrides: {
-  readonly [TABLE_NAME in keyof Tables]?: Readonly<Partial<Record<TableFields<
-      Tables[TABLE_NAME]
-    >, FieldConfigOverwrite>>>;
+  readonly [TABLE_NAME in keyof Tables]?: Readonly<
+    Partial<Record<TableFields<Tables[TABLE_NAME]>, FieldConfigOverwrite>>
+  >;
 } & {
   readonly common: IR<FieldConfigOverwrite>;
 } = {

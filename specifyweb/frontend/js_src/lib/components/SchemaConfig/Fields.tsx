@@ -182,7 +182,6 @@ export function SchemaConfigFields({
       {typeof items === 'undefined' ? (
         commonText.loading()
       ) : (
-         
         <div
           className="flex flex-col gap-4 overflow-y-auto [scrollbar-gutter:stable]"
           ref={listRef}

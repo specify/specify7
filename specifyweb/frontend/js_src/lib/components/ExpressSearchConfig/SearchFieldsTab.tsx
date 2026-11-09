@@ -22,8 +22,7 @@ function fieldLabel(tableName: string, fieldName: string): string {
 function tableLabel(tableName: string): string {
   return (
     (genericTables[tableName as keyof typeof genericTables]?.label as
-      | string
-      | undefined) ?? camelToHuman(tableName)
+      string | undefined) ?? camelToHuman(tableName)
   );
 }
 

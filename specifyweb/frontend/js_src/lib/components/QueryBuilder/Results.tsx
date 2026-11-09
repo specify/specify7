@@ -330,7 +330,6 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     undefinedResult === -1 ? results : results?.slice(0, undefinedResult)
   ) as RA<QueryResultRow> | undefined;
 
-   
   const deletingRef = React.useRef<Set<number>>(new Set()); // Track recent deleted IDs to prevent duplicate deletion
 
   // TEST: try deleting while records are being fetched

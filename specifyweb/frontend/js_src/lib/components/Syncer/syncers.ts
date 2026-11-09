@@ -379,7 +379,8 @@ export const syncers = {
     KEY extends string,
     OBJECT extends Readonly<Record<KEY, NodeWithContext<SimpleXmlNode>>>,
     SUB_SPEC extends BaseSpec<SimpleXmlNode>,
-    NEW_OBJECT extends Omit<OBJECT, KEY> & Readonly<Record<KEY, SpecToJson<SUB_SPEC>>>,
+    NEW_OBJECT extends Omit<OBJECT, KEY> &
+      Readonly<Record<KEY, SpecToJson<SUB_SPEC>>>,
   >(
     key: KEY,
     spec: (dependent: OBJECT) => SUB_SPEC
@@ -594,11 +595,16 @@ export const syncers = {
     IN extends Readonly<Record<NODE_KEY, NodeWithContext<SimpleXmlNode>>>,
     KEY extends string,
     EXTRA,
-    MAPPER extends Readonly<Record<TYPE_MAPPER[keyof TYPE_MAPPER] | 'Unknown', (
-        input: IN,
-        extra: EXTRA,
-        rawType: keyof TYPE_MAPPER
-      ) => BaseSpec<SimpleXmlNode>>>,
+    MAPPER extends Readonly<
+      Record<
+        TYPE_MAPPER[keyof TYPE_MAPPER] | 'Unknown',
+        (
+          input: IN,
+          extra: EXTRA,
+          rawType: keyof TYPE_MAPPER
+        ) => BaseSpec<SimpleXmlNode>
+      >
+    >,
     MAPPED extends {
       readonly [KEY in keyof TYPE_MAPPER]: SpecToJson<
         ReturnType<MAPPER[TYPE_MAPPER[KEY]]>

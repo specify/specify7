@@ -12,7 +12,6 @@ import { NotFoundView } from './NotFoundView';
 import type { EnhancedRoute } from './RouterUtils';
 import { toReactRoutes } from './RouterUtils';
 
- 
 export const entrypointRoutes: RA<EnhancedRoute> = [
   {
     path: 'accounts',
@@ -62,7 +61,6 @@ export const entrypointRoutes: RA<EnhancedRoute> = [
     element: <NotFoundView />,
   },
 ];
- 
 
 const routes = toReactRoutes(entrypointRoutes, undefined, false);
 const router = createBrowserRouter(routes);

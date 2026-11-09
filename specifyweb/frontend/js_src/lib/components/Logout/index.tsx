@@ -11,7 +11,7 @@ export function Logout(): JSX.Element {
   const loading = React.useContext(LoadingContext);
   const [nextUrl = '/specify/'] = useSearchParameter('nextUrl');
 
-  console.log(`next => ${  nextUrl}`);
+  console.log(`next => ${nextUrl}`);
 
   React.useEffect(() => {
     loading(

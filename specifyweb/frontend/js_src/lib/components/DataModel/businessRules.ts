@@ -36,7 +36,6 @@ import { getUniqueInvalidReason, getUniquenessRules } from './uniquenessRules';
 /* eslint-disable functional/no-this-expression */
 // eslint-disable-next-line functional/no-class
 export class BusinessRuleManager<SCHEMA extends AnySchema> {
-   
   public pendingPromise: Promise<BusinessRuleResult | undefined> =
     Promise.resolve(undefined);
 
@@ -44,10 +43,8 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
 
   private readonly rules: BusinessRuleDefs<AnySchema | SCHEMA> | undefined;
 
-   
   private fieldChangePromises: Record<string, ResolvablePromise<string>> = {};
 
-   
   private watchers: Record<string, () => void> = {};
 
   public constructor(resource: SpecifyResource<SCHEMA>) {

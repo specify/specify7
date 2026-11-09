@@ -49,7 +49,6 @@ export function MergeStatus({
         readonly taskid: string;
         readonly response: string;
       }>(`/merge/status/${mergingId}/`, {
-         
         headers: { Accept: 'application/json' },
       })
         .then(

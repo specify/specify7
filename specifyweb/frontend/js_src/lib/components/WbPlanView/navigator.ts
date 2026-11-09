@@ -271,14 +271,13 @@ export function getMappingLineData({
   const ensurePermission = spec.ensurePermission();
 
   const internalState: {
-     
     position: number;
     readonly mappingLineData: WritableArray<MappingLineData>;
-     
+
     mappedFields: RA<string>;
-     
+
     defaultValue: string;
-     
+
     parsedDefaultValue: readonly [fieldName: string, part: string | undefined];
   } = {
     position: -1,

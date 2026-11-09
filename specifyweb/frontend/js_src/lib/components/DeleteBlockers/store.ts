@@ -3,20 +3,10 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Relationship } from '../DataModel/specifyField';
 import type { Tables } from '../DataModel/types';
-import type {
-  BlockerPageCacheKey,
-  DeleteBlockerLRUPage} from './pageCache';
-import {
-  buildPageCacheKey,
-  makeBlockerKey,
-} from './pageCache';
-import type {
-  BlockerNode,
-  ResourceIdentifier} from './state';
-import {
-  DeleteBlockerState,
-  resourceToStringIdentifier,
-} from './state';
+import type { BlockerPageCacheKey, DeleteBlockerLRUPage } from './pageCache';
+import { buildPageCacheKey, makeBlockerKey } from './pageCache';
+import type { BlockerNode, ResourceIdentifier } from './state';
+import { DeleteBlockerState, resourceToStringIdentifier } from './state';
 
 export type DeleteBlockerRelationship = {
   readonly key: BlockerPageCacheKey;

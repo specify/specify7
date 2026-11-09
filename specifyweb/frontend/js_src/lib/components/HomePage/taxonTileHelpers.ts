@@ -33,7 +33,6 @@ export function pairNodes(nodes: RA<Node>): RA<PairedNode> {
 }
 
 type PairedNode = Node & {
-   
   children: WritableArray<PairedNode> | undefined;
 };
 

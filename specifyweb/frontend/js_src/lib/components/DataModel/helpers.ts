@@ -261,7 +261,7 @@ export function gatherAllDependents(
         ? related.models
         : // Typescript still thinks related can be undefined or null here, so
           // Using a cast
-          (related!)
+          related!
     );
   const cascadedDependents = directDependents.flatMap(gatherAllDependents);
   return [...directDependents, ...cascadedDependents];

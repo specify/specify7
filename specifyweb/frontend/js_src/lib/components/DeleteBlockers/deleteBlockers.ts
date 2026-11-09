@@ -98,5 +98,7 @@ export async function fetchReferenceCounts(
       headers: { Accept: 'application/json' },
       expectedErrors: expectFailure ? [Http.NOT_FOUND] : [],
     }
-  ).then((result) => result.status === Http.NOT_FOUND ? undefined : result.data);
+  ).then((result) =>
+    result.status === Http.NOT_FOUND ? undefined : result.data
+  );
 }

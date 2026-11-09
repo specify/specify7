@@ -8,7 +8,8 @@ import type { Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import type {
   APIDeleteBlockerCount,
-  APIDeleteBlockerCounts} from './deleteBlockers';
+  APIDeleteBlockerCounts,
+} from './deleteBlockers';
 import type { APIDeleteBlockerPage, APIDeleteBlockers } from './deleteBlockers';
 import {
   DELETE_BLOCKER_LIMIT,
@@ -16,9 +17,7 @@ import {
   fetchReferenceCounts,
   filterDeleteBlockers,
 } from './deleteBlockers';
-import type {
-  BlockerPageCacheKey,
-  DeleteBlockerLRUPage} from './pageCache';
+import type { BlockerPageCacheKey, DeleteBlockerLRUPage } from './pageCache';
 import {
   blockerPageToCacheKey,
   buildPageCacheKey,
@@ -33,7 +32,7 @@ export type BlockerRelationship = {
   readonly key: BlockerPageCacheKey;
   readonly table: Lowercase<keyof Tables>;
   readonly field: string;
-   
+
   count?: number;
 };
 
@@ -42,9 +41,9 @@ export type BlockerNode = {
   readonly resource: SpecifyResource<AnySchema>;
   readonly relationshipMetaData: Map<string, BlockerRelationship>;
   readonly cascadeChildren: Set<string>;
-   
+
   count?: number;
-   
+
   version: number;
 };
 

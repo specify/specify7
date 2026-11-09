@@ -15,12 +15,21 @@ import type { IR, RA } from '../../utils/types';
 
 type ResponseType = Document | IR<unknown> | RA<unknown> | string;
 
- 
-const overrides: Partial<Record<string, Partial<Record<string, {
-      readonly data: () => ResponseType;
-      readonly responseCode: number | undefined;
-      readonly body: unknown;
-    }>>>> = {};
+const overrides: Partial<
+  Record<
+    string,
+    Partial<
+      Record<
+        string,
+        {
+          readonly data: () => ResponseType;
+          readonly responseCode: number | undefined;
+          readonly body: unknown;
+        }
+      >
+    >
+  >
+> = {};
 
 /**
  * Overwrite the response to an ajax response for all fetch requests originating

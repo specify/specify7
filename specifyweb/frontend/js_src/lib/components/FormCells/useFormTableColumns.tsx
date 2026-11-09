@@ -140,9 +140,9 @@ export function useFormTableColumns({
   const [contentColumnWidths, setContentColumnWidths] = React.useState<
     number[]
   >([]);
-  const [headerColumnWidths, setHeaderColumnWidths] = React.useState<
-    number[]
-  >([]);
+  const [headerColumnWidths, setHeaderColumnWidths] = React.useState<number[]>(
+    []
+  );
   const [tableChromeWidth, setTableChromeWidth] = React.useState(0);
   const [columnWidths, setColumnWidths] = React.useState<
     Record<number, number>

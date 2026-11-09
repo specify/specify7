@@ -95,9 +95,9 @@ type AutoMapperDefinitions = {
    *   a mapping even if a shortcut, or a synonym was used
    */
   readonly dontMatch: {
-    readonly [TABLE_NAME in keyof Tables]?: Readonly<Partial<Record<TableFields<
-        Tables[TABLE_NAME]
-      >, RA<AutoMapperScope>>>>;
+    readonly [TABLE_NAME in keyof Tables]?: Readonly<
+      Partial<Record<TableFields<Tables[TABLE_NAME]>, RA<AutoMapperScope>>>
+    >;
   };
 
   /*
@@ -154,28 +154,35 @@ type AutoMapperDefinitions = {
    *   and there exists a path from tableName to baseTableName
    */
   readonly synonyms: {
-    readonly [TABLE_NAME in keyof Tables]?: Readonly<Partial<Record<TableFields<Tables[TABLE_NAME]>, Partial<
-        RR<
-          AutoMapperScope,
-          {
-            readonly headers: Options & {
-              /*
-               * Additional matching rule - available
-               * only for `synonym` definitions
-               * Matches only if header is strictly
-               * in one of the following forms:
-               *   - <fieldNameSynonym> <tableName>
-               *   - <tableName> <fieldNameSynonym>
-               *   - <tableName> <index> <fieldNameSynonym>
-               *   - <tableName> <fieldNameSynonym> <index>
-               * Where <fieldNameSynonym> is the value
-               * provided in formattedHeaderFieldSynonym
-               */
-              readonly formattedHeaderFieldSynonym?: RA<string>;
-            };
-          }
+    readonly [TABLE_NAME in keyof Tables]?: Readonly<
+      Partial<
+        Record<
+          TableFields<Tables[TABLE_NAME]>,
+          Partial<
+            RR<
+              AutoMapperScope,
+              {
+                readonly headers: Options & {
+                  /*
+                   * Additional matching rule - available
+                   * only for `synonym` definitions
+                   * Matches only if header is strictly
+                   * in one of the following forms:
+                   *   - <fieldNameSynonym> <tableName>
+                   *   - <tableName> <fieldNameSynonym>
+                   *   - <tableName> <index> <fieldNameSynonym>
+                   *   - <tableName> <fieldNameSynonym> <index>
+                   * Where <fieldNameSynonym> is the value
+                   * provided in formattedHeaderFieldSynonym
+                   */
+                  readonly formattedHeaderFieldSynonym?: RA<string>;
+                };
+              }
+            >
+          >
         >
-      >>>>;
+      >
+    >;
   };
 };
 

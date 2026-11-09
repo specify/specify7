@@ -32,8 +32,7 @@ export function FieldSearch({
   readonly showHiddenFields: boolean | undefined;
   readonly searchSpec: NavigatorSpec;
   readonly onSelectSearchResult:
-    | ((mappingPath: MappingPath) => void)
-    | undefined;
+    ((mappingPath: MappingPath) => void) | undefined;
 }): JSX.Element | null {
   const fieldSearchId = React.useId();
   const resultsListId = `${fieldSearchId}-results`;

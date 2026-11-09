@@ -19,7 +19,6 @@ import type { RA } from '../../utils/types';
 import { Redirect } from './Redirect';
 import type { EnhancedRoute } from './RouterUtils';
 
- 
 /**
  * Overlay routes are rendered inside of a <Dialog>.
  * When linking to an overlay route, the previous route remains visible in
@@ -286,5 +285,3 @@ export const overlayRoutes: RA<EnhancedRoute> = [
     ],
   },
 ];
-
- 

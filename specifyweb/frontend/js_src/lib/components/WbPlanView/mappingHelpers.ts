@@ -141,7 +141,7 @@ export function parsePartialField<PART extends string>(
 ): readonly [fieldName: string, part: PART] {
   const split = value.split(schema.fieldPartSeparator);
   if (split.length !== 2) throw new Error('failed to parse partial field');
-   
+
   return split as [string, PART];
 }
 

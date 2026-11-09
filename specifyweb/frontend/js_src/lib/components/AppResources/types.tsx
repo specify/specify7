@@ -12,11 +12,7 @@ import type { SpAppResourceDir, Tables } from '../DataModel/types';
 import type { AppResourceMode } from './helpers';
 
 export type AppResourceScope =
-  | 'collection'
-  | 'discipline'
-  | 'global'
-  | 'user'
-  | 'userType';
+  'collection' | 'discipline' | 'global' | 'user' | 'userType';
 
 export type AppResourceType = {
   readonly tableName: keyof Tables & ('SpAppResource' | 'SpViewSetObj');

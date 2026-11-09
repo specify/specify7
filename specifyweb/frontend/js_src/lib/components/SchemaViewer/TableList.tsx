@@ -10,9 +10,7 @@ import type { SchemaViewerRow, SchemaViewerValue } from './helpers';
 
 export function SchemaViewerTableList<
   SORT_CONFIG extends
-    | 'schemaViewerFields'
-    | 'schemaViewerRelationships'
-    | 'schemaViewerTables',
+    'schemaViewerFields' | 'schemaViewerRelationships' | 'schemaViewerTables',
   FIELD_NAME extends SortConfigs[SORT_CONFIG],
   DATA extends SchemaViewerRow<RR<FIELD_NAME, SchemaViewerValue>>,
 >({
@@ -37,7 +35,6 @@ export function SchemaViewerTableList<
   const data = React.useMemo(
     () =>
       applySortConfig(unsortedData, (row) => {
-         
         const data = row[sortConfig.sortField] as SchemaViewerValue;
         return Array.isArray(data) ? data[0] : data;
       }),

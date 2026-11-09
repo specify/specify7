@@ -60,7 +60,6 @@ export const createEmptyDataSet = async <
       ...props,
     },
     headers: {
-       
       Accept: 'application/json',
     },
   }).then(({ data }) => data);
@@ -95,8 +94,7 @@ function TableHeader({
   onSort: handleSort,
 }: {
   readonly sortConfig:
-    | SortConfig<'dateCreated' | 'dateUploaded' | 'name'>
-    | undefined;
+    SortConfig<'dateCreated' | 'dateUploaded' | 'name'> | undefined;
   readonly onSort: (sortField: 'dateCreated' | 'dateUploaded' | 'name') => void;
 }): JSX.Element {
   return (

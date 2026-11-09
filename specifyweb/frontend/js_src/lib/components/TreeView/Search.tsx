@@ -87,7 +87,6 @@ export function TreeViewSearch<SCHEMA extends AnyTree>({
         }}
         source={async (value) =>
           fetchCollection(
-             
             tableName as AnyTree['tableName'],
             {
               definition: treeDefinitionId,

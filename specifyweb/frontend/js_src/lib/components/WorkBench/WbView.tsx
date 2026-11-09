@@ -55,13 +55,12 @@ import { WbValidation } from './WbValidation';
 export type WbStatus = 'unupload' | 'upload' | 'validate';
 
 export type Workbench = {
-   
   cells: WbCellMeta;
   disambiguation: Disambiguation;
   validation: WbValidation;
   utils: WbUtils;
   undoRedoIsHandled: boolean;
-   
+
   readonly dataset: Dataset;
   readonly data: RA<RA<string | null>>;
   readonly hot: Handsontable | undefined;

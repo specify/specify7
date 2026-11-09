@@ -60,19 +60,14 @@ function extractDatePart(fieldName: string): {
 export class QueryFieldSpec {
   public readonly baseTable: SpecifyTable;
 
-   
   public joinPath: RA<LiteralField | Relationship> = [];
 
-   
   public table: SpecifyTable;
 
-   
   public datePart: DatePart | undefined = undefined;
 
-   
   public treeRank: string | undefined = undefined;
 
-   
   public parser: Parser = {};
 
   /**
@@ -81,7 +76,7 @@ export class QueryFieldSpec {
    * They are returned in the back-end response, but they are not
    * visible in the results table, unless user explicitly adds them.
    */
-   
+
   public isPhantom: boolean = false;
 
   public constructor(baseTable: SpecifyTable) {

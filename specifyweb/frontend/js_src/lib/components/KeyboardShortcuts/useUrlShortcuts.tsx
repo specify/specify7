@@ -67,6 +67,5 @@ export function useUrlShortcuts(): void {
           );
     });
     return (): void => cleanup.forEach((cleanup) => cleanup?.());
-     
   }, [shortcuts, menuItems, userTools, location, navigate]);
 }

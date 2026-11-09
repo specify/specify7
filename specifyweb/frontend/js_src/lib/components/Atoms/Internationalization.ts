@@ -10,7 +10,7 @@ import { capitalize } from '../../utils/utils';
 import { DAY, HOUR, MINUTE, MONTH, SECOND, WEEK, YEAR } from './timeUnits';
 
 /* This is an incomplete definition. For complete, see MDN Docs */
- 
+
 declare namespace Intl {
   // eslint-disable-next-line functional/no-class
   class ListFormat {
@@ -54,10 +54,7 @@ declare namespace Intl {
          */
         readonly unit: 'byte';
         readonly notation:
-          | 'compact'
-          | 'engineering'
-          | 'scientific'
-          | 'standard';
+          'compact' | 'engineering' | 'scientific' | 'standard';
         readonly unitDisplay: 'long' | 'narrow' | 'short';
         readonly style: 'currency' | 'decimal' | 'percent' | 'unit';
       }
