@@ -65,3 +65,37 @@ test('checks for confirmation before saving', async () => {
   expect(handleBeforeSaving).toHaveBeenCalledTimes(2);
   expect(handleSaving).toHaveBeenCalledTimes(1);
 });
+
+test('does not submit again while confirmation is pending', async () => {
+  const resource = new tables.CollectionObjectGroup.Resource();
+  const form = document.createElement('form');
+  let resolveConfirmation: (value: boolean) => void = () => undefined;
+  const confirmation = new Promise<boolean>((resolve) => {
+    resolveConfirmation = resolve;
+  });
+  const handleBeforeSaving = jest.fn(() => confirmation);
+
+  mount(
+    <LoadingContext.Provider value={(promise) => void promise}>
+      <SaveButton
+        form={form}
+        resource={resource}
+        onBeforeSaving={handleBeforeSaving}
+      />
+    </LoadingContext.Provider>
+  );
+  await act(async () => undefined);
+
+  act(() => {
+    form.dispatchEvent(
+      new SubmitEvent('submit', { bubbles: true, cancelable: true })
+    );
+    form.dispatchEvent(
+      new SubmitEvent('submit', { bubbles: true, cancelable: true })
+    );
+  });
+  await act(async () => undefined);
+
+  expect(handleBeforeSaving).toHaveBeenCalledTimes(1);
+  await act(async () => resolveConfirmation(false));
+});

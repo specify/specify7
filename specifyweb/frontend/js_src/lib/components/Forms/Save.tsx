@@ -26,6 +26,7 @@ import {
 } from '../DataModel/saveBlockers';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import { error } from '../Errors/assert';
+import { crash } from '../Errors/Crash';
 import { errorHandledBy } from '../Errors/FormatError';
 import { InFormEditorContext } from '../FormEditor/Context';
 import { tableValidForBulkClone } from '../FormMeta/CarryForward';
@@ -83,6 +84,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   readonly isInRecordSet?: boolean;
 }): JSX.Element {
   const id = useId('save-button');
+  const isSubmittingRef = React.useRef(false);
   const saveRequired = useIsModified(resource);
   const unsetUnloadProtect = useUnloadProtect(
     saveRequired || externalSaveRequired,
@@ -141,38 +143,40 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
       !resource.isNew());
 
   async function handleSubmit(): Promise<void> {
-    if (typeof setFormContext === 'function')
-      setFormContext((formContext) =>
-        replaceKey(formContext, 'triedToSubmit', true)
-      );
+    if (isSubmittingRef.current) return;
+    isSubmittingRef.current = true;
+    let saveStarted = false;
+    try {
+      if (typeof setFormContext === 'function')
+        setFormContext((formContext) =>
+          replaceKey(formContext, 'triedToSubmit', true)
+        );
 
-    await (resource.businessRuleManager?.pendingPromise ?? Promise.resolve());
-    if (blockers.length > 0) {
-      const blocker = findUnclaimedBlocker(blockers);
-      if (blocker === undefined) return;
-      console.error(
-        'Unclaimed blocker discovered (is not handled by any react component)',
-        {
-          blocker,
-          resource,
-        }
-      );
-      setShownBlocker(blocker);
-      return;
-    }
+      await (resource.businessRuleManager?.pendingPromise ?? Promise.resolve());
+      if (blockers.length > 0) {
+        const blocker = findUnclaimedBlocker(blockers);
+        if (blocker === undefined) return;
+        console.error(
+          'Unclaimed blocker discovered (is not handled by any react component)',
+          {
+            blocker,
+            resource,
+          }
+        );
+        setShownBlocker(blocker);
+        return;
+      }
 
-    // Confirm before entering the loading state so the prompt remains interactive.
-    if ((await handleBeforeSaving?.()) === false) return;
+      // Confirm before entering the loading state so the prompt remains interactive.
+      if ((await handleBeforeSaving?.()) === false) return;
 
-    /*
-     * Save process is canceled if false was returned. This also allows to
-     * implement custom save behavior
-     */
-    if (handleSaving?.(unsetUnloadProtect) === false) return;
+      /*
+       * Save process is canceled if false was returned. This also allows to
+       * implement custom save behavior
+       */
+      if (handleSaving?.(unsetUnloadProtect) === false) return;
 
-    setIsSaving(true);
-    loading(
-      resource
+      const savePromise = resource
         .save({ onSaveConflict: hasSaveConflict })
         .catch((error_) =>
           // FEATURE: if form save fails, should make the error message dismissible (if safe)
@@ -185,8 +189,16 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
         .finally(() => {
           unsetUnloadProtect();
           setIsSaving(false);
-        })
-    );
+          isSubmittingRef.current = false;
+        });
+      saveStarted = true;
+      setIsSaving(true);
+      loading(savePromise);
+    } catch (error_) {
+      crash(error_ instanceof Error ? error_ : new Error(String(error_)));
+    } finally {
+      if (!saveStarted) isSubmittingRef.current = false;
+    }
   }
 
   const handleSubmitRef = React.useRef(handleSubmit);
