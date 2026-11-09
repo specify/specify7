@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from specifyweb.specify import models
 from specifyweb.specify.api.crud import post_resource
 from specifyweb.specify.api.serializers import uri_for_model
@@ -53,6 +55,23 @@ class PreparationTests(ApiTests):
                 collectionmemberid=self.collection.id,
             )
         )
+
+    def test_add_preparation_with_prepared_date(self):
+        prepared_date = datetime(2025, 6, 15, 12, 30)
+
+        preparation = post_resource(
+            self.collection,
+            self.agent,
+            'preparation',
+            self._preparation_data(
+                prepareddate=prepared_date.isoformat(),
+                prepareddateprecision=2,
+            ),
+        )
+
+        preparation.refresh_from_db()
+        self.assertEqual(preparation.prepareddate, prepared_date)
+        self.assertEqual(preparation.prepareddateprecision, 2)
 
     def test_barcode_unique_to_collection(self):
         prep_type = models.Preptype.objects.create(
