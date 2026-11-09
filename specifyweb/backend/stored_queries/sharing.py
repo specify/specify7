@@ -162,10 +162,14 @@ def manage_query_shares(request: HttpRequest, id: int) -> HttpResponse:
         # A stale save must leave the current grants untouched.
         try:
             bump_version(query, data.get("version"))
-        except MissingVersionException as error:
-            return HttpResponseBadRequest(error)
-        except StaleObjectException as error:
-            return HttpResponseConflict(error)
+        except MissingVersionException:
+            return HttpResponseBadRequest(
+                "A required version value is missing or invalid."
+            )
+        except StaleObjectException:
+            return HttpResponseConflict(
+                "The query was modified by another request. Please reload and try again."
+            )
 
         query.share_grants.all().delete()
         SpqueryShare.objects.bulk_create(
