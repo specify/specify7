@@ -23,7 +23,14 @@ from specifyweb.specify.models import (
     Spappresourcedir,
 )
 
-from .dwca import DwCAException, ExportField, Stanza, validate_definition, validate_stanzas
+from .dwca import (
+    DwCAException,
+    ExportField,
+    Stanza,
+    _collect_core_id,
+    validate_definition,
+    validate_stanzas,
+)
 
 class SimpleTest(TestCase):
     def test_basic_addition(self):
@@ -64,6 +71,19 @@ class DwcaValidationTest(TestCase):
         core = self.stanza(True, [ExportField(0, occurrence_id, True)])
         extension = self.stanza(False, [ExportField(0, occurrence_id, True)])
         validate_stanzas(core, [extension, extension])
+
+    def test_skips_empty_core_identifiers_and_retains_duplicate_detection(self):
+        core_ids = set()
+        row_type = 'http://rs.tdwg.org/dwc/terms/Occurrence'
+
+        self.assertFalse(_collect_core_id(None, core_ids, row_type))
+        self.assertFalse(_collect_core_id('', core_ids, row_type))
+        self.assertTrue(_collect_core_id('valid-id', core_ids, row_type))
+        self.assertEqual(core_ids, {'valid-id'})
+        self.assertNotIn(None, core_ids)
+        self.assertNotIn('', core_ids)
+        with self.assertRaises(DwCAException):
+            _collect_core_id('valid-id', core_ids, row_type)
 
     def test_uses_core_row_type_base_table(self):
         collecting_event_id = datamodel.get_table_strict('collectingevent').tableId

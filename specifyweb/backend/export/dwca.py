@@ -209,6 +209,19 @@ class ConstantField(namedtuple('ConstantField', 'value term')):
         return cls(value=node.attrib['value'], term=node.attrib['term'])
 
 
+def _collect_core_id(core_id, core_ids, row_type):
+    if core_id is None or core_id == '':
+        return False
+    if core_id in core_ids:
+        identifier_term = get_core_identifier_term(row_type)
+        raise DwCAException(_(
+            "The core query returned duplicate %(identifier_term)s values. "
+            "Each core row must have a unique %(identifier_term)s."
+        ) % {'identifier_term': identifier_term})
+    core_ids.add(core_id)
+    return True
+
+
 def make_dwca(collection, user, definition, output_file, eml=None):
     output_dir = mkdtemp()
     try:
@@ -234,14 +247,7 @@ def make_dwca(collection, user, definition, output_file, eml=None):
         core_ids = set()
         def collect_ids(row):
             core_id = row[core_stanza.id_field_idx + 1]
-            if core_id in core_ids:
-                identifier_term = get_core_identifier_term(core_stanza.row_type)
-                raise DwCAException(_(
-                    "The core query returned duplicate %(identifier_term)s values. "
-                    "Each core row must have a unique %(identifier_term)s."
-                ) % {'identifier_term': identifier_term})
-            core_ids.add(core_id)
-            return True
+            return _collect_core_id(core_id, core_ids, core_stanza.row_type)
 
         with session_context() as session:
             for query in core_stanza.queries:
