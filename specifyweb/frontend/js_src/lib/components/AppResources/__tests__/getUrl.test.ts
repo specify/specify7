@@ -48,3 +48,14 @@ test('table is SpViewSetObj', () => {
     '/specify/resources/view-set/new/?directorykey=TestKey&name=testName&mimetype=application%2Fjson&templatefile=testFile'
   );
 });
+
+test('form definition can use a custom name', () => {
+  const result = getUrl(
+    'TestKey',
+    appResourceTypes.viewSets,
+    'CustomFormName',
+    'text/xml'
+  );
+
+  expect(result).toContain('name=CustomFormName');
+});
