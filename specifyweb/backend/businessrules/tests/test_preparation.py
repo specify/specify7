@@ -119,6 +119,27 @@ class PreparationTests(ApiTests):
         self.assertEqual(storage.parent_id, self.rootstorage.id)
         self.assertEqual(storage.definitionitem_id, site.id)
 
+    def test_add_multiple_preparations_to_collection_object(self):
+        first = post_resource(
+            self.collection,
+            self.agent,
+            'preparation',
+            self._preparation_data(countamt=1),
+        )
+        second = post_resource(
+            self.collection,
+            self.agent,
+            'preparation',
+            self._preparation_data(countamt=2),
+        )
+
+        preparation_ids = set(
+            self.collectionobjects[0].preparations.values_list(
+                'id', flat=True
+            )
+        )
+        self.assertEqual(preparation_ids, {first.id, second.id})
+
     def test_barcode_unique_to_collection(self):
         prep_type = models.Preptype.objects.create(
             name='testPrepType',
