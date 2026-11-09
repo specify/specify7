@@ -1,9 +1,59 @@
 from specifyweb.specify import models
+from specifyweb.specify.api.crud import post_resource
+from specifyweb.specify.api.serializers import uri_for_model
 from specifyweb.specify.tests.test_api import ApiTests
 from ..exceptions import BusinessRuleException
 
 
 class PreparationTests(ApiTests):
+    def setUp(self):
+        super().setUp()
+
+        self.preptype = models.Preptype.objects.create(
+            name='Default Prep Type',
+            isloanable=False,
+            collection=self.collection,
+        )
+
+        self.storagetreedef = models.Storagetreedef.objects.create(
+            name='Test Storage tree def'
+        )
+        self.rootstoragetreedefitem = self.storagetreedef.treedefitems.create(
+            name='root',
+            rankid=0,
+        )
+        self.rootstorage = self.rootstoragetreedefitem.treeentries.create(
+            name='Storage',
+            definition=self.storagetreedef,
+            rankid=0,
+        )
+
+    def _preparation_data(self, **overrides):
+        data = {
+            'collectionobject': uri_for_model(
+                'collectionobject', self.collectionobjects[0].id
+            ),
+            'preptype': uri_for_model('preptype', self.preptype.id),
+        }
+        data.update(overrides)
+        return data
+
+    def test_add_preparation_with_count(self):
+        preparation = post_resource(
+            self.collection,
+            self.agent,
+            'preparation',
+            self._preparation_data(countamt=5),
+        )
+
+        self.assertExists(
+            models.Preparation.objects.filter(
+                id=preparation.id,
+                countamt=5,
+                collectionmemberid=self.collection.id,
+            )
+        )
+
     def test_barcode_unique_to_collection(self):
         prep_type = models.Preptype.objects.create(
             name='testPrepType',
