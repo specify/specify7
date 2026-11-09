@@ -19,7 +19,14 @@ import { UnloadProtectsContext } from '../../Router/UnloadProtect';
 requireContext();
 
 jest.mock('../../Forms/ResourceView', () => ({
-  ResourceView: jest.fn(({ children }) => <>{children}</>),
+  ResourceView: jest.fn(({ children, onClose }) => (
+    <>
+      <button type="button" onClick={onClose}>
+        Close editor
+      </button>
+      {children}
+    </>
+  )),
 }));
 jest.mock('../Share', () => ({
   QuerySharingActions: ({
@@ -34,6 +41,36 @@ jest.mock('../Share', () => ({
 }));
 
 afterEach(() => jest.restoreAllMocks());
+
+test('discards name and remarks edits on close without reverting other changes', () => {
+  const resource = new tables.SpQuery.Resource<SpQuery>(
+    addMissingFields('SpQuery', {
+      id: 100,
+      version: 1,
+      name: 'Original name',
+      remarks: 'Original remarks',
+      isFavorite: false,
+      contextTableId: tables.CollectionObject.tableId,
+      specifyUser: userInformation.resource_uri,
+      fields: [],
+    })
+  );
+  render(
+    <UnloadProtectsContext.Provider value={[]}>
+      <QueryEditButton queryResource={resource} onRefresh={jest.fn()} />
+    </UnloadProtectsContext.Provider>
+  );
+
+  fireEvent.click(screen.getByRole('button', { name: commonText.edit() }));
+  resource.set('name', 'Discarded name');
+  resource.set('remarks', 'Discarded remarks');
+  resource.set('isFavorite', true);
+  fireEvent.click(screen.getByRole('button', { name: 'Close editor' }));
+
+  expect(resource.get('name')).toBe('Original name');
+  expect(resource.get('remarks')).toBe('Original remarks');
+  expect(resource.get('isFavorite')).toBe(true);
+});
 
 function Editor({
   resource,

@@ -37,6 +37,7 @@ test('Save As default name preserves surrogate pairs within the field length', (
 
   const input = screen.getByRole<HTMLInputElement>('textbox');
   expect(input.value).not.toBe('');
+  expect(input.value).toBe('😀'.repeat(128));
   expect(input.value).not.toMatch(/[\uD800-\uDFFF]/u);
   expect(input.maxLength).toBe(getField(tables.SpQuery, 'name').length);
   expect(input.value.length).toBeLessThanOrEqual(input.maxLength);

@@ -75,6 +75,13 @@ function EditQueryDialog({
   const [state, setState] = React.useState<
     'default' | 'dwcaExport' | 'labelExport' | 'report' | 'reportExport'
   >('default');
+  const originalName = React.useRef(queryResource.get('name'));
+  const originalRemarks = React.useRef(queryResource.get('remarks'));
+  const handleDialogClose = React.useCallback((): void => {
+    queryResource.set('name', originalName.current, { silent: true });
+    queryResource.set('remarks', originalRemarks.current, { silent: true });
+    handleClose();
+  }, [handleClose, queryResource]);
 
   const loading = React.useContext(LoadingContext);
   const exportButton = (
@@ -132,8 +139,8 @@ function EditQueryDialog({
         isSubForm={false}
         resource={queryResource}
         onAdd={undefined}
-        onClose={handleClose}
-        onDeleted={handleClose}
+        onClose={handleDialogClose}
+        onDeleted={handleDialogClose}
         onSaved={(): void => globalThis.location.reload()}
       >
         {actions}
@@ -147,18 +154,21 @@ function EditQueryDialog({
           </>
         }
         header={commonText.export()}
-        onClose={handleClose}
+        onClose={handleDialogClose}
       >
         {actions}
       </Dialog>
     )
   ) : state === 'dwcaExport' ? (
-    <DwcaQueryExport queryResource={queryResource} onClose={handleClose} />
+    <DwcaQueryExport
+      queryResource={queryResource}
+      onClose={handleDialogClose}
+    />
   ) : state === 'reportExport' || state === 'labelExport' ? (
     <QueryExport
       asLabel={state === 'labelExport'}
       queryResource={queryResource}
-      onClose={handleClose}
+      onClose={handleDialogClose}
     />
   ) : (
     error('Invalid state')
