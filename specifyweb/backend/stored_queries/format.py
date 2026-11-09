@@ -377,7 +377,11 @@ class ObjectFormatter:
                 for value, expr in cases
                 if value is not None
             ]
-            expr = case(*cases, value=formatted, else_=default)
+            expr = (
+                case(*cases, value=formatted, else_=default)
+                if cases
+                else default
+            )
         return query, blank_nulls(expr)
 
     def aggregate(self, query: QueryConstruct,

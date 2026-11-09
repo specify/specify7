@@ -481,3 +481,39 @@ class FormatterAggregatorTests(SQLAlchemySetup):
             query, expr = object_formatter.objformat(query, models.AccessionAgent, None)
             query = query.query.add_columns(expr)
             self.assertCountEqual(list(query), [('text 1 value for this accession',), (' text 2 value for this accession role2',)])
+
+    def test_switch_with_only_default_fields(self):
+        formatter_def = """
+        <formatters>
+          <format
+            name="Accession"
+            class="edu.ku.brc.specify.datamodel.Accession"
+            default="true"
+          >
+            <switch single="false" field="accessionNumber">
+              <fields><field>text1</field></fields>
+            </switch>
+          </format>
+        </formatters>
+        """
+        object_formatter = self.get_formatter(formatter_def)
+        accession = spmodels.Accession.objects.create(
+            accessionnumber='unmatched',
+            division=self.division,
+            text1='default value',
+        )
+
+        with FormatterAggregatorTests.test_session_context() as session:
+            query = QueryConstruct(
+                collection=self.collection,
+                objectformatter=object_formatter,
+                query=session.query(),
+            )
+            query, expression = object_formatter.objformat(
+                query, models.Accession, None
+            )
+            result = session.query(expression).filter(
+                models.Accession._id == accession.id
+            ).scalar()
+
+        self.assertEqual(result, 'default value')
