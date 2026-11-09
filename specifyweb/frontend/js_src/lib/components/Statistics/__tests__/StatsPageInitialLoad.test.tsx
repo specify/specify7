@@ -29,9 +29,9 @@ describe('Statistics initial load with no saved layout', () => {
 
   test('marks the active page as refreshed', async () => {
     const { sharedLayout } = await renderEmptyStatsPage();
-    expect(
-      Number.isNaN(new Date(sharedLayout[0].lastUpdated!).valueOf())
-    ).toBe(false);
+    expect(Number.isNaN(new Date(sharedLayout[0].lastUpdated!).valueOf())).toBe(
+      false
+    );
     expect(
       screen.getByText(statsText.lastRefreshed(), { exact: false })
     ).toBeInTheDocument();
@@ -91,10 +91,7 @@ describe('Statistics initial load with no saved layout', () => {
 
   test('fills dynamic categories from the query results', async () => {
     const { sharedLayout } = await renderEmptyStatsPage();
-    const typeSpecimens = findCategory(
-      sharedLayout,
-      statsText.typeSpecimens()
-    );
+    const typeSpecimens = findCategory(sharedLayout, statsText.typeSpecimens());
     expect(typeSpecimens?.items.map(({ label }) => label)).toEqual([
       'Holotype',
       'Neotype',
