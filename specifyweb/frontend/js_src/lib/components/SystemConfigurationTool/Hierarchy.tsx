@@ -250,7 +250,13 @@ function HierarchyDiagram({
                   width={NODE_WIDTH}
                   y={6}
                 >
-                  <div className="text-white h-full px-3 flex flex-col items-center justify-center text-center leading-tight break-words">
+                  <div
+                    className={`h-full px-3 flex flex-col items-center justify-center text-center leading-tight break-words ${
+                      node.data.kind === 'collection'
+                        ? 'text-white dark:text-neutral-900'
+                        : 'text-white'
+                    }`}
+                  >
                     <div className="text-sm font-semibold">
                       {node.data.name}
                     </div>
