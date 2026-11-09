@@ -171,12 +171,14 @@ export function QueryListDialog({
   );
 
   React.useEffect(() => {
-    if (section !== 'shared' && section !== 'sharing') return;
     const handleFocus = (): void => setRefreshToken((token) => token + 1);
-    const interval = window.setInterval(handleFocus, 30_000);
     window.addEventListener('focus', handleFocus);
+    const interval =
+      section === 'shared' || section === 'sharing'
+        ? window.setInterval(handleFocus, 30_000)
+        : undefined;
     return () => {
-      window.clearInterval(interval);
+      if (interval !== undefined) window.clearInterval(interval);
       window.removeEventListener('focus', handleFocus);
     };
   }, [section]);
