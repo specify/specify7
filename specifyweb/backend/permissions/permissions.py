@@ -284,8 +284,8 @@ def has_permission_in_scope(
 def filter_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
     """Filter supported record scopes before counting, projection, or pagination.
 
-    Supports direct collection scopes and direct division scopes without
-    narrower scope fields. Other scopes are not filtered here; serialized
+    Supports direct collection scopes and direct division/discipline scopes
+    without competing scope fields. Other scopes are not filtered here; serialized
     records still undergo instance permission checks.
     """
     model = queryset.model
@@ -298,7 +298,19 @@ def filter_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
         ))
         and model not in (Accession, Discipline)
     )
-    if scope_type != ScopeType.COLLECTION and not direct_division_scope:
+    direct_discipline_scope = (
+        scope_type == ScopeType.DISCIPLINE
+        and hasattr(model, "discipline")
+        and not any(hasattr(model, field) for field in (
+            "division", "collectionmemberid", "collection",
+        ))
+        and model is not models.Collection
+    )
+    if (
+        scope_type != ScopeType.COLLECTION
+        and not direct_division_scope
+        and not direct_discipline_scope
+    ):
         return queryset
 
     userid = _actor_userid(actor)
@@ -308,12 +320,14 @@ def filter_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
         if query_pt(collectionid, userid, CollectionAccessPT.access).allowed
         and query(collectionid, userid, resource, "read").allowed
     ]
-    if direct_division_scope:
+    if direct_division_scope or direct_discipline_scope:
         allowed_collections = models.Collection.objects.filter(id__in=allowed_ids)
-        condition = Q(division_id__in=allowed_collections.values("discipline__division_id"))
-        # A missing division resolves to the institution in the instance resolver.
+        field = "division" if direct_division_scope else "discipline"
+        collection_lookup = "discipline__division_id" if direct_division_scope else "discipline_id"
+        condition = Q(**{f"{field}_id__in": allowed_collections.values(collection_lookup)})
+        # A missing direct scope resolves to the institution in the instance resolver.
         if allowed_ids:
-            condition |= Q(division__isnull=True)
+            condition |= Q(**{f"{field}__isnull": True})
         return queryset.filter(condition)
     if hasattr(model, "collectionmemberid"):
         condition = Q(collectionmemberid__in=allowed_ids)
