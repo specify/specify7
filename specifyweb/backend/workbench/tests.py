@@ -5,7 +5,7 @@ from django.test import Client
 from specifyweb.backend.notifications.models import Message
 from specifyweb.backend.permissions.models import UserPolicy
 from specifyweb.backend.workbench.models import Spdataset
-from specifyweb.specify.models import Agent, Collectionobject, Recordset, Specifyuser, Spauditlogfield, Spauditlog
+from specifyweb.specify.models import Agent, Collectionobject, Recordset, Specifyuser, Spauditlogfield
 from specifyweb.specify.tests.test_api import ApiTests
 from .upload import upload as uploader
 from .upload.upload_table import UploadTable
