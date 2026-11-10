@@ -1098,6 +1098,63 @@ class ScopingTests(ApiTests):
             discipline=self.other_discipline,
         )
 
+    def test_record_scope_preserves_hierarchy_records(self):
+        for obj in (
+            self.other_collection,
+            self.other_discipline,
+            self.other_division,
+            self.institution,
+        ):
+            with self.subTest(model=obj._meta.model_name):
+                with self.assertNumQueries(0):
+                    self.assertIs(scoping.Scoping.scope_for_record(obj), obj)
+
+    def test_record_scope_uses_record_collection(self):
+        obj = Collectionobject(collection=self.other_collection)
+
+        self.assertEqual(
+            scoping.Scoping.scope_for_record(obj), self.other_collection
+        )
+
+    def test_record_scope_uses_collectionmemberid(self):
+        obj = Preparation(collectionmemberid=self.other_collection.id)
+
+        self.assertEqual(
+            scoping.Scoping.scope_for_record(obj), self.other_collection
+        )
+
+    def test_record_scope_uses_record_discipline(self):
+        obj = Loan(discipline=self.other_discipline)
+
+        self.assertEqual(
+            scoping.Scoping.scope_for_record(obj), self.other_discipline
+        )
+
+    def test_record_scope_uses_record_division(self):
+        obj = Agent(division=self.other_division)
+
+        self.assertEqual(
+            scoping.Scoping.scope_for_record(obj), self.other_division
+        )
+
+    def test_record_scope_preserves_institution_fallback(self):
+        self.assertEqual(
+            scoping.Scoping.scope_for_record(Disposal()), self.institution
+        )
+
+    def test_record_scope_propagates_invalid_collectionmemberid(self):
+        missing_id = Collection.objects.aggregate(Max('id'))['id__max'] + 1
+        obj = Preparation(collectionmemberid=missing_id)
+
+        with self.assertRaises(Collection.DoesNotExist):
+            scoping.Scoping.scope_for_record(obj)
+
+    def test_record_scope_does_not_change_parent_scope_resolution(self):
+        self.assertEqual(
+            scoping.Scoping.model_from_instance(self.other_collection),
+            self.other_discipline,
+        )
+
     def test_explicitly_defined_scope(self):
         accession = Accession.objects.create(
             accessionnumber="ACC_Test",
