@@ -1,7 +1,7 @@
 from inspect import isclass
 
 from enum import Enum
-from django.db.models import Model
+from django.db.models import Model, QuerySet
 from django.core.exceptions import ObjectDoesNotExist
 
 from .. import models
@@ -253,6 +253,25 @@ class Scoping:
         )):
             return obj
         return Scoping.model_from_instance(obj)
+
+    @staticmethod
+    def collections_for_scope(scope: Model) -> QuerySet:
+        """Return all collections within a resolved hierarchy scope.
+
+        This does not evaluate user permissions or restrict shared scopes to
+        the collection the user is logged into.
+        """
+        scope_type = ScopeType.from_model(scope)
+        if scope.pk is None:
+            raise ValueError("Cannot resolve collections for an unsaved scope")
+
+        lookup = {
+            "COLLECTION": "pk",
+            "DISCIPLINE": "discipline_id",
+            "DIVISION": "discipline__division_id",
+            "INSTITUTION": "discipline__division__institution_id",
+        }[scope_type.name]
+        return models.Collection.objects.filter(**{lookup: scope.pk})
 
     @staticmethod
     def scope_type_from_class(model_class) -> ScopeType:
