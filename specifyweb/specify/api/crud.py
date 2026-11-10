@@ -9,7 +9,7 @@ from django.db.models.deletion import Collector
 from django.http import (HttpResponseServerError, Http404)
 from django.apps import apps
 
-from specifyweb.backend.permissions.permissions import check_field_permissions, check_table_permissions
+from specifyweb.backend.permissions.permissions import check_field_permissions, check_table_permissions, filter_collection_scoped_read_queryset
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 from specifyweb.backend.workbench.upload.auditlog import auditlog
 from specifyweb.specify import models
@@ -522,13 +522,15 @@ def delete_resource(collection, agent, name, id, version) -> None:
         clean_predelete=clean_predelete,
     )
 
-def get_collection(logged_in_collection, model, checker: ReadPermChecker, control_params=GetCollectionForm.defaults, params={}) -> CollectionPayload:
+def get_collection(logged_in_collection, model, checker: ReadPermChecker, control_params=GetCollectionForm.defaults, params={}, *, actor=None) -> CollectionPayload:
     from specifyweb.specify.api.serializers import _obj_to_data
     
     """Return a list of structured data for the objects from 'model'
     subject to the request 'params'."""
 
     objs = apply_filters(logged_in_collection, params, model, control_params)
+    if actor is not None:
+        objs = filter_collection_scoped_read_queryset(objs, actor)
 
     try:
         return objs_to_data_(objs, objs.count(), lambda o: _obj_to_data(o, checker), control_params['offset'], control_params['limit'])

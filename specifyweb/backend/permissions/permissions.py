@@ -12,11 +12,11 @@ import logging
 logger = logging.getLogger(__name__)
 
 from django.db import connection
-from django.db.models import Model
+from django.db.models import Model, Q, QuerySet
 
 from specifyweb.specify.models import Agent
 from specifyweb.specify.datamodel import Table
-from specifyweb.specify.utils.scoping import Scoping
+from specifyweb.specify.utils.scoping import Scoping, ScopeType
 from specifyweb.backend.cache.thread import ThreadCache
 
 from . import models
@@ -280,6 +280,34 @@ def has_permission_in_scope(
         and query(collectionid, userid, resource, action).allowed
         for collectionid in collection_ids
     )
+
+def filter_collection_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
+    """Filter directly collection-scoped records before counting or pagination.
+
+    Other scope types retain per-record enforcement during serialization.
+    """
+    model = queryset.model
+    if Scoping.scope_type_from_class(model) != ScopeType.COLLECTION:
+        return queryset
+
+    userid = _actor_userid(actor)
+    resource = f"/table/{model.specify_model.name.lower()}"
+    allowed_ids = [
+        collectionid for collectionid in models.Collection.objects.values_list("id", flat=True)
+        if query_pt(collectionid, userid, CollectionAccessPT.access).allowed
+        and query(collectionid, userid, resource, "read").allowed
+    ]
+    if hasattr(model, "collectionmemberid"):
+        condition = Q(collectionmemberid__in=allowed_ids)
+        if hasattr(model, "collection"):
+            # Match the instance resolver's fallback for stale membership IDs.
+            invalid_membership = (
+                Q(collectionmemberid__isnull=True)
+                | ~Q(collectionmemberid__in=models.Collection.objects.values("id"))
+            )
+            condition |= invalid_membership & Q(collection_id__in=allowed_ids)
+        return queryset.filter(condition)
+    return queryset.filter(collection_id__in=allowed_ids)
 
 @contextmanager
 def cache_permission_queries():

@@ -122,7 +122,8 @@ def collection_dispatch(request, model) -> HttpResponse:
                                           content_type='application/json')
         try:
             data = get_collection(request.specify_collection, model, checker,
-                                  control_params.cleaned_data, request.GET)
+                                  control_params.cleaned_data, request.GET,
+                                  actor=request.specify_user_agent)
         except (FilterError, OrderByError) as e:
             return HttpResponseBadRequest(e)
         resp = HttpResponse(toJson(data), content_type='application/json')
