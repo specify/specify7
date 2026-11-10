@@ -236,6 +236,25 @@ class ModelInstanceScope:
 class Scoping:
 
     @staticmethod
+    def scope_for_record(obj: Model) -> Model:
+        """Resolve a record's scope, keeping hierarchy records at their own scope.
+
+        Unlike model_from_instance, a Collection resolves to itself rather than
+        its Discipline (likewise for Discipline, Division, and Institution).
+        Other records use the existing resolver, including its institution
+        fallback for records without a defined scope. Invalid associations
+        propagate the resolver's errors.
+        """
+        if isinstance(obj, (
+            models.Collection,
+            models.Discipline,
+            models.Division,
+            models.Institution,
+        )):
+            return obj
+        return Scoping.model_from_instance(obj)
+
+    @staticmethod
     def scope_type_from_class(model_class) -> ScopeType:
         """
         Returns the ScopeType that a particular class can be scoped to.
