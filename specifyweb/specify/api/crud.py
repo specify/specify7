@@ -9,7 +9,10 @@ from django.db.models.deletion import Collector
 from django.http import (HttpResponseServerError, Http404)
 from django.apps import apps
 
-from specifyweb.backend.permissions.permissions import check_field_permissions, check_table_permissions, filter_scoped_read_queryset
+from specifyweb.backend.permissions.permissions import (
+    check_field_permissions, check_table_permissions,
+    filter_forward_related_read_queryset, filter_scoped_read_queryset,
+)
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 from specifyweb.backend.workbench.upload.auditlog import auditlog
 from specifyweb.specify import models
@@ -531,6 +534,20 @@ def get_collection(logged_in_collection, model, checker: ReadPermChecker, contro
     objs = apply_filters(logged_in_collection, params, model, control_params)
     if actor is not None:
         objs = filter_scoped_read_queryset(objs, actor)
+        filter_fields = [key for key in params if key not in control_params]
+        try:
+            objs = filter_forward_related_read_queryset(objs, filter_fields, actor)
+        except FieldError as e:
+            raise FilterError(e)
+        if control_params['orderby']:
+            order_fields = [
+                field.removeprefix('-')
+                for field in control_params['orderby'].split(',')
+            ]
+            try:
+                objs = filter_forward_related_read_queryset(objs, order_fields, actor)
+            except FieldError as e:
+                raise OrderByError(e)
 
     try:
         return objs_to_data_(objs, objs.count(), lambda o: _obj_to_data(o, checker), control_params['offset'], control_params['limit'])

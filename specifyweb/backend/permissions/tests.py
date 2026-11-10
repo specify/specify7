@@ -690,6 +690,83 @@ class ForwardRelatedRowsApiTests(ScopedPermissionTestBase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(json.loads(response.content), [])
 
+    def assert_list_ids(self, expected, **params):
+        response = self.client.get('/api/specify/collectionobject/', {
+            'id__in': ','.join(str(obj.id) for obj in (
+                self.allowed_record, self.restricted_record, self.null_record,
+            )),
+            'limit': 0, 'orderby': '-id', **params,
+        })
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload['meta']['total_count'], len(expected))
+        self.assertCountEqual(
+            [obj['id'] for obj in payload['objects']], [obj.id for obj in expected],
+        )
+
+    def test_list_related_filter_excludes_restricted_matches_and_count(self):
+        self.assert_list_ids([], collectingevent__remarks='restricted')
+
+    def test_list_related_ordering_excludes_restricted_records_and_count(self):
+        self.assert_list_ids(
+            [self.allowed_record, self.null_record],
+            orderby='-collectingevent__remarks,id',
+        )
+
+    def test_list_related_ordering_filters_before_pagination(self):
+        response = self.client.get('/api/specify/collectionobject/', {
+            'id__in': f'{self.allowed_record.id},{self.restricted_record.id}',
+            'orderby': '-collectingevent__remarks', 'limit': 1,
+        })
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload['meta']['total_count'], 1)
+        self.assertEqual(
+            [obj['id'] for obj in payload['objects']], [self.allowed_record.id],
+        )
+
+    def test_list_related_read_grant_requires_collection_access(self):
+        self.grant(self.other_collection, '/table/collectingevent', 'read')
+        self.assert_list_ids([], collectingevent__remarks='restricted')
+
+    def test_list_related_access_requires_table_read(self):
+        self.grant_access(self.other_collection)
+        self.assert_list_ids([], collectingevent__remarks='restricted')
+
+    def test_list_related_filter_allows_qualifying_grants(self):
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/collectingevent', 'read')
+        self.assert_list_ids(
+            [self.restricted_record], collectingevent__remarks='restricted',
+        )
+
+    def test_list_without_relationship_query_preserves_base_records(self):
+        self.assert_list_ids([
+            self.allowed_record, self.restricted_record, self.null_record,
+        ])
+
+    def test_list_nested_filter_checks_each_related_scope(self):
+        locality = spmodels.Locality.objects.create(
+            discipline=self.other_discipline, localityname='restricted locality',
+        )
+        self.allowed_event.locality = locality
+        self.allowed_event.save()
+        self.assert_list_ids(
+            [], collectingevent__locality__localityname='restricted locality',
+        )
+
+    def test_list_related_filter_preserves_null_relationships(self):
+        self.assert_list_ids(
+            [self.null_record], collectingevent__remarks__isnull='true',
+        )
+
+    def test_list_global_grant_preserves_related_ordering(self):
+        self.grant(None, '%', '%')
+        self.assert_list_ids(
+            [self.allowed_record, self.restricted_record, self.null_record],
+            orderby='-collectingevent__remarks,id',
+        )
+
 class DivisionScopedReadApiTests(ScopedPermissionTestBase):
     def setUp(self):
         super().setUp()
