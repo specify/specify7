@@ -3954,6 +3954,170 @@ class ReverseInheritedScopeMutationApiTests(ScopedPermissionTestBase):
         }, before)
         event.refresh_from_db()
 
+class BatchEditPreparationAuthorizationApiTests(ScopedPermissionTestBase):
+    def setUp(self):
+        super().setUp()
+        self.client.force_login(self.specifyuser)
+        self.client.cookies['collection'] = str(self.collection.pk)
+        self.grant_access(self.collection)
+        self.grant(self.collection, '%', '%')
+        self.restricted = spmodels.Collectionobject.objects.create(
+            collection=self.other_collection, catalognumber='restricted-batch',
+        )
+        self.preptype = spmodels.Preptype.objects.create(
+            collection=self.collection, name='Batch prep', isloanable=False,
+        )
+        self.preparation = spmodels.Preparation.objects.create(
+            collectionobject=self.collectionobjects[0], preptype=self.preptype,
+            collectionmemberid=self.other_collection.pk, remarks='restricted data',
+        )
+        self.source_rows = [(self.collectionobjects[0], None)]
+
+    def snapshot(self):
+        from specifyweb.backend.workbench.models import Spdataset
+        return {
+            model.__name__: list(model.objects.order_by('pk').values())
+            for model in (Spdataset, spmodels.Collectionobject, spmodels.Preparation,
+                          spmodels.Spauditlog, spmodels.Spauditlogfield)
+        }
+
+    def execute_rows(self, **kwargs):
+        rows = []
+        for obj, preparation in self.source_rows:
+            values = [obj.pk]
+            for query_field in kwargs['query_fields']:
+                spec = query_field.fieldspec
+                source = obj if spec.table.name.lower() == 'collectionobject' else preparation
+                field = spec.get_field()
+                values.append(
+                    None if source is None else (
+                        source.pk if field.name == spec.table.idFieldName
+                        else getattr(source, field.name.lower())
+                    )
+                )
+            rows.append(tuple(values))
+        return {'results': rows}
+
+    def post(self, *, related=False, recordset=None, paths=None):
+        from specifyweb.backend.stored_queries.queryfieldspec import QueryFieldSpec
+
+        paths = [('Collectionobject', 'text1')] if paths is None else list(paths)
+        if related:
+            paths.append(('Collectionobject', 'preparations', 'remarks'))
+        fields = [{
+            'stringid': QueryFieldSpec.from_path(path).to_stringid(),
+            'isrelfld': False, 'operstart': 8, 'startvalue': '',
+            'isnot': False, 'isdisplay': True, 'sorttype': 0, 'position': index,
+        } for index, path in enumerate(paths)]
+        with (
+            patch('specifyweb.backend.stored_queries.batch_edit.execute', side_effect=self.execute_rows),
+            patch('specifyweb.backend.stored_queries.batch_edit.get_all_tree_information', return_value={}),
+        ):
+            response = self.client.post('/stored_query/batch_edit/', data={
+                'name': 'Authorization batch', 'contexttableid': 1, 'fields': fields,
+                **({} if recordset is None else {'recordsetid': recordset.pk}),
+            }, content_type='application/json')
+        self.assertNotEqual(response.status_code, 500, response.content.decode()[:1500])
+        return response
+
+    def assert_denied_unchanged(self, **options):
+        before = self.snapshot()
+        self.assertEqual(self.post(**options).status_code, 403)
+        self.assertEqual(self.snapshot(), before)
+
+    def test_restricted_base_record_does_not_create_dataset_or_backup(self):
+        self.source_rows = [(self.restricted, None)]
+        self.assert_denied_unchanged()
+
+    def test_mixed_base_rows_do_not_create_partial_dataset(self):
+        self.source_rows.append((self.restricted, None))
+        self.assert_denied_unchanged()
+
+    def test_base_read_without_collection_access_does_not_authorize(self):
+        self.grant(self.other_collection, '/table/collectionobject', 'read')
+        self.source_rows = [(self.restricted, None)]
+        self.assert_denied_unchanged()
+
+    def test_collection_access_without_base_read_does_not_authorize(self):
+        self.grant_access(self.other_collection)
+        self.source_rows = [(self.restricted, None)]
+        self.assert_denied_unchanged()
+
+    def test_related_record_requires_read_in_actual_scope(self):
+        self.source_rows = [(self.collectionobjects[0], self.preparation)]
+        self.assert_denied_unchanged(related=True)
+
+    def test_related_read_without_access_does_not_authorize(self):
+        self.grant(self.other_collection, '/table/preparation', 'read')
+        self.source_rows = [(self.collectionobjects[0], self.preparation)]
+        self.assert_denied_unchanged(related=True)
+
+    def test_related_access_without_read_does_not_authorize(self):
+        self.grant_access(self.other_collection)
+        self.source_rows = [(self.collectionobjects[0], self.preparation)]
+        self.assert_denied_unchanged(related=True)
+
+    def test_authorized_base_creates_dataset_and_backup(self):
+        from specifyweb.backend.workbench.models import Spdataset
+        before = Spdataset.objects.count()
+        response = self.post()
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(Spdataset.objects.count(), before + 2)
+        dataset = Spdataset.objects.get(pk=response.json()['id'])
+        self.assertTrue(dataset.isupdate)
+        self.assertIsNotNone(dataset.backer)
+
+    def test_authorized_related_scope_preserves_data(self):
+        from specifyweb.backend.workbench.models import Spdataset
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/preparation', 'read')
+        self.source_rows = [(self.collectionobjects[0], self.preparation)]
+        response = self.post(related=True)
+        self.assertEqual(response.status_code, 201)
+        self.assertIn('restricted data', str(Spdataset.objects.get(pk=response.json()['id']).data))
+
+    def test_null_related_record_is_allowed(self):
+        self.assertEqual(self.post(related=True).status_code, 201)
+
+    def test_related_to_one_record_requires_actual_scope_read(self):
+        attribute = spmodels.Collectionobjectattribute.objects.create(
+            collectionmemberid=self.other_collection.pk, text1='restricted attribute',
+        )
+        self.source_rows = [(self.collectionobjects[0], attribute)]
+        self.assert_denied_unchanged(paths=[
+            ('Collectionobject', 'collectionobjectattribute', 'text1'),
+        ])
+
+    def test_authorized_cross_collection_base_is_preserved(self):
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/collectionobject', 'read')
+        self.source_rows.append((self.restricted, None))
+        self.assertEqual(self.post().status_code, 201)
+
+    def test_restricted_recordset_cannot_select_readable_records(self):
+        recordset = spmodels.Recordset.objects.create(
+            collectionmemberid=self.other_collection.pk, name='Restricted selection',
+            dbtableid=1, type=0, specifyuser=self.specifyuser,
+        )
+        recordset.recordsetitems.create(recordid=self.collectionobjects[0].pk)
+        self.assert_denied_unchanged(recordset=recordset)
+
+    def test_authorized_recordset_selection_is_preserved(self):
+        recordset = spmodels.Recordset.objects.create(
+            collectionmemberid=self.collection.pk, name='Readable selection',
+            dbtableid=1, type=0, specifyuser=self.specifyuser,
+        )
+        recordset.recordsetitems.create(recordid=self.collectionobjects[0].pk)
+        self.assertEqual(self.post(recordset=recordset).status_code, 201)
+
+    def test_missing_source_record_does_not_create_dataset(self):
+        obj = self.collectionobjects[0]
+        obj.pk += 1000000
+        before = self.snapshot()
+        response = self.post()
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(self.snapshot(), before)
+
 class BulkCreateAuthorizationApiTests(ScopedPermissionTestBase):
     def setUp(self):
         super().setUp()
