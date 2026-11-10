@@ -308,6 +308,133 @@ class ScopedDeleteApiTests(ScopedPermissionTestBase):
             spmodels.Collectionobjectattribute.objects.filter(pk=attribute.id).exists()
         )
 
+class ScopedUpdateApiTests(ScopedPermissionTestBase):
+    def setUp(self):
+        super().setUp()
+        self.grant_access(self.collection)
+        self.grant(self.collection, '/table/%', 'update')
+        self.grant(None, '/table/%', 'read')
+        self.grant(None, '/field/%', 'update')
+        self.client.force_login(self.specifyuser)
+        self.client.cookies['collection'] = str(self.collection.id)
+        self.other_record = spmodels.Collectionobject.objects.create(
+            collection=self.other_collection,
+            catalognumber='other-record',
+        )
+
+    def update_record(self, record, **changes):
+        return self.client.put(
+            f'/api/specify/collectionobject/{record.id}/',
+            data={'version': record.version, **changes},
+            content_type='application/json',
+        )
+
+    def assert_record_unchanged(self, record):
+        expected = {
+            field.attname: getattr(record, field.attname)
+            for field in record._meta.concrete_fields
+        }
+        persisted = spmodels.Collectionobject.objects.filter(pk=record.id).values().get()
+        self.assertEqual(persisted, expected)
+
+    def test_updates_authorized_record(self):
+        record = self.collectionobjects[0]
+        version = record.version
+        response = self.update_record(record, text1='Updated')
+        self.assertEqual(response.status_code, 200)
+        record.refresh_from_db()
+        self.assertEqual(record.text1, 'Updated')
+        self.assertEqual(record.version, version + 1)
+
+    def test_denies_update_in_restricted_collection(self):
+        response = self.update_record(self.other_record, text1='Forbidden')
+        self.assertEqual(response.status_code, 403)
+        self.assert_record_unchanged(self.other_record)
+
+    def test_update_grant_without_collection_access_does_not_allow_update(self):
+        self.grant(self.other_collection, '/table/%', 'update')
+        response = self.update_record(self.other_record, text1='Forbidden')
+        self.assertEqual(response.status_code, 403)
+        self.assert_record_unchanged(self.other_record)
+
+    def test_collection_access_without_update_grant_does_not_allow_update(self):
+        self.grant_access(self.other_collection)
+        response = self.update_record(self.other_record, text1='Forbidden')
+        self.assertEqual(response.status_code, 403)
+        self.assert_record_unchanged(self.other_record)
+
+    def test_updates_other_collection_with_both_grants(self):
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/%', 'update')
+        response = self.update_record(self.other_record, text1='Updated')
+        self.assertEqual(response.status_code, 200)
+        self.other_record.refresh_from_db()
+        self.assertEqual(self.other_record.text1, 'Updated')
+
+    def test_institution_admin_can_update_other_collection(self):
+        self.grant(None, '%', '%')
+        response = self.update_record(self.other_record, text1='Updated')
+        self.assertEqual(response.status_code, 200)
+        self.other_record.refresh_from_db()
+        self.assertEqual(self.other_record.text1, 'Updated')
+
+    def test_denies_moving_record_into_restricted_collection(self):
+        record = self.collectionobjects[0]
+        response = self.update_record(
+            record, collection=f'/api/specify/collection/{self.other_collection.id}/',
+            collectionmemberid=self.other_collection.id, text1='Forbidden',
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assert_record_unchanged(record)
+
+    def test_denies_moving_restricted_record_into_authorized_collection(self):
+        response = self.update_record(
+            self.other_record,
+            collection=f'/api/specify/collection/{self.collection.id}/',
+            collectionmemberid=self.collection.id, text1='Forbidden',
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assert_record_unchanged(self.other_record)
+
+    def test_moves_record_when_both_scopes_are_authorized(self):
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/%', 'update')
+        record = self.collectionobjects[0]
+        version = record.version
+        response = self.update_record(
+            record, collection=f'/api/specify/collection/{self.other_collection.id}/',
+            collectionmemberid=self.other_collection.id, text1='Moved',
+        )
+        self.assertEqual(response.status_code, 200)
+        record.refresh_from_db()
+        self.assertEqual(record.collection_id, self.other_collection.id)
+        self.assertEqual(record.collectionmemberid, self.other_collection.id)
+        self.assertEqual(record.text1, 'Moved')
+        self.assertEqual(record.version, version + 1)
+
+    def test_restricted_nested_update_rolls_back_parent(self):
+        attribute = spmodels.Collectionobjectattribute.objects.create(
+            collectionmemberid=self.other_collection.id
+        )
+        record = self.collectionobjects[0]
+        record.collectionobjectattribute = attribute
+        record.save()
+        version = attribute.version
+
+        response = self.update_record(
+            record, text1='Forbidden',
+            collectionobjectattribute={
+                'id': attribute.id, 'version': version,
+                'collectionmemberid': self.collection.id,
+            },
+        )
+
+        self.assertEqual(response.status_code, 403)
+        self.assert_record_unchanged(record)
+        attribute.refresh_from_db()
+        self.assertEqual(attribute.version, version)
+        self.assertEqual(attribute.collectionmemberid, self.other_collection.id)
+
 class PermissionsApiTest(ApiTests):
     def setUp(self):
         super().setUp()
