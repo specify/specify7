@@ -368,7 +368,15 @@ export function QueryLine({
               disabled={handleRemove === undefined}
               title={commonText.remove()}
               variant={className.dangerButton}
-              onClick={handleRemove}
+              onClick={
+                handleRemove === undefined
+                  ? undefined
+                  : (event): void => {
+                      event.stopPropagation();
+                      handleRemove();
+                    }
+              }
+              onKeyDown={(event): void => event.stopPropagation()}
             >
               {icons.trash}
             </Button.Small>
