@@ -380,7 +380,7 @@ class ObjectFormatter:
             expr = (
                 case(*cases, value=formatted, else_=default)
                 if cases
-                else default
+                else default if default is not None else literal(None)
             )
         return query, blank_nulls(expr)
 

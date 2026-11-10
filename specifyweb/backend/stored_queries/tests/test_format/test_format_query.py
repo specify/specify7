@@ -530,3 +530,26 @@ class FormatterAggregatorTests(SQLAlchemySetup):
             ).scalar()
 
         self.assertEqual(result, 'default value')
+
+    def test_switch_with_empty_default_fields(self):
+        formatter = self.get_formatter('''<formatters>
+          <format name="Accession" class="edu.ku.brc.specify.datamodel.Accession" default="true">
+            <switch single="false" field="accessionNumber"><fields/></switch>
+          </format>
+        </formatters>''')
+        accession = spmodels.Accession.objects.create(
+            accessionnumber='empty-default', division=self.division
+        )
+        with FormatterAggregatorTests.test_session_context() as session:
+            query = QueryConstruct(
+                collection=self.collection,
+                objectformatter=formatter,
+                query=session.query(),
+            )
+            _, expression = formatter.objformat(query, models.Accession, None)
+            self.assertEqual(
+                session.query(expression)
+                .filter(models.Accession._id == accession.id)
+                .scalar(),
+                '',
+            )
