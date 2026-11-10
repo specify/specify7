@@ -61,7 +61,7 @@ jest.mock('../../Forms/ResourceView', () => {
     mockReact.createElement(
       'button',
       { type: 'button', onClick: onSaved },
-      `Save ${String(resource.get('name') ?? 'Taxon')}`
+      `Save ${String(resource.get('name') ?? resource.get('lastName') ?? 'Record')}`
     );
   return { ResourceView, RESTRICT_ADDING: new Set() };
 });
@@ -179,7 +179,7 @@ type ComboBoxQuery = { readonly fields: ReadonlyArray<QueryField> };
 
 const mockedRunQuery = jest.mocked(runQuery);
 
-describe('Determination Taxon tree definition filtering', () => {
+describe('Determination QueryComboBox behavior', () => {
   test.each([
     {
       cot: 'COT A',
@@ -333,5 +333,66 @@ describe('Determination Taxon tree definition filtering', () => {
     expect(
       (setTaxon.mock.calls[0]?.[1] as SpecifyResource<AnySchema>).get('name')
     ).toBe('New taxon');
+  });
+
+  test('creates a new Agent for a Determiner with the QCBX Add button', async () => {
+    mockedRunQuery.mockResolvedValue([]);
+    const typeSearch: TypeSearch = {
+      name: localized('Agent'),
+      table: tables.Agent,
+      title: localized('Agent'),
+      formatter: localized(''),
+      format: localized('%s'),
+      displayFields: undefined,
+      searchFields: [[tables.Agent.strictGetLiteralField('lastName')]],
+    };
+    const setAgent = jest.fn();
+    const determiner = {
+      specifyTable: tables.Determiner,
+      set: setAgent,
+      rgetPromise: async () => undefined,
+      on: () => undefined,
+      off: () => undefined,
+    } as unknown as SpecifyResource<AnySchema>;
+
+    render(
+      <LoadingContext.Provider value={(promise) => void promise}>
+        <QueryComboBox
+          id="determiner-agent"
+          resource={determiner}
+          field={tables.Determiner.strictGetRelationship('agent')}
+          formType="form"
+          isRequired={false}
+          hasNewButton
+          hasEditButton={false}
+          typeSearch={typeSearch}
+          forceCollection={undefined}
+        />
+      </LoadingContext.Provider>
+    );
+
+    const input = screen.getByRole('textbox', { name: 'Agent' });
+    await waitFor(() => expect(input).toBeEnabled());
+    await act(async () => {
+      await userEvent.type(input, 'New Agent');
+    });
+
+    await act(async () => {
+      await userEvent.click(screen.getByRole('button', { name: 'Add' }));
+    });
+    const saveButton = await screen.findByRole('button', {
+      name: 'Save New Agent',
+    });
+    await act(async () => {
+      await userEvent.click(saveButton);
+    });
+
+    expect(setAgent).toHaveBeenCalledWith(
+      'agent',
+      expect.objectContaining({ specifyTable: tables.Agent })
+    );
+    expect(
+      (setAgent.mock.calls[0]?.[1] as SpecifyResource<AnySchema>).get('lastName')
+    ).toBe('New Agent');
   });
 });
