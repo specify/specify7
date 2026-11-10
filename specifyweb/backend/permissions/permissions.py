@@ -591,14 +591,17 @@ def _enforce_in_scope(scope: Model, actor, resources: list[str], action: str) ->
         logger.debug("record scope permission denied: %s, scope=%s", denials, scope)
         raise NoMatchingRuleException(denials)
 
-def check_table_permissions(collection, actor, obj, action: TABLE_ACTION) -> None:
-    """Check instances in record scope; model/table checks use collection."""
+def check_table_permissions(
+    collection, actor, obj, action: TABLE_ACTION, *, scope: Model | None = None
+) -> None:
+    """Check instances in record or captured scope; model/table checks use collection."""
     if isinstance(obj, Table):
         name = obj.name.lower()
     else:
         name = obj.specify_model.name.lower()
     if isinstance(obj, Model):
-        _enforce_in_scope(Scoping.scope_for_record(obj), actor, [f"/table/{name}"], action)
+        resolved_scope = scope if scope is not None else Scoping.scope_for_record(obj)
+        _enforce_in_scope(resolved_scope, actor, [f"/table/{name}"], action)
         return
     enforce(collection, actor, [f"/table/{name}"], action)
 

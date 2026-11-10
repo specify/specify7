@@ -160,6 +160,7 @@ def handle_fk_fields(collection, agent, obj, data: dict[str, Any], *, parent_obj
 def _handle_fk_field(collection, agent, obj, field, value, read_checker, *, parent_obj=None):
     from specifyweb.specify.api.crud import get_object_or_404, update_or_create_resource
     from specifyweb.specify.api.serializers import _obj_to_data
+    from specifyweb.specify.api.validators import cleanData
 
     field_name = field.name
     old_related = get_related_or_none(obj, field_name)
@@ -196,7 +197,8 @@ def _handle_fk_field(collection, agent, obj, field, value, read_checker, *, pare
         # The related object is represented by a nested dict of data.
         rel_model = field.related_model
         datamodel_field = obj.specify_model.get_relationship_strict(field_name)
-        rel_obj = update_or_create_resource(collection, agent, rel_model, value, obj if dependent else None, datamodel_field)
+        rel_data = cleanData(rel_model, value, datamodel_field)
+        rel_obj = update_or_create_resource(collection, agent, rel_model, rel_data, obj if dependent else None, datamodel_field)
 
         setattr(obj, field_name, rel_obj)
         if dependent and old_related and old_related.id != rel_obj.id:
@@ -306,15 +308,20 @@ def handle_to_many(collection, agent, obj, data: dict[str, Any]) -> None:
 
 @contextmanager
 def _authorize_related_update(collection, agent, obj, field, related_obj):
-    """Authorize the original parent and any inherited descendant scope changes."""
+    """Authorize the original parent's relationship before reassigning it."""
     original = get_related_or_none(related_obj, field.field.name)
     if original is not None and original != obj:
         check_table_permissions(collection, agent, original, "update")
         check_field_permissions(collection, agent, original, [field.name], "update")
+    yield
 
+
+@contextmanager
+def authorize_dependent_scope_update(collection, agent, obj):
+    """Require update permission in both scopes for implicitly moved dependents."""
     # Descendants can inherit scope through the moved record (e.g. notebook pages).
     states = []
-    seen = {(type(related_obj), related_obj.pk)}
+    seen = {(type(obj), obj.pk)}
 
     def collect_dependents(parent):
         for relation in parent._meta.get_fields():
@@ -335,14 +342,14 @@ def _authorize_related_update(collection, agent, obj, field, related_obj):
                 states.append((child, Scoping.scope_for_record(child)))
                 collect_dependents(child)
 
-    collect_dependents(related_obj)
+    collect_dependents(obj)
     yield
     for child, original_scope in states:
         current = type(child).objects.filter(pk=child.pk).first()
         if current is None:
             continue  # Explicit nested deletion was authorized by its own deleter.
         if Scoping.scope_for_record(current) != original_scope:
-            check_table_permissions(collection, agent, child, "update")
+            check_table_permissions(collection, agent, child, "update", scope=original_scope)
             check_table_permissions(collection, agent, current, "update")
 
 def _handle_dependent_to_many(collection, agent, obj, field, value):

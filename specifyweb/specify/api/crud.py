@@ -24,7 +24,7 @@ from specifyweb.specify.utils.field_change_info import FieldChangeInfo
 from specifyweb.specify.utils.scoping import Scoping
 from specifyweb.specify.api.filter_by_col import filter_by_collection
 from specifyweb.specify.models_utils.models_by_table_id import get_model_by_table_id
-from specifyweb.specify.models_utils.relationships import get_recordset_info, get_related_or_none, handle_fk_fields, handle_to_many, is_dependent_field
+from specifyweb.specify.models_utils.relationships import authorize_dependent_scope_update, get_recordset_info, get_related_or_none, handle_fk_fields, handle_to_many, is_dependent_field
 from specifyweb.specify.utils.uiformatters import AutonumberOverflowException
 from specifyweb.specify.api.validators import GetCollectionForm, cleanData, fld_change_info
 
@@ -142,47 +142,45 @@ def post_resource(collection, agent, name: str, data, recordsetid: int | None=No
 
 def update_obj(collection, agent, name: str, id, version, data: dict[str, Any], parent_obj=None, parent_relationship=None):
     """Update the resource with 'id' in model named 'name' with given
-    'data'.
+    'data', authorizing inherited scope changes for dependent records too.
     """
     obj = get_object_or_404(name, id=int(id))
     check_table_permissions(collection, agent, obj, "update")
     original_scope = Scoping.scope_for_record(obj)
 
-    data = cleanData(obj.__class__, data, parent_relationship)
-    dependents_to_delete, fk_dirty, handle_remote_to_ones = handle_fk_fields(
-        collection, agent, obj, data, parent_obj=parent_obj,
-    )
-    dirty = fk_dirty + set_fields_from_data(obj, data)
-
-    # Scope-defining fields may have changed; authorize the resulting scope too.
-    check_table_permissions(collection, agent, obj, "update")
-    dirty_fields = [d['field_name'] for d in dirty]
-    dirty_fields.extend(
-        name for name, value in data.items()
-        if isinstance(value, (list, dict)) and (
-            obj._meta.get_field(name).one_to_many
-            or (obj._meta.get_field(name).one_to_one and not obj._meta.get_field(name).concrete)
+    with authorize_dependent_scope_update(collection, agent, obj):
+        data = cleanData(obj.__class__, data, parent_relationship)
+        dependents_to_delete, fk_dirty, handle_remote_to_ones = handle_fk_fields(
+            collection, agent, obj, data, parent_obj=parent_obj,
         )
-    )
-    check_field_permissions(
-        collection, agent, obj, dirty_fields, "update", scope=original_scope
-    )
-    if Scoping.scope_for_record(obj) != original_scope:
-        check_field_permissions(collection, agent, obj, dirty_fields, "update")
+        dirty = fk_dirty + set_fields_from_data(obj, data)
 
-    if hasattr(obj, 'modifiedbyagent'):
-        setattr(obj, 'modifiedbyagent', agent)
+        # Scope-defining fields may have changed; authorize the resulting scope too.
+        check_table_permissions(collection, agent, obj, "update")
+        dirty_fields = [d['field_name'] for d in dirty]
+        dirty_fields.extend(
+            name for name, value in data.items()
+            if isinstance(value, (list, dict)) and obj._meta.get_field(name).is_relation
+        )
+        check_field_permissions(
+            collection, agent, obj, dirty_fields, "update", scope=original_scope
+        )
+        if Scoping.scope_for_record(obj) != original_scope:
+            check_field_permissions(collection, agent, obj, dirty_fields, "update")
 
-    data = _handle_special_update_priors(obj, data)
-    bump_version(obj, version)
-    obj.save(force_update=True)
-    auditlog.update(obj, agent, parent_obj, dirty)
-    deleter = make_default_deleter(collection=collection, agent=agent)
-    for dep in dependents_to_delete:
-        delete_obj(dep, deleter, parent_obj=obj)
-    handle_remote_to_ones(obj)
-    handle_to_many(collection, agent, obj, data)
-    _handle_special_update_posts(obj)
+        if hasattr(obj, 'modifiedbyagent'):
+            setattr(obj, 'modifiedbyagent', agent)
+
+        data = _handle_special_update_priors(obj, data)
+        bump_version(obj, version)
+        obj.save(force_update=True)
+        auditlog.update(obj, agent, parent_obj, dirty)
+        deleter = make_default_deleter(collection=collection, agent=agent)
+        for dep in dependents_to_delete:
+            delete_obj(dep, deleter, parent_obj=obj)
+        handle_remote_to_ones(obj)
+        handle_to_many(collection, agent, obj, data)
+        _handle_special_update_posts(obj)
     return obj
 
 

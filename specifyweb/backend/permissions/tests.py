@@ -3954,6 +3954,234 @@ class ReverseInheritedScopeMutationApiTests(ScopedPermissionTestBase):
         }, before)
         event.refresh_from_db()
 
+class ForwardNestedScopeMutationApiTests(ScopedPermissionTestBase):
+    def setUp(self):
+        super().setUp()
+        self.other_discipline = spmodels.Discipline.objects.create(
+            division=self.division, datatype=self.datatype,
+            geographytreedef=self.geographytreedef,
+            geologictimeperiodtreedef=self.geologictimeperiodtreedef,
+        )
+        self.other_collection.discipline = self.other_discipline
+        self.other_collection.save()
+        for collection in (self.collection, self.other_collection):
+            self.grant_access(collection)
+            self.grant(collection, '/table/%', 'read')
+            self.grant(collection, '/field/%', 'update')
+            for table in ('fieldnotebook', 'fieldnotebookpageset'):
+                self.grant(collection, f'/table/{table}', 'update')
+        self.client.force_login(self.specifyuser)
+        self.client.cookies['collection'] = str(self.collection.id)
+        self.notebook = spmodels.Fieldnotebook.objects.create(
+            collection=self.collection, discipline=self.discipline, owneragent=self.agent,
+        )
+        self.destination = spmodels.Fieldnotebook.objects.create(
+            collection=self.other_collection, discipline=self.other_discipline,
+            owneragent=self.agent,
+        )
+        self.pageset = spmodels.Fieldnotebookpageset.objects.create(
+            fieldnotebook=self.notebook, discipline=self.discipline,
+        )
+        self.page = spmodels.Fieldnotebookpage.objects.create(
+            pageset=self.pageset, discipline=self.discipline, pagenumber='1',
+        )
+        self.sibling_pageset = spmodels.Fieldnotebookpageset.objects.create(
+            fieldnotebook=self.notebook, discipline=self.discipline,
+        )
+        self.sibling_page = spmodels.Fieldnotebookpage.objects.create(
+            pageset=self.sibling_pageset, discipline=self.discipline, pagenumber='2',
+        )
+
+    def snapshot(self):
+        return {
+            model.__name__: list(model.objects.order_by('pk').values())
+            for model in (
+                spmodels.Fieldnotebook, spmodels.Fieldnotebookpageset,
+                spmodels.Fieldnotebookpage, spmodels.Spauditlog, spmodels.Spauditlogfield,
+            )
+        }
+
+    def uri(self, obj):
+        return f'/api/specify/{obj._meta.model_name}/{obj.pk}/'
+
+    def put(self, obj, **changes):
+        return self.client.put(
+            self.uri(obj), data={'version': obj.version, **changes},
+            content_type='application/json',
+        )
+
+    def nested_data(self, **changes):
+        return {
+            'id': self.notebook.pk, 'version': self.notebook.version,
+            'discipline': self.uri(self.other_discipline), **changes,
+        }
+
+    def assert_nested_denied_unchanged(self):
+        before = self.snapshot()
+        response = self.put(
+            self.pageset, description='must roll back', fieldnotebook=self.nested_data(),
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(self.snapshot(), before)
+
+    def test_nested_scope_change_requires_resulting_descendant_update(self):
+        self.grant(self.collection, '/table/fieldnotebookpage', 'update')
+        self.assert_nested_denied_unchanged()
+
+    def test_nested_scope_change_requires_original_descendant_update(self):
+        self.grant(self.other_collection, '/table/fieldnotebookpage', 'update')
+        self.assert_nested_denied_unchanged()
+
+    def test_nested_scope_change_checks_dependents_outside_submitted_path(self):
+        self.page.delete()
+        self.assert_nested_denied_unchanged()
+
+    def test_nested_scope_change_with_all_permissions_updates_descendant_scopes(self):
+        for collection in (self.collection, self.other_collection):
+            self.grant(collection, '/table/fieldnotebookpage', 'update')
+        response = self.put(self.pageset, fieldnotebook=self.nested_data())
+        self.assertEqual(response.status_code, 200)
+        for obj in (self.pageset, self.page, self.sibling_pageset, self.sibling_page):
+            obj.refresh_from_db()
+            self.assertEqual(permissions.Scoping.scope_for_record(obj), self.other_discipline)
+
+    def test_unchanged_scope_does_not_require_descendant_update(self):
+        response = self.put(
+            self.pageset, fieldnotebook=self.nested_data(
+                discipline=self.uri(self.discipline), description='allowed',
+            ),
+        )
+        self.assertEqual(response.status_code, 200)
+        self.notebook.refresh_from_db()
+        self.assertEqual(self.notebook.description, 'allowed')
+
+    def test_collection_change_with_unchanged_discipline_preserves_shared_scope(self):
+        response = self.put(
+            self.pageset, fieldnotebook=self.nested_data(
+                discipline=self.uri(self.discipline),
+                collection=self.uri(self.other_collection),
+            ),
+        )
+        self.assertEqual(response.status_code, 200)
+        self.page.refresh_from_db()
+        self.assertEqual(permissions.Scoping.scope_for_record(self.page), self.discipline)
+
+    def test_nested_new_independent_target_preserves_previous_target_and_dependents(self):
+        self.grant(self.collection, '/table/fieldnotebook', 'create')
+        response = self.put(self.pageset, fieldnotebook={
+            'id': None, 'name': 'New notebook',
+            'collection': self.uri(self.collection),
+            'discipline': self.uri(self.discipline),
+            'owneragent': self.uri(self.agent),
+        })
+        self.assertEqual(response.status_code, 200)
+        self.pageset.refresh_from_db()
+        self.assertNotEqual(self.pageset.fieldnotebook_id, self.notebook.pk)
+        self.assertTrue(spmodels.Fieldnotebook.objects.filter(pk=self.notebook.pk).exists())
+        self.sibling_pageset.refresh_from_db()
+        self.assertEqual(self.sibling_pageset.fieldnotebook_id, self.notebook.pk)
+        self.page.refresh_from_db()
+        self.assertEqual(permissions.Scoping.scope_for_record(self.page), self.discipline)
+
+    def test_nested_same_id_requires_source_relationship_field_permission(self):
+        models.UserPolicy.objects.filter(resource='/field/%').delete()
+        self.grant(self.collection, '/field/fieldnotebook/%', 'update')
+        before = self.snapshot()
+        response = self.put(
+            self.pageset, fieldnotebook=self.nested_data(
+                discipline=self.uri(self.discipline), description='denied',
+            ),
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(self.snapshot(), before)
+
+    def test_nested_update_still_requires_related_table_permission(self):
+        models.UserPolicy.objects.filter(resource='/table/fieldnotebook', action='update').delete()
+        self.assert_nested_denied_unchanged()
+
+    def test_nested_change_requires_source_field_in_resulting_scope(self):
+        for collection in (self.collection, self.other_collection):
+            self.grant(collection, '/table/fieldnotebookpage', 'update')
+        models.UserPolicy.objects.filter(resource='/field/%').delete()
+        self.grant(self.collection, '/field/%', 'update')
+        self.grant(self.other_collection, '/field/fieldnotebook/%', 'update')
+        self.assert_nested_denied_unchanged()
+
+    def test_same_id_noop_still_requires_source_relationship_field_permission(self):
+        models.UserPolicy.objects.filter(resource='/field/%').delete()
+        before = self.snapshot()
+        response = self.put(
+            self.pageset,
+            fieldnotebook={'id': self.notebook.pk, 'version': self.notebook.version},
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(self.snapshot(), before)
+
+    def test_case_insensitive_nested_id_updates_existing_record(self):
+        response = self.put(self.pageset, fieldnotebook={
+            'ID': self.notebook.pk, 'Version': self.notebook.version,
+            'Description': 'normalized',
+        })
+        self.assertEqual(response.status_code, 200)
+        self.notebook.refresh_from_db()
+        self.assertEqual(self.notebook.description, 'normalized')
+
+    def test_missing_nested_version_rolls_back(self):
+        before = self.snapshot()
+        response = self.put(
+            self.pageset, description='rollback',
+            fieldnotebook={'id': self.notebook.pk, 'description': 'rollback'},
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(self.snapshot(), before)
+
+    def test_stale_nested_version_rolls_back(self):
+        before = self.snapshot()
+        response = self.put(
+            self.pageset, description='rollback', fieldnotebook=self.nested_data(
+                version=self.notebook.version + 1,
+            ),
+        )
+        self.assertEqual(response.status_code, 409)
+        self.assertEqual(self.snapshot(), before)
+
+    def test_nested_create_parent_rolls_back_scope_change_of_existing_target(self):
+        self.grant(self.collection, '/table/fieldnotebookpageset', 'create')
+        self.grant(self.other_collection, '/table/fieldnotebookpageset', 'create')
+        before = self.snapshot()
+        response = self.client.post(
+            '/api/specify/fieldnotebookpageset/',
+            data={
+                'discipline': self.uri(self.discipline),
+                'fieldnotebook': self.nested_data(),
+            }, content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(self.snapshot(), before)
+
+    def test_direct_scope_change_checks_descendants_too(self):
+        before = self.snapshot()
+        response = self.put(self.notebook, discipline=self.uri(self.other_discipline))
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(self.snapshot(), before)
+
+    def test_direct_reparent_with_uri_checks_descendants_too(self):
+        before = self.snapshot()
+        response = self.put(self.pageset, fieldnotebook=self.uri(self.destination))
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(self.snapshot(), before)
+
+    def test_direct_reparent_with_permissions_preserves_pages(self):
+        for collection in (self.collection, self.other_collection):
+            self.grant(collection, '/table/fieldnotebookpage', 'update')
+        response = self.put(self.pageset, fieldnotebook=self.uri(self.destination))
+        self.assertEqual(response.status_code, 200)
+        self.page.refresh_from_db()
+        self.assertEqual(self.page.pageset_id, self.pageset.pk)
+        self.assertEqual(permissions.Scoping.scope_for_record(self.page), self.other_discipline)
+        self.sibling_page.refresh_from_db()
+        self.assertEqual(permissions.Scoping.scope_for_record(self.sibling_page), self.discipline)
+
 class ReverseOneToOneMutationApiTests(ScopedPermissionTestBase):
     def setUp(self):
         super().setUp()
