@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 from collections import namedtuple, deque
 
@@ -6,8 +8,9 @@ from sqlalchemy import orm, sql, or_
 import specifyweb.specify.models as spmodels
 from specifyweb.backend.trees.utils import get_treedefs
 
-from .queryfieldspec import TreeRankQuery, QueryFieldSpec
 from specifyweb.backend.stored_queries import models
+from specifyweb.backend.stored_queries.tree_rank import TreeRankQuery, TreeRanks
+from specifyweb.backend.stored_queries.queryfieldspec import QueryFieldSpec
 
 logger = logging.getLogger(__name__)
 
@@ -19,29 +22,40 @@ def _safe_filter(query):
     raise Exception(f"Got more than one matching: {list(query)}")
 
 
-class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter query join_cache tree_rank_count internal_filters')):
-
+class QueryConstruct(
+    namedtuple(
+        "QueryConstruct",
+        "collection objectformatter query join_cache tree_rank_count internal_filters",
+    )
+):
     def __new__(cls, *args, **kwargs):
-        kwargs['join_cache'] = dict()
+        kwargs["join_cache"] = dict()
         # TODO: Use tree_rank_count to implement cases where formatter of taxon is defined with fields from the parent.
         # In that case, the cycle will end (unlike other cyclical cases).
-        kwargs['tree_rank_count'] = 0
-        kwargs['internal_filters'] = []
+        kwargs["tree_rank_count"] = 0
+        kwargs["internal_filters"] = []
         return super().__new__(cls, *args, **kwargs)
 
-    def handle_tree_field(self, node, table, tree_rank: TreeRankQuery, next_join_path, current_field_spec: QueryFieldSpec):
-        """Resolve a rank by indexed parent traversal, not reverse range scans.
-
-        Each relationship/rank gets one outer join, shared by its selected fields.
-        Ancestors are shared only for identical tree node IDs and definitions.
-        """
+    def handle_tree_field(
+        self,
+        node,
+        table,
+        tree_rank: TreeRankQuery,
+        next_join_path,
+        current_field_spec: QueryFieldSpec,
+    ):
         query = self
         if query.collection is None:  # Not sure it makes sense to query across collections
             raise AssertionError(
                 f"No Collection found in Query for {table}",
                 {"table": table, "localizationKey": "noCollectionInQuery"},
             )
-        logger.info('handling treefield %s rank: %s field: %s', table, tree_rank.name, next_join_path)
+        logger.info(
+            "handling treefield %s rank: %s field: %s",
+            table,
+            tree_rank.name,
+            next_join_path,
+        )
 
         treedef_column = table.name + 'TreeDefID'
 
@@ -49,12 +63,23 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
         item_model = getattr(spmodels, table.django_name + "treedefitem")
 
         # TODO: optimize out the ranks that appear? cache them
-        treedefs_with_ranks: list[tuple[int, int]] = [tup for tup in [
-            (treedef_id, _safe_filter(item_model.objects.filter(treedef_id=treedef_id, name=tree_rank.name).values_list('id', flat=True)))
-            for treedef_id, _ in treedefs
-            # For constructing tree queries for batch edit
-            if (tree_rank.treedef_id is None or tree_rank.treedef_id == treedef_id)
-            ] if tup[1] is not None]
+        treedefs_with_ranks: list[tuple[int, int]] = [
+            tup
+            for tup in [
+                (
+                    treedef_id,
+                    _safe_filter(
+                        item_model.objects.filter(
+                            treedef_id=treedef_id, name=tree_rank.name
+                        ).values_list("id", flat=True)
+                    ),
+                )
+                for treedef_id, _ in treedefs
+                # For constructing tree queries for batch edit
+                if tree_rank.treedef_id is None or tree_rank.treedef_id == treedef_id
+            ]
+            if tup[1] is not None
+        ]
 
         if not treedefs_with_ranks:
             logger.warning(
@@ -71,8 +96,6 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
         cache_key = (node, table, treedefitem_params, 'TreeRank')
         ranks = query.join_cache.get("tree_ranks")
         if ranks is None:
-            from .tree_rank import TreeRanks
-
             ranks = TreeRanks()
             query.join_cache["tree_ranks"] = ranks
         ranks.current_rank = (node, table, treedefitem_params)
@@ -102,20 +125,6 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
         query, column, field, table = field_spec.add_spec_to_query(query)
         return query, column, field, table
 
-    def tables_in_path(self, table, join_path):
-        path = deque(join_path)
-        field = None
-        tables = [table]
-        while len(path) > 0:
-            field = path.popleft()
-            if isinstance(field, str):
-                field = tables[-1].get_field(field, strict=True)
-            if not field.is_relationship: # also handles tree ranks
-                break
-
-            tables.append(spmodels.datamodel.get_table(field.relatedModelName, strict=True))
-        return tables
-
     def build_join(self, table, model, join_path):
         query = self
         path = deque(join_path)
@@ -143,7 +152,6 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
             table, model = next_table, aliased
         return query, model, table, field
 
-
     # To make things "simpler", it doesn't apply any filters, but returns a single predicate
     # @model is an input parameter, because cannot guess if it is aliased or not (callers are supposed to know that)
     def get_internal_filters(self):
@@ -155,11 +163,14 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
             return self.internal_filters[0]
         return sql.or_(*self.internal_filters)
 
+
 def add_proxy_method(name):
     def proxy(self, *args, **kwargs):
         method = getattr(self.query, name)
         return self._replace(query=method(*args, **kwargs))
+
     setattr(QueryConstruct, name, proxy)
 
-for name in 'filter join outerjoin add_columns reset_joinpoint group_by'.split():
+
+for name in "filter join outerjoin add_columns reset_joinpoint group_by".split():
     add_proxy_method(name)

@@ -1,12 +1,3 @@
-"""Query-scoped, indexed ancestor resolution for tree rank fields.
-
-Ordinary predicates bound the seed set before rank filters are evaluated. Each
-tree shares a recursive parent mapping across its relationship aliases. Counts
-can omit display-only ranks; scalar pages resolve them after selecting rows.
-Grouping, synonym searches, mixed trees and formatted objects remain eager.
-Mappings live only in the SQL statement: there is no tree cache to invalidate.
-"""
-
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -15,11 +6,11 @@ from typing import TYPE_CHECKING, Protocol
 from sqlalchemy import orm, sql
 
 from . import models
+from specifyweb.specify.datamodel import datamodel
+from specifyweb.specify.models_utils.load_datamodel import Table, Relationship
 
-if TYPE_CHECKING:
-    from specifyweb.specify.models_utils.load_datamodel import Table
-    ObjectFormatter = object
-    Rank = tuple[object, Table, tuple[int, ...]]
+ObjectFormatter = object
+Rank = tuple[object, Table, tuple[int, ...]]
 
 
 class RankField(Protocol):
@@ -27,6 +18,7 @@ class RankField(Protocol):
     def fieldspec(self) -> object:
         raise NotImplementedError
 
+RANK_KEY_DELIMITER = "~>"
 
 def rank_path(spec):
     from specifyweb.specify.datamodel import datamodel, is_tree_table
@@ -250,3 +242,37 @@ def resolve_page(query, order, ranks, limit, offset):
     return result.with_entities(*[
         replacements.get(i, walk.c[f"value_{i}"]) for i in range(len(columns))
     ]).order_by(walk.c.page_order).execution_options(specify_tree_ranks=ranks)
+
+class TreeRankQuery(Relationship):
+    # FUTURE: used to remember what the previous value was. Useless after 6 retires
+    original_field: str
+    # This is used to query a particular treedef. If this is none, all treedefs are searched, otherwise a specific treedef is searched.
+    treedef_id: int | None
+    # Yeah this can be inferred from treedef_id but doing it this way avoids a database lookup because we already fetch it once.
+    treedef_name: str | None
+
+    def __hash__(self):
+        return hash((TreeRankQuery, self.relatedModelName, self.name))
+
+    def __eq__(self, value):
+        return (
+            isinstance(value, TreeRankQuery)
+            and value.name == self.name
+            and value.relatedModelName == self.relatedModelName
+        )
+
+    @staticmethod
+    def create(name, table_name, treedef_id=None, treedef_name=None):
+        obj = TreeRankQuery(
+            name=name,
+            relatedModelName=table_name,
+            type="many-to-one",
+            column=datamodel.get_table_strict(table_name).idFieldName,
+        )
+        obj.treedef_id = treedef_id
+        obj.treedef_name = treedef_name
+        return obj
+
+    def get_workbench_name(self):
+        # Treedef id included to make it easier to pass it to batch edit
+        return f"{self.treedef_name}{RANK_KEY_DELIMITER}{self.name}{RANK_KEY_DELIMITER}{self.treedef_id}"
