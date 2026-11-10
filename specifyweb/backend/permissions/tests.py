@@ -902,6 +902,149 @@ class DisciplineTreeReadApiTests(ScopedPermissionTestBase):
                 self.assertEqual(response.status_code, 200)
                 self.assertEqual(json.loads(response.content), [])
 
+class StorageTreeReadApiTests(ScopedPermissionTestBase):
+    def setUp(self):
+        super().setUp()
+        self.grant_access(self.collection)
+        self.grant(self.collection, '/table/%', 'read')
+        self.client.force_login(self.specifyuser)
+        self.client.cookies['collection'] = str(self.collection.id)
+        self.allowed_storage = self.make_storage(self.institution, 'Allowed')
+        self.other_institution = spmodels.Institution.objects.create(
+            name='Other Institution', isaccessionsglobal=True,
+            issecurityon=False, isserverbased=False,
+            issharinglocalities=True, issinglegeographytree=True,
+        )
+        self.other_division = spmodels.Division.objects.create(
+            institution=self.other_institution, name='Other Division',
+        )
+        self.other_discipline = spmodels.Discipline.objects.create(
+            division=self.other_division, datatype=self.datatype,
+            taxontreedef=self.taxontreedef,
+            geographytreedef=self.geographytreedef,
+            geologictimeperiodtreedef=self.geologictimeperiodtreedef,
+        )
+        self.other_collection.discipline = self.other_discipline
+        self.other_collection.save()
+        self.restricted_storage = self.make_storage(
+            self.other_institution, 'Restricted',
+        )
+
+    def make_storage(self, institution, name):
+        definition = spmodels.Storagetreedef.objects.create(
+            name=name, institution=institution,
+        )
+        rank = definition.treedefitems.create(name='Root', rankid=0)
+        return spmodels.Storage.objects.create(
+            name=name, rankid=0, definition=definition, definitionitem=rank,
+        )
+
+    def assert_visible_storage(self, expected, **params):
+        for prefix in ('/api/specify', '/table_rows/specify_rows'):
+            with self.subTest(prefix=prefix):
+                query = {'limit': 0, 'orderby': '-id', **params}
+                if prefix == '/table_rows/specify_rows':
+                    query['fields'] = 'id'
+                response = self.client.get(f'{prefix}/storage/', query)
+                self.assertEqual(response.status_code, 200)
+                payload = response.json()
+                if isinstance(payload, dict):
+                    self.assertEqual(payload['meta']['total_count'], len(expected))
+                    ids = [obj['id'] for obj in payload['objects']]
+                else:
+                    ids = [row[0] for row in payload]
+                self.assertCountEqual(ids, [obj.id for obj in expected])
+
+    def test_excludes_other_institution(self):
+        self.assert_visible_storage([self.allowed_storage])
+
+    def test_restricted_id_returns_empty_results(self):
+        self.assert_visible_storage([], id=self.restricted_storage.id)
+
+    def test_read_grant_requires_collection_access(self):
+        self.grant(self.other_collection, '/table/%', 'read')
+        self.assert_visible_storage([self.allowed_storage])
+
+    def test_collection_access_requires_table_read_grant(self):
+        self.grant_access(self.other_collection)
+        self.assert_visible_storage([self.allowed_storage])
+
+    def test_both_grants_allow_other_institution(self):
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/%', 'read')
+        self.assert_visible_storage([self.allowed_storage, self.restricted_storage])
+
+    def test_global_grant_allows_other_institution(self):
+        self.grant(None, '%', '%')
+        self.assert_visible_storage([self.allowed_storage, self.restricted_storage])
+
+    def test_shared_institution_allows_other_division_storage(self):
+        self.other_division.institution = self.institution
+        self.other_division.save()
+        definition = self.restricted_storage.definition
+        definition.institution = self.institution
+        definition.save()
+        self.assert_visible_storage([self.allowed_storage, self.restricted_storage])
+
+    def test_filters_before_pagination(self):
+        self.assert_visible_storage([self.allowed_storage], limit=1)
+
+    def test_distinct_projection_excludes_restricted_names(self):
+        response = self.client.get(
+            '/table_rows/specify_rows/storage/',
+            {'fields': 'name', 'distinct': 'true'},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [['Allowed']])
+
+    def test_legacy_dispatch_rows_uses_same_scope_filter(self):
+        from specifyweb.specify.api.dispatch import rows
+
+        request = RequestFactory().get(
+            '/table_rows/specify_rows/storage/',
+            {'fields': 'id', 'id': self.restricted_storage.id},
+        )
+        request.specify_collection = self.collection
+        request.specify_user_agent = self.agent
+        response = rows(request, 'storage')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json.loads(response.content), [])
+
+class StorageTreeFallbackReadTests(ScopedPermissionTestBase):
+    def setUp(self):
+        super().setUp()
+        definition = spmodels.Storagetreedef.objects.create(name='Unscoped')
+        rank = definition.treedefitems.create(name='Root', rankid=0)
+        self.storage = spmodels.Storage.objects.create(
+            name='Institution fallback', rankid=0,
+            definition=definition, definitionitem=rank,
+        )
+
+    def filtered_storage(self):
+        return permissions.filter_scoped_read_queryset(
+            spmodels.Storage.objects.all(), self.agent,
+        )
+
+    def test_missing_institution_preserves_single_institution_fallback(self):
+        self.grant_access(self.collection)
+        self.grant(self.collection, '/table/storage', 'read')
+        self.assertCountEqual(self.filtered_storage(), [self.storage])
+
+    def test_missing_institution_requires_access_and_read_in_same_collection(self):
+        self.grant_access(self.collection)
+        self.grant(self.other_collection, '/table/storage', 'read')
+        self.assertFalse(self.filtered_storage().exists())
+
+    def test_ambiguous_institution_propagates_resolver_error(self):
+        spmodels.Institution.objects.create(
+            name='Other Institution', isaccessionsglobal=True,
+            issecurityon=False, isserverbased=False,
+            issharinglocalities=True, issinglegeographytree=True,
+        )
+        self.grant(None, '%', '%')
+        with self.assertRaises(spmodels.Institution.MultipleObjectsReturned):
+            self.filtered_storage()
+
 class ScopedDeleteApiTests(ScopedPermissionTestBase):
     def setUp(self):
         super().setUp()

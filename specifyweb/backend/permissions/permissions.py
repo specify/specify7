@@ -16,7 +16,7 @@ from django.db.models import Model, Q, QuerySet
 
 from specifyweb.specify.models import (
     Accession, Agent, Discipline, Division, Geography, Geologictimeperiod,
-    Institution, Lithostrat, Taxon, Tectonicunit,
+    Institution, Lithostrat, Storage, Taxon, Tectonicunit,
 )
 from specifyweb.specify.datamodel import Table
 from specifyweb.specify.utils.scoping import Scoping, ScopeType
@@ -289,8 +289,8 @@ def filter_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
 
     Supports hierarchy records, direct collection scopes, and direct
     division/discipline scopes without competing scope fields, and discipline
-    tree nodes. Other scopes are not filtered here; serialized records still
-    undergo instance checks.
+    and storage tree nodes. Other scopes are not filtered here; serialized
+    records still undergo instance checks.
     """
     model = queryset.model
     hierarchy_lookup = {
@@ -325,6 +325,7 @@ def filter_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
         and not direct_discipline_scope
         and hierarchy_lookup is None
         and not discipline_tree_scope
+        and model is not Storage
     ):
         return queryset
 
@@ -339,6 +340,21 @@ def filter_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
         return queryset.filter(pk__in=models.Collection.objects.filter(
             id__in=allowed_ids
         ).values(hierarchy_lookup))
+    if model is Storage:
+        allowed_collections = models.Collection.objects.filter(id__in=allowed_ids)
+        condition = Q(
+            definition__institution_id__in=allowed_collections.values(
+                "discipline__division__institution_id"
+            )
+        )
+        # Match the instance resolver's single-institution fallback.
+        if queryset.filter(definition__institution__isnull=True).exists():
+            institution = Institution.objects.get()
+            if allowed_collections.filter(
+                discipline__division__institution=institution
+            ).exists():
+                condition |= Q(definition__institution__isnull=True)
+        return queryset.filter(condition)
     if discipline_tree_scope:
         condition = Q(
             definition__discipline_id__in=models.Collection.objects.filter(
