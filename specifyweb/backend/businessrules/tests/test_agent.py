@@ -5,9 +5,27 @@ from specifyweb.specify import models
 from specifyweb.specify.api.crud import delete_resource, post_resource
 from specifyweb.specify.api.serializers import uri_for_model
 from specifyweb.specify.tests.test_api import ApiTests
+from specifyweb.specify.utils.scoping import ScopeType
 from ..exceptions import BusinessRuleException
 
 class AgentTests(ApiTests):
+    def _add_attachment(self):
+        return post_resource(
+            self.collection,
+            self.agent,
+            'agentattachment',
+            {
+                'agent': uri_for_model('agent', self.agent.id),
+                'ordinal': 0,
+                'attachment': {
+                    'origfilename': 'agent.jpg',
+                    'attachmentlocation': 'uploaded-agent.jpg',
+                    'mimetype': 'image/jpeg',
+                    'title': 'Agent attachment',
+                },
+            },
+        )
+
     def test_agent_delete_cascades(self):
         agent = models.Agent.objects.create(
             agenttype=0,
@@ -32,21 +50,7 @@ class AgentTests(ApiTests):
 
     @patch('specifyweb.backend.attachment_gw.views.delete_attachment_file')
     def test_delete_attachment_from_agent(self, delete_file):
-        join = post_resource(
-            self.collection,
-            self.agent,
-            'agentattachment',
-            {
-                'agent': uri_for_model('agent', self.agent.id),
-                'ordinal': 0,
-                'attachment': {
-                    'origfilename': 'agent.jpg',
-                    'attachmentlocation': 'uploaded-agent.jpg',
-                    'mimetype': 'image/jpeg',
-                    'title': 'Agent attachment',
-                },
-            },
-        )
+        join = self._add_attachment()
         attachment_id = join.attachment_id
 
         delete_resource(
@@ -61,6 +65,19 @@ class AgentTests(ApiTests):
         self.assertNotExists(models.Attachment.objects.filter(id=attachment_id))
         self.assertExists(models.Agent.objects.filter(id=self.agent.id))
         delete_file.assert_called_once_with('uploaded-agent.jpg')
+
+    def test_add_attachment_to_agent(self):
+        join = self._add_attachment()
+
+        saved = models.Agentattachment.objects.get(id=join.id)
+        self.assertEqual(saved.agent_id, self.agent.id)
+        self.assertEqual(saved.ordinal, 0)
+
+        attachment = models.Attachment.objects.get(id=saved.attachment_id)
+        self.assertEqual(attachment.origfilename, 'agent.jpg')
+        self.assertEqual(attachment.tableid, models.Agent.specify_model.tableId)
+        self.assertEqual(attachment.scopeid, self.division.id)
+        self.assertEqual(attachment.scopetype, ScopeType.DIVISION.value)
 
     def test_specifyuser_blocks_delete(self):
         agent = models.Agent.objects.create(
