@@ -1,6 +1,7 @@
 import json
 from unittest.mock import patch
 
+from django.apps import apps
 from django.test import Client, RequestFactory
 from django.utils import timezone
 
@@ -1898,6 +1899,44 @@ class MixedDisciplineCollectionReadApiTests(ScopedPermissionTestBase):
                     response = rows(request, model._meta.model_name)
                     self.assertEqual(response.status_code, 200)
                     self.assertEqual(json.loads(response.content), [])
+
+class ScopedReadModelCoverageTests(ScopedPermissionTestBase):
+    def api_models(self):
+        return [
+            model for model in apps.get_app_config('specify').get_models()
+            if hasattr(model, 'specify_model')
+        ]
+
+    def test_all_api_models_deny_reads_without_grants(self):
+        for global_accessions in (False, True):
+            self.institution.isaccessionsglobal = global_accessions
+            self.institution.save()
+            for model in self.api_models():
+                with self.subTest(
+                    model=model.__name__, global_accessions=global_accessions,
+                ):
+                    queryset = model.objects.all()
+                    filtered = permissions.filter_scoped_read_queryset(
+                        queryset, self.agent,
+                    )
+                    self.assertIsNot(filtered, queryset)
+                    self.assertIs(filtered.model, model)
+                    self.assertFalse(filtered.exists())
+
+    def test_all_api_model_filters_execute_with_global_grants(self):
+        self.grant(None, '%', '%')
+        for global_accessions in (False, True):
+            self.institution.isaccessionsglobal = global_accessions
+            self.institution.save()
+            for model in self.api_models():
+                with self.subTest(
+                    model=model.__name__, global_accessions=global_accessions,
+                ):
+                    filtered = permissions.filter_scoped_read_queryset(
+                        model.objects.all(), self.agent,
+                    )
+                    self.assertIs(filtered.model, model)
+                    list(filtered.values_list('pk', flat=True)[:1])
 
 class ScopedDeleteApiTests(ScopedPermissionTestBase):
     def setUp(self):
