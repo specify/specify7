@@ -1,7 +1,7 @@
 import json
 from unittest.mock import patch
 
-from django.test import Client
+from django.test import Client, RequestFactory
 from django.utils import timezone
 
 from specifyweb.specify.tests.test_api import ApiTests
@@ -310,6 +310,105 @@ class ScopedReadApiTests(ScopedPermissionTestBase):
                 permissions.check_table_permissions(
                     self.collection, self.agent, obj, 'read'
                 )
+
+class ScopedRowsApiTests(ScopedPermissionTestBase):
+    def setUp(self):
+        super().setUp()
+        self.grant_access(self.collection)
+        self.grant(self.collection, '/table/%', 'read')
+        self.client.force_login(self.specifyuser)
+        self.client.cookies['collection'] = str(self.collection.id)
+        self.other_record = spmodels.Collectionobject.objects.create(
+            collection=self.other_collection,
+            catalognumber='restricted-record',
+            text1='restricted-value',
+        )
+
+    def get_rows(self, **params):
+        return self.client.get(
+            '/table_rows/specify_rows/collectionobject/',
+            {'fields': 'id', 'limit': 0, **params},
+        )
+
+    def test_filters_before_projection_and_pagination(self):
+        expected = [[obj.id] for obj in reversed(self.collectionobjects)][1:3]
+        for domainfilter in (None, 'false', 'true'):
+            with self.subTest(domainfilter=domainfilter):
+                params = {'orderby': '-id', 'offset': 1, 'limit': 2}
+                if domainfilter is not None:
+                    params['domainfilter'] = domainfilter
+                response = self.get_rows(**params)
+                self.assertEqual(response.status_code, 200)
+                self.assertEqual(response.json(), expected)
+
+    def test_restricted_id_returns_no_rows(self):
+        response = self.get_rows(id=self.other_record.id)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [])
+
+    def test_distinct_projection_excludes_restricted_values(self):
+        response = self.get_rows(fields='text1', distinct='true')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [[None]])
+
+    def test_read_grant_without_collection_access_does_not_expose_rows(self):
+        self.grant(self.other_collection, '/table/%', 'read')
+        response = self.get_rows(id=self.other_record.id)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [])
+
+    def test_collection_access_without_read_grant_does_not_expose_rows(self):
+        self.grant_access(self.other_collection)
+        response = self.get_rows(id=self.other_record.id)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [])
+
+    def test_both_grants_allow_other_collection_rows(self):
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/%', 'read')
+        response = self.get_rows()
+        self.assertEqual(response.status_code, 200)
+        self.assertCountEqual(
+            response.json(),
+            [[obj.id] for obj in self.collectionobjects] + [[self.other_record.id]],
+        )
+
+    def test_global_grant_preserves_domainfilter(self):
+        self.grant(None, '%', '%')
+        response = self.get_rows()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()), 6)
+        response = self.get_rows(domainfilter='true')
+        self.assertEqual(response.status_code, 200)
+        self.assertCountEqual(
+            response.json(), [[obj.id] for obj in self.collectionobjects]
+        )
+
+    def test_membership_only_rows_are_filtered(self):
+        allowed = spmodels.Collectionobjectattribute.objects.create(
+            collectionmemberid=self.collection.id
+        )
+        spmodels.Collectionobjectattribute.objects.create(
+            collectionmemberid=self.other_collection.id
+        )
+        response = self.client.get(
+            '/table_rows/specify_rows/collectionobjectattribute/', {'fields': 'id'}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [[allowed.id]])
+
+    def test_legacy_dispatch_rows_uses_same_filter(self):
+        from specifyweb.specify.api.dispatch import rows
+
+        request = RequestFactory().get(
+            '/table_rows/specify_rows/collectionobject/',
+            {'fields': 'id', 'id': self.other_record.id},
+        )
+        request.specify_collection = self.collection
+        request.specify_user_agent = self.agent
+        response = rows(request, 'collectionobject')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json.loads(response.content), [])
 
 class ScopedDeleteApiTests(ScopedPermissionTestBase):
     def setUp(self):
