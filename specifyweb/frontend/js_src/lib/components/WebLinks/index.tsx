@@ -19,7 +19,7 @@ import { getIcon, unknownIcon } from '../InitialContext/icons';
 import { xmlToSpec } from '../Syncer/xmlUtils';
 import { WebLinksContext } from './Editor';
 import type { WebLink } from './spec';
-import { webLinksSpec } from './spec';
+import { resolveWebLinkParts, webLinksSpec } from './spec';
 
 const loadWebLinks = (refresh = false): Promise<RA<WebLink>> =>
   Promise.all([
@@ -104,7 +104,7 @@ export function WebLinkField({
                     ? format(resource, part.formatter, false)
                     : part.value
             )
-          ).then((values) => values.map((value) => value ?? ''));
+          ).then((values) => resolveWebLinkParts(parts, values));
 
     return resourceOn(
       resource,
