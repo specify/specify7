@@ -411,6 +411,299 @@ class ScopedRowsApiTests(ScopedPermissionTestBase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(json.loads(response.content), [])
 
+class ReverseRelatedRowsApiTests(ScopedPermissionTestBase):
+    def setUp(self):
+        super().setUp()
+        self.grant_access(self.collection)
+        self.grant(self.collection, '/table/%', 'read')
+        self.client.force_login(self.specifyuser)
+        self.client.cookies['collection'] = str(self.collection.id)
+        self._create_prep_type()
+        self.mixed_record, self.restricted_record, self.empty_record = self.collectionobjects[:3]
+        self.allowed_prep = self._create_prep(
+            self.mixed_record, None, remarks='allowed',
+        )
+        self.null_prep = self._create_prep(self.mixed_record, None)
+        self.restricted_prep = self._create_prep(
+            self.mixed_record, None, remarks='restricted',
+            collectionmemberid=self.other_collection.id,
+        )
+        self.restricted_only_prep = self._create_prep(
+            self.restricted_record, None, remarks='restricted only',
+            collectionmemberid=self.other_collection.id,
+        )
+
+    def get_rows(self, **params):
+        return self.client.get('/table_rows/specify_rows/collectionobject/', {
+            'fields': 'id,preparations__id,preparations__remarks',
+            'id__in': ','.join(str(obj.id) for obj in (
+                self.mixed_record, self.restricted_record, self.empty_record,
+            )),
+            'limit': 0, **params,
+        })
+
+    def expected_rows(self):
+        return [
+            [self.mixed_record.id, self.allowed_prep.id, 'allowed'],
+            [self.mixed_record.id, self.null_prep.id, None],
+            [self.restricted_record.id, None, None],
+            [self.empty_record.id, None, None],
+        ]
+
+    def test_projects_only_readable_children_and_preserves_parents(self):
+        response = self.get_rows()
+        self.assertEqual(response.status_code, 200)
+        self.assertCountEqual(response.json(), self.expected_rows())
+
+    def test_related_read_requires_access_in_same_collection(self):
+        self.grant(self.other_collection, '/table/preparation', 'read')
+        response = self.get_rows()
+        self.assertEqual(response.status_code, 200)
+        self.assertCountEqual(response.json(), self.expected_rows())
+
+    def test_related_access_requires_table_read(self):
+        self.grant_access(self.other_collection)
+        response = self.get_rows()
+        self.assertEqual(response.status_code, 200)
+        self.assertCountEqual(response.json(), self.expected_rows())
+
+    def test_both_grants_include_previously_restricted_children(self):
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/preparation', 'read')
+        response = self.get_rows()
+        self.assertEqual(response.status_code, 200)
+        self.assertCountEqual(response.json(), [
+            *self.expected_rows()[:2],
+            [self.mixed_record.id, self.restricted_prep.id, 'restricted'],
+            [self.restricted_record.id, self.restricted_only_prep.id, 'restricted only'],
+            [self.empty_record.id, None, None],
+        ])
+
+    def test_without_child_table_read_projects_nulls(self):
+        initialize.wipe_permissions()
+        self.grant_access(self.collection)
+        self.grant(self.collection, '/table/collectionobject', 'read')
+        response = self.get_rows()
+        self.assertEqual(response.status_code, 200)
+        self.assertCountEqual(response.json(), [
+            [record.id, None, None] for record in (
+                self.mixed_record, self.restricted_record, self.empty_record,
+            )
+        ])
+
+    def test_filters_and_projection_use_same_authorized_child(self):
+        response = self.get_rows(preparations__remarks='allowed')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [
+            [self.mixed_record.id, self.allowed_prep.id, 'allowed'],
+        ])
+
+    def test_restricted_child_cannot_match_filter(self):
+        response = self.get_rows(
+            fields='id', preparations__remarks='restricted',
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [])
+
+    def test_isnull_filter_preserves_missing_readable_children(self):
+        response = self.get_rows(preparations__remarks__isnull='true')
+        self.assertEqual(response.status_code, 200)
+        self.assertCountEqual(response.json(), self.expected_rows()[1:])
+
+    def test_nonnull_filter_excludes_missing_readable_children(self):
+        response = self.get_rows(preparations__remarks__isnull='false')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), self.expected_rows()[:1])
+
+    def test_reverse_terminal_reference_is_authorized(self):
+        response = self.get_rows(fields='id,preparations', id=self.mixed_record.id)
+        self.assertEqual(response.status_code, 200)
+        self.assertCountEqual(response.json(), [
+            [self.mixed_record.id, self.allowed_prep.id],
+            [self.mixed_record.id, self.null_prep.id],
+        ])
+
+    def test_ordering_and_pagination_use_authorized_children(self):
+        response = self.get_rows(orderby='-preparations__remarks', limit=1)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), self.expected_rows()[:1])
+
+    def test_unprojected_ordering_does_not_add_restricted_child_rows(self):
+        response = self.get_rows(fields='id', orderby='-preparations__remarks')
+        self.assertEqual(response.status_code, 200)
+        self.assertCountEqual(response.json(), [
+            [self.mixed_record.id], [self.mixed_record.id],
+            [self.restricted_record.id], [self.empty_record.id],
+        ])
+
+    def test_distinct_omits_restricted_values(self):
+        response = self.get_rows(
+            fields='preparations__remarks', distinct='true',
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertCountEqual(response.json(), [['allowed'], [None]])
+
+    def test_forward_path_after_reverse_is_authorized(self):
+        other_type = spmodels.Preptype.objects.create(
+            name='restricted type', isloanable=False, collection=self.other_collection,
+        )
+        self.allowed_prep.preptype = other_type
+        self.allowed_prep.save()
+        response = self.get_rows(
+            fields='id,preparations__id,preparations__preptype__name',
+            id=self.mixed_record.id,
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertCountEqual(response.json(), [
+            [self.mixed_record.id, self.allowed_prep.id, None],
+            [self.mixed_record.id, self.null_prep.id, self.prep_type.name],
+        ])
+
+    def test_terminal_forward_reference_after_reverse_is_authorized(self):
+        other_type = spmodels.Preptype.objects.create(
+            name='restricted type', isloanable=False, collection=self.other_collection,
+        )
+        self.allowed_prep.preptype = other_type
+        self.allowed_prep.save()
+        for field in ('preptype', 'preptype_id'):
+            with self.subTest(field=field):
+                response = self.get_rows(
+                    fields=f'preparations__id,preparations__{field}',
+                    id=self.mixed_record.id,
+                )
+                self.assertEqual(response.status_code, 200)
+                self.assertCountEqual(response.json(), [
+                    [self.allowed_prep.id, None],
+                    [self.null_prep.id, self.prep_type.id],
+                ])
+
+    def test_nested_reverse_paths_check_each_child(self):
+        spmodels.Preparationproperty.objects.create(
+            preparation=self.allowed_prep,
+            collectionmemberid=self.collection.id, integer1=1,
+        )
+        spmodels.Preparationproperty.objects.create(
+            preparation=self.allowed_prep,
+            collectionmemberid=self.other_collection.id, integer1=2,
+        )
+        spmodels.Preparationproperty.objects.create(
+            preparation=self.restricted_prep,
+            collectionmemberid=self.collection.id, integer1=3,
+        )
+        response = self.get_rows(
+            fields='preparations__id,preparations__preparationproperties__integer1',
+            id=self.mixed_record.id,
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertCountEqual(response.json(), [
+            [self.allowed_prep.id, 1], [self.null_prep.id, None],
+        ])
+
+    def test_nested_filter_cannot_match_restricted_grandchild(self):
+        spmodels.Preparationproperty.objects.create(
+            preparation=self.allowed_prep,
+            collectionmemberid=self.other_collection.id, integer1=2,
+        )
+        response = self.get_rows(
+            fields='id', preparations__preparationproperties__integer1=2,
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [])
+
+    def test_reverse_path_after_forward_checks_both_scopes(self):
+        self.mixed_record.collectingevent = self.collectingevent
+        self.mixed_record.save()
+        self.restricted_record.collectingevent = self.collectingevent
+        self.restricted_record.collection = self.other_collection
+        self.restricted_record.collectionmemberid = self.other_collection.id
+        self.restricted_record.save()
+        response = self.get_rows(
+            fields='collectingevent__collectionobjects__id',
+            id=self.mixed_record.id,
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [[self.mixed_record.id]])
+
+    def test_forward_filter_after_reverse_cannot_match_restricted_target(self):
+        other_type = spmodels.Preptype.objects.create(
+            name='restricted type', isloanable=False, collection=self.other_collection,
+        )
+        self.allowed_prep.preptype = other_type
+        self.allowed_prep.save()
+        response = self.get_rows(
+            fields='id', preparations__preptype__name=other_type.name,
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [])
+
+    def test_multiple_filters_match_the_same_readable_child(self):
+        response = self.get_rows(
+            preparations__id=self.allowed_prep.id,
+            preparations__remarks__isnull='true',
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [])
+
+    def test_equivalent_paths_do_not_overwrite_conflicting_filters(self):
+        other_type = spmodels.Preptype.objects.create(
+            name='another readable type', isloanable=False, collection=self.collection,
+        )
+        response = self.get_rows(
+            preparations__preptype=other_type.id,
+            preparations__preptype_id=self.prep_type.id,
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [])
+
+    def test_reverse_in_filter_only_matches_readable_children(self):
+        response = self.get_rows(
+            preparations__in=f'{self.allowed_prep.id},{self.restricted_prep.id}',
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), self.expected_rows()[:1])
+
+    def test_without_reverse_paths_parent_visibility_is_unchanged(self):
+        response = self.get_rows(fields='id')
+        self.assertEqual(response.status_code, 200)
+        self.assertCountEqual(response.json(), [
+            [record.id] for record in (
+                self.mixed_record, self.restricted_record, self.empty_record,
+            )
+        ])
+
+    def test_reverse_scalar_transform_remains_valid(self):
+        response = self.get_rows(
+            fields='preparations__timestampcreated__year',
+            preparations__id=self.allowed_prep.id,
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [[self.allowed_prep.timestampcreated.year]])
+
+    def test_invalid_reverse_paths_remain_bad_requests(self):
+        for params in (
+            {'fields': 'preparations__unknown__remarks'},
+            {'preparations__unknown': 'value'},
+            {'orderby': 'preparations__unknown'},
+        ):
+            with self.subTest(params=params):
+                response = self.get_rows(**params)
+                self.assertEqual(response.status_code, 400)
+
+    def test_legacy_rows_share_reverse_authorization(self):
+        from specifyweb.specify.api.dispatch import rows
+
+        request = RequestFactory().get(
+            '/table_rows/specify_rows/collectionobject/', {
+                'fields': 'id,preparations__id,preparations__remarks',
+                'id': self.mixed_record.id,
+            },
+        )
+        request.specify_collection = self.collection
+        request.specify_user_agent = self.agent
+        response = rows(request, 'collectionobject')
+        self.assertEqual(response.status_code, 200)
+        self.assertCountEqual(json.loads(response.content), self.expected_rows()[:2])
+
 class ForwardRelatedRowsApiTests(ScopedPermissionTestBase):
     def setUp(self):
         super().setUp()

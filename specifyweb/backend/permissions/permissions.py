@@ -13,7 +13,8 @@ logger = logging.getLogger(__name__)
 
 from django.db import connection
 from django.core.exceptions import FieldDoesNotExist, FieldError
-from django.db.models import ForeignKey, Model, Q, QuerySet
+from django.db.models import Exists, FilteredRelation, ForeignKey, Model, OuterRef, Q, QuerySet
+from django.db.models.fields.reverse_related import ManyToOneRel
 
 from specifyweb.specify.models import (
     Accession, Agent, Conservevent, Discipline, Division, Fieldnotebook, Fieldnotebookpage,
@@ -507,6 +508,58 @@ def filter_forward_related_read_queryset(
             )
             checked_paths.add(lookup)
     return queryset
+
+def prepare_reverse_related_read_queryset(
+    queryset: QuerySet, fields: Iterable[str], actor
+) -> tuple[QuerySet, dict[str, str]]:
+    """Build readable reverse FK joins and return replacement query paths.
+
+    All projections, filters, and ordering must use the replacements so that
+    they refer to the same readable children. Authorization belongs in the
+    join's ON clause to preserve parents with no readable children.
+    Forward hops after a reverse join are restricted in the same way.
+    """
+    joins: dict[str, str] = {}
+    replacements: dict[str, str] = {}
+    for projection in fields:
+        model = queryset.model
+        source_path = []
+        path = []
+        reverse = False
+        relation_field = None
+        names = projection.split("__")
+        for index, name in enumerate(names):
+            try:
+                field = model._meta.pk if name == "pk" else model._meta.get_field(name)
+            except FieldDoesNotExist as error:
+                if relation_field is not None and relation_field.get_lookup(name) is not None:
+                    path.extend(names[index:])
+                    break
+                raise FieldError(str(error)) from error
+            if not isinstance(field, (ForeignKey, ManyToOneRel)):
+                path.extend(names[index:])
+                break
+            source_path.append(field.name)
+            reverse = reverse or isinstance(field, ManyToOneRel)
+            model = field.related_model
+            relation_field = field.field if isinstance(field, ManyToOneRel) else field
+            if reverse:
+                source = "__".join(source_path)
+                if source not in joins:
+                    alias = f"_scope_read_{len(joins)}"
+                    lookup = "__".join([*path, field.name])
+                    allowed = filter_scoped_read_queryset(model.objects.all(), actor)
+                    queryset = queryset.alias(**{
+                        alias: FilteredRelation(
+                            lookup, condition=Q(Exists(allowed.filter(pk=OuterRef(alias)))),
+                        ),
+                    })
+                    joins[source] = alias
+                path = [joins[source]]
+            else:
+                path.append(name)
+        replacements[projection] = "__".join(path)
+    return queryset, replacements
 
 @contextmanager
 def cache_permission_queries():

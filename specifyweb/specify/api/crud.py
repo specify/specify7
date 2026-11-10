@@ -4,7 +4,7 @@ from collections.abc import Callable
 import json
 from django.db import transaction
 from django.core.exceptions import BadRequest, FieldError, FieldDoesNotExist
-from django.db.models import Model, F, Q, Subquery
+from django.db.models import Model, F, Q, QuerySet, Subquery
 from django.db.models.deletion import Collector
 from django.http import (HttpResponseServerError, Http404)
 from django.apps import apps
@@ -554,11 +554,18 @@ def get_collection(logged_in_collection, model, checker: ReadPermChecker, contro
     except FieldError as e:
         raise OrderByError(e)
     
-def apply_filters(logged_in_collection, params, model, control_params=GetCollectionForm.defaults):
+def apply_filters(
+    logged_in_collection, params, model, control_params=GetCollectionForm.defaults,
+    *, queryset: QuerySet | None = None, field_aliases: dict[str, str] | None = None,
+):
+    """Apply API filters and ordering, optionally using authorized join paths."""
     filters = {}
+    field_aliases = {} if field_aliases is None else field_aliases
 
     if isinstance(model, str):
         model = get_model_or_404(model)
+    if queryset is None:
+        queryset = model.objects.all()
 
     for param, val in list(params.items()):
         if param in control_params:
@@ -587,7 +594,10 @@ def apply_filters(logged_in_collection, params, model, control_params=GetCollect
         })
 
     try:
-        objs = model.objects.filter(**filters)
+        objs = queryset.filter(*(
+            Q(**{field_aliases.get(param, param): val})
+            for param, val in filters.items()
+        ))
     except (ValueError, FieldError) as e:
         raise FilterError(e)
 
@@ -595,7 +605,11 @@ def apply_filters(logged_in_collection, params, model, control_params=GetCollect
         objs = filter_by_collection(objs, logged_in_collection)
     if control_params['orderby']:
         try:
-            fields = control_params['orderby'].split(',')
+            fields = [
+                ('-' if field.startswith('-') else '')
+                + field_aliases.get(field.removeprefix('-'), field.removeprefix('-'))
+                for field in control_params['orderby'].split(',')
+            ]
             objs = objs.order_by(*fields)
         except FieldError as e:
             raise OrderByError(e)
