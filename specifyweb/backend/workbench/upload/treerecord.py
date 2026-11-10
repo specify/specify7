@@ -20,6 +20,7 @@ from specifyweb.backend.workbench.upload.predicates import (
     ToRemove,
     resolve_reference_attributes,
     safe_fetch,
+    readable_match_query,
 )
 from specifyweb.backend.trees.utils import (
     SPECIFY_TREES,
@@ -825,7 +826,7 @@ class BoundTreeRecord(NamedTuple):
         cached: list[MatchInfo] | None = (
             self.cache.get(cache_key, None) if self.cache is not None else None
         )
-        if cached is not None:
+        if cached is not None and self.auditor.agent is None:
             return cached
 
         model = getattr(models, self.name)
@@ -842,7 +843,11 @@ class BoundTreeRecord(NamedTuple):
                 **{"definitionitem_id": to_match.treedefitem.id},
             }
 
-            query = model.objects.filter(**_filter).values(*FETCHED_ATTRS)
+            query = readable_match_query(
+                model, _filter, self.auditor.agent,
+                scope_fields=("definition_id", "definitionitem_id"),
+                check_scope=False,
+            ).values(*FETCHED_ATTRS)
 
             matches: list[MatchInfo] = []
 
@@ -854,7 +859,7 @@ class BoundTreeRecord(NamedTuple):
                 matches = list(query)
 
             if matches:
-                if self.cache is not None:
+                if self.cache is not None and self.auditor.agent is None:
                     self.cache[cache_key] = matches
                 break
 

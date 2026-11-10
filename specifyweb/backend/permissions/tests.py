@@ -3954,6 +3954,457 @@ class ReverseInheritedScopeMutationApiTests(ScopedPermissionTestBase):
         }, before)
         event.refresh_from_db()
 
+class IndirectImportMatchingTests(ScopedPermissionTestBase):
+    def setUp(self):
+        super().setUp()
+        self.grant_access(self.collection)
+        self.grant(self.collection, '/table/%', '%')
+        self.obj = self.collectionobjects[0]
+        self.preptype = spmodels.Preptype.objects.create(
+            name='indirect-import-type', collection=self.collection,
+        )
+
+    def preparation(self, *, readable=True, remarks='witness', parent=None, preptype=None):
+        return spmodels.Preparation.objects.create(
+            collectionobject=self.obj if parent is None else parent,
+            collectionmemberid=(self.collection if readable else self.other_collection).pk,
+            preptype=self.preptype if preptype is None else preptype, remarks=remarks,
+            countamt=1,
+        )
+
+    def bound_table(self, *, actor=True):
+        from specifyweb.backend.workbench.upload.auditor import Auditor, DEFAULT_AUDITOR_PROPS
+        from specifyweb.backend.workbench.upload.upload_table import UploadTable
+        return UploadTable(
+            name='Collectionobject', wbcols={}, static={}, toOne={}, toMany={},
+        ).apply_scoping(self.collection).bind(
+            {}, self.agent.pk,
+            Auditor(self.collection, DEFAULT_AUDITOR_PROPS, None,
+                    agent=self.agent if actor else None), {},
+        )
+
+    def match(self, predicate, *, actor=True):
+        from specifyweb.backend.workbench.upload.upload_result import ReportInfo
+        bound = self.bound_table(actor=actor)
+        return bound._match(predicate, ReportInfo(bound.name, [], None))
+
+    def predicate(self, *children):
+        from specifyweb.backend.workbench.upload.predicates import DjangoPredicates
+        return DjangoPredicates(filters={'id': self.obj.pk, 'preparations': list(children)})
+
+    def test_unreadable_to_many_cannot_witness_a_match(self):
+        from specifyweb.backend.workbench.upload.predicates import DjangoPredicates
+        self.preparation(readable=False)
+        self.assertIsNone(self.match(self.predicate(
+            DjangoPredicates(filters={'remarks': 'witness'}),
+        )))
+
+    def test_readable_child_cannot_authorize_another_matching_child(self):
+        from specifyweb.backend.workbench.upload.predicates import DjangoPredicates
+        self.preparation(readable=False)
+        self.preparation(remarks='not-a-witness')
+        self.assertIsNone(self.match(self.predicate(
+            DjangoPredicates(filters={'remarks': 'witness'}),
+        )))
+
+    def test_readable_child_preserves_parent_match(self):
+        from specifyweb.backend.workbench.upload.predicates import DjangoPredicates
+        self.preparation()
+        self.preparation(readable=False)
+        self.assertEqual(self.match(self.predicate(
+            DjangoPredicates(filters={'remarks': 'witness'}),
+        )).id, self.obj.pk)
+
+    def test_two_witnesses_must_be_distinct_and_readable(self):
+        from specifyweb.backend.workbench.upload.predicates import DjangoPredicates
+        self.preparation()
+        self.preparation(readable=False)
+        child = DjangoPredicates(filters={'remarks': 'witness'})
+        self.assertIsNone(self.match(self.predicate(child, child)))
+
+    def test_two_readable_witnesses_preserve_match(self):
+        from specifyweb.backend.workbench.upload.predicates import DjangoPredicates
+        self.preparation()
+        self.preparation()
+        child = DjangoPredicates(filters={'remarks': 'witness'})
+        self.assertEqual(self.match(self.predicate(child, child)).id, self.obj.pk)
+
+    def test_reverse_then_forward_requires_related_scope(self):
+        from specifyweb.backend.workbench.upload.predicates import DjangoPredicates
+        restricted_type = spmodels.Preptype.objects.create(
+            name='restricted-type', collection=self.other_collection,
+        )
+        self.preparation(preptype=restricted_type)
+        self.assertIsNone(self.match(self.predicate(DjangoPredicates(filters={
+            'remarks': 'witness', 'preptype': [
+                DjangoPredicates(filters={'name': 'restricted-type'}),
+            ],
+        }))))
+
+    def test_raw_fk_aliases_require_related_scope(self):
+        from specifyweb.backend.workbench.upload.predicates import DjangoPredicates
+        restricted_type = spmodels.Preptype.objects.create(
+            name='restricted-type', collection=self.other_collection,
+        )
+        self.preparation(preptype=restricted_type)
+        for field in ('preptype', 'preptype_id', 'preptype__name'):
+            with self.subTest(field=field):
+                self.assertIsNone(self.match(self.predicate(DjangoPredicates(filters={
+                    field: 'restricted-type' if field.endswith('__name') else restricted_type.pk,
+                }))))
+
+    def test_scalar_reverse_lookup_requires_same_readable_witness(self):
+        from specifyweb.backend.workbench.upload.predicates import DjangoPredicates
+        self.preparation(readable=False)
+        self.preparation(remarks='not-a-witness')
+        self.assertIsNone(self.match(DjangoPredicates(filters={
+            'id': self.obj.pk, 'preparations__remarks': 'witness',
+        })))
+
+    def test_hidden_extra_child_does_not_change_absence_match(self):
+        from specifyweb.backend.workbench.upload.predicates import DjangoPredicates, ToRemove
+        self.preparation(readable=False)
+        self.assertEqual(self.match(self.predicate(
+            DjangoPredicates(to_remove=ToRemove('Preparation', {})),
+        )).id, self.obj.pk)
+
+    def test_readable_extra_child_still_blocks_absence_match(self):
+        from specifyweb.backend.workbench.upload.predicates import DjangoPredicates, ToRemove
+        self.preparation()
+        self.assertIsNone(self.match(self.predicate(
+            DjangoPredicates(to_remove=ToRemove('Preparation', {})),
+        )))
+
+    def test_exclusion_keeps_explicit_witness_and_ignores_hidden_extra(self):
+        from specifyweb.backend.workbench.upload.predicates import DjangoPredicates, ToRemove
+        self.preparation()
+        self.preparation(readable=False, remarks='extra')
+        self.assertEqual(self.match(self.predicate(
+            DjangoPredicates(filters={'remarks': 'witness'}),
+            DjangoPredicates(to_remove=ToRemove('Preparation', {})),
+        )).id, self.obj.pk)
+
+    def test_exclusion_still_detects_readable_extra(self):
+        from specifyweb.backend.workbench.upload.predicates import DjangoPredicates, ToRemove
+        self.preparation()
+        self.preparation(remarks='extra')
+        self.assertIsNone(self.match(self.predicate(
+            DjangoPredicates(filters={'remarks': 'witness'}),
+            DjangoPredicates(to_remove=ToRemove('Preparation', {})),
+        )))
+
+    def test_exclusion_checks_forward_reference_in_filter(self):
+        from specifyweb.backend.workbench.upload.predicates import DjangoPredicates, ToRemove
+        restricted_type = spmodels.Preptype.objects.create(
+            name='restricted-type', collection=self.other_collection,
+        )
+        self.preparation(preptype=restricted_type)
+        self.assertEqual(self.match(self.predicate(
+            DjangoPredicates(to_remove=ToRemove('Preparation', {
+                'preptype_id': restricted_type.pk,
+            })),
+        )).id, self.obj.pk)
+
+    def test_trusted_matching_retains_unrestricted_behavior(self):
+        from specifyweb.backend.workbench.upload.predicates import DjangoPredicates
+        self.preparation(readable=False)
+        self.assertEqual(self.match(self.predicate(
+            DjangoPredicates(filters={'remarks': 'witness'}),
+        ), actor=False).id, self.obj.pk)
+
+    def test_collection_access_without_table_read_cannot_witness(self):
+        from specifyweb.backend.workbench.upload.predicates import DjangoPredicates
+        self.preparation(readable=False)
+        self.grant_access(self.other_collection)
+        self.assertIsNone(self.match(self.predicate(
+            DjangoPredicates(filters={'remarks': 'witness'}),
+        )))
+
+    def test_table_read_without_collection_access_cannot_witness(self):
+        from specifyweb.backend.workbench.upload.predicates import DjangoPredicates
+        self.preparation(readable=False)
+        self.grant(self.other_collection, '/table/preparation', 'read')
+        self.assertIsNone(self.match(self.predicate(
+            DjangoPredicates(filters={'remarks': 'witness'}),
+        )))
+
+    def test_both_grants_enable_restricted_witness(self):
+        from specifyweb.backend.workbench.upload.predicates import DjangoPredicates
+        self.preparation(readable=False)
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/preparation', 'read')
+        self.assertEqual(self.match(self.predicate(
+            DjangoPredicates(filters={'remarks': 'witness'}),
+        )).id, self.obj.pk)
+
+    def test_null_forward_relation_keeps_readable_parent(self):
+        from specifyweb.backend.workbench.upload.predicates import DjangoPredicates
+        self.assertEqual(self.match(DjangoPredicates(filters={
+            'id': self.obj.pk, 'collectionobjectattribute_id': None,
+        })).id, self.obj.pk)
+
+    def test_nested_reverse_requires_grandchild_scope(self):
+        from specifyweb.backend.workbench.upload.predicates import DjangoPredicates
+        prep = self.preparation()
+        spmodels.Preparationproperty.objects.create(
+            preparation=prep, collectionmemberid=self.other_collection.pk, integer1=17,
+        )
+        self.assertIsNone(self.match(self.predicate(DjangoPredicates(filters={
+            'preparationproperties': [DjangoPredicates(filters={'integer1': 17})],
+        }))))
+
+    def test_nested_reverse_absence_ignores_hidden_grandchild(self):
+        from specifyweb.backend.workbench.upload.predicates import DjangoPredicates, ToRemove
+        prep = self.preparation()
+        spmodels.Preparationproperty.objects.create(
+            preparation=prep, collectionmemberid=self.other_collection.pk, integer1=17,
+        )
+        self.assertEqual(self.match(self.predicate(DjangoPredicates(filters={
+            'remarks': 'witness', 'preparationproperties': [
+                DjangoPredicates(to_remove=ToRemove('Preparationproperty', {})),
+            ],
+        }))).id, self.obj.pk)
+
+    def test_forward_then_reverse_requires_intermediate_read(self):
+        from specifyweb.backend.workbench.upload.predicates import DjangoPredicates
+        prep = self.preparation(readable=False)
+        prop = spmodels.Preparationproperty.objects.create(
+            preparation=prep, collectionmemberid=self.collection.pk, integer1=17,
+        )
+        self.assertIsNone(self.match(DjangoPredicates(filters={
+            'id': self.obj.pk, 'preparations__preparationproperties__id': prop.pk,
+        })))
+
+    def test_cached_matches_recheck_indirect_witness(self):
+        from specifyweb.backend.workbench.upload.predicates import DjangoPredicates
+        from specifyweb.backend.workbench.upload.upload_result import ReportInfo
+        prep = self.preparation()
+        bound = self.bound_table()
+        predicate = self.predicate(DjangoPredicates(filters={'remarks': 'witness'}))
+        info = ReportInfo(bound.name, [], None)
+        self.assertEqual(bound._match(predicate, info).id, self.obj.pk)
+        bound.cache[predicate.get_cache_key(bound.name)] = [self.obj.pk]
+        prep.collectionmemberid = self.other_collection.pk
+        prep.save()
+        self.assertIsNone(bound._match(predicate, info))
+
+    def test_ten_row_limit_applies_after_deduplicating_witnesses(self):
+        from specifyweb.backend.workbench.upload.predicates import DjangoPredicates
+        for _ in range(12):
+            self.preparation()
+        second = self.collectionobjects[1]
+        self.preparation(parent=second)
+        predicate = DjangoPredicates(filters={
+            'preparations': [DjangoPredicates(filters={'remarks': 'witness'})],
+        })
+        self.assertCountEqual(self.match(predicate).ids, [self.obj.pk, second.pk])
+
+    def test_reverse_isnull_uses_only_readable_children(self):
+        from specifyweb.backend.workbench.upload.predicates import DjangoPredicates
+        self.preparation(readable=False)
+        self.assertEqual(self.match(DjangoPredicates(filters={
+            'id': self.obj.pk, 'preparations__id__isnull': True,
+        })).id, self.obj.pk)
+
+    def test_readable_child_still_blocks_reverse_isnull(self):
+        from specifyweb.backend.workbench.upload.predicates import DjangoPredicates
+        self.preparation()
+        self.assertIsNone(self.match(DjangoPredicates(filters={
+            'id': self.obj.pk, 'preparations__id__isnull': True,
+        })))
+
+    def run_upload(
+        self, *, empty=False, no_commit=False, allow_partial=True,
+        earlier_row=False, single_row_validation=False,
+    ):
+        from specifyweb.backend.workbench.upload.upload import do_upload
+        from specifyweb.backend.workbench.upload.upload_plan_schema import parse_plan
+        plan = parse_plan({
+            'baseTableName': 'Collectionobject', 'uploadable': {'uploadTable': {
+                'wbcols': {'remarks': 'Object'}, 'static': {}, 'toOne': {},
+                'toMany': {'preparations': [{
+                    'wbcols': {'remarks': 'Prep'},
+                    'static': {'preptype_id': self.preptype.pk}, 'toOne': {}, 'toMany': {},
+                }]},
+            }},
+        })
+        row = {'Object': 'source', 'Prep': '' if empty else 'witness'}
+        if single_row_validation:
+            from specifyweb.backend.workbench.upload.upload import validate_row
+            return [validate_row(
+                self.collection, plan.apply_scoping(self.collection, row=row),
+                self.agent.pk, row, None,
+            )]
+        return do_upload(
+            self.collection,
+            ([{'Object': 'earlier-allowed-row', 'Prep': ''}] if earlier_row else [])
+            + [row],
+            plan, self.agent.pk, no_commit=no_commit, allow_partial=allow_partial,
+        )
+
+    def restrict_preparation_read(self, *, create=True):
+        self.obj.remarks = 'source'
+        self.obj.save()
+        self.preparation()
+        models.UserPolicy.objects.filter(resource='/table/%').delete()
+        self.grant(self.collection, '/table/collectionobject', '%')
+        self.grant(self.collection, '/table/preptype', 'read')
+        if create:
+            self.grant(self.collection, '/table/preparation', 'create')
+
+    def test_actual_upload_does_not_reuse_parent_via_unreadable_child(self):
+        from specifyweb.backend.workbench.upload.upload_result import Uploaded
+        self.restrict_preparation_read()
+        result = self.run_upload()[0]
+        self.assertIsInstance(result.record_result, Uploaded)
+        self.assertNotEqual(result.get_id(), self.obj.pk)
+        self.assertEqual(self.obj.preparations.count(), 1)
+
+    def test_actual_upload_absence_ignores_unreadable_extra(self):
+        from specifyweb.backend.workbench.upload.upload_result import Matched
+        self.restrict_preparation_read()
+        # Absence matching is scoped by the plan's static fields as well.
+        result = self.run_upload(empty=True)[0]
+        self.assertIsInstance(result.record_result, Matched)
+        self.assertEqual(result.get_id(), self.obj.pk)
+
+    def test_actual_validation_does_not_reuse_hidden_witness(self):
+        from specifyweb.backend.workbench.upload.upload_result import Uploaded
+        self.restrict_preparation_read()
+        before = self.snapshot()
+        result = self.run_upload(no_commit=True)[0]
+        self.assertIsInstance(result.record_result, Uploaded)
+        self.assertEqual(self.snapshot(), before)
+
+    def test_single_row_validation_does_not_reuse_hidden_witness(self):
+        from specifyweb.backend.workbench.upload.upload_result import Uploaded
+        self.restrict_preparation_read(create=False)
+        before = self.snapshot()
+        result = self.run_upload(single_row_validation=True)[0]
+        self.assertIsInstance(result.record_result, Uploaded)
+        self.assertEqual(self.snapshot(), before)
+
+    def test_single_row_validation_absence_ignores_hidden_extra(self):
+        from specifyweb.backend.workbench.upload.upload_result import Matched
+        self.restrict_preparation_read(create=False)
+        before = self.snapshot()
+        result = self.run_upload(empty=True, single_row_validation=True)[0]
+        self.assertIsInstance(result.record_result, Matched)
+        self.assertEqual(result.get_id(), self.obj.pk)
+        self.assertEqual(self.snapshot(), before)
+
+    def snapshot(self):
+        return {
+            model.__name__: list(model.objects.order_by('pk').values())
+            for model in (
+                spmodels.Collectionobject, spmodels.Preparation,
+                spmodels.Spauditlog, spmodels.Spauditlogfield,
+            )
+        }
+
+    def test_denial_after_indirect_nonmatch_rolls_back_writes_and_audits(self):
+        self.restrict_preparation_read(create=False)
+        for allow_partial in (True, False):
+            with self.subTest(allow_partial=allow_partial):
+                before = self.snapshot()
+                with self.assertRaises(permissions.NoMatchingRuleException):
+                    self.run_upload(allow_partial=allow_partial, earlier_row=True)
+                self.assertEqual(self.snapshot(), before)
+
+
+class IndirectImportTreeMatchingTests(ScopedPermissionTestBase):
+    def setUp(self):
+        super().setUp()
+        self.grant_access(self.collection)
+        self.grant(self.collection, '/table/%', '%')
+        self.geographytreedef.discipline = self.discipline
+        self.geographytreedef.save()
+        root_item = self.geographytreedef.treedefitems.get(name='Planet')
+        middle_item = self.geographytreedef.treedefitems.create(
+            name='Continent', rankid=100, parent=root_item,
+        )
+        leaf_item = self.geographytreedef.treedefitems.create(
+            name='Country', rankid=200, parent=middle_item,
+        )
+        self.root = spmodels.Geography.objects.create(
+            name='Earth', definition=self.geographytreedef, definitionitem=root_item,
+        )
+        self.middle = spmodels.Geography.objects.create(
+            name='Middle', definition=self.geographytreedef,
+            definitionitem=middle_item, parent=self.root,
+        )
+        self.leaf = spmodels.Geography.objects.create(
+            name='Target', definition=self.geographytreedef,
+            definitionitem=leaf_item, parent=self.middle,
+        )
+        discipline = spmodels.Discipline.objects.create(
+            division=self.division, datatype=self.datatype,
+            geographytreedef=self.geographytreedef,
+            geologictimeperiodtreedef=self.geologictimeperiodtreedef,
+        )
+        self.other_collection.discipline = discipline
+        self.other_collection.save()
+        self.other_definition = spmodels.Geographytreedef.objects.create(discipline=discipline)
+        self.other_item = self.other_definition.treedefitems.create(name='Continent', rankid=100)
+
+    def bound_tree(self):
+        from specifyweb.backend.workbench.upload.auditor import Auditor, DEFAULT_AUDITOR_PROPS
+        from specifyweb.backend.workbench.upload.upload_plan_schema import parse_plan
+        return parse_plan({
+            'baseTableName': 'Geography', 'uploadable': {'treeRecord': {'ranks': {
+                'Planet': {'treeNodeCols': {'name': 'Planet'}},
+                'Country': {'treeNodeCols': {'name': 'Country'}},
+            }}},
+        }).apply_scoping(self.collection).bind(
+            {'Planet': 'Earth', 'Country': 'Target'}, self.agent.pk,
+            Auditor(self.collection, DEFAULT_AUDITOR_PROPS, None, agent=self.agent), {},
+        )
+
+    def hide_middle(self):
+        # Simulate a pre-existing cross-definition parent link.
+        spmodels.Geography.objects.filter(pk=self.middle.pk).update(
+            definition=self.other_definition, definitionitem=self.other_item,
+        )
+
+    def test_skipped_unreadable_ancestor_cannot_establish_tree_match(self):
+        from specifyweb.backend.workbench.upload.upload_result import NoMatch
+        self.hide_middle()
+        self.assertIsInstance(self.bound_tree().match_row().record_result, NoMatch)
+
+    def test_readable_skipped_ancestor_preserves_match(self):
+        from specifyweb.backend.workbench.upload.upload_result import Matched
+        result = self.bound_tree().match_row().record_result
+        self.assertIsInstance(result, Matched)
+        self.assertEqual(result.id, self.leaf.pk)
+
+    def test_both_grants_enable_cross_scope_ancestor(self):
+        self.hide_middle()
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/geography', 'read')
+        self.assertEqual(self.bound_tree().match_row().get_id(), self.leaf.pk)
+
+    def test_cached_tree_matches_recheck_ancestor_scope(self):
+        from specifyweb.backend.workbench.upload.upload_result import NoMatch
+        bound = self.bound_tree()
+        trusted = bound._replace(auditor=bound.auditor._replace(agent=None))
+        self.assertEqual(trusted.match_row().get_id(), self.leaf.pk)
+        self.assertTrue(bound.cache)
+        self.hide_middle()
+        self.assertIsInstance(bound.match_row().record_result, NoMatch)
+
+    def test_tree_ancestor_table_read_alone_is_insufficient(self):
+        from specifyweb.backend.workbench.upload.upload_result import NoMatch
+        self.hide_middle()
+        self.grant(self.other_collection, '/table/geography', 'read')
+        self.assertIsInstance(self.bound_tree().match_row().record_result, NoMatch)
+
+    def test_tree_ancestor_collection_access_alone_is_insufficient(self):
+        from specifyweb.backend.workbench.upload.upload_result import NoMatch
+        self.hide_middle()
+        self.grant_access(self.other_collection)
+        self.assertIsInstance(self.bound_tree().match_row().record_result, NoMatch)
+
+
 class ImportReadAuthorizationTests(ScopedPermissionTestBase):
     def setUp(self):
         super().setUp()

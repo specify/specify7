@@ -457,7 +457,11 @@ def validate_row(
                     # TODO: Handle auditor props better
                     row,
                     uploading_agent_id,
-                    Auditor(collection, props=DEFAULT_AUDITOR_PROPS, audit_log=None),
+                    Auditor(
+                        collection, props=DEFAULT_AUDITOR_PROPS, audit_log=None,
+                        skip_create_permission_check=True,
+                        agent=models.Agent.objects.get(id=uploading_agent_id),
+                    ),
                 )
                 result = (
                     UploadResult(bind_result, {}, {})

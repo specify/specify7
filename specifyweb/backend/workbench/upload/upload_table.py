@@ -483,14 +483,19 @@ class BoundUploadTable(NamedTuple):
             return DjangoPredicates()
 
         combined_filters = combined_filters._replace(
-            filters={**combined_filters.filters, **self.scopingAttrs, **self.static}
+            filters={**combined_filters.filters, **self.scopingAttrs, **self.static},
+            scope_fields=tuple(
+                name for name in self.scopingAttrs
+                if name not in self.static and name not in direct_filters and name not in to_ones
+            ),
         )
 
         return combined_filters
 
     def get_to_remove(self) -> ToRemove:
         return ToRemove(
-            model_name=self.name, filter_on={**self.scopingAttrs, **self.static}
+            model_name=self.name, filter_on={**self.scopingAttrs, **self.static},
+            scope_fields=tuple(name for name in self.scopingAttrs if name not in self.static),
         )
 
     def process_row(self) -> UploadResult:
@@ -677,10 +682,13 @@ class BoundUploadTable(NamedTuple):
         cache_hit: list[int] | None = (
             self.cache.get(cache_key, None) if self.cache is not None else None
         )
-        if cache_hit is not None:
+        # Actor-backed matches must re-evaluate indirect witnesses after earlier rows write.
+        if cache_hit is not None and self.auditor.agent is None:
             ids = cache_hit
         else:
-            query = predicates.apply_to_query(self.name).values_list("id", flat=True)
+            query = predicates.apply_to_query(
+                self.name, actor=self.auditor.agent,
+            ).values_list("id", flat=True).distinct()
             current_id = self.current_id
             ids = []
             if current_id is not None:
@@ -693,7 +701,7 @@ class BoundUploadTable(NamedTuple):
             if not ids:
                 query = query[:10]
                 ids = list(query.values_list("id", flat=True))
-                if self.cache is not None and ids:
+                if self.cache is not None and ids and self.auditor.agent is None:
                     self.cache[cache_key] = ids
 
         if self.auditor.agent is not None:
