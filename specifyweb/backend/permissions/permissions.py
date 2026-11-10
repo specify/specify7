@@ -17,7 +17,8 @@ from django.db.models import Model, Q, QuerySet
 from specifyweb.specify.models import (
     Accession, Agent, Conservevent, Discipline, Division, Fieldnotebook, Fieldnotebookpage,
     Fieldnotebookpageset, Geography, Geologictimeperiod, Gift,
-    Institution, Lithostrat, Loan, Permit, Referencework, Storage, Taxon, Tectonicunit,
+    Institution, Lithostrat, Loan, Permit, Referencework, Spappresourcedir,
+    Sptasksemaphore, Storage, Taxon, Tectonicunit,
 )
 from specifyweb.specify.datamodel import Table
 from specifyweb.specify.utils.scoping import Scoping, ScopeType
@@ -296,6 +297,7 @@ def filter_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
     Notebook pages and page sets inherit the notebook's discipline.
     Conservation events inherit their description's scope.
     Remaining institution-scoped models use the single-institution fallback.
+    Resource directories and task semaphores prefer discipline over collection.
     Other scopes are not filtered here; serialized records still undergo
     instance checks.
     """
@@ -343,6 +345,7 @@ def filter_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
         and model not in (Permit, Referencework)
         and notebook_lookup is None
         and model is not Conservevent
+        and model not in (Spappresourcedir, Sptasksemaphore)
     ):
         return queryset
 
@@ -353,6 +356,19 @@ def filter_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
         if query_pt(collectionid, userid, CollectionAccessPT.access).allowed
         and query(collectionid, userid, resource, "read").allowed
     ]
+    if model in (Spappresourcedir, Sptasksemaphore):
+        allowed_collections = models.Collection.objects.filter(id__in=allowed_ids)
+        condition = Q(
+            discipline_id__in=allowed_collections.values("discipline_id")
+        ) | Q(discipline__isnull=True, collection_id__in=allowed_ids)
+        unscoped = Q(discipline__isnull=True, collection__isnull=True)
+        if queryset.filter(unscoped).exists():
+            institution = Institution.objects.get()
+            if allowed_collections.filter(
+                discipline__division__institution=institution
+            ).exists():
+                condition |= unscoped
+        return queryset.filter(condition)
     if model is Conservevent:
         allowed_collections = models.Collection.objects.filter(id__in=allowed_ids)
         condition = Q(

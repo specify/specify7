@@ -1769,6 +1769,136 @@ class InstitutionFallbackReadTests(ScopedPermissionTestBase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(json.loads(response.content), [])
 
+class MixedDisciplineCollectionReadApiTests(ScopedPermissionTestBase):
+    def setUp(self):
+        super().setUp()
+        self.grant_access(self.collection)
+        self.grant(self.collection, '/table/%', 'read')
+        self.client.force_login(self.specifyuser)
+        self.client.cookies['collection'] = str(self.collection.id)
+        self.other_discipline = spmodels.Discipline.objects.create(
+            division=self.division, datatype=self.datatype,
+            geographytreedef=self.geographytreedef,
+            geologictimeperiodtreedef=self.geologictimeperiodtreedef,
+        )
+        self.other_collection.discipline = self.other_discipline
+        self.other_collection.save()
+        self.records = []
+        for model in (spmodels.Spappresourcedir, spmodels.Sptasksemaphore):
+            allowed = model.objects.create(
+                discipline=self.discipline, collection=self.other_collection,
+            )
+            restricted = model.objects.create(
+                discipline=self.other_discipline, collection=self.collection,
+            )
+            collection_allowed = model.objects.create(collection=self.collection)
+            collection_restricted = model.objects.create(collection=self.other_collection)
+            unscoped = model.objects.create()
+            self.records.append((
+                model, [allowed, collection_allowed, unscoped],
+                [restricted, collection_restricted],
+            ))
+
+    def assert_visible_records(self, include_other=False, **params):
+        for model, allowed, restricted in self.records:
+            for prefix in ('/api/specify', '/table_rows/specify_rows'):
+                with self.subTest(model=model.__name__, prefix=prefix):
+                    query = {'limit': 0, 'orderby': '-id', **params}
+                    if prefix == '/table_rows/specify_rows':
+                        query['fields'] = 'id'
+                    response = self.client.get(
+                        f'{prefix}/{model._meta.model_name}/', query,
+                    )
+                    self.assertEqual(response.status_code, 200)
+                    expected = allowed + restricted if include_other else allowed
+                    payload = response.json()
+                    if isinstance(payload, dict):
+                        self.assertEqual(payload['meta']['total_count'], len(expected))
+                        ids = [obj['id'] for obj in payload['objects']]
+                    else:
+                        ids = [row[0] for row in payload]
+                    self.assertCountEqual(ids, [obj.id for obj in expected])
+
+    def test_scope_precedence_and_fallbacks(self):
+        self.assert_visible_records()
+
+    def test_read_grant_requires_collection_access(self):
+        self.grant(self.other_collection, '/table/%', 'read')
+        self.assert_visible_records()
+
+    def test_collection_access_requires_table_read(self):
+        self.grant_access(self.other_collection)
+        self.assert_visible_records()
+
+    def test_both_grants_allow_other_scope(self):
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/%', 'read')
+        self.assert_visible_records(include_other=True)
+
+    def test_global_grant_allows_other_scope(self):
+        self.grant(None, '%', '%')
+        self.assert_visible_records(include_other=True)
+
+    def test_ambiguous_institution_fallback_propagates_resolver_error(self):
+        spmodels.Institution.objects.create(
+            name='Other Institution', isaccessionsglobal=True,
+            issecurityon=False, isserverbased=False,
+            issharinglocalities=True, issinglegeographytree=True,
+        )
+        for model, _, _ in self.records:
+            with self.subTest(model=model.__name__):
+                with self.assertRaises(spmodels.Institution.MultipleObjectsReturned):
+                    permissions.filter_scoped_read_queryset(
+                        model.objects.all(), self.agent,
+                    )
+
+    def test_fallback_does_not_combine_grants_between_collections(self):
+        initialize.wipe_permissions()
+        self.grant_access(self.collection)
+        self.grant(self.other_collection, '/table/%', 'read')
+        for model, _, _ in self.records:
+            with self.subTest(model=model.__name__):
+                self.assertFalse(permissions.filter_scoped_read_queryset(
+                    model.objects.all(), self.agent,
+                ).exists())
+
+    def test_filters_before_pagination(self):
+        for model, allowed, _ in self.records:
+            for prefix in ('/api/specify', '/table_rows/specify_rows'):
+                with self.subTest(model=model.__name__, prefix=prefix):
+                    query = {'limit': 1, 'offset': 1, 'orderby': '-id'}
+                    if prefix == '/table_rows/specify_rows':
+                        query['fields'] = 'id'
+                    response = self.client.get(
+                        f'{prefix}/{model._meta.model_name}/', query,
+                    )
+                    self.assertEqual(response.status_code, 200)
+                    payload = response.json()
+                    expected = sorted([obj.id for obj in allowed], reverse=True)[1]
+                    if isinstance(payload, dict):
+                        self.assertEqual(payload['meta']['total_count'], 3)
+                        self.assertEqual([obj['id'] for obj in payload['objects']], [expected])
+                    else:
+                        self.assertEqual(payload, [[expected]])
+
+    def test_restricted_ids_return_empty_results_in_both_row_implementations(self):
+        from specifyweb.specify.api.dispatch import rows
+
+        for model, _, restricted in self.records:
+            for record in restricted:
+                with self.subTest(model=model.__name__, record=record.id):
+                    path = f'/table_rows/specify_rows/{model._meta.model_name}/'
+                    params = {'fields': 'id', 'id': record.id}
+                    response = self.client.get(path, params)
+                    self.assertEqual(response.status_code, 200)
+                    self.assertEqual(response.json(), [])
+                    request = RequestFactory().get(path, params)
+                    request.specify_collection = self.collection
+                    request.specify_user_agent = self.agent
+                    response = rows(request, model._meta.model_name)
+                    self.assertEqual(response.status_code, 200)
+                    self.assertEqual(json.loads(response.content), [])
+
 class ScopedDeleteApiTests(ScopedPermissionTestBase):
     def setUp(self):
         super().setUp()
