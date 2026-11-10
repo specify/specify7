@@ -1155,6 +1155,80 @@ class ScopingTests(ApiTests):
             self.other_discipline,
         )
 
+    def test_collections_for_scope_includes_shared_collections(self):
+        sibling_collection = Collection.objects.create(
+            catalognumformatname='test',
+            collectionname='SiblingCollection',
+            isembeddedcollectingevent=False,
+            discipline=self.discipline,
+        )
+        sibling_discipline = Discipline.objects.create(
+            geologictimeperiodtreedef=self.geologictimeperiodtreedef,
+            geographytreedef=self.geographytreedef,
+            division=self.division,
+            datatype=self.datatype,
+        )
+        cousin_collection = Collection.objects.create(
+            catalognumformatname='test',
+            collectionname='CousinCollection',
+            isembeddedcollectingevent=False,
+            discipline=sibling_discipline,
+        )
+
+        for scope, expected in (
+            (self.collection, [self.collection]),
+            (self.discipline, [self.collection, sibling_collection]),
+            (self.division, [
+                self.collection, sibling_collection, cousin_collection,
+            ]),
+            (self.institution, [
+                self.collection, sibling_collection, cousin_collection,
+                self.other_collection,
+            ]),
+        ):
+            with self.subTest(model=scope._meta.model_name):
+                with self.assertNumQueries(0):
+                    collections = scoping.Scoping.collections_for_scope(scope)
+                self.assertCountEqual(collections, expected)
+
+    def test_collections_for_scope_excludes_other_institutions(self):
+        other_institution = Institution.objects.create(
+            name='Other Institution',
+            isaccessionsglobal=True,
+            issecurityon=False,
+            isserverbased=False,
+            issharinglocalities=True,
+            issinglegeographytree=True,
+        )
+        self.other_division.institution = other_institution
+        self.other_division.save()
+
+        self.assertCountEqual(
+            scoping.Scoping.collections_for_scope(self.institution),
+            [self.collection],
+        )
+        self.assertCountEqual(
+            scoping.Scoping.collections_for_scope(other_institution),
+            [self.other_collection],
+        )
+
+    def test_collections_for_scope_without_collections(self):
+        division = Division.objects.create(
+            institution=self.institution, name='Empty Division'
+        )
+
+        self.assertFalse(scoping.Scoping.collections_for_scope(division).exists())
+
+    def test_collections_for_scope_rejects_unsaved_scopes(self):
+        for scope in (Collection(), Discipline(), Division(), Institution()):
+            with self.subTest(model=scope._meta.model_name):
+                with self.assertRaisesMessage(ValueError, "unsaved scope"):
+                    scoping.Scoping.collections_for_scope(scope)
+
+    def test_collections_for_scope_rejects_non_hierarchy_records(self):
+        with self.assertRaisesMessage(TypeError, "is not a hierarchy table"):
+            scoping.Scoping.collections_for_scope(self.collectionobjects[0])
+
     def test_explicitly_defined_scope(self):
         accession = Accession.objects.create(
             accessionnumber="ACC_Test",
