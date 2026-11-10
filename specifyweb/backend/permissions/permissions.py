@@ -290,6 +290,24 @@ def cache_permission_queries():
 
 TABLE_ACTION = Literal["read", "create", "update", "delete"]
 
+def _enforce_in_scope(scope: Model, actor, resources: list[str], action: str) -> None:
+    if not resources:
+        return
+    userid = _actor_userid(actor)
+    denied_resources = [
+        resource for resource in resources
+        if not has_permission_in_scope(scope, userid, resource, action)
+    ]
+    if denied_resources:
+        collection_ids = Scoping.collections_for_scope(scope).values_list("id", flat=True)
+        denials = [
+            PermRequest(collectionid, userid, resource, action)
+            for collectionid in collection_ids
+            for resource in denied_resources
+        ]
+        logger.debug("record scope permission denied: %s, scope=%s", denials, scope)
+        raise NoMatchingRuleException(denials)
+
 def check_table_permissions(collection, actor, obj, action: TABLE_ACTION) -> None:
     """Check existing-record actions in record scope; creates use collection."""
     if isinstance(obj, Table):
@@ -297,29 +315,28 @@ def check_table_permissions(collection, actor, obj, action: TABLE_ACTION) -> Non
     else:
         name = obj.specify_model.name.lower()
     if action in ("read", "update", "delete") and isinstance(obj, Model):
-        userid = _actor_userid(actor)
-        scope = Scoping.scope_for_record(obj)
-        resource = f"/table/{name}"
-        if not has_permission_in_scope(scope, userid, resource, action):
-            collection_ids = Scoping.collections_for_scope(scope).values_list("id", flat=True)
-            denials = [
-                PermRequest(collectionid, userid, resource, action)
-                for collectionid in collection_ids
-            ]
-            logger.debug("record scope permission denied: %s, scope=%s", denials, scope)
-            raise NoMatchingRuleException(denials)
+        _enforce_in_scope(Scoping.scope_for_record(obj), actor, [f"/table/{name}"], action)
         return
     enforce(collection, actor, [f"/table/{name}"], action)
 
 def has_table_permission(collection_id, user_id, table_name: str, action: TABLE_ACTION) -> bool:
     return query(collection_id, user_id, f'/table/{table_name.lower()}', action).allowed
 
-def check_field_permissions(collection, actor, obj, fields: Iterable[str], action: str) -> None:
+def check_field_permissions(
+    collection, actor, obj, fields: Iterable[str], action: str, *, scope: Model | None = None
+) -> None:
+    """Check instance updates in record scope, optionally using a captured scope."""
     if isinstance(obj, Table):
         table = obj.name.lower()
     else:
         table = obj.specify_model.name.lower()
-    enforce(collection, actor, [f"/field/{table}/{field}" for field in fields], action)
+    resources = [f"/field/{table}/{field}" for field in fields]
+    if action == "update" and isinstance(obj, Model):
+        if resources:
+            resolved_scope = scope if scope is not None else Scoping.scope_for_record(obj)
+            _enforce_in_scope(resolved_scope, actor, resources, action)
+        return
+    enforce(collection, actor, resources, action)
 
 def table_permissions_checker(collection, actor, action: TABLE_ACTION) -> Callable[[Any], None]:
     def checker(obj) -> None:

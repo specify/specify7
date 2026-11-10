@@ -17,6 +17,7 @@ from specifyweb.specify.api.api_utils import objs_to_data_, CollectionPayload
 from specifyweb.specify.utils.autonumbering import autonumber_and_save
 from specifyweb.specify.api.exceptions import FilterError, MissingVersionException, OrderByError, RecordSetException, StaleObjectException
 from specifyweb.specify.utils.field_change_info import FieldChangeInfo
+from specifyweb.specify.utils.scoping import Scoping
 from specifyweb.specify.api.filter_by_col import filter_by_collection
 from specifyweb.specify.models_utils.models_by_table_id import get_model_by_table_id
 from specifyweb.specify.models_utils.relationships import get_recordset_info, get_related_or_none, handle_fk_fields, handle_to_many, is_dependent_field
@@ -128,6 +129,7 @@ def update_obj(collection, agent, name: str, id, version, data: dict[str, Any], 
     """
     obj = get_object_or_404(name, id=int(id))
     check_table_permissions(collection, agent, obj, "update")
+    original_scope = Scoping.scope_for_record(obj)
 
     data = cleanData(obj.__class__, data, parent_relationship)
     dependents_to_delete, fk_dirty, handle_remote_to_ones = handle_fk_fields(collection, agent, obj, data)
@@ -135,7 +137,12 @@ def update_obj(collection, agent, name: str, id, version, data: dict[str, Any], 
 
     # Scope-defining fields may have changed; authorize the resulting scope too.
     check_table_permissions(collection, agent, obj, "update")
-    check_field_permissions(collection, agent, obj, [d['field_name'] for d in dirty], "update")
+    dirty_fields = [d['field_name'] for d in dirty]
+    check_field_permissions(
+        collection, agent, obj, dirty_fields, "update", scope=original_scope
+    )
+    if Scoping.scope_for_record(obj) != original_scope:
+        check_field_permissions(collection, agent, obj, dirty_fields, "update")
 
     if hasattr(obj, 'modifiedbyagent'):
         setattr(obj, 'modifiedbyagent', agent)
