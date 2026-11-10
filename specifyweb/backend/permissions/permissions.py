@@ -309,12 +309,12 @@ def _enforce_in_scope(scope: Model, actor, resources: list[str], action: str) ->
         raise NoMatchingRuleException(denials)
 
 def check_table_permissions(collection, actor, obj, action: TABLE_ACTION) -> None:
-    """Check existing-record actions in record scope; creates use collection."""
+    """Check instances in record scope; model/table checks use collection."""
     if isinstance(obj, Table):
         name = obj.name.lower()
     else:
         name = obj.specify_model.name.lower()
-    if action in ("read", "update", "delete") and isinstance(obj, Model):
+    if isinstance(obj, Model):
         _enforce_in_scope(Scoping.scope_for_record(obj), actor, [f"/table/{name}"], action)
         return
     enforce(collection, actor, [f"/table/{name}"], action)

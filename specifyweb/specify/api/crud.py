@@ -80,14 +80,19 @@ def create_obj(collection, agent, model, data: dict[str, Any], parent_obj=None, 
     _, _, handle_remote_to_ones = handle_fk_fields(collection, agent, obj, data)
     set_fields_from_data(obj, data)
     set_field_if_exists(obj, 'createdbyagent', agent)
-    set_field_if_exists(obj, 'collectionmemberid', collection.id)
+    # Keep membership consistent with an explicit target collection.
+    target_collection_id = getattr(obj, 'collection_id', None)
+    set_field_if_exists(
+        obj, 'collectionmemberid',
+        collection.id if target_collection_id is None else target_collection_id,
+    )
+    check_table_permissions(collection, agent, obj, "create")
     try:
         autonumber_and_save(collection, agent.specifyuser, obj)
     except AutonumberOverflowException as e:
         logger.warn("autonumbering overflow: %s", e)
 
     if obj.id is not None: # was the object actually saved?
-        check_table_permissions(collection, agent, obj, "create")
         auditlog.insert(obj, agent, parent_obj)
 
     handle_remote_to_ones(obj)
