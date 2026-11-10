@@ -5,13 +5,14 @@ from django.test import Client
 from specifyweb.backend.notifications.models import Message
 from specifyweb.backend.permissions.models import UserPolicy
 from specifyweb.backend.workbench.models import Spdataset
-from specifyweb.specify.models import Agent, Collectionobject, Recordset, Specifyuser, Spauditlogfield
+from specifyweb.specify.models import Agent, Collectionobject, Recordset, Specifyuser, Spauditlogfield, Spauditlog
 from specifyweb.specify.tests.test_api import ApiTests
 from .upload import upload as uploader
 from .upload.upload_table import UploadTable
 from .upload.upload_plan_schema import parse_column_options
 from .upload.upload_result import UploadResult
 from specifyweb.specify.api.crud import create_obj
+from .upload.uploadable import BatchEditJson
 
 
 class DataSetTests(ApiTests):
@@ -390,12 +391,17 @@ class AuditLogTests(ApiTests):
                 {"catno":collection_object.catalognumber, "eventid":event_1.stationfieldnumber}
         ]
 
-        batch_edit_packs=[
-                {"self": {"id": collection_object.id, "version":int(collection_object.version), "ordernumber":None}}
+        batch_edit_packs: list[BatchEditJson | None]=[
+                BatchEditJson(
+                    self={"id": int(collection_object.id), "version":int(collection_object.version), "ordernumber":None},
+                    to_one={},
+                    to_many={}
+                ), 
         ]
 
         upload_results=uploader.do_upload(self.collection, data, plan, self.agent.id, batch_edit_packs=batch_edit_packs)
         self.assertFalse(any(map(lambda obj : obj.contains_failure(), upload_results)))
-        latest_update=Spauditlogfield.objects.order_by("timestampcreated")[0]
-        self.assertEqual(latest_update.spauditlog.recordid, collection_object.id)
+        latest_update: Spauditlogfield = Spauditlogfield.objects.order_by("timestampcreated")[0]
+        recordid = latest_update.spauditlog.recordid if latest_update.spauditlog else None
+        self.assertEqual(recordid, collection_object.id)
         self.assertEqual(latest_update.fieldname, "collectingevent")
