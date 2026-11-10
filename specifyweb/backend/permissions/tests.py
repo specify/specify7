@@ -198,9 +198,111 @@ class ScopedReadApiTests(ScopedPermissionTestBase):
         self.assertEqual(record.collectionobjectattribute_id, attribute.id)
         self.assertEqual(attribute.collectionmemberid, self.other_collection.id)
 
-    def test_unfiltered_list_denies_restricted_records(self):
-        response = self.client.get('/api/specify/collectionobject/')
-        self.assertEqual(response.status_code, 403)
+    def test_list_filters_restricted_records_before_count_and_pagination(self):
+        for domainfilter in (None, 'false', 'true'):
+            with self.subTest(domainfilter=domainfilter):
+                params = {'limit': 2, 'offset': 1, 'orderby': '-id'}
+                if domainfilter is not None:
+                    params['domainfilter'] = domainfilter
+                response = self.client.get('/api/specify/collectionobject/', params)
+                self.assertEqual(response.status_code, 200)
+                payload = response.json()
+                self.assertEqual(payload['meta']['total_count'], 5)
+                self.assertEqual(
+                    [obj['id'] for obj in payload['objects']],
+                    [obj.id for obj in reversed(self.collectionobjects)][1:3],
+                )
+
+    def test_list_includes_other_collection_with_both_grants(self):
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/%', 'read')
+        response = self.client.get('/api/specify/collectionobject/', {'limit': 0})
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload['meta']['total_count'], 6)
+        self.assertCountEqual(
+            [obj['id'] for obj in payload['objects']],
+            [obj.id for obj in self.collectionobjects] + [self.other_record.id],
+        )
+
+    def test_domainfilter_still_limits_broad_access_to_login_collection(self):
+        self.grant(None, '%', '%')
+        response = self.client.get(
+            '/api/specify/collectionobject/', {'domainfilter': 'true', 'limit': 0}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['meta']['total_count'], 5)
+
+    def test_list_does_not_combine_grants_across_collections(self):
+        self.grant(self.other_collection, '/table/%', 'read')
+        response = self.client.get(
+            '/api/specify/collectionobject/', {'id': self.other_record.id}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['objects'], [])
+        self.assertEqual(response.json()['meta']['total_count'], 0)
+
+    def test_list_requires_table_grant_in_target_collection(self):
+        self.grant_access(self.other_collection)
+        response = self.client.get(
+            '/api/specify/collectionobject/', {'id': self.other_record.id}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['objects'], [])
+        self.assertEqual(response.json()['meta']['total_count'], 0)
+
+    def test_list_scope_matches_membership_when_collection_fields_disagree(self):
+        self.other_record.collectionmemberid = self.other_collection.id
+        self.other_record.collection = self.collection
+        self.other_record.save()
+
+        response = self.client.get(
+            '/api/specify/collectionobject/', {'id': self.other_record.id}
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['objects'], [])
+        self.assertEqual(response.json()['meta']['total_count'], 0)
+
+    def test_list_preserves_collection_fallback_for_invalid_membership(self):
+        record = self.collectionobjects[0]
+        record.collectionmemberid = self.other_collection.id + self.collection.id + 1
+        record.save()
+
+        response = self.client.get(
+            '/api/specify/collectionobject/', {'id': record.id}
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['meta']['total_count'], 1)
+        self.assertEqual(response.json()['objects'][0]['id'], record.id)
+
+    def test_list_filters_membership_only_records(self):
+        allowed = spmodels.Collectionobjectattribute.objects.create(
+            collectionmemberid=self.collection.id
+        )
+        spmodels.Collectionobjectattribute.objects.create(
+            collectionmemberid=self.other_collection.id
+        )
+
+        response = self.client.get('/api/specify/collectionobjectattribute/')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['meta']['total_count'], 1)
+        self.assertEqual(
+            [obj['id'] for obj in response.json()['objects']], [allowed.id]
+        )
+
+    def test_list_with_global_grant_includes_both_collections(self):
+        self.grant(None, '%', '%')
+        response = self.client.get('/api/specify/collectionobject/', {'limit': 0})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['meta']['total_count'], 6)
+        self.assertIn(
+            self.other_record.id,
+            [obj['id'] for obj in response.json()['objects']],
+        )
 
     def test_non_instance_read_check_keeps_current_collection_behavior(self):
         for obj in (spmodels.Collectionobject, spmodels.Collectionobject.specify_model):
