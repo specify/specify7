@@ -506,6 +506,74 @@ class ScopedUpdateApiTests(ScopedPermissionTestBase):
         self.assertEqual(attribute.version, version)
         self.assertEqual(attribute.collectionmemberid, self.other_collection.id)
 
+class CreateIdentityApiTests(ScopedPermissionTestBase):
+    def setUp(self):
+        super().setUp()
+        self.grant_access(self.collection)
+        self.grant(self.collection, '/table/%', 'create')
+        self.grant(None, '/table/%', 'read')
+        self.client.force_login(self.specifyuser)
+        self.client.cookies['collection'] = str(self.collection.id)
+        self.other_record = spmodels.Collectionobject.objects.create(
+            collection=self.other_collection, catalognumber='other-record'
+        )
+
+    def post_record(self, **changes):
+        return self.client.post(
+            '/api/specify/collectionobject/',
+            data={
+                'collection': f'/api/specify/collection/{self.collection.id}/',
+                'catalognumber': 'new-record',
+                **changes,
+            },
+            content_type='application/json',
+        )
+
+    def test_create_cannot_overwrite_existing_record(self):
+        for record in (self.collectionobjects[0], self.other_record):
+            with self.subTest(collection=record.collection_id):
+                before = list(spmodels.Collectionobject.objects.order_by('id').values())
+                response = self.post_record(id=record.id)
+                self.assertEqual(response.status_code, 400)
+                self.assertEqual(
+                    list(spmodels.Collectionobject.objects.order_by('id').values()),
+                    before,
+                )
+
+    def test_create_rejects_case_insensitive_id(self):
+        before = list(spmodels.Collectionobject.objects.order_by('id').values())
+        response = self.post_record(ID=self.other_record.id)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            list(spmodels.Collectionobject.objects.order_by('id').values()), before
+        )
+
+    def test_create_rejects_unused_id(self):
+        unused_id = max(
+            spmodels.Collectionobject.objects.values_list('id', flat=True)
+        ) + 1
+        count = spmodels.Collectionobject.objects.count()
+        response = self.post_record(id=unused_id)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(spmodels.Collectionobject.objects.count(), count)
+        self.assertFalse(spmodels.Collectionobject.objects.filter(pk=unused_id).exists())
+
+    def test_create_without_id_still_inserts(self):
+        count = spmodels.Collectionobject.objects.count()
+        response = self.post_record()
+        self.assertEqual(response.status_code, 201)
+        record = spmodels.Collectionobject.objects.get(pk=response.json()['id'])
+        self.assertEqual(record.collection_id, self.collection.id)
+        self.assertEqual(record.catalognumber, 'new-record')
+        self.assertEqual(spmodels.Collectionobject.objects.count(), count + 1)
+
+    def test_create_with_null_id_still_inserts(self):
+        response = self.post_record(id=None)
+        self.assertEqual(response.status_code, 201)
+        record = spmodels.Collectionobject.objects.get(pk=response.json()['id'])
+        self.assertEqual(record.collection_id, self.collection.id)
+        self.assertEqual(record.catalognumber, 'new-record')
+
 class PermissionsApiTest(ApiTests):
     def setUp(self):
         super().setUp()
