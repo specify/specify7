@@ -278,7 +278,7 @@ class FormatterAggregatorTests(SQLAlchemySetup):
             result = session.query(formatted).select_from(models.CollectingEvent).filter(
                 models.CollectingEvent._id == event.id
             ).scalar()
-            self.assertEqual(result, ' ID-1')
+            self.assertEqual(result, 'ID-1')
 
 
     def test_aggregation_in_formatters(self):
@@ -493,7 +493,7 @@ class FormatterAggregatorTests(SQLAlchemySetup):
             )
             query, expr = object_formatter.objformat(query, models.AccessionAgent, None)
             query = query.query.add_columns(expr)
-            self.assertCountEqual(list(query), [('text 1 value for this accession',), (' text 2 value for this accession role2',)])
+            self.assertCountEqual(list(query), [('text 1 value for this accession',), ('text 2 value for this accession role2',)])
 
     def test_switch_with_only_default_fields(self):
         formatter_def = """
