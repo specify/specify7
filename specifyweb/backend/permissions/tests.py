@@ -5,6 +5,7 @@ from django.apps import apps
 from django.test import Client, RequestFactory
 from django.utils import timezone
 
+from specifyweb.backend.businessrules.rules.cogtype_rules import SYSTEM_COGTYPES_PICKLIST
 from specifyweb.specify.tests.test_api import ApiTests
 from specifyweb.specify import models as spmodels
 from . import models, permissions, initialize
@@ -3952,6 +3953,251 @@ class ReverseInheritedScopeMutationApiTests(ScopedPermissionTestBase):
                           spmodels.Conservevent, spmodels.Spauditlog, spmodels.Spauditlogfield)
         }, before)
         event.refresh_from_db()
+
+class ReverseOneToOneMutationApiTests(ScopedPermissionTestBase):
+    def setUp(self):
+        super().setUp()
+        self.grant_access(self.collection)
+        self.grant(self.collection, '/table/%', '%')
+        self.grant(self.collection, '/field/%', 'update')
+        self.client.force_login(self.specifyuser)
+        self.client.cookies['collection'] = str(self.collection.id)
+        self.destination, self.original = self.collectionobjects[:2]
+        self.restricted_original = spmodels.Collectionobject.objects.create(
+            collection=self.other_collection, catalognumber='restricted-original',
+        )
+        picklist = spmodels.Picklist.objects.create(
+            name=SYSTEM_COGTYPES_PICKLIST, collection=self.collection,
+            issystem=True, type=0, readonly=True,
+        )
+        spmodels.Picklistitem.objects.create(
+            title='Discrete', value='Discrete', picklist=picklist,
+        )
+        cogtype = spmodels.Collectionobjectgrouptype.objects.create(
+            name='Discrete', type='Discrete', collection=self.collection,
+        )
+        self.group = spmodels.Collectionobjectgroup.objects.create(
+            name='Parent', cogtype=cogtype, collection=self.collection,
+        )
+        self.join = spmodels.Collectionobjectgroupjoin.objects.create(
+            parentcog=self.group, childco=self.original, isprimary=False, issubstrate=False,
+        )
+
+    def snapshot(self):
+        return {
+            model.__name__: list(model.objects.order_by('pk').values())
+            for model in (
+                spmodels.Collectionobject, spmodels.Collectionobjectgroup,
+                spmodels.Collectionobjectgroupjoin, spmodels.Spauditlog, spmodels.Spauditlogfield,
+            )
+        }
+
+    def put(self, value, parent=None, **changes):
+        parent = self.destination if parent is None else parent
+        return self.client.put(
+            f'/api/specify/{parent._meta.model_name}/{parent.id}/',
+            data={'version': parent.version, 'cojo': value, **changes},
+            content_type='application/json',
+        )
+
+    def join_data(self, **changes):
+        return {'id': self.join.id, 'version': self.join.version, **changes}
+
+    def assert_denied_unchanged(self, value, parent=None):
+        before = self.snapshot()
+        response = self.put(value, parent, text1='must roll back')
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(self.snapshot(), before)
+
+    def test_reassignment_requires_original_parent_update_scope(self):
+        self.join.childco = self.restricted_original
+        self.join.save()
+        self.assert_denied_unchanged(self.join_data())
+
+    def test_original_parent_read_does_not_replace_update(self):
+        self.join.childco = self.restricted_original
+        self.join.save()
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/%', 'read')
+        self.assert_denied_unchanged(self.join_data())
+
+    def test_reassignment_requires_original_parent_field_permission(self):
+        self.join.childco = self.restricted_original
+        self.join.save()
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/%', '%')
+        self.assert_denied_unchanged(self.join_data())
+
+    def test_reassignment_with_all_permissions_preserves_original_record(self):
+        self.join.childco = self.restricted_original
+        self.join.save()
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/%', '%')
+        self.grant(self.other_collection, '/field/%', 'update')
+        response = self.put(self.join_data(text1='moved'))
+        self.assertEqual(response.status_code, 200)
+        self.join.refresh_from_db()
+        self.assertEqual(self.join.childco_id, self.destination.id)
+        self.assertEqual(self.join.text1, 'moved')
+        self.assertTrue(spmodels.Collectionobject.objects.filter(
+            pk=self.restricted_original.id,
+        ).exists())
+
+    def test_unchanged_reverse_id_still_requires_parent_field_permission(self):
+        models.UserPolicy.objects.filter(resource='/field/%').delete()
+        self.grant(self.collection, '/field/collectionobjectgroupjoin/%', 'update')
+        before = self.snapshot()
+        response = self.put(self.join_data(text1='denied'), self.original)
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(self.snapshot(), before)
+
+    def test_nested_update_requires_related_table_permission(self):
+        initialize.wipe_permissions()
+        self.grant_access(self.collection)
+        self.grant(self.collection, '/table/%', 'read')
+        self.grant(self.collection, '/table/collectionobject', 'update')
+        self.grant(self.collection, '/field/%', 'update')
+        self.assert_denied_unchanged(self.join_data(text1='denied'), self.original)
+
+    def test_clear_requires_delete_permission_and_rolls_back(self):
+        initialize.wipe_permissions()
+        self.grant_access(self.collection)
+        for action in ('read', 'update'):
+            self.grant(self.collection, '/table/%', action)
+        self.grant(self.collection, '/field/%', 'update')
+        self.assert_denied_unchanged(None, self.original)
+
+    def test_clear_deletes_only_join_with_required_permissions(self):
+        response = self.put(None, self.original)
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(spmodels.Collectionobjectgroupjoin.objects.filter(pk=self.join.id).exists())
+        self.assertTrue(spmodels.Collectionobject.objects.filter(pk=self.original.id).exists())
+        self.assertTrue(spmodels.Collectionobjectgroup.objects.filter(pk=self.group.id).exists())
+
+    def test_replacement_without_id_removes_previous_dependent(self):
+        response = self.put({
+            'parentcog': f'/api/specify/collectionobjectgroup/{self.group.id}/',
+            'isprimary': False, 'issubstrate': False,
+        }, self.original)
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(spmodels.Collectionobjectgroupjoin.objects.filter(pk=self.join.id).exists())
+        self.assertEqual(
+            spmodels.Collectionobjectgroupjoin.objects.filter(childco=self.original).count(), 1,
+        )
+
+    def test_case_insensitive_id_updates_existing_related_record(self):
+        response = self.put({
+            'ID': self.join.id, 'Version': self.join.version, 'Text1': 'updated',
+        }, self.original)
+        self.assertEqual(response.status_code, 200)
+        self.join.refresh_from_db()
+        self.assertEqual(self.join.text1, 'updated')
+        self.assertEqual(self.join.childco_id, self.original.id)
+
+    def test_supplied_back_reference_cannot_override_destination(self):
+        response = self.put(self.join_data(
+            childco=f'/api/specify/collectionobject/{self.restricted_original.id}/',
+            ChildCo=f'/api/specify/collectionobject/{self.restricted_original.id}/',
+        ))
+        self.assertEqual(response.status_code, 200)
+        self.join.refresh_from_db()
+        self.assertEqual(self.join.childco_id, self.destination.id)
+
+    def test_missing_nested_version_rolls_back_parent(self):
+        before = self.snapshot()
+        response = self.put({'id': self.join.id}, text1='rollback')
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(self.snapshot(), before)
+
+    def test_create_parent_rolls_back_if_original_parent_is_restricted(self):
+        self.join.childco = self.restricted_original
+        self.join.save()
+        before = self.snapshot()
+        response = self.client.post(
+            '/api/specify/collectionobject/',
+            data={
+                'collection': f'/api/specify/collection/{self.collection.id}/',
+                'catalognumber': 'new-reverse-parent', 'cojo': self.join_data(),
+            }, content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(self.snapshot(), before)
+
+    def test_group_reassignment_requires_original_group_permission(self):
+        restricted_group = spmodels.Collectionobjectgroup.objects.create(
+            name='Restricted child', cogtype=self.group.cogtype,
+            collection=self.other_collection,
+        )
+        self.join.childco = None
+        self.join.childcog = restricted_group
+        self.join.save()
+        destination = spmodels.Collectionobjectgroup.objects.create(
+            name='New child', cogtype=self.group.cogtype, collection=self.collection,
+        )
+        self.assert_denied_unchanged(self.join_data(), destination)
+
+    def test_group_reassignment_with_permissions_preserves_original_group(self):
+        original_group = spmodels.Collectionobjectgroup.objects.create(
+            name='Original child', cogtype=self.group.cogtype, collection=self.collection,
+        )
+        destination = spmodels.Collectionobjectgroup.objects.create(
+            name='New child', cogtype=self.group.cogtype, collection=self.collection,
+        )
+        self.join.childco = None
+        self.join.childcog = original_group
+        self.join.save()
+        response = self.put(self.join_data(), destination)
+        self.assertEqual(response.status_code, 200)
+        self.join.refresh_from_db()
+        self.assertEqual(self.join.childcog_id, destination.id)
+        self.assertTrue(spmodels.Collectionobjectgroup.objects.filter(pk=original_group.id).exists())
+
+    def test_replacement_delete_denial_rolls_back_parent(self):
+        initialize.wipe_permissions()
+        self.grant_access(self.collection)
+        for action in ('read', 'update', 'create'):
+            self.grant(self.collection, '/table/%', action)
+        self.grant(self.collection, '/field/%', 'update')
+        self.assert_denied_unchanged({
+            'parentcog': f'/api/specify/collectionobjectgroup/{self.group.id}/',
+            'isprimary': False, 'issubstrate': False,
+        }, self.original)
+
+    def test_replacement_create_denial_restores_deleted_dependent_and_audit(self):
+        initialize.wipe_permissions()
+        self.grant_access(self.collection)
+        for action in ('read', 'update', 'delete'):
+            self.grant(self.collection, '/table/%', action)
+        self.grant(self.collection, '/field/%', 'update')
+        self.assert_denied_unchanged({
+            'parentcog': f'/api/specify/collectionobjectgroup/{self.group.id}/',
+            'isprimary': False, 'issubstrate': False,
+        }, self.original)
+
+    def test_missing_related_record_rolls_back_parent(self):
+        before = self.snapshot()
+        response = self.put(self.join_data(id=self.join.id + 1000000), text1='rollback')
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(self.snapshot(), before)
+
+    def test_null_nested_id_creates_replacement(self):
+        response = self.put({
+            'id': None, 'parentcog': f'/api/specify/collectionobjectgroup/{self.group.id}/',
+            'isprimary': False, 'issubstrate': False,
+        }, self.original)
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(spmodels.Collectionobjectgroupjoin.objects.filter(pk=self.join.id).exists())
+        self.assertEqual(
+            spmodels.Collectionobjectgroupjoin.objects.filter(childco=self.original).count(), 1,
+        )
+
+    def test_invalid_payloads_return_400_without_writes(self):
+        for value in (False, 1, [], '/api/specify/collectionobjectgroupjoin/1/'):
+            with self.subTest(value=value):
+                before = self.snapshot()
+                response = self.put(value, text1='rollback')
+                self.assertEqual(response.status_code, 400)
+                self.assertEqual(self.snapshot(), before)
 
 class ForeignKeyReferenceWriteApiTests(ScopedPermissionTestBase):
     def setUp(self):

@@ -159,7 +159,10 @@ def update_obj(collection, agent, name: str, id, version, data: dict[str, Any], 
     dirty_fields = [d['field_name'] for d in dirty]
     dirty_fields.extend(
         name for name, value in data.items()
-        if isinstance(value, (list, dict)) and obj._meta.get_field(name).one_to_many
+        if isinstance(value, (list, dict)) and (
+            obj._meta.get_field(name).one_to_many
+            or (obj._meta.get_field(name).one_to_one and not obj._meta.get_field(name).concrete)
+        )
     )
     check_field_permissions(
         collection, agent, obj, dirty_fields, "update", scope=original_scope

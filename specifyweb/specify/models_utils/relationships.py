@@ -105,9 +105,10 @@ def handle_fk_fields(collection, agent, obj, data: dict[str, Any], *, parent_obj
     set foreign key fields in the object from the provided data.
 
     URI references require read permission in the target record's scope.
-    Reverse unlinking preserves the parent being edited.
+    Reverse unlinking preserves the parent being edited. Reverse one-to-one
+    reassignment authorizes the original parent's relationship as well.
     """
-    from specifyweb.specify.api.crud import update_or_create_resource
+    from specifyweb.specify.api.crud import get_object_or_404, update_or_create_resource
 
     # This function looks at arbitrary related objects so it needs to be able to check read permissions
     read_checker = table_permissions_checker(collection, agent, "read")
@@ -135,10 +136,24 @@ def handle_fk_fields(collection, agent, obj, data: dict[str, Any], *, parent_obj
         remote_to_ones += some_remote_to_ones
 
     def _set_remote_to_ones(created_obj): 
-        for field, related_data, is_dependent in remote_to_ones: 
-            related_data[field.name] = created_obj
-            rel_obj = update_or_create_resource(collection, agent, field.model, related_data, created_obj if is_dependent else None)
-            setattr(obj, field.remote_field.name, rel_obj)
+        for field, related_data, is_dependent in remote_to_ones:
+            related_obj = None
+            if related_data.get('id') is not None:
+                related_obj = get_object_or_404(
+                    field.model.objects.select_for_update(), pk=related_data['id'],
+                )
+            related_data.setdefault(field.name, created_obj)
+            authorization = (
+                nullcontext() if related_obj is None else _authorize_related_update(
+                    collection, agent, created_obj, field.remote_field, related_obj,
+                )
+            )
+            with authorization:
+                rel_obj = update_or_create_resource(
+                    collection, agent, field.model, related_data,
+                    created_obj if is_dependent else None,
+                )
+            setattr(obj, field.remote_field.name, None if related_data[field.name] is None else rel_obj)
 
     return dependents_to_delete, dirty, _set_remote_to_ones
 
@@ -198,7 +213,7 @@ def _handle_fk_field(collection, agent, obj, field, value, read_checker, *, pare
 
 def _handle_remote_fk_field(obj, field, value, read_checker): 
     from specifyweb.specify.api.crud import get_object_or_404
-    from specifyweb.specify.api.serializers import _obj_to_data
+    from specifyweb.specify.api.validators import cleanData
 
     field_name = field.name
     old_related = get_related_or_none(obj, field_name)
@@ -215,30 +230,41 @@ def _handle_remote_fk_field(obj, field, value, read_checker):
         setattr(obj, field_name, None)
         if dependent and old_related:
             dependents_to_delete.append(old_related)
+        elif old_related:
+            read_checker(old_related)
+            rel_data = {
+                'id': old_related.pk, 'version': old_related.version,
+                field.field.name: None,
+            }
 
     elif isinstance(value, field.related_model):
         # The related value was patched into the data by a parent object.
-        setattr(obj, field_name, value)
-        rel_data = _obj_to_data(value, read_checker)
+        rel_data = {'id': value.pk, 'version': value.version}
         new_related_id = value.id
 
     elif isinstance(value, str):
         # The related object is given by a URI reference.
-        assert not dependent, f"didn't get inline data for dependent field {field_name} in {obj}: {value!r}"
-        fk_model, fk_id = strict_uri_to_model(value, field.related_model.__name__)
+        if dependent:
+            raise BadRequest(f"Expected inline data for dependent field {field_name}")
+        try:
+            fk_model, fk_id = strict_uri_to_model(value, field.related_model.__name__)
+        except (AssertionError, ValueError, TypeError) as error:
+            raise BadRequest(f"Invalid resource URI for {field_name}") from error
         rel_obj = get_object_or_404(fk_model, id=fk_id)
-        setattr(obj, field_name, rel_obj)
-        rel_data = _obj_to_data(rel_obj, read_checker)
+        read_checker(rel_obj)
+        rel_data = {'id': rel_obj.pk, 'version': rel_obj.version}
         new_related_id = rel_obj.pk
 
     elif hasattr(value, 'items'):  # i.e. it's a dict of some sort
         # The related object is represented by a nested dict of data.
-        rel_data = value
-        new_related_id = value.get("id", None)
-        if dependent and old_related and new_related_id and old_related.id != new_related_id:
-            dependents_to_delete.append(old_related)
+        rel_data = cleanData(field.related_model, value)
+        rel_data.pop(field.field.name, None)
+        new_related_id = rel_data.get("id")
     else:
-        raise Exception(f'bad foreign key field in data: {field_name}')
+        raise BadRequest(f"Invalid related record data for {field_name}")
+
+    if value is not None and dependent and old_related and str(old_related_id) != str(new_related_id):
+        dependents_to_delete.append(old_related)
 
     if str(old_related_id) != str(new_related_id):
         dirty.append(FieldChangeInfo(field_name=field_name, old_value=old_related_id, new_value=new_related_id))
