@@ -704,6 +704,326 @@ class ReverseRelatedRowsApiTests(ScopedPermissionTestBase):
         self.assertEqual(response.status_code, 200)
         self.assertCountEqual(json.loads(response.content), self.expected_rows()[:2])
 
+class ReverseRelatedListApiTests(ScopedPermissionTestBase):
+    def setUp(self):
+        super().setUp()
+        self.grant_access(self.collection)
+        self.grant(self.collection, '/table/%', 'read')
+        self.client.force_login(self.specifyuser)
+        self.client.cookies['collection'] = str(self.collection.id)
+        self._create_prep_type()
+        self.mixed_record, self.restricted_record, self.empty_record = [
+            spmodels.Preparationattribute.objects.create(
+                collectionmemberid=self.collection.id,
+            ) for _ in range(3)
+        ]
+        self.allowed_prep = self._create_prep(
+            self.collectionobjects[0], None, remarks='allowed',
+            preparationattribute=self.mixed_record,
+        )
+        self.null_prep = self._create_prep(
+            self.collectionobjects[0], None, preparationattribute=self.mixed_record,
+        )
+        self.restricted_prep = self._create_prep(
+            self.collectionobjects[0], None, remarks='restricted',
+            preparationattribute=self.mixed_record,
+            collectionmemberid=self.other_collection.id,
+        )
+        self.restricted_only_prep = self._create_prep(
+            self.collectionobjects[1], None, remarks='restricted only',
+            preparationattribute=self.restricted_record,
+            collectionmemberid=self.other_collection.id,
+        )
+
+    def get_list(self, **params):
+        return self.client.get('/api/specify/preparationattribute/', {
+            'id__in': ','.join(str(obj.id) for obj in (
+                self.mixed_record, self.restricted_record, self.empty_record,
+            )),
+            'limit': 0, 'orderby': 'id', **params,
+        })
+
+    def assert_list_ids(self, expected, **params):
+        response = self.get_list(**params)
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload['meta']['total_count'], len(expected))
+        self.assertCountEqual(
+            [obj['id'] for obj in payload['objects']], [obj.id for obj in expected],
+        )
+
+    def test_list_restricted_children_cannot_match_filters(self):
+        for domainfilter in ('true', 'false'):
+            with self.subTest(domainfilter=domainfilter):
+                self.assert_list_ids(
+                    [], preparations__remarks='restricted',
+                    domainfilter=domainfilter,
+                )
+
+    def test_list_child_grants_require_access_and_read_in_same_collection(self):
+        self.grant(self.other_collection, '/table/preparation', 'read')
+        self.assert_list_ids([], preparations__remarks='restricted')
+        initialize.wipe_permissions()
+        self.grant_access(self.collection)
+        self.grant(self.collection, '/table/%', 'read')
+        self.grant_access(self.other_collection)
+        self.assert_list_ids([], preparations__remarks='restricted')
+
+    def test_list_qualifying_grants_allow_child_filters(self):
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/preparation', 'read')
+        self.assert_list_ids(
+            [self.mixed_record, self.restricted_record],
+            preparations__remarks__startswith='restricted',
+        )
+
+    def test_list_global_grant_allows_child_filters(self):
+        self.grant(None, '%', '%')
+        self.assert_list_ids(
+            [self.mixed_record, self.restricted_record],
+            preparations__remarks__startswith='restricted',
+        )
+
+    def test_list_isnull_filters_preserve_parents_without_readable_children(self):
+        self.assert_list_ids(
+            [self.mixed_record, self.restricted_record, self.empty_record],
+            preparations__remarks__isnull='true',
+        )
+
+    def test_list_nonnull_filter_matches_only_readable_children(self):
+        self.assert_list_ids(
+            [self.mixed_record], preparations__remarks__isnull='false',
+        )
+
+    def test_list_filters_and_ordering_share_the_same_readable_child(self):
+        self.assert_list_ids(
+            [self.mixed_record], preparations__remarks='allowed',
+            orderby='-preparations__id,id',
+        )
+
+    def test_list_multiple_filters_require_the_same_readable_child(self):
+        self.assert_list_ids(
+            [], preparations__id=self.allowed_prep.id,
+            preparations__remarks__isnull='true',
+        )
+
+    def test_list_terminal_reverse_references_require_child_scope(self):
+        for field in ('preparations', 'preparations__exact', 'preparations__in'):
+            with self.subTest(field=field):
+                self.assert_list_ids([], **{field: str(self.restricted_prep.id)})
+                self.assert_list_ids(
+                    [self.mixed_record], **{field: str(self.allowed_prep.id)},
+                )
+
+    def test_list_reverse_ordering_counts_authorized_joined_rows(self):
+        for orderby in (
+            'preparations__remarks,id', '-preparations__remarks,id',
+            '-preparations,id', '-preparations__id,id',
+        ):
+            with self.subTest(orderby=orderby):
+                self.assert_list_ids(
+                    [self.mixed_record, self.mixed_record,
+                     self.restricted_record, self.empty_record],
+                    orderby=orderby,
+                )
+
+    def test_list_reverse_ordering_without_child_read_preserves_parents(self):
+        initialize.wipe_permissions()
+        self.grant_access(self.collection)
+        self.grant(self.collection, '/table/preparationattribute', 'read')
+        self.assert_list_ids(
+            [self.mixed_record, self.restricted_record, self.empty_record],
+            orderby='-preparations__remarks,id',
+        )
+
+    def test_list_reverse_ordering_counts_all_children_with_qualifying_grants(self):
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/preparation', 'read')
+        self.assert_list_ids(
+            [self.mixed_record, self.mixed_record, self.mixed_record,
+             self.restricted_record, self.empty_record],
+            orderby='-preparations__remarks,id',
+        )
+
+    def test_list_reverse_ordering_filters_before_count_and_pagination(self):
+        for offset, expected in ((0, self.mixed_record), (2, self.restricted_record)):
+            with self.subTest(offset=offset):
+                response = self.get_list(
+                    orderby='-preparations__remarks,id', offset=offset, limit=1,
+                )
+                self.assertEqual(response.status_code, 200)
+                payload = response.json()
+                self.assertEqual(payload['meta']['total_count'], 4)
+                self.assertEqual(
+                    [obj['id'] for obj in payload['objects']], [expected.id],
+                )
+
+    def test_list_nested_reverse_paths_require_each_child_scope(self):
+        spmodels.Preparationproperty.objects.create(
+            preparation=self.allowed_prep,
+            collectionmemberid=self.collection.id, integer1=1,
+        )
+        spmodels.Preparationproperty.objects.create(
+            preparation=self.allowed_prep,
+            collectionmemberid=self.other_collection.id, integer1=2,
+        )
+        spmodels.Preparationproperty.objects.create(
+            preparation=self.restricted_prep,
+            collectionmemberid=self.collection.id, integer1=3,
+        )
+        self.assert_list_ids(
+            [self.mixed_record], preparations__preparationproperties__integer1=1,
+        )
+        for value in (2, 3):
+            with self.subTest(value=value):
+                self.assert_list_ids(
+                    [], preparations__preparationproperties__integer1=value,
+                )
+
+    def test_list_nested_reverse_ordering_counts_only_readable_grandchildren(self):
+        for value in (1, 2):
+            spmodels.Preparationproperty.objects.create(
+                preparation=self.allowed_prep,
+                collectionmemberid=self.collection.id, integer1=value,
+            )
+        spmodels.Preparationproperty.objects.create(
+            preparation=self.allowed_prep,
+            collectionmemberid=self.other_collection.id, integer1=3,
+        )
+        self.assert_list_ids(
+            [self.mixed_record, self.mixed_record, self.mixed_record,
+             self.restricted_record, self.empty_record],
+            orderby='-preparations__preparationproperties__integer1,id',
+        )
+        self.assert_list_ids(
+            [self.mixed_record, self.mixed_record],
+            preparations__remarks='allowed',
+            orderby='-preparations__preparationproperties__integer1,id',
+        )
+
+    def test_list_reverse_queries_still_require_base_record_scope(self):
+        self.restricted_record.collectionmemberid = self.other_collection.id
+        self.restricted_record.save()
+        self.allowed_prep.preparationattribute = self.restricted_record
+        self.allowed_prep.save()
+        self.assert_list_ids([], preparations__remarks='allowed')
+        self.assert_list_ids(
+            [self.mixed_record, self.empty_record],
+            orderby='-preparations__remarks,id',
+        )
+
+    def test_list_reverse_then_forward_ordering_ignores_restricted_targets(self):
+        other_type = spmodels.Preptype.objects.create(
+            name='zz restricted type', isloanable=False, collection=self.other_collection,
+        )
+        self.allowed_prep.preptype = other_type
+        self.allowed_prep.save()
+        readable_type = spmodels.Preptype.objects.create(
+            name='z readable type', isloanable=False, collection=self.collection,
+        )
+        self._create_prep(
+            self.collectionobjects[1], None, preparationattribute=self.restricted_record,
+            preptype=readable_type,
+        )
+        response = self.get_list(
+            orderby='-preparations__preptype__name,id', limit=1,
+        )
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload['meta']['total_count'], 4)
+        self.assertEqual(
+            [obj['id'] for obj in payload['objects']], [self.restricted_record.id],
+        )
+        self.assert_list_ids(
+            [self.mixed_record, self.mixed_record,
+             self.restricted_record, self.empty_record],
+            orderby='-preparations__preptype__name,id',
+        )
+
+    def test_list_forward_path_after_reverse_requires_target_scope(self):
+        other_type = spmodels.Preptype.objects.create(
+            name='restricted type', isloanable=False, collection=self.other_collection,
+        )
+        self.allowed_prep.preptype = other_type
+        self.allowed_prep.save()
+        self.assert_list_ids([], preparations__preptype__name=other_type.name)
+        for field in ('preptype', 'preptype_id'):
+            with self.subTest(field=field):
+                self.assert_list_ids([], **{f'preparations__{field}': other_type.id})
+
+    def test_list_equivalent_paths_preserve_conflicting_filters(self):
+        other_type = spmodels.Preptype.objects.create(
+            name='another readable type', isloanable=False, collection=self.collection,
+        )
+        self.assert_list_ids(
+            [], preparations__preptype=other_type.id,
+            preparations__preptype_id=self.prep_type.id,
+        )
+
+    def test_list_without_relationship_queries_preserves_base_records(self):
+        self.assert_list_ids([
+            self.mixed_record, self.restricted_record, self.empty_record,
+        ])
+
+    def test_list_reverse_scalar_transforms_remain_valid(self):
+        self.assert_list_ids(
+            [self.mixed_record],
+            preparations__timestampcreated__year=self.allowed_prep.timestampcreated.year,
+            preparations__id=self.allowed_prep.id,
+        )
+
+    def test_list_reverse_filters_work_without_ordering(self):
+        self.assert_list_ids(
+            [self.mixed_record], preparations__remarks='allowed', orderby='',
+        )
+
+    def test_list_invalid_reverse_paths_remain_bad_requests(self):
+        for params in (
+            {'preparations__unknown': 'value'},
+            {'orderby': 'preparations__unknown'},
+        ):
+            with self.subTest(params=params):
+                response = self.get_list(**params)
+                self.assertEqual(response.status_code, 400)
+
+    def test_list_reverse_path_errors_keep_filter_and_order_error_types(self):
+        from specifyweb.specify.api.crud import get_collection
+        from specifyweb.specify.api.exceptions import FilterError, OrderByError
+        from specifyweb.specify.api.validators import GetCollectionForm
+
+        with self.assertRaises(FilterError):
+            get_collection(
+                self.collection, spmodels.Preparationattribute, lambda obj: None,
+                params={'preparations__unknown': 'value'}, actor=self.agent,
+            )
+        with self.assertRaises(OrderByError):
+            get_collection(
+                self.collection, spmodels.Preparationattribute, lambda obj: None,
+                control_params={
+                    **GetCollectionForm.defaults, 'orderby': 'preparations__unknown',
+                },
+                actor=self.agent,
+            )
+
+    def test_list_trusted_caller_without_actor_retains_existing_behavior(self):
+        from specifyweb.specify.api.crud import get_collection
+
+        payload = get_collection(
+            self.collection, spmodels.Preparationattribute, lambda obj: None,
+            params={'preparations__remarks': 'restricted'},
+        )
+        self.assertEqual(payload['meta']['total_count'], 1)
+        self.assertEqual(
+            [obj['id'] for obj in payload['objects']], [self.mixed_record.id],
+        )
+
+    def test_list_inline_restricted_children_still_fail_closed(self):
+        response = self.client.get('/api/specify/collectionobject/', {
+            'id': self.collectionobjects[0].id,
+            'preparations__remarks': 'allowed',
+        })
+        self.assertEqual(response.status_code, 403)
+
 class ForwardRelatedRowsApiTests(ScopedPermissionTestBase):
     def setUp(self):
         super().setUp()

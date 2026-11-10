@@ -12,6 +12,7 @@ from django.apps import apps
 from specifyweb.backend.permissions.permissions import (
     check_field_permissions, check_table_permissions,
     filter_forward_related_read_queryset, filter_scoped_read_queryset,
+    prepare_reverse_related_read_queryset,
 )
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 from specifyweb.backend.workbench.upload.auditlog import auditlog
@@ -526,17 +527,26 @@ def delete_resource(collection, agent, name, id, version) -> None:
     )
 
 def get_collection(logged_in_collection, model, checker: ReadPermChecker, control_params=GetCollectionForm.defaults, params={}, *, actor=None) -> CollectionPayload:
-    from specifyweb.specify.api.serializers import _obj_to_data
-    
-    """Return a list of structured data for the objects from 'model'
-    subject to the request 'params'."""
+    """Return model data filtered before counting and pagination.
 
-    objs = apply_filters(logged_in_collection, params, model, control_params)
+    Actor-aware requests share readable reverse joins between filters and
+    ordering. Trusted callers without an actor retain their existing behavior.
+    """
+    from specifyweb.specify.api.serializers import _obj_to_data
+
+    queryset = None
+    field_aliases = {}
+    order_fields = []
     if actor is not None:
-        objs = filter_scoped_read_queryset(objs, actor)
+        if isinstance(model, str):
+            model = get_model_or_404(model)
+        queryset = model.objects.all()
+        joins = {}
         filter_fields = [key for key in params if key not in control_params]
         try:
-            objs = filter_forward_related_read_queryset(objs, filter_fields, actor)
+            queryset, field_aliases = prepare_reverse_related_read_queryset(
+                queryset, filter_fields, actor, joins=joins,
+            )
         except FieldError as e:
             raise FilterError(e)
         if control_params['orderby']:
@@ -545,12 +555,36 @@ def get_collection(logged_in_collection, model, checker: ReadPermChecker, contro
                 for field in control_params['orderby'].split(',')
             ]
             try:
-                objs = filter_forward_related_read_queryset(objs, order_fields, actor)
+                queryset, order_aliases = prepare_reverse_related_read_queryset(
+                    queryset, order_fields, actor, joins=joins,
+                )
+                field_aliases.update(order_aliases)
             except FieldError as e:
                 raise OrderByError(e)
 
+    objs = apply_filters(
+        logged_in_collection, params, model, control_params,
+        queryset=queryset, field_aliases=field_aliases,
+    )
+    if actor is not None:
+        objs = filter_scoped_read_queryset(objs, actor)
+        try:
+            objs = filter_forward_related_read_queryset(objs, filter_fields, actor)
+        except FieldError as e:
+            raise FilterError(e)
+        try:
+            objs = filter_forward_related_read_queryset(objs, order_fields, actor)
+        except FieldError as e:
+            raise OrderByError(e)
+
     try:
-        return objs_to_data_(objs, objs.count(), lambda o: _obj_to_data(o, checker), control_params['offset'], control_params['limit'])
+        counted_objs = objs
+        if any(field_aliases[field] != field for field in order_fields):
+            # count() otherwise discards joins used only by ordering.
+            counted_objs = objs.values_list(
+                'pk', *(field_aliases[field] for field in order_fields),
+            )
+        return objs_to_data_(objs, counted_objs.count(), lambda o: _obj_to_data(o, checker), control_params['offset'], control_params['limit'])
     except FieldError as e:
         raise OrderByError(e)
     

@@ -510,7 +510,8 @@ def filter_forward_related_read_queryset(
     return queryset
 
 def prepare_reverse_related_read_queryset(
-    queryset: QuerySet, fields: Iterable[str], actor
+    queryset: QuerySet, fields: Iterable[str], actor, *,
+    joins: dict[str, str] | None = None,
 ) -> tuple[QuerySet, dict[str, str]]:
     """Build readable reverse FK joins and return replacement query paths.
 
@@ -518,8 +519,10 @@ def prepare_reverse_related_read_queryset(
     they refer to the same readable children. Authorization belongs in the
     join's ON clause to preserve parents with no readable children.
     Forward hops after a reverse join are restricted in the same way.
+    Reuse ``joins`` when preparing more paths on the returned queryset.
     """
-    joins: dict[str, str] = {}
+    if joins is None:
+        joins = {}
     replacements: dict[str, str] = {}
     for projection in fields:
         model = queryset.model
