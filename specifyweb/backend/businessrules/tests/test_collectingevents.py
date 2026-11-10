@@ -7,6 +7,7 @@ from specifyweb.specify import models
 from specifyweb.specify.api.crud import delete_resource, post_resource, update_obj
 from specifyweb.specify.api.serializers import uri_for_model
 from specifyweb.specify.tests.test_api import ApiTests
+from specifyweb.specify.utils.scoping import ScopeType
 
 class CollectingEventTests(ApiTests):
     def _add_attachment(self, collecting_event, filename, ordinal=0):
@@ -133,6 +134,7 @@ class CollectingEventTests(ApiTests):
             attachment.tableid, models.Collectingevent.specify_model.tableId
         )
         self.assertEqual(attachment.scopeid, self.discipline.id)
+        self.assertEqual(attachment.scopetype, ScopeType.DISCIPLINE.value)
 
     @patch('specifyweb.backend.attachment_gw.views.delete_attachment_file')
     def test_delete_attachment_from_collecting_event(self, delete_file):
