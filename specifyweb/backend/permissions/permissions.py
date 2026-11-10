@@ -16,6 +16,7 @@ from django.db.models import Model
 
 from specifyweb.specify.models import Agent
 from specifyweb.specify.datamodel import Table
+from specifyweb.specify.utils.scoping import Scoping
 from specifyweb.backend.cache.thread import ThreadCache
 
 from . import models
@@ -259,6 +260,21 @@ def query(
         )
     request = PermRequest(collectionid, userid, resource, action)
     return _permission_query_cache.get_or_set(request, get_query_result)
+
+def has_permission_in_scope(
+    scope: Model, userid: int, resource: str, action: str
+) -> bool:
+    """Require collection access and the action in one collection in the scope.
+
+    Grants in different collections cannot be combined. Shared scopes allow
+    access through any qualifying collection, using the existing policy rules.
+    """
+    collection_ids = Scoping.collections_for_scope(scope).values_list("id", flat=True)
+    return any(
+        query_pt(collectionid, userid, CollectionAccessPT.access).allowed
+        and query(collectionid, userid, resource, action).allowed
+        for collectionid in collection_ids
+    )
 
 @contextmanager
 def cache_permission_queries():
