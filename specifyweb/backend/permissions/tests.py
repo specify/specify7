@@ -7,7 +7,7 @@ from specifyweb.specify.tests.test_api import ApiTests
 from specifyweb.specify import models as spmodels
 from . import models, permissions, initialize
 
-class ScopedPermissionTests(ApiTests):
+class ScopedPermissionTestBase(ApiTests):
     resource = '/table/collectionobject'
 
     def setUp(self):
@@ -32,6 +32,7 @@ class ScopedPermissionTests(ApiTests):
         target = permissions.CollectionAccessPT.access
         self.grant(collection, target.resource(), target.action())
 
+class ScopedPermissionTests(ScopedPermissionTestBase):
     def test_denies_without_policies(self):
         self.assertFalse(permissions.has_permission_in_scope(
             self.collection, self.specifyuser.id, self.resource, 'read'
@@ -112,6 +113,100 @@ class ScopedPermissionTests(ApiTests):
         self.assertFalse(permissions.has_permission_in_scope(
             empty_division, self.specifyuser.id, self.resource, 'read'
         ))
+
+class ScopedReadApiTests(ScopedPermissionTestBase):
+    def setUp(self):
+        super().setUp()
+        self.grant_access(self.collection)
+        self.grant(self.collection, '/table/%', 'read')
+        self.client.force_login(self.specifyuser)
+        self.client.cookies['collection'] = str(self.collection.id)
+        self.other_record = spmodels.Collectionobject.objects.create(
+            collection=self.other_collection,
+            catalognumber='other-record',
+        )
+
+    def test_reads_authorized_record(self):
+        response = self.client.get(
+            f'/api/specify/collectionobject/{self.collectionobjects[0].id}/'
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_denies_read_in_restricted_collection(self):
+        response = self.client.get(
+            f'/api/specify/collectionobject/{self.other_record.id}/'
+        )
+        self.assertEqual(response.status_code, 403)
+        self.other_record.refresh_from_db()
+        self.assertEqual(self.other_record.collection_id, self.other_collection.id)
+        self.assertEqual(self.other_record.catalognumber, 'other-record')
+
+    def test_table_grant_without_collection_access_does_not_allow_read(self):
+        self.grant(self.other_collection, '/table/%', 'read')
+        response = self.client.get(
+            f'/api/specify/collectionobject/{self.other_record.id}/'
+        )
+        self.assertEqual(response.status_code, 403)
+
+    def test_collection_access_without_table_grant_does_not_allow_read(self):
+        self.grant_access(self.other_collection)
+        response = self.client.get(
+            f'/api/specify/collectionobject/{self.other_record.id}/'
+        )
+        self.assertEqual(response.status_code, 403)
+
+    def test_reads_other_collection_with_both_grants(self):
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/%', 'read')
+        response = self.client.get(
+            f'/api/specify/collectionobject/{self.other_record.id}/'
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_institution_admin_can_read_other_collection(self):
+        self.grant(None, '%', '%')
+        response = self.client.get(
+            f'/api/specify/collectionobject/{self.other_record.id}/'
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_reads_shared_division_record(self):
+        response = self.client.get(f'/api/specify/agent/{self.agent.id}/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_denies_record_from_other_division(self):
+        division = spmodels.Division.objects.create(
+            institution=self.institution, name='Restricted Division'
+        )
+        agent = spmodels.Agent.objects.create(agenttype=0, division=division)
+        response = self.client.get(f'/api/specify/agent/{agent.id}/')
+        self.assertEqual(response.status_code, 403)
+
+    def test_denies_nested_record_in_restricted_collection(self):
+        attribute = spmodels.Collectionobjectattribute.objects.create(
+            collectionmemberid=self.other_collection.id
+        )
+        record = self.collectionobjects[0]
+        record.collectionobjectattribute = attribute
+        record.save()
+
+        response = self.client.get(f'/api/specify/collectionobject/{record.id}/')
+        self.assertEqual(response.status_code, 403)
+        record.refresh_from_db()
+        attribute.refresh_from_db()
+        self.assertEqual(record.collectionobjectattribute_id, attribute.id)
+        self.assertEqual(attribute.collectionmemberid, self.other_collection.id)
+
+    def test_unfiltered_list_denies_restricted_records(self):
+        response = self.client.get('/api/specify/collectionobject/')
+        self.assertEqual(response.status_code, 403)
+
+    def test_non_instance_read_check_keeps_current_collection_behavior(self):
+        for obj in (spmodels.Collectionobject, spmodels.Collectionobject.specify_model):
+            with self.subTest(obj=obj):
+                permissions.check_table_permissions(
+                    self.collection, self.agent, obj, 'read'
+                )
 
 class PermissionsApiTest(ApiTests):
     def setUp(self):
