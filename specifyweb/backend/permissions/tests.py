@@ -1017,12 +1017,207 @@ class ReverseRelatedListApiTests(ScopedPermissionTestBase):
             [obj['id'] for obj in payload['objects']], [self.mixed_record.id],
         )
 
-    def test_list_inline_restricted_children_still_fail_closed(self):
+    def test_list_inline_restricted_children_are_excluded(self):
         response = self.client.get('/api/specify/collectionobject/', {
             'id': self.collectionobjects[0].id,
             'preparations__remarks': 'allowed',
         })
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload['meta']['total_count'], 1)
+        self.assertCountEqual(
+            [obj['id'] for obj in payload['objects'][0]['preparations']],
+            [self.allowed_prep.id, self.null_prep.id],
+        )
+
+class InlineRelatedReadApiTests(ScopedPermissionTestBase):
+    def setUp(self):
+        super().setUp()
+        self.grant_access(self.collection)
+        self.grant(self.collection, '/table/%', 'read')
+        self.client.force_login(self.specifyuser)
+        self.client.cookies['collection'] = str(self.collection.id)
+        self._create_prep_type()
+        self.parent, self.restricted_only_parent, self.empty_parent = self.collectionobjects[:3]
+        self.allowed_prep = self._create_prep(self.parent, None, remarks='allowed')
+        self.restricted_prep = self._create_prep(
+            self.parent, None, remarks='restricted',
+            collectionmemberid=self.other_collection.id,
+        )
+        self.restricted_only_prep = self._create_prep(
+            self.restricted_only_parent, None, collectionmemberid=self.other_collection.id,
+        )
+
+    def assert_inline_ids(self, expected):
+        response = self.client.get(f'/api/specify/collectionobject/{self.parent.id}/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['id'], self.parent.id)
+        self.assertCountEqual(
+            [obj['id'] for obj in response.json()['preparations']], expected,
+        )
+        response = self.client.get('/api/specify/collectionobject/', {'id': self.parent.id})
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload['meta']['total_count'], 1)
+        self.assertCountEqual(
+            [obj['id'] for obj in payload['objects'][0]['preparations']], expected,
+        )
+
+    def test_mixed_children_preserve_readable_parent_and_child(self):
+        self.assert_inline_ids([self.allowed_prep.id])
+
+    def test_related_table_read_without_access_does_not_expose_child(self):
+        self.grant(self.other_collection, '/table/preparation', 'read')
+        self.assert_inline_ids([self.allowed_prep.id])
+
+    def test_related_access_without_table_read_does_not_expose_child(self):
+        self.grant_access(self.other_collection)
+        self.assert_inline_ids([self.allowed_prep.id])
+
+    def test_qualifying_grants_include_previously_restricted_child(self):
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/preparation', 'read')
+        self.assert_inline_ids([self.allowed_prep.id, self.restricted_prep.id])
+
+    def test_global_grant_includes_all_children(self):
+        self.grant(None, '%', '%')
+        self.assert_inline_ids([self.allowed_prep.id, self.restricted_prep.id])
+
+    def test_missing_child_table_read_returns_empty_children(self):
+        initialize.wipe_permissions()
+        self.grant_access(self.collection)
+        self.grant(self.collection, '/table/collectionobject', 'read')
+        self.assert_inline_ids([])
+
+    def test_empty_and_restricted_only_parents_remain_visible(self):
+        response = self.client.get('/api/specify/collectionobject/', {
+            'id__in': f'{self.restricted_only_parent.id},{self.empty_parent.id}',
+            'orderby': 'id', 'limit': 1, 'offset': 1,
+        })
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload['meta']['total_count'], 2)
+        self.assertEqual(payload['objects'][0]['id'], self.empty_parent.id)
+        for parent in (self.restricted_only_parent, self.empty_parent):
+            response = self.client.get(f'/api/specify/collectionobject/{parent.id}/')
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.json()['preparations'], [])
+
+    def test_restricted_parent_is_still_denied(self):
+        self.parent.collectionmemberid = self.other_collection.id
+        self.parent.save()
+        response = self.client.get(f'/api/specify/collectionobject/{self.parent.id}/')
         self.assertEqual(response.status_code, 403)
+        response = self.client.get('/api/specify/collectionobject/', {'id': self.parent.id})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['objects'], [])
+        self.assertEqual(response.json()['meta']['total_count'], 0)
+
+    def test_nested_children_are_independently_filtered(self):
+        allowed = spmodels.Preparationproperty.objects.create(
+            preparation=self.allowed_prep, collectionmemberid=self.collection.id,
+        )
+        spmodels.Preparationproperty.objects.create(
+            preparation=self.allowed_prep, collectionmemberid=self.other_collection.id,
+        )
+        spmodels.Preparationproperty.objects.create(
+            preparation=self.restricted_prep, collectionmemberid=self.collection.id,
+        )
+        for path, params in (
+            (f'/api/specify/collectionobject/{self.parent.id}/', {}),
+            ('/api/specify/collectionobject/', {'id': self.parent.id}),
+        ):
+            with self.subTest(path=path):
+                response = self.client.get(path, params)
+                self.assertEqual(response.status_code, 200)
+                payload = response.json()
+                if 'objects' in payload:
+                    payload = payload['objects'][0]
+                self.assertEqual(len(payload['preparations']), 1)
+                self.assertEqual(
+                    [obj['id'] for obj in payload['preparations'][0]['preparationproperties']],
+                    [allowed.id],
+                )
+
+    def test_restricted_child_is_still_denied_when_requested_directly(self):
+        response = self.client.get(f'/api/specify/preparation/{self.restricted_prep.id}/')
+        self.assertEqual(response.status_code, 403)
+
+    def test_omitted_children_are_logged(self):
+        with self.assertLogs('specifyweb.specify.api.serializers', level='DEBUG') as logs:
+            response = self.client.get(f'/api/specify/collectionobject/{self.parent.id}/')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(any(
+            'omitting unreadable inline child' in message for message in logs.output
+        ))
+
+    def test_prefetched_children_apply_the_same_authorization(self):
+        from specifyweb.specify.api.serializers import _obj_to_data
+
+        obj = spmodels.Collectionobject.objects.prefetch_related('preparations').get(
+            pk=self.parent.id,
+        )
+        payload = _obj_to_data(obj, permissions.table_permissions_checker(
+            self.collection, self.agent, 'read',
+        ))
+        self.assertEqual(
+            [child['id'] for child in payload['preparations']], [self.allowed_prep.id],
+        )
+
+    def test_prefetched_nested_children_apply_the_same_authorization(self):
+        from specifyweb.specify.api.serializers import _obj_to_data
+
+        allowed = spmodels.Preparationproperty.objects.create(
+            preparation=self.allowed_prep, collectionmemberid=self.collection.id,
+        )
+        spmodels.Preparationproperty.objects.create(
+            preparation=self.allowed_prep, collectionmemberid=self.other_collection.id,
+        )
+        obj = spmodels.Collectionobject.objects.prefetch_related(
+            'preparations__preparationproperties',
+        ).get(pk=self.parent.id)
+        payload = _obj_to_data(obj, permissions.table_permissions_checker(
+            self.collection, self.agent, 'read',
+        ))
+        self.assertEqual(
+            [child['id'] for child in payload['preparations']], [self.allowed_prep.id],
+        )
+        self.assertEqual(
+            [child['id'] for child in payload['preparations'][0]['preparationproperties']],
+            [allowed.id],
+        )
+
+    def test_trusted_serialization_without_checker_retains_all_children(self):
+        from specifyweb.specify.api.serializers import obj_to_data
+
+        payload = obj_to_data(self.parent)
+        self.assertCountEqual(
+            [child['id'] for child in payload['preparations']],
+            [self.allowed_prep.id, self.restricted_prep.id],
+        )
+
+    def test_unexpected_checker_errors_are_not_suppressed(self):
+        from specifyweb.specify.api.serializers import _obj_to_data
+
+        def checker(obj):
+            if isinstance(obj, spmodels.Preparation):
+                raise ValueError('invalid record scope')
+
+        with self.assertRaisesRegex(ValueError, 'invalid record scope'):
+            _obj_to_data(self.parent, checker)
+
+    def test_denial_inside_child_serialization_is_not_suppressed(self):
+        from specifyweb.specify.api.serializers import _obj_to_data
+
+        attribute = spmodels.Preparationattribute.objects.create(
+            collectionmemberid=self.other_collection.id,
+        )
+        self.allowed_prep.preparationattribute = attribute
+        self.allowed_prep.save()
+        with self.assertRaises(permissions.NoMatchingRuleException):
+            _obj_to_data(self.parent, permissions.table_permissions_checker(
+                self.collection, self.agent, 'read',
+            ))
 
 class ForwardRelatedRowsApiTests(ScopedPermissionTestBase):
     def setUp(self):
