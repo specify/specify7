@@ -1,8 +1,10 @@
+from unittest.mock import patch
+
 from django.db.models import ProtectedError
 from django.utils import timezone
 
 from specifyweb.specify import models
-from specifyweb.specify.api.crud import post_resource, update_obj
+from specifyweb.specify.api.crud import delete_resource, post_resource, update_obj
 from specifyweb.specify.api.serializers import uri_for_model
 from specifyweb.specify.tests.test_api import ApiTests
 
@@ -131,6 +133,31 @@ class CollectingEventTests(ApiTests):
             attachment.tableid, models.Collectingevent.specify_model.tableId
         )
         self.assertEqual(attachment.scopeid, self.discipline.id)
+
+    @patch('specifyweb.backend.attachment_gw.views.delete_attachment_file')
+    def test_delete_attachment_from_collecting_event(self, delete_file):
+        collecting_event = models.Collectingevent.objects.create(
+            discipline=self.discipline
+        )
+        join = self._add_attachment(collecting_event, 'delete-me.jpg')
+        attachment_id = join.attachment_id
+
+        delete_resource(
+            self.collection,
+            self.agent,
+            'collectingeventattachment',
+            join.id,
+            join.version,
+        )
+
+        self.assertNotExists(
+            models.Collectingeventattachment.objects.filter(id=join.id)
+        )
+        self.assertNotExists(models.Attachment.objects.filter(id=attachment_id))
+        self.assertExists(
+            models.Collectingevent.objects.filter(id=collecting_event.id)
+        )
+        delete_file.assert_called_once_with('uploaded-delete-me.jpg')
 
     def test_collectionobjects_block_delete(self):
         ce = models.Collectingevent.objects.create(
