@@ -119,7 +119,8 @@ def post_resource(collection, agent, name: str, data, recordsetid: int | None=No
     agent - the agent associated with the specify user logged in.
     name - the model name of the resource to be created.
     data - a dict of the data for the resource to be created.
-    recordsetid - created resource will be added to the given recordset (optional)
+    recordsetid - optionally append to a readable, updatable recordset; the
+    relationship update and item creation are authorized in this transaction.
     """
     obj = create_obj(collection, agent, name, data)
 
@@ -127,9 +128,13 @@ def post_resource(collection, agent, name: str, data, recordsetid: int | None=No
         # add the resource to the record set
         Recordset = models.Recordset
         try:
-            recordset = Recordset.objects.get(id=recordsetid)
+            recordset = Recordset.objects.select_for_update().get(id=recordsetid)
         except Recordset.DoesNotExist as e:
             raise RecordSetException(e)
+
+        check_table_permissions(collection, agent, recordset, "read")
+        check_table_permissions(collection, agent, recordset, "update")
+        check_field_permissions(collection, agent, recordset, ["recordsetitems"], "update")
 
         if recordset.dbtableid != obj.specify_model.tableId:
             # the resource is not of the right kind to go in the recordset
@@ -137,7 +142,10 @@ def post_resource(collection, agent, name: str, data, recordsetid: int | None=No
                 "expected %s, got %s when adding object to recordset",
                 (get_model_by_table_id(recordset.dbtableid), obj.__class__))
 
-        recordset.recordsetitems.create(recordid=obj.id)
+        create_obj(
+            collection, agent, models.Recordsetitem,
+            {"recordset": recordset, "recordid": obj.id}, parent_obj=recordset,
+        )
     return obj
 
 def update_obj(collection, agent, name: str, id, version, data: dict[str, Any], parent_obj=None, parent_relationship=None):

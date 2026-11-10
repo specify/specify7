@@ -3954,6 +3954,163 @@ class ReverseInheritedScopeMutationApiTests(ScopedPermissionTestBase):
         }, before)
         event.refresh_from_db()
 
+class RecordsetAppendAuthorizationApiTests(ScopedPermissionTestBase):
+    def setUp(self):
+        super().setUp()
+        self.client.force_login(self.specifyuser)
+        self.client.cookies['collection'] = str(self.collection.id)
+        self.grant_access(self.collection)
+        for action in ('read', 'create'):
+            self.grant(self.collection, '/table/%', action)
+        self.recordset = self.make_recordset(self.collection)
+        self.restricted_recordset = self.make_recordset(self.other_collection)
+
+    def make_recordset(self, collection):
+        return spmodels.Recordset.objects.create(
+            collectionmemberid=collection.pk,
+            dbtableid=spmodels.Collectionobject.specify_model.tableId,
+            name='Append target', type=0, specifyuser=self.specifyuser,
+        )
+
+    def snapshot(self):
+        return {
+            model.__name__: list(model.objects.order_by('pk').values())
+            for model in (
+                spmodels.Collectionobject, spmodels.Recordset, spmodels.Recordsetitem,
+                spmodels.Spauditlog, spmodels.Spauditlogfield,
+            )
+        }
+
+    def post(self, recordset=None):
+        return self.client.post(
+            '/api/specify/collectionobject/'
+            + ('' if recordset is None else f'?recordsetid={recordset.pk}'),
+            data={
+                'collection': f'/api/specify/collection/{self.collection.pk}/',
+                'catalognumber': 'appended-object',
+            }, content_type='application/json',
+        )
+
+    def allow_update(self, collection):
+        self.grant(collection, '/table/recordset', 'update')
+        self.grant(collection, '/field/recordset/recordsetitems', 'update')
+
+    def assert_denied_unchanged(self, recordset):
+        before = self.snapshot()
+        response = self.post(recordset)
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(self.snapshot(), before)
+
+    def test_denies_restricted_recordset_and_rolls_back_created_record(self):
+        self.assert_denied_unchanged(self.restricted_recordset)
+
+    def test_collection_access_alone_does_not_authorize_append(self):
+        self.grant_access(self.other_collection)
+        self.assert_denied_unchanged(self.restricted_recordset)
+
+    def test_read_permission_does_not_authorize_append(self):
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/recordset', 'read')
+        self.assert_denied_unchanged(self.restricted_recordset)
+
+    def test_login_collection_update_does_not_authorize_restricted_target(self):
+        self.allow_update(self.collection)
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/recordset', 'read')
+        self.assert_denied_unchanged(self.restricted_recordset)
+
+    def test_target_update_without_access_does_not_authorize_append(self):
+        self.allow_update(self.other_collection)
+        self.grant(self.other_collection, '/table/recordset', 'read')
+        self.assert_denied_unchanged(self.restricted_recordset)
+
+    def test_append_requires_relationship_field_update(self):
+        self.grant(self.collection, '/table/recordset', 'update')
+        self.assert_denied_unchanged(self.recordset)
+
+    def test_append_requires_recordset_read_for_reference(self):
+        models.UserPolicy.objects.filter(resource='/table/%', action='read').delete()
+        for table in ('collectionobject', 'collection', 'agent'):
+            self.grant(self.collection, f'/table/{table}', 'read')
+        self.allow_update(self.collection)
+        self.assert_denied_unchanged(self.recordset)
+
+    def test_append_requires_recordsetitem_create(self):
+        models.UserPolicy.objects.filter(resource='/table/%', action='create').delete()
+        self.grant(self.collection, '/table/collectionobject', 'create')
+        self.allow_update(self.collection)
+        self.assert_denied_unchanged(self.recordset)
+
+    def test_authorized_append_creates_only_one_membership(self):
+        self.allow_update(self.collection)
+        response = self.post(self.recordset)
+        self.assertEqual(response.status_code, 201)
+        item = self.recordset.recordsetitems.get()
+        self.assertEqual(item.recordid, response.json()['id'])
+        self.assertTrue(spmodels.Collectionobject.objects.filter(pk=item.recordid).exists())
+
+    def test_authorized_cross_collection_append_uses_target_scope(self):
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/recordset', 'read')
+        self.allow_update(self.other_collection)
+        response = self.post(self.restricted_recordset)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(
+            self.restricted_recordset.recordsetitems.get().recordid, response.json()['id'],
+        )
+        self.assertFalse(self.recordset.recordsetitems.exists())
+
+    def test_institution_wide_grants_authorize_append(self):
+        self.grant(None, '%', '%')
+        response = self.post(self.restricted_recordset)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(
+            self.restricted_recordset.recordsetitems.get().recordid, response.json()['id'],
+        )
+
+    def test_created_membership_is_audited_against_target_recordset(self):
+        self.allow_update(self.collection)
+        response = self.post(self.recordset)
+        self.assertEqual(response.status_code, 201)
+        item = self.recordset.recordsetitems.get()
+        self.assertTrue(spmodels.Spauditlog.objects.filter(
+            tablenum=spmodels.Recordsetitem.specify_model.tableId, recordid=item.pk,
+            parenttablenum=spmodels.Recordset.specify_model.tableId,
+            parentrecordid=self.recordset.pk,
+        ).exists())
+
+    def test_record_type_mismatch_still_rolls_back_creation(self):
+        from specifyweb.specify.api.crud import post_resource
+        from specifyweb.specify.api.exceptions import RecordSetException
+
+        self.allow_update(self.collection)
+        self.recordset.dbtableid = spmodels.Agent.specify_model.tableId
+        self.recordset.save()
+        before = self.snapshot()
+        with self.assertRaises(RecordSetException):
+            post_resource(self.collection, self.agent, 'collectionobject', {
+                'collection': f'/api/specify/collection/{self.collection.pk}/',
+                'catalognumber': 'rollback-type-mismatch',
+            }, recordsetid=self.recordset.pk)
+        self.assertEqual(self.snapshot(), before)
+
+    def test_missing_recordset_still_rolls_back_creation(self):
+        from specifyweb.specify.api.crud import post_resource
+        from specifyweb.specify.api.exceptions import RecordSetException
+
+        before = self.snapshot()
+        with self.assertRaises(RecordSetException):
+            post_resource(self.collection, self.agent, 'collectionobject', {
+                'collection': f'/api/specify/collection/{self.collection.pk}/',
+                'catalognumber': 'rollback-missing-recordset',
+            }, recordsetid=self.restricted_recordset.pk + 1000000)
+        self.assertEqual(self.snapshot(), before)
+
+    def test_without_recordset_does_not_require_append_permissions(self):
+        response = self.post()
+        self.assertEqual(response.status_code, 201)
+        self.assertFalse(spmodels.Recordsetitem.objects.exists())
+
 class ForwardNestedScopeMutationApiTests(ScopedPermissionTestBase):
     def setUp(self):
         super().setUp()
