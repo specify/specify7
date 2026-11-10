@@ -7,6 +7,112 @@ from specifyweb.specify.tests.test_api import ApiTests
 from specifyweb.specify import models as spmodels
 from . import models, permissions, initialize
 
+class ScopedPermissionTests(ApiTests):
+    resource = '/table/collectionobject'
+
+    def setUp(self):
+        super().setUp()
+        initialize.wipe_permissions()
+        self.other_collection = spmodels.Collection.objects.create(
+            catalognumformatname='test',
+            collectionname='Other Collection',
+            isembeddedcollectingevent=False,
+            discipline=self.discipline,
+        )
+
+    def grant(self, collection, resource, action):
+        models.UserPolicy.objects.create(
+            collection=collection,
+            specifyuser=self.specifyuser,
+            resource=resource,
+            action=action,
+        )
+
+    def grant_access(self, collection):
+        target = permissions.CollectionAccessPT.access
+        self.grant(collection, target.resource(), target.action())
+
+    def test_denies_without_policies(self):
+        self.assertFalse(permissions.has_permission_in_scope(
+            self.collection, self.specifyuser.id, self.resource, 'read'
+        ))
+
+    def test_requires_collection_access(self):
+        self.grant(self.collection, self.resource, 'read')
+
+        self.assertFalse(permissions.has_permission_in_scope(
+            self.collection, self.specifyuser.id, self.resource, 'read'
+        ))
+
+    def test_requires_requested_action(self):
+        self.grant_access(self.collection)
+        self.grant(self.collection, self.resource, 'read')
+
+        self.assertTrue(permissions.has_permission_in_scope(
+            self.collection, self.specifyuser.id, self.resource, 'read'
+        ))
+        self.assertFalse(permissions.has_permission_in_scope(
+            self.collection, self.specifyuser.id, self.resource, 'update'
+        ))
+
+    def test_does_not_use_grants_outside_scope(self):
+        self.grant_access(self.collection)
+        self.grant(self.collection, self.resource, '%')
+
+        self.assertFalse(permissions.has_permission_in_scope(
+            self.other_collection, self.specifyuser.id, self.resource, 'read'
+        ))
+
+    def test_shared_scopes_allow_access_through_a_member_collection(self):
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, self.resource, '%')
+
+        for scope in (self.discipline, self.division, self.institution):
+            for action in ('read', 'create', 'update', 'delete'):
+                with self.subTest(scope=scope._meta.model_name, action=action):
+                    self.assertTrue(permissions.has_permission_in_scope(
+                        scope, self.specifyuser.id, self.resource, action
+                    ))
+
+    def test_does_not_combine_grants_from_different_collections(self):
+        self.grant_access(self.collection)
+        self.grant(self.other_collection, self.resource, 'read')
+
+        self.assertFalse(permissions.has_permission_in_scope(
+            self.discipline, self.specifyuser.id, self.resource, 'read'
+        ))
+
+    def test_role_policies_can_supply_access_and_action(self):
+        role = models.Role.objects.create(
+            collection=self.other_collection, name='Scoped role'
+        )
+        models.UserRole.objects.create(specifyuser=self.specifyuser, role=role)
+        models.RolePolicy.objects.create(role=role, resource='%', action='%')
+
+        self.assertTrue(permissions.has_permission_in_scope(
+            self.discipline, self.specifyuser.id, self.resource, 'update'
+        ))
+        self.assertFalse(permissions.has_permission_in_scope(
+            self.collection, self.specifyuser.id, self.resource, 'update'
+        ))
+
+    def test_institution_wide_policies_remain_valid(self):
+        self.grant(None, '%', '%')
+
+        self.assertTrue(permissions.has_permission_in_scope(
+            self.other_collection, self.specifyuser.id, self.resource, 'delete'
+        ))
+
+    def test_scope_without_collections_does_not_grant_access(self):
+        self.grant(None, '%', '%')
+        empty_division = spmodels.Division.objects.create(
+            institution=self.institution, name='Empty Division'
+        )
+
+        self.assertFalse(permissions.has_permission_in_scope(
+            empty_division, self.specifyuser.id, self.resource, 'read'
+        ))
+
 class PermissionsApiTest(ApiTests):
     def setUp(self):
         super().setUp()
