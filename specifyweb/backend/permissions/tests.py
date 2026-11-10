@@ -3954,6 +3954,281 @@ class ReverseInheritedScopeMutationApiTests(ScopedPermissionTestBase):
         }, before)
         event.refresh_from_db()
 
+class BatchEditWriteAuthorizationTests(ScopedPermissionTestBase):
+    def setUp(self):
+        super().setUp()
+        self.grant_access(self.collection)
+        self.grant(self.collection, '/table/%', '%')
+        self.grant(self.collection, '/field/%', 'update')
+        self.obj = self.collectionobjects[0]
+
+    def snapshot(self):
+        return {
+            model.__name__: list(model.objects.order_by('pk').values())
+            for model in (
+                spmodels.Collectionobject, spmodels.Collectionobjectattribute,
+                spmodels.Fieldnotebook, spmodels.Fieldnotebookpageset, spmodels.Fieldnotebookpage,
+                spmodels.Spauditlog, spmodels.Spauditlogfield,
+            )
+        }
+
+    def upload(self, objects=None, *, no_commit=False, allow_partial=True, rows=None):
+        from specifyweb.backend.workbench.upload.upload import do_upload
+        from specifyweb.backend.workbench.upload.upload_plan_schema import parse_plan
+        plan = parse_plan({
+            'baseTableName': 'collectionobject', 'uploadable': {'uploadTable': {
+                'wbcols': {'remarks': 'Remarks', **({'text1': 'Text'} if rows is not None else {})},
+                'static': {}, 'toOne': {}, 'toMany': {},
+            }},
+        })
+        objects = [self.obj] if objects is None else objects
+        return do_upload(
+            self.collection, [{'Remarks': 'changed'} for obj in objects] if rows is None else rows,
+            plan, self.agent.pk, no_commit=no_commit, allow_partial=allow_partial,
+            batch_edit_packs=[{'self': {
+                'id': obj.pk, 'version': obj.version, 'ordernumber': None,
+            }} for obj in objects],
+        )
+
+    def bound_update(self, obj, changes):
+        from specifyweb.backend.workbench.upload.auditor import Auditor, DEFAULT_AUDITOR_PROPS
+        from specifyweb.backend.workbench.upload.auditlog import auditlog
+        from specifyweb.backend.workbench.upload.upload_table import BoundUpdateTable
+        from specifyweb.specify.utils.field_change_info import FieldChangeInfo
+        from django.db import transaction
+
+        bound = BoundUpdateTable(
+            name=obj.__class__.__name__, static={}, parsedFields=[], toOne={}, toMany={},
+            preserveIdentity=True, scopingAttrs={}, disambiguation=None,
+            uploadingAgentId=self.agent.pk,
+            auditor=Auditor(self.collection, DEFAULT_AUDITOR_PROPS, auditlog, agent=self.agent),
+            cache={}, to_one_fields={}, match_payload=None, strong_ignore=[],
+        )
+        dirty = [FieldChangeInfo(
+            field_name=name,
+            old_value=getattr(obj, name), new_value=value,
+        ) for name, value in changes.items()]
+        with transaction.atomic():
+            return bound._do_update(obj, dirty, **changes)
+
+    def assert_denied_unchanged(self, operation):
+        before = self.snapshot()
+        with self.assertRaises(permissions.NoMatchingRuleException):
+            operation()
+        self.assertEqual(self.snapshot(), before)
+
+    def test_commit_requires_field_permission(self):
+        models.UserPolicy.objects.filter(resource='/field/%').delete()
+        self.assert_denied_unchanged(self.upload)
+
+    def test_unrelated_field_permission_does_not_authorize_commit(self):
+        models.UserPolicy.objects.filter(resource='/field/%').delete()
+        self.grant(self.collection, '/field/collectionobject/text1', 'update')
+        self.assert_denied_unchanged(self.upload)
+
+    def test_commit_requires_table_update(self):
+        models.UserPolicy.objects.filter(resource='/table/%').delete()
+        self.grant(self.collection, '/table/%', 'read')
+        self.assert_denied_unchanged(self.upload)
+
+    def test_revoked_field_permission_is_rechecked_at_commit(self):
+        self.upload()
+        self.obj.refresh_from_db()
+        self.obj.remarks = 'reset'
+        self.obj.save()
+        models.UserPolicy.objects.filter(resource='/field/%').delete()
+        self.assert_denied_unchanged(self.upload)
+
+    def test_mixed_rows_permission_denial_rolls_back_first_update(self):
+        self.assert_mixed_field_denial(allow_partial=True)
+
+    def test_mixed_rows_without_partial_also_roll_back(self):
+        self.assert_mixed_field_denial(allow_partial=False)
+
+    def assert_mixed_field_denial(self, *, allow_partial):
+        second = spmodels.Collectionobject.objects.create(
+            collection=self.collection, catalognumber='second-batch-write', remarks='keep',
+        )
+        self.obj.text1 = 'keep'
+        self.obj.save()
+        models.UserPolicy.objects.filter(resource='/field/%').delete()
+        self.grant(self.collection, '/field/collectionobject/remarks', 'update')
+        self.assert_denied_unchanged(lambda: self.upload(
+            [self.obj, second], allow_partial=allow_partial,
+            rows=[{'Remarks': 'changed', 'Text': 'keep'},
+                  {'Remarks': 'keep', 'Text': 'changed'}],
+        ))
+
+    def test_authorized_commit_updates_and_audits(self):
+        from specifyweb.backend.workbench.upload.upload_result import Updated
+        results = self.upload()
+        self.assertIsInstance(results[0].record_result, Updated)
+        self.obj.refresh_from_db()
+        self.assertEqual(self.obj.remarks, 'changed')
+        self.assertTrue(spmodels.Spauditlog.objects.filter(
+            tablenum=self.obj.specify_model.tableId, recordid=self.obj.pk,
+        ).exists())
+
+    def test_validation_preserves_existing_write_permission_skip(self):
+        models.UserPolicy.objects.filter(resource='/field/%').delete()
+        before = self.snapshot()
+        self.upload(no_commit=True)
+        self.assertEqual(self.snapshot(), before)
+
+    def test_unchanged_record_requires_current_read_permission(self):
+        self.obj.remarks = 'changed'
+        self.obj.save()
+        models.UserPolicy.objects.filter(resource='/table/%').delete()
+        self.grant(self.collection, '/table/%', 'update')
+        self.assert_denied_unchanged(self.upload)
+
+    def upload_nested(self):
+        from specifyweb.backend.workbench.upload.upload import do_upload
+        from specifyweb.backend.workbench.upload.upload_plan_schema import parse_plan
+        attribute = self.obj.collectionobjectattribute
+        plan = parse_plan({
+            'baseTableName': 'collectionobject', 'uploadable': {'uploadTable': {
+                'wbcols': {'remarks': 'Remarks'}, 'static': {}, 'toMany': {},
+                'toOne': {'collectionobjectattribute': {'uploadTable': {
+                    'wbcols': {'number1': 'Number'}, 'static': {}, 'toOne': {}, 'toMany': {},
+                }}},
+            }},
+        })
+        return do_upload(
+            self.collection, [{'Remarks': 'changed', 'Number': '123'}], plan, self.agent.pk,
+            batch_edit_packs=[{
+                'self': {'id': self.obj.pk, 'version': self.obj.version, 'ordernumber': None},
+                'to_one': {'collectionobjectattribute': {'self': {
+                    'id': attribute.pk, 'version': attribute.version, 'ordernumber': None,
+                }}},
+            }],
+        )
+
+    def setup_nested_attribute(self):
+        attribute = spmodels.Collectionobjectattribute.objects.create(
+            collectionmemberid=self.collection.pk,
+        )
+        self.obj.collectionobjectattribute = attribute
+        self.obj.save()
+        return attribute
+
+    def test_nested_update_requires_source_relationship_permission(self):
+        self.setup_nested_attribute()
+        models.UserPolicy.objects.filter(resource='/field/%').delete()
+        self.grant(self.collection, '/field/collectionobject/remarks', 'update')
+        self.grant(self.collection, '/field/collectionobjectattribute/%', 'update')
+        self.assert_denied_unchanged(self.upload_nested)
+
+    def test_nested_writes_roll_back_on_later_scalar_field_denial(self):
+        self.setup_nested_attribute()
+        models.UserPolicy.objects.filter(resource='/field/%').delete()
+        self.grant(self.collection, '/field/collectionobject/collectionobjectattribute', 'update')
+        self.grant(self.collection, '/field/collectionobjectattribute/%', 'update')
+        self.assert_denied_unchanged(self.upload_nested)
+
+    def test_authorized_nested_update_is_preserved(self):
+        attribute = self.setup_nested_attribute()
+        self.upload_nested()
+        attribute.refresh_from_db()
+        self.assertEqual(attribute.number1, 123)
+
+    def test_resulting_scope_requires_table_update(self):
+        self.assert_denied_unchanged(lambda: self.bound_update(
+            self.obj, {'collectionmemberid': self.other_collection.pk},
+        ))
+
+    def test_resulting_scope_requires_field_update(self):
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/%', '%')
+        self.assert_denied_unchanged(lambda: self.bound_update(
+            self.obj, {'collectionmemberid': self.other_collection.pk},
+        ))
+
+    def test_allowed_scope_transition_updates_membership(self):
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/%', '%')
+        self.grant(self.other_collection, '/field/%', 'update')
+        self.bound_update(self.obj, {'collectionmemberid': self.other_collection.pk})
+        self.obj.refresh_from_db()
+        self.assertEqual(permissions.Scoping.scope_for_record(self.obj), self.other_collection)
+
+    def test_changed_fk_requires_target_read(self):
+        attribute = spmodels.Collectionobjectattribute.objects.create(
+            collectionmemberid=self.other_collection.pk,
+        )
+        self.assert_denied_unchanged(lambda: self.bound_update(
+            self.obj, {'collectionobjectattribute_id': attribute.pk},
+        ))
+
+    def test_fk_read_does_not_require_target_update(self):
+        attribute = spmodels.Collectionobjectattribute.objects.create(
+            collectionmemberid=self.other_collection.pk,
+        )
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/collectionobjectattribute', 'read')
+        self.bound_update(self.obj, {'collectionobjectattribute_id': attribute.pk})
+        self.obj.refresh_from_db()
+        self.assertEqual(self.obj.collectionobjectattribute_id, attribute.pk)
+
+    def test_fk_attname_uses_relationship_field_permission(self):
+        attribute = spmodels.Collectionobjectattribute.objects.create(
+            collectionmemberid=self.collection.pk,
+        )
+        models.UserPolicy.objects.filter(resource='/field/%').delete()
+        self.grant(self.collection, '/field/collectionobject/collectionobjectattribute', 'update')
+        self.bound_update(self.obj, {'collectionobjectattribute_id': attribute.pk})
+        self.obj.refresh_from_db()
+        self.assertEqual(self.obj.collectionobjectattribute_id, attribute.pk)
+
+    def notebook_scope_change(self, *, original_children=True, destination_children=True):
+        destination = spmodels.Discipline.objects.create(
+            division=self.division, datatype=self.datatype,
+            geographytreedef=self.geographytreedef,
+            geologictimeperiodtreedef=self.geologictimeperiodtreedef,
+        )
+        self.other_collection.discipline = destination
+        self.other_collection.save()
+        notebook = spmodels.Fieldnotebook.objects.create(
+            discipline=self.discipline, collection=self.collection, owneragent=self.agent,
+        )
+        pageset = spmodels.Fieldnotebookpageset.objects.create(
+            fieldnotebook=notebook, discipline=self.discipline,
+        )
+        page = spmodels.Fieldnotebookpage.objects.create(
+            pageset=pageset, discipline=self.discipline,
+        )
+        models.UserPolicy.objects.filter(resource='/table/%').delete()
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/field/%', 'update')
+        for collection, children in (
+            (self.collection, original_children), (self.other_collection, destination_children),
+        ):
+            self.grant(collection, '/table/fieldnotebook', 'update')
+            self.grant(collection, '/table/discipline', 'read')
+            if children:
+                self.grant(collection, '/table/fieldnotebookpageset', 'update')
+                self.grant(collection, '/table/fieldnotebookpage', 'update')
+        return notebook, page, destination
+
+    def test_inherited_descendant_requires_original_scope_update(self):
+        notebook, _, destination = self.notebook_scope_change(original_children=False)
+        self.assert_denied_unchanged(lambda: self.bound_update(
+            notebook, {'discipline_id': destination.pk},
+        ))
+
+    def test_inherited_descendant_requires_destination_scope_update(self):
+        notebook, _, destination = self.notebook_scope_change(destination_children=False)
+        self.assert_denied_unchanged(lambda: self.bound_update(
+            notebook, {'discipline_id': destination.pk},
+        ))
+
+    def test_authorized_inherited_scope_change_is_preserved(self):
+        notebook, page, destination = self.notebook_scope_change()
+        self.bound_update(notebook, {'discipline_id': destination.pk})
+        page.refresh_from_db()
+        self.assertEqual(permissions.Scoping.scope_for_record(page), destination)
+
+
 class BatchEditPreparationAuthorizationApiTests(ScopedPermissionTestBase):
     def setUp(self):
         super().setUp()

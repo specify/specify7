@@ -1,11 +1,14 @@
 from decimal import Decimal
+from contextlib import nullcontext
 import logging
 from typing import Any, NamedTuple, Literal, Union, Callable
 
 from django.db import transaction, IntegrityError
 
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
+from specifyweb.backend.permissions.permissions import check_field_permissions, check_table_permissions
 from specifyweb.specify import models
+from specifyweb.specify.models_utils.relationships import authorize_dependent_scope_update
 from specifyweb.specify.models_utils.model_extras import ModelWithTable
 from specifyweb.specify.utils.func import Func
 from specifyweb.specify.utils.field_change_info import FieldChangeInfo
@@ -983,6 +986,20 @@ class BoundUpdateTable(BoundUploadTable):
         if current_id == NULL_RECORD:
             return UploadResult(NoChange(current_id, info), {}, {})
 
+        reference_record = self._get_reference()
+        if self.auditor.agent is not None:
+            check_table_permissions(
+                self.auditor.collection, self.auditor.agent, reference_record, "read",
+            )
+            if not self.auditor.skip_create_permission_check and (self.toOne or self.toMany):
+                check_table_permissions(
+                    self.auditor.collection, self.auditor.agent, reference_record, "update",
+                )
+                check_field_permissions(
+                    self.auditor.collection, self.auditor.agent, reference_record,
+                    [*self.toOne, *self.toMany], "update",
+                )
+
         return super()._handle_row(skip_match=True, allow_null=allow_null)
 
     def _process_to_ones(self) -> dict[str, UploadResult]:
@@ -1139,15 +1156,39 @@ class BoundUpdateTable(BoundUploadTable):
         return False
 
     def _do_update(self, reference_obj, dirty_fields, **attrs):
-        # TODO: Try handling parent_obj. Quite complicated and ugly.
-        self.auditor.update(reference_obj, None, dirty_fields)
-        for key, value in attrs.items():
-            setattr(reference_obj, key, value)
-        if hasattr(reference_obj, "version"):
-            # Consider using bump_version here.
-            # I'm not doing it for performance reasons -- we already checked our version at this point, and have a lock, so can just increment the version.
-            setattr(reference_obj, "version", getattr(reference_obj, "version") + 1)
-        reference_obj.save()
+        """Authorize actual changed fields, FK targets, and both record scopes."""
+        collection, agent = self.auditor.collection, self.auditor.agent
+        enforce_permissions = agent is not None and not self.auditor.skip_create_permission_check
+        fields = [
+            reference_obj._meta.get_field(change["field_name"]).name
+            for change in dirty_fields
+        ]
+        updated_fields = list(dict.fromkeys([*fields, *self.toOne, *self.toMany]))
+        if enforce_permissions:
+            check_table_permissions(collection, agent, reference_obj, "update")
+            check_field_permissions(collection, agent, reference_obj, updated_fields, "update")
+        authorization = (
+            authorize_dependent_scope_update(collection, agent, reference_obj)
+            if enforce_permissions else nullcontext()
+        )
+        with authorization:
+            for key, value in attrs.items():
+                setattr(reference_obj, key, value)
+            if enforce_permissions:
+                check_table_permissions(collection, agent, reference_obj, "update")
+                check_field_permissions(collection, agent, reference_obj, updated_fields, "update")
+                for name in fields:
+                    field = reference_obj._meta.get_field(name)
+                    if field.concrete and (field.many_to_one or field.one_to_one):
+                        related = getattr(reference_obj, field.name)
+                        if related is not None:
+                            check_table_permissions(collection, agent, related, "read")
+            # TODO: Try handling parent_obj. Quite complicated and ugly.
+            self.auditor.update(reference_obj, None, dirty_fields)
+            if hasattr(reference_obj, "version"):
+                # The reference was already version-checked and locked.
+                setattr(reference_obj, "version", getattr(reference_obj, "version") + 1)
+            reference_obj.save()
         return reference_obj
 
     def _do_insert(self):
