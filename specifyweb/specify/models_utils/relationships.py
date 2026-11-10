@@ -101,6 +101,8 @@ def handle_fk_fields(collection, agent, obj, data: dict[str, Any]) -> tuple[list
     from specifyweb.specify.api.crud import update_or_create_resource
     """Where 'obj' is a Django model instance and 'data' is a dict,
     set foreign key fields in the object from the provided data.
+
+    URI references require read permission in the target record's scope.
     """
 
     # This function looks at arbitrary related objects so it needs to be able to check read permissions
@@ -165,6 +167,7 @@ def _handle_fk_field(collection, agent, obj, field, value, read_checker):
         assert not dependent, f"didn't get inline data for dependent field {field_name} in {obj}: {value!r}"
         fk_model, fk_id = strict_uri_to_model(value, field.related_model.__name__)
         rel_obj = get_object_or_404(fk_model, id=fk_id)
+        read_checker(rel_obj)
         setattr(obj, field_name, rel_obj)
         new_related_id = fk_id
 

@@ -3269,6 +3269,219 @@ class ScopedDeleteApiTests(ScopedPermissionTestBase):
             spmodels.Collectionobjectattribute.objects.filter(pk=attribute.id).exists()
         )
 
+class ForeignKeyReferenceWriteApiTests(ScopedPermissionTestBase):
+    def setUp(self):
+        super().setUp()
+        self.grant_access(self.collection)
+        for action in ('read', 'create', 'update'):
+            self.grant(self.collection, '/table/%', action)
+        self.grant(self.collection, '/field/%', 'update')
+        self.client.force_login(self.specifyuser)
+        self.client.cookies['collection'] = str(self.collection.id)
+        self.other_discipline = spmodels.Discipline.objects.create(
+            division=self.division, datatype=self.datatype,
+            geographytreedef=self.geographytreedef,
+            geologictimeperiodtreedef=self.geologictimeperiodtreedef,
+        )
+        self.other_collection.discipline = self.other_discipline
+        self.other_collection.save()
+        self.restricted_event = spmodels.Collectingevent.objects.create(
+            discipline=self.other_discipline, remarks='restricted event',
+        )
+        self.record = self.collectionobjects[0]
+        self.record.collectingevent = self.collectingevent
+        self.record.save()
+
+    def write_reference(self, operation, event, **changes):
+        uri = None if event is None else f'/api/specify/collectingevent/{event.id}/'
+        if operation == 'create':
+            return self.client.post(
+                '/api/specify/collectionobject/',
+                data={
+                    'collection': f'/api/specify/collection/{self.collection.id}/',
+                    'catalognumber': 'reference-test',
+                    **changes, 'collectingevent': uri,
+                },
+                content_type='application/json',
+            )
+        return self.client.put(
+            f'/api/specify/collectionobject/{self.record.id}/',
+            data={'version': self.record.version, **changes, 'collectingevent': uri},
+            content_type='application/json',
+        )
+
+    def snapshot(self):
+        return {
+            model.__name__: list(model.objects.order_by('pk').values())
+            for model in (
+                spmodels.Collectionobject, spmodels.Collectionobjectattribute,
+                spmodels.Collectingevent, spmodels.Spauditlog, spmodels.Spauditlogfield,
+            )
+        }
+
+    def assert_reference_denied(self):
+        for operation in ('create', 'update'):
+            with self.subTest(operation=operation):
+                before = self.snapshot()
+                response = self.write_reference(
+                    operation, self.restricted_event, text1='must not persist',
+                )
+                self.assertEqual(response.status_code, 403)
+                self.assertEqual(self.snapshot(), before)
+
+    def assert_reference_allowed(self, event):
+        for operation, status in (('create', 201), ('update', 200)):
+            with self.subTest(operation=operation):
+                event_before = spmodels.Collectingevent.objects.values().get(pk=event.id)
+                response = self.write_reference(operation, event)
+                self.assertEqual(response.status_code, status)
+                obj = spmodels.Collectionobject.objects.get(pk=response.json()['id'])
+                self.assertEqual(obj.collectingevent_id, event.id)
+                self.assertEqual(
+                    spmodels.Collectingevent.objects.values().get(pk=event.id), event_before,
+                )
+
+    def test_denies_restricted_uri_before_create_or_update_persists(self):
+        self.assert_reference_denied()
+
+    def test_target_read_without_access_is_not_sufficient(self):
+        self.grant(self.other_collection, '/table/collectingevent', 'read')
+        self.assert_reference_denied()
+
+    def test_target_access_without_read_is_not_sufficient(self):
+        self.grant_access(self.other_collection)
+        self.assert_reference_denied()
+
+    def test_target_write_does_not_replace_read(self):
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/collectingevent', 'update')
+        self.assert_reference_denied()
+
+    def test_target_read_and_access_allow_link_without_target_write(self):
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/collectingevent', 'read')
+        self.assert_reference_allowed(self.restricted_event)
+
+    def test_readable_shared_discipline_target_remains_linkable(self):
+        self.assert_reference_allowed(self.collectingevent)
+
+    def test_global_grant_allows_reference(self):
+        self.grant(None, '%', '%')
+        self.assert_reference_allowed(self.restricted_event)
+
+    def test_readable_target_does_not_replace_source_update_permission(self):
+        models.UserPolicy.objects.filter(action='update').delete()
+        before = self.snapshot()
+        response = self.write_reference('update', self.collectingevent, text1='denied')
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(self.snapshot(), before)
+
+    def test_readable_target_does_not_replace_source_create_permission(self):
+        models.UserPolicy.objects.filter(action='create').delete()
+        before = self.snapshot()
+        response = self.write_reference('create', self.collectingevent)
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(self.snapshot(), before)
+
+    def test_denied_reference_rolls_back_earlier_nested_writes(self):
+        for operation in ('create', 'update'):
+            with self.subTest(operation=operation):
+                before = self.snapshot()
+                response = self.write_reference(
+                    operation, self.restricted_event,
+                    collectionobjectattribute={'text1': 'must roll back'},
+                )
+                self.assertEqual(response.status_code, 403)
+                self.assertEqual(self.snapshot(), before)
+
+    def test_denied_reference_rolls_back_earlier_nested_update(self):
+        attribute = spmodels.Collectionobjectattribute.objects.create(
+            collectionmemberid=self.collection.id, text1='original',
+        )
+        self.record.collectionobjectattribute = attribute
+        self.record.save()
+        before = self.snapshot()
+        response = self.write_reference(
+            'update', self.restricted_event,
+            collectionobjectattribute={
+                'id': attribute.id, 'version': attribute.version, 'text1': 'must roll back',
+            },
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(self.snapshot(), before)
+
+    def test_fk_aliases_and_case_insensitive_names_require_target_read(self):
+        for field in ('collectingevent_id', 'CollectingEvent'):
+            for operation in ('create', 'update'):
+                with self.subTest(field=field, operation=operation):
+                    data = {field: f'/api/specify/collectingevent/{self.restricted_event.id}/'}
+                    if operation == 'create':
+                        response = self.client.post(
+                            '/api/specify/collectionobject/',
+                            data={
+                                'collection': f'/api/specify/collection/{self.collection.id}/',
+                                'catalognumber': 'alias-test', **data,
+                            },
+                            content_type='application/json',
+                        )
+                    else:
+                        response = self.client.put(
+                            f'/api/specify/collectionobject/{self.record.id}/',
+                            data={'version': self.record.version, **data},
+                            content_type='application/json',
+                        )
+                    self.assertEqual(response.status_code, 403)
+                    self.record.refresh_from_db()
+                    self.assertEqual(self.record.collectingevent_id, self.collectingevent.id)
+                    self.assertFalse(spmodels.Collectionobject.objects.filter(
+                        catalognumber='alias-test',
+                    ).exists())
+
+    def test_readable_target_does_not_replace_source_field_permission(self):
+        models.UserPolicy.objects.filter(resource='/field/%').delete()
+        before = self.snapshot()
+        response = self.write_reference('update', self.collectingevent, text1='denied')
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(self.snapshot(), before)
+
+    def test_repeated_restricted_uri_is_not_exempt_from_authorization(self):
+        self.record.collectingevent = self.restricted_event
+        self.record.save()
+        before = self.snapshot()
+        response = self.write_reference('update', self.restricted_event)
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(self.snapshot(), before)
+
+    def test_missing_target_does_not_persist_other_changes(self):
+        missing = spmodels.Collectingevent(id=2147483647)
+        for operation in ('create', 'update'):
+            with self.subTest(operation=operation):
+                before = self.snapshot()
+                response = self.write_reference(operation, missing, text1='denied')
+                self.assertEqual(response.status_code, 404)
+                self.assertEqual(self.snapshot(), before)
+
+    def test_null_reference_still_clears_link(self):
+        response = self.write_reference('update', None)
+        self.assertEqual(response.status_code, 200)
+        self.record.refresh_from_db()
+        self.assertIsNone(self.record.collectingevent_id)
+
+    def test_existing_restricted_reference_can_be_cleared(self):
+        self.record.collectingevent = self.restricted_event
+        self.record.save()
+        event_before = spmodels.Collectingevent.objects.values().get(
+            pk=self.restricted_event.id,
+        )
+        response = self.write_reference('update', None)
+        self.assertEqual(response.status_code, 200)
+        self.record.refresh_from_db()
+        self.assertIsNone(self.record.collectingevent_id)
+        self.assertEqual(
+            spmodels.Collectingevent.objects.values().get(pk=self.restricted_event.id),
+            event_before,
+        )
+
 class ScopedUpdateApiTests(ScopedPermissionTestBase):
     def setUp(self):
         super().setUp()
