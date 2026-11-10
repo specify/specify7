@@ -5,13 +5,12 @@ from django.test import Client
 from specifyweb.backend.notifications.models import Message
 from specifyweb.backend.permissions.models import UserPolicy
 from specifyweb.backend.workbench.models import Spdataset
-from specifyweb.specify.models import Agent, Collectionobject, Recordset, Specifyuser, Collectingevent, Spauditlogfield
+from specifyweb.specify.models import Agent, Collectionobject, Recordset, Specifyuser, Spauditlogfield
 from specifyweb.specify.tests.test_api import ApiTests
 from .upload import upload as uploader
 from .upload.upload_table import UploadTable
 from .upload.upload_plan_schema import parse_column_options
 from .upload.upload_result import UploadResult
-from specifyweb.specify.models_utils.models_by_table_id import get_table_id_by_model_name
 from specifyweb.specify.api.crud import create_obj
 
 
@@ -392,7 +391,7 @@ class AuditLogTests(ApiTests):
         ]
 
         batch_edit_packs=[
-                {"self": {"id": collection_object.id, "version":collection_object.version}}
+                {"self": {"id": collection_object.id, "version":int(collection_object.version), "ordernumber":None}}
         ]
 
         upload_results=uploader.do_upload(self.collection, data, plan, self.agent.id, batch_edit_packs=batch_edit_packs)
