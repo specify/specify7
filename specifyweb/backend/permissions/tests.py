@@ -1045,6 +1045,130 @@ class StorageTreeFallbackReadTests(ScopedPermissionTestBase):
         with self.assertRaises(spmodels.Institution.MultipleObjectsReturned):
             self.filtered_storage()
 
+class LoanGiftReadApiTests(ScopedPermissionTestBase):
+    def setUp(self):
+        super().setUp()
+        self.grant_access(self.collection)
+        self.grant(self.collection, '/table/%', 'read')
+        self.client.force_login(self.specifyuser)
+        self.client.cookies['collection'] = str(self.collection.id)
+        self.other_division = spmodels.Division.objects.create(
+            institution=self.institution, name='Other Division',
+        )
+        self.other_discipline = spmodels.Discipline.objects.create(
+            division=self.other_division, datatype=self.datatype,
+            geographytreedef=self.geographytreedef,
+            geologictimeperiodtreedef=self.geologictimeperiodtreedef,
+        )
+        self.other_collection.discipline = self.other_discipline
+        self.other_collection.save()
+        self.records = []
+        for model, number_field in (
+            (spmodels.Loan, 'loannumber'), (spmodels.Gift, 'giftnumber'),
+        ):
+            allowed = model.objects.create(
+                discipline=self.discipline, division=self.other_division,
+                **{number_field: 'allowed'},
+            )
+            restricted = model.objects.create(
+                discipline=self.other_discipline, division=self.division,
+                **{number_field: 'restricted'},
+            )
+            self.records.append((model._meta.model_name, allowed, restricted))
+
+    def assert_visible_records(self, include_other=False, restricted_only=False, **params):
+        for table, allowed, restricted in self.records:
+            for prefix in ('/api/specify', '/table_rows/specify_rows'):
+                with self.subTest(table=table, prefix=prefix):
+                    query = {'limit': 0, 'orderby': '-id', **params}
+                    if prefix == '/table_rows/specify_rows':
+                        query['fields'] = 'id'
+                    if restricted_only:
+                        query['id'] = restricted.id
+                    response = self.client.get(f'{prefix}/{table}/', query)
+                    self.assertEqual(response.status_code, 200)
+                    expected = [allowed.id]
+                    if include_other:
+                        expected.append(restricted.id)
+                    if restricted_only:
+                        expected = [restricted.id] if include_other else []
+                    payload = response.json()
+                    if isinstance(payload, dict):
+                        self.assertEqual(payload['meta']['total_count'], len(expected))
+                        ids = [obj['id'] for obj in payload['objects']]
+                    else:
+                        ids = [row[0] for row in payload]
+                    self.assertCountEqual(ids, expected)
+
+    def test_discipline_takes_precedence_over_division(self):
+        self.assert_visible_records()
+
+    def test_restricted_id_returns_empty_results(self):
+        self.assert_visible_records(restricted_only=True)
+
+    def test_read_grant_requires_collection_access(self):
+        self.grant(self.other_collection, '/table/%', 'read')
+        self.assert_visible_records()
+
+    def test_collection_access_requires_table_read_grant(self):
+        self.grant_access(self.other_collection)
+        self.assert_visible_records()
+
+    def test_both_grants_allow_other_discipline(self):
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/%', 'read')
+        self.assert_visible_records(include_other=True)
+
+    def test_global_grant_allows_other_discipline(self):
+        self.grant(None, '%', '%')
+        self.assert_visible_records(include_other=True)
+
+    def test_shared_discipline_remains_visible(self):
+        for _, _, restricted in self.records:
+            restricted.discipline = self.discipline
+            restricted.save()
+        self.assert_visible_records(include_other=True)
+
+    def test_missing_division_does_not_change_discipline_scope(self):
+        for _, allowed, restricted in self.records:
+            for record in (allowed, restricted):
+                record.division = None
+                record.save()
+        self.assert_visible_records()
+
+    def test_sibling_disciplines_in_same_division_remain_isolated(self):
+        self.other_discipline.division = self.division
+        self.other_discipline.save()
+        self.assert_visible_records()
+
+    def test_distinct_projection_excludes_restricted_numbers(self):
+        for table, _, _ in self.records:
+            with self.subTest(table=table):
+                response = self.client.get(
+                    f'/table_rows/specify_rows/{table}/',
+                    {'fields': f'{table}number', 'distinct': 'true'},
+                )
+                self.assertEqual(response.status_code, 200)
+                self.assertEqual(response.json(), [['allowed']])
+
+    def test_filters_before_pagination(self):
+        self.assert_visible_records(limit=1)
+
+    def test_legacy_dispatch_rows_uses_same_scope_filter(self):
+        from specifyweb.specify.api.dispatch import rows
+
+        for table, _, restricted in self.records:
+            with self.subTest(table=table):
+                request = RequestFactory().get(
+                    f'/table_rows/specify_rows/{table}/',
+                    {'fields': 'id', 'id': restricted.id},
+                )
+                request.specify_collection = self.collection
+                request.specify_user_agent = self.agent
+                response = rows(request, table)
+                self.assertEqual(response.status_code, 200)
+                self.assertEqual(json.loads(response.content), [])
+
 class ScopedDeleteApiTests(ScopedPermissionTestBase):
     def setUp(self):
         super().setUp()

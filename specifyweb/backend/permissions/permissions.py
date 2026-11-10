@@ -15,8 +15,8 @@ from django.db import connection
 from django.db.models import Model, Q, QuerySet
 
 from specifyweb.specify.models import (
-    Accession, Agent, Discipline, Division, Geography, Geologictimeperiod,
-    Institution, Lithostrat, Storage, Taxon, Tectonicunit,
+    Accession, Agent, Discipline, Division, Geography, Geologictimeperiod, Gift,
+    Institution, Lithostrat, Loan, Storage, Taxon, Tectonicunit,
 )
 from specifyweb.specify.datamodel import Table
 from specifyweb.specify.utils.scoping import Scoping, ScopeType
@@ -289,8 +289,9 @@ def filter_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
 
     Supports hierarchy records, direct collection scopes, and direct
     division/discipline scopes without competing scope fields, and discipline
-    and storage tree nodes. Other scopes are not filtered here; serialized
-    records still undergo instance checks.
+    and storage tree nodes. Loan and Gift use their required discipline even
+    when a division is populated. Other scopes are not filtered here;
+    serialized records still undergo instance checks.
     """
     model = queryset.model
     hierarchy_lookup = {
@@ -326,6 +327,7 @@ def filter_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
         and hierarchy_lookup is None
         and not discipline_tree_scope
         and model is not Storage
+        and model not in (Loan, Gift)
     ):
         return queryset
 
@@ -340,6 +342,12 @@ def filter_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
         return queryset.filter(pk__in=models.Collection.objects.filter(
             id__in=allowed_ids
         ).values(hierarchy_lookup))
+    if model in (Loan, Gift):
+        return queryset.filter(
+            discipline_id__in=models.Collection.objects.filter(
+                id__in=allowed_ids
+            ).values("discipline_id")
+        )
     if model is Storage:
         allowed_collections = models.Collection.objects.filter(id__in=allowed_ids)
         condition = Q(
