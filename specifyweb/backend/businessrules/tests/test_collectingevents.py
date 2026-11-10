@@ -2,6 +2,8 @@ from django.db.models import ProtectedError
 from django.utils import timezone
 
 from specifyweb.specify import models
+from specifyweb.specify.api.crud import update_obj
+from specifyweb.specify.api.serializers import uri_for_model
 from specifyweb.specify.tests.test_api import ApiTests
 
 class CollectingEventTests(ApiTests):
@@ -69,6 +71,31 @@ class CollectingEventTests(ApiTests):
         fetched_event = models.Collectingevent.objects.get(id=ce.id)
         self.assertEqual(fetched_event.locality, locality)
         self.assertEqual(fetched_event.locality.localityname, "Somewhere")
+
+    def test_shared_collecting_event_links_collection_objects(self):
+        collecting_event = models.Collectingevent.objects.create(
+            discipline=self.discipline
+        )
+        first, second = self.collectionobjects[:2]
+
+        for collection_object in (first, second):
+            update_obj(
+                self.collection,
+                self.agent,
+                'collectionobject',
+                collection_object.id,
+                collection_object.version,
+                {
+                    'collectingevent': uri_for_model(
+                        'collectingevent', collecting_event.id
+                    )
+                },
+            )
+
+        self.assertEqual(
+            set(collecting_event.collectionobjects.values_list('id', flat=True)),
+            {first.id, second.id},
+        )
 
     def test_collectionobjects_block_delete(self):
         ce = models.Collectingevent.objects.create(
