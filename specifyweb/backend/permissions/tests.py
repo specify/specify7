@@ -1,4 +1,5 @@
 import json
+from unittest.mock import patch
 
 from django.test import Client
 from django.utils import timezone
@@ -573,6 +574,129 @@ class CreateIdentityApiTests(ScopedPermissionTestBase):
         record = spmodels.Collectionobject.objects.get(pk=response.json()['id'])
         self.assertEqual(record.collection_id, self.collection.id)
         self.assertEqual(record.catalognumber, 'new-record')
+
+class ScopedCreateApiTests(ScopedPermissionTestBase):
+    def setUp(self):
+        super().setUp()
+        self.grant_access(self.collection)
+        self.grant(self.collection, '/table/%', 'create')
+        self.grant(None, '/table/%', 'read')
+        self.client.force_login(self.specifyuser)
+        self.client.cookies['collection'] = str(self.collection.id)
+
+    def post_record(self, collection):
+        return self.client.post(
+            '/api/specify/collectionobject/',
+            data={
+                'collection': f'/api/specify/collection/{collection.id}/',
+                'catalognumber': 'new-record',
+            },
+            content_type='application/json',
+        )
+
+    def assert_create_denied(self):
+        before = list(spmodels.Collectionobject.objects.order_by('id').values())
+        response = self.post_record(self.other_collection)
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(
+            list(spmodels.Collectionobject.objects.order_by('id').values()), before
+        )
+
+    def test_denies_create_in_restricted_collection(self):
+        self.assert_create_denied()
+
+    def test_login_collection_membership_cannot_mask_restricted_target(self):
+        before = list(spmodels.Collectionobject.objects.order_by('id').values())
+        response = self.client.post(
+            '/api/specify/collectionobject/',
+            data={
+                'collection': f'/api/specify/collection/{self.other_collection.id}/',
+                'collectionmemberid': self.collection.id,
+                'catalognumber': 'forbidden-record',
+            },
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(
+            list(spmodels.Collectionobject.objects.order_by('id').values()), before
+        )
+
+    def test_create_grant_without_collection_access_does_not_allow_create(self):
+        self.grant(self.other_collection, '/table/%', 'create')
+        self.assert_create_denied()
+
+    def test_collection_access_without_create_grant_does_not_allow_create(self):
+        self.grant_access(self.other_collection)
+        self.assert_create_denied()
+
+    def test_creates_in_authorized_collection(self):
+        response = self.post_record(self.collection)
+        self.assertEqual(response.status_code, 201)
+        record = spmodels.Collectionobject.objects.get(pk=response.json()['id'])
+        self.assertEqual(record.collection_id, self.collection.id)
+        self.assertEqual(record.collectionmemberid, self.collection.id)
+
+    def test_creates_in_other_collection_with_both_grants(self):
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/%', 'create')
+        response = self.post_record(self.other_collection)
+        self.assertEqual(response.status_code, 201)
+        record = spmodels.Collectionobject.objects.get(pk=response.json()['id'])
+        self.assertEqual(record.collection_id, self.other_collection.id)
+        self.assertEqual(record.collectionmemberid, self.other_collection.id)
+
+    def test_institution_admin_can_create_in_other_collection(self):
+        self.grant(None, '%', '%')
+        response = self.post_record(self.other_collection)
+        self.assertEqual(response.status_code, 201)
+        record = spmodels.Collectionobject.objects.get(pk=response.json()['id'])
+        self.assertEqual(record.collection_id, self.other_collection.id)
+        self.assertEqual(record.collectionmemberid, self.other_collection.id)
+
+    def test_denied_create_does_not_reach_save(self):
+        models.UserPolicy.objects.filter(action='create').delete()
+        with patch('specifyweb.specify.api.crud.autonumber_and_save') as save:
+            response = self.post_record(self.collection)
+        self.assertEqual(response.status_code, 403)
+        save.assert_not_called()
+
+    def test_creates_in_shared_discipline(self):
+        response = self.client.post(
+            '/api/specify/loan/',
+            data={
+                'discipline': f'/api/specify/discipline/{self.discipline.id}/',
+                'loannumber': 'shared-loan',
+            },
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 201)
+        loan = spmodels.Loan.objects.get(pk=response.json()['id'])
+        self.assertEqual(loan.discipline_id, self.discipline.id)
+
+    def test_denies_create_in_restricted_discipline(self):
+        discipline = spmodels.Discipline.objects.create(
+            division=self.division,
+            datatype=self.datatype,
+            geographytreedef=self.geographytreedef,
+            geologictimeperiodtreedef=self.geologictimeperiodtreedef,
+        )
+        self.other_collection.discipline = discipline
+        self.other_collection.save()
+        count = spmodels.Loan.objects.count()
+
+        with patch('specifyweb.specify.api.crud.autonumber_and_save') as save:
+            response = self.client.post(
+                '/api/specify/loan/',
+                data={
+                    'discipline': f'/api/specify/discipline/{discipline.id}/',
+                    'loannumber': 'forbidden-loan',
+                },
+                content_type='application/json',
+            )
+
+        self.assertEqual(response.status_code, 403)
+        save.assert_not_called()
+        self.assertEqual(spmodels.Loan.objects.count(), count)
 
 class PermissionsApiTest(ApiTests):
     def setUp(self):
