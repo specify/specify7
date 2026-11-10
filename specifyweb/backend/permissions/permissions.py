@@ -295,6 +295,7 @@ def filter_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
     Permit and ReferenceWork use their required institution.
     Notebook pages and page sets inherit the notebook's discipline.
     Conservation events inherit their description's scope.
+    Remaining institution-scoped models use the single-institution fallback.
     Other scopes are not filtered here; serialized records still undergo
     instance checks.
     """
@@ -331,7 +332,7 @@ def filter_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
         and hierarchy_lookup is None
     )
     if (
-        scope_type != ScopeType.COLLECTION
+        scope_type not in (ScopeType.COLLECTION, ScopeType.INSTITUTION)
         and not direct_division_scope
         and not direct_discipline_scope
         and hierarchy_lookup is None
@@ -426,6 +427,12 @@ def filter_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
                 definition__isnull=False, definition__discipline__isnull=True
             )
         return queryset.filter(condition)
+    if scope_type == ScopeType.INSTITUTION:
+        institution = Institution.objects.get()
+        allowed = models.Collection.objects.filter(
+            id__in=allowed_ids, discipline__division__institution=institution
+        ).exists()
+        return queryset if allowed else queryset.none()
     if direct_division_scope or direct_discipline_scope:
         allowed_collections = models.Collection.objects.filter(id__in=allowed_ids)
         field = "division" if direct_division_scope else "discipline"

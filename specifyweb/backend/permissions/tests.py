@@ -1693,6 +1693,82 @@ class ConservationEventReadApiTests(ScopedPermissionTestBase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(json.loads(response.content), [])
 
+class InstitutionFallbackReadTests(ScopedPermissionTestBase):
+    def filtered_datatypes(self):
+        return permissions.filter_scoped_read_queryset(
+            spmodels.Datatype.objects.all(), self.agent,
+        )
+
+    def test_denies_without_policies(self):
+        self.assertFalse(self.filtered_datatypes().exists())
+
+    def test_read_grant_requires_collection_access(self):
+        self.grant(self.collection, '/table/datatype', 'read')
+        self.assertFalse(self.filtered_datatypes().exists())
+
+    def test_collection_access_requires_table_read(self):
+        self.grant_access(self.collection)
+        self.assertFalse(self.filtered_datatypes().exists())
+
+    def test_grants_in_different_collections_cannot_be_combined(self):
+        self.grant_access(self.collection)
+        self.grant(self.other_collection, '/table/datatype', 'read')
+        self.assertFalse(self.filtered_datatypes().exists())
+
+    def test_qualifying_sibling_collection_allows_shared_records(self):
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/datatype', 'read')
+        self.assertCountEqual(self.filtered_datatypes(), [self.datatype])
+
+    def test_global_grant_allows_shared_records(self):
+        self.grant(None, '%', '%')
+        self.assertCountEqual(self.filtered_datatypes(), [self.datatype])
+
+    def test_ambiguous_institution_propagates_resolver_error(self):
+        spmodels.Institution.objects.create(
+            name='Other Institution', isaccessionsglobal=True,
+            issecurityon=False, isserverbased=False,
+            issharinglocalities=True, issinglegeographytree=True,
+        )
+        self.grant(None, '%', '%')
+        with self.assertRaises(spmodels.Institution.MultipleObjectsReturned):
+            self.filtered_datatypes()
+
+    def test_list_and_row_endpoints_preserve_shared_records_and_pagination(self):
+        self.grant_access(self.collection)
+        self.grant(self.collection, '/table/datatype', 'read')
+        other = spmodels.Datatype.objects.create(name='Other datatype')
+        self.client.force_login(self.specifyuser)
+        self.client.cookies['collection'] = str(self.collection.id)
+        for prefix in ('/api/specify', '/table_rows/specify_rows'):
+            with self.subTest(prefix=prefix):
+                params = {'limit': 1, 'orderby': '-id'}
+                if prefix == '/table_rows/specify_rows':
+                    params['fields'] = 'id'
+                response = self.client.get(
+                    f'{prefix}/datatype/', params,
+                )
+                self.assertEqual(response.status_code, 200)
+                payload = response.json()
+                if isinstance(payload, dict):
+                    self.assertEqual(payload['meta']['total_count'], 2)
+                    self.assertEqual([obj['id'] for obj in payload['objects']], [other.id])
+                else:
+                    self.assertEqual(payload, [[other.id]])
+
+    def test_legacy_rows_deny_without_collection_access(self):
+        from specifyweb.specify.api.dispatch import rows
+
+        self.grant(self.collection, '/table/datatype', 'read')
+        request = RequestFactory().get(
+            '/table_rows/specify_rows/datatype/', {'fields': 'id'},
+        )
+        request.specify_collection = self.collection
+        request.specify_user_agent = self.agent
+        response = rows(request, 'datatype')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json.loads(response.content), [])
+
 class ScopedDeleteApiTests(ScopedPermissionTestBase):
     def setUp(self):
         super().setUp()
