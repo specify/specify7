@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 from django.db import connection
 from django.db.models import Model, Q, QuerySet
 
-from specifyweb.specify.models import Agent
+from specifyweb.specify.models import Accession, Agent, Discipline
 from specifyweb.specify.datamodel import Table
 from specifyweb.specify.utils.scoping import Scoping, ScopeType
 from specifyweb.backend.cache.thread import ThreadCache
@@ -281,13 +281,24 @@ def has_permission_in_scope(
         for collectionid in collection_ids
     )
 
-def filter_collection_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
-    """Filter directly collection-scoped records before counting or pagination.
+def filter_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
+    """Filter supported record scopes before counting, projection, or pagination.
 
-    Other scope types retain per-record enforcement during serialization.
+    Supports direct collection scopes and direct division scopes without
+    narrower scope fields. Other scopes are not filtered here; serialized
+    records still undergo instance permission checks.
     """
     model = queryset.model
-    if Scoping.scope_type_from_class(model) != ScopeType.COLLECTION:
+    scope_type = Scoping.scope_type_from_class(model)
+    direct_division_scope = (
+        scope_type == ScopeType.DIVISION
+        and hasattr(model, "division")
+        and not any(hasattr(model, field) for field in (
+            "discipline", "collectionmemberid", "collection",
+        ))
+        and model not in (Accession, Discipline)
+    )
+    if scope_type != ScopeType.COLLECTION and not direct_division_scope:
         return queryset
 
     userid = _actor_userid(actor)
@@ -297,6 +308,13 @@ def filter_collection_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySe
         if query_pt(collectionid, userid, CollectionAccessPT.access).allowed
         and query(collectionid, userid, resource, "read").allowed
     ]
+    if direct_division_scope:
+        allowed_collections = models.Collection.objects.filter(id__in=allowed_ids)
+        condition = Q(division_id__in=allowed_collections.values("discipline__division_id"))
+        # A missing division resolves to the institution in the instance resolver.
+        if allowed_ids:
+            condition |= Q(division__isnull=True)
+        return queryset.filter(condition)
     if hasattr(model, "collectionmemberid"):
         condition = Q(collectionmemberid__in=allowed_ids)
         if hasattr(model, "collection"):

@@ -410,6 +410,109 @@ class ScopedRowsApiTests(ScopedPermissionTestBase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(json.loads(response.content), [])
 
+class DivisionScopedReadApiTests(ScopedPermissionTestBase):
+    def setUp(self):
+        super().setUp()
+        self.grant_access(self.collection)
+        self.grant(self.collection, '/table/%', 'read')
+        self.client.force_login(self.specifyuser)
+        self.client.cookies['collection'] = str(self.collection.id)
+        self.other_division = spmodels.Division.objects.create(
+            institution=self.institution, name='Other Division'
+        )
+        self.other_discipline = spmodels.Discipline.objects.create(
+            division=self.other_division, datatype=self.datatype,
+            geographytreedef=self.geographytreedef,
+            geologictimeperiodtreedef=self.geologictimeperiodtreedef,
+        )
+        self.other_collection.discipline = self.other_discipline
+        self.other_collection.save()
+        self.restricted_agent = spmodels.Agent.objects.create(
+            agenttype=0, division=self.other_division, lastname='Restricted'
+        )
+
+    def assert_visible_agents(self, expected, **params):
+        for path in (
+            '/api/specify/agent/',
+            '/table_rows/specify_rows/agent/',
+        ):
+            with self.subTest(path=path):
+                response = self.client.get(
+                    path, {'fields': 'id', 'limit': 0, **params}
+                    if path.startswith('/table_rows/')
+                    else {'limit': 0, **params},
+                )
+                self.assertEqual(response.status_code, 200)
+                payload = response.json()
+                if isinstance(payload, dict):
+                    self.assertEqual(payload['meta']['total_count'], len(expected))
+                    ids = [obj['id'] for obj in payload['objects']]
+                else:
+                    ids = [row[0] for row in payload]
+                self.assertCountEqual(ids, [obj.id for obj in expected])
+
+    def test_excludes_other_division(self):
+        self.assert_visible_agents([self.agent])
+
+    def test_explicit_restricted_id_returns_empty_results(self):
+        self.assert_visible_agents([], id=self.restricted_agent.id)
+
+    def test_read_grant_requires_collection_access_in_same_division(self):
+        self.grant(self.other_collection, '/table/%', 'read')
+        self.assert_visible_agents([self.agent])
+
+    def test_collection_access_requires_table_read_grant(self):
+        self.grant_access(self.other_collection)
+        self.assert_visible_agents([self.agent])
+
+    def test_both_grants_allow_other_division(self):
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/%', 'read')
+        self.assert_visible_agents([self.agent, self.restricted_agent])
+
+    def test_global_grant_preserves_domainfilter(self):
+        self.grant(None, '%', '%')
+        self.assert_visible_agents([self.agent, self.restricted_agent])
+        self.assert_visible_agents([self.agent], domainfilter='true')
+
+    def test_missing_division_preserves_institution_fallback(self):
+        unscoped_agent = spmodels.Agent.objects.create(
+            agenttype=0, lastname='Institution scoped'
+        )
+        self.assert_visible_agents([self.agent, unscoped_agent])
+
+    def test_no_read_grants_exclude_missing_division_records(self):
+        spmodels.Agent.objects.create(agenttype=0, lastname='Unscoped')
+        models.UserPolicy.objects.filter(action='read').delete()
+
+        queryset = permissions.filter_scoped_read_queryset(
+            spmodels.Agent.objects.all(), self.agent
+        )
+
+        self.assertFalse(queryset.exists())
+
+    def test_discipline_records_are_not_treated_as_division_scoped(self):
+        queryset = spmodels.Discipline.objects.all()
+        self.assertIs(
+            permissions.filter_scoped_read_queryset(queryset, self.agent),
+            queryset,
+        )
+
+    def test_filters_before_pagination(self):
+        for path in ('/api/specify/agent/', '/table_rows/specify_rows/agent/'):
+            with self.subTest(path=path):
+                params = {'orderby': '-id', 'limit': 1}
+                if path.startswith('/table_rows/'):
+                    params['fields'] = 'id'
+                response = self.client.get(path, params)
+                self.assertEqual(response.status_code, 200)
+                payload = response.json()
+                if isinstance(payload, dict):
+                    self.assertEqual(payload['meta']['total_count'], 1)
+                    self.assertEqual(payload['objects'][0]['id'], self.agent.id)
+                else:
+                    self.assertEqual(payload, [[self.agent.id]])
+
 class ScopedDeleteApiTests(ScopedPermissionTestBase):
     def setUp(self):
         super().setUp()
