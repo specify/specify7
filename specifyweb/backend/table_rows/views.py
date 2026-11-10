@@ -6,7 +6,9 @@ from specifyweb.specify.api.serializers import toJson
 from specifyweb.specify.api.validators import RowsForm
 from specifyweb.specify.views import login_maybe_required
 from django.http import (HttpResponse, HttpResponseBadRequest)
-from specifyweb.backend.permissions.permissions import enforce, filter_scoped_read_queryset
+from specifyweb.backend.permissions.permissions import (
+    enforce, filter_forward_related_read_queryset, filter_scoped_read_queryset,
+)
 from django.core.exceptions import FieldError
 
 @login_maybe_required
@@ -23,6 +25,9 @@ def rows(request, model: str) -> HttpResponse:
     query = filter_scoped_read_queryset(query, request.specify_user_agent)
     fields = form.cleaned_data['fields'].split(',')
     try:
+        query = filter_forward_related_read_queryset(
+            query, fields, request.specify_user_agent
+        )
         query = query.values_list(*fields).order_by(*fields)
     except FieldError as e:
         return HttpResponseBadRequest(e)

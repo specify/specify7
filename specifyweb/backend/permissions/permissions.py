@@ -12,7 +12,8 @@ import logging
 logger = logging.getLogger(__name__)
 
 from django.db import connection
-from django.db.models import Model, Q, QuerySet
+from django.core.exceptions import FieldDoesNotExist, FieldError
+from django.db.models import ForeignKey, Model, Q, QuerySet
 
 from specifyweb.specify.models import (
     Accession, Agent, Conservevent, Discipline, Division, Fieldnotebook, Fieldnotebookpage,
@@ -469,6 +470,38 @@ def filter_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
             condition |= invalid_membership & Q(collection_id__in=allowed_ids)
         return queryset.filter(condition)
     return queryset.filter(collection_id__in=allowed_ids)
+
+def filter_forward_related_read_queryset(
+    queryset: QuerySet, fields: Iterable[str], actor
+) -> QuerySet:
+    """Filter forward FK projection paths by each related record's read scope.
+
+    Null relationships remain visible. Reverse and to-many paths are not
+    handled here, because their joins require separate authorization semantics.
+    """
+    checked_paths = set()
+    for projection in fields:
+        model = queryset.model
+        path = []
+        for name in projection.split("__")[:-1]:
+            try:
+                field = model._meta.pk if name == "pk" else model._meta.get_field(name)
+            except FieldDoesNotExist as error:
+                raise FieldError(str(error)) from error
+            if not isinstance(field, ForeignKey):
+                break
+            path.append(field.name)
+            model = field.related_model
+            lookup = "__".join(path)
+            if lookup in checked_paths:
+                continue
+            allowed = filter_scoped_read_queryset(model.objects.all(), actor)
+            queryset = queryset.filter(
+                Q(**{f"{lookup}__isnull": True})
+                | Q(**{f"{lookup}__in": allowed.values("pk")})
+            )
+            checked_paths.add(lookup)
+    return queryset
 
 @contextmanager
 def cache_permission_queries():

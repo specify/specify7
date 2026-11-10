@@ -411,6 +411,144 @@ class ScopedRowsApiTests(ScopedPermissionTestBase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(json.loads(response.content), [])
 
+class ForwardRelatedRowsApiTests(ScopedPermissionTestBase):
+    def setUp(self):
+        super().setUp()
+        self.grant_access(self.collection)
+        self.grant(self.collection, '/table/%', 'read')
+        self.client.force_login(self.specifyuser)
+        self.client.cookies['collection'] = str(self.collection.id)
+        self.other_discipline = spmodels.Discipline.objects.create(
+            division=self.division, datatype=self.datatype,
+            geographytreedef=self.geographytreedef,
+            geologictimeperiodtreedef=self.geologictimeperiodtreedef,
+        )
+        self.other_collection.discipline = self.other_discipline
+        self.other_collection.save()
+        self.allowed_event = self.collectingevent
+        self.allowed_event.remarks = 'allowed'
+        self.allowed_event.save()
+        self.restricted_event = spmodels.Collectingevent.objects.create(
+            discipline=self.other_discipline, remarks='restricted',
+        )
+        self.allowed_record, self.restricted_record, self.null_record = (
+            self.collectionobjects[:3]
+        )
+        self.allowed_record.collectingevent = self.allowed_event
+        self.allowed_record.save()
+        self.restricted_record.collectingevent = self.restricted_event
+        self.restricted_record.save()
+
+    def get_rows(self, **params):
+        return self.client.get('/table_rows/specify_rows/collectionobject/', {
+            'fields': 'id,collectingevent__remarks',
+            'id__in': ','.join(str(obj.id) for obj in (
+                self.allowed_record, self.restricted_record, self.null_record,
+            )),
+            'limit': 0, 'orderby': '-id', **params,
+        })
+
+    def test_excludes_restricted_related_record_and_preserves_null(self):
+        response = self.get_rows()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [
+            [self.null_record.id, None], [self.allowed_record.id, 'allowed'],
+        ])
+
+    def test_base_record_remains_visible_without_relationship_projection(self):
+        response = self.get_rows(fields='id', id=self.restricted_record.id)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [[self.restricted_record.id]])
+
+    def test_related_read_grant_requires_collection_access(self):
+        self.grant(self.other_collection, '/table/collectingevent', 'read')
+        response = self.get_rows(id=self.restricted_record.id)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [])
+
+    def test_related_collection_access_requires_table_read(self):
+        self.grant_access(self.other_collection)
+        response = self.get_rows(id=self.restricted_record.id)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [])
+
+    def test_both_grants_allow_related_record(self):
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/collectingevent', 'read')
+        response = self.get_rows(id=self.restricted_record.id)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [[self.restricted_record.id, 'restricted']])
+
+    def test_base_table_grant_does_not_replace_related_table_grant(self):
+        initialize.wipe_permissions()
+        self.grant_access(self.collection)
+        self.grant(self.collection, '/table/collectionobject', 'read')
+        response = self.get_rows()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [[self.null_record.id, None]])
+
+    def test_global_grant_allows_related_records(self):
+        self.grant(None, '%', '%')
+        response = self.get_rows(id=self.restricted_record.id)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [[self.restricted_record.id, 'restricted']])
+
+    def test_filters_before_pagination(self):
+        response = self.get_rows(offset=1, limit=1)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [[self.allowed_record.id, 'allowed']])
+
+    def test_distinct_projection_excludes_restricted_values(self):
+        response = self.get_rows(
+            fields='collectingevent__remarks', distinct='true',
+            orderby='collectingevent__remarks',
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertCountEqual(response.json(), [[None], ['allowed']])
+
+    def test_nested_projection_checks_each_related_scope(self):
+        locality = spmodels.Locality.objects.create(
+            discipline=self.other_discipline, localityname='restricted locality',
+        )
+        self.allowed_event.locality = locality
+        self.allowed_event.save()
+        response = self.get_rows(fields='id,collectingevent__locality__localityname')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [[self.null_record.id, None]])
+
+    def test_nested_projection_preserves_missing_locality(self):
+        response = self.get_rows(fields='id,collectingevent__locality__localityname')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [
+            [self.null_record.id, None], [self.allowed_record.id, None],
+        ])
+
+    def test_invalid_projection_retains_bad_request_response(self):
+        response = self.get_rows(fields='collectingevent__unknown__remarks')
+        self.assertEqual(response.status_code, 400)
+
+    def test_scalar_transforms_remain_valid(self):
+        response = self.get_rows(
+            id=self.allowed_record.id, fields='timestampcreated__year',
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [[self.allowed_record.timestampcreated.year]])
+
+    def test_legacy_dispatch_rows_uses_same_related_filter(self):
+        from specifyweb.specify.api.dispatch import rows
+
+        request = RequestFactory().get(
+            '/table_rows/specify_rows/collectionobject/', {
+                'fields': 'id,collectingevent__remarks',
+                'id': self.restricted_record.id,
+            },
+        )
+        request.specify_collection = self.collection
+        request.specify_user_agent = self.agent
+        response = rows(request, 'collectionobject')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json.loads(response.content), [])
+
 class DivisionScopedReadApiTests(ScopedPermissionTestBase):
     def setUp(self):
         super().setUp()

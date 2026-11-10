@@ -10,7 +10,10 @@ from django.http import (
 from django.core.exceptions import FieldError
 
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
-from specifyweb.backend.permissions.permissions import enforce, filter_scoped_read_queryset, table_permissions_checker
+from specifyweb.backend.permissions.permissions import (
+    enforce, filter_forward_related_read_queryset, filter_scoped_read_queryset,
+    table_permissions_checker,
+)
 from specifyweb.specify.api.crud import apply_filters, delete_resource, get_collection, get_resource, post_resource, put_resource
 from specifyweb.specify.api.exceptions import FilterError, OrderByError
 from specifyweb.specify.api.filter_by_col import filter_by_collection
@@ -158,6 +161,9 @@ def rows(request, model_name: str) -> HttpResponse:
     query = filter_scoped_read_queryset(query, request.specify_user_agent)
     fields = form.cleaned_data['fields'].split(',')
     try:
+        query = filter_forward_related_read_queryset(
+            query, fields, request.specify_user_agent
+        )
         query = query.values_list(*fields).order_by(*fields)
     except FieldError as e:
         return HttpResponseBadRequest(e)
