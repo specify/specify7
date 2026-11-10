@@ -24,9 +24,10 @@ def rows(request, model: str) -> HttpResponse:
     query = apply_filters(request.specify_collection, request.GET, model, form.cleaned_data)
     query = filter_scoped_read_queryset(query, request.specify_user_agent)
     fields = form.cleaned_data['fields'].split(',')
+    filter_fields = [key for key in request.GET if key not in form.cleaned_data]
     try:
         query = filter_forward_related_read_queryset(
-            query, fields, request.specify_user_agent
+            query, fields + filter_fields, request.specify_user_agent
         )
         query = query.values_list(*fields).order_by(*fields)
     except FieldError as e:

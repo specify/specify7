@@ -605,6 +605,76 @@ class ForwardRelatedRowsApiTests(ScopedPermissionTestBase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(json.loads(response.content), [])
 
+    def test_unprojected_related_filters_require_related_scope(self):
+        for lookup, value in (
+            ('collectingevent__remarks', 'restricted'),
+            ('collectingevent__remarks__icontains', 'restrict'),
+            ('collectingevent__id__in', str(self.restricted_event.id)),
+        ):
+            with self.subTest(lookup=lookup):
+                response = self.get_rows(fields='id', **{lookup: value})
+                self.assertEqual(response.status_code, 200)
+                self.assertEqual(response.json(), [])
+
+    def test_related_filter_allows_qualifying_grants(self):
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/collectingevent', 'read')
+        response = self.get_rows(
+            fields='id', collectingevent__remarks='restricted',
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [[self.restricted_record.id]])
+
+    def test_related_filter_read_grant_requires_collection_access(self):
+        self.grant(self.other_collection, '/table/collectingevent', 'read')
+        response = self.get_rows(fields='id', collectingevent__remarks='restricted')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [])
+
+    def test_related_filter_access_requires_table_read(self):
+        self.grant_access(self.other_collection)
+        response = self.get_rows(fields='id', collectingevent__remarks='restricted')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [])
+
+    def test_nested_filter_checks_each_related_scope(self):
+        locality = spmodels.Locality.objects.create(
+            discipline=self.other_discipline, localityname='restricted locality',
+        )
+        self.allowed_event.locality = locality
+        self.allowed_event.save()
+        response = self.get_rows(
+            fields='id', collectingevent__locality__localityname='restricted locality',
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [])
+
+    def test_related_isnull_filter_preserves_missing_relationship(self):
+        response = self.get_rows(fields='id', collectingevent__remarks__isnull='true')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [[self.null_record.id]])
+
+    def test_related_filter_checks_scope_before_pagination(self):
+        response = self.get_rows(
+            fields='id', collectingevent__remarks__isnull='false', limit=1,
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [[self.allowed_record.id]])
+
+    def test_legacy_dispatch_rows_checks_unprojected_filters(self):
+        from specifyweb.specify.api.dispatch import rows
+
+        request = RequestFactory().get(
+            '/table_rows/specify_rows/collectionobject/', {
+                'fields': 'id', 'collectingevent__remarks': 'restricted',
+            },
+        )
+        request.specify_collection = self.collection
+        request.specify_user_agent = self.agent
+        response = rows(request, 'collectionobject')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json.loads(response.content), [])
+
     def test_legacy_dispatch_rows_uses_same_related_filter(self):
         from specifyweb.specify.api.dispatch import rows
 
