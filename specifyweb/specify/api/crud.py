@@ -81,11 +81,17 @@ def create_obj(collection, agent, model, data: dict[str, Any], parent_obj=None, 
     if data.get(model._meta.pk.name) is not None:
         raise BadRequest("Cannot create a record with an explicit primary key")
     obj = model()
-    _, _, handle_remote_to_ones = handle_fk_fields(collection, agent, obj, data)
+    _, _, handle_remote_to_ones = handle_fk_fields(
+        collection, agent, obj, data, parent_obj=parent_obj,
+    )
     set_fields_from_data(obj, data)
     set_field_if_exists(obj, 'createdbyagent', agent)
-    # Keep membership consistent with an explicit target collection.
+    # Prefer the explicit collection, then a dependent parent's collection.
     target_collection_id = getattr(obj, 'collection_id', None)
+    if target_collection_id is None and parent_obj is not None:
+        parent_scope = Scoping.scope_for_record(parent_obj)
+        if isinstance(parent_scope, models.Collection):
+            target_collection_id = parent_scope.id
     set_field_if_exists(
         obj, 'collectionmemberid',
         collection.id if target_collection_id is None else target_collection_id,
@@ -143,12 +149,18 @@ def update_obj(collection, agent, name: str, id, version, data: dict[str, Any], 
     original_scope = Scoping.scope_for_record(obj)
 
     data = cleanData(obj.__class__, data, parent_relationship)
-    dependents_to_delete, fk_dirty, handle_remote_to_ones = handle_fk_fields(collection, agent, obj, data)
+    dependents_to_delete, fk_dirty, handle_remote_to_ones = handle_fk_fields(
+        collection, agent, obj, data, parent_obj=parent_obj,
+    )
     dirty = fk_dirty + set_fields_from_data(obj, data)
 
     # Scope-defining fields may have changed; authorize the resulting scope too.
     check_table_permissions(collection, agent, obj, "update")
     dirty_fields = [d['field_name'] for d in dirty]
+    dirty_fields.extend(
+        name for name, value in data.items()
+        if isinstance(value, (list, dict)) and obj._meta.get_field(name).one_to_many
+    )
     check_field_permissions(
         collection, agent, obj, dirty_fields, "update", scope=original_scope
     )
@@ -189,27 +201,22 @@ def delete_obj(obj, deleter: Callable[[Any, Any], None] | None=None, version=Non
     
     if hasattr(obj, 'pre_constraints_delete'):
         obj.pre_constraints_delete()
-    # Tree nodes are deleted through the database cascade when their parent is
-    # deleted. Audit those descendants explicitly because Django's collector
-    # does not invoke the API deleter for cascaded objects.
-    model_fields = {field.name for field in obj._meta.get_fields()}
-    is_tree_model = 'parent' in model_fields and 'rankid' in model_fields
-    if (
-        deleter
-        and is_tree_model
-    ):
+    # Django cascades do not invoke the API deleter for related records.
+    if deleter:
         collector = Collector(using=obj._state.db)
         collector.collect([obj])
         descendants = {
-            getattr(descendant, "id"): descendant
+            (model, descendant.pk): descendant
             for model, instances in collector.data.items()
-            if model is obj.__class__
+            if hasattr(model, 'specify_model')
             for descendant in instances
-            if getattr(descendant, "id") != obj.id
+            if descendant != obj
         }
         for queryset in collector.fast_deletes:
-            if queryset.model is obj.__class__:
-                descendants.update({getattr(descendant, "id"): descendant for descendant in queryset})
+            if hasattr(queryset.model, 'specify_model'):
+                descendants.update({
+                    (queryset.model, descendant.pk): descendant for descendant in queryset
+                })
         for descendant in descendants.values():
             deleter(descendant, obj)
     if deleter:
@@ -224,10 +231,10 @@ def delete_obj(obj, deleter: Callable[[Any, Any], None] | None=None, version=Non
             delete_obj(dep, deleter, version, parent_obj=obj, clean_predelete=clean_predelete)
 
 def update_or_create_resource(collection, agent, model, data, parent_obj, parent_relationship=None): 
-    if 'id' in data: 
+    if data.get('id') is not None:
         return update_obj(collection, agent, 
                           model, data['id'], 
-                          data['version'], data, 
+                          data.get('version'), data,
                           parent_obj=parent_obj, parent_relationship=parent_relationship)
     else: 
         return create_obj(collection, agent, model, data, parent_obj=parent_obj, parent_relationship=parent_relationship)

@@ -3269,6 +3269,690 @@ class ScopedDeleteApiTests(ScopedPermissionTestBase):
             spmodels.Collectionobjectattribute.objects.filter(pk=attribute.id).exists()
         )
 
+class ReverseRelationshipMutationApiTests(ScopedPermissionTestBase):
+    def setUp(self):
+        super().setUp()
+        self.grant_access(self.collection)
+        self.grant(self.collection, '/table/%', '%')
+        self.grant(self.collection, '/field/%', 'update')
+        self.client.force_login(self.specifyuser)
+        self.client.cookies['collection'] = str(self.collection.id)
+        self._create_prep_type()
+        self.parent, self.second_parent = self.collectionobjects[:2]
+        self.restricted_parent = spmodels.Collectionobject.objects.create(
+            collection=self.other_collection, catalognumber='restricted-parent',
+        )
+        self.destination, self.original, self.restricted_original = [
+            spmodels.Preparationattribute.objects.create(collectionmemberid=collection.id)
+            for collection in (self.collection, self.collection, self.other_collection)
+        ]
+        self.child = self._create_prep(
+            self.parent, None, preparationattribute=self.original, remarks='original',
+        )
+        self.restricted_child = self._create_prep(
+            self.restricted_parent, None,
+            collectionmemberid=self.other_collection.id, remarks='restricted',
+        )
+
+    def snapshot(self):
+        return {
+            model.__name__: list(model.objects.order_by('pk').values())
+            for model in (
+                spmodels.Collectionobject, spmodels.Preparation,
+                spmodels.Preparationattribute, spmodels.Preparationproperty,
+                spmodels.Spauditlog, spmodels.Spauditlogfield,
+            )
+        }
+
+    def put(self, parent, **changes):
+        return self.client.put(
+            f'/api/specify/{parent._meta.model_name}/{parent.id}/',
+            data={'version': parent.version, **changes},
+            content_type='application/json',
+        )
+
+    def uri(self, obj):
+        return f'/api/specify/{obj._meta.model_name}/{obj.id}/'
+
+    def child_data(self, child=None, **changes):
+        child = self.child if child is None else child
+        return {'id': child.id, 'version': child.version, **changes}
+
+    def assert_denied_unchanged(self, parent, **changes):
+        before = self.snapshot()
+        response = self.put(parent, **changes)
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(self.snapshot(), before)
+
+    def allow_other(self):
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/%', '%')
+        self.grant(self.other_collection, '/field/%', 'update')
+
+    def test_independent_uri_link_checks_child_scope(self):
+        self.assert_denied_unchanged(
+            self.destination, preparations={'update': [self.uri(self.restricted_child)]},
+        )
+
+    def test_independent_nested_link_checks_child_scope(self):
+        self.assert_denied_unchanged(
+            self.destination,
+            preparations={'update': [self.child_data(self.restricted_child, remarks='denied')]},
+        )
+
+    def test_independent_uri_unlink_checks_child_scope(self):
+        self.restricted_child.preparationattribute = self.destination
+        self.restricted_child.save()
+        self.assert_denied_unchanged(
+            self.destination, preparations={'remove': [self.uri(self.restricted_child)]},
+        )
+
+    def test_independent_noop_link_does_not_skip_authorization(self):
+        self.restricted_child.preparationattribute = self.destination
+        self.restricted_child.save()
+        self.assert_denied_unchanged(
+            self.destination, preparations={'update': [self.uri(self.restricted_child)]},
+        )
+
+    def test_independent_uri_requires_read_as_well_as_update(self):
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/preparation', 'update')
+        self.grant(self.other_collection, '/field/%', 'update')
+        self.assert_denied_unchanged(
+            self.destination, preparations={'update': [self.uri(self.restricted_child)]},
+        )
+
+    def test_independent_read_does_not_replace_child_update(self):
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/preparation', 'read')
+        self.assert_denied_unchanged(
+            self.destination, preparations={'update': [self.uri(self.restricted_child)]},
+        )
+
+    def test_independent_uri_link_and_unlink_preserve_other_child_fields(self):
+        response = self.put(
+            self.destination, preparations={'update': [self.uri(self.child)]},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.child.refresh_from_db()
+        self.assertEqual(self.child.preparationattribute_id, self.destination.id)
+        self.assertEqual(self.child.remarks, 'original')
+        self.destination.refresh_from_db()
+        response = self.put(
+            self.destination, preparations={'remove': [self.uri(self.child)]},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.child.refresh_from_db()
+        self.assertIsNone(self.child.preparationattribute_id)
+        self.assertEqual(self.child.remarks, 'original')
+        self.assertTrue(spmodels.Preparationattribute.objects.filter(pk=self.destination.id).exists())
+        self.assertTrue(spmodels.Preparationattribute.objects.filter(pk=self.original.id).exists())
+
+    def test_independent_uri_link_does_not_rewrite_or_delete_nested_children(self):
+        prop = spmodels.Preparationproperty.objects.create(
+            preparation=self.child, collectionmemberid=self.other_collection.id, integer1=1,
+        )
+        response = self.put(
+            self.destination, preparations={'update': [self.uri(self.child)]},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.child.refresh_from_db()
+        prop.refresh_from_db()
+        self.assertEqual(self.child.preparationattribute_id, self.destination.id)
+        self.assertEqual(prop.integer1, 1)
+        self.assertEqual(prop.version, 0)
+
+    def test_independent_uri_unlink_does_not_rewrite_nested_children(self):
+        self.child.preparationattribute = self.destination
+        self.child.save()
+        prop = spmodels.Preparationproperty.objects.create(
+            preparation=self.child, collectionmemberid=self.other_collection.id,
+        )
+        response = self.put(
+            self.destination, preparations={'remove': [self.uri(self.child)]},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.child.refresh_from_db()
+        prop.refresh_from_db()
+        self.assertIsNone(self.child.preparationattribute_id)
+        self.assertEqual(prop.version, 0)
+
+    def test_independent_reparent_checks_original_parent_scope(self):
+        self.child.preparationattribute = self.restricted_original
+        self.child.save()
+        for value in (self.uri(self.child), self.child_data()):
+            with self.subTest(value=value):
+                self.assert_denied_unchanged(
+                    self.destination, preparations={'update': [value]},
+                )
+
+    def test_independent_reparent_with_all_grants_succeeds(self):
+        self.child.preparationattribute = self.restricted_original
+        self.child.save()
+        self.allow_other()
+        response = self.put(
+            self.destination, preparations={'update': [self.uri(self.child)]},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.child.refresh_from_db()
+        self.assertEqual(self.child.preparationattribute_id, self.destination.id)
+
+    def test_independent_unlink_rejects_child_of_another_parent(self):
+        before = self.snapshot()
+        response = self.put(
+            self.destination, preparations={'remove': [self.uri(self.child)]},
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(self.snapshot(), before)
+
+    def test_independent_mixed_batch_is_atomic(self):
+        self.assert_denied_unchanged(
+            self.destination, text1='rollback',
+            preparations={'update': [
+                self.child_data(remarks='rollback'), self.uri(self.restricted_child),
+            ]},
+        )
+
+    def test_independent_create_parent_rolls_back_on_denied_child(self):
+        before = self.snapshot()
+        response = self.client.post(
+            '/api/specify/preparationattribute/',
+            data={'preparations': {'update': [self.uri(self.restricted_child)]}},
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(self.snapshot(), before)
+
+    def test_independent_nested_create_and_update(self):
+        response = self.put(
+            self.destination, preparations={'update': [
+                self.child_data(remarks='updated'),
+                {'collectionobject': self.uri(self.second_parent),
+                 'preptype': self.uri(self.prep_type), 'remarks': 'new'},
+            ]},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.child.refresh_from_db()
+        self.assertEqual(self.child.remarks, 'updated')
+        self.assertEqual(self.child.preparationattribute_id, self.destination.id)
+        self.assertTrue(self.destination.preparations.filter(remarks='new').exists())
+
+    def test_independent_supplied_back_reference_cannot_override_destination(self):
+        response = self.put(self.destination, preparations={'update': [
+            self.child_data(
+                preparationattribute=self.uri(self.original),
+                PreparationAttribute=self.uri(self.restricted_original),
+            ),
+        ]})
+        self.assertEqual(response.status_code, 200)
+        self.child.refresh_from_db()
+        self.assertEqual(self.child.preparationattribute_id, self.destination.id)
+
+    def test_independent_nested_scope_change_requires_destination_permission(self):
+        self.assert_denied_unchanged(self.destination, preparations={'update': [
+            self.child_data(collectionmemberid=self.other_collection.id),
+        ]})
+
+    def test_independent_link_succeeds_with_target_collection_grants(self):
+        self.allow_other()
+        response = self.put(self.destination, preparations={
+            'update': [self.uri(self.restricted_child)],
+        })
+        self.assertEqual(response.status_code, 200)
+        self.restricted_child.refresh_from_db()
+        self.assertEqual(self.restricted_child.preparationattribute_id, self.destination.id)
+        self.assertEqual(self.restricted_child.collectionmemberid, self.other_collection.id)
+
+    def test_independent_create_child_requires_create_permission(self):
+        models.UserPolicy.objects.filter(resource='/table/%').delete()
+        for action in ('read', 'update'):
+            self.grant(self.collection, '/table/%', action)
+        self.assert_denied_unchanged(self.destination, preparations={'update': [{
+            'preptype': self.uri(self.prep_type),
+            'collectionobject': self.uri(self.parent), 'remarks': 'denied',
+        }]})
+
+    def test_independent_missing_uri_rolls_back(self):
+        before = self.snapshot()
+        response = self.put(
+            self.destination, text1='rollback',
+            preparations={'update': ['/api/specify/preparation/2147483647/']},
+        )
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(self.snapshot(), before)
+
+    def test_independent_child_field_permission_is_required(self):
+        models.UserPolicy.objects.filter(resource='/field/%').delete()
+        self.grant(self.collection, '/field/preparationattribute/preparations', 'update')
+        self.assert_denied_unchanged(
+            self.destination, preparations={'update': [self.uri(self.child)]},
+        )
+
+    def test_independent_original_parent_field_permission_is_required(self):
+        models.UserPolicy.objects.filter(resource='/field/%').delete()
+        self.grant(self.collection, '/field/preparation/%', 'update')
+        self.grant(self.collection, '/field/preparationattribute/preparations', 'update')
+        # Give the old parent a distinct scope so only the destination grant applies.
+        self.child.preparationattribute = self.restricted_original
+        self.child.save()
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/%', '%')
+        self.assert_denied_unchanged(
+            self.destination, preparations={'update': [self.uri(self.child)]},
+        )
+
+    def test_independent_update_then_remove_uses_current_version(self):
+        response = self.put(self.destination, preparations={
+            'update': [self.child_data(remarks='updated')],
+            'remove': [self.uri(self.child)],
+        })
+        self.assertEqual(response.status_code, 200)
+        self.child.refresh_from_db()
+        self.assertEqual(self.child.remarks, 'updated')
+        self.assertIsNone(self.child.preparationattribute_id)
+        self.assertTrue(spmodels.Preparationattribute.objects.filter(pk=self.destination.id).exists())
+
+    def test_independent_stale_nested_update_is_atomic(self):
+        before = self.snapshot()
+        response = self.put(self.destination, text1='rollback', preparations={
+            'update': [self.child_data(version=self.child.version + 1)],
+        })
+        self.assertEqual(response.status_code, 409)
+        self.assertEqual(self.snapshot(), before)
+
+    def test_independent_missing_nested_version_is_rejected(self):
+        before = self.snapshot()
+        response = self.put(self.destination, preparations={'update': [{'id': self.child.id}]})
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(self.snapshot(), before)
+
+    def test_independent_parent_update_permission_is_required(self):
+        initialize.wipe_permissions()
+        self.grant_access(self.collection)
+        for action in ('read', 'update'):
+            self.grant(self.collection, '/table/preparation', action)
+        self.grant(self.collection, '/table/preparationattribute', 'read')
+        self.grant(self.collection, '/field/%', 'update')
+        self.assert_denied_unchanged(
+            self.destination, preparations={'update': [self.uri(self.child)]},
+        )
+
+    def test_independent_remove_batch_rolls_back_earlier_unlink(self):
+        self.child.preparationattribute = self.destination
+        self.child.save()
+        self.restricted_child.preparationattribute = self.destination
+        self.restricted_child.save()
+        self.assert_denied_unchanged(
+            self.destination, preparations={'remove': [
+                self.uri(self.child), self.uri(self.restricted_child),
+            ]},
+        )
+
+    def test_independent_parent_relationship_field_permission_is_required(self):
+        models.UserPolicy.objects.filter(resource='/field/%').delete()
+        self.grant(self.collection, '/field/preparation/%', 'update')
+        self.assert_denied_unchanged(
+            self.destination, preparations={'update': [self.uri(self.child)]},
+        )
+
+    def test_dependent_nested_update_checks_child_scope(self):
+        self.restricted_child.collectionobject = self.parent
+        self.restricted_child.save()
+        self.assert_denied_unchanged(
+            self.parent, preparations=[
+                self.child_data(), self.child_data(self.restricted_child, remarks='denied'),
+            ],
+        )
+
+    def test_dependent_nested_scope_change_requires_destination_permission(self):
+        self.assert_denied_unchanged(self.parent, preparations=[
+            self.child_data(collectionmemberid=self.other_collection.id),
+        ])
+
+    def test_dependent_create_parent_with_nested_children(self):
+        response = self.client.post(
+            '/api/specify/collectionobject/',
+            data={
+                'collection': self.uri(self.collection), 'catalognumber': 'nested-create',
+                'preparations': [{
+                    'preptype': self.uri(self.prep_type),
+                    'preparationproperties': [{'integer1': 1}],
+                }],
+            }, content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 201)
+        obj = spmodels.Collectionobject.objects.get(pk=response.json()['id'])
+        self.assertEqual(obj.preparations.get().collectionmemberid, self.collection.id)
+        self.assertEqual(obj.preparations.get().preparationproperties.get().integer1, 1)
+
+    def test_dependent_omission_requires_delete_in_child_scope(self):
+        self.restricted_child.collectionobject = self.parent
+        self.restricted_child.save()
+        self.assert_denied_unchanged(
+            self.parent, text1='rollback', preparations=[self.child_data()],
+        )
+
+    def test_dependent_omission_requires_delete_not_update(self):
+        initialize.wipe_permissions()
+        self.grant_access(self.collection)
+        for action in ('read', 'update'):
+            self.grant(self.collection, '/table/%', action)
+        self.grant(self.collection, '/field/%', 'update')
+        self.assert_denied_unchanged(self.parent, preparations=[])
+
+    def test_dependent_omission_checks_cascaded_grandchild_scope(self):
+        spmodels.Preparationproperty.objects.create(
+            preparation=self.child, collectionmemberid=self.other_collection.id,
+        )
+        self.assert_denied_unchanged(self.parent, preparations=[])
+
+    def test_dependent_omission_checks_grandchild_table_delete(self):
+        spmodels.Preparationproperty.objects.create(
+            preparation=self.child, collectionmemberid=self.collection.id,
+        )
+        initialize.wipe_permissions()
+        self.grant_access(self.collection)
+        for action in ('read', 'update'):
+            self.grant(self.collection, '/table/%', action)
+        self.grant(self.collection, '/table/preparation', 'delete')
+        self.grant(self.collection, '/field/%', 'update')
+        self.assert_denied_unchanged(self.parent, preparations=[])
+
+    def test_dependent_omission_deletes_forward_dependent_with_permissions(self):
+        attribute = spmodels.Preparationattribute.objects.create(
+            collectionmemberid=self.collection.id,
+        )
+        self.child.preparationattribute = attribute
+        self.child.save()
+        response = self.put(self.parent, preparations=[])
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(spmodels.Preparation.objects.filter(pk=self.child.id).exists())
+        self.assertFalse(spmodels.Preparationattribute.objects.filter(pk=attribute.id).exists())
+
+    def test_dependent_omission_checks_forward_dependent_scope(self):
+        self.child.preparationattribute = self.restricted_original
+        self.child.save()
+        self.assert_denied_unchanged(self.parent, preparations=[])
+
+    def test_dependent_omission_audits_cascaded_grandchildren(self):
+        prop = spmodels.Preparationproperty.objects.create(
+            preparation=self.child, collectionmemberid=self.collection.id,
+        )
+        response = self.put(self.parent, preparations=[])
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(spmodels.Preparationproperty.objects.filter(pk=prop.id).exists())
+        self.assertTrue(spmodels.Spauditlog.objects.filter(
+            recordid=prop.id, tablenum=prop.specify_model.tableId, action=2,
+        ).exists())
+
+    def test_dependent_omission_mixed_siblings_is_atomic(self):
+        allowed = self._create_prep(self.second_parent, None)
+        self.restricted_child.collectionobject = self.second_parent
+        self.restricted_child.save()
+        self.assert_denied_unchanged(self.second_parent, preparations=[])
+        self.assertTrue(spmodels.Preparation.objects.filter(pk=allowed.id).exists())
+
+    def test_dependent_nested_grandchild_denial_rolls_back_all_changes(self):
+        prop = spmodels.Preparationproperty.objects.create(
+            preparation=self.child, collectionmemberid=self.other_collection.id,
+        )
+        self.assert_denied_unchanged(self.parent, text1='rollback', preparations=[
+            self.child_data(remarks='rollback', preparationproperties=[
+                {'id': prop.id, 'version': prop.version, 'integer1': 2},
+            ]),
+        ])
+
+    def test_dependent_old_parent_field_permission_is_required(self):
+        self.child.collectionobject = self.restricted_parent
+        self.child.save()
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/%', '%')
+        self.assert_denied_unchanged(self.second_parent, preparations=[self.child_data()])
+
+    def test_dependent_reparent_with_all_grants_preserves_child_scope(self):
+        self.child.collectionobject = self.restricted_parent
+        self.child.save()
+        self.allow_other()
+        response = self.put(self.second_parent, preparations=[self.child_data()])
+        self.assertEqual(response.status_code, 200)
+        self.child.refresh_from_db()
+        self.assertEqual(self.child.collectionobject_id, self.second_parent.id)
+        self.assertEqual(self.child.collectionmemberid, self.collection.id)
+
+    def test_dependent_nested_create_and_update(self):
+        response = self.put(self.parent, preparations=[
+            self.child_data(remarks='updated'),
+            {'preptype': self.uri(self.prep_type), 'remarks': 'new',
+             'preparationproperties': [{'integer1': 1}]},
+        ])
+        self.assertEqual(response.status_code, 200)
+        self.child.refresh_from_db()
+        self.assertEqual(self.child.remarks, 'updated')
+        created = self.parent.preparations.get(remarks='new')
+        self.assertEqual(created.preparationproperties.get().integer1, 1)
+
+    def test_dependent_case_insensitive_child_data_is_updated_not_recreated(self):
+        response = self.put(self.parent, preparations=[{
+            'ID': self.child.id, 'Version': self.child.version, 'Remarks': 'updated',
+        }])
+        self.assertEqual(response.status_code, 200)
+        self.child.refresh_from_db()
+        self.assertEqual(self.child.remarks, 'updated')
+        self.assertEqual(self.parent.preparations.count(), 1)
+
+    def test_dependent_supplied_back_reference_cannot_override_destination(self):
+        response = self.put(self.second_parent, preparations=[
+            self.child_data(
+                collectionobject=self.uri(self.parent),
+                CollectionObject=self.uri(self.restricted_parent),
+            ),
+        ])
+        self.assertEqual(response.status_code, 200)
+        self.child.refresh_from_db()
+        self.assertEqual(self.child.collectionobject_id, self.second_parent.id)
+
+    def test_invalid_reverse_mutation_payloads_return_400_and_rollback(self):
+        cases = (
+            (self.parent, {'preparations': {'update': []}}),
+            (self.parent, {'preparations': [self.uri(self.child)]}),
+            (self.destination, {'preparations': []}),
+            (self.destination, {'preparations': {'update': 'not a list'}}),
+            (self.destination, {'preparations': {'remove': [{}]}}),
+            (self.destination, {'preparations': {'update': [False]}}),
+            (self.destination, {'preparations': {'unknown': []}}),
+            (self.destination, {'preparations': {'update': ['/api/specify/taxon/1/']}}),
+        )
+        for parent, changes in cases:
+            with self.subTest(changes=changes):
+                before = self.snapshot()
+                response = self.put(parent, **changes)
+                self.assertEqual(response.status_code, 400)
+                self.assertEqual(self.snapshot(), before)
+
+    def test_dependent_reparent_checks_original_parent_scope(self):
+        self.child.collectionobject = self.restricted_parent
+        self.child.save()
+        self.assert_denied_unchanged(self.second_parent, preparations=[self.child_data()])
+
+    def test_dependent_reparent_succeeds_with_required_permissions(self):
+        response = self.put(self.second_parent, preparations=[self.child_data(remarks='moved')])
+        self.assertEqual(response.status_code, 200)
+        self.child.refresh_from_db()
+        self.assertEqual(self.child.collectionobject_id, self.second_parent.id)
+        self.assertEqual(self.child.remarks, 'moved')
+
+    def test_dependent_parent_relationship_field_permission_is_required(self):
+        models.UserPolicy.objects.filter(resource='/field/%').delete()
+        self.grant(self.collection, '/field/preparation/%', 'update')
+        self.assert_denied_unchanged(self.parent, preparations=[self.child_data(remarks='denied')])
+
+    def test_dependent_create_under_other_collection_uses_parent_scope(self):
+        self.allow_other()
+        response = self.put(self.restricted_parent, preparations=[
+            self.child_data(self.restricted_child),
+            {'preptype': self.uri(self.prep_type), 'remarks': 'new scoped child'},
+        ])
+        self.assertEqual(response.status_code, 200)
+        created = self.restricted_parent.preparations.get(remarks='new scoped child')
+        self.assertEqual(created.collectionmemberid, self.other_collection.id)
+
+    def test_dependent_create_requires_create_in_destination_scope(self):
+        self.grant_access(self.other_collection)
+        for action in ('read', 'update'):
+            self.grant(self.other_collection, '/table/%', action)
+        self.grant(self.other_collection, '/field/%', 'update')
+        self.assert_denied_unchanged(
+            self.restricted_parent, preparations=[
+                self.child_data(self.restricted_child),
+                {'preptype': self.uri(self.prep_type), 'remarks': 'denied'},
+            ],
+        )
+
+    def test_dependent_nested_update_stale_version_rolls_back(self):
+        before = self.snapshot()
+        response = self.put(self.parent, text1='rollback', preparations=[
+            self.child_data(version=self.child.version + 1, remarks='denied'),
+        ])
+        self.assertEqual(response.status_code, 409)
+        self.assertEqual(self.snapshot(), before)
+
+    def test_dependent_missing_child_rolls_back(self):
+        before = self.snapshot()
+        response = self.put(self.parent, text1='rollback', preparations=[
+            {'id': 2147483647, 'version': 0},
+        ])
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(self.snapshot(), before)
+
+class ReverseInheritedScopeMutationApiTests(ScopedPermissionTestBase):
+    def setUp(self):
+        super().setUp()
+        self.grant_access(self.collection)
+        self.grant(self.collection, '/table/%', '%')
+        self.grant(self.collection, '/field/%', 'update')
+        self.client.force_login(self.specifyuser)
+        self.client.cookies['collection'] = str(self.collection.id)
+        self.other_discipline = spmodels.Discipline.objects.create(
+            division=self.division, datatype=self.datatype,
+            geographytreedef=self.geographytreedef,
+            geologictimeperiodtreedef=self.geologictimeperiodtreedef,
+        )
+        self.other_collection.discipline = self.other_discipline
+        self.other_collection.save()
+        self.notebook = spmodels.Fieldnotebook.objects.create(
+            collection=self.collection, discipline=self.discipline, owneragent=self.agent,
+        )
+        self.other_notebook = spmodels.Fieldnotebook.objects.create(
+            collection=self.other_collection, discipline=self.other_discipline,
+            owneragent=self.agent,
+        )
+        self.pageset = spmodels.Fieldnotebookpageset.objects.create(
+            fieldnotebook=self.notebook, discipline=self.discipline,
+        )
+        self.page = spmodels.Fieldnotebookpage.objects.create(
+            pageset=self.pageset, discipline=self.discipline, pagenumber='1',
+        )
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/%', 'read')
+        self.grant(self.other_collection, '/field/%', 'update')
+        for table in ('fieldnotebook', 'fieldnotebookpageset'):
+            self.grant(self.other_collection, f'/table/{table}', 'update')
+
+    def snapshot(self):
+        return {
+            model.__name__: list(model.objects.order_by('pk').values())
+            for model in (
+                spmodels.Fieldnotebook, spmodels.Fieldnotebookpageset,
+                spmodels.Fieldnotebookpage, spmodels.Spauditlog, spmodels.Spauditlogfield,
+            )
+        }
+
+    def move(self):
+        return self.client.put(
+            f'/api/specify/fieldnotebook/{self.other_notebook.id}/',
+            data={
+                'version': self.other_notebook.version, 'description': 'changed',
+                'pagesets': [{
+                    'id': self.pageset.id, 'version': self.pageset.version,
+                }],
+            }, content_type='application/json',
+        )
+
+    def test_reparent_checks_resulting_descendant_scope(self):
+        before = self.snapshot()
+        response = self.move()
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(self.snapshot(), before)
+
+    def test_reparent_checks_original_descendant_scope(self):
+        models.UserPolicy.objects.filter(resource='/table/%', action='%').delete()
+        for action in ('read', 'update'):
+            self.grant(self.collection, '/table/fieldnotebook', action)
+            self.grant(self.collection, '/table/fieldnotebookpageset', action)
+        self.grant(self.collection, '/table/fieldnotebookpage', 'read')
+        self.grant(self.other_collection, '/table/fieldnotebookpage', 'update')
+        before = self.snapshot()
+        response = self.move()
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(self.snapshot(), before)
+
+    def test_reparent_moves_descendant_scope_with_all_required_permissions(self):
+        self.grant(self.other_collection, '/table/fieldnotebookpage', 'update')
+        response = self.move()
+        self.assertEqual(response.status_code, 200)
+        self.pageset.refresh_from_db()
+        self.page.refresh_from_db()
+        self.assertEqual(self.pageset.fieldnotebook_id, self.other_notebook.id)
+        self.assertEqual(
+            permissions.Scoping.scope_for_record(self.page), self.other_discipline,
+        )
+
+    def test_nested_create_in_restricted_destination_rolls_back(self):
+        before = self.snapshot()
+        response = self.client.put(
+            f'/api/specify/fieldnotebook/{self.other_notebook.id}/',
+            data={'version': self.other_notebook.version, 'pagesets': [{
+                'discipline': f'/api/specify/discipline/{self.discipline.id}/',
+                'pages': [{'discipline': f'/api/specify/discipline/{self.discipline.id}/',
+                           'pagenumber': 'new'}],
+            }]},
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(self.snapshot(), before)
+
+    def test_nested_scope_change_without_reparent_checks_descendants(self):
+        self.other_division = spmodels.Division.objects.create(
+            institution=self.institution, name='Other division',
+        )
+        self.other_discipline.division = self.other_division
+        self.other_discipline.save()
+        desc = spmodels.Conservdescription.objects.create(
+            collectionobject=self.collectionobjects[0], division=self.division,
+        )
+        event = spmodels.Conservevent.objects.create(conservdescription=desc)
+        self.grant(self.other_collection, '/table/conservdescription', 'update')
+        before = {
+            model.__name__: list(model.objects.order_by('pk').values())
+            for model in (spmodels.Collectionobject, spmodels.Conservdescription,
+                          spmodels.Conservevent, spmodels.Spauditlog, spmodels.Spauditlogfield)
+        }
+        response = self.client.put(
+            f'/api/specify/collectionobject/{self.collectionobjects[0].id}/',
+            data={'version': self.collectionobjects[0].version, 'conservdescriptions': [{
+                'id': desc.id, 'version': desc.version,
+                'division': f'/api/specify/division/{self.other_division.id}/',
+            }]},
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual({
+            model.__name__: list(model.objects.order_by('pk').values())
+            for model in (spmodels.Collectionobject, spmodels.Conservdescription,
+                          spmodels.Conservevent, spmodels.Spauditlog, spmodels.Spauditlogfield)
+        }, before)
+        event.refresh_from_db()
+
 class ForeignKeyReferenceWriteApiTests(ScopedPermissionTestBase):
     def setUp(self):
         super().setUp()
