@@ -14,7 +14,10 @@ logger = logging.getLogger(__name__)
 from django.db import connection
 from django.db.models import Model, Q, QuerySet
 
-from specifyweb.specify.models import Accession, Agent, Discipline, Division, Institution
+from specifyweb.specify.models import (
+    Accession, Agent, Discipline, Division, Geography, Geologictimeperiod,
+    Institution, Lithostrat, Taxon, Tectonicunit,
+)
 from specifyweb.specify.datamodel import Table
 from specifyweb.specify.utils.scoping import Scoping, ScopeType
 from specifyweb.backend.cache.thread import ThreadCache
@@ -285,8 +288,9 @@ def filter_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
     """Filter supported record scopes before counting, projection, or pagination.
 
     Supports hierarchy records, direct collection scopes, and direct
-    division/discipline scopes without competing scope fields. Other scopes
-    are not filtered here; serialized records still undergo instance checks.
+    division/discipline scopes without competing scope fields, and discipline
+    tree nodes. Other scopes are not filtered here; serialized records still
+    undergo instance checks.
     """
     model = queryset.model
     hierarchy_lookup = {
@@ -295,6 +299,9 @@ def filter_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
         Division: "discipline__division_id",
         Institution: "discipline__division__institution_id",
     }.get(model)
+    discipline_tree_scope = model in (
+        Taxon, Geography, Geologictimeperiod, Lithostrat, Tectonicunit,
+    )
     scope_type = Scoping.scope_type_from_class(model)
     direct_division_scope = (
         scope_type == ScopeType.DIVISION
@@ -317,6 +324,7 @@ def filter_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
         and not direct_division_scope
         and not direct_discipline_scope
         and hierarchy_lookup is None
+        and not discipline_tree_scope
     ):
         return queryset
 
@@ -331,6 +339,18 @@ def filter_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
         return queryset.filter(pk__in=models.Collection.objects.filter(
             id__in=allowed_ids
         ).values(hierarchy_lookup))
+    if discipline_tree_scope:
+        condition = Q(
+            definition__discipline_id__in=models.Collection.objects.filter(
+                id__in=allowed_ids
+            ).values("discipline_id")
+        )
+        # A definition without a discipline uses the resolver's institution fallback.
+        if allowed_ids:
+            condition |= Q(
+                definition__isnull=False, definition__discipline__isnull=True
+            )
+        return queryset.filter(condition)
     if direct_division_scope or direct_discipline_scope:
         allowed_collections = models.Collection.objects.filter(id__in=allowed_ids)
         field = "division" if direct_division_scope else "discipline"
