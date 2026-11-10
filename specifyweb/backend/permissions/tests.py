@@ -1290,6 +1290,129 @@ class AccessionReadApiTests(ScopedPermissionTestBase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(json.loads(response.content), [])
 
+class InstitutionRecordReadApiTests(ScopedPermissionTestBase):
+    def setUp(self):
+        super().setUp()
+        self.grant_access(self.collection)
+        self.grant(self.collection, '/table/%', 'read')
+        self.client.force_login(self.specifyuser)
+        self.client.cookies['collection'] = str(self.collection.id)
+        self.other_institution = spmodels.Institution.objects.create(
+            name='Other Institution', isaccessionsglobal=True,
+            issecurityon=False, isserverbased=False,
+            issharinglocalities=True, issinglegeographytree=True,
+        )
+        self.other_division = spmodels.Division.objects.create(
+            institution=self.other_institution, name='Other Division',
+        )
+        self.other_discipline = spmodels.Discipline.objects.create(
+            division=self.other_division, datatype=self.datatype,
+            taxontreedef=self.taxontreedef,
+            geographytreedef=self.geographytreedef,
+            geologictimeperiodtreedef=self.geologictimeperiodtreedef,
+        )
+        self.other_collection.discipline = self.other_discipline
+        self.other_collection.save()
+        self.records = []
+        for model, label_field, fields in (
+            (spmodels.Permit, 'permitnumber', {}),
+            (spmodels.Referencework, 'title', {'referenceworktype': 0}),
+        ):
+            allowed = model.objects.create(
+                institution=self.institution, **{label_field: 'allowed'}, **fields,
+            )
+            restricted = model.objects.create(
+                institution=self.other_institution,
+                **{label_field: 'restricted'}, **fields,
+            )
+            self.records.append((model._meta.model_name, allowed, restricted))
+
+    def assert_visible_records(self, include_other=False, restricted_only=False, **params):
+        for table, allowed, restricted in self.records:
+            for prefix in ('/api/specify', '/table_rows/specify_rows'):
+                with self.subTest(table=table, prefix=prefix):
+                    query = {'limit': 0, 'orderby': '-id', **params}
+                    if prefix == '/table_rows/specify_rows':
+                        query['fields'] = 'id'
+                    if restricted_only:
+                        query['id'] = restricted.id
+                    response = self.client.get(f'{prefix}/{table}/', query)
+                    self.assertEqual(response.status_code, 200)
+                    expected = [allowed.id]
+                    if include_other:
+                        expected.append(restricted.id)
+                    if restricted_only:
+                        expected = [restricted.id] if include_other else []
+                    payload = response.json()
+                    if isinstance(payload, dict):
+                        self.assertEqual(payload['meta']['total_count'], len(expected))
+                        ids = [obj['id'] for obj in payload['objects']]
+                    else:
+                        ids = [row[0] for row in payload]
+                    self.assertCountEqual(ids, expected)
+
+    def test_excludes_other_institution(self):
+        self.assert_visible_records()
+
+    def test_restricted_id_returns_empty_results(self):
+        self.assert_visible_records(restricted_only=True)
+
+    def test_read_grant_requires_collection_access(self):
+        self.grant(self.other_collection, '/table/%', 'read')
+        self.assert_visible_records()
+
+    def test_collection_access_requires_table_read_grant(self):
+        self.grant_access(self.other_collection)
+        self.assert_visible_records()
+
+    def test_both_grants_allow_other_institution(self):
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/%', 'read')
+        self.assert_visible_records(include_other=True)
+
+    def test_global_grant_allows_other_institution(self):
+        self.grant(None, '%', '%')
+        self.assert_visible_records(include_other=True)
+
+    def test_shared_institution_remains_visible(self):
+        for _, _, restricted in self.records:
+            restricted.institution = self.institution
+            restricted.save()
+        self.assert_visible_records(include_other=True)
+
+    def test_empty_institution_scope_is_excluded_even_with_global_grant(self):
+        self.other_collection.delete()
+        self.grant(None, '%', '%')
+        self.assert_visible_records()
+
+    def test_distinct_projection_excludes_restricted_values(self):
+        for table, field in (('permit', 'permitnumber'), ('referencework', 'title')):
+            with self.subTest(table=table):
+                response = self.client.get(
+                    f'/table_rows/specify_rows/{table}/',
+                    {'fields': field, 'distinct': 'true'},
+                )
+                self.assertEqual(response.status_code, 200)
+                self.assertEqual(response.json(), [['allowed']])
+
+    def test_filters_before_pagination(self):
+        self.assert_visible_records(limit=1)
+
+    def test_legacy_dispatch_rows_uses_same_scope_filter(self):
+        from specifyweb.specify.api.dispatch import rows
+
+        for table, _, restricted in self.records:
+            with self.subTest(table=table):
+                request = RequestFactory().get(
+                    f'/table_rows/specify_rows/{table}/',
+                    {'fields': 'id', 'id': restricted.id},
+                )
+                request.specify_collection = self.collection
+                request.specify_user_agent = self.agent
+                response = rows(request, table)
+                self.assertEqual(response.status_code, 200)
+                self.assertEqual(json.loads(response.content), [])
+
 class ScopedDeleteApiTests(ScopedPermissionTestBase):
     def setUp(self):
         super().setUp()

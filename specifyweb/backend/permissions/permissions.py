@@ -16,7 +16,7 @@ from django.db.models import Model, Q, QuerySet
 
 from specifyweb.specify.models import (
     Accession, Agent, Discipline, Division, Geography, Geologictimeperiod, Gift,
-    Institution, Lithostrat, Loan, Storage, Taxon, Tectonicunit,
+    Institution, Lithostrat, Loan, Permit, Referencework, Storage, Taxon, Tectonicunit,
 )
 from specifyweb.specify.datamodel import Table
 from specifyweb.specify.utils.scoping import Scoping, ScopeType
@@ -291,6 +291,7 @@ def filter_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
     division/discipline scopes without competing scope fields, and discipline
     and storage tree nodes. Loan and Gift use their required discipline even
     when a division is populated; Accession follows its configured scope.
+    Permit and ReferenceWork use their required institution.
     Other scopes are not filtered here; serialized records still undergo
     instance checks.
     """
@@ -330,6 +331,7 @@ def filter_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
         and model is not Storage
         and model not in (Loan, Gift)
         and model is not Accession
+        and model not in (Permit, Referencework)
     ):
         return queryset
 
@@ -344,6 +346,12 @@ def filter_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
         return queryset.filter(pk__in=models.Collection.objects.filter(
             id__in=allowed_ids
         ).values(hierarchy_lookup))
+    if model in (Permit, Referencework):
+        return queryset.filter(
+            institution_id__in=models.Collection.objects.filter(
+                id__in=allowed_ids
+            ).values("discipline__division__institution_id")
+        )
     if model is Accession:
         allowed_collections = models.Collection.objects.filter(id__in=allowed_ids)
         if scope_type == ScopeType.INSTITUTION:
