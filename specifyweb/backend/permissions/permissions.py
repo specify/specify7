@@ -121,12 +121,7 @@ class NoAdminUsersException(PermissionsException):
         return {"NoAdminUsersException": {}}
 
 
-def enforce(
-    collection: int | Model | None, actor, resources: list[str], action: str
-) -> None:
-    if not resources:
-        return
-
+def _actor_userid(actor) -> int:
     if isinstance(actor, Agent):
         userid = actor.specifyuser_id
     else:
@@ -139,6 +134,16 @@ def enforce(
 
     if userid is None:
         raise PermissionsException(f"agent {actor} is not a Specify user")
+    return userid
+
+
+def enforce(
+    collection: int | Model | None, actor, resources: list[str], action: str
+) -> None:
+    if not resources:
+        return
+
+    userid = _actor_userid(actor)
 
     if isinstance(collection, int) or collection is None:
         collectionid = collection
@@ -286,10 +291,24 @@ def cache_permission_queries():
 TABLE_ACTION = Literal["read", "create", "update", "delete"]
 
 def check_table_permissions(collection, actor, obj, action: TABLE_ACTION) -> None:
+    """Check instance reads in their record scope; other checks use collection."""
     if isinstance(obj, Table):
         name = obj.name.lower()
     else:
         name = obj.specify_model.name.lower()
+    if action == "read" and isinstance(obj, Model):
+        userid = _actor_userid(actor)
+        scope = Scoping.scope_for_record(obj)
+        resource = f"/table/{name}"
+        if not has_permission_in_scope(scope, userid, resource, action):
+            collection_ids = Scoping.collections_for_scope(scope).values_list("id", flat=True)
+            denials = [
+                PermRequest(collectionid, userid, resource, action)
+                for collectionid in collection_ids
+            ]
+            logger.debug("record scope permission denied: %s, scope=%s", denials, scope)
+            raise NoMatchingRuleException(denials)
+        return
     enforce(collection, actor, [f"/table/{name}"], action)
 
 def has_table_permission(collection_id, user_id, table_name: str, action: TABLE_ACTION) -> bool:
