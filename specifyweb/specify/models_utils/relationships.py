@@ -318,14 +318,17 @@ def _authorize_related_update(collection, agent, obj, field, related_obj):
 
 @contextmanager
 def authorize_dependent_scope_update(collection, agent, obj):
-    """Require update permission in both scopes for implicitly moved dependents."""
+    """Authorize both scopes for implicitly moved dependents, including recordset items."""
     # Descendants can inherit scope through the moved record (e.g. notebook pages).
     states = []
     seen = {(type(obj), obj.pk)}
 
     def collect_dependents(parent):
         for relation in parent._meta.get_fields():
-            if not relation.is_relation or not is_dependent_field(parent, relation.name):
+            if not relation.is_relation or not (
+                is_dependent_field(parent, relation.name)
+                or (isinstance(parent, models.Recordset) and relation.name == 'recordsetitems')
+            ):
                 continue
             if relation.one_to_many:
                 children = getattr(parent, relation.name).select_for_update()

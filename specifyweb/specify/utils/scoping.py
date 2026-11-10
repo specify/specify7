@@ -102,6 +102,9 @@ class ModelClassScope:
     def referencework(self):
         return ScopeType.INSTITUTION
 
+    def recordsetitem(self):
+        return ScopeType.COLLECTION
+
     def taxon(self):
         return ScopeType.DISCIPLINE
 
@@ -180,6 +183,9 @@ class ModelInstanceScope:
     def permit(self) -> Model:
         if has_related(self.obj, 'institution'):
             return self.obj.institution
+
+    def recordsetitem(self) -> Model:
+        return ModelInstanceScope(self.obj.recordset).scope_model
 
     def referencework(self) -> Model:
         if has_related(self.obj, 'institution'):

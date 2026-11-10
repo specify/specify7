@@ -3954,6 +3954,343 @@ class ReverseInheritedScopeMutationApiTests(ScopedPermissionTestBase):
         }, before)
         event.refresh_from_db()
 
+class RecordsetItemAuthorizationApiTests(ScopedPermissionTestBase):
+    def setUp(self):
+        super().setUp()
+        self.client.force_login(self.specifyuser)
+        self.client.cookies['collection'] = str(self.collection.pk)
+        self.grant_access(self.collection)
+        self.grant(self.collection, '/table/%', '%')
+        self.grant(self.collection, '/field/%', 'update')
+        self.recordset = self.make_recordset(self.collection)
+        self.restricted_recordset = self.make_recordset(self.other_collection)
+        self.item = self.recordset.recordsetitems.create(recordid=self.collectionobjects[0].pk)
+        self.restricted_item = self.restricted_recordset.recordsetitems.create(
+            recordid=self.collectionobjects[1].pk,
+        )
+        self.restricted_record = spmodels.Collectionobject.objects.create(
+            collection=self.other_collection, catalognumber='restricted-member',
+        )
+
+    def make_recordset(self, collection):
+        return spmodels.Recordset.objects.create(
+            collectionmemberid=collection.pk,
+            dbtableid=spmodels.Collectionobject.specify_model.tableId,
+            name='Item operations', type=0, specifyuser=self.specifyuser,
+        )
+
+    def uri(self, obj):
+        return f'/api/specify/{obj._meta.model_name}/{obj.pk}/'
+
+    def snapshot(self):
+        return {
+            model.__name__: list(model.objects.order_by('pk').values())
+            for model in (
+                spmodels.Recordset, spmodels.Recordsetitem, spmodels.Collectionobject,
+                spmodels.Spauditlog, spmodels.Spauditlogfield,
+            )
+        }
+
+    def post(self, recordset=None, record=None):
+        return self.client.post('/api/specify/recordsetitem/', data={
+            'recordset': self.uri(self.recordset if recordset is None else recordset),
+            'recordid': (self.collectionobjects[2] if record is None else record).pk,
+        }, content_type='application/json')
+
+    def put(self, item=None, **changes):
+        return self.client.put(
+            self.uri(self.item if item is None else item), data=changes,
+            content_type='application/json',
+        )
+
+    def nested(self, items, recordset=None):
+        recordset = self.recordset if recordset is None else recordset
+        return self.client.put(self.uri(recordset), data={
+            'version': recordset.version, 'name': 'nested change',
+            'recordsetitems': items,
+        }, content_type='application/json')
+
+    def assert_denied_unchanged(self, operation):
+        before = self.snapshot()
+        self.assertEqual(operation().status_code, 403)
+        self.assertEqual(self.snapshot(), before)
+
+    def test_instance_scope_is_parent_collection(self):
+        self.assertEqual(permissions.Scoping.scope_for_record(self.restricted_item), self.other_collection)
+
+    def test_class_scope_is_collection(self):
+        from specifyweb.specify.utils.scoping import ScopeType
+        self.assertEqual(permissions.Scoping.scope_type_from_class(spmodels.Recordsetitem), ScopeType.COLLECTION)
+
+    def test_restricted_item_read_is_denied(self):
+        self.assertEqual(self.client.get(self.uri(self.restricted_item)).status_code, 403)
+
+    def test_list_filters_before_count_and_pagination(self):
+        response = self.client.get('/api/specify/recordsetitem/?domainfilter=false&limit=1')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['meta']['total_count'], 1)
+        self.assertEqual([row['id'] for row in response.json()['objects']], [self.item.pk])
+
+    def test_legacy_rows_filter_restricted_parent_scope(self):
+        response = self.client.get(
+            '/api/specify_rows/recordsetitem/?fields=id,recordid&domainfilter=false',
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [[self.item.pk, self.item.recordid]])
+
+    def test_modern_rows_filter_restricted_parent_scope(self):
+        response = self.client.get(
+            '/table_rows/specify_rows/recordsetitem/?fields=id,recordid&domainfilter=false',
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [[self.item.pk, self.item.recordid]])
+
+    def test_create_requires_parent_update(self):
+        models.UserPolicy.objects.filter(resource='/table/%').delete()
+        self.grant(self.collection, '/table/%', 'read')
+        self.grant(self.collection, '/table/recordsetitem', 'create')
+        self.assert_denied_unchanged(self.post)
+
+    def test_create_requires_parent_relationship_field_update(self):
+        models.UserPolicy.objects.filter(resource='/field/%').delete()
+        self.assert_denied_unchanged(self.post)
+
+    def test_create_requires_item_create_in_parent_scope(self):
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/recordset', '%')
+        self.grant(self.other_collection, '/field/%', 'update')
+        self.assert_denied_unchanged(lambda: self.post(self.restricted_recordset))
+
+    def test_create_requires_referenced_record_read(self):
+        self.assert_denied_unchanged(lambda: self.post(record=self.restricted_record))
+
+    def test_update_requires_referenced_record_read(self):
+        self.assert_denied_unchanged(lambda: self.put(recordid=self.restricted_record.pk))
+
+    def test_item_read_grant_requires_collection_access(self):
+        self.grant(self.other_collection, '/table/recordsetitem', 'read')
+        self.assertEqual(self.client.get(self.uri(self.restricted_item)).status_code, 403)
+
+    def test_readable_parent_does_not_replace_item_read(self):
+        models.UserPolicy.objects.filter(resource='/table/%').delete()
+        self.grant(self.collection, '/table/recordset', 'read')
+        self.assertEqual(self.client.get(self.uri(self.item)).status_code, 403)
+
+    def test_noop_update_does_not_bypass_parent_scope(self):
+        self.assert_denied_unchanged(lambda: self.put(self.restricted_item, order=1))
+
+    def test_update_requires_parent_update_even_when_item_update_is_granted(self):
+        models.UserPolicy.objects.filter(resource='/table/%').delete()
+        self.grant(self.collection, '/table/%', 'read')
+        self.grant(self.collection, '/table/recordsetitem', 'update')
+        self.assert_denied_unchanged(lambda: self.put(order=1))
+
+    def test_delete_requires_parent_update(self):
+        models.UserPolicy.objects.filter(resource='/table/%').delete()
+        self.grant(self.collection, '/table/%', 'read')
+        self.grant(self.collection, '/table/recordsetitem', 'delete')
+        self.assert_denied_unchanged(lambda: self.client.delete(self.uri(self.item)))
+
+    def test_delete_requires_parent_relationship_field_update(self):
+        models.UserPolicy.objects.filter(resource='/field/%').delete()
+        self.assert_denied_unchanged(lambda: self.client.delete(self.uri(self.item)))
+
+    def test_update_requires_parent_relationship_field_update(self):
+        models.UserPolicy.objects.filter(resource='/field/%').delete()
+        self.grant(self.collection, '/field/recordsetitem/%', 'update')
+        self.assert_denied_unchanged(lambda: self.put(order=1))
+
+    def test_delete_restricted_item_is_denied(self):
+        self.assert_denied_unchanged(lambda: self.client.delete(self.uri(self.restricted_item)))
+
+    def test_reparent_requires_original_parent_update(self):
+        self.grant_access(self.other_collection)
+        for action in ('read', 'update'):
+            self.grant(self.other_collection, '/table/recordsetitem', action)
+        self.assert_denied_unchanged(lambda: self.put(
+            self.restricted_item, recordset=self.uri(self.recordset),
+        ))
+
+    def test_reparent_requires_destination_parent_update(self):
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/%', 'read')
+        self.grant(self.other_collection, '/table/recordsetitem', 'update')
+        self.assert_denied_unchanged(lambda: self.put(recordset=self.uri(self.restricted_recordset)))
+
+    def test_authorized_cross_collection_reparent_persists(self):
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/%', '%')
+        self.grant(self.other_collection, '/field/%', 'update')
+        response = self.put(recordset=self.uri(self.restricted_recordset))
+        self.assertEqual(response.status_code, 200)
+        self.item.refresh_from_db()
+        self.assertEqual(self.item.recordset_id, self.restricted_recordset.pk)
+        self.assertEqual(permissions.Scoping.scope_for_record(self.item), self.other_collection)
+
+    def test_reparent_requires_item_update_in_destination_scope(self):
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/recordset', '%')
+        self.grant(self.other_collection, '/field/%', 'update')
+        self.assert_denied_unchanged(lambda: self.put(recordset=self.uri(self.restricted_recordset)))
+
+    def test_missing_reference_returns_404_and_rolls_back(self):
+        before = self.snapshot()
+        response = self.put(recordid=self.restricted_record.pk + 1000000, order=7)
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(self.snapshot(), before)
+
+    def test_invalid_reference_returns_400_and_rolls_back(self):
+        before = self.snapshot()
+        response = self.put(recordid='invalid', order=7)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(self.snapshot(), before)
+
+    def test_nested_mixed_members_roll_back_all_changes(self):
+        self.assert_denied_unchanged(lambda: self.nested([
+            {'recordid': self.collectionobjects[2].pk},
+            {'recordid': self.restricted_record.pk},
+        ]))
+
+    def test_nested_new_recordset_with_restricted_member_rolls_back(self):
+        self.assert_denied_unchanged(lambda: self.client.post(
+            '/api/specify/recordset/', data={
+                'name': 'Denied', 'type': 0,
+                'dbtableid': spmodels.Collectionobject.specify_model.tableId,
+                'recordsetitems': [{'recordid': self.restricted_record.pk}],
+            }, content_type='application/json',
+        ))
+
+    def test_nested_existing_item_update_checks_reference(self):
+        self.assert_denied_unchanged(lambda: self.nested([
+            {'id': self.item.pk, 'recordid': self.restricted_record.pk},
+        ]))
+
+    def test_nested_new_recordset_requires_create_not_parent_update(self):
+        models.UserPolicy.objects.filter(resource='/table/%').delete()
+        for action in ('read', 'create'):
+            self.grant(self.collection, '/table/%', action)
+        response = self.client.post('/api/specify/recordset/', data={
+            'name': 'New set', 'type': 0,
+            'dbtableid': spmodels.Collectionobject.specify_model.tableId,
+            'recordsetitems': [{'recordid': self.collectionobjects[2].pk}],
+        }, content_type='application/json')
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(spmodels.Recordset.objects.get(pk=response.json()['id'])
+                         .recordsetitems.get().recordid, self.collectionobjects[2].pk)
+
+    def test_nested_recordsets_require_inner_recordset_read(self):
+        self.recordset.dbtableid = spmodels.Recordset.specify_model.tableId
+        self.recordset.save()
+        self.assert_denied_unchanged(lambda: self.post(record=self.restricted_recordset))
+
+    def test_shared_discipline_reference_is_allowed(self):
+        self.recordset.dbtableid = spmodels.Collectingevent.specify_model.tableId
+        self.recordset.save()
+        response = self.post(record=self.collectingevent)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.json()['recordid'], self.collectingevent.pk)
+
+    def test_invalid_table_returns_400_without_writes(self):
+        self.recordset.dbtableid = -1
+        self.recordset.save()
+        before = self.snapshot()
+        response = self.post()
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(self.snapshot(), before)
+
+    def test_table_change_checks_reinterpreted_member_reference(self):
+        spmodels.Recordset.objects.create(
+            pk=self.item.recordid, collectionmemberid=self.other_collection.pk,
+            name='Restricted reinterpreted target', type=0,
+            dbtableid=spmodels.Collectionobject.specify_model.tableId,
+            specifyuser=self.specifyuser,
+        )
+        self.assert_denied_unchanged(lambda: self.client.put(
+            self.uri(self.recordset), data={
+                'version': self.recordset.version,
+                'dbtableid': spmodels.Recordset.specify_model.tableId,
+            }, content_type='application/json',
+        ))
+
+    def test_authorized_table_change_preserves_membership(self):
+        target = spmodels.Recordset.objects.create(
+            pk=self.item.recordid, collectionmemberid=self.collection.pk,
+            name='Readable reinterpreted target', type=0,
+            dbtableid=spmodels.Collectionobject.specify_model.tableId,
+            specifyuser=self.specifyuser,
+        )
+        response = self.client.put(self.uri(self.recordset), data={
+            'version': self.recordset.version,
+            'dbtableid': spmodels.Recordset.specify_model.tableId,
+        }, content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+        self.item.refresh_from_db()
+        self.assertEqual(self.item.recordid, target.pk)
+
+    def test_recordset_scope_change_requires_descendant_update_in_destination(self):
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/recordset', '%')
+        self.grant(self.other_collection, '/table/recordsetitem', 'read')
+        self.grant(self.other_collection, '/field/%', 'update')
+        self.assert_denied_unchanged(lambda: self.client.put(
+            self.uri(self.recordset), data={
+                'version': self.recordset.version,
+                'collectionmemberid': self.other_collection.pk,
+            }, content_type='application/json',
+        ))
+
+    def test_authorized_direct_create_does_not_require_target_update(self):
+        models.UserPolicy.objects.filter(resource='/table/%').delete()
+        self.grant(self.collection, '/table/%', 'read')
+        self.grant(self.collection, '/table/recordset', 'update')
+        self.grant(self.collection, '/table/recordsetitem', 'create')
+        response = self.post()
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.json()['recordid'], self.collectionobjects[2].pk)
+
+    def test_authorized_update_persists(self):
+        response = self.put(recordid=self.collectionobjects[2].pk, order=5)
+        self.assertEqual(response.status_code, 200)
+        self.item.refresh_from_db()
+        self.assertEqual((self.item.recordid, self.item.order), (self.collectionobjects[2].pk, 5))
+
+    def test_authorized_delete_removes_only_membership(self):
+        response = self.client.delete(self.uri(self.item))
+        self.assertEqual(response.status_code, 204)
+        self.assertFalse(spmodels.Recordsetitem.objects.filter(pk=self.item.pk).exists())
+        self.assertTrue(spmodels.Collectionobject.objects.filter(pk=self.item.recordid).exists())
+
+    def test_deletion_can_clean_up_dangling_member(self):
+        self.item.recordid = self.restricted_record.pk + 1000000
+        self.item.save()
+        self.assertEqual(self.client.delete(self.uri(self.item)).status_code, 204)
+
+    def test_deletion_can_remove_unreadable_member_without_deleting_target(self):
+        self.item.recordid = self.restricted_record.pk
+        self.item.save()
+        self.assertEqual(self.client.delete(self.uri(self.item)).status_code, 204)
+        self.assertTrue(spmodels.Collectionobject.objects.filter(pk=self.restricted_record.pk).exists())
+
+    def test_deleting_parent_requires_delete_not_update(self):
+        models.UserPolicy.objects.filter(resource='/table/%').delete()
+        self.grant(self.collection, '/table/%', 'read')
+        self.grant(self.collection, '/table/%', 'delete')
+        response = self.client.delete(self.uri(self.recordset))
+        self.assertEqual(response.status_code, 204)
+        self.assertFalse(spmodels.Recordsetitem.objects.filter(pk=self.item.pk).exists())
+
+    def test_nested_authorized_replace_does_not_require_target_delete(self):
+        models.UserPolicy.objects.filter(resource='/table/%').delete()
+        self.grant(self.collection, '/table/%', 'read')
+        self.grant(self.collection, '/table/recordset', 'update')
+        for action in ('create', 'delete'):
+            self.grant(self.collection, '/table/recordsetitem', action)
+        response = self.nested([{'recordid': self.collectionobjects[2].pk}])
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(list(self.recordset.recordsetitems.values_list('recordid', flat=True)),
+                         [self.collectionobjects[2].pk])
+        self.assertTrue(spmodels.Collectionobject.objects.filter(pk=self.item.recordid).exists())
+
 class RecordsetNavigationAuthorizationApiTests(ScopedPermissionTestBase):
     def setUp(self):
         super().setUp()
@@ -4199,6 +4536,7 @@ class RecordsetAppendAuthorizationApiTests(ScopedPermissionTestBase):
         self.grant_access(self.other_collection)
         self.grant(self.other_collection, '/table/recordset', 'read')
         self.allow_update(self.other_collection)
+        self.grant(self.other_collection, '/table/recordsetitem', 'create')
         response = self.post(self.restricted_recordset)
         self.assertEqual(response.status_code, 201)
         self.assertEqual(

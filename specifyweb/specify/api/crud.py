@@ -97,6 +97,9 @@ def create_obj(collection, agent, model, data: dict[str, Any], parent_obj=None, 
         collection.id if target_collection_id is None else target_collection_id,
     )
     check_table_permissions(collection, agent, obj, "create")
+    if isinstance(obj, models.Recordsetitem):
+        _check_recordset_item_parent(collection, agent, obj, parent_obj)
+        _check_recordset_item_reference(collection, agent, obj)
     try:
         autonumber_and_save(collection, agent.specifyuser, obj)
     except AutonumberOverflowException as e:
@@ -154,6 +157,8 @@ def update_obj(collection, agent, name: str, id, version, data: dict[str, Any], 
     """
     obj = get_object_or_404(name, id=int(id))
     check_table_permissions(collection, agent, obj, "update")
+    if isinstance(obj, models.Recordsetitem):
+        _check_recordset_item_parent(collection, agent, obj, parent_obj)
     original_scope = Scoping.scope_for_record(obj)
 
     with authorize_dependent_scope_update(collection, agent, obj):
@@ -165,6 +170,9 @@ def update_obj(collection, agent, name: str, id, version, data: dict[str, Any], 
 
         # Scope-defining fields may have changed; authorize the resulting scope too.
         check_table_permissions(collection, agent, obj, "update")
+        if isinstance(obj, models.Recordsetitem):
+            _check_recordset_item_parent(collection, agent, obj, parent_obj)
+            _check_recordset_item_reference(collection, agent, obj)
         dirty_fields = [d['field_name'] for d in dirty]
         dirty_fields.extend(
             name for name, value in data.items()
@@ -188,6 +196,11 @@ def update_obj(collection, agent, name: str, id, version, data: dict[str, Any], 
             delete_obj(dep, deleter, parent_obj=obj)
         handle_remote_to_ones(obj)
         handle_to_many(collection, agent, obj, data)
+        if isinstance(obj, models.Recordset) and any(
+            change['field_name'] == 'dbtableid' for change in dirty
+        ):
+            for item in obj.recordsetitems.select_for_update():
+                _check_recordset_item_reference(collection, agent, item)
         _handle_special_update_posts(obj)
     return obj
 
@@ -248,10 +261,35 @@ def update_or_create_resource(collection, agent, model, data, parent_obj, parent
     else: 
         return create_obj(collection, agent, model, data, parent_obj=parent_obj, parent_relationship=parent_relationship)
     
+def _check_recordset_item_parent(collection, agent, item, parent_obj):
+    """Direct item mutations also modify the parent's membership relationship."""
+    if item.recordset != parent_obj:
+        check_table_permissions(collection, agent, item.recordset, "update")
+        check_field_permissions(
+            collection, agent, item.recordset, ["recordsetitems"], "update",
+        )
+
+
+def _check_recordset_item_reference(collection, agent, item):
+    """Treat the polymorphic record ID as a reference, requiring target read."""
+    try:
+        model = get_model_by_table_id(item.recordset.dbtableid)
+    except ValueError as error:
+        raise BadRequest("Invalid recordset table ID") from error
+    try:
+        recordid = int(item.recordid)
+    except (ValueError, TypeError) as error:
+        raise BadRequest("Invalid recordset record ID") from error
+    record = get_object_or_404(model, pk=recordid)
+    check_table_permissions(collection, agent, record, "read")
+
+
 def make_default_deleter(collection=None, agent=None):
     def _deleter(obj, parent_obj):
         if collection and agent:
             check_table_permissions(collection, agent, obj, "delete")
+            if isinstance(obj, models.Recordsetitem):
+                _check_recordset_item_parent(collection, agent, obj, parent_obj)
             auditlog.remove(obj, agent, parent_obj)
     return _deleter
 

@@ -19,7 +19,7 @@ from django.db.models.fields.reverse_related import ManyToOneRel
 from specifyweb.specify.models import (
     Accession, Agent, Conservevent, Discipline, Division, Fieldnotebook, Fieldnotebookpage,
     Fieldnotebookpageset, Geography, Geologictimeperiod, Gift,
-    Institution, Lithostrat, Loan, Permit, Referencework, Spappresourcedir,
+    Institution, Lithostrat, Loan, Permit, Recordsetitem, Referencework, Spappresourcedir,
     Sptasksemaphore, Storage, Taxon, Tectonicunit,
 )
 from specifyweb.specify.datamodel import Table
@@ -298,6 +298,7 @@ def filter_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
     Permit and ReferenceWork use their required institution.
     Notebook pages and page sets inherit the notebook's discipline.
     Conservation events inherit their description's scope.
+    Recordset items inherit their recordset's collection.
     Remaining institution-scoped models use the single-institution fallback.
     Resource directories and task semaphores prefer discipline over collection.
     Other scopes are not filtered here; serialized records still undergo
@@ -358,6 +359,8 @@ def filter_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
         if query_pt(collectionid, userid, CollectionAccessPT.access).allowed
         and query(collectionid, userid, resource, "read").allowed
     ]
+    if model is Recordsetitem:
+        return queryset.filter(recordset__collectionmemberid__in=allowed_ids)
     if model in (Spappresourcedir, Sptasksemaphore):
         allowed_collections = models.Collection.objects.filter(id__in=allowed_ids)
         condition = Q(
