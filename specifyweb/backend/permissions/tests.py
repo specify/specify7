@@ -412,6 +412,77 @@ class ScopedUpdateApiTests(ScopedPermissionTestBase):
         self.assertEqual(record.text1, 'Moved')
         self.assertEqual(record.version, version + 1)
 
+    def restrict_field_grants(self):
+        models.UserPolicy.objects.filter(resource='/field/%').delete()
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/%', 'update')
+
+    def test_denies_field_granted_only_in_login_collection(self):
+        self.restrict_field_grants()
+        self.grant(self.collection, '/field/%', 'update')
+        response = self.update_record(self.other_record, text1='Forbidden')
+        self.assertEqual(response.status_code, 403)
+        self.assert_record_unchanged(self.other_record)
+
+    def test_allows_field_granted_only_in_record_collection(self):
+        self.restrict_field_grants()
+        self.grant(self.other_collection, '/field/%', 'update')
+        response = self.update_record(self.other_record, text1='Updated')
+        self.assertEqual(response.status_code, 200)
+        self.other_record.refresh_from_db()
+        self.assertEqual(self.other_record.text1, 'Updated')
+
+    def test_denies_field_not_covered_by_record_scope_grant(self):
+        self.restrict_field_grants()
+        self.grant(self.other_collection, '/field/collectionobject/text2', 'update')
+        response = self.update_record(self.other_record, text1='Forbidden')
+        self.assertEqual(response.status_code, 403)
+        self.assert_record_unchanged(self.other_record)
+
+    def test_empty_field_check_does_not_resolve_scope(self):
+        with self.assertNumQueries(0):
+            permissions.check_field_permissions(
+                self.collection, self.agent, spmodels.Collectionobject(), [], 'update'
+            )
+
+    def test_model_field_check_keeps_current_collection_behavior(self):
+        self.restrict_field_grants()
+        self.grant(self.collection, '/field/%', 'update')
+        for obj in (spmodels.Collectionobject, spmodels.Collectionobject.specify_model):
+            with self.subTest(obj=obj):
+                permissions.check_field_permissions(
+                    self.collection, self.agent, obj, ['text1'], 'update'
+                )
+
+    def test_move_requires_field_grants_in_both_scopes(self):
+        for granted_collection in (self.collection, self.other_collection):
+            with self.subTest(collection=granted_collection.id):
+                self.restrict_field_grants()
+                self.grant(granted_collection, '/field/%', 'update')
+                record = self.collectionobjects[0]
+                response = self.update_record(
+                    record,
+                    collection=f'/api/specify/collection/{self.other_collection.id}/',
+                    collectionmemberid=self.other_collection.id,
+                    text1='Forbidden',
+                )
+                self.assertEqual(response.status_code, 403)
+                self.assert_record_unchanged(record)
+
+    def test_move_with_field_grants_in_both_scopes(self):
+        self.restrict_field_grants()
+        for collection in (self.collection, self.other_collection):
+            self.grant(collection, '/field/%', 'update')
+        record = self.collectionobjects[0]
+        response = self.update_record(
+            record, collection=f'/api/specify/collection/{self.other_collection.id}/',
+            collectionmemberid=self.other_collection.id, text1='Moved',
+        )
+        self.assertEqual(response.status_code, 200)
+        record.refresh_from_db()
+        self.assertEqual(record.collection_id, self.other_collection.id)
+        self.assertEqual(record.text1, 'Moved')
+
     def test_restricted_nested_update_rolls_back_parent(self):
         attribute = spmodels.Collectionobjectattribute.objects.create(
             collectionmemberid=self.other_collection.id
