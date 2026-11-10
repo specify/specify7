@@ -15,7 +15,8 @@ from django.db import connection
 from django.db.models import Model, Q, QuerySet
 
 from specifyweb.specify.models import (
-    Accession, Agent, Discipline, Division, Geography, Geologictimeperiod, Gift,
+    Accession, Agent, Discipline, Division, Fieldnotebook, Fieldnotebookpage,
+    Fieldnotebookpageset, Geography, Geologictimeperiod, Gift,
     Institution, Lithostrat, Loan, Permit, Referencework, Storage, Taxon, Tectonicunit,
 )
 from specifyweb.specify.datamodel import Table
@@ -292,6 +293,7 @@ def filter_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
     and storage tree nodes. Loan and Gift use their required discipline even
     when a division is populated; Accession follows its configured scope.
     Permit and ReferenceWork use their required institution.
+    Notebook pages and page sets inherit the notebook's discipline.
     Other scopes are not filtered here; serialized records still undergo
     instance checks.
     """
@@ -305,6 +307,11 @@ def filter_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
     discipline_tree_scope = model in (
         Taxon, Geography, Geologictimeperiod, Lithostrat, Tectonicunit,
     )
+    notebook_lookup = {
+        Fieldnotebook: "discipline_id",
+        Fieldnotebookpageset: "fieldnotebook__discipline_id",
+        Fieldnotebookpage: "pageset__fieldnotebook__discipline_id",
+    }.get(model)
     scope_type = Scoping.scope_type_from_class(model)
     direct_division_scope = (
         scope_type == ScopeType.DIVISION
@@ -332,6 +339,7 @@ def filter_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
         and model not in (Loan, Gift)
         and model is not Accession
         and model not in (Permit, Referencework)
+        and notebook_lookup is None
     ):
         return queryset
 
@@ -342,6 +350,12 @@ def filter_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
         if query_pt(collectionid, userid, CollectionAccessPT.access).allowed
         and query(collectionid, userid, resource, "read").allowed
     ]
+    if notebook_lookup is not None:
+        return queryset.filter(**{
+            f"{notebook_lookup}__in": models.Collection.objects.filter(
+                id__in=allowed_ids
+            ).values("discipline_id")
+        })
     if hierarchy_lookup is not None:
         return queryset.filter(pk__in=models.Collection.objects.filter(
             id__in=allowed_ids

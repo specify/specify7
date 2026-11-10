@@ -1413,6 +1413,155 @@ class InstitutionRecordReadApiTests(ScopedPermissionTestBase):
                 self.assertEqual(response.status_code, 200)
                 self.assertEqual(json.loads(response.content), [])
 
+class FieldNotebookReadApiTests(ScopedPermissionTestBase):
+    def setUp(self):
+        super().setUp()
+        self.grant_access(self.collection)
+        self.grant(self.collection, '/table/%', 'read')
+        self.client.force_login(self.specifyuser)
+        self.client.cookies['collection'] = str(self.collection.id)
+        self.other_discipline = spmodels.Discipline.objects.create(
+            division=self.division, datatype=self.datatype,
+            geographytreedef=self.geographytreedef,
+            geologictimeperiodtreedef=self.geologictimeperiodtreedef,
+        )
+        self.other_collection.discipline = self.other_discipline
+        self.other_collection.save()
+        chains = []
+        for label, discipline, competing_discipline, collection in (
+            ('allowed', self.discipline, self.other_discipline, self.other_collection),
+            ('restricted', self.other_discipline, self.discipline, self.collection),
+        ):
+            notebook = spmodels.Fieldnotebook.objects.create(
+                name=label, discipline=discipline, collection=collection,
+                owneragent=self.agent,
+            )
+            pageset = spmodels.Fieldnotebookpageset.objects.create(
+                description=label, fieldnotebook=notebook,
+                discipline=competing_discipline,
+            )
+            page = spmodels.Fieldnotebookpage.objects.create(
+                pagenumber=label, pageset=pageset, discipline=competing_discipline,
+            )
+            chains.append((notebook, pageset, page))
+        self.records = tuple(zip(
+            ('fieldnotebook', 'fieldnotebookpageset', 'fieldnotebookpage'),
+            *chains,
+        ))
+
+    def assert_visible_records(self, include_other=False, restricted_only=False, **params):
+        for table, allowed, restricted in self.records:
+            for prefix in ('/api/specify', '/table_rows/specify_rows'):
+                with self.subTest(table=table, prefix=prefix):
+                    query = {'limit': 0, 'orderby': '-id', **params}
+                    if prefix == '/table_rows/specify_rows':
+                        query['fields'] = 'id'
+                    if restricted_only:
+                        query['id'] = restricted.id
+                    response = self.client.get(f'{prefix}/{table}/', query)
+                    self.assertEqual(response.status_code, 200)
+                    expected = [allowed.id]
+                    if include_other:
+                        expected.append(restricted.id)
+                    if restricted_only:
+                        expected = [restricted.id] if include_other else []
+                    payload = response.json()
+                    if isinstance(payload, dict):
+                        self.assertEqual(payload['meta']['total_count'], len(expected))
+                        ids = [obj['id'] for obj in payload['objects']]
+                    else:
+                        ids = [row[0] for row in payload]
+                    self.assertCountEqual(ids, expected)
+
+    def test_notebook_discipline_overrides_competing_scope_fields(self):
+        self.assert_visible_records()
+
+    def test_restricted_id_returns_empty_results(self):
+        self.assert_visible_records(restricted_only=True)
+
+    def test_read_grant_requires_collection_access(self):
+        self.grant(self.other_collection, '/table/%', 'read')
+        self.assert_visible_records()
+
+    def test_collection_access_requires_table_read_grant(self):
+        self.grant_access(self.other_collection)
+        self.assert_visible_records()
+
+    def test_both_grants_allow_other_discipline(self):
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/%', 'read')
+        self.assert_visible_records(include_other=True)
+
+    def test_global_grant_allows_other_discipline(self):
+        self.grant(None, '%', '%')
+        self.assert_visible_records(include_other=True)
+
+    def test_shared_discipline_remains_visible(self):
+        notebook = self.records[0][2]
+        notebook.discipline = self.discipline
+        notebook.save()
+        self.assert_visible_records(include_other=True)
+
+    def test_filters_before_pagination(self):
+        self.assert_visible_records(limit=1)
+
+    def test_missing_parent_chains_are_excluded(self):
+        orphan_pageset = spmodels.Fieldnotebookpageset.objects.create(
+            discipline=self.discipline,
+        )
+        spmodels.Fieldnotebookpage.objects.create(
+            pagenumber='no-pageset', discipline=self.discipline,
+        )
+        spmodels.Fieldnotebookpage.objects.create(
+            pagenumber='no-notebook', discipline=self.discipline,
+            pageset=orphan_pageset,
+        )
+        self.grant(None, '%', '%')
+        self.assert_visible_records(include_other=True)
+
+    def test_child_read_grants_are_not_replaced_by_notebook_grants(self):
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/fieldnotebook', 'read')
+        for table, allowed, restricted in self.records:
+            with self.subTest(table=table):
+                expected = [allowed]
+                if table == 'fieldnotebook':
+                    expected.append(restricted)
+                self.assertCountEqual(
+                    permissions.filter_scoped_read_queryset(
+                        type(allowed).objects.all(), self.agent,
+                    ),
+                    expected,
+                )
+
+    def test_distinct_projection_excludes_restricted_values(self):
+        for table, field in (
+            ('fieldnotebook', 'name'), ('fieldnotebookpageset', 'description'),
+            ('fieldnotebookpage', 'pagenumber'),
+        ):
+            with self.subTest(table=table):
+                response = self.client.get(
+                    f'/table_rows/specify_rows/{table}/',
+                    {'fields': field, 'distinct': 'true'},
+                )
+                self.assertEqual(response.status_code, 200)
+                self.assertEqual(response.json(), [['allowed']])
+
+    def test_legacy_dispatch_rows_uses_same_scope_filter(self):
+        from specifyweb.specify.api.dispatch import rows
+
+        for table, _, restricted in self.records:
+            with self.subTest(table=table):
+                request = RequestFactory().get(
+                    f'/table_rows/specify_rows/{table}/',
+                    {'fields': 'id', 'id': restricted.id},
+                )
+                request.specify_collection = self.collection
+                request.specify_user_agent = self.agent
+                response = rows(request, table)
+                self.assertEqual(response.status_code, 200)
+                self.assertEqual(json.loads(response.content), [])
+
 class ScopedDeleteApiTests(ScopedPermissionTestBase):
     def setUp(self):
         super().setUp()
