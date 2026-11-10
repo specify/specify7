@@ -208,6 +208,106 @@ class ScopedReadApiTests(ScopedPermissionTestBase):
                     self.collection, self.agent, obj, 'read'
                 )
 
+class ScopedDeleteApiTests(ScopedPermissionTestBase):
+    def setUp(self):
+        super().setUp()
+        self.grant_access(self.collection)
+        self.grant(self.collection, '/table/%', 'delete')
+        self.client.force_login(self.specifyuser)
+        self.client.cookies['collection'] = str(self.collection.id)
+        self.other_record = spmodels.Collectionobject.objects.create(
+            collection=self.other_collection,
+            catalognumber='other-record',
+        )
+
+    def delete_record(self, record):
+        return self.client.delete(
+            f'/api/specify/collectionobject/{record.id}/?version={record.version}'
+        )
+
+    def assert_record_unchanged(self, record):
+        version = record.version
+        collection_id = record.collection_id
+        catalognumber = record.catalognumber
+        record.refresh_from_db()
+        self.assertEqual(record.version, version)
+        self.assertEqual(record.collection_id, collection_id)
+        self.assertEqual(record.catalognumber, catalognumber)
+
+    def test_deletes_authorized_record(self):
+        record = self.collectionobjects[0]
+        response = self.delete_record(record)
+        self.assertEqual(response.status_code, 204)
+        self.assertFalse(spmodels.Collectionobject.objects.filter(pk=record.id).exists())
+
+    def test_denies_delete_in_restricted_collection(self):
+        response = self.delete_record(self.other_record)
+        self.assertEqual(response.status_code, 403)
+        self.assert_record_unchanged(self.other_record)
+
+    def test_delete_grant_without_collection_access_does_not_allow_delete(self):
+        self.grant(self.other_collection, '/table/%', 'delete')
+        response = self.delete_record(self.other_record)
+        self.assertEqual(response.status_code, 403)
+        self.assert_record_unchanged(self.other_record)
+
+    def test_collection_access_without_delete_grant_does_not_allow_delete(self):
+        self.grant_access(self.other_collection)
+        response = self.delete_record(self.other_record)
+        self.assertEqual(response.status_code, 403)
+        self.assert_record_unchanged(self.other_record)
+
+    def test_deletes_other_collection_record_with_both_grants(self):
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/%', 'delete')
+        response = self.delete_record(self.other_record)
+        self.assertEqual(response.status_code, 204)
+        self.assertFalse(
+            spmodels.Collectionobject.objects.filter(pk=self.other_record.id).exists()
+        )
+
+    def test_institution_admin_can_delete_other_collection_record(self):
+        self.grant(None, '%', '%')
+        response = self.delete_record(self.other_record)
+        self.assertEqual(response.status_code, 204)
+        self.assertFalse(
+            spmodels.Collectionobject.objects.filter(pk=self.other_record.id).exists()
+        )
+
+    def test_restricted_dependent_rolls_back_parent_delete(self):
+        attribute = spmodels.Collectionobjectattribute.objects.create(
+            collectionmemberid=self.other_collection.id
+        )
+        record = self.collectionobjects[0]
+        record.collectionobjectattribute = attribute
+        record.save()
+        attribute_version = attribute.version
+
+        response = self.delete_record(record)
+
+        self.assertEqual(response.status_code, 403)
+        self.assert_record_unchanged(record)
+        attribute.refresh_from_db()
+        self.assertEqual(record.collectionobjectattribute_id, attribute.id)
+        self.assertEqual(attribute.version, attribute_version)
+        self.assertEqual(attribute.collectionmemberid, self.other_collection.id)
+
+    def test_deletes_authorized_dependent(self):
+        attribute = spmodels.Collectionobjectattribute.objects.create(
+            collectionmemberid=self.collection.id
+        )
+        record = self.collectionobjects[0]
+        record.collectionobjectattribute = attribute
+        record.save()
+
+        response = self.delete_record(record)
+
+        self.assertEqual(response.status_code, 204)
+        self.assertFalse(spmodels.Collectionobject.objects.filter(pk=record.id).exists())
+        self.assertFalse(
+            spmodels.Collectionobjectattribute.objects.filter(pk=attribute.id).exists()
+        )
+
 class PermissionsApiTest(ApiTests):
     def setUp(self):
         super().setUp()
