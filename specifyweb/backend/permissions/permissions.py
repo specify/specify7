@@ -476,6 +476,7 @@ def filter_forward_related_read_queryset(
 ) -> QuerySet:
     """Filter forward FK field paths by each related record's read scope.
 
+    Includes terminal FK names and their raw ``_id`` aliases.
     Null relationships remain visible. Reverse and to-many paths are not
     handled here, because their joins require separate authorization semantics.
     """
@@ -483,15 +484,19 @@ def filter_forward_related_read_queryset(
     for projection in fields:
         model = queryset.model
         path = []
-        for name in projection.split("__")[:-1]:
+        relation_field = None
+        for name in projection.split("__"):
             try:
                 field = model._meta.pk if name == "pk" else model._meta.get_field(name)
             except FieldDoesNotExist as error:
+                if relation_field is not None and relation_field.get_lookup(name) is not None:
+                    break
                 raise FieldError(str(error)) from error
             if not isinstance(field, ForeignKey):
                 break
             path.append(field.name)
             model = field.related_model
+            relation_field = field
             lookup = "__".join(path)
             if lookup in checked_paths:
                 continue

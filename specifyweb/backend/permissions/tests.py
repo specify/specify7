@@ -767,6 +767,73 @@ class ForwardRelatedRowsApiTests(ScopedPermissionTestBase):
             orderby='-collectingevent__remarks,id',
         )
 
+    def test_terminal_fk_filters_require_related_scope(self):
+        for field in (
+            'collectingevent', 'collectingevent_id',
+            'collectingevent__exact', 'collectingevent_id__in',
+        ):
+            with self.subTest(field=field):
+                response = self.get_rows(
+                    fields='id', **{field: str(self.restricted_event.id)},
+                )
+                self.assertEqual(response.status_code, 200)
+                self.assertEqual(response.json(), [])
+                self.assert_list_ids([], **{field: str(self.restricted_event.id)})
+
+    def test_terminal_fk_projections_require_related_scope(self):
+        for field in ('collectingevent', 'collectingevent_id'):
+            with self.subTest(field=field):
+                response = self.get_rows(fields=f'id,{field}')
+                self.assertEqual(response.status_code, 200)
+                self.assertCountEqual(response.json(), [
+                    [self.allowed_record.id, self.allowed_event.id],
+                    [self.null_record.id, None],
+                ])
+
+    def test_terminal_fk_ordering_requires_related_scope(self):
+        self.assert_list_ids(
+            [self.allowed_record, self.null_record], orderby='-collectingevent_id',
+        )
+        response = self.get_rows(fields='id', orderby='-collectingevent_id')
+        self.assertEqual(response.status_code, 200)
+        self.assertCountEqual(response.json(), [
+            [self.allowed_record.id], [self.null_record.id],
+        ])
+
+    def test_terminal_fk_allows_qualifying_grants(self):
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/collectingevent', 'read')
+        self.assert_list_ids(
+            [self.restricted_record], collectingevent=self.restricted_event.id,
+        )
+        response = self.get_rows(
+            fields='id,collectingevent_id', collectingevent=self.restricted_event.id,
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [
+            [self.restricted_record.id, self.restricted_event.id],
+        ])
+
+    def test_terminal_fk_null_filter_preserves_missing_relationship(self):
+        self.assert_list_ids([self.null_record], collectingevent__isnull='true')
+        response = self.get_rows(fields='id', collectingevent__isnull='true')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [[self.null_record.id]])
+
+    def test_legacy_rows_checks_terminal_fk_projection(self):
+        from specifyweb.specify.api.dispatch import rows
+
+        request = RequestFactory().get(
+            '/table_rows/specify_rows/collectionobject/', {
+                'fields': 'collectingevent_id', 'id': self.restricted_record.id,
+            },
+        )
+        request.specify_collection = self.collection
+        request.specify_user_agent = self.agent
+        response = rows(request, 'collectionobject')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json.loads(response.content), [])
+
 class DivisionScopedReadApiTests(ScopedPermissionTestBase):
     def setUp(self):
         super().setUp()
