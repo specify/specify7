@@ -492,10 +492,11 @@ class DivisionScopedReadApiTests(ScopedPermissionTestBase):
         self.assertFalse(queryset.exists())
 
     def test_discipline_records_are_not_treated_as_division_scoped(self):
-        queryset = spmodels.Discipline.objects.all()
-        self.assertIs(
-            permissions.filter_scoped_read_queryset(queryset, self.agent),
-            queryset,
+        self.assertCountEqual(
+            permissions.filter_scoped_read_queryset(
+                spmodels.Discipline.objects.all(), self.agent
+            ),
+            [self.discipline],
         )
 
     def test_filters_before_pagination(self):
@@ -678,6 +679,87 @@ class CollectionHierarchyReadApiTests(ScopedPermissionTestBase):
                     self.assertEqual(payload['objects'][0]['id'], self.collection.id)
                 else:
                     self.assertEqual(payload, [[self.collection.id]])
+
+class HierarchyScopedReadApiTests(ScopedPermissionTestBase):
+    def setUp(self):
+        super().setUp()
+        self.grant_access(self.collection)
+        self.grant(self.collection, '/table/%', 'read')
+        self.client.force_login(self.specifyuser)
+        self.client.cookies['collection'] = str(self.collection.id)
+        self.other_institution = spmodels.Institution.objects.create(
+            name='Other Institution', isaccessionsglobal=True,
+            issecurityon=False, isserverbased=False,
+            issharinglocalities=True, issinglegeographytree=True,
+        )
+        self.other_division = spmodels.Division.objects.create(
+            institution=self.other_institution, name='Other Division'
+        )
+        self.other_discipline = spmodels.Discipline.objects.create(
+            division=self.other_division, datatype=self.datatype,
+            taxontreedef=self.taxontreedef,
+            geographytreedef=self.geographytreedef,
+            geologictimeperiodtreedef=self.geologictimeperiodtreedef,
+        )
+        self.other_collection.discipline = self.other_discipline
+        self.other_collection.save()
+        self.scopes = (
+            ('discipline', self.discipline, self.other_discipline),
+            ('division', self.division, self.other_division),
+            ('institution', self.institution, self.other_institution),
+        )
+
+    def assert_visible_hierarchy(self, include_other=False, restricted_only=False):
+        for model, allowed, restricted in self.scopes:
+            for prefix in ('/api/specify', '/table_rows/specify_rows'):
+                with self.subTest(model=model, prefix=prefix):
+                    params = {'limit': 0, 'orderby': '-id'}
+                    if prefix == '/table_rows/specify_rows':
+                        params['fields'] = 'id'
+                    if restricted_only:
+                        params['id'] = restricted.id
+                    response = self.client.get(f'{prefix}/{model}/', params)
+                    self.assertEqual(response.status_code, 200)
+                    expected = [allowed.id]
+                    if include_other:
+                        expected.append(restricted.id)
+                    if restricted_only:
+                        expected = [restricted.id] if include_other else []
+                    payload = response.json()
+                    if isinstance(payload, dict):
+                        self.assertEqual(payload['meta']['total_count'], len(expected))
+                        ids = [obj['id'] for obj in payload['objects']]
+                    else:
+                        ids = [row[0] for row in payload]
+                    self.assertCountEqual(ids, expected)
+
+    def test_excludes_restricted_hierarchy_scopes(self):
+        self.assert_visible_hierarchy()
+
+    def test_restricted_ids_return_empty_results(self):
+        self.assert_visible_hierarchy(restricted_only=True)
+
+    def test_read_grants_require_collection_access(self):
+        self.grant(self.other_collection, '/table/%', 'read')
+        self.assert_visible_hierarchy()
+
+    def test_collection_access_requires_table_read_grants(self):
+        self.grant_access(self.other_collection)
+        self.assert_visible_hierarchy()
+
+    def test_both_grants_allow_other_hierarchy_scopes(self):
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/%', 'read')
+        self.assert_visible_hierarchy(include_other=True)
+
+    def test_global_grant_allows_other_hierarchy_scopes(self):
+        self.grant(None, '%', '%')
+        self.assert_visible_hierarchy(include_other=True)
+
+    def test_empty_hierarchy_scope_does_not_inherit_other_scope_grants(self):
+        self.other_collection.delete()
+        self.grant(None, '%', '%')
+        self.assert_visible_hierarchy(restricted_only=True)
 
 class ScopedDeleteApiTests(ScopedPermissionTestBase):
     def setUp(self):

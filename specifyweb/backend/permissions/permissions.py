@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 from django.db import connection
 from django.db.models import Model, Q, QuerySet
 
-from specifyweb.specify.models import Accession, Agent, Discipline
+from specifyweb.specify.models import Accession, Agent, Discipline, Division, Institution
 from specifyweb.specify.datamodel import Table
 from specifyweb.specify.utils.scoping import Scoping, ScopeType
 from specifyweb.backend.cache.thread import ThreadCache
@@ -284,11 +284,17 @@ def has_permission_in_scope(
 def filter_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
     """Filter supported record scopes before counting, projection, or pagination.
 
-    Supports Collection records, direct collection scopes, and direct
+    Supports hierarchy records, direct collection scopes, and direct
     division/discipline scopes without competing scope fields. Other scopes
     are not filtered here; serialized records still undergo instance checks.
     """
     model = queryset.model
+    hierarchy_lookup = {
+        models.Collection: "id",
+        Discipline: "discipline_id",
+        Division: "discipline__division_id",
+        Institution: "discipline__division__institution_id",
+    }.get(model)
     scope_type = Scoping.scope_type_from_class(model)
     direct_division_scope = (
         scope_type == ScopeType.DIVISION
@@ -304,13 +310,13 @@ def filter_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
         and not any(hasattr(model, field) for field in (
             "division", "collectionmemberid", "collection",
         ))
-        and model is not models.Collection
+        and hierarchy_lookup is None
     )
     if (
         scope_type != ScopeType.COLLECTION
         and not direct_division_scope
         and not direct_discipline_scope
-        and model is not models.Collection
+        and hierarchy_lookup is None
     ):
         return queryset
 
@@ -321,8 +327,10 @@ def filter_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
         if query_pt(collectionid, userid, CollectionAccessPT.access).allowed
         and query(collectionid, userid, resource, "read").allowed
     ]
-    if model is models.Collection:
-        return queryset.filter(pk__in=allowed_ids)
+    if hierarchy_lookup is not None:
+        return queryset.filter(pk__in=models.Collection.objects.filter(
+            id__in=allowed_ids
+        ).values(hierarchy_lookup))
     if direct_division_scope or direct_discipline_scope:
         allowed_collections = models.Collection.objects.filter(id__in=allowed_ids)
         field = "division" if direct_division_scope else "discipline"
