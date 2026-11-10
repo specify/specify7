@@ -1562,6 +1562,137 @@ class FieldNotebookReadApiTests(ScopedPermissionTestBase):
                 self.assertEqual(response.status_code, 200)
                 self.assertEqual(json.loads(response.content), [])
 
+class ConservationEventReadApiTests(ScopedPermissionTestBase):
+    def setUp(self):
+        super().setUp()
+        self.grant_access(self.collection)
+        self.grant(self.collection, '/table/%', 'read')
+        self.client.force_login(self.specifyuser)
+        self.client.cookies['collection'] = str(self.collection.id)
+        self.other_division = spmodels.Division.objects.create(
+            institution=self.institution, name='Other Division',
+        )
+        self.other_discipline = spmodels.Discipline.objects.create(
+            division=self.other_division, datatype=self.datatype,
+            geographytreedef=self.geographytreedef,
+            geologictimeperiodtreedef=self.geologictimeperiodtreedef,
+        )
+        self.other_collection.discipline = self.other_discipline
+        self.other_collection.save()
+        self.allowed_description = spmodels.Conservdescription.objects.create(
+            division=self.division,
+        )
+        self.restricted_description = spmodels.Conservdescription.objects.create(
+            division=self.other_division,
+        )
+        self.allowed_event = spmodels.Conservevent.objects.create(
+            conservdescription=self.allowed_description, text1='allowed',
+        )
+        self.restricted_event = spmodels.Conservevent.objects.create(
+            conservdescription=self.restricted_description, text1='restricted',
+        )
+
+    def assert_visible_events(self, expected, **params):
+        for prefix in ('/api/specify', '/table_rows/specify_rows'):
+            with self.subTest(prefix=prefix):
+                query = {'limit': 0, 'orderby': '-id', **params}
+                if prefix == '/table_rows/specify_rows':
+                    query['fields'] = 'id'
+                response = self.client.get(f'{prefix}/conservevent/', query)
+                self.assertEqual(response.status_code, 200)
+                payload = response.json()
+                if isinstance(payload, dict):
+                    self.assertEqual(payload['meta']['total_count'], len(expected))
+                    ids = [obj['id'] for obj in payload['objects']]
+                else:
+                    ids = [row[0] for row in payload]
+                self.assertCountEqual(ids, [obj.id for obj in expected])
+
+    def test_excludes_other_description_division(self):
+        self.assert_visible_events([self.allowed_event])
+
+    def test_restricted_id_returns_empty_results(self):
+        self.assert_visible_events([], id=self.restricted_event.id)
+
+    def test_read_grant_requires_collection_access(self):
+        self.grant(self.other_collection, '/table/%', 'read')
+        self.assert_visible_events([self.allowed_event])
+
+    def test_collection_access_requires_table_read_grant(self):
+        self.grant_access(self.other_collection)
+        self.assert_visible_events([self.allowed_event])
+
+    def test_both_grants_allow_other_division(self):
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/%', 'read')
+        self.assert_visible_events([self.allowed_event, self.restricted_event])
+
+    def test_global_grant_allows_other_division(self):
+        self.grant(None, '%', '%')
+        self.assert_visible_events([self.allowed_event, self.restricted_event])
+
+    def test_shared_division_remains_visible(self):
+        self.restricted_description.division = self.division
+        self.restricted_description.save()
+        self.assert_visible_events([self.allowed_event, self.restricted_event])
+
+    def test_missing_division_preserves_institution_fallback(self):
+        self.restricted_description.division = None
+        self.restricted_description.save()
+        self.assert_visible_events([self.allowed_event, self.restricted_event])
+
+    def test_fallback_requires_access_and_read_in_same_collection(self):
+        self.restricted_description.division = None
+        self.restricted_description.save()
+        initialize.wipe_permissions()
+        self.grant_access(self.collection)
+        self.grant(self.other_collection, '/table/conservevent', 'read')
+        self.assertFalse(permissions.filter_scoped_read_queryset(
+            spmodels.Conservevent.objects.all(), self.agent,
+        ).exists())
+
+    def test_ambiguous_institution_fallback_propagates_resolver_error(self):
+        self.restricted_description.division = None
+        self.restricted_description.save()
+        spmodels.Institution.objects.create(
+            name='Other Institution', isaccessionsglobal=True,
+            issecurityon=False, isserverbased=False,
+            issharinglocalities=True, issinglegeographytree=True,
+        )
+        with self.assertRaises(spmodels.Institution.MultipleObjectsReturned):
+            permissions.filter_scoped_read_queryset(
+                spmodels.Conservevent.objects.all(), self.agent,
+            )
+
+    def test_description_read_does_not_replace_event_read(self):
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/conservdescription', 'read')
+        self.assert_visible_events([self.allowed_event])
+
+    def test_filters_before_pagination(self):
+        self.assert_visible_events([self.allowed_event], limit=1)
+
+    def test_distinct_projection_excludes_restricted_values(self):
+        response = self.client.get(
+            '/table_rows/specify_rows/conservevent/',
+            {'fields': 'text1', 'distinct': 'true'},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [['allowed']])
+
+    def test_legacy_dispatch_rows_uses_same_scope_filter(self):
+        from specifyweb.specify.api.dispatch import rows
+
+        request = RequestFactory().get(
+            '/table_rows/specify_rows/conservevent/',
+            {'fields': 'id', 'id': self.restricted_event.id},
+        )
+        request.specify_collection = self.collection
+        request.specify_user_agent = self.agent
+        response = rows(request, 'conservevent')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json.loads(response.content), [])
+
 class ScopedDeleteApiTests(ScopedPermissionTestBase):
     def setUp(self):
         super().setUp()

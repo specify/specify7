@@ -15,7 +15,7 @@ from django.db import connection
 from django.db.models import Model, Q, QuerySet
 
 from specifyweb.specify.models import (
-    Accession, Agent, Discipline, Division, Fieldnotebook, Fieldnotebookpage,
+    Accession, Agent, Conservevent, Discipline, Division, Fieldnotebook, Fieldnotebookpage,
     Fieldnotebookpageset, Geography, Geologictimeperiod, Gift,
     Institution, Lithostrat, Loan, Permit, Referencework, Storage, Taxon, Tectonicunit,
 )
@@ -294,6 +294,7 @@ def filter_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
     when a division is populated; Accession follows its configured scope.
     Permit and ReferenceWork use their required institution.
     Notebook pages and page sets inherit the notebook's discipline.
+    Conservation events inherit their description's scope.
     Other scopes are not filtered here; serialized records still undergo
     instance checks.
     """
@@ -340,6 +341,7 @@ def filter_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
         and model is not Accession
         and model not in (Permit, Referencework)
         and notebook_lookup is None
+        and model is not Conservevent
     ):
         return queryset
 
@@ -350,6 +352,21 @@ def filter_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
         if query_pt(collectionid, userid, CollectionAccessPT.access).allowed
         and query(collectionid, userid, resource, "read").allowed
     ]
+    if model is Conservevent:
+        allowed_collections = models.Collection.objects.filter(id__in=allowed_ids)
+        condition = Q(
+            conservdescription__division_id__in=allowed_collections.values(
+                "discipline__division_id"
+            )
+        )
+        # A description without a division resolves to the single institution.
+        if queryset.filter(conservdescription__division__isnull=True).exists():
+            institution = Institution.objects.get()
+            if allowed_collections.filter(
+                discipline__division__institution=institution
+            ).exists():
+                condition |= Q(conservdescription__division__isnull=True)
+        return queryset.filter(condition)
     if notebook_lookup is not None:
         return queryset.filter(**{
             f"{notebook_lookup}__in": models.Collection.objects.filter(
