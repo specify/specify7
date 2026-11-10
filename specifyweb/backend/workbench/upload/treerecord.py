@@ -618,6 +618,7 @@ class BoundTreeRecord(NamedTuple):
         # the relationship, then just indicate a match against the existing
         # record which presumably isn't present in the BatchEdit Data Set.
         if isinstance(processed.record_result, NullRecord) and tree_node_id is not None:
+            self.auditor.read(getattr(models, self.name).objects.get(pk=tree_node_id))
             columns = [pr.column for prs in self.parsedFields.values() for pr in prs]
             info = ReportInfo(tableName=self.name, columns=columns, treeInfo=None)
             return UploadResult(Matched(id=tree_node_id, info=info), {}, {})
@@ -731,6 +732,10 @@ class BoundTreeRecord(NamedTuple):
                         else references.get(to_match.treedefitem.name)
                     ),
                 )
+
+            if self.auditor.agent is not None:
+                for matched in model.objects.filter(pk__in=[match["id"] for match in matches]):
+                    self.auditor.read(matched)
 
             if len(matches) != 1:
                 # matching failed at to_match level
@@ -1013,6 +1018,15 @@ class BoundTreeRecord(NamedTuple):
                 obj.save(skip_tree_extras=True)
             else:
                 obj.save(force_insert=True)
+            self.auditor.read_references(
+                obj,
+                (
+                    name for name in attrs
+                    if name not in {
+                        "createdbyagent_id", "definition", "definitionitem", "rankid",
+                    }
+                ),
+            )
             self.auditor.insert(obj, None)
             return obj
 
@@ -1020,7 +1034,9 @@ class BoundTreeRecord(NamedTuple):
 
     def _do_clone(self, ref, attrs):
         _inserter = self._get_inserter()
-        return clone_record(ref, _inserter, {}, [], attrs)
+        return clone_record(
+            ref, _inserter, {}, [], attrs, authorize_read=self.auditor.read,
+        )
 
     def force_upload_row(self) -> UploadResult:
         raise NotImplementedError()
@@ -1051,6 +1067,7 @@ class BoundTreeRecord(NamedTuple):
                 reference = safe_fetch(
                     model, {"id": pack["id"]}, pack.get("version", None)
                 )
+                self.auditor.read(reference)
                 if (
                     previous_parent_id is not None
                     and previous_parent_id != reference.pk

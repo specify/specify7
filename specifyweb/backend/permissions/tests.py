@@ -3954,6 +3954,286 @@ class ReverseInheritedScopeMutationApiTests(ScopedPermissionTestBase):
         }, before)
         event.refresh_from_db()
 
+class ImportReadAuthorizationTests(ScopedPermissionTestBase):
+    def setUp(self):
+        super().setUp()
+        self.grant_access(self.collection)
+        self.grant(self.collection, '/table/%', '%')
+        self.obj = self.collectionobjects[0]
+        self.obj.remarks = 'existing-import-record'
+        self.obj.save()
+
+    def snapshot(self):
+        return {
+            model.__name__: list(model.objects.order_by('pk').values())
+            for model in (
+                spmodels.Collectionobject, spmodels.Collectionobjectattribute,
+                spmodels.Geography,
+                spmodels.Spauditlog, spmodels.Spauditlogfield,
+            )
+        }
+
+    def upload(self, *, rows=None, static=None, disambiguations=None, no_commit=False):
+        from specifyweb.backend.workbench.upload.upload import do_upload
+        from specifyweb.backend.workbench.upload.upload_table import UploadTable
+        from specifyweb.backend.workbench.upload.upload_plan_schema import parse_column_options
+
+        plan = UploadTable(
+            name='Collectionobject', wbcols={'remarks': parse_column_options('Remarks')},
+            static={} if static is None else static, toOne={}, toMany={},
+        )
+        return do_upload(
+            self.collection, [{'Remarks': self.obj.remarks}] if rows is None else rows,
+            plan, self.agent.pk, disambiguations=disambiguations, no_commit=no_commit,
+        )
+
+    def assert_denied_unchanged(self, operation):
+        before = self.snapshot()
+        with self.assertRaises(permissions.NoMatchingRuleException):
+            operation()
+        self.assertEqual(self.snapshot(), before)
+
+    def deny_read(self):
+        models.UserPolicy.objects.filter(resource='/table/%').delete()
+        self.grant(self.collection, '/table/%', 'create')
+
+    def test_natural_match_requires_record_read(self):
+        self.deny_read()
+        self.assert_denied_unchanged(self.upload)
+
+    def test_disambiguated_match_requires_actual_collection_access(self):
+        from specifyweb.backend.workbench.upload.disambiguation import DisambiguationInfo
+        restricted = spmodels.Collectionobject.objects.create(
+            collection=self.other_collection, remarks='restricted-import',
+        )
+        self.grant(self.other_collection, '/table/%', 'read')
+        self.assert_denied_unchanged(lambda: self.upload(
+            disambiguations=[DisambiguationInfo({(): restricted.pk})],
+        ))
+
+    def test_disambiguated_match_requires_read_not_just_access(self):
+        from specifyweb.backend.workbench.upload.disambiguation import DisambiguationInfo
+        restricted = spmodels.Collectionobject.objects.create(
+            collection=self.other_collection, remarks='restricted-import',
+        )
+        self.grant_access(self.other_collection)
+        self.assert_denied_unchanged(lambda: self.upload(
+            disambiguations=[DisambiguationInfo({(): restricted.pk})],
+        ))
+
+    def test_disambiguation_denial_rolls_back_earlier_row(self):
+        from specifyweb.backend.workbench.upload.disambiguation import DisambiguationInfo
+        restricted = spmodels.Collectionobject.objects.create(collection=self.other_collection)
+        self.assert_denied_unchanged(lambda: self.upload(
+            rows=[{'Remarks': 'new-import-row'}, {'Remarks': 'restricted'}],
+            disambiguations=[None, DisambiguationInfo({(): restricted.pk})],
+        ))
+
+    def test_explicit_static_fk_requires_target_read(self):
+        attribute = spmodels.Collectionobjectattribute.objects.create(
+            collectionmemberid=self.other_collection.pk,
+        )
+        self.assert_denied_unchanged(lambda: self.upload(
+            rows=[{'Remarks': 'new-import-row'}],
+            static={'collectionobjectattribute_id': attribute.pk},
+        ))
+
+    def test_allowed_reference_requires_read_not_update(self):
+        attribute = spmodels.Collectionobjectattribute.objects.create(
+            collectionmemberid=self.other_collection.pk,
+        )
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/collectionobjectattribute', 'read')
+        result = self.upload(
+            rows=[{'Remarks': 'new-import-row'}],
+            static={'collectionobjectattribute_id': attribute.pk},
+        )
+        created = spmodels.Collectionobject.objects.get(pk=result[0].get_id())
+        self.assertEqual(created.collectionobjectattribute_id, attribute.pk)
+
+    def test_validation_still_checks_match_read_access(self):
+        self.deny_read()
+        self.assert_denied_unchanged(lambda: self.upload(no_commit=True))
+
+    def test_matching_does_not_require_create_or_update(self):
+        from specifyweb.backend.workbench.upload.upload_result import Matched
+        models.UserPolicy.objects.filter(resource='/table/%').delete()
+        self.grant(self.collection, '/table/%', 'read')
+        result = self.upload()
+        self.assertIsInstance(result[0].record_result, Matched)
+        self.assertEqual(result[0].get_id(), self.obj.pk)
+
+    def test_creation_rechecks_actual_scope(self):
+        self.assert_denied_unchanged(lambda: self.upload(
+            rows=[{'Remarks': 'new-import-row'}],
+            static={'collectionmemberid': self.other_collection.pk},
+        ))
+
+    def test_multiple_matches_require_read(self):
+        spmodels.Collectionobject.objects.create(
+            collection=self.collection, remarks=self.obj.remarks,
+        )
+        self.deny_read()
+        self.assert_denied_unchanged(self.upload)
+
+    def test_create_without_record_read_is_preserved(self):
+        from specifyweb.backend.workbench.upload.upload_result import Uploaded
+        self.deny_read()
+        result = self.upload(rows=[{'Remarks': 'new-import-row'}])
+        self.assertIsInstance(result[0].record_result, Uploaded)
+
+    def test_one_to_one_match_requires_related_read(self):
+        from specifyweb.backend.workbench.upload.upload import do_upload
+        from specifyweb.backend.workbench.upload.upload_table import UploadTable, OneToOneTable
+        from specifyweb.backend.workbench.upload.upload_plan_schema import parse_column_options
+        attribute = spmodels.Collectionobjectattribute.objects.create(
+            collectionmemberid=self.collection.pk, number1=42,
+        )
+        models.UserPolicy.objects.filter(resource='/table/%').delete()
+        self.grant(self.collection, '/table/collectionobject', '%')
+        self.grant(self.collection, '/table/collectionobjectattribute', 'create')
+        self.obj.collectionobjectattribute = attribute
+        self.obj.save()
+        plan = UploadTable(
+            name='Collectionobject', wbcols={'remarks': parse_column_options('Remarks')},
+            static={}, toMany={}, toOne={
+                'collectionobjectattribute': OneToOneTable(
+                    name='Collectionobjectattribute',
+                    wbcols={'number1': parse_column_options('Number')},
+                    static={}, toOne={}, toMany={},
+                ),
+            },
+        )
+        self.assert_denied_unchanged(lambda: do_upload(
+            self.collection, [{'Remarks': self.obj.remarks, 'Number': '42'}],
+            plan, self.agent.pk,
+        ))
+
+    def bound_table(self):
+        from specifyweb.backend.workbench.upload.auditor import Auditor, DEFAULT_AUDITOR_PROPS
+        from specifyweb.backend.workbench.upload.auditlog import auditlog
+        from specifyweb.backend.workbench.upload.upload_table import UploadTable
+        return UploadTable(
+            name='Collectionobject', wbcols={}, static={}, toOne={}, toMany={},
+        ).apply_scoping(self.collection).bind(
+            {}, self.agent.pk,
+            Auditor(self.collection, DEFAULT_AUDITOR_PROPS, auditlog, agent=self.agent), {},
+        )
+
+    def test_cached_matches_recheck_read(self):
+        from specifyweb.backend.workbench.upload.predicates import DjangoPredicates
+        from specifyweb.backend.workbench.upload.upload_result import ReportInfo
+        bound = self.bound_table()
+        predicates = DjangoPredicates(filters={'id': self.obj.pk})
+        bound.cache[predicates.get_cache_key(bound.name)] = [self.obj.pk]
+        self.deny_read()
+        self.assert_denied_unchanged(lambda: bound._match(
+            predicates, ReportInfo(bound.name, [], None),
+        ))
+
+    def test_clone_requires_source_read(self):
+        from django.db import transaction
+        bound = self.bound_table()._replace(match_payload={'id': self.obj.pk})
+        self.deny_read()
+        with transaction.atomic():
+            self.assert_denied_unchanged(lambda: bound._do_clone({'remarks': 'cloned'}))
+
+    def test_clone_requires_dependent_source_read(self):
+        from django.db import transaction
+        attribute = spmodels.Collectionobjectattribute.objects.create(
+            collectionmemberid=self.other_collection.pk,
+        )
+        self.obj.collectionobjectattribute = attribute
+        self.obj.save()
+        bound = self.bound_table()._replace(match_payload={'id': self.obj.pk})
+        with transaction.atomic():
+            self.assert_denied_unchanged(lambda: bound._do_clone({'remarks': 'cloned'}))
+
+    def test_authorized_clone_preserves_original(self):
+        bound = self.bound_table()._replace(match_payload={'id': self.obj.pk})
+        copied = bound._do_clone({'remarks': 'cloned', 'catalognumber': 'import-clone'})
+        self.obj.refresh_from_db()
+        self.assertNotEqual(copied.pk, self.obj.pk)
+        self.assertEqual(self.obj.remarks, 'existing-import-record')
+        self.assertEqual(copied.remarks, 'cloned')
+
+    def tree_plan(self):
+        from specifyweb.backend.workbench.upload.upload_plan_schema import parse_plan
+        return parse_plan({
+            'baseTableName': 'Geography',
+            'uploadable': {'treeRecord': {'ranks': {
+                'Planet': {'treeNodeCols': {'name': 'Planet'}},
+            }}},
+        })
+
+    def tree_node(self):
+        return spmodels.Geography.objects.create(
+            name='Earth', definition=self.geographytreedef,
+            definitionitem=self.geographytreedef.treedefitems.get(name='Planet'),
+        )
+
+    def test_tree_match_requires_read(self):
+        from specifyweb.backend.workbench.upload.upload import do_upload
+        self.tree_node()
+        self.deny_read()
+        self.assert_denied_unchanged(lambda: do_upload(
+            self.collection, [{'Planet': 'Earth'}], self.tree_plan(), self.agent.pk,
+        ))
+
+    def test_tree_disambiguation_requires_actual_scope_read(self):
+        from specifyweb.backend.workbench.upload.upload import do_upload
+        from specifyweb.backend.workbench.upload.disambiguation import DisambiguationInfo
+        other_discipline = spmodels.Discipline.objects.create(
+            division=self.division, datatype=self.datatype,
+            geographytreedef=self.geographytreedef,
+            geologictimeperiodtreedef=self.geologictimeperiodtreedef,
+        )
+        self.other_collection.discipline = other_discipline
+        self.other_collection.save()
+        definition = spmodels.Geographytreedef.objects.create(discipline=other_discipline)
+        item = definition.treedefitems.create(name='Planet', rankid=0)
+        node = spmodels.Geography.objects.create(
+            name='Restricted', definition=definition, definitionitem=item,
+        )
+        self.assert_denied_unchanged(lambda: do_upload(
+            self.collection, [{'Planet': 'Earth'}], self.tree_plan(), self.agent.pk,
+            disambiguations=[DisambiguationInfo({('$Planet',): node.pk})],
+        ))
+
+    def test_tree_existing_null_fallback_requires_read(self):
+        from specifyweb.backend.workbench.upload.auditor import Auditor, DEFAULT_AUDITOR_PROPS
+        node = self.tree_node()
+        bound = self.tree_plan().apply_scoping(self.collection).bind(
+            {'Planet': ''}, self.agent.pk,
+            Auditor(self.collection, DEFAULT_AUDITOR_PROPS, None, agent=self.agent), {},
+        )
+        self.deny_read()
+        self.assert_denied_unchanged(lambda: bound.process_with_existing(node.pk))
+
+    def test_tree_reference_requires_read_before_clone(self):
+        from specifyweb.backend.workbench.upload.upload import do_upload
+        from specifyweb.backend.workbench.upload.treerecord import RANK_KEY_DELIMITER
+        node = self.tree_node()
+        key = RANK_KEY_DELIMITER.join((
+            self.geographytreedef.name, 'Planet', str(self.geographytreedef.pk),
+        ))
+        self.deny_read()
+        self.assert_denied_unchanged(lambda: do_upload(
+            self.collection, [{'Planet': 'Other'}], self.tree_plan(), self.agent.pk,
+            batch_edit_packs=[{'to_one': {
+                key: {'self': {'id': node.pk, 'version': node.version}},
+            }}],
+        ))
+
+    def test_authorized_tree_match_is_preserved(self):
+        from specifyweb.backend.workbench.upload.upload import do_upload
+        node = self.tree_node()
+        result = do_upload(
+            self.collection, [{'Planet': 'Earth'}], self.tree_plan(), self.agent.pk,
+        )
+        self.assertEqual(result[0].get_id(), node.pk)
+
+
 class BatchEditWriteAuthorizationTests(ScopedPermissionTestBase):
     def setUp(self):
         super().setUp()

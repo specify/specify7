@@ -532,9 +532,11 @@ class BoundUploadTable(NamedTuple):
                 # Using pop as a _different_ memory optimization.
                 assert self.cache is not None
                 self.cache.pop(cache_key)
+            self.auditor.read(cache_hit)
             return cache_hit
 
         reference_record = safe_fetch(model, {"id": current_id}, self.current_version)
+        self.auditor.read(reference_record)
 
         if should_cache and self.cache is not None:
             self.cache[cache_key] = reference_record
@@ -557,7 +559,9 @@ class BoundUploadTable(NamedTuple):
     def _handle_row(self, skip_match: bool, allow_null: bool) -> UploadResult:
         model = self.django_model
         if self.disambiguation is not None:
-            if model.objects.filter(pk=self.disambiguation).exists():
+            matched = model.objects.filter(pk=self.disambiguation).first()
+            if matched is not None:
+                self.auditor.read(matched)
                 return UploadResult(
                     Matched(
                         id=self.disambiguation, info=ReportInfo(self.name, [], None)
@@ -655,6 +659,15 @@ class BoundUploadTable(NamedTuple):
             if not to_one_def.is_one_to_one()
         }
 
+    def _authorize_match(self, matched) -> None:
+        self.auditor.read(matched)
+        # One-to-one records are matched inline, rather than by _process_to_ones.
+        for name, uploadable in self.toOne.items():
+            if isinstance(uploadable, BoundOneToOneTable):
+                related = getattr(matched, name)
+                if related is not None:
+                    uploadable._authorize_match(related)
+
     def _match(
         self, predicates: DjangoPredicates, info: ReportInfo
     ) -> Matched | MatchedMultiple | None:
@@ -682,6 +695,10 @@ class BoundUploadTable(NamedTuple):
                 ids = list(query.values_list("id", flat=True))
                 if self.cache is not None and ids:
                     self.cache[cache_key] = ids
+
+        if self.auditor.agent is not None:
+            for matched in self.django_model.objects.filter(pk__in=ids):
+                self._authorize_match(matched)
 
         n_matched = len(ids)
         if n_matched > 1:
@@ -816,12 +833,25 @@ class BoundUploadTable(NamedTuple):
             *self.toMany.keys(),  # Don't touch mapped to-manys
         ]
         return clone_record(
-            self._get_reference(), inserter, self.to_one_fields, to_ignore, attrs
+            self._get_reference(), inserter, self.to_one_fields, to_ignore, attrs,
+            authorize_read=self.auditor.read,
         )
 
     def _get_inserter(self):
         def _inserter(model, attrs):
             uploaded = model.objects.create(**attrs)
+            self.auditor.read_references(
+                uploaded,
+                (
+                    name for name in attrs
+                    if name not in self.scopingAttrs
+                    and (
+                        name != "createdbyagent_id"
+                        or "createdbyagent_id" in self.static
+                        or "createdbyagent" in self.toOne
+                    )
+                ),
+            )
             self.auditor.insert(uploaded, None)
             return uploaded
 
@@ -987,18 +1017,18 @@ class BoundUpdateTable(BoundUploadTable):
             return UploadResult(NoChange(current_id, info), {}, {})
 
         reference_record = self._get_reference()
-        if self.auditor.agent is not None:
+        if (
+            self.auditor.agent is not None
+            and not self.auditor.skip_create_permission_check
+            and (self.toOne or self.toMany)
+        ):
             check_table_permissions(
-                self.auditor.collection, self.auditor.agent, reference_record, "read",
+                self.auditor.collection, self.auditor.agent, reference_record, "update",
             )
-            if not self.auditor.skip_create_permission_check and (self.toOne or self.toMany):
-                check_table_permissions(
-                    self.auditor.collection, self.auditor.agent, reference_record, "update",
-                )
-                check_field_permissions(
-                    self.auditor.collection, self.auditor.agent, reference_record,
-                    [*self.toOne, *self.toMany], "update",
-                )
+            check_field_permissions(
+                self.auditor.collection, self.auditor.agent, reference_record,
+                [*self.toOne, *self.toMany], "update",
+            )
 
         return super()._handle_row(skip_match=True, allow_null=allow_null)
 

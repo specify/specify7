@@ -1,4 +1,5 @@
 import logging
+from collections.abc import Iterable
 from typing import Any, NamedTuple, TypedDict
 
 
@@ -42,6 +43,21 @@ class Auditor(NamedTuple):
     audit_log: AuditLog | None
     skip_create_permission_check: bool = False
     agent: Agent | None = None
+
+    def read(self, obj: Any) -> None:
+        # Validation skips writes, not access to existing records.
+        if self.agent is not None:
+            check_table_permissions(self.collection, self.agent, obj, "read")
+
+    def read_references(self, obj: Any, fields: Iterable[str]) -> None:
+        if self.agent is None:
+            return
+        for name in fields:
+            field = obj._meta.get_field(name)
+            if field.concrete and (field.many_to_one or field.one_to_one):
+                related = getattr(obj, field.name)
+                if related is not None:
+                    self.read(related)
 
     def pre_log(self, obj: Any, action_name: TABLE_ACTION):
         if self.skip_create_permission_check:
