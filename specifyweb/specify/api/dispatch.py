@@ -10,7 +10,7 @@ from django.http import (
 from django.core.exceptions import FieldError
 
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
-from specifyweb.backend.permissions.permissions import enforce, table_permissions_checker
+from specifyweb.backend.permissions.permissions import enforce, filter_collection_scoped_read_queryset, table_permissions_checker
 from specifyweb.specify.api.crud import apply_filters, delete_resource, get_collection, get_resource, post_resource, put_resource
 from specifyweb.specify.api.exceptions import FilterError, OrderByError
 from specifyweb.specify.api.filter_by_col import filter_by_collection
@@ -155,6 +155,7 @@ def rows(request, model_name: str) -> HttpResponse:
         return HttpResponseBadRequest(toJson(form.errors), content_type='application/json')
 
     query = apply_filters(request.specify_collection, request.GET, model_name, form.cleaned_data)
+    query = filter_collection_scoped_read_queryset(query, request.specify_user_agent)
     fields = form.cleaned_data['fields'].split(',')
     try:
         query = query.values_list(*fields).order_by(*fields)
