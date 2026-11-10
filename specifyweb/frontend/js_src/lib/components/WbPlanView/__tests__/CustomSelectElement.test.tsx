@@ -8,7 +8,7 @@ import { CustomSelectElement } from '../CustomSelectElement';
 requireContext();
 
 test.each([320, 1280])(
-  'keeps long field labels within the mapper at %ipx',
+  'applies width styles and label wrapping classes with innerWidth set to %i',
   (viewportWidth) => {
     Object.defineProperty(window, 'innerWidth', {
       configurable: true,
