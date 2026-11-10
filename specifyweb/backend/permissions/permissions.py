@@ -290,8 +290,9 @@ def filter_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
     Supports hierarchy records, direct collection scopes, and direct
     division/discipline scopes without competing scope fields, and discipline
     and storage tree nodes. Loan and Gift use their required discipline even
-    when a division is populated. Other scopes are not filtered here;
-    serialized records still undergo instance checks.
+    when a division is populated; Accession follows its configured scope.
+    Other scopes are not filtered here; serialized records still undergo
+    instance checks.
     """
     model = queryset.model
     hierarchy_lookup = {
@@ -328,6 +329,7 @@ def filter_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
         and not discipline_tree_scope
         and model is not Storage
         and model not in (Loan, Gift)
+        and model is not Accession
     ):
         return queryset
 
@@ -342,6 +344,16 @@ def filter_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
         return queryset.filter(pk__in=models.Collection.objects.filter(
             id__in=allowed_ids
         ).values(hierarchy_lookup))
+    if model is Accession:
+        allowed_collections = models.Collection.objects.filter(id__in=allowed_ids)
+        if scope_type == ScopeType.INSTITUTION:
+            institution = Institution.objects.get()
+            return queryset if allowed_collections.filter(
+                discipline__division__institution=institution
+            ).exists() else queryset.none()
+        return queryset.filter(
+            division_id__in=allowed_collections.values("discipline__division_id")
+        )
     if model in (Loan, Gift):
         return queryset.filter(
             discipline_id__in=models.Collection.objects.filter(
