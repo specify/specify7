@@ -607,10 +607,77 @@ class DisciplineScopedReadApiTests(ScopedPermissionTestBase):
         self.assertFalse(queryset.exists())
 
     def test_collection_hierarchy_records_are_not_discipline_scoped(self):
-        queryset = spmodels.Collection.objects.all()
-        self.assertIs(
-            permissions.filter_scoped_read_queryset(queryset, self.agent), queryset
+        self.assertCountEqual(
+            permissions.filter_scoped_read_queryset(
+                spmodels.Collection.objects.all(), self.agent
+            ),
+            [self.collection],
         )
+
+class CollectionHierarchyReadApiTests(ScopedPermissionTestBase):
+    def setUp(self):
+        super().setUp()
+        self.grant_access(self.collection)
+        self.grant(self.collection, '/table/%', 'read')
+        self.client.force_login(self.specifyuser)
+        self.client.cookies['collection'] = str(self.collection.id)
+
+    def assert_visible_collections(self, expected, **params):
+        for path in ('/api/specify/collection/', '/table_rows/specify_rows/collection/'):
+            with self.subTest(path=path):
+                query = {'limit': 0, **params}
+                if path.startswith('/table_rows/'):
+                    query['fields'] = 'id'
+                response = self.client.get(path, query)
+                self.assertEqual(response.status_code, 200)
+                payload = response.json()
+                if isinstance(payload, dict):
+                    self.assertEqual(payload['meta']['total_count'], len(expected))
+                    ids = [obj['id'] for obj in payload['objects']]
+                else:
+                    ids = [row[0] for row in payload]
+                self.assertCountEqual(ids, [obj.id for obj in expected])
+
+    def test_sibling_collection_requires_its_own_grants(self):
+        for domainfilter in (None, 'false', 'true'):
+            with self.subTest(domainfilter=domainfilter):
+                params = {} if domainfilter is None else {'domainfilter': domainfilter}
+                self.assert_visible_collections([self.collection], **params)
+
+    def test_explicit_restricted_id_returns_empty_results(self):
+        self.assert_visible_collections([], id=self.other_collection.id)
+
+    def test_read_grant_requires_collection_access(self):
+        self.grant(self.other_collection, '/table/%', 'read')
+        self.assert_visible_collections([self.collection])
+
+    def test_collection_access_requires_table_read_grant(self):
+        self.grant_access(self.other_collection)
+        self.assert_visible_collections([self.collection])
+
+    def test_both_grants_allow_other_collection(self):
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/%', 'read')
+        self.assert_visible_collections([self.collection, self.other_collection])
+
+    def test_global_grant_allows_both_collections(self):
+        self.grant(None, '%', '%')
+        self.assert_visible_collections([self.collection, self.other_collection])
+
+    def test_filters_before_pagination(self):
+        for path in ('/api/specify/collection/', '/table_rows/specify_rows/collection/'):
+            with self.subTest(path=path):
+                params = {'orderby': '-id', 'limit': 1}
+                if path.startswith('/table_rows/'):
+                    params['fields'] = 'id'
+                response = self.client.get(path, params)
+                self.assertEqual(response.status_code, 200)
+                payload = response.json()
+                if isinstance(payload, dict):
+                    self.assertEqual(payload['meta']['total_count'], 1)
+                    self.assertEqual(payload['objects'][0]['id'], self.collection.id)
+                else:
+                    self.assertEqual(payload, [[self.collection.id]])
 
 class ScopedDeleteApiTests(ScopedPermissionTestBase):
     def setUp(self):

@@ -284,9 +284,9 @@ def has_permission_in_scope(
 def filter_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
     """Filter supported record scopes before counting, projection, or pagination.
 
-    Supports direct collection scopes and direct division/discipline scopes
-    without competing scope fields. Other scopes are not filtered here; serialized
-    records still undergo instance permission checks.
+    Supports Collection records, direct collection scopes, and direct
+    division/discipline scopes without competing scope fields. Other scopes
+    are not filtered here; serialized records still undergo instance checks.
     """
     model = queryset.model
     scope_type = Scoping.scope_type_from_class(model)
@@ -310,6 +310,7 @@ def filter_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
         scope_type != ScopeType.COLLECTION
         and not direct_division_scope
         and not direct_discipline_scope
+        and model is not models.Collection
     ):
         return queryset
 
@@ -320,6 +321,8 @@ def filter_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
         if query_pt(collectionid, userid, CollectionAccessPT.access).allowed
         and query(collectionid, userid, resource, "read").allowed
     ]
+    if model is models.Collection:
+        return queryset.filter(pk__in=allowed_ids)
     if direct_division_scope or direct_discipline_scope:
         allowed_collections = models.Collection.objects.filter(id__in=allowed_ids)
         field = "division" if direct_division_scope else "discipline"
