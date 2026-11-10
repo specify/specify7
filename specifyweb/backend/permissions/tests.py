@@ -534,6 +534,77 @@ class ForwardRelatedRowsApiTests(ScopedPermissionTestBase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), [[self.allowed_record.timestampcreated.year]])
 
+    def test_unprojected_related_ordering_requires_related_read_scope(self):
+        for orderby in ('collectingevent__remarks', '-collectingevent__remarks'):
+            with self.subTest(orderby=orderby):
+                response = self.get_rows(fields='id', orderby=orderby)
+                self.assertEqual(response.status_code, 200)
+                self.assertCountEqual(response.json(), [
+                    [self.null_record.id], [self.allowed_record.id],
+                ])
+
+    def test_related_ordering_filters_before_pagination(self):
+        response = self.get_rows(
+            fields='id', orderby='-collectingevent__remarks', limit=1,
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [[self.allowed_record.id]])
+
+    def test_related_ordering_allows_qualifying_grants(self):
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/collectingevent', 'read')
+        response = self.get_rows(
+            fields='id', id=self.restricted_record.id,
+            orderby='-collectingevent__remarks',
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [[self.restricted_record.id]])
+
+    def test_related_ordering_requires_both_grants(self):
+        self.grant(self.other_collection, '/table/collectingevent', 'read')
+        response = self.get_rows(
+            fields='id', id=self.restricted_record.id,
+            orderby='collectingevent__remarks',
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [])
+
+    def test_related_ordering_requires_related_table_grant(self):
+        self.grant_access(self.other_collection)
+        response = self.get_rows(
+            fields='id', id=self.restricted_record.id,
+            orderby='collectingevent__remarks',
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [])
+
+    def test_nested_ordering_checks_each_related_scope(self):
+        locality = spmodels.Locality.objects.create(
+            discipline=self.other_discipline, localityname='restricted locality',
+        )
+        self.allowed_event.locality = locality
+        self.allowed_event.save()
+        response = self.get_rows(
+            fields='id', orderby='-collectingevent__locality__localityname',
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [[self.null_record.id]])
+
+    def test_legacy_dispatch_rows_checks_unprojected_ordering(self):
+        from specifyweb.specify.api.dispatch import rows
+
+        request = RequestFactory().get(
+            '/table_rows/specify_rows/collectionobject/', {
+                'fields': 'id', 'id': self.restricted_record.id,
+                'orderby': '-collectingevent__remarks',
+            },
+        )
+        request.specify_collection = self.collection
+        request.specify_user_agent = self.agent
+        response = rows(request, 'collectionobject')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json.loads(response.content), [])
+
     def test_legacy_dispatch_rows_uses_same_related_filter(self):
         from specifyweb.specify.api.dispatch import rows
 

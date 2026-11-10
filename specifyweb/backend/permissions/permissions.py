@@ -474,7 +474,7 @@ def filter_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
 def filter_forward_related_read_queryset(
     queryset: QuerySet, fields: Iterable[str], actor
 ) -> QuerySet:
-    """Filter forward FK projection paths by each related record's read scope.
+    """Filter forward FK field paths by each related record's read scope.
 
     Null relationships remain visible. Reverse and to-many paths are not
     handled here, because their joins require separate authorization semantics.

@@ -171,6 +171,10 @@ def rows(request, model_name: str) -> HttpResponse:
         query = filter_by_collection(query, request.specify_collection)
     if form.cleaned_data['orderby']:
         try:
+            query = filter_forward_related_read_queryset(
+                query, [form.cleaned_data['orderby'].removeprefix('-')],
+                request.specify_user_agent,
+            )
             query = query.order_by(form.cleaned_data['orderby'])
         except FieldError as e:
             raise OrderByError(e)
