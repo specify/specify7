@@ -291,12 +291,12 @@ def cache_permission_queries():
 TABLE_ACTION = Literal["read", "create", "update", "delete"]
 
 def check_table_permissions(collection, actor, obj, action: TABLE_ACTION) -> None:
-    """Check instance reads/deletes in record scope; other checks use collection."""
+    """Check existing-record actions in record scope; creates use collection."""
     if isinstance(obj, Table):
         name = obj.name.lower()
     else:
         name = obj.specify_model.name.lower()
-    if action in ("read", "delete") and isinstance(obj, Model):
+    if action in ("read", "update", "delete") and isinstance(obj, Model):
         userid = _actor_userid(actor)
         scope = Scoping.scope_for_record(obj)
         resource = f"/table/{name}"

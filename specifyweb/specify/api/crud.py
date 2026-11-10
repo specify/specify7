@@ -133,6 +133,8 @@ def update_obj(collection, agent, name: str, id, version, data: dict[str, Any], 
     dependents_to_delete, fk_dirty, handle_remote_to_ones = handle_fk_fields(collection, agent, obj, data)
     dirty = fk_dirty + set_fields_from_data(obj, data)
 
+    # Scope-defining fields may have changed; authorize the resulting scope too.
+    check_table_permissions(collection, agent, obj, "update")
     check_field_permissions(collection, agent, obj, [d['field_name'] for d in dirty], "update")
 
     if hasattr(obj, 'modifiedbyagent'):
