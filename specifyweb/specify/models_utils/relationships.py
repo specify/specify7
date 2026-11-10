@@ -475,17 +475,26 @@ class RecordSetInfo(TypedDict):
     previous: str | None
     next: str | None
 
-def get_recordset_info(obj, recordsetid: int) -> RecordSetInfo | None:
+def get_recordset_info(obj, recordsetid: int, checker, *, actor=None) -> RecordSetInfo | None:
     from specifyweb.specify.api.serializers import uri_for_model
+    from specifyweb.backend.permissions.permissions import filter_scoped_read_queryset
 
     """Return a dict of info about how the resource 'obj' is related to
-    the recordset with id 'recordsetid'.
+    the readable recordset with id 'recordsetid'. When an actor is supplied,
+    counts and navigation include only existing, readable members.
     """
+    recordset = models.Recordset.objects.filter(pk=recordsetid).first()
+    if recordset is None:
+        return None
+    checker(recordset)
     # Queryset of record set items in the given record set with
     # the additional condition that they match the resource's table.
     Recordsetitem = models.Recordsetitem
     rsis = Recordsetitem.objects.filter(
         recordset__id=recordsetid, recordset__dbtableid=obj.specify_model.tableId)
+    if actor is not None:
+        readable = filter_scoped_read_queryset(type(obj).objects.all(), actor)
+        rsis = rsis.filter(recordid__in=readable.values('pk'))
 
     # Get the one which points to the resource 'obj'.
     try:

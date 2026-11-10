@@ -55,7 +55,10 @@ def resource_dispatch(request, model, id) -> HttpResponse:
 
     # Dispatch on the request type.
     if request.method == 'GET':
-        data = get_resource(model, id, checker, request.GET.get('recordsetid', None))
+        data = get_resource(
+            model, id, checker, request.GET.get('recordsetid', None),
+            actor=request.specify_user_agent,
+        )
         resp = HttpResponse(toJson(data), content_type='application/json')
 
     elif request.method == 'PUT':

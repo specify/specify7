@@ -370,7 +370,7 @@ class RecordSetTests(ApiTests):
             self.recordset.recordsetitems.create(recordid=id)
 
         for i, co in enumerate(self.collectionobjects):
-            info = get_recordset_info(co, self.recordset.id)
+            info = get_recordset_info(co, self.recordset.id, skip_perms_check)
             self.assertEqual(info["recordsetid"], self.recordset.id)
             self.assertEqual(info["total_count"], len(self.collectionobjects))
             self.assertEqual(info["index"], i)
@@ -397,7 +397,7 @@ class RecordSetTests(ApiTests):
             )
 
     def test_no_recordset_info(self):
-        info = get_recordset_info(self.collectionobjects[0], self.recordset.id)
+        info = get_recordset_info(self.collectionobjects[0], self.recordset.id, skip_perms_check)
         self.assertEqual(info, None)
 
     def test_recordsetitem_ordering(self):

@@ -3954,6 +3954,152 @@ class ReverseInheritedScopeMutationApiTests(ScopedPermissionTestBase):
         }, before)
         event.refresh_from_db()
 
+class RecordsetNavigationAuthorizationApiTests(ScopedPermissionTestBase):
+    def setUp(self):
+        super().setUp()
+        self.client.force_login(self.specifyuser)
+        self.client.cookies['collection'] = str(self.collection.pk)
+        self.grant_access(self.collection)
+        self.grant(self.collection, '/table/%', 'read')
+        self.recordset = self.make_recordset(self.collection)
+        self.restricted_recordset = self.make_recordset(self.other_collection)
+        self.previous, self.current, self.next = self.collectionobjects[:3]
+        self.previous.collection = self.other_collection
+        self.previous.collectionmemberid = self.other_collection.pk
+        self.previous.save()
+        self.restricted_next = spmodels.Collectionobject.objects.create(
+            collection=self.other_collection, catalognumber='restricted-next',
+        )
+        for recordset in (self.recordset, self.restricted_recordset):
+            for obj in (self.previous, self.current, self.next, self.restricted_next):
+                recordset.recordsetitems.create(recordid=obj.pk)
+
+    def make_recordset(self, collection):
+        return spmodels.Recordset.objects.create(
+            collectionmemberid=collection.pk,
+            dbtableid=spmodels.Collectionobject.specify_model.tableId,
+            name='Navigation', type=0, specifyuser=self.specifyuser,
+        )
+
+    def get(self, obj=None, recordset=None):
+        obj = self.current if obj is None else obj
+        recordset = self.recordset if recordset is None else recordset
+        return self.client.get(
+            f'/api/specify/collectionobject/{obj.pk}/?recordsetid={recordset.pk}',
+        )
+
+    def test_denies_restricted_recordset_even_for_readable_current_record(self):
+        self.assertEqual(self.get(recordset=self.restricted_recordset).status_code, 403)
+
+    def test_recordset_access_requires_read_permission_too(self):
+        self.grant_access(self.other_collection)
+        self.assertEqual(self.get(recordset=self.restricted_recordset).status_code, 403)
+
+    def test_recordset_read_requires_collection_access_too(self):
+        self.grant(self.other_collection, '/table/recordset', 'read')
+        self.assertEqual(self.get(recordset=self.restricted_recordset).status_code, 403)
+
+    def test_restricted_recordset_is_checked_even_when_record_is_not_a_member(self):
+        self.assertEqual(self.get(
+            self.collectionobjects[4], self.restricted_recordset,
+        ).status_code, 403)
+
+    def test_navigation_counts_and_previous_omit_unreadable_records(self):
+        response = self.get()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['recordset_info'], {
+            'recordsetid': self.recordset.pk, 'total_count': 2, 'index': 0,
+            'previous': None, 'next': f'/api/specify/collectionobject/{self.next.pk}/',
+        })
+
+    def test_navigation_next_omits_unreadable_records(self):
+        response = self.get(self.next)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['recordset_info'], {
+            'recordsetid': self.recordset.pk, 'total_count': 2, 'index': 1,
+            'previous': f'/api/specify/collectionobject/{self.current.pk}/', 'next': None,
+        })
+
+    def test_authorized_recordset_does_not_authorize_its_restricted_members(self):
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/recordset', 'read')
+        response = self.get(recordset=self.restricted_recordset)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['recordset_info']['total_count'], 2)
+
+    def test_all_authorized_records_are_included(self):
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/collectionobject', 'read')
+        response = self.get()
+        self.assertEqual(response.status_code, 200)
+        info = response.json()['recordset_info']
+        self.assertEqual(info['total_count'], 4)
+        self.assertEqual(info['index'], 1)
+        self.assertEqual(info['previous'], f'/api/specify/collectionobject/{self.previous.pk}/')
+
+    def test_table_read_without_access_does_not_expose_members(self):
+        self.grant(self.other_collection, '/table/collectionobject', 'read')
+        response = self.get()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['recordset_info']['total_count'], 2)
+
+    def test_dangling_record_ids_are_not_navigation_targets(self):
+        self.recordset.recordsetitems.create(recordid=self.restricted_next.pk + 1000000)
+        response = self.get(self.next)
+        self.assertEqual(response.status_code, 200)
+        info = response.json()['recordset_info']
+        self.assertEqual(info['total_count'], 2)
+        self.assertIsNone(info['next'])
+
+    def test_nonmember_retains_null_navigation(self):
+        response = self.get(self.collectionobjects[4])
+        self.assertEqual(response.status_code, 200)
+        self.assertIsNone(response.json()['recordset_info'])
+
+    def test_missing_recordset_retains_null_navigation(self):
+        response = self.client.get(
+            f'/api/specify/collectionobject/{self.current.pk}/'
+            f'?recordsetid={self.restricted_recordset.pk + 1000000}',
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertIsNone(response.json()['recordset_info'])
+
+    def test_only_readable_member_has_no_neighbors(self):
+        self.next.collection = self.other_collection
+        self.next.collectionmemberid = self.other_collection.pk
+        self.next.save()
+        response = self.get()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['recordset_info'], {
+            'recordsetid': self.recordset.pk, 'total_count': 1, 'index': 0,
+            'previous': None, 'next': None,
+        })
+
+    def test_plain_record_read_does_not_require_recordset_read(self):
+        models.UserPolicy.objects.filter(resource='/table/%').delete()
+        for table in ('collectionobject', 'collection', 'agent'):
+            self.grant(self.collection, f'/table/{table}', 'read')
+        response = self.client.get(f'/api/specify/collectionobject/{self.current.pk}/')
+        self.assertEqual(response.status_code, 200)
+        self.assertNotIn('recordset_info', response.json())
+
+    def test_mismatched_table_retains_null_navigation(self):
+        self.recordset.dbtableid = spmodels.Agent.specify_model.tableId
+        self.recordset.save()
+        response = self.get()
+        self.assertEqual(response.status_code, 200)
+        self.assertIsNone(response.json()['recordset_info'])
+
+    def test_current_record_still_requires_read_permission(self):
+        self.assertEqual(self.get(self.previous).status_code, 403)
+
+    def test_institution_grants_include_all_members(self):
+        self.grant(None, '%', 'read')
+        self.grant(None, '/system/sp7/collection', 'access')
+        response = self.get(recordset=self.restricted_recordset)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['recordset_info']['total_count'], 4)
+
 class RecordsetAppendAuthorizationApiTests(ScopedPermissionTestBase):
     def setUp(self):
         super().setUp()
