@@ -143,6 +143,19 @@ class FormatterAggregatorTests(SQLAlchemySetup):
                 models.Agent,
                 'AgentIdentifier',
             )
+            determiner_names = ObjectFormatter(self.collection, self.specifyuser, False).aggregate(
+                query,
+                spmodels.datamodel.get_table('Determination').get_relationship_strict('determiners'),
+                models.Determination,
+                'Determiner',
+            )
+            self.assertEqual(
+                session.query(determiner_names)
+                .select_from(models.Determination)
+                .filter(models.Determination._id == determination.id)
+                .scalar(),
+                'Person 1; Person 0',
+            )
             expected = 'https://orcid.org/id-1 | https://orcid.org/id-0'
             for model, identifier, expression in [
                 (models.CollectingEvent, event.id, collector_ids),
