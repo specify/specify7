@@ -324,75 +324,74 @@ export function AppResourceEditor({
                 }
               : undefined
           }
-          onSaving={(unsetUnloadProtect): false => {
-            loading(
-              (typeof directory.id === 'number'
+          onSaving={async (unsetUnloadProtect): Promise<false> => {
+            const savePromise = (
+              typeof directory.id === 'number'
                 ? Promise.resolve(directory)
                 : createResource('SpAppResourceDir', directory)
-              ).then(async (resourceDirectory) => {
-                unsetUnloadProtect();
+            ).then(async (resourceDirectory) => {
+              unsetUnloadProtect();
 
-                if (appResource.isNew())
+              if (appResource.isNew())
+                appResource.set(
+                  'spAppResourceDir',
+                  resourceDirectory.resource_uri
+                );
+
+              const subType = f.maybe(
+                toResource(serializeResource(appResource), 'SpAppResource'),
+                getAppResourceType
+              );
+              // Set a mime type if it's not set yet
+              if (typeof subType === 'string') {
+                const type = appResourceSubTypes[subType];
+                if (typeof type.name === 'string')
                   appResource.set(
-                    'spAppResourceDir',
-                    resourceDirectory.resource_uri
+                    'mimeType',
+                    type.mimeType ?? appResource.get('mimeType')
                   );
+              }
 
-                const subType = f.maybe(
-                  toResource(serializeResource(appResource), 'SpAppResource'),
-                  getAppResourceType
-                );
-                // Set a mime type if it's not set yet
-                if (typeof subType === 'string') {
-                  const type = appResourceSubTypes[subType];
-                  if (typeof type.name === 'string')
-                    appResource.set(
-                      'mimeType',
-                      type.mimeType ?? appResource.get('mimeType')
-                    );
-                }
+              await appResource.save();
+              const resource = serializeResource(appResource);
 
-                await appResource.save();
-                const resource = serializeResource(appResource);
+              const data =
+                typeof lastDataRef.current === 'function'
+                  ? lastDataRef.current()
+                  : lastDataRef.current;
+              const syncedData = syncViewsetNameInXml(
+                data === undefined ? resourceData.data : data,
+                appResource
+              );
+              const appResourceData = deserializeResource({
+                ...resourceData,
+                data: syncedData,
+                spAppResource:
+                  toTable(appResource, 'SpAppResource')?.get('resource_uri') ??
+                  null,
+                spViewSetObj:
+                  toTable(appResource, 'SpViewSetObj')?.get('resource_uri') ??
+                  null,
+              });
+              await appResourceData.save();
+              if (appResource.specifyTable.name === 'SpAppResource')
+                await clearUrlCache(getAppResourceUrl(appResource.get('name')));
+              await cleanup?.();
 
-                const data =
-                  typeof lastDataRef.current === 'function'
-                    ? lastDataRef.current()
-                    : lastDataRef.current;
-                const syncedData = syncViewsetNameInXml(
-                  data === undefined ? resourceData.data : data,
-                  appResource
-                );
-                const appResourceData = deserializeResource({
-                  ...resourceData,
-                  data: syncedData,
-                  spAppResource:
-                    toTable(appResource, 'SpAppResource')?.get(
-                      'resource_uri'
-                    ) ?? null,
-                  spViewSetObj:
-                    toTable(appResource, 'SpViewSetObj')?.get('resource_uri') ??
-                    null,
-                });
-                await appResourceData.save();
-                if (appResource.specifyTable.name === 'SpAppResource')
-                  await clearUrlCache(
-                    getAppResourceUrl(appResource.get('name'))
-                  );
-                await cleanup?.();
+              setResourceData(
+                serializeResource(
+                  appResourceData
+                ) as SerializedResource<SpAppResourceData>
+              );
 
-                setResourceData(
-                  serializeResource(
-                    appResourceData
-                  ) as SerializedResource<SpAppResourceData>
-                );
-
-                handleSaved(resource, {
-                  ...resourceDirectory,
-                  scope: getScope(resourceDirectory),
-                });
-              })
-            );
+              handleSaved(resource, {
+                ...resourceDirectory,
+                scope: getScope(resourceDirectory),
+              });
+            });
+            // SaveButton reports rejections after awaiting this same promise.
+            loading(savePromise.catch(() => undefined));
+            await savePromise;
 
             return false;
           }}

@@ -75,7 +75,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   // Returning false would cancel the save proces (allowing to trigger custom behaviour)
   readonly onSaving?: (
     unsetUnloadProtect: () => void
-  ) => false | undefined | void;
+  ) => false | undefined | void | Promise<false | undefined | void>;
   readonly onBeforeSaving?: () => Promise<boolean>;
   readonly onSaved?: () => void;
   readonly onAdd?: (resources: RA<SpecifyResource<SCHEMA>>) => void;
@@ -174,7 +174,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
        * Save process is canceled if false was returned. This also allows to
        * implement custom save behavior
        */
-      if (handleSaving?.(unsetUnloadProtect) === false) return;
+      if ((await handleSaving?.(unsetUnloadProtect)) === false) return;
 
       const savePromise = resource
         .save({ onSaveConflict: hasSaveConflict })

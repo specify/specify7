@@ -99,3 +99,30 @@ test('does not submit again while confirmation is pending', async () => {
   expect(handleBeforeSaving).toHaveBeenCalledTimes(1);
   await act(async () => resolveConfirmation(false));
 });
+
+test('blocks repeated submissions until a custom save settles', async () => {
+  const resource = new tables.CollectionObjectGroup.Resource();
+  const form = document.createElement('form');
+  let finishSaving: (value: false) => void = () => undefined;
+  const pendingSave = new Promise<false>((resolve) => {
+    finishSaving = resolve;
+  });
+  const handleSaving = jest.fn(() => pendingSave);
+  const save = jest.spyOn(resource, 'save');
+  mount(<SaveButton form={form} resource={resource} onSaving={handleSaving} />);
+  await act(async () => undefined);
+  const submit = (): void => {
+    form.dispatchEvent(
+      new SubmitEvent('submit', { bubbles: true, cancelable: true })
+    );
+  };
+  await act(async () => submit());
+  await act(async () => submit());
+  expect(handleSaving).toHaveBeenCalledTimes(1);
+  expect(save).not.toHaveBeenCalled();
+
+  await act(async () => finishSaving(false));
+  await act(async () => submit());
+  expect(handleSaving).toHaveBeenCalledTimes(2);
+  expect(save).not.toHaveBeenCalled();
+});
