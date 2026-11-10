@@ -3,7 +3,7 @@ from typing import Any, Dict
 from collections.abc import Callable
 import json
 from django.db import transaction
-from django.core.exceptions import FieldError, FieldDoesNotExist
+from django.core.exceptions import BadRequest, FieldError, FieldDoesNotExist
 from django.db.models import Model, F, Q, Subquery
 from django.db.models.deletion import Collector
 from django.http import (HttpResponseServerError, Http404)
@@ -43,7 +43,7 @@ def get_resource(name, id, checker: ReadPermChecker, recordsetid=None) -> dict:
     return data
 
 def create_obj(collection, agent, model, data: dict[str, Any], parent_obj=None, parent_relationship=None):
-    """Create a new instance of 'model' and populate it with 'data'."""
+    """Create a new instance; non-null primary keys are not accepted."""
     from specifyweb.backend.setup_tool.api import create_institution, create_division, create_discipline, create_collection
     from specifyweb.backend.setup_tool.utils import normalize_keys
     from specifyweb.backend.permissions.permissions import PermissionsException
@@ -74,6 +74,8 @@ def create_obj(collection, agent, model, data: dict[str, Any], parent_obj=None, 
         return model.objects.filter(id=result[f'{model_name}_id']).first()
 
     data = cleanData(model, data, parent_relationship)
+    if data.get(model._meta.pk.name) is not None:
+        raise BadRequest("Cannot create a record with an explicit primary key")
     obj = model()
     _, _, handle_remote_to_ones = handle_fk_fields(collection, agent, obj, data)
     set_fields_from_data(obj, data)
