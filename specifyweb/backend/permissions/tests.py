@@ -3954,6 +3954,198 @@ class ReverseInheritedScopeMutationApiTests(ScopedPermissionTestBase):
         }, before)
         event.refresh_from_db()
 
+class BulkCreateAuthorizationApiTests(ScopedPermissionTestBase):
+    def setUp(self):
+        super().setUp()
+        self.client.force_login(self.specifyuser)
+        self.client.cookies['collection'] = str(self.collection.pk)
+        self.grant_access(self.collection)
+        self.grant(self.collection, '/table/%', '%')
+        self.grant(self.collection, '/field/%', 'update')
+        self.recordset = spmodels.Recordset.objects.create(
+            collectionmemberid=self.collection.pk,
+            dbtableid=spmodels.Collectionobject.specify_model.tableId,
+            name='Bulk target', type=0, specifyuser=self.specifyuser,
+        )
+
+    def data(self, collection=None, **changes):
+        collection = self.collection if collection is None else collection
+        return {
+            'collection': f'/api/specify/collection/{collection.pk}/',
+            'text1': 'bulk-created', **changes,
+        }
+
+    def snapshot(self):
+        return {
+            model.__name__: list(model.objects.order_by('pk').values())
+            for model in (
+                spmodels.Collectionobject, spmodels.Collectionobjectattribute,
+                spmodels.Recordset, spmodels.Recordsetitem,
+                spmodels.Spauditlog, spmodels.Spauditlogfield,
+            )
+        }
+
+    def post(self, data, *, copies=None, recordset=None, prefix='/bulk_copy/'):
+        return self.client.post(
+            f'{prefix}bulk/collectionobject/'
+            + ('' if copies is None else f'{copies}/')
+            + ('' if recordset is None else f'?recordsetid={recordset.pk}'),
+            data=data, content_type='application/json',
+        )
+
+    def assert_denied_unchanged(self, data, **options):
+        before = self.snapshot()
+        self.assertEqual(self.post(data, **options).status_code, 403)
+        self.assertEqual(self.snapshot(), before)
+
+    def test_mixed_scope_batch_rolls_back_first_create_and_audit(self):
+        self.assert_denied_unchanged([self.data(), self.data(self.other_collection)])
+
+    def test_mixed_scope_legacy_alias_rolls_back_first_create(self):
+        self.assert_denied_unchanged(
+            [self.data(), self.data(self.other_collection)], prefix='/api/specify',
+        )
+
+    def test_target_read_without_create_does_not_authorize_batch(self):
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/%', 'read')
+        self.assert_denied_unchanged([self.data(), self.data(self.other_collection)])
+
+    def test_target_create_without_access_does_not_authorize_batch(self):
+        self.grant(self.other_collection, '/table/%', '%')
+        self.assert_denied_unchanged([self.data(), self.data(self.other_collection)])
+
+    def test_mixed_scope_batch_rolls_back_recordset_memberships(self):
+        self.assert_denied_unchanged(
+            [self.data(), self.data(self.other_collection)], recordset=self.recordset,
+        )
+
+    def test_later_nested_denial_rolls_back_prior_nested_create(self):
+        self.assert_denied_unchanged([
+            self.data(collectionobjectattribute={'text1': 'new attribute'}),
+            self.data(self.other_collection),
+        ])
+
+    def test_later_fk_reference_denial_rolls_back_first_create(self):
+        other_discipline = spmodels.Discipline.objects.create(
+            division=self.division, datatype=self.datatype,
+            geographytreedef=self.geographytreedef,
+            geologictimeperiodtreedef=self.geologictimeperiodtreedef,
+        )
+        self.other_collection.discipline = other_discipline
+        self.other_collection.save()
+        restricted = spmodels.Collectingevent.objects.create(
+            discipline=other_discipline,
+        )
+        self.assert_denied_unchanged([
+            self.data(), self.data(collectingevent=f'/api/specify/collectingevent/{restricted.pk}/'),
+        ])
+
+    def test_batch_response_read_denial_rolls_back_created_records(self):
+        models.UserPolicy.objects.filter(resource='/table/%').delete()
+        self.grant(self.collection, '/table/%', 'create')
+        self.grant(self.collection, '/table/collection', 'read')
+        self.assert_denied_unchanged([self.data(), self.data()])
+
+    def test_copy_response_read_denial_rolls_back_created_records(self):
+        models.UserPolicy.objects.filter(resource='/table/%').delete()
+        self.grant(self.collection, '/table/%', 'create')
+        self.grant(self.collection, '/table/collection', 'read')
+        self.assert_denied_unchanged(self.data(), copies=2)
+
+    def test_repeated_copy_later_denial_rolls_back_previous_copies(self):
+        from specifyweb.backend.permissions.permissions import NoMatchingRuleException
+        from specifyweb.specify.api.crud import post_resource
+
+        calls = 0
+
+        def create_then_deny(*args, **kwargs):
+            nonlocal calls
+            calls += 1
+            if calls == 2:
+                raise NoMatchingRuleException([])
+            return post_resource(*args, **kwargs)
+
+        with patch(
+            'specifyweb.backend.bulk_copy.bulk_copy.post_resource', side_effect=create_then_deny,
+        ):
+            self.assert_denied_unchanged(self.data(), copies=2, recordset=self.recordset)
+        self.assertEqual(calls, 2)
+
+    def test_later_nested_update_denial_restores_existing_related_record(self):
+        attribute = spmodels.Collectionobjectattribute.objects.create(
+            collectionmemberid=self.collection.pk, text1='original',
+        )
+        self.assert_denied_unchanged([
+            self.data(collectionobjectattribute={
+                'id': attribute.pk, 'version': attribute.version, 'text1': 'changed',
+            }),
+            self.data(self.other_collection),
+        ])
+
+    def test_later_explicit_primary_key_error_rolls_back_prior_create(self):
+        before = self.snapshot()
+        response = self.post([self.data(), self.data(id=self.collectionobjects[0].pk)])
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(self.snapshot(), before)
+
+    def test_later_missing_reference_rolls_back_prior_create(self):
+        before = self.snapshot()
+        response = self.post([
+            self.data(), self.data(collectingevent='/api/specify/collectingevent/2147483647/'),
+        ])
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(self.snapshot(), before)
+
+    def test_restricted_copy_destination_does_not_write(self):
+        self.assert_denied_unchanged(self.data(self.other_collection), copies=2)
+
+    def test_authorized_batch_returns_all_records_in_order(self):
+        response = self.post([self.data(text1='first'), self.data(text1='second')])
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual([obj['text1'] for obj in response.json()], ['first', 'second'])
+        self.assertEqual(spmodels.Collectionobject.objects.filter(text1__in=['first', 'second']).count(), 2)
+
+    def test_authorized_cross_collection_batch_uses_actual_scope(self):
+        self.grant_access(self.other_collection)
+        self.grant(self.other_collection, '/table/%', '%')
+        self.grant(self.other_collection, '/field/%', 'update')
+        response = self.post([self.data(), self.data(self.other_collection)])
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual([
+            spmodels.Collectionobject.objects.get(pk=obj['id']).collection_id
+            for obj in response.json()
+        ], [self.collection.pk, self.other_collection.pk])
+
+    def test_authorized_copies_create_distinct_records_not_source_updates(self):
+        source = self.collectionobjects[0]
+        before = spmodels.Collectionobject.objects.filter(pk=source.pk).values().get()
+        response = self.post(self.data(id=source.pk), copies=2)
+        self.assertEqual(response.status_code, 201)
+        ids = [obj['id'] for obj in response.json()]
+        self.assertEqual(len(set(ids)), 2)
+        self.assertNotIn(source.pk, ids)
+        self.assertEqual(spmodels.Collectionobject.objects.filter(pk=source.pk).values().get(), before)
+
+    def test_authorized_copies_append_all_memberships(self):
+        response = self.post(self.data(), copies=2, recordset=self.recordset)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(
+            set(self.recordset.recordsetitems.values_list('recordid', flat=True)),
+            {obj['id'] for obj in response.json()},
+        )
+
+    def test_authorized_legacy_copy_alias_returns_all_copies(self):
+        response = self.post(self.data(), copies=2, prefix='/api/specify')
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(len(response.json()), 2)
+
+    def test_unsupported_method_does_not_write(self):
+        before = self.snapshot()
+        self.assertEqual(self.client.get('/bulk_copy/bulk/collectionobject/').status_code, 405)
+        self.assertEqual(self.client.get('/bulk_copy/bulk/collectionobject/2/').status_code, 405)
+        self.assertEqual(self.snapshot(), before)
+
 class RecordsetItemAuthorizationApiTests(ScopedPermissionTestBase):
     def setUp(self):
         super().setUp()
