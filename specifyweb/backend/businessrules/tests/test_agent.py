@@ -93,6 +93,23 @@ class AgentTests(ApiTests):
         self.assertEqual(saved.language, 'en')
         self.assertEqual(saved.country, 'US')
 
+    def test_add_agent_specialty(self):
+        specialty = post_resource(
+            self.collection,
+            self.agent,
+            'agentspecialty',
+            {
+                'agent': uri_for_model('agent', self.agent.id),
+                'ordernumber': 0,
+                'specialtyname': 'Botany',
+            },
+        )
+
+        saved = models.Agentspecialty.objects.get(id=specialty.id)
+        self.assertEqual(saved.agent_id, self.agent.id)
+        self.assertEqual(saved.ordernumber, 0)
+        self.assertEqual(saved.specialtyname, 'Botany')
+
     def test_agent_delete_cascades(self):
         agent = models.Agent.objects.create(
             agenttype=0,
