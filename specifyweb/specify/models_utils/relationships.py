@@ -164,7 +164,6 @@ def handle_fk_fields(collection, agent, obj, data: dict[str, Any], *, parent_obj
 def _handle_fk_field(collection, agent, obj, field, value, read_checker, *, parent_obj=None):
     from specifyweb.specify.api.crud import get_object_or_404, update_or_create_resource
     from specifyweb.specify.api.serializers import _obj_to_data
-    from specifyweb.specify.api.validators import cleanData
 
     field_name = field.name
     old_related = get_related_or_none(obj, field_name)
