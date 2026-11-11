@@ -3,6 +3,7 @@ from specifyweb.specify import models
 from specifyweb.specify.api.crud import post_resource, update_obj
 from specifyweb.specify.api.serializers import uri_for_model
 from specifyweb.specify.tests.test_api import ApiTests
+from specifyweb.specify.utils.scoping import ScopeType
 
 class LocalityBusinessRuleTests(ApiTests):
     def _geography_data(self, name='Test geography'):
@@ -99,6 +100,38 @@ class LocalityBusinessRuleTests(ApiTests):
             locality.paleocontext.discipline_id,
             self.discipline.id,
         )
+
+    def test_add_attachment_to_locality(self):
+        locality = models.Locality.objects.create(
+            localityname='Locality with attachment',
+            srclatlongunit=0,
+            discipline=self.discipline,
+        )
+
+        locality_attachment = post_resource(
+            self.collection,
+            self.agent,
+            'localityattachment',
+            {
+                'locality': uri_for_model('locality', locality.id),
+                'ordinal': 0,
+                'attachment': {
+                    'origfilename': 'locality.txt',
+                    'title': 'Locality attachment',
+                },
+            },
+        )
+
+        attachment = locality_attachment.attachment
+        self.assertEqual(locality.localityattachments.count(), 1)
+        self.assertEqual(attachment.origfilename, 'locality.txt')
+        self.assertEqual(attachment.title, 'Locality attachment')
+        self.assertEqual(
+            attachment.tableid,
+            models.Locality.specify_model.tableId,
+        )
+        self.assertEqual(attachment.scopetype, ScopeType.DISCIPLINE.value)
+        self.assertEqual(attachment.scopeid, self.discipline.id)
 
     def test_create_locality_with_fields(self):
         locality = models.Locality.objects.create(
