@@ -5,6 +5,7 @@ from specifyweb.specify import models
 from specifyweb.specify.api.crud import delete_resource, post_resource
 from specifyweb.specify.api.serializers import uri_for_model
 from specifyweb.specify.tests.test_api import ApiTests
+from specifyweb.specify.utils.agent_types import agent_types
 from specifyweb.specify.utils.scoping import ScopeType
 from ..exceptions import BusinessRuleException
 
@@ -25,6 +26,27 @@ class AgentTests(ApiTests):
                 },
             },
         )
+
+    def test_add_address_to_agent(self):
+        address = post_resource(
+            self.collection,
+            self.agent,
+            'address',
+            {
+                'agent': uri_for_model('agent', self.agent.id),
+                'address': '123 Main St',
+                'city': 'Gainesville',
+                'state': 'FL',
+                'isprimary': True,
+            },
+        )
+
+        saved = models.Address.objects.get(id=address.id)
+        self.assertEqual(saved.agent_id, self.agent.id)
+        self.assertEqual(saved.address, '123 Main St')
+        self.assertEqual(saved.city, 'Gainesville')
+        self.assertEqual(saved.state, 'FL')
+        self.assertIs(saved.isprimary, True)
 
     def test_agent_delete_cascades(self):
         agent = models.Agent.objects.create(
