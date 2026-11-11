@@ -360,10 +360,9 @@ def authorize_dependent_scope_update(collection, agent, obj):
             check_table_permissions(collection, agent, current, "update")
 
 def _handle_dependent_to_many(collection, agent, obj, field, value):
-    delete_obj = crud.delete_obj
-    get_object_or_404 = crud.get_object_or_404
-    make_default_deleter = crud.make_default_deleter
-    update_or_create_resource = crud.update_or_create_resource
+    from ..api.crud import (
+        delete_obj, get_object_or_404, make_default_deleter, update_or_create_resource,
+    )
     cleanData = import_module("specifyweb.specify.api.validators").cleanData
 
     rel_model = field.related_model
@@ -404,8 +403,7 @@ class IndependentInline(TypedDict):
     remove: list[str]
 
 def _handle_independent_to_many(collection, agent, obj, field, value: IndependentInline):
-    get_object_or_404 = crud.get_object_or_404
-    update_or_create_resource = crud.update_or_create_resource
+    from ..api.crud import get_object_or_404, update_obj, update_or_create_resource
     from ..api.validators import cleanData
 
     logger.warning("Updating independent collections via the API is experimental and the structure may be changed in the future")
