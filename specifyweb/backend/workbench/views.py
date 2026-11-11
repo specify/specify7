@@ -763,6 +763,10 @@ def unupload(request, ds) -> http.HttpResponse:
 
         if ds.uploaderstatus is not None:
             return http.HttpResponse("dataset in use by uploader.", status=409)
+        if ds.collection != request.specify_collection:
+            return http.HttpResponse(
+                "dataset belongs to a different collection.", status=400
+            )
         if not ds.was_uploaded():
             return http.HttpResponse("dataset has not been uploaded.", status=400)
 

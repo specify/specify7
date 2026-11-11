@@ -518,7 +518,9 @@ class BoundUploadTable(NamedTuple):
             else update_table.process_row_with_null()
         )
 
-    def _get_reference(self, should_cache=True) -> ModelWithTable | None:
+    def _get_reference(
+        self, should_cache=True, *, check_read: bool = True,
+    ) -> ModelWithTable | None:
         model: ModelWithTable = self.django_model
         current_id = self.current_id
 
@@ -537,11 +539,13 @@ class BoundUploadTable(NamedTuple):
                 # Using pop as a _different_ memory optimization.
                 assert self.cache is not None
                 self.cache.pop(cache_key)
-            self.auditor.read(cache_hit)
+            if check_read:
+                self.auditor.read(cache_hit)
             return cache_hit
 
         reference_record = safe_fetch(model, {"id": current_id}, self.current_version)
-        self.auditor.read(reference_record)
+        if check_read:
+            self.auditor.read(reference_record)
 
         if should_cache and self.cache is not None:
             self.cache[cache_key] = reference_record
@@ -883,6 +887,7 @@ class BoundUploadTable(NamedTuple):
                 )
         return added_picklist_items
 
+    @transaction.atomic
     def delete_row(self, parent_obj=None) -> UploadResult:
 
         info = ReportInfo(
@@ -897,7 +902,9 @@ class BoundUploadTable(NamedTuple):
         # So, we can just go ahead and follow the general delete protocol. Don't need version-control here.
         # Also caching still works (we'll, always, get a hit) because updates and deletes are independent (update wouldn't have been called).
         reference_record = self._get_reference(
-            should_cache=False  # Need to evict the last copy, in case someone tries accessing it, we'll then get a stale record
+            should_cache=False,
+            check_read=False,
+            # Evict cached data so subsequent access cannot observe stale state.
         )
 
         assert reference_record is not None
@@ -914,6 +921,7 @@ class BoundUploadTable(NamedTuple):
             for (results_per_key) in to_many_deleted.values()
             for result in results_per_key
         ):
+            transaction.set_rollback(True)
             return UploadResult(PropagatedFailure(), {}, to_many_deleted)
 
         with transaction.atomic():

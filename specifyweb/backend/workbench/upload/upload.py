@@ -16,13 +16,18 @@ from django.db.utils import OperationalError, IntegrityError
 from jsonschema import validate  # type: ignore
 from typing import Any, Optional, cast
 
-from specifyweb.backend.permissions.permissions import has_target_permission, cache_permission_queries
+from specifyweb.backend.permissions.permissions import (
+    cache_permission_queries,
+    check_permission_targets,
+    check_table_permissions,
+    has_target_permission,
+)
 from specifyweb.specify import models
 from specifyweb.backend.workbench.upload.auditlog import auditlog
 from specifyweb.specify.datamodel import Table
 from specifyweb.specify.utils.func import Func
 from specifyweb.backend.trees.extras import renumber_tree, set_fullnames
-from specifyweb.backend.workbench.permissions import BatchEditDataSetPT
+from specifyweb.backend.workbench.permissions import BatchEditDataSetPT, DataSetPT
 from specifyweb.backend.businessrules.utils import cache_unique_catnum_preferences
 from specifyweb.backend.businessrules.uniqueness_rules import cache_uniqueness_rules
 from specifyweb.backend.context.remote_prefs import cache_remote_preferences
@@ -102,6 +107,10 @@ def no_savepoint():
 
 
 def unupload_dataset(ds: Spdataset, agent, progress: Progress | None = None) -> None:
+    permission = BatchEditDataSetPT.rollback if ds.isupdate else DataSetPT.unupload
+    check_permission_targets(
+        ds.collection_id, agent.specifyuser_id, [permission],
+    )
     if ds.rowresults is None:
         return
     results = json.loads(ds.rowresults)
@@ -112,7 +121,7 @@ def unupload_dataset(ds: Spdataset, agent, progress: Progress | None = None) -> 
             logger.info(f"rolling back row {current} of {total}")
             upload_result = UploadResult.from_json(row)
             if not upload_result.contains_failure():
-                unupload_record(upload_result, agent)
+                unupload_record(upload_result, agent, ds.collection)
 
             current += 1
             if progress is not None:
@@ -129,7 +138,8 @@ ACTION_RESULTS = [
     NoChange
 ]
 
-def unupload_record(upload_result: UploadResult, agent) -> None:
+@transaction.atomic
+def unupload_record(upload_result: UploadResult, agent, collection=None) -> None:
     
     is_action_result = any(isinstance(upload_result.record_result, cls) for cls in ACTION_RESULTS)
 
@@ -139,7 +149,7 @@ def unupload_record(upload_result: UploadResult, agent) -> None:
         upload_result.toMany.items(), key=lambda kv: kv[0], reverse=True
     ):
         for record in reversed(toMany):
-            unupload_record(record, agent)
+            unupload_record(record, agent, collection)
 
     if isinstance(upload_result.record_result, Uploaded):
         model = getattr(models, upload_result.record_result.info.tableName.capitalize())
@@ -150,6 +160,7 @@ def unupload_record(upload_result: UploadResult, agent) -> None:
             logger.debug("already deleted")
         else:
             logger.debug(f"deleting {obj}")
+            check_table_permissions(collection, agent, obj, "delete")
             auditlog.remove(obj, agent, None)
             try:
                 obj_q._raw_delete(obj_q.db)
@@ -169,13 +180,14 @@ def unupload_record(upload_result: UploadResult, agent) -> None:
                 logger.debug("picklist item already deleted")
             else:
                 logger.debug(f"deleting {pli}")
+                check_table_permissions(collection, agent, pli, "delete")
                 auditlog.remove(pli, agent, None)
                 pli_q._raw_delete(pli_q.db)  # type: ignore
 
     for _, record in sorted(
         upload_result.toOne.items(), key=lambda kv: kv[0], reverse=True
     ):
-        unupload_record(record, agent)
+        unupload_record(record, agent, collection)
 
 
 def do_upload_dataset(
@@ -571,6 +583,7 @@ def adjust_pack(
     return {"self": self_pack, "to_one": to_ones, "to_many": to_many}
 
 
+@transaction.atomic
 def rollback_batch_edit(
     parent: Spdataset, collection, agent, progress: Progress | None = None
 ) -> None:

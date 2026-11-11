@@ -4405,6 +4405,259 @@ class IndirectImportTreeMatchingTests(ScopedPermissionTestBase):
         self.assertIsInstance(self.bound_tree().match_row().record_result, NoMatch)
 
 
+class UnuploadAuthorizationTests(ScopedPermissionTestBase):
+    def setUp(self):
+        super().setUp()
+        self.grant_access(self.collection)
+        self.allowed_obj = self.collectionobjects[0]
+        self.restricted_obj = spmodels.Collectionobject.objects.create(
+            collection=self.other_collection, catalognumber='restricted-unupload',
+        )
+
+    def uploaded_result(self, obj, *, to_many=None, additions=None):
+        from specifyweb.backend.workbench.upload.upload_result import (
+            ReportInfo, Uploaded, UploadResult,
+        )
+        return UploadResult(
+            Uploaded(
+                obj.pk,
+                ReportInfo(obj.specify_model.name, [], None),
+                [] if additions is None else additions,
+            ),
+            {},
+            {} if to_many is None else to_many,
+        )
+
+    def snapshot(self):
+        return {
+            model.__name__: list(model.objects.order_by('pk').values())
+            for model in (
+                spmodels.Collectionobject, spmodels.Preparation,
+                spmodels.Picklist, spmodels.Picklistitem,
+                spmodels.Spauditlog, spmodels.Spauditlogfield,
+            )
+        }
+
+    def grant_delete(self, collection, table):
+        self.grant_access(collection)
+        self.grant(collection, f'/table/{table}', 'delete')
+
+    def test_unupload_checks_delete_in_actual_scope(self):
+        from specifyweb.backend.workbench.upload.upload import unupload_record
+        self.grant(self.collection, '/table/collectionobject', 'delete')
+        before = self.snapshot()
+        with self.assertRaises(permissions.NoMatchingRuleException):
+            unupload_record(
+                self.uploaded_result(self.restricted_obj), self.agent, self.collection,
+            )
+        self.assertEqual(self.snapshot(), before)
+
+    def test_unupload_does_not_require_read_permission(self):
+        from specifyweb.backend.workbench.upload.upload import unupload_record
+        from specifyweb.backend.workbench.upload import auditcodes
+        self.grant_delete(self.other_collection, 'collectionobject')
+        unupload_record(
+            self.uploaded_result(self.restricted_obj), self.agent, self.collection,
+        )
+        self.assertFalse(spmodels.Collectionobject.objects.filter(pk=self.restricted_obj.pk).exists())
+        self.assertTrue(spmodels.Spauditlog.objects.filter(
+            tablenum=self.restricted_obj.specify_model.tableId,
+            recordid=self.restricted_obj.pk, action=auditcodes.REMOVE,
+        ).exists())
+
+    def test_import_delete_checks_actual_scope_without_requiring_read(self):
+        from specifyweb.backend.workbench.upload.auditor import Auditor, DEFAULT_AUDITOR_PROPS
+        from specifyweb.backend.workbench.upload.auditlog import auditlog
+        from specifyweb.backend.workbench.upload.upload_table import UploadTable
+        self.grant_delete(self.other_collection, 'collectionobject')
+        bound = UploadTable(
+            name='Collectionobject', wbcols={}, static={}, toOne={}, toMany={},
+        ).apply_scoping(self.collection).bind(
+            {}, self.agent.pk,
+            Auditor(self.collection, DEFAULT_AUDITOR_PROPS, auditlog, agent=self.agent), {},
+        )._replace(match_payload={
+            'id': self.restricted_obj.pk,
+            'version': self.restricted_obj.version,
+            'ordernumber': None,
+        })
+        result = bound.delete_row()
+        from specifyweb.backend.workbench.upload.upload_result import Deleted
+        self.assertIsInstance(result.record_result, Deleted)
+        self.assertFalse(spmodels.Collectionobject.objects.filter(pk=self.restricted_obj.pk).exists())
+
+    def test_import_delete_denied_in_actual_scope(self):
+        from specifyweb.backend.workbench.upload.auditor import Auditor, DEFAULT_AUDITOR_PROPS
+        from specifyweb.backend.workbench.upload.auditlog import auditlog
+        from specifyweb.backend.workbench.upload.upload_table import UploadTable
+        self.grant(self.collection, '/table/collectionobject', 'delete')
+        bound = UploadTable(
+            name='Collectionobject', wbcols={}, static={}, toOne={}, toMany={},
+        ).apply_scoping(self.collection).bind(
+            {}, self.agent.pk,
+            Auditor(self.collection, DEFAULT_AUDITOR_PROPS, auditlog, agent=self.agent), {},
+        )._replace(match_payload={
+            'id': self.restricted_obj.pk,
+            'version': self.restricted_obj.version,
+            'ordernumber': None,
+        })
+        before = self.snapshot()
+        with self.assertRaises(permissions.NoMatchingRuleException):
+            bound.delete_row()
+        self.assertEqual(self.snapshot(), before)
+
+    def test_import_delete_propagated_child_failure_rolls_back_dependent_deletions(self):
+        from specifyweb.backend.workbench.upload.auditor import Auditor, DEFAULT_AUDITOR_PROPS
+        from specifyweb.backend.workbench.upload.auditlog import auditlog
+        from specifyweb.backend.workbench.upload.upload_table import UploadTable
+        child = spmodels.Preparation.objects.create(
+            collectionobject=self.restricted_obj,
+            collectionmemberid=self.collection.pk, countamt=1,
+            preptype=spmodels.Preptype.objects.create(
+                name='import delete preparation type', collection=self.collection,
+            ),
+        )
+        self.grant_delete(self.collection, 'preparation')
+        parent_plan = UploadTable(
+            name='Collectionobject', wbcols={}, static={}, toOne={}, toMany={
+                'preparations': [UploadTable(
+                    name='Preparation', wbcols={}, static={}, toOne={}, toMany={},
+                )],
+            },
+        ).apply_scoping(self.collection).apply_batch_edit_pack({
+            'self': {'id': self.restricted_obj.pk, 'version': self.restricted_obj.version},
+            'to_many': {'preparations': [{
+                'self': {'id': child.pk, 'version': child.version},
+            }]},
+        }).bind(
+            {}, self.agent.pk,
+            Auditor(self.collection, DEFAULT_AUDITOR_PROPS, auditlog, agent=self.agent), {},
+        )
+        before = self.snapshot()
+        result = parent_plan.delete_row()
+        from specifyweb.backend.workbench.upload.upload_result import PropagatedFailure
+        self.assertIsInstance(result.record_result, PropagatedFailure)
+        self.assertEqual(self.snapshot(), before)
+
+    def test_nested_delete_denial_rolls_back_earlier_child_removal(self):
+        from specifyweb.backend.workbench.upload.upload import unupload_record
+        from specifyweb.backend.workbench.upload.upload_result import ReportInfo, UploadResult, Uploaded
+        child = spmodels.Preparation.objects.create(
+            collectionobject=self.restricted_obj,
+            collectionmemberid=self.collection.pk, countamt=1,
+            preptype=spmodels.Preptype.objects.create(
+                name='unupload preparation type', collection=self.collection,
+            ),
+        )
+        child_result = self.uploaded_result(child)
+        parent_result = self.uploaded_result(
+            self.restricted_obj, to_many={'preparations': [child_result]},
+        )
+        self.grant_delete(self.collection, 'preparation')
+        before = self.snapshot()
+        with self.assertRaises(permissions.NoMatchingRuleException):
+            unupload_record(parent_result, self.agent, self.collection)
+        self.assertEqual(self.snapshot(), before)
+
+    def test_picklist_addition_delete_denial_rolls_back_parent(self):
+        from specifyweb.backend.workbench.upload.upload import unupload_record
+        from specifyweb.backend.workbench.upload.upload_result import PicklistAddition
+        picklist = spmodels.Picklist.objects.create(
+            name='restricted rollback picklist', collection=self.other_collection, type=0,
+        )
+        item = spmodels.Picklistitem.objects.create(
+            picklist=picklist, title='new', value='new',
+        )
+        addition = PicklistAddition(picklist.name, 'new', 'New', item.pk)
+        self.grant_delete(self.collection, 'collectionobject')
+        before = self.snapshot()
+        with self.assertRaises(permissions.NoMatchingRuleException):
+            unupload_record(
+                self.uploaded_result(self.allowed_obj, additions=[addition]),
+                self.agent, self.collection,
+            )
+        self.assertEqual(self.snapshot(), before)
+
+    def make_dataset(self, results, *, isupdate=False, uploadresult=None):
+        import json
+        from specifyweb.backend.workbench.models import Spdataset
+        return Spdataset.objects.create(
+            name='unupload authorization',
+            collection=self.collection,
+            specifyuser=self.specifyuser,
+            columns=[],
+            data=[],
+            rowresults=json.dumps([result.to_json() for result in results]),
+            uploadresult={'success': True} if uploadresult is None else uploadresult,
+            isupdate=isupdate,
+        )
+
+    def test_dataset_unupload_denial_rolls_back_prior_rows_and_audits(self):
+        from specifyweb.backend.workbench.upload.upload import unupload_dataset
+        self.grant(self.collection, '/workbench/dataset', 'unupload')
+        self.grant_delete(self.collection, 'collectionobject')
+        dataset = self.make_dataset([
+            self.uploaded_result(self.restricted_obj),
+            self.uploaded_result(self.allowed_obj),
+        ])
+        before = self.snapshot()
+        with self.assertRaises(permissions.NoMatchingRuleException):
+            unupload_dataset(dataset, self.agent)
+        self.assertEqual(self.snapshot(), before)
+        dataset.refresh_from_db()
+        self.assertIsNotNone(dataset.uploadresult)
+
+    def test_unupload_rechecks_dataset_permission(self):
+        from specifyweb.backend.workbench.upload.upload import unupload_dataset
+        dataset = self.make_dataset([self.uploaded_result(self.allowed_obj)])
+        before = self.snapshot()
+        with self.assertRaises(permissions.NoMatchingRuleException):
+            unupload_dataset(dataset, self.agent)
+        self.assertEqual(self.snapshot(), before)
+
+    def test_batch_edit_unupload_requires_rollback_permission(self):
+        from specifyweb.backend.workbench.upload.upload import unupload_dataset
+        dataset = self.make_dataset([], isupdate=True)
+        self.grant(self.collection, '/workbench/dataset', 'unupload')
+        with self.assertRaises(permissions.NoMatchingRuleException):
+            unupload_dataset(dataset, self.agent)
+        self.grant(self.collection, '/batch_edit/dataset', 'rollback')
+        unupload_dataset(dataset, self.agent)
+        dataset.refresh_from_db()
+        self.assertIsNone(dataset.uploadresult)
+
+    def test_unupload_endpoint_rejects_dataset_from_another_collection(self):
+        from unittest.mock import patch
+        self.client.force_login(self.specifyuser)
+        self.client.cookies['collection'] = str(self.collection.pk)
+        self.grant(self.collection, '/workbench/dataset', 'unupload')
+        dataset = self.make_dataset([self.uploaded_result(self.restricted_obj)])
+        dataset.collection = self.other_collection
+        dataset.save(update_fields=['collection'])
+        with patch('specifyweb.backend.workbench.views.tasks.unupload.apply_async') as enqueue:
+            response = self.client.post(f'/api/workbench/unupload/{dataset.pk}/')
+        self.assertEqual(response.status_code, 400)
+        enqueue.assert_not_called()
+
+    def test_worker_rejects_dataset_from_another_collection(self):
+        from django.core.exceptions import PermissionDenied
+        from specifyweb.backend.workbench.tasks import unupload
+        dataset = self.make_dataset([self.uploaded_result(self.allowed_obj)])
+        dataset.uploaderstatus = {'operation': 'unuploading', 'taskid': None}
+        dataset.save(update_fields=['uploaderstatus'])
+        with self.assertRaises(PermissionDenied):
+            unupload.run(self.other_collection.pk, dataset.pk, self.agent.pk)
+
+    def test_successful_dataset_unupload_checks_dataset_and_record_delete(self):
+        from specifyweb.backend.workbench.upload.upload import unupload_dataset
+        self.grant(self.collection, '/workbench/dataset', 'unupload')
+        self.grant_delete(self.other_collection, 'collectionobject')
+        dataset = self.make_dataset([self.uploaded_result(self.restricted_obj)])
+        unupload_dataset(dataset, self.agent)
+        self.assertFalse(spmodels.Collectionobject.objects.filter(pk=self.restricted_obj.pk).exists())
+        dataset.refresh_from_db()
+        self.assertIsNone(dataset.uploadresult)
+
+
 class ImportReadAuthorizationTests(ScopedPermissionTestBase):
     def setUp(self):
         super().setUp()
