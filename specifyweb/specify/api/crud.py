@@ -24,7 +24,6 @@ from specifyweb.specify.utils.field_change_info import FieldChangeInfo
 from specifyweb.specify.utils.scoping import Scoping
 from specifyweb.specify.api.filter_by_col import filter_by_collection
 from specifyweb.specify.models_utils.models_by_table_id import get_model_by_table_id
-from specifyweb.specify.models_utils.relationships import authorize_dependent_scope_update, get_recordset_info, get_related_or_none, handle_fk_fields, handle_to_many, is_dependent_field
 from specifyweb.specify.utils.uiformatters import AutonumberOverflowException
 from specifyweb.specify.api.validators import GetCollectionForm, cleanData, fld_change_info
 
@@ -34,6 +33,7 @@ ReadPermChecker = Callable[[Any], None]
 
 def get_resource(name, id, checker: ReadPermChecker, recordsetid=None, *, actor=None) -> dict:
     from specifyweb.specify.api.serializers import _obj_to_data
+    from specifyweb.specify.models_utils.relationships import get_recordset_info
 
     """Return a dict of the fields from row 'id' in model 'name'.
 
