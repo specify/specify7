@@ -287,11 +287,12 @@ def filter_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
     """Apply shared scope rules using collections granting both access and read."""
     userid = _actor_userid(actor)
     resource = f"/table/{queryset.model.specify_model.name.lower()}"
-    allowed_ids = [
-        collectionid for collectionid in models.Collection.objects.values_list("id", flat=True)
-        if query_pt(collectionid, userid, CollectionAccessPT.access).allowed
-        and query(collectionid, userid, resource, "read").allowed
-    ]
+    with cache_permission_queries():
+        allowed_ids = [
+            collectionid for collectionid in models.Collection.objects.values_list("id", flat=True)
+            if query_pt(collectionid, userid, CollectionAccessPT.access).allowed
+            and query(collectionid, userid, resource, "read").allowed
+        ]
     return Scoping.filter_queryset(
         queryset, models.Collection.objects.filter(id__in=allowed_ids),
     )
