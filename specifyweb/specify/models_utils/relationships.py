@@ -403,7 +403,8 @@ class IndependentInline(TypedDict):
     remove: list[str]
 
 def _handle_independent_to_many(collection, agent, obj, field, value: IndependentInline):
-    from ..api.crud import get_object_or_404, update_or_create_resource
+    get_object_or_404 = crud.get_object_or_404
+    update_or_create_resource = crud.update_or_create_resource
     from ..api.validators import cleanData
 
     logger.warning("Updating independent collections via the API is experimental and the structure may be changed in the future")
