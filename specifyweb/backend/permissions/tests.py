@@ -4658,6 +4658,195 @@ class UnuploadAuthorizationTests(ScopedPermissionTestBase):
         self.assertIsNone(dataset.uploadresult)
 
 
+class CustomInteractionAuthorizationTests(ScopedPermissionTestBase):
+    def setUp(self):
+        super().setUp()
+        self.grant_access(self.collection)
+        self.grant(self.collection, '/table/%', 'read')
+        self.client.force_login(self.specifyuser)
+        self.client.cookies['collection'] = str(self.collection.id)
+        self._create_prep_type()
+        self.allowed_prep = self._create_prep(
+            self.collectionobjects[0], None, remarks='allowed interaction preparation',
+        )
+        self.allowed_sibling = self._create_prep(self.collectionobjects[2], None)
+        self.restricted_prep = self._create_prep(
+            self.collectionobjects[1], None,
+            collectionmemberid=self.other_collection.id,
+        )
+
+    def test_prep_availability_checks_actual_scope(self):
+        response = self.client.get(
+            f'/interactions/prep_availability/{self.restricted_prep.id}/'
+        )
+        self.assertEqual(response.status_code, 403)
+
+    def test_prep_interactions_checks_actual_scope(self):
+        response = self.client.post('/interactions/prep_interactions/', {
+            'prepIds': str(self.restricted_prep.id),
+        })
+        self.assertEqual(response.status_code, 403)
+
+    def test_preparations_available_by_recordset_checks_recordset_scope(self):
+        from specifyweb.specify.models import Collectionobject, Recordset
+        recordset = Recordset.objects.create(
+            collectionmemberid=self.other_collection.id,
+            dbtableid=Collectionobject.specify_model.tableId,
+            name='restricted interaction recordset',
+            type=0,
+            specifyuser=self.specifyuser,
+        )
+        response = self.client.post(
+            f'/interactions/preparations_available_rs/{recordset.id}/',
+        )
+        self.assertEqual(response.status_code, 403)
+
+    def test_preparations_available_by_ids_omits_restricted_record_scope(self):
+        from specifyweb.specify.models import Collectionobject, Collectionobjecttype
+        other_type = Collectionobjecttype.objects.create(
+            name='restricted interaction type',
+            collection=self.other_collection,
+            taxontreedef=self.taxontreedef,
+        )
+        other_object = Collectionobject.objects.create(
+            collection=self.other_collection,
+            catalognumber='restricted-interaction-object',
+            collectionobjecttype=other_type,
+        )
+        other_prep = self._create_prep(
+            other_object, None, collectionmemberid=self.collection.id,
+            remarks='restricted interaction preparation',
+        )
+        response = self.client.post('/interactions/preparations_available_ids/', {
+            'id_fld': 'catalognumber',
+            'co_ids': json.dumps([
+                self.collectionobjects[0].catalognumber,
+                other_object.catalognumber,
+            ]),
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()), 1)
+        self.assertEqual(response.json()[0][1], self.collectionobjects[0].id)
+        response = self.client.post(
+            '/interactions/preparations_available_preps/',
+            {
+                'prep_fld': 'remarks',
+                'prep_values': json.dumps([
+                    self.allowed_prep.remarks,
+                    other_prep.remarks,
+                ]),
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()), 1)
+        self.assertEqual(response.json()[0][4], self.allowed_prep.id)
+
+    def test_loan_return_rejects_an_unreadable_recordset(self):
+        from specifyweb.specify.models import Loan, Recordset, Recordsetitem
+        self.grant(self.collection, '/table/loan', 'update')
+        self.grant(self.collection, '/table/loanpreparation', 'update')
+        self.grant(self.collection, '/table/loanreturnpreparation', 'create')
+        loan = Loan.objects.create(
+            discipline=self.discipline, loannumber='scoped-recordset-loan',
+        )
+        recordset = Recordset.objects.create(
+            collectionmemberid=self.other_collection.id,
+            dbtableid=Loan.specify_model.tableId,
+            name='restricted loan recordset',
+            type=0,
+            specifyuser=self.specifyuser,
+        )
+        Recordsetitem.objects.create(recordset=recordset, recordid=loan.id)
+        response = self.client.post('/interactions/loan_return_all/', {
+            'recordSetId': recordset.id,
+        })
+        self.assertEqual(response.status_code, 403)
+        loan.refresh_from_db()
+        self.assertFalse(loan.isclosed)
+
+    def test_loan_return_checks_each_target_loan_scope(self):
+        from specifyweb.specify.models import (
+            Collectionobject, Collectionobjecttype, Discipline, Loan,
+            Loanpreparation, Preptype, Preparation,
+        )
+        self.grant(self.collection, '/table/loan', 'update')
+        self.grant(self.collection, '/table/loanpreparation', 'update')
+        self.grant(self.collection, '/table/loanreturnpreparation', 'create')
+        other_discipline = Discipline.objects.create(
+            name='restricted interaction discipline',
+            type='paleobotany',
+            division=self.division,
+            datatype=self.datatype,
+            geographytreedef=self.geographytreedef,
+            geologictimeperiodtreedef=self.geologictimeperiodtreedef,
+        )
+        self.other_collection.discipline = other_discipline
+        self.other_collection.save(update_fields=['discipline'])
+        other_type = Collectionobjecttype.objects.create(
+            name='restricted interaction collection object type',
+            collection=self.other_collection,
+            taxontreedef=self.taxontreedef,
+        )
+        other_object = Collectionobject.objects.create(
+            collection=self.other_collection,
+            catalognumber='restricted-loan-return-object',
+            collectionobjecttype=other_type,
+        )
+        other_prep_type = Preptype.objects.create(
+            name='restricted interaction prep type',
+            collection=self.other_collection,
+        )
+        other_prep = Preparation.objects.create(
+            collectionobject=other_object,
+            preptype=other_prep_type,
+            collectionmemberid=self.other_collection.id,
+        )
+        active_loan = Loan.objects.create(
+            discipline=self.discipline, loannumber='duplicate-loan-number',
+        )
+        restricted_loan = Loan.objects.create(
+            discipline=other_discipline, loannumber='duplicate-loan-number',
+        )
+        Loanpreparation.objects.create(
+            loan=restricted_loan,
+            preparation=other_prep,
+            discipline=other_discipline,
+            quantity=1,
+        )
+        response = self.client.post('/interactions/loan_return_all/', {
+            'loanNumbers': json.dumps(['duplicate-loan-number']),
+        })
+        self.assertEqual(response.status_code, 403)
+        active_loan.refresh_from_db()
+        restricted_loan.refresh_from_db()
+        self.assertFalse(active_loan.isclosed)
+        self.assertFalse(restricted_loan.isclosed)
+
+    def test_sibling_lookup_checks_actual_scope(self):
+        response = self.client.post(
+            '/interactions/sibling_preps/',
+            data=json.dumps({'ids': [self.restricted_prep.id]}),
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 403)
+
+    def test_sibling_lookup_omits_unreadable_siblings(self):
+        from unittest.mock import patch
+        with patch(
+            'specifyweb.backend.interactions.views.get_all_sibling_preps_within_consolidated_cog',
+            return_value=[
+                self.allowed_prep, self.allowed_sibling, self.restricted_prep,
+            ],
+        ):
+            response = self.client.post(
+                '/interactions/sibling_preps/',
+                data=json.dumps({'ids': [self.allowed_prep.id]}),
+                content_type='application/json',
+            )
+        self.assertEqual(response.status_code, 200)
+        self.assertCountEqual(response.json(), [self.allowed_sibling.id])
+
+
 class ImportReadAuthorizationTests(ScopedPermissionTestBase):
     def setUp(self):
         super().setUp()

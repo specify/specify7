@@ -2,8 +2,9 @@ import json
 from datetime import date
 
 from django import http
-from django.core.exceptions import FieldDoesNotExist
+from django.core.exceptions import FieldDoesNotExist, PermissionDenied
 from django.db import connection, transaction
+from django.shortcuts import get_object_or_404
 from django.views.decorators.http import require_POST
 
 from specifyweb.backend.interactions.cog_preps import (
@@ -12,14 +13,101 @@ from specifyweb.backend.interactions.cog_preps import (
     add_consolidated_sibling_co_ids
 )
 from specifyweb.middleware.general import require_GET
-from specifyweb.backend.permissions.permissions import check_table_permissions, table_permissions_checker
+from specifyweb.backend.permissions.permissions import (
+    NoMatchingRuleException,
+    check_table_permissions,
+    table_permissions_checker,
+)
 from specifyweb.specify.api.api_utils import strict_uri_to_model
-from specifyweb.specify.models import Collectionobject, Loan, Loanpreparation, \
-    Loanreturnpreparation, Preparation, Recordset
+from specifyweb.specify.models import (
+    Collectionobject,
+    Disposalpreparation,
+    Exchangeoutprep,
+    Giftpreparation,
+    Loan,
+    Loanpreparation,
+    Loanreturnpreparation,
+    Preparation,
+    Recordsetitem,
+    Taxon,
+    Recordset,
+)
 from specifyweb.specify.api.serializers import toJson
 from specifyweb.specify.views import login_maybe_required
 
 from django.db.models import Q
+
+
+def _has_read_permission(request, obj) -> bool:
+    try:
+        check_table_permissions(
+            request.specify_collection, request.specify_user, obj, "read",
+        )
+    except NoMatchingRuleException:
+        return False
+    return True
+
+
+def _require_read_permission(request, obj) -> None:
+    check_table_permissions(
+        request.specify_collection, request.specify_user, obj, "read",
+    )
+
+
+def _get_readable_preparations(request, preparation_ids: set[int]) -> dict[int, Preparation]:
+    preparations = Preparation.objects.in_bulk(preparation_ids)
+    if preparations.keys() != preparation_ids:
+        raise http.Http404
+    for preparation in preparations.values():
+        _require_read_permission(request, preparation)
+    return preparations
+
+
+def _readable_availability_rows(request, rows):
+    collectionobject_ids = {row[1] for row in rows}
+    preparation_ids = {row[4] for row in rows}
+    taxon_ids = {row[3] for row in rows if row[3] is not None}
+    collectionobjects = Collectionobject.objects.in_bulk(collectionobject_ids)
+    preparations = {
+        preparation.id: preparation
+        for preparation in Preparation.objects.filter(
+            id__in=preparation_ids,
+        ).select_related('preptype')
+    }
+    taxa = Taxon.objects.in_bulk(taxon_ids)
+    unreadable_preparations = set()
+
+    for interaction_model in (
+        Loanpreparation,
+        Giftpreparation,
+        Exchangeoutprep,
+        Disposalpreparation,
+    ):
+        for interaction in interaction_model.objects.filter(
+            preparation_id__in=preparation_ids,
+        ).iterator(chunk_size=2000):
+            if not _has_read_permission(request, interaction):
+                unreadable_preparations.add(interaction.preparation_id)
+
+    return [
+        row for row in rows
+        if (
+            row[1] in collectionobjects
+            and _has_read_permission(request, collectionobjects[row[1]])
+            and row[4] in preparations
+            and row[4] not in unreadable_preparations
+            and _has_read_permission(request, preparations[row[4]])
+            and _has_read_permission(request, preparations[row[4]].preptype)
+            and (
+                row[3] is None
+                or (
+                    row[3] in taxa
+                    and _has_read_permission(request, taxa[row[3]])
+                )
+            )
+        )
+    ]
+
 
 @require_POST # NOTE: why is this a POST request?
 @login_maybe_required
@@ -27,7 +115,12 @@ def preps_available_rs(request, recordset_id):
     "Returns a list of preparations that are loanable?(for loan) based on the CO recordset <recordset_id>."
     
     # Get consolidated CO ids if the recordset is a COG
-    rs = Recordset.objects.filter(id=recordset_id).first()
+    rs = get_object_or_404(Recordset, id=recordset_id)
+    _require_read_permission(request, rs)
+    for recordset_item in Recordsetitem.objects.filter(
+        recordset_id=rs.id,
+    ).iterator(chunk_size=2000):
+        _require_read_permission(request, recordset_item)
     cog_co_ids = get_co_ids_from_shared_cog_rs(rs)
     cog_co_ids = [co_id for co_id in cog_co_ids if co_id is not None]
     # cog_co_ids = set()
@@ -83,7 +176,10 @@ def preps_available_rs(request, recordset_id):
     cursor.execute(sql, [request.specify_collection.id, recordset_id])
     rows = cursor.fetchall()
 
-    return http.HttpResponse(toJson(rows), content_type='application/json')
+    return http.HttpResponse(
+        toJson(_readable_availability_rows(request, rows)),
+        content_type='application/json',
+    )
 
 @require_POST
 @login_maybe_required
@@ -132,7 +228,10 @@ def preps_available_ids(request):
     cursor.execute(sql, [int(request.specify_collection.id)] + co_ids)
     rows = cursor.fetchall()
 
-    return http.HttpResponse(toJson(rows), content_type='application/json')
+    return http.HttpResponse(
+        toJson(_readable_availability_rows(request, rows)),
+        content_type='application/json',
+    )
 
 
 @require_POST
@@ -190,7 +289,10 @@ def preps_available_preps(request):
     cursor.execute(sql, [int(request.specify_collection.id)] + prep_values)
     rows = cursor.fetchall()
 
-    return http.HttpResponse(toJson(rows), content_type='application/json')
+    return http.HttpResponse(
+        toJson(_readable_availability_rows(request, rows)),
+        content_type='application/json',
+    )
 
 def record_set_or_loan_nos(record_set_id=None, loan_nos=None, by_id=True):
     if record_set_id is not None:
@@ -311,6 +413,44 @@ def loan_return_all_items(request):
     else:
         loan_nos = None
 
+    if record_set_id is not None:
+        recordset = get_object_or_404(Recordset, id=record_set_id)
+        _require_read_permission(request, recordset)
+        if recordset.dbtableid != Loan.specify_model.tableId:
+            raise http.Http404
+        recordset_items = Recordsetitem.objects.filter(recordset=recordset)
+        for item in recordset_items.iterator(chunk_size=2000):
+            _require_read_permission(request, item)
+        target_loans = Loan.objects.filter(
+            id__in=recordset_items.values_list('recordid', flat=True),
+        )
+    elif loan_nos is not None:
+        target_loans = Loan.objects.filter(loannumber__in=loan_nos)
+    else:
+        raise http.Http404
+
+    target_loan_ids = []
+    for loan in target_loans.iterator(chunk_size=2000):
+        check_table_permissions(
+            request.specify_collection, request.specify_user, loan, "update",
+        )
+        if loan.discipline_id != discipline_id:
+            raise PermissionDenied("Loan is outside the active discipline.")
+        target_loan_ids.append(loan.id)
+
+    loan_preparations = Loanpreparation.objects.filter(
+        loan_id__in=target_loan_ids,
+    )
+    for loan_preparation in loan_preparations.iterator(chunk_size=2000):
+        check_table_permissions(
+            request.specify_collection, request.specify_user,
+            loan_preparation, "update",
+        )
+        if loan_preparation.discipline_id != discipline_id:
+            raise PermissionDenied(
+                "Loan preparation is outside the active discipline."
+            )
+
     cursor = connection.cursor()
     insert_loanreturnpreps(cursor,
                            returned_date,
@@ -333,6 +473,19 @@ def loan_return_all_items(request):
 @login_maybe_required
 def prep_availability(request, prep_id, iprep_id=None, iprep_name=None):
     "Returns available counts for preps."
+    preparation = get_object_or_404(Preparation, id=prep_id)
+    _require_read_permission(request, preparation)
+    for interaction_model in (
+        Loanpreparation,
+        Giftpreparation,
+        Exchangeoutprep,
+        Disposalpreparation,
+    ):
+        for interaction in interaction_model.objects.filter(
+            preparation_id=preparation.id,
+        ).iterator(chunk_size=2000):
+            _require_read_permission(request, interaction)
+
     args = [prep_id]
     sql = """select p.countAmt - coalesce(sum(lp.quantity-lp.quantityresolved),0) - coalesce(sum(gp.quantity),0) - coalesce(sum(ep.quantity),0) 
     from preparation p
@@ -362,6 +515,26 @@ def prep_availability(request, prep_id, iprep_id=None, iprep_name=None):
 @require_POST
 @login_maybe_required
 def prep_interactions(request):
+    try:
+        preparation_id = int(request.POST['prepIds'].split(',', 1)[0])
+    except ValueError as error:
+        raise http.Http404 from error
+    preparation_ids = {preparation_id}
+
+    _get_readable_preparations(request, preparation_ids)
+    interaction_relations = (
+        (Loanpreparation, "loan", Q(isresolved=False)),
+        (Giftpreparation, "gift", Q()),
+        (Exchangeoutprep, "exchangeout", Q()),
+    )
+    for interaction_model, parent_field, interaction_filter in interaction_relations:
+        interactions = interaction_model.objects.filter(
+            preparation_id__in=preparation_ids,
+        ).filter(interaction_filter).select_related(parent_field)
+        for interaction in interactions.iterator(chunk_size=2000):
+            _require_read_permission(request, interaction)
+            _require_read_permission(request, getattr(interaction, parent_field))
+
     cursor = connection.cursor()
 
     sql = """
@@ -375,11 +548,12 @@ def prep_interactions(request):
     left join loan l on l.loanid = lp.loanid
     left join gift g on g.giftid = gp.giftid
     left join exchangeout e on  e.exchangeoutid = ep.exchangeoutid
-    where (lp.loanpreparationid is null or not lp.isresolved) and p.preparationid in(%s)
+    where (lp.loanpreparationid is null or not lp.isresolved)
+    and p.preparationid in (%s)
     group by 1;
     """
 
-    cursor.execute(sql, [str(request.POST['prepIds'])])
+    cursor.execute(sql, [preparation_id])
     rows = cursor.fetchall()
 
     return http.HttpResponse(toJson(rows), content_type='application/json')
@@ -436,13 +610,28 @@ def create_sibling_loan_preps(request: http.HttpRequest):
 @login_maybe_required
 def get_sibling_preps(request: http.HttpRequest):
     data = json.loads(request.body)
-    prep_ids = set(data.get('ids', []))
+    try:
+        prep_ids = {int(prep_id) for prep_id in data.get('ids', [])}
+    except (TypeError, ValueError) as error:
+        raise http.Http404 from error
+    if not prep_ids:
+        return http.HttpResponse(toJson([]), content_type='application/json')
+
+    preparations = _get_readable_preparations(request, prep_ids)
 
     sibling_prep_ids = {
         sibling_prep.id
         for prep_id in prep_ids
-        for sibling_prep in get_all_sibling_preps_within_consolidated_cog(Preparation.objects.get(id=prep_id))
+        for sibling_prep in get_all_sibling_preps_within_consolidated_cog(
+            preparations[prep_id],
+        )
     }
     sibling_prep_ids -= prep_ids
 
-    return http.HttpResponse(toJson(list(sibling_prep_ids)), content_type='application/json') 
+    readable_sibling_ids = [
+        preparation.id
+        for preparation in Preparation.objects.filter(id__in=sibling_prep_ids)
+        if _has_read_permission(request, preparation)
+    ]
+
+    return http.HttpResponse(toJson(readable_sibling_ids), content_type='application/json')
