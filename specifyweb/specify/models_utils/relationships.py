@@ -366,13 +366,14 @@ def _handle_dependent_to_many(collection, agent, obj, field, value):
     from specifyweb.specify.api.validators import cleanData
 
     rel_model = field.related_model
-        allowed_keys = {f.name for f in datamodel.get_table(rel_model).fields}
-        allowed_keys.add('id')
-        rel_data = {k: v for k, v in rel_data.items() if k in allowed_keys}
+    allowed_keys = {f.name for f in datamodel.get_table(rel_model).fields}
+    allowed_keys.add('id')
+    ids = []
 
     for rel_data in value:
         if not isinstance(rel_data, dict):
             raise BadRequest(f"Expected child data for {field.name}")
+        rel_data = {k: v for k, v in rel_data.items() if k in allowed_keys}
         rel_data = cleanData(rel_model, rel_data)
         related_obj = None
         if rel_data.get('id') is not None:
