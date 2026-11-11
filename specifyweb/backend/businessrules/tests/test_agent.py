@@ -72,6 +72,27 @@ class AgentTests(ApiTests):
         self.assertEqual(saved.division_id, self.division.id)
         self.assertEqual(saved.ordernumber, 0)
 
+    def test_add_variant_to_agent(self):
+        variant = post_resource(
+            self.collection,
+            self.agent,
+            'agentvariant',
+            {
+                'agent': uri_for_model('agent', self.agent.id),
+                'name': 'A. Poudel',
+                'vartype': 0,
+                'language': 'en',
+                'country': 'US',
+            },
+        )
+
+        saved = models.Agentvariant.objects.get(id=variant.id)
+        self.assertEqual(saved.agent_id, self.agent.id)
+        self.assertEqual(saved.name, 'A. Poudel')
+        self.assertEqual(saved.vartype, 0)
+        self.assertEqual(saved.language, 'en')
+        self.assertEqual(saved.country, 'US')
+
     def test_agent_delete_cascades(self):
         agent = models.Agent.objects.create(
             agenttype=0,
