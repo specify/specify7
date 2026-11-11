@@ -201,6 +201,7 @@ def _handle_fk_field(collection, agent, obj, field, value, read_checker, *, pare
         # The related object is represented by a nested dict of data.
         rel_model = field.related_model
         datamodel_field = obj.specify_model.get_relationship_strict(field_name)
+        from specifyweb.specify.api.validators import cleanData
         rel_data = cleanData(rel_model, value, datamodel_field)
         rel_obj = update_or_create_resource(collection, agent, rel_model, rel_data, obj if dependent else None, datamodel_field)
 
