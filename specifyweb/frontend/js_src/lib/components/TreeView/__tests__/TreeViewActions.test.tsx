@@ -4,15 +4,18 @@ import { MemoryRouter } from 'react-router-dom';
 
 import { f } from '../../../utils/functools';
 import { commonText } from '../../../localization/common';
+import { formsText } from '../../../localization/forms';
 import { treeText } from '../../../localization/tree';
 import { overrideAjax } from '../../../tests/ajax';
 import { Http } from '../../../utils/ajax/definitions';
 import { requireContext } from '../../../tests/helpers';
 import { mount } from '../../../tests/reactUtils';
+import type { GetSet, RA } from '../../../utils/types';
 import { LoadingContext } from '../../Core/Contexts';
 import { addMissingFields } from '../../DataModel/addMissingFields';
 import type { AnyTree } from '../../DataModel/helperTypes';
 import { getResourceApiUrl } from '../../DataModel/resource';
+import { tables } from '../../DataModel/tables';
 import {
   SetUnloadProtectsContext,
   UnloadProtectsContext,
@@ -58,7 +61,8 @@ function makeRow(overrides: Partial<Row> = {}): Row {
 function renderActions(
   tableName: AnyTree['tableName'],
   focusedRow: Row,
-  handleRefresh: () => void = jest.fn()
+  handleRefresh: () => void = jest.fn(),
+  focusPath: GetSet<RA<number>> = [[], jest.fn()]
 ): ReturnType<typeof mount> {
   return mount(
     <MemoryRouter>
@@ -67,7 +71,7 @@ function renderActions(
           <SetUnloadProtectsContext.Provider value={f.void}>
             <TreeViewActions
               actionRow={undefined}
-              focusPath={[[], jest.fn()]}
+              focusPath={focusPath}
               focusRef={{ current: null }}
               focusedRow={focusedRow}
               ranks={ranks}
@@ -228,5 +232,66 @@ describe('Add taxon', () => {
     );
 
     await waitFor(() => expect(handleRefresh).toHaveBeenCalled());
+  });
+});
+
+describe('Delete taxon', () => {
+  const nodeId = 4;
+  const parentId = 2;
+  const deleteRequest = jest.fn(() => '');
+
+  overrideAjax(getResourceApiUrl('Taxon', nodeId), () =>
+    addMissingFields('Taxon', {
+      id: nodeId,
+      name: 'velifer',
+      fullName: 'Carpiodes velifer',
+      rankId: 220,
+      parent: getResourceApiUrl('Taxon', parentId),
+      resource_uri: getResourceApiUrl('Taxon', nodeId),
+    })
+  );
+  overrideAjax(`/delete_blockers/delete_blockers/taxon/${nodeId}/?limit=40`, {
+    results: [],
+    next: [],
+  });
+  overrideAjax(`/delete_blockers/count/taxon/${nodeId}/`, {
+    results: [],
+    total_count: 0,
+  });
+  overrideAjax(getResourceApiUrl('Taxon', nodeId), deleteRequest, {
+    method: 'DELETE',
+    responseCode: Http.NO_CONTENT,
+  });
+
+  test('"Delete" removes the focused node and focuses its parent', async () => {
+    const handleRefresh = jest.fn();
+    const setFocusPath = jest.fn();
+    const { user } = renderActions(
+      'Taxon',
+      makeRow({
+        nodeId,
+        name: 'velifer',
+        fullName: 'Carpiodes velifer',
+        rankId: 220,
+        children: 0,
+      }),
+      handleRefresh,
+      [[1, parentId, nodeId], setFocusPath]
+    );
+
+    await user.click(screen.getByRole('button', { name: commonText.delete() }));
+
+    const dialog = await screen.findByRole('dialog', {
+      name: formsText.deleteConfirmation({
+        tableName: tables.Taxon.label,
+      }),
+    });
+    await user.click(
+      within(dialog).getByRole('button', { name: commonText.delete() })
+    );
+
+    await waitFor(() => expect(handleRefresh).toHaveBeenCalled());
+    expect(deleteRequest).toHaveBeenCalledTimes(1);
+    expect(setFocusPath).toHaveBeenCalledWith([1, parentId]);
   });
 });
