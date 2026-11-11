@@ -15,6 +15,16 @@ import { runQuery } from '../../QueryBuilder/ResultsWrapper';
 import { UnloadProtectsContext } from '../../Router/UnloadProtect';
 import type { useViewDefinition } from '../../Forms/useViewDefinition';
 
+// The installed MemoryRouter types omit future flags supported by the runtime.
+const MemoryRouterWithFuture = MemoryRouter as unknown as React.ComponentType<
+  React.ComponentProps<typeof MemoryRouter> & {
+    readonly future: {
+      readonly v7_startTransition: boolean;
+      readonly v7_relativeSplatPath: boolean;
+    };
+  }
+>;
+
 jest.mock('../../QueryBuilder/ResultsWrapper', () => ({ runQuery: jest.fn() }));
 
 jest.mock('../../Forms/Save', () => {
@@ -108,7 +118,7 @@ test('creates an Agent with type and remarks for a Determiner', async () => {
 
   const user = userEvent.setup();
   render(
-    <MemoryRouter
+    <MemoryRouterWithFuture
       future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
     >
       <UnloadProtectsContext.Provider value={[]}>
@@ -126,7 +136,7 @@ test('creates an Agent with type and remarks for a Determiner', async () => {
           />
         </LoadingContext.Provider>
       </UnloadProtectsContext.Provider>
-    </MemoryRouter>
+    </MemoryRouterWithFuture>
   );
 
   const input = screen.getByRole('combobox', { name: 'Agent' });
