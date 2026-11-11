@@ -72,6 +72,30 @@ class DwcaValidationTest(TestCase):
         extension = self.stanza(False, [ExportField(0, occurrence_id, True)])
         validate_stanzas(core, [extension, extension])
 
+    def test_allows_legacy_identifiers_without_terms(self):
+        core = self.stanza(True, [ExportField(0, None, True)])
+        extension = self.stanza(False, [ExportField(0, None, True)])
+        validate_stanzas(core, [extension])
+
+    def test_rejects_incorrect_explicit_core_identifier_term(self):
+        core = self.stanza(True, [ExportField(0, 'eventID', True)])
+        with self.assertRaises(DwCAException):
+            validate_stanzas(core, [])
+
+    def test_legacy_identifiers_do_not_allow_other_unmapped_display_fields(self):
+        for is_core in (True, False):
+            with self.subTest(is_core=is_core):
+                core = self.stanza(True, [ExportField(0, None, True)])
+                unmapped = self.stanza(is_core, [
+                    ExportField(0, None, True),
+                    ExportField(1, None, False),
+                ])
+                with self.assertRaises(DwCAException):
+                    validate_stanzas(
+                        unmapped if is_core else core,
+                        [] if is_core else [unmapped],
+                    )
+
     def test_skips_empty_core_identifiers_and_retains_duplicate_detection(self):
         core_ids = set()
         row_type = 'http://rs.tdwg.org/dwc/terms/Occurrence'
@@ -240,6 +264,53 @@ class ExportFeedTests(SQLAlchemySetup):
                     content__contains='test_export.zip',
                 ).exists()
             )
+
+    def test_legacy_definition_does_not_block_later_feed_items(self):
+        definition_resource = Spappresource.objects.get(name='DwCATestDefinition')
+        legacy_resource = Spappresource.objects.create(
+            spappresourcedir=definition_resource.spappresourcedir,
+            specifyuser=self.specifyuser,
+            level=0,
+            name='LegacyDwCATestDefinition',
+            mimetype='text/xml',
+        )
+        Spappresourcedata.objects.create(
+            spappresource=legacy_resource,
+            data=DWCA_DEFINITION.replace(
+                ' term="http://rs.tdwg.org/dwc/terms/occurrenceID"', ''
+            ).encode(),
+        )
+        feed_xml = FEED_XML.format(
+            collection_id=self.collection.id,
+            user_id=self.specifyuser.id,
+        ).replace(
+            'definition="DwCATestDefinition"',
+            'definition="LegacyDwCATestDefinition"',
+            1,
+        )
+
+        with tempfile.TemporaryDirectory() as tmp:
+            with (
+                patch('specifyweb.backend.export.feed.FEED_DIR', tmp),
+                patch('specifyweb.backend.export.feed.get_feed_resource', return_value=feed_xml),
+                patch('specifyweb.backend.export.dwca.session_context', ExportFeedTests.test_session_context),
+                patch('specifyweb.backend.stored_queries.execution.set_group_concat_max_len', noop),
+            ):
+                update_feed(force=True)
+
+            for filename in (
+                'test_export.zip',
+                'unpublished_export.zip',
+                'missing_archive_export.zip',
+            ):
+                with self.subTest(filename=filename):
+                    with ZipFile(os.path.join(tmp, filename)) as archive:
+                        self.assertIn('meta.xml', archive.namelist())
+                        self.assertIn('collection_objects.csv', archive.namelist())
+                    self.assertTrue(Message.objects.filter(
+                        user=self.specifyuser,
+                        content__contains=filename,
+                    ).exists())
 
     def test_rss_feed_lists_published_items(self):
         with tempfile.TemporaryDirectory() as tmp:

@@ -277,19 +277,27 @@ def validate_stanzas(core_stanza, extension_stanzas):
     core_row_type = getattr(core_stanza, 'row_type', OCCURRENCE_CORE_ROW_TYPE)
     core_identifier_term = get_core_identifier_term(core_row_type)
     core_id = core_stanza.export_fields[core_stanza.id_field_idx]
-    if core_id.term != core_identifier_term:
+    # Older definitions use an unlabelled ID column only to join archive files.
+    # Keep that structural ID valid without inventing a semantic term for it.
+    if core_id.term not in (None, core_identifier_term):
         raise DwCAException(_(
             "The core identifier must use the identifier term for its core row type."
         ))
-    if any(field.term is None for field in core_stanza.export_fields):
+    if any(
+        field.term is None and not field.is_core_id
+        for field in core_stanza.export_fields
+    ):
         raise DwCAException(_("Every displayed core field must have a term."))
     for stanza in extension_stanzas:
         extension_id = stanza.export_fields[stanza.id_field_idx]
-        if extension_id.term != core_identifier_term:
+        if extension_id.term not in (None, core_identifier_term):
             raise DwCAException(_(
                 "Every extension identifier must use the core identifier term."
             ))
-        if any(field.term is None for field in stanza.export_fields):
+        if any(
+            field.term is None and not field.is_core_id
+            for field in stanza.export_fields
+        ):
             raise DwCAException(_("Every displayed extension field must have a term."))
 
 
