@@ -66,6 +66,40 @@ class LocalityBusinessRuleTests(ApiTests):
         self.assertEqual(locality.geography_id, geography.id)
         self.assertEqual(locality.geography.name, 'Existing geography')
 
+    def test_add_paleocontext_to_locality(self):
+        locality = models.Locality.objects.create(
+            localityname='Locality with paleo context',
+            srclatlongunit=0,
+            discipline=self.discipline,
+        )
+
+        update_obj(
+            self.collection,
+            self.agent,
+            'locality',
+            locality.id,
+            locality.version,
+            {
+                'paleocontext': {
+                    'paleocontextname': 'Test Paleo Context',
+                    'discipline': uri_for_model(
+                        'discipline', self.discipline.id
+                    ),
+                }
+            },
+        )
+
+        locality.refresh_from_db()
+        self.assertIsNotNone(locality.paleocontext)
+        self.assertEqual(
+            locality.paleocontext.paleocontextname,
+            'Test Paleo Context',
+        )
+        self.assertEqual(
+            locality.paleocontext.discipline_id,
+            self.discipline.id,
+        )
+
     def test_create_locality_with_fields(self):
         locality = models.Locality.objects.create(
             localityname="Somewhere",
