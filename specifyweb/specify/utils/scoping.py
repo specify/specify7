@@ -1,7 +1,8 @@
 from inspect import isclass
+from dataclasses import dataclass
 
 from enum import Enum
-from django.db.models import Model, QuerySet
+from django.db.models import Model, Q, QuerySet
 from django.core.exceptions import ObjectDoesNotExist
 
 from .. import models
@@ -62,6 +63,136 @@ class ScopeType(Enum):
         return self.value == other.value
 
 
+_COLLECTION_SCOPE_LOOKUPS = {
+    'COLLECTION': 'pk',
+    'DISCIPLINE': 'discipline_id',
+    'DIVISION': 'discipline__division_id',
+    'INSTITUTION': 'discipline__division__institution_id',
+}
+
+_HIERARCHY_MODELS = {
+    'COLLECTION': models.Collection,
+    'DISCIPLINE': models.Discipline,
+    'DIVISION': models.Division,
+    'INSTITUTION': models.Institution,
+}
+
+
+@dataclass(frozen=True)
+class ScopePath:
+    """A hierarchy relationship shared by instance resolution and SQL filtering."""
+
+    scope_type: ScopeType
+    path: str | None = None
+    institution_fallback: bool = False
+    required_parent: str | None = None
+
+    def resolve(self, obj: Model) -> Model | None:
+        if self.path is None:
+            return models.Institution.objects.get()
+        for field in self.path.split('__'):
+            obj = getattr(obj, field)
+        return obj
+
+    def condition(self, collections: QuerySet, queryset: QuerySet | None = None) -> Q:
+        if self.path is None:
+            institution = models.Institution.objects.get()
+            allowed = collections.filter(
+                discipline__division__institution=institution,
+            ).exists()
+            return Q() if allowed else Q(pk__in=[])
+        lookup = _COLLECTION_SCOPE_LOOKUPS[self.scope_type.name]
+        condition = Q(**{f'{self.path}__in': collections.values(lookup)})
+        if self.institution_fallback:
+            missing = Q(**{f'{self.path}__isnull': True})
+            if self.required_parent is not None:
+                missing &= Q(**{f'{self.required_parent}__isnull': False})
+            if queryset is None or queryset.filter(missing).exists():
+                condition |= missing & ScopePath(ScopeType.INSTITUTION).condition(collections)
+        return condition
+
+
+_RECORD_SCOPE_PATHS = {
+    'fieldnotebook': ScopePath(ScopeType.DISCIPLINE, 'discipline'),
+    'gift': ScopePath(ScopeType.DISCIPLINE, 'discipline'),
+    'loan': ScopePath(ScopeType.DISCIPLINE, 'discipline'),
+    'permit': ScopePath(ScopeType.INSTITUTION, 'institution'),
+    'referencework': ScopePath(ScopeType.INSTITUTION, 'institution'),
+    'storage': ScopePath(
+        ScopeType.INSTITUTION, 'definition__institution', institution_fallback=True,
+    ),
+    **{
+        tree: ScopePath(
+            ScopeType.DISCIPLINE, 'definition__discipline',
+            institution_fallback=True, required_parent='definition',
+        )
+        for tree in (
+            'taxon', 'geography', 'geologictimeperiod', 'lithostrat', 'tectonicunit',
+        )
+    },
+}
+
+_INHERITED_SCOPES = {
+    'conservevent': ('conservdescription', models.Conservdescription),
+    'fieldnotebookpage': ('pageset', models.Fieldnotebookpageset),
+    'fieldnotebookpageset': ('fieldnotebook', models.Fieldnotebook),
+    'recordsetitem': ('recordset', models.Recordset),
+}
+
+
+def _record_scope_path(model_class) -> ScopePath | None:
+    if model_class._meta.model_name == 'accession':
+        return (
+            ScopePath(ScopeType.INSTITUTION)
+            if models.Institution.objects.get().isaccessionsglobal
+            else ScopePath(ScopeType.DIVISION, 'division')
+        )
+    return _RECORD_SCOPE_PATHS.get(model_class._meta.model_name)
+
+
+def _queryset_scope_path(model_class) -> ScopePath | None:
+    if model_class in _HIERARCHY_MODELS.values():
+        return ScopePath(ScopeType.from_model(model_class), 'pk')
+    path = _record_scope_path(model_class)
+    if path is not None:
+        return path
+    inherited = _INHERITED_SCOPES.get(model_class._meta.model_name)
+    if inherited is not None:
+        parent_field, parent_model = inherited
+        parent_path = _queryset_scope_path(parent_model)
+        if parent_path is None:
+            return None
+        return ScopePath(
+            parent_path.scope_type,
+            f'{parent_field}__{parent_path.path}' if parent_path.path else None,
+            parent_path.institution_fallback,
+            (
+                f'{parent_field}__{parent_path.required_parent}'
+                if parent_path.required_parent else None
+            ),
+        )
+    scope_type = ModelClassScope(model_class).scope_type
+    if scope_type == ScopeType.INSTITUTION:
+        return ScopePath(scope_type)
+    field = scope_type.name.lower()
+    if scope_type == ScopeType.COLLECTION:
+        field = (
+            'collectionmemberid'
+            if hasattr(model_class, 'collectionmemberid') else 'collection'
+        )
+        return ScopePath(scope_type, field)
+    competing_fields = (
+        ('discipline', 'collectionmemberid', 'collection')
+        if scope_type == ScopeType.DIVISION
+        else ('division', 'collectionmemberid', 'collection')
+    )
+    if hasattr(model_class, field) and not any(
+        hasattr(model_class, competing) for competing in competing_fields
+    ):
+        return ScopePath(scope_type, field, institution_fallback=True)
+    return None
+
+
 class ModelClassScope:
     def __init__(self, model_class):
         if not isclass(model_class):
@@ -70,65 +201,13 @@ class ModelClassScope:
 
     @property
     def scope_type(self) -> ScopeType:
-        table = self.model_class.__name__.lower()
-        scope = getattr(self, table, lambda: None)()
-        if scope is None:
-            return self._infer_scope()
-        return scope
-
-    def accession(self):
-        institution = models.Institution.objects.get()
-        if institution.isaccessionsglobal:
-            return ScopeType.INSTITUTION
-        else:
-            return ScopeType.DIVISION
-
-    def attachment(self):
-        return ScopeType.INSTITUTION
-
-    def conservevent(self): return ModelClassScope(
-        models.Conservdescription).scope_type
-
-    def fieldnotebookpage(self): return ModelClassScope(
-        models.Fieldnotebookpageset).scope_type
-
-    def fieldnotebookpageset(self): return ModelClassScope(
-        models.Fieldnotebook).scope_type
-
-    def gift(self): return ScopeType.DISCIPLINE
-
-    def loan(self): return ScopeType.DISCIPLINE
-
-    def permit(self):
-        return ScopeType.INSTITUTION
-
-    def referencework(self):
-        return ScopeType.INSTITUTION
-
-    def recordsetitem(self):
-        return ScopeType.COLLECTION
-
-    def taxon(self):
-        return ScopeType.DISCIPLINE
-
-    def geography(self):
-        return ScopeType.DISCIPLINE
-
-    def geologictimeperiod(self):
-        return ScopeType.DISCIPLINE
-
-    def lithostrat(self):
-        return ScopeType.DISCIPLINE
-
-    def tectonicunit(self):
-        return ScopeType.DISCIPLINE
-
-    def storage(self):
-        return ScopeType.INSTITUTION
-
-
-#############################################################################
-
+        path = _record_scope_path(self.model_class)
+        if path is not None:
+            return path.scope_type
+        inherited = _INHERITED_SCOPES.get(self.model_class._meta.model_name)
+        if inherited is not None:
+            return ModelClassScope(inherited[1]).scope_type
+        return self._infer_scope()
 
     def _infer_scope(self):
         if is_related(self.model_class, "division"):
@@ -153,6 +232,13 @@ class ModelInstanceScope:
 
     @property
     def scope_model(self) -> Model:
+        path = _record_scope_path(self.obj.__class__)
+        if path is not None:
+            scope = path.resolve(self.obj)
+            return self._infer_scope_model() if scope is None else scope
+        inherited = _INHERITED_SCOPES.get(self.obj._meta.model_name)
+        if inherited is not None:
+            return ModelInstanceScope(getattr(self.obj, inherited[0])).scope_model
         table = self.obj.__class__.__name__.lower()
         scope = getattr(self, table, lambda: None)()
         if scope is None:
@@ -160,78 +246,14 @@ class ModelInstanceScope:
 
         return scope
 
-    def accession(self) -> Model:
-        institution = models.Institution.objects.get()
-        if institution.isaccessionsglobal:
-            return institution
-        return self.obj.division
-
     def attachment(self) -> Model:
-        scope_type = (
-            ScopeType.INSTITUTION
-            if self.obj.scopetype is None
-            else ScopeType(self.obj.scopetype)
-        )
+        if self.obj.scopetype is None:
+            return models.Institution.objects.get()
+        scope_type = ScopeType(self.obj.scopetype)
         if scope_type == ScopeType.GLOBAL:
             return models.Institution.objects.get()
-        scope_models = (
-            (ScopeType.COLLECTION, models.Collection),
-            (ScopeType.DISCIPLINE, models.Discipline),
-            (ScopeType.DIVISION, models.Division),
-            (ScopeType.INSTITUTION, models.Institution),
-        )
-        scope_model = next(
-            (model for kind, model in scope_models if scope_type == kind), None
-        )
-        if scope_model is None:
-            raise ValueError(f"Unsupported attachment scope type: {scope_type}")
+        scope_model = _HIERARCHY_MODELS[scope_type.name]
         return scope_model.objects.get(pk=self.obj.scopeid)
-
-    def conservevent(self) -> Model:
-        return ModelInstanceScope(self.obj.conservdescription).scope_model
-
-    def fieldnotebookpage(self) -> Model:
-        return ModelInstanceScope(self.obj.pageset).scope_model
-
-    def fieldnotebookpageset(self) -> Model:
-        return ModelInstanceScope(self.obj.fieldnotebook).scope_model
-
-    def gift(self) -> Model:
-        if has_related(self.obj, "discipline"):
-            return self.obj.discipline
-
-    def loan(self) -> Model:
-        if has_related(self.obj, 'discipline'):
-            return self.obj.discipline
-
-    def permit(self) -> Model:
-        if has_related(self.obj, 'institution'):
-            return self.obj.institution
-
-    def recordsetitem(self) -> Model:
-        return ModelInstanceScope(self.obj.recordset).scope_model
-
-    def referencework(self) -> Model:
-        if has_related(self.obj, 'institution'):
-            return self.obj.institution
-
-    def taxon(self) -> Model:
-        return self.obj.definition.discipline
-
-    def geography(self):
-        return self.obj.definition.discipline
-
-    def geologictimeperiod(self):
-        return self.obj.definition.discipline
-
-    def lithostrat(self):
-        return self.obj.definition.discipline
-
-    def tectonicunit(self):
-        return self.obj.definition.discipline
-
-    def storage(self):
-        return self.obj.definition.institution
 
     def _infer_scope_model(self) -> Model:
         if is_related(self.obj.__class__, "division") and has_related(self.obj, "division"):
@@ -266,6 +288,50 @@ class ModelInstanceScope:
 class Scoping:
 
     @staticmethod
+    def filter_queryset(queryset: QuerySet, collections: QuerySet) -> QuerySet:
+        """Restrict rows to hierarchy scopes represented by the given collections.
+
+        Filtering stays in SQL so counts, projections and pagination use the
+        same scope paths as record authorization. Unsupported competing scope
+        fields retain instance-only checks.
+        """
+        model = queryset.model
+        if model is models.Attachment:
+            condition = Q(pk__in=[])
+            if collections.exists():
+                condition |= Q(scopetype__isnull=True) | Q(
+                    scopetype=ScopeType.GLOBAL.value,
+                )
+            for kind, lookup in _COLLECTION_SCOPE_LOOKUPS.items():
+                condition |= Q(
+                    scopetype=ScopeType[kind].value,
+                    scopeid__in=collections.values(lookup),
+                )
+            return queryset.filter(condition)
+        if model in (models.Spappresourcedir, models.Sptasksemaphore):
+            condition = ScopePath(ScopeType.DISCIPLINE, 'discipline').condition(collections)
+            condition |= Q(discipline__isnull=True) & ScopePath(
+                ScopeType.COLLECTION, 'collection',
+            ).condition(collections)
+            unscoped = Q(discipline__isnull=True, collection__isnull=True)
+            if queryset.filter(unscoped).exists():
+                condition |= unscoped & ScopePath(ScopeType.INSTITUTION).condition(collections)
+            return queryset.filter(condition)
+        path = _queryset_scope_path(model)
+        if path is None:
+            return queryset
+        condition = path.condition(collections, queryset)
+        if path.path == 'collectionmemberid' and hasattr(model, 'collection'):
+            invalid_membership = (
+                Q(collectionmemberid__isnull=True)
+                | ~Q(collectionmemberid__in=models.Collection.objects.values('pk'))
+            )
+            condition |= invalid_membership & ScopePath(
+                ScopeType.COLLECTION, 'collection',
+            ).condition(collections)
+        return queryset.filter(condition)
+
+    @staticmethod
     def scope_for_record(obj: Model) -> Model:
         """Resolve a record's scope, keeping hierarchy records at their own scope.
 
@@ -295,12 +361,7 @@ class Scoping:
         if scope.pk is None:
             raise ValueError("Cannot resolve collections for an unsaved scope")
 
-        lookup = {
-            "COLLECTION": "pk",
-            "DISCIPLINE": "discipline_id",
-            "DIVISION": "discipline__division_id",
-            "INSTITUTION": "discipline__division__institution_id",
-        }[scope_type.name]
+        lookup = _COLLECTION_SCOPE_LOOKUPS[scope_type.name]
         return models.Collection.objects.filter(**{lookup: scope.pk})
 
     @staticmethod

@@ -1101,6 +1101,67 @@ class ScopingTests(ApiTests):
             discipline=self.other_discipline,
         )
 
+    def assert_queryset_matches_instance_scopes(self, model):
+        collections = Collection.objects.filter(pk=self.collection.pk)
+        expected = [
+            record.pk for record in model.objects.all()
+            if scoping.Scoping.collections_for_scope(
+                scoping.Scoping.scope_for_record(record),
+            ).filter(pk__in=collections).exists()
+        ]
+        self.assertCountEqual(
+            scoping.Scoping.filter_queryset(
+                model.objects.all(), collections,
+            ).values_list('pk', flat=True),
+            expected,
+        )
+
+    def test_queryset_scope_paths_match_instance_resolution(self):
+        for model in (models.Loan, models.Gift):
+            for discipline in (self.discipline, self.other_discipline):
+                model.objects.create(discipline=discipline, division=self.division)
+        for discipline in (self.discipline, self.other_discipline):
+            notebook = models.Fieldnotebook.objects.create(
+                discipline=discipline, collection=self.other_collection,
+                owneragent=self.agent,
+            )
+            pageset = models.Fieldnotebookpageset.objects.create(
+                fieldnotebook=notebook, discipline=self.discipline,
+            )
+            models.Fieldnotebookpage.objects.create(
+                pageset=pageset, discipline=self.discipline,
+            )
+        for model in (
+            Collection, Discipline, Division, Institution, Agent, Collectionobject,
+            models.Loan, models.Gift, models.Fieldnotebook,
+            models.Fieldnotebookpageset, models.Fieldnotebookpage,
+        ):
+            with self.subTest(model=model._meta.model_name):
+                self.assert_queryset_matches_instance_scopes(model)
+
+    def test_attachment_queryset_scope_matches_instance_resolution(self):
+        for scope in (
+            self.collection, self.other_collection,
+            self.discipline, self.other_discipline,
+            self.division, self.other_division, self.institution,
+        ):
+            models.Attachment.objects.create(
+                scopetype=scoping.ScopeType.from_model(scope).value,
+                scopeid=scope.pk,
+            )
+        for scope_type in (None, scoping.ScopeType.GLOBAL.value):
+            models.Attachment.objects.create(scopetype=scope_type)
+        self.assert_queryset_matches_instance_scopes(models.Attachment)
+
+    def test_invalid_attachment_scope_does_not_fall_back_to_institution(self):
+        attachment = models.Attachment.objects.create(scopetype=99)
+        with self.assertRaises(ValueError):
+            scoping.Scoping.scope_for_record(attachment)
+        self.assertFalse(scoping.Scoping.filter_queryset(
+            models.Attachment.objects.filter(pk=attachment.pk),
+            Collection.objects.all(),
+        ).exists())
+
     def test_record_scope_preserves_hierarchy_records(self):
         for obj in (
             self.other_collection,

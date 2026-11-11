@@ -8,6 +8,7 @@ from django.utils import timezone
 from specifyweb.backend.businessrules.rules.cogtype_rules import SYSTEM_COGTYPES_PICKLIST
 from specifyweb.specify.tests.test_api import ApiTests
 from specifyweb.specify import models as spmodels
+from specifyweb.specify.utils.scoping import ScopeType
 from . import models, permissions, initialize
 
 class ScopedPermissionTestBase(ApiTests):
@@ -121,7 +122,7 @@ class ScopedPermissionTests(ScopedPermissionTestBase):
         self.grant_access(self.collection)
         self.grant(self.collection, '/table/attachment', 'read')
         attachment = spmodels.Attachment.objects.create(
-            scopetype=permissions.ScopeType.COLLECTION.value,
+            scopetype=ScopeType.COLLECTION.value,
             scopeid=self.other_collection.id,
             tableid=spmodels.Attachment.specify_model.tableId,
             origfilename='restricted.jpg',
@@ -158,11 +159,11 @@ class ScopedPermissionTests(ScopedPermissionTestBase):
                 origfilename=f'{name}.jpg',
             )
             for name, scope_type, scope_id in (
-                ('allowed collection', permissions.ScopeType.COLLECTION.value, self.collection.id),
-                ('restricted collection', permissions.ScopeType.COLLECTION.value, self.other_collection.id),
-                ('allowed discipline', permissions.ScopeType.DISCIPLINE.value, self.discipline.id),
-                ('restricted discipline', permissions.ScopeType.DISCIPLINE.value, other_discipline.id),
-                ('global', permissions.ScopeType.GLOBAL.value, None),
+                ('allowed collection', ScopeType.COLLECTION.value, self.collection.id),
+                ('restricted collection', ScopeType.COLLECTION.value, self.other_collection.id),
+                ('allowed discipline', ScopeType.DISCIPLINE.value, self.discipline.id),
+                ('restricted discipline', ScopeType.DISCIPLINE.value, other_discipline.id),
+                ('global', ScopeType.GLOBAL.value, None),
                 ('unset', None, None),
             )
         ]
@@ -186,7 +187,7 @@ class ScopedPermissionTests(ScopedPermissionTestBase):
             )
             for name, scope_type in (
                 ('unset', None),
-                ('global', permissions.ScopeType.GLOBAL.value),
+                ('global', ScopeType.GLOBAL.value),
             )
         ]
 

@@ -16,14 +16,9 @@ from django.core.exceptions import FieldDoesNotExist, FieldError
 from django.db.models import Exists, FilteredRelation, ForeignKey, Model, OuterRef, Q, QuerySet
 from django.db.models.fields.reverse_related import ManyToOneRel
 
-from specifyweb.specify.models import (
-    Accession, Agent, Attachment, Conservevent, Discipline, Division, Fieldnotebook, Fieldnotebookpage,
-    Fieldnotebookpageset, Geography, Geologictimeperiod, Gift,
-    Institution, Lithostrat, Loan, Permit, Recordsetitem, Referencework, Spappresourcedir,
-    Sptasksemaphore, Storage, Taxon, Tectonicunit,
-)
+from specifyweb.specify.models import Agent
 from specifyweb.specify.datamodel import Table
-from specifyweb.specify.utils.scoping import Scoping, ScopeType
+from specifyweb.specify.utils.scoping import Scoping
 from specifyweb.backend.cache.thread import ThreadCache
 
 from . import models
@@ -289,211 +284,17 @@ def has_permission_in_scope(
     )
 
 def filter_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
-    """Filter supported record scopes before counting, projection, or pagination.
-
-    Supports hierarchy records, direct collection scopes, and direct
-    division/discipline scopes without competing scope fields, and discipline
-    and storage tree nodes. Loan and Gift use their required discipline even
-    when a division is populated; Accession follows its configured scope.
-    Permit and ReferenceWork use their required institution.
-    Attachments use their stored hierarchy scope.
-    Notebook pages and page sets inherit the notebook's discipline.
-    Conservation events inherit their description's scope.
-    Recordset items inherit their recordset's collection.
-    Remaining institution-scoped models use the single-institution fallback.
-    Resource directories and task semaphores prefer discipline over collection.
-    Other scopes are not filtered here; serialized records still undergo
-    instance checks.
-    """
-    model = queryset.model
-    hierarchy_lookup = {
-        models.Collection: "id",
-        Discipline: "discipline_id",
-        Division: "discipline__division_id",
-        Institution: "discipline__division__institution_id",
-    }.get(model)
-    discipline_tree_scope = model in (
-        Taxon, Geography, Geologictimeperiod, Lithostrat, Tectonicunit,
-    )
-    notebook_lookup = {
-        Fieldnotebook: "discipline_id",
-        Fieldnotebookpageset: "fieldnotebook__discipline_id",
-        Fieldnotebookpage: "pageset__fieldnotebook__discipline_id",
-    }.get(model)
-    scope_type = Scoping.scope_type_from_class(model)
-    direct_division_scope = (
-        scope_type == ScopeType.DIVISION
-        and hasattr(model, "division")
-        and not any(hasattr(model, field) for field in (
-            "discipline", "collectionmemberid", "collection",
-        ))
-        and model not in (Accession, Discipline)
-    )
-    direct_discipline_scope = (
-        scope_type == ScopeType.DISCIPLINE
-        and hasattr(model, "discipline")
-        and not any(hasattr(model, field) for field in (
-            "division", "collectionmemberid", "collection",
-        ))
-        and hierarchy_lookup is None
-    )
-    if (
-        scope_type not in (ScopeType.COLLECTION, ScopeType.INSTITUTION)
-        and not direct_division_scope
-        and not direct_discipline_scope
-        and hierarchy_lookup is None
-        and not discipline_tree_scope
-        and model is not Storage
-        and model not in (Loan, Gift)
-        and model is not Accession
-        and model not in (Permit, Referencework)
-        and notebook_lookup is None
-        and model is not Conservevent
-        and model not in (Spappresourcedir, Sptasksemaphore)
-    ):
-        return queryset
-
+    """Apply shared scope rules using collections granting both access and read."""
     userid = _actor_userid(actor)
-    resource = f"/table/{model.specify_model.name.lower()}"
+    resource = f"/table/{queryset.model.specify_model.name.lower()}"
     allowed_ids = [
         collectionid for collectionid in models.Collection.objects.values_list("id", flat=True)
         if query_pt(collectionid, userid, CollectionAccessPT.access).allowed
         and query(collectionid, userid, resource, "read").allowed
     ]
-    if model is Recordsetitem:
-        return queryset.filter(recordset__collectionmemberid__in=allowed_ids)
-    if model in (Spappresourcedir, Sptasksemaphore):
-        allowed_collections = models.Collection.objects.filter(id__in=allowed_ids)
-        condition = Q(
-            discipline_id__in=allowed_collections.values("discipline_id")
-        ) | Q(discipline__isnull=True, collection_id__in=allowed_ids)
-        unscoped = Q(discipline__isnull=True, collection__isnull=True)
-        if queryset.filter(unscoped).exists():
-            institution = Institution.objects.get()
-            if allowed_collections.filter(
-                discipline__division__institution=institution
-            ).exists():
-                condition |= unscoped
-        return queryset.filter(condition)
-    if model is Conservevent:
-        allowed_collections = models.Collection.objects.filter(id__in=allowed_ids)
-        condition = Q(
-            conservdescription__division_id__in=allowed_collections.values(
-                "discipline__division_id"
-            )
-        )
-        # A description without a division resolves to the single institution.
-        if queryset.filter(conservdescription__division__isnull=True).exists():
-            institution = Institution.objects.get()
-            if allowed_collections.filter(
-                discipline__division__institution=institution
-            ).exists():
-                condition |= Q(conservdescription__division__isnull=True)
-        return queryset.filter(condition)
-    if notebook_lookup is not None:
-        return queryset.filter(**{
-            f"{notebook_lookup}__in": models.Collection.objects.filter(
-                id__in=allowed_ids
-            ).values("discipline_id")
-        })
-    if hierarchy_lookup is not None:
-        return queryset.filter(pk__in=models.Collection.objects.filter(
-            id__in=allowed_ids
-        ).values(hierarchy_lookup))
-    if model in (Permit, Referencework):
-        return queryset.filter(
-            institution_id__in=models.Collection.objects.filter(
-                id__in=allowed_ids
-            ).values("discipline__division__institution_id")
-        )
-    if model is Accession:
-        allowed_collections = models.Collection.objects.filter(id__in=allowed_ids)
-        if scope_type == ScopeType.INSTITUTION:
-            institution = Institution.objects.get()
-            return queryset if allowed_collections.filter(
-                discipline__division__institution=institution
-            ).exists() else queryset.none()
-        return queryset.filter(
-            division_id__in=allowed_collections.values("discipline__division_id")
-        )
-    if model is Attachment:
-        allowed_collections = models.Collection.objects.filter(id__in=allowed_ids)
-        condition = Q(pk__in=[])
-        if allowed_ids:
-            condition |= Q(scopetype__isnull=True) | Q(
-                scopetype=ScopeType.GLOBAL.value
-            )
-        scope_lookups = (
-            (ScopeType.COLLECTION, "pk"),
-            (ScopeType.DISCIPLINE, "discipline_id"),
-            (ScopeType.DIVISION, "discipline__division_id"),
-            (ScopeType.INSTITUTION, "discipline__division__institution_id"),
-        )
-        for attachment_scope, collection_lookup in scope_lookups:
-            condition |= Q(
-                scopetype=attachment_scope.value,
-                scopeid__in=allowed_collections.values(collection_lookup),
-            )
-        return queryset.filter(condition)
-    if model in (Loan, Gift):
-        return queryset.filter(
-            discipline_id__in=models.Collection.objects.filter(
-                id__in=allowed_ids
-            ).values("discipline_id")
-        )
-    if model is Storage:
-        allowed_collections = models.Collection.objects.filter(id__in=allowed_ids)
-        condition = Q(
-            definition__institution_id__in=allowed_collections.values(
-                "discipline__division__institution_id"
-            )
-        )
-        # Match the instance resolver's single-institution fallback.
-        if queryset.filter(definition__institution__isnull=True).exists():
-            institution = Institution.objects.get()
-            if allowed_collections.filter(
-                discipline__division__institution=institution
-            ).exists():
-                condition |= Q(definition__institution__isnull=True)
-        return queryset.filter(condition)
-    if discipline_tree_scope:
-        condition = Q(
-            definition__discipline_id__in=models.Collection.objects.filter(
-                id__in=allowed_ids
-            ).values("discipline_id")
-        )
-        # A definition without a discipline uses the resolver's institution fallback.
-        if allowed_ids:
-            condition |= Q(
-                definition__isnull=False, definition__discipline__isnull=True
-            )
-        return queryset.filter(condition)
-    if scope_type == ScopeType.INSTITUTION:
-        institution = Institution.objects.get()
-        allowed = models.Collection.objects.filter(
-            id__in=allowed_ids, discipline__division__institution=institution
-        ).exists()
-        return queryset if allowed else queryset.none()
-    if direct_division_scope or direct_discipline_scope:
-        allowed_collections = models.Collection.objects.filter(id__in=allowed_ids)
-        field = "division" if direct_division_scope else "discipline"
-        collection_lookup = "discipline__division_id" if direct_division_scope else "discipline_id"
-        condition = Q(**{f"{field}_id__in": allowed_collections.values(collection_lookup)})
-        # A missing direct scope resolves to the institution in the instance resolver.
-        if allowed_ids:
-            condition |= Q(**{f"{field}__isnull": True})
-        return queryset.filter(condition)
-    if hasattr(model, "collectionmemberid"):
-        condition = Q(collectionmemberid__in=allowed_ids)
-        if hasattr(model, "collection"):
-            # Match the instance resolver's fallback for stale membership IDs.
-            invalid_membership = (
-                Q(collectionmemberid__isnull=True)
-                | ~Q(collectionmemberid__in=models.Collection.objects.values("id"))
-            )
-            condition |= invalid_membership & Q(collection_id__in=allowed_ids)
-        return queryset.filter(condition)
-    return queryset.filter(collection_id__in=allowed_ids)
+    return Scoping.filter_queryset(
+        queryset, models.Collection.objects.filter(id__in=allowed_ids),
+    )
 
 def filter_forward_related_read_queryset(
     queryset: QuerySet, fields: Iterable[str], actor
