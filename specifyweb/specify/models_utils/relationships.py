@@ -363,7 +363,7 @@ def _handle_dependent_to_many(collection, agent, obj, field, value):
     get_object_or_404 = crud.get_object_or_404
     make_default_deleter = crud.make_default_deleter
     update_or_create_resource = crud.update_or_create_resource
-    from specifyweb.specify.api.validators import cleanData
+    cleanData = import_module("specifyweb.specify.api.validators").cleanData
 
     rel_model = field.related_model
     allowed_keys = {f.name for f in datamodel.get_table(rel_model).fields}
