@@ -84,6 +84,10 @@ def get_related_or_none(obj, field_name: str) -> Any:
     except ObjectDoesNotExist:
         return None
 
+def _get_crud_helpers():
+    from specifyweb.specify.api.crud import get_object_or_404, update_or_create_resource
+    return get_object_or_404, update_or_create_resource
+
 def reorder_fields_for_embedding(cls, data: dict[str, Any]) -> Iterable[tuple[str, Any]]:
     """For objects which can have embedded collectingevent or
     paleocontext, we have to make sure the domain field gets set
@@ -108,7 +112,7 @@ def handle_fk_fields(collection, agent, obj, data: dict[str, Any], *, parent_obj
     Reverse unlinking preserves the parent being edited. Reverse one-to-one
     reassignment authorizes the original parent's relationship as well.
     """
-    from specifyweb.specify.api.crud import get_object_or_404, update_or_create_resource
+    get_object_or_404, update_or_create_resource = _get_crud_helpers()
 
     # This function looks at arbitrary related objects so it needs to be able to check read permissions
     read_checker = table_permissions_checker(collection, agent, "read")
