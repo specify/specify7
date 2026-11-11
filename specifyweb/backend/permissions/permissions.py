@@ -594,6 +594,14 @@ def _enforce_in_scope(scope: Model, actor, resources: list[str], action: str) ->
         logger.debug("record scope permission denied: %s, scope=%s", denials, scope)
         raise NoMatchingRuleException(denials)
 
+
+def check_permission_in_scope(
+    scope: Model, actor, resource: str, action: str
+) -> None:
+    """Require a resource action using the same actual-scope rules as record checks."""
+    _enforce_in_scope(scope, actor, [resource], action)
+
+
 def check_table_permissions(
     collection, actor, obj, action: TABLE_ACTION, *, scope: Model | None = None
 ) -> None:

@@ -5,22 +5,28 @@ from uuid import uuid4
 from django import http
 from typing import Iterator, Literal, TypedDict, Any, Dict
 from django.db import connection, transaction
+from django.db import models as django_models
+from django.db.models import Q
 from django.http import HttpResponse
 from django.views.decorators.http import require_POST
-from specifyweb.backend.trees.tree_mutations import perm_target
 from specifyweb.specify.views import login_maybe_required, openapi
 from sqlalchemy import distinct
 from specifyweb.specify import models as spmodels
 from specifyweb.specify.api.crud import get_object_or_404
 from specifyweb.specify.api.serializers import obj_to_data, toJson
-from sqlalchemy import select, func, distinct, literal
+from sqlalchemy import select, func, distinct, literal, and_, case
 from sqlalchemy.orm import aliased
 from jsonschema import validate  # type: ignore
 from jsonschema.exceptions import ValidationError  # type: ignore
 
 from specifyweb.middleware.general import require_GET
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
-from specifyweb.backend.permissions.permissions import check_permission_targets, has_table_permission
+from specifyweb.backend.permissions.permissions import (
+    check_permission_in_scope,
+    check_field_permissions,
+    check_table_permissions,
+    has_table_permission,
+)
 
 from specifyweb.backend.stored_queries import models as sqlmodels
 from specifyweb.backend.stored_queries.execution import set_group_concat_max_len
@@ -29,13 +35,19 @@ from specifyweb.backend.notifications.models import Message
 
 from specifyweb.backend.trees.default_tree_files import load_default_tree_json
 from specifyweb.backend.trees.utils import get_search_filters
-from specifyweb.backend.trees.defaults import create_default_tree_task, queue_create_default_tree_task, get_active_create_default_tree_tasks
+from specifyweb.backend.trees.defaults import (
+    check_default_tree_permissions,
+    create_default_tree_task,
+    queue_create_default_tree_task,
+    get_active_create_default_tree_tasks,
+)
 from specifyweb.specify.utils.field_change_info import FieldChangeInfo
 from specifyweb.backend.trees.ranks import tree_rank_count
 from . import extras
 from specifyweb.backend.workbench.upload.auditcodes import TREE_MOVE
 from specifyweb.backend.trees.utils import SPECIFY_TREES, TREE_NAMES
 from specifyweb.backend.trees.stats import get_tree_stats
+from specifyweb.specify.utils.scoping import Scoping
 
 import logging
 
@@ -51,6 +63,131 @@ COMMON_TREES: tuple[TREE_TABLE, ...] = ('Taxon', 'Storage',
 
 ALL_TREES: tuple[TREE_TABLE, ...] = (
     *COMMON_TREES, 'Geologictimeperiod', 'Lithostrat', *GEO_TREES)
+
+
+def _tree_name(tree: str) -> str:
+    tree_name = tree.lower()
+    if tree_name not in {name.lower() for name in ALL_TREES}:
+        raise http.Http404
+    return tree_name
+
+
+def _tree_model(tree: str):
+    return getattr(spmodels, _tree_name(tree).capitalize())
+
+
+def _tree_definition_model(tree: str):
+    return getattr(spmodels, f'{_tree_name(tree).capitalize()}treedef')
+
+
+def _check_tree_action(request, tree: str, obj, action: str) -> None:
+    check_permission_in_scope(
+        Scoping.scope_for_record(obj),
+        request.specify_user,
+        f'/tree/edit/{_tree_name(tree)}',
+        action,
+    )
+
+
+def _check_tree_action_for_all_definitions(request, tree: str, action: str) -> None:
+    definition_model = _tree_definition_model(tree)
+    for definition in definition_model.objects.all().iterator(chunk_size=2000):
+        _check_tree_action(request, tree, definition, action)
+
+
+def _check_tree_table_access(request, tree: str, scope_obj, action: str) -> None:
+    check_permission_in_scope(
+        Scoping.scope_for_record(scope_obj),
+        request.specify_user,
+        f'/table/{_tree_name(tree)}',
+        action,
+    )
+
+
+def _check_tree_table_action_for_all_definitions(
+    request, tree: str, action: str,
+) -> None:
+    for definition in _tree_definition_model(tree).objects.all().iterator(
+        chunk_size=2000,
+    ):
+        check_permission_in_scope(
+            Scoping.scope_for_record(definition),
+            request.specify_user,
+            f'/table/{_tree_name(tree)}',
+            action,
+        )
+
+
+def _check_related_tree_records(request, tree: str, node, action: str) -> None:
+    if tree.lower() != 'taxon':
+        return
+    from specifyweb.specify.models import Determination
+    determinations = Determination.objects.filter(
+        Q(taxon_id=node.id) | Q(preferredtaxon_id=node.id),
+    )
+    for determination in determinations.iterator(chunk_size=2000):
+        check_table_permissions(
+            request.specify_collection, request.specify_user,
+            determination, action,
+        )
+
+
+def _check_tree_merge_references(request, tree: str, node, target) -> None:
+    tree_model = _tree_model(tree)
+    nodes_to_delete = [node]
+    target_children = list(target.children.all())
+    for child in node.children.all():
+        matching = next((
+            target_child for target_child in target_children
+            if target_child.name == child.name
+            and target_child.rankid == child.rankid
+        ), None)
+        if matching is not None:
+            nodes_to_delete.extend(
+                _tree_nodes_to_merge(child, matching),
+            )
+
+    node_ids = [tree_node.id for tree_node in nodes_to_delete]
+    for table in spmodels.datamodel.tables:
+        related_model = getattr(spmodels, table.name, None)
+        if related_model is None or related_model is tree_model:
+            continue
+        for field in related_model._meta.get_fields():
+            if not (
+                field.is_relation
+                and (field.many_to_one or field.one_to_one)
+                and field.remote_field.model is tree_model
+            ):
+                continue
+            related_records = related_model.objects.filter(
+                **{f'{field.attname}__in': node_ids},
+            )
+            deleting = field.remote_field.on_delete is django_models.CASCADE
+            action = 'delete' if deleting else 'update'
+            for record in related_records.iterator(chunk_size=2000):
+                check_table_permissions(
+                    request.specify_collection, request.specify_user,
+                    record, action,
+                )
+                if not deleting:
+                    check_field_permissions(
+                        request.specify_collection, request.specify_user,
+                        record, [field.name], 'update',
+                    )
+
+
+def _tree_nodes_to_merge(node, target) -> list:
+    nodes = [node]
+    target_children = list(target.children.all())
+    for child in node.children.all():
+        matching = next((
+            target_child for target_child in target_children
+            if target_child.name == child.name
+            and target_child.rankid == child.rankid
+        ), None)
+        if matching is not None:
+            nodes.extend(_tree_nodes_to_merge(child, matching))
+    return nodes
 
 
 def tree_mutation(mutation):
@@ -167,6 +304,17 @@ def tree_view(request, treedef, tree: TREE_TABLE, parentid, sortfield):
     include_author = request.GET.get('includeauthor', False) and tree == 'taxon'
     include_start_end_periods = request.GET.get('includestartendperiods', False) and tree == 'geologictimeperiod'
     biostrat = request.GET.get('biostrat', 'all')
+    tree_definition = get_object_or_404(
+        _tree_definition_model(tree), id=treedef,
+    )
+    _check_tree_table_access(request, tree, tree_definition, 'read')
+    if parentid != 'null':
+        parent = get_object_or_404(_tree_model(tree), id=parentid)
+        if parent.definition_id != tree_definition.id:
+            raise http.Http404
+        check_table_permissions(
+            request.specify_collection, request.specify_user, parent, 'read',
+        )
     with sqlmodels.session_context() as session:
         set_group_concat_max_len(session.connection())
         results = get_tree_rows(treedef, tree, parentid, sortfield, include_author, include_start_end_periods, biostrat, session)
@@ -192,7 +340,10 @@ def get_tree_rows(treedef, tree, parentid, sortfield, include_author, include_st
         node.nodeNumber.label("node_number"),
         node.highestChildNodeNumber.label("highest_child_number"),
         node.rankId.label("rank_id"),
-        node.AcceptedID.label("accepted_id"),
+        case(
+            [(accepted._id.isnot(None), node.AcceptedID)],
+            else_=None,
+        ).label("accepted_id"),
         accepted.fullName.label("accepted_fullname"),
         (node.author if include_author else literal("NULL")).label("author"),
         (
@@ -217,11 +368,17 @@ def get_tree_rows(treedef, tree, parentid, sortfield, include_author, include_st
         ).label("end_uncertainty"),
         select(func.count(child._id))
             .where(child.ParentID == node._id)
+            .where(
+                getattr(child, tree_table.name + "TreeDefID") == treedef_col,
+            )
             .correlate(node)
             .scalar_subquery()
             .label("child_count"),
         select(group_concat(distinct(synonym.fullName), separator=", "))
             .where(synonym.AcceptedID == node._id)
+            .where(
+                getattr(synonym, tree_table.name + "TreeDefID") == treedef_col,
+            )
             .correlate(node)
             .scalar_subquery()
             .label("synonyms"),
@@ -254,7 +411,10 @@ def get_tree_rows(treedef, tree, parentid, sortfield, include_author, include_st
 
     query = (
         select(*cols)
-        .outerjoin(accepted, node.AcceptedID == accepted._id)
+        .outerjoin(accepted, and_(
+            node.AcceptedID == accepted._id,
+            getattr(accepted, tree_table.name + "TreeDefID") == treedef_col,
+        ))
         .where(treedef_col == int(treedef))
         .where(node.ParentID == parentid)
         .order_by(orderby)
@@ -266,6 +426,17 @@ def get_tree_rows(treedef, tree, parentid, sortfield, include_author, include_st
 @require_GET
 def tree_stats(request, treedef, tree, parentid):
     "Returns tree stats (collection object count) for tree nodes parented by <parentid>."
+    tree_definition = get_object_or_404(
+        _tree_definition_model(tree), id=treedef,
+    )
+    _check_tree_table_access(request, tree, tree_definition, 'read')
+    if parentid != 'null':
+        parent = get_object_or_404(_tree_model(tree), id=parentid)
+        if parent.definition_id != tree_definition.id:
+            raise http.Http404
+        check_table_permissions(
+            request.specify_collection, request.specify_user, parent, 'read',
+        )
 
     using_cte = (tree in ['geography', 'taxon', 'storage'])
     include_synonym_count = (
@@ -284,11 +455,15 @@ def tree_stats(request, treedef, tree, parentid):
 def path(request, tree: TREE_TABLE, id: int):
     "Returns all nodes up to the root of <tree> starting from node <id>."
     id = int(id)
-    tree_node = get_object_or_404(tree, id=id)
+    tree_model = _tree_model(tree)
+    tree_node = get_object_or_404(tree_model, id=id)
 
-    data = {
-        node.definitionitem.name: obj_to_data(node) for node in get_tree_path(tree_node)
-    }
+    data = {}
+    for node in get_tree_path(tree_node):
+        check_table_permissions(
+            request.specify_collection, request.specify_user, node, 'read',
+        )
+        data[node.definitionitem.name] = obj_to_data(node)
 
     data["resource_uri"] = "/trees/specify_tree/%s/%d/path/" % (tree, id)
 
@@ -309,10 +484,22 @@ def predict_fullname(request, tree: TREE_TABLE, parentid: int):
     'treedefitemid' and 'name', to indicate the rank (treedefitem) and
     name of the node, respectively.
     """
-    parent = get_object_or_404(tree, id=parentid)
+    parent = get_object_or_404(_tree_model(tree), id=parentid)
+    check_table_permissions(
+        request.specify_collection, request.specify_user, parent, 'read',
+    )
     depth = parent.definition.treedefitems.count()
     reverse = parent.definition.fullnamedirection == -1
     defitemid = int(request.GET["treedefitemid"])
+    tree_def_item = get_object_or_404(
+        getattr(spmodels, f'{_tree_name(tree).capitalize()}treedefitem'),
+        id=defitemid,
+    )
+    if tree_def_item.treedef_id != parent.definition_id:
+        raise http.Http404
+    check_table_permissions(
+        request.specify_collection, request.specify_user, tree_def_item, 'read',
+    )
     name = request.GET["name"]
     fullname = extras.predict_fullname(
         parent._meta.db_table, depth, parent.id, defitemid, name, reverse
@@ -324,13 +511,16 @@ def predict_fullname(request, tree: TREE_TABLE, parentid: int):
 def merge(request, tree: TREE_TABLE, id: int):
     """Merges <tree> node <id> into the node with id indicated by the
     'target' POST parameter."""
-    check_permission_targets(
-        request.specify_collection.id,
-        request.specify_user.id,
-        [perm_target(tree).merge],
-    )
-    node = get_object_or_404(tree, id=id)
-    target = get_object_or_404(tree, id=request.POST["target"])
+    tree_name = _tree_name(tree)
+    node = get_object_or_404(_tree_model(tree_name), id=id)
+    target = get_object_or_404(_tree_model(tree_name), id=request.POST["target"])
+    if node.definition_id != target.definition_id:
+        raise http.Http404
+    _check_tree_action_for_all_definitions(request, tree_name, 'merge')
+    _check_tree_table_action_for_all_definitions(request, tree_name, 'update')
+    _check_tree_action(request, tree_name, node, 'merge')
+    _check_tree_action(request, tree_name, target, 'merge')
+    _check_tree_merge_references(request, tree_name, node, target)
     extras.merge(node, target, request.specify_user_agent)
 
 
@@ -339,18 +529,22 @@ def move(request, tree: TREE_TABLE, id: int):
     """Reparents the <tree> node <id> to be a child of the node
     indicated by the 'target' POST parameter.
     """
-    check_permission_targets(
-        request.specify_collection.id, request.specify_user.id, [perm_target(tree).move]
-    )
-    node = get_object_or_404(tree, id=id)
-    target = get_object_or_404(tree, id=request.POST["target"])
+    tree_name = _tree_name(tree)
+    node = get_object_or_404(_tree_model(tree_name), id=id)
+    target = get_object_or_404(_tree_model(tree_name), id=request.POST["target"])
+    if node.definition_id != target.definition_id:
+        raise http.Http404
+    _check_tree_action_for_all_definitions(request, tree_name, 'move')
+    _check_tree_table_action_for_all_definitions(request, tree_name, 'update')
+    _check_tree_action(request, tree_name, node, 'move')
+    _check_tree_action(request, tree_name, target, 'move')
     old_parent = node.parent
     old_parentid = old_parent.id
     old_fullname = node.fullname
     node.parent = target
     old_stamp = node.timestampmodified
     node.save()
-    node = get_object_or_404(tree, id=id)
+    node = get_object_or_404(_tree_model(tree_name), id=id)
     if old_stamp is None or (node.timestampmodified > old_stamp):
         field_change_infos = [
             FieldChangeInfo(
@@ -416,13 +610,25 @@ def bulk_move(request, tree: TREE_TABLE, id: int):
     as new location storage the node indicated by the 'target'
     POST parameter.
     """
-    check_permission_targets(
-        request.specify_collection.id,
-        request.specify_user.id,
-        [perm_target(tree).bulk_move],
-    )
-    node = get_object_or_404(tree, id=id)
-    target = get_object_or_404(tree, id=request.POST["target"])
+    tree_name = _tree_name(tree)
+    node = get_object_or_404(_tree_model(tree_name), id=id)
+    target = get_object_or_404(_tree_model(tree_name), id=request.POST["target"])
+    if node.definition_id != target.definition_id:
+        raise http.Http404
+    _check_tree_action(request, tree_name, node, 'bulk_move')
+    _check_tree_action(request, tree_name, target, 'bulk_move')
+    from specifyweb.specify.models import Preparation
+    for preparation in Preparation.objects.filter(
+        storage_id=node.id,
+    ).iterator(chunk_size=2000):
+        check_table_permissions(
+            request.specify_collection, request.specify_user,
+            preparation, 'update',
+        )
+        check_field_permissions(
+            request.specify_collection, request.specify_user,
+            preparation, ['storage'], 'update',
+        )
     extras.bulk_move(node, target, request.specify_user_agent)
 
 
@@ -431,13 +637,24 @@ def synonymize(request, tree: TREE_TABLE, id: int):
     """Synonymizes the <tree> node <id> to be a synonym of the node
     indicated by the 'target' POST parameter.
     """
-    check_permission_targets(
-        request.specify_collection.id,
-        request.specify_user.id,
-        [perm_target(tree).synonymize],
-    )
-    node = get_object_or_404(tree, id=id)
-    target = get_object_or_404(tree, id=request.POST["target"])
+    tree_name = _tree_name(tree)
+    node = get_object_or_404(_tree_model(tree_name), id=id)
+    target = get_object_or_404(_tree_model(tree_name), id=request.POST["target"])
+    if node.definition_id != target.definition_id:
+        raise http.Http404
+    _check_tree_action(request, tree_name, node, 'synonymize')
+    _check_tree_action(request, tree_name, target, 'synonymize')
+    _check_related_tree_records(request, tree_name, node, 'update')
+    if tree_name == 'taxon':
+        from specifyweb.specify.models import Determination
+        determinations = Determination.objects.filter(
+            Q(taxon_id=node.id) | Q(preferredtaxon_id=node.id),
+        )
+        for determination in determinations.iterator(chunk_size=2000):
+            check_field_permissions(
+                request.specify_collection, request.specify_user,
+                determination, ['preferredtaxon'], 'update',
+            )
     extras.synonymize(node, target, request.specify_user_agent, request.specify_user,
             request.specify_collection)
 
@@ -445,23 +662,38 @@ def synonymize(request, tree: TREE_TABLE, id: int):
 @tree_mutation
 def desynonymize(request, tree: TREE_TABLE, id: int):
     "Causes the <tree> node <id> to no longer be a synonym of another node."
-    check_permission_targets(
-        request.specify_collection.id,
-        request.specify_user.id,
-        [perm_target(tree).desynonymize],
-    )
-    node = get_object_or_404(tree, id=id)
+    tree_name = _tree_name(tree)
+    node = get_object_or_404(_tree_model(tree_name), id=id)
+    _check_tree_action(request, tree_name, node, 'desynonymize')
+    _check_related_tree_records(request, tree_name, node, 'update')
+    if tree_name == 'taxon':
+        from specifyweb.specify.models import Determination
+        for determination in Determination.objects.filter(
+            Q(taxon_id=node.id) | Q(preferredtaxon_id=node.id),
+        ).iterator(chunk_size=2000):
+            check_field_permissions(
+                request.specify_collection, request.specify_user,
+                determination, ['preferredtaxon'], 'update',
+            )
     extras.desynonymize(node, request.specify_user_agent)
 
 
 @tree_mutation
 def repair_tree(request, tree: TREE_TABLE):
     "Repairs the indicated <tree>."
-    check_permission_targets(request.specify_collection.id,
-                             request.specify_user.id,
-                             [perm_target(tree).repair])
-    tree_model = spmodels.datamodel.get_table(tree)
-    table = tree_model.name.lower()
+    tree_name = _tree_name(tree)
+    tree_model = _tree_model(tree_name)
+    for definition_id in tree_model.objects.values_list(
+        'definition_id', flat=True,
+    ).distinct().iterator(chunk_size=2000):
+        definition = get_object_or_404(
+            _tree_definition_model(tree_name), id=definition_id,
+        )
+        _check_tree_action(request, tree_name, definition, 'repair')
+    _check_tree_table_action_for_all_definitions(
+        request, tree_name, 'update',
+    )
+    table = spmodels.datamodel.get_table(tree_name).name.lower()
     extras.renumber_tree(table)
     extras.validate_tree_numbering(table)
 
@@ -469,10 +701,19 @@ def repair_tree(request, tree: TREE_TABLE):
 def add_root(request, tree, treeid): 
     "Creates a root node in a specific tree."
 
-    tree_name = tree.title()
-    tree_target = get_object_or_404(f"{tree_name}treedef", id=treeid)
-    tree_def_item_model = getattr(spmodels, f"{tree_name}treedefitem")
-    item = getattr(spmodels, tree_name)
+    tree_name = _tree_name(tree)
+    tree_target = get_object_or_404(_tree_definition_model(tree_name), id=treeid)
+    scope = Scoping.scope_for_record(tree_target)
+    check_permission_in_scope(
+        scope, request.specify_user, f'/table/{tree_name}', 'create',
+    )
+    check_permission_in_scope(
+        scope, request.specify_user, f'/table/{tree_name}treedefitem', 'create',
+    )
+    tree_def_item_model = getattr(
+        spmodels, f"{tree_name.capitalize()}treedefitem",
+    )
+    item = _tree_model(tree_name)
 
     tree_def_item, create = tree_def_item_model.objects.get_or_create(
             treedef=tree_target,
@@ -508,11 +749,12 @@ def add_root(request, tree, treeid):
 @require_GET
 def tree_rank_item_count(request, tree, rankid):
     """Returns the number of items in the tree rank with id <rank_id>."""
-    tree_rank_model_name = (
-        tree if tree.endswith("treedefitem") else tree + "treedefitem"
-    )
-    rank = get_object_or_404(tree_rank_model_name, id=rankid)
-    count = tree_rank_count(tree, rank.id)
+    tree_name = _tree_name(tree.removesuffix('treedefitem'))
+    tree_rank_model_name = f'{tree_name}treedefitem'
+    rank_model = getattr(spmodels, f'{tree_name.capitalize()}treedefitem')
+    rank = get_object_or_404(rank_model, id=rankid)
+    _check_tree_table_access(request, tree_name, rank, 'read')
+    count = tree_rank_count(tree_rank_model_name, rank.id)
     return HttpResponse(toJson(count), content_type="application/json")
 
 
@@ -596,11 +838,6 @@ def get_all_tree_information(collection, user_id) -> dict[str, list[TREE_INFORMA
             })
 
     return result
-
-# class DefaultTreePT(PermissionTarget):
-#     resource = "/tree/default"
-#     update = PermissionTargetAction()
-#     delete = PermissionTargetAction()
 
 # Schema definition for the mapping file that is used in default tree creation.
 DEFAULT_TREE_MAPPING_SCHEMA = {
@@ -747,14 +984,12 @@ DEFAULT_TREE_MAPPING_SCHEMA = {
         }
     })
 @login_maybe_required
+@login_maybe_required
 @require_POST
 @transaction.atomic
 def create_default_tree_view(request):
     """Creates or populates a tree with default records from a CSV file.
     """
-    # Check permissions in the normal case and for the case of intial database setup.
-    # check_permission_targets(request.specify_collection.id, request.specify_user.id, [DefaultTreePT.create])
-    
     data = json.loads(request.body)
 
     requested_discipline_name = data.get('disciplineName', None)
@@ -794,6 +1029,13 @@ def create_default_tree_view(request):
     
     # Import into an existing tree
     tree_def_id = data.get('treeDefId')
+    check_default_tree_permissions(
+        request.specify_user,
+        collection,
+        tree_type,
+        tree_def_id,
+        create_missing_ranks,
+    )
     
     # CSV mapping. Accept the mapping directly or a url to a JSON file containing the mapping.
     tree_cfg = data.get('mapping', None)
@@ -809,13 +1051,25 @@ def create_default_tree_view(request):
         return http.JsonResponse({'error': f'Default tree mapping is invalid: {e}'}, status=400)
 
     task_id = str(uuid4())
+    task_name = f"create_default_tree_{tree_type}_{task_id}"
+    active_task_id = (
+        f"create_default_tree_{tree_type}_{tree_def_id}"
+        if tree_def_id else task_name
+    )
+    Message.objects.create(user=request.specify_user, content=json.dumps({
+        'type': 'create-default-tree-starting',
+        'name': tree_name,
+        'taskid': task_name,
+        'active_task_id': active_task_id,
+        'collection_id': collection.id,
+    }))
     async_result = create_default_tree_task.apply_async(
-        args=[url, discipline.id, tree_type, collection.id, request.specify_user.id, tree_cfg, row_count, tree_name, tree_def_id, create_missing_ranks, True],
-        task_id=f"create_default_tree_{tree_type}_{task_id}",
+        args=[url, discipline.id, tree_type, collection.id, request.specify_user.id, tree_cfg, row_count, tree_name, tree_def_id, create_missing_ranks, True, False],
+        task_id=task_name,
         taskid=task_id
     )
     if tree_def_id:
-        queue_create_default_tree_task(f'create_default_tree_{tree_type.lower()}_{tree_def_id or task_id}')
+        queue_create_default_tree_task(active_task_id)
     return http.JsonResponse({
         'message': 'Trees creation started in the background.',
         'task_id': async_result.id
@@ -880,14 +1134,19 @@ def create_default_tree_view(request):
             }
         }
     })
+@login_maybe_required
 @require_GET
 def default_tree_upload_status(request, task_id: str) -> http.HttpResponse:
     """Returns the task status for the default tree upload celery task.
     If you don't know the task id, the format create_default_tree_{tree_type}_{task_id} can be used just to get the active status.
     Celery task logs are semi-permanent, so ids need to be generated randomly."""
 
+    celery_task_id = _default_tree_task_id_for_user(request, task_id)
+    if celery_task_id is None:
+        return http.HttpResponseNotFound()
+
     tasks = get_active_create_default_tree_tasks()
-    result = create_default_tree_task.AsyncResult(task_id)
+    result = create_default_tree_task.AsyncResult(celery_task_id)
 
     status = {
         'taskstatus': result.status,
@@ -933,17 +1192,23 @@ def default_tree_upload_status(request, task_id: str) -> http.HttpResponse:
         }
     },
 })
+@login_maybe_required
 @require_POST
 def abort_default_tree_creation(request, task_id: str) -> http.HttpResponse:
     """Stops a default tree upload celery task"""
+    celery_task_id = _default_tree_task_id_for_user(request, task_id)
+    if celery_task_id is None:
+        return http.HttpResponseNotFound()
+
     try:
-        task = create_default_tree_task.AsyncResult(task_id)
+        task = create_default_tree_task.AsyncResult(celery_task_id)
         task.revoke(terminate=True)
 
         Message.objects.create(user=request.specify_user, content=json.dumps({
             'type': 'create-default-tree-cancelled',
             'name': '',
-            'taskid': task_id,
+            'taskid': celery_task_id,
+            'active_task_id': task_id,
             'collection_id': request.specify_collection.id,
         }))
 
@@ -970,6 +1235,32 @@ def default_tree_mapping(request) -> http.HttpResponse:
         return http.JsonResponse({'error': f'Default tree mapping is invalid: {e}'}, status=400)
 
     return http.JsonResponse(tree_cfg)
+
+
+def _default_tree_task_id_for_user(request, task_id: str) -> str | None:
+    for content in Message.objects.filter(
+        user=request.specify_user,
+        content__contains=task_id,
+    ).values_list('content', flat=True):
+        try:
+            data = json.loads(content)
+        except (TypeError, json.JSONDecodeError):
+            continue
+        if not isinstance(data, dict):
+            continue
+        if data.get('type') in {
+            'create-default-tree-starting',
+            'create-default-tree-completed',
+            'create-default-tree-failed',
+            'create-default-tree-cancelled',
+        } and task_id in {
+            data.get('taskid'),
+            data.get('active_task_id'),
+        }:
+            actual_task_id = data.get('taskid')
+            if isinstance(actual_task_id, str):
+                return actual_task_id
+    return None
 
 def get_db_encoding(request):
     cursor = connection.cursor()

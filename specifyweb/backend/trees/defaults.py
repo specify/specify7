@@ -2,8 +2,10 @@ from typing import Dict, Optional, TypedDict, NotRequired, Union
 import json
 
 from django.db import transaction
+from django.http import Http404
 
 from specifyweb.backend.notifications.models import Message
+from specifyweb.backend.permissions.permissions import check_permission_in_scope
 from specifyweb.celery_tasks import LogErrorsTask, app
 import specifyweb.specify.models as spmodels
 from specifyweb.backend.trees.default_tree_files import stream_default_tree_csv
@@ -11,6 +13,7 @@ from specifyweb.backend.trees.utils import get_models, TREE_ROOT_NODES
 from specifyweb.backend.trees.extras import renumber_tree, set_fullnames
 from specifyweb.backend.cache.redis.connect import RedisConnection, RedisSet
 from specifyweb.backend.trees.redis import ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY
+from specifyweb.specify.utils.scoping import Scoping
 
 import logging
 logger = logging.getLogger(__name__)
@@ -123,6 +126,58 @@ def create_default_root(tree_def, tree_type: str, root_cfg: Optional[dict]= None
         **kwargs
     )
     return tree_node
+
+
+def check_default_tree_permissions(
+    actor, collection, tree_type: str, existing_tree_def_id=None,
+    create_missing_ranks: bool=False,
+) -> None:
+    tree_def_model, _, _ = get_models(tree_type)
+    if existing_tree_def_id:
+        tree_def = tree_def_model.objects.filter(
+            pk=existing_tree_def_id,
+        ).first()
+        if tree_def is None:
+            raise Http404
+        scope = Scoping.scope_for_record(tree_def)
+        expected_scope = (
+            collection.discipline.division.institution
+            if tree_type == 'storage'
+            else collection.discipline
+        )
+        if (scope._meta.label_lower != expected_scope._meta.label_lower
+                or scope.pk != expected_scope.pk):
+            raise Http404
+    else:
+        scope = (
+            collection.discipline.division.institution
+            if tree_type == 'storage'
+            else collection.discipline
+        )
+
+    tree_resource = f'/table/{tree_type}'
+    check_permission_in_scope(
+        scope, actor, tree_resource, 'create',
+    )
+    if existing_tree_def_id and create_missing_ranks:
+        check_permission_in_scope(
+            scope, actor, f'/table/{tree_type}treedefitem', 'create',
+        )
+    else:
+        check_permission_in_scope(
+            scope, actor, f'/table/{tree_type}treedef', 'create',
+        )
+        check_permission_in_scope(
+            scope, actor, f'/table/{tree_type}treedefitem', 'create',
+        )
+
+    for definition in tree_def_model.objects.all().iterator(chunk_size=2000):
+        check_permission_in_scope(
+            Scoping.scope_for_record(definition),
+            actor,
+            tree_resource,
+            'update',
+        )
 
 class RankMappingConfiguration(TypedDict):
     name: str
@@ -410,17 +465,35 @@ def finish_create_default_tree_task(task_id):
 @app.task(base=LogErrorsTask, bind=True)
 def create_default_tree_task(self, url: str, discipline_id: int, tree_type: str, specify_collection_id: Optional[int],
                              specify_user_id: Optional[int], tree_cfg: dict, row_count: Optional[int], initial_tree_name: str,
-                             existing_tree_def_id = None, create_missing_ranks: bool = False, notify: bool = True):
+                             existing_tree_def_id = None, create_missing_ranks: bool = False, notify: bool = True,
+                             notify_start: bool = True):
     logger.info(f'starting task {str(self.request.id)}')
+    active_task_id = (
+        f'create_default_tree_{tree_type}_{existing_tree_def_id}'
+        if existing_tree_def_id else str(self.request.id)
+    )
 
     discipline = None
     if discipline_id:
         discipline = spmodels.Discipline.objects.get(id=discipline_id)
 
+    collection = (
+        spmodels.Collection.objects.get(id=specify_collection_id)
+        if specify_collection_id else None
+    )
+    specify_user = (
+        spmodels.Specifyuser.objects.get(id=specify_user_id)
+        if specify_user_id else None
+    )
+    if collection is not None and specify_user is not None:
+        check_default_tree_permissions(
+            specify_user, collection, tree_type, existing_tree_def_id,
+            create_missing_ranks,
+        )
+
     tree_name = initial_tree_name # Name will be uniquified on tree creation
 
-    if notify and specify_user_id and specify_collection_id:
-        specify_user = spmodels.Specifyuser.objects.get(id=specify_user_id)
+    if notify and notify_start and specify_user_id and specify_collection_id:
         Message.objects.create(
             user=specify_user,
             content=json.dumps({
@@ -506,7 +579,7 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_type: str,
                     # 'error': str(e)
                 })
             )
-        finish_create_default_tree_task(f'create_default_tree_{tree_type}_{existing_tree_def_id or self.request.id}')
+        finish_create_default_tree_task(active_task_id)
         raise
 
     if notify and specify_user_id and specify_collection_id:
@@ -520,4 +593,4 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_type: str,
             })
         )
     
-    finish_create_default_tree_task(f'create_default_tree_{tree_type}_{existing_tree_def_id or self.request.id}')
+    finish_create_default_tree_task(active_task_id)
