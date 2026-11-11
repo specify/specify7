@@ -217,11 +217,13 @@ export const ensure =
  * empty string is used. However, empty string is not a LocalizedString, so
  * this hack is needed
  *
- * @example Valid use case
+ * @example
+ * // Valid use case
  * localized('')
  *
- * @example Invalid use case
+ * @example
  * ```ts
+ * // Invalid use case
  * // Wrong:
  * localized(table.name)
  * // Should use table label instead (unless there is a good reason to use

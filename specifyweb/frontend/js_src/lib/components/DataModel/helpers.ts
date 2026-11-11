@@ -3,6 +3,7 @@ import type { RA, ValueOf } from '../../utils/types';
 import { caseInsensitiveHash } from '../../utils/utils';
 import { isTreeResource } from '../InitialContext/treeRanks';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
+import { isRelationshipCollection } from './collectionApi';
 import type {
   AnySchema,
   AnyTree,
@@ -248,6 +249,22 @@ export async function fetchDistantRelated(
         resource: relatedResource,
         field,
       };
+}
+
+export function gatherAllDependents(
+  resource: SpecifyResource<AnySchema>
+): RA<SpecifyResource<AnySchema>> {
+  const directDependents = Object.values(resource.dependentResources)
+    .filter((related) => related !== null && related !== undefined)
+    .flatMap((related) =>
+      isRelationshipCollection(related)
+        ? related.models
+        : // Typescript still thinks related can be undefined or null here, so
+          // using a cast
+          (related as SpecifyResource<AnySchema>)
+    );
+  const cascadedDependents = directDependents.flatMap(gatherAllDependents);
+  return [...directDependents, ...cascadedDependents];
 }
 
 // Cog types: Discrete, Consolidated, Drill Core

@@ -217,7 +217,6 @@ export function Dialog({
   );
   const [showIcon] = userPreferences.use('general', 'dialog', 'showIcon');
 
-  const [closeOnEsc] = userPreferences.use('general', 'dialog', 'closeOnEsc');
   const [closeOnOutsideClick] = userPreferences.use(
     'general',
     'dialog',
@@ -353,6 +352,24 @@ export function Dialog({
 
   const [buttonContainer, setButtonContainer] =
     React.useState<HTMLDivElement | null>(null);
+  const saveButton = buttonContainer?.querySelector<HTMLElement>(
+    'input[type="submit"], button[type="submit"]'
+  );
+  userPreferences.useKeyboardShortcut(
+    'form',
+    'dialogs',
+    'close',
+    isOpen && typeof handleClose === 'function' ? handleClose : undefined
+  );
+  userPreferences.useKeyboardShortcut(
+    'form',
+    'dialogs',
+    'save',
+    isOpen && saveButton !== null && saveButton !== undefined
+      ? (): void => saveButton.click()
+      : undefined
+  );
+
   const iconType = React.useMemo(() => {
     if (!showIcon) return 'none';
     if (typeof defaultIcon === 'string') return defaultIcon;
@@ -479,9 +496,7 @@ export function Dialog({
       }}
       overlayElement={overlayElement}
       portalClassName=""
-      shouldCloseOnEsc={
-        modal && typeof handleClose === 'function' && closeOnEsc
-      }
+      shouldCloseOnEsc={false}
       /*
        * Adding aria-hidden to #root is a legacy solution. Modern solution
        * involves displaying an element with [role="dialog"][aria-modal="true"],

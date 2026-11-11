@@ -10,6 +10,21 @@ describe('ChronoChart', () => {
     expect(asFragment()).toMatchSnapshot();
   });
 
+  test('clock icon opens the chronostratigraphic chart', async () => {
+    const { getByRole, user } = mount(
+      <UnloadProtectsContext.Provider value={[]}>
+        <ChronoChart />
+      </UnloadProtectsContext.Provider>
+    );
+
+    await user.click(
+      getByRole('button', { name: 'Chronostratigraphic Chart' })
+    );
+
+    expect(getByRole('dialog')).toBeInTheDocument();
+    expect(getByRole('img', { name: 'Chrono Chart' })).toBeInTheDocument();
+  });
+
   test('dialog open and close', async () => {
     const { getAllByRole, getByRole, queryAllByRole, user } = mount(
       <UnloadProtectsContext.Provider value={[]}>

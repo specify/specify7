@@ -183,7 +183,9 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
     readonly errorOnAlreadySaving?: boolean;
   }): Promise<SpecifyResource<SCHEMA>>;
   destroy(): Promise<void>;
-  fetch(): Promise<SpecifyResource<SCHEMA>>;
+  fetch(options?: {
+    readonly strict?: boolean;
+  }): Promise<SpecifyResource<SCHEMA>>;
   viewUrl(): string;
   isNew(): boolean;
   isBeingInitialized(): boolean;

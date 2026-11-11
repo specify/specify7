@@ -1,7 +1,7 @@
 from typing import Optional
 import logging
 
-from specifyweb.backend.cache.redis import add_to_set, delete_key, remove_from_set, set_members
+from specifyweb.backend.cache.redis.connect import RedisConnection, RedisSet
 from specifyweb.celery_tasks import CELERY_TASK_STATE, app
 from specifyweb.backend.setup_tool.redis import (
     DISCIPLINE_TASKS_REDIS_KEY,
@@ -32,13 +32,16 @@ def _discipline_tasks_key(discipline_id: int) -> str:
     return DISCIPLINE_TASKS_REDIS_KEY.replace("{discipline_id}", str(discipline_id))
 
 def _remove_task_ids_and_delete_empty_key(key: str, *task_ids: str) -> None:
-    remove_from_set(key, *task_ids)
-    if len(set_members(key)) == 0:
-        delete_key(key)
+    redis_set = RedisSet(RedisConnection())
+    redis_set.remove(key, *task_ids)
+    if redis_set.size(key) == 0:
+        redis_set.delete(key)
 
 def queue_discipline_background_task(discipline_id: int, task_id: str) -> None:
     try:
-        add_to_set(_discipline_tasks_key(discipline_id), task_id)
+        redis_set = RedisSet(RedisConnection())
+        key = _discipline_tasks_key(discipline_id)
+        redis_set.add(key, task_id)
     except Exception:
         logger.warning(
             "Failed to track discipline task %s for discipline %s.",
@@ -58,7 +61,8 @@ def finish_discipline_background_task(discipline_id: int, task_id: str) -> None:
 
 def _active_task_ids_from_redis_key(key: str) -> set[str]:
     try:
-        task_ids = set_members(key)
+        redis_set = RedisSet(RedisConnection())
+        task_ids = redis_set.members(key)
         if not task_ids:
             return set()
 

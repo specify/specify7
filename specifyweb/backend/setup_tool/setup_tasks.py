@@ -11,7 +11,7 @@ from specifyweb.backend.setup_tool.app_resource_defaults import create_app_resou
 from specifyweb.backend.setup_tool.tree_defaults import start_preload_default_tree
 from specifyweb.specify.models_utils.model_extras import PALEO_DISCIPLINES, GEOLOGY_DISCIPLINES
 from specifyweb.celery_tasks import is_worker_alive, MissingWorkerError
-from specifyweb.backend.cache.redis import set_string, get_string
+from specifyweb.backend.cache.redis.connect import RedisString, RedisConnection
 from specifyweb.backend.setup_tool.redis import ACTIVE_TASK_REDIS_KEY, ACTIVE_TASK_TTL, LAST_ERROR_REDIS_KEY
 
 from uuid import uuid4
@@ -33,13 +33,15 @@ def setup_database_background(data: dict) -> str:
 
     task = setup_database_task.apply_async(args, task_id=task_id)
 
-    set_string(ACTIVE_TASK_REDIS_KEY, task.id, time_to_live=ACTIVE_TASK_TTL)
+    redis_string = RedisString(RedisConnection())
+    redis_string.set(ACTIVE_TASK_REDIS_KEY, task.id, time_to_live=ACTIVE_TASK_TTL)
     
     return task.id
 
 def get_active_setup_task() -> Tuple[Optional[AsyncResult], bool]:
     """Return the current setup task if it is active, and also if it is busy."""
-    task_id = get_string(ACTIVE_TASK_REDIS_KEY)
+    redis_string = RedisString(RedisConnection())
+    task_id = redis_string.get(ACTIVE_TASK_REDIS_KEY)
 
     if not task_id:
         return None, False
@@ -183,13 +185,15 @@ def setup_database_task(self, data: dict):
         raise
 
 def get_last_setup_error() -> Optional[str]:
-    err = get_string(LAST_ERROR_REDIS_KEY)
+    redis_string = RedisString(RedisConnection())
+    err = redis_string.get(LAST_ERROR_REDIS_KEY)
     if err == '':
         return None
     return err
 
 def set_last_setup_error(error_text: Optional[str]):
-    set_string(LAST_ERROR_REDIS_KEY, error_text or '', time_to_live=60*60*24)
+    redis_string = RedisString(RedisConnection())
+    redis_string.set(LAST_ERROR_REDIS_KEY, error_text or '', time_to_live=60*60*24)
 
 def create_discipline_and_trees_task(data: dict):
     from specifyweb.specify.models import Discipline

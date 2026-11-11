@@ -9,6 +9,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { useCachedState } from '../../hooks/useCachedState';
 import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
+import { ping } from '../../utils/ajax/ping';
 import { listen } from '../../utils/events';
 import type { RA } from '../../utils/types';
 import { localized } from '../../utils/types';
@@ -16,10 +17,12 @@ import { useAttachmentServerStatus } from '../Attachments/attachments';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
+import { MINUTE } from '../Atoms/timeUnits';
 import type { TagProps } from '../Atoms/wrapper';
 import type { MenuItem } from '../Core/Main';
 import { schema } from '../DataModel/schema';
 import { userInformation } from '../InitialContext/userInformation';
+import { useUrlShortcuts } from '../KeyboardShortcuts/useUrlShortcuts';
 import { titleDelay, titlePosition } from '../Molecules/Tooltips';
 import { Notifications } from '../Notifications/Notifications';
 import { useDarkMode } from '../Preferences/Hooks';
@@ -32,12 +35,15 @@ import { useUserTools } from './menuItemProcessing';
 import { UserTools } from './UserTools';
 
 const collapseThreshold = 900;
+const PRESENCE_ACTIVE_TIMEOUT = 5 * MINUTE;
 
 export function Header({
   menuItems,
 }: {
   readonly menuItems: RA<MenuItem>;
 }): JSX.Element {
+  usePresenceHeartbeat();
+
   const [rawIsCollapsed = false, setIsCollapsed] = useCachedState(
     'header',
     'isCollapsed'
@@ -96,6 +102,8 @@ export function Header({
       ) ?? commonText.chooseCollection(),
     []
   );
+
+  useUrlShortcuts();
 
   const activeMenuItem = React.useContext(MenuContext);
   return (
@@ -160,6 +168,52 @@ export function Header({
       </nav>
     </header>
   );
+}
+
+function usePresenceHeartbeat(): void {
+  React.useEffect(() => {
+    let lastActivity = Date.now();
+    const updateLastActivity = (): void => {
+      lastActivity = Date.now();
+    };
+    const heartbeat = (): void => {
+      void ping('/accounts/presence/', {
+        method: 'POST',
+        body: {
+          active: Date.now() - lastActivity <= PRESENCE_ACTIVE_TIMEOUT,
+        },
+        errorMode: 'silent',
+      }).catch((error: unknown) =>
+        console.error('Unable to update user presence', error)
+      );
+    };
+    const onVisibilityChange = (): void => {
+      if (document.visibilityState === 'visible') heartbeat();
+    };
+
+    const activityEvents = [
+      'pointerdown',
+      'pointermove',
+      'keydown',
+      'scroll',
+      'touchstart',
+    ];
+    activityEvents.forEach((event) =>
+      document.addEventListener(event, updateLastActivity, { passive: true })
+    );
+    document.addEventListener('visibilitychange', onVisibilityChange);
+
+    heartbeat();
+    const interval = globalThis.setInterval(heartbeat, MINUTE);
+
+    return (): void => {
+      globalThis.clearInterval(interval);
+      activityEvents.forEach((event) =>
+        document.removeEventListener(event, updateLastActivity)
+      );
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+    };
+  }, []);
 }
 
 export function HeaderItems({

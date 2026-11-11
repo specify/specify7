@@ -7,13 +7,12 @@ import { wbPlanText } from '../../localization/wbPlan';
 import type { CacheDefinitions } from '../../utils/cache/definitions';
 import type { RA } from '../../utils/types';
 import { localized } from '../../utils/types';
-import { sortFunction } from '../../utils/utils';
 import { H3, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import type { SpecifyTable } from '../DataModel/specifyTable';
-import { genericTables } from '../DataModel/tables';
+import { genericTables, sortTablesByCaption } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { TableIcon } from '../Molecules/TableIcon';
@@ -69,6 +68,8 @@ export function TableList({
   filter = defaultFilter,
   children,
   localizeTableNames = true,
+  showAllTables = false,
+  showTableCaptionToggle = false,
   currentTableName,
   badge,
 }: {
@@ -77,6 +78,8 @@ export function TableList({
   readonly filter?: (showHiddenTables: boolean, table: SpecifyTable) => boolean;
   readonly children?: (table: SpecifyTable) => React.ReactNode;
   readonly localizeTableNames?: boolean;
+  readonly showAllTables?: boolean;
+  readonly showTableCaptionToggle?: boolean;
   readonly currentTableName?: string;
   readonly badge?: (table: SpecifyTable) => React.ReactNode;
 }): JSX.Element {
@@ -84,13 +87,20 @@ export function TableList({
     cacheKey,
     'showHiddenTables'
   );
+  const [useTableCaptions, setuseTableCaptions] =
+    React.useState(localizeTableNames);
+  const shouldShowHiddenTables = showAllTables || showHiddenTables;
 
   const sortedTables = React.useMemo(
     () =>
-      Object.values(genericTables)
-        .filter((table) => filter(showHiddenTables, table))
-        .sort(sortFunction(({ name }) => name)),
-    [filter, showHiddenTables]
+      sortTablesByCaption(
+        Object.values(genericTables).filter((table) =>
+          filter(shouldShowHiddenTables, table)
+        ),
+        ({ name }) => name,
+        useTableCaptions
+      ),
+    [filter, shouldShowHiddenTables, useTableCaptions]
   );
 
   const listRef = React.useRef<HTMLUListElement | null>(null);
@@ -123,13 +133,13 @@ export function TableList({
             currentTableName !== undefined &&
             table.name.toLowerCase() === currentTableName.toLowerCase();
           const isVisible =
-            showHiddenTables ||
+            shouldShowHiddenTables ||
             children === undefined ||
             extraContent !== undefined;
           const content = (
             <>
               <TableIcon label={false} name={table.name} />
-              {localizeTableNames ? table.label : localized(table.name)}{' '}
+              {useTableCaptions ? table.label : localized(table.name)}{' '}
               {extraContent !== undefined && extraContent}
               {badgeContent}
             </>
@@ -158,13 +168,23 @@ export function TableList({
           ) : undefined;
         })}
       </Ul>
-      <Label.Inline>
-        <Input.Checkbox
-          checked={showHiddenTables}
-          onValueChange={setShowHiddenTables}
-        />
-        {wbPlanText.showAllTables()}
-      </Label.Inline>
+      {showTableCaptionToggle ? (
+        <Label.Inline>
+          <Input.Checkbox
+            checked={useTableCaptions}
+            onValueChange={setuseTableCaptions}
+          />
+          {schemaText.useTableCaptions()}
+        </Label.Inline>
+      ) : showAllTables ? undefined : (
+        <Label.Inline>
+          <Input.Checkbox
+            checked={showHiddenTables}
+            onValueChange={setShowHiddenTables}
+          />
+          {wbPlanText.showAllTables()}
+        </Label.Inline>
+      )}
     </div>
   );
 }
@@ -178,6 +198,8 @@ export function CollapsibleTableList({
   getAction,
   filter: extraFilter,
   localizeTableNames = true,
+  showAllTables = false,
+  showTableCaptionToggle = false,
   currentTableName,
   badge,
   asAside = false,
@@ -186,6 +208,8 @@ export function CollapsibleTableList({
   readonly getAction: (table: SpecifyTable) => string | (() => void);
   readonly filter?: (table: SpecifyTable) => boolean;
   readonly localizeTableNames?: boolean;
+  readonly showAllTables?: boolean;
+  readonly showTableCaptionToggle?: boolean;
   readonly currentTableName?: string;
   readonly badge?: (table: SpecifyTable) => React.ReactNode;
   // Use <aside> semantics and full-bleed responsive layout (as in the schema config sidebar)
@@ -233,10 +257,12 @@ export function CollapsibleTableList({
         badge={badge}
         cacheKey={cacheKey}
         currentTableName={currentTableName}
+        showAllTables={showAllTables}
+        showTableCaptionToggle={showTableCaptionToggle}
         filter={(showHiddenTables, table): boolean => {
           const searchText = search.toLowerCase();
           return (
-            tablesFilter(showHiddenTables, false, true, table) &&
+            tablesFilter(showHiddenTables, showAllTables, true, table) &&
             (searchText === '' ||
               table.name.toLowerCase().includes(searchText) ||
               table.label.toLowerCase().includes(searchText)) &&

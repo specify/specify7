@@ -144,7 +144,7 @@ function Map({
     results: [results],
     canFetchMore,
     onFetchMore: handleFetchMore,
-  } = usePaginatedCollection<QueryResultRow | undefined>({
+  } = usePaginatedCollection({
     fetchMore: props.fetchResults,
     fetchSize: props.fetchSize,
     totalCount: props.totalCount,

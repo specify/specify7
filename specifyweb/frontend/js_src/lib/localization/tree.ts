@@ -352,7 +352,7 @@ export const treeText = createDictionary({
     'ru-ru':
       'Выберите целевой объект для "{nodeName:string}", который будет синонимизирован.',
     'es-es':
-      'Seleccione un destino para que "{nodeName:string}" sea sinonimizado.',
+      'Seleccione un destino para que "{nodeName:string}" se convierta en sinónimo.',
     'fr-fr':
       'Sélectionnez une cible pour que « {nodeName:string} » y soit synonymisé',
     'uk-ua': 'Виберіть ціль для синонімізації "{nodeName:string}"',

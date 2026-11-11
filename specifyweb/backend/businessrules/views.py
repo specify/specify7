@@ -141,6 +141,8 @@ def uniqueness_rule(request, discipline_id):
                 "modelName": rule.modelName, "isDatabaseConstraint": rule.isDatabaseConstraint}})
 
     if request.method == 'PUT':
+        if not request.specify_user.is_admin():
+            return http.HttpResponseForbidden('Specifyuser must be an institution admin')
         ids = set()
         tables = set()
         rules = json.loads(request.body)['rules']

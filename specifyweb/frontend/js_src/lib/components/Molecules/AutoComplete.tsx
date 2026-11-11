@@ -1,6 +1,5 @@
 import type { Placement } from '@floating-ui/react';
 import { Combobox } from '@headlessui/react';
-import { useVirtualizer } from '@tanstack/react-virtual';
 import React from 'react';
 import _ from 'underscore';
 
@@ -211,6 +210,7 @@ export function AutoComplete<T>({
   );
 
   const [input, setInput] = React.useState<HTMLInputElement | null>(null);
+  const inputRef = React.useRef<HTMLInputElement | null>(null);
   const dataListRef = React.useRef<HTMLUListElement | null>(null);
   const [dataList, setDataList] = React.useState<HTMLUListElement | null>(null);
   const dataListRefCallback = React.useCallback(
@@ -246,6 +246,14 @@ export function AutoComplete<T>({
    */
   const ignoreFilter = currentValue === pendingValue;
   const itemSource = ignoreFilter ? (allResults ?? []) : filteredItems;
+  const [lastResultOption, setLastResultOption] =
+    React.useState<HTMLLIElement | null>(null);
+  const [shouldFocusLastResult, setShouldFocusLastResult] =
+    React.useState(false);
+  const lastResultOptionRefCallback = React.useCallback(
+    (option: HTMLLIElement | null): void => setLastResultOption(option),
+    []
+  );
 
   React.useLayoutEffect(() => {
     if (
@@ -261,22 +269,11 @@ export function AutoComplete<T>({
   }, [dataList, itemSource.length, isLoading, isLoadingMore, onScrollEnd]);
 
   const [activeIndex, setActiveIndex] = React.useState(-1);
-  const virtualizer = useVirtualizer({
-    count: itemSource.length,
-    getScrollElement: () => dataList,
-    estimateSize: () => 32,
-    initialRect: { height: 256, width: 0 },
-    overscan: 5,
-  });
-  const virtualItems = virtualizer.getVirtualItems();
-  const itemsToRender =
-    virtualItems.length > 0
-      ? virtualItems
-      : itemSource.map((_, index) => ({
-          index,
-          key: index,
-          start: index * 32,
-        }));
+
+  const scrollToItem = (index: number): void =>
+    dataList
+      ?.querySelector<HTMLElement>(`[data-index="${index}"]`)
+      ?.scrollIntoView({ block: 'nearest' });
 
   const pendingItem = allResults?.find(
     ({ label, searchValue }) => (searchValue ?? label) === pendingValue
@@ -288,7 +285,18 @@ export function AutoComplete<T>({
     pendingItem === undefined;
   const listHasItems = showAdd || isLoading || itemSource.length > 0;
 
-  React.useEffect(() => setActiveIndex(-1), [itemSource]);
+  /*
+   * Reset the keyboard highlight when the search text changes or the base
+   * results are replaced, but not when a new page of results is appended
+   * (issue #8691)
+   */
+  React.useEffect(() => setActiveIndex(-1), [pendingValue, results]);
+  React.useLayoutEffect(() => {
+    if (!shouldFocusLastResult || lastResultOption === null) return;
+    lastResultOption.focus();
+    inputRef.current?.focus({ preventScroll: true });
+    setShouldFocusLastResult(false);
+  }, [shouldFocusLastResult, lastResultOption]);
 
   function handleChanged(item: AutoCompleteItem<T>): void {
     handleChange(item);
@@ -310,7 +318,9 @@ export function AutoComplete<T>({
         key: event.key,
       });
       setActiveIndex(nextIndex);
-      virtualizer.scrollToIndex(nextIndex);
+      scrollToItem(nextIndex);
+    } else if (event.key === 'End' && event.shiftKey) {
+      return;
     } else if (event.key === 'Home' || event.key === 'End') {
       event.preventDefault();
       event.stopPropagation();
@@ -320,7 +330,12 @@ export function AutoComplete<T>({
         key: event.key,
       });
       setActiveIndex(nextIndex);
-      virtualizer.scrollToIndex(nextIndex);
+      scrollToItem(nextIndex);
+      if (event.key === 'End' && lastResultOption !== null) {
+        // Avoid activating a trailing Add option when the list is focused.
+        event.preventDefault();
+        setShouldFocusLastResult(true);
+      }
     } else if (event.key === 'Enter' && activeIndex >= 0) {
       const item = itemSource[activeIndex];
       if (item !== undefined) {
@@ -417,7 +432,6 @@ export function AutoComplete<T>({
     'highlightMatch'
   );
 
-  const inputRef = React.useRef<HTMLInputElement | null>(null);
   const shouldBlurAfterMouseSelection = React.useRef(false);
   const forwardChildRef: React.RefCallback<HTMLInputElement> =
     React.useCallback(
@@ -538,116 +552,104 @@ export function AutoComplete<T>({
               {commonText.loading()}
             </Combobox.Option>
           )}
-          <div
-            style={{
-              height: virtualizer.getTotalSize(),
-              position: 'relative',
-            }}
-          >
-            {itemsToRender.map((virtualItem) => {
-              const index = virtualItem.index;
-              const item = itemSource[index];
-              if (item === undefined) return null;
+          {/*
+           * Not virtualized: Headless UI tracks the active option by its index
+           * among mounted options, so unmounting rows while scrolling makes it
+           * scroll the wrong row into view (see #8691)
+           */}
+          {itemSource.map((item, index) => {
+            if (item === undefined) return null;
 
-              /**
-               * Highlight relevant part of the string.
-               * Note, if item.searchValue and item.value is different,
-               * label might not be highlighted even if it matched
-               * Also, highlighting might be confusing as it highlights any part
-               * of the string (i.e, it behaves like case-insensitive "contains"
-               * search), where as the search algorithm might actually be
-               * case-sensitive and/or search for values with query as a prefix
-               * only
-               */
-              const stringLabel =
-                typeof item.label === 'string' ? item.label : undefined;
-              const label =
-                typeof stringLabel === 'string' && highlightMatch ? (
-                  <span>
-                    {stringLabel
-                      // Convert to lower case as search may be case-insensitive
-                      .toLowerCase()
-                      .split(pendingValue.toLowerCase())
-                      .map((part, index, parts) => {
-                        const startIndex = parts
-                          .slice(0, index)
-                          .join(pendingValue).length;
-                        const offsetStartIndex =
-                          startIndex + (index === 0 ? 0 : pendingValue.length);
-                        const endIndex =
-                          startIndex +
-                          part.length +
-                          (index === 0 ? 0 : pendingValue.length);
-                        return (
-                          <React.Fragment key={index}>
-                            {/* Reconstruct the value in original casing */}
-                            {stringLabel.slice(offsetStartIndex, endIndex)}
-                            {index + 1 !== parts.length && (
-                              <span className="text-brand-300">
-                                {stringLabel.slice(
-                                  endIndex,
-                                  endIndex + pendingValue.length
-                                )}
-                              </span>
-                            )}
-                          </React.Fragment>
-                        );
-                      })}
-                  </span>
-                ) : (
-                  item.label
-                );
-              const fullLabel =
-                typeof item.subLabel === 'string' ? (
-                  <div className="flex flex-col justify-center">
-                    {label}
-                    <span className="text-gray-500">{item.subLabel}</span>
-                  </div>
-                ) : (
-                  label
-                );
-              return (
-                <div
-                  ref={virtualizer.measureElement}
-                  key={virtualItem.key}
-                  data-index={virtualItem.index}
-                  style={{
-                    left: 0,
-                    position: 'absolute',
-                    top: 0,
-                    transform: `translateY(${virtualItem.start}px)`,
-                    width: '100%',
-                  }}
-                >
-                  <Combobox.Option as={React.Fragment} value={item}>
-                    {({ active, selected }): JSX.Element => (
-                      <li
-                        className={optionClassName(
-                          active || index === activeIndex,
-                          selected
-                        )}
-                        onMouseDown={handleOptionMouseDown}
-                      >
-                        {typeof item.icon === 'string' ? (
-                          <div className="flex items-center">
-                            {item.icon}
-                            {fullLabel}
-                          </div>
-                        ) : (
-                          fullLabel
-                        )}
-                      </li>
-                    )}
-                  </Combobox.Option>
-                </div>
+            /**
+             * Highlight relevant part of the string.
+             * Note, if item.searchValue and item.value is different,
+             * label might not be highlighted even if it matched
+             * Also, highlighting might be confusing as it highlights any part
+             * of the string (i.e, it behaves like case-insensitive "contains"
+             * search), where as the search algorithm might actually be
+             * case-sensitive and/or search for values with query as a prefix
+             * only
+             */
+            const stringLabel =
+              typeof item.label === 'string' ? item.label : undefined;
+            const label =
+              typeof stringLabel === 'string' && highlightMatch ? (
+                <span>
+                  {stringLabel
+                    // Convert to lower case as search may be case-insensitive
+                    .toLowerCase()
+                    .split(pendingValue.toLowerCase())
+                    .map((part, index, parts) => {
+                      const startIndex = parts
+                        .slice(0, index)
+                        .join(pendingValue).length;
+                      const offsetStartIndex =
+                        startIndex + (index === 0 ? 0 : pendingValue.length);
+                      const endIndex =
+                        startIndex +
+                        part.length +
+                        (index === 0 ? 0 : pendingValue.length);
+                      return (
+                        <React.Fragment key={index}>
+                          {/* Reconstruct the value in original casing */}
+                          {stringLabel.slice(offsetStartIndex, endIndex)}
+                          {index + 1 !== parts.length && (
+                            <span className="text-brand-300">
+                              {stringLabel.slice(
+                                endIndex,
+                                endIndex + pendingValue.length
+                              )}
+                            </span>
+                          )}
+                        </React.Fragment>
+                      );
+                    })}
+                </span>
+              ) : (
+                item.label
               );
-            })}
-          </div>
+            const fullLabel =
+              typeof item.subLabel === 'string' ? (
+                <div className="flex flex-col justify-center">
+                  {label}
+                  <span className="text-gray-500">{item.subLabel}</span>
+                </div>
+              ) : (
+                label
+              );
+            return (
+              <Combobox.Option key={index} as={React.Fragment} value={item}>
+                {({ active, selected }): JSX.Element => (
+                  <AutoCompleteOption
+                    active={active || index === activeIndex}
+                    selected={selected}
+                    data-index={index}
+                    ref={
+                      index === itemSource.length - 1
+                        ? lastResultOptionRefCallback
+                        : undefined
+                    }
+                    onMouseDown={handleOptionMouseDown}
+                  >
+                    {typeof item.icon === 'string' ? (
+                      <div className="flex items-center">
+                        {item.icon}
+                        {fullLabel}
+                      </div>
+                    ) : (
+                      fullLabel
+                    )}
+                  </AutoCompleteOption>
+                )}
+              </Combobox.Option>
+            );
+          })}
           {showAdd && (
             <Combobox.Option as={React.Fragment} value={pendingValue}>
               {({ active, selected }): JSX.Element => (
-                <li
-                  className={optionClassName(active, selected)}
+                <AutoCompleteOption
+                  active={active}
+                  selected={selected}
                   onMouseDown={(e: React.MouseEvent): void => {
                     e.stopPropagation();
                     shouldBlurAfterMouseSelection.current = true;
@@ -657,7 +659,7 @@ export function AutoComplete<T>({
                     <span className={className.dataEntryAdd}>{icons.plus}</span>
                     {commonText.add()}
                   </div>
-                </li>
+                </AutoCompleteOption>
               )}
             </Combobox.Option>
           )}
@@ -678,6 +680,29 @@ export function AutoComplete<T>({
     </Combobox>
   );
 }
+
+const AutoCompleteOption = React.forwardRef<
+  HTMLLIElement,
+  TagProps<'li'> & {
+    readonly active: boolean;
+    readonly selected: boolean;
+  }
+>(function AutoCompleteOption(
+  { active, selected, ...props },
+  forwardedRef
+): JSX.Element {
+  const ref = React.useCallback(
+    (option: HTMLLIElement | null): void => {
+      if (typeof forwardedRef === 'function') forwardedRef(option);
+      else if (forwardedRef !== null) forwardedRef.current = option;
+    },
+    [forwardedRef]
+  );
+
+  return (
+    <li {...props} className={optionClassName(active, selected)} ref={ref} />
+  );
+});
 
 const toggleButton = (
   <Combobox.Button
