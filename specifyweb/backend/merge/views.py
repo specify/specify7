@@ -92,9 +92,14 @@ def record_merge(
 
     if old_model_ids is None or len(old_model_ids) < 1:
         return http.HttpResponseBadRequest('There were no old record IDs given to be replaced by the new ID.')
+    try:
+        new_id = int(new_model_id)
+        old_ids = [int(i) for i in old_model_ids]
+    except (TypeError, ValueError, OverflowError):
+        return http.HttpResponseBadRequest('Record IDs must be integers.')
     if (
-        len(set(old_model_ids)) != len(old_model_ids)
-        or new_model_id in old_model_ids
+        len(set(old_ids)) != len(old_ids)
+        or new_id in old_ids
     ):
         return http.HttpResponseBadRequest(
             'Old record IDs must be unique and cannot include the replacement ID.',
