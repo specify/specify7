@@ -6,6 +6,8 @@ from specifyweb.specify.models import (
     Agent,
     Accession,
 )
+from specifyweb.specify.api.crud import update_obj
+from specifyweb.specify.api.serializers import uri_for_model
 from specifyweb.specify.tests.test_api import ApiTests
 from specifyweb.backend.businessrules.tests.test_component import enable_unique_catnum_pref
 
@@ -62,6 +64,35 @@ class CollectionObjectTests(ApiTests):
         fetched_object = Collectionobject.objects.get(id=collection_object.id)
         self.assertEqual(fetched_object.accession, accession)
         self.assertEqual(fetched_object.accession.accessionnumber, "New Test Accession")
+
+    def test_add_paleocontext_to_collectionobject(self):
+        collection_object = self.collectionobjects[0]
+        update_obj(
+            self.collection,
+            self.agent,
+            'collectionobject',
+            collection_object.id,
+            collection_object.version,
+            {
+                'paleocontext': {
+                    'paleocontextname': 'Test Paleo Context',
+                    'discipline': uri_for_model(
+                        'discipline', self.discipline.id
+                    ),
+                }
+            },
+        )
+
+        collection_object.refresh_from_db()
+        self.assertIsNotNone(collection_object.paleocontext)
+        self.assertEqual(
+            collection_object.paleocontext.paleocontextname,
+            'Test Paleo Context',
+        )
+        self.assertEqual(
+            collection_object.paleocontext.discipline_id,
+            self.discipline.id,
+        )
 
     def test_add_cataloger_with_existing_agent(self):
         collection_object = Collectionobject.objects.create(
