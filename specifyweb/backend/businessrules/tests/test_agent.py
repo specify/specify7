@@ -151,6 +151,72 @@ class AgentTests(ApiTests):
         self.assertEqual(data['text1'], 'Text one')
         self.assertEqual(data['integer1'], 42)
 
+    def test_add_multiple_related_records_to_agent(self):
+        group = models.Agent.objects.create(
+            agenttype=agent_types.index('Group'),
+            lastname='Test Group',
+            division=self.division,
+        )
+        other_member = models.Agent.objects.create(
+            agenttype=agent_types.index('Person'),
+            firstname='Other',
+            lastname='Member',
+            division=self.division,
+        )
+
+        for index, member in enumerate((self.agent, other_member)):
+            post_resource(
+                self.collection,
+                self.agent,
+                'groupperson',
+                {
+                    'group': uri_for_model('agent', group.id),
+                    'member': uri_for_model('agent', member.id),
+                    'division': uri_for_model('division', self.division.id),
+                    'ordernumber': index,
+                },
+            )
+
+        for index in range(2):
+            post_resource(
+                self.collection,
+                self.agent,
+                'address',
+                {
+                    'agent': uri_for_model('agent', self.agent.id),
+                    'address': f'{index} Main St',
+                    'isprimary': index == 0,
+                },
+            )
+            post_resource(
+                self.collection,
+                self.agent,
+                'agentvariant',
+                {
+                    'agent': uri_for_model('agent', self.agent.id),
+                    'name': f'Variant {index}',
+                    'vartype': index,
+                },
+            )
+            post_resource(
+                self.collection,
+                self.agent,
+                'agentspecialty',
+                {
+                    'agent': uri_for_model('agent', self.agent.id),
+                    'ordernumber': index,
+                    'specialtyname': f'Specialty {index}',
+                },
+            )
+
+        self.assertEqual(
+            dict(self.agent.addresses.values_list('address', 'isprimary')),
+            {'0 Main St': True, '1 Main St': False},
+        )
+        self.assertEqual(group.groups.count(), 2)
+        self.assertEqual(self.agent.variants.count(), 2)
+        self.assertEqual(self.agent.agentspecialties.count(), 2)
+
     def test_agent_delete_cascades(self):
         agent = models.Agent.objects.create(
             agenttype=0,
