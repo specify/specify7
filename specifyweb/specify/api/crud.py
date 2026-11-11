@@ -2,6 +2,7 @@ import logging
 from typing import Any, Dict
 from collections.abc import Callable
 import json
+import importlib
 from django.db import transaction
 from django.core.exceptions import BadRequest, FieldError, FieldDoesNotExist
 from django.db.models import Model, F, Q, QuerySet, Subquery
@@ -33,7 +34,6 @@ ReadPermChecker = Callable[[Any], None]
 
 def get_resource(name, id, checker: ReadPermChecker, recordsetid=None, *, actor=None) -> dict:
     from specifyweb.specify.api.serializers import _obj_to_data
-    from specifyweb.specify.models_utils.relationships import get_recordset_info
 
     """Return a dict of the fields from row 'id' in model 'name'.
 
@@ -43,7 +43,8 @@ def get_resource(name, id, checker: ReadPermChecker, recordsetid=None, *, actor=
     obj = get_object_or_404(name, id=int(id))
     data = _obj_to_data(obj, checker)
     if recordsetid is not None:
-        data['recordset_info'] = get_recordset_info(obj, recordsetid, checker, actor=actor)
+        relationships = importlib.import_module("specifyweb.specify.models_utils.relationships")
+        data['recordset_info'] = relationships.get_recordset_info(obj, recordsetid, checker, actor=actor)
     return data
 
 def create_obj(collection, agent, model, data: dict[str, Any], parent_obj=None, parent_relationship=None):
