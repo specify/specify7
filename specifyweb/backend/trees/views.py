@@ -118,7 +118,7 @@ def _check_tree_table_action_for_all_definitions(
         )
 
 
-def _check_related_tree_records(request, tree: str, node, action: str) -> None:
+def _check_taxon_determination_updates(request, tree: str, node) -> None:
     if tree.lower() != 'taxon':
         return
     from specifyweb.specify.models import Determination
@@ -128,24 +128,16 @@ def _check_related_tree_records(request, tree: str, node, action: str) -> None:
     for determination in determinations.iterator(chunk_size=2000):
         check_table_permissions(
             request.specify_collection, request.specify_user,
-            determination, action,
+            determination, 'update',
         )
-
+        check_field_permissions(
+            request.specify_collection, request.specify_user,
+            determination, ['preferredtaxon'], 'update',
+        )
 
 def _check_tree_merge_references(request, tree: str, node, target) -> None:
     tree_model = _tree_model(tree)
-    nodes_to_delete = [node]
-    target_children = list(target.children.all())
-    for child in node.children.all():
-        matching = next((
-            target_child for target_child in target_children
-            if target_child.name == child.name
-            and target_child.rankid == child.rankid
-        ), None)
-        if matching is not None:
-            nodes_to_delete.extend(
-                _tree_nodes_to_merge(child, matching),
-            )
+    nodes_to_delete = _tree_nodes_to_merge(node, target)
 
     node_ids = [tree_node.id for tree_node in nodes_to_delete]
     for table in spmodels.datamodel.tables:
@@ -644,17 +636,7 @@ def synonymize(request, tree: TREE_TABLE, id: int):
         raise http.Http404
     _check_tree_action(request, tree_name, node, 'synonymize')
     _check_tree_action(request, tree_name, target, 'synonymize')
-    _check_related_tree_records(request, tree_name, node, 'update')
-    if tree_name == 'taxon':
-        from specifyweb.specify.models import Determination
-        determinations = Determination.objects.filter(
-            Q(taxon_id=node.id) | Q(preferredtaxon_id=node.id),
-        )
-        for determination in determinations.iterator(chunk_size=2000):
-            check_field_permissions(
-                request.specify_collection, request.specify_user,
-                determination, ['preferredtaxon'], 'update',
-            )
+    _check_taxon_determination_updates(request, tree_name, node)
     extras.synonymize(node, target, request.specify_user_agent, request.specify_user,
             request.specify_collection)
 
@@ -665,16 +647,7 @@ def desynonymize(request, tree: TREE_TABLE, id: int):
     tree_name = _tree_name(tree)
     node = get_object_or_404(_tree_model(tree_name), id=id)
     _check_tree_action(request, tree_name, node, 'desynonymize')
-    _check_related_tree_records(request, tree_name, node, 'update')
-    if tree_name == 'taxon':
-        from specifyweb.specify.models import Determination
-        for determination in Determination.objects.filter(
-            Q(taxon_id=node.id) | Q(preferredtaxon_id=node.id),
-        ).iterator(chunk_size=2000):
-            check_field_permissions(
-                request.specify_collection, request.specify_user,
-                determination, ['preferredtaxon'], 'update',
-            )
+    _check_taxon_determination_updates(request, tree_name, node)
     extras.desynonymize(node, request.specify_user_agent)
 
 

@@ -418,9 +418,11 @@ def filter_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
         )
     if model is Attachment:
         allowed_collections = models.Collection.objects.filter(id__in=allowed_ids)
-        condition = Q(scopetype__isnull=True) | Q(
-            scopetype=ScopeType.GLOBAL.value
-        )
+        condition = Q(pk__in=[])
+        if allowed_ids:
+            condition |= Q(scopetype__isnull=True) | Q(
+                scopetype=ScopeType.GLOBAL.value
+            )
         scope_lookups = (
             (ScopeType.COLLECTION, "pk"),
             (ScopeType.DISCIPLINE, "discipline_id"),

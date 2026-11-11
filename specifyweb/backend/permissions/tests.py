@@ -163,6 +163,7 @@ class ScopedPermissionTests(ScopedPermissionTestBase):
                 ('allowed discipline', permissions.ScopeType.DISCIPLINE.value, self.discipline.id),
                 ('restricted discipline', permissions.ScopeType.DISCIPLINE.value, other_discipline.id),
                 ('global', permissions.ScopeType.GLOBAL.value, None),
+                ('unset', None, None),
             )
         ]
 
@@ -172,7 +173,31 @@ class ScopedPermissionTests(ScopedPermissionTestBase):
 
         self.assertCountEqual(
             readable.values_list('id', flat=True),
-            [attachments[0].id, attachments[2].id, attachments[4].id],
+            [attachments[0].id, attachments[2].id, attachments[4].id, attachments[5].id],
+        )
+
+    def test_unscoped_attachments_require_an_institution_read_grant(self):
+        attachments = [
+            spmodels.Attachment.objects.create(
+                scopetype=scope_type,
+                scopeid=None,
+                tableid=spmodels.Attachment.specify_model.tableId,
+                origfilename=f'{name}.jpg',
+            )
+            for name, scope_type in (
+                ('unset', None),
+                ('global', permissions.ScopeType.GLOBAL.value),
+            )
+        ]
+
+        readable = permissions.filter_scoped_read_queryset(
+            spmodels.Attachment.objects.all(), self.specifyuser
+        )
+
+        self.assertFalse(
+            readable.filter(
+                id__in=[item.id for item in attachments],
+            ).exists()
         )
 
 class PermissionInitializationTests(ScopedPermissionTestBase):
