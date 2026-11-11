@@ -10,6 +10,14 @@ from specifyweb.backend.context.app_resource import (
     get_data_view_queries_resource,
     merge_formatters,
 )
+from specifyweb.backend.permissions.models import UserPolicy
+from specifyweb.specify.models import (
+    Agent,
+    Spappresourcedata,
+    Spappresourcedir,
+    Spappresource,
+    Specifyuser,
+)
 from specifyweb.specify.tests.test_api import ApiTests
 
 
@@ -213,3 +221,50 @@ class TestAppResource(ApiTests):
 
         response = c.get("/context/app.resource?name='simple'&quiet='true'")
         self._assertStatusCodeEqual(response, 204)
+
+    def test_collection_preferences_cannot_be_modified_without_permission(self):
+        directory = Spappresourcedir.objects.create(
+            collection=self.collection,
+            ispersonal=False,
+        )
+        resource = Spappresource.objects.create(
+            spappresourcedir=directory,
+            specifyuser=self.specifyuser,
+            level=0,
+            name="CollectionPreferences",
+            mimetype="application/json",
+        )
+        Spappresourcedata.objects.create(
+            spappresource=resource,
+            data=b'{"general":{}}',
+        )
+
+        user = Specifyuser.objects.create(
+            isloggedin=False,
+            isloggedinreport=False,
+            name="no-permission-user",
+            password="test",
+        )
+        UserPolicy.objects.create(
+            collection=self.collection,
+            specifyuser=user,
+            resource="/system/sp7/collection",
+            action="access",
+        )
+        Agent.objects.create(
+            agenttype=0,
+            firstname="No",
+            lastname="Permission",
+            division=self.division,
+            specifyuser=user,
+        )
+
+        c = Client()
+        c.force_login(user)
+        response = c.put(
+            f"/api/specify/spappresource/{resource.id}/",
+            data={"version": resource.version, "name": "Changed"},
+            content_type="application/json",
+        )
+
+        self._assertStatusCodeEqual(response, 403)
