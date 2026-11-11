@@ -1214,7 +1214,7 @@ def _default_tree_task_id_for_user(request, task_id: str) -> str | None:
     for content in Message.objects.filter(
         user=request.specify_user,
         content__contains=task_id,
-    ).values_list('content', flat=True):
+    ).order_by('-timestampcreated', '-id').values_list('content', flat=True):
         try:
             data = json.loads(content)
         except (TypeError, json.JSONDecodeError):
