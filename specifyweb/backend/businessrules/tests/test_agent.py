@@ -48,6 +48,30 @@ class AgentTests(ApiTests):
         self.assertEqual(saved.state, 'FL')
         self.assertIs(saved.isprimary, True)
 
+    def test_add_group_member_to_agent(self):
+        group = models.Agent.objects.create(
+            agenttype=agent_types.index('Group'),
+            lastname='Test Group',
+            division=self.division,
+        )
+        membership = post_resource(
+            self.collection,
+            self.agent,
+            'groupperson',
+            {
+                'group': uri_for_model('agent', group.id),
+                'member': uri_for_model('agent', self.agent.id),
+                'division': uri_for_model('division', self.division.id),
+                'ordernumber': 0,
+            },
+        )
+
+        saved = models.Groupperson.objects.get(id=membership.id)
+        self.assertEqual(saved.group_id, group.id)
+        self.assertEqual(saved.member_id, self.agent.id)
+        self.assertEqual(saved.division_id, self.division.id)
+        self.assertEqual(saved.ordernumber, 0)
+
     def test_agent_delete_cascades(self):
         agent = models.Agent.objects.create(
             agenttype=0,
