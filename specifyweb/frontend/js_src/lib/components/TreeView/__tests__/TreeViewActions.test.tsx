@@ -176,7 +176,14 @@ describe('Add taxon', () => {
     }
   );
 
-  overrideAjax('/delete_blockers/delete_blockers/taxon/3/', []);
+  overrideAjax('/delete_blockers/delete_blockers/taxon/3/?limit=40', {
+    results: [],
+    next: [],
+  });
+  overrideAjax('/delete_blockers/count/taxon/3/', {
+    results: [],
+    total_count: 0,
+  });
   overrideAjax(
     `/trees/specify_tree/taxon/${parentId}/predict_fullname/?name=velifer&treedefitemid=${speciesRankId}`,
     'Carpiodes velifer'
@@ -190,7 +197,9 @@ describe('Add taxon', () => {
       handleRefresh
     );
 
-    const addChild = screen.getByRole('link', { name: treeText.addChild() });
+    const addChild = screen.getByRole('link', {
+      name: new RegExp(`^${treeText.addChild()}`, 'u'),
+    });
     expect(addChild).toHaveAttribute('aria-disabled', 'false');
     expect(addChild).toHaveAttribute('href', '/specify/view/taxon/new/');
 
