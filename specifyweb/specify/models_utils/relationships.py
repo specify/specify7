@@ -1,6 +1,7 @@
 import logging
 from collections.abc import Callable
 from contextlib import contextmanager, nullcontext
+from importlib import import_module
 from django.http import Http404
 from specifyweb.backend.permissions.permissions import (
     check_field_permissions, check_table_permissions, table_permissions_checker,
@@ -358,9 +359,11 @@ def authorize_dependent_scope_update(collection, agent, obj):
             check_table_permissions(collection, agent, current, "update")
 
 def _handle_dependent_to_many(collection, agent, obj, field, value):
-    from specifyweb.specify.api.crud import (
-        delete_obj, get_object_or_404, make_default_deleter, update_or_create_resource,
-    )
+    crud = import_module("specifyweb.specify.api.crud")
+    delete_obj = crud.delete_obj
+    get_object_or_404 = crud.get_object_or_404
+    make_default_deleter = crud.make_default_deleter
+    update_or_create_resource = crud.update_or_create_resource
     from specifyweb.specify.api.validators import cleanData
 
     rel_model = field.related_model
