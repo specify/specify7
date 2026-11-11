@@ -83,6 +83,9 @@ class ModelClassScope:
         else:
             return ScopeType.DIVISION
 
+    def attachment(self):
+        return ScopeType.INSTITUTION
+
     def conservevent(self): return ModelClassScope(
         models.Conservdescription).scope_type
 
@@ -162,6 +165,27 @@ class ModelInstanceScope:
         if institution.isaccessionsglobal:
             return institution
         return self.obj.division
+
+    def attachment(self) -> Model:
+        scope_type = (
+            ScopeType.INSTITUTION
+            if self.obj.scopetype is None
+            else ScopeType(self.obj.scopetype)
+        )
+        if scope_type == ScopeType.GLOBAL:
+            return models.Institution.objects.get()
+        scope_models = (
+            (ScopeType.COLLECTION, models.Collection),
+            (ScopeType.DISCIPLINE, models.Discipline),
+            (ScopeType.DIVISION, models.Division),
+            (ScopeType.INSTITUTION, models.Institution),
+        )
+        scope_model = next(
+            (model for kind, model in scope_models if scope_type == kind), None
+        )
+        if scope_model is None:
+            raise ValueError(f"Unsupported attachment scope type: {scope_type}")
+        return scope_model.objects.get(pk=self.obj.scopeid)
 
     def conservevent(self) -> Model:
         return ModelInstanceScope(self.obj.conservdescription).scope_model

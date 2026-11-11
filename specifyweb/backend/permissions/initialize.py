@@ -177,7 +177,7 @@ def assign_users_to_roles_during_testing(apps=apps) -> None:
 
     Role = apps.get_model('permissions', 'Role')
     UserPolicy = apps.get_model('permissions', 'UserPolicy')
-    UserRole = apps.get_model('permissions', 'UserPolicy')
+    UserRole = apps.get_model('permissions', 'UserRole')
     Specifyuser = apps.get_model('specify', 'Specifyuser')
     Agent = apps.get_model('specify', 'Agent')
 

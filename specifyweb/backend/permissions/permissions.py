@@ -17,7 +17,7 @@ from django.db.models import Exists, FilteredRelation, ForeignKey, Model, OuterR
 from django.db.models.fields.reverse_related import ManyToOneRel
 
 from specifyweb.specify.models import (
-    Accession, Agent, Conservevent, Discipline, Division, Fieldnotebook, Fieldnotebookpage,
+    Accession, Agent, Attachment, Conservevent, Discipline, Division, Fieldnotebook, Fieldnotebookpage,
     Fieldnotebookpageset, Geography, Geologictimeperiod, Gift,
     Institution, Lithostrat, Loan, Permit, Recordsetitem, Referencework, Spappresourcedir,
     Sptasksemaphore, Storage, Taxon, Tectonicunit,
@@ -296,6 +296,7 @@ def filter_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
     and storage tree nodes. Loan and Gift use their required discipline even
     when a division is populated; Accession follows its configured scope.
     Permit and ReferenceWork use their required institution.
+    Attachments use their stored hierarchy scope.
     Notebook pages and page sets inherit the notebook's discipline.
     Conservation events inherit their description's scope.
     Recordset items inherit their recordset's collection.
@@ -415,6 +416,23 @@ def filter_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
         return queryset.filter(
             division_id__in=allowed_collections.values("discipline__division_id")
         )
+    if model is Attachment:
+        allowed_collections = models.Collection.objects.filter(id__in=allowed_ids)
+        condition = Q(scopetype__isnull=True) | Q(
+            scopetype=ScopeType.GLOBAL.value
+        )
+        scope_lookups = (
+            (ScopeType.COLLECTION, "pk"),
+            (ScopeType.DISCIPLINE, "discipline_id"),
+            (ScopeType.DIVISION, "discipline__division_id"),
+            (ScopeType.INSTITUTION, "discipline__division__institution_id"),
+        )
+        for attachment_scope, collection_lookup in scope_lookups:
+            condition |= Q(
+                scopetype=attachment_scope.value,
+                scopeid__in=allowed_collections.values(collection_lookup),
+            )
+        return queryset.filter(condition)
     if model in (Loan, Gift):
         return queryset.filter(
             discipline_id__in=models.Collection.objects.filter(

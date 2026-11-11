@@ -117,6 +117,82 @@ class ScopedPermissionTests(ScopedPermissionTestBase):
             empty_division, self.specifyuser.id, self.resource, 'read'
         ))
 
+    def test_attachment_instance_uses_its_stored_collection_scope(self):
+        self.grant_access(self.collection)
+        self.grant(self.collection, '/table/attachment', 'read')
+        attachment = spmodels.Attachment.objects.create(
+            scopetype=permissions.ScopeType.COLLECTION.value,
+            scopeid=self.other_collection.id,
+            tableid=spmodels.Attachment.specify_model.tableId,
+            origfilename='restricted.jpg',
+        )
+
+        self.assertEqual(
+            permissions.Scoping.scope_for_record(attachment), self.other_collection
+        )
+        with self.assertRaises(permissions.NoMatchingRuleException):
+            permissions.check_table_permissions(
+                self.collection, self.specifyuser, attachment, 'read'
+            )
+
+    def test_attachment_queryset_filter_uses_each_stored_scope(self):
+        self.grant_access(self.collection)
+        self.grant(self.collection, '/table/attachment', 'read')
+        other_discipline = spmodels.Discipline.objects.create(
+            geologictimeperiodtreedef=self.geologictimeperiodtreedef,
+            geographytreedef=self.geographytreedef,
+            division=self.division,
+            datatype=self.datatype,
+        )
+        other_discipline_collection = spmodels.Collection.objects.create(
+            catalognumformatname='test',
+            collectionname='Other discipline collection',
+            isembeddedcollectingevent=False,
+            discipline=other_discipline,
+        )
+        attachments = [
+            spmodels.Attachment.objects.create(
+                scopetype=scope_type,
+                scopeid=scope_id,
+                tableid=spmodels.Attachment.specify_model.tableId,
+                origfilename=f'{name}.jpg',
+            )
+            for name, scope_type, scope_id in (
+                ('allowed collection', permissions.ScopeType.COLLECTION.value, self.collection.id),
+                ('restricted collection', permissions.ScopeType.COLLECTION.value, self.other_collection.id),
+                ('allowed discipline', permissions.ScopeType.DISCIPLINE.value, self.discipline.id),
+                ('restricted discipline', permissions.ScopeType.DISCIPLINE.value, other_discipline.id),
+                ('global', permissions.ScopeType.GLOBAL.value, None),
+            )
+        ]
+
+        readable = permissions.filter_scoped_read_queryset(
+            spmodels.Attachment.objects.all(), self.specifyuser
+        )
+
+        self.assertCountEqual(
+            readable.values_list('id', flat=True),
+            [attachments[0].id, attachments[2].id, attachments[4].id],
+        )
+
+class PermissionInitializationTests(ScopedPermissionTestBase):
+    def test_test_role_assignment_uses_user_role_model(self):
+        role = models.Role.objects.create(
+            collection=self.collection, name='Collection Admin'
+        )
+        self.specifyuser.usertype = 'Manager'
+        self.specifyuser.save()
+
+        with patch(
+            'specifyweb.backend.context.collection_access.users_collections_for_sp6',
+            return_value=[],
+        ):
+            initialize.assign_users_to_roles_during_testing()
+
+        self.assertTrue(models.UserRole.objects.filter(
+            specifyuser=self.specifyuser, role=role
+        ).exists())
+
 class ScopedReadApiTests(ScopedPermissionTestBase):
     def setUp(self):
         super().setUp()
