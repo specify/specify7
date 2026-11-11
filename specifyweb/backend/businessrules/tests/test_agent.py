@@ -2,9 +2,9 @@ import unittest
 from unittest.mock import patch
 
 from specifyweb.specify import models
-from specifyweb.specify.api.crud import delete_resource, post_resource
+from specifyweb.specify.api.crud import delete_resource, get_resource, post_resource
 from specifyweb.specify.api.serializers import uri_for_model
-from specifyweb.specify.tests.test_api import ApiTests
+from specifyweb.specify.tests.test_api import ApiTests, skip_perms_check
 from specifyweb.specify.utils.agent_types import agent_types
 from specifyweb.specify.utils.scoping import ScopeType
 from ..exceptions import BusinessRuleException
@@ -109,6 +109,47 @@ class AgentTests(ApiTests):
         self.assertEqual(saved.agent_id, self.agent.id)
         self.assertEqual(saved.ordernumber, 0)
         self.assertEqual(saved.specialtyname, 'Botany')
+
+    def test_agent_optional_fields_round_trip(self):
+        agent = post_resource(
+            self.collection,
+            self.agent,
+            'agent',
+            {
+                'agenttype': agent_types.index('Person'),
+                'firstname': 'Ada',
+                'lastname': 'Lovelace',
+                'division': uri_for_model('division', self.division.id),
+                'email': 'ada@example.org',
+                'url': 'https://example.org/ada',
+                'jobtitle': 'Curator',
+                'remarks': 'Test remarks',
+                'text1': 'Text one',
+                'integer1': 42,
+            },
+        )
+
+        saved = models.Agent.objects.get(id=agent.id)
+        self.assertEqual(saved.firstname, 'Ada')
+        self.assertEqual(saved.lastname, 'Lovelace')
+        self.assertEqual(saved.email, 'ada@example.org')
+        self.assertEqual(saved.url, 'https://example.org/ada')
+        self.assertEqual(saved.jobtitle, 'Curator')
+        self.assertEqual(saved.remarks, 'Test remarks')
+        self.assertEqual(saved.text1, 'Text one')
+        self.assertEqual(saved.integer1, 42)
+
+        data = get_resource('agent', agent.id, skip_perms_check)
+        self.assertEqual(data['agenttype'], agent_types.index('Person'))
+        self.assertEqual(
+            data['division'], uri_for_model('division', self.division.id)
+        )
+        self.assertEqual(data['email'], 'ada@example.org')
+        self.assertEqual(data['url'], 'https://example.org/ada')
+        self.assertEqual(data['jobtitle'], 'Curator')
+        self.assertEqual(data['remarks'], 'Test remarks')
+        self.assertEqual(data['text1'], 'Text one')
+        self.assertEqual(data['integer1'], 42)
 
     def test_agent_delete_cascades(self):
         agent = models.Agent.objects.create(
