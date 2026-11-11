@@ -1,6 +1,6 @@
 from django.db.models import ProtectedError
 from specifyweb.specify import models
-from specifyweb.specify.api.crud import post_resource
+from specifyweb.specify.api.crud import post_resource, update_obj
 from specifyweb.specify.api.serializers import uri_for_model
 from specifyweb.specify.tests.test_api import ApiTests
 
@@ -38,6 +38,33 @@ class LocalityBusinessRuleTests(ApiTests):
             locality.geography.definition_id,
             self.geographytreedef.id,
         )
+
+    def test_add_existing_geography_to_locality(self):
+        geography = models.Geography.objects.create(
+            name='Existing geography',
+            definition=self.geographytreedef,
+            definitionitem=self.geographytreedef.treedefitems.get(rankid=0),
+        )
+        locality = models.Locality.objects.create(
+            localityname='Locality with existing geography',
+            srclatlongunit=0,
+            discipline=self.discipline,
+        )
+
+        update_obj(
+            self.collection,
+            self.agent,
+            'locality',
+            locality.id,
+            locality.version,
+            {
+                'geography': uri_for_model('geography', geography.id),
+            },
+        )
+
+        locality.refresh_from_db()
+        self.assertEqual(locality.geography_id, geography.id)
+        self.assertEqual(locality.geography.name, 'Existing geography')
 
     def test_create_locality_with_fields(self):
         locality = models.Locality.objects.create(
