@@ -33,6 +33,7 @@ class LocalityBusinessRuleTests(ApiTests):
             },
         )
 
+        locality.refresh_from_db()
         self.assertIsNotNone(locality.geography)
         self.assertEqual(locality.geography.name, 'New geography')
         self.assertEqual(
@@ -123,6 +124,7 @@ class LocalityBusinessRuleTests(ApiTests):
         )
 
         attachment = locality_attachment.attachment
+        attachment.refresh_from_db()
         self.assertEqual(locality.localityattachments.count(), 1)
         self.assertEqual(attachment.origfilename, 'locality.txt')
         self.assertEqual(attachment.title, 'Locality attachment')
