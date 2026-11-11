@@ -6,7 +6,7 @@ from specifyweb.specify.tests.test_api import ApiTests
 from specifyweb.specify.utils.scoping import ScopeType
 
 class LocalityBusinessRuleTests(ApiTests):
-    def _geography_data(self, name='Test geography'):
+    def _geography_data(self, name):
         return {
             'name': name,
             'definition': uri_for_model(
@@ -42,10 +42,11 @@ class LocalityBusinessRuleTests(ApiTests):
         )
 
     def test_add_existing_geography_to_locality(self):
-        geography = models.Geography.objects.create(
-            name='Existing geography',
-            definition=self.geographytreedef,
-            definitionitem=self.geographytreedef.treedefitems.get(rankid=0),
+        geography = post_resource(
+            self.collection,
+            self.agent,
+            'geography',
+            self._geography_data('Existing geography'),
         )
         locality = models.Locality.objects.create(
             localityname='Locality with existing geography',
