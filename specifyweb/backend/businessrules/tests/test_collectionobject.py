@@ -65,6 +65,29 @@ class CollectionObjectTests(ApiTests):
         self.assertEqual(fetched_object.accession, accession)
         self.assertEqual(fetched_object.accession.accessionnumber, "New Test Accession")
 
+    def test_add_collectionobjectattribute_to_collectionobject(self):
+        collection_object = self.collectionobjects[0]
+
+        update_obj(
+            self.collection,
+            self.agent,
+            'collectionobject',
+            collection_object.id,
+            collection_object.version,
+            {
+                'collectionobjectattribute': {
+                    'text1': 'Test attribute',
+                }
+            },
+        )
+
+        collection_object.refresh_from_db()
+        self.assertIsNotNone(collection_object.collectionobjectattribute)
+        self.assertEqual(
+            collection_object.collectionobjectattribute.text1,
+            'Test attribute',
+        )
+
     def test_add_paleocontext_to_collectionobject(self):
         collection_object = self.collectionobjects[0]
         update_obj(
