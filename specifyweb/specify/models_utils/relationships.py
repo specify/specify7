@@ -359,7 +359,6 @@ def authorize_dependent_scope_update(collection, agent, obj):
             check_table_permissions(collection, agent, current, "update")
 
 def _handle_dependent_to_many(collection, agent, obj, field, value):
-    crud = import_module("specifyweb.specify.api.crud")
     delete_obj = crud.delete_obj
     get_object_or_404 = crud.get_object_or_404
     make_default_deleter = crud.make_default_deleter
@@ -367,7 +366,9 @@ def _handle_dependent_to_many(collection, agent, obj, field, value):
     from specifyweb.specify.api.validators import cleanData
 
     rel_model = field.related_model
-    ids = [] # Ids not in this list will be deleted at the end.
+        allowed_keys = {f.name for f in datamodel.get_table(rel_model).fields}
+        allowed_keys.add('id')
+        rel_data = {k: v for k, v in rel_data.items() if k in allowed_keys}
 
     for rel_data in value:
         if not isinstance(rel_data, dict):
