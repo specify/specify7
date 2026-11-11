@@ -218,7 +218,6 @@ def _handle_fk_field(collection, agent, obj, field, value, read_checker, *, pare
 
 def _handle_remote_fk_field(obj, field, value, read_checker): 
     from specifyweb.specify.api.crud import get_object_or_404
-    from specifyweb.specify.api.validators import cleanData
 
     field_name = field.name
     old_related = get_related_or_none(obj, field_name)
@@ -262,7 +261,7 @@ def _handle_remote_fk_field(obj, field, value, read_checker):
 
     elif hasattr(value, 'items'):  # i.e. it's a dict of some sort
         # The related object is represented by a nested dict of data.
-        rel_data = cleanData(field.related_model, value)
+        rel_data = dict(value)
         rel_data.pop(field.field.name, None)
         new_related_id = rel_data.get("id")
     else:
