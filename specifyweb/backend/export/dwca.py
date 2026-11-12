@@ -140,11 +140,22 @@ class Query(namedtuple('Query', 'tableid file_name query_fields')):
     def from_xml(cls, query_node):
         if 'contextTableId' not in query_node.attrib or 'name' not in query_node.attrib:
             raise DwCAException(_("Query is missing its table or file name."))
+        file_name = query_node.attrib['name'].strip()
+        if not file_name:
+            raise DwCAException(_("Query file name must not be empty."))
+        if (
+            file_name in ('.', '..')
+            or '/' in file_name
+            or '\\' in file_name
+            or ':' in file_name
+            or '\x00' in file_name
+        ):
+            raise DwCAException(_("Query file name must be a file name without a path."))
         try:
             return cls(
                 tableid = int(query_node.attrib['contextTableId']),
 
-                file_name = query_node.attrib['name'],
+                file_name = file_name,
 
                 query_fields = [
                     QueryDefField.from_xml(field_node)
@@ -327,6 +338,15 @@ def validate_definition(definition):
             "All Darwin Core queries must use the base table associated with the core "
             "row type."
         ))
+    file_names = set()
+    for stanza in [core_stanza, *extension_stanzas]:
+        for query in stanza.queries:
+            name = query.file_name.casefold()
+            if name in ('meta.xml', 'eml.xml'):
+                raise DwCAException(_("Query file name is reserved for archive metadata."))
+            if name in file_names:
+                raise DwCAException(_("Archive queries must have unique file names."))
+            file_names.add(name)
     validate_stanzas(core_stanza, extension_stanzas)
     return core_stanza, extension_stanzas
 

@@ -10,6 +10,7 @@ import tempfile
 from collections import namedtuple
 from unittest.mock import Mock, patch
 from zipfile import ZipFile
+from xml.etree import ElementTree as ET
 
 from django.test import Client, TestCase
 
@@ -40,6 +41,33 @@ class SimpleTest(TestCase):
         self.assertEqual(1 + 1, 2)
 
 class DwcaValidationTest(TestCase):
+    def test_rejects_empty_unsafe_and_reserved_file_names(self):
+        for name in ('', ' ', '.', '..', '/tmp/output.csv', '../output.csv',
+                     'folder/output.csv', 'folder\\output.csv', 'C:output.csv',
+                     'meta.xml', ' EML.XML '):
+            with self.subTest(name=name), self.assertRaises(DwCAException):
+                validate_definition(DWCA_DEFINITION.replace('collection_objects.csv', name))
+
+    def test_rejects_duplicate_file_names_across_all_queries(self):
+        for extension, name in ((False, 'collection_objects.csv'),
+                                (True, ' COLLECTION_OBJECTS.CSV ')):
+            tree = ET.fromstring(DWCA_DEFINITION)
+            query = ET.fromstring(ET.tostring(tree.find('core/queries/query')))
+            query.set('name', name)
+            if extension:
+                stanza = ET.SubElement(tree, 'extension', rowType='https://example.org/extension')
+                ET.SubElement(stanza, 'queries').append(query)
+            else:
+                tree.find('core/queries').append(query)
+            with self.subTest(extension=extension), self.assertRaises(DwCAException):
+                validate_definition(ET.tostring(tree))
+
+    def test_trims_valid_file_names(self):
+        core, _ = validate_definition(
+            DWCA_DEFINITION.replace('collection_objects.csv', ' occurrence.csv ')
+        )
+        self.assertEqual(core.queries[0].file_name, 'occurrence.csv')
+
     @staticmethod
     def stanza(is_core, fields, index=0):
         return namedtuple('TestStanza', 'is_core export_fields id_field_idx')(
