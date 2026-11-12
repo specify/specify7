@@ -129,7 +129,7 @@ class Stanza(namedtuple('Stanza', 'is_core row_type constant_fields export_field
 
         return output_node
 
-class Query(namedtuple('Query', 'tableid file_name query_fields')):
+class Query(namedtuple('Query', 'tableid file_name query_fields search_synonymy', defaults=[False])):
     """Represents the information about a query that goes into the archive.
 
     tableid -- the table the query is over.
@@ -156,6 +156,7 @@ class Query(namedtuple('Query', 'tableid file_name query_fields')):
                 tableid = int(query_node.attrib['contextTableId']),
 
                 file_name = file_name,
+                search_synonymy = query_node.attrib.get('searchSynonymy', 'false') == 'true',
 
                 query_fields = [
                     QueryDefField.from_xml(field_node)
@@ -264,7 +265,8 @@ def make_dwca(collection, user, definition, output_file, eml=None):
             for query in core_stanza.queries:
                 path = os.path.join(output_dir, query.file_name)
                 query_to_csv(session, collection, user, query.tableid, query.get_field_specs(), path,
-                             strip_id=True, row_filter=collect_ids)
+                             strip_id=True, row_filter=collect_ids,
+                             search_synonymy=query.search_synonymy)
 
             for stanza in extension_stanzas:
                 def filter_ids(row):
@@ -273,7 +275,8 @@ def make_dwca(collection, user, definition, output_file, eml=None):
                 for query in stanza.queries:
                     path = os.path.join(output_dir, query.file_name)
                     query_to_csv(session, collection, user, query.tableid, query.get_field_specs(), path,
-                                 strip_id=True, row_filter=filter_ids)
+                                 strip_id=True, row_filter=filter_ids,
+                                 search_synonymy=query.search_synonymy)
 
         basename = re.sub(r'\.zip$', '', output_file)
         shutil.make_archive(basename, 'zip', output_dir, logger=logger)

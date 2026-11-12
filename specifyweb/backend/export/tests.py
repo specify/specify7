@@ -42,6 +42,12 @@ class SimpleTest(TestCase):
         self.assertEqual(1 + 1, 2)
 
 class DwcaValidationTest(TestCase):
+    def test_preserves_search_synonymy_in_export_queries(self):
+        node = ET.fromstring(DWCA_DEFINITION).find('core/queries/query')
+        self.assertFalse(Query.from_xml(node).search_synonymy)
+        node.set('searchSynonymy', 'true')
+        self.assertTrue(Query.from_xml(node).search_synonymy)
+
     def test_preserves_strict_matching_in_export_query_fields(self):
         for strict in (False, True):
             node = ET.fromstring(DWCA_DEFINITION).find('core/queries/query')

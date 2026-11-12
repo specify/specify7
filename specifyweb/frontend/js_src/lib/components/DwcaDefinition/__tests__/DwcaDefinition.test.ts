@@ -47,6 +47,15 @@ import {
 const occurrenceId = 'http://rs.tdwg.org/dwc/terms/occurrenceID';
 const kingdom = 'http://rs.tdwg.org/dwc/terms/kingdom';
 
+test('preserves Search Synonymy when loading and saving definitions', () => {
+  const xml = `<archive><core rowType="http://rs.tdwg.org/dwc/terms/Occurrence"><queries><query contextTableId="1" searchSynonymy="true">
+    <id stringId="1.collectionobject.guid" term="${occurrenceId}" />
+  </query></queries></core></archive>`;
+  const mappings = parseDefinition(xml);
+  expect(mappings[0].query.get('searchSynonymy')).toBe(true);
+  expect(parseDefinition(serializeDefinition(mappings))[0].query.get('searchSynonymy')).toBe(true);
+});
+
 test('preserves strict filters when loading and saving definitions', () => {
   const xml = `<archive><core rowType="http://rs.tdwg.org/dwc/terms/Occurrence"><queries><query contextTableId="1">
     <id stringId="1.collectionobject.guid" term="${occurrenceId}" />

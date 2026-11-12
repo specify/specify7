@@ -1176,6 +1176,7 @@ export function parseDefinition(data: string | null): RA<Mapping> {
         table
       );
       query.set('contextTableId', baseTable.tableId);
+      query.set('searchSynonymy', queryNode?.getAttribute('searchSynonymy') === 'true');
       query.set('fields', fields);
       const rowType = stanza.getAttribute('rowType') ?? '';
       const extensionDefinition = extension
@@ -1279,6 +1280,7 @@ export function serializeDefinition(mappings: RA<Mapping>): string {
     const query = document.createElement('query');
     query.setAttribute('name', mapping.fileName);
     query.setAttribute('contextTableId', String(mapping.baseTable.tableId));
+    if (mapping.query.get('searchSynonymy')) query.setAttribute('searchSynonymy', 'true');
     let displayIndex = 0;
     let idIndex = -1;
     mapping.fields.forEach((field, index) => {
@@ -1812,7 +1814,7 @@ export function QueryMapping({
             onChange={handleChange}
           />
         )}
-        onChange={({ fields: newFields }): void => {
+        onChange={({ fields: newFields, searchSynonymy }): void => {
           /*
            * QueryBuilder emits changes for its pending empty state and then
            * for its initial state. Neither callback is a user edit. The
@@ -1822,14 +1824,16 @@ export function QueryMapping({
           if (!queryBuilderInitialized.current) {
             if (
               newFields.length === 0 ||
-              fieldShapesEqual(mapping.fields, newFields)
+              (fieldShapesEqual(mapping.fields, newFields) &&
+                mapping.query.get('searchSynonymy') === searchSynonymy)
             ) {
               if (newFields.length > 0) queryBuilderInitialized.current = true;
               return;
             }
             queryBuilderInitialized.current = true;
           }
-          handleChange(updateMappingFields(mapping, newFields));
+          const updated = updateMappingFields(mapping, newFields);
+          handleChange({ ...updated, query: updated.query.set('searchSynonymy', searchSynonymy) });
         }}
         canRemoveField={(field): boolean => !isIdentifierField(field)}
         isFieldReadOnly={isIdentifierField}
