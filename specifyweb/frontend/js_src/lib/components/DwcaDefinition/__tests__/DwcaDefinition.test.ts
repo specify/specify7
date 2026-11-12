@@ -48,6 +48,19 @@ import {
 const occurrenceId = 'http://rs.tdwg.org/dwc/terms/occurrenceID';
 const kingdom = 'http://rs.tdwg.org/dwc/terms/kingdom';
 
+test('automatic mapping respects explicit assignments and deliberate unmapped fields', () => {
+  const catalog = 'http://rs.tdwg.org/dwc/terms/catalogNumber';
+  const [mapping] = parseDefinition(`<archive><core rowType="http://rs.tdwg.org/dwc/terms/Occurrence"><queries><query contextTableId="1">
+    <id stringId="1.collectionobject.guid" term="${occurrenceId}"/>
+    <field stringId="1.collectionobject.text1" term="${catalog}"/>
+    <field stringId="1.collectionobject.catalogNumber"/>
+  </query></queries></core></archive>`);
+  const explicit = { ...mapping, terms: [occurrenceId, catalog, undefined] };
+  const fields = [explicit.fields[0], explicit.fields[2], explicit.fields[1]];
+  expect(updateMappingFields(explicit, fields).terms).toEqual([occurrenceId, undefined, catalog]);
+  expect(updateMappingFields({ ...mapping, fields: mapping.fields.slice(0, 2), terms: [occurrenceId, catalog] }, fields).terms).toEqual([occurrenceId, undefined, catalog]);
+});
+
 test('preserves an unlabelled legacy collectionObjectId as the structural ID', () => {
   const xml = `<archive><core rowType="http://rs.tdwg.org/dwc/terms/Occurrence"><queries><query contextTableId="1">
     <id stringId="1.collectionobject.collectionObjectId" oper="1" value="" isNot="false" isRelFld="false" />

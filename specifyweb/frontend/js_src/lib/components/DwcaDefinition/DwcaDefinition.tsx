@@ -661,20 +661,25 @@ export function updateMappingFields(
     mapping.coreRowType
   );
   const fields = [...newFields];
+  const assignedTerms = new Set(mapping.terms.filter((term): term is string => term !== undefined));
+  const priorTerm = (field: SerializedResource<SpQueryField>): string | undefined =>
+    oldStringIds.has(fieldFormatKey(field))
+      ? oldStringIds.get(fieldFormatKey(field))
+      : oldMetadata.get(fieldTermKey(field))?.[0];
   if (!mapping.extension) {
-    const automaticTerms = autoMapCoreFields(fields, availableTerms);
+    const automaticTerms = autoMapCoreFields(fields, availableTerms, assignedTerms);
     const occurrenceIndex = fields.findIndex(
       (field, index) =>
-        (oldStringIds.get(fieldFormatKey(field)) ??
-          oldMetadata.get(fieldTermKey(field))?.[0] ??
-          automaticTerms[index]) === getCoreIdentifierTerm(mapping.coreRowType)
+        (oldStringIds.has(fieldFormatKey(field)) || oldMetadata.has(fieldTermKey(field))
+          ? priorTerm(field)
+          : automaticTerms[index]) === getCoreIdentifierTerm(mapping.coreRowType)
     );
     if (occurrenceIndex > 0) {
       const [occurrence] = fields.splice(occurrenceIndex, 1);
       fields.unshift(occurrence);
     }
   }
-  const autoMapped = autoMapCoreFields(fields, availableTerms);
+  const autoMapped = autoMapCoreFields(fields, availableTerms, assignedTerms);
   const usedTerms = new Set<string>();
   const terms = fields.map((field, index) => {
     const key = fieldTermKey(field);
@@ -682,7 +687,9 @@ export function updateMappingFields(
     const pathTerms = oldMetadata.get(key);
     const pathTerm = pathTerms?.[0];
     if (pathTerms !== undefined) oldMetadata.set(key, pathTerms.slice(1));
-    const candidateTerm = oldTerm ?? pathTerm ?? autoMapped[index];
+    const candidateTerm = oldStringIds.has(fieldFormatKey(field))
+      ? oldTerm
+      : pathTerms !== undefined ? pathTerm : autoMapped[index];
     if (candidateTerm === undefined) return undefined;
     // Pick-list terms may only be mapped once. Custom terms are intentionally
     // left untouched, even when they are not present in the catalogs.
@@ -705,9 +712,10 @@ export function updateMappingFields(
 
 function autoMapCoreFields(
   fields: RA<SerializedResource<SpQueryField>>,
-  availableTerms: ReadonlySet<string>
+  availableTerms: ReadonlySet<string>,
+  assignedTerms: ReadonlySet<string> = new Set()
 ): RA<string | undefined> {
-  const usedTerms = new Set<string>();
+  const usedTerms = new Set(assignedTerms);
   const terms = fields.map((field) => {
     const stringId = field.stringId.toLowerCase();
     const match = Object.entries(
