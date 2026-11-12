@@ -12,7 +12,6 @@ import { NotFoundView } from './NotFoundView';
 import type { EnhancedRoute } from './RouterUtils';
 import { toReactRoutes } from './RouterUtils';
 
-/* eslint-disable @typescript-eslint/promise-function-async */
 export const entrypointRoutes: RA<EnhancedRoute> = [
   {
     path: 'accounts',
@@ -62,7 +61,6 @@ export const entrypointRoutes: RA<EnhancedRoute> = [
     element: <NotFoundView />,
   },
 ];
-/* eslint-enable @typescript-eslint/promise-function-async */
 
 const routes = toReactRoutes(entrypointRoutes, undefined, false);
 const router = createBrowserRouter(routes);

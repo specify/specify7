@@ -15,7 +15,6 @@ import type { RA } from '../../utils/types';
 import { Redirect } from './Redirect';
 import type { EnhancedRoute } from './RouterUtils';
 
-/* eslint-disable @typescript-eslint/promise-function-async */
 export const routes: RA<EnhancedRoute> = [
   {
     path: 'specify-network-collection',
@@ -532,7 +531,5 @@ export const routes: RA<EnhancedRoute> = [
    * triggered when displaying the overlay
    */
 ];
-
-/* eslint-enable @typescript-eslint/promise-function-async */
 
 export const inRouterContext = {};

@@ -35,7 +35,7 @@ export const unCapitalize = <T extends string>(string: T): Uncapitalize<T> =>
   (string.charAt(0).toLowerCase() + string.slice(1)) as Uncapitalize<T>;
 
 export const upperToKebab = (value: string): string =>
-  value.toLowerCase().split('_').join('-');
+  value.toLowerCase().replaceAll('_', '-');
 
 export const lowerToHuman = (value: string): LocalizedString =>
   localized(value.toLowerCase().split('_').map(capitalize).join(' '));
@@ -122,11 +122,7 @@ export const caseInsensitiveHash = <
 >(
   dictionary: DICTIONARY,
   searchKey:
-    | Capitalize<KEY>
-    | KEY
-    | Lowercase<KEY>
-    | Uncapitalize<KEY>
-    | Uppercase<KEY>
+    Capitalize<KEY> | KEY | Lowercase<KEY> | Uncapitalize<KEY> | Uppercase<KEY>
 ): DICTIONARY[KEY] =>
   searchKey in dictionary
     ? dictionary[searchKey as KEY]
@@ -156,8 +152,7 @@ export const sortFunction =
 export const multiSortFunction =
   <ORIGINAL_TYPE>(
     ...payload: readonly (
-      | true
-      | ((value: ORIGINAL_TYPE) => Date | boolean | number | string)
+      true | ((value: ORIGINAL_TYPE) => Date | boolean | number | string)
     )[]
   ): ((left: ORIGINAL_TYPE, right: ORIGINAL_TYPE) => -1 | 0 | 1) =>
   (left: ORIGINAL_TYPE, right: ORIGINAL_TYPE): -1 | 0 | 1 => {
@@ -224,7 +219,7 @@ export const group = <KEY, VALUE>(
 ): RA<readonly [key: KEY, values: RA<VALUE>]> =>
   Array.from(
     entries
-      // eslint-disable-next-line functional/prefer-readonly-type
+      // // eslint-disable-next-line functional/prefer-readonly-type
       .reduce<Map<KEY, RA<VALUE>>>(
         (grouped, [key, value]) =>
           grouped.set(key, [...(grouped.get(key) ?? []), value]),

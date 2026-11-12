@@ -39,8 +39,8 @@ test('disables merging throughout Data Views', () => {
     <MemoryRouter initialEntries={['/specify/dataviews/agent/']}>
       <Routes>
         <Route
-          path="/specify/dataviews/:tableName/"
           element={<TableDataView />}
+          path="/specify/dataviews/:tableName/"
         />
       </Routes>
     </MemoryRouter>

@@ -46,7 +46,6 @@ export function showLeafletMap({
     'min-h-[theme(spacing.80)]'
   );
 
-  // eslint-disable-next-line functional/prefer-readonly-type
   let defaultCenter: [number, number] = [0, 0];
   let defaultZoom = 1;
   if (localityPoints.length > 0) {
@@ -142,9 +141,8 @@ export type MarkerGroups = {
 export type LeafletMarker = L.Circle | L.Marker | L.Polygon | L.Polyline;
 
 const createLine = (
-  // eslint-disable-next-line functional/prefer-readonly-type
   coordinate1: [number, number],
-  // eslint-disable-next-line functional/prefer-readonly-type
+
   coordinate2: [number, number]
 ): L.Polyline =>
   new L.Polyline([coordinate1, coordinate2], {
@@ -163,7 +161,6 @@ export const formatLocalityData = (
     ...Object.entries(localityData)
       .filter(([fieldName]) => !mappingLocalityColumns.includes(fieldName))
       .filter(
-        // eslint-disable-next-line functional/prefer-readonly-type
         (entry): entry is [string, Field<number | string>] =>
           typeof entry[1] === 'object' && entry[1].value !== ''
       )

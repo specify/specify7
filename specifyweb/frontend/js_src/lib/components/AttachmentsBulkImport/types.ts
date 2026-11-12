@@ -89,9 +89,8 @@ export type AttachmentWorkProgress = {
 };
 
 export type AttachmentWorkRef = {
-  // eslint-disable-next-line functional/prefer-readonly-type
   mappedFiles: RA<PartialUploadableFileSpec>;
-  // eslint-disable-next-line functional/prefer-readonly-type
+
   uploadPromise: Promise<number | undefined>;
   readonly retrySpec: Record<number, number>;
 };

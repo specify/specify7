@@ -204,8 +204,10 @@ export const buildSaveRequests = (
 ): RA<SaveRequest> => {
   const { nameChanged, descChanged, containerChanged } =
     getEditorChanges(editor);
-  // Capture the values sent with each request so reconciliation can compare
-  // the current state against what was actually saved
+  /*
+   * Capture the values sent with each request so reconciliation can compare
+   * the current state against what was actually saved
+   */
   const sentName = editor.name;
   const sentDesc = editor.desc;
   const sentContainer = editor.container;

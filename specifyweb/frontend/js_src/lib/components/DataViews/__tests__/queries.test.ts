@@ -1,8 +1,9 @@
+import { overrideAjax } from '../../../tests/ajax';
+import { requireContext } from '../../../tests/helpers';
 import { addMissingFields } from '../../DataModel/addMissingFields';
 import { serializeResource } from '../../DataModel/serializers';
 import { strictGetTable } from '../../DataModel/tables';
-import { overrideAjax } from '../../../tests/ajax';
-import { requireContext } from '../../../tests/helpers';
+import { getNumericResultId } from '../index';
 import {
   defaultDataViewQuery,
   getDataViewQueryDefinition,
@@ -12,7 +13,6 @@ import {
   saveUserDataViewQueries,
   serializeDataViewQueries,
 } from '../queries';
-import { getNumericResultId } from '../index';
 
 requireContext();
 
@@ -247,7 +247,7 @@ test('generated defaults include every unhidden literal field and a hidden audit
   expect(
     new Set(
       fields
-        .filter(({ isDisplay }) => isDisplay !== false)
+        .filter(({ isDisplay }) => isDisplay)
         .map(({ fieldName }) => fieldName)
     )
   ).toEqual(expected);

@@ -179,7 +179,6 @@ async function recursiveResourceResolve(
   } else return [];
 }
 
-// eslint-disable-next-line functional/prefer-readonly-type
 export const parsedLocalityPinFields: [
   RA<MappingPath> | undefined,
   RA<MappingPath> | undefined,

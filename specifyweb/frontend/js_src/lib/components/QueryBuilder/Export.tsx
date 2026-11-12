@@ -7,6 +7,7 @@ import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { keysToLowerCase } from '../../utils/utils';
+import { dialogIcons } from '../Atoms/Icons';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { genericTables } from '../DataModel/tables';
@@ -22,7 +23,6 @@ import { QueryButton } from './Components';
 import type { QueryField } from './helpers';
 import { hasLocalityColumns } from './helpers';
 import type { QueryResultRow } from './Results';
-import { dialogIcons } from '../Atoms/Icons';
 
 export function QueryExportButtons({
   baseTableName,
@@ -37,8 +37,7 @@ export function QueryExportButtons({
   readonly fields: RA<QueryField>;
   readonly queryResource: SpecifyResource<SpQuery>;
   readonly getQueryFieldRecords:
-    | (() => RA<SerializedResource<SpQueryField>>)
-    | undefined;
+    (() => RA<SerializedResource<SpQueryField>>) | undefined;
   readonly recordSetId: number | undefined;
   readonly results: React.MutableRefObject<
     RA<QueryResultRow | undefined> | undefined
@@ -172,9 +171,9 @@ export function QueryExportButtons({
         </Dialog>
       ) : state === 'duplicateWarning' ? (
         <Dialog
-          icon={dialogIcons.warning}
           buttons={commonText.close()}
           header={queryText.webPortalExportDuplicateRecordIds()}
+          icon={dialogIcons.warning}
           onClose={(): void => setState(undefined)}
         >
           {queryText.webPortalExportDuplicateRecordIdsDescription()}

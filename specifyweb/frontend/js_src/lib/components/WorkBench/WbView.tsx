@@ -55,13 +55,12 @@ import { WbValidation } from './WbValidation';
 export type WbStatus = 'unupload' | 'upload' | 'validate';
 
 export type Workbench = {
-  /* eslint-disable functional/prefer-readonly-type */
   cells: WbCellMeta;
   disambiguation: Disambiguation;
   validation: WbValidation;
   utils: WbUtils;
   undoRedoIsHandled: boolean;
-  /* eslint-enable functional/prefer-readonly-type */
+
   readonly dataset: Dataset;
   readonly data: RA<RA<string | null>>;
   readonly hot: Handsontable | undefined;

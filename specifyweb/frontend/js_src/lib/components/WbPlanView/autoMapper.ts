@@ -95,8 +95,7 @@ type AutoMapperHeadersToMapActions = Action<
 >;
 
 type AutoMapperSearchedTablesActions =
-  | Action<'add', { readonly tableName: keyof Tables }>
-  | Action<'reset'>;
+  Action<'add', { readonly tableName: keyof Tables }> | Action<'reset'>;
 
 type AutoMapperFindMappingsQueueActions =
   | Action<
@@ -196,7 +195,7 @@ const headerComparisons: {
     | ((header: string, match: RegExp) => boolean)
     | ((header: string, match: string) => boolean);
 } = {
-  regex: (header: string, regex: RegExp) => regex.exec(header) !== null,
+  regex: (header: string, regex: RegExp) => regex.test(header),
   string: (header: string, string: string) => header === string,
   contains: (header: string, string: string) => header.includes(string),
 };
@@ -222,7 +221,6 @@ export class AutoMapper {
   private readonly getMappedFields: (mappingPath: MappingPath) => RA<string>;
 
   private readonly headersToMap: IR<{
-    // eslint-disable-next-line functional/prefer-readonly-type
     isMapped: boolean;
     // OriginalHeaderName.toLowerCase() and trimmed
     readonly lowercaseHeaderName: string;
@@ -235,14 +233,13 @@ export class AutoMapper {
     readonly finalHeaderName: string;
   }> = {};
 
-  // eslint-disable-next-line functional/prefer-readonly-type
   private searchedTables: WritableArray<string> = [];
 
   /*
    * Used to enforce higher priority for closer mappings
    * (breadth-first-search)
    */
-  // eslint-disable-next-line functional/prefer-readonly-type
+
   private findMappingsQueue: WritableArray<
     WritableArray<FindMappingsParameters>
   > = [];
@@ -323,8 +320,7 @@ export class AutoMapper {
             .replaceAll(regexRemoveNonAz, ' ')
             .replaceAll(regexReplaceWhiteSpace, ' ')
             .trim()
-            .split(' ')
-            .join('');
+            .replaceAll(' ', '');
 
           return {
             originalName,
@@ -782,8 +778,7 @@ export class AutoMapper {
                         const match =
                           regularExpression.exec(lowercaseHeaderName);
 
-                        if (match === null || match[1] === undefined)
-                          return false;
+                        if (match?.[1] === undefined) return false;
 
                         toManyIndex = Number(match[1]);
                         return true;

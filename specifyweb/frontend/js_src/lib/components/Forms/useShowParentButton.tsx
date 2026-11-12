@@ -1,15 +1,16 @@
 import React from 'react';
+
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useParentResource } from '../../hooks/useParentResource';
-import { AnySchema } from '../DataModel/helperTypes';
-import { SpecifyResource } from '../DataModel/legacyTypes';
-import { Button } from '../Atoms/Button';
-import { formsText } from '../../localization/forms';
-import { ResourceView } from './ResourceView';
-import { Dialog } from '../Molecules/Dialog';
 import { commonText } from '../../localization/common';
-import { GetOrSet } from '../../utils/types';
-import { SET } from '../../utils/utils';
+import { formsText } from '../../localization/forms';
+import type { GetOrSet } from '../../utils/types';
+import type { SET } from '../../utils/utils';
+import { Button } from '../Atoms/Button';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { Dialog } from '../Molecules/Dialog';
+import { ResourceView } from './ResourceView';
 
 export function useShowParentButton({
   resource,
@@ -49,12 +50,23 @@ export function useShowParentButton({
     parentResourceForm: (
       <>
         {isParentResourceOpen ? (
-          parentResource !== false ? (
+          parentResource === false ? (
+            <Dialog
+              buttons={
+                <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+              }
+              header={formsText.noParentFound()}
+              onClose={handleCloseParentResource}
+            >
+              {formsText.noParentFound()}
+            </Dialog>
+          ) : (
             <ResourceView
-              dialog={'modal'}
+              dialog="modal"
               isDependent={false}
-              resource={parentResource}
               isLoading={parentResource === undefined}
+              isSubForm={false}
+              resource={parentResource}
               onAdd={undefined}
               onClose={handleCloseParentResource}
               onDeleted={() => {
@@ -68,7 +80,6 @@ export function useShowParentButton({
                   handleCloseParentResource();
                 });
               }}
-              isSubForm={false}
               onSaved={() => {
                 handleLoading(true);
                 if (parentResource !== undefined)
@@ -82,16 +93,6 @@ export function useShowParentButton({
                 });
               }}
             />
-          ) : (
-            <Dialog
-              buttons={
-                <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-              }
-              header={formsText.noParentFound()}
-              onClose={handleCloseParentResource}
-            >
-              {formsText.noParentFound()}
-            </Dialog>
           )
         ) : null}
       </>

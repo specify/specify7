@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { type RA, localized } from '../../utils/types';
+import { localized, type RA } from '../../utils/types';
 import { BatchEditFromQuery } from '../BatchEdit';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -51,8 +51,7 @@ export function QueryBuilderResults({
   readonly saveRequired: boolean;
   readonly isCountOnly: boolean;
   readonly getQueryFieldRecords:
-    | (() => RA<SerializedResource<SpQueryField>>)
-    | undefined;
+    (() => RA<SerializedResource<SpQueryField>>) | undefined;
   readonly selectedRows: ReadonlySet<number>;
   readonly setSelectedRows: React.Dispatch<
     React.SetStateAction<ReadonlySet<number>>
@@ -74,6 +73,7 @@ export function QueryBuilderResults({
   const [refreshToken, setRefreshToken] = React.useState(0);
   return hasPermission('/querybuilder/query', 'execute') ? (
     <QueryResultsWrapper
+      countOnly={isCountOnly}
       createRecordSet={
         !isReadOnly &&
         hasPermission('/querybuilder/query', 'create_recordset') &&
@@ -113,17 +113,11 @@ export function QueryBuilderResults({
       }
       fields={state.fields}
       forceCollection={forceCollection}
-      countOnly={isCountOnly}
+      isSplit={isSplit}
       queryResource={queryResource}
       queryRunCount={state.queryRunCount}
-      refreshToken={refreshToken}
       recordSetId={recordSet?.id}
-      resultsRef={resultsRef}
-      selectedRows={[selectedRows, setSelectedRows]}
-      isSplit={isSplit}
-      splitContainerRef={splitViewRef}
-      splitHorizontal={isHorizontal}
-      splitPrimaryPaneMaxWidth={`${maximumPrimaryPaneWidth}px`}
+      refreshToken={refreshToken}
       renderSplitPane={({
         results,
         selectedRows: resultSelection,
@@ -137,8 +131,8 @@ export function QueryBuilderResults({
           hasFetchableRecordIds(results) ? (
             <QueryFormView
               results={results}
-              selectedRows={resultSelection}
               selectedIndex={selectedIndex}
+              selectedRows={resultSelection}
               table={table}
               title={localized(query.name)}
               totalCount={totalCount}
@@ -154,6 +148,11 @@ export function QueryBuilderResults({
           ) : null}
         </>
       )}
+      resultsRef={resultsRef}
+      selectedRows={[selectedRows, setSelectedRows]}
+      splitContainerRef={splitViewRef}
+      splitHorizontal={isHorizontal}
+      splitPrimaryPaneMaxWidth={`${maximumPrimaryPaneWidth}px`}
       table={table}
       onReRun={handleReRun}
       onResults={handleResults}

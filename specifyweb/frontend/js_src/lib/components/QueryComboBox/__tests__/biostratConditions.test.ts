@@ -7,7 +7,7 @@ import { getQueryComboBoxConditions } from '../helpers';
 requireContext();
 
 describe('getQueryComboBoxConditions with BioStrat typeSearchName', () => {
-  const getBaseParams = () => ({
+  const getBaseParameters = () => ({
     // Use a non-tree resource to avoid toTreeTable() requiring tree data
     resource: new tables.CollectionObject.Resource(
       {},
@@ -23,7 +23,7 @@ describe('getQueryComboBoxConditions with BioStrat typeSearchName', () => {
 
   test('adds isBioStrat=true filter when typeSearchName is BioStrat', () => {
     const conditions = getQueryComboBoxConditions({
-      ...getBaseParams(),
+      ...getBaseParameters(),
       typeSearchName: 'BioStrat',
     });
     const serialized = conditions.map(serializeResource);
@@ -38,7 +38,7 @@ describe('getQueryComboBoxConditions with BioStrat typeSearchName', () => {
 
   test('does NOT add isBioStrat filter when typeSearchName is something else', () => {
     const conditions = getQueryComboBoxConditions({
-      ...getBaseParams(),
+      ...getBaseParameters(),
       typeSearchName: 'ChronosStrat',
     });
     const serialized = conditions.map(serializeResource);
@@ -49,7 +49,7 @@ describe('getQueryComboBoxConditions with BioStrat typeSearchName', () => {
 
   test('does NOT add isBioStrat filter when typeSearchName is undefined', () => {
     const conditions = getQueryComboBoxConditions({
-      ...getBaseParams(),
+      ...getBaseParameters(),
     });
     const serialized = conditions.map(serializeResource);
     expect(
@@ -59,7 +59,7 @@ describe('getQueryComboBoxConditions with BioStrat typeSearchName', () => {
 
   test('does NOT add isBioStrat filter for non-GeologicTimePeriod tables', () => {
     const conditions = getQueryComboBoxConditions({
-      ...getBaseParams(),
+      ...getBaseParameters(),
       relatedTable: tables.Taxon,
       typeSearchName: 'BioStrat',
     });

@@ -5,12 +5,12 @@ import { clearIdStore } from '../../../hooks/useId';
 import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
 import { mount } from '../../../tests/reactUtils';
-import * as Attachments from '../../Attachments/attachments';
 import { testAttachment } from '../../Attachments/__tests__/utils';
+import * as Attachments from '../../Attachments/attachments';
 import { deserializeResource } from '../../DataModel/serializers';
 import { SetMenuContext } from '../../Header/MenuContext';
-import { WbImportAttachmentsView } from '..';
 import { UnloadProtectsContext } from '../../Router/UnloadProtect';
+import { WbImportAttachmentsView } from '..';
 
 requireContext();
 
@@ -69,7 +69,7 @@ afterEach(() => {
 // [Import Attachments] Select multiple image files
 test('selects multiple image files', async () => {
   const { container, getByRole, user } = mount(
-    <Router.MemoryRouter useTransitions={true}>
+    <Router.MemoryRouter useTransitions>
       <SetMenuContext.Provider value={jest.fn()}>
         <WbImportAttachmentsView />
       </SetMenuContext.Provider>
@@ -103,7 +103,7 @@ test('selects multiple image files', async () => {
 // [Import Attachments] Select different image file types
 test('selects different image file types', async () => {
   const { container, getByRole, user } = mount(
-    <Router.MemoryRouter useTransitions={true}>
+    <Router.MemoryRouter useTransitions>
       <SetMenuContext.Provider value={jest.fn()}>
         <WbImportAttachmentsView />
       </SetMenuContext.Provider>
@@ -150,20 +150,20 @@ test('imports selected attachment files', async () => {
     .mockResolvedValue(deserializeResource(testAttachment));
 
   const { container, findByText, getByRole, user } = mount(
-    <Router.MemoryRouter initialEntries={['/']} useTransitions={true}>
+    <Router.MemoryRouter initialEntries={['/']} useTransitions>
       <UnloadProtectsContext.Provider value={[]}>
         <Router.Routes>
           <Router.Route
-            path="/"
             element={
               <SetMenuContext.Provider value={jest.fn()}>
                 <WbImportAttachmentsView />
               </SetMenuContext.Provider>
             }
+            path="/"
           />
           <Router.Route
-            path="/specify/workbench/plan/:dataSetId/"
             element={<div>WorkBench data set created</div>}
+            path="/specify/workbench/plan/:dataSetId/"
           />
         </Router.Routes>
       </UnloadProtectsContext.Provider>
@@ -188,7 +188,7 @@ test('imports selected attachment files', async () => {
     })
   );
 
-  expect(await findByText('WorkBench data set created')).toBeInTheDocument();
+  await expect(findByText('WorkBench data set created')).resolves.toBeInTheDocument();
 
   expect(uploadFile).toHaveBeenCalledTimes(1);
   expect(uploadFile).toHaveBeenCalledWith(

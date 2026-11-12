@@ -37,8 +37,8 @@ import { getTableOverwrite, tableViews } from './schemaOverrides';
 import type { Relationship } from './specifyField';
 import {
   type FieldDefinition,
-  type RelationshipDefinition,
   LiteralField,
+  type RelationshipDefinition,
 } from './specifyField';
 import type { SchemaLocalization } from './tables';
 import { genericTables, getSchemaLocalization, getTable } from './tables';
@@ -443,7 +443,6 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
     return this.localization.aggregator ?? undefined;
   }
 
-  // eslint-disable-next-line functional/prefer-readonly-type
   private scopingRelationship: Relationship | false | undefined;
 
   /**

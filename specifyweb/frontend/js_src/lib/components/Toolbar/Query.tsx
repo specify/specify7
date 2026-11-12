@@ -140,8 +140,10 @@ export function QueryListDialog({
         const matchesSearch =
           searchFilter === '' ||
           name.toLowerCase().includes(searchFilter.toLowerCase());
-        // Mirror every collection filter fetchCollection was called with,
-        // so an out-of-scope deletion doesn't decrement an unrelated count
+        /*
+         * Mirror every collection filter fetchCollection was called with,
+         * so an out-of-scope deletion doesn't decrement an unrelated count
+         */
         const activeFilters = filters ?? { specifyUser: userInformation.id };
         const specifyUserId = idFromUrl(
           (resource.get('specifyUser') as string | null) ?? ''

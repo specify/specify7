@@ -81,10 +81,10 @@ function measureCell(
 }
 
 function fitColumnWidths(
-  widths: Array<number>,
+  widths: number[],
   availableWidth: number,
-  minimumWidths: Array<number>
-): Array<number> {
+  minimumWidths: number[]
+): number[] {
   const minimumTotal = minimumWidths.reduce((total, width) => total + width, 0);
   const preferredWidths = widths.map((width, index) =>
     Math.max(width, minimumWidths[index] ?? minimumColumnWidth)
@@ -105,7 +105,7 @@ function fitColumnWidths(
 
 type FormTableColumnSizing = {
   readonly columnWidths: Record<number, number>;
-  readonly contentColumnWidths: Array<number>;
+  readonly contentColumnWidths: number[];
   readonly gridRef: React.RefObject<HTMLDivElement>;
   readonly gridTemplateColumns: string;
   readonly resizeColumn: (
@@ -138,11 +138,11 @@ export function useFormTableColumns({
   const scrollContainerRef = React.useRef<HTMLDivElement | null>(null);
   const [tableWidth, setTableWidth] = React.useState(0);
   const [contentColumnWidths, setContentColumnWidths] = React.useState<
-    Array<number>
+    number[]
   >([]);
-  const [headerColumnWidths, setHeaderColumnWidths] = React.useState<
-    Array<number>
-  >([]);
+  const [headerColumnWidths, setHeaderColumnWidths] = React.useState<number[]>(
+    []
+  );
   const [tableChromeWidth, setTableChromeWidth] = React.useState(0);
   const [columnWidths, setColumnWidths] = React.useState<
     Record<number, number>
@@ -348,12 +348,12 @@ export function useFormTableColumns({
     const customFixedWidth = tracks.reduce(
       (total, { cellIndex, width }) =>
         total +
-        (typeof width !== 'number'
-          ? 0
-          : flexibleSubGridColumnWidth
+        (typeof width === 'number'
+          ? flexibleSubGridColumnWidth
             ? (contentColumnWidths[cellIndex] ?? minimumColumnWidth) /
               (cells[cellIndex]?.colSpan ?? 1)
-            : width),
+            : width
+          : 0),
       0
     );
     const minimumWidths = autoColumns.map(({ cellIndex }) => {

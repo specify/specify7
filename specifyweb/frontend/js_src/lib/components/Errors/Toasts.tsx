@@ -57,7 +57,7 @@ export function Toasts({
   return (
     <SetToastsContext.Provider value={setToasts}>
       {children}
-      <span aria-live="polite" aria-atomic="true" className="sr-only">
+      <span aria-atomic="true" aria-live="polite" className="sr-only">
         {announcement}
       </span>
       {toasts.length > 0 && (

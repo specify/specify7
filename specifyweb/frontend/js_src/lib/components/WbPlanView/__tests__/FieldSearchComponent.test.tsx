@@ -4,8 +4,8 @@ import React from 'react';
 import { commonText } from '../../../localization/common';
 import { requireContext } from '../../../tests/helpers';
 import { mount } from '../../../tests/reactUtils';
-import { FieldSearch } from '../FieldSearchComponent';
 import { searchFields } from '../fieldSearch';
+import { FieldSearch } from '../FieldSearchComponent';
 import { navigatorSpecs } from '../navigatorSpecs';
 
 jest.mock('../fieldSearch', () => {
@@ -60,8 +60,8 @@ test('does not search until the query is long enough', async () => {
 
   expect(searchFieldsSpy).not.toHaveBeenCalled();
   expect(input).toHaveAttribute('aria-expanded', 'false');
-  expect(screen.queryByRole('listbox')).toBeNull();
-  expect(screen.queryByText(commonText.noResults())).toBeNull();
+  expect(screen.queryByRole('listbox')).not.toBeInTheDocument();
+  expect(screen.queryByText(commonText.noResults())).not.toBeInTheDocument();
 });
 
 test('searches once the query is long enough', async () => {
@@ -204,7 +204,7 @@ test('dismisses results with Escape and reopens them with an arrow key', async (
 
   await user.keyboard('{Escape}');
   expect(input).toHaveAttribute('aria-expanded', 'false');
-  expect(screen.queryByRole('listbox')).toBeNull();
+  expect(screen.queryByRole('listbox')).not.toBeInTheDocument();
 
   await user.keyboard('{ArrowDown}');
   expect(input).toHaveAttribute('aria-expanded', 'true');

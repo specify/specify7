@@ -1,29 +1,30 @@
+import { f } from '../../utils/functools';
 import { PromiseQueue } from '../../utils/promiseQueue';
-import { RA, WritableArray } from '../../utils/types';
-import { AnySchema } from '../DataModel/helperTypes';
-import { SpecifyResource } from '../DataModel/legacyTypes';
+import type { RA, WritableArray } from '../../utils/types';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getTable } from '../DataModel/tables';
-import { Tables } from '../DataModel/types';
-import {
+import type { Tables } from '../DataModel/types';
+import { softFail } from '../Errors/Crash';
+import type {
   APIDeleteBlockerCount,
   APIDeleteBlockerCounts,
+} from './deleteBlockers';
+import type { APIDeleteBlockerPage, APIDeleteBlockers } from './deleteBlockers';
+import {
   DELETE_BLOCKER_LIMIT,
   fetchInitialBlockers,
   fetchReferenceCounts,
   filterDeleteBlockers,
 } from './deleteBlockers';
+import type { BlockerPageCacheKey, DeleteBlockerLRUPage } from './pageCache';
 import {
-  BlockerPageCacheKey,
   blockerPageToCacheKey,
   buildPageCacheKey,
   DeleteBlockerLRU,
-  DeleteBlockerLRUPage,
   makeBlockerKey,
   pageAnchorToFilter,
 } from './pageCache';
-import { APIDeleteBlockerPage, APIDeleteBlockers } from './deleteBlockers';
-import { f } from '../../utils/functools';
-import { softFail } from '../Errors/Crash';
 
 export type ResourceIdentifier = string;
 
@@ -31,7 +32,7 @@ export type BlockerRelationship = {
   readonly key: BlockerPageCacheKey;
   readonly table: Lowercase<keyof Tables>;
   readonly field: string;
-  // eslint-disable-next-line functional/prefer-readonly-type
+
   count?: number;
 };
 
@@ -40,9 +41,9 @@ export type BlockerNode = {
   readonly resource: SpecifyResource<AnySchema>;
   readonly relationshipMetaData: Map<string, BlockerRelationship>;
   readonly cascadeChildren: Set<string>;
-  // eslint-disable-next-line functional/prefer-readonly-type
+
   count?: number;
-  // eslint-disable-next-line functional/prefer-readonly-type
+
   version: number;
 };
 
@@ -93,10 +94,12 @@ export class DeleteBlockerState {
       maxPages,
       onEvict: (key, page) => this.unindexBlockerPage(key, page),
     });
-    // We only allow one promise to be resolving at a time for counts, and
-    // three for pages.
-    // This should still let the browser handle other requests while fetching
-    // blocker information for records with a lot of references
+    /*
+     * We only allow one promise to be resolving at a time for counts, and
+     * three for pages.
+     * This should still let the browser handle other requests while fetching
+     * blocker information for records with a lot of references
+     */
     this.countPromiseQueue = new PromiseQueue(1);
     this.pagePromiseQueue = new PromiseQueue(3);
     this.nodes = new Map();
@@ -175,7 +178,7 @@ export class DeleteBlockerState {
     if (this.pageIsCached(queueKey) || this.pageIsFetching(queueKey)) {
       return;
     }
-    return this.pagePromiseQueue.enqueue(queueKey, () =>
+    return this.pagePromiseQueue.enqueue(queueKey, async () =>
       this.handleMainBlockers(resource)
     );
   }
@@ -187,9 +190,11 @@ export class DeleteBlockerState {
       this.recordsPerPage,
       true
     ).then((blockers) =>
-      // This branch should only mean that the resource was deleted while the
-      // request was in-flight.
-      // If that happens, just clean it up as if it were deleted
+      /*
+       * This branch should only mean that the resource was deleted while the
+       * request was in-flight.
+       * If that happens, just clean it up as if it were deleted
+       */
       blockers === undefined
         ? this.removeResource(
             makeBlockerKey(
@@ -315,9 +320,11 @@ export class DeleteBlockerState {
       };
       // We probably don't need to re-index the page here, but just to be safe
       this.unindexBlockerPage(cacheKey, blockerPage);
-      // REFACTOR:? This keeps the page in the cache even if all IDs are now
-      // removed. Do we want to explicitly remove the cached page if that's the
-      // case?
+      /*
+       * REFACTOR:? This keeps the page in the cache even if all IDs are now
+       * removed. Do we want to explicitly remove the cached page if that's the
+       * case?
+       */
       this.pageCache.replacePage(cacheKey, updatedPage);
       this.indexBlockerPage(cacheKey, updatedPage);
       this.invalidateCounts(ownerIdentifier);
@@ -385,7 +392,7 @@ export class DeleteBlockerState {
     return this.queueBlockerCount(countKey);
   }
 
-  private queueBlockerCount(resourceKey: ResourceIdentifier) {
+  private async queueBlockerCount(resourceKey: ResourceIdentifier) {
     const alreadyQueued = this.countPromiseQueue.get(resourceKey);
     const [tableName, resourceId] = identifierToParts(resourceKey);
     if (alreadyQueued === false) {
@@ -395,12 +402,14 @@ export class DeleteBlockerState {
       return undefined;
     }
 
-    const fetchCounts = () =>
+    const fetchCounts = async () =>
       fetchReferenceCounts(tableName, resourceId, true).then((counts) =>
         counts === undefined
           ? // This branch should only mean that the resource was deleted while
-            // the request was in-flight.
-            // If that happens, just clean it up as if it were deleted
+            /*
+             * The request was in-flight.
+             * If that happens, just clean it up as if it were deleted
+             */
             this.removeResource(resourceKey)
           : // Otherwise we can treat the counts as normal
             this.handleDeleteBlockerCounts(resourceKey, counts)
@@ -423,9 +432,11 @@ export class DeleteBlockerState {
   ) {
     const node = this.getNode(resourceKey);
     if (node === undefined) {
-      // We're expecting the node to exist at this point, but maybe the
-      // resource was deleted between the time the count request was made and
-      // this is executing?
+      /*
+       * We're expecting the node to exist at this point, but maybe the
+       * resource was deleted between the time the count request was made and
+       * this is executing?
+       */
       console.warn(
         'Trying to handle counts for record not in DeleteBlocker state',
         { resource: resourceKey }
@@ -451,8 +462,10 @@ export class DeleteBlockerState {
     const relationshipKey = this.nodeRelationshipKey(node, table, field);
     const relationship = node.relationshipMetaData.get(relationshipKey);
     if (relationship === undefined) {
-      // We're expecting this relationship to already exist on the node.
-      // Maybe all records in the relationship were deleted and it was removed?
+      /*
+       * We're expecting this relationship to already exist on the node.
+       * Maybe all records in the relationship were deleted and it was removed?
+       */
       console.warn('Trying to handle counts for missing relationship', {
         resource: resourceToStringIdentifier(node.resource),
         table,
@@ -505,15 +518,17 @@ export class DeleteBlockerState {
       if (marked) {
         this.updateAncestors(parentNode.key);
       }
-      // This is to try and prevent cycles when fetching CASCADE relationships
-      // when both tables have relationships set to CASCADE:
-      // e.g., Collection -> autoNumberingSchemes and
-      // AutoNumberingScheme -> collections
+      /*
+       * This is to try and prevent cycles when fetching CASCADE relationships
+       * when both tables have relationships set to CASCADE:
+       * e.g., Collection -> autoNumberingSchemes and
+       * AutoNumberingScheme -> collections
+       */
       if (marked && (parentCreated || childCreated))
         this.seedBlockers(childResource);
     }
     // We need to handle queuing up the rest of the next blockers
-    if (nextBlocker.complete === false) {
+    if (!nextBlocker.complete) {
       this.handleNextPage(resource, nextBlocker);
     }
   }
@@ -602,7 +617,7 @@ export class DeleteBlockerState {
     if (this.pageIsFetching(cacheKey)) {
       return undefined;
     }
-    const fetchBlockers = () =>
+    const fetchBlockers = async () =>
       filterDeleteBlockers(
         resource.specifyTable.name,
         resource.id,
@@ -611,17 +626,21 @@ export class DeleteBlockerState {
             table: relatedTable,
             field: relationshipName,
             anchor: pageAnchorToFilter(anchor),
-            // This is needed to fetch the last page
-            // A null anchor depends on the direction of the request
+            /*
+             * This is needed to fetch the last page
+             * A null anchor depends on the direction of the request
+             */
             backwards: anchor === 'last' ? true : backwards,
             limit: this.recordsPerPage,
           },
         ],
         true
       ).then((blockers) => {
-        // This branch should only mean that the resource was deleted while the
-        // request was in-flight.
-        // If that happens, just clean it up as if it were deleted
+        /*
+         * This branch should only mean that the resource was deleted while the
+         * request was in-flight.
+         * If that happens, just clean it up as if it were deleted
+         */
         if (blockers === undefined) {
           const resourceKey = makeBlockerKey(
             resource.specifyTable.name.toLowerCase(),
@@ -632,23 +651,25 @@ export class DeleteBlockerState {
         }
         // Othwerwise we treat the response as normal
         const formattedBlockers =
-          anchor === 'last' || backwards === true
+          anchor === 'last' || backwards
             ? {
                 ...blockers,
                 results: blockers.results.map((page) => ({
                   ...page,
                   ids: [...page.ids].reverse(),
-                  // We normally treat backwards requests the same as forwards
-                  // and transform them accordingly.
-                  // However when the last page is requested then it's
-                  // important to include indication of backwards as that's the
-                  // only way to know the last page was requested.
-                  // See blockerPageToCacheKey
-                  // REFACTOR: Maybe we can define a modified type of the API
-                  // response and pass those to the cache that allows anchor to
-                  // be 'false'.
-                  // That would decouple the anchor + backwards pairing to make
-                  // working with cached pages easier
+                  /*
+                   * We normally treat backwards requests the same as forwards
+                   * and transform them accordingly.
+                   * However when the last page is requested then it's
+                   * important to include indication of backwards as that's the
+                   * only way to know the last page was requested.
+                   * See blockerPageToCacheKey
+                   * REFACTOR: Maybe we can define a modified type of the API
+                   * response and pass those to the cache that allows anchor to
+                   * be 'false'.
+                   * That would decouple the anchor + backwards pairing to make
+                   * working with cached pages easier
+                   */
                   backwards: anchor === 'last',
                 })),
               }
@@ -663,8 +684,10 @@ export class DeleteBlockerState {
     blockerPage: APIDeleteBlockerPage
   ) {
     if (blockerPage.complete) {
-      // The page we're requesting the next page from is already complete.
-      // Skip the request
+      /*
+       * The page we're requesting the next page from is already complete.
+       * Skip the request
+       */
       return;
     }
     const newAnchor = blockerPage.ids.at(-1);

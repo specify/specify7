@@ -30,28 +30,26 @@ export const getSelectedCells = (
   columnsToWorkWith: RA<number>
 ): RR<number, ReadonlySet<number>> => {
   const selectedRegions = getSelectedRegions(hot);
-  return (
-    selectedRegions
-      .flatMap(({ startRow, endRow, startCol, endCol }) =>
-        Array.from({ length: endRow - startRow + 1 }, (_, rowIndex) =>
-          Array.from({ length: endCol - startCol + 1 }, (_, colIndex) => [
-            startRow + rowIndex,
-            startCol + colIndex,
-          ])
-        )
+  return selectedRegions
+    .flatMap(({ startRow, endRow, startCol, endCol }) =>
+      Array.from({ length: endRow - startRow + 1 }, (_, rowIndex) =>
+        Array.from({ length: endCol - startCol + 1 }, (_, colIndex) => [
+          startRow + rowIndex,
+          startCol + colIndex,
+        ])
       )
-      .flat()
-      // eslint-disable-next-line functional/prefer-readonly-type
-      .reduce<Record<number, Set<number>>>(
-        (indexedCells, [visualRow, visualCol]) => {
-          if (!columnsToWorkWith.includes(visualCol)) return indexedCells;
-          indexedCells[visualRow] ??= new Set();
-          indexedCells[visualRow].add(visualCol);
-          return indexedCells;
-        },
-        {}
-      )
-  );
+    )
+    .flat()
+
+    .reduce<Record<number, Set<number>>>(
+      (indexedCells, [visualRow, visualCol]) => {
+        if (!columnsToWorkWith.includes(visualCol)) return indexedCells;
+        indexedCells[visualRow] ??= new Set();
+        indexedCells[visualRow].add(visualCol);
+        return indexedCells;
+      },
+      {}
+    );
 };
 
 /**
@@ -82,7 +80,6 @@ export const setHotData = (
     readonly [visualCol: number, visualRow: number, value: string | null]
   >
 ): void =>
-  // eslint-disable-next-line functional/prefer-readonly-type
   hot.setDataAtCell(changes as WritableArray<[number, number, string | null]>);
 
 export const getPhysicalColToMappingCol =

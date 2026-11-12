@@ -5,20 +5,20 @@ import { localized } from '../../../utils/types';
 import { getResourceApiUrl } from '../../DataModel/resource';
 import { fetchAndReconstructAttachmentDataset } from '../Import';
 import type { FetchedDataSet } from '../types';
-import * as bulkAttachmentUtils from '../utils';
+import * as bulkAttachmentUtilities from '../utils';
 
 const mockReconstructUploading = jest.fn();
 const mockReconstructDeleting = jest.fn();
 
 jest
-  .spyOn(bulkAttachmentUtils, 'reconstructUploadingAttachmentSpec')
+  .spyOn(bulkAttachmentUtilities, 'reconstructUploadingAttachmentSpec')
   .mockImplementation(async (...args) => {
     mockReconstructUploading(...args);
     return [];
   });
 
 jest
-  .spyOn(bulkAttachmentUtils, 'reconstructDeletingAttachment')
+  .spyOn(bulkAttachmentUtilities, 'reconstructDeletingAttachment')
   .mockImplementation(async (...args) => {
     mockReconstructDeleting(...args);
     return [];

@@ -122,7 +122,6 @@ export type Conformations = RA<Conformation>;
 
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
 
-// eslint-disable-next-line functional/prefer-readonly-type
 export interface Conformation extends Readonly<[number, ...Conformations]> {}
 
 /* eslint-enable @typescript-eslint/consistent-type-definitions */

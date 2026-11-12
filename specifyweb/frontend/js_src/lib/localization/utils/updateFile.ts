@@ -42,7 +42,7 @@ async function updateLocalFile(
     'u'
   );
 
-  if (re.exec(originalFile) === null)
+  if (!re.test(originalFile))
     error(`Unable to find a "${dictionaryName}" dictionary in ${filePath}`);
 
   const newContent = originalFile.replace(

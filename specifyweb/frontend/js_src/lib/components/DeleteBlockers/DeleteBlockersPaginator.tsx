@@ -1,11 +1,12 @@
 import React from 'react';
-import { SpecifyResource } from '../DataModel/legacyTypes';
-import { AnySchema } from '../DataModel/helperTypes';
-import { RecordSelectorFromPage } from '../FormSliders/RecordSelectorFromPage';
+
 import { f } from '../../utils/functools';
-import { Relationship } from '../DataModel/specifyField';
-import { useDeleteBlockerPages } from './useDeleteBlockerPages';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { Relationship } from '../DataModel/specifyField';
+import { RecordSelectorFromPage } from '../FormSliders/RecordSelectorFromPage';
 import { buildPageCacheKey } from './pageCache';
+import { useDeleteBlockerPages } from './useDeleteBlockerPages';
 
 export function DeleteBlockersPaginator({
   parentResource,
@@ -41,23 +42,25 @@ export function DeleteBlockersPaginator({
     [parentResource, relationship]
   );
 
-  // FEAT: use the Relationships reference count in the paginator?
-  // const referenceCount = useRelationshipReferenceCount(
-  //   parentResource,
-  //   relationship
-  // );
+  /*
+   * FEAT: use the Relationships reference count in the paginator?
+   * const referenceCount = useRelationshipReferenceCount(
+   *   parentResource,
+   *   relationship
+   * );
+   */
 
   return (
     <RecordSelectorFromPage
+      dialog={dialog}
       page={page}
       pageKey={pageKey}
-      pageSize={pageSize}
       pageMetaData={pageMetaData}
-      dialog={dialog}
+      pageSize={pageSize}
       table={relationship.table}
       title={undefined}
-      onNextPageFetch={handleNextPageFetch}
       onClose={handleClose}
+      onNextPageFetch={handleNextPageFetch}
       onSaved={f.void}
       // Deleting a parent might not actually remove all of the blockers for
       // this relationship, but this behavior is currently OK as it lets the

@@ -42,8 +42,7 @@ export function useBulkCarryForward<SCHEMA extends AnySchema = AnySchema>({
 }): {
   readonly BulkCarryForward: JSX.Element | null;
   readonly handleBulkCarryForward:
-    | (() => Promise<RA<SpecifyResource<SCHEMA>> | undefined>)
-    | undefined;
+    (() => Promise<RA<SpecifyResource<SCHEMA>> | undefined>) | undefined;
   readonly dialogs: JSX.Element | null;
 } {
   // Disable bulk carry forward for COType cat num format that are undefined or one of types listed in tableValidForBulkClone()
@@ -295,8 +294,9 @@ export function BulkCarryRangeBlockedDialog({
           {formsText.bulkCarryForwardRangeExistingRecords({
             field: numberField.label,
           })}
-          {invalidNumbers &&
-            invalidNumbers.map((number, index) => <p key={index}>{number}</p>)}
+          {invalidNumbers?.map((number, index) => (
+            <p key={index}>{number}</p>
+          ))}
         </>
       ) : error === 'LimitExceeded' ? (
         <>

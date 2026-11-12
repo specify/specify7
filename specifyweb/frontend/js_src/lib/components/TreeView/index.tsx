@@ -55,8 +55,7 @@ export function TreeViewWrapper(): JSX.Element | null {
   useMenuItem('trees');
   const { tableName = '' } = useParams();
   const treeName = getTable(tableName)?.name as
-    | AnyTree['tableName']
-    | undefined;
+    AnyTree['tableName'] | undefined;
 
   const [treeDefinitions] = usePromise(treeRanksPromise, true);
   useErrorContext('treeDefinitions', treeDefinitions);
@@ -142,9 +141,11 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
     `conformations${tableName}`
   );
 
-  // On initial mount, restore conformation from URL or cache.
-  // The URL is the single source of truth during a session;
-  // the cache persists state for when the user closes and reopens the tab.
+  /*
+   * On initial mount, restore conformation from URL or cache.
+   * The URL is the single source of truth during a session;
+   * the cache persists state for when the user closes and reopens the tab.
+   */
   const isFirstRender = React.useRef(true);
   React.useEffect(() => {
     if (!isFirstRender.current) return;
@@ -160,8 +161,10 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
     // If neither URL nor cache has a conformation, use the default (empty).
   }, [conformation, urlConformation, setConformation, setUrlConformation]);
 
-  // When the user interacts with the tree, persist the conformation
-  // to both the URL (primary) and the cache (for session restoration).
+  /*
+   * When the user interacts with the tree, persist the conformation
+   * to both the URL (primary) and the cache (for session restoration).
+   */
   React.useEffect(() => {
     if (isFirstRender.current) {
       isFirstRender.current = false;
@@ -445,8 +448,8 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
         </Label.Inline>
         {tableName === 'GeologicTimePeriod' && (
           <Select
-            className="w-max"
             aria-label={treeText.biostratFilter()}
+            className="w-max"
             title={treeText.biostratFilter()}
             value={biostratFilter}
             onValueChange={(value: string): void => {

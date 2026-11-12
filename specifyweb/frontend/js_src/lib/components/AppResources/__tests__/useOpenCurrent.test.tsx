@@ -2,13 +2,13 @@ import { render, renderHook } from '@testing-library/react';
 import React from 'react';
 
 import { requireContext } from '../../../tests/helpers';
+import { TestComponentWrapperRouter } from '../../../tests/utils';
 import type { RA } from '../../../utils/types';
 import type { SerializedResource } from '../../DataModel/helperTypes';
 import type { SpAppResource } from '../../DataModel/types';
 import type { AppResourcesConformation } from '../Aside';
 import { exportsForTests } from '../Aside';
 import { utilsForTests } from './utils';
-import { TestComponentWrapperRouter } from '../../../tests/utils';
 
 requireContext();
 

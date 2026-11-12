@@ -87,10 +87,7 @@ const notificationHeadings: IR<
 export const getNotificationHeading = (
   notification: GenericNotification
 ): LocalizedString => {
-  const heading = Object.prototype.hasOwnProperty.call(
-    notificationHeadings,
-    notification.type
-  )
+  const heading = Object.hasOwn(notificationHeadings, notification.type)
     ? notificationHeadings[notification.type]
     : undefined;
   return heading?.(notification) ?? notificationsText.notifications();
@@ -180,8 +177,7 @@ export const notificationRenderers: IR<
   },
   'query-export-to-csv-failed'(notification) {
     const errorPayload = notification.payload.error as unknown as
-      | { readonly error: string; readonly traceback: string }
-      | undefined;
+      { readonly error: string; readonly traceback: string } | undefined;
     return (
       <>
         {getNotificationHeading(notification)}
@@ -201,8 +197,7 @@ export const notificationRenderers: IR<
   },
   'query-export-to-kml-failed'(notification) {
     const errorPayload = notification.payload.error as unknown as
-      | { readonly error: string; readonly traceback: string }
-      | undefined;
+      { readonly error: string; readonly traceback: string } | undefined;
     return (
       <>
         {getNotificationHeading(notification)}
@@ -254,8 +249,7 @@ export const notificationRenderers: IR<
   },
   'query-export-to-webportal-failed'(notification) {
     const errorPayload = notification.payload.error as unknown as
-      | { readonly error: string; readonly traceback: string }
-      | undefined;
+      { readonly error: string; readonly traceback: string } | undefined;
     return (
       <>
         {getNotificationHeading(notification)}

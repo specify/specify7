@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { useSliderButtons } from './useSliderButtons';
 
 type DisabledProps = {
@@ -19,8 +20,7 @@ export function BasicSlider({
 }: {
   readonly buttonsDisabled?: DisabledProps;
   readonly onChange:
-    | ((direction: 'first' | 'last' | 'next' | 'previous') => void)
-    | undefined;
+    ((direction: 'first' | 'last' | 'next' | 'previous') => void) | undefined;
 }) {
   const {
     navigateToFirst,

@@ -377,11 +377,10 @@ export const syncers = {
    */
   dependent: <
     KEY extends string,
-    OBJECT extends { readonly [key in KEY]: NodeWithContext<SimpleXmlNode> },
+    OBJECT extends Readonly<Record<KEY, NodeWithContext<SimpleXmlNode>>>,
     SUB_SPEC extends BaseSpec<SimpleXmlNode>,
-    NEW_OBJECT extends Omit<OBJECT, KEY> & {
-      readonly [key in KEY]: SpecToJson<SUB_SPEC>;
-    },
+    NEW_OBJECT extends Omit<OBJECT, KEY> &
+      Readonly<Record<KEY, SpecToJson<SUB_SPEC>>>,
   >(
     key: KEY,
     spec: (dependent: OBJECT) => SUB_SPEC
@@ -441,8 +440,8 @@ export const syncers = {
     KEY extends string,
     RAW,
     PARSED,
-    OBJECT extends { readonly [key in KEY]: RAW },
-    NEW_OBJECT extends Omit<OBJECT, KEY> & { readonly [key in KEY]: PARSED },
+    OBJECT extends Readonly<Record<KEY, RAW>>,
+    NEW_OBJECT extends Omit<OBJECT, KEY> & Readonly<Record<KEY, PARSED>>,
   >(
     key: KEY,
     serializer: (object: OBJECT) => PARSED,
@@ -593,16 +592,19 @@ export const syncers = {
   switch: <
     TYPE_MAPPER extends IR<string>,
     NODE_KEY extends string,
-    IN extends { readonly [KEY in NODE_KEY]: NodeWithContext<SimpleXmlNode> },
+    IN extends Readonly<Record<NODE_KEY, NodeWithContext<SimpleXmlNode>>>,
     KEY extends string,
     EXTRA,
-    MAPPER extends {
-      readonly [KEY in TYPE_MAPPER[keyof TYPE_MAPPER] | 'Unknown']: (
-        input: IN,
-        extra: EXTRA,
-        rawType: keyof TYPE_MAPPER
-      ) => BaseSpec<SimpleXmlNode>;
-    },
+    MAPPER extends Readonly<
+      Record<
+        TYPE_MAPPER[keyof TYPE_MAPPER] | 'Unknown',
+        (
+          input: IN,
+          extra: EXTRA,
+          rawType: keyof TYPE_MAPPER
+        ) => BaseSpec<SimpleXmlNode>
+      >
+    >,
     MAPPED extends {
       readonly [KEY in keyof TYPE_MAPPER]: SpecToJson<
         ReturnType<MAPPER[TYPE_MAPPER[KEY]]>
@@ -643,7 +645,7 @@ export const syncers = {
      */
     extraPayload: EXTRA
   ) =>
-    syncer<IN, IN & { readonly [_KEY in KEY]: MAPPED }>(
+    syncer<IN, IN & Readonly<Record<KEY, MAPPED>>>(
       (cell) => {
         const { node, logContext } = cell[nodeKey];
 
@@ -669,7 +671,7 @@ export const syncers = {
             rawType,
             ...serializer(node),
           },
-        } as IN & { readonly [_KEY in KEY]: MAPPED };
+        } as IN & Readonly<Record<KEY, MAPPED>>;
       },
       ({ [key]: definition, ...cell }) => {
         const rawType = definition.rawType;

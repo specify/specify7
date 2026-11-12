@@ -34,9 +34,9 @@ import type { QueryFieldSpec } from './fieldSpec';
 import type { QueryField } from './helpers';
 import { sortTypes } from './helpers';
 import { QueryResultsTable } from './ResultsTable';
+import { SplitView } from './SplitView';
 import { QueryToForms } from './ToForms';
 import { QueryToMap } from './ToMap';
-import { SplitView } from './SplitView';
 
 export type QueryResultRow = RA<number | string | null>;
 
@@ -71,8 +71,7 @@ export type QueryResultsProps = {
    */
   readonly fetchSize: number;
   readonly fetchResults:
-    | ((offset: number) => Promise<RA<QueryResultRow>>)
-    | undefined;
+    ((offset: number) => Promise<RA<QueryResultRow>>) | undefined;
   readonly fetchCount: (() => Promise<number>) | undefined;
   readonly totalCount: number | undefined;
   readonly fieldSpecs: RA<QueryFieldSpec>;
@@ -201,15 +200,17 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
             .some((result) => result !== undefined)
         );
         const pages = await Promise.all(
-          offsets.map((offset) => fetchResults(offset))
+          offsets.map(async (offset) => fetchResults(offset))
         );
         if (generation !== refreshGenerationRef.current) return;
         const refreshedResults = (
           currentResultsRef.current ?? currentResults
         ).slice();
         let refreshedResultCount = refreshedTotalCount;
-        // Stop applying pages once a short page is hit, so a later full page
-        // can't re-extend the array past the earliest known end of data
+        /*
+         * Stop applying pages once a short page is hit, so a later full page
+         * can't re-extend the array past the earliest known end of data
+         */
         for (let pageIndex = 0; pageIndex < pages.length; pageIndex++) {
           const page = pages[pageIndex];
           const offset = offsets[pageIndex];
@@ -300,9 +301,11 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
   const [showCellEllipsis, setShowCellEllipsis] = React.useState(false);
 
   const lastSelectedRow = React.useRef<number | undefined>(undefined);
-  // Unselect all rows when the query fields change, but do not clear the
-  // parent-owned selection when this component is remounted while changing
-  // split-view orientation.
+  /*
+   * Unselect all rows when the query fields change, but do not clear the
+   * parent-owned selection when this component is remounted while changing
+   * split-view orientation.
+   */
   const previousFieldSpecs = React.useRef(fieldSpecs);
   React.useEffect(() => {
     if (previousFieldSpecs.current === fieldSpecs) return;
@@ -327,7 +330,6 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     undefinedResult === -1 ? results : results?.slice(0, undefinedResult)
   ) as RA<QueryResultRow> | undefined;
 
-  /* eslint-disable functional/prefer-readonly-type */
   const deletingRef = React.useRef<Set<number>>(new Set()); // Track recent deleted IDs to prevent duplicate deletion
 
   // TEST: try deleting while records are being fetched
@@ -668,8 +670,8 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
             <QueryResultsTable
               fieldSpecs={fieldSpecs}
               results={loadedResults}
-              showCellEllipsis={showCellEllipsis}
               selectedRows={selectedRows}
+              showCellEllipsis={showCellEllipsis}
               table={table}
               wrapQueryResults={wrapQueryResults}
               onSelected={(rowIndex, isSelected, isShiftClick): void => {
@@ -727,7 +729,9 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
       primaryPaneKey="query-results"
       primaryPaneMaxWidth={splitPrimaryPaneMaxWidth}
       secondaryPane={
-        isSplit !== false ? (
+        isSplit === false ? (
+          <></>
+        ) : (
           renderSplitPane({
             results: results ?? [],
             selectedRows,
@@ -735,8 +739,6 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
             onFetchMore: canFetchMore ? handleFetchMore : undefined,
             onDelete: handleDelete,
           })
-        ) : (
-          <></>
         )
       }
       secondaryPaneKey="split-pane"

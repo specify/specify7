@@ -85,8 +85,10 @@ export const fetchSchemaData = async (): Promise<RawSchemaData> =>
     pickLists: fetchSchemaPickLists(),
   });
 
-// Re-fetch schema data after editing app resources. Pick lists and tables
-// are fetched fresh on every call
+/*
+ * Re-fetch schema data after editing app resources. Pick lists and tables
+ * are fetched fresh on every call
+ */
 export const refreshSchemaData = async (): Promise<RawSchemaData> => {
   await Promise.all([
     refreshFormatters(),

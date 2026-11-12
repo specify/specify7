@@ -5,6 +5,7 @@ import { commonText } from '../../localization/common';
 import { ajax } from '../../utils/ajax';
 import type { Parser } from '../../utils/parser/definitions';
 import { getValidationAttributes } from '../../utils/parser/definitions';
+import { keysToLowerCase } from '../../utils/utils';
 import { Input } from '../Atoms/Form';
 import { ReadOnlyContext, SearchDialogContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
@@ -15,7 +16,6 @@ import { raise } from '../Errors/Crash';
 import { fetchPathAsString } from '../Formatters/formatters';
 import { collectionPreferences } from '../Preferences/collectionPreferences';
 import { userPreferences } from '../Preferences/userPreferences';
-import { keysToLowerCase } from '../../utils/utils';
 
 export function UiField({
   field,

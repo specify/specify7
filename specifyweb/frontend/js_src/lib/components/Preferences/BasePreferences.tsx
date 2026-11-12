@@ -57,22 +57,16 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
      */
   >(undefined);
 
-  // eslint-disable-next-line functional/prefer-readonly-type
   private defaults: PartialPreferences<DEFINITIONS> = {};
 
-  // eslint-disable-next-line functional/prefer-readonly-type
   private values: PartialPreferences<DEFINITIONS> = {};
 
-  // eslint-disable-next-line functional/prefer-readonly-type
   private resourcePromise: Promise<ResourceWithData> | undefined = undefined;
 
-  // eslint-disable-next-line functional/prefer-readonly-type
   private syncPromise: Promise<void> | undefined;
 
-  // eslint-disable-next-line functional/prefer-readonly-type
   private isSyncPending = false;
 
-  // eslint-disable-next-line functional/prefer-readonly-type
   private syncTimeoutInstance: ReturnType<typeof setTimeout> | undefined =
     undefined;
 
@@ -160,9 +154,9 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
    */
   public definition<
     CATEGORY extends string & keyof DEFINITIONS,
-    SUBCATEGORY extends CATEGORY extends keyof DEFINITIONS
+    SUBCATEGORY extends (CATEGORY extends keyof DEFINITIONS
       ? string & keyof DEFINITIONS[CATEGORY]['subCategories']
-      : never,
+      : never),
     ITEM extends string &
       keyof DEFINITIONS[CATEGORY]['subCategories'][SUBCATEGORY]['items'],
   >(
@@ -186,9 +180,9 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
    */
   public get<
     CATEGORY extends string & keyof DEFINITIONS,
-    SUBCATEGORY extends CATEGORY extends keyof DEFINITIONS
+    SUBCATEGORY extends (CATEGORY extends keyof DEFINITIONS
       ? string & keyof DEFINITIONS[CATEGORY]['subCategories']
-      : never,
+      : never),
     ITEM extends string &
       keyof DEFINITIONS[CATEGORY]['subCategories'][SUBCATEGORY]['items'],
   >(
@@ -208,9 +202,9 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
    */
   set<
     CATEGORY extends string & keyof DEFINITIONS,
-    SUBCATEGORY extends CATEGORY extends keyof DEFINITIONS
+    SUBCATEGORY extends (CATEGORY extends keyof DEFINITIONS
       ? string & keyof DEFINITIONS[CATEGORY]['subCategories']
-      : never,
+      : never),
     ITEM extends string &
       keyof DEFINITIONS[CATEGORY]['subCategories'][SUBCATEGORY]['items'],
   >(
@@ -362,9 +356,9 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
    */
   public use<
     CATEGORY extends string & keyof DEFINITIONS,
-    SUBCATEGORY extends CATEGORY extends keyof DEFINITIONS
+    SUBCATEGORY extends (CATEGORY extends keyof DEFINITIONS
       ? string & keyof DEFINITIONS[CATEGORY]['subCategories']
-      : never,
+      : never),
     ITEM extends string &
       keyof DEFINITIONS[CATEGORY]['subCategories'][SUBCATEGORY]['items'],
   >(
@@ -438,9 +432,9 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
   // eslint-disable-next-line max-params
   public useKeyboardShortcut<
     CATEGORY extends string & keyof DEFINITIONS,
-    SUBCATEGORY extends CATEGORY extends keyof DEFINITIONS
+    SUBCATEGORY extends (CATEGORY extends keyof DEFINITIONS
       ? string & keyof DEFINITIONS[CATEGORY]['subCategories']
-      : never,
+      : never),
     ITEM extends string &
       keyof DEFINITIONS[CATEGORY]['subCategories'][SUBCATEGORY]['items'],
   >(
@@ -577,14 +571,14 @@ type ResourceWithData = UserResource & {
 /**
  * Represents a JSON structure that is actually storing the preferences
  */
-// eslint-disable-next-line functional/prefer-readonly-type
+
 export type PartialPreferences<DEFINITIONS extends GenericPreferences> = {
-  // eslint-disable-next-line functional/prefer-readonly-type
   [CATEGORY in string & keyof DEFINITIONS]?: {
-    // eslint-disable-next-line functional/prefer-readonly-type
     [SUBCATEGORY in string & keyof DEFINITIONS[CATEGORY]['subCategories']]?: {
-      [ITEM in string &
-        keyof DEFINITIONS[CATEGORY]['subCategories'][SUBCATEGORY]['items']]?: DEFINITIONS[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue'];
+      [
+        ITEM in string &
+          keyof DEFINITIONS[CATEGORY]['subCategories'][SUBCATEGORY]['items']
+      ]?: DEFINITIONS[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue'];
     };
   };
 };

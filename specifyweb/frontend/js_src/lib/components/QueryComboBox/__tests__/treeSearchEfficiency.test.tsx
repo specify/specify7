@@ -7,11 +7,11 @@
  * more than enough for a dropdown.
  */
 import { requireContext } from '../../../tests/helpers';
+import { localized } from '../../../utils/types';
 import { serializeResource } from '../../DataModel/serializers';
 import { tables } from '../../DataModel/tables';
 import { userPreferences } from '../../Preferences/userPreferences';
 import { queryFieldFilterSpecs } from '../../QueryBuilder/FieldFilterSpec';
-import { localized } from '../../../utils/types';
 import { QUERY_COMBO_BOX_PAGE_SIZE } from '../constants';
 import { makeComboBoxQuery } from '../helpers';
 
@@ -51,7 +51,7 @@ describe('Tree search efficiency', () => {
       (field: { readonly isDisplay: boolean }) => !field.isDisplay
     );
 
-    // startsWith operator (id 15), NOT like (id 0)
+    // StartsWith operator (id 15), NOT like (id 0)
     expect(searchField?.operStart).toBe(queryFieldFilterSpecs.startsWith.id);
     // Value should NOT be wrapped in % wildcards
     expect(searchField?.startValue).toBe('rosa');
@@ -151,8 +151,10 @@ describe('Tree search efficiency', () => {
   );
 
   test('search limit is at most 50', () => {
-    // The exported constant from index.tsx controls runQuery limit.
-    // If someone bumps it back to 1000, this test catches it.
+    /*
+     * The exported constant from index.tsx controls runQuery limit.
+     * If someone bumps it back to 1000, this test catches it.
+     */
     expect(QUERY_COMBO_BOX_PAGE_SIZE).toBeLessThanOrEqual(50);
   });
 });

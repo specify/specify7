@@ -75,8 +75,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   readonly onClose: () => void;
   readonly onSaved: (resource: SpecifyResource<SCHEMA>) => void;
   readonly onClone:
-    | ((resources: RA<SpecifyResource<SCHEMA>>) => void)
-    | undefined;
+    ((resources: RA<SpecifyResource<SCHEMA>>) => void) | undefined;
   readonly onFetch?: (
     index: number
   ) => Promise<RA<number | undefined> | undefined>;
@@ -140,7 +139,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                * Since React's setState has a special behavior when a function
                * argument is passed, need to wrap a function in a function
                */
-              // eslint-disable-next-line unicorn/consistent-function-scoping
+
               setUnloadProtect(() => () => handleAdd(resources));
             else handleAdd(resources);
           }

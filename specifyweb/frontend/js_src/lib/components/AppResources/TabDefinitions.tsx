@@ -19,6 +19,7 @@ import type {
   SpAppResourceDir,
   SpViewSetObj,
 } from '../DataModel/types';
+import { DataViewQueryEditor } from '../DataViews/QueryEditor';
 import { RssExportFeedEditor } from '../ExportFeed';
 import { exportFeedSpec } from '../ExportFeed/spec';
 import { ExpressSearchConfigResourceEditor } from '../ExpressSearchConfig/ExpressSearchConfigEditor';
@@ -40,7 +41,6 @@ import { WebLinkEditor } from '../WebLinks/Editor';
 import { webLinksSpec } from '../WebLinks/spec';
 import { useCodeMirrorExtensions } from './EditorComponents';
 import type { appResourceSubTypes } from './types';
-import { DataViewQueryEditor } from '../DataViews/QueryEditor';
 
 export type AppResourceEditorType = 'generic' | 'json' | 'visual' | 'xml';
 

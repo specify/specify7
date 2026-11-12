@@ -1,11 +1,12 @@
 import React from 'react';
-import { resourceToStringIdentifier } from './state';
-import { SpecifyResource } from '../DataModel/legacyTypes';
-import { AnySchema } from '../DataModel/helperTypes';
-import { DeleteBlockerResource } from './store';
-import { RA } from '../../utils/types';
-import { useDeleteBlockerStore } from './Context';
+
 import { useLiveState } from '../../hooks/useLiveState';
+import type { RA } from '../../utils/types';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { useDeleteBlockerStore } from './Context';
+import { resourceToStringIdentifier } from './state';
+import type { DeleteBlockerResource } from './store';
 
 export function useDeleteBlockersForResource(
   resource: SpecifyResource<AnySchema>,

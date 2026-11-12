@@ -2,8 +2,8 @@ import React from 'react';
 
 import type { RA } from '../../utils/types';
 import type { GetSet } from '../../utils/types';
-import { getTableById, strictGetTable } from '../DataModel/tables';
 import type { SpecifyTable } from '../DataModel/specifyTable';
+import { getTableById, strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { userPreferences } from '../Preferences/userPreferences';
 import { tablesFilter } from '../SchemaConfig/Tables';

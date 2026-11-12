@@ -120,13 +120,15 @@ test('Simple Search passes records, fields, pagination and independent selection
   expect(latestProps('CollectionObject').selectedRows[0].size).toBe(0);
 
   await act(async () => {
-    expect(await latestProps('Agent').fetchResults?.(40)).toEqual(
+    await expect(latestProps('Agent').fetchResults?.(40)).resolves.toEqual(
       primary.results
     );
-    expect(await latestProps('CollectionObject').fetchResults?.(40)).toEqual(
-      secondary.results
+    await expect(
+      latestProps('CollectionObject').fetchResults?.(40)
+    ).resolves.toEqual(secondary.results);
+    await expect(latestProps('CollectionObject').fetchCount?.()).resolves.toBe(
+      1
     );
-    expect(await latestProps('CollectionObject').fetchCount?.()).toBe(1);
   });
   const relatedPage = ajax.mock.calls
     .map(([url]) => new URL(url, 'http://localhost'))

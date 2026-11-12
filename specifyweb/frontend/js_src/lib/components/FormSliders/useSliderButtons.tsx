@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { formsText } from '../../localization/forms';
 import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';

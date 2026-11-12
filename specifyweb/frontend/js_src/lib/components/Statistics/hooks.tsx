@@ -582,10 +582,7 @@ export function useDynamicCategorySetter(
 ) {
   React.useEffect(() => {
     dynamicStatsSpec.forEach(({ responseKey }) => {
-      if (
-        dynamicEphemeralResponse !== undefined &&
-        dynamicEphemeralResponse[responseKey] !== undefined
-      ) {
+      if (dynamicEphemeralResponse?.[responseKey] !== undefined) {
         handleChange((oldCategory) =>
           oldCategory.map((dynamicCategory) => ({
             ...dynamicCategory,
@@ -612,10 +609,7 @@ export function useDefaultDynamicCategorySetter(
 ) {
   React.useEffect(() => {
     dynamicStatsSpec.forEach(({ responseKey }) => {
-      if (
-        defaultDynamicEphemeralResponse !== undefined &&
-        defaultDynamicEphemeralResponse[responseKey] !== undefined
-      ) {
+      if (defaultDynamicEphemeralResponse?.[responseKey] !== undefined) {
         setDefaultLayout((oldLayout) =>
           oldLayout === undefined
             ? undefined

@@ -353,7 +353,6 @@ const borderSpec = f.store(() =>
   })
 );
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const subViewSpec = (
   cell: SpecToJson<ReturnType<typeof cellSpec>>,
   table: SpecifyTable | undefined
@@ -489,7 +488,6 @@ const subViewSpec = (
     ...borderSpec(),
   });
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const panelSpec = (
   _cell: SpecToJson<ReturnType<typeof cellSpec>>,
   table: SpecifyTable | undefined
@@ -590,7 +588,6 @@ const iconViewSpec = f.store(() =>
 // FIXME: when changing cell type, remove attributes
 const emptySpec = f.store(() => createXmlSpec({}));
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const fieldSpec = (
   cell: SpecToJson<ReturnType<typeof cellSpec>>,
   table: SpecifyTable | undefined
@@ -794,7 +791,6 @@ const textSpec = f.store(() =>
   })
 );
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const textAreaSpec = (
   _field: SpecToJson<ReturnType<typeof rawFieldSpec>>,
   _: unknown,

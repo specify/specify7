@@ -7,7 +7,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 import type { IR } from '../../utils/types';
 import { localized } from '../../utils/types';
 import { camelToHuman } from '../../utils/utils';
-import { type UiFormatter, getUiFormatters } from '../FieldFormatters';
+import { getUiFormatters, type UiFormatter } from '../FieldFormatters';
 import { isTreeTable } from '../InitialContext/treeRanks';
 import { getFrontEndPickLists } from '../PickLists/definitions';
 import type { AnySchema } from './helperTypes';
@@ -78,13 +78,10 @@ export abstract class FieldBase {
 
   public readonly name: string;
 
-  // eslint-disable-next-line functional/prefer-readonly-type
   public isHidden: boolean;
 
-  // eslint-disable-next-line functional/prefer-readonly-type
   public isReadOnly: boolean;
 
-  // eslint-disable-next-line functional/prefer-readonly-type
   public isVirtual: boolean = false;
 
   public readonly isRequired: boolean;
@@ -96,13 +93,12 @@ export abstract class FieldBase {
    * legacy fields
    */
   public readonly overrides: {
-    // eslint-disable-next-line functional/prefer-readonly-type
     isRequired: boolean;
     // If relatedTable isHidden, this is set to true
-    // eslint-disable-next-line functional/prefer-readonly-type
+
     isHidden: boolean;
     // If relatedTable isSystem, this is set to true
-    // eslint-disable-next-line functional/prefer-readonly-type
+
     isReadOnly: boolean;
   };
 
@@ -287,7 +283,6 @@ export class LiteralField extends FieldBase {
 }
 
 export class Relationship extends FieldBase {
-  // eslint-disable-next-line functional/prefer-readonly-type
   public otherSideName?: string;
 
   public readonly relatedTable: SpecifyTable;

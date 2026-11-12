@@ -2,6 +2,7 @@ import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useDelay } from '../../hooks/useDelay';
+import { useElementSize } from '../../hooks/useElementSize';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { mergingText } from '../../localization/merging';
@@ -10,14 +11,13 @@ import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
 import { SECOND } from '../Atoms/timeUnits';
 import type { AnySchema } from '../DataModel/helperTypes';
+import { DeleteBlockers } from '../DeleteBlockers';
+import { MIN_DELETEBLOCKER_CONTAINER_WIDTH } from '../DeleteBlockers';
+import { DeleteBlockerProvider } from '../DeleteBlockers/Context';
+import { useDirectDeleteBlockersForResource } from '../DeleteBlockers/useDeleteBlockersForResource';
 import type { DeleteButtonProps } from '../Forms/DeleteButton';
 import { loadingBar } from '.';
 import { Dialog, dialogClassNames } from './Dialog';
-import { DeleteBlockerProvider } from '../DeleteBlockers/Context';
-import { useDirectDeleteBlockersForResource } from '../DeleteBlockers/useDeleteBlockersForResource';
-import { DeleteBlockers } from '../DeleteBlockers';
-import { MIN_DELETEBLOCKER_CONTAINER_WIDTH } from '../DeleteBlockers';
-import { useElementSize } from '../../hooks/useElementSize';
 
 const LOADING_TIMEOUT = 2 * SECOND;
 
@@ -127,10 +127,10 @@ function LinkedRecords<SCHEMA extends AnySchema>({
         ) : (
           <Dialog
             buttons={commonText.close()}
-            forwardRef={{ container: elementRef }}
             className={{
               container: dialogClassNames.wideContainer,
             }}
+            forwardRef={{ container: elementRef }}
             header={mergingText.linkedRecords()}
             icon={icons.documentSearch}
             onClose={handleClose}

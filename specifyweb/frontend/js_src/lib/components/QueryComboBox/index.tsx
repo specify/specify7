@@ -44,10 +44,10 @@ import type { QueryComboBoxFilter } from '../SearchDialog';
 import { SearchDialog } from '../SearchDialog';
 import { QUERY_COMBO_BOX_PAGE_SIZE } from './constants';
 import {
+  deduplicateQueryComboBoxResults,
   getQueryComboBoxConditions,
   getRelatedCollectionId,
   makeComboBoxQuery,
-  deduplicateQueryComboBoxResults,
   pendingValueToResource,
   scopeNewResourceToCollection,
   useQueryComboBoxDefaults,
@@ -96,8 +96,7 @@ export function QueryComboBox({
   readonly defaultRecord?: string | undefined;
   readonly relatedTable?: SpecifyTable | undefined;
   readonly onSavingNewRecord?:
-    | ((resource: SpecifyResource<AnySchema>) => void)
-    | undefined;
+    ((resource: SpecifyResource<AnySchema>) => void) | undefined;
 }): JSX.Element {
   React.useEffect(() => {
     useQueryComboBoxDefaults({ resource, field, defaultRecord });
@@ -280,8 +279,7 @@ export function QueryComboBox({
               .then(
                 (
                   collectionObjectType:
-                    | SpecifyResource<CollectionObjectType>
-                    | undefined
+                    SpecifyResource<CollectionObjectType> | undefined
                 ) => collectionObjectType?.get('taxonTreeDef')
               )
           : undefined;
@@ -466,7 +464,7 @@ export function QueryComboBox({
           return;
         loadingMoreRef.current = undefined;
         setIsLoadingMore(false);
-        setExtraItems((prev) => [...prev, ...newItems]);
+        setExtraItems((previous) => [...previous, ...newItems]);
       })
       .catch(() => {
         if (loadingMoreRef.current === queries) {
@@ -515,6 +513,7 @@ export function QueryComboBox({
             (formatted === undefined &&
               document.activeElement !== inputRef.current)
           }
+          extraItems={extraItems}
           filterItems={false}
           forwardRef={validationRef}
           inputProps={{
@@ -528,7 +527,6 @@ export function QueryComboBox({
             type: 'text',
             [titlePosition]: 'top',
           }}
-          extraItems={extraItems}
           isLoadingMore={isLoadingMore}
           pendingValueRef={pendingValueRef}
           source={fetchSource}
@@ -545,7 +543,6 @@ export function QueryComboBox({
             updateValue(data);
           }}
           onCleared={(): void => updateValue('')}
-          onScrollEnd={handleScrollEnd}
           onNewValue={
             formType !== 'formTable' && canAdd
               ? (): void =>
@@ -561,6 +558,7 @@ export function QueryComboBox({
                       )
               : undefined
           }
+          onScrollEnd={handleScrollEnd}
         />
         <span className="contents print:hidden">
           {formType === 'formTable' ? undefined : isReadOnly ? (

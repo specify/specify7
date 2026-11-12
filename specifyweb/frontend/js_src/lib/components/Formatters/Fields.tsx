@@ -270,7 +270,7 @@ function FieldFormat({
 }): JSX.Element {
   const isReadOnly = React.useContext(ReadOnlyContext);
   const format = field.format ?? '';
-  const substitution = field.format?.match(/%[sd]/)?.[0] ?? '%s';
+  const substitution = field.format?.match(/%[ds]/)?.[0] ?? '%s';
   const [prefix, suffix] = format.includes(substitution)
     ? format.split(substitution, 2)
     : [format, ''];

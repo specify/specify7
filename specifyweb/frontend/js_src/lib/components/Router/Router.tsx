@@ -233,7 +233,7 @@ function Overlay({
 
   const handleCloseOverlay = React.useCallback(
     // False positive
-    // eslint-disable-next-line functional/prefer-tacit
+
     () => handleCloseRef.current(),
     []
   );

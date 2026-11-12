@@ -1,11 +1,11 @@
 import React from 'react';
-import type { LocalizedString } from 'typesafe-i18n';
 import { useNavigate } from 'react-router-dom';
-import { commonText } from '../../localization/common';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { useLiveState } from '../../hooks/useLiveState';
 import { useTriggerState } from '../../hooks/useTriggerState';
+import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { localityText } from '../../localization/locality';
 import { getAppResourceUrl } from '../../utils/ajax/helpers';
@@ -75,8 +75,7 @@ export function AppResourceEditor({
   children,
 }: {
   readonly resource:
-    | SerializedResource<SpAppResource>
-    | SerializedResource<SpViewSetObject>;
+    SerializedResource<SpAppResource> | SerializedResource<SpViewSetObject>;
   readonly directory: ScopedAppResourceDir;
   readonly initialData: string | undefined;
   readonly onDeleted: (() => void) | undefined;
@@ -90,8 +89,7 @@ export function AppResourceEditor({
     | undefined;
   readonly onSaved: (
     resource:
-      | SerializedResource<SpAppResource>
-      | SerializedResource<SpViewSetObject>,
+      SerializedResource<SpAppResource> | SerializedResource<SpViewSetObject>,
     directory: ScopedAppResourceDir
   ) => void;
   readonly children: (renderProps: {
@@ -246,7 +244,7 @@ export function AppResourceEditor({
   const footer = (
     <>
       {
-        // handleClone is undefined when the editor is used in a dialog, so don't show the close button in that case
+        // HandleClone is undefined when the editor is used in a dialog, so don't show the close button in that case
         handleClone === undefined ? undefined : (
           <Button.Secondary
             onClick={(): void =>

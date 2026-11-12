@@ -24,6 +24,7 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { hasPermission } from '../Permissions/helpers';
 import { NotFoundView } from '../Router/NotFoundView';
 import { staticAttachmentImportPaths } from './importPaths';
+import { MatchingModeDialog } from './MatchingModeDialog';
 import { AttachmentDatasetMeta } from './RenameDataSet';
 import { AttachmentRollback } from './Rollback';
 import { SelectUploadPath } from './SelectUploadPath';
@@ -49,7 +50,6 @@ import {
 } from './utils';
 import { AttachmentsValidationDialog } from './ValidationDialog';
 import { ViewAttachmentFiles } from './ViewAttachmentFiles';
-import { MatchingModeDialog } from './MatchingModeDialog';
 
 export type AttachmentUploadSpec = {
   readonly staticPathKey: keyof typeof staticAttachmentImportPaths;
@@ -144,8 +144,10 @@ function AttachmentsImport({
 
   const applyFileNames = React.useCallback(
     (file: UnBoundFile): PartialUploadableFileSpec => {
-      // In mapping-file mode, look up the match value from the CSV data
-      // (works even before a field path is selected)
+      /*
+       * In mapping-file mode, look up the match value from the CSV data
+       * (works even before a field path is selected)
+       */
       if (
         eagerDataSet.uploadplan.matchingMode === 'mappingFile' &&
         eagerDataSet.uploadplan.mappingFileData !== undefined
@@ -508,7 +510,7 @@ function AttachmentsImport({
           onValidated={(validatedFiles) => {
             if (validatedFiles === undefined) return undefined;
             setMissingFiles(validatedFiles.filter(isMappingFilePlaceholder));
-            return commitChange(
+            return void commitChange(
               (oldState) => ({
                 ...oldState,
                 uploaderstatus: 'main',
@@ -593,8 +595,8 @@ function AttachmentsImport({
       )}
       {showModeDialog && (
         <MatchingModeDialog
-          initialData={eagerDataSet.uploadplan.mappingFileData}
           initialColumns={eagerDataSet.uploadplan.mappingFileColumns}
+          initialData={eagerDataSet.uploadplan.mappingFileData}
           initialMode={eagerDataSet.uploadplan.matchingMode}
           onClose={() => {
             // Default to filename mode if user closes without choosing

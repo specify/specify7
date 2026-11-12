@@ -46,9 +46,9 @@ import { QueryFields } from './Fields';
 import { QueryFromMap } from './FromMap';
 import { QueryHeader } from './Header';
 import { unParseQueryFields } from './helpers';
+import { QueryBuilderResults } from './QueryBuilderResults';
 import { getInitialState, reducer } from './reducer';
 import type { QueryResultRow } from './Results';
-import { QueryBuilderResults } from './QueryBuilderResults';
 import { QueryToolbar } from './Toolbar';
 import { useQueryExecution } from './useQueryExecution';
 import { useQuerySplitView } from './useQuerySplitView';
@@ -382,10 +382,13 @@ function Wrapped({
            *   See https://github.com/specify/specify7/issues/3000
            */}
           <QueryHeader
+            canUseHorizontalSplit={canUseHorizontalSplit}
             form={form}
             getQueryFieldRecords={getQueryFieldRecords}
             isEmbedded={isEmbedded}
+            isHorizontal={isHorizontal}
             isScrolledTop={isScrolledTop}
+            isSplit={isSplit}
             query={query}
             queryResource={queryResource}
             recordSet={recordSet}
@@ -397,12 +400,9 @@ function Wrapped({
               initialFields.current = JSON.stringify(state.fields);
               dispatch({ type: 'SavedQueryAction' });
             }}
-            onTriedToSave={handleTriedToSave}
-            isSplit={isSplit}
-            canUseHorizontalSplit={canUseHorizontalSplit}
-            isHorizontal={isHorizontal}
-            onToggleSplit={toggleSplit}
             onToggleOrientation={toggleOrientation}
+            onToggleSplit={toggleSplit}
+            onTriedToSave={handleTriedToSave}
           />
           <CheckReadAccess query={query} />
           <Form
@@ -479,8 +479,8 @@ function Wrapped({
                         });
                     },
                   })}
-                  showHiddenFields={showHiddenFields}
                   searchSpec={navigatorSpecs.queryBuilder}
+                  showHiddenFields={showHiddenFields}
                   onSelectSearchResult={(mappingPath): void => {
                     dispatch({ type: 'SetMappingViewAction', mappingPath });
                     if (

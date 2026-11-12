@@ -1,11 +1,11 @@
 import { LRUCache } from '../../utils/lruCache';
-import { RA } from '../../utils/types';
-import { AnySchema } from '../DataModel/helperTypes';
-import { SpecifyResource } from '../DataModel/legacyTypes';
-import { Tables } from '../DataModel/types';
+import type { RA } from '../../utils/types';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
-import { APIDeleteBlockerPage } from './deleteBlockers';
-import { ResourceIdentifier } from './state';
+import type { APIDeleteBlockerPage } from './deleteBlockers';
+import type { ResourceIdentifier } from './state';
 
 export type BlockerPageCacheKey = string;
 
@@ -128,8 +128,10 @@ export class DeleteBlockerLRU {
     return this.pageCache.peek(cacheKey);
   }
 
-  // Given a specific resource identifier (table + id), this removes all pages
-  // owned by that resource
+  /*
+   * Given a specific resource identifier (table + id), this removes all pages
+   * owned by that resource
+   */
   public removePagesOwnedBy(identifer: ResourceIdentifier) {
     for (const cacheKey of this.pageCache.keys()) {
       if (cacheKey.startsWith(identifer)) {
@@ -139,6 +141,6 @@ export class DeleteBlockerLRU {
   }
 
   public clear() {
-    return this.pageCache.clear();
+    return void this.pageCache.clear();
   }
 }
