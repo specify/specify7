@@ -3,17 +3,21 @@ import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 
 import { commonText } from '../../../localization/common';
+import { formsText } from '../../../localization/forms';
 import { treeText } from '../../../localization/tree';
 import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
 import { mount } from '../../../tests/reactUtils';
+import { getCache, setCache } from '../../../utils/cache';
 import { Http } from '../../../utils/ajax/definitions';
 import { f } from '../../../utils/functools';
 import { LoadingContext } from '../../Core/Contexts';
 import { addMissingFields } from '../../DataModel/addMissingFields';
 import { getResourceApiUrl } from '../../DataModel/resource';
+import { deserializeResource } from '../../DataModel/serializers';
 import { tables } from '../../DataModel/tables';
 import { clearViewLocal } from '../../FormParse';
+import { ResourceEdit } from '../../Molecules/ResourceLink';
 import {
   SetUnloadProtectsContext,
   UnloadProtectsContext,
@@ -243,5 +247,113 @@ describe('Cannot add rank in tree creation dialog', () => {
         })
         .filter((button) => !(button as HTMLButtonElement).disabled)
     ).toHaveLength(0);
+  });
+});
+
+describe('Delete new taxon tree', () => {
+  const treeId = 5;
+  const defaultTreeId = 1;
+  const disciplineUrl = getResourceApiUrl('Discipline', 3);
+  const deleteRequest = jest.fn(() => '');
+
+  beforeAll(() => clearViewLocal('TaxonTreeDef'));
+  overrideAjax(
+    '/context/view.json?name=TaxonTreeDef',
+    {
+      name: 'TaxonTreeDef',
+      class: 'edu.ku.brc.specify.datamodel.TaxonTreeDef',
+      isinternal: 'false',
+      resourcelabels: 'false',
+      altviews: {
+        'TaxonTreeDef Edit': {
+          name: 'TaxonTreeDef Edit',
+          viewdef: 'TaxonTreeDef',
+          mode: 'edit',
+          default: 'true',
+        },
+      },
+      viewdefs: {
+        TaxonTreeDef: `<viewdef name="TaxonTreeDef" type="form" class="edu.ku.brc.specify.datamodel.TaxonTreeDef" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+          <columnDef>p,p</columnDef>
+          <rowDef>p</rowDef>
+          <rows>
+            <row><cell type="label" labelfor="name" /><cell type="field" id="name" uitype="text" name="name" /></row>
+          </rows>
+        </viewdef>`,
+      },
+    },
+    {},
+    true
+  );
+  overrideAjax(
+    `/delete_blockers/delete_blockers/taxontreedef/${treeId}/?limit=40`,
+    { results: [], next: [] }
+  );
+  overrideAjax(`/delete_blockers/count/taxontreedef/${treeId}/`, {
+    results: [],
+    total_count: 0,
+  });
+  overrideAjax(getResourceApiUrl('TaxonTreeDef', treeId), deleteRequest, {
+    method: 'DELETE',
+    responseCode: Http.NO_CONTENT,
+  });
+
+  test('deleting the new tree returns to the default taxon tree', async () => {
+    const consoleError = jest
+      .spyOn(console, 'error')
+      .mockImplementation(f.void);
+    const isNavigation = (error: unknown): boolean =>
+      (error as Error | undefined)?.message?.startsWith(
+        'Not implemented: navigation'
+      ) === true;
+    setCache('tree', 'definitionTaxon', treeId);
+    const tree = deserializeResource(
+      addMissingFields('TaxonTreeDef', {
+        id: treeId,
+        name: treeText.emptyTree(),
+        discipline: disciplineUrl,
+        resource_uri: getResourceApiUrl('TaxonTreeDef', treeId),
+      })
+    );
+
+    const { user } = mount(
+      <MemoryRouter>
+        <LoadingContext.Provider value={f.void}>
+          <UnloadProtectsContext.Provider value={[]}>
+            <SetUnloadProtectsContext.Provider value={f.void}>
+              <ResourceEdit resource={tree} />
+            </SetUnloadProtectsContext.Provider>
+          </UnloadProtectsContext.Provider>
+        </LoadingContext.Provider>
+      </MemoryRouter>
+    );
+
+    await user.click(screen.getByRole('link', { name: commonText.edit() }));
+    const form = await screen.findByRole('dialog', {
+      name: new RegExp(treeText.emptyTree(), 'u'),
+    });
+    await user.click(
+      await within(form).findByRole('button', { name: commonText.delete() })
+    );
+    const confirmation = await screen.findByRole('dialog', {
+      name: formsText.deleteConfirmation({
+        tableName: tables.TaxonTreeDef.label,
+      }),
+    });
+    await user.click(
+      within(confirmation).getByRole('button', { name: commonText.delete() })
+    );
+
+    await waitFor(() =>
+      expect(
+        consoleError.mock.calls.some(([error]) => isNavigation(error))
+      ).toBe(true)
+    );
+    expect(deleteRequest).toHaveBeenCalledTimes(1);
+    expect(getCache('tree', 'definitionTaxon')).toBe(defaultTreeId);
+    expect(
+      consoleError.mock.calls.every(([error]) => isNavigation(error))
+    ).toBe(true);
+    consoleError.mockRestore();
   });
 });
