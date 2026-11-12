@@ -1614,6 +1614,9 @@ export function QueryMapping({
   const requestReplacement = (
     replacement: NonNullable<typeof pendingReplacement>
   ): void => {
+    // Invalidate an in-flight fetch as soon as a newer replacement is requested,
+    // including while the user is deciding whether to confirm it.
+    replacementRequest.current += 1;
     setShowSettings(false);
     setPendingReplacement(replacement);
   };
