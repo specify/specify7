@@ -66,7 +66,7 @@ test('uses relationship schema for remote one-to-one formats before and after re
   const spec = QueryFieldSpec.fromPath('CollectionObject', remotePath);
   const attributes = spec.toSpQueryAttributes();
   const reloaded = QueryFieldSpec.fromStringId(
-    attributes.stringId, attributes.isRelFld
+    attributes.stringId, attributes.isRelFld ?? false
   ).toMappingPath();
   expect(queryFieldFormatType(reloaded, 'CollectionObject')).toBe('formatter');
   expect(queryFieldFormatType(['preparations', formatToManyIndex(2), formattedEntry], 'CollectionObject')).toBe('aggregator');
