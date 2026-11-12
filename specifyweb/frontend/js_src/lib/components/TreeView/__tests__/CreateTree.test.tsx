@@ -12,6 +12,8 @@ import { f } from '../../../utils/functools';
 import { LoadingContext } from '../../Core/Contexts';
 import { addMissingFields } from '../../DataModel/addMissingFields';
 import { getResourceApiUrl } from '../../DataModel/resource';
+import { tables } from '../../DataModel/tables';
+import { clearViewLocal } from '../../FormParse';
 import {
   SetUnloadProtectsContext,
   UnloadProtectsContext,
@@ -137,5 +139,109 @@ describe('Add new taxon tree', () => {
       true
     );
     consoleError.mockRestore();
+  });
+});
+
+describe('Cannot add rank in tree creation dialog', () => {
+  beforeAll(() => clearViewLocal('TaxonTreeDef'));
+  beforeEach(() => {
+    jest.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(null);
+  });
+  afterEach(() => jest.restoreAllMocks());
+  overrideAjax(
+    '/context/view.json?name=TaxonTreeDef',
+    {
+      name: 'TaxonTreeDef',
+      class: 'edu.ku.brc.specify.datamodel.TaxonTreeDef',
+      isinternal: 'false',
+      resourcelabels: 'false',
+      altviews: {
+        'TaxonTreeDef Edit': {
+          name: 'TaxonTreeDef Edit',
+          viewdef: 'TaxonTreeDef',
+          mode: 'edit',
+          default: 'true',
+        },
+      },
+      viewdefs: {
+        TaxonTreeDef: `<viewdef name="TaxonTreeDef" type="form" class="edu.ku.brc.specify.datamodel.TaxonTreeDef" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+          <columnDef>p,p</columnDef>
+          <rowDef>p,p</rowDef>
+          <rows>
+            <row><cell type="label" labelfor="name" /><cell type="field" id="name" uitype="text" name="name" /></row>
+            <row><cell type="subview" id="items" name="treeDefItems" colspan="2" defaulttype="table" initialize="sortField=rankId" /></row>
+          </rows>
+        </viewdef>`,
+      },
+    },
+    {},
+    true
+  );
+  overrideAjax('/context/view.json?name=TaxonTreeDefItem', {
+    name: 'TaxonTreeDefItem',
+    class: 'edu.ku.brc.specify.datamodel.TaxonTreeDefItem',
+    isinternal: 'false',
+    resourcelabels: 'false',
+    altviews: {
+      'TaxonTreeDefItem Edit': {
+        name: 'TaxonTreeDefItem Edit',
+        viewdef: 'TaxonTreeDefItem',
+        mode: 'edit',
+        default: 'true',
+      },
+    },
+    viewdefs: {
+      TaxonTreeDefItem: `<viewdef name="TaxonTreeDefItem" type="form" class="edu.ku.brc.specify.datamodel.TaxonTreeDefItem" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+        <columnDef>p,p</columnDef>
+        <rowDef>p</rowDef>
+        <rows>
+          <row><cell type="label" labelfor="1" /><cell type="field" id="1" name="name" uitype="text" /></row>
+        </rows>
+      </viewdef>`,
+    },
+  });
+
+  test('the ranks of a new tree have no enabled "Add" button', async () => {
+    const { user } = mount(
+      <MemoryRouter>
+        <LoadingContext.Provider value={f.void}>
+          <UnloadProtectsContext.Provider value={[]}>
+            <SetUnloadProtectsContext.Provider value={f.void}>
+              <CreateTree tableName="Taxon" treeDefinitions={[]} />
+            </SetUnloadProtectsContext.Provider>
+          </UnloadProtectsContext.Provider>
+        </LoadingContext.Provider>
+      </MemoryRouter>
+    );
+
+    await user.click(screen.getByRole('button', { name: treeText.addTree() }));
+    const addTreeDialog = await screen.findByRole('dialog', {
+      name: treeText.addTree(),
+    });
+    await user.click(
+      within(addTreeDialog).getByRole('button', { name: treeText.emptyTree() })
+    );
+
+    const form = await screen.findByRole('dialog', { name: /Taxon Tree/u });
+    await waitFor(() =>
+      expect(
+        within(form)
+          .getAllByRole('textbox')
+          .map((input) => (input as HTMLInputElement).value)
+      ).toContain('Life')
+    );
+    const ranks = within(form).getByRole('group', {
+      name: new RegExp(
+        `^${tables.TaxonTreeDef.strictGetRelationship('treeDefItems').label}`,
+        'u'
+      ),
+    });
+    expect(
+      within(ranks)
+        .queryAllByRole('button', {
+          name: new RegExp(`^${commonText.add()}`, 'u'),
+        })
+        .filter((button) => !(button as HTMLButtonElement).disabled)
+    ).toHaveLength(0);
   });
 });
