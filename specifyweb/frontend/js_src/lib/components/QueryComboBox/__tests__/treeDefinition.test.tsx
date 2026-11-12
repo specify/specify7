@@ -1,5 +1,11 @@
 import React from 'react';
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { localized } from '../../../utils/types';
@@ -32,13 +38,15 @@ jest.mock('../../../utils/parser/definitions', () => ({
 
 jest.mock('../../Atoms/DataEntry', () => {
   const mockReact = jest.requireActual<typeof import('react')>('react');
-  const makeButton = (label: string) =>
+  const makeButton =
+    (label: string) =>
     ({
       enableShortcut: _enableShortcut,
       ...props
     }: React.ButtonHTMLAttributes<HTMLButtonElement> & {
       readonly enableShortcut?: boolean;
-    }) => mockReact.createElement('button', props, label);
+    }) =>
+      mockReact.createElement('button', props, label);
   return {
     DataEntry: {
       Add: makeButton('Add'),
@@ -279,9 +287,13 @@ describe('Determination QueryComboBox behavior', () => {
       });
 
       for (const taxon of expectedTaxa)
-        expect(await screen.findByRole('option', { name: taxon })).toBeVisible();
+        expect(
+          await screen.findByRole('option', { name: taxon })
+        ).toBeVisible();
       for (const taxon of excludedTaxa)
-        expect(screen.queryByRole('option', { name: taxon })).not.toBeInTheDocument();
+        expect(
+          screen.queryByRole('option', { name: taxon })
+        ).not.toBeInTheDocument();
 
       fireEvent.click(screen.getByRole('button', { name: 'Search' }));
       const searchFilters = JSON.parse(
@@ -356,7 +368,8 @@ describe('Determination QueryComboBox behavior', () => {
       'taxon',
       expect.objectContaining({ specifyTable: tables.Taxon })
     );
-    const assignedTaxon = setTaxon.mock.calls[0]?.[1] as SpecifyResource<AnySchema>;
+    const assignedTaxon = setTaxon.mock
+      .calls[0]?.[1] as SpecifyResource<AnySchema>;
     expect(assignedTaxon.get('name')).toBe('New taxon');
     expect(assignedTaxon.save).toHaveBeenCalledTimes(1);
   });
@@ -417,7 +430,8 @@ describe('Determination QueryComboBox behavior', () => {
       'agent',
       expect.objectContaining({ specifyTable: tables.Agent })
     );
-    const assignedAgent = setAgent.mock.calls[0]?.[1] as SpecifyResource<AnySchema>;
+    const assignedAgent = setAgent.mock
+      .calls[0]?.[1] as SpecifyResource<AnySchema>;
     expect(assignedAgent.get('lastName')).toBe('New Agent');
     expect(assignedAgent.save).toHaveBeenCalledTimes(1);
   });
