@@ -71,6 +71,8 @@ type Mapping = {
   readonly terms: RA<string | undefined>;
   readonly additionalQueries?: RA<string>;
   readonly constantFields?: RA<string>;
+  /** Original unlabelled structural ID, distinct from a vocabulary identifier. */
+  readonly legacyIdentifier?: string;
 };
 
 export type TermDefinition = {
@@ -227,13 +229,14 @@ export function getMappingTerm(
   mapping: {
     readonly extension: boolean;
     readonly rowType?: string;
+    readonly legacyIdentifier?: string;
     readonly fields: ReadonlyArray<{ readonly stringId: string; readonly formatName?: string | null }>;
     readonly terms: RA<string | undefined>;
   },
   field: MappingFieldIdentity
 ): string | undefined {
   const fieldIndex = getMappingFieldIndex(mapping, field);
-  return !mapping.extension && fieldIndex === 0
+  return !mapping.extension && fieldIndex === 0 && mapping.legacyIdentifier === undefined
     ? getCoreIdentifierTerm(mapping.rowType ?? occurrenceCoreRowType)
     : mapping.terms[fieldIndex];
 }
@@ -795,7 +798,10 @@ export function getMissingRequiredTerms(
           field.isDisplay === true &&
           getSerializedMappingTerm(mapping, field, index) === name
       );
-    const missingIdentifier = hasDisplayedTerm(identifierTerm)
+    const hasStructuralIdentifier = mapping.legacyIdentifier !== undefined && mapping.fields.some(
+      (field) => field.isDisplay && fieldFormatKey(field) === mapping.legacyIdentifier
+    );
+    const missingIdentifier = hasDisplayedTerm(identifierTerm) || hasStructuralIdentifier
       ? []
       : [
           {
@@ -915,6 +921,14 @@ const isCoreIdentifierField = (
 };
 
 export function ensureIdentifierTerm(mapping: Mapping): Mapping {
+  if (mapping.legacyIdentifier !== undefined) {
+    const identifierIndex = mapping.fields.findIndex((field) => fieldFormatKey(field) === mapping.legacyIdentifier);
+    if (identifierIndex >= 0) {
+      const indexes = [identifierIndex, ...mapping.fields.map((_, index) => index).filter((index) => index !== identifierIndex)];
+      const fields = indexes.map((index, position) => ({ ...mapping.fields[index], position }));
+      return { ...mapping, fields, terms: indexes.map((index) => mapping.terms[index]), query: mapping.query.set('fields', fields) };
+    }
+  }
   const identifierIndex = mapping.fields.findIndex((field) =>
     isCoreIdentifierField(mapping, field)
   );
@@ -1200,6 +1214,10 @@ export function parseDefinition(data: string | null): RA<Mapping> {
         (field) => field.getAttribute('term') ?? undefined
       );
       const serializedFields = fields.map(serializeResource);
+      const legacyIdIndex = fieldNodes.findIndex((field) =>
+        field.tagName === 'id' && !field.hasAttribute('term') &&
+        field.getAttribute('stringId')?.toLowerCase().endsWith('collectionobject.collectionobjectid')
+      );
       const automaticTerms = autoMapCoreFields(
         serializedFields,
         availableTermNames(extension, extensionDefinition, coreRowType)
@@ -1220,6 +1238,7 @@ export function parseDefinition(data: string | null): RA<Mapping> {
               : 'core.csv'),
         query,
         fields: serializedFields,
+        legacyIdentifier: legacyIdIndex >= 0 ? fieldFormatKey(serializedFields[legacyIdIndex]) : undefined,
         // Legacy definitions often omitted terms for recognizable fields.
         // Populate only missing terms; explicit and custom values remain intact.
         terms: explicitTerms.map(
@@ -1301,7 +1320,9 @@ export function serializeDefinition(mappings: RA<Mapping>): string {
       const term = getSerializedMappingTerm(mapping, field, index);
       const isId =
         field.isDisplay === true &&
-        term === getCoreIdentifierTerm(mapping.coreRowType);
+        (mapping.legacyIdentifier === undefined
+          ? term === getCoreIdentifierTerm(mapping.coreRowType)
+          : fieldFormatKey(field) === mapping.legacyIdentifier);
       const node = document.createElement(isId ? 'id' : 'field');
       node.setAttribute('stringId', field.stringId);
       node.setAttribute('oper', String(field.operStart));

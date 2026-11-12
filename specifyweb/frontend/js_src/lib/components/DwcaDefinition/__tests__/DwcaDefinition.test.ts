@@ -48,6 +48,20 @@ import {
 const occurrenceId = 'http://rs.tdwg.org/dwc/terms/occurrenceID';
 const kingdom = 'http://rs.tdwg.org/dwc/terms/kingdom';
 
+test('preserves an unlabelled legacy collectionObjectId as the structural ID', () => {
+  const xml = `<archive><core rowType="http://rs.tdwg.org/dwc/terms/Occurrence"><queries><query contextTableId="1">
+    <id stringId="1.collectionobject.collectionObjectId" oper="1" value="" isNot="false" isRelFld="false" />
+    <field stringId="1.collectionobject.guid" term="${occurrenceId}" />
+  </query></queries></core></archive>`;
+  const mappings = parseDefinition(xml);
+  expect(mappings[0].fields).toHaveLength(2);
+  const saved = new DOMParser().parseFromString(serializeDefinition(mappings), 'text/xml');
+  expect(saved.querySelectorAll('query id')).toHaveLength(1);
+  expect(saved.querySelector('query id')?.getAttribute('stringId')).toBe('1.collectionobject.collectionObjectId');
+  expect(saved.querySelector('query id')?.hasAttribute('term')).toBe(false);
+  expect(saved.querySelector('query field')?.getAttribute('stringId')).toBe('1.collectionobject.guid');
+});
+
 test('checks collisions with every additional query file name', () => {
   const mappings = parseDefinition(`<archive><core rowType="http://rs.tdwg.org/dwc/terms/Occurrence"><queries>
     <query contextTableId="1" name="core.csv"/>
