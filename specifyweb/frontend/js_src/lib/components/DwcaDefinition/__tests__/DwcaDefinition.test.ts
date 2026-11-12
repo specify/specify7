@@ -47,6 +47,18 @@ import {
 const occurrenceId = 'http://rs.tdwg.org/dwc/terms/occurrenceID';
 const kingdom = 'http://rs.tdwg.org/dwc/terms/kingdom';
 
+test('requires core vocabulary terms and accepts stanza constants', () => {
+  const [core] = parseDefinition(`<archive><core rowType="http://rs.tdwg.org/dwc/terms/Occurrence"><queries><query contextTableId="1" /></queries></core></archive>`);
+  const basis = 'http://rs.tdwg.org/dwc/terms/basisOfRecord';
+  expect(getMissingRequiredTerms([core]).some(({ term }) => term.includes(basis))).toBe(true);
+  const constantCore = { ...core, constantFields: [`<field term="${basis}" value="PreservedSpecimen"/>`] };
+  expect(getMissingRequiredTerms([constantCore])).toEqual([]);
+  const [extension] = parseDefinition(`<archive><extension rowType="http://rs.tdwg.org/ac/terms/Multimedia"><queries><query contextTableId="1"/></queries></extension></archive>`);
+  const identifier = 'http://purl.org/dc/terms/identifier';
+  const constants = { ...extension, constantFields: [`<field term="${identifier}" value="https://example.org/media"/>`] };
+  expect(getMissingRequiredTerms([constants]).some(({ term }) => term.includes(identifier))).toBe(false);
+});
+
 test('preserves Search Synonymy when loading and saving definitions', () => {
   const xml = `<archive><core rowType="http://rs.tdwg.org/dwc/terms/Occurrence"><queries><query contextTableId="1" searchSynonymy="true">
     <id stringId="1.collectionobject.guid" term="${occurrenceId}" />

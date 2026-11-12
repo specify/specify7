@@ -797,14 +797,18 @@ export function getMissingRequiredTerms(
             }),
           },
         ];
-    if (!mapping.extension) return missingIdentifier;
+    const hasVocabularyTerm = (name: string): boolean => hasDisplayedTerm(name) ||
+      (mapping.constantFields ?? []).some((xml) => {
+        const field = new DOMParser().parseFromString(xml, 'text/xml').documentElement;
+        return field.getAttribute('term') === name && (field.getAttribute('value') ?? '').trim() !== '';
+      });
     const required = (mapping.extensionDefinition?.fields ?? []).filter(
       ({ required }) => required === true
     );
     return [
       ...missingIdentifier,
       ...required
-        .filter(({ name }) => !hasDisplayedTerm(name))
+        .filter(({ name }) => !hasVocabularyTerm(name))
         .map(({ title, name }) => ({
           mappingIndex,
           mappingName,

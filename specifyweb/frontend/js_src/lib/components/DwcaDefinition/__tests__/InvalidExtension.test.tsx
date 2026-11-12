@@ -60,6 +60,7 @@ test('clears visual editor save blockers when switching editors', async () => {
     await screen.findByRole('button', { name: 'Core' })
   ).toBeInTheDocument();
   expect(getFieldBlockers(appResource, dataField)).toEqual([
+    expect.stringContaining('basisOfRecord'),
     'Field is required.',
   ]);
   unmount();
