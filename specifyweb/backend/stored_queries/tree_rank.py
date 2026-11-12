@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Protocol
+from typing import Protocol
 
 from sqlalchemy import orm, sql
 
 from . import models
-from specifyweb.specify.datamodel import datamodel
+from specifyweb.specify.datamodel import datamodel, is_tree_table
 from specifyweb.specify.models_utils.load_datamodel import Table, Relationship
 
 ObjectFormatter = object
@@ -21,7 +21,6 @@ class RankField(Protocol):
 RANK_KEY_DELIMITER = "~>"
 
 def rank_path(spec):
-    from specifyweb.specify.datamodel import datamodel, is_tree_table
     for index, part in enumerate(spec.join_path):
         if (
             hasattr(part, "relatedModelName")

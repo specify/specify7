@@ -6,6 +6,7 @@ from collections import namedtuple, deque
 from sqlalchemy import orm, sql, or_
 
 import specifyweb.specify.models as spmodels
+from specifyweb.specify.datamodel import datamodel
 from specifyweb.backend.trees.utils import get_treedefs
 
 from specifyweb.backend.stored_queries import models
@@ -133,7 +134,7 @@ class QueryConstruct(
             # basically, tree ranks act as forks.
             if not field.is_relationship or isinstance(field, TreeRankQuery):
                 break
-            next_table = spmodels.datamodel.get_table(field.relatedModelName, strict=True)
+            next_table = datamodel.get_table_strict(field.relatedModelName)
             logger.debug("joining: %r to %r via %r", table, next_table, field)
             if (model, field.name) in query.join_cache:
                 aliased = query.join_cache[(model, field.name)]
