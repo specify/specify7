@@ -23,14 +23,14 @@ const preparation = (available: number): PreparationData => ({
   taxonId: 1,
   preparationId: 1,
   prepType: 'Fluid',
-  countAmount: available,
+  countAmount: available + 3,
   loaned: 0,
   gifted: 0,
   exchanged: 0,
   available,
 });
 
-test('checkbox selects all available for the row', async () => {
+test('checkbox selects and clears available count for the row', async () => {
   const handleChange = jest.fn();
   const { getByRole, rerender, user } = mount(
     <table>
@@ -44,7 +44,9 @@ test('checkbox selects all available for the row', async () => {
     </table>
   );
 
-  await user.click(getByRole('checkbox', { name: interactionsText.selectAll() }));
+  await user.click(
+    getByRole('checkbox', { name: interactionsText.selectAll() })
+  );
   expect(handleChange).toHaveBeenLastCalledWith(5);
 
   rerender(
@@ -58,6 +60,8 @@ test('checkbox selects all available for the row', async () => {
       </tbody>
     </table>
   );
-  await user.click(getByRole('checkbox', { name: interactionsText.selectAll() }));
+  await user.click(
+    getByRole('checkbox', { name: interactionsText.selectAll() })
+  );
   expect(handleChange).toHaveBeenLastCalledWith(0);
 });

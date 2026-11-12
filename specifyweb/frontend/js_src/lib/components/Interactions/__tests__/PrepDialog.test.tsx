@@ -1,4 +1,5 @@
 import React from 'react';
+import { within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 
 import { interactionsText } from '../../../localization/interactions';
@@ -30,7 +31,7 @@ const preparation = (
   taxonId: preparationId,
   preparationId,
   prepType: 'Fluid',
-  countAmount: available,
+  countAmount: available + 3,
   loaned: 0,
   gifted: 0,
   exchanged: 0,
@@ -46,7 +47,11 @@ test('Select All and Deselect All update every preparation', async () => {
         <LoadingContext.Provider value={noop}>
           <PrepDialog
             onClose={noop}
-            preparations={[preparation(1, 3), preparation(2, 5)]}
+            preparations={[
+              preparation(1, 3),
+              preparation(2, 5),
+              preparation(3, 0),
+            ]}
             table={tables.Loan}
           />
         </LoadingContext.Provider>
@@ -55,14 +60,14 @@ test('Select All and Deselect All update every preparation', async () => {
   );
 
   const values = (): readonly string[] =>
-    getAllByRole('spinbutton').map(
-      (input) => (input as HTMLInputElement).value
-    );
+    getAllByRole('row')
+      .filter((row) => within(row).queryByRole('checkbox') !== null)
+      .map(
+        (row) => (within(row).getByRole('spinbutton') as HTMLInputElement).value
+      );
 
-  await user.click(
-    getByRole('button', { name: interactionsText.selectAll() })
-  );
-  expect(values()).toEqual(['0', '3', '5']);
+  await user.click(getByRole('button', { name: interactionsText.selectAll() }));
+  expect(values()).toEqual(['3', '5', '0']);
 
   await user.click(
     getByRole('button', { name: interactionsText.deselectAll() })
