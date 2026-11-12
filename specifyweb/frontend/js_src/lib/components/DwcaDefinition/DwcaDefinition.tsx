@@ -219,15 +219,18 @@ export function getMappingTabIndex(
   return oldIndex < 0 ? fallbackIndex : oldIndex;
 }
 
+type MappingFieldIdentity = Partial<Pick<QueryField,
+  'id' | 'sourceIndex' | 'sourceStringId' | 'mappingPath' | 'filters'
+>>;
+
 export function getMappingTerm(
   mapping: {
     readonly extension: boolean;
     readonly rowType?: string;
-    readonly fields: ReadonlyArray<{ readonly stringId: string }>;
+    readonly fields: ReadonlyArray<{ readonly stringId: string; readonly formatName?: string | null }>;
     readonly terms: RA<string | undefined>;
   },
-  field: Partial<Pick<QueryField, 'id' | 'sourceIndex' | 'sourceStringId'>> &
-    Partial<Pick<QueryField, 'mappingPath'>>
+  field: MappingFieldIdentity
 ): string | undefined {
   const fieldIndex = getMappingFieldIndex(mapping, field);
   return !mapping.extension && fieldIndex === 0
@@ -237,38 +240,42 @@ export function getMappingTerm(
 
 function getMappingFieldIndex(
   mapping: {
-    readonly fields: ReadonlyArray<{ readonly stringId: string }>;
+    readonly fields: ReadonlyArray<{ readonly stringId: string; readonly formatName?: string | null }>;
   },
-  field: Partial<Pick<QueryField, 'id' | 'sourceIndex' | 'sourceStringId'>> &
-    Partial<Pick<QueryField, 'mappingPath'>>
+  field: MappingFieldIdentity
 ): number {
+  const format = field.filters?.[0]?.fieldFormat ?? '';
   if (
     field.sourceIndex !== undefined &&
     mapping.fields[field.sourceIndex]?.stringId.toLowerCase() ===
-      field.sourceStringId?.toLowerCase()
+      field.sourceStringId?.toLowerCase() &&
+    (mapping.fields[field.sourceIndex]?.formatName ?? '') === format
   )
     return field.sourceIndex;
   if (field.sourceStringId !== undefined) {
     const exactIndex = mapping.fields.findIndex(
-      ({ stringId }) =>
-        stringId.toLowerCase() === field.sourceStringId!.toLowerCase()
+      ({ stringId, formatName }) =>
+        stringId.toLowerCase() === field.sourceStringId!.toLowerCase() &&
+        (formatName ?? '') === format
     );
     if (exactIndex >= 0) return exactIndex;
   }
   if (field.mappingPath !== undefined) {
     const pathKey = JSON.stringify(field.mappingPath).toLowerCase();
     const pathIndex = mapping.fields.findIndex(
-      (candidate) => fieldTermPathKey(candidate) === pathKey
+      (candidate) => fieldTermPathKey(candidate) === pathKey &&
+        (candidate.formatName ?? '') === format
     );
     if (pathIndex >= 0) return pathIndex;
   }
-  return field.sourceIndex ?? field.id ?? -1;
+  return field.sourceStringId !== undefined || field.mappingPath !== undefined
+    ? -1
+    : (field.sourceIndex ?? field.id ?? -1);
 }
 
 export function updateMappingTerm(
   mapping: Mapping,
-  field: Pick<QueryField, 'sourceIndex' | 'sourceStringId'> &
-    Partial<Pick<QueryField, 'mappingPath'>>,
+  field: MappingFieldIdentity,
   term: string | undefined
 ): Mapping {
   const fieldIndex = getMappingFieldIndex(mapping, field);
@@ -301,7 +308,7 @@ export function getSerializedMappingTerm(
   )
     return mapping.terms[fallbackIndex];
   const fieldIndex = mapping.fields.findIndex(
-    ({ stringId }) => stringId.toLowerCase() === field.stringId.toLowerCase()
+    (candidate) => fieldFormatKey(candidate) === fieldFormatKey(field)
   );
   const resolvedIndex = fieldIndex >= 0 ? fieldIndex : fallbackIndex;
   return mapping.terms[resolvedIndex];

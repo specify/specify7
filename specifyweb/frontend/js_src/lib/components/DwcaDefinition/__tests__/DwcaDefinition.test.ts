@@ -871,9 +871,7 @@ describe('DwCA query field term mapping', () => {
     expect(
       parsed.slice(1).map((field) => getMappingTerm(mapping, field))
     ).toEqual([firstTerm, secondTerm]);
-    expect(getMappingTerm(mapping, { mappingPath: [formattedEntry] })).toBe(
-      firstTerm
-    );
+    expect(getMappingTerm(mapping, { mappingPath: [formattedEntry] })).toBeUndefined();
 
     const serialized = unParseQueryFields('CollectionObject', parsed);
     expect(serialized.slice(1).map(({ formatName }) => formatName)).toEqual([
@@ -898,6 +896,21 @@ describe('DwCA query field term mapping', () => {
         1
       )
     ).toBe(secondTerm);
+  });
+
+  test('resolves terms by format after fields move and before source indexes refresh', () => {
+    const [mapping] = parseDefinition(`<archive><extension rowType="custom"><queries><query contextTableId="1">
+      <id stringId="1.collectionobject.guid" term="${occurrenceId}" />
+      <field stringId="1.collectionobject." formatName="First" term="https://example.org/first" />
+      <field stringId="1.collectionobject." formatName="Second" term="https://example.org/second" />
+    </query></queries></extension></archive>`);
+    const fields = parseQueryFields(mapping.fields);
+    const moved = { ...mapping, fields: [mapping.fields[0], mapping.fields[2], mapping.fields[1]], terms: [occurrenceId, 'https://example.org/second', 'https://example.org/first'] };
+    expect(getMappingTerm(moved, fields[1])).toBe('https://example.org/first');
+    expect(getMappingTerm(moved, fields[2])).toBe('https://example.org/second');
+    const newColumn = { ...fields[2], sourceIndex: undefined, sourceStringId: undefined };
+    expect(getMappingTerm(moved, newColumn)).toBe('https://example.org/second');
+    expect(updateMappingTerm(moved, newColumn, 'https://example.org/changed').terms).toEqual([occurrenceId, 'https://example.org/changed', 'https://example.org/first']);
   });
 
   test('does not serialize terms on hidden relationship fields', () => {

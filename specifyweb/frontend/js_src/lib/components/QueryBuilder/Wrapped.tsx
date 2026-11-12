@@ -281,6 +281,9 @@ function Wrapped({
         ...state.fields,
         {
           id,
+          sourceStringId: QueryFieldSpec.fromPath(
+            state.baseTableName, mappingPath
+          ).toSpQueryAttributes().stringId,
           mappingPath,
           sortType: undefined,
           filters: [
