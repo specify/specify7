@@ -27,6 +27,7 @@ from specifyweb.specify.models import (
 from .dwca import (
     DwCAException,
     ExportField,
+    Query,
     Stanza,
     _collect_core_id,
     validate_definition,
@@ -41,6 +42,13 @@ class SimpleTest(TestCase):
         self.assertEqual(1 + 1, 2)
 
 class DwcaValidationTest(TestCase):
+    def test_preserves_strict_matching_in_export_query_fields(self):
+        for strict in (False, True):
+            node = ET.fromstring(DWCA_DEFINITION).find('core/queries/query')
+            node[0].set('isStrict', str(strict).lower())
+            query = Query.from_xml(node)
+            self.assertEqual(query.get_field_specs()[0].strict, strict)
+
     def test_rejects_empty_unsafe_and_reserved_file_names(self):
         for name in ('', ' ', '.', '..', '/tmp/output.csv', '../output.csv',
                      'folder/output.csv', 'folder\\output.csv', 'C:output.csv',

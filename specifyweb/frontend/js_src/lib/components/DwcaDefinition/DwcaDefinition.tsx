@@ -1167,7 +1167,7 @@ export function parseDefinition(data: string | null): RA<Mapping> {
             // defaults to position 0 and those IDs become unreliable.
             position,
             sortType: 0,
-            isStrict: false,
+            isStrict: field.getAttribute('isStrict') === 'true',
           })
       );
       const query = createQuery(
@@ -1291,6 +1291,7 @@ export function serializeDefinition(mappings: RA<Mapping>): string {
       node.setAttribute('oper', String(field.operStart));
       node.setAttribute('value', field.startValue);
       node.setAttribute('isNot', String(field.isNot));
+      node.setAttribute('isStrict', String(field.isStrict ?? false));
       node.setAttribute('isRelFld', String(field.isRelFld));
       if (field.formatName !== null)
         node.setAttribute('formatName', field.formatName ?? '');

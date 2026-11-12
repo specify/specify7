@@ -47,6 +47,16 @@ import {
 const occurrenceId = 'http://rs.tdwg.org/dwc/terms/occurrenceID';
 const kingdom = 'http://rs.tdwg.org/dwc/terms/kingdom';
 
+test('preserves strict filters when loading and saving definitions', () => {
+  const xml = `<archive><core rowType="http://rs.tdwg.org/dwc/terms/Occurrence"><queries><query contextTableId="1">
+    <id stringId="1.collectionobject.guid" term="${occurrenceId}" />
+    <field stringId="1.collectionobject.age" isStrict="true" oper="1" value="test" />
+  </query></queries></core></archive>`;
+  const mappings = parseDefinition(xml);
+  expect(mappings[0].fields[1].isStrict).toBe(true);
+  expect(parseDefinition(serializeDefinition(mappings))[0].fields[1].isStrict).toBe(true);
+});
+
 test('preserves an extension with a different query context table', () => {
   const xml =
     '<archive><core><queries><query contextTableId="1" /></queries></core><extension rowType="custom"><queries><query contextTableId="121"><field stringId="121.dnasequence.boldBarcodeId" /></query></queries></extension></archive>';
