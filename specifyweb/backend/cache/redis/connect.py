@@ -42,6 +42,18 @@ class RedisConnection:
             key = _format_key(key)
         return self.connection.delete(key)
 
+    def exists(self, key: str, format_key=True) -> bool:
+        if format_key:
+            key = _format_key(key)
+        # Technically, exists accepts any number of keys and returns the number
+        # of keys that exist among all passed-in keys
+        # See https://redis.io/docs/latest/commands/exists/
+        exists_in_redis = self.connection.exists(key)
+        # We're keeping the interface as simple and easy-to-use as possible
+        # though, so we currently treat exists as a function that accepts only
+        # a single key and returns whether or not that key exists in Redis.
+        return bool(exists_in_redis)
+
     def key_type(self, key: str, format_key=True) -> Redis_Type:
         if format_key:
             key = _format_key(key)
@@ -58,6 +70,9 @@ class RedisDataType:
 
     def delete(self, key: str, format_key=True):
         return self._established.delete(key, format_key=format_key)
+
+    def exists(self, key: str, format_key=True) -> bool:
+        return self._established.exists(key, format_key=format_key)
 
     def key_type(self, key: str, format_key=True) -> Redis_Type:
         return self._established.key_type(key, format_key=format_key)
