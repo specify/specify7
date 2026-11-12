@@ -894,11 +894,11 @@ def execute(
     search_synonymy: bool,
     count_only: bool,
     query_fields: list[QueryField],
-    limit,
-    offset,
-    recordsetid=None,
-    formatauditobjs=False,
-    formatter_props=None,
+    limit: int,
+    offset: int,
+    recordsetid: int | None = None,
+    formatauditobjs: bool = False,
+    formatter_props: ObjectFormatterProps | None = None,
 ):
     "Build and execute a query, returning the results as a data structure for json serialization"
 
