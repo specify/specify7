@@ -6,10 +6,12 @@ from collections import namedtuple, deque
 from sqlalchemy import orm, sql, or_
 
 import specifyweb.specify.models as spmodels
+from specifyweb.specify.datamodel import datamodel
 from specifyweb.backend.trees.utils import get_treedefs
 
 from specifyweb.backend.stored_queries import models
-from specifyweb.backend.stored_queries.tree_rank import TreeRankQuery
+from specifyweb.backend.stored_queries.tree_rank import TreeRankQuery, TreeRanks
+from specifyweb.backend.stored_queries.queryfieldspec import QueryFieldSpec
 
 logger = logging.getLogger(__name__)
 
@@ -41,10 +43,9 @@ class QueryConstruct(
         table,
         tree_rank: TreeRankQuery,
         next_join_path,
-        current_field_spec,
+        current_field_spec: QueryFieldSpec,
     ):
         query = self
-        query_before_tree_joins = query
         if query.collection is None:  # Not sure it makes sense to query across collections
             raise AssertionError(
                 f"No Collection found in Query for {table}",
@@ -57,30 +58,9 @@ class QueryConstruct(
             next_join_path,
         )
 
-        treedefitem_column = table.name + "TreeDefItemID"
-        treedef_column = table.name + "TreeDefID"
+        treedef_column = table.name + 'TreeDefID'
 
-        cache_key = (table, "TreeRanks")
-        if cache_key in query.join_cache:
-            logger.debug("using join cache for %r tree ranks.", node)
-            ancestors, treedefs = query.join_cache[cache_key]
-        else:
-            treedefs = get_treedefs(query.collection, table.name)
-
-            # We need to take the max here. Otherwise, it is possible that the same rank
-            # name may not occur at the same level across tree defs.
-            max_depth = max(depth for _, depth in treedefs)
-
-            ancestors = [node]
-            for _ in range(max_depth - 1):
-                ancestor = orm.aliased(node)
-                query = query.outerjoin(ancestor, ancestors[-1].ParentID == ancestor._id)
-                ancestors.append(ancestor)
-
-            logger.debug("adding to join cache for %r tree ranks.", node)
-            query = query._replace(join_cache=query.join_cache.copy())
-            query.join_cache[cache_key] = (ancestors, treedefs)
-
+        treedefs = get_treedefs(query.collection, table.name)
         item_model = getattr(spmodels, table.django_name + "treedefitem")
 
         # TODO: optimize out the ranks that appear? cache them
@@ -108,31 +88,23 @@ class QueryConstruct(
                 tree_rank.name,
                 table.name,
             )
-            return query_before_tree_joins, None, None, table
+            return query, None, None, table
 
-        treedefitem_params = [treedefitem_id for (_, treedefitem_id) in treedefs_with_ranks]
-
-        def make_tree_field_spec(tree_node):
-            return current_field_spec._replace(
-                root_table=table,  # rebasing the query
-                root_sql_table=tree_node,  # this is needed to preserve SQL aliased going to next part
-                join_path=next_join_path,  # slicing join path to begin from after the tree
-            )
-
-        cases = []
-        field = None  # just to stop mypy from complaining.
-        for ancestor in ancestors:
-            field_spec = make_tree_field_spec(ancestor)
-            query, orm_field, field, table = field_spec.add_spec_to_query(query)
-            # Field and table won't matter. Rank acts as fork, and these two will be same across siblings
-            for treedefitem_param in treedefitem_params:
-                cases.append(
-                    (getattr(ancestor, treedefitem_column) == treedefitem_param, orm_field)
-                )
-
-        column = sql.case(cases)
-
+        treedefitem_params = tuple(sorted(
+            treedefitem_id for (_, treedefitem_id) in treedefs_with_ranks
+        ))
         defs_to_filter_on = [def_id for (def_id, _) in treedefs_with_ranks]
+        cache_key = (node, table, treedefitem_params, 'TreeRank')
+        ranks = query.join_cache.get("tree_ranks")
+        ranks.current_rank = (node, table, treedefitem_params)
+        if cache_key in query.join_cache:
+            ancestor = query.join_cache[cache_key]
+        else:
+            ancestor = orm.aliased(getattr(models, table.name))
+            query = ranks.join(query, node, ancestor, table, treedefitem_params)
+            query = query._replace(join_cache=query.join_cache.copy())
+            query.join_cache[cache_key] = ancestor
+
         # We don't want to include treedef if the rank is not present.
         new_filters = [
             *query.internal_filters,
@@ -143,6 +115,12 @@ class QueryConstruct(
         ]
         query = query._replace(internal_filters=new_filters)
 
+        field_spec = current_field_spec._replace(
+            root_table=table,
+            root_sql_table=ancestor,
+            join_path=next_join_path,
+        )
+        query, column, field, table = field_spec.add_spec_to_query(query)
         return query, column, field, table
 
     def build_join(self, table, model, join_path):
@@ -154,10 +132,9 @@ class QueryConstruct(
             if isinstance(field, str):
                 field = table.get_field(field, strict=True)
             # basically, tree ranks act as forks.
-            is_tree_rank_query = field.__class__.__name__ == "TreeRankQuery"
-            if not field.is_relationship or is_tree_rank_query:
+            if not field.is_relationship or isinstance(field, TreeRankQuery):
                 break
-            next_table = spmodels.datamodel.get_table(field.relatedModelName, strict=True)
+            next_table = datamodel.get_table_strict(field.relatedModelName)
             logger.debug("joining: %r to %r via %r", table, next_table, field)
             if (model, field.name) in query.join_cache:
                 aliased = query.join_cache[(model, field.name)]
