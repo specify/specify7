@@ -37,7 +37,7 @@ from specifyweb.backend.workbench.upload.auditlog import auditlog
 from specifyweb.backend.stored_queries.group_concat import group_by_displayed_fields
 from specifyweb.backend.stored_queries.queryfield import fields_from_json, QUREYFIELD_SORT_T
 from specifyweb.backend.stored_queries.synonomy import synonymize_tree_query
-
+from specifyweb.backend.stored_queries.tree_rank import prepare_tree_ranks, rank_path, path_key, resolve_page
 from specifyweb.specify.datamodel import datamodel, is_tree_table
 from specifyweb.specify.models_utils.load_datamodel import Table
 
@@ -51,12 +51,6 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 SERIES_MAX_ROWS = 10000
-
-
-def _get_tree_rank_functions():
-    from .tree_rank import prepare_tree_ranks, rank_path, path_key, resolve_page
-    return prepare_tree_ranks, rank_path, path_key, resolve_page
-
 
 class QuerySort:
     SORT_TYPES = [None, asc, desc]
@@ -965,7 +959,6 @@ def execute(
         logger.debug("order by: %s", order_by_exprs)
         ranks = query.get_execution_options().get("specify_tree_ranks")
         if ranks is not None:
-            resolve_page = _get_tree_rank_functions()[3]
             query = resolve_page(query, order_by_exprs, ranks, limit, offset)
         else:
             query = query.order_by(*order_by_exprs).offset(offset)
@@ -1111,7 +1104,6 @@ def add_fields_to_query(
     defer_tree_display: bool = False,
     count_only: bool = False,
 ):
-    prepare_tree_ranks, rank_path, path_key, _ = _get_tree_rank_functions()
     query_fields = list(query_fields)
     ordinary_predicates = defaultdict(list)
     if any(rank_path(f.fieldspec) is not None for f in query_fields):
