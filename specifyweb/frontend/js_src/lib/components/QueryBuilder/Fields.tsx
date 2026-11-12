@@ -206,11 +206,7 @@ export function QueryFields({
         readonly currentIndex: number;
         readonly over: HTMLElement | null;
       };
-      const parent = over?.parentElement ?? null;
-      const overIndex =
-        over === null || parent === null
-          ? -1
-          : Array.from(parent.children).indexOf(over);
+      const overIndex = over === null ? -1 : sortable.index(over);
       if (
         wouldMoveReadOnlyField(
           fieldsRef.current,
