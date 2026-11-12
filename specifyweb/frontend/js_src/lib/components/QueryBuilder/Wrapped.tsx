@@ -222,7 +222,7 @@ function Wrapped({
 
   const [formatters] = usePromise(fetchFormatters, false);
   const availableFormats = (mappingPath: MappingPath): RA<string> => {
-    const type = queryFieldFormatType(mappingPath);
+    const type = queryFieldFormatType(mappingPath, state.baseTableName);
     if (type === undefined || formatters === undefined) return [];
     const tableName = QueryFieldSpec.fromPath(state.baseTableName, mappingPath)
       .table.name;
@@ -265,7 +265,7 @@ function Wrapped({
       availableFormats(mappingPath)
     );
   const canAddMapping = (mappingPath: MappingPath): boolean =>
-    queryFieldFormatType(mappingPath) === undefined
+    queryFieldFormatType(mappingPath, state.baseTableName) === undefined
       ? !getMappedFields(state.fields, mappingPath.slice(0, -1)).includes(
           mappingPath.at(-1)!
         )
@@ -296,7 +296,7 @@ function Wrapped({
         },
       ],
     });
-    if (queryFieldFormatType(mappingPath) !== undefined) {
+    if (queryFieldFormatType(mappingPath, state.baseTableName) !== undefined) {
       if (hasExistingFormat) openFormatSelection(id);
       else setFormatSelectionRequest(undefined);
     }
@@ -362,7 +362,7 @@ function Wrapped({
   const getMappedFieldsBind = (mappingPath: MappingPath): RA<string> =>
     getMappedFields(state.fields, mappingPath).filter(
       (name) =>
-        queryFieldFormatType([...mappingPath, name]) === undefined ||
+        queryFieldFormatType([...mappingPath, name], state.baseTableName) === undefined ||
         !canAddMapping([...mappingPath, name])
     );
   const mapButtonEnabled =
@@ -678,7 +678,7 @@ function Wrapped({
                         });
                         if (
                           mappingPathIsComplete(path) &&
-                          queryFieldFormatType(path) !== undefined &&
+                          queryFieldFormatType(path, state.baseTableName) !== undefined &&
                           JSON.stringify(path) !==
                             JSON.stringify(state.fields[line].mappingPath)
                         ) {

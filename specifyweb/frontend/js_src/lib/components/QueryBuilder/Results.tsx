@@ -15,7 +15,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { serializeResource } from '../DataModel/serializers';
 import { schema } from '../DataModel/schema';
 import type { SpecifyTable } from '../DataModel/specifyTable';
-import type { SpQuery } from '../DataModel/types';
+import type { SpQuery, Tables } from '../DataModel/types';
 import { fetchFormatters } from '../Formatters/formatters';
 import { treeRanksPromise } from '../InitialContext/treeRanks';
 import { RecordMergingLink } from '../Merging';
@@ -58,9 +58,10 @@ export function getResultHeaderFormatSuffix(
         readonly formatters: RA<ResultFormatDefinition>;
         readonly aggregators: RA<ResultFormatDefinition>;
       }
-    | undefined
+    | undefined,
+  baseTableName: keyof Tables = 'CollectionObject'
 ): string | undefined {
-  const type = queryFieldFormatType(field.mappingPath);
+  const type = queryFieldFormatType(field.mappingPath, baseTableName);
   const formatName = field.filters.find(
     ({ type }) => type === 'any'
   )?.fieldFormat;
@@ -710,7 +711,8 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
                     defined(resultFields[fieldIndex]),
                     visibleFields,
                     fieldSpec.table.name,
-                    formatters
+                    formatters,
+                    fieldSpec.baseTable.name
                   )}
                   key={fieldIndex}
                   sortConfig={sortConfig?.[fieldIndex]}

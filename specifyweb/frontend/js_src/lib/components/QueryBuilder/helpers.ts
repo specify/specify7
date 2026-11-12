@@ -8,7 +8,6 @@ import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { serializeResource } from '../DataModel/serializers';
 import { genericTables, getTable, tables } from '../DataModel/tables';
-import { schema } from '../DataModel/schema';
 import type { SpQuery, SpQueryField, Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import { queryMappingLocalityColumns } from '../Leaflet/config';
@@ -18,6 +17,7 @@ import { mappingPathIsComplete } from '../WbPlanView/helpers';
 import type { MappingPath } from '../WbPlanView/Mapper';
 import {
   formattedEntry,
+  relationshipIsToMany,
   mappingPathToString,
   splitJoinedMappingPath,
   valueIsToManyIndex,
@@ -111,7 +111,7 @@ export function parseQueryFields(
           const mappingPath = fieldSpec.toMappingPath();
           return [
             `${mappingPathToString(mappingPath)}${
-              queryFieldFormatType(mappingPath) !== undefined
+              queryFieldFormatType(mappingPath, fieldSpec.baseTable.name) !== undefined
                 ? `:${field.formatName ?? ''}`
                 : ''
             }`,
@@ -145,14 +145,16 @@ export function parseQueryFields(
 }
 
 /** Relationship columns with the same path are distinct by their format. */
-export const queryFieldFormatType = (
-  mappingPath: MappingPath
-): 'aggregator' | 'formatter' | undefined =>
-  mappingPath.at(-1) === formattedEntry
-    ? mappingPath.at(-2) === `${schema.referenceSymbol}1`
-      ? 'aggregator'
-      : 'formatter'
-    : undefined;
+export function queryFieldFormatType(
+  mappingPath: MappingPath,
+  baseTableName: keyof Tables = 'CollectionObject'
+): 'aggregator' | 'formatter' | undefined {
+  if (mappingPath.at(-1) !== formattedEntry) return undefined;
+  const field = QueryFieldSpec.fromPath(baseTableName, mappingPath).getField();
+  return field?.isRelationship === true && relationshipIsToMany(field)
+    ? 'aggregator'
+    : 'formatter';
+}
 
 /** The blank legacy selection denotes the table's default format. */
 export function nextAvailableQueryFormat(

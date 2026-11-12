@@ -38,6 +38,7 @@ import {
 } from '../DataModel/saveBlockers';
 import { createQuery } from '../QueryBuilder';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
+import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import {
   parseQueryFields,
   queryFieldFormatType,
@@ -552,7 +553,10 @@ function fieldTermKey(
     const [parsed] = parseQueryFields([
       field as SerializedResource<SpQueryField>,
     ]);
-    return queryFieldFormatType(parsed?.mappingPath ?? []) === undefined
+    return queryFieldFormatType(
+      parsed?.mappingPath ?? [],
+      QueryFieldSpec.fromStringId(field.stringId, field.isRelFld ?? false).baseTable.name
+    ) === undefined
       ? path
       : `${path}:${field.formatName ?? ''}`;
   } catch {

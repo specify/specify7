@@ -342,7 +342,7 @@ export function QueryFields({
                         .filter(
                           (other, index) =>
                             index !== line &&
-                            queryFieldFormatType(other.mappingPath) !==
+                            queryFieldFormatType(other.mappingPath, baseTableName) !==
                               undefined &&
                             JSON.stringify(other.mappingPath) ===
                               JSON.stringify(field.mappingPath)
