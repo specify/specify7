@@ -3,6 +3,7 @@ from unittest.mock import Mock, patch
 
 from django.test import Client, override_settings
 
+from specifyweb.backend.permissions.models import SpqueryShare
 from specifyweb.backend.report_runner.views import (
     _expand_rows_by_count,
     _expand_rows_by_field,
@@ -14,8 +15,66 @@ from specifyweb.backend.stored_queries.tests.test_views.raw_query import (
 )
 from specifyweb.backend.stored_queries.tests.tests import SQLAlchemySetup
 from specifyweb.specify.api.crud import post_resource
-from specifyweb.specify.models import Spappresourcedir, Spreport
+from specifyweb.specify.models import Spappresourcedir, Spreport, Spquery, Specifyuser
 from specifyweb.specify.tests.test_api import ApiTests
+
+
+class TestReportListingQueryAccess(ApiTests):
+    def setUp(self):
+        super().setUp()
+        self.client.force_login(self.specifyuser)
+        self.appdir = Spappresourcedir.objects.create(
+            discipline=self.discipline, ispersonal=False
+        )
+        self.other_user = Specifyuser.objects.create(
+            name='report_query_owner', password='unusable'
+        )
+        self.owned_query = self._make_query(self.specifyuser)
+        self.private_query = self._make_query(self.other_user)
+        self.owned_report = self._make_report(self.owned_query)
+        self.private_report = self._make_report(self.private_query)
+        self.urls = (
+            '/report_runner/get_reports/',
+            f'/report_runner/get_reports_by_tbl/{self.owned_query.contexttableid}/',
+        )
+
+    def _make_query(self, owner):
+        return Spquery.objects.create(
+            name=f'Report query {owner.id}',
+            contextname='Collectionobject',
+            contexttableid=self.collectionobjects[0].specify_model.tableId,
+            specifyuser=owner,
+        )
+
+    def _make_report(self, query):
+        resource = self.appdir.sppersistedappresources.create(
+            name=f'Report {query.id}', mimetype='jrxml/report', level=0,
+            specifyuser=self.specifyuser,
+        )
+        return Spreport.objects.create(
+            name=resource.name, appresource=resource, query=query,
+            specifyuser=self.specifyuser,
+        )
+
+    def _assert_listed_reports(self, expected):
+        for url in self.urls:
+            with self.subTest(url=url):
+                response = self.client.get(url)
+                self.assertEqual(response.status_code, 200, response.content)
+                data = response.json()
+                self.assertEqual(data['meta']['total_count'], len(expected))
+                self.assertCountEqual(
+                    [item['report']['id'] for item in data['objects']], expected
+                )
+
+    def test_listing_tracks_query_grants_and_revocation(self):
+        self._assert_listed_reports([self.owned_report.id])
+        grant = SpqueryShare.objects.create(
+            query=self.private_query, recipient=self.specifyuser
+        )
+        self._assert_listed_reports([self.owned_report.id, self.private_report.id])
+        grant.delete()
+        self._assert_listed_reports([self.owned_report.id])
 
 
 class TestRunReport(ApiTests):

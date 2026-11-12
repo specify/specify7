@@ -18,102 +18,157 @@ import { LoadingContext } from '../Core/Contexts';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { deserializeResource } from '../DataModel/serializers';
+import { idFromUrl } from '../DataModel/resource';
 import { tables } from '../DataModel/tables';
 import type { SpQuery, SpReport } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import { ResourceView } from '../Forms/ResourceView';
+import { userInformation } from '../InitialContext/userInformation';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { downloadFile } from '../Molecules/FilePicker';
 import { hasPermission } from '../Permissions/helpers';
+import { QuerySharingActions } from './Share';
 
 export function QueryEditButton({
-  query,
+  queryResource,
+  onRefresh,
 }: {
-  readonly query: SerializedResource<SpQuery>;
+  readonly queryResource: SpecifyResource<SpQuery>;
+  readonly onRefresh: () => void;
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
-  const queryResource = React.useMemo(
-    () => deserializeResource(query),
-    [query]
-  );
+  const isOwner =
+    idFromUrl(queryResource.get('specifyUser')) === userInformation.id;
   return (
     <>
-      <DataEntry.Edit onClick={handleOpen} />
+      {isOwner ? (
+        <DataEntry.Edit onClick={handleOpen} />
+      ) : (
+        <Button.LikeLink onClick={handleOpen}>
+          {commonText.export()}
+        </Button.LikeLink>
+      )}
       {isOpen && (
-        <EditQueryDialog queryResource={queryResource} onClose={handleClose} />
+        <EditQueryDialog
+          isOwner={isOwner}
+          queryResource={queryResource}
+          onClose={handleClose}
+          onVersionChange={onRefresh}
+        />
       )}
     </>
   );
 }
 
 function EditQueryDialog({
+  isOwner,
   queryResource,
   onClose: handleClose,
+  onVersionChange,
 }: {
+  readonly isOwner: boolean;
   readonly queryResource: SpecifyResource<SpQuery>;
   readonly onClose: () => void;
+  readonly onVersionChange: () => void;
 }): JSX.Element {
   const [state, setState] = React.useState<
     'default' | 'dwcaExport' | 'labelExport' | 'report' | 'reportExport'
   >('default');
+  const originalName = React.useRef(queryResource.get('name'));
+  const originalRemarks = React.useRef(queryResource.get('remarks'));
+  const handleDialogClose = React.useCallback((): void => {
+    queryResource.set('name', originalName.current, { silent: true });
+    queryResource.set('remarks', originalRemarks.current, { silent: true });
+    handleClose();
+  }, [handleClose, queryResource]);
 
   const loading = React.useContext(LoadingContext);
-  return state === 'default' ? (
-    <ResourceView
-      dialog="modal"
-      extraButtons={
-        <>
-          <span className="-ml-2 flex-1" />
-          <Button.Success
-            onClick={(): void => {
-              loading(
-                downloadFile(
-                  `${queryResource.get('name')}.json`,
-                  JSON.stringify(queryResource.toJSON(), null, '\t')
-                )
-              );
-            }}
-          >
-            {commonText.export()}
-          </Button.Success>
-        </>
-      }
-      isDependent={false}
-      isSubForm={false}
-      resource={queryResource}
-      onAdd={undefined}
-      onClose={handleClose}
-      onDeleted={handleClose}
-      onSaved={(): void => globalThis.location.reload()}
+  const exportButton = (
+    <Button.Success
+      onClick={(): void => {
+        loading(
+          downloadFile(
+            `${queryResource.get('name')}.json`,
+            JSON.stringify(queryResource.toJSON(), null, '\t')
+          )
+        );
+      }}
     >
-      {queryResource.isNew() ? undefined : (
-        <div className="flex flex-col">
-          <p>{commonText.actions()}</p>
-          <Button.LikeLink onClick={(): void => setState('dwcaExport')}>
-            {queryText.exportQueryForDwca()}
+      {commonText.export()}
+    </Button.Success>
+  );
+  const actions = queryResource.isNew() ? undefined : (
+    <div className="flex flex-col">
+      <p>{commonText.actions()}</p>
+      {isOwner &&
+        idFromUrl(queryResource.get('specifyUser')) === userInformation.id &&
+        queryResource.id !== undefined && (
+          <QuerySharingActions
+            canShare={userInformation.isadmin}
+            queryId={queryResource.id}
+            onVersionChange={onVersionChange}
+          />
+        )}
+      <Button.LikeLink onClick={(): void => setState('dwcaExport')}>
+        {queryText.exportQueryForDwca()}
+      </Button.LikeLink>
+      {hasPermission('/report', 'execute') && (
+        <>
+          <Button.LikeLink onClick={(): void => setState('reportExport')}>
+            {queryText.exportQueryAsReport()}
           </Button.LikeLink>
-          {hasPermission('/report', 'execute') && (
-            <>
-              <Button.LikeLink onClick={(): void => setState('reportExport')}>
-                {queryText.exportQueryAsReport()}
-              </Button.LikeLink>
-              <Button.LikeLink onClick={(): void => setState('labelExport')}>
-                {queryText.exportQueryAsLabel()}
-              </Button.LikeLink>
-            </>
-          )}
-        </div>
+          <Button.LikeLink onClick={(): void => setState('labelExport')}>
+            {queryText.exportQueryAsLabel()}
+          </Button.LikeLink>
+        </>
       )}
-    </ResourceView>
+    </div>
+  );
+  return state === 'default' ? (
+    isOwner ? (
+      <ResourceView
+        dialog="modal"
+        extraButtons={
+          <>
+            <span className="-ml-2 flex-1" />
+            {exportButton}
+          </>
+        }
+        isDependent={false}
+        isSubForm={false}
+        resource={queryResource}
+        onAdd={undefined}
+        onClose={handleDialogClose}
+        onDeleted={handleDialogClose}
+        onSaved={(): void => globalThis.location.reload()}
+      >
+        {actions}
+      </ResourceView>
+    ) : (
+      <Dialog
+        buttons={
+          <>
+            <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+            {exportButton}
+          </>
+        }
+        header={commonText.export()}
+        onClose={handleDialogClose}
+      >
+        {actions}
+      </Dialog>
+    )
   ) : state === 'dwcaExport' ? (
-    <DwcaQueryExport queryResource={queryResource} onClose={handleClose} />
+    <DwcaQueryExport
+      queryResource={queryResource}
+      onClose={handleDialogClose}
+    />
   ) : state === 'reportExport' || state === 'labelExport' ? (
     <QueryExport
       asLabel={state === 'labelExport'}
       queryResource={queryResource}
-      onClose={handleClose}
+      onClose={handleDialogClose}
     />
   ) : (
     error('Invalid state')

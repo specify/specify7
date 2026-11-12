@@ -3,11 +3,15 @@ from specifyweb.specify.api.crud import apply_filters
 from specifyweb.specify.api.exceptions import OrderByError
 from specifyweb.specify.api.filter_by_col import filter_by_collection
 from specifyweb.specify.api.serializers import toJson
-from specifyweb.specify.api.validators import RowsForm
+from specifyweb.specify.api.validators import RowsForm, has_unfiltered_query_path
 from specifyweb.specify.views import login_maybe_required
 from django.http import (HttpResponse, HttpResponseBadRequest)
 from specifyweb.backend.permissions.permissions import enforce
 from django.core.exceptions import FieldError
+
+
+_has_unfiltered_query_projection = has_unfiltered_query_path
+_has_unfiltered_query_filter = has_unfiltered_query_path
 
 @login_maybe_required
 @require_http_methods(['GET', 'HEAD'])
@@ -20,7 +24,32 @@ def rows(request, model: str) -> HttpResponse:
         return HttpResponseBadRequest(toJson(form.errors), content_type='application/json')
 
     query = apply_filters(request.specify_collection, request.GET, model, form.cleaned_data)
+    if model.lower() == 'spquery':
+        from specifyweb.backend.stored_queries.access import filter_queries_for_user
+
+        query = filter_queries_for_user(query, request.specify_user.id)
+    elif model.lower() == 'spqueryfield':
+        from specifyweb.backend.stored_queries.access import filter_queries_for_user
+        from specifyweb.specify.models import Spquery
+
+        visible_queries = filter_queries_for_user(
+            Spquery.objects.all(), request.specify_user.id
+        )
+        query = query.filter(query__in=visible_queries)
+
     fields = form.cleaned_data['fields'].split(',')
+    filter_paths = [
+        key for key in request.GET.keys() if key not in form.cleaned_data
+    ]
+    if any(
+        _has_unfiltered_query_projection(query.model, field) for field in fields
+    ) or any(
+        _has_unfiltered_query_filter(query.model, filter_path)
+        for filter_path in filter_paths
+    ):
+        return HttpResponseBadRequest(
+            "Query-related projections and filters must use a query or query-field root with visibility checks."
+        )
     try:
         query = query.values_list(*fields).order_by(*fields)
     except FieldError as e:

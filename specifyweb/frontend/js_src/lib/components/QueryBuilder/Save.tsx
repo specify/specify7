@@ -33,6 +33,17 @@ async function doSave(
     .then(() => clonedQuery.id);
 }
 
+export async function cloneSharedQuery(
+  query: SpecifyResource<SpQuery>
+): Promise<number> {
+  const clonedQuery = await query.clone(true);
+  const truncatedName = Array.from(query.get('name')).slice(0, 247).join('');
+  clonedQuery.set('name', `${truncatedName} - cloned`);
+  clonedQuery.set('specifyUser', userInformation.resource_uri);
+  clonedQuery.set('isFavorite', !isModern(query));
+  return clonedQuery.save().then(() => clonedQuery.id);
+}
+
 export function QuerySaveDialog({
   isSaveAs,
   query,
@@ -47,7 +58,11 @@ export function QuerySaveDialog({
   const id = useId('id');
   const [name, setName] = React.useState<string>((): string =>
     isSaveAs
-      ? getUniqueName(query.get('name'), [query.get('name')])
+      ? getUniqueName(
+          query.get('name'),
+          [query.get('name')],
+          getField(tables.SpQuery, 'name').length
+        )
       : query.get('name')
   );
 

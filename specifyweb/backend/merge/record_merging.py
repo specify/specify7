@@ -9,16 +9,18 @@ from collections.abc import Callable
 import traceback
 
 from django import http
-from django.db import IntegrityError, transaction, models
+from django.db import IntegrityError, OperationalError, transaction, models
 from specifyweb.backend.merge.utils import get_app_model
 from specifyweb.backend.notifications.models import Message, Spmerging
+from specifyweb.backend.permissions.models import SpqueryShare
 from django.db.models import Q
 
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
+from specifyweb.backend.stored_queries.access import QueryWriteDenied, ensure_query_write_access
 from specifyweb.celery_tasks import LogErrorsTask, app
 from specifyweb.specify import models as spmodels
 from specifyweb.specify.models_utils.build_models import orderings
-from specifyweb.specify.api.crud import delete_obj, put_resource
+from specifyweb.specify.api.crud import bump_version, delete_obj, put_resource
 from specifyweb.specify.models_utils.load_datamodel import Table, FieldDoesNotExistError
 from celery.utils.log import get_task_logger # type: ignore
 from specifyweb.specify.models_utils.relationships import is_dependent_field
@@ -49,6 +51,9 @@ def resolve_record_merge_response(start_function, silent=True):
     try:
         start_function()
         response = http.HttpResponse('', status=204)
+    except QueryWriteDenied as error:
+        logger.info("Query merge denied: %s", error)
+        return http.JsonResponse(error.to_json(), status=error.status_code)
     except Exception as error:
         # FEATURE: Add traceback here
         if isinstance(error, FailedMergingException):
@@ -165,13 +170,43 @@ def fix_record_data(new_record_data, current_model: Table, target_model_name: st
 
 RESTRICT_UPDATE_FIELDS = {'spappresourcedata'}
 
-@transaction.atomic
+MYSQL_DEADLOCK_ERROR = 1213
+MERGE_DEADLOCK_ATTEMPTS = 3
+
 def record_merge_fx(model_name: str, old_model_ids: list[int], new_model_id: int,
+                    specify_user: spmodels.Specifyuser,
                     progress: Progress | None=None,
                     new_record_info: dict[str, Any]=None):
     """Replaces all the foreign keys referencing the old record ID
     with the new record ID, and deletes the old record.
+
+    Retries the entire merge transaction if the database aborts it with a
+    deadlock. InnoDB rolls back the whole transaction on a deadlock, so
+    re-running the complete merge preserves atomicity; partial retries are
+    never performed.
     """
+    for attempt in range(MERGE_DEADLOCK_ATTEMPTS):
+        try:
+            return _record_merge(model_name, old_model_ids, new_model_id,
+                                 specify_user, progress, new_record_info)
+        except OperationalError as error:
+            is_deadlock = bool(error.args) and error.args[0] == MYSQL_DEADLOCK_ERROR
+            # Only retry when this is the outermost transaction: inside an
+            # enclosing atomic block the rollback is not under our control.
+            can_retry = (is_deadlock
+                         and attempt + 1 < MERGE_DEADLOCK_ATTEMPTS
+                         and not transaction.get_connection().in_atomic_block)
+            if not can_retry:
+                raise
+            logger.warning(
+                'Deadlock during record merge of %s; retrying transaction (attempt %d of %d)',
+                model_name, attempt + 2, MERGE_DEADLOCK_ATTEMPTS)
+
+@transaction.atomic
+def _record_merge(model_name: str, old_model_ids: list[int], new_model_id: int,
+                  specify_user: spmodels.Specifyuser,
+                  progress: Progress | None=None,
+                  new_record_info: dict[str, Any]=None):
     # Confirm the target model table exists
     model_name = model_name.lower().title()
     target_model = get_app_model(model_name)
@@ -187,6 +222,66 @@ def record_merge_fx(model_name: str, old_model_ids: list[int], new_model_id: int
 
     # Get dependent fields and objects of the target object
     target_object = target_model.objects.get(id=new_model_id)
+    if isinstance(target_object, (spmodels.Spquery, spmodels.Spqueryfield)):
+        ensure_query_write_access(target_object, specify_user.id)
+        for old_object in target_model.objects.filter(id__in=old_model_ids):
+            ensure_query_write_access(old_object, specify_user.id)
+            # Deleting a shared source would cascade its grants. Do not silently
+            # revoke access or extend it to a different query definition.
+            if isinstance(old_object, spmodels.Spquery) and old_object.share_grants.exists():
+                raise QueryWriteDenied(
+                    "Shared source queries cannot be merged. Remove their sharing grants first."
+                )
+    elif isinstance(target_object, spmodels.Specifyuser):
+        # Reassigning query ownership requires write access to every original.
+        for query in spmodels.Spquery.objects.filter(
+            specifyuser_id__in=old_model_ids
+        ).select_for_update():
+            ensure_query_write_access(query, specify_user.id)
+
+        # manage_query_shares locks the Spquery row before touching its grant
+        # rows. Acquire locks in the same order here (queries first, then
+        # grants) so a concurrent share change cannot deadlock with this
+        # merge. The affected queries are only known from the grants, so read
+        # them without locking and re-read until the locked set is stable.
+        locked_query_ids: set[int] = set()
+        locked_queries: list[spmodels.Spquery] = []
+        while True:
+            grant_query_ids = set(SpqueryShare.objects.filter(
+                recipient_id__in=old_model_ids
+            ).values_list('query_id', flat=True))
+            if grant_query_ids <= locked_query_ids:
+                break
+            locked_query_ids |= grant_query_ids
+            # Evaluate the queryset to acquire the row locks in pk order.
+            locked_queries = list(spmodels.Spquery.objects.filter(
+                id__in=locked_query_ids
+            ).order_by('pk').select_for_update())
+        locked_queries_by_id = {query.pk: query for query in locked_queries}
+
+        source_grants = list(SpqueryShare.objects.filter(
+            recipient_id__in=old_model_ids
+        ).select_for_update())
+        if source_grants and not target_object.is_admin() and any(
+            locked_queries_by_id[grant.query_id].specifyuser_id != specify_user.id
+            for grant in source_grants
+        ):
+            raise QueryWriteDenied(
+                "Only a query owner or a Specify Administrator can transfer sharing grants."
+            )
+
+        # Copy missing grants before source-user deletion cascades the originals.
+        for grant in source_grants:
+            query = locked_queries_by_id[grant.query_id]
+            ensure_query_write_access(query, specify_user.id)
+            _, created = SpqueryShare.objects.get_or_create(
+                query_id=grant.query_id, recipient_id=new_model_id
+            )
+            if created:
+                # The row lock on this query is already held from the ordered
+                # locking pass above, so this cannot acquire locks out of order.
+                bump_version(query, query.version)
+
     dependant_relationships = [(rel.relatedModelName, rel.name)
         for rel in target_object.specify_model.relationships
         if is_dependent_field(target_object, rel.name)]
@@ -284,8 +379,12 @@ def record_merge_fx(model_name: str, old_model_ids: list[int], new_model_id: int
                     new_record = foreign_record_lst.first()
                     old_record, new_record = sorted([old_record, new_record], key=key_function)
 
-                    # Make a recursive call to record_merge to resolve duplication error
-                    record_merge_fx(table_name, [old_record.pk], new_record.pk, progress)
+                    # Make a recursive call to record_merge to resolve duplication error.
+                    # Call the inner atomic function directly: a deadlock must
+                    # never retry only this nested part of the merge.
+                    _record_merge(
+                        table_name, [old_record.pk], new_record.pk, specify_user, progress
+                    )
                     if old_record.pk != obj.pk:
                         update_record(new_record)
 
@@ -380,7 +479,9 @@ def record_merge_task(self, model_name: str, old_model_ids: list[int], new_model
     logger.info('Starting record merge')
 
     response = resolve_record_merge_response(
-        lambda: record_merge_fx(model_name, old_model_ids, int(new_model_id), progress, new_record_info))
+        lambda: record_merge_fx(
+            model_name, old_model_ids, int(new_model_id), specify_user, progress, new_record_info
+        ))
 
     logger.info('Finishing record merge')
 

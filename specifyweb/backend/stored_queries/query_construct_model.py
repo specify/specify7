@@ -24,7 +24,7 @@ def _safe_filter(query):
 class QueryConstruct(
     namedtuple(
         "QueryConstruct",
-        "collection objectformatter query join_cache tree_rank_count internal_filters",
+        "collection objectformatter query join_cache tree_rank_count internal_filters query_user_id",
     )
 ):
     def __new__(cls, *args, **kwargs):
@@ -33,7 +33,24 @@ class QueryConstruct(
         # In that case, the cycle will end (unlike other cyclical cases).
         kwargs["tree_rank_count"] = 0
         kwargs["internal_filters"] = []
+        kwargs.setdefault("query_user_id", None)
         return super().__new__(cls, *args, **kwargs)
+
+    def query_visibility_filter(self, model, table):
+        table_name = table.name.lower()
+        if table_name not in {"spquery", "spqueryfield"}:
+            return None
+
+        cache_key = ("query_visibility_ids", self.query_user_id)
+        if cache_key not in self.join_cache:
+            from specifyweb.backend.stored_queries.access import visible_query_ids
+
+            query_ids, field_ids = visible_query_ids(self.query_user_id)
+            self.join_cache[cache_key] = (query_ids, field_ids)
+
+        query_ids, field_ids = self.join_cache[cache_key]
+        visible_ids = query_ids if table_name == "spquery" else field_ids
+        return model._id.in_(visible_ids)
 
     def handle_tree_field(
         self,
@@ -164,7 +181,13 @@ class QueryConstruct(
                 logger.debug("using join cache for %r.%s", model, field.name)
             else:
                 aliased = orm.aliased(getattr(models, next_table.name))
-                query = query.outerjoin(aliased, getattr(model, field.name))
+                join_condition = getattr(model, field.name)
+                visibility_filter = query.query_visibility_filter(
+                    aliased, next_table
+                )
+                if visibility_filter is not None:
+                    join_condition = join_condition.and_(visibility_filter)
+                query = query.outerjoin(aliased, join_condition)
 
                 logger.debug("adding to join cache %r, %r", (model, field.name), aliased)
                 query = query._replace(join_cache=query.join_cache.copy())

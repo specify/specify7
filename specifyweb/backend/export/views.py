@@ -21,6 +21,7 @@ from specifyweb.backend.context.app_resource import get_app_resource
 from specifyweb.backend.notifications.models import Message
 from specifyweb.backend.permissions.permissions import PermissionTarget, PermissionTargetAction, \
     check_permission_targets
+from specifyweb.backend.stored_queries.access import ensure_query_access
 from specifyweb.specify.models import Spquery
 from specifyweb.specify.views import login_maybe_required
 from specifyweb.middleware.general import require_GET
@@ -188,5 +189,6 @@ def extract_query(request, query_id):
     """Return an XML snippet for creating a DwCA definition based on the
     query <query_id>.
     """
+    ensure_query_access(query_id, request.specify_user.id)
     query = Spquery.objects.get(id=query_id)
     return HttpResponse(extract(query), 'text/xml')

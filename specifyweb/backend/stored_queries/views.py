@@ -16,6 +16,7 @@ from specifyweb.backend.stats.coordination import (
     StatisticsBusy, busy_response, statistics_result,
 )
 from specifyweb.backend.stored_queries.batch_edit import run_batch_edit
+from specifyweb.backend.stored_queries.access import ensure_query_access
 from specifyweb.specify.models_utils.models_by_table_id import model_names_by_table_id
 from specifyweb.specify.api.serializers import toJson, uri_for_model
 from specifyweb.specify.datamodel import datamodel
@@ -118,6 +119,7 @@ def query(request, id):
     """Executes and returns the results of query with id <id>.
     'limit' and 'offset' may be provided as GET parameters.
     """
+    ensure_query_access(id, request.specify_user.id)
     check_permission_targets(request.specify_collection.id, request.specify_user.id, [QueryBuilderPt.execute])
     limit = int(request.GET.get('limit', 20))
     offset = int(request.GET.get('offset', 0))

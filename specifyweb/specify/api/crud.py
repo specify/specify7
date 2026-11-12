@@ -43,6 +43,10 @@ def get_resource(name, id, checker: ReadPermChecker, recordsetid=None) -> dict:
 
 def create_obj(collection, agent, model, data: dict[str, Any], parent_obj=None, parent_relationship=None):
     """Create a new instance of 'model' and populate it with 'data'."""
+    from specifyweb.backend.stored_queries.access import (
+        QueryWriteDenied,
+        ensure_query_write_access,
+    )
     from specifyweb.backend.setup_tool.api import create_institution, create_division, create_discipline, create_collection
     from specifyweb.backend.setup_tool.utils import normalize_keys
     from specifyweb.backend.permissions.permissions import PermissionsException
@@ -76,6 +80,9 @@ def create_obj(collection, agent, model, data: dict[str, Any], parent_obj=None, 
     obj = model()
     _, _, handle_remote_to_ones = handle_fk_fields(collection, agent, obj, data)
     set_fields_from_data(obj, data)
+    if isinstance(obj, (models.Spquery, models.Spqueryfield)) and obj.pk is not None:
+        raise QueryWriteDenied("New query definitions cannot specify an existing ID.")
+    ensure_query_write_access(obj, agent.specifyuser_id)
     set_field_if_exists(obj, 'createdbyagent', agent)
     set_field_if_exists(obj, 'collectionmemberid', collection.id)
     try:
@@ -126,12 +133,23 @@ def update_obj(collection, agent, name: str, id, version, data: dict[str, Any], 
     """Update the resource with 'id' in model named 'name' with given
     'data'.
     """
+    from specifyweb.backend.stored_queries.access import (
+        QueryWriteDenied,
+        ensure_query_write_access,
+    )
+
     obj = get_object_or_404(name, id=int(id))
     check_table_permissions(collection, agent, obj, "update")
+    ensure_query_write_access(obj, agent.specifyuser_id)
+    if isinstance(obj, models.Spqueryfield) and obj.query_id is None:
+        raise QueryWriteDenied("Orphaned query fields cannot be updated.")
 
     data = cleanData(obj.__class__, data, parent_relationship)
     dependents_to_delete, fk_dirty, handle_remote_to_ones = handle_fk_fields(collection, agent, obj, data)
     dirty = fk_dirty + set_fields_from_data(obj, data)
+    if isinstance(obj, (models.Spquery, models.Spqueryfield)) and obj.pk != int(id):
+        raise QueryWriteDenied("Query definition IDs cannot be changed.")
+    ensure_query_write_access(obj, agent.specifyuser_id)
 
     check_field_permissions(collection, agent, obj, [d['field_name'] for d in dirty], "update")
 
@@ -215,7 +233,10 @@ def update_or_create_resource(collection, agent, model, data, parent_obj, parent
 def make_default_deleter(collection=None, agent=None):
     def _deleter(obj, parent_obj):
         if collection and agent:
+            from specifyweb.backend.stored_queries.access import ensure_query_write_access
+
             check_table_permissions(collection, agent, obj, "delete")
+            ensure_query_write_access(obj, agent.specifyuser_id)
             auditlog.remove(obj, agent, parent_obj)
     return _deleter
 
@@ -506,13 +527,33 @@ def delete_resource(collection, agent, name, id, version) -> None:
         clean_predelete=clean_predelete,
     )
 
-def get_collection(logged_in_collection, model, checker: ReadPermChecker, control_params=GetCollectionForm.defaults, params={}) -> CollectionPayload:
+def get_collection(
+    logged_in_collection,
+    model,
+    checker: ReadPermChecker,
+    control_params=GetCollectionForm.defaults,
+    params={},
+    query_user_id: int | None = None,
+) -> CollectionPayload:
     from specifyweb.specify.api.serializers import _obj_to_data
     
     """Return a list of structured data for the objects from 'model'
     subject to the request 'params'."""
 
+    if isinstance(model, str):
+        model = get_model_or_404(model)
+
     objs = apply_filters(logged_in_collection, params, model, control_params)
+    if query_user_id is not None and model._meta.model_name == 'spqueryfield':
+        from specifyweb.backend.stored_queries.access import filter_queries_for_user
+
+        visible_queries = filter_queries_for_user(models.Spquery.objects.all(), query_user_id)
+        objs = objs.filter(query__in=visible_queries)
+    elif query_user_id is not None and model._meta.model_name == 'spquery':
+        from specifyweb.backend.stored_queries.access import filter_queries_for_user
+
+        visible_queries = filter_queries_for_user(models.Spquery.objects.all(), query_user_id)
+        objs = objs.filter(id__in=visible_queries).distinct()
 
     try:
         return objs_to_data_(objs, objs.count(), lambda o: _obj_to_data(o, checker), control_params['offset'], control_params['limit'])
