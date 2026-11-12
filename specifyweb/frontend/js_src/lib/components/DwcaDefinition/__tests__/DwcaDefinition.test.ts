@@ -23,6 +23,7 @@ import {
   getExtensionDefinitionForRowType,
   getDefaultMappingFileName,
   getDuplicateMappingFileNames,
+  hasIncompatibleQuerySchemas,
   formatTermExampleText,
   hasEmptyRequiredMappingValues,
   hasUnmappedDisplayedFields,
@@ -47,6 +48,18 @@ import {
 
 const occurrenceId = 'http://rs.tdwg.org/dwc/terms/occurrenceID';
 const kingdom = 'http://rs.tdwg.org/dwc/terms/kingdom';
+
+test('detects schema-changing visual edits without rewriting additional queries', () => {
+  const query = `<id stringId="1.collectionobject.guid" term="${occurrenceId}"/><field stringId="1.collectionobject.text1" term="https://example.org/text"/>`;
+  const [mapping] = parseDefinition(`<archive><core rowType="http://rs.tdwg.org/dwc/terms/Occurrence"><queries>
+    <query contextTableId="1" name="first.csv">${query}</query>
+    <query contextTableId="1" name="second.csv">${query}</query>
+  </queries></core></archive>`);
+  expect(hasIncompatibleQuerySchemas(mapping)).toBe(false);
+  const changed = updateMappingFields(mapping, mapping.fields.slice(0, 1));
+  expect(hasIncompatibleQuerySchemas(changed)).toBe(true);
+  expect(changed.additionalQueries).toEqual(mapping.additionalQueries);
+});
 
 test('automatic mapping respects explicit assignments and deliberate unmapped fields', () => {
   const catalog = 'http://rs.tdwg.org/dwc/terms/catalogNumber';

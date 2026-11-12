@@ -782,6 +782,16 @@ export function getDuplicateMappingFileNames(mappings: RA<Mapping>): ReadonlySet
   return new Set(fileNames.filter((name, index) => fileNames.indexOf(name) !== index));
 }
 
+export function hasIncompatibleQuerySchemas(mapping: Mapping): boolean {
+  if (!mapping.additionalQueries?.length || mapping.invalidExtensionXml) return false;
+  const xml = new DOMParser().parseFromString(serializeDefinition([mapping]), 'text/xml');
+  const schemas = Array.from(xml.querySelectorAll('queries > query')).map((query) => JSON.stringify(
+    Array.from(query.children).filter((field) => field.tagName === 'id' || field.hasAttribute('term'))
+      .map((field) => [field.tagName === 'id', field.getAttribute('term')])
+  ));
+  return schemas.some((schema) => schema !== schemas[0]);
+}
+
 type MissingRequiredTerm = {
   readonly mappingIndex: number;
   readonly mappingName: string;
@@ -2085,6 +2095,12 @@ function DwcaDefinitionEditorLoaded({
   ]);
   const duplicateFileNames = React.useMemo(() => getDuplicateMappingFileNames(mappings), [mappings]);
   const hasDuplicateFileNames = duplicateFileNames.size > 0;
+  const incompatibleQuerySchemas = mappings.some(hasIncompatibleQuerySchemas);
+  React.useEffect(() => {
+    const key = getFieldBlockerKey(appResourceDataField, 'dwca-query-schemas');
+    setSaveBlockers(incompatibleQuerySchemas ? [dwcaText.dwcaQueryFieldsMustMatch()] : [], key);
+    return (): void => setSaveBlockers([], key);
+  }, [appResourceDataField, incompatibleQuerySchemas, setSaveBlockers]);
   React.useEffect(() => {
     const key = getFieldBlockerKey(appResourceDataField, 'dwca-file-names');
     setSaveBlockers(
