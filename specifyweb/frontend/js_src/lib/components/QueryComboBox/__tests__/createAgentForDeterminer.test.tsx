@@ -33,14 +33,25 @@ jest.mock('../../Forms/Save', () => {
     resource,
     onSaved,
   }: {
-    readonly resource: { readonly get: (fieldName: string) => unknown };
+    readonly resource: {
+      readonly get: (fieldName: string) => unknown;
+      readonly save: () => Promise<unknown>;
+    };
     readonly onSaved?: () => void;
-  }) =>
-    mockReact.createElement(
+  }) => {
+    jest.spyOn(resource, 'save').mockResolvedValue(resource);
+    return mockReact.createElement(
       'button',
-      { type: 'button', onClick: onSaved },
+      {
+        type: 'button',
+        onClick: async () => {
+          await resource.save();
+          onSaved?.();
+        },
+      },
       `Save ${String(resource.get('lastName') ?? 'Agent')}`
     );
+  };
   return { SaveButton };
 });
 
@@ -176,6 +187,7 @@ test('creates an Agent with type and remarks for a Determiner', async () => {
   );
   const assignedAgent = agentAssignment?.[1] as SpecifyResource<AnySchema>;
   expect(assignedAgent.specifyTable).toBe(tables.Agent);
+  expect(assignedAgent.save).toHaveBeenCalledTimes(1);
   expect(assignedAgent.get('lastName')).toBe('New Agent');
   expect(assignedAgent.get('agentType')).toBe(1);
   expect(assignedAgent.get('remarks')).toBe('Created from the Determiner form');

@@ -9,6 +9,7 @@ import type { SpecifyResource } from '../../DataModel/legacyTypes';
 import { LoadingContext } from '../../Core/Contexts';
 import { getResourceApiUrl } from '../../DataModel/resource';
 import { tables } from '../../DataModel/tables';
+import { queryFieldFilterSpecs } from '../../QueryBuilder/FieldFilterSpec';
 import { runQuery } from '../../QueryBuilder/ResultsWrapper';
 import { QueryComboBox } from '../index';
 import type { TypeSearch } from '../spec';
@@ -55,14 +56,25 @@ jest.mock('../../Forms/ResourceView', () => {
     resource,
     onSaved,
   }: {
-    readonly resource: { readonly get: (fieldName: string) => unknown };
+    readonly resource: {
+      readonly get: (fieldName: string) => unknown;
+      readonly save: () => Promise<unknown>;
+    };
     readonly onSaved?: () => void;
-  }) =>
-    mockReact.createElement(
+  }) => {
+    jest.spyOn(resource, 'save').mockResolvedValue(resource);
+    return mockReact.createElement(
       'button',
-      { type: 'button', onClick: onSaved },
+      {
+        type: 'button',
+        onClick: async () => {
+          await resource.save();
+          onSaved?.();
+        },
+      },
       `Save ${String(resource.get('name') ?? resource.get('lastName') ?? 'Record')}`
     );
+  };
   return { ResourceView, RESTRICT_ADDING: new Set() };
 });
 
@@ -196,11 +208,26 @@ describe('Determination QueryComboBox behavior', () => {
   ])(
     'filters the dropdown and Search dialog using the tree for $cot',
     async ({ treeId, taxa: expectedTaxa, excludedTaxa }) => {
-      mockedRunQuery.mockResolvedValue(
-        taxa
-          .filter((taxon) => taxon.treeId === treeId)
-          .map(({ id, name }) => [id, localized(name)]) as never
-      );
+      mockedRunQuery.mockImplementation(async (query) => {
+        const fields = (query as unknown as ComboBoxQuery).fields;
+        const definitionIdFilter = fields.find(
+          ({ fieldName }) => fieldName === 'taxonTreeDefId'
+        );
+        expect(definitionIdFilter).toEqual(
+          expect.objectContaining({
+            fieldName: 'taxonTreeDefId',
+            stringId: expect.stringContaining(
+              '-definition.taxontreedef.taxonTreeDefId'
+            ),
+            operStart: queryFieldFilterSpecs.equal.id,
+            startValue: treeId.toString(),
+          })
+        );
+        const queriedTreeId = Number(definitionIdFilter?.startValue);
+        return taxa
+          .filter((taxon) => taxon.treeId === queriedTreeId)
+          .map(({ id, name }) => [id, localized(name)]) as never;
+      });
       const typeSearch: TypeSearch = {
         name: localized('Taxon'),
         table: tables.Taxon,
@@ -256,19 +283,18 @@ describe('Determination QueryComboBox behavior', () => {
       for (const taxon of excludedTaxa)
         expect(screen.queryByRole('option', { name: taxon })).not.toBeInTheDocument();
 
-      const queryCalls = mockedRunQuery.mock.calls.map(([query]) =>
-        (query as unknown as ComboBoxQuery).fields
-      );
-      expect(queryCalls.flat()).toContainEqual(
-        expect.objectContaining({ startValue: treeId.toString() })
-      );
-
       fireEvent.click(screen.getByRole('button', { name: 'Search' }));
       const searchFilters = JSON.parse(
         screen.getByRole('status').textContent ?? '[]'
       ) as ReadonlyArray<{ readonly value: string }>;
       expect(searchFilters).toContainEqual(
-        expect.objectContaining({ value: treeId.toString() })
+        expect.objectContaining({
+          field: 'definition',
+          queryBuilderFieldPath: ['definition', 'id'],
+          isRelationship: true,
+          operation: 'in',
+          value: treeId.toString(),
+        })
       );
     }
   );
@@ -330,9 +356,9 @@ describe('Determination QueryComboBox behavior', () => {
       'taxon',
       expect.objectContaining({ specifyTable: tables.Taxon })
     );
-    expect(
-      (setTaxon.mock.calls[0]?.[1] as SpecifyResource<AnySchema>).get('name')
-    ).toBe('New taxon');
+    const assignedTaxon = setTaxon.mock.calls[0]?.[1] as SpecifyResource<AnySchema>;
+    expect(assignedTaxon.get('name')).toBe('New taxon');
+    expect(assignedTaxon.save).toHaveBeenCalledTimes(1);
   });
 
   test('creates a new Agent for a Determiner with the QCBX Add button', async () => {
@@ -391,8 +417,8 @@ describe('Determination QueryComboBox behavior', () => {
       'agent',
       expect.objectContaining({ specifyTable: tables.Agent })
     );
-    expect(
-      (setAgent.mock.calls[0]?.[1] as SpecifyResource<AnySchema>).get('lastName')
-    ).toBe('New Agent');
+    const assignedAgent = setAgent.mock.calls[0]?.[1] as SpecifyResource<AnySchema>;
+    expect(assignedAgent.get('lastName')).toBe('New Agent');
+    expect(assignedAgent.save).toHaveBeenCalledTimes(1);
   });
 });
