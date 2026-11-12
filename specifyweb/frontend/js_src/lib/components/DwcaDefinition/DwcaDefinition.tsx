@@ -761,6 +761,16 @@ export const hasEmptyRequiredMappingValues = (
     ({ fileName, rowType }) => fileName.trim() === '' || rowType.trim() === ''
   );
 
+export function getDuplicateMappingFileNames(mappings: RA<Mapping>): ReadonlySet<string> {
+  const fileNames = mappings.flatMap((mapping) => [
+    mapping.fileName,
+    ...(mapping.additionalQueries ?? []).map((xml) =>
+      new DOMParser().parseFromString(xml, 'text/xml').documentElement.getAttribute('name') ?? ''
+    ),
+  ]).map((name) => name.trim().toLowerCase()).filter(Boolean);
+  return new Set(fileNames.filter((name, index) => fileNames.indexOf(name) !== index));
+}
+
 type MissingRequiredTerm = {
   readonly mappingIndex: number;
   readonly mappingName: string;
@@ -2044,16 +2054,7 @@ function DwcaDefinitionEditorLoaded({
     requiredTermsMessage,
     setSaveBlockers,
   ]);
-  const duplicateFileNames = React.useMemo(() => {
-    const fileNames = mappings
-      .map(({ fileName }) => fileName.trim().toLowerCase())
-      .filter((fileName) => fileName !== '');
-    return new Set(
-      fileNames.filter(
-        (fileName, index) => fileNames.indexOf(fileName) !== index
-      )
-    );
-  }, [mappings]);
+  const duplicateFileNames = React.useMemo(() => getDuplicateMappingFileNames(mappings), [mappings]);
   const hasDuplicateFileNames = duplicateFileNames.size > 0;
   React.useEffect(() => {
     const key = getFieldBlockerKey(appResourceDataField, 'dwca-file-names');

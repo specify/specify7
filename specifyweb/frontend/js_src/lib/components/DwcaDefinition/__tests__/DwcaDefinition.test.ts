@@ -22,6 +22,7 @@ import {
   getCoreDefinitionForRowType,
   getExtensionDefinitionForRowType,
   getDefaultMappingFileName,
+  getDuplicateMappingFileNames,
   formatTermExampleText,
   hasEmptyRequiredMappingValues,
   hasUnmappedDisplayedFields,
@@ -46,6 +47,14 @@ import {
 
 const occurrenceId = 'http://rs.tdwg.org/dwc/terms/occurrenceID';
 const kingdom = 'http://rs.tdwg.org/dwc/terms/kingdom';
+
+test('checks collisions with every additional query file name', () => {
+  const mappings = parseDefinition(`<archive><core rowType="http://rs.tdwg.org/dwc/terms/Occurrence"><queries>
+    <query contextTableId="1" name="core.csv"/>
+    <query contextTableId="1" name=" EXTRA.CSV "/>
+  </queries></core><extension rowType="custom"><queries><query contextTableId="1" name="extra.csv"/></queries></extension></archive>`);
+  expect([...getDuplicateMappingFileNames(mappings)]).toEqual(['extra.csv']);
+});
 
 test('requires core vocabulary terms and accepts stanza constants', () => {
   const [core] = parseDefinition(`<archive><core rowType="http://rs.tdwg.org/dwc/terms/Occurrence"><queries><query contextTableId="1" /></queries></core></archive>`);
