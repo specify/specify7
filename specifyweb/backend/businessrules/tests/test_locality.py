@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.db.models import ProtectedError
 from specifyweb.specify import models
 from specifyweb.specify.api.crud import post_resource, update_obj
@@ -135,6 +137,42 @@ class LocalityBusinessRuleTests(ApiTests):
         )
         self.assertEqual(attachment.scopetype, ScopeType.DISCIPLINE.value)
         self.assertEqual(attachment.scopeid, self.discipline.id)
+
+    def test_locality_optional_fields_round_trip(self):
+        locality = post_resource(
+            self.collection,
+            self.agent,
+            'locality',
+            {
+                'localityname': 'Locality with optional fields',
+                'srclatlongunit': 0,
+                'discipline': uri_for_model(
+                    'discipline', self.discipline.id
+                ),
+                'latitude1': Decimal('12.345'),
+                'longitude1': Decimal('-45.678'),
+                'lat1text': '12.345 N',
+                'long1text': '45.678 W',
+                'verbatimlatitude': '12.345',
+                'verbatimlongitude': '-45.678',
+                'latlongtype': 'Point',
+                'latlongmethod': 'GPS',
+                'datum': 'WGS84',
+                'remarks': 'Optional locality fields',
+            },
+        )
+
+        locality.refresh_from_db()
+        self.assertEqual(locality.latitude1, Decimal('12.345'))
+        self.assertEqual(locality.longitude1, Decimal('-45.678'))
+        self.assertEqual(locality.lat1text, '12.345 N')
+        self.assertEqual(locality.long1text, '45.678 W')
+        self.assertEqual(locality.verbatimlatitude, '12.345')
+        self.assertEqual(locality.verbatimlongitude, '-45.678')
+        self.assertEqual(locality.latlongtype, 'Point')
+        self.assertEqual(locality.latlongmethod, 'GPS')
+        self.assertEqual(locality.datum, 'WGS84')
+        self.assertEqual(locality.remarks, 'Optional locality fields')
 
     def test_create_locality_with_fields(self):
         locality = models.Locality.objects.create(
