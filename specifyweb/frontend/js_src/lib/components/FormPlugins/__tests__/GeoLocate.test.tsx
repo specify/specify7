@@ -41,7 +41,7 @@ test('sends locality geography to GeoLocate and applies returned coordinates', a
         { noBusinessRules: true }
       )
     );
-    geography.set('parent', parent);
+    if (parent !== null) geography.set('parent', parent);
     return geography;
   }
   const country = makeGeography('USA', 'Country', null);
