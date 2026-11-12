@@ -40,6 +40,7 @@ export function MakeDwcaOverlay(): JSX.Element | null {
 
   return resources === undefined ? null : definition === undefined ? (
     <PickAppResource
+      key="definition"
       filters={dwcaAppResourceFilter}
       header={headerText.chooseDwca()}
       resources={resources}
@@ -50,6 +51,7 @@ export function MakeDwcaOverlay(): JSX.Element | null {
     <ExportStarted onClose={handleClose} />
   ) : (
     <PickAppResource
+      key="metadata"
       filters={dwcaAppResourceFilter}
       header={headerText.chooseMetadataResource()}
       resources={resources}
