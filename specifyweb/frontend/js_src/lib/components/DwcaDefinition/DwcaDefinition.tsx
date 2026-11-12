@@ -718,6 +718,21 @@ function autoMapCoreFields(
   const usedTerms = new Set(assignedTerms);
   const terms = fields.map((field) => {
     const stringId = field.stringId.toLowerCase();
+    let spec: QueryFieldSpec | undefined;
+    try {
+      spec = QueryFieldSpec.fromStringId(field.stringId, field.isRelFld ?? false);
+    } catch {
+      // Unknown legacy paths remain available for manual mapping.
+    }
+    const source = spec?.getField();
+    if (source?.name.toLowerCase() === 'guid' && source.table.name === 'Taxon') {
+      const relationship = spec?.joinPath.at(-2)?.name.toLowerCase();
+      const term = `http://rs.tdwg.org/dwc/terms/${relationship === 'parent'
+        ? 'parentNameUsageID' : relationship === 'acceptedtaxon' ? 'acceptedNameUsageID' : 'taxonID'}`;
+      if (!availableTerms.has(term) || usedTerms.has(term)) return undefined;
+      usedTerms.add(term);
+      return term;
+    }
     const match = Object.entries(
       getCoreTermPatterns(getSystemInfo()?.discipline_type)
     ).find(
@@ -1238,7 +1253,8 @@ export function parseDefinition(data: string | null): RA<Mapping> {
       );
       const automaticTerms = autoMapCoreFields(
         serializedFields,
-        availableTermNames(extension, extensionDefinition, coreRowType)
+        availableTermNames(extension, extensionDefinition, coreRowType),
+        new Set(explicitTerms.filter((term): term is string => term !== undefined))
       );
       return ensureIdentifierTerm({
         extension,

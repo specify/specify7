@@ -49,6 +49,17 @@ import {
 const occurrenceId = 'http://rs.tdwg.org/dwc/terms/occurrenceID';
 const kingdom = 'http://rs.tdwg.org/dwc/terms/kingdom';
 
+test('maps taxon identifiers through their relationships instead of sharing taxon.guid', () => {
+  const [mapping] = parseDefinition(`<archive><core rowType="http://rs.tdwg.org/dwc/terms/Taxon"><queries><query contextTableId="4">
+    <field stringId="4.taxon.guid"/>
+    <field stringId="4,4-parent.taxon.guid"/>
+    <field stringId="4,4-acceptedTaxon.taxon.guid"/>
+  </query></queries></core></archive>`);
+  expect(mapping.terms).toEqual(['taxonID', 'parentNameUsageID', 'acceptedNameUsageID'].map((name) => `http://rs.tdwg.org/dwc/terms/${name}`));
+  expect(coreTermPatterns['http://rs.tdwg.org/dwc/terms/scientificNameID']).toEqual([]);
+  expect(coreTermPatterns['http://rs.tdwg.org/dwc/terms/originalNameUsageID']).toEqual([]);
+});
+
 test('detects schema-changing visual edits without rewriting additional queries', () => {
   const query = `<id stringId="1.collectionobject.guid" term="${occurrenceId}"/><field stringId="1.collectionobject.text1" term="https://example.org/text"/>`;
   const [mapping] = parseDefinition(`<archive><core rowType="http://rs.tdwg.org/dwc/terms/Occurrence"><queries>
