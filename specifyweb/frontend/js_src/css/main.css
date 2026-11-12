@@ -392,7 +392,7 @@
 
   .wb-mapping-row {
     min-width: 56rem;
-    @apply grid min-w-0 items-start gap-2 border-t border-t-gray-500 py-2;
+    @apply grid items-start gap-2 border-t border-t-gray-500 py-2;
     grid-template-columns: 2.5rem minmax(10rem, 22rem) minmax(0, 1fr);
     grid-template-areas: 'clear header path';
   }
