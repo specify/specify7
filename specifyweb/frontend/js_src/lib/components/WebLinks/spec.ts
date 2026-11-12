@@ -137,12 +137,13 @@ export function resolveWebLinkParts(
 ): RA<string> {
   const prefix = parts[0];
   const value = values[1];
-  return parts.length === 2 &&
+  return parts.length >= 2 &&
+    parts.slice(2).every(({ type }) => type === 'UrlPart') &&
     prefix.type === 'UrlPart' &&
     parts[1].type === 'ThisField' &&
     prefix.value.length > 0 &&
     value?.startsWith(prefix.value) === true
-    ? ['', value]
+    ? values.map((value, index) => (index === 0 ? '' : (value ?? '')))
     : values.map((value) => value ?? '');
 }
 

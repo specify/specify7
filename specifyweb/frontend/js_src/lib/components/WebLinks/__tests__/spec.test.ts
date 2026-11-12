@@ -22,7 +22,7 @@ test.each(['https://orcid.org/', 'https://www.wikidata.org/entity/'])(
   }
 );
 
-test('preserves URL construction for links with other parameters or suffixes', () => {
+test('preserves full identifiers followed by literal suffixes', () => {
   const prefix = 'https://example.org/';
   const parts = [
     { type: 'UrlPart', value: localized(prefix) },
@@ -31,7 +31,7 @@ test('preserves URL construction for links with other parameters or suffixes', (
   ] as const;
   expect(
     resolveWebLinkParts(parts, [prefix, `${prefix}123`, '/details']).join('')
-  ).toBe(`${prefix}${prefix}123/details`);
+  ).toBe(`${prefix}123/details`);
 });
 
 test('new web link definition is parsed', () => {
