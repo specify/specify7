@@ -1,5 +1,4 @@
 import React from 'react';
-import { within } from '@testing-library/react';
 
 import { interactionsText } from '../../../localization/interactions';
 import { requireContext } from '../../../tests/helpers';
@@ -16,11 +15,6 @@ jest.mock('../../Forms/SpecifyForm', () => ({
 
 jest.mock('../../Interactions/LoanReturn', () => ({
   loanReturnPrepForm: () => ({}),
-}));
-
-jest.mock('../../WbPlanView/helpers', () => ({
-  ...jest.requireActual('../../WbPlanView/helpers'),
-  mappingPathIsComplete: () => true,
 }));
 
 requireContext();
@@ -48,7 +42,7 @@ test('Return Loan button shows returned preparations', async () => {
     <UnloadProtectsContext.Provider value={[]}>
       <LoadingContext.Provider value={noop}>
         <QueryLoanReturn
-          fields={[{ mappingPath: [] } as never]}
+          fields={[{ mappingPath: ['loan', 'loanNumber'] } as never]}
           queryResource={queryResource}
           getQueryFieldRecords={undefined}
         />
@@ -62,7 +56,9 @@ test('Return Loan button shows returned preparations', async () => {
     })
   );
 
-  const loanRow = (await findByRole('link', { name: /l1/i })).closest('tr');
-  expect(loanRow).not.toBeNull();
-  expect(within(loanRow!).getByRole('cell', { name: '2' })).toBeInTheDocument();
+  const link = await findByRole('link', { name: /l1/i });
+  expect(link).toHaveAttribute('href', '/specify/view/loan/1/');
+  const loanRow = link.closest('tr')!;
+  expect(loanRow.cells[0]).toHaveTextContent('L1');
+  expect(loanRow.cells[1]).toHaveTextContent('2');
 });
