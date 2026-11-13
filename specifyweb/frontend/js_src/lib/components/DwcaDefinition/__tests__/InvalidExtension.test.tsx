@@ -34,39 +34,43 @@ test('offers the XML editor when the definition is invalid', async () => {
   expect(onSwitchToXmlEditor).toHaveBeenCalledTimes(1);
 });
 
-test('clears visual editor save blockers when switching editors', async () => {
-  jest
-    .spyOn(collectionModule, 'fetchCollection')
-    .mockImplementation(() => new Promise(() => undefined));
-  const appResource = new tables.SpAppResource.Resource({ name: 'DwCA' });
-  const dataField = getField(appResource.specifyTable, 'spAppResourceDatas');
-  const { unmount } = render(
-    <MemoryRouter>
-      <LoadingContext.Provider value={() => undefined}>
-        <UnloadProtectsContext.Provider value={[]}>
-          <DwcaDefinitionEditor
-            {...({
-              appResource,
-              data: '<archive><core rowType="http://rs.tdwg.org/dwc/terms/Occurrence"><queries><query contextTableId="1" name=""><id stringId="1.collectionobject.guid" /></query></queries></core></archive>',
-              onChange: jest.fn(),
-              onSetSaveConfirmation: jest.fn(),
-            } as unknown as Parameters<typeof DwcaDefinitionEditor>[0])}
-          />
-        </UnloadProtectsContext.Provider>
-      </LoadingContext.Provider>
-    </MemoryRouter>
-  );
-  expect(
-    await screen.findByRole('button', { name: 'Core' })
-  ).toBeInTheDocument();
-  expect(getFieldBlockers(appResource, dataField)).toEqual([
-    expect.stringContaining('basisOfRecord'),
-    expect.stringContaining('Query file names must not be empty'),
-    'Field is required.',
-  ]);
-  unmount();
-  expect(getFieldBlockers(appResource, dataField)).toEqual([]);
-});
+test.each(['', '../data.csv'])(
+  'flags invalid filename %j and clears save blockers when switching editors',
+  async (fileName) => {
+    jest
+      .spyOn(collectionModule, 'fetchCollection')
+      .mockImplementation(() => new Promise(() => undefined));
+    const appResource = new tables.SpAppResource.Resource({ name: 'DwCA' });
+    const dataField = getField(appResource.specifyTable, 'spAppResourceDatas');
+    const { unmount } = render(
+      <MemoryRouter>
+        <LoadingContext.Provider value={() => undefined}>
+          <UnloadProtectsContext.Provider value={[]}>
+            <DwcaDefinitionEditor
+              {...({
+                appResource,
+                data: `<archive><core rowType="http://rs.tdwg.org/dwc/terms/Occurrence"><queries><query contextTableId="1" name="${fileName}"><id stringId="1.collectionobject.guid" /></query></queries></core></archive>`,
+                onChange: jest.fn(),
+                onSetSaveConfirmation: jest.fn(),
+              } as unknown as Parameters<typeof DwcaDefinitionEditor>[0])}
+            />
+          </UnloadProtectsContext.Provider>
+        </LoadingContext.Provider>
+      </MemoryRouter>
+    );
+    expect(
+      await screen.findByRole('button', { name: 'Core' })
+    ).toBeInTheDocument();
+    expect(screen.getByText('Check file name in settings')).toBeInTheDocument();
+    expect(getFieldBlockers(appResource, dataField)).toEqual([
+      expect.stringContaining('basisOfRecord'),
+      expect.stringContaining('Query file names must not be empty'),
+      ...(fileName === '' ? ['Field is required.'] : []),
+    ]);
+    unmount();
+    expect(getFieldBlockers(appResource, dataField)).toEqual([]);
+  }
+);
 
 test('hides a mismatched extension and lets the user remove it', async () => {
   jest

@@ -2500,7 +2500,7 @@ function DwcaDefinitionEditorLoaded({
         mapping={active}
         hasMappingsToReset={hasMappingsToReset}
         hasFileNameError={
-          active.fileName.trim() === '' ||
+          hasInvalidMappingFileNames([active]) ||
           duplicateFileNames.has(active.fileName.trim().toLowerCase())
         }
         onCoreChange={handleCoreChange}
