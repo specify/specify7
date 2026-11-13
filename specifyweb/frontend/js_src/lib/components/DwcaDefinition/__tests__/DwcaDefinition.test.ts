@@ -404,9 +404,9 @@ describe('DwCA query field term mapping', () => {
   });
 
   test('uses semantically correct shared Darwin Core sources', () => {
-    expect(coreTermPatterns['http://rs.tdwg.org/dwc/terms/basisOfRecord']).toBe(
-      undefined
-    );
+    expect(
+      coreTermPatterns['http://rs.tdwg.org/dwc/terms/basisOfRecord']
+    ).toEqual(['collection.collectiontype']);
     expect(
       coreTermPatterns['http://rs.tdwg.org/dwc/terms/institutionID']
     ).toEqual(['institution.guid']);
@@ -1577,6 +1577,10 @@ describe('DwCA query field term mapping', () => {
       [
         '1,23,26,96,94.institution.termsOfUse',
         'http://purl.org/dc/terms/accessRights',
+      ],
+      [
+        '1,23.collection.collectionType',
+        'http://rs.tdwg.org/dwc/terms/basisOfRecord',
       ],
       [
         '1,23.collection.description',

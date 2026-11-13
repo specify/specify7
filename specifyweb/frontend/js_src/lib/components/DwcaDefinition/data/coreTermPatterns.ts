@@ -26,6 +26,9 @@ const darwinCoreTermPatterns: Readonly<Record<string, readonly string[]>> = {
     'collectingevent.startdate',
     'collectingevent.enddate',
   ],
+  // TODO: Collection Type is the closest analogue until Basis Of Record is added as a real field:
+  // https://github.com/specify/specify7/issues/7602
+  'http://rs.tdwg.org/dwc/terms/basisOfRecord': ['collection.collectiontype'],
   'http://rs.tdwg.org/dwc/terms/datasetName': [
     'collection.description',
     'collection.collectionname',
