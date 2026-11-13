@@ -1,5 +1,4 @@
 import os
-import errno
 import logging
 import re
 import shutil
