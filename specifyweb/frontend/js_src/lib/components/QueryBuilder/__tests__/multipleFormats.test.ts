@@ -11,9 +11,36 @@ import {
   queryFieldFormatType,
   unParseQueryFields,
   getUsedQueryFormats,
+  getDefaultQueryFormat,
 } from '../helpers';
 
 requireContext();
+
+test('reserves the resolved Schema Config default instead of the first format', () => {
+  const formats = [
+    { name: 'A', isDefault: false },
+    { name: 'B', isDefault: false },
+  ];
+  const resolved = getDefaultQueryFormat(formats, 'B', true);
+  expect(resolved).toBe('B');
+  expect(
+    nextAvailableQueryFormat(
+      [makeField()],
+      path,
+      ['A', 'B'],
+      'CollectionObject',
+      resolved ?? null
+    )
+  ).toBe('A');
+  expect(
+    getDefaultQueryFormat(
+      [{ name: 'A', isDefault: true }, formats[1]],
+      'B',
+      true
+    )
+  ).toBe('A');
+  expect(getDefaultQueryFormat(formats, undefined, false)).toBeUndefined();
+});
 
 const path = [formattedEntry];
 const makeField = (format?: string): QueryField => ({

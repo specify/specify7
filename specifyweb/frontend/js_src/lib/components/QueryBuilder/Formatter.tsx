@@ -16,6 +16,8 @@ import { fetchContext as fetchDomain, schema } from '../DataModel/schema';
 import type { CollectionObjectType, Tables } from '../DataModel/types';
 import { fetchFormatters } from '../Formatters/formatters';
 import { customSelectElementBackground } from '../WbPlanView/CustomSelectElement';
+import { getTable } from '../DataModel/tables';
+import { getDefaultQueryFormat } from './helpers';
 
 type SimpleFormatter = {
   readonly name: string;
@@ -43,31 +45,44 @@ export function QueryFieldRecordFormatter({
   readonly onChange: ((formatter: string | undefined) => void) | undefined;
 }): JSX.Element | null {
   const [formatters] = usePromise(fetchFormatters, false);
-  const availableFormatters = React.useMemo<RA<SimpleFormatter> | undefined>(
-    () =>
-      // Some code duplication, but required by TypeScript
-      (type === 'formatter'
-        ? formatters?.formatters.map(({ table, name, title, isDefault }) => ({
-            table,
-            name,
-            title,
-            isDefault,
-          }))
-        : formatters?.aggregators.map(({ table, name, title, isDefault }) => ({
-            table,
-            name,
-            title,
-            isDefault,
-          }))
+  const availableFormatters = React.useMemo<
+    RA<SimpleFormatter> | undefined
+  >(() => {
+    const available = // Some code duplication, but required by TypeScript
+      (
+        type === 'formatter'
+          ? formatters?.formatters.map(({ table, name, title, isDefault }) => ({
+              table,
+              name,
+              title,
+              isDefault,
+            }))
+          : formatters?.aggregators.map(
+              ({ table, name, title, isDefault }) => ({
+                table,
+                name,
+                title,
+                isDefault,
+              })
+            )
       )
         ?.filter(({ table }) => table?.name === tableName)
         .map(({ name, title = name, isDefault }) => ({
           name,
           title,
           isDefault,
-        })),
-    [type, formatters, tableName]
-  );
+        }));
+    if (available === undefined) return undefined;
+    const defaultName = getDefaultQueryFormat(
+      available,
+      type === 'formatter' ? getTable(tableName)?.getFormat() : undefined,
+      type === 'formatter'
+    );
+    return available.map((formatter) => ({
+      ...formatter,
+      isDefault: formatter.name === defaultName,
+    }));
+  }, [type, formatters, tableName]);
 
   return (
     <FormatSelect

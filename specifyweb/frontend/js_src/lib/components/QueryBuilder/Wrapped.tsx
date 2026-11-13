@@ -59,6 +59,7 @@ import {
   queryFieldFormatType,
   unParseQueryFields,
   getUsedQueryFormats,
+  getDefaultQueryFormat,
 } from './helpers';
 import type { QueryField } from './helpers';
 import { getInitialState, reducer } from './reducer';
@@ -260,7 +261,25 @@ function Wrapped({
       state.fields,
       mappingPath,
       availableFormats(mappingPath),
-      state.baseTableName
+      state.baseTableName,
+      (() => {
+        const type = queryFieldFormatType(mappingPath, state.baseTableName);
+        if (type === undefined || formatters === undefined) return undefined;
+        const table = QueryFieldSpec.fromPath(
+          state.baseTableName,
+          mappingPath
+        ).table;
+        const definitions = [
+          ...(type === 'formatter'
+            ? formatters.formatters
+            : formatters.aggregators),
+        ].filter((definition) => definition.table?.name === table.name);
+        return getDefaultQueryFormat(
+          definitions,
+          type === 'formatter' ? table.getFormat() : undefined,
+          type === 'formatter'
+        );
+      })() ?? null
     );
   const canAddMapping = (mappingPath: MappingPath): boolean =>
     queryFieldFormatType(mappingPath, state.baseTableName) === undefined

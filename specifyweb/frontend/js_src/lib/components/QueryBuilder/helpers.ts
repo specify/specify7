@@ -186,12 +186,25 @@ export function nextAvailableQueryFormat(
   fields: RA<QueryField>,
   mappingPath: MappingPath,
   formats: RA<string>,
-  baseTableName: keyof Tables = 'CollectionObject'
+  baseTableName: keyof Tables = 'CollectionObject',
+  defaultFormat: string | null = formats[0] ?? null
 ): string | undefined {
   const used = getUsedQueryFormats(fields, mappingPath, baseTableName);
   if (used.size === 0) return undefined;
   return formats.find(
-    (name, index) => !used.has(name) && !(index === 0 && used.has(''))
+    (name) => !used.has(name) && !(name === defaultFormat && used.has(''))
+  );
+}
+
+export function getDefaultQueryFormat(
+  formats: RA<{ readonly name: string; readonly isDefault: boolean }>,
+  schemaDefault: string | undefined,
+  allowFirstFallback: boolean
+): string | undefined {
+  return (
+    formats.find(({ isDefault }) => isDefault)?.name ??
+    formats.find(({ name }) => name === schemaDefault)?.name ??
+    (allowFirstFallback ? formats[0]?.name : undefined)
   );
 }
 

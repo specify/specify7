@@ -4,10 +4,13 @@ import React from 'react';
 import { requireContext } from '../../../tests/helpers';
 import { queryText } from '../../../localization/query';
 import { QueryFieldRecordFormatter } from '../Formatter';
+import { tables } from '../../DataModel/tables';
 
 jest.mock('../../Formatters/formatters', () => ({
   fetchFormatters: Promise.resolve({
     formatters: [
+      { table: { name: 'Locality' }, name: 'A', title: 'A', isDefault: false },
+      { table: { name: 'Locality' }, name: 'B', title: 'B', isDefault: false },
       {
         table: { name: 'Agent' },
         name: 'Default',
@@ -57,6 +60,24 @@ jest.mock('../../Formatters/formatters', () => ({
 }));
 
 requireContext();
+
+test('disables the Schema Config default when an unnamed column already uses it', async () => {
+  jest.spyOn(tables.Locality, 'getFormat').mockReturnValue('B');
+  render(
+    <QueryFieldRecordFormatter
+      type="formatter"
+      tableName="Locality"
+      formatter={undefined}
+      usedFormats={new Set([''])}
+      onChange={jest.fn()}
+    />
+  );
+  fireEvent.click(
+    await screen.findByRole('button', { name: queryText.chooseFormatter() })
+  );
+  expect(screen.getByRole('option', { name: /^B/ })).toBeDisabled();
+  expect(screen.getByRole('option', { name: 'A' })).toBeEnabled();
+});
 
 test('recognizes the backstop aggregation in a DwC-A mapping', async () => {
   render(
