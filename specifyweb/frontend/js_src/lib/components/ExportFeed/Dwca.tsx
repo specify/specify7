@@ -58,8 +58,7 @@ export function MakeDwcaOverlay(): JSX.Element | null {
       skippable
       onClose={(): void => setDefinition(undefined)}
       onSelected={(metadata): void => {
-        handleExporting();
-        loading(startExport(definition, metadata?.name));
+        loading(startExport(definition, metadata?.name).then(handleExporting));
       }}
     />
   );
