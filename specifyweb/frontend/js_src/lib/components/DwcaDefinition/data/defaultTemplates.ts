@@ -356,7 +356,7 @@ export const defaultTemplates: readonly DwcaTemplate[] = [
         <field stringId="1,111-collectionObjectAttachments,41.attachment.subtype" oper="11" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/ac/terms/subtype"/>
         <field stringId="1,111-collectionObjectAttachments,41.attachment.mimeType" oper="11" value="" isNot="false" isRelFld="false" formatName="" term="http://purl.org/dc/elements/1.1/format"/>
         <field stringId="1,111-collectionObjectAttachments,41.attachment.subjectOrientation" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/ac/terms/subjectOrientation"/>
-        <field stringId="1,111-collectionObjectAttachments,41.attachment.attachmentLocation" oper="11" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/ac/terms/accessURI"/>
+        <field stringId="1,111-collectionObjectAttachments,41.attachment.attachment" oper="11" value="" isNot="false" isRelFld="true" formatName="" term="http://rs.tdwg.org/ac/terms/accessURI"/>
         <field stringId="1,23,26,96,94.institution.copyright" oper="11" value="" isNot="false" isRelFld="false" formatName="" term="http://ns.adobe.com/xap/1.0/rights/UsageTerms"/>
         <field stringId="1,23,26,96,94.institution.termsOfUse" oper="11" value="" isNot="false" isRelFld="false" formatName="" term="http://purl.org/dc/terms/rights"/>
       </query>

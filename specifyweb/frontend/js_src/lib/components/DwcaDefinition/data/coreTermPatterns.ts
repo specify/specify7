@@ -287,8 +287,8 @@ const gbifExtensionTermPatterns: Readonly<Record<string, readonly string[]>> = {
   ],
   'http://rs.tdwg.org/ac/terms/licenseLogoURL': ['attachment.licenselogourl'],
   'http://rs.tdwg.org/ac/terms/accessURI': [
-    // The DwC-A exporter converts stored locations to public asset-server URLs.
-    'attachment.attachmentlocation',
+    // This is a formatted Attachment relationship field exposed by QueryBuilder.
+    'attachment.attachment',
   ],
 
   // GBIF Types and Specimen / Identification extensions.

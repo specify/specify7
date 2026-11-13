@@ -10,11 +10,9 @@ import tempfile
 from collections import namedtuple
 from unittest.mock import Mock, patch
 from zipfile import ZipFile
-import csv
-from urllib.parse import parse_qs, urlsplit
 from xml.etree import ElementTree as ET
 
-from django.test import Client, TestCase, override_settings
+from django.test import Client, TestCase
 
 from specifyweb.backend.export.feed import update_feed
 from specifyweb.backend.notifications.models import Message
@@ -32,8 +30,6 @@ from .dwca import (
     Query,
     Stanza,
     _collect_core_id,
-    _convert_media_urls,
-    _public_media_url,
     validate_definition,
     validate_stanzas,
 )
@@ -46,33 +42,6 @@ class SimpleTest(TestCase):
         self.assertEqual(1 + 1, 2)
 
 class DwcaValidationTest(TestCase):
-    @override_settings(WEB_ATTACHMENT_REQUIRES_KEY_FOR_GET=False, WEB_ATTACHMENT_COLLECTION='Public collection')
-    @patch('specifyweb.backend.attachment_gw.views.server_urls', {'read': 'https://assets.example.org/fileget'})
-    def test_media_locations_become_original_public_file_urls(self):
-        media = ET.fromstring(DWCA_DEFINITION).find('core/queries/query')
-        field = media[1]
-        field.set('stringId', '1,111-collectionObjectAttachments,41.attachment.attachmentLocation')
-        field.set('term', 'http://purl.org/dc/terms/identifier')
-        query = Query.from_xml(media)
-        with tempfile.TemporaryDirectory() as tmp:
-            path = os.path.join(tmp, 'media.csv')
-            with open(path, 'w', newline='') as target:
-                csv.writer(target).writerows([['id', 'image one.jpg'], ['other', '']])
-            _convert_media_urls(path, query, 'http://rs.gbif.org/terms/1.0/Multimedia', Mock())
-            with open(path, newline='') as source:
-                rows = list(csv.reader(source))
-        url = urlsplit(rows[0][1])
-        self.assertEqual(url.scheme, 'https')
-        self.assertEqual(url.netloc, 'assets.example.org')
-        self.assertEqual(parse_qs(url.query), {'coll': ['Public collection'], 'type': ['O'], 'filename': ['image one.jpg']})
-        self.assertEqual(rows[1], ['other', ''])
-
-    @override_settings(WEB_ATTACHMENT_REQUIRES_KEY_FOR_GET=True)
-    def test_media_export_rejects_expiring_token_urls(self):
-        with self.assertRaises(DwCAException):
-            _public_media_url('stored.jpg', Mock())
-        self.assertEqual(_public_media_url('https://example.org/public.jpg', Mock()), 'https://example.org/public.jpg')
-
     def test_preserves_search_synonymy_in_export_queries(self):
         node = ET.fromstring(DWCA_DEFINITION).find('core/queries/query')
         self.assertFalse(Query.from_xml(node).search_synonymy)

@@ -93,25 +93,6 @@ test('clears a legacy identifier when a replacement query omits its field', () =
   );
 });
 
-test('Simple Multimedia identifiers use file locations rather than GUIDs', () => {
-  const [mapping] =
-    parseDefinition(`<archive><extension rowType="http://rs.gbif.org/terms/1.0/Multimedia"><queries><query contextTableId="1">
-    <field stringId="1,111-collectionObjectAttachments,41.attachment.guid"/>
-    <field stringId="1,29-collectionObjectCitations,69.referencework.guid"/>
-    <field stringId="1,111-collectionObjectAttachments,41.attachment.attachmentLocation"/>
-  </query></queries></extension></archive>`);
-  expect(mapping.terms).toEqual([
-    occurrenceId,
-    undefined,
-    undefined,
-    'http://purl.org/dc/terms/identifier',
-  ]);
-  const [reference] = parseDefinition(
-    `<archive><extension rowType="http://eol.org/schema/reference/Reference"><queries><query contextTableId="1"><field stringId="1,29-collectionObjectCitations,69.referencework.guid"/></query></queries></extension></archive>`
-  );
-  expect(reference.terms).toContain('http://purl.org/dc/terms/identifier');
-});
-
 test('maps taxon identifiers through their relationships instead of sharing taxon.guid', () => {
   const [mapping] =
     parseDefinition(`<archive><core rowType="http://rs.tdwg.org/dwc/terms/Taxon"><queries><query contextTableId="4">
@@ -1412,7 +1393,10 @@ describe('DwCA query field term mapping', () => {
         '1,111-collectionObjectAttachments,41.attachment.fileCreatedDate',
         'http://rs.tdwg.org/ac/terms/digitizationDate',
       ],
-      ['1,111-collectionObjectAttachments,41.attachment.guid', undefined],
+      [
+        '1,111-collectionObjectAttachments,41.attachment.guid',
+        'http://purl.org/dc/terms/identifier',
+      ],
       [
         '1,111-collectionObjectAttachments,41.attachment.type',
         'http://purl.org/dc/elements/1.1/type',
@@ -1426,7 +1410,7 @@ describe('DwCA query field term mapping', () => {
         'http://purl.org/dc/elements/1.1/format',
       ],
       [
-        '1,111-collectionObjectAttachments,41.attachment.attachmentLocation',
+        '1,111-collectionObjectAttachments,41.attachment.attachment',
         'http://rs.tdwg.org/ac/terms/accessURI',
       ],
     ] as const;
