@@ -35,3 +35,16 @@ class TestRenameQuery(ApiTests):
 
         query.refresh_from_db()
         self.assertEqual(query.name, "Renamed Query")
+
+    def test_create_new_query(self):
+        query = post_resource(
+            self.collection,
+            self.agent,
+            'spquery',
+            get_simple_query(self.specifyuser),
+        )
+
+        self.assertIsNotNone(query.id)
+        self.assertEqual(query.name, "New Query")
+        self.assertEqual(query.contextname, "CollectionObject")
+        self.assertEqual(query.fields.count(), 1)
