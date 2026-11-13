@@ -221,29 +221,40 @@ export function getMappingTabIndex(
   return oldIndex < 0 ? fallbackIndex : oldIndex;
 }
 
-type MappingFieldIdentity = Partial<Pick<QueryField,
-  'id' | 'sourceIndex' | 'sourceStringId' | 'mappingPath' | 'filters'
->>;
+type MappingFieldIdentity = Partial<
+  Pick<
+    QueryField,
+    'id' | 'sourceIndex' | 'sourceStringId' | 'mappingPath' | 'filters'
+  >
+>;
 
 export function getMappingTerm(
   mapping: {
     readonly extension: boolean;
     readonly rowType?: string;
     readonly legacyIdentifier?: string;
-    readonly fields: ReadonlyArray<{ readonly stringId: string; readonly formatName?: string | null }>;
+    readonly fields: ReadonlyArray<{
+      readonly stringId: string;
+      readonly formatName?: string | null;
+    }>;
     readonly terms: RA<string | undefined>;
   },
   field: MappingFieldIdentity
 ): string | undefined {
   const fieldIndex = getMappingFieldIndex(mapping, field);
-  return !mapping.extension && fieldIndex === 0 && mapping.legacyIdentifier === undefined
+  return !mapping.extension &&
+    fieldIndex === 0 &&
+    mapping.legacyIdentifier === undefined
     ? getCoreIdentifierTerm(mapping.rowType ?? occurrenceCoreRowType)
     : mapping.terms[fieldIndex];
 }
 
 function getMappingFieldIndex(
   mapping: {
-    readonly fields: ReadonlyArray<{ readonly stringId: string; readonly formatName?: string | null }>;
+    readonly fields: ReadonlyArray<{
+      readonly stringId: string;
+      readonly formatName?: string | null;
+    }>;
   },
   field: MappingFieldIdentity
 ): number {
@@ -266,7 +277,8 @@ function getMappingFieldIndex(
   if (field.mappingPath !== undefined) {
     const pathKey = JSON.stringify(field.mappingPath).toLowerCase();
     const pathIndex = mapping.fields.findIndex(
-      (candidate) => fieldTermPathKey(candidate) === pathKey &&
+      (candidate) =>
+        fieldTermPathKey(candidate) === pathKey &&
         (candidate.formatName ?? '') === format
     );
     if (pathIndex >= 0) return pathIndex;
@@ -565,7 +577,8 @@ function fieldTermKey(
     ]);
     return queryFieldFormatType(
       parsed?.mappingPath ?? [],
-      QueryFieldSpec.fromStringId(field.stringId, field.isRelFld ?? false).baseTable.name
+      QueryFieldSpec.fromStringId(field.stringId, field.isRelFld ?? false)
+        .baseTable.name
     ) === undefined
       ? path
       : `${path}:${field.formatName ?? ''}`;
@@ -661,25 +674,41 @@ export function updateMappingFields(
     mapping.coreRowType
   );
   const fields = [...newFields];
-  const assignedTerms = new Set(mapping.terms.filter((term): term is string => term !== undefined));
-  const priorTerm = (field: SerializedResource<SpQueryField>): string | undefined =>
+  const assignedTerms = new Set(
+    mapping.terms.filter((term): term is string => term !== undefined)
+  );
+  const priorTerm = (
+    field: SerializedResource<SpQueryField>
+  ): string | undefined =>
     oldStringIds.has(fieldFormatKey(field))
       ? oldStringIds.get(fieldFormatKey(field))
       : oldMetadata.get(fieldTermKey(field))?.[0];
   if (!mapping.extension) {
-    const automaticTerms = autoMapCoreFields(fields, availableTerms, assignedTerms, mapping.rowType);
+    const automaticTerms = autoMapCoreFields(
+      fields,
+      availableTerms,
+      assignedTerms,
+      mapping.rowType
+    );
     const occurrenceIndex = fields.findIndex(
       (field, index) =>
-        (oldStringIds.has(fieldFormatKey(field)) || oldMetadata.has(fieldTermKey(field))
+        (oldStringIds.has(fieldFormatKey(field)) ||
+        oldMetadata.has(fieldTermKey(field))
           ? priorTerm(field)
-          : automaticTerms[index]) === getCoreIdentifierTerm(mapping.coreRowType)
+          : automaticTerms[index]) ===
+        getCoreIdentifierTerm(mapping.coreRowType)
     );
     if (occurrenceIndex > 0) {
       const [occurrence] = fields.splice(occurrenceIndex, 1);
       fields.unshift(occurrence);
     }
   }
-  const autoMapped = autoMapCoreFields(fields, availableTerms, assignedTerms, mapping.rowType);
+  const autoMapped = autoMapCoreFields(
+    fields,
+    availableTerms,
+    assignedTerms,
+    mapping.rowType
+  );
   const usedTerms = new Set<string>();
   const terms = fields.map((field, index) => {
     const key = fieldTermKey(field);
@@ -689,7 +718,9 @@ export function updateMappingFields(
     if (pathTerms !== undefined) oldMetadata.set(key, pathTerms.slice(1));
     const candidateTerm = oldStringIds.has(fieldFormatKey(field))
       ? oldTerm
-      : pathTerms !== undefined ? pathTerm : autoMapped[index];
+      : pathTerms !== undefined
+        ? pathTerm
+        : autoMapped[index];
     if (candidateTerm === undefined) return undefined;
     // Pick-list terms may only be mapped once. Custom terms are intentionally
     // left untouched, even when they are not present in the catalogs.
@@ -721,25 +752,42 @@ function autoMapCoreFields(
     const stringId = field.stringId.toLowerCase();
     let spec: QueryFieldSpec | undefined;
     try {
-      spec = QueryFieldSpec.fromStringId(field.stringId, field.isRelFld ?? false);
+      spec = QueryFieldSpec.fromStringId(
+        field.stringId,
+        field.isRelFld ?? false
+      );
     } catch {
       // Unknown legacy paths remain available for manual mapping.
     }
     const source = spec?.getField();
-    if (source?.name.toLowerCase() === 'guid' && source.table.name === 'Taxon') {
+    if (
+      source?.name.toLowerCase() === 'guid' &&
+      source.table.name === 'Taxon'
+    ) {
       const relationship = spec?.joinPath.at(-2)?.name.toLowerCase();
-      const term = `http://rs.tdwg.org/dwc/terms/${relationship === 'parent'
-        ? 'parentNameUsageID' : relationship === 'acceptedtaxon' ? 'acceptedNameUsageID' : 'taxonID'}`;
+      const term = `http://rs.tdwg.org/dwc/terms/${
+        relationship === 'parent'
+          ? 'parentNameUsageID'
+          : relationship === 'acceptedtaxon'
+            ? 'acceptedNameUsageID'
+            : 'taxonID'
+      }`;
       if (!availableTerms.has(term) || usedTerms.has(term)) return undefined;
       usedTerms.add(term);
       return term;
     }
     const patterns = getCoreTermPatterns(getSystemInfo()?.discipline_type);
-    const mediaPatterns = rowType === 'http://rs.gbif.org/terms/1.0/Multimedia'
-      ? { ...patterns, 'http://purl.org/dc/terms/identifier': ['attachment.attachmentlocation'] }
-      : rowType === 'http://rs.tdwg.org/ac/terms/Multimedia'
-        ? { ...patterns, 'http://purl.org/dc/terms/identifier': [] }
-        : patterns;
+    const mediaPatterns =
+      rowType === 'http://rs.gbif.org/terms/1.0/Multimedia'
+        ? {
+            ...patterns,
+            'http://purl.org/dc/terms/identifier': [
+              'attachment.attachmentlocation',
+            ],
+          }
+        : rowType === 'http://rs.tdwg.org/ac/terms/Multimedia'
+          ? { ...patterns, 'http://purl.org/dc/terms/identifier': [] }
+          : patterns;
     const match = Object.entries(mediaPatterns).find(
       ([term, patterns]) =>
         availableTerms.has(term) &&
@@ -792,23 +840,43 @@ export const hasEmptyRequiredMappingValues = (
     ({ fileName, rowType }) => fileName.trim() === '' || rowType.trim() === ''
   );
 
-export function getDuplicateMappingFileNames(mappings: RA<Mapping>): ReadonlySet<string> {
-  const fileNames = mappings.flatMap((mapping) => [
-    mapping.fileName,
-    ...(mapping.additionalQueries ?? []).map((xml) =>
-      new DOMParser().parseFromString(xml, 'text/xml').documentElement.getAttribute('name') ?? ''
-    ),
-  ]).map((name) => name.trim().toLowerCase()).filter(Boolean);
-  return new Set(fileNames.filter((name, index) => fileNames.indexOf(name) !== index));
+export function getDuplicateMappingFileNames(
+  mappings: RA<Mapping>
+): ReadonlySet<string> {
+  const fileNames = mappings
+    .flatMap((mapping) => [
+      mapping.fileName,
+      ...(mapping.additionalQueries ?? []).map(
+        (xml) =>
+          new DOMParser()
+            .parseFromString(xml, 'text/xml')
+            .documentElement.getAttribute('name') ?? ''
+      ),
+    ])
+    .map((name) => name.trim().toLowerCase())
+    .filter(Boolean);
+  return new Set(
+    fileNames.filter((name, index) => fileNames.indexOf(name) !== index)
+  );
 }
 
 export function hasIncompatibleQuerySchemas(mapping: Mapping): boolean {
-  if (!mapping.additionalQueries?.length || mapping.invalidExtensionXml) return false;
-  const xml = new DOMParser().parseFromString(serializeDefinition([mapping]), 'text/xml');
-  const schemas = Array.from(xml.querySelectorAll('queries > query')).map((query) => JSON.stringify(
-    Array.from(query.children).filter((field) => field.tagName === 'id' || field.hasAttribute('term'))
-      .map((field) => [field.tagName === 'id', field.getAttribute('term')])
-  ));
+  if (!mapping.additionalQueries?.length || mapping.invalidExtensionXml)
+    return false;
+  const xml = new DOMParser().parseFromString(
+    serializeDefinition([mapping]),
+    'text/xml'
+  );
+  const schemas = Array.from(xml.querySelectorAll('queries > query')).map(
+    (query) =>
+      JSON.stringify(
+        Array.from(query.children)
+          .filter(
+            (field) => field.tagName === 'id' || field.hasAttribute('term')
+          )
+          .map((field) => [field.tagName === 'id', field.getAttribute('term')])
+      )
+  );
   return schemas.some((schema) => schema !== schemas[0]);
 }
 
@@ -836,25 +904,36 @@ export function getMissingRequiredTerms(
           field.isDisplay === true &&
           getSerializedMappingTerm(mapping, field, index) === name
       );
-    const hasStructuralIdentifier = mapping.legacyIdentifier !== undefined && mapping.fields.some(
-      (field) => field.isDisplay && fieldFormatKey(field) === mapping.legacyIdentifier
-    );
-    const missingIdentifier = hasDisplayedTerm(identifierTerm) || hasStructuralIdentifier
-      ? []
-      : [
-          {
-            mappingIndex,
-            mappingName,
-            term: dwcaText.dwcaRequiredTerm({
-              title: identifierTerm.split(/[\/#]/).at(-1) ?? identifierTerm,
-              name: identifierTerm,
-            }),
-          },
-        ];
-    const hasVocabularyTerm = (name: string): boolean => hasDisplayedTerm(name) ||
+    const hasStructuralIdentifier =
+      mapping.legacyIdentifier !== undefined &&
+      mapping.fields.some(
+        (field) =>
+          field.isDisplay && fieldFormatKey(field) === mapping.legacyIdentifier
+      );
+    const missingIdentifier =
+      hasDisplayedTerm(identifierTerm) || hasStructuralIdentifier
+        ? []
+        : [
+            {
+              mappingIndex,
+              mappingName,
+              term: dwcaText.dwcaRequiredTerm({
+                title: identifierTerm.split(/[\/#]/).at(-1) ?? identifierTerm,
+                name: identifierTerm,
+              }),
+            },
+          ];
+    const hasVocabularyTerm = (name: string): boolean =>
+      hasDisplayedTerm(name) ||
       (mapping.constantFields ?? []).some((xml) => {
-        const field = new DOMParser().parseFromString(xml, 'text/xml').documentElement;
-        return field.getAttribute('term') === name && (field.getAttribute('value') ?? '').trim() !== '';
+        const field = new DOMParser().parseFromString(
+          xml,
+          'text/xml'
+        ).documentElement;
+        return (
+          field.getAttribute('term') === name &&
+          (field.getAttribute('value') ?? '').trim() !== ''
+        );
       });
     const required = (mapping.extensionDefinition?.fields ?? []).filter(
       ({ required }) => required === true
@@ -960,11 +1039,26 @@ const isCoreIdentifierField = (
 
 export function ensureIdentifierTerm(mapping: Mapping): Mapping {
   if (mapping.legacyIdentifier !== undefined) {
-    const identifierIndex = mapping.fields.findIndex((field) => fieldFormatKey(field) === mapping.legacyIdentifier);
+    const identifierIndex = mapping.fields.findIndex(
+      (field) => fieldFormatKey(field) === mapping.legacyIdentifier
+    );
     if (identifierIndex >= 0) {
-      const indexes = [identifierIndex, ...mapping.fields.map((_, index) => index).filter((index) => index !== identifierIndex)];
-      const fields = indexes.map((index, position) => ({ ...mapping.fields[index], position }));
-      return { ...mapping, fields, terms: indexes.map((index) => mapping.terms[index]), query: mapping.query.set('fields', fields) };
+      const indexes = [
+        identifierIndex,
+        ...mapping.fields
+          .map((_, index) => index)
+          .filter((index) => index !== identifierIndex),
+      ];
+      const fields = indexes.map((index, position) => ({
+        ...mapping.fields[index],
+        position,
+      }));
+      return {
+        ...mapping,
+        fields,
+        terms: indexes.map((index) => mapping.terms[index]),
+        query: mapping.query.set('fields', fields),
+      };
     }
   }
   const identifierIndex = mapping.fields.findIndex((field) =>
@@ -1242,7 +1336,10 @@ export function parseDefinition(data: string | null): RA<Mapping> {
         table
       );
       query.set('contextTableId', baseTable.tableId);
-      query.set('searchSynonymy', queryNode?.getAttribute('searchSynonymy') === 'true');
+      query.set(
+        'searchSynonymy',
+        queryNode?.getAttribute('searchSynonymy') === 'true'
+      );
       query.set('fields', fields);
       const rowType = stanza.getAttribute('rowType') ?? '';
       const extensionDefinition = extension
@@ -1252,14 +1349,21 @@ export function parseDefinition(data: string | null): RA<Mapping> {
         (field) => field.getAttribute('term') ?? undefined
       );
       const serializedFields = fields.map(serializeResource);
-      const legacyIdIndex = fieldNodes.findIndex((field) =>
-        field.tagName === 'id' && !field.hasAttribute('term') &&
-        field.getAttribute('stringId')?.toLowerCase().endsWith('collectionobject.collectionobjectid')
+      const legacyIdIndex = fieldNodes.findIndex(
+        (field) =>
+          field.tagName === 'id' &&
+          !field.hasAttribute('term') &&
+          field
+            .getAttribute('stringId')
+            ?.toLowerCase()
+            .endsWith('collectionobject.collectionobjectid')
       );
       const automaticTerms = autoMapCoreFields(
         serializedFields,
         availableTermNames(extension, extensionDefinition, coreRowType),
-        new Set(explicitTerms.filter((term): term is string => term !== undefined)),
+        new Set(
+          explicitTerms.filter((term): term is string => term !== undefined)
+        ),
         rowType
       );
       return ensureIdentifierTerm({
@@ -1278,7 +1382,10 @@ export function parseDefinition(data: string | null): RA<Mapping> {
               : 'core.csv'),
         query,
         fields: serializedFields,
-        legacyIdentifier: legacyIdIndex >= 0 ? fieldFormatKey(serializedFields[legacyIdIndex]) : undefined,
+        legacyIdentifier:
+          legacyIdIndex >= 0
+            ? fieldFormatKey(serializedFields[legacyIdIndex])
+            : undefined,
         // Legacy definitions often omitted terms for recognizable fields.
         // Populate only missing terms; explicit and custom values remain intact.
         terms: explicitTerms.map(
@@ -1353,7 +1460,8 @@ export function serializeDefinition(mappings: RA<Mapping>): string {
     const query = document.createElement('query');
     query.setAttribute('name', mapping.fileName);
     query.setAttribute('contextTableId', String(mapping.baseTable.tableId));
-    if (mapping.query.get('searchSynonymy')) query.setAttribute('searchSynonymy', 'true');
+    if (mapping.query.get('searchSynonymy'))
+      query.setAttribute('searchSynonymy', 'true');
     let displayIndex = 0;
     let idIndex = -1;
     mapping.fields.forEach((field, index) => {
@@ -1908,7 +2016,10 @@ export function QueryMapping({
             queryBuilderInitialized.current = true;
           }
           const updated = updateMappingFields(mapping, newFields);
-          handleChange({ ...updated, query: updated.query.set('searchSynonymy', searchSynonymy) });
+          handleChange({
+            ...updated,
+            query: updated.query.set('searchSynonymy', searchSynonymy),
+          });
         }}
         canRemoveField={(field): boolean => !isIdentifierField(field)}
         isFieldReadOnly={isIdentifierField}
@@ -2115,12 +2226,18 @@ function DwcaDefinitionEditorLoaded({
     requiredTermsMessage,
     setSaveBlockers,
   ]);
-  const duplicateFileNames = React.useMemo(() => getDuplicateMappingFileNames(mappings), [mappings]);
+  const duplicateFileNames = React.useMemo(
+    () => getDuplicateMappingFileNames(mappings),
+    [mappings]
+  );
   const hasDuplicateFileNames = duplicateFileNames.size > 0;
   const incompatibleQuerySchemas = mappings.some(hasIncompatibleQuerySchemas);
   React.useEffect(() => {
     const key = getFieldBlockerKey(appResourceDataField, 'dwca-query-schemas');
-    setSaveBlockers(incompatibleQuerySchemas ? [dwcaText.dwcaQueryFieldsMustMatch()] : [], key);
+    setSaveBlockers(
+      incompatibleQuerySchemas ? [dwcaText.dwcaQueryFieldsMustMatch()] : [],
+      key
+    );
     return (): void => setSaveBlockers([], key);
   }, [appResourceDataField, incompatibleQuerySchemas, setSaveBlockers]);
   React.useEffect(() => {

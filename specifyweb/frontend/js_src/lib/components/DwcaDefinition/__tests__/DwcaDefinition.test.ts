@@ -50,30 +50,48 @@ const occurrenceId = 'http://rs.tdwg.org/dwc/terms/occurrenceID';
 const kingdom = 'http://rs.tdwg.org/dwc/terms/kingdom';
 
 test('Simple Multimedia identifiers use file locations rather than GUIDs', () => {
-  const [mapping] = parseDefinition(`<archive><extension rowType="http://rs.gbif.org/terms/1.0/Multimedia"><queries><query contextTableId="1">
+  const [mapping] =
+    parseDefinition(`<archive><extension rowType="http://rs.gbif.org/terms/1.0/Multimedia"><queries><query contextTableId="1">
     <field stringId="1,111-collectionObjectAttachments,41.attachment.guid"/>
     <field stringId="1,29-collectionObjectCitations,69.referencework.guid"/>
     <field stringId="1,111-collectionObjectAttachments,41.attachment.attachmentLocation"/>
   </query></queries></extension></archive>`);
-  expect(mapping.terms).toEqual([occurrenceId, undefined, undefined, 'http://purl.org/dc/terms/identifier']);
-  const [reference] = parseDefinition(`<archive><extension rowType="http://eol.org/schema/reference/Reference"><queries><query contextTableId="1"><field stringId="1,29-collectionObjectCitations,69.referencework.guid"/></query></queries></extension></archive>`);
+  expect(mapping.terms).toEqual([
+    occurrenceId,
+    undefined,
+    undefined,
+    'http://purl.org/dc/terms/identifier',
+  ]);
+  const [reference] = parseDefinition(
+    `<archive><extension rowType="http://eol.org/schema/reference/Reference"><queries><query contextTableId="1"><field stringId="1,29-collectionObjectCitations,69.referencework.guid"/></query></queries></extension></archive>`
+  );
   expect(reference.terms).toContain('http://purl.org/dc/terms/identifier');
 });
 
 test('maps taxon identifiers through their relationships instead of sharing taxon.guid', () => {
-  const [mapping] = parseDefinition(`<archive><core rowType="http://rs.tdwg.org/dwc/terms/Taxon"><queries><query contextTableId="4">
+  const [mapping] =
+    parseDefinition(`<archive><core rowType="http://rs.tdwg.org/dwc/terms/Taxon"><queries><query contextTableId="4">
     <field stringId="4.taxon.guid"/>
     <field stringId="4,4-parent.taxon.guid"/>
     <field stringId="4,4-acceptedTaxon.taxon.guid"/>
   </query></queries></core></archive>`);
-  expect(mapping.terms).toEqual(['taxonID', 'parentNameUsageID', 'acceptedNameUsageID'].map((name) => `http://rs.tdwg.org/dwc/terms/${name}`));
-  expect(coreTermPatterns['http://rs.tdwg.org/dwc/terms/scientificNameID']).toEqual([]);
-  expect(coreTermPatterns['http://rs.tdwg.org/dwc/terms/originalNameUsageID']).toEqual([]);
+  expect(mapping.terms).toEqual(
+    ['taxonID', 'parentNameUsageID', 'acceptedNameUsageID'].map(
+      (name) => `http://rs.tdwg.org/dwc/terms/${name}`
+    )
+  );
+  expect(
+    coreTermPatterns['http://rs.tdwg.org/dwc/terms/scientificNameID']
+  ).toEqual([]);
+  expect(
+    coreTermPatterns['http://rs.tdwg.org/dwc/terms/originalNameUsageID']
+  ).toEqual([]);
 });
 
 test('detects schema-changing visual edits without rewriting additional queries', () => {
   const query = `<id stringId="1.collectionobject.guid" term="${occurrenceId}"/><field stringId="1.collectionobject.text1" term="https://example.org/text"/>`;
-  const [mapping] = parseDefinition(`<archive><core rowType="http://rs.tdwg.org/dwc/terms/Occurrence"><queries>
+  const [mapping] =
+    parseDefinition(`<archive><core rowType="http://rs.tdwg.org/dwc/terms/Occurrence"><queries>
     <query contextTableId="1" name="first.csv">${query}</query>
     <query contextTableId="1" name="second.csv">${query}</query>
   </queries></core></archive>`);
@@ -85,15 +103,29 @@ test('detects schema-changing visual edits without rewriting additional queries'
 
 test('automatic mapping respects explicit assignments and deliberate unmapped fields', () => {
   const catalog = 'http://rs.tdwg.org/dwc/terms/catalogNumber';
-  const [mapping] = parseDefinition(`<archive><core rowType="http://rs.tdwg.org/dwc/terms/Occurrence"><queries><query contextTableId="1">
+  const [mapping] =
+    parseDefinition(`<archive><core rowType="http://rs.tdwg.org/dwc/terms/Occurrence"><queries><query contextTableId="1">
     <id stringId="1.collectionobject.guid" term="${occurrenceId}"/>
     <field stringId="1.collectionobject.text1" term="${catalog}"/>
     <field stringId="1.collectionobject.catalogNumber"/>
   </query></queries></core></archive>`);
   const explicit = { ...mapping, terms: [occurrenceId, catalog, undefined] };
   const fields = [explicit.fields[0], explicit.fields[2], explicit.fields[1]];
-  expect(updateMappingFields(explicit, fields).terms).toEqual([occurrenceId, undefined, catalog]);
-  expect(updateMappingFields({ ...mapping, fields: mapping.fields.slice(0, 2), terms: [occurrenceId, catalog] }, fields).terms).toEqual([occurrenceId, undefined, catalog]);
+  expect(updateMappingFields(explicit, fields).terms).toEqual([
+    occurrenceId,
+    undefined,
+    catalog,
+  ]);
+  expect(
+    updateMappingFields(
+      {
+        ...mapping,
+        fields: mapping.fields.slice(0, 2),
+        terms: [occurrenceId, catalog],
+      },
+      fields
+    ).terms
+  ).toEqual([occurrenceId, undefined, catalog]);
 });
 
 test('preserves an unlabelled legacy collectionObjectId as the structural ID', () => {
@@ -103,15 +135,23 @@ test('preserves an unlabelled legacy collectionObjectId as the structural ID', (
   </query></queries></core></archive>`;
   const mappings = parseDefinition(xml);
   expect(mappings[0].fields).toHaveLength(2);
-  const saved = new DOMParser().parseFromString(serializeDefinition(mappings), 'text/xml');
+  const saved = new DOMParser().parseFromString(
+    serializeDefinition(mappings),
+    'text/xml'
+  );
   expect(saved.querySelectorAll('query id')).toHaveLength(1);
-  expect(saved.querySelector('query id')?.getAttribute('stringId')).toBe('1.collectionobject.collectionObjectId');
+  expect(saved.querySelector('query id')?.getAttribute('stringId')).toBe(
+    '1.collectionobject.collectionObjectId'
+  );
   expect(saved.querySelector('query id')?.hasAttribute('term')).toBe(false);
-  expect(saved.querySelector('query field')?.getAttribute('stringId')).toBe('1.collectionobject.guid');
+  expect(saved.querySelector('query field')?.getAttribute('stringId')).toBe(
+    '1.collectionobject.guid'
+  );
 });
 
 test('checks collisions with every additional query file name', () => {
-  const mappings = parseDefinition(`<archive><core rowType="http://rs.tdwg.org/dwc/terms/Occurrence"><queries>
+  const mappings =
+    parseDefinition(`<archive><core rowType="http://rs.tdwg.org/dwc/terms/Occurrence"><queries>
     <query contextTableId="1" name="core.csv"/>
     <query contextTableId="1" name=" EXTRA.CSV "/>
   </queries></core><extension rowType="custom"><queries><query contextTableId="1" name="extra.csv"/></queries></extension></archive>`);
@@ -119,15 +159,33 @@ test('checks collisions with every additional query file name', () => {
 });
 
 test('requires core vocabulary terms and accepts stanza constants', () => {
-  const [core] = parseDefinition(`<archive><core rowType="http://rs.tdwg.org/dwc/terms/Occurrence"><queries><query contextTableId="1" /></queries></core></archive>`);
+  const [core] = parseDefinition(
+    `<archive><core rowType="http://rs.tdwg.org/dwc/terms/Occurrence"><queries><query contextTableId="1" /></queries></core></archive>`
+  );
   const basis = 'http://rs.tdwg.org/dwc/terms/basisOfRecord';
-  expect(getMissingRequiredTerms([core]).some(({ term }) => term.includes(basis))).toBe(true);
-  const constantCore = { ...core, constantFields: [`<field term="${basis}" value="PreservedSpecimen"/>`] };
+  expect(
+    getMissingRequiredTerms([core]).some(({ term }) => term.includes(basis))
+  ).toBe(true);
+  const constantCore = {
+    ...core,
+    constantFields: [`<field term="${basis}" value="PreservedSpecimen"/>`],
+  };
   expect(getMissingRequiredTerms([constantCore])).toEqual([]);
-  const [extension] = parseDefinition(`<archive><extension rowType="http://rs.tdwg.org/ac/terms/Multimedia"><queries><query contextTableId="1"/></queries></extension></archive>`);
+  const [extension] = parseDefinition(
+    `<archive><extension rowType="http://rs.tdwg.org/ac/terms/Multimedia"><queries><query contextTableId="1"/></queries></extension></archive>`
+  );
   const identifier = 'http://purl.org/dc/terms/identifier';
-  const constants = { ...extension, constantFields: [`<field term="${identifier}" value="https://example.org/media"/>`] };
-  expect(getMissingRequiredTerms([constants]).some(({ term }) => term.includes(identifier))).toBe(false);
+  const constants = {
+    ...extension,
+    constantFields: [
+      `<field term="${identifier}" value="https://example.org/media"/>`,
+    ],
+  };
+  expect(
+    getMissingRequiredTerms([constants]).some(({ term }) =>
+      term.includes(identifier)
+    )
+  ).toBe(false);
 });
 
 test('preserves Search Synonymy when loading and saving definitions', () => {
@@ -136,7 +194,11 @@ test('preserves Search Synonymy when loading and saving definitions', () => {
   </query></queries></core></archive>`;
   const mappings = parseDefinition(xml);
   expect(mappings[0].query.get('searchSynonymy')).toBe(true);
-  expect(parseDefinition(serializeDefinition(mappings))[0].query.get('searchSynonymy')).toBe(true);
+  expect(
+    parseDefinition(serializeDefinition(mappings))[0].query.get(
+      'searchSynonymy'
+    )
+  ).toBe(true);
 });
 
 test('preserves strict filters when loading and saving definitions', () => {
@@ -146,7 +208,9 @@ test('preserves strict filters when loading and saving definitions', () => {
   </query></queries></core></archive>`;
   const mappings = parseDefinition(xml);
   expect(mappings[0].fields[1].isStrict).toBe(true);
-  expect(parseDefinition(serializeDefinition(mappings))[0].fields[1].isStrict).toBe(true);
+  expect(
+    parseDefinition(serializeDefinition(mappings))[0].fields[1].isStrict
+  ).toBe(true);
 });
 
 test('preserves an extension with a different query context table', () => {
@@ -973,7 +1037,9 @@ describe('DwCA query field term mapping', () => {
     expect(
       parsed.slice(1).map((field) => getMappingTerm(mapping, field))
     ).toEqual([firstTerm, secondTerm]);
-    expect(getMappingTerm(mapping, { mappingPath: [formattedEntry] })).toBeUndefined();
+    expect(
+      getMappingTerm(mapping, { mappingPath: [formattedEntry] })
+    ).toBeUndefined();
 
     const serialized = unParseQueryFields('CollectionObject', parsed);
     expect(serialized.slice(1).map(({ formatName }) => formatName)).toEqual([
@@ -1001,18 +1067,37 @@ describe('DwCA query field term mapping', () => {
   });
 
   test('resolves terms by format after fields move and before source indexes refresh', () => {
-    const [mapping] = parseDefinition(`<archive><extension rowType="custom"><queries><query contextTableId="1">
+    const [mapping] =
+      parseDefinition(`<archive><extension rowType="custom"><queries><query contextTableId="1">
       <id stringId="1.collectionobject.guid" term="${occurrenceId}" />
       <field stringId="1.collectionobject." formatName="First" term="https://example.org/first" />
       <field stringId="1.collectionobject." formatName="Second" term="https://example.org/second" />
     </query></queries></extension></archive>`);
     const fields = parseQueryFields(mapping.fields);
-    const moved = { ...mapping, fields: [mapping.fields[0], mapping.fields[2], mapping.fields[1]], terms: [occurrenceId, 'https://example.org/second', 'https://example.org/first'] };
+    const moved = {
+      ...mapping,
+      fields: [mapping.fields[0], mapping.fields[2], mapping.fields[1]],
+      terms: [
+        occurrenceId,
+        'https://example.org/second',
+        'https://example.org/first',
+      ],
+    };
     expect(getMappingTerm(moved, fields[1])).toBe('https://example.org/first');
     expect(getMappingTerm(moved, fields[2])).toBe('https://example.org/second');
-    const newColumn = { ...fields[2], sourceIndex: undefined, sourceStringId: undefined };
+    const newColumn = {
+      ...fields[2],
+      sourceIndex: undefined,
+      sourceStringId: undefined,
+    };
     expect(getMappingTerm(moved, newColumn)).toBe('https://example.org/second');
-    expect(updateMappingTerm(moved, newColumn, 'https://example.org/changed').terms).toEqual([occurrenceId, 'https://example.org/changed', 'https://example.org/first']);
+    expect(
+      updateMappingTerm(moved, newColumn, 'https://example.org/changed').terms
+    ).toEqual([
+      occurrenceId,
+      'https://example.org/changed',
+      'https://example.org/first',
+    ]);
   });
 
   test('does not serialize terms on hidden relationship fields', () => {
@@ -1283,10 +1368,7 @@ describe('DwCA query field term mapping', () => {
         '1,111-collectionObjectAttachments,41.attachment.fileCreatedDate',
         'http://rs.tdwg.org/ac/terms/digitizationDate',
       ],
-      [
-        '1,111-collectionObjectAttachments,41.attachment.guid',
-        undefined,
-      ],
+      ['1,111-collectionObjectAttachments,41.attachment.guid', undefined],
       [
         '1,111-collectionObjectAttachments,41.attachment.type',
         'http://purl.org/dc/elements/1.1/type',

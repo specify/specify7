@@ -111,7 +111,8 @@ export function parseQueryFields(
           const mappingPath = fieldSpec.toMappingPath();
           return [
             `${mappingPathToString(mappingPath)}${
-              queryFieldFormatType(mappingPath, fieldSpec.baseTable.name) !== undefined
+              queryFieldFormatType(mappingPath, fieldSpec.baseTable.name) !==
+              undefined
                 ? `:${field.formatName ?? ''}`
                 : ''
             }`,

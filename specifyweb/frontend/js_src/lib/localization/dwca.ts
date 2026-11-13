@@ -10,7 +10,8 @@ import { createDictionary } from './utils';
 
 export const dwcaText = createDictionary({
   dwcaQueryFieldsMustMatch: {
-    'en-us': 'All queries in a mapping must export the same fields and terms. Update the other queries in the XML editor before saving.',
+    'en-us':
+      'All queries in a mapping must export the same fields and terms. Update the other queries in the XML editor before saving.',
   },
   dwcaChangeCoreConfirmation: {
     'en-us': 'Change the Darwin Core type and reset mappings?',

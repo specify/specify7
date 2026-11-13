@@ -206,9 +206,14 @@ export function QueryFields({
         readonly currentIndex: number;
         readonly over: HTMLElement | null;
       };
-      const overIndex = over === null ? -1 : (sortable as typeof sortable & {
-        readonly index: (element: HTMLElement) => number;
-      }).index(over);
+      const overIndex =
+        over === null
+          ? -1
+          : (
+              sortable as typeof sortable & {
+                readonly index: (element: HTMLElement) => number;
+              }
+            ).index(over);
       if (
         wouldMoveReadOnlyField(
           fieldsRef.current,
@@ -344,8 +349,10 @@ export function QueryFields({
                         .filter(
                           (other, index) =>
                             index !== line &&
-                            queryFieldFormatType(other.mappingPath, baseTableName) !==
-                              undefined &&
+                            queryFieldFormatType(
+                              other.mappingPath,
+                              baseTableName
+                            ) !== undefined &&
                             JSON.stringify(other.mappingPath) ===
                               JSON.stringify(field.mappingPath)
                         )

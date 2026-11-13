@@ -282,7 +282,8 @@ function Wrapped({
         {
           id,
           sourceStringId: QueryFieldSpec.fromPath(
-            state.baseTableName, mappingPath
+            state.baseTableName,
+            mappingPath
           ).toSpQueryAttributes().stringId,
           mappingPath,
           sortType: undefined,
@@ -365,8 +366,8 @@ function Wrapped({
   const getMappedFieldsBind = (mappingPath: MappingPath): RA<string> =>
     getMappedFields(state.fields, mappingPath).filter(
       (name) =>
-        queryFieldFormatType([...mappingPath, name], state.baseTableName) === undefined ||
-        !canAddMapping([...mappingPath, name])
+        queryFieldFormatType([...mappingPath, name], state.baseTableName) ===
+          undefined || !canAddMapping([...mappingPath, name])
     );
   const mapButtonEnabled =
     !isReadOnly &&
@@ -681,7 +682,8 @@ function Wrapped({
                         });
                         if (
                           mappingPathIsComplete(path) &&
-                          queryFieldFormatType(path, state.baseTableName) !== undefined &&
+                          queryFieldFormatType(path, state.baseTableName) !==
+                            undefined &&
                           JSON.stringify(path) !==
                             JSON.stringify(state.fields[line].mappingPath)
                         ) {
