@@ -765,6 +765,13 @@ function autoMapCoreFields(
       source.table.name === 'Taxon'
     ) {
       const relationship = spec?.joinPath.at(-2)?.name.toLowerCase();
+      if (
+        relationship !== undefined &&
+        !['parent', 'acceptedtaxon', 'taxon', 'preferredtaxon'].includes(
+          relationship
+        )
+      )
+        return undefined;
       const term = `http://rs.tdwg.org/dwc/terms/${
         relationship === 'parent'
           ? 'parentNameUsageID'
