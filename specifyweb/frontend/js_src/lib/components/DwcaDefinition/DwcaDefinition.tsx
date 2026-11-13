@@ -68,6 +68,7 @@ type Mapping = {
   readonly fileName: string;
   readonly query: SpecifyResource<SpQuery>;
   readonly fields: RA<SerializedResource<SpQueryField>>;
+  readonly rowIds?: RA<number | undefined>;
   readonly terms: RA<string | undefined>;
   readonly additionalQueries?: RA<string>;
   readonly constantFields?: RA<string>;
@@ -649,7 +650,8 @@ function availableTermNames(
 
 export function updateMappingFields(
   mapping: Mapping,
-  newFields: RA<SerializedResource<SpQueryField>>
+  newFields: RA<SerializedResource<SpQueryField>>,
+  fieldIdentities?: RA<QueryField>
 ): Mapping {
   const oldMetadata = new Map<string, RA<string | undefined>>();
   mapping.fields.forEach((field, index) => {
@@ -671,6 +673,24 @@ export function updateMappingFields(
     mapping.coreRowType
   );
   const fields = [...newFields];
+  const stablePriorIndex = (
+    field: SerializedResource<SpQueryField>
+  ): number => {
+    const identity = fieldIdentities?.[newFields.indexOf(field)];
+    if (identity === undefined) return -1;
+    const priorIndex =
+      mapping.rowIds === undefined
+        ? identity.sourceIndex
+        : mapping.rowIds.indexOf(identity.id);
+    const prior =
+      priorIndex === undefined || priorIndex < 0
+        ? undefined
+        : mapping.fields[priorIndex];
+    return prior !== undefined &&
+      fieldTermPathKey(prior) === fieldTermPathKey(field)
+      ? priorIndex!
+      : -1;
+  };
   const assignedTerms = new Set(
     mapping.terms.filter((term): term is string => term !== undefined)
   );
@@ -707,11 +727,15 @@ export function updateMappingFields(
     const pathTerms = oldMetadata.get(key);
     const pathTerm = pathTerms?.[0];
     if (pathTerms !== undefined) oldMetadata.set(key, pathTerms.slice(1));
-    const candidateTerm = oldStringIds.has(fieldFormatKey(field))
-      ? oldTerm
-      : pathTerms !== undefined
-        ? pathTerm
-        : autoMapped[index];
+    const priorIndex = stablePriorIndex(field);
+    const candidateTerm =
+      priorIndex >= 0
+        ? mapping.terms[priorIndex]
+        : oldStringIds.has(fieldFormatKey(field))
+          ? oldTerm
+          : pathTerms !== undefined
+            ? pathTerm
+            : autoMapped[index];
     if (candidateTerm === undefined) return undefined;
     // Pick-list terms may only be mapped once. Custom terms are intentionally
     // left untouched, even when they are not present in the catalogs.
@@ -723,6 +747,14 @@ export function updateMappingFields(
   });
   const updatedMapping = {
     ...mapping,
+    rowIds:
+      fieldIdentities === undefined
+        ? mapping.rowIds === undefined
+          ? undefined
+          : fields.map(
+              (field) => mapping.rowIds?.[mapping.fields.indexOf(field)]
+            )
+        : fields.map((field) => fieldIdentities[newFields.indexOf(field)]?.id),
     query: mapping.query.set('fields', fields),
     fields,
     terms,
@@ -1054,6 +1086,10 @@ export function ensureIdentifierTerm(mapping: Mapping): Mapping {
       return {
         ...mapping,
         fields,
+        rowIds:
+          mapping.rowIds === undefined
+            ? undefined
+            : indexes.map((index) => mapping.rowIds?.[index]),
         terms: indexes.map((index) => mapping.terms[index]),
         query: mapping.query.set('fields', fields),
       };
@@ -1103,6 +1139,13 @@ export function ensureIdentifierTerm(mapping: Mapping): Mapping {
   return {
     ...mapping,
     legacyIdentifier: undefined,
+    rowIds:
+      mapping.rowIds === undefined
+        ? undefined
+        : [
+            mapping.rowIds[identifierIndex],
+            ...mapping.rowIds.filter((_, index) => index !== identifierIndex),
+          ],
     query: mapping.query.set('fields', positionedFields),
     fields: positionedFields,
     terms,
@@ -1995,7 +2038,11 @@ export function QueryMapping({
             onChange={handleChange}
           />
         )}
-        onChange={({ fields: newFields, searchSynonymy }): void => {
+        onChange={({
+          fields: newFields,
+          searchSynonymy,
+          fieldIdentities,
+        }): void => {
           /*
            * QueryBuilder emits changes for its pending empty state and then
            * for its initial state. Neither callback is a user edit. The
@@ -2013,7 +2060,11 @@ export function QueryMapping({
             }
             queryBuilderInitialized.current = true;
           }
-          const updated = updateMappingFields(mapping, newFields);
+          const updated = updateMappingFields(
+            mapping,
+            newFields,
+            fieldIdentities
+          );
           handleChange({
             ...updated,
             query: updated.query.set('searchSynonymy', searchSynonymy),

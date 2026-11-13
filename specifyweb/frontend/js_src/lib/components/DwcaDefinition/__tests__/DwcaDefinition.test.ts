@@ -50,6 +50,58 @@ import {
 const occurrenceId = 'http://rs.tdwg.org/dwc/terms/occurrenceID';
 const kingdom = 'http://rs.tdwg.org/dwc/terms/kingdom';
 
+test('preserves custom terms across format changes and reordering by column identity', () => {
+  const [mapping] = parseDefinition(
+    `<archive><core rowType="http://rs.tdwg.org/dwc/terms/Occurrence"><queries><query contextTableId="1"><id stringId="1.collectionobject.guid" term="${occurrenceId}"/><field stringId="1.collectionobject." formatName="First" term="https://example.org/first"/><field stringId="1.collectionobject." formatName="Second" term="https://example.org/second"/></query></queries></core></archive>`
+  );
+  const parsed = parseQueryFields(mapping.fields);
+  const reordered = [
+    parsed[0],
+    parsed[2],
+    {
+      ...parsed[1],
+      filters: parsed[1].filters.map((filter) => ({
+        ...filter,
+        fieldFormat: 'Third',
+      })),
+    },
+  ];
+  const updated = updateMappingFields(
+    mapping,
+    unParseQueryFields('CollectionObject', reordered),
+    reordered
+  );
+  expect(updated.terms).toEqual([
+    occurrenceId,
+    'https://example.org/second',
+    'https://example.org/first',
+  ]);
+  const edited = [
+    reordered[0],
+    {
+      ...reordered[2],
+      filters: reordered[2].filters.map((filter) => ({
+        ...filter,
+        fieldFormat: 'Fourth',
+      })),
+    },
+    reordered[1],
+  ];
+  const next = updateMappingFields(
+    updated,
+    unParseQueryFields('CollectionObject', edited),
+    edited
+  );
+  expect(next.terms).toEqual([
+    occurrenceId,
+    'https://example.org/first',
+    'https://example.org/second',
+  ]);
+  expect(serializeDefinition([next])).toContain(
+    'formatName="Fourth" term="https://example.org/first"'
+  );
+});
+
 test('does not infer a collection code from a specimen-specific text field', () => {
   const [mapping] = parseDefinition(
     '<archive><core rowType="http://rs.tdwg.org/dwc/terms/Occurrence"><queries><query contextTableId="1"><field stringId="1.collectionobject.text1"/></query></queries></core></archive>'

@@ -115,6 +115,7 @@ function Wrapped({
   readonly onSelected?: (selected: RA<number>) => void;
   readonly onChange?: (props: {
     readonly fields: RA<SerializedResource<SpQueryField>>;
+    readonly fieldIdentities?: RA<QueryField>;
     readonly isDistinct: boolean | null;
     readonly searchSynonymy: boolean | null;
     readonly isSeries: boolean | null;
@@ -192,8 +193,13 @@ function Wrapped({
 
   React.useEffect(() => {
     if (state === pendingState) return;
+    const fields = unParseQueryFields(state.baseTableName, state.fields);
+    const completeFields = state.fields.filter(({ mappingPath }) =>
+      mappingPathIsComplete(mappingPath)
+    );
     handleChange?.({
-      fields: unParseQueryFields(state.baseTableName, state.fields),
+      fields,
+      fieldIdentities: fields.map(({ position }) => completeFields[position]),
       isDistinct: query.selectDistinct,
       searchSynonymy: query.searchSynonymy,
       isSeries: query.smushed,
