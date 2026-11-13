@@ -10,6 +10,7 @@ import {
   parseQueryFields,
   queryFieldFormatType,
   unParseQueryFields,
+  getUsedQueryFormats,
 } from '../helpers';
 
 requireContext();
@@ -71,6 +72,18 @@ test('uses relationship schema for remote one-to-one formats before and after re
     attributes.stringId,
     attributes.isRelFld ?? false
   ).toMappingPath();
+  const existing = [{ ...makeField(), mappingPath: reloaded }];
+  expect(getUsedQueryFormats(existing, remotePath, 'CollectionObject')).toEqual(
+    new Set([''])
+  );
+  expect(
+    nextAvailableQueryFormat(
+      existing,
+      remotePath,
+      ['Default', 'Alternate'],
+      'CollectionObject'
+    )
+  ).toBe('Alternate');
   expect(queryFieldFormatType(reloaded, 'CollectionObject')).toBe('formatter');
   expect(
     queryFieldFormatType(

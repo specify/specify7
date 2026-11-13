@@ -58,6 +58,7 @@ import {
   nextAvailableQueryFormat,
   queryFieldFormatType,
   unParseQueryFields,
+  getUsedQueryFormats,
 } from './helpers';
 import type { QueryField } from './helpers';
 import { getInitialState, reducer } from './reducer';
@@ -247,22 +248,13 @@ function Wrapped({
       .map(({ name }) => name);
   };
   const usedFormats = (mappingPath: MappingPath): ReadonlySet<string> =>
-    new Set(
-      state.fields
-        .filter(
-          ({ mappingPath: path }) =>
-            JSON.stringify(path) === JSON.stringify(mappingPath)
-        )
-        .map(
-          ({ filters }) =>
-            filters.find(({ type }) => type === 'any')?.fieldFormat ?? ''
-        )
-    );
+    getUsedQueryFormats(state.fields, mappingPath, state.baseTableName);
   const nextFormat = (mappingPath: MappingPath): string | undefined =>
     nextAvailableQueryFormat(
       state.fields,
       mappingPath,
-      availableFormats(mappingPath)
+      availableFormats(mappingPath),
+      state.baseTableName
     );
   const canAddMapping = (mappingPath: MappingPath): boolean =>
     queryFieldFormatType(mappingPath, state.baseTableName) === undefined

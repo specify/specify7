@@ -158,22 +158,38 @@ export function queryFieldFormatType(
 }
 
 /** The blank legacy selection denotes the table's default format. */
+export function getUsedQueryFormats(
+  fields: RA<QueryField>,
+  mappingPath: MappingPath,
+  baseTableName: keyof Tables
+): ReadonlySet<string> {
+  if (!mappingPathIsComplete(mappingPath)) return new Set();
+  const key = (path: MappingPath) =>
+    mappingPathToString(
+      QueryFieldSpec.fromPath(baseTableName, path).toMappingPath()
+    );
+  const target = key(mappingPath);
+  return new Set(
+    fields
+      .filter(
+        ({ mappingPath: path }) =>
+          mappingPathIsComplete(path) && key(path) === target
+      )
+      .map(
+        ({ filters }) =>
+          filters.find(({ type }) => type === 'any')?.fieldFormat ?? ''
+      )
+  );
+}
+
 export function nextAvailableQueryFormat(
   fields: RA<QueryField>,
   mappingPath: MappingPath,
-  formats: RA<string>
+  formats: RA<string>,
+  baseTableName: keyof Tables = 'CollectionObject'
 ): string | undefined {
-  const matchingFields = fields.filter(
-    ({ mappingPath: path }) =>
-      mappingPathToString(path) === mappingPathToString(mappingPath)
-  );
-  if (matchingFields.length === 0) return undefined;
-  const used = new Set(
-    matchingFields.map(
-      ({ filters }) =>
-        filters.find(({ type }) => type === 'any')?.fieldFormat ?? ''
-    )
-  );
+  const used = getUsedQueryFormats(fields, mappingPath, baseTableName);
+  if (used.size === 0) return undefined;
   return formats.find(
     (name, index) => !used.has(name) && !(index === 0 && used.has(''))
   );
