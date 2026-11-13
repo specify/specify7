@@ -290,7 +290,11 @@ export function QueryFields({
   );
 
   return (
-    <div className={isBasic ? 'query-fields-container min-h-0 sm:flex-1' : ''}>
+    <div
+      className={
+        isBasic ? 'query-fields-container min-h-0 sm:flex-1' : 'contents'
+      }
+    >
       <div
         className={
           isBasic

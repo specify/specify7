@@ -585,7 +585,11 @@ export function Mapper(props: {
 
       <Ul
         aria-label={wbPlanText.mappings()}
-        className="wb-mappings-container flex min-w-0 flex-1 flex-col overflow-auto"
+        className={`
+          grid flex-1 auto-rows-max grid-cols-[theme(spacing.8)_max-content_auto]
+          overflow-x-hidden
+          print:grid-cols-[min-content_auto]
+        `}
         forwardRef={listOfMappings}
         tabIndex={-1}
         onScroll={repositionSuggestionBox}

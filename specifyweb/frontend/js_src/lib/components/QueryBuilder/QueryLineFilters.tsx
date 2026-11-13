@@ -67,8 +67,8 @@ export function QueryLineFilters({
     <div
       className={
         fieldFilters.length > 1
-          ? 'flex w-full min-w-0 flex-col gap-2'
-          : 'flex w-full min-w-0 items-center gap-2 flex-wrap'
+          ? `flex ${isBasic ? 'w-full min-w-0' : ''} flex-col gap-2`
+          : `flex ${isBasic ? 'w-full min-w-0' : ''} items-center gap-2 flex-wrap`
       }
     >
       {fieldFilters.map((_, index) => (
@@ -169,7 +169,7 @@ function QueryLineFilterWrapper({
       <div
         className={
           isBasic
-            ? 'order-3 flex shrink-0 items-center gap-2'
+            ? 'order-1 flex shrink-0 items-center gap-2'
             : 'flex contents items-center gap-2'
         }
       >
@@ -184,7 +184,7 @@ function QueryLineFilterWrapper({
           isFieldComplete={isFieldComplete}
         />
       </div>
-      <div className={isBasic ? 'order-1 w-40 shrink-0' : 'contents w-full'}>
+      <div className={isBasic ? 'order-2 w-40 shrink-0' : 'contents w-full'}>
         <Select
           aria-label={
             queryFieldFilterSpecs[filter.type].description ??
@@ -254,8 +254,8 @@ function QueryLineFilterWrapper({
         className={
           isBasic
             ? hasFilterValue
-              ? 'order-2 flex min-w-32 flex-1 items-center gap-2'
-              : 'order-2 hidden'
+              ? 'order-3 flex min-w-32 flex-1 items-center gap-2'
+              : 'order-3 hidden'
             : 'contents'
         }
       >

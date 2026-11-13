@@ -390,31 +390,6 @@
     @apply mb-1 hidden text-sm font-semibold text-gray-700 dark:text-neutral-300;
   }
 
-  .wb-mapping-row {
-    min-width: 56rem;
-    @apply grid items-start gap-2 border-t border-t-gray-500 py-2;
-    grid-template-columns: 2.5rem minmax(10rem, 22rem) minmax(0, 1fr);
-    grid-template-areas: 'clear header path';
-  }
-
-  .wb-mapping-row--focused {
-    @apply bg-gray-300 dark:bg-neutral-700;
-  }
-
-  .wb-mapping-clear {
-    grid-area: clear;
-  }
-
-  .wb-mapping-header {
-    grid-area: header;
-    @apply flex min-w-0 justify-end break-words p-2 text-right;
-  }
-
-  .wb-mapping-path {
-    grid-area: path;
-    @apply flex min-w-0 flex-wrap items-center gap-2 print:gap-1;
-  }
-
   .wbs-form {
     --new-cell: theme('colors.indigo.350');
     --invalid-cell: theme('colors.red.300');
