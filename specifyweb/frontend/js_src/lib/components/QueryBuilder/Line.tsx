@@ -287,8 +287,26 @@ export function QueryLine({
             fieldSpec.baseTable.name,
             fieldSpec.toMappingPath()
           ),
-    [fieldSpec]
+    [fieldName, fieldSpec]
   );
+  const rowTablePath = fieldSpec?.joinPath
+    .reduce<RA<string>>((parts, pathField) => {
+      if (!pathField.isRelationship) return parts;
+      const tableLabel = pathField.relatedTable.label;
+      if (parts.length === 0) return [tableLabel];
+
+      // Include relationship names when they differ from the related table,
+      // so paths like "Preferred Taxon → Taxon" remain distinguishable.
+      const relationshipLabel = pathField.label;
+      const withRelationship =
+        relationshipLabel === tableLabel || parts.at(-1) === relationshipLabel
+          ? parts
+          : [...parts, relationshipLabel];
+      return withRelationship.at(-1) === tableLabel
+        ? withRelationship
+        : [...withRelationship, tableLabel];
+    }, [])
+    .join(' → ');
 
   const isBasic = React.useContext(IsQueryBasicContext);
 
@@ -397,13 +415,19 @@ export function QueryLine({
                 label
                 name={mappingLineProps.at(-1)?.tableName ?? baseTableName ?? ''}
               />
-              <p className="min-w-0 break-words">
-                {rowTableName}{' '}
-                {field.mappingPath.at(-1) === formattedEntry
-                  ? mappingLineProps.at(-1)?.fieldsData[formattedEntry]
-                      ?.optionLabel
-                  : ''}
-              </p>
+              <div className="min-w-0 break-words">
+                {rowTablePath !== undefined && rowTablePath.length > 0 && (
+                  <p className="text-sm text-gray-600 dark:text-neutral-400">
+                    {rowTablePath}
+                  </p>
+                )}
+                <p>
+                  {rowTableName}
+                  {field.mappingPath.at(-1) === formattedEntry
+                    ? ` ${mappingLineProps.at(-1)?.fieldsData[formattedEntry]?.optionLabel ?? ''}`
+                    : ''}
+                </p>
+              </div>
               {recordFormatter}
             </div>
           </div>
