@@ -1,5 +1,6 @@
 from specifyweb.specify.tests.test_api import ApiTests
-from specifyweb.specify.api.crud import post_resource, update_obj
+from specifyweb.specify.api.crud import delete_resource, post_resource, update_obj
+from specifyweb.specify import models
 from specifyweb.backend.stored_queries.tests.test_views.raw_query import (
     get_simple_query,
 )
@@ -80,3 +81,22 @@ class TestRenameQuery(ApiTests):
         original.refresh_from_db()
         self.assertEqual(original.name, "New Query")
         self.assertEqual(original.fields.get().startvalue, "")
+
+    def test_delete_existing_query(self):
+        query = post_resource(
+            self.collection,
+            self.agent,
+            'spquery',
+            get_simple_query(self.specifyuser),
+        )
+        query_id = query.id
+
+        delete_resource(
+            self.collection,
+            self.agent,
+            'spquery',
+            query.id,
+            query.version,
+        )
+
+        self.assertFalse(models.Spquery.objects.filter(id=query_id).exists())
