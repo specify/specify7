@@ -32,6 +32,7 @@ import type {
 import { useResourceView } from '../Forms/BaseResourceView';
 import { SaveButton } from '../Forms/Save';
 import { AppTitle } from '../Molecules/AppTitle';
+import { Dialog } from '../Molecules/Dialog';
 import { hasPermission, hasToolPermission } from '../Permissions/helpers';
 import { isOverlay, OverlayContext } from '../Router/Router';
 import { clearUrlCache } from '../RouterCommands/CacheBuster';
@@ -45,6 +46,7 @@ import {
 import { getAppResourceType, getResourceType } from './filtersHelpers';
 import { useAppResourceData } from './hooks';
 import { AppResourcesTab, useEditorTabs } from './Tabs';
+import type { SaveConfirmation } from './TabDefinitions';
 import { getScope } from './tree';
 import type { ScopedAppResourceDir } from './types';
 import { appResourceSubTypes } from './types';
@@ -172,13 +174,17 @@ export function AppResourceEditor({
   const isEditingForm =
     typeof toResource(resource, 'SpViewSetObj') === 'object';
   // When editing a form, don't render the page inside of <form> to avoid #3357
-  const renderInForm = !isEditingForm;
+  const renderInForm =
+    !isEditingForm &&
+    appResource.get('mimeType') !== 'application/vnd.specify.dwca+xml';
 
   const headerButtons = (
-    <div className="flex flex-wrap gap-3">
+    <div className="ml-auto flex flex-wrap items-center gap-2">
       {tabs.length > 1 && (
         <div className="flex">
           <Select
+            aria-label={commonText.select()}
+            className="py-2"
             value={tab}
             onValueChange={(index): void =>
               handleChangeTab(f.parseInt(index) ?? 0)
@@ -202,7 +208,6 @@ export function AppResourceEditor({
           {isFullScreen ? icons.arrowsCollapse : icons.arrowsExpand}
         </Button.Info>
       )}
-      <span className="-ml-4 md:flex-1" />
       {typeof resourceData === 'object' && (
         <AppResourceLoad
           onLoaded={(data: string, mimeType: string): void => {
@@ -240,6 +245,36 @@ export function AppResourceEditor({
     (callback: (() => Promise<void>) | undefined) => setCleanup(() => callback),
     []
   );
+  const [saveConfirmation, setSaveConfirmation] = React.useState<
+    SaveConfirmation | undefined
+  >(undefined);
+  const [showSaveConfirmation, setShowSaveConfirmation] = React.useState(false);
+  const saveConfirmationResolver = React.useRef<
+    ((confirmed: boolean) => void) | undefined
+  >(undefined);
+  const handleBeforeSaving = React.useCallback(async (): Promise<boolean> => {
+    if (saveConfirmation === undefined) return true;
+    if (saveConfirmationResolver.current !== undefined) return false;
+    return new Promise<boolean>((resolve) => {
+      saveConfirmationResolver.current = resolve;
+      setShowSaveConfirmation(true);
+    });
+  }, [saveConfirmation]);
+  const resolveSaveConfirmation = React.useCallback(
+    (confirmed: boolean): void => {
+      setShowSaveConfirmation(false);
+      saveConfirmationResolver.current?.(confirmed);
+      saveConfirmationResolver.current = undefined;
+    },
+    []
+  );
+  React.useEffect(() => {
+    if (
+      saveConfirmation === undefined &&
+      saveConfirmationResolver.current !== undefined
+    )
+      resolveSaveConfirmation(false);
+  }, [resolveSaveConfirmation, saveConfirmation]);
 
   if (resourceData === undefined) return null;
 
@@ -267,6 +302,7 @@ export function AppResourceEditor({
           form={formElement}
           resource={appResource}
           saveRequired={isChanged || possiblyChanged}
+          onBeforeSaving={handleBeforeSaving}
           onAdd={
             hasToolPermission('resources', 'create') &&
             typeof handleClone === 'function'
@@ -288,80 +324,95 @@ export function AppResourceEditor({
                 }
               : undefined
           }
-          onSaving={(unsetUnloadProtect): false => {
-            loading(
-              (typeof directory.id === 'number'
+          onSaving={async (unsetUnloadProtect): Promise<false> => {
+            const savePromise = (
+              typeof directory.id === 'number'
                 ? Promise.resolve(directory)
                 : createResource('SpAppResourceDir', directory)
-              ).then(async (resourceDirectory) => {
-                unsetUnloadProtect();
+            ).then(async (resourceDirectory) => {
+              unsetUnloadProtect();
 
-                if (appResource.isNew())
+              if (appResource.isNew())
+                appResource.set(
+                  'spAppResourceDir',
+                  resourceDirectory.resource_uri
+                );
+
+              const subType = f.maybe(
+                toResource(serializeResource(appResource), 'SpAppResource'),
+                getAppResourceType
+              );
+              // Set a mime type if it's not set yet
+              if (typeof subType === 'string') {
+                const type = appResourceSubTypes[subType];
+                if (typeof type.name === 'string')
                   appResource.set(
-                    'spAppResourceDir',
-                    resourceDirectory.resource_uri
+                    'mimeType',
+                    type.mimeType ?? appResource.get('mimeType')
                   );
+              }
 
-                const subType = f.maybe(
-                  toResource(serializeResource(appResource), 'SpAppResource'),
-                  getAppResourceType
-                );
-                // Set a mime type if it's not set yet
-                if (typeof subType === 'string') {
-                  const type = appResourceSubTypes[subType];
-                  if (typeof type.name === 'string')
-                    appResource.set(
-                      'mimeType',
-                      type.mimeType ?? appResource.get('mimeType')
-                    );
-                }
+              await appResource.save();
+              const resource = serializeResource(appResource);
 
-                await appResource.save();
-                const resource = serializeResource(appResource);
+              const data =
+                typeof lastDataRef.current === 'function'
+                  ? lastDataRef.current()
+                  : lastDataRef.current;
+              const syncedData = syncViewsetNameInXml(
+                data === undefined ? resourceData.data : data,
+                appResource
+              );
+              const appResourceData = deserializeResource({
+                ...resourceData,
+                data: syncedData,
+                spAppResource:
+                  toTable(appResource, 'SpAppResource')?.get('resource_uri') ??
+                  null,
+                spViewSetObj:
+                  toTable(appResource, 'SpViewSetObj')?.get('resource_uri') ??
+                  null,
+              });
+              await appResourceData.save();
+              if (appResource.specifyTable.name === 'SpAppResource')
+                await clearUrlCache(getAppResourceUrl(appResource.get('name')));
+              await cleanup?.();
 
-                const data =
-                  typeof lastDataRef.current === 'function'
-                    ? lastDataRef.current()
-                    : lastDataRef.current;
-                const syncedData = syncViewsetNameInXml(
-                  data === undefined ? resourceData.data : data,
-                  appResource
-                );
-                const appResourceData = deserializeResource({
-                  ...resourceData,
-                  data: syncedData,
-                  spAppResource:
-                    toTable(appResource, 'SpAppResource')?.get(
-                      'resource_uri'
-                    ) ?? null,
-                  spViewSetObj:
-                    toTable(appResource, 'SpViewSetObj')?.get('resource_uri') ??
-                    null,
-                });
-                await appResourceData.save();
-                if (appResource.specifyTable.name === 'SpAppResource')
-                  await clearUrlCache(
-                    getAppResourceUrl(appResource.get('name'))
-                  );
-                await cleanup?.();
+              setResourceData(
+                serializeResource(
+                  appResourceData
+                ) as SerializedResource<SpAppResourceData>
+              );
 
-                setResourceData(
-                  serializeResource(
-                    appResourceData
-                  ) as SerializedResource<SpAppResourceData>
-                );
-
-                handleSaved(resource, {
-                  ...resourceDirectory,
-                  scope: getScope(resourceDirectory),
-                });
-              })
-            );
+              handleSaved(resource, {
+                ...resourceDirectory,
+                scope: getScope(resourceDirectory),
+              });
+            });
+            // SaveButton reports rejections after awaiting this same promise.
+            loading(savePromise.catch(() => undefined));
+            await savePromise;
 
             return false;
           }}
         />
       ) : undefined}
+      {showSaveConfirmation && saveConfirmation !== undefined && (
+        <Dialog
+          buttons={
+            <>
+              <Button.Save onClick={(): void => resolveSaveConfirmation(true)}>
+                {commonText.save()}
+              </Button.Save>
+              <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+            </>
+          }
+          header={saveConfirmation.header}
+          onClose={(): void => resolveSaveConfirmation(false)}
+        >
+          {saveConfirmation.message}
+        </Dialog>
+      )}
     </>
   );
 
@@ -382,7 +433,9 @@ export function AppResourceEditor({
             if (typeof data === 'function') setLastData(() => data);
             else setResourceData({ ...resourceData, data });
           }}
+          onSwitchToXmlEditor={(): void => handleChangeTab(1)}
           onSetCleanup={handleSetCleanup}
+          onSetSaveConfirmation={setSaveConfirmation}
         />
       </AppResourceContext.Provider>
     </ReadOnlyContext.Provider>
@@ -391,12 +444,12 @@ export function AppResourceEditor({
   return children({
     headerString: formatted,
     headerJsx: (
-      <div className="flex items-center justify-center gap-2">
+      <div className="flex min-w-0 max-w-full items-center gap-2">
         <div className="hidden md:block">
           {appResourceIcon(getResourceType(resource))}
         </div>
-        <div className="flex max-w-[90%] gap-1">
-          <h3 className="overflow-auto whitespace-nowrap text-2xl">
+        <div className="flex min-w-0 items-center gap-1">
+          <h3 className="truncate text-lg font-semibold" title={formatted}>
             {formatted}
           </h3>
           <AppResourceEditButton
@@ -413,11 +466,14 @@ export function AppResourceEditor({
     ),
     headerButtons,
     form: renderInForm ? (
-      <Form className="flex-1 overflow-auto" forwardRef={setForm}>
+      <Form
+        className="min-h-0 min-w-0 flex-1 !gap-2 overflow-auto"
+        forwardRef={setForm}
+      >
         {content}
       </Form>
     ) : (
-      <div className="flex flex-1 flex-col gap-4 overflow-auto">
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2 overflow-auto">
         {/* A blank form just for the <SaveButton< component */}
         <Form className="contents" forwardRef={setForm} />
         {content}

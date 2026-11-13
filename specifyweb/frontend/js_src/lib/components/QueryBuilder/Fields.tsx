@@ -1,7 +1,10 @@
 import { Sortable } from '@shopify/draggable';
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useReadyEffect } from '../../hooks/useReadyEffect';
+import { commonText } from '../../localization/common';
+import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Ul } from '../Atoms';
@@ -13,11 +16,59 @@ import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import { IsQueryBasicContext } from './Context';
 import type { QueryField } from './helpers';
 import { queryFieldsToFieldSpecs } from './helpers';
+import { queryFieldFormatType } from './helpers';
 import { QueryLine } from './Line';
+
+export type BasicViewLabels = {
+  readonly prefix?: LocalizedString;
+  readonly field: LocalizedString;
+  readonly filter: LocalizedString;
+  readonly options: LocalizedString;
+};
+
+export function canMoveField(
+  fields: RA<QueryField>,
+  line: number,
+  direction: 'down' | 'up',
+  isFieldReadOnly: ((field: QueryField, line: number) => boolean) | undefined
+): boolean {
+  const destination = direction === 'up' ? line - 1 : line + 1;
+  return (
+    destination >= 0 &&
+    destination < fields.length &&
+    isFieldReadOnly?.(fields[line]!, line) !== true &&
+    isFieldReadOnly?.(fields[destination]!, destination) !== true
+  );
+}
+
+export const isReadOnlyFieldIndex = (
+  fields: RA<QueryField>,
+  index: number,
+  isFieldReadOnly: ((field: QueryField, line: number) => boolean) | undefined
+): boolean =>
+  index >= 0 &&
+  index < fields.length &&
+  isFieldReadOnly?.(fields[index]!, index) === true;
+
+export const wouldMoveReadOnlyField = (
+  fields: RA<QueryField>,
+  currentIndex: number,
+  overIndex: number,
+  isFieldReadOnly: ((field: QueryField, line: number) => boolean) | undefined
+): boolean => {
+  if (currentIndex === overIndex || currentIndex < 0 || overIndex < 0)
+    return false;
+  const first = Math.min(currentIndex, overIndex);
+  const last = Math.max(currentIndex, overIndex);
+  return fields
+    .slice(first, last + 1)
+    .some((field, index) => isFieldReadOnly?.(field, first + index) === true);
+};
 
 export function QueryFields({
   baseTableName,
   fields,
+  formatSelectionRequest,
   enforceLengthLimit,
   openedElement,
   showHiddenFields,
@@ -25,15 +76,27 @@ export function QueryFields({
   onChangeField: handleChangeField,
   onMappingChange: handleMappingChange,
   onRemoveField: handleRemoveField,
+  canRemoveField,
+  isFieldReadOnly,
   onOpen: handleOpen,
   onClose: handleClose,
   onLineFocus: handleLineFocus,
   onLineMove: handleLineMove,
   onOpenMap: handleOpenMap,
   onChangeFields: handleChangeFields,
+  renderFieldPrefix,
+  basicViewLabels = {
+    field: queryText.queryField(),
+    filter: commonText.filter(),
+    options: queryText.queryOptions(),
+  },
 }: {
   readonly baseTableName: keyof Tables;
   readonly fields: RA<QueryField>;
+  readonly formatSelectionRequest?: {
+    readonly fieldId: number;
+    readonly requestId: number;
+  };
   readonly enforceLengthLimit: boolean;
   readonly openedElement?: {
     readonly line: number;
@@ -59,6 +122,12 @@ export function QueryFields({
       ) => void)
     | undefined;
   readonly onRemoveField: ((line: number) => void) | undefined;
+  readonly canRemoveField?:
+    | ((field: QueryField, line: number) => boolean)
+    | undefined;
+  readonly isFieldReadOnly?:
+    | ((field: QueryField, line: number) => boolean)
+    | undefined;
   readonly onOpen: ((line: number, index: number) => void) | undefined;
   readonly onClose: (() => void) | undefined;
   readonly onLineFocus: ((line: number) => void) | undefined;
@@ -67,11 +136,18 @@ export function QueryFields({
     | undefined;
   readonly onOpenMap: ((line: number) => void) | undefined;
   readonly onChangeFields?: ((fields: RA<QueryField>) => void) | undefined;
+  readonly renderFieldPrefix?:
+    | ((field: QueryField, line: number) => JSX.Element)
+    | undefined;
+  readonly basicViewLabels?: BasicViewLabels;
 }): JSX.Element {
   const fieldsContainerRef = React.useRef<HTMLUListElement | null>(null);
 
   const fieldsRef = React.useRef(fields);
   fieldsRef.current = fields;
+
+  const isFieldReadOnlyRef = React.useRef(isFieldReadOnly);
+  isFieldReadOnlyRef.current = isFieldReadOnly;
 
   const handleChangeFieldRef = React.useRef(handleChangeFields);
   handleChangeFieldRef.current = handleChangeFields;
@@ -105,12 +181,48 @@ export function QueryFields({
         interactiveElements.some((element) => target.closest(element) !== null)
       )
         event.cancel();
+
+      const sourceIndex = event.startIndex;
+      if (
+        sourceIndex !== undefined &&
+        isFieldReadOnlyRef.current?.(
+          fieldsRef.current[sourceIndex]!,
+          sourceIndex
+        )
+      )
+        event.cancel();
     });
 
     sortable.on('mirror:created', (event) => {
       const parentZIndex = findClosestZIndex(event.source);
       if (parentZIndex !== undefined)
         event.mirror.style.zIndex = (parentZIndex + 1).toString();
+    });
+
+    sortable.on('sortable:sort', (event) => {
+      // These properties are available at runtime, but are not included in the
+      // package's top-level SortableSortEvent type.
+      const { currentIndex, over } = event as unknown as {
+        readonly currentIndex: number;
+        readonly over: HTMLElement | null;
+      };
+      const overIndex =
+        over === null
+          ? -1
+          : (
+              sortable as typeof sortable & {
+                readonly index: (element: HTMLElement) => number;
+              }
+            ).index(over);
+      if (
+        wouldMoveReadOnlyField(
+          fieldsRef.current,
+          currentIndex,
+          overIndex,
+          isFieldReadOnlyRef.current
+        )
+      )
+        event.cancel();
     });
 
     sortable.on('sortable:stop', (event) => {
@@ -178,66 +290,159 @@ export function QueryFields({
   );
 
   return (
-    <Ul
-      className={`
-          items-center overflow-y-auto sm:flex-1
-          ${
-            isBasic
-              ? 'grid grid-cols-[auto,auto,1fr,auto] content-start items-start gap-x-2 gap-y-2'
-              : ''
-          }
-        `}
-      forwardRef={fieldsContainerRef}
+    <div
+      className={
+        isBasic ? 'query-fields-container min-h-0 sm:flex-1' : 'contents'
+      }
     >
-      {fields.map((field, line, { length }) => (
-        <ErrorBoundary dismissible key={field.id}>
-          <li className={`${isBasic ? 'contents' : ''}`} key={line}>
-            <QueryLine
-              baseTableName={baseTableName}
-              enforceLengthLimit={enforceLengthLimit}
-              field={field}
-              fieldHash={`${line}_${length}`}
-              fieldName={fieldName}
-              getMappedFields={getMappedFields}
-              isFocused={openedElement?.line === line}
-              isLast={line === fields.length - 1}
-              openedElement={
-                openedElement?.line === line ? openedElement?.index : undefined
-              }
-              showHiddenFields={showHiddenFields}
-              onChange={handleChangeField?.bind(undefined, line)}
-              onClose={handleClose}
-              onLineFocus={(target): void =>
-                (target === 'previous' && line === 0) ||
-                (target === 'next' && line + 1 >= length)
-                  ? undefined
-                  : handleLineFocus?.(
-                      target === 'previous'
-                        ? line - 1
-                        : target === 'current'
-                          ? line
-                          : line + 1
+      <div
+        className={
+          isBasic
+            ? `query-fields-table ${
+                renderFieldPrefix === undefined
+                  ? 'query-fields-table--without-prefix'
+                  : 'query-fields-table--with-prefix'
+              }`
+            : 'contents'
+        }
+      >
+        {isBasic && (
+          <div
+            aria-hidden="true"
+            className={`query-fields-header ${
+              renderFieldPrefix === undefined
+                ? 'query-fields-header--without-prefix'
+                : 'query-fields-header--with-prefix'
+            }`}
+          >
+            {renderFieldPrefix === undefined ? null : (
+              <span className="query-field-header-prefix">
+                {basicViewLabels.prefix}
+              </span>
+            )}
+            <span className="query-field-header-field">
+              {basicViewLabels.field}
+            </span>
+            <span className="query-field-header-filter">
+              {basicViewLabels.filter}
+            </span>
+            <span className="query-field-header-options">
+              {basicViewLabels.options}
+            </span>
+          </div>
+        )}
+        <Ul
+          className={`items-center ${isBasic ? 'query-fields-list' : 'overflow-y-auto sm:flex-1'}`}
+          forwardRef={fieldsContainerRef}
+        >
+          {fields.map((field, line, { length }) => (
+            <ErrorBoundary dismissible key={field.id}>
+              <li className={isBasic ? 'contents' : undefined} key={line}>
+                <QueryLine
+                  baseTableName={baseTableName}
+                  enforceLengthLimit={enforceLengthLimit}
+                  field={field}
+                  formatSelectionRequest={
+                    formatSelectionRequest?.fieldId === field.id
+                      ? formatSelectionRequest.requestId
+                      : undefined
+                  }
+                  usedFormats={
+                    new Set(
+                      fields
+                        .filter(
+                          (other, index) =>
+                            index !== line &&
+                            queryFieldFormatType(
+                              other.mappingPath,
+                              baseTableName
+                            ) !== undefined &&
+                            JSON.stringify(other.mappingPath) ===
+                              JSON.stringify(field.mappingPath)
+                        )
+                        .map(
+                          (other) =>
+                            other.filters.find(({ type }) => type === 'any')
+                              ?.fieldFormat ?? ''
+                        )
                     )
-              }
-              onMappingChange={handleMappingChange?.bind(undefined, line)}
-              onMoveDown={
-                line + 1 === length || handleLineMove === undefined
-                  ? undefined
-                  : (): void => handleLineMove?.(line, 'down')
-              }
-              onMoveUp={
-                line === 0 || handleLineMove === undefined
-                  ? undefined
-                  : (): void => handleLineMove?.(line, 'up')
-              }
-              onOpen={handleOpen?.bind(undefined, line)}
-              onOpenMap={handleOpenMap?.bind(undefined, line)}
-              onRemove={handleRemoveField?.bind(undefined, line)}
-            />
-          </li>
-        </ErrorBoundary>
-      ))}
-    </Ul>
+                  }
+                  fieldHash={`${line}_${length}`}
+                  fieldName={fieldName}
+                  getMappedFields={getMappedFields}
+                  isFocused={openedElement?.line === line}
+                  isLast={line === fields.length - 1}
+                  openedElement={
+                    openedElement?.line === line
+                      ? openedElement?.index
+                      : undefined
+                  }
+                  showHiddenFields={showHiddenFields}
+                  onChange={
+                    isFieldReadOnly?.(field, line)
+                      ? undefined
+                      : handleChangeField?.bind(undefined, line)
+                  }
+                  onClose={handleClose}
+                  onLineFocus={(target): void =>
+                    (target === 'previous' && line === 0) ||
+                    (target === 'next' && line + 1 >= length)
+                      ? undefined
+                      : handleLineFocus?.(
+                          target === 'previous'
+                            ? line - 1
+                            : target === 'current'
+                              ? line
+                              : line + 1
+                        )
+                  }
+                  onMappingChange={
+                    isFieldReadOnly?.(field, line)
+                      ? undefined
+                      : handleMappingChange?.bind(undefined, line)
+                  }
+                  onMoveDown={
+                    !canMoveField(fields, line, 'down', isFieldReadOnly) ||
+                    handleLineMove === undefined
+                      ? undefined
+                      : (): void => handleLineMove?.(line, 'down')
+                  }
+                  onMoveUp={
+                    !canMoveField(fields, line, 'up', isFieldReadOnly) ||
+                    handleLineMove === undefined
+                      ? undefined
+                      : (): void => handleLineMove?.(line, 'up')
+                  }
+                  onOpen={
+                    isFieldReadOnly?.(field, line)
+                      ? undefined
+                      : handleOpen?.bind(undefined, line)
+                  }
+                  onOpenMap={
+                    isFieldReadOnly?.(field, line)
+                      ? undefined
+                      : handleOpenMap?.bind(undefined, line)
+                  }
+                  onRemove={
+                    handleRemoveField !== undefined &&
+                    isFieldReadOnly?.(field, line) !== true &&
+                    (canRemoveField?.(field, line) ?? true)
+                      ? handleRemoveField.bind(undefined, line)
+                      : undefined
+                  }
+                  renderFieldPrefix={
+                    renderFieldPrefix === undefined
+                      ? undefined
+                      : (): JSX.Element => renderFieldPrefix(field, line)
+                  }
+                  basicViewLabels={basicViewLabels}
+                />
+              </li>
+            </ErrorBoundary>
+          ))}
+        </Ul>
+      </div>
+    </div>
   );
 }
 

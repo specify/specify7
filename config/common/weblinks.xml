@@ -21,8 +21,8 @@
 	</weblinkdef>
 	<weblinkdef>
 		<name>ORCID</name>
-		<tableName>Agent</tableName>
-		<baseURLStr>orcid.com/&lt;this&gt;</baseURLStr>
+		<tableName>AgentIdentifier</tableName>
+		<baseURLStr>https://orcid.org/&lt;this&gt;</baseURLStr>
 		<args>
 			<weblinkdefarg>
 				<name>this</name>
@@ -39,8 +39,8 @@
 	</weblinkdef>
 	<weblinkdef>
 		<name>Wikidata</name>
-		<tableName>Agent</tableName>
-		<baseURLStr>wikidata.com/&lt;this&gt;</baseURLStr>
+		<tableName>AgentIdentifier</tableName>
+		<baseURLStr>https://www.wikidata.org/entity/&lt;this&gt;</baseURLStr>
 		<args>
 			<weblinkdefarg>
 				<name>this</name>

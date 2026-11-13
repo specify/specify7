@@ -201,9 +201,9 @@ export function QueryInputField({
     // This allows <input> to grow in size as needed
     <span
       className={`
-        relative min-w-[theme(spacing.40)] after:invisible
+        relative after:invisible
         after:block after:px-2 after:leading-[0px] after:content-[attr(data-value)]
-        ${isBasic ? 'flex-1' : ''}
+        ${isBasic ? 'min-w-32 max-w-full flex-1' : 'min-w-[theme(spacing.40)]'}
       `}
       // The :after pseudo element sets the width
       data-value={value}

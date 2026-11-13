@@ -10,7 +10,7 @@ from xml.sax.saxutils import quoteattr
 
 from specifyweb.backend.stored_queries.utils import ensure_string_type_if_null
 from specifyweb.specify.api.utils import get_picklists
-from sqlalchemy import Table as SQLTable, inspect, case, type_coerce
+from sqlalchemy import Table as SQLTable, inspect, case, type_coerce, and_, or_
 from sqlalchemy.orm import aliased, Query
 from sqlalchemy.sql.expression import func, cast, literal, Label
 from sqlalchemy.sql.functions import concat
@@ -177,7 +177,15 @@ class ObjectFormatter:
         """
         if '%s' in format:
             before, after = format.split('%s')
-            return concat(before, expr, after)
+            formatted = concat(before, expr, after)
+            return (
+                case(
+                    (expr.startswith(before, autoescape=True), expr),
+                    else_=formatted,
+                )
+                if before and not after
+                else formatted
+            )
         elif '%d' in format:
             before, after = format.split('%d')
             return concat(before, expr, after)
@@ -191,7 +199,8 @@ class ObjectFormatter:
                   orm_table,
                   specify_model,
                   previous_tables=None,
-                  do_blank_null = True
+                  do_blank_null = True,
+                  apply_sep = True,
                   ) -> tuple[
         QueryConstruct, blank_nulls, QueryFieldSpec]:
         if path is None:
@@ -256,11 +265,19 @@ class ObjectFormatter:
 
             fmt = fieldNodeAttrib.get('format')
             if fmt is not None:
-                e = self.pseudo_sprintf(fmt, e)
+                # An empty value must not become a non-empty pattern such as
+                # "[]" before the separator is considered.
+                value = (
+                    func.nullif(cast(e, types.String()), '')
+                    if '%s' in fmt or '%d' in fmt
+                    else e
+                )
+                e = self.pseudo_sprintf(fmt, value)
 
             sep = fieldNodeAttrib.get('sep')
-            if sep is not None:
-                e = concat(sep, e)
+            if sep is not None and apply_sep:
+                # Cast before NULLIF so numeric zero remains a value.
+                e = concat(sep, func.nullif(cast(e, types.String()), ''))
 
             return e
 
@@ -303,9 +320,33 @@ class ObjectFormatter:
         def make_case(query: QueryConstruct, caseNode: Element) -> tuple[
             QueryConstruct, str | None, blank_nulls]:
             field_exprs = []
+            field_values = []
             for node in caseNode.findall('field'):
-                query, expr, _ = self.make_expr(query, node.text, node.attrib, orm_table, specify_model, cycle_with_self)
-                field_exprs.append(expr)
+                query, expr, _ = self.make_expr(
+                    query, node.text, node.attrib, orm_table, specify_model,
+                    cycle_with_self, apply_sep=False
+                )
+                if node.text is not None and 'sep' in node.attrib:
+                    # A separator belongs between populated fields. A static
+                    # field uses sep as its literal value instead.
+                    if field_values:
+                        has_value = and_(
+                            func.char_length(cast(expr, types.String())) > 0,
+                            or_(*(
+                                func.char_length(cast(value, types.String())) > 0
+                                for value in field_values
+                            )),
+                        )
+                        expr_with_sep = case(
+                            (has_value, concat(node.attrib['sep'], expr)),
+                            else_=expr,
+                        )
+                    else:
+                        expr_with_sep = expr
+                else:
+                    expr_with_sep = expr
+                field_values.append(expr)
+                field_exprs.append(expr_with_sep)
             if field_exprs:
                 if len(field_exprs) > 1:
                     expr = concat(*field_exprs)
@@ -333,8 +374,17 @@ class ObjectFormatter:
         else:
             query, formatted, switch_field_spec = self.make_expr(query, switchNode.attrib['field'], {}, orm_table, specify_model)
             def case_value_convert(value): return value == 'true' if switch_field_spec.get_field().type == 'java.lang.Boolean' else value
-            cases = [(case_value_convert(value), expr) for (value, expr) in cases]
-            expr = case(*cases, value=formatted)
+            default = next((expr for value, expr in cases if value is None), None)
+            cases = [
+                (case_value_convert(value), expr)
+                for value, expr in cases
+                if value is not None
+            ]
+            expr = (
+                case(*cases, value=formatted, else_=default)
+                if cases
+                else default if default is not None else literal(None)
+            )
         return query, blank_nulls(expr)
 
     def aggregate(self, query: QueryConstruct,
@@ -426,7 +476,10 @@ class ObjectFormatter:
         else:
             order_by_expr = []
 
-        aggregated = blank_nulls(group_concat(formatted, separator, *order_by_expr))
+        # GROUP_CONCAT skips NULL rows, but not empty strings. A nested
+        # formatter can return '' for a related record with no values; leaving
+        # it in the group produces separators with nothing between them.
+        aggregated = blank_nulls(group_concat(func.nullif(formatted, ''), separator, *order_by_expr))
 
         aggregator_label = f"aggregator_{self.aggregator_count}"
         self.aggregator_count += 1

@@ -5,6 +5,7 @@ import { xcodeLight } from '@uiw/codemirror-theme-xcode';
 import type { ReactCodeMirrorRef } from '@uiw/react-codemirror';
 import CodeMirror from '@uiw/react-codemirror';
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { f } from '../../utils/functools';
 import type { RR } from '../../utils/types';
@@ -20,6 +21,7 @@ import type {
   SpViewSetObj,
 } from '../DataModel/types';
 import { RssExportFeedEditor } from '../ExportFeed';
+import { DwcaDefinitionEditor } from '../DwcaDefinition/DwcaDefinition';
 import { exportFeedSpec } from '../ExportFeed/spec';
 import { ExpressSearchConfigResourceEditor } from '../ExpressSearchConfig/ExpressSearchConfigEditor';
 import { FieldFormattersEditor } from '../FieldFormatters/Editor';
@@ -44,11 +46,17 @@ import { DataViewQueryEditor } from '../DataViews/QueryEditor';
 
 export type AppResourceEditorType = 'generic' | 'json' | 'visual' | 'xml';
 
+export type SaveConfirmation = {
+  readonly header: LocalizedString;
+  readonly message: LocalizedString;
+};
+
 export type AppResourceTabProps = {
   readonly resource: SerializedResource<SpAppResource | SpViewSetObj>;
   readonly appResource: SpecifyResource<SpAppResource | SpViewSetObj>;
   readonly directory: SerializedResource<SpAppResourceDir>;
   readonly data: string | null;
+  readonly onSwitchToXmlEditor?: () => void;
   /**
    * Instead of returning a string value on change, you return a function
    * that returns a string value. This way, if new value is stored in an
@@ -59,6 +67,9 @@ export type AppResourceTabProps = {
     data: string | (() => string | null | undefined) | null
   ) => void;
   readonly onSetCleanup: (callback: () => Promise<void>) => void;
+  readonly onSetSaveConfirmation: (
+    confirmation: SaveConfirmation | undefined
+  ) => void;
 };
 const generateEditor = (xmlSpec: (() => BaseSpec<SimpleXmlNode>) | undefined) =>
   function AppResourceTextEditor({
@@ -67,7 +78,10 @@ const generateEditor = (xmlSpec: (() => BaseSpec<SimpleXmlNode>) | undefined) =>
     data,
     className = '',
     onChange: handleChange,
-  }: Omit<AppResourceTabProps, 'onChange' | 'onSetCleanup'> & {
+  }: Omit<
+    AppResourceTabProps,
+    'onChange' | 'onSetCleanup' | 'onSetSaveConfirmation'
+  > & {
     readonly onChange: (data: string) => void;
     readonly className?: string;
   }): JSX.Element {
@@ -177,6 +191,10 @@ export const visualAppResourceEditors = f.store<
   rssExportFeed: {
     visual: RssExportFeedEditor,
     xml: generateXmlEditor(exportFeedSpec),
+  },
+  dwcaDefinition: {
+    visual: DwcaDefinitionEditor,
+    xml: generateXmlEditor(undefined),
   },
   expressSearchConfig: {
     visual: ExpressSearchConfigResourceEditor,

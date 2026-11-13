@@ -402,6 +402,7 @@ def query_to_csv(
     distinct=False,
     delimiter=",",
     bom=False,
+    search_synonymy=False,
 ):
     """Build a sqlalchemy query using the QueryField objects given by
     field_specs and send the results to a CSV file at the given
@@ -416,7 +417,8 @@ def query_to_csv(
         user,
         tableid,
         field_specs,
-        BuildQueryProps(recordsetid=recordsetid, replace_nulls=True, distinct=distinct),
+        BuildQueryProps(recordsetid=recordsetid, replace_nulls=True, distinct=distinct,
+                        search_synonymy=search_synonymy),
     )
     query = query.order_by(*order_by_exprs)
     query_rows = apply_special_post_query_processing(

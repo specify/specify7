@@ -67,8 +67,8 @@ export function QueryLineFilters({
     <div
       className={
         fieldFilters.length > 1
-          ? 'flex flex-col gap-2'
-          : `flex items-center gap-2 ${isBasic ? '' : ' flex-wrap'}`
+          ? `flex ${isBasic ? 'w-full min-w-0' : ''} flex-col gap-2`
+          : `flex ${isBasic ? 'w-full min-w-0' : ''} items-center gap-2 flex-wrap`
       }
     >
       {fieldFilters.map((_, index) => (
@@ -91,7 +91,7 @@ export function QueryLineFilters({
       ))}
     </div>
   ) : (
-    <span className={`${isBasic ? 'col-span-1' : 'contents'}`} />
+    <span className={isBasic ? '' : 'contents'} />
   );
 }
 
@@ -152,13 +152,29 @@ function QueryLineFilterWrapper({
       ? undefined
       : fieldFormatterToParser(terminatingField, fieldFormatter)) ??
     fieldMeta.parser;
+  const hasFilterValue =
+    queryFieldFilterSpecs[filter.type].component !== undefined;
 
   return (
     <div
-      className={fieldFilters.length > 1 ? 'flex flex-wrap gap-2' : 'contents'}
+      className={
+        isBasic
+          ? 'flex w-full min-w-0 flex-nowrap items-center gap-2'
+          : fieldFilters.length > 1
+            ? 'flex flex-wrap gap-2'
+            : 'contents'
+      }
       key={index}
     >
-      <div className="flex contents items-center gap-2">
+      <div
+        className={
+          isBasic
+            ? index === 0 && filter.type === 'any' && mappingPath[0] !== 'age'
+              ? 'hidden'
+              : 'order-1 flex shrink-0 items-center gap-2'
+            : 'flex contents items-center gap-2'
+        }
+      >
         <FieldFilterTool
           fieldFilters={fieldFilters}
           fieldName={mappingPath[0]}
@@ -169,74 +185,82 @@ function QueryLineFilterWrapper({
           isBasic={isBasic}
           isFieldComplete={isFieldComplete}
         />
-        <div className="contents w-full">
-          <Select
-            aria-label={
-              queryFieldFilterSpecs[filter.type].description ??
-              commonText.filter()
-            }
-            className={`
-                        !w-[unset] ${customSelectElementBackground}
-                      `}
-            disabled={handleQueryFieldChange === undefined}
-            title={
-              queryFieldFilterSpecs[filter.type].description ??
-              commonText.filter()
-            }
-            value={filter.type}
-            onChange={({ target }): void => {
-              const newFilter = (target as HTMLSelectElement)
-                .value as QueryFieldFilter;
-              const startValue =
-                queryFieldFilterSpecs[newFilter].component === undefined
-                  ? ''
-                  : filter.type === 'any' &&
-                      filtersWithDefaultValue.has(newFilter) &&
-                      filter.startValue === '' &&
-                      typeof parser?.value === 'string'
-                    ? parser.value
-                    : filter.startValue;
-
-              /*
-               * When going from "in" to another filter type, throw away
-               * all but first one or two values
-               */
-              const valueLength = newFilter === 'between' ? 2 : 1;
-              const trimmedValue =
-                filter.type === 'in'
-                  ? startValue
-                  : startValue.split(',').slice(0, valueLength).join(', ');
-
-              handleFilterChange?.(index, {
-                ...filter,
-                type: newFilter,
-                startValue: trimmedValue,
-              });
-            }}
-          >
-            {/**
-             * Only visible filters types are shown and able to
-             * be selected. If the current filter type is
-             * supported but isn't supposed to be visible
-             * (i.e., the filter in the database has the
-             * supported type), still show the filter
-             */}
-            {availableFilters
-              .filter(
-                ([filterName, { types }]) =>
-                  fieldMeta.fieldType === undefined ||
-                  filterName === filter.type ||
-                  types[fieldMeta.fieldType]?.visible == true
-              )
-              .map(([filterName, { label }]) => (
-                <option key={filterName} value={filterName}>
-                  {label}
-                </option>
-              ))}
-          </Select>
-        </div>
       </div>
-      <div className="contents">
+      <div className={isBasic ? 'order-2 w-40 shrink-0' : 'contents w-full'}>
+        <Select
+          aria-label={
+            queryFieldFilterSpecs[filter.type].description ??
+            commonText.filter()
+          }
+          className={`${
+            isBasic ? 'min-w-32 w-full' : '!w-[unset]'
+          } ${customSelectElementBackground}`}
+          disabled={handleQueryFieldChange === undefined}
+          title={
+            queryFieldFilterSpecs[filter.type].description ??
+            commonText.filter()
+          }
+          value={filter.type}
+          onChange={({ target }): void => {
+            const newFilter = (target as HTMLSelectElement)
+              .value as QueryFieldFilter;
+            const startValue =
+              queryFieldFilterSpecs[newFilter].component === undefined
+                ? ''
+                : filter.type === 'any' &&
+                    filtersWithDefaultValue.has(newFilter) &&
+                    filter.startValue === '' &&
+                    typeof parser?.value === 'string'
+                  ? parser.value
+                  : filter.startValue;
+
+            /*
+             * When going from "in" to another filter type, throw away
+             * all but first one or two values
+             */
+            const valueLength = newFilter === 'between' ? 2 : 1;
+            const trimmedValue =
+              filter.type === 'in'
+                ? startValue
+                : startValue.split(',').slice(0, valueLength).join(', ');
+
+            handleFilterChange?.(index, {
+              ...filter,
+              type: newFilter,
+              startValue: trimmedValue,
+            });
+          }}
+        >
+          {/**
+           * Only visible filters types are shown and able to
+           * be selected. If the current filter type is
+           * supported but isn't supposed to be visible
+           * (i.e., the filter in the database has the
+           * supported type), still show the filter
+           */}
+          {availableFilters
+            .filter(
+              ([filterName, { types }]) =>
+                fieldMeta.fieldType === undefined ||
+                filterName === filter.type ||
+                types[fieldMeta.fieldType]?.visible == true
+            )
+            .map(([filterName, { label }]) => (
+              <option key={filterName} value={filterName}>
+                {label}
+              </option>
+            ))}
+        </Select>
+      </div>
+      <div
+        className={
+          isBasic
+            ? hasFilterValue
+              ? 'order-3 flex min-w-32 flex-1 items-center gap-2'
+              : 'order-3 hidden'
+            : 'contents'
+        }
+      >
         {typeof parser === 'object' && (
           <QueryLineFilter
             enforceLengthLimit={enforceLengthLimit}

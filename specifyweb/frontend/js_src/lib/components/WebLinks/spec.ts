@@ -131,6 +131,22 @@ type ParsedWebLink =
   | State<'ThisField'>
   | State<'UrlPart', { readonly value: LocalizedString }>;
 
+export function resolveWebLinkParts(
+  parts: RA<ParsedWebLink>,
+  values: RA<string | undefined>
+): RA<string> {
+  const prefix = parts[0];
+  const value = values[1];
+  return parts.length >= 2 &&
+    parts.slice(2).every(({ type }) => type === 'UrlPart') &&
+    prefix.type === 'UrlPart' &&
+    parts[1].type === 'ThisField' &&
+    prefix.value.length > 0 &&
+    value?.startsWith(prefix.value) === true
+    ? values.map((value, index) => (index === 0 ? '' : (value ?? '')))
+    : values.map((value) => value ?? '');
+}
+
 const reArgument = /(?<argument><[^>]+>)/u;
 
 const parseDefinition = (item: RawWebLink): RA<ParsedWebLink> =>

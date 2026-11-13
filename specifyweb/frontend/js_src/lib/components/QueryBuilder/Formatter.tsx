@@ -16,6 +16,8 @@ import { fetchContext as fetchDomain, schema } from '../DataModel/schema';
 import type { CollectionObjectType, Tables } from '../DataModel/types';
 import { fetchFormatters } from '../Formatters/formatters';
 import { customSelectElementBackground } from '../WbPlanView/CustomSelectElement';
+import { getTable } from '../DataModel/tables';
+import { getDefaultQueryFormat } from './helpers';
 
 type SimpleFormatter = {
   readonly name: string;
@@ -31,44 +33,63 @@ export function QueryFieldRecordFormatter({
   type,
   tableName,
   formatter,
+  formatSelectionRequest,
+  usedFormats,
   onChange: handleChange,
 }: {
   readonly type: 'aggregator' | 'formatter';
   readonly tableName: keyof Tables;
   readonly formatter: string | undefined;
+  readonly formatSelectionRequest?: number;
+  readonly usedFormats?: ReadonlySet<string>;
   readonly onChange: ((formatter: string | undefined) => void) | undefined;
 }): JSX.Element | null {
   const [formatters] = usePromise(fetchFormatters, false);
-  const availableFormatters = React.useMemo<RA<SimpleFormatter> | undefined>(
-    () =>
-      // Some code duplication, but required by TypeScript
-      (type === 'formatter'
-        ? formatters?.formatters.map(({ table, name, title, isDefault }) => ({
-            table,
-            name,
-            title,
-            isDefault,
-          }))
-        : formatters?.aggregators.map(({ table, name, title, isDefault }) => ({
-            table,
-            name,
-            title,
-            isDefault,
-          }))
+  const availableFormatters = React.useMemo<
+    RA<SimpleFormatter> | undefined
+  >(() => {
+    const available = // Some code duplication, but required by TypeScript
+      (
+        type === 'formatter'
+          ? formatters?.formatters.map(({ table, name, title, isDefault }) => ({
+              table,
+              name,
+              title,
+              isDefault,
+            }))
+          : formatters?.aggregators.map(
+              ({ table, name, title, isDefault }) => ({
+                table,
+                name,
+                title,
+                isDefault,
+              })
+            )
       )
         ?.filter(({ table }) => table?.name === tableName)
         .map(({ name, title = name, isDefault }) => ({
           name,
           title,
           isDefault,
-        })),
-    [type, formatters, tableName]
-  );
+        }));
+    if (available === undefined) return undefined;
+    const defaultName = getDefaultQueryFormat(
+      available,
+      type === 'formatter' ? getTable(tableName)?.getFormat() : undefined,
+      type === 'formatter'
+    );
+    return available.map((formatter) => ({
+      ...formatter,
+      isDefault: formatter.name === defaultName,
+    }));
+  }, [type, formatters, tableName]);
 
   return (
     <FormatSelect
       availableFormatters={availableFormatters}
       currentFormat={formatter}
+      formatSelectionRequest={formatSelectionRequest}
+      usedFormats={usedFormats}
       onChange={handleChange}
     />
   );
@@ -161,15 +182,27 @@ export function CatalogNumberFormatSelection({
 function FormatSelect({
   availableFormatters,
   currentFormat,
+  formatSelectionRequest,
+  usedFormats,
   showSingular = false,
   onChange: handleChange,
 }: {
   readonly availableFormatters: RA<SimpleFormatter> | undefined;
   readonly currentFormat: string | undefined;
+  readonly formatSelectionRequest?: number;
+  readonly usedFormats?: ReadonlySet<string>;
   readonly showSingular?: boolean;
   readonly onChange: ((formatter: string | undefined) => void) | undefined;
 }): JSX.Element | null {
   const [formatterSelectIsOpen, setFormatterSelect] = React.useState(false);
+
+  React.useEffect(() => {
+    if (
+      formatSelectionRequest !== undefined &&
+      (availableFormatters?.length ?? 0) > 1
+    )
+      setFormatterSelect(true);
+  }, [availableFormatters, formatSelectionRequest]);
 
   const id = useId('formatters-selection');
 
@@ -203,16 +236,33 @@ function FormatSelect({
             className={customSelectElementBackground}
             disabled={handleChange === undefined}
             id={id('list')}
-            value={currentFormat}
+            value={currentFormat ?? ''}
             onValueChange={handleChange}
           >
-            <option value="" />
+            <option
+              value=""
+              disabled={
+                usedFormats?.has('') ||
+                usedFormats?.has(
+                  availableFormatters.find(({ isDefault }) => isDefault)
+                    ?.name ?? ''
+                )
+              }
+            />
             {availableFormatters.map((formatter, index) => (
-              <option key={index} value={formatter.name}>
+              <option
+                key={index}
+                value={formatter.name}
+                disabled={
+                  usedFormats?.has(formatter.name) ||
+                  (formatter.isDefault && usedFormats?.has(''))
+                }
+              >
                 {`${formatter.title}${formatter.isDefault ? resourcesText.defaultInline() : ''}`}
               </option>
             ))}
             {currentFormat !== undefined &&
+            currentFormat !== '' &&
             !availableFormatters
               .map(({ name }) => name)
               .includes(currentFormat) ? (

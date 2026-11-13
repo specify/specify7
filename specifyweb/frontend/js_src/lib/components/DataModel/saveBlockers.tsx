@@ -201,7 +201,7 @@ export function useAllSaveBlockers(
 /**
  * Recursively get all blockers for current resource and all children resources
  */
-const getAllBlockers = (
+export const getAllBlockers = (
   resource: SpecifyResource<AnySchema>,
   filterBlockers?: LiteralField | Relationship
 ): RA<BlockerWithResource> => [

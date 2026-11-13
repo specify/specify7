@@ -47,11 +47,11 @@ exports[`Tabs first tab selected, and then second 1`] = `
     </button>
   </div>
   <div
-    class="flex flex-1 overflow-hidden"
+    class="flex min-w-0 flex-1 overflow-hidden"
   >
     <div
       aria-labelledby="headlessui-tabs-tab-:r0:"
-      class="flex flex-1 flex-col gap-4"
+      class="flex min-w-0 max-w-full flex-1 flex-col gap-4"
       data-headlessui-state="selected"
       id="headlessui-tabs-panel-:r2:"
       role="tabpanel"
@@ -120,11 +120,11 @@ exports[`Tabs first tab selected, and then second 2`] = `
     </button>
   </div>
   <div
-    class="flex flex-1 overflow-hidden"
+    class="flex min-w-0 flex-1 overflow-hidden"
   >
     <div
       aria-labelledby="headlessui-tabs-tab-:r0:"
-      class="flex flex-1 flex-col gap-4"
+      class="flex min-w-0 max-w-full flex-1 flex-col gap-4"
       data-headlessui-state="selected"
       id="headlessui-tabs-panel-:r2:"
       role="tabpanel"
@@ -163,7 +163,7 @@ exports[`Tabs simple no tabs 1`] = `
     role="tablist"
   />
   <div
-    class="flex flex-1 overflow-hidden"
+    class="flex min-w-0 flex-1 overflow-hidden"
   />
 </DocumentFragment>
 `;
