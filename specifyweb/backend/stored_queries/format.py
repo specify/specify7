@@ -331,8 +331,11 @@ class ObjectFormatter:
                     # field uses sep as its literal value instead.
                     if field_values:
                         has_value = and_(
-                            expr != '',
-                            or_(*(value != '' for value in field_values)),
+                            func.char_length(cast(expr, types.String())) > 0,
+                            or_(*(
+                                func.char_length(cast(value, types.String())) > 0
+                                for value in field_values
+                            )),
                         )
                         expr_with_sep = case(
                             (has_value, concat(node.attrib['sep'], expr)),
