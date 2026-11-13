@@ -188,9 +188,9 @@ test('requires core vocabulary terms and accepts stanza constants', () => {
     `<archive><core rowType="http://rs.tdwg.org/dwc/terms/Occurrence"><queries><query contextTableId="1" /></queries></core></archive>`
   );
   const basis = 'http://rs.tdwg.org/dwc/terms/basisOfRecord';
-  expect(
-    getMissingRequiredTerms([core]).some(({ term }) => term.includes(basis))
-  ).toBe(true);
+  expect(getMissingRequiredTerms([core]).map(({ term }) => term)).toContain(
+    `Basis Of Record (${basis})`
+  );
   const constantCore = {
     ...core,
     constantFields: [`<field term="${basis}" value="PreservedSpecimen"/>`],
@@ -200,6 +200,9 @@ test('requires core vocabulary terms and accepts stanza constants', () => {
     `<archive><extension rowType="http://rs.tdwg.org/ac/terms/Multimedia"><queries><query contextTableId="1"/></queries></extension></archive>`
   );
   const identifier = 'http://purl.org/dc/terms/identifier';
+  expect(
+    getMissingRequiredTerms([extension]).map(({ term }) => term)
+  ).toContain(`Identifier (${identifier})`);
   const constants = {
     ...extension,
     constantFields: [
@@ -207,10 +210,8 @@ test('requires core vocabulary terms and accepts stanza constants', () => {
     ],
   };
   expect(
-    getMissingRequiredTerms([constants]).some(({ term }) =>
-      term.includes(identifier)
-    )
-  ).toBe(false);
+    getMissingRequiredTerms([constants]).map(({ term }) => term)
+  ).not.toContain(`Identifier (${identifier})`);
 });
 
 test('preserves Search Synonymy when loading and saving definitions', () => {
