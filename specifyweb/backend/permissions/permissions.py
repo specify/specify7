@@ -12,10 +12,13 @@ import logging
 logger = logging.getLogger(__name__)
 
 from django.db import connection
-from django.db.models import Model
+from django.core.exceptions import FieldDoesNotExist, FieldError
+from django.db.models import Exists, FilteredRelation, ForeignKey, Model, OuterRef, Q, QuerySet
+from django.db.models.fields.reverse_related import ManyToOneRel
 
 from specifyweb.specify.models import Agent
 from specifyweb.specify.datamodel import Table
+from specifyweb.specify.utils.scoping import Scoping
 from specifyweb.backend.cache.thread import ThreadCache
 
 from . import models
@@ -120,12 +123,7 @@ class NoAdminUsersException(PermissionsException):
         return {"NoAdminUsersException": {}}
 
 
-def enforce(
-    collection: int | Model | None, actor, resources: list[str], action: str
-) -> None:
-    if not resources:
-        return
-
+def _actor_userid(actor) -> int:
     if isinstance(actor, Agent):
         userid = actor.specifyuser_id
     else:
@@ -138,6 +136,16 @@ def enforce(
 
     if userid is None:
         raise PermissionsException(f"agent {actor} is not a Specify user")
+    return userid
+
+
+def enforce(
+    collection: int | Model | None, actor, resources: list[str], action: str
+) -> None:
+    if not resources:
+        return
+
+    userid = _actor_userid(actor)
 
     if isinstance(collection, int) or collection is None:
         collectionid = collection
@@ -260,6 +268,127 @@ def query(
     request = PermRequest(collectionid, userid, resource, action)
     return _permission_query_cache.get_or_set(request, get_query_result)
 
+def has_permission_in_scope(
+    scope: Model, userid: int, resource: str, action: str
+) -> bool:
+    """Require collection access and the action in one collection in the scope.
+
+    Grants in different collections cannot be combined. Shared scopes allow
+    access through any qualifying collection, using the existing policy rules.
+    """
+    collection_ids = Scoping.collections_for_scope(scope).values_list("id", flat=True)
+    return any(
+        query_pt(collectionid, userid, CollectionAccessPT.access).allowed
+        and query(collectionid, userid, resource, action).allowed
+        for collectionid in collection_ids
+    )
+
+def filter_scoped_read_queryset(queryset: QuerySet, actor) -> QuerySet:
+    """Apply shared scope rules using collections granting both access and read."""
+    userid = _actor_userid(actor)
+    resource = f"/table/{queryset.model.specify_model.name.lower()}"
+    with cache_permission_queries():
+        allowed_ids = [
+            collectionid for collectionid in models.Collection.objects.values_list("id", flat=True)
+            if query_pt(collectionid, userid, CollectionAccessPT.access).allowed
+            and query(collectionid, userid, resource, "read").allowed
+        ]
+    return Scoping.filter_queryset(
+        queryset, models.Collection.objects.filter(id__in=allowed_ids),
+    )
+
+def filter_forward_related_read_queryset(
+    queryset: QuerySet, fields: Iterable[str], actor
+) -> QuerySet:
+    """Filter forward FK field paths by each related record's read scope.
+
+    Includes terminal FK names and their raw ``_id`` aliases.
+    Null relationships remain visible. Reverse and to-many paths are not
+    handled here, because their joins require separate authorization semantics.
+    """
+    checked_paths = set()
+    for projection in fields:
+        model = queryset.model
+        path = []
+        relation_field = None
+        for name in projection.split("__"):
+            try:
+                field = model._meta.pk if name == "pk" else model._meta.get_field(name)
+            except FieldDoesNotExist as error:
+                if relation_field is not None and relation_field.get_lookup(name) is not None:
+                    break
+                raise FieldError(str(error)) from error
+            if not isinstance(field, ForeignKey):
+                break
+            path.append(field.name)
+            model = field.related_model
+            relation_field = field
+            lookup = "__".join(path)
+            if lookup in checked_paths:
+                continue
+            allowed = filter_scoped_read_queryset(model.objects.all(), actor)
+            queryset = queryset.filter(
+                Q(**{f"{lookup}__isnull": True})
+                | Q(**{f"{lookup}__in": allowed.values("pk")})
+            )
+            checked_paths.add(lookup)
+    return queryset
+
+def prepare_reverse_related_read_queryset(
+    queryset: QuerySet, fields: Iterable[str], actor, *,
+    joins: dict[str, str] | None = None,
+) -> tuple[QuerySet, dict[str, str]]:
+    """Build readable reverse FK joins and return replacement query paths.
+
+    All projections, filters, and ordering must use the replacements so that
+    they refer to the same readable children. Authorization belongs in the
+    join's ON clause to preserve parents with no readable children.
+    Forward hops after a reverse join are restricted in the same way.
+    Reuse ``joins`` when preparing more paths on the returned queryset.
+    """
+    if joins is None:
+        joins = {}
+    replacements: dict[str, str] = {}
+    for projection in fields:
+        model = queryset.model
+        source_path = []
+        path = []
+        reverse = False
+        relation_field = None
+        names = projection.split("__")
+        for index, name in enumerate(names):
+            try:
+                field = model._meta.pk if name == "pk" else model._meta.get_field(name)
+            except FieldDoesNotExist as error:
+                if relation_field is not None and relation_field.get_lookup(name) is not None:
+                    path.extend(names[index:])
+                    break
+                raise FieldError(str(error)) from error
+            if not isinstance(field, (ForeignKey, ManyToOneRel)):
+                path.extend(names[index:])
+                break
+            source_path.append(field.name)
+            reverse = reverse or isinstance(field, ManyToOneRel)
+            model = field.related_model
+            relation_field = field.field if isinstance(field, ManyToOneRel) else field
+            if reverse:
+                source = "__".join(source_path)
+                if source not in joins:
+                    alias = f"_scope_read_{len(joins)}"
+                    lookup = "__".join([*path, field.name])
+                    allowed = filter_scoped_read_queryset(model.objects.all(), actor)
+                    queryset = queryset.alias(**{
+                        alias: FilteredRelation(
+                            lookup, condition=Q(Exists(allowed.filter(pk=OuterRef(alias)))),
+                        ),
+                    })
+                    joins[source] = alias
+                path = [joins[source]]
+            else:
+                path.append(name)
+        replacements[projection] = "__".join(path)
+    return queryset, replacements
+
 @contextmanager
 def cache_permission_queries():
     with (
@@ -269,22 +398,64 @@ def cache_permission_queries():
 
 TABLE_ACTION = Literal["read", "create", "update", "delete"]
 
-def check_table_permissions(collection, actor, obj, action: TABLE_ACTION) -> None:
+def _enforce_in_scope(scope: Model, actor, resources: list[str], action: str) -> None:
+    if not resources:
+        return
+    userid = _actor_userid(actor)
+    denied_resources = [
+        resource for resource in resources
+        if not has_permission_in_scope(scope, userid, resource, action)
+    ]
+    if denied_resources:
+        collection_ids = Scoping.collections_for_scope(scope).values_list("id", flat=True)
+        denials = [
+            PermRequest(collectionid, userid, resource, action)
+            for collectionid in collection_ids
+            for resource in denied_resources
+        ]
+        logger.debug("record scope permission denied: %s, scope=%s", denials, scope)
+        raise NoMatchingRuleException(denials)
+
+
+def check_permission_in_scope(
+    scope: Model, actor, resource: str, action: str
+) -> None:
+    """Require a resource action using the same actual-scope rules as record checks."""
+    _enforce_in_scope(scope, actor, [resource], action)
+
+
+def check_table_permissions(
+    collection, actor, obj, action: TABLE_ACTION, *, scope: Model | None = None
+) -> None:
+    """Check instances in record or captured scope; model/table checks use collection."""
     if isinstance(obj, Table):
         name = obj.name.lower()
     else:
         name = obj.specify_model.name.lower()
+    if isinstance(obj, Model):
+        resolved_scope = scope if scope is not None else Scoping.scope_for_record(obj)
+        _enforce_in_scope(resolved_scope, actor, [f"/table/{name}"], action)
+        return
     enforce(collection, actor, [f"/table/{name}"], action)
 
 def has_table_permission(collection_id, user_id, table_name: str, action: TABLE_ACTION) -> bool:
     return query(collection_id, user_id, f'/table/{table_name.lower()}', action).allowed
 
-def check_field_permissions(collection, actor, obj, fields: Iterable[str], action: str) -> None:
+def check_field_permissions(
+    collection, actor, obj, fields: Iterable[str], action: str, *, scope: Model | None = None
+) -> None:
+    """Check instance updates in record scope, optionally using a captured scope."""
     if isinstance(obj, Table):
         table = obj.name.lower()
     else:
         table = obj.specify_model.name.lower()
-    enforce(collection, actor, [f"/field/{table}/{field}" for field in fields], action)
+    resources = [f"/field/{table}/{field}" for field in fields]
+    if action == "update" and isinstance(obj, Model):
+        if resources:
+            resolved_scope = scope if scope is not None else Scoping.scope_for_record(obj)
+            _enforce_in_scope(resolved_scope, actor, resources, action)
+        return
+    enforce(collection, actor, resources, action)
 
 def table_permissions_checker(collection, actor, action: TABLE_ACTION) -> Callable[[Any], None]:
     def checker(obj) -> None:

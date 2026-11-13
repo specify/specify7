@@ -122,6 +122,33 @@ class QueryConstructionTests(SQLAlchemySetup):
         self.assertEqual(plan, row_plan_map)
 
     @patch(OBJ_FORMATTER_PATH, new=fake_obj_formatter)
+    def test_restricted_related_record_is_denied_with_real_query(self):
+        from specifyweb.backend.permissions import initialize, models as permission_models
+        from specifyweb.backend.permissions.permissions import NoMatchingRuleException
+
+        other_collection = models.Collection.objects.create(
+            discipline=self.discipline, collectionname='Restricted',
+            catalognumformatname='test', isembeddedcollectingevent=False,
+        )
+        attribute = models.Collectionobjectattribute.objects.create(
+            collectionmemberid=other_collection.pk, text1='restricted attribute',
+        )
+        obj = self.collectionobjects[0]
+        obj.collectionobjectattribute = attribute
+        obj.save()
+        initialize.wipe_permissions()
+        permission_models.UserPolicy.objects.create(
+            collection=self.collection, specifyuser=self.specifyuser,
+            resource='%', action='%',
+        )
+        fields = [BatchEditPack._query_field(QueryFieldSpec.from_path(
+            ('Collectionobject', 'collectionobjectattribute', 'text1'),
+        ), 0)]
+        props = self.build_props(fields, 'collectionobject')
+        with self.assertRaises(NoMatchingRuleException):
+            run_batch_edit_query(props)
+
+    @patch(OBJ_FORMATTER_PATH, new=fake_obj_formatter)
     def test_basic_run(self):
         base_table = "collectionobject"
         query_paths = [

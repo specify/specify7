@@ -20,6 +20,7 @@ from specifyweb.backend.workbench.upload.predicates import (
     ToRemove,
     resolve_reference_attributes,
     safe_fetch,
+    readable_match_query,
 )
 from specifyweb.backend.trees.utils import (
     SPECIFY_TREES,
@@ -618,6 +619,7 @@ class BoundTreeRecord(NamedTuple):
         # the relationship, then just indicate a match against the existing
         # record which presumably isn't present in the BatchEdit Data Set.
         if isinstance(processed.record_result, NullRecord) and tree_node_id is not None:
+            self.auditor.read(getattr(models, self.name).objects.get(pk=tree_node_id))
             columns = [pr.column for prs in self.parsedFields.values() for pr in prs]
             info = ReportInfo(tableName=self.name, columns=columns, treeInfo=None)
             return UploadResult(Matched(id=tree_node_id, info=info), {}, {})
@@ -732,6 +734,10 @@ class BoundTreeRecord(NamedTuple):
                     ),
                 )
 
+            if self.auditor.agent is not None:
+                for matched in model.objects.filter(pk__in=[match["id"] for match in matches]):
+                    self.auditor.read(matched)
+
             if len(matches) != 1:
                 # matching failed at to_match level
                 break
@@ -820,7 +826,7 @@ class BoundTreeRecord(NamedTuple):
         cached: list[MatchInfo] | None = (
             self.cache.get(cache_key, None) if self.cache is not None else None
         )
-        if cached is not None:
+        if cached is not None and self.auditor.agent is None:
             return cached
 
         model = getattr(models, self.name)
@@ -837,7 +843,11 @@ class BoundTreeRecord(NamedTuple):
                 **{"definitionitem_id": to_match.treedefitem.id},
             }
 
-            query = model.objects.filter(**_filter).values(*FETCHED_ATTRS)
+            query = readable_match_query(
+                model, _filter, self.auditor.agent,
+                scope_fields=("definition_id", "definitionitem_id"),
+                check_scope=False,
+            ).values(*FETCHED_ATTRS)
 
             matches: list[MatchInfo] = []
 
@@ -849,7 +859,7 @@ class BoundTreeRecord(NamedTuple):
                 matches = list(query)
 
             if matches:
-                if self.cache is not None:
+                if self.cache is not None and self.auditor.agent is None:
                     self.cache[cache_key] = matches
                 break
 
@@ -1013,6 +1023,15 @@ class BoundTreeRecord(NamedTuple):
                 obj.save(skip_tree_extras=True)
             else:
                 obj.save(force_insert=True)
+            self.auditor.read_references(
+                obj,
+                (
+                    name for name in attrs
+                    if name not in {
+                        "createdbyagent_id", "definition", "definitionitem", "rankid",
+                    }
+                ),
+            )
             self.auditor.insert(obj, None)
             return obj
 
@@ -1020,7 +1039,9 @@ class BoundTreeRecord(NamedTuple):
 
     def _do_clone(self, ref, attrs):
         _inserter = self._get_inserter()
-        return clone_record(ref, _inserter, {}, [], attrs)
+        return clone_record(
+            ref, _inserter, {}, [], attrs, authorize_read=self.auditor.read,
+        )
 
     def force_upload_row(self) -> UploadResult:
         raise NotImplementedError()
@@ -1051,6 +1072,7 @@ class BoundTreeRecord(NamedTuple):
                 reference = safe_fetch(
                     model, {"id": pack["id"]}, pack.get("version", None)
                 )
+                self.auditor.read(reference)
                 if (
                     previous_parent_id is not None
                     and previous_parent_id != reference.pk

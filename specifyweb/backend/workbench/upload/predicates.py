@@ -15,6 +15,11 @@ from specifyweb.specify.utils.func import Func
 from django.core.exceptions import ObjectDoesNotExist
 
 from specifyweb.backend.workbench.upload.clone import GENERIC_FIELDS_TO_SKIP
+from specifyweb.backend.permissions.permissions import (
+    filter_forward_related_read_queryset,
+    filter_scoped_read_queryset,
+    prepare_reverse_related_read_queryset,
+)
 
 Filter = dict[str, Any]
 
@@ -23,6 +28,7 @@ Value = str | int | F | None
 
 class ToRemoveMatchee(TypedDict):
     filter_on: Filter
+    scope_fields: tuple[str, ...]
     # It is possible that the node we need to filter on may be present. In this case, we'll remove valid entries.
     # To avoid that, we track the present ones too. I can't think why this might need more cont, so making it Q
     remove: Q | None
@@ -43,14 +49,35 @@ def add_to_remove_node(previous: ToRemoveNode, new_node: ToRemoveNode) -> ToRemo
 class ToRemove(NamedTuple):
     model_name: str
     filter_on: Filter
+    scope_fields: tuple[str, ...] = ()
 
     def to_cache_key(self):
-        return repr((self.model_name, filter_match_key(self.filter_on)))
+        return repr((self.model_name, filter_match_key(self.filter_on), self.scope_fields))
+
+
+def readable_match_query(
+    model, filters: Filter, actor, *,
+    scope_fields: tuple[str, ...] = (), check_scope: bool = True,
+) -> QuerySet:
+    """Keep scalar predicates and their readable relationship witnesses aligned."""
+    query = model.objects.all()
+    if actor is None:
+        return query.filter(**filters)
+    if check_scope:
+        query = filter_scoped_read_queryset(query, actor)
+    fields = [name for name in filters if name not in scope_fields]
+    query, replacements = prepare_reverse_related_read_queryset(query, fields, actor)
+    query = filter_forward_related_read_queryset(query, fields, actor)
+    return query.filter(**{
+        replacements.get(name, name): value for name, value in filters.items()
+    })
 
 
 class DjangoPredicates(NamedTuple):
     filters: dict[str, Value | list[Any]] = {}  # type: ignore
     to_remove: ToRemove | None = None
+    # Inferred scope FKs select the upload domain, rather than user-read relations.
+    scope_fields: tuple[str, ...] = ()
 
     def reduce_for_to_one(self):
         if (
@@ -101,7 +128,7 @@ class DjangoPredicates(NamedTuple):
             for key, values in Func.sort_by_key(self.filters)
         ]
         to_remove = None if self.to_remove is None else self.to_remove.to_cache_key()
-        return repr((basetable_name, tuple(filters), to_remove))
+        return repr((basetable_name, tuple(filters), to_remove, self.scope_fields))
 
     def _smart_apply(
         self,
@@ -111,6 +138,8 @@ class DjangoPredicates(NamedTuple):
         path: str | None = None,
         aliases: list[tuple[str, str]] = [],
         to_remove_node: "ToRemoveNode" = {},
+        *,
+        actor=None,
     ):
         _get_field_name = lambda raw_name: (
             raw_name if path is None else (path + "__" + raw_name)
@@ -126,6 +155,13 @@ class DjangoPredicates(NamedTuple):
             for (field_name, value) in self.filters.items()
             if not isinstance(value, list)
         }
+        if actor is not None:
+            local = readable_match_query(
+                current_model,
+                {name: value for name, value in self.filters.items() if not isinstance(value, list)},
+                actor, scope_fields=self.scope_fields, check_scope=path is not None,
+            )
+            base_predicates = {_get_field_name("id") + "__in": local.values("pk")}
 
         filtered = {
             **base_predicates,
@@ -169,6 +205,7 @@ class DjangoPredicates(NamedTuple):
                                         **current.to_remove.filter_on,
                                         reverse_side: OuterRef(unique_alias),
                                     },
+                                    "scope_fields": current.to_remove.scope_fields,
                                     "remove": (
                                         None
                                         if len(internal_exclude) == 0
@@ -194,6 +231,7 @@ class DjangoPredicates(NamedTuple):
                     new_path,
                     aliases,
                     previous_to_remove_node,
+                    actor=actor,
                 )
                 record_aligned: QuerySet = reduce(
                     lambda _query, _to_remove: _query.exclude(
@@ -234,17 +272,18 @@ class DjangoPredicates(NamedTuple):
         )
         return query, to_remove, unique_alias
 
-    def apply_to_query(self, base_name: str) -> QuerySet:
+    def apply_to_query(self, base_name: str, *, actor=None) -> QuerySet:
+        """Scope indirect witnesses when an actor is supplied; callers authorize roots."""
         base_model = get_model(base_name)
         query: QuerySet = base_model.objects.all()
         getter = get_unique_predicate()
         if not self.filters:
             return query
         query, to_remove, alias = self._smart_apply(
-            query, getter, base_model, None, aliases=[]
+            query, getter, base_model, None, aliases=[], actor=actor,
         )
         if to_remove:
-            query = query.filter(canonicalize_remove_node(to_remove))
+            query = query.filter(canonicalize_remove_node(to_remove, actor=actor))
         return query
 
 
@@ -263,7 +302,7 @@ class SkippablePredicate(DjangoPredicates):
     def get_cache_key(self, basetable_name: str | None = None) -> str:
         return repr(("Skippable", basetable_name))
 
-    def apply_to_query(self, base_name: str) -> QuerySet:
+    def apply_to_query(self, base_name: str, *, actor=None) -> QuerySet:
         raise Exception("Attempting to apply skippable predicates to a query!")
 
     def is_reducible(self):
@@ -275,21 +314,23 @@ def filter_match_key(f: Filter) -> str:
     return repr(sorted(f.items()))
 
 
-def canonicalize_remove_node(node: ToRemoveNode) -> Q:
-    all_exists = [Q(_map_matchee(matchee, name)) for name, matchee in node.items()]
+def canonicalize_remove_node(node: ToRemoveNode, *, actor=None) -> Q:
+    all_exists = [
+        Q(_map_matchee(matchee, name, actor=actor))
+        for name, matchees in node.items() for matchee in matchees
+    ]
     all_or = Func.make_ors(all_exists)
     # Don't miss the negation below!
     return ~all_or
 
 
-def _map_matchee(matchee: list[ToRemoveMatchee], model_name: str) -> Exists:
+def _map_matchee(matchee: ToRemoveMatchee, model_name: str, *, actor=None) -> Exists:
     model = get_model(model_name)
-    qs = [Q(**match["filter_on"]) for match in matchee]
-    qs_or = Func.make_ors(qs)
-    query = model.objects.filter(qs_or)
-    to_remove = [match["remove"] for match in matchee if match["remove"] is not None]
-    if to_remove:
-        query = query.exclude(Func.make_ors(to_remove))
+    query = readable_match_query(
+        model, matchee["filter_on"], actor, scope_fields=matchee["scope_fields"],
+    )
+    if matchee["remove"] is not None:
+        query = query.exclude(matchee["remove"])
     return Exists(query)
 
 

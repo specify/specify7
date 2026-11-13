@@ -370,7 +370,7 @@ class RecordSetTests(ApiTests):
             self.recordset.recordsetitems.create(recordid=id)
 
         for i, co in enumerate(self.collectionobjects):
-            info = get_recordset_info(co, self.recordset.id)
+            info = get_recordset_info(co, self.recordset.id, skip_perms_check)
             self.assertEqual(info["recordsetid"], self.recordset.id)
             self.assertEqual(info["total_count"], len(self.collectionobjects))
             self.assertEqual(info["index"], i)
@@ -397,7 +397,7 @@ class RecordSetTests(ApiTests):
             )
 
     def test_no_recordset_info(self):
-        info = get_recordset_info(self.collectionobjects[0], self.recordset.id)
+        info = get_recordset_info(self.collectionobjects[0], self.recordset.id, skip_perms_check)
         self.assertEqual(info, None)
 
     def test_recordsetitem_ordering(self):
@@ -615,12 +615,15 @@ class InlineApiTests(ApiTests):
             'specifyuser': f'/api/specify/specifyuser/{self.specifyuser.id}/',
             'type': 0,
             'recordsetitems': [
-                {'recordid': 123},
-                {'recordid': 124},
+                {'recordid': self.collectionobjects[0].id},
+                {'recordid': self.collectionobjects[1].id},
             ]
         })
         rs = Recordset.objects.get(pk=obj.id)
-        self.assertEqual({123, 124}, set(rs.recordsetitems.values_list('recordid', flat=True)))
+        self.assertEqual(
+            {co.id for co in self.collectionobjects[:2]},
+            set(rs.recordsetitems.values_list('recordid', flat=True)),
+        )
 
     def test_update_object_with_inlines(self):
         self.collectionobjects[0].determinations.create(
@@ -1097,6 +1100,198 @@ class ScopingTests(ApiTests):
             isembeddedcollectingevent=False,
             discipline=self.other_discipline,
         )
+
+    def assert_queryset_matches_instance_scopes(self, model):
+        collections = Collection.objects.filter(pk=self.collection.pk)
+        expected = [
+            record.pk for record in model.objects.all()
+            if scoping.Scoping.collections_for_scope(
+                scoping.Scoping.scope_for_record(record),
+            ).filter(pk__in=collections).exists()
+        ]
+        self.assertCountEqual(
+            scoping.Scoping.filter_queryset(
+                model.objects.all(), collections,
+            ).values_list('pk', flat=True),
+            expected,
+        )
+
+    def test_queryset_scope_paths_match_instance_resolution(self):
+        for model in (models.Loan, models.Gift):
+            for discipline in (self.discipline, self.other_discipline):
+                model.objects.create(discipline=discipline, division=self.division)
+        for discipline in (self.discipline, self.other_discipline):
+            notebook = models.Fieldnotebook.objects.create(
+                discipline=discipline, collection=self.other_collection,
+                owneragent=self.agent,
+            )
+            pageset = models.Fieldnotebookpageset.objects.create(
+                fieldnotebook=notebook, discipline=self.discipline,
+            )
+            models.Fieldnotebookpage.objects.create(
+                pageset=pageset, discipline=self.discipline,
+            )
+        for model in (
+            Collection, Discipline, Division, Institution, Agent, Collectionobject,
+            models.Loan, models.Gift, models.Fieldnotebook,
+            models.Fieldnotebookpageset, models.Fieldnotebookpage,
+        ):
+            with self.subTest(model=model._meta.model_name):
+                self.assert_queryset_matches_instance_scopes(model)
+
+    def test_attachment_queryset_scope_matches_instance_resolution(self):
+        for scope in (
+            self.collection, self.other_collection,
+            self.discipline, self.other_discipline,
+            self.division, self.other_division, self.institution,
+        ):
+            models.Attachment.objects.create(
+                scopetype=scoping.ScopeType.from_model(scope).value,
+                scopeid=scope.pk,
+            )
+        for scope_type in (None, scoping.ScopeType.GLOBAL.value):
+            models.Attachment.objects.create(scopetype=scope_type)
+        self.assert_queryset_matches_instance_scopes(models.Attachment)
+
+    def test_invalid_attachment_scope_does_not_fall_back_to_institution(self):
+        attachment = models.Attachment.objects.create(scopetype=99)
+        with self.assertRaises(ValueError):
+            scoping.Scoping.scope_for_record(attachment)
+        self.assertFalse(scoping.Scoping.filter_queryset(
+            models.Attachment.objects.filter(pk=attachment.pk),
+            Collection.objects.all(),
+        ).exists())
+
+    def test_record_scope_preserves_hierarchy_records(self):
+        for obj in (
+            self.other_collection,
+            self.other_discipline,
+            self.other_division,
+            self.institution,
+        ):
+            with self.subTest(model=obj._meta.model_name):
+                with self.assertNumQueries(0):
+                    self.assertIs(scoping.Scoping.scope_for_record(obj), obj)
+
+    def test_record_scope_uses_record_collection(self):
+        obj = Collectionobject(collection=self.other_collection)
+
+        self.assertEqual(
+            scoping.Scoping.scope_for_record(obj), self.other_collection
+        )
+
+    def test_record_scope_uses_collectionmemberid(self):
+        obj = Preparation(collectionmemberid=self.other_collection.id)
+
+        self.assertEqual(
+            scoping.Scoping.scope_for_record(obj), self.other_collection
+        )
+
+    def test_record_scope_uses_record_discipline(self):
+        obj = Loan(discipline=self.other_discipline)
+
+        self.assertEqual(
+            scoping.Scoping.scope_for_record(obj), self.other_discipline
+        )
+
+    def test_record_scope_uses_record_division(self):
+        obj = Agent(division=self.other_division)
+
+        self.assertEqual(
+            scoping.Scoping.scope_for_record(obj), self.other_division
+        )
+
+    def test_record_scope_preserves_institution_fallback(self):
+        self.assertEqual(
+            scoping.Scoping.scope_for_record(Disposal()), self.institution
+        )
+
+    def test_record_scope_propagates_invalid_collectionmemberid(self):
+        missing_id = Collection.objects.aggregate(Max('id'))['id__max'] + 1
+        obj = Preparation(collectionmemberid=missing_id)
+
+        with self.assertRaises(Collection.DoesNotExist):
+            scoping.Scoping.scope_for_record(obj)
+
+    def test_record_scope_does_not_change_parent_scope_resolution(self):
+        self.assertEqual(
+            scoping.Scoping.model_from_instance(self.other_collection),
+            self.other_discipline,
+        )
+
+    def test_collections_for_scope_includes_shared_collections(self):
+        sibling_collection = Collection.objects.create(
+            catalognumformatname='test',
+            collectionname='SiblingCollection',
+            isembeddedcollectingevent=False,
+            discipline=self.discipline,
+        )
+        sibling_discipline = Discipline.objects.create(
+            geologictimeperiodtreedef=self.geologictimeperiodtreedef,
+            geographytreedef=self.geographytreedef,
+            division=self.division,
+            datatype=self.datatype,
+        )
+        cousin_collection = Collection.objects.create(
+            catalognumformatname='test',
+            collectionname='CousinCollection',
+            isembeddedcollectingevent=False,
+            discipline=sibling_discipline,
+        )
+
+        for scope, expected in (
+            (self.collection, [self.collection]),
+            (self.discipline, [self.collection, sibling_collection]),
+            (self.division, [
+                self.collection, sibling_collection, cousin_collection,
+            ]),
+            (self.institution, [
+                self.collection, sibling_collection, cousin_collection,
+                self.other_collection,
+            ]),
+        ):
+            with self.subTest(model=scope._meta.model_name):
+                with self.assertNumQueries(0):
+                    collections = scoping.Scoping.collections_for_scope(scope)
+                self.assertCountEqual(collections, expected)
+
+    def test_collections_for_scope_excludes_other_institutions(self):
+        other_institution = Institution.objects.create(
+            name='Other Institution',
+            isaccessionsglobal=True,
+            issecurityon=False,
+            isserverbased=False,
+            issharinglocalities=True,
+            issinglegeographytree=True,
+        )
+        self.other_division.institution = other_institution
+        self.other_division.save()
+
+        self.assertCountEqual(
+            scoping.Scoping.collections_for_scope(self.institution),
+            [self.collection],
+        )
+        self.assertCountEqual(
+            scoping.Scoping.collections_for_scope(other_institution),
+            [self.other_collection],
+        )
+
+    def test_collections_for_scope_without_collections(self):
+        division = Division.objects.create(
+            institution=self.institution, name='Empty Division'
+        )
+
+        self.assertFalse(scoping.Scoping.collections_for_scope(division).exists())
+
+    def test_collections_for_scope_rejects_unsaved_scopes(self):
+        for scope in (Collection(), Discipline(), Division(), Institution()):
+            with self.subTest(model=scope._meta.model_name):
+                with self.assertRaisesMessage(ValueError, "unsaved scope"):
+                    scoping.Scoping.collections_for_scope(scope)
+
+    def test_collections_for_scope_rejects_non_hierarchy_records(self):
+        with self.assertRaisesMessage(TypeError, "is not a hierarchy table"):
+            scoping.Scoping.collections_for_scope(self.collectionobjects[0])
 
     def test_explicitly_defined_scope(self):
         accession = Accession.objects.create(

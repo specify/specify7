@@ -2,14 +2,19 @@ import logging
 from typing import Any, Dict
 from collections.abc import Callable
 import json
+import importlib
 from django.db import transaction
-from django.core.exceptions import FieldError, FieldDoesNotExist
-from django.db.models import Model, F, Q, Subquery
+from django.core.exceptions import BadRequest, FieldError, FieldDoesNotExist
+from django.db.models import Model, F, Q, QuerySet, Subquery
 from django.db.models.deletion import Collector
 from django.http import (HttpResponseServerError, Http404)
 from django.apps import apps
 
-from specifyweb.backend.permissions.permissions import check_field_permissions, check_table_permissions
+from specifyweb.backend.permissions.permissions import (
+    check_field_permissions, check_table_permissions,
+    filter_forward_related_read_queryset, filter_scoped_read_queryset,
+    prepare_reverse_related_read_queryset,
+)
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 from specifyweb.backend.workbench.upload.auditlog import auditlog
 from specifyweb.specify import models
@@ -17,9 +22,9 @@ from specifyweb.specify.api.api_utils import objs_to_data_, CollectionPayload
 from specifyweb.specify.utils.autonumbering import autonumber_and_save
 from specifyweb.specify.api.exceptions import FilterError, MissingVersionException, OrderByError, RecordSetException, StaleObjectException
 from specifyweb.specify.utils.field_change_info import FieldChangeInfo
+from specifyweb.specify.utils.scoping import Scoping
 from specifyweb.specify.api.filter_by_col import filter_by_collection
 from specifyweb.specify.models_utils.models_by_table_id import get_model_by_table_id
-from specifyweb.specify.models_utils.relationships import get_recordset_info, get_related_or_none, handle_fk_fields, handle_to_many, is_dependent_field
 from specifyweb.specify.utils.uiformatters import AutonumberOverflowException
 from specifyweb.specify.api.validators import GetCollectionForm, cleanData, fld_change_info
 
@@ -27,7 +32,7 @@ logger = logging.getLogger(__name__)
 
 ReadPermChecker = Callable[[Any], None]
 
-def get_resource(name, id, checker: ReadPermChecker, recordsetid=None) -> dict:
+def get_resource(name, id, checker: ReadPermChecker, recordsetid=None, *, actor=None) -> dict:
     from specifyweb.specify.api.serializers import _obj_to_data
 
     """Return a dict of the fields from row 'id' in model 'name'.
@@ -38,11 +43,12 @@ def get_resource(name, id, checker: ReadPermChecker, recordsetid=None) -> dict:
     obj = get_object_or_404(name, id=int(id))
     data = _obj_to_data(obj, checker)
     if recordsetid is not None:
-        data['recordset_info'] = get_recordset_info(obj, recordsetid)
+        relationships = importlib.import_module("specifyweb.specify.models_utils.relationships")
+        data['recordset_info'] = relationships.get_recordset_info(obj, recordsetid, checker, actor=actor)
     return data
 
 def create_obj(collection, agent, model, data: dict[str, Any], parent_obj=None, parent_relationship=None):
-    """Create a new instance of 'model' and populate it with 'data'."""
+    """Create a new instance; non-null primary keys are not accepted."""
     from specifyweb.backend.setup_tool.api import create_institution, create_division, create_discipline, create_collection
     from specifyweb.backend.setup_tool.utils import normalize_keys
     from specifyweb.backend.permissions.permissions import PermissionsException
@@ -73,18 +79,34 @@ def create_obj(collection, agent, model, data: dict[str, Any], parent_obj=None, 
         return model.objects.filter(id=result[f'{model_name}_id']).first()
 
     data = cleanData(model, data, parent_relationship)
+    if data.get(model._meta.pk.name) is not None:
+        raise BadRequest("Cannot create a record with an explicit primary key")
     obj = model()
-    _, _, handle_remote_to_ones = handle_fk_fields(collection, agent, obj, data)
+    _, _, handle_remote_to_ones = handle_fk_fields(
+        collection, agent, obj, data, parent_obj=parent_obj,
+    )
     set_fields_from_data(obj, data)
     set_field_if_exists(obj, 'createdbyagent', agent)
-    set_field_if_exists(obj, 'collectionmemberid', collection.id)
+    # Prefer the explicit collection, then a dependent parent's collection.
+    target_collection_id = getattr(obj, 'collection_id', None)
+    if target_collection_id is None and parent_obj is not None:
+        parent_scope = Scoping.scope_for_record(parent_obj)
+        if isinstance(parent_scope, models.Collection):
+            target_collection_id = parent_scope.id
+    set_field_if_exists(
+        obj, 'collectionmemberid',
+        collection.id if target_collection_id is None else target_collection_id,
+    )
+    check_table_permissions(collection, agent, obj, "create")
+    if isinstance(obj, models.Recordsetitem):
+        _check_recordset_item_parent(collection, agent, obj, parent_obj)
+        _check_recordset_item_reference(collection, agent, obj)
     try:
         autonumber_and_save(collection, agent.specifyuser, obj)
     except AutonumberOverflowException as e:
         logger.warn("autonumbering overflow: %s", e)
 
     if obj.id is not None: # was the object actually saved?
-        check_table_permissions(collection, agent, obj, "create")
         auditlog.insert(obj, agent, parent_obj)
 
     handle_remote_to_ones(obj)
@@ -101,7 +123,8 @@ def post_resource(collection, agent, name: str, data, recordsetid: int | None=No
     agent - the agent associated with the specify user logged in.
     name - the model name of the resource to be created.
     data - a dict of the data for the resource to be created.
-    recordsetid - created resource will be added to the given recordset (optional)
+    recordsetid - optionally append to a readable, updatable recordset; the
+    relationship update and item creation are authorized in this transaction.
     """
     obj = create_obj(collection, agent, name, data)
 
@@ -109,9 +132,13 @@ def post_resource(collection, agent, name: str, data, recordsetid: int | None=No
         # add the resource to the record set
         Recordset = models.Recordset
         try:
-            recordset = Recordset.objects.get(id=recordsetid)
+            recordset = Recordset.objects.select_for_update().get(id=recordsetid)
         except Recordset.DoesNotExist as e:
             raise RecordSetException(e)
+
+        check_table_permissions(collection, agent, recordset, "read")
+        check_table_permissions(collection, agent, recordset, "update")
+        check_field_permissions(collection, agent, recordset, ["recordsetitems"], "update")
 
         if recordset.dbtableid != obj.specify_model.tableId:
             # the resource is not of the right kind to go in the recordset
@@ -119,35 +146,63 @@ def post_resource(collection, agent, name: str, data, recordsetid: int | None=No
                 "expected %s, got %s when adding object to recordset",
                 (get_model_by_table_id(recordset.dbtableid), obj.__class__))
 
-        recordset.recordsetitems.create(recordid=obj.id)
+        create_obj(
+            collection, agent, models.Recordsetitem,
+            {"recordset": recordset, "recordid": obj.id}, parent_obj=recordset,
+        )
     return obj
 
 def update_obj(collection, agent, name: str, id, version, data: dict[str, Any], parent_obj=None, parent_relationship=None):
     """Update the resource with 'id' in model named 'name' with given
-    'data'.
+    'data', authorizing inherited scope changes for dependent records too.
     """
     obj = get_object_or_404(name, id=int(id))
     check_table_permissions(collection, agent, obj, "update")
+    if isinstance(obj, models.Recordsetitem):
+        _check_recordset_item_parent(collection, agent, obj, parent_obj)
+    original_scope = Scoping.scope_for_record(obj)
 
-    data = cleanData(obj.__class__, data, parent_relationship)
-    dependents_to_delete, fk_dirty, handle_remote_to_ones = handle_fk_fields(collection, agent, obj, data)
-    dirty = fk_dirty + set_fields_from_data(obj, data)
+    with authorize_dependent_scope_update(collection, agent, obj):
+        data = cleanData(obj.__class__, data, parent_relationship)
+        dependents_to_delete, fk_dirty, handle_remote_to_ones = handle_fk_fields(
+            collection, agent, obj, data, parent_obj=parent_obj,
+        )
+        dirty = fk_dirty + set_fields_from_data(obj, data)
 
-    check_field_permissions(collection, agent, obj, [d['field_name'] for d in dirty], "update")
+        # Scope-defining fields may have changed; authorize the resulting scope too.
+        check_table_permissions(collection, agent, obj, "update")
+        if isinstance(obj, models.Recordsetitem):
+            _check_recordset_item_parent(collection, agent, obj, parent_obj)
+            _check_recordset_item_reference(collection, agent, obj)
+        dirty_fields = [d['field_name'] for d in dirty]
+        dirty_fields.extend(
+            name for name, value in data.items()
+            if isinstance(value, (list, dict)) and obj._meta.get_field(name).is_relation
+        )
+        check_field_permissions(
+            collection, agent, obj, dirty_fields, "update", scope=original_scope
+        )
+        if Scoping.scope_for_record(obj) != original_scope:
+            check_field_permissions(collection, agent, obj, dirty_fields, "update")
 
-    if hasattr(obj, 'modifiedbyagent'):
-        setattr(obj, 'modifiedbyagent', agent)
+        if hasattr(obj, 'modifiedbyagent'):
+            setattr(obj, 'modifiedbyagent', agent)
 
-    data = _handle_special_update_priors(obj, data)
-    bump_version(obj, version)
-    obj.save(force_update=True)
-    auditlog.update(obj, agent, parent_obj, dirty)
-    deleter = make_default_deleter(collection=collection, agent=agent)
-    for dep in dependents_to_delete:
-        delete_obj(dep, deleter, parent_obj=obj)
-    handle_remote_to_ones(obj)
-    handle_to_many(collection, agent, obj, data)
-    _handle_special_update_posts(obj)
+        data = _handle_special_update_priors(obj, data)
+        bump_version(obj, version)
+        obj.save(force_update=True)
+        auditlog.update(obj, agent, parent_obj, dirty)
+        deleter = make_default_deleter(collection=collection, agent=agent)
+        for dep in dependents_to_delete:
+            delete_obj(dep, deleter, parent_obj=obj)
+        handle_remote_to_ones(obj)
+        handle_to_many(collection, agent, obj, data)
+        if isinstance(obj, models.Recordset) and any(
+            change['field_name'] == 'dbtableid' for change in dirty
+        ):
+            for item in obj.recordsetitems.select_for_update():
+                _check_recordset_item_reference(collection, agent, item)
+        _handle_special_update_posts(obj)
     return obj
 
 
@@ -169,27 +224,22 @@ def delete_obj(obj, deleter: Callable[[Any, Any], None] | None=None, version=Non
     
     if hasattr(obj, 'pre_constraints_delete'):
         obj.pre_constraints_delete()
-    # Tree nodes are deleted through the database cascade when their parent is
-    # deleted. Audit those descendants explicitly because Django's collector
-    # does not invoke the API deleter for cascaded objects.
-    model_fields = {field.name for field in obj._meta.get_fields()}
-    is_tree_model = 'parent' in model_fields and 'rankid' in model_fields
-    if (
-        deleter
-        and is_tree_model
-    ):
+    # Django cascades do not invoke the API deleter for related records.
+    if deleter:
         collector = Collector(using=obj._state.db)
         collector.collect([obj])
         descendants = {
-            getattr(descendant, "id"): descendant
+            (model, descendant.pk): descendant
             for model, instances in collector.data.items()
-            if model is obj.__class__
+            if hasattr(model, 'specify_model')
             for descendant in instances
-            if getattr(descendant, "id") != obj.id
+            if descendant != obj
         }
         for queryset in collector.fast_deletes:
-            if queryset.model is obj.__class__:
-                descendants.update({getattr(descendant, "id"): descendant for descendant in queryset})
+            if hasattr(queryset.model, 'specify_model'):
+                descendants.update({
+                    (queryset.model, descendant.pk): descendant for descendant in queryset
+                })
         for descendant in descendants.values():
             deleter(descendant, obj)
     if deleter:
@@ -204,18 +254,43 @@ def delete_obj(obj, deleter: Callable[[Any, Any], None] | None=None, version=Non
             delete_obj(dep, deleter, version, parent_obj=obj, clean_predelete=clean_predelete)
 
 def update_or_create_resource(collection, agent, model, data, parent_obj, parent_relationship=None): 
-    if 'id' in data: 
+    if data.get('id') is not None:
         return update_obj(collection, agent, 
                           model, data['id'], 
-                          data['version'], data, 
+                          data.get('version'), data,
                           parent_obj=parent_obj, parent_relationship=parent_relationship)
     else: 
         return create_obj(collection, agent, model, data, parent_obj=parent_obj, parent_relationship=parent_relationship)
     
+def _check_recordset_item_parent(collection, agent, item, parent_obj):
+    """Direct item mutations also modify the parent's membership relationship."""
+    if item.recordset != parent_obj:
+        check_table_permissions(collection, agent, item.recordset, "update")
+        check_field_permissions(
+            collection, agent, item.recordset, ["recordsetitems"], "update",
+        )
+
+
+def _check_recordset_item_reference(collection, agent, item):
+    """Treat the polymorphic record ID as a reference, requiring target read."""
+    try:
+        model = get_model_by_table_id(item.recordset.dbtableid)
+    except ValueError as error:
+        raise BadRequest("Invalid recordset table ID") from error
+    try:
+        recordid = int(item.recordid)
+    except (ValueError, TypeError) as error:
+        raise BadRequest("Invalid recordset record ID") from error
+    record = get_object_or_404(model, pk=recordid)
+    check_table_permissions(collection, agent, record, "read")
+
+
 def make_default_deleter(collection=None, agent=None):
     def _deleter(obj, parent_obj):
         if collection and agent:
             check_table_permissions(collection, agent, obj, "delete")
+            if isinstance(obj, models.Recordsetitem):
+                _check_recordset_item_parent(collection, agent, obj, parent_obj)
             auditlog.remove(obj, agent, parent_obj)
     return _deleter
 
@@ -506,24 +581,80 @@ def delete_resource(collection, agent, name, id, version) -> None:
         clean_predelete=clean_predelete,
     )
 
-def get_collection(logged_in_collection, model, checker: ReadPermChecker, control_params=GetCollectionForm.defaults, params={}) -> CollectionPayload:
-    from specifyweb.specify.api.serializers import _obj_to_data
-    
-    """Return a list of structured data for the objects from 'model'
-    subject to the request 'params'."""
+def get_collection(logged_in_collection, model, checker: ReadPermChecker, control_params=GetCollectionForm.defaults, params={}, *, actor=None) -> CollectionPayload:
+    """Return model data filtered before counting and pagination.
 
-    objs = apply_filters(logged_in_collection, params, model, control_params)
+    Actor-aware requests share readable reverse joins between filters and
+    ordering. Trusted callers without an actor retain their existing behavior.
+    """
+    from specifyweb.specify.api.serializers import _obj_to_data
+
+    queryset = None
+    field_aliases = {}
+    order_fields = []
+    if actor is not None:
+        if isinstance(model, str):
+            model = get_model_or_404(model)
+        queryset = model.objects.all()
+        joins = {}
+        filter_fields = [key for key in params if key not in control_params]
+        try:
+            queryset, field_aliases = prepare_reverse_related_read_queryset(
+                queryset, filter_fields, actor, joins=joins,
+            )
+        except FieldError as e:
+            raise FilterError(e)
+        if control_params['orderby']:
+            order_fields = [
+                field.removeprefix('-')
+                for field in control_params['orderby'].split(',')
+            ]
+            try:
+                queryset, order_aliases = prepare_reverse_related_read_queryset(
+                    queryset, order_fields, actor, joins=joins,
+                )
+                field_aliases.update(order_aliases)
+            except FieldError as e:
+                raise OrderByError(e)
+
+    objs = apply_filters(
+        logged_in_collection, params, model, control_params,
+        queryset=queryset, field_aliases=field_aliases,
+    )
+    if actor is not None:
+        objs = filter_scoped_read_queryset(objs, actor)
+        try:
+            objs = filter_forward_related_read_queryset(objs, filter_fields, actor)
+        except FieldError as e:
+            raise FilterError(e)
+        try:
+            objs = filter_forward_related_read_queryset(objs, order_fields, actor)
+        except FieldError as e:
+            raise OrderByError(e)
 
     try:
-        return objs_to_data_(objs, objs.count(), lambda o: _obj_to_data(o, checker), control_params['offset'], control_params['limit'])
+        counted_objs = objs
+        if any(field_aliases[field] != field for field in order_fields):
+            # count() otherwise discards joins used only by ordering.
+            counted_objs = objs.values_list(
+                'pk', *(field_aliases[field] for field in order_fields),
+            )
+        return objs_to_data_(objs, counted_objs.count(), lambda o: _obj_to_data(o, checker), control_params['offset'], control_params['limit'])
     except FieldError as e:
         raise OrderByError(e)
     
-def apply_filters(logged_in_collection, params, model, control_params=GetCollectionForm.defaults):
+def apply_filters(
+    logged_in_collection, params, model, control_params=GetCollectionForm.defaults,
+    *, queryset: QuerySet | None = None, field_aliases: dict[str, str] | None = None,
+):
+    """Apply API filters and ordering, optionally using authorized join paths."""
     filters = {}
+    field_aliases = {} if field_aliases is None else field_aliases
 
     if isinstance(model, str):
         model = get_model_or_404(model)
+    if queryset is None:
+        queryset = model.objects.all()
 
     for param, val in list(params.items()):
         if param in control_params:
@@ -552,7 +683,10 @@ def apply_filters(logged_in_collection, params, model, control_params=GetCollect
         })
 
     try:
-        objs = model.objects.filter(**filters)
+        objs = queryset.filter(*(
+            Q(**{field_aliases.get(param, param): val})
+            for param, val in filters.items()
+        ))
     except (ValueError, FieldError) as e:
         raise FilterError(e)
 
@@ -560,7 +694,11 @@ def apply_filters(logged_in_collection, params, model, control_params=GetCollect
         objs = filter_by_collection(objs, logged_in_collection)
     if control_params['orderby']:
         try:
-            fields = control_params['orderby'].split(',')
+            fields = [
+                ('-' if field.startswith('-') else '')
+                + field_aliases.get(field.removeprefix('-'), field.removeprefix('-'))
+                for field in control_params['orderby'].split(',')
+            ]
             objs = objs.order_by(*fields)
         except FieldError as e:
             raise OrderByError(e)

@@ -1,4 +1,5 @@
 import json
+from unittest.mock import patch
 from specifyweb.backend.stored_queries.batch_edit import make_dataset, run_batch_edit_query # type: ignore
 from specifyweb.backend.stored_queries.queryfield import QueryField
 from specifyweb.backend.stored_queries.queryfieldspec import QueryFieldSpec
@@ -105,6 +106,17 @@ class BatchEditRollbackTests(SQLAlchemySetup, UploadTestsBase):
         rollback_batch_edit(dataset, self.collection, self.agent)
         self.co.refresh_from_db()
         self.assertEqual(self.co.remarks, ORIGINAL_REMARKS)
+
+    def test_denied_unupload_rolls_back_restoration_writes(self):
+        dataset = self._commit_edit()
+        with patch(
+            "specifyweb.backend.workbench.upload.upload.unupload_dataset",
+            side_effect=RuntimeError("rollback authorization denied"),
+        ):
+            with self.assertRaisesRegex(RuntimeError, "authorization denied"):
+                rollback_batch_edit(dataset, self.collection, self.agent)
+        self.co.refresh_from_db()
+        self.assertEqual(self.co.remarks, EDITED_REMARKS)
 
     def test_rollback_does_not_delete_edited_records(self):
         dataset = self._commit_edit()
