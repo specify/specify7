@@ -61,6 +61,7 @@ test('clears visual editor save blockers when switching editors', async () => {
   ).toBeInTheDocument();
   expect(getFieldBlockers(appResource, dataField)).toEqual([
     expect.stringContaining('basisOfRecord'),
+    expect.stringContaining('Query file names must not be empty'),
     'Field is required.',
   ]);
   unmount();

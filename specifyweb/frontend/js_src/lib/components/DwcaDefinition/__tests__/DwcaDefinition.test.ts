@@ -23,6 +23,7 @@ import {
   getExtensionDefinitionForRowType,
   getDefaultMappingFileName,
   getDuplicateMappingFileNames,
+  hasInvalidMappingFileNames,
   hasIncompatibleQuerySchemas,
   formatTermExampleText,
   hasEmptyRequiredMappingValues,
@@ -48,6 +49,34 @@ import {
 
 const occurrenceId = 'http://rs.tdwg.org/dwc/terms/occurrenceID';
 const kingdom = 'http://rs.tdwg.org/dwc/terms/kingdom';
+
+test.each([
+  '',
+  '.',
+  '..',
+  'META.XML',
+  'eml.xml',
+  '../data.csv',
+  'dir\\data.csv',
+  'C:data.csv',
+  'data\u0000.csv',
+])(
+  'rejects unsafe archive file name %j in primary and additional queries',
+  (fileName) => {
+    const [mapping] = parseDefinition(
+      '<archive><core><queries><query contextTableId="1" name="data.csv"/></queries></core></archive>'
+    );
+    expect(hasInvalidMappingFileNames([mapping])).toBe(false);
+    expect(hasInvalidMappingFileNames([{ ...mapping, fileName }])).toBe(true);
+    const query = document.createElement('query');
+    query.setAttribute('name', fileName);
+    expect(
+      hasInvalidMappingFileNames([
+        { ...mapping, additionalQueries: [query.outerHTML] },
+      ])
+    ).toBe(true);
+  }
+);
 
 test('clears a legacy identifier when a replacement query omits its field', () => {
   const [mapping] = parseDefinition(

@@ -847,10 +847,8 @@ export const hasEmptyRequiredMappingValues = (
     ({ fileName, rowType }) => fileName.trim() === '' || rowType.trim() === ''
   );
 
-export function getDuplicateMappingFileNames(
-  mappings: RA<Mapping>
-): ReadonlySet<string> {
-  const fileNames = mappings
+const getMappingFileNames = (mappings: RA<Mapping>): RA<string> =>
+  mappings
     .flatMap((mapping) => [
       mapping.fileName,
       ...(mapping.additionalQueries ?? []).map(
@@ -860,8 +858,20 @@ export function getDuplicateMappingFileNames(
             .documentElement.getAttribute('name') ?? ''
       ),
     ])
-    .map((name) => name.trim().toLowerCase())
-    .filter(Boolean);
+    .map((name) => name.trim().toLowerCase());
+
+export const hasInvalidMappingFileNames = (mappings: RA<Mapping>): boolean =>
+  getMappingFileNames(mappings).some(
+    (name) =>
+      name === '' ||
+      ['.', '..', 'meta.xml', 'eml.xml'].includes(name) ||
+      /[/\\:\u0000]/u.test(name)
+  );
+
+export function getDuplicateMappingFileNames(
+  mappings: RA<Mapping>
+): ReadonlySet<string> {
+  const fileNames = getMappingFileNames(mappings).filter(Boolean);
   return new Set(
     fileNames.filter((name, index) => fileNames.indexOf(name) !== index)
   );
@@ -2240,6 +2250,7 @@ function DwcaDefinitionEditorLoaded({
     [mappings]
   );
   const hasDuplicateFileNames = duplicateFileNames.size > 0;
+  const invalidFileNames = hasInvalidMappingFileNames(mappings);
   const incompatibleQuerySchemas = mappings.some(hasIncompatibleQuerySchemas);
   React.useEffect(() => {
     const key = getFieldBlockerKey(appResourceDataField, 'dwca-query-schemas');
@@ -2252,11 +2263,21 @@ function DwcaDefinitionEditorLoaded({
   React.useEffect(() => {
     const key = getFieldBlockerKey(appResourceDataField, 'dwca-file-names');
     setSaveBlockers(
-      hasDuplicateFileNames ? [dwcaText.dwcaFileNamesMustBeUnique()] : [],
+      [
+        ...(hasDuplicateFileNames
+          ? [dwcaText.dwcaFileNamesMustBeUnique()]
+          : []),
+        ...(invalidFileNames ? [dwcaText.dwcaInvalidFileNames()] : []),
+      ],
       key
     );
     return (): void => setSaveBlockers([], key);
-  }, [appResourceDataField, hasDuplicateFileNames, setSaveBlockers]);
+  }, [
+    appResourceDataField,
+    hasDuplicateFileNames,
+    invalidFileNames,
+    setSaveBlockers,
+  ]);
   const emptyRequiredValues = React.useMemo(() => {
     const validMappings = mappings.filter(
       (mapping) => !mapping.invalidExtensionXml

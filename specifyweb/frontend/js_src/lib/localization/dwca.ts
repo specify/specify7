@@ -101,6 +101,10 @@ export const dwcaText = createDictionary({
   dwcaFileNamesMustBeUnique: {
     'en-us': 'File names must be unique.',
   },
+  dwcaInvalidFileNames: {
+    'en-us':
+      'Query file names must not be empty, contain paths, or use the reserved names meta.xml and eml.xml.',
+  },
   dwcaStartFromScratch: {
     'en-us': 'Start from scratch',
   },
