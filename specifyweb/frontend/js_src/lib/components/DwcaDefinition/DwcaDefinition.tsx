@@ -667,7 +667,7 @@ export function updateMappingFields(
       ? oldStringIds.get(fieldFormatKey(field))
       : oldMetadata.get(fieldTermKey(field))?.[0];
   if (!mapping.extension) {
-    const automaticTerms = autoMapCoreFields(fields, availableTerms, assignedTerms);
+    const automaticTerms = autoMapCoreFields(fields, availableTerms, assignedTerms, mapping.rowType);
     const occurrenceIndex = fields.findIndex(
       (field, index) =>
         (oldStringIds.has(fieldFormatKey(field)) || oldMetadata.has(fieldTermKey(field))
@@ -679,7 +679,7 @@ export function updateMappingFields(
       fields.unshift(occurrence);
     }
   }
-  const autoMapped = autoMapCoreFields(fields, availableTerms, assignedTerms);
+  const autoMapped = autoMapCoreFields(fields, availableTerms, assignedTerms, mapping.rowType);
   const usedTerms = new Set<string>();
   const terms = fields.map((field, index) => {
     const key = fieldTermKey(field);
@@ -713,7 +713,8 @@ export function updateMappingFields(
 function autoMapCoreFields(
   fields: RA<SerializedResource<SpQueryField>>,
   availableTerms: ReadonlySet<string>,
-  assignedTerms: ReadonlySet<string> = new Set()
+  assignedTerms: ReadonlySet<string> = new Set(),
+  rowType?: string
 ): RA<string | undefined> {
   const usedTerms = new Set(assignedTerms);
   const terms = fields.map((field) => {
@@ -733,9 +734,13 @@ function autoMapCoreFields(
       usedTerms.add(term);
       return term;
     }
-    const match = Object.entries(
-      getCoreTermPatterns(getSystemInfo()?.discipline_type)
-    ).find(
+    const patterns = getCoreTermPatterns(getSystemInfo()?.discipline_type);
+    const mediaPatterns = rowType === 'http://rs.gbif.org/terms/1.0/Multimedia'
+      ? { ...patterns, 'http://purl.org/dc/terms/identifier': ['attachment.attachmentlocation'] }
+      : rowType === 'http://rs.tdwg.org/ac/terms/Multimedia'
+        ? { ...patterns, 'http://purl.org/dc/terms/identifier': [] }
+        : patterns;
+    const match = Object.entries(mediaPatterns).find(
       ([term, patterns]) =>
         availableTerms.has(term) &&
         !usedTerms.has(term) &&
@@ -1254,7 +1259,8 @@ export function parseDefinition(data: string | null): RA<Mapping> {
       const automaticTerms = autoMapCoreFields(
         serializedFields,
         availableTermNames(extension, extensionDefinition, coreRowType),
-        new Set(explicitTerms.filter((term): term is string => term !== undefined))
+        new Set(explicitTerms.filter((term): term is string => term !== undefined)),
+        rowType
       );
       return ensureIdentifierTerm({
         extension,

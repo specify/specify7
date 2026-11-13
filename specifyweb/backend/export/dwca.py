@@ -3,7 +3,10 @@ import errno
 import logging
 import re
 import shutil
-from tempfile import mkdtemp
+import csv
+from types import SimpleNamespace
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
+from tempfile import mkdtemp, NamedTemporaryFile
 from collections import namedtuple
 from uuid import uuid4
 from datetime import date
@@ -234,6 +237,54 @@ def _collect_core_id(core_id, core_ids, row_type):
     return True
 
 
+def _public_media_url(value, collection):
+    if not value:
+        return ''
+    if urlsplit(value).scheme in ('http', 'https'):
+        return value
+    from django.conf import settings
+    from specifyweb.backend.attachment_gw import views as attachment_views
+
+    if settings.WEB_ATTACHMENT_REQUIRES_KEY_FOR_GET:
+        raise DwCAException(_("Media export requires public attachment URLs without access tokens."))
+    read_url = (attachment_views.server_urls or {}).get('read', '')
+    parts = urlsplit(read_url)
+    if parts.scheme not in ('http', 'https') or not parts.netloc:
+        raise DwCAException(_("Media export requires a configured public asset server."))
+    parameters = dict(parse_qsl(parts.query))
+    parameters.update({
+        'coll': attachment_views.get_collection(SimpleNamespace(specify_collection=collection)),
+        'type': 'O',
+        'filename': value,
+    })
+    return urlunsplit(parts._replace(query=urlencode(parameters)))
+
+
+def _convert_media_urls(path, query, row_type, collection):
+    if row_type not in (
+        'http://rs.gbif.org/terms/1.0/Multimedia',
+        'http://rs.tdwg.org/ac/terms/Multimedia',
+    ):
+        return
+    columns = [index for index, field in enumerate(
+        field for field in query.query_fields if field.field_spec.isDisplay
+    ) if field.term in (
+        'http://purl.org/dc/terms/identifier',
+        'http://rs.tdwg.org/ac/terms/accessURI',
+    ) and field.field_spec.stringId.lower().endswith('attachment.attachmentlocation')]
+    if not columns:
+        return
+    with open(path, newline='', encoding='utf-8') as source, NamedTemporaryFile(
+        mode='w', newline='', encoding='utf-8', dir=os.path.dirname(path), delete=False
+    ) as target:
+        writer = csv.writer(target)
+        for row in csv.reader(source):
+            for index in columns:
+                row[index] = _public_media_url(row[index], collection)
+            writer.writerow(row)
+    os.replace(target.name, path)
+
+
 def make_dwca(collection, user, definition, output_file, eml=None):
     output_dir = mkdtemp()
     try:
@@ -267,6 +318,7 @@ def make_dwca(collection, user, definition, output_file, eml=None):
                 query_to_csv(session, collection, user, query.tableid, query.get_field_specs(), path,
                              strip_id=True, row_filter=collect_ids,
                              search_synonymy=query.search_synonymy)
+                _convert_media_urls(path, query, core_stanza.row_type, collection)
 
             for stanza in extension_stanzas:
                 def filter_ids(row):
@@ -277,6 +329,7 @@ def make_dwca(collection, user, definition, output_file, eml=None):
                     query_to_csv(session, collection, user, query.tableid, query.get_field_specs(), path,
                                  strip_id=True, row_filter=filter_ids,
                                  search_synonymy=query.search_synonymy)
+                    _convert_media_urls(path, query, stanza.row_type, collection)
 
         basename = re.sub(r'\.zip$', '', output_file)
         shutil.make_archive(basename, 'zip', output_dir, logger=logger)
