@@ -58,13 +58,13 @@ class TestRenameQuery(ApiTests):
 
     def test_save_query_as_copy(self):
         query_data = get_simple_query(self.specifyuser)
+        first_field = query_data["fields"][0]
         original = post_resource(
             self.collection,
             self.agent,
             'spquery',
             query_data,
         )
-        first_field = query_data["fields"][0]
         copied_query_data = {
             **query_data,
             "name": "Copied Query",
@@ -101,6 +101,10 @@ class TestRenameQuery(ApiTests):
         original.refresh_from_db()
         self.assertEqual(original.name, "New Query")
         self.assertEqual(original.fields.count(), 1)
+        self.assertEqual(
+            original.fields.get().stringid,
+            "1.collectionobject.catalogNumber",
+        )
         self.assertEqual(original.fields.get().startvalue, "")
 
     def test_delete_existing_query(self):
