@@ -712,6 +712,7 @@ describe('DwCA query field term mapping', () => {
             mapped.fields[0]!,
             { ...mapped.fields[0]!, isDisplay: true },
           ],
+          terms: [occurrenceId, undefined],
         },
       ])
     ).toContainEqual(requiredMessage);
@@ -1750,5 +1751,22 @@ describe('DwCA query field term mapping', () => {
       occurrenceId,
       ...fields.map(([, term]) => term),
     ]);
+    const saved = new DOMParser().parseFromString(
+      serializeDefinition([
+        {
+          ...mapping,
+          fields: mapping.fields.map((field) => ({
+            ...field,
+            isDisplay: true,
+          })),
+        },
+      ]),
+      'text/xml'
+    );
+    expect(
+      Array.from(saved.querySelectorAll('query > field')).map((field) =>
+        field.getAttribute('term')
+      )
+    ).toEqual(fields.map(([, term]) => term));
   });
 });

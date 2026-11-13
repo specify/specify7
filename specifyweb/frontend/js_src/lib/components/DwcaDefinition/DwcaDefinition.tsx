@@ -316,10 +316,7 @@ export function getSerializedMappingTerm(
     mapping.fields[fallbackIndex]?.stringId.toLowerCase() ===
       field.stringId.toLowerCase() &&
     (mapping.fields[fallbackIndex]?.formatName ?? '') ===
-      (field.formatName ?? '') &&
-    !mapping.fields
-      .slice(0, fallbackIndex)
-      .some((previous) => fieldFormatKey(previous) === fieldFormatKey(field))
+      (field.formatName ?? '')
   )
     return mapping.terms[fallbackIndex];
   const fieldIndex = mapping.fields.findIndex(
