@@ -37,6 +37,8 @@ class DeterminerTests(ApiTests):
         )
         fetched_determiner = determination.determiners.get(id=determiner.id)
         self.assertEqual(fetched_determiner.agent_id, self.agent.id)
+        self.assertTrue(fetched_determiner.isprimary)
+        self.assertEqual(fetched_determiner.ordernumber, 0)
 
     @skipUnless(hasattr(models, 'Determiner'), "Determiner table added in 6.8.02")
     def test_agent_unique_in_determination(self):
