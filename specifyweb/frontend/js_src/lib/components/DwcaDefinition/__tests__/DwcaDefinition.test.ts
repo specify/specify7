@@ -49,6 +49,21 @@ import {
 const occurrenceId = 'http://rs.tdwg.org/dwc/terms/occurrenceID';
 const kingdom = 'http://rs.tdwg.org/dwc/terms/kingdom';
 
+test('clears a legacy identifier when a replacement query omits its field', () => {
+  const [mapping] = parseDefinition(
+    `<archive><core rowType="http://rs.tdwg.org/dwc/terms/Occurrence"><queries><query contextTableId="1"><id stringId="1.collectionobject.collectionObjectId"/></query></queries></core></archive>`
+  );
+  const replaced = ensureIdentifierTerm({ ...mapping, fields: [], terms: [] });
+  expect(replaced.legacyIdentifier).toBeUndefined();
+  const saved = new DOMParser().parseFromString(
+    serializeDefinition([replaced]),
+    'text/xml'
+  );
+  expect(saved.querySelector('query id')?.getAttribute('stringId')).toBe(
+    '1.collectionobject.guid'
+  );
+});
+
 test('Simple Multimedia identifiers use file locations rather than GUIDs', () => {
   const [mapping] =
     parseDefinition(`<archive><extension rowType="http://rs.gbif.org/terms/1.0/Multimedia"><queries><query contextTableId="1">

@@ -1022,6 +1022,7 @@ function mappingFromQuery(
         // previous mapping attach to the new query by array position.
         fields: [],
         terms: [],
+        legacyIdentifier: undefined,
         query: query
           .set('fields', fields)
           .set('contextTableId', mapping.baseTable.tableId),
@@ -1111,6 +1112,7 @@ export function ensureIdentifierTerm(mapping: Mapping): Mapping {
   ];
   return {
     ...mapping,
+    legacyIdentifier: undefined,
     query: mapping.query.set('fields', positionedFields),
     fields: positionedFields,
     terms,
