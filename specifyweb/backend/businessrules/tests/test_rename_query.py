@@ -48,3 +48,35 @@ class TestRenameQuery(ApiTests):
         self.assertEqual(query.name, "New Query")
         self.assertEqual(query.contextname, "CollectionObject")
         self.assertEqual(query.fields.count(), 1)
+
+    def test_save_query_as_copy(self):
+        original = post_resource(
+            self.collection,
+            self.agent,
+            'spquery',
+            get_simple_query(self.specifyuser),
+        )
+        copied_query_data = {
+            **get_simple_query(self.specifyuser),
+            "name": "Copied Query",
+            "fields": [
+                {**field, "startvalue": "num-0"}
+                for field in get_simple_query(self.specifyuser)["fields"]
+            ],
+        }
+
+        copied_query = post_resource(
+            self.collection,
+            self.agent,
+            'spquery',
+            copied_query_data,
+        )
+
+        self.assertNotEqual(copied_query.id, original.id)
+        self.assertEqual(copied_query.name, "Copied Query")
+        self.assertEqual(copied_query.fields.count(), 1)
+        self.assertEqual(copied_query.fields.get().startvalue, "num-0")
+
+        original.refresh_from_db()
+        self.assertEqual(original.name, "New Query")
+        self.assertEqual(original.fields.get().startvalue, "")
