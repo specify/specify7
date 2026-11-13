@@ -114,10 +114,7 @@ const darwinCoreTermPatterns: Readonly<Record<string, readonly string[]>> = {
   'http://rs.tdwg.org/dwc/terms/georeferenceSources': [
     'geocoorddetail.georefdetref',
   ],
-  'http://rs.tdwg.org/dwc/terms/collectionCode': [
-    'collection.code',
-    'collectionobject.text1',
-  ],
+  'http://rs.tdwg.org/dwc/terms/collectionCode': ['collection.code'],
   'http://rs.tdwg.org/dwc/terms/eventRemarks': ['collectingevent.remarks'],
   'http://rs.tdwg.org/dwc/terms/institutionCode': ['institution.code'],
   'http://rs.tdwg.org/dwc/terms/fieldNumber': [

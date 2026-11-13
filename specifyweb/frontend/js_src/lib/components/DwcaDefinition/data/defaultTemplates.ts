@@ -30,7 +30,7 @@ const occurrenceTemplate: DwcaTemplate = {
       <query name="occurrence.csv" contextTableId="1">
         <id stringId="1.collectionobject.guid" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/occurrenceID"/>
         <field stringId="1.collectionobject.catalogNumber" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/catalogNumber"/>
-        <field stringId="1.collectionobject.text1" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/collectionCode"/>
+        <field stringId="1,23.collection.code" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/collectionCode"/>
         <field stringId="1.collectionobject.timestampModified" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://purl.org/dc/terms/modified"/>
         <field stringId="1,23,26,96,94.institution.code" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/institutionCode"/>
         <field stringId="1,23,26,96,94.institution.guid" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/institutionID"/>

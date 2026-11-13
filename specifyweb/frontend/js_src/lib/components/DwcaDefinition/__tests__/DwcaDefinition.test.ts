@@ -50,6 +50,15 @@ import {
 const occurrenceId = 'http://rs.tdwg.org/dwc/terms/occurrenceID';
 const kingdom = 'http://rs.tdwg.org/dwc/terms/kingdom';
 
+test('does not infer a collection code from a specimen-specific text field', () => {
+  const [mapping] = parseDefinition(
+    '<archive><core rowType="http://rs.tdwg.org/dwc/terms/Occurrence"><queries><query contextTableId="1"><field stringId="1.collectionobject.text1"/></query></queries></core></archive>'
+  );
+  expect(mapping.terms).not.toContain(
+    'http://rs.tdwg.org/dwc/terms/collectionCode'
+  );
+});
+
 test.each([
   '',
   '.',
@@ -1507,10 +1516,7 @@ describe('DwCA query field term mapping', () => {
   test('automatically maps the expanded core default field patterns', () => {
     const fields = [
       ['1.collectionobject.guid', occurrenceId],
-      [
-        '1.collectionobject.text1',
-        'http://rs.tdwg.org/dwc/terms/collectionCode',
-      ],
+      ['1,23.collection.code', 'http://rs.tdwg.org/dwc/terms/collectionCode'],
       [
         '1,23,26,96,94.institution.guid',
         'http://rs.tdwg.org/dwc/terms/institutionID',
