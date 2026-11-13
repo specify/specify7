@@ -428,11 +428,11 @@ export function QueryLine({
                     : ''}
                 </p>
               </div>
-              {recordFormatter}
             </div>
           </div>
-          <div className="query-field-filter">
+          <div className="query-field-filter flex items-center gap-2">
             <span className="query-field-label">{basicViewLabels.filter}</span>
+            {recordFormatter}
             <QueryLineFilters
               baseTableName={baseTableName}
               enforceLengthLimit={enforceLengthLimit}
