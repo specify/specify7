@@ -22,6 +22,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { BlockerWithResource } from '../DataModel/saveBlockers';
 import {
   findUnclaimedBlocker,
+  getAllBlockers,
   useAllSaveBlockers,
 } from '../DataModel/saveBlockers';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
@@ -142,6 +143,27 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
        */
       !resource.isNew());
 
+  async function validationBlocked(): Promise<boolean> {
+    let pending: Promise<unknown> | undefined;
+    do {
+      pending = resource.businessRuleManager?.pendingPromise;
+      await pending;
+    } while (resource.businessRuleManager?.pendingPromise !== pending);
+    const currentBlockers = resource.noBusinessRules
+      ? []
+      : getAllBlockers(resource, filterBlockers);
+    if (currentBlockers.length === 0) return false;
+    const blocker = findUnclaimedBlocker(currentBlockers);
+    if (blocker !== undefined) {
+      console.error(
+        'Unclaimed blocker discovered (is not handled by any react component)',
+        { blocker, resource }
+      );
+      setShownBlocker(blocker);
+    }
+    return true;
+  }
+
   async function handleSubmit(): Promise<void> {
     if (isSubmittingRef.current) return;
     isSubmittingRef.current = true;
@@ -152,29 +174,18 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
           replaceKey(formContext, 'triedToSubmit', true)
         );
 
-      await (resource.businessRuleManager?.pendingPromise ?? Promise.resolve());
-      if (blockers.length > 0) {
-        const blocker = findUnclaimedBlocker(blockers);
-        if (blocker === undefined) return;
-        console.error(
-          'Unclaimed blocker discovered (is not handled by any react component)',
-          {
-            blocker,
-            resource,
-          }
-        );
-        setShownBlocker(blocker);
-        return;
-      }
+      if (await validationBlocked()) return;
 
       // Confirm before entering the loading state so the prompt remains interactive.
       if ((await handleBeforeSaving?.()) === false) return;
+      if (await validationBlocked()) return;
 
       /*
        * Save process is canceled if false was returned. This also allows to
        * implement custom save behavior
        */
       if ((await handleSaving?.(unsetUnloadProtect)) === false) return;
+      if (await validationBlocked()) return;
 
       const savePromise = resource
         .save({ onSaveConflict: hasSaveConflict })

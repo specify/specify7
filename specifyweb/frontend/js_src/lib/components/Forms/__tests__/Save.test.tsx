@@ -8,8 +8,76 @@ import { mount } from '../../../tests/reactUtils';
 import { tables } from '../../DataModel/tables';
 import { LoadingContext } from '../../Core/Contexts';
 import { SaveButton } from '../Save';
+import { setSaveBlockers } from '../../DataModel/saveBlockers';
+import { UnloadProtectsContext } from '../../Router/UnloadProtect';
 
 requireContext();
+
+test('reads blockers published while pending rules settle', async () => {
+  jest.spyOn(console, 'error').mockImplementation(() => undefined);
+  const resource = new tables.CollectionObjectGroup.Resource();
+  const form = document.createElement('form');
+  const onSaving = jest.fn(() => false as const);
+  const save = jest.spyOn(resource, 'save');
+  mount(
+    <UnloadProtectsContext.Provider value={[]}>
+      <SaveButton form={form} resource={resource} onSaving={onSaving} />
+    </UnloadProtectsContext.Provider>
+  );
+  await act(async () => undefined);
+  let finish: () => void = () => undefined;
+  resource.businessRuleManager!.pendingPromise = new Promise<undefined>(
+    (resolve) => {
+      finish = () => resolve(undefined);
+    }
+  );
+  act(() => {
+    form.dispatchEvent(
+      new SubmitEvent('submit', { bubbles: true, cancelable: true })
+    );
+  });
+  await act(async () => {
+    setSaveBlockers(
+      resource,
+      resource.specifyTable.strictGetField('name'),
+      ['Latest validation failed'],
+      'late-rule'
+    );
+    finish();
+  });
+  expect(onSaving).not.toHaveBeenCalled();
+  expect(save).not.toHaveBeenCalled();
+});
+
+test('waits for rules queued after submission began', async () => {
+  const resource = new tables.CollectionObjectGroup.Resource();
+  const form = document.createElement('form');
+  const onSaving = jest.fn(() => false as const);
+  mount(<SaveButton form={form} resource={resource} onSaving={onSaving} />);
+  await act(async () => undefined);
+  let firstDone: () => void = () => undefined;
+  let secondDone: () => void = () => undefined;
+  const first = new Promise<undefined>((resolve) => {
+    firstDone = () => resolve(undefined);
+  });
+  resource.businessRuleManager!.pendingPromise = first;
+  act(() => {
+    form.dispatchEvent(
+      new SubmitEvent('submit', { bubbles: true, cancelable: true })
+    );
+  });
+  const second = new Promise<undefined>((resolve) => {
+    secondDone = () => resolve(undefined);
+  });
+  resource.businessRuleManager!.pendingPromise = Promise.all([
+    first,
+    second,
+  ]).then(() => undefined);
+  await act(async () => firstDone());
+  expect(onSaving).not.toHaveBeenCalled();
+  await act(async () => secondDone());
+  expect(onSaving).toHaveBeenCalledTimes(1);
+});
 
 test('Clone button is hidden for CollectionObjectGroup, but Add button is not', async () => {
   const resource = new tables.CollectionObjectGroup.Resource();
