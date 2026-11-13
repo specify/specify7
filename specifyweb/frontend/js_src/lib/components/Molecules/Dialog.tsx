@@ -88,8 +88,10 @@ const supportsBackdropBlur =
     '((-webkit-backdrop-filter: none) or (backdrop-filter: none))'
   ) ?? false;
 
-// Used for 'inert' attribute addition
-const root = globalThis.document?.getElementById('root');
+const inertRoots = new WeakMap<
+  HTMLElement,
+  { readonly owners: Set<object>; readonly wasInert: boolean }
+>();
 
 /**
  * Modal or non-modal dialog. Highly customizable. Used all over the place
@@ -189,10 +191,22 @@ export function Dialog({
   const id = useId('modal');
 
   React.useEffect(() => {
-    const shouldInert = modal && isOpen;
-    root?.toggleAttribute('inert', shouldInert);
+    const root = globalThis.document?.getElementById('root');
+    if (!modal || !isOpen || root === null || root === undefined) return;
+    const state = inertRoots.get(root) ?? {
+      owners: new Set<object>(),
+      wasInert: root.hasAttribute('inert'),
+    };
+    const owner = {};
+    state.owners.add(owner);
+    inertRoots.set(root, state);
+    root.setAttribute('inert', '');
     return () => {
-      root?.removeAttribute('inert');
+      state.owners.delete(owner);
+      if (state.owners.size === 0) {
+        root.toggleAttribute('inert', state.wasInert);
+        inertRoots.delete(root);
+      }
     };
   }, [modal, isOpen]);
 
