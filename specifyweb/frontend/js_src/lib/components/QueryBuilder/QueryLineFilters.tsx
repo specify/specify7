@@ -169,7 +169,9 @@ function QueryLineFilterWrapper({
       <div
         className={
           isBasic
-            ? 'order-1 flex shrink-0 items-center gap-2'
+            ? index === 0 && filter.type === 'any' && mappingPath[0] !== 'age'
+              ? 'hidden'
+              : 'order-1 flex shrink-0 items-center gap-2'
             : 'flex contents items-center gap-2'
         }
       >
