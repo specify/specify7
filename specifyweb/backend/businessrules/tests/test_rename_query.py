@@ -38,31 +38,44 @@ class TestRenameQuery(ApiTests):
         self.assertEqual(query.name, "Renamed Query")
 
     def test_create_new_query(self):
+        query_data = get_simple_query(self.specifyuser)
         query = post_resource(
             self.collection,
             self.agent,
             'spquery',
-            get_simple_query(self.specifyuser),
+            query_data,
         )
 
         self.assertIsNotNone(query.id)
         self.assertEqual(query.name, "New Query")
         self.assertEqual(query.contextname, "CollectionObject")
+        self.assertEqual(query.specifyuser_id, self.specifyuser.id)
         self.assertEqual(query.fields.count(), 1)
+        self.assertEqual(
+            query.fields.get().stringid,
+            "1.collectionobject.catalogNumber",
+        )
 
     def test_save_query_as_copy(self):
+        query_data = get_simple_query(self.specifyuser)
         original = post_resource(
             self.collection,
             self.agent,
             'spquery',
-            get_simple_query(self.specifyuser),
+            query_data,
         )
+        first_field = query_data["fields"][0]
         copied_query_data = {
-            **get_simple_query(self.specifyuser),
+            **query_data,
             "name": "Copied Query",
             "fields": [
-                {**field, "startvalue": "num-0"}
-                for field in get_simple_query(self.specifyuser)["fields"]
+                {**first_field, "startvalue": "num-0"},
+                {
+                    **first_field,
+                    "stringid": "1.collectionobject.text1",
+                    "fieldname": "text1",
+                    "position": 1,
+                },
             ],
         }
 
@@ -75,11 +88,19 @@ class TestRenameQuery(ApiTests):
 
         self.assertNotEqual(copied_query.id, original.id)
         self.assertEqual(copied_query.name, "Copied Query")
-        self.assertEqual(copied_query.fields.count(), 1)
-        self.assertEqual(copied_query.fields.get().startvalue, "num-0")
+        self.assertEqual(copied_query.fields.count(), 2)
+        copied_fields = {
+            field.position: field for field in copied_query.fields.all()
+        }
+        self.assertEqual(copied_fields[0].startvalue, "num-0")
+        self.assertEqual(
+            copied_fields[1].stringid,
+            "1.collectionobject.text1",
+        )
 
         original.refresh_from_db()
         self.assertEqual(original.name, "New Query")
+        self.assertEqual(original.fields.count(), 1)
         self.assertEqual(original.fields.get().startvalue, "")
 
     def test_delete_existing_query(self):
@@ -89,7 +110,14 @@ class TestRenameQuery(ApiTests):
             'spquery',
             get_simple_query(self.specifyuser),
         )
+        other_query = post_resource(
+            self.collection,
+            self.agent,
+            'spquery',
+            {**get_simple_query(self.specifyuser), "name": "Other Query"},
+        )
         query_id = query.id
+        other_query_id = other_query.id
 
         delete_resource(
             self.collection,
@@ -100,3 +128,6 @@ class TestRenameQuery(ApiTests):
         )
 
         self.assertFalse(models.Spquery.objects.filter(id=query_id).exists())
+        self.assertTrue(
+            models.Spquery.objects.filter(id=other_query_id).exists()
+        )
