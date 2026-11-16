@@ -151,7 +151,10 @@ msgstr "Velg alle tilgjengelige preparater"
 #: components/Interactions/PrepDialogRow.tsx:92
 #: components/Interactions/PrepReturnRow.tsx:80
 #: components/Interactions/PrepReturnRow.tsx:82
-#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Dialog Row ⬤ Components > Interactions > Prep Return Row
+#: components/Interactions/__tests__/PrepDialog.test.tsx:69
+#: components/Interactions/__tests__/PrepDialogRow.test.tsx:48
+#: components/Interactions/__tests__/PrepDialogRow.test.tsx:64
+#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Dialog Row ⬤ Components > Interactions > Prep Return Row ⬤ Interactions > __tests__ > Prep Dialog ⬤ Interactions > __tests__ > Prep Dialog Row
 msgid "selectAll"
 msgstr "Velg alle"
 
@@ -205,8 +208,9 @@ msgstr ""
 #: components/FormMeta/CarryForward.tsx:382
 #: components/Interactions/LoanReturn.tsx:197
 #: components/Interactions/PrepDialog.tsx:140
+#: components/Interactions/__tests__/PrepDialog.test.tsx:73
 #: components/QueryBuilder/Results.tsx:515
-#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Query Builder > Results
+#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Interactions > __tests__ > Prep Dialog ⬤ Components > Query Builder > Results
 msgid "deselectAll"
 msgstr "Fjern alle valgte"
 
