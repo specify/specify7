@@ -86,7 +86,7 @@ msgstr "No"
 #: components/SetupTool/SetupForm.tsx:329
 #: components/Statistics/DeleteCategory.tsx:41
 #: components/Statistics/index.tsx:595
-#: components/Statistics/__tests__/StatsPageButtonColors.test.tsx:117
+#: components/Statistics/__tests__/StatsPageButtonColors.test.tsx:113
 #: components/Statistics/__tests__/StatsPagePages.test.tsx:74
 #: components/Statistics/__tests__/StatsPagePages.test.tsx:131
 #: components/Statistics/__tests__/StatsPagePages.test.tsx:383
@@ -312,7 +312,7 @@ msgstr "Crear"
 #: components/Statistics/AddStatDialog.tsx:75
 #: components/Statistics/ResultsDialog.tsx:75
 #: components/Statistics/StatsPageEditing.tsx:43
-#: components/Statistics/__tests__/StatsPageButtonColors.test.tsx:143
+#: components/Statistics/__tests__/StatsPageButtonColors.test.tsx:137
 #: components/Statistics/__tests__/StatsPageCreateStatistic.test.tsx:118
 #: components/Statistics/__tests__/StatsPageNoEditPermission.test.tsx:210
 #: components/Statistics/__tests__/StatsPagePages.test.tsx:91
@@ -463,8 +463,8 @@ msgstr "Eliminar columnas no asignadas"
 #: components/Statistics/__tests__/StatsEditPermissionGrant.test.tsx:123
 #: components/Statistics/__tests__/StatsEditPermissionGrant.test.tsx:146
 #: components/Statistics/__tests__/StatsEditPermissionGrant.test.tsx:166
-#: components/Statistics/__tests__/StatsPageButtonColors.test.tsx:116
-#: components/Statistics/__tests__/StatsPageButtonColors.test.tsx:140
+#: components/Statistics/__tests__/StatsPageButtonColors.test.tsx:112
+#: components/Statistics/__tests__/StatsPageButtonColors.test.tsx:134
 #: components/Statistics/__tests__/StatsPageCreateStatistic.test.tsx:74
 #: components/Statistics/__tests__/StatsPageCreateStatistic.test.tsx:91
 #: components/Statistics/__tests__/StatsPageNoEditPermission.test.tsx:124
@@ -548,7 +548,7 @@ msgstr "Abierto"
 #: components/Security/PreviewTables.tsx:68
 #: components/Security/Role.tsx:223
 #: components/Statistics/DeleteCategory.tsx:38
-#: components/Statistics/__tests__/StatsPageButtonColors.test.tsx:158
+#: components/Statistics/__tests__/StatsPageButtonColors.test.tsx:152
 #: components/TreeView/Actions.tsx:648
 #: components/WorkBench/DataSetMeta.tsx:159
 #: components/WorkBench/DataSetMeta.tsx:185
@@ -706,7 +706,7 @@ msgstr "Subido"
 #: components/Security/Role.tsx:182
 #: components/Statistics/StatsPageEditing.tsx:38
 #: components/Statistics/StatsResult.tsx:62
-#: components/Statistics/__tests__/StatsPageButtonColors.test.tsx:143
+#: components/Statistics/__tests__/StatsPageButtonColors.test.tsx:137
 #: components/Statistics/__tests__/StatsPagePages.test.tsx:149
 #: components/Statistics/__tests__/StatsPagePages.test.tsx:187
 #: components/Statistics/__tests__/StatsPagePages.test.tsx:458
@@ -786,7 +786,7 @@ msgstr "N / A"
 #: components/FormEditor/Create.tsx:69
 #: components/Security/RoleTemplate.tsx:89
 #: components/Statistics/AddStatDialog.tsx:73
-#: components/Statistics/__tests__/StatsPageButtonColors.test.tsx:168
+#: components/Statistics/__tests__/StatsPageButtonColors.test.tsx:162
 #: components/Statistics/__tests__/StatsPageCreateStatistic.test.tsx:56
 #: components/Toolbar/BackupDatabase.tsx:80
 #: components/Toolbar/Query.tsx:258
@@ -821,7 +821,7 @@ msgstr "Nuevo"
 #: components/Security/UserComponents.tsx:158
 #: components/Statistics/Buttons.tsx:54
 #: components/Statistics/index.tsx:612
-#: components/Statistics/__tests__/StatsPageButtonColors.test.tsx:106
+#: components/Statistics/__tests__/StatsPageButtonColors.test.tsx:103
 #: components/Statistics/__tests__/StatsPageNoEditPermission.test.tsx:86
 #: components/Statistics/__tests__/StatsPageNoEditPermission.test.tsx:87
 #: components/Statistics/__tests__/StatsPageNoEditPermission.test.tsx:137

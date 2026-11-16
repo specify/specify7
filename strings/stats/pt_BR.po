@@ -159,7 +159,7 @@ msgstr "Pessoal"
 
 #: components/Statistics/index.tsx:142
 #: components/Statistics/index.tsx:499
-#: components/Statistics/__tests__/StatsPageButtonColors.test.tsx:125
+#: components/Statistics/__tests__/StatsPageButtonColors.test.tsx:119
 #: components/Statistics/__tests__/StatsPageDownloadTsv.test.tsx:133
 #: components/Statistics/__tests__/StatsPageInitialLoad.test.tsx:46
 #: components/Statistics/__tests__/StatsPageNoEditPermission.test.tsx:93
@@ -217,7 +217,7 @@ msgid "itemValue"
 msgstr "Valor do item"
 
 #: components/Statistics/index.tsx:548
-#: components/Statistics/__tests__/StatsPageButtonColors.test.tsx:105
+#: components/Statistics/__tests__/StatsPageButtonColors.test.tsx:103
 #: components/Statistics/__tests__/StatsPageDownloadTsv.test.tsx:52
 #: components/Statistics/__tests__/StatsPageDownloadTsv.test.tsx:61
 #: components/Statistics/__tests__/StatsPageNoEditPermission.test.tsx:105
@@ -228,7 +228,7 @@ msgstr "Baixar como TSV"
 
 #: components/Statistics/index.tsx:141
 #: components/Statistics/index.tsx:499
-#: components/Statistics/__tests__/StatsPageButtonColors.test.tsx:124
+#: components/Statistics/__tests__/StatsPageButtonColors.test.tsx:118
 #: components/Statistics/__tests__/StatsPageDownloadTsv.test.tsx:132
 #: components/Statistics/__tests__/StatsPageInitialLoad.test.tsx:43
 #: components/Statistics/__tests__/StatsPageNoEditPermission.test.tsx:82
@@ -274,7 +274,7 @@ msgstr "Estatísticas"
 
 #: components/Statistics/DeleteCategory.tsx:26
 #: components/Statistics/DeleteCategory.tsx:45
-#: components/Statistics/__tests__/StatsPageButtonColors.test.tsx:152
+#: components/Statistics/__tests__/StatsPageButtonColors.test.tsx:146
 #: components/Statistics/__tests__/StatsPageNoEditPermission.test.tsx:158
 #. Used in: Components > Statistics > Delete Category ⬤ Statistics > __tests__ > Stats Page Button Colors ⬤ Statistics > __tests__ > Stats Page No Edit Permission
 #, fuzzy
@@ -315,8 +315,8 @@ msgstr "Adicionar uma categoria"
 #: components/Statistics/Buttons.tsx:22
 #: components/Statistics/__tests__/Buttons.test.tsx:32
 #: components/Statistics/__tests__/Buttons.test.tsx:70
-#: components/Statistics/__tests__/StatsPageButtonColors.test.tsx:104
-#: components/Statistics/__tests__/StatsPageButtonColors.test.tsx:215
+#: components/Statistics/__tests__/StatsPageButtonColors.test.tsx:103
+#: components/Statistics/__tests__/StatsPageButtonColors.test.tsx:209
 #: components/Statistics/__tests__/StatsPageNoEditPermission.test.tsx:102
 #. Used in: Components > Statistics > Buttons ⬤ Statistics > __tests__ > Buttons ⬤ Statistics > __tests__ > Stats Page Button Colors ⬤ Statistics > __tests__ > Stats Page No Edit Permission
 #, fuzzy
