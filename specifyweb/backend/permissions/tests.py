@@ -79,6 +79,58 @@ class CollectionScopeApiTests(ApiTests):
                     collections=spmodels.Collection.objects.none(),
                 )
 
+    def test_collection_membership_fallback_matches_instance_and_queryset_access(self):
+        obj = self.collectionobjects[0]
+        for membership, collection, allowed in (
+            (self.collection.id, self.collection, True),
+            (-1, self.collection, True),
+            (-1, self.other_collection, False),
+            (self.other_collection.id, self.collection, False),
+        ):
+            with self.subTest(membership=membership, collection=collection.id):
+                spmodels.Collectionobject.objects.filter(pk=obj.pk).update(
+                    collectionmemberid=membership, collection=collection,
+                )
+                obj.refresh_from_db()
+                response = self.client.get(f'/api/specify/collectionobject/{obj.id}/')
+                self.assertEqual(response.status_code, 200 if allowed else 403, response.content)
+                response = self.client.get('/api/specify/collectionobject/', {'id': obj.id})
+                self.assertEqual(response.status_code, 200, response.content)
+                self.assertEqual(
+                    [row['id'] for row in response.json()['objects']],
+                    [obj.id] if allowed else [],
+                )
+                response = self.client.get('/table_rows/specify_rows/collectionobject/', {
+                    'fields': 'id', 'id': obj.id,
+                })
+                self.assertEqual(response.status_code, 200, response.content)
+                self.assertEqual(response.json(), [[obj.id]] if allowed else [])
+                if allowed:
+                    self.assertEqual(Scoping.model_from_instance(obj), self.collection)
+                    response = self.client.put(
+                        f'/api/specify/collectionobject/{obj.id}/', {
+                            'version': obj.version, 'remarks': f'Membership {membership}',
+                        }, content_type='application/json',
+                    )
+                    self.assertEqual(response.status_code, 200, response.content)
+                    obj.refresh_from_db()
+                    self.assertEqual(obj.collectionmemberid, membership)
+                    with permissions.cache_permission_queries():
+                        permissions.check_table_permissions(
+                            self.collection, self.agent, obj, 'read',
+                        )
+                        with self.assertNumQueries(0):
+                            for _ in range(100):
+                                permissions.check_table_permissions(
+                                    self.collection, self.agent, obj, 'read',
+                                )
+        with permissions.cache_permission_queries():
+            with self.assertRaises(permissions.NoMatchingRuleException):
+                permissions.check_table_permissions(
+                    self.collection, self.agent,
+                    spmodels.Determination(collectionmemberid=-1), 'read',
+                )
+
     def test_repeated_scope_checks_do_not_issue_queries(self):
         agents = list(spmodels.Agent.objects.filter(pk=self.agent.pk))
         groups = (

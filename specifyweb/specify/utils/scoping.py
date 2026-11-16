@@ -2,7 +2,7 @@ from inspect import isclass
 from functools import cache
 
 from enum import Enum
-from django.db.models import Model, Q, QuerySet
+from django.db.models import Exists, Model, Q, QuerySet
 from django.core.exceptions import ObjectDoesNotExist
 
 from .. import models
@@ -338,20 +338,28 @@ class Scoping:
         if value is None and scope_type != ScopeType.COLLECTION:
             return None if isinstance(obj, models.Taxontreedefitem) else {}
         filters = {Scoping.collection_lookup(scope_type): value}
-        # Some records carry both fields; neither may refer to a denied collection.
+        # Retain both values in cache keys, including when membership is dangling.
         if path == 'collectionmemberid' and hasattr(obj, 'collection_id'):
             filters['id'] = obj.collection_id
         return filters
 
     @staticmethod
     def collections_for_record(obj: Model) -> QuerySet:
-        """Resolve record membership, defaulting to the institution scope."""
+        """Resolve scope, using collection when its membership ID is dangling."""
         filters = Scoping.record_scope_filter(obj)
         if filters is None:
             filters = {
                 Scoping.collection_lookup(ScopeType.INSTITUTION): models.Institution.objects.get().pk,
             }
-        return models.Collection.objects.filter(**filters)
+        condition = Q(**filters)
+        if (
+            'id' in filters
+            and filters.get('pk') is not None
+            and filters['pk'] != filters['id']
+        ):
+            membership = models.Collection.objects.filter(pk=filters['pk'])
+            condition |= Q(pk=filters['id']) & ~Exists(membership)
+        return models.Collection.objects.filter(condition)
 
     @staticmethod
     def filter_records(queryset: QuerySet, collections: QuerySet) -> QuerySet:
@@ -381,7 +389,10 @@ class Scoping:
             ).exists():
                 condition |= missing
         if path == 'collectionmemberid' and hasattr(model, 'collection_id'):
-            condition &= Q(collection__in=collections)
+            dangling = Q(collectionmemberid__isnull=False) & ~Q(
+                collectionmemberid__in=models.Collection.objects.values('pk'),
+            )
+            condition = (condition | dangling) & Q(collection__in=collections)
         return queryset.filter(condition)
 
     @staticmethod
