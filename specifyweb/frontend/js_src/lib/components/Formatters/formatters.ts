@@ -248,7 +248,13 @@ async function formatField(
         ? displayFormat
         : formatted === undefined || formatted === ''
           ? undefined
-          : displayFormat.replace(substitution, formatted);
+          : [
+                'https://orcid.org/%s',
+                'https://www.wikidata.org/entity/%s',
+              ].includes(displayFormat) &&
+              formatted.startsWith(displayFormat.slice(0, -2))
+            ? formatted
+            : displayFormat.replace(substitution, formatted);
   }
 
   return {
