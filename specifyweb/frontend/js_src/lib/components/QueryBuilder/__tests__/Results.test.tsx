@@ -130,6 +130,7 @@ test('clicking a results heading cycles the sort order', async () => {
 
   fireEvent.click(within(screen.getByRole('columnheader')).getByRole('button'));
   expect(onSortChange).toHaveBeenLastCalledWith(fieldSpecs[0], 'ascending');
+  expect(onSortChange).toHaveBeenCalledTimes(1);
 
   rerender(
     <QueryResults
@@ -142,6 +143,7 @@ test('clicking a results heading cycles the sort order', async () => {
 
   fireEvent.click(within(screen.getByRole('columnheader')).getByRole('button'));
   expect(onSortChange).toHaveBeenLastCalledWith(fieldSpecs[0], 'descending');
+  expect(onSortChange).toHaveBeenCalledTimes(2);
 });
 
 test('row clicks add, range-select, and toggle result selections', async () => {
