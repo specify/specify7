@@ -22,7 +22,10 @@ msgstr "Forms"
 #: components/Forms/__tests__/Save.test.tsx:24
 #: components/Preferences/UserDefinitions.tsx:956
 #: components/Statistics/ResultsDialog.tsx:69
-#. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Save ⬤ Forms > __tests__ > Save ⬤ Components > Preferences > User Definitions ⬤ Components > Statistics > Results Dialog
+#: components/Statistics/__tests__/StatsPageNoEditPermission.test.tsx:207
+#: components/Statistics/__tests__/StatsPageNoEditPermission.test.tsx:274
+#: components/Statistics/__tests__/StatsPageNoEditPermission.test.tsx:283
+#. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Save ⬤ Forms > __tests__ > Save ⬤ Components > Preferences > User Definitions ⬤ Components > Statistics > Results Dialog ⬤ Statistics > __tests__ > Stats Page No Edit Permission
 msgid "clone"
 msgstr "Clone"
 

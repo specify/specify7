@@ -211,7 +211,9 @@ msgstr ""
 #: components/Statistics/Categories.tsx:76
 #: components/Statistics/StatItems.tsx:187
 #: components/Statistics/StatItems.tsx:272
-#. 🟥Used in field formatter if user doesn't have read access to the related table. Used in: Components > Formatters > Formatters ⬤ Components > Forms > Data Obj Formatters ⬤ Components > Query Combo Box > Index ⬤ Components > Statistics > Categories ⬤ Components > Statistics > Stat Items
+#: components/Statistics/__tests__/StatsPageDownloadTsv.test.tsx:180
+#: components/Statistics/__tests__/StatsPageDownloadTsv.test.tsx:208
+#. 🟥Used in field formatter if user doesn't have read access to the related table. Used in: Components > Formatters > Formatters ⬤ Components > Forms > Data Obj Formatters ⬤ Components > Query Combo Box > Index ⬤ Components > Statistics > Categories ⬤ Components > Statistics > Stat Items ⬤ Statistics > __tests__ > Stats Page Download Tsv
 msgid "noPermission"
 msgstr "SIN AUTORIZACIÓN"
 
@@ -350,12 +352,14 @@ msgid "collectionUserRoles"
 msgstr "Roles de usuario de {collectionTable:string}"
 
 #: components/Security/UserComponents.tsx:109
-#. Used in: Components > Security > User Components
+#: components/Statistics/__tests__/StatsEditPermissionGrant.test.tsx:201
+#. Used in: Components > Security > User Components ⬤ Statistics > __tests__ > Stats Edit Permission Grant
 msgid "assignedUserRoles"
 msgstr "Roles de usuario asignados"
 
 #: components/Security/Role.tsx:153
-#. Used in: Components > Security > Role
+#: components/Statistics/__tests__/StatsEditPermissionGrant.test.tsx:70
+#. Used in: Components > Security > Role ⬤ Statistics > __tests__ > Stats Edit Permission Grant
 msgid "rolePolicies"
 msgstr "Políticas de permisos"
 

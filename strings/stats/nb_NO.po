@@ -26,9 +26,10 @@ msgstr "Samlingsobjekter"
 #: components/Statistics/StatsSpec.tsx:63
 #: components/Statistics/StatsSpec.tsx:398
 #: components/Statistics/StatsSpec.tsx:401
+#: components/Statistics/__tests__/StatsPageInitialLoad.test.tsx:94
 #: components/Statistics/__tests__/layout.tests.ts:83
 #: components/Statistics/__tests__/layout.tests.ts:86
-#. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
+#. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Stats Page Initial Load ⬤ Statistics > __tests__ > Layout
 msgid "typeSpecimens"
 msgstr "Type eksemplarer"
 
@@ -104,7 +105,9 @@ msgid "digitizedLastYear"
 msgstr "Digitalisert i fjor"
 
 #: components/Statistics/AddStatDialog.tsx:82
-#. Used in: Components > Statistics > Add Stat Dialog
+#: components/Statistics/__tests__/StatsPageStatItems.test.tsx:162
+#: components/Statistics/__tests__/statsPageTestUtils.tsx:260
+#. Used in: Components > Statistics > Add Stat Dialog ⬤ Statistics > __tests__ > Stats Page Stat Items ⬤ Statistics > __tests__ > Stats Page Test Utils
 msgid "chooseStatistics"
 msgstr "Velg statistikk"
 
@@ -134,7 +137,18 @@ msgstr "Personlig"
 
 #: components/Statistics/index.tsx:142
 #: components/Statistics/index.tsx:499
-#. Used in: Components > Statistics > Index
+#: components/Statistics/__tests__/StatsPageButtonColors.test.tsx:125
+#: components/Statistics/__tests__/StatsPageDownloadTsv.test.tsx:133
+#: components/Statistics/__tests__/StatsPageInitialLoad.test.tsx:46
+#: components/Statistics/__tests__/StatsPageNoEditPermission.test.tsx:93
+#: components/Statistics/__tests__/StatsPageNoEditPermission.test.tsx:111
+#: components/Statistics/__tests__/StatsPageNoEditPermission.test.tsx:121
+#: components/Statistics/__tests__/StatsPageNoEditPermission.test.tsx:146
+#: components/Statistics/__tests__/StatsPageNoEditPermission.test.tsx:231
+#: components/Statistics/__tests__/StatsPageNoEditPermission.test.tsx:298
+#: components/Statistics/__tests__/StatsPagePages.test.tsx:25
+#: components/Statistics/__tests__/StatsPagePages.test.tsx:199
+#. Used in: Components > Statistics > Index ⬤ Statistics > __tests__ > Stats Page Button Colors ⬤ Statistics > __tests__ > Stats Page Download Tsv ⬤ Statistics > __tests__ > Stats Page Initial Load ⬤ Statistics > __tests__ > Stats Page No Edit Permission ⬤ Statistics > __tests__ > Stats Page Pages
 msgid "private"
 msgstr "Privat"
 
@@ -150,33 +164,69 @@ msgid "collectionObjectsDetermined"
 msgstr "Antall samlingsobjekter identifisert"
 
 #: components/Statistics/index.tsx:521
-#. Used in: Components > Statistics > Index
+#: components/Statistics/__tests__/StatsPageInitialLoad.test.tsx:36
+#. Used in: Components > Statistics > Index ⬤ Statistics > __tests__ > Stats Page Initial Load
 msgid "lastRefreshed"
 msgstr "Sist oppdatert"
 
 #: components/Statistics/hooks.tsx:389
-#. Used in: Components > Statistics > Hooks
+#: components/Statistics/__tests__/StatsPageDownloadTsv.test.tsx:44
+#. Used in: Components > Statistics > Hooks ⬤ Statistics > __tests__ > Stats Page Download Tsv
 msgid "categoryName"
 msgstr "Kategorinavn"
 
 #: components/Statistics/hooks.tsx:390
-#. Used in: Components > Statistics > Hooks
+#: components/Statistics/__tests__/StatsPageDownloadTsv.test.tsx:45
+#. Used in: Components > Statistics > Hooks ⬤ Statistics > __tests__ > Stats Page Download Tsv
 msgid "itemName"
 msgstr "Element navn"
 
 #: components/Statistics/hooks.tsx:391
-#. Used in: Components > Statistics > Hooks
+#: components/Statistics/__tests__/StatsPageDownloadTsv.test.tsx:46
+#. Used in: Components > Statistics > Hooks ⬤ Statistics > __tests__ > Stats Page Download Tsv
 msgid "itemValue"
 msgstr "Element-verdi"
 
 #: components/Statistics/index.tsx:548
-#. Used in: Components > Statistics > Index
+#: components/Statistics/__tests__/StatsPageButtonColors.test.tsx:105
+#: components/Statistics/__tests__/StatsPageDownloadTsv.test.tsx:52
+#: components/Statistics/__tests__/StatsPageDownloadTsv.test.tsx:61
+#: components/Statistics/__tests__/StatsPageNoEditPermission.test.tsx:105
+#. Used in: Components > Statistics > Index ⬤ Statistics > __tests__ > Stats Page Button Colors ⬤ Statistics > __tests__ > Stats Page Download Tsv ⬤ Statistics > __tests__ > Stats Page No Edit Permission
 msgid "downloadAsTSV"
 msgstr "Last ned som TSV"
 
 #: components/Statistics/index.tsx:141
 #: components/Statistics/index.tsx:499
-#. Used in: Components > Statistics > Index
+#: components/Statistics/__tests__/StatsPageButtonColors.test.tsx:124
+#: components/Statistics/__tests__/StatsPageDownloadTsv.test.tsx:132
+#: components/Statistics/__tests__/StatsPageInitialLoad.test.tsx:43
+#: components/Statistics/__tests__/StatsPageNoEditPermission.test.tsx:82
+#: components/Statistics/__tests__/StatsPagePages.test.tsx:46
+#: components/Statistics/__tests__/StatsPagePages.test.tsx:50
+#: components/Statistics/__tests__/StatsPagePages.test.tsx:79
+#: components/Statistics/__tests__/StatsPagePages.test.tsx:80
+#: components/Statistics/__tests__/StatsPagePages.test.tsx:95
+#: components/Statistics/__tests__/StatsPagePages.test.tsx:111
+#: components/Statistics/__tests__/StatsPagePages.test.tsx:116
+#: components/Statistics/__tests__/StatsPagePages.test.tsx:136
+#: components/Statistics/__tests__/StatsPagePages.test.tsx:137
+#: components/Statistics/__tests__/StatsPagePages.test.tsx:162
+#: components/Statistics/__tests__/StatsPagePages.test.tsx:180
+#: components/Statistics/__tests__/StatsPagePages.test.tsx:237
+#: components/Statistics/__tests__/StatsPagePages.test.tsx:248
+#: components/Statistics/__tests__/StatsPagePages.test.tsx:271
+#: components/Statistics/__tests__/StatsPagePages.test.tsx:288
+#: components/Statistics/__tests__/StatsPagePages.test.tsx:303
+#: components/Statistics/__tests__/StatsPagePages.test.tsx:325
+#: components/Statistics/__tests__/StatsPagePages.test.tsx:337
+#: components/Statistics/__tests__/StatsPagePages.test.tsx:505
+#: components/Statistics/__tests__/statsPageTestUtils.tsx:170
+#: components/Statistics/__tests__/statsPageTestUtils.tsx:187
+#: components/Statistics/__tests__/statsPageTestUtils.tsx:211
+#: components/Statistics/__tests__/statsPageTestUtils.tsx:216
+#: components/Statistics/__tests__/statsPageTestUtils.tsx:231
+#. Used in: Components > Statistics > Index ⬤ Statistics > __tests__ > Stats Page Button Colors ⬤ Statistics > __tests__ > Stats Page Download Tsv ⬤ Statistics > __tests__ > Stats Page Initial Load ⬤ Statistics > __tests__ > Stats Page No Edit Permission ⬤ Statistics > __tests__ > Stats Page Pages ⬤ Statistics > __tests__ > Stats Page Test Utils
 msgid "shared"
 msgstr "Delt"
 
@@ -192,29 +242,47 @@ msgstr "Statistikk"
 
 #: components/Statistics/DeleteCategory.tsx:26
 #: components/Statistics/DeleteCategory.tsx:45
-#. Used in: Components > Statistics > Delete Category
+#: components/Statistics/__tests__/StatsPageButtonColors.test.tsx:152
+#: components/Statistics/__tests__/StatsPageNoEditPermission.test.tsx:158
+#. Used in: Components > Statistics > Delete Category ⬤ Statistics > __tests__ > Stats Page Button Colors ⬤ Statistics > __tests__ > Stats Page No Edit Permission
 msgid "deleteCategory"
 msgstr "Slett kategori"
 
 #: components/Statistics/StatsPageEditing.tsx:52
-#. Used in: Components > Statistics > Stats Page Editing
+#: components/Statistics/__tests__/StatsPagePages.test.tsx:160
+#: components/Statistics/__tests__/StatsPagePages.test.tsx:235
+#: components/Statistics/__tests__/StatsPagePages.test.tsx:470
+#: components/Statistics/__tests__/statsPageTestUtils.tsx:225
+#. Used in: Components > Statistics > Stats Page Editing ⬤ Statistics > __tests__ > Stats Page Pages ⬤ Statistics > __tests__ > Stats Page Test Utils
 msgid "editPage"
 msgstr "Rediger side"
 
 #: components/Statistics/StatsPageEditing.tsx:52
-#. Used in: Components > Statistics > Stats Page Editing
+#: components/Statistics/__tests__/StatsPagePages.test.tsx:44
+#: components/Statistics/__tests__/StatsPagePages.test.tsx:360
+#: components/Statistics/__tests__/statsPageTestUtils.tsx:195
+#. Used in: Components > Statistics > Stats Page Editing ⬤ Statistics > __tests__ > Stats Page Pages ⬤ Statistics > __tests__ > Stats Page Test Utils
 msgid "addPage"
 msgstr "Legg til side"
 
 #: components/Statistics/Categories.tsx:298
-#. Used in: Components > Statistics > Categories
+#: components/Statistics/__tests__/StatsPageDownloadTsv.test.tsx:109
+#: components/Statistics/__tests__/StatsPageNoEditPermission.test.tsx:155
+#: components/Statistics/__tests__/StatsPagePages.test.tsx:65
+#: components/Statistics/__tests__/StatsPagePages.test.tsx:374
+#: components/Statistics/__tests__/StatsPageStatItems.test.tsx:31
+#: components/Statistics/__tests__/statsPageTestUtils.tsx:247
+#. Used in: Components > Statistics > Categories ⬤ Statistics > __tests__ > Stats Page Download Tsv ⬤ Statistics > __tests__ > Stats Page No Edit Permission ⬤ Statistics > __tests__ > Stats Page Pages ⬤ Statistics > __tests__ > Stats Page Stat Items ⬤ Statistics > __tests__ > Stats Page Test Utils
 msgid "addACategory"
 msgstr "Legg til en kategori"
 
 #: components/Statistics/Buttons.tsx:22
 #: components/Statistics/__tests__/Buttons.test.tsx:32
 #: components/Statistics/__tests__/Buttons.test.tsx:70
-#. Used in: Components > Statistics > Buttons ⬤ Statistics > __tests__ > Buttons
+#: components/Statistics/__tests__/StatsPageButtonColors.test.tsx:104
+#: components/Statistics/__tests__/StatsPageButtonColors.test.tsx:215
+#: components/Statistics/__tests__/StatsPageNoEditPermission.test.tsx:102
+#. Used in: Components > Statistics > Buttons ⬤ Statistics > __tests__ > Buttons ⬤ Statistics > __tests__ > Stats Page Button Colors ⬤ Statistics > __tests__ > Stats Page No Edit Permission
 msgid "refresh"
 msgstr "Last inn på nytt"
 
@@ -246,12 +314,14 @@ msgid "geographiesRepresented"
 msgstr "Representerte geografiske områder"
 
 #: components/Statistics/StatsSpec.tsx:334
-#. Used in: Components > Statistics > Stats Spec
+#: components/Statistics/__tests__/StatsPageInitialLoad.test.tsx:86
+#. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Stats Page Initial Load
 msgid "percentGeoReferenced"
 msgstr "Prosent med koordinater"
 
 #: components/Statistics/StatsSpec.tsx:553
-#. Used in: Components > Statistics > Stats Spec
+#: components/Statistics/__tests__/StatsPageInitialLoad.test.tsx:87
+#. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Stats Page Initial Load
 msgid "percentImaged"
 msgstr "Prosent avbildet"
 

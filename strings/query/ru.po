@@ -57,8 +57,11 @@ msgstr "Конструктор запросов"
 #: components/Statistics/AddStatDialog.tsx:64
 #: components/Statistics/AddStatDialog.tsx:140
 #: components/Statistics/AddStatDialog.tsx:149
+#: components/Statistics/__tests__/StatsPageCreateStatistic.test.tsx:59
+#: components/Statistics/__tests__/StatsPageCreateStatistic.test.tsx:66
+#: components/Statistics/__tests__/StatsPageCreateStatistic.test.tsx:100
 #: components/Toolbar/QueryTablesWrapper.tsx:187
-#. Used in: Components > Query Builder > Export ⬤ Components > Query Builder > Index ⬤ Components > Router > Overlay Routes ⬤ Components > Statistics > Add Stat Dialog ⬤ Components > Toolbar > Query Tables Wrapper
+#. Used in: Components > Query Builder > Export ⬤ Components > Query Builder > Index ⬤ Components > Router > Overlay Routes ⬤ Components > Statistics > Add Stat Dialog ⬤ Statistics > __tests__ > Stats Page Create Statistic ⬤ Components > Toolbar > Query Tables Wrapper
 #, fuzzy
 msgid "newQueryName"
 msgstr "Новый запрос"
