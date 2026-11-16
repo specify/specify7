@@ -266,6 +266,35 @@ describe('Resource initialization preferences', () => {
     }
   );
 
+  test('Cloning an Agent copies its primary address', async () => {
+    const original = new tables.Agent.Resource(
+      addMissingFields('Agent', {
+        resource_uri: getResourceApiUrl('Agent', 1),
+        id: 1,
+        addresses: [
+          { _tableName: 'Address', address: '123 Main St', isPrimary: true },
+          { _tableName: 'Address', address: '456 Side St', isPrimary: false },
+        ],
+      })
+    );
+
+    const cloned = await original.clone(true);
+    const addresses = await cloned.rgetCollection('addresses');
+
+    expect(addresses.models).toHaveLength(2);
+    expect(
+      addresses.models.map((address) => ({
+        address: address.get('address'),
+        isPrimary: address.get('isPrimary'),
+      }))
+    ).toEqual(
+      expect.arrayContaining([
+        { address: '123 Main St', isPrimary: true },
+        { address: '456 Side St', isPrimary: false },
+      ])
+    );
+  });
+
   test('Cloning resource does not create duplicates', async () => {
     // See Issue #3278
 
