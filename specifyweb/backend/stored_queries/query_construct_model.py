@@ -10,7 +10,7 @@ from specifyweb.specify.datamodel import datamodel
 from specifyweb.backend.trees.utils import get_treedefs
 
 from specifyweb.backend.stored_queries import models
-from specifyweb.backend.stored_queries.tree_rank import TreeRankQuery, TreeRanks
+from specifyweb.backend.stored_queries.tree_rank import TreeRankQuery
 from specifyweb.backend.stored_queries.queryfieldspec import QueryFieldSpec
 
 logger = logging.getLogger(__name__)
