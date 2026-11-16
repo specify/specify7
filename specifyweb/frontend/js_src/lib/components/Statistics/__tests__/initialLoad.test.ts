@@ -54,8 +54,9 @@ describe('generateDefaultLayout', () => {
         pageName: 'collection',
         categoryName: 'locality_geography',
         itemName: 'countries',
-        label: statsSpecTest.collection.categories.locality_geography.items
-          .countries.label,
+        label:
+          statsSpecTest.collection.categories.locality_geography.items.countries
+            .label,
         itemValue: undefined,
         itemType: 'BackEndStat',
         pathToValue: 'countries',

@@ -100,12 +100,8 @@ describe('Statistics buttons use the button color preferences', () => {
   test('header buttons use the secondary button color', async () => {
     await renderEmptyStatsPage();
 
-    [
-      statsText.refresh(),
-      statsText.downloadAsTSV(),
-      commonText.edit(),
-    ].forEach((name) =>
-      expect(getButton(name)).toHaveClass(colorClass('secondary'))
+    [statsText.refresh(), statsText.downloadAsTSV(), commonText.edit()].forEach(
+      (name) => expect(getButton(name)).toHaveClass(colorClass('secondary'))
     );
   });
 
@@ -114,9 +110,7 @@ describe('Statistics buttons use the button color preferences', () => {
     await enterEditMode(user);
 
     expect(getButton(commonText.save())).toHaveClass(colorClass('save'));
-    expect(getButton(commonText.cancel())).toHaveClass(
-      colorClass('secondary')
-    );
+    expect(getButton(commonText.cancel())).toHaveClass(colorClass('secondary'));
   });
 
   test('page buttons use the secondary colors unless they are open', async () => {
