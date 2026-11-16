@@ -432,15 +432,11 @@ const gbifExtensionTermPatterns: Readonly<Record<string, readonly string[]>> = {
     'permit.statusqualifier',
   ],
   'http://data.ggbn.org/schemas/ggbn/terms/permitText': ['permit.permittext'],
-  'http://data.ggbn.org/schemas/ggbn/terms/blockedUntil': [
-    'loan.currentduedate',
-  ],
   'http://data.ggbn.org/schemas/ggbn/terms/loanConditions': [
     'loan.specialconditions',
   ],
   'http://data.ggbn.org/schemas/ggbn/terms/loanDate': ['loan.loandate'],
   'http://data.ggbn.org/schemas/ggbn/terms/loanIdentifier': ['loan.loannumber'],
-  'http://purl.org/dc/terms/disposition': ['loan.purposeofloan'],
 };
 
 export const coreTermPatterns: Readonly<Record<string, readonly string[]>> = {

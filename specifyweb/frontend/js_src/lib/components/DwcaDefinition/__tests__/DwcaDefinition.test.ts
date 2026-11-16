@@ -111,6 +111,37 @@ test('does not infer a collection code from a specimen-specific text field', () 
   );
 });
 
+test('does not infer availability or disposition from loan dates and purposes', () => {
+  expect(coreTermPatterns).not.toHaveProperty([
+    'http://data.ggbn.org/schemas/ggbn/terms/blockedUntil',
+  ]);
+  expect(coreTermPatterns).not.toHaveProperty([
+    'http://purl.org/dc/terms/disposition',
+  ]);
+});
+
+test('does not map collector identifiers to the recordedBy name term', () => {
+  const identifierField =
+    'stringId="1,10,30-collectors.collector.collectors" formatName="Collector Identifiers"';
+  const [mapping] = parseDefinition(
+    `<archive><core rowType="http://rs.tdwg.org/dwc/terms/Occurrence"><queries><query contextTableId="1">
+      <field ${identifierField}/>
+      <field stringId="1,10,30-collectors.collector.collectors" formatName=""/>
+    </query></queries></core></archive>`
+  );
+  expect(mapping.terms).toEqual([
+    'http://rs.tdwg.org/dwc/terms/occurrenceID',
+    undefined,
+    'http://rs.tdwg.org/dwc/terms/recordedBy',
+  ]);
+  const [explicit] = parseDefinition(
+    `<archive><core rowType="http://rs.tdwg.org/dwc/terms/Occurrence"><queries><query contextTableId="1">
+      <field ${identifierField} term="http://rs.tdwg.org/dwc/terms/recordedByID"/>
+    </query></queries></core></archive>`
+  );
+  expect(explicit.terms).toContain('http://rs.tdwg.org/dwc/terms/recordedByID');
+});
+
 test.each([
   '',
   '.',

@@ -782,6 +782,7 @@ function autoMapCoreFields(
       // Unknown legacy paths remain available for manual mapping.
     }
     const source = spec?.getField();
+    if (field.formatName === 'Collector Identifiers') return undefined;
     if (
       source?.name.toLowerCase() === 'guid' &&
       source.table.name === 'Taxon'
