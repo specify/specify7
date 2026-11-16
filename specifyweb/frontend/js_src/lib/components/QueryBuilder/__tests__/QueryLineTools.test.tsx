@@ -48,6 +48,7 @@ test('move buttons move the field up and down', () => {
 
   fireEvent.click(screen.getByRole('button', { name: queryText.moveDown() }));
   expect(onMoveDown).toHaveBeenCalledTimes(1);
+  expect(onMoveUp).toHaveBeenCalledTimes(1);
 });
 
 // [QueryBuilder] Sort button changes field sort order
