@@ -3,13 +3,13 @@ from typing import Any, Dict
 from collections.abc import Callable
 import json
 from django.db import transaction
-from django.core.exceptions import FieldError, FieldDoesNotExist
+from django.core.exceptions import BadRequest, FieldError, FieldDoesNotExist
 from django.db.models import Model, F, Q, Subquery
 from django.db.models.deletion import Collector
 from django.http import (HttpResponseServerError, Http404)
 from django.apps import apps
 
-from specifyweb.backend.permissions.permissions import check_field_permissions, check_table_permissions
+from specifyweb.backend.permissions.permissions import check_field_permissions, check_table_permissions, invalidate_collection_scope_cache, prepare_read_queryset
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 from specifyweb.backend.workbench.upload.auditlog import auditlog
 from specifyweb.specify import models
@@ -22,12 +22,13 @@ from specifyweb.specify.models_utils.models_by_table_id import get_model_by_tabl
 from specifyweb.specify.models_utils.relationships import get_recordset_info, get_related_or_none, handle_fk_fields, handle_to_many, is_dependent_field
 from specifyweb.specify.utils.uiformatters import AutonumberOverflowException
 from specifyweb.specify.api.validators import GetCollectionForm, cleanData, fld_change_info
+from specifyweb.specify.utils.scoping import Scoping
 
 logger = logging.getLogger(__name__)
 
 ReadPermChecker = Callable[[Any], None]
 
-def get_resource(name, id, checker: ReadPermChecker, recordsetid=None) -> dict:
+def get_resource(name, id, checker: ReadPermChecker, recordsetid=None, *, actor=None) -> dict:
     from specifyweb.specify.api.serializers import _obj_to_data
 
     """Return a dict of the fields from row 'id' in model 'name'.
@@ -38,8 +39,16 @@ def get_resource(name, id, checker: ReadPermChecker, recordsetid=None) -> dict:
     obj = get_object_or_404(name, id=int(id))
     data = _obj_to_data(obj, checker)
     if recordsetid is not None:
-        data['recordset_info'] = get_recordset_info(obj, recordsetid)
+        checker(get_object_or_404(models.Recordset, id=recordsetid))
+        data['recordset_info'] = get_recordset_info(obj, recordsetid, actor=actor)
     return data
+
+def _check_recordset_reference(collection, agent, obj) -> None:
+    if isinstance(obj, models.Recordsetitem):
+        target = get_object_or_404(
+            get_model_by_table_id(obj.recordset.dbtableid), pk=obj.recordid,
+        )
+        check_table_permissions(collection, agent, target, "read")
 
 def create_obj(collection, agent, model, data: dict[str, Any], parent_obj=None, parent_relationship=None):
     """Create a new instance of 'model' and populate it with 'data'."""
@@ -70,21 +79,33 @@ def create_obj(collection, agent, model, data: dict[str, Any], parent_obj=None, 
             Message.objects.create(user_id=agent.specifyuser.id, content=json.dumps({
                 'type': 'collection-creation-starting'
             }))
-        return model.objects.filter(id=result[f'{model_name}_id']).first()
+        obj = model.objects.filter(id=result[f'{model_name}_id']).first()
+        if obj is not None:
+            invalidate_collection_scope_cache(obj)
+        return obj
 
     data = cleanData(model, data, parent_relationship)
+    if data.get(model._meta.pk.name) is not None:
+        raise BadRequest("Cannot create a record with an explicit primary key")
     obj = model()
     _, _, handle_remote_to_ones = handle_fk_fields(collection, agent, obj, data)
     set_fields_from_data(obj, data)
     set_field_if_exists(obj, 'createdbyagent', agent)
-    set_field_if_exists(obj, 'collectionmemberid', collection.id)
+    target_collection_id = getattr(obj, 'collection_id', None)
+    if target_collection_id is None and parent_obj is not None:
+        target_collection_id = getattr(parent_obj, 'collectionmemberid', None)
+    set_field_if_exists(
+        obj, 'collectionmemberid',
+        collection.id if target_collection_id is None else target_collection_id,
+    )
+    check_table_permissions(collection, agent, obj, "create")
+    _check_recordset_reference(collection, agent, obj)
     try:
         autonumber_and_save(collection, agent.specifyuser, obj)
     except AutonumberOverflowException as e:
         logger.warn("autonumbering overflow: %s", e)
 
     if obj.id is not None: # was the object actually saved?
-        check_table_permissions(collection, agent, obj, "create")
         auditlog.insert(obj, agent, parent_obj)
 
     handle_remote_to_ones(obj)
@@ -113,13 +134,17 @@ def post_resource(collection, agent, name: str, data, recordsetid: int | None=No
         except Recordset.DoesNotExist as e:
             raise RecordSetException(e)
 
+        check_table_permissions(collection, agent, recordset, "update")
         if recordset.dbtableid != obj.specify_model.tableId:
             # the resource is not of the right kind to go in the recordset
             raise RecordSetException(
                 "expected %s, got %s when adding object to recordset",
                 (get_model_by_table_id(recordset.dbtableid), obj.__class__))
 
-        recordset.recordsetitems.create(recordid=obj.id)
+        create_obj(
+            collection, agent, models.Recordsetitem,
+            {'recordset': recordset, 'recordid': obj.id}, parent_obj=recordset,
+        )
     return obj
 
 def update_obj(collection, agent, name: str, id, version, data: dict[str, Any], parent_obj=None, parent_relationship=None):
@@ -128,12 +153,24 @@ def update_obj(collection, agent, name: str, id, version, data: dict[str, Any], 
     """
     obj = get_object_or_404(name, id=int(id))
     check_table_permissions(collection, agent, obj, "update")
+    original_collections = models.Collection.objects.filter(
+        pk__in=list(Scoping.collections_for_record(obj).values_list('pk', flat=True)),
+    )
 
     data = cleanData(obj.__class__, data, parent_relationship)
+    if data.get(obj._meta.pk.name) is not None and str(data[obj._meta.pk.name]) != str(obj.pk):
+        raise BadRequest("Cannot change a record's primary key")
     dependents_to_delete, fk_dirty, handle_remote_to_ones = handle_fk_fields(collection, agent, obj, data)
     dirty = fk_dirty + set_fields_from_data(obj, data)
 
-    check_field_permissions(collection, agent, obj, [d['field_name'] for d in dirty], "update")
+    check_table_permissions(collection, agent, obj, "update")
+    dirty_fields = [d['field_name'] for d in dirty]
+    _check_recordset_reference(collection, agent, obj)
+    dirty_fields.extend(name for name, value in data.items() if isinstance(value, (list, dict)))
+    check_field_permissions(
+        collection, agent, obj, dirty_fields, "update", collections=original_collections,
+    )
+    check_field_permissions(collection, agent, obj, dirty_fields, "update")
 
     if hasattr(obj, 'modifiedbyagent'):
         setattr(obj, 'modifiedbyagent', agent)
@@ -141,6 +178,7 @@ def update_obj(collection, agent, name: str, id, version, data: dict[str, Any], 
     data = _handle_special_update_priors(obj, data)
     bump_version(obj, version)
     obj.save(force_update=True)
+    invalidate_collection_scope_cache(obj)
     auditlog.update(obj, agent, parent_obj, dirty)
     deleter = make_default_deleter(collection=collection, agent=agent)
     for dep in dependents_to_delete:
@@ -196,6 +234,7 @@ def delete_obj(obj, deleter: Callable[[Any, Any], None] | None=None, version=Non
         deleter(obj, parent_obj)
 
     obj.delete()
+    invalidate_collection_scope_cache(obj)
 
     # before delete obj, store dep id to avoid accessing deleted obj in recursive delete calls
     for dep in dependents_to_delete:
@@ -489,6 +528,7 @@ def delete_resource(collection, agent, name, id, version) -> None:
     locking 'version'.
     """
     obj = get_object_or_404(name, id=int(id))
+    check_table_permissions(collection, agent, obj, "delete")
     if is_discipline(obj):
         guard_blockers = get_discipline_delete_guard_blockers(obj)
         if guard_blockers:
@@ -506,20 +546,27 @@ def delete_resource(collection, agent, name, id, version) -> None:
         clean_predelete=clean_predelete,
     )
 
-def get_collection(logged_in_collection, model, checker: ReadPermChecker, control_params=GetCollectionForm.defaults, params={}) -> CollectionPayload:
+def get_collection(logged_in_collection, model, checker: ReadPermChecker, control_params=GetCollectionForm.defaults, params={}, *, actor=None) -> CollectionPayload:
     from specifyweb.specify.api.serializers import _obj_to_data
     
     """Return a list of structured data for the objects from 'model'
     subject to the request 'params'."""
 
-    objs = apply_filters(logged_in_collection, params, model, control_params)
+    objs = apply_filters(logged_in_collection, params, model, control_params, actor=actor)
+    if actor is not None:
+        _, scope_path = Scoping.record_scope_path(objs.model)
+        if scope_path is not None and '__' in scope_path:
+            objs = objs.select_related(scope_path.rsplit('__', 1)[0])
 
     try:
         return objs_to_data_(objs, objs.count(), lambda o: _obj_to_data(o, checker), control_params['offset'], control_params['limit'])
     except FieldError as e:
         raise OrderByError(e)
     
-def apply_filters(logged_in_collection, params, model, control_params=GetCollectionForm.defaults):
+def apply_filters(
+    logged_in_collection, params, model, control_params=GetCollectionForm.defaults, *,
+    actor=None, field_aliases: dict[str, str] | None = None,
+):
     filters = {}
 
     if isinstance(model, str):
@@ -552,7 +599,22 @@ def apply_filters(logged_in_collection, params, model, control_params=GetCollect
         })
 
     try:
-        objs = model.objects.filter(**filters)
+        objs = model.objects.all()
+        orderby = control_params['orderby']
+        fields = control_params.get('fields')
+        paths = [*filters]
+        if orderby:
+            paths.extend(field for field in orderby.split(',') if field != '?')
+        paths.extend(fields.split(',') if fields else [])
+        aliases = {path.lstrip('-'): path.lstrip('-') for path in paths}
+        if actor is not None:
+            objs, aliases = prepare_read_queryset(
+                objs, actor, [path.lstrip('-') for path in paths],
+            )
+        aliases['?'] = '?'
+        if field_aliases is not None:
+            field_aliases.update(aliases)
+        objs = objs.filter(**{aliases[key]: value for key, value in filters.items()})
     except (ValueError, FieldError) as e:
         raise FilterError(e)
 
@@ -561,7 +623,10 @@ def apply_filters(logged_in_collection, params, model, control_params=GetCollect
     if control_params['orderby']:
         try:
             fields = control_params['orderby'].split(',')
-            objs = objs.order_by(*fields)
+            objs = objs.order_by(*[
+                ('-' if field.startswith('-') else '') + aliases[field.lstrip('-')]
+                for field in fields
+            ])
         except FieldError as e:
             raise OrderByError(e)
 

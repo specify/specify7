@@ -165,6 +165,7 @@ def _handle_fk_field(collection, agent, obj, field, value, read_checker):
         assert not dependent, f"didn't get inline data for dependent field {field_name} in {obj}: {value!r}"
         fk_model, fk_id = strict_uri_to_model(value, field.related_model.__name__)
         rel_obj = get_object_or_404(fk_model, id=fk_id)
+        read_checker(rel_obj)
         setattr(obj, field_name, rel_obj)
         new_related_id = fk_id
 
@@ -360,8 +361,9 @@ class RecordSetInfo(TypedDict):
     previous: str | None
     next: str | None
 
-def get_recordset_info(obj, recordsetid: int) -> RecordSetInfo | None:
+def get_recordset_info(obj, recordsetid: int, *, actor=None) -> RecordSetInfo | None:
     from specifyweb.specify.api.serializers import uri_for_model
+    from specifyweb.backend.permissions.permissions import filter_readable
 
     """Return a dict of info about how the resource 'obj' is related to
     the recordset with id 'recordsetid'.
@@ -371,6 +373,8 @@ def get_recordset_info(obj, recordsetid: int) -> RecordSetInfo | None:
     Recordsetitem = models.Recordsetitem
     rsis = Recordsetitem.objects.filter(
         recordset__id=recordsetid, recordset__dbtableid=obj.specify_model.tableId)
+    if actor is not None:
+        rsis = rsis.filter(recordid__in=filter_readable(obj.__class__.objects.all(), actor).values('pk'))
 
     # Get the one which points to the resource 'obj'.
     try:

@@ -1,7 +1,7 @@
 from inspect import isclass
 
 from enum import Enum
-from django.db.models import Model
+from django.db.models import Model, Q, QuerySet
 from django.core.exceptions import ObjectDoesNotExist
 
 from .. import models
@@ -234,6 +234,116 @@ class ModelInstanceScope:
 
 
 class Scoping:
+
+    @staticmethod
+    def record_scope_path(model_class) -> tuple[ScopeType, str | None]:
+        """Use the same hierarchy path for instance and queryset authorization."""
+        hierarchy = (models.Collection, models.Discipline, models.Division, models.Institution)
+        if model_class in hierarchy:
+            return ScopeType.from_model(model_class), 'pk'
+        inherited = {
+            models.Conservevent: ('conservdescription', models.Conservdescription),
+            models.Fieldnotebookpage: ('pageset', models.Fieldnotebookpageset),
+            models.Fieldnotebookpageset: ('fieldnotebook', models.Fieldnotebook),
+            models.Recordsetitem: ('recordset', models.Recordset),
+        }
+        if model_class in inherited:
+            parent, parent_model = inherited[model_class]
+            scope_type, path = Scoping.record_scope_path(parent_model)
+            return scope_type, f'{parent}__{path}' if path else None
+        scope_type = Scoping.scope_type_from_class(model_class)
+        if model_class in (
+            models.Taxon, models.Geography, models.Geologictimeperiod,
+            models.Lithostrat, models.Tectonicunit,
+        ):
+            return scope_type, 'definition__discipline'
+        if model_class is models.Storage:
+            return scope_type, 'definition__institution'
+        if scope_type == ScopeType.INSTITUTION:
+            return scope_type, 'institution' if hasattr(model_class, 'institution') else None
+        if scope_type == ScopeType.COLLECTION:
+            return scope_type, (
+                'collectionmemberid' if hasattr(model_class, 'collectionmemberid') else 'collection'
+            )
+        return scope_type, scope_type.name.lower()
+
+    @staticmethod
+    def collection_lookup(scope_type: ScopeType) -> str:
+        return {
+            ScopeType.COLLECTION.name: 'pk',
+            ScopeType.DISCIPLINE.name: 'discipline_id',
+            ScopeType.DIVISION.name: 'discipline__division_id',
+            ScopeType.INSTITUTION.name: 'discipline__division__institution_id',
+        }[scope_type.name]
+
+    @staticmethod
+    def record_scope_filter(
+        obj: Model, *, scope_path: tuple[ScopeType, str | None] | None = None,
+    ) -> dict[str, int | None] | None:
+        """Return scope predicates; None denotes the default institution."""
+        if isinstance(obj, models.Attachment):
+            if obj.scopetype is None or obj.scopetype == ScopeType.GLOBAL.value:
+                return {}
+            return {
+                Scoping.collection_lookup(ScopeType(obj.scopetype)): obj.scopeid,
+            }
+        scope_type, path = scope_path if scope_path is not None else Scoping.record_scope_path(type(obj))
+        value = obj
+        if path is None:
+            return None
+        parts = path.split('__')
+        for index, name in enumerate(parts):
+            if value is None:
+                return {'pk': None}
+            if index == len(parts) - 1 and hasattr(value, f'{name}_id'):
+                name = f'{name}_id'
+            value = getattr(value, name)
+        if isinstance(value, Model):
+            value = value.pk
+        if value is None and scope_type != ScopeType.COLLECTION:
+            return {}
+        filters = {Scoping.collection_lookup(scope_type): value}
+        # Some records carry both fields; neither may refer to a denied collection.
+        if path == 'collectionmemberid' and hasattr(obj, 'collection_id'):
+            filters['id'] = obj.collection_id
+        return filters
+
+    @staticmethod
+    def collections_for_record(obj: Model) -> QuerySet:
+        filters = Scoping.record_scope_filter(obj)
+        if filters is None:
+            filters = {
+                Scoping.collection_lookup(ScopeType.INSTITUTION): models.Institution.objects.get().pk,
+            }
+        return models.Collection.objects.filter(**filters)
+
+    @staticmethod
+    def filter_records(queryset: QuerySet, collections: QuerySet) -> QuerySet:
+        model = queryset.model
+        if model is models.Attachment:
+            condition = Q(scopetype__isnull=True) | Q(scopetype=ScopeType.GLOBAL.value)
+            for scope_type in (
+                ScopeType.COLLECTION, ScopeType.DISCIPLINE, ScopeType.DIVISION, ScopeType.INSTITUTION,
+            ):
+                condition |= Q(
+                    scopetype=scope_type.value,
+                    scopeid__in=collections.values(Scoping.collection_lookup(scope_type)),
+                )
+            return queryset.filter(condition) if collections.exists() else queryset.none()
+        scope_type, path = Scoping.record_scope_path(model)
+        if path is None:
+            return queryset if collections.exists() else queryset.none()
+        condition = Q(**{
+            f'{path}__in': collections.values(Scoping.collection_lookup(scope_type)),
+        })
+        if scope_type != ScopeType.COLLECTION and collections.exists():
+            missing = Q(**{f'{path}__isnull': True})
+            if '__' in path:
+                missing &= Q(**{f"{path.rsplit('__', 1)[0]}__isnull": False})
+            condition |= missing
+        if path == 'collectionmemberid' and hasattr(model, 'collection_id'):
+            condition &= Q(collection__in=collections)
+        return queryset.filter(condition)
 
     @staticmethod
     def scope_type_from_class(model_class) -> ScopeType:

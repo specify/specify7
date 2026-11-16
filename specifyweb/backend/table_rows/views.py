@@ -1,16 +1,16 @@
 from specifyweb.middleware.general import require_http_methods
 from specifyweb.specify.api.crud import apply_filters
-from specifyweb.specify.api.exceptions import OrderByError
-from specifyweb.specify.api.filter_by_col import filter_by_collection
+from specifyweb.specify.api.exceptions import FilterError, OrderByError
 from specifyweb.specify.api.serializers import toJson
 from specifyweb.specify.api.validators import RowsForm
 from specifyweb.specify.views import login_maybe_required
 from django.http import (HttpResponse, HttpResponseBadRequest)
-from specifyweb.backend.permissions.permissions import enforce
+from specifyweb.backend.permissions.permissions import cache_permission_queries, enforce
 from django.core.exceptions import FieldError
 
 @login_maybe_required
 @require_http_methods(['GET', 'HEAD'])
+@cache_permission_queries()
 def rows(request, model: str) -> HttpResponse:
     enforce(request.specify_collection, request.specify_user_agent, [f'/table/{model.lower()}'], "read")
 
@@ -19,19 +19,19 @@ def rows(request, model: str) -> HttpResponse:
     if not form.is_valid():
         return HttpResponseBadRequest(toJson(form.errors), content_type='application/json')
 
-    query = apply_filters(request.specify_collection, request.GET, model, form.cleaned_data)
+    aliases = {}
     fields = form.cleaned_data['fields'].split(',')
     try:
-        query = query.values_list(*fields).order_by(*fields)
-    except FieldError as e:
+        query = apply_filters(
+            request.specify_collection, request.GET, model, form.cleaned_data,
+            actor=request.specify_user_agent, field_aliases=aliases,
+        )
+        fields = [aliases[field] for field in fields]
+        query = query.values_list(*fields)
+        if not form.cleaned_data['orderby']:
+            query = query.order_by(*fields)
+    except (FieldError, FilterError, OrderByError) as e:
         return HttpResponseBadRequest(e)
-    if form.cleaned_data['domainfilter'] == 'true':
-        query = filter_by_collection(query, request.specify_collection)
-    if form.cleaned_data['orderby']:
-        try:
-            query = query.order_by(form.cleaned_data['orderby'])
-        except FieldError as e:
-            raise OrderByError(e)
     if form.cleaned_data['distinct']:
         query = query.distinct()
 

@@ -12,10 +12,13 @@ import logging
 logger = logging.getLogger(__name__)
 
 from django.db import connection
-from django.db.models import Model
+from django.core.exceptions import FieldDoesNotExist, FieldError
+from django.db.models import Exists, FilteredRelation, ForeignKey, Model, OuterRef, QuerySet, Q
+from django.db.models.fields.reverse_related import ManyToOneRel
 
-from specifyweb.specify.models import Agent
+from specifyweb.specify.models import Agent, Discipline, Division, Institution
 from specifyweb.specify.datamodel import Table
+from specifyweb.specify.utils.scoping import Scoping, ScopeType
 from specifyweb.backend.cache.thread import ThreadCache
 
 from . import models
@@ -120,12 +123,7 @@ class NoAdminUsersException(PermissionsException):
         return {"NoAdminUsersException": {}}
 
 
-def enforce(
-    collection: int | Model | None, actor, resources: list[str], action: str
-) -> None:
-    if not resources:
-        return
-
+def _actor_userid(actor) -> int:
     if isinstance(actor, Agent):
         userid = actor.specifyuser_id
     else:
@@ -138,6 +136,16 @@ def enforce(
 
     if userid is None:
         raise PermissionsException(f"agent {actor} is not a Specify user")
+    return userid
+
+
+def enforce(
+    collection: int | Model | None, actor, resources: list[str], action: str
+) -> None:
+    if not resources:
+        return
+
+    userid = _actor_userid(actor)
 
     if isinstance(collection, int) or collection is None:
         collectionid = collection
@@ -174,6 +182,18 @@ _permission_query_cache = ThreadCache[PermRequest, QueryResult](
         "permission_query_cache",
         default=None,
     )
+)
+
+_permitted_collection_cache = ThreadCache[PermRequest, frozenset[int]](
+    ContextVar("permitted_collection_cache", default=None)
+)
+_scope_collection_cache = ThreadCache[
+    tuple[tuple[str, int | None], ...] | None, frozenset[int]
+](
+    ContextVar("scope_collection_cache", default=None)
+)
+_scope_path_cache = ThreadCache[type[Model], tuple[ScopeType, str | None]](
+    ContextVar("scope_path_cache", default=None)
 )
 
 def query_pt(
@@ -263,28 +283,153 @@ def query(
 @contextmanager
 def cache_permission_queries():
     with (
-        _permission_query_cache.activate()
+        _permission_query_cache.activate(),
+        _permitted_collection_cache.activate(),
+        _scope_collection_cache.activate(),
+        _scope_path_cache.activate(),
     ):
         yield
 
+
+def invalidate_collection_scope_cache(obj: Model) -> None:
+    if isinstance(obj, (models.Collection, Discipline, Division, Institution)):
+        _permission_query_cache.clear_keys()
+        _permitted_collection_cache.clear_keys()
+        _scope_collection_cache.clear_keys()
+        _scope_path_cache.clear_keys()
+
+
 TABLE_ACTION = Literal["read", "create", "update", "delete"]
+
+def _permitted_collection_ids(actor, resource: str, action: str) -> frozenset[int]:
+    userid = _actor_userid(actor)
+
+    def calculate():
+        collection_ids = _scope_collection_cache.get_or_set(
+            (), lambda: frozenset(models.Collection.objects.values_list('id', flat=True)),
+        )
+        return frozenset(
+            collectionid for collectionid in collection_ids
+            if query_pt(collectionid, userid, CollectionAccessPT.access).allowed
+            and query(collectionid, userid, resource, action).allowed
+        )
+
+    return _permitted_collection_cache.get_or_set(
+        PermRequest(None, userid, resource, action), calculate,
+    )
+
+
+def permitted_collections(actor, resource: str, action: str) -> QuerySet:
+    return models.Collection.objects.filter(pk__in=_permitted_collection_ids(actor, resource, action))
+
+
+def _record_collection_ids(obj: Model) -> frozenset[int]:
+    scope_path = _scope_path_cache.get_or_set(
+        type(obj), lambda: Scoping.record_scope_path(type(obj)),
+    )
+    filters = Scoping.record_scope_filter(obj, scope_path=scope_path)
+    key = None if filters is None else tuple(sorted(filters.items()))
+    return _scope_collection_cache.get_or_set(
+        key, lambda: frozenset(Scoping.collections_for_record(obj).values_list('pk', flat=True)),
+    )
+
+
+def enforce_record(
+    actor, obj: Model, resources: list[str], action: str, *,
+    collections: QuerySet | None = None,
+) -> None:
+    if not resources:
+        return
+    userid = _actor_userid(actor)
+    candidates = (
+        _record_collection_ids(obj) if collections is None
+        else frozenset(collections.values_list('pk', flat=True))
+    )
+    denials = []
+    for resource in resources:
+        if candidates.isdisjoint(_permitted_collection_ids(actor, resource, action)):
+            denials.extend(
+                PermRequest(collectionid, userid, resource, action)
+                for collectionid in sorted(candidates) or [None]
+            )
+    if denials:
+        logger.debug("record permission denied: %s, model=%s, pk=%s", denials, obj._meta.label, obj.pk)
+        raise NoMatchingRuleException(denials)
+
+
+def filter_readable(queryset: QuerySet, actor) -> QuerySet:
+    resource = f'/table/{queryset.model.specify_model.name.lower()}'
+    return Scoping.filter_records(queryset, permitted_collections(actor, resource, 'read'))
+
+
+def prepare_read_queryset(
+    queryset: QuerySet, actor, paths: Iterable[str],
+) -> tuple[QuerySet, dict[str, str]]:
+    """Authorize joins before filtering, ordering or projecting related fields."""
+    queryset = filter_readable(queryset, actor)
+    joins = {}
+    aliases = {}
+    for projection in paths:
+        model = queryset.model
+        source = []
+        path = []
+        relation_field = None
+        for name in projection.split('__'):
+            try:
+                field = model._meta.pk if name == 'pk' else model._meta.get_field(name)
+            except FieldDoesNotExist as error:
+                if relation_field is not None and relation_field.get_lookup(name) is not None:
+                    path.append(name)
+                    continue
+                raise FieldError(str(error)) from error
+            if not isinstance(field, (ForeignKey, ManyToOneRel)):
+                path.extend(projection.split('__')[len(source):])
+                break
+            source.append(field.name)
+            model = field.related_model
+            relation_field = field.field if isinstance(field, ManyToOneRel) else field
+            key = '__'.join(source)
+            if key not in joins:
+                alias = f'_read_scope_{len(joins)}'
+                allowed = filter_readable(model.objects.all(), actor)
+                queryset = queryset.alias(**{
+                    alias: FilteredRelation(
+                        '__'.join([*path, field.name]),
+                        condition=Q(Exists(allowed.filter(pk=OuterRef(alias)))),
+                    ),
+                })
+                joins[key] = alias
+            path = [joins[key]]
+        aliases[projection] = '__'.join(path)
+    return queryset, aliases
+
 
 def check_table_permissions(collection, actor, obj, action: TABLE_ACTION) -> None:
     if isinstance(obj, Table):
         name = obj.name.lower()
     else:
         name = obj.specify_model.name.lower()
-    enforce(collection, actor, [f"/table/{name}"], action)
+    if isinstance(obj, Model):
+        enforce_record(actor, obj, [f"/table/{name}"], action)
+    else:
+        enforce(collection, actor, [f"/table/{name}"], action)
 
 def has_table_permission(collection_id, user_id, table_name: str, action: TABLE_ACTION) -> bool:
     return query(collection_id, user_id, f'/table/{table_name.lower()}', action).allowed
 
-def check_field_permissions(collection, actor, obj, fields: Iterable[str], action: str) -> None:
+def check_field_permissions(
+    collection, actor, obj, fields: Iterable[str], action: str, *,
+    collections: QuerySet | None = None,
+) -> None:
     if isinstance(obj, Table):
         table = obj.name.lower()
     else:
         table = obj.specify_model.name.lower()
-    enforce(collection, actor, [f"/field/{table}/{field}" for field in fields], action)
+    resources = [f"/field/{table}/{field}" for field in fields]
+    if isinstance(obj, Model):
+        enforce_record(actor, obj, resources, action, collections=collections)
+    else:
+        enforce(collection, actor, resources, action)
 
 def table_permissions_checker(collection, actor, action: TABLE_ACTION) -> Callable[[Any], None]:
     def checker(obj) -> None:
