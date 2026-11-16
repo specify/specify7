@@ -381,11 +381,25 @@ def filter_readable(queryset: QuerySet, actor) -> QuerySet:
     return Scoping.filter_records(queryset, permitted_collections(actor, resource, 'read'))
 
 
+def _filter_readable_for_list(queryset: QuerySet, actor) -> QuerySet:
+    """Include globally authorized empty hierarchy scopes in list reads."""
+    readable = filter_readable(queryset, actor)
+    model = queryset.model
+    if model in (Discipline, Division, Institution) and has_table_permission(
+        None, _actor_userid(actor), model.specify_model.name, 'read',
+    ):
+        collections = models.Collection.objects.filter(**{
+            Scoping.collection_lookup(ScopeType.from_model(model)): OuterRef('pk'),
+        })
+        return readable | queryset.filter(~Exists(collections))
+    return readable
+
+
 def prepare_read_queryset(
     queryset: QuerySet, actor, paths: Iterable[str],
 ) -> tuple[QuerySet, dict[str, str]]:
     """Authorize joins before filtering, ordering or projecting related fields."""
-    queryset = filter_readable(queryset, actor)
+    queryset = _filter_readable_for_list(queryset, actor)
     joins = {}
     aliases = {}
     for projection in paths:
@@ -410,7 +424,7 @@ def prepare_read_queryset(
             key = '__'.join(source)
             if key not in joins:
                 alias = f'_read_scope_{len(joins)}'
-                allowed = filter_readable(model.objects.all(), actor)
+                allowed = _filter_readable_for_list(model.objects.all(), actor)
                 queryset = queryset.alias(**{
                     alias: FilteredRelation(
                         '__'.join([*path, field.name]),

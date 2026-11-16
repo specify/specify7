@@ -79,6 +79,61 @@ class CollectionScopeApiTests(ApiTests):
                     collections=spmodels.Collection.objects.none(),
                 )
 
+    def test_empty_hierarchy_lists_require_global_read_permissions(self):
+        division = spmodels.Division.objects.create(
+            name='Empty division', institution=self.institution,
+        )
+        discipline = spmodels.Discipline.objects.create(
+            name='Empty discipline', type='botany', datatype=self.datatype,
+            division=division, geographytreedef=self.geographytreedef,
+            geologictimeperiodtreedef=self.geologictimeperiodtreedef,
+        )
+        foreign = spmodels.Discipline.objects.create(
+            name='Restricted discipline', type='botany', datatype=self.datatype,
+            division=self.division, geographytreedef=self.geographytreedef,
+            geologictimeperiodtreedef=self.geologictimeperiodtreedef,
+        )
+        self.other_collection.discipline = foreign
+        self.other_collection.save()
+        for resource, action, allowed in (
+            (None, None, False), ('%', 'delete', False),
+            ('/table/%', 'read', True), ('%', '%', True),
+        ):
+            with self.subTest(resource=resource, action=action):
+                models.UserPolicy.objects.filter(collection__isnull=True).delete()
+                if resource is not None:
+                    models.UserPolicy.objects.create(
+                        collection=None, specifyuser=self.specifyuser,
+                        resource=resource, action=action,
+                    )
+                for obj in (discipline, division):
+                    table = obj.specify_model.name.lower()
+                    response = self.client.get(f'/api/specify/{table}/{obj.pk}/')
+                    self.assertEqual(response.status_code, 200 if allowed else 403, response.content)
+                    response = self.client.get(f'/api/specify/{table}/', {'id': obj.pk})
+                    self.assertEqual(response.status_code, 200, response.content)
+                    self.assertEqual(
+                        [row['id'] for row in response.json()['objects']],
+                        [obj.pk] if allowed else [],
+                    )
+                response = self.client.get('/api/specify/discipline/', {'id': foreign.pk})
+                self.assertEqual(response.status_code, 200, response.content)
+                self.assertEqual(
+                    [row['id'] for row in response.json()['objects']],
+                    [foreign.pk] if action == '%' else [],
+                )
+                response = self.client.get('/table_rows/specify_rows/discipline/', {
+                    'fields': 'id,division__name', 'id': discipline.pk,
+                })
+                self.assertEqual(response.status_code, 200, response.content)
+                self.assertEqual(
+                    response.json(), [[discipline.pk, division.name]] if allowed else [],
+                )
+                with permissions.cache_permission_queries():
+                    self.assertFalse(permissions.filter_readable(
+                        spmodels.Discipline.objects.filter(pk=discipline.pk), self.agent,
+                    ).exists())
+
     def test_collection_membership_fallback_matches_instance_and_queryset_access(self):
         obj = self.collectionobjects[0]
         for membership, collection, allowed in (
