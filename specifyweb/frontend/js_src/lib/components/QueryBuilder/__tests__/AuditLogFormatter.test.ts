@@ -22,6 +22,15 @@ overrideAjax(
     }) as never
 );
 
+overrideAjax(
+  getResourceApiUrl('CollectionObject', 456),
+  () =>
+    addMissingFields('CollectionObject', {
+      id: 456,
+      catalogNumber: '456',
+    }) as never
+);
+
 // [QueryBuilder] Format audit log field names
 test('formats audit log field names', async () => {
   const fieldSpecs = [
@@ -40,7 +49,7 @@ test('formats audit log field names', async () => {
     tables.CollectionObject.tableId,
     'catalogNumber',
     123,
-    null,
+    456,
   ]);
 
   expect(result[2]).toBe(
@@ -51,5 +60,9 @@ test('formats audit log field names', async () => {
       href: new tables.CollectionObject.Resource({ id: 123 }).viewUrl(),
     },
   });
-  expect(result[4]).toBe('');
+  expect(result[4]).toMatchObject({
+    props: {
+      href: new tables.CollectionObject.Resource({ id: 456 }).viewUrl(),
+    },
+  });
 });
