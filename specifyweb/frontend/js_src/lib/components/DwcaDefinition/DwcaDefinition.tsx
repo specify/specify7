@@ -1383,6 +1383,10 @@ export function parseDefinition(data: string | null): RA<Mapping> {
         'searchSynonymy',
         queryNode?.getAttribute('searchSynonymy') === 'true'
       );
+      query.set(
+        'selectDistinct',
+        queryNode?.getAttribute('selectDistinct') === 'true'
+      );
       query.set('fields', fields);
       const rowType = stanza.getAttribute('rowType') ?? '';
       const extensionDefinition = extension
@@ -1504,6 +1508,8 @@ export function serializeDefinition(mappings: RA<Mapping>): string {
     query.setAttribute('contextTableId', String(mapping.baseTable.tableId));
     if (mapping.query.get('searchSynonymy'))
       query.setAttribute('searchSynonymy', 'true');
+    if (mapping.query.get('selectDistinct'))
+      query.setAttribute('selectDistinct', 'true');
     let displayIndex = 0;
     let idIndex = -1;
     mapping.fields.forEach((field, index) => {
@@ -2042,6 +2048,7 @@ export function QueryMapping({
         onChange={({
           fields: newFields,
           searchSynonymy,
+          isDistinct,
           fieldIdentities,
         }): void => {
           /*
@@ -2054,7 +2061,8 @@ export function QueryMapping({
             if (
               newFields.length === 0 ||
               (fieldShapesEqual(mapping.fields, newFields) &&
-                mapping.query.get('searchSynonymy') === searchSynonymy)
+                mapping.query.get('searchSynonymy') === searchSynonymy &&
+                mapping.query.get('selectDistinct') === isDistinct)
             ) {
               if (newFields.length > 0) queryBuilderInitialized.current = true;
               return;
@@ -2068,7 +2076,9 @@ export function QueryMapping({
           );
           handleChange({
             ...updated,
-            query: updated.query.set('searchSynonymy', searchSynonymy),
+            query: updated.query
+              .set('searchSynonymy', searchSynonymy)
+              .set('selectDistinct', isDistinct),
           });
         }}
         canRemoveField={(field): boolean => !isIdentifierField(field)}

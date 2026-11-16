@@ -16,6 +16,7 @@ from django.test import Client, TestCase
 
 from specifyweb.backend.export.feed import update_feed
 from specifyweb.backend.notifications.models import Message
+from specifyweb.backend.stored_queries.execution import query_to_csv
 from specifyweb.backend.stored_queries.tests.tests import SQLAlchemySetup
 from specifyweb.specify.datamodel import datamodel
 from specifyweb.specify.models import (
@@ -47,6 +48,12 @@ class DwcaValidationTest(TestCase):
         self.assertFalse(Query.from_xml(node).search_synonymy)
         node.set('searchSynonymy', 'true')
         self.assertTrue(Query.from_xml(node).search_synonymy)
+
+    def test_preserves_distinct_in_export_queries(self):
+        node = ET.fromstring(DWCA_DEFINITION).find('core/queries/query')
+        self.assertFalse(Query.from_xml(node).distinct)
+        node.set('selectDistinct', 'true')
+        self.assertTrue(Query.from_xml(node).distinct)
 
     def test_preserves_strict_matching_in_export_query_fields(self):
         for strict in (False, True):
@@ -282,12 +289,23 @@ class ExportFeedTests(SQLAlchemySetup):
         )
 
     def test_update_feed_generates_archive_and_notification(self):
+        definition = Spappresourcedata.objects.get(
+            spappresource__name='DwCATestDefinition'
+        )
+        definition.data = DWCA_DEFINITION.replace(
+            'name="collection_objects.csv"',
+            'name="collection_objects.csv" selectDistinct="true"',
+        ).encode()
+        definition.save(update_fields=['data'])
         with tempfile.TemporaryDirectory() as tmp:
             with patch('specifyweb.backend.export.feed.FEED_DIR', tmp):
                 # make_dwca must run queries against the Django test database
                 with patch('specifyweb.backend.export.dwca.session_context', ExportFeedTests.test_session_context):
                     with patch('specifyweb.backend.stored_queries.execution.set_group_concat_max_len', noop):
-                        update_feed(force=True)
+                        with patch('specifyweb.backend.export.dwca.query_to_csv', wraps=query_to_csv) as export_query:
+                            update_feed(force=True)
+            self.assertTrue(export_query.call_args_list)
+            self.assertTrue(all(call.kwargs['distinct'] for call in export_query.call_args_list))
 
             path = os.path.join(tmp, 'test_export.zip')
             self.assertTrue(os.path.exists(path))

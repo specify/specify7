@@ -299,6 +299,19 @@ test('preserves Search Synonymy when loading and saving definitions', () => {
   ).toBe(true);
 });
 
+test('preserves Distinct when loading and saving definitions', () => {
+  const xml = `<archive><core rowType="http://rs.tdwg.org/dwc/terms/Occurrence"><queries><query contextTableId="1" selectDistinct="true">
+    <id stringId="1.collectionobject.guid" term="${occurrenceId}" />
+  </query></queries></core></archive>`;
+  const mappings = parseDefinition(xml);
+  expect(mappings[0].query.get('selectDistinct')).toBe(true);
+  expect(
+    parseDefinition(serializeDefinition(mappings))[0].query.get(
+      'selectDistinct'
+    )
+  ).toBe(true);
+});
+
 test('preserves strict filters when loading and saving definitions', () => {
   const xml = `<archive><core rowType="http://rs.tdwg.org/dwc/terms/Occurrence"><queries><query contextTableId="1">
     <id stringId="1.collectionobject.guid" term="${occurrenceId}" />

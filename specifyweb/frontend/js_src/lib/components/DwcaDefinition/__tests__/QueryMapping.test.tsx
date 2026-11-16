@@ -9,8 +9,25 @@ import { UnloadProtectsContext } from '../../Router/UnloadProtect';
 import { parseDefinition, QueryMapping, TermPicker } from '../DwcaDefinition';
 import { defaultTemplates } from '../data/defaultTemplates';
 
+let mockQueryBuilderOnChange:
+  | ((changes: {
+      readonly fields: NonNullable<
+        ReturnType<typeof parseDefinition>
+      >[number]['fields'];
+      readonly searchSynonymy: boolean;
+      readonly isDistinct: boolean;
+      readonly fieldIdentities: readonly [];
+    }) => void)
+  | undefined;
 jest.mock('../../QueryBuilder/Wrapped', () => ({
-  QueryBuilder: (): null => null,
+  QueryBuilder: ({
+    onChange,
+  }: {
+    readonly onChange: typeof mockQueryBuilderOnChange;
+  }): null => {
+    mockQueryBuilderOnChange = onChange;
+    return null;
+  },
 }));
 let mockSavedQueries:
   | {
@@ -28,6 +45,7 @@ jest.mock('../../../hooks/useAsyncState', () => ({
 requireContext();
 beforeEach(() => {
   mockSavedQueries = undefined;
+  mockQueryBuilderOnChange = undefined;
 });
 afterEach(() => {
   jest.restoreAllMocks();
@@ -303,6 +321,33 @@ test('confirms before fetching a replacement saved query', () => {
   selectQuery();
   fireEvent.click(screen.getByRole('button', { name: 'Replace mapping' }));
   expect(fetchQuery).toHaveBeenCalledWith('SpQuery', 42);
+});
+
+test('keeps Distinct when the embedded query builder changes', () => {
+  const [mapping] = parseDefinition(defaultTemplates[0]!.definition);
+  expect(mapping).toBeDefined();
+  const onChange = jest.fn();
+  render(
+    <UnloadProtectsContext.Provider value={[]}>
+      <QueryMapping
+        mapping={mapping!}
+        hasMappingsToReset={false}
+        hasFileNameError={false}
+        onCoreChange={jest.fn()}
+        onChange={onChange}
+      />
+    </UnloadProtectsContext.Provider>
+  );
+  act(() => {
+    mockQueryBuilderOnChange?.({
+      fields: mapping!.fields,
+      searchSynonymy: false,
+      isDistinct: true,
+      fieldIdentities: [],
+    });
+  });
+  expect(onChange).toHaveBeenCalledTimes(1);
+  expect(onChange.mock.calls[0]?.[0].query.get('selectDistinct')).toBe(true);
 });
 
 test('discards a saved-query replacement after the mapping changes', async () => {
