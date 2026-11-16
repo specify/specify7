@@ -14,6 +14,8 @@ jest.mock('../../Forms/ResourceView', () => ({
   ResourceView: jest.fn(() => null),
 }));
 
+afterEach(() => jest.restoreAllMocks());
+
 requireContext();
 
 const fields: readonly QueryField[] = [
@@ -26,20 +28,36 @@ const fields: readonly QueryField[] = [
   },
 ];
 
+const fieldRecords = [
+  {
+    id: 1,
+    stringId: '1.collectionobject.lastName',
+    fieldName: 'lastName',
+    tableList: '1',
+    isDisplay: true,
+    isRelFld: false,
+    sortType: 0,
+    position: 0,
+    operStart: 8,
+    startValue: '',
+  },
+] as never;
+
 // [QueryBuilder] Create record set from all results
 test('creates a record set from the whole query', async () => {
-  const warn = jest.spyOn(console, 'warn').mockImplementation(() => undefined);
+  jest.spyOn(console, 'warn').mockImplementation(() => undefined);
   const queryResource = new tables.SpQuery.Resource(
     { id: 5, name: 'All results' },
     { noBusinessRules: true }
   );
+  const getQueryFieldRecords = jest.fn(() => fieldRecords);
   const user = userEvent.setup();
   render(
     <UnloadProtectsContext.Provider value={[]}>
       <MakeRecordSetButton
         baseTableName="Agent"
         fields={fields}
-        getQueryFieldRecords={undefined}
+        getQueryFieldRecords={getQueryFieldRecords}
         queryResource={queryResource}
         sourceRecordSetId={undefined}
       />
@@ -57,18 +75,27 @@ test('creates a record set from the whole query', async () => {
   });
 
   const props = jest.mocked(ResourceView).mock.calls.at(-1)![0];
+  expect(getQueryFieldRecords).toHaveBeenCalledTimes(1);
   expect(props.resource?.get('name')).toBe('All results');
   expect(props.resource?.get('dbTableId')).toBe(tables.Agent.tableId);
-  expect(props.resource?.get('fromQuery')).toEqual(
+  const fromQuery = props.resource?.get('fromQuery') as unknown as {
+    readonly fields: readonly Record<string, unknown>[];
+  };
+  expect(fromQuery).toEqual(
     expect.objectContaining({
       name: 'All results',
       recordsetid: undefined,
     })
   );
-  expect(warn).toHaveBeenCalledWith(
-    expect.stringContaining('unknown field fromquery'),
-    expect.anything(),
-    expect.anything()
+  expect(fromQuery.fields).toHaveLength(1);
+  expect(fromQuery.fields[0]).toEqual(
+    expect.objectContaining({
+      fieldname: 'lastName',
+      stringid: '1.collectionobject.lastName',
+      startvalue: '',
+    })
   );
-  warn.mockRestore();
+  expect((props.resource as unknown as { url: string }).url).toBe(
+    '/stored_query/make_recordset/'
+  );
 });
