@@ -12,6 +12,7 @@ from django.apps import apps
 from specifyweb.backend.permissions.permissions import TABLE_ACTION, check_field_permissions, check_table_permissions, invalidate_collection_scope_cache, prepare_read_queryset
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 from specifyweb.backend.workbench.upload.auditlog import auditlog
+from specifyweb.backend.trees.extras import Tree
 from specifyweb.specify import models
 from specifyweb.specify.api.api_utils import objs_to_data_, CollectionPayload
 from specifyweb.specify.utils.autonumbering import autonumber_and_save
@@ -99,6 +100,8 @@ def create_obj(collection, agent, model, data: dict[str, Any], parent_obj=None, 
     obj = model()
     _, _, handle_remote_to_ones = handle_fk_fields(collection, agent, obj, data)
     set_fields_from_data(obj, data)
+    if isinstance(obj, Tree):
+        obj.set_rank_and_definition()
     set_field_if_exists(obj, 'createdbyagent', agent)
     target_collection_id = getattr(obj, 'collection_id', None)
     if target_collection_id is None:
@@ -183,6 +186,8 @@ def update_obj(collection, agent, name: str, id, version, data: dict[str, Any], 
     dependents_to_delete, fk_dirty, handle_remote_to_ones = handle_fk_fields(collection, agent, obj, data)
     dirty = fk_dirty + set_fields_from_data(obj, data)
 
+    if isinstance(obj, Tree):
+        obj.set_rank_and_definition()
     check_table_permissions(collection, agent, obj, "update")
     dirty_fields = [d['field_name'] for d in dirty]
     _check_destination_scope(collection, agent, obj, data, "update")

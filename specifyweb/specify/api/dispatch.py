@@ -156,7 +156,7 @@ def rows(request, model_name: str) -> HttpResponse:
     if not form.is_valid():
         return HttpResponseBadRequest(toJson(form.errors), content_type='application/json')
 
-    aliases = {}
+    aliases: dict[str, str] = {}
     fields = form.cleaned_data['fields'].split(',')
     try:
         query = apply_filters(

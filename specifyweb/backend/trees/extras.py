@@ -34,6 +34,11 @@ class Tree(ModelWithTable):
     class Meta:
         abstract = True
 
+    def set_rank_and_definition(self):
+        """Resolve rank-derived fields before authorization or persistence."""
+        self.rankid = self.definitionitem.rankid
+        self.definition = self.definitionitem.treedef
+
     def save(self, *args, skip_tree_extras=False, **kwargs):
         collection = kwargs.pop("collection", None)
         user = kwargs.pop("user", None)
@@ -45,8 +50,7 @@ class Tree(ModelWithTable):
             return save()
 
         model = type(self)
-        self.rankid = self.definitionitem.rankid
-        self.definition = self.definitionitem.treedef
+        self.set_rank_and_definition()
 
         prev_self = None if self.id is None \
                     else model.objects.select_for_update().get(id=self.id)

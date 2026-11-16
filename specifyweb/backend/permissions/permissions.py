@@ -364,12 +364,12 @@ def enforce_record(
     ):
         enforce(None, actor, resources, action)
         return
-    denials = []
+    denials: list[PermRequest] = []
     for resource in resources:
         if candidates.isdisjoint(_permitted_collection_ids(actor, resource, action)):
             denials.extend(
                 PermRequest(collectionid, userid, resource, action)
-                for collectionid in sorted(candidates) or [None]
+                for collectionid in sorted(candidates) or (None,)
             )
     if denials:
         logger.debug("record permission denied: %s, model=%s, pk=%s", denials, obj._meta.label, obj.pk)
@@ -400,12 +400,12 @@ def prepare_read_queryset(
 ) -> tuple[QuerySet, dict[str, str]]:
     """Authorize joins before filtering, ordering or projecting related fields."""
     queryset = _filter_readable_for_list(queryset, actor)
-    joins = {}
-    aliases = {}
+    joins: dict[str, str] = {}
+    aliases: dict[str, str] = {}
     for projection in paths:
         model = queryset.model
-        source = []
-        path = []
+        source: list[str] = []
+        path: list[str] = []
         relation_field = None
         for name in projection.split('__'):
             try:
@@ -419,12 +419,15 @@ def prepare_read_queryset(
                 path.extend(projection.split('__')[len(source):])
                 break
             source.append(field.name)
-            model = field.related_model
+            related_model = field.related_model
+            if isinstance(related_model, str):
+                raise FieldError(f'Unresolved relationship {model._meta.label}.{field.name}')
+            model = related_model
             relation_field = field.field if isinstance(field, ManyToOneRel) else field
             key = '__'.join(source)
             if key not in joins:
                 alias = f'_read_scope_{len(joins)}'
-                allowed = _filter_readable_for_list(model.objects.all(), actor)
+                allowed = _filter_readable_for_list(model._default_manager.all(), actor)
                 queryset = queryset.alias(**{
                     alias: FilteredRelation(
                         '__'.join([*path, field.name]),

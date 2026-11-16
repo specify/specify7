@@ -709,6 +709,42 @@ class CollectionScopeApiTests(ApiTests):
                 response = self.client.get(f'/api/specify/{table}/{records[1].id}/')
                 self.assertEqual(response.status_code, 403, response.content)
 
+    def test_tree_writes_authorize_the_definition_implied_by_the_rank(self):
+        foreign = spmodels.Discipline.objects.create(
+            name='Restricted discipline', type='botany', datatype=self.datatype,
+            division=self.division, geographytreedef=self.geographytreedef,
+            geologictimeperiodtreedef=self.geologictimeperiodtreedef,
+        )
+        self.other_collection.discipline = foreign
+        self.other_collection.save()
+        self.grant_other_collection('/system/sp7/collection', 'access')
+        self.grant_other_collection('%', 'read')
+        definitions = [
+            spmodels.Taxontreedef.objects.create(name=discipline.name, discipline=discipline)
+            for discipline in (self.discipline, foreign)
+        ]
+        ranks = [definition.treedefitems.create(name='Root', rankid=0) for definition in definitions]
+        taxon = spmodels.Taxon.objects.create(
+            name='Allowed root', definition=definitions[0], definitionitem=ranks[0],
+        )
+        for method, url, data in (
+            ('post', '/api/specify/taxon/', {'name': 'Unauthorized root'}),
+            ('post', '/api/specify/taxon/', {
+                'name': 'Unauthorized root',
+                'definition': f'/api/specify/taxontreedef/{definitions[0].id}/',
+            }),
+            ('put', f'/api/specify/taxon/{taxon.id}/', {'version': taxon.version}),
+        ):
+            with self.subTest(method=method, data=data):
+                response = getattr(self.client, method)(url, {
+                    **data, 'definitionitem': f'/api/specify/taxontreedefitem/{ranks[1].id}/',
+                }, content_type='application/json')
+                self.assertEqual(response.status_code, 403, response.content)
+        taxon.refresh_from_db()
+        self.assertEqual(taxon.definition_id, definitions[0].id)
+        self.assertEqual(taxon.definitionitem_id, ranks[0].id)
+        self.assertFalse(spmodels.Taxon.objects.filter(name='Unauthorized root').exists())
+
     def test_taxon_rank_without_discipline_uses_institution_scope(self):
         rank = self.taxontreedef.treedefitems.create(name='Root', rankid=0)
         self.assertIsNone(Scoping.record_scope_filter(rank))
