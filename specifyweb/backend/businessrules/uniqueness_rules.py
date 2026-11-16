@@ -9,7 +9,8 @@ from typing import Any, TypedDict, Iterable
 
 from django.apps import apps
 from django.db import connections, transaction
-from django.db.models import Q, Count
+from django.db.models import Q, Count, F, Func, CharField, TextField
+from django.db.models.lookups import Exact
 from django.db.migrations.recorder import MigrationRecorder
 from django.core.exceptions import ObjectDoesNotExist, FieldDoesNotExist
 from specifyweb.specify.api.crud import get_model
@@ -271,6 +272,12 @@ def validate_unique(model, instance):
         conflicts_query = model.objects.only('id')
 
         conflicts = conflicts_query.filter(**matchable)
+        # MySQL text equality inherits the column's often case-insensitive
+        # collation. Configurable rules must compare the actual capitalization.
+        if not rule.is_database_constraint:
+            for field, value in matchable.items():
+                if isinstance(value, str):
+                    conflicts = conflicts.filter(Exact(Func(F(field), function='BINARY'), value))
         if instance.id is not None:
             conflicts = conflicts.exclude(id=instance.id)
         if conflicts.exists():
@@ -320,9 +327,18 @@ def check_uniqueness(model_name: str, raw_fields: list[str], raw_scopes: list[st
     queryset = django_model.objects
     value_fields: list[str] = [*all_fields]
 
+    # Include binary text expressions in GROUP BY so differently capitalized
+    # values are not reported as duplicates by case-insensitive DB collations.
+    case_sensitive_fields = {
+        f'_unique_case_{index}': Func(F(field), function='BINARY')
+        for index, field in enumerate(all_fields)
+        if isinstance(resolve_model_field(django_model, field), (CharField, TextField))
+    }
+
     duplicates = (
         queryset
-        .values(*value_fields)
+        .annotate(**case_sensitive_fields)
+        .values(*value_fields, *case_sensitive_fields)
         .annotate(**{duplicates_field: Count('id')})
         .filter(strict_filters)
         .filter(**{f"{duplicates_field}__gt": 1})

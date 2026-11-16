@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 
 from specifyweb.backend.stored_queries import models
 from specifyweb.backend.stored_queries.execution import add_fields_to_query
-from specifyweb.backend.stored_queries.query_construct import QueryConstruct
+from specifyweb.backend.stored_queries.query_construct_model import QueryConstruct
 from specifyweb.backend.stored_queries.queryfield import fields_from_json
 
 

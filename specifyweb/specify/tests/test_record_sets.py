@@ -1,5 +1,8 @@
-from specifyweb.specify.tests.test_api import ApiTests
-from specifyweb.specify.models import Recordset, Recordsetitem, Collectionobject
+from specifyweb.specify.api.crud import get_resource, post_resource, update_obj
+from specifyweb.specify.api.exceptions import RecordSetException
+from specifyweb.specify.api.serializers import uri_for_model
+from specifyweb.specify.models import Collectionobject, Recordset, Recordsetitem
+from specifyweb.specify.tests.test_api import ApiTests, skip_perms_check
 
 
 
@@ -108,3 +111,150 @@ class RecordSetCreationTests(ApiTests):
             recordset.recordsetitems.count(),
             matching_cos.count(),
         )
+
+
+class RecordSetEditingTests(ApiTests):
+    def test_edit_existing_record_set(self):
+        """Edit an existing record set by renaming it and replacing one item."""
+        recordset = Recordset.objects.create(
+            collectionmemberid=self.collection.id,
+            dbtableid=Collectionobject.specify_model.tableId,
+            name="Original record set",
+            type=0,
+            specifyuser=self.specifyuser,
+        )
+        first = self.collectionobjects[0]
+        second = self.collectionobjects[1]
+        third = self.collectionobjects[2]
+        recordset.recordsetitems.create(recordid=first.id)
+        recordset.recordsetitems.create(recordid=second.id)
+
+        data = get_resource("recordset", recordset.id, skip_perms_check)
+        data["name"] = "Edited record set"
+        data["recordsetitems"] = [
+            {"recordid": item.recordid}
+            for item in recordset.recordsetitems.all()
+            if item.recordid != second.id
+        ]
+        data["recordsetitems"].append({"recordid": third.id})
+
+        update_obj(
+            self.collection,
+            self.agent,
+            "recordset",
+            data["id"],
+            data["version"],
+            data,
+        )
+
+        recordset.refresh_from_db()
+        self.assertEqual(recordset.name, "Edited record set")
+        self.assertEqual(recordset.version, data["version"] + 1)
+        self.assertEqual(
+            set(recordset.recordsetitems.values_list("recordid", flat=True)),
+            {first.id, third.id},
+        )
+
+
+class RecordSetNestingTests(ApiTests):
+    def test_add_record_set_to_record_set(self):
+        """Add an existing record set as a record in another record set."""
+        inner = Recordset.objects.create(
+            collectionmemberid=self.collection.id,
+            dbtableid=Collectionobject.specify_model.tableId,
+            name="Inner record set",
+            type=0,
+            specifyuser=self.specifyuser,
+        )
+        inner.recordsetitems.create(recordid=self.collectionobjects[0].id)
+
+        outer = Recordset.objects.create(
+            collectionmemberid=self.collection.id,
+            dbtableid=Recordset.specify_model.tableId,
+            name="Outer record set",
+            type=0,
+            specifyuser=self.specifyuser,
+        )
+
+        post_resource(
+            self.collection,
+            self.agent,
+            "recordsetitem",
+            {
+                "recordid": inner.id,
+                "recordset": uri_for_model("recordset", outer.id),
+            },
+        )
+
+        nested = post_resource(
+            self.collection,
+            self.agent,
+            "recordset",
+            {
+                "name": "Nested record set",
+                "dbtableid": Collectionobject.specify_model.tableId,
+                "type": 0,
+                "specifyuser": uri_for_model(
+                    "specifyuser", self.specifyuser.id
+                ),
+            },
+            recordsetid=outer.id,
+        )
+
+        with self.assertRaises(RecordSetException):
+            post_resource(
+                self.collection,
+                self.agent,
+                "collectionobject",
+                {
+                    "collection": uri_for_model(
+                        "collection", self.collection.id
+                    ),
+                    "catalognumber": "not-a-record-set",
+                },
+                recordsetid=outer.id,
+            )
+
+        outer.refresh_from_db()
+        self.assertEqual(
+            set(outer.recordsetitems.values_list("recordid", flat=True)),
+            {inner.id, nested.id},
+        )
+        self.assertEqual(inner.recordsetitems.count(), 1)
+
+
+class RecordSetRenameTests(ApiTests):
+    def test_rename_record_set(self):
+        """Rename an existing record set without changing its records."""
+        recordset = Recordset.objects.create(
+            collectionmemberid=self.collection.id,
+            dbtableid=Collectionobject.specify_model.tableId,
+            name="Original record set name",
+            type=0,
+            specifyuser=self.specifyuser,
+        )
+        first = self.collectionobjects[0]
+        second = self.collectionobjects[1]
+        recordset.recordsetitems.create(recordid=first.id)
+        recordset.recordsetitems.create(recordid=second.id)
+
+        data = get_resource("recordset", recordset.id, skip_perms_check)
+        data["name"] = "Renamed record set"
+
+        update_obj(
+            self.collection,
+            self.agent,
+            "recordset",
+            data["id"],
+            data["version"],
+            data,
+        )
+
+        recordset.refresh_from_db()
+        self.assertEqual(recordset.name, "Renamed record set")
+        self.assertEqual(recordset.version, data["version"] + 1)
+        self.assertEqual(
+            set(recordset.recordsetitems.values_list("recordid", flat=True)),
+            {first.id, second.id},
+        )
+

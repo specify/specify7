@@ -2,17 +2,24 @@ import React from 'react';
 
 import { formsText } from '../../localization/forms';
 import { clamp } from '../../utils/utils';
+import { Button } from '../Atoms/Button';
 import { Input } from '../Atoms/Form';
-import { SlideDirection, useSliderButtons } from './useSliderButtons';
+import { icons } from '../Atoms/Icons';
+import { userPreferences } from '../Preferences/userPreferences';
 
 export function Slider({
   value,
   count,
   onChange: handleChange,
+  enableKeyboardShortcuts,
 }: {
   readonly value: number;
   readonly count: number;
   readonly onChange: ((newValue: number) => void) | undefined;
+  /**
+   * If true, keyboard shortcuts will be enabled for this slider
+   */
+  readonly enableKeyboardShortcuts: boolean;
 }): JSX.Element | null {
   const [pendingValue, setPendingValue] = React.useState<number>(value);
   const inputRef = React.useRef<HTMLInputElement | null>(null);
@@ -26,35 +33,67 @@ export function Slider({
   const max = Math.max(1, count);
   const resolvedValue = Number.isNaN(pendingValue) ? '' : pendingValue + 1;
 
-  const handleSlide = React.useCallback(
-    (direction: SlideDirection) => {
-      if (direction === 'first') handleChange?.(0);
-      if (direction === 'previous') handleChange?.(value - 1);
-      if (direction === 'next') handleChange?.(value + 1);
-      if (direction === 'last') handleChange?.(count - 1);
-    },
-    [value, handleChange]
-  );
+  const goToFirstRecord =
+    value <= 0 || handleChange === undefined
+      ? undefined
+      : (): void => handleChange?.(0);
+  const goToPreviousRecord =
+    value <= 0 || handleChange === undefined
+      ? undefined
+      : (): void => handleChange(value - 1);
+  const goToNextRecord =
+    value + 1 >= count || handleChange === undefined
+      ? undefined
+      : (): void => handleChange?.(value + 1);
+  const goToLastRecord =
+    value + 1 >= count || handleChange === undefined
+      ? undefined
+      : (): void => handleChange?.(count - 1);
 
-  const {
-    navigateToFirst,
-    navigateToPrevious,
-    navigateToNext,
-    navigateToLast,
-  } = useSliderButtons({
-    buttonsDisabled: {
-      first: value === 0,
-      previous: value === 0,
-      next: value + 1 === count,
-      last: value + 1 == count,
-    },
-    onChange: handleSlide,
-  });
+  const goToFirstRecordShortcut = userPreferences.useKeyboardShortcut(
+    'form',
+    'recordSet',
+    'goToFirstRecord',
+    enableKeyboardShortcuts ? goToFirstRecord : undefined
+  );
+  const goToPreviousRecordShortcut = userPreferences.useKeyboardShortcut(
+    'form',
+    'recordSet',
+    'goToPreviousRecord',
+    enableKeyboardShortcuts ? goToPreviousRecord : undefined
+  );
+  const goToNextRecordShortcut = userPreferences.useKeyboardShortcut(
+    'form',
+    'recordSet',
+    'goToNextRecord',
+    enableKeyboardShortcuts ? goToNextRecord : undefined
+  );
+  const goToLastRecordShortcut = userPreferences.useKeyboardShortcut(
+    'form',
+    'recordSet',
+    'goToLastRecord',
+    enableKeyboardShortcuts ? goToLastRecord : undefined
+  );
 
   return count > 0 ? (
     <nav className="flex justify-center gap-2 print:hidden">
-      {navigateToFirst}
-      {navigateToPrevious}
+      <Button.Small
+        aria-label={formsText.goToFirstRecord()}
+        disabled={goToFirstRecord === undefined}
+        title={`${formsText.goToFirstRecord()}${goToFirstRecordShortcut}`}
+        onClick={goToFirstRecord}
+      >
+        {icons.chevronDoubleLeft}
+      </Button.Small>
+      <Button.Small
+        aria-label={formsText.goToPreviousRecord()}
+        className="px-4 dark:bg-neutral-500"
+        disabled={goToPreviousRecord === undefined}
+        title={`${formsText.goToPreviousRecord()}${goToPreviousRecordShortcut}`}
+        onClick={goToPreviousRecord}
+      >
+        {icons.chevronLeft}
+      </Button.Small>
       <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-1 font-bold">
         <label
           className={`
@@ -93,8 +132,23 @@ export function Slider({
         <span>/</span>
         <span>{count}</span>
       </div>
-      {navigateToNext}
-      {navigateToLast}
+      <Button.Small
+        aria-label={formsText.goToNextRecord()}
+        className="px-4 dark:bg-neutral-500"
+        disabled={goToNextRecord === undefined}
+        title={`${formsText.goToNextRecord()}${goToNextRecordShortcut}`}
+        onClick={goToNextRecord}
+      >
+        {icons.chevronRight}
+      </Button.Small>
+      <Button.Small
+        aria-label={formsText.goToLastRecord()}
+        disabled={goToLastRecord === undefined}
+        title={`${formsText.goToLastRecord()}${goToLastRecordShortcut}`}
+        onClick={goToLastRecord}
+      >
+        {icons.chevronDoubleRight}
+      </Button.Small>
     </nav>
   ) : null;
 }

@@ -35,7 +35,6 @@ export function QueryResultsTable({
   wrapQueryResults,
   selectedRows,
   onSelected: handleSelected,
-  onRowSelected: handleRowSelected,
 }: {
   readonly table: SpecifyTable;
   readonly fieldSpecs: RA<QueryFieldSpec>;
@@ -48,7 +47,6 @@ export function QueryResultsTable({
     isSelected: boolean,
     isShiftClick: boolean
   ) => void;
-  readonly onRowSelected: (index: number) => void;
 }): JSX.Element {
   const recordFormatter = React.useMemo(
     () => getAuditRecordFormatter(fieldSpecs),
@@ -76,7 +74,6 @@ export function QueryResultsTable({
           onSelected={(isSelected, isShiftClick): void =>
             handleSelected(index, isSelected, isShiftClick)
           }
-          onRowSelected={(): void => handleRowSelected(index)}
         />
       ))}
     </>
@@ -94,7 +91,6 @@ function Row({
   showCellEllipsis,
   wrapQueryResults,
   onSelected: handleSelected,
-  onRowSelected: handleRowSelected,
 }: {
   readonly table: SpecifyTable;
   readonly fieldSpecs: RA<QueryFieldSpec>;
@@ -108,7 +104,6 @@ function Row({
   readonly showCellEllipsis: boolean;
   readonly wrapQueryResults: boolean;
   readonly onSelected?: (isSelected: boolean, isShiftClick: boolean) => void;
-  readonly onRowSelected?: () => void;
 }): JSX.Element {
   // REFACTOR: replace this with getResourceViewUrl()
   const [resource] = useLiveState<
@@ -159,14 +154,14 @@ function Row({
       `}
       role="row"
       onClick={
-        typeof handleRowSelected === 'function'
-          ? ({ target }): void =>
+        typeof handleSelected === 'function'
+          ? ({ target, shiftKey }): void =>
               /*
                * Ignore clicks on the "View" links, formatted audit log cell
-               * links, and record-list controls (e.g., the split records button)
+               * links, and record-list controls.
                */
-              (target as Element).closest('a, button') === null
-                ? handleRowSelected?.()
+              (target as Element).closest('a, button') === null && hasValidId
+                ? handleSelected?.(shiftKey || !isSelected, shiftKey)
                 : undefined
           : undefined
       }

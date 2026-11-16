@@ -44,6 +44,7 @@ USER node
 WORKDIR /home/node
 
 COPY --chown=node:node specifyweb/frontend/js_src/package*.json ./
+COPY --chown=node:node specifyweb/frontend/js_src/patches ./patches
 RUN npm ci
 RUN mkdir dist && chown node:node dist
 COPY --chown=node:node specifyweb/frontend/js_src .
@@ -277,5 +278,4 @@ FROM run-common AS run
 RUN mv specifyweb.wsgi specifyweb_wsgi.py
 
 CMD ["ve/bin/gunicorn", "-w", "3", "-b", "0.0.0.0:8000", "-t", "300", "specifyweb_wsgi"]
-
 
