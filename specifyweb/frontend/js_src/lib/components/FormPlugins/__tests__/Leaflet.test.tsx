@@ -25,12 +25,10 @@ const localityData = {
 };
 
 test('Show Map opens the map with the locality point', async () => {
-  jest
-    .mocked(fetchLocalityDataFromResource)
-    .mockImplementation(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 0));
-      return localityData as never;
-    });
+  jest.mocked(fetchLocalityDataFromResource).mockImplementation(async () => {
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    return localityData as never;
+  });
 
   const locality = new tables.Locality.Resource({ id: 1 });
   const { findByText, getByRole, user } = mount(
