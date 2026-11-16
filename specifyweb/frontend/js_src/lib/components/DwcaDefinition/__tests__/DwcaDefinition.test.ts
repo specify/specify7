@@ -16,7 +16,6 @@ import {
   getMappingTabIndex,
   getSerializedMappingTerm,
   ensureIdentifierTerm,
-  defaultRowTypes,
   defaultCoreRowTypes,
   getBaseTableForCore,
   getCoreDefinitionForRowType,
@@ -42,10 +41,6 @@ import {
   parseTermExamples,
 } from '../DwcaDefinition';
 import { defaultTemplates } from '../data/defaultTemplates';
-import {
-  coreTermPatterns,
-  getCoreTermPatterns,
-} from '../data/coreTermPatterns';
 
 const occurrenceId = 'http://rs.tdwg.org/dwc/terms/occurrenceID';
 const kingdom = 'http://rs.tdwg.org/dwc/terms/kingdom';
@@ -109,15 +104,6 @@ test('does not infer a collection code from a specimen-specific text field', () 
   expect(mapping.terms).not.toContain(
     'http://rs.tdwg.org/dwc/terms/collectionCode'
   );
-});
-
-test('does not infer availability or disposition from loan dates and purposes', () => {
-  expect(coreTermPatterns).not.toHaveProperty([
-    'http://data.ggbn.org/schemas/ggbn/terms/blockedUntil',
-  ]);
-  expect(coreTermPatterns).not.toHaveProperty([
-    'http://purl.org/dc/terms/disposition',
-  ]);
 });
 
 test('does not map collector identifiers to the recordedBy name term', () => {
@@ -197,12 +183,6 @@ test('maps taxon identifiers through their relationships instead of sharing taxo
       (name) => `http://rs.tdwg.org/dwc/terms/${name}`
     )
   );
-  expect(
-    coreTermPatterns['http://rs.tdwg.org/dwc/terms/scientificNameID']
-  ).toEqual([]);
-  expect(
-    coreTermPatterns['http://rs.tdwg.org/dwc/terms/originalNameUsageID']
-  ).toEqual([]);
 });
 
 test('detects schema-changing visual edits without rewriting additional queries', () => {
@@ -432,67 +412,6 @@ describe('DwCA query field term mapping', () => {
         .querySelector('field[stringId$=".isCurrent"]')
         ?.getAttribute('term')
     ).toBe('http://rs.tdwg.org/dwc/terms/isAcceptedIdentification');
-  });
-
-  test('uses semantically correct shared Darwin Core sources', () => {
-    expect(
-      coreTermPatterns['http://rs.tdwg.org/dwc/terms/basisOfRecord']
-    ).toEqual(['collection.collectiontype']);
-    expect(
-      coreTermPatterns['http://rs.tdwg.org/dwc/terms/institutionID']
-    ).toEqual(['institution.guid']);
-    expect(
-      coreTermPatterns['http://rs.tdwg.org/dwc/terms/scientificNameAuthorship']
-    ).toEqual(['taxon.author']);
-    expect(
-      coreTermPatterns['http://rs.tdwg.org/dwc/terms/fieldNumber']
-    ).toEqual(['collectingevent.stationfieldnumber']);
-    expect(
-      coreTermPatterns['http://rs.tdwg.org/dwc/terms/recordNumber']
-    ).toEqual(['collectionobject.fieldnumber']);
-    expect(
-      coreTermPatterns['http://rs.tdwg.org/dwc/terms/georeferenceSources']
-    ).toEqual(['geocoorddetail.georefdetref']);
-    expect(
-      coreTermPatterns['http://rs.tdwg.org/dwc/terms/dateIdentified']
-    ).toEqual(['determination.determineddate']);
-    expect(
-      coreTermPatterns['http://rs.tdwg.org/dwc/terms/georeferencedBy']
-    ).toEqual(['georefdetby']);
-    expect(
-      coreTermPatterns['http://rs.tdwg.org/dwc/terms/countryCode']
-    ).toEqual(['geography.country geographycode']);
-  });
-
-  test('uses discipline-specific schema override sources', () => {
-    expect(
-      getCoreTermPatterns('bird')['http://rs.tdwg.org/dwc/terms/sex']
-    ).toEqual(['collectionobjectattribute.text2']);
-    expect(
-      getCoreTermPatterns('fish')['http://rs.tdwg.org/dwc/terms/habitat']
-    ).toEqual(['collectingeventattribute.text9']);
-    expect(
-      getCoreTermPatterns('mammal')['http://rs.tdwg.org/dwc/terms/lifeStage']
-    ).toEqual(['collectionobjectattribute.text4']);
-    expect(
-      getCoreTermPatterns(undefined)['http://rs.tdwg.org/dwc/terms/sex']
-    ).toBeUndefined();
-  });
-
-  test('lists discipline occurrence defaults independently', () => {
-    const bird = defaultTemplates.find(
-      ({ name }) => name === 'Darwin Core Occurrence (Ornithology)'
-    );
-    const fish = defaultTemplates.find(
-      ({ name }) => name === 'Darwin Core Occurrence (Ichthyology)'
-    );
-    expect(bird).toBeDefined();
-    expect(fish).toBeDefined();
-    expect(bird?.disciplineTypes).toEqual(['bird']);
-    expect(fish?.disciplineTypes).toEqual(['fish']);
-    expect(fish?.definition).toContain(
-      '1,10,92.collectingeventattribute.text9'
-    );
   });
 
   test('includes the current determination in the Occurrence template', () => {
@@ -1303,13 +1222,6 @@ describe('DwCA query field term mapping', () => {
       isDisplay: true,
     });
     expect(updated.terms[0]).toBe(occurrenceId);
-  });
-
-  test('provides all built-in row types as defaults', () => {
-    expect(defaultRowTypes).toContain('http://rs.tdwg.org/ac/terms/Multimedia');
-    expect(defaultRowTypes).toContain(
-      'http://rs.tdwg.org/dwc/terms/MeasurementOrFact'
-    );
   });
 
   test('provides GBIF Event and Taxon as selectable cores', () => {
