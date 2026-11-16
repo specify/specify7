@@ -449,6 +449,50 @@ test('discards a saved-query replacement after a newer replacement is requested'
   ).toBeInTheDocument();
 });
 
+test('applies a saved-query replacement when the mapping has not changed', async () => {
+  const [mapping] = parseDefinition(defaultTemplates[0]!.definition);
+  expect(mapping).toBeDefined();
+  mockSavedQueries = {
+    records: [
+      {
+        id: 42,
+        name: 'Replacement query',
+        contextTableId: mapping!.baseTable.tableId,
+      },
+    ],
+  };
+  const replacementQuery = mapping!.query.set(
+    'fields',
+    mapping!.fields.slice(0, 1)
+  );
+  jest
+    .spyOn(resourceModule, 'fetchResource')
+    .mockResolvedValue(serializeResource(replacementQuery) as never);
+  const onChange = jest.fn();
+  render(
+    <UnloadProtectsContext.Provider value={[]}>
+      <QueryMapping
+        mapping={mapping!}
+        hasMappingsToReset
+        hasFileNameError={false}
+        onCoreChange={jest.fn()}
+        onChange={onChange}
+      />
+    </UnloadProtectsContext.Provider>
+  );
+  fireEvent.change(
+    screen.getByRole('combobox', { name: 'Choose Template or Query' }),
+    { target: { value: 'query:42' } }
+  );
+  fireEvent.click(screen.getByRole('button', { name: 'Replace mapping' }));
+  await act(async () => {});
+  expect(onChange).toHaveBeenCalledTimes(1);
+  expect(onChange.mock.calls[0]?.[0].fields).toHaveLength(1);
+  expect(onChange.mock.calls[0]?.[0].fields[0].stringId).toBe(
+    mapping!.fields[0]?.stringId
+  );
+});
+
 test('flags a file-name problem on the settings control', () => {
   const [mapping] = parseDefinition(`
     <archive>
