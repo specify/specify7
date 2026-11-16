@@ -7,6 +7,7 @@ from specifyweb.specify import models
 from ..datamodel import datamodel, Table, Relationship
 from specifyweb.specify.api.api_utils import strict_uri_to_model
 from specifyweb.specify.utils.field_change_info import FieldChangeInfo
+from specifyweb.specify.utils.scoping import Scoping
 from specifyweb.specify.models_utils.load_datamodel import Relationship, Table
 from typing import Any, Iterable, TypedDict, cast
 from django.core.exceptions import ObjectDoesNotExist
@@ -163,8 +164,15 @@ def _handle_fk_field(collection, agent, obj, field, value, read_checker):
     elif isinstance(value, str):
         # The related object is given by a URI reference.
         assert not dependent, f"didn't get inline data for dependent field {field_name} in {obj}: {value!r}"
-        fk_model, fk_id = strict_uri_to_model(value, field.related_model.__name__)
-        rel_obj = get_object_or_404(fk_model, id=fk_id)
+        _, fk_id = strict_uri_to_model(value, field.related_model.__name__)
+        paths = (
+            Scoping.collection_owner_paths(field.related_model)
+            if field_name in Scoping.collection_owner_fields(type(obj)) else ()
+        )
+        queryset = field.related_model.objects.all()
+        if paths:
+            queryset = queryset.select_related(*paths)
+        rel_obj = get_object_or_404(queryset, id=fk_id)
         read_checker(rel_obj)
         setattr(obj, field_name, rel_obj)
         new_related_id = fk_id

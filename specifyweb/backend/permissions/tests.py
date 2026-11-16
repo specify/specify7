@@ -8,8 +8,9 @@ from django.utils import timezone
 
 from specifyweb.specify.tests.test_api import ApiTests
 from specifyweb.specify import models as spmodels
-from specifyweb.specify.api.crud import get_collection, put_resource
+from specifyweb.specify.api.crud import _check_destination_scope, get_collection, put_resource
 from specifyweb.specify.api.validators import GetCollectionForm
+from specifyweb.specify.models_utils.relationships import handle_fk_fields
 from specifyweb.specify.utils.scoping import Scoping, ScopeType
 from . import models, permissions, initialize
 
@@ -108,6 +109,88 @@ class CollectionScopeApiTests(ApiTests):
                     permissions.check_field_permissions(
                         self.collection, self.agent, obj, fields, 'update',
                     )
+
+    def test_repeated_destination_checks_do_not_issue_queries(self):
+        children = [
+            spmodels.Determination(
+                collectionobject=parent, collectionmemberid=self.collection.id,
+            ) for parent in self.collectionobjects
+        ]
+        preparation = spmodels.Preparation(
+            collectionobject=self.collectionobjects[0], collectionmemberid=self.collection.id,
+        )
+        sample = spmodels.Materialsample(
+            preparation=preparation, collectionmemberid=self.collection.id,
+        )
+        for objects, field in ((children, 'collectionobject'), ([sample], 'preparation')):
+            with self.subTest(model=type(objects[0]).__name__):
+                with permissions.cache_permission_queries():
+                    _check_destination_scope(
+                        self.collection, self.agent, objects[0],
+                        {field: getattr(objects[0], field)}, 'update',
+                    )
+                    with self.assertNumQueries(0):
+                        for index in range(100):
+                            obj = objects[index % len(objects)]
+                            _check_destination_scope(
+                                self.collection, self.agent, obj,
+                                {field: getattr(obj, field)}, 'update',
+                            )
+
+    def test_destination_cache_uses_current_membership_and_parent_scopes(self):
+        self.grant_other_collection()
+        preparation = spmodels.Preparation(
+            collectionobject=self.collectionobjects[0], collectionmemberid=self.collection.id,
+        )
+        sample = spmodels.Materialsample(
+            preparation=preparation, collectionmemberid=self.collection.id,
+        )
+        with permissions.cache_permission_queries():
+            _check_destination_scope(
+                self.collection, self.agent, sample, {'preparation': preparation}, 'update',
+            )
+            preparation.collectionobject = self.other_object
+            with self.assertRaises(permissions.NoMatchingRuleException):
+                _check_destination_scope(
+                    self.collection, self.agent, sample, {'preparation': preparation}, 'update',
+                )
+            preparation.collectionmemberid = self.other_collection.id
+            with self.assertRaises(permissions.NoMatchingRuleException):
+                _check_destination_scope(
+                    self.collection, self.agent, sample, {'preparation': preparation}, 'update',
+                )
+            sample.collectionmemberid = self.other_collection.id
+            _check_destination_scope(
+                self.collection, self.agent, sample, {'preparation': preparation}, 'update',
+            )
+            sample.preparation = spmodels.Preparation(
+                collectionobject=self.collectionobjects[0], collectionmemberid=self.collection.id,
+            )
+            with self.assertRaises(permissions.NoMatchingRuleException):
+                _check_destination_scope(
+                    self.collection, self.agent, sample, {'preparation': sample.preparation}, 'update',
+                )
+
+    def test_destination_parent_references_load_ancestor_scopes(self):
+        preptype = spmodels.Preptype.objects.create(
+            name='Scoped preparation', isloanable=False, collection=self.collection,
+        )
+        preparation = spmodels.Preparation.objects.create(
+            collectionobject=self.collectionobjects[0], preptype=preptype,
+        )
+        data = {'preparation': f'/api/specify/preparation/{preparation.id}/'}
+        sample = spmodels.Materialsample(
+            preparation=preparation, collectionmemberid=self.collection.id,
+        )
+        with permissions.cache_permission_queries():
+            permissions.check_table_permissions(self.collection, self.agent, preparation, 'read')
+            _check_destination_scope(self.collection, self.agent, sample, data, 'create')
+            for _ in range(10):
+                sample = spmodels.Materialsample(collectionmemberid=self.collection.id)
+                with self.assertNumQueries(1):
+                    handle_fk_fields(self.collection, self.agent, sample, data.copy())
+                with self.assertNumQueries(0):
+                    _check_destination_scope(self.collection, self.agent, sample, data, 'create')
 
     def test_list_permission_query_count_does_not_grow_with_records(self):
         recordset = spmodels.Recordset.objects.create(
@@ -343,6 +426,81 @@ class CollectionScopeApiTests(ApiTests):
         self.assertIsNone(obj.remarks)
         self.assertIsNone(foreign.remarks)
         self.assertEqual(foreign.collectionobject_id, self.other_object.id)
+
+    def test_child_references_require_destination_mutation_permissions(self):
+        self.grant_other_collection('/system/sp7/collection', 'access')
+        self.grant_other_collection('%', 'read')
+        own = spmodels.Determination.objects.create(
+            collectionobject=self.collectionobjects[0], iscurrent=True,
+        )
+        foreign = spmodels.Determination.objects.create(
+            collectionobject=self.other_object, iscurrent=True,
+        )
+        count = spmodels.Determination.objects.count()
+        destination = f'/api/specify/collectionobject/{self.other_object.id}/'
+        requests = [
+            ('post', '/api/specify/determination/', {
+                'collectionobject': destination, 'iscurrent': False,
+            }),
+            ('post', '/api/specify/determination/', {
+                'collectionobject': destination, 'iscurrent': False,
+                'collectionmemberid': self.collection.id,
+            }),
+            ('put', f'/api/specify/determination/{own.id}/', {
+                'version': own.version, 'collectionobject': destination,
+            }),
+            ('put', f'/api/specify/determination/{foreign.id}/', {
+                'version': foreign.version,
+                'collectionobject': f'/api/specify/collectionobject/{self.collectionobjects[0].id}/',
+                'collectionmemberid': self.collection.id,
+            }),
+        ]
+        for method, url, data in requests:
+            with self.subTest(method=method, url=url, membership=data.get('collectionmemberid')):
+                response = getattr(self.client, method)(url, data, content_type='application/json')
+                self.assertEqual(response.status_code, 403, response.content)
+        own.refresh_from_db()
+        foreign.refresh_from_db()
+        self.assertEqual(own.collectionobject_id, self.collectionobjects[0].id)
+        self.assertEqual(foreign.collectionobject_id, self.other_object.id)
+        self.assertEqual(spmodels.Determination.objects.count(), count)
+
+    def test_authorized_child_destinations_require_matching_membership(self):
+        self.grant_other_collection()
+        destination = f'/api/specify/collectionobject/{self.other_object.id}/'
+        for membership in ({}, {'collectionmemberid': None}):
+            with self.subTest(membership=membership):
+                response = self.client.post('/api/specify/determination/', {
+                    'collectionobject': destination, 'iscurrent': False, **membership,
+                }, content_type='application/json')
+                self.assertEqual(response.status_code, 201, response.content)
+                child = spmodels.Determination.objects.get(pk=response.json()['id'])
+                self.assertEqual(child.collectionmemberid, self.other_collection.id)
+        own = spmodels.Determination.objects.create(
+            collectionobject=self.collectionobjects[0], iscurrent=True,
+        )
+        for method, url, data in (
+            ('post', '/api/specify/determination/', {'iscurrent': False}),
+            ('put', f'/api/specify/determination/{own.id}/', {'version': own.version}),
+        ):
+            with self.subTest(method=method):
+                response = getattr(self.client, method)(url, {
+                    **data, 'collectionobject': destination,
+                    'collectionmemberid': self.collection.id,
+                }, content_type='application/json')
+                self.assertEqual(response.status_code, 403, response.content)
+        response = self.client.put(f'/api/specify/determination/{own.id}/', {
+            'version': own.version, 'collectionmemberid': self.other_collection.id,
+        }, content_type='application/json')
+        self.assertEqual(response.status_code, 403, response.content)
+        response = self.client.put(f'/api/specify/determination/{own.id}/', {
+            'version': own.version, 'collectionobject': destination,
+            'collectionmemberid': self.other_collection.id,
+        }, content_type='application/json')
+        self.assertEqual(response.status_code, 200, response.content)
+        own.refresh_from_db()
+        self.assertEqual(own.collectionobject_id, self.other_object.id)
+        self.assertEqual(own.collectionmemberid, self.other_collection.id)
 
     def test_shared_scope_and_own_collection_remain_accessible(self):
         response = self.client.get(f'/api/specify/agent/{self.agent.id}/')

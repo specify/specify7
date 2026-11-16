@@ -9,7 +9,7 @@ from django.db.models.deletion import Collector
 from django.http import (HttpResponseServerError, Http404)
 from django.apps import apps
 
-from specifyweb.backend.permissions.permissions import check_field_permissions, check_table_permissions, invalidate_collection_scope_cache, prepare_read_queryset
+from specifyweb.backend.permissions.permissions import TABLE_ACTION, check_field_permissions, check_table_permissions, invalidate_collection_scope_cache, prepare_read_queryset
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 from specifyweb.backend.workbench.upload.auditlog import auditlog
 from specifyweb.specify import models
@@ -49,6 +49,15 @@ def _check_recordset_reference(collection, agent, obj) -> None:
             get_model_by_table_id(obj.recordset.dbtableid), pk=obj.recordid,
         )
         check_table_permissions(collection, agent, target, "read")
+
+def _check_destination_scope(
+    collection, agent, obj: Model, data: dict[str, Any], action: TABLE_ACTION,
+) -> None:
+    owners = Scoping.collection_owner_fields(type(obj))
+    if owners and any(name in data for name in (*owners, 'collectionmemberid', 'collection')):
+        check_table_permissions(
+            collection, agent, obj, action, destination=True,
+        )
 
 def create_obj(collection, agent, model, data: dict[str, Any], parent_obj=None, parent_relationship=None):
     """Create a new instance of 'model' and populate it with 'data'."""
@@ -92,13 +101,24 @@ def create_obj(collection, agent, model, data: dict[str, Any], parent_obj=None, 
     set_fields_from_data(obj, data)
     set_field_if_exists(obj, 'createdbyagent', agent)
     target_collection_id = getattr(obj, 'collection_id', None)
+    if target_collection_id is None:
+        for name in Scoping.collection_owner_fields(model):
+            owner = getattr(obj, name)
+            if owner is not None:
+                target_collection_id = getattr(owner, 'collection_id', None)
+                if target_collection_id is None:
+                    target_collection_id = getattr(owner, 'collectionmemberid', None)
+                if target_collection_id is not None:
+                    break
     if target_collection_id is None and parent_obj is not None:
         target_collection_id = getattr(parent_obj, 'collectionmemberid', None)
-    set_field_if_exists(
-        obj, 'collectionmemberid',
-        collection.id if target_collection_id is None else target_collection_id,
-    )
+    if data.get('collectionmemberid') is None:
+        set_field_if_exists(
+            obj, 'collectionmemberid',
+            collection.id if target_collection_id is None else target_collection_id,
+        )
     check_table_permissions(collection, agent, obj, "create")
+    _check_destination_scope(collection, agent, obj, data, "create")
     _check_recordset_reference(collection, agent, obj)
     try:
         autonumber_and_save(collection, agent.specifyuser, obj)
@@ -165,6 +185,7 @@ def update_obj(collection, agent, name: str, id, version, data: dict[str, Any], 
 
     check_table_permissions(collection, agent, obj, "update")
     dirty_fields = [d['field_name'] for d in dirty]
+    _check_destination_scope(collection, agent, obj, data, "update")
     _check_recordset_reference(collection, agent, obj)
     dirty_fields.extend(name for name, value in data.items() if isinstance(value, (list, dict)))
     check_field_permissions(

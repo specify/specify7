@@ -1,10 +1,12 @@
 from inspect import isclass
+from functools import cache
 
 from enum import Enum
 from django.db.models import Model, Q, QuerySet
 from django.core.exceptions import ObjectDoesNotExist
 
 from .. import models
+from ..datamodel import datamodel
 
 
 class ScopeType(Enum):
@@ -236,6 +238,34 @@ class ModelInstanceScope:
 class Scoping:
 
     @staticmethod
+    @cache
+    def collection_owner_fields(model_class) -> tuple[str, ...]:
+        """Find parent references that own collection-scoped child records."""
+        if not (
+            hasattr(model_class, 'collectionmemberid') or is_related(model_class, 'collection')
+        ) or Scoping.scope_type_from_class(model_class) != ScopeType.COLLECTION:
+            return ()
+        return tuple(
+            field.name for field in model_class._meta.fields
+            if field.is_relation
+            and (reverse := datamodel.reverse_relationship(
+                model_class.specify_model.get_relationship_strict(field.name),
+            )) is not None
+            and reverse.dependent
+        )
+
+    @staticmethod
+    @cache
+    def collection_owner_paths(model_class) -> tuple[str, ...]:
+        """Return ownership joins needed to validate a destination scope."""
+        paths = []
+        for name in Scoping.collection_owner_fields(model_class):
+            parent_model = model_class._meta.get_field(name).related_model
+            for path in Scoping.collection_owner_paths(parent_model) or ('',):
+                paths.append(f'{name}__{path}' if path else name)
+        return tuple(paths)
+
+    @staticmethod
     def record_scope_path(model_class) -> tuple[ScopeType, str | None]:
         """Use the same hierarchy path for instance and queryset authorization."""
         hierarchy = (models.Collection, models.Discipline, models.Division, models.Institution)
@@ -315,6 +345,7 @@ class Scoping:
 
     @staticmethod
     def collections_for_record(obj: Model) -> QuerySet:
+        """Resolve record membership, defaulting to the institution scope."""
         filters = Scoping.record_scope_filter(obj)
         if filters is None:
             filters = {

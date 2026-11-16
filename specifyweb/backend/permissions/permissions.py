@@ -323,29 +323,38 @@ def permitted_collections(actor, resource: str, action: str) -> QuerySet:
     return models.Collection.objects.filter(pk__in=_permitted_collection_ids(actor, resource, action))
 
 
-def _record_collection_ids(obj: Model) -> frozenset[int]:
+def _record_collection_ids(obj: Model, *, destination: bool = False) -> frozenset[int]:
+    """Cache scope values, intersecting current owning scopes for mutations."""
     scope_path = _scope_path_cache.get_or_set(
         type(obj), lambda: Scoping.record_scope_path(type(obj)),
     )
     filters = Scoping.record_scope_filter(obj, scope_path=scope_path)
     key = None if filters is None else tuple(sorted(filters.items()))
-    return _scope_collection_cache.get_or_set(
+    collection_ids = _scope_collection_cache.get_or_set(
         key, lambda: frozenset(Scoping.collections_for_record(obj).values_list('pk', flat=True)),
     )
+    if destination:
+        for name in Scoping.collection_owner_fields(type(obj)):
+            parent = getattr(obj, name)
+            if parent is not None:
+                collection_ids &= _record_collection_ids(parent, destination=True)
+    return collection_ids
 
 
 def enforce_record(
     actor, obj: Model, resources: list[str], action: str, *,
-    collections: QuerySet | None = None,
+    collections: QuerySet | None = None, destination: bool = False,
 ) -> None:
     """Require scope grants, using global grants for existing empty hierarchy records."""
     if not resources:
         return
     userid = _actor_userid(actor)
     candidates = (
-        _record_collection_ids(obj) if collections is None
+        _record_collection_ids(obj, destination=destination) if collections is None
         else frozenset(collections.values_list('pk', flat=True))
     )
+    if destination and collections is not None:
+        candidates &= _record_collection_ids(obj, destination=True)
     if (
         not candidates
         and isinstance(obj, (Discipline, Division, Institution))
@@ -414,13 +423,15 @@ def prepare_read_queryset(
     return queryset, aliases
 
 
-def check_table_permissions(collection, actor, obj, action: TABLE_ACTION) -> None:
+def check_table_permissions(
+    collection, actor, obj, action: TABLE_ACTION, *, destination: bool = False,
+) -> None:
     if isinstance(obj, Table):
         name = obj.name.lower()
     else:
         name = obj.specify_model.name.lower()
     if isinstance(obj, Model):
-        enforce_record(actor, obj, [f"/table/{name}"], action)
+        enforce_record(actor, obj, [f"/table/{name}"], action, destination=destination)
     else:
         enforce(collection, actor, [f"/table/{name}"], action)
 
