@@ -35,6 +35,48 @@ class CollectionScopeApiTests(ApiTests):
             resource=resource, action=action,
         )
 
+    def test_empty_hierarchy_scopes_require_global_permissions(self):
+        discipline = spmodels.Discipline.objects.create(
+            name='Empty discipline', type='botany', datatype=self.datatype,
+            division=self.division, geographytreedef=self.geographytreedef,
+            geologictimeperiodtreedef=self.geologictimeperiodtreedef,
+        )
+        division = spmodels.Division.objects.create(
+            name='Empty division', institution=self.institution,
+        )
+        with permissions.cache_permission_queries():
+            for obj in (discipline, division):
+                with self.subTest(model=type(obj).__name__):
+                    with self.assertRaises(permissions.NoMatchingRuleException):
+                        permissions.check_table_permissions(
+                            self.collection, self.agent, obj, 'delete',
+                        )
+        models.UserPolicy.objects.create(
+            collection=None, specifyuser=self.specifyuser, resource='%', action='%',
+        )
+        with permissions.cache_permission_queries():
+            for obj in (discipline, division):
+                permissions.check_table_permissions(self.collection, self.agent, obj, 'delete')
+
+    def test_global_permissions_do_not_authorize_arbitrary_empty_scopes(self):
+        models.UserPolicy.objects.create(
+            collection=None, specifyuser=self.specifyuser, resource='%', action='%',
+        )
+        with permissions.cache_permission_queries():
+            for obj in (
+                spmodels.Collectionobject(collection_id=self.collection.id, collectionmemberid=None),
+                spmodels.Discipline(pk=-1),
+                spmodels.Collection(pk=-1),
+            ):
+                with self.subTest(model=type(obj).__name__):
+                    with self.assertRaises(permissions.NoMatchingRuleException):
+                        permissions.check_table_permissions(self.collection, self.agent, obj, 'read')
+            with self.assertRaises(permissions.NoMatchingRuleException):
+                permissions.enforce_record(
+                    self.agent, self.discipline, ['/table/discipline'], 'delete',
+                    collections=spmodels.Collection.objects.none(),
+                )
+
     def test_repeated_scope_checks_do_not_issue_queries(self):
         agents = list(spmodels.Agent.objects.filter(pk=self.agent.pk))
         groups = (

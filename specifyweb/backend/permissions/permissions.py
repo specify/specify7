@@ -338,6 +338,7 @@ def enforce_record(
     actor, obj: Model, resources: list[str], action: str, *,
     collections: QuerySet | None = None,
 ) -> None:
+    """Require scope grants, using global grants for existing empty hierarchy records."""
     if not resources:
         return
     userid = _actor_userid(actor)
@@ -345,6 +346,15 @@ def enforce_record(
         _record_collection_ids(obj) if collections is None
         else frozenset(collections.values_list('pk', flat=True))
     )
+    if (
+        not candidates
+        and isinstance(obj, (Discipline, Division, Institution))
+        and obj.pk is not None
+        and (collections is None or not _record_collection_ids(obj))
+        and type(obj).objects.filter(pk=obj.pk).exists()
+    ):
+        enforce(None, actor, resources, action)
+        return
     denials = []
     for resource in resources:
         if candidates.isdisjoint(_permitted_collection_ids(actor, resource, action)):
