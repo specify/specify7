@@ -5,10 +5,14 @@ from django.test import Client
 from specifyweb.backend.notifications.models import Message
 from specifyweb.backend.permissions.models import UserPolicy
 from specifyweb.backend.workbench.models import Spdataset
-from specifyweb.specify.models import Agent, Collectionobject, Recordset, Specifyuser
+from specifyweb.specify.models import Agent, Collectionobject, Recordset, Specifyuser, Spauditlogfield
 from specifyweb.specify.tests.test_api import ApiTests
 from .upload import upload as uploader
+from .upload.upload_table import UploadTable
+from .upload.upload_plan_schema import parse_column_options
 from .upload.upload_result import UploadResult
+from specifyweb.specify.api.crud import create_obj
+from .upload.uploadable import BatchEditJson
 
 
 class DataSetTests(ApiTests):
@@ -341,3 +345,63 @@ class ChangeOwnershipTests(ApiTests):
         self.dataset.refresh_from_db()
         self.assertEqual(self.dataset.specifyuser, self.specifyuser)
         self.assertFalse(Message.objects.exists())
+
+class AuditLogTests(ApiTests):
+    def setUp(self) -> None:
+        super().setUp()
+
+    def test_CO_to_one_relationship_logging(self) -> None:
+        event_0 = create_obj(self.collection, self.agent, "Collectingevent", {
+            "stationfieldnumber":"betest0",
+            "discipline":self.discipline
+        })
+        event_1= create_obj(self.collection, self.agent, 'Collectingevent', {
+            "stationfieldnumber":"betest1",
+            "discipline":self.discipline
+        })
+
+        obj_data = {
+            "catalognumber":"111111111",
+            "collectingevent":event_0,
+            "collectionmemberid":self.collection.id,
+            "collection":self.collection,
+            "version":0
+        }
+        collection_object=create_obj(self.collection, self.agent, "Collectionobject", obj_data)
+
+
+        plan = UploadTable(
+            name="Collectionobject",
+            wbcols={"catalognumber":parse_column_options("catno")},
+            overrideScope=None,
+            static={},
+            toMany={},
+            toOne={
+                "collectingevent":UploadTable(
+                    name="Collectingevent",
+                    wbcols={"stationfieldnumber":parse_column_options("eventid")},
+                    overrideScope=None,
+                    static={},
+                    toOne={},
+                    toMany={}
+                )
+            }
+        )
+        data = [
+                {"catno":collection_object.catalognumber, "eventid":event_1.stationfieldnumber}
+        ]
+
+        batch_edit_packs: list[BatchEditJson | None]=[
+                BatchEditJson(
+                    self={"id": int(collection_object.id), "version":int(collection_object.version), "ordernumber":None},
+                    to_one={},
+                    to_many={}
+                ), 
+        ]
+
+        upload_results=uploader.do_upload(self.collection, data, plan, self.agent.id, batch_edit_packs=batch_edit_packs)
+        self.assertFalse(any(map(lambda obj : obj.contains_failure(), upload_results)))
+        latest_update: Spauditlogfield = Spauditlogfield.objects.order_by("timestampcreated")[0]
+        recordid = latest_update.spauditlog.recordid if latest_update.spauditlog else None
+        self.assertEqual(recordid, collection_object.id)
+        self.assertEqual(latest_update.fieldname, "collectingevent")
