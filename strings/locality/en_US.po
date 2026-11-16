@@ -39,7 +39,7 @@ msgid "errorRadius"
 msgstr "Error Radius"
 
 #: components/FormPlugins/Leaflet.tsx:83
-#: components/FormPlugins/__tests__/Leaflet.test.tsx:42
+#: components/FormPlugins/__tests__/Leaflet.test.tsx:40
 #. Used in: Components > Form Plugins > Leaflet ⬤ Form Plugins > __tests__ > Leaflet
 msgid "showMap"
 msgstr "Show Map"
