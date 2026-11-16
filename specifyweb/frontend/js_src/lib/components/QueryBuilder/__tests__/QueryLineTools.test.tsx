@@ -24,6 +24,31 @@ const fieldMeta = {
   tableName: 'CollectionObject',
 } as const;
 
+// [QueryBuilder] Move field with arrow buttons
+test('move buttons reorder the field', () => {
+  const onMoveUp = jest.fn();
+  const onMoveDown = jest.fn();
+  render(
+    <IsQueryBasicContext.Provider value={false}>
+      <QueryLineTools
+        field={field}
+        fieldMeta={fieldMeta}
+        isFieldComplete
+        onChange={undefined}
+        onMoveDown={onMoveDown}
+        onMoveUp={onMoveUp}
+        onOpenMap={undefined}
+      />
+    </IsQueryBasicContext.Provider>
+  );
+
+  fireEvent.click(screen.getByRole('button', { name: queryText.moveUp() }));
+  fireEvent.click(screen.getByRole('button', { name: queryText.moveDown() }));
+
+  expect(onMoveUp).toHaveBeenCalledTimes(1);
+  expect(onMoveDown).toHaveBeenCalledTimes(1);
+});
+
 // [QueryBuilder] Sort button changes field sort order
 test('sort button cycles the field sort order', () => {
   const onChange = jest.fn();
