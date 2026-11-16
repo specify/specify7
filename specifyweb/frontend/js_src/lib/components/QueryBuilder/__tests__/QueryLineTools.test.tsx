@@ -25,7 +25,7 @@ const fieldMeta = {
 } as const;
 
 // [QueryBuilder] Move field with arrow buttons
-test('move buttons reorder the field', () => {
+test('move buttons move the field up and down', () => {
   const onMoveUp = jest.fn();
   const onMoveDown = jest.fn();
   render(
@@ -43,9 +43,10 @@ test('move buttons reorder the field', () => {
   );
 
   fireEvent.click(screen.getByRole('button', { name: queryText.moveUp() }));
-  fireEvent.click(screen.getByRole('button', { name: queryText.moveDown() }));
-
   expect(onMoveUp).toHaveBeenCalledTimes(1);
+  expect(onMoveDown).not.toHaveBeenCalled();
+
+  fireEvent.click(screen.getByRole('button', { name: queryText.moveDown() }));
   expect(onMoveDown).toHaveBeenCalledTimes(1);
 });
 
@@ -92,5 +93,27 @@ test('sort button cycles the field sort order', () => {
   expect(onChange.mock.calls[1][0]).toEqual({
     ...field,
     sortType: 'descending',
+  });
+
+  rerender(
+    <IsQueryBasicContext.Provider value={false}>
+      <QueryLineTools
+        field={{ ...field, sortType: 'descending' }}
+        fieldMeta={fieldMeta}
+        isFieldComplete
+        onChange={onChange}
+        onMoveDown={undefined}
+        onMoveUp={undefined}
+        onOpenMap={undefined}
+      />
+    </IsQueryBasicContext.Provider>
+  );
+
+  fireEvent.click(
+    screen.getByRole('button', { name: queryText.descendingSort() })
+  );
+  expect(onChange.mock.calls[2][0]).toEqual({
+    ...field,
+    sortType: undefined,
   });
 });
