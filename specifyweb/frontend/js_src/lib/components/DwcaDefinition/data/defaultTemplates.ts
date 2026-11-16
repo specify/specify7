@@ -288,7 +288,7 @@ const identificationHistoryTemplate: DwcaTemplate = {
         <field stringId="1,9-determinations,5-determiner,168-identifiers.agentidentifier.identifiers" oper="8" value="" isNot="false" isRelFld="true" formatName="AgentIdentifier" term="http://rs.tdwg.org/dwc/terms/identifiedByID"/>
         <field stringId="1,9-determinations.determination.qualifier" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/identificationQualifier"/>
         <field stringId="1,9-determinations.determination.typeStatusName" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/typeStatus"/>
-        <field stringId="1,9-determinations.determination.confidence" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/taxonRemarks"/>
+        <field stringId="1,9-determinations,4.taxon.remarks" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/taxonRemarks"/>
         <field stringId="1,9-determinations,4.taxon.Kingdom" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/kingdom"/>
         <field stringId="1,9-determinations,4.taxon.Phylum" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/phylum"/>
         <field stringId="1,9-determinations,4.taxon.Class" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/class"/>
