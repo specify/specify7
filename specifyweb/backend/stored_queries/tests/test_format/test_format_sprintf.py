@@ -83,7 +83,7 @@ class TestFormatSprintf(SQLAlchemySetup):
         ], self._get_results(table, query_fields))
 
     @patch('specifyweb.backend.stored_queries.format.app_resource.get_app_resource')
-    def test_separator_is_not_applied_to_first_field(self, get_app_resource: Mock):
+    def test_first_field_separator_is_a_literal_prefix(self, get_app_resource: Mock):
         get_app_resource.return_value = ("""
             <formatters>
                 <format name="Accession" class="edu.ku.brc.specify.datamodel.Accession"
@@ -98,11 +98,19 @@ class TestFormatSprintf(SQLAlchemySetup):
             division=self.division,
             accessionnumber="first",
         )
+        empty = Accession.objects.create(
+            division=self.division,
+            accessionnumber="",
+        )
 
         table, query_fields = make_query_fields_test("Accession", [[]])
 
         self.assertIn(
-            (accession.id, "first"),
+            (accession.id, ", first"),
+            self._get_results(table, query_fields),
+        )
+        self.assertIn(
+            (empty.id, ""),
             self._get_results(table, query_fields),
         )
 

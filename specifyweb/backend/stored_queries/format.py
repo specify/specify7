@@ -342,7 +342,11 @@ class ObjectFormatter:
                             else_=expr,
                         )
                     else:
-                        expr_with_sep = expr
+                        expr_with_sep = case(
+                            (func.char_length(cast(expr, types.String())) > 0,
+                             concat(node.attrib['sep'], expr)),
+                            else_=expr,
+                        )
                 else:
                     expr_with_sep = expr
                 field_values.append(expr)

@@ -89,6 +89,13 @@ class FormatterAggregatorTests(SQLAlchemySetup):
         custom = '''<formatters>
           <format name="Collector" class="edu.ku.brc.specify.datamodel.Collector" default="true"/>
           <format name="Determiner" class="edu.ku.brc.specify.datamodel.Determiner" default="true"/>
+          <format name="AgentIdentifier" class="edu.ku.brc.specify.datamodel.AgentIdentifier" default="true">
+            <switch single="true"><fields><field>identifier</field></fields></switch>
+          </format>
+          <aggregators>
+            <aggregator name="AgentIdentifier" class="edu.ku.brc.specify.datamodel.AgentIdentifier"
+                default="true" separator=" | " format="AgentIdentifier"/>
+          </aggregators>
         </formatters>'''
         formatter.formattersDom = ElementTree.fromstring(
             merge_formatters(custom, ElementTree.tostring(formatter.formattersDom))
@@ -154,7 +161,7 @@ class FormatterAggregatorTests(SQLAlchemySetup):
                 .select_from(models.Determination)
                 .filter(models.Determination._id == determination.id)
                 .scalar(),
-                'Person 1; Person 0',
+                ' Person 1;  Person 0',
             )
             expected = 'https://orcid.org/id-1 | https://orcid.org/id-0'
             for model, identifier, expression in [
@@ -170,7 +177,7 @@ class FormatterAggregatorTests(SQLAlchemySetup):
                 .select_from(models.Agent)
                 .filter(models.Agent._id == agents[0].id)
                 .scalar(),
-                'https://orcid.org/id-0',
+                'id-0',
             )
 
     def test_agent_identifier_formatter_urls_and_fallback(self):
@@ -278,7 +285,7 @@ class FormatterAggregatorTests(SQLAlchemySetup):
             result = session.query(formatted).select_from(models.CollectingEvent).filter(
                 models.CollectingEvent._id == event.id
             ).scalar()
-            self.assertEqual(result, 'ID-1')
+            self.assertEqual(result, ' ID-1')
 
 
     def test_aggregation_in_formatters(self):
@@ -493,7 +500,7 @@ class FormatterAggregatorTests(SQLAlchemySetup):
             )
             query, expr = object_formatter.objformat(query, models.AccessionAgent, None)
             query = query.query.add_columns(expr)
-            self.assertCountEqual(list(query), [('text 1 value for this accession',), ('text 2 value for this accession role2',)])
+            self.assertCountEqual(list(query), [('text 1 value for this accession',), (' text 2 value for this accession role2',)])
 
     def test_switch_with_only_default_fields(self):
         formatter_def = """
