@@ -259,6 +259,8 @@ class Scoping:
             return scope_type, 'definition__discipline'
         if model_class is models.Storage:
             return scope_type, 'definition__institution'
+        if model_class is models.Taxontreedefitem:
+            return ScopeType.DISCIPLINE, 'treedef__discipline'
         if scope_type == ScopeType.INSTITUTION:
             return scope_type, 'institution' if hasattr(model_class, 'institution') else None
         if scope_type == ScopeType.COLLECTION:
@@ -280,7 +282,10 @@ class Scoping:
     def record_scope_filter(
         obj: Model, *, scope_path: tuple[ScopeType, str | None] | None = None,
     ) -> dict[str, int | None] | None:
-        """Return scope predicates; None denotes the default institution."""
+        """Return scope predicates; None denotes the default institution.
+
+        Taxon ranks without a discipline retain the default institution scope.
+        """
         if isinstance(obj, models.Attachment):
             if obj.scopetype is None or obj.scopetype == ScopeType.GLOBAL.value:
                 return {}
@@ -301,7 +306,7 @@ class Scoping:
         if isinstance(value, Model):
             value = value.pk
         if value is None and scope_type != ScopeType.COLLECTION:
-            return {}
+            return None if isinstance(obj, models.Taxontreedefitem) else {}
         filters = {Scoping.collection_lookup(scope_type): value}
         # Some records carry both fields; neither may refer to a denied collection.
         if path == 'collectionmemberid' and hasattr(obj, 'collection_id'):
@@ -340,7 +345,10 @@ class Scoping:
             missing = Q(**{f'{path}__isnull': True})
             if '__' in path:
                 missing &= Q(**{f"{path.rsplit('__', 1)[0]}__isnull": False})
-            condition |= missing
+            if model is not models.Taxontreedefitem or collections.filter(
+                discipline__division__institution=models.Institution.objects.get(),
+            ).exists():
+                condition |= missing
         if path == 'collectionmemberid' and hasattr(model, 'collection_id'):
             condition &= Q(collection__in=collections)
         return queryset.filter(condition)

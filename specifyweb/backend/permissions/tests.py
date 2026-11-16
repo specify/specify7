@@ -1,4 +1,5 @@
 import json
+from unittest.mock import patch
 
 from django.test import Client
 from django.db import connection
@@ -9,7 +10,7 @@ from specifyweb.specify.tests.test_api import ApiTests
 from specifyweb.specify import models as spmodels
 from specifyweb.specify.api.crud import get_collection, put_resource
 from specifyweb.specify.api.validators import GetCollectionForm
-from specifyweb.specify.utils.scoping import ScopeType
+from specifyweb.specify.utils.scoping import Scoping, ScopeType
 from . import models, permissions, initialize
 
 class CollectionScopeApiTests(ApiTests):
@@ -423,19 +424,58 @@ class CollectionScopeApiTests(ApiTests):
             name='Foreign discipline', type='botany',
         )
         trees = []
+        ranks = []
         for discipline in (self.discipline, foreign_discipline):
             definition = spmodels.Taxontreedef.objects.create(
                 name=discipline.name, discipline=discipline,
             )
             item = definition.treedefitems.create(name='Root', rankid=0)
+            ranks.append(item)
             trees.append(spmodels.Taxon.objects.create(
                 name='Root', rankid=0, definition=definition, definitionitem=item,
             ))
-        response = self.client.get('/api/specify/taxon/')
+        for table, records in (('taxon', trees), ('taxontreedefitem', ranks)):
+            with self.subTest(table=table):
+                response = self.client.get(f'/api/specify/{table}/')
+                self.assertEqual(response.status_code, 200, response.content)
+                self.assertEqual(
+                    [row['id'] for row in response.json()['objects']], [records[0].id],
+                )
+                response = self.client.get(f'/api/specify/{table}/{records[1].id}/')
+                self.assertEqual(response.status_code, 403, response.content)
+
+    def test_taxon_rank_without_discipline_uses_institution_scope(self):
+        rank = self.taxontreedef.treedefitems.create(name='Root', rankid=0)
+        self.assertIsNone(Scoping.record_scope_filter(rank))
+        self.assertCountEqual(
+            Scoping.collections_for_record(rank),
+            spmodels.Collection.objects.filter(
+                discipline__division__institution=self.institution,
+            ),
+        )
+        response = self.client.get(f'/api/specify/taxontreedefitem/{rank.id}/')
         self.assertEqual(response.status_code, 200, response.content)
-        self.assertEqual([row['id'] for row in response.json()['objects']], [trees[0].id])
-        response = self.client.get(f'/api/specify/taxon/{trees[1].id}/')
-        self.assertEqual(response.status_code, 403, response.content)
+        queryset = spmodels.Taxontreedefitem.objects.filter(pk=rank.id)
+        self.assertEqual(
+            list(Scoping.filter_records(queryset, spmodels.Collection.objects.filter(
+                pk=self.collection.id,
+            ))), [rank],
+        )
+        self.assertFalse(Scoping.filter_records(
+            queryset, spmodels.Collection.objects.none(),
+        ).exists())
+        empty_institution = spmodels.Institution.objects.create(
+            name='Empty institution', isaccessionsglobal=True,
+            issecurityon=False, isserverbased=False,
+            issharinglocalities=True, issinglegeographytree=True,
+        )
+        with patch.object(
+            spmodels.Institution.objects, 'get', return_value=empty_institution,
+        ):
+            self.assertFalse(Scoping.collections_for_record(rank).exists())
+            self.assertFalse(Scoping.filter_records(
+                queryset, spmodels.Collection.objects.all(),
+            ).exists())
 
     def test_recordset_membership_and_navigation(self):
         own = spmodels.Recordset.objects.create(
