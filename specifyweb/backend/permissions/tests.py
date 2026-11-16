@@ -1,11 +1,436 @@
 import json
 
 from django.test import Client
+from django.db import connection
+from django.test.utils import CaptureQueriesContext
 from django.utils import timezone
 
 from specifyweb.specify.tests.test_api import ApiTests
 from specifyweb.specify import models as spmodels
+from specifyweb.specify.api.crud import get_collection, put_resource
+from specifyweb.specify.api.validators import GetCollectionForm
+from specifyweb.specify.utils.scoping import ScopeType
 from . import models, permissions, initialize
+
+class CollectionScopeApiTests(ApiTests):
+    def setUp(self):
+        super().setUp()
+        self.other_collection = spmodels.Collection.objects.create(
+            collectionname='Restricted collection', discipline=self.discipline,
+        )
+        self.other_object = spmodels.Collectionobject.objects.create(
+            collection=self.other_collection, catalognumber='restricted',
+        )
+        models.UserPolicy.objects.all().delete()
+        models.UserPolicy.objects.create(
+            collection=self.collection, specifyuser=self.specifyuser,
+            resource='%', action='%',
+        )
+        self.client.force_login(self.specifyuser)
+        self.client.cookies['collection'] = self.collection.id
+
+    def grant_other_collection(self, resource='%', action='%'):
+        models.UserPolicy.objects.create(
+            collection=self.other_collection, specifyuser=self.specifyuser,
+            resource=resource, action=action,
+        )
+
+    def test_repeated_scope_checks_do_not_issue_queries(self):
+        agents = list(spmodels.Agent.objects.filter(pk=self.agent.pk))
+        groups = (
+            self.collectionobjects,
+            agents,
+            [spmodels.Accession(division_id=self.division.id)],
+        )
+        for objects in groups:
+            with self.subTest(model=type(objects[0]).__name__):
+                with permissions.cache_permission_queries():
+                    permissions.check_table_permissions(
+                        self.collection, self.agent, objects[0], 'read',
+                    )
+                    with self.assertNumQueries(0):
+                        for index in range(100):
+                            permissions.check_table_permissions(
+                                self.collection, self.agent, objects[index % len(objects)], 'read',
+                            )
+
+    def test_repeated_field_checks_do_not_issue_queries(self):
+        fields = ['remarks', 'text1', 'text2']
+        with permissions.cache_permission_queries():
+            permissions.check_field_permissions(
+                self.collection, self.agent, self.collectionobjects[0], fields, 'update',
+            )
+            with self.assertNumQueries(0):
+                for obj in self.collectionobjects:
+                    permissions.check_field_permissions(
+                        self.collection, self.agent, obj, fields, 'update',
+                    )
+
+    def test_list_permission_query_count_does_not_grow_with_records(self):
+        recordset = spmodels.Recordset.objects.create(
+            name='Scoped items', dbtableid=1, type=0,
+            collectionmemberid=self.collection.id, specifyuser=self.specifyuser,
+        )
+        for obj in self.collectionobjects:
+            recordset.recordsetitems.create(recordid=obj.id)
+        for model in ('collectionobject', 'recordsetitem'):
+            counts = []
+            for limit in (1, 5):
+                query_count = 0
+
+                def checker(obj):
+                    nonlocal query_count
+                    with CaptureQueriesContext(connection) as captured:
+                        permissions.check_table_permissions(self.collection, self.agent, obj, 'read')
+                    query_count += len(captured)
+
+                with permissions.cache_permission_queries():
+                    data = get_collection(
+                        self.collection, model, checker,
+                        GetCollectionForm.defaults | {'limit': limit}, actor=self.agent,
+                    )
+                self.assertEqual(len(data['objects']), limit)
+                self.assertLessEqual(query_count, 1)
+                counts.append(query_count)
+            self.assertEqual(counts[0], counts[1])
+
+    def test_cached_checks_distinguish_scope_actor_resource_and_action(self):
+        models.UserPolicy.objects.all().delete()
+        for resource, action in (
+            ('/system/sp7/collection', 'access'), ('/table/collectionobject', 'read'),
+        ):
+            models.UserPolicy.objects.create(
+                collection=self.collection, specifyuser=self.specifyuser,
+                resource=resource, action=action,
+            )
+        other_user = spmodels.Specifyuser.objects.create(name='No access')
+        obj = self.collectionobjects[0]
+        with permissions.cache_permission_queries():
+            permissions.check_table_permissions(self.collection, self.agent, obj, 'read')
+            for actor, target, action in (
+                (self.agent, self.other_object, 'read'),
+                (self.agent, obj, 'update'),
+                (other_user, obj, 'read'),
+                (self.agent, self.agent, 'read'),
+            ):
+                with self.subTest(actor=actor, target=target, action=action):
+                    with self.assertRaises(permissions.NoMatchingRuleException):
+                        permissions.check_table_permissions(self.collection, actor, target, action)
+            obj.collectionmemberid = self.other_collection.id
+            obj.collection_id = self.other_collection.id
+            with self.assertRaises(permissions.NoMatchingRuleException):
+                permissions.check_table_permissions(self.collection, self.agent, obj, 'read')
+
+    def test_permission_cache_does_not_survive_request_context(self):
+        with permissions.cache_permission_queries():
+            permissions.check_table_permissions(
+                self.collection, self.agent, self.collectionobjects[0], 'read',
+            )
+        models.UserPolicy.objects.all().delete()
+        self.grant_other_collection()
+        with permissions.cache_permission_queries():
+            with self.assertRaises(permissions.NoMatchingRuleException):
+                permissions.check_table_permissions(
+                    self.collection, self.agent, self.collectionobjects[0], 'read',
+                )
+            permissions.check_table_permissions(
+                self.collection, self.agent, self.other_object, 'read',
+            )
+
+    def test_hierarchy_update_invalidates_cached_scope_rules(self):
+        division = spmodels.Division.objects.create(
+            institution=self.institution, name='Foreign division',
+        )
+        accession = spmodels.Accession(division_id=division.id)
+        with permissions.cache_permission_queries():
+            permissions.check_table_permissions(self.collection, self.agent, accession, 'read')
+            put_resource(
+                self.collection, self.agent, 'institution',
+                self.institution.id, self.institution.version, {'isaccessionsglobal': False},
+            )
+            with self.assertRaises(permissions.NoMatchingRuleException):
+                permissions.check_table_permissions(self.collection, self.agent, accession, 'read')
+
+    def test_denied_record_crud_leaves_record_unchanged(self):
+        url = f'/api/specify/collectionobject/{self.other_object.id}/'
+        for method in ('get', 'put', 'delete'):
+            with self.subTest(method=method):
+                if method == 'put':
+                    response = self.client.put(
+                        url, data={'version': self.other_object.version, 'remarks': 'changed'},
+                        content_type='application/json',
+                    )
+                else:
+                    response = getattr(self.client, method)(url)
+                self.assertEqual(response.status_code, 403, response.content)
+                self.other_object.refresh_from_db()
+                self.assertIsNone(self.other_object.remarks)
+                self.assertEqual(self.other_object.collection_id, self.other_collection.id)
+
+    def test_lists_and_rows_filter_before_pagination(self):
+        for domainfilter in ('false', 'true'):
+            response = self.client.get('/api/specify/collectionobject/', {
+                'domainfilter': domainfilter, 'orderby': '-id', 'limit': 1,
+            })
+            self.assertEqual(response.status_code, 200, response.content)
+            self.assertEqual(response.json()['meta']['total_count'], 5)
+            self.assertEqual(response.json()['objects'][0]['id'], self.collectionobjects[-1].id)
+        response = self.client.get('/table_rows/specify_rows/collectionobject/', {'fields': 'id'})
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual({row[0] for row in response.json()}, {co.id for co in self.collectionobjects})
+
+    def test_other_collection_requires_access_and_action(self):
+        url = f'/api/specify/collectionobject/{self.other_object.id}/'
+        self.grant_other_collection('/table/collectionobject', 'read')
+        self.assertEqual(self.client.get(url).status_code, 403)
+        self.grant_other_collection('/system/sp7/collection', 'access')
+        self.assertEqual(self.client.get(url).status_code, 200)
+        response = self.client.put(url, {
+            'version': self.other_object.version, 'remarks': 'changed',
+        }, content_type='application/json')
+        self.assertEqual(response.status_code, 403)
+        self.other_object.refresh_from_db()
+        self.assertIsNone(self.other_object.remarks)
+
+    def test_authorized_cross_collection_update(self):
+        self.grant_other_collection()
+        response = self.client.put(
+            f'/api/specify/collectionobject/{self.other_object.id}/',
+            {'version': self.other_object.version, 'remarks': 'allowed'},
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 200, response.content)
+        self.other_object.refresh_from_db()
+        self.assertEqual(self.other_object.remarks, 'allowed')
+
+    def test_post_cannot_overwrite_existing_record(self):
+        response = self.client.post('/api/specify/collectionobject/', {
+            'id': self.other_object.id, 'remarks': 'changed',
+            'collection': f'/api/specify/collection/{self.collection.id}/',
+        }, content_type='application/json')
+        self.assertEqual(response.status_code, 400, response.content)
+        self.other_object.refresh_from_db()
+        self.assertIsNone(self.other_object.remarks)
+        self.assertEqual(self.other_object.collection_id, self.other_collection.id)
+
+    def test_put_cannot_change_primary_key(self):
+        obj = self.collectionobjects[0]
+        response = self.client.put(
+            f'/api/specify/collectionobject/{obj.id}/',
+            {'id': self.other_object.id, 'version': obj.version, 'remarks': 'changed'},
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 400, response.content)
+        obj.refresh_from_db()
+        self.other_object.refresh_from_db()
+        self.assertIsNone(self.other_object.remarks)
+        self.assertEqual(self.other_object.collection_id, self.other_collection.id)
+
+    def test_related_rows_and_filters_do_not_expose_foreign_records(self):
+        self.other_object.collectingevent = self.collectingevent
+        self.other_object.save()
+        obj = self.collectionobjects[0]
+        obj.collectingevent = self.collectingevent
+        obj.save()
+        for prefix in ('/table_rows/', '/api/'):
+            response = self.client.get(f'{prefix}specify_rows/collectingevent/', {
+                'fields': 'id,collectionobjects__catalognumber',
+                'id': self.collectingevent.id, 'orderby': '-collectionobjects__catalognumber',
+            })
+            self.assertEqual(response.status_code, 200, response.content)
+            self.assertEqual(response.json(), [[self.collectingevent.id, obj.catalognumber]])
+        response = self.client.get('/api/specify/collectingevent/', {
+            'collectionobjects__catalognumber': 'restricted',
+        })
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual(response.json()['meta']['total_count'], 0)
+
+    def test_foreign_relationship_assignment_is_denied(self):
+        obj = self.collectionobjects[0]
+        response = self.client.put(
+            f'/api/specify/collectionobject/{obj.id}/', {
+                'version': obj.version,
+                'collectionobjecttype': '/api/specify/collectionobjecttype/%s/' % (
+                    spmodels.Collectionobjecttype.objects.create(
+                        collection=self.other_collection, name='restricted',
+                        taxontreedef=self.taxontreedef,
+                    ).id
+                ),
+            }, content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 403, response.content)
+        obj.refresh_from_db()
+        self.assertEqual(obj.collectionobjecttype_id, self.collectionobjecttype.id)
+
+    def test_scope_change_and_foreign_create_are_denied(self):
+        obj = self.collectionobjects[0]
+        for method, url, data in (
+            ('put', f'/api/specify/collectionobject/{obj.id}/', {
+                'version': obj.version, 'collectionmemberid': self.other_collection.id,
+            }),
+            ('post', '/api/specify/collectionobject/', {
+                'collection': f'/api/specify/collection/{self.other_collection.id}/',
+                'catalognumber': 'new-restricted',
+            }),
+        ):
+            with self.subTest(method=method):
+                response = getattr(self.client, method)(url, data, content_type='application/json')
+                self.assertEqual(response.status_code, 403, response.content)
+        obj.refresh_from_db()
+        self.assertEqual(obj.collection_id, self.collection.id)
+        self.assertEqual(obj.collectionmemberid, self.collection.id)
+        self.assertFalse(spmodels.Collectionobject.objects.filter(catalognumber='new-restricted').exists())
+
+    def test_nested_update_is_atomic(self):
+        foreign = spmodels.Determination.objects.create(
+            collectionobject=self.other_object, iscurrent=True,
+        )
+        obj = self.collectionobjects[0]
+        response = self.client.put(
+            f'/api/specify/collectionobject/{obj.id}/', {
+                'version': obj.version, 'remarks': 'must roll back',
+                'determinations': [{
+                    'id': foreign.id, 'version': foreign.version, 'remarks': 'changed',
+                }],
+            }, content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 403, response.content)
+        obj.refresh_from_db()
+        foreign.refresh_from_db()
+        self.assertIsNone(obj.remarks)
+        self.assertIsNone(foreign.remarks)
+        self.assertEqual(foreign.collectionobject_id, self.other_object.id)
+
+    def test_shared_scope_and_own_collection_remain_accessible(self):
+        response = self.client.get(f'/api/specify/agent/{self.agent.id}/')
+        self.assertEqual(response.status_code, 200, response.content)
+        obj = self.collectionobjects[0]
+        response = self.client.put(
+            f'/api/specify/collectionobject/{obj.id}/',
+            {'version': obj.version, 'remarks': 'allowed'}, content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 200, response.content)
+        obj.refresh_from_db()
+        self.assertEqual(obj.remarks, 'allowed')
+
+    def test_create_and_delete_in_own_collection(self):
+        response = self.client.post('/api/specify/collectionobject/', {
+            'collection': f'/api/specify/collection/{self.collection.id}/',
+            'catalognumber': 'new-allowed',
+        }, content_type='application/json')
+        self.assertEqual(response.status_code, 201, response.content)
+        obj = spmodels.Collectionobject.objects.get(pk=response.json()['id'])
+        self.assertEqual(obj.collection_id, self.collection.id)
+        response = self.client.delete(f'/api/specify/collectionobject/{obj.id}/')
+        self.assertEqual(response.status_code, 204, response.content)
+        self.assertFalse(spmodels.Collectionobject.objects.filter(pk=obj.id).exists())
+
+    def test_collection_and_shared_scope_lists(self):
+        foreign_division = spmodels.Division.objects.create(
+            institution=self.institution, name='Foreign division',
+        )
+        foreign_agent = spmodels.Agent.objects.create(
+            division=foreign_division, agenttype=0, lastname='restricted',
+        )
+        response = self.client.get('/api/specify/collection/')
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual([row['id'] for row in response.json()['objects']], [self.collection.id])
+        response = self.client.get('/api/specify/agent/')
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertIn(self.agent.id, [row['id'] for row in response.json()['objects']])
+        self.assertNotIn(foreign_agent.id, [row['id'] for row in response.json()['objects']])
+        self.assertEqual(
+            self.client.get(f'/api/specify/agent/{foreign_agent.id}/').status_code, 403,
+        )
+
+    def test_field_permissions_use_destination_collection(self):
+        self.grant_other_collection('/system/sp7/collection', 'access')
+        self.grant_other_collection('/table/collectionobject', '%')
+        response = self.client.put(
+            f'/api/specify/collectionobject/{self.other_object.id}/',
+            {'version': self.other_object.version, 'remarks': 'changed'},
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 403, response.content)
+        self.other_object.refresh_from_db()
+        self.assertIsNone(self.other_object.remarks)
+
+    def test_attachment_scope_is_enforced(self):
+        attachments = [
+            spmodels.Attachment.objects.create(scopetype=scope_type, scopeid=scope_id)
+            for scope_type, scope_id in (
+                (ScopeType.COLLECTION.value, self.collection.id),
+                (ScopeType.COLLECTION.value, self.other_collection.id),
+                (ScopeType.DISCIPLINE.value, self.discipline.id), (None, None),
+            )
+        ]
+        response = self.client.get('/api/specify/attachment/')
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual(
+            {row['id'] for row in response.json()['objects']},
+            {attachments[index].id for index in (0, 2, 3)},
+        )
+        response = self.client.get(f'/api/specify/attachment/{attachments[1].id}/')
+        self.assertEqual(response.status_code, 403, response.content)
+
+    def test_tree_scope_is_shared_only_with_its_discipline(self):
+        foreign_discipline = spmodels.Discipline.objects.create(
+            division=self.division, datatype=self.datatype,
+            geographytreedef=self.geographytreedef,
+            geologictimeperiodtreedef=self.geologictimeperiodtreedef,
+            name='Foreign discipline', type='botany',
+        )
+        trees = []
+        for discipline in (self.discipline, foreign_discipline):
+            definition = spmodels.Taxontreedef.objects.create(
+                name=discipline.name, discipline=discipline,
+            )
+            item = definition.treedefitems.create(name='Root', rankid=0)
+            trees.append(spmodels.Taxon.objects.create(
+                name='Root', rankid=0, definition=definition, definitionitem=item,
+            ))
+        response = self.client.get('/api/specify/taxon/')
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual([row['id'] for row in response.json()['objects']], [trees[0].id])
+        response = self.client.get(f'/api/specify/taxon/{trees[1].id}/')
+        self.assertEqual(response.status_code, 403, response.content)
+
+    def test_recordset_membership_and_navigation(self):
+        own = spmodels.Recordset.objects.create(
+            collectionmemberid=self.collection.id, dbtableid=1,
+            name='Own', type=0, specifyuser=self.specifyuser,
+        )
+        foreign = spmodels.Recordset.objects.create(
+            collectionmemberid=self.other_collection.id, dbtableid=1,
+            name='Foreign', type=0, specifyuser=self.specifyuser,
+        )
+        obj = self.collectionobjects[0]
+        for target in (obj, self.other_object):
+            own.recordsetitems.create(recordid=target.id)
+        response = self.client.get(
+            f'/api/specify/collectionobject/{obj.id}/', {'recordsetid': own.id},
+        )
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual(response.json()['recordset_info']['total_count'], 1)
+        self.assertIsNone(response.json()['recordset_info']['next'])
+        response = self.client.get(
+            f'/api/specify/collectionobject/{obj.id}/', {'recordsetid': foreign.id},
+        )
+        self.assertEqual(response.status_code, 403, response.content)
+        response = self.client.post(
+            f'/api/specify/collectionobject/?recordsetid={foreign.id}',
+            {'collection': f'/api/specify/collection/{self.collection.id}/',
+             'catalognumber': 'must-roll-back'},
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 403, response.content)
+        self.assertFalse(spmodels.Collectionobject.objects.filter(catalognumber='must-roll-back').exists())
+        response = self.client.post('/api/specify/recordsetitem/', {
+            'recordset': f'/api/specify/recordset/{own.id}/', 'recordid': self.other_object.id,
+        }, content_type='application/json')
+        self.assertEqual(response.status_code, 403, response.content)
+        self.assertEqual(own.recordsetitems.count(), 2)
+
 
 class PermissionsApiTest(ApiTests):
     def setUp(self):

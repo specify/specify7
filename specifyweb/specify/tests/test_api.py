@@ -615,12 +615,15 @@ class InlineApiTests(ApiTests):
             'specifyuser': f'/api/specify/specifyuser/{self.specifyuser.id}/',
             'type': 0,
             'recordsetitems': [
-                {'recordid': 123},
-                {'recordid': 124},
+                {'recordid': self.collectionobjects[0].id},
+                {'recordid': self.collectionobjects[1].id},
             ]
         })
         rs = Recordset.objects.get(pk=obj.id)
-        self.assertEqual({123, 124}, set(rs.recordsetitems.values_list('recordid', flat=True)))
+        self.assertEqual(
+            {co.id for co in self.collectionobjects[:2]},
+            set(rs.recordsetitems.values_list('recordid', flat=True)),
+        )
 
     def test_update_object_with_inlines(self):
         self.collectionobjects[0].determinations.create(
