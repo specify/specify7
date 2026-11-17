@@ -1,7 +1,10 @@
-from django.db.models import Q, Count, Model
+from typing import TypedDict, Any
+
+from django.db.models import Q, Model, Prefetch
 
 import specifyweb.specify.models as spmodels
 from specifyweb.specify.datamodel import datamodel, Table
+from specifyweb.specify.api.serializers import obj_to_data
 
 import logging
 logger = logging.getLogger(__name__)
@@ -53,32 +56,39 @@ def get_search_filters(collection: spmodels.Collection, tree: str):
         discipline_query |= Q(id=tree_at_discipline.id)
     return discipline_query
 
-def get_treedefs(collection: spmodels.Collection, tree_name: str) ->  list[tuple[int, int]]:
-    # Get the appropriate TreeDef based on the Collection and tree_name
+class TreeInformation(TypedDict):
+    definition: dict
+    ranks: list[dict]
+
+def get_tree_defs_in_collection(collection: spmodels.Collection, tree_name: str, tree_def_filters: dict[str, Any] | None = None) -> list[TreeInformation]:
     if tree_name.lower() not in SPECIFY_TREES:
         raise ValueError(f"unexpected tree type: {tree_name}")
 
-    # Mimic the old behavior of limiting the query to the first item for trees other than taxon.
-    # Even though the queryconstruct can handle trees with multiple types.
-    _limit = lambda query: (query if tree_name.lower() == 'taxon' else query[:1])
-    search_filters = get_search_filters(collection, tree_name)
-
-    lookup_tree = lookup(tree_name)
-    tree_table = datamodel.get_table_strict(lookup_tree)
+    tree_table = datamodel.get_table_strict(lookup(tree_name))
+    # BUG: prefer get_model here in case a tree is defined in an app that is
+    # not 'specify'
     tree_model: Model = getattr(spmodels, tree_table.django_name)
-
-    # Get all the treedefids, and the count of item in each, corresponding to our search predicates
-    search_query = _limit(
-        tree_model.objects.filter(search_filters)
-        .annotate(item_counts=Count("treedefitems", distinct=True))
-        .distinct()
-        .values_list("id", "item_counts")
+    scoping_filters = get_search_filters(collection, tree_name)
+    # REFACTOR: prefer using string lookup with tree + 'treedefitem' lookup?
+    # the .field accesses the FK on the TreeDef model, and the .model retreives
+    # its related model (the TreeDefItem)
+    tree_rank_model = tree_model.treedefitems.field.model
+    rank_prefetch = Prefetch(
+        'treedefitems',
+        queryset=tree_rank_model.objects.order_by('rankid'),
+        to_attr='ordered_ranks'
     )
-
-    result = list(search_query)
-
-    assert len(result) > 0, "No definition to query on"
-
+    tree_defs_query = tree_model.objects.prefetch_related(rank_prefetch).filter(scoping_filters)
+    if tree_def_filters is not None:
+        tree_defs_query.filter(tree_def_filters)
+    result = []
+    for definition in tree_defs_query:
+        ranks = definition.ordered_ranks
+        serialized_tree_info = {
+            'definition': obj_to_data(definition),
+            'ranks': [obj_to_data(rank) for rank in ranks]
+        }
+        result.append(serialized_tree_info)
     return result
 
 def get_default_treedef(table: Table, collection):

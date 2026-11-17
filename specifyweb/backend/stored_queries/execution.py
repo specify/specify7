@@ -36,6 +36,7 @@ from specifyweb.specify.models import Loan, Loanpreparation, Loanreturnpreparati
 from specifyweb.backend.workbench.upload.auditlog import auditlog
 from specifyweb.backend.stored_queries.group_concat import group_by_displayed_fields
 from specifyweb.backend.stored_queries.queryfield import fields_from_json, QUREYFIELD_SORT_T
+from specifyweb.backend.stored_queries.query_construct_model import QueryConstruct
 from specifyweb.backend.stored_queries.synonomy import synonymize_tree_query
 from specifyweb.backend.stored_queries.tree_rank import prepare_tree_ranks, rank_path, path_key, resolve_page
 from specifyweb.specify.datamodel import datamodel, is_tree_table
@@ -46,7 +47,6 @@ from specifyweb.specify.models_utils.load_datamodel import Table
 # import it would already be handled.
 if TYPE_CHECKING:
     from specifyweb.backend.stored_queries.queryfield import QueryField
-    from specifyweb.backend.stored_queries.query_construct_model import QueryConstruct
 
 logger = logging.getLogger(__name__)
 
@@ -991,7 +991,6 @@ def build_query_construct_base(
     model,
     props: BuildQueryProps,
 ):
-    from .query_construct_model import QueryConstruct
 
     id_field = model._id
     catalognumber_field = model.catalogNumber if hasattr(model, 'catalogNumber') else None

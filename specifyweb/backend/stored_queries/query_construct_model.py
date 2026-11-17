@@ -5,9 +5,9 @@ from collections import namedtuple, deque
 
 from sqlalchemy import orm, sql, or_
 
-import specifyweb.specify.models as spmodels
 from specifyweb.specify.datamodel import datamodel
-from specifyweb.backend.trees.utils import get_treedefs
+from specifyweb.specify.models_utils.load_datamodel import Table
+from specifyweb.backend.trees.utils import get_tree_defs_in_collection
 
 from specifyweb.backend.stored_queries import models
 from specifyweb.backend.stored_queries.tree_rank import TreeRankQuery
@@ -16,12 +16,40 @@ from specifyweb.backend.stored_queries.queryfieldspec import QueryFieldSpec
 logger = logging.getLogger(__name__)
 
 
-def _safe_filter(query):
-    count = query.count()
-    if count <= 1:
-        return query.first()
-    raise Exception(f"Got more than one matching: {list(query)}")
+def resolve_tree_rank(collection, tree_table_name: str, rank_name: str, tree_def_id: int | None = None) -> list[tuple[int, int]]:
+    """
+    This is just a helper function to map trees scoped to the collection to a
+    list containing objects of the form (definition_id, rank_id) given some
+    particular rank name.
+    In other words, this creates a mapping of ranks with a specific name to
+    their tree definitions.
+    """
+    if collection is None:
+        raise AssertionError(f"No Collection found in Query for {tree_table_name}")
 
+    filters = None
+    if tree_def_id is not None:
+        filters = {
+            "pk": tree_def_id
+        }
+    # REFACTOR: (performance) this makes two queries, one for the definition
+    # info and one for the ranks.
+    # This can theoretically be optimized to a single query for the ranks.
+    tree_defs = get_tree_defs_in_collection(collection, tree_table_name, filters)
+    result = []
+    for tree_info in tree_defs:
+        def_id = tree_info['definition']['id']
+        correct_ranks = tuple(
+            filter(
+                lambda rank: rank['name'].lower() == rank_name.lower(),
+                tree_info['ranks']
+            )
+        )
+        if len(correct_ranks) > 1:
+            raise Exception(f"Got more than once matching rank for name {rank_name} on {tree_table_name} with id {def_id}")
+        resolved_rank_id = correct_ranks[0]['id']
+        result.append((def_id, resolved_rank_id))
+    return result
 
 class QueryConstruct(
     namedtuple(
@@ -40,7 +68,7 @@ class QueryConstruct(
     def handle_tree_field(
         self,
         node,
-        table,
+        table: Table,
         tree_rank: TreeRankQuery,
         next_join_path,
         current_field_spec: QueryFieldSpec,
@@ -60,27 +88,7 @@ class QueryConstruct(
 
         treedef_column = table.name + 'TreeDefID'
 
-        treedefs = get_treedefs(query.collection, table.name)
-        item_model = getattr(spmodels, table.django_name + "treedefitem")
-
-        # TODO: optimize out the ranks that appear? cache them
-        treedefs_with_ranks: list[tuple[int, int]] = [
-            tup
-            for tup in [
-                (
-                    treedef_id,
-                    _safe_filter(
-                        item_model.objects.filter(
-                            treedef_id=treedef_id, name=tree_rank.name
-                        ).values_list("id", flat=True)
-                    ),
-                )
-                for treedef_id, _ in treedefs
-                # For constructing tree queries for batch edit
-                if tree_rank.treedef_id is None or tree_rank.treedef_id == treedef_id
-            ]
-            if tup[1] is not None
-        ]
+        treedefs_with_ranks = resolve_tree_rank(query.collection, table.name, tree_rank.name, tree_rank.treedef_id)
 
         if not treedefs_with_ranks:
             logger.warning(
