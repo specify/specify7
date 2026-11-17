@@ -9,6 +9,7 @@ from django.core.exceptions import FieldError
 from django.test.utils import CaptureQueriesContext
 from django.utils import timezone
 
+from specifyweb.backend.businessrules.rules.cogtype_rules import SYSTEM_COGTYPES_PICKLIST
 from specifyweb.specify.tests.test_api import ApiTests, ApiTransactionTests
 from specifyweb.specify import models as spmodels
 from specifyweb.specify.api import crud
@@ -41,6 +42,72 @@ class CollectionScopeApiTests(ApiTests):
             collection=self.other_collection, specifyuser=self.specifyuser,
             resource=resource, action=action,
         )
+
+    def _create_scoped_group_joins(self):
+        joins = []
+        for collection, child in zip(
+            (self.collection, self.other_collection), self.collectionobjects,
+        ):
+            picklist = spmodels.Picklist.objects.create(
+                name=SYSTEM_COGTYPES_PICKLIST, issystem=True, type=0,
+                readonly=True, collection=collection,
+            )
+            spmodels.Picklistitem.objects.create(
+                title='Discrete', value='Discrete', picklist=picklist,
+            )
+            cogtype = spmodels.Collectionobjectgrouptype.objects.create(
+                name='Scoped group type', type='Discrete', collection=collection,
+            )
+            group = spmodels.Collectionobjectgroup.objects.create(
+                collection=collection, cogtype=cogtype,
+            )
+            joins.append(spmodels.Collectionobjectgroupjoin.objects.create(
+                parentcog=group, childco=child,
+            ))
+        return joins
+
+    def test_group_join_reads_use_parent_collection(self):
+        allowed, denied = self._create_scoped_group_joins()
+        for join, readable in ((allowed, True), (denied, False)):
+            with self.subTest(join=join.id):
+                response = self.client.get(f'/api/specify/collectionobjectgroupjoin/{join.id}/')
+                self.assertEqual(response.status_code, 200 if readable else 403, response.content)
+                response = self.client.get('/api/specify/collectionobjectgroupjoin/', {'id': join.id})
+                self.assertEqual(response.status_code, 200, response.content)
+                self.assertEqual(
+                    [obj['id'] for obj in response.json()['objects']],
+                    [join.id] if readable else [],
+                )
+                response = self.client.get('/table_rows/specify_rows/collectionobjectgroupjoin/', {
+                    'fields': 'id', 'id': join.id,
+                })
+                self.assertEqual(response.status_code, 200, response.content)
+                self.assertEqual(response.json(), [[join.id]] if readable else [])
+
+    def test_group_join_updates_require_parent_collection_permissions(self):
+        allowed, denied = self._create_scoped_group_joins()
+        response = self.client.put(
+            f'/api/specify/collectionobjectgroupjoin/{allowed.id}/',
+            {'version': allowed.version, 'text1': 'Allowed edit'},
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 200, response.content)
+        allowed.refresh_from_db()
+        self.assertEqual(allowed.text1, 'Allowed edit')
+        original_parent_id = denied.parentcog_id
+        original_version = denied.version
+        for fields in ({}, {'parentcog': f'/api/specify/collectionobjectgroup/{allowed.parentcog_id}/'}):
+            with self.subTest(fields=fields):
+                response = self.client.put(
+                    f'/api/specify/collectionobjectgroupjoin/{denied.id}/', {
+                        'version': original_version, 'text1': 'Unauthorized edit', **fields,
+                    }, content_type='application/json',
+                )
+                self.assertEqual(response.status_code, 403, response.content)
+                denied.refresh_from_db()
+                self.assertIsNone(denied.text1)
+                self.assertEqual(denied.parentcog_id, original_parent_id)
+                self.assertEqual(denied.version, original_version)
 
     def test_empty_hierarchy_scopes_require_global_permissions(self):
         discipline = spmodels.Discipline.objects.create(
