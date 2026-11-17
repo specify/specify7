@@ -419,3 +419,64 @@ describe('Add geography', () => {
     await waitFor(() => expect(handleRefresh).toHaveBeenCalled());
   });
 });
+
+describe('Delete geography', () => {
+  const nodeId = 11;
+  const parentId = 10;
+  const deleteRequest = jest.fn(() => '');
+
+  overrideAjax(getResourceApiUrl('Geography', nodeId), () =>
+    addMissingFields('Geography', {
+      id: nodeId,
+      name: 'Kansas',
+      fullName: 'Kansas, USA',
+      rankId: 300,
+      parent: getResourceApiUrl('Geography', parentId),
+      resource_uri: getResourceApiUrl('Geography', nodeId),
+    })
+  );
+  overrideAjax(
+    `/delete_blockers/delete_blockers/geography/${nodeId}/?limit=40`,
+    { results: [], next: [] }
+  );
+  overrideAjax(`/delete_blockers/count/geography/${nodeId}/`, {
+    results: [],
+    total_count: 0,
+  });
+  overrideAjax(getResourceApiUrl('Geography', nodeId), deleteRequest, {
+    method: 'DELETE',
+    responseCode: Http.NO_CONTENT,
+  });
+
+  test('"Delete" removes the focused node and focuses its parent', async () => {
+    const handleRefresh = jest.fn();
+    const setFocusPath = jest.fn();
+    const { user } = renderActions(
+      'Geography',
+      makeRow({
+        nodeId,
+        name: 'Kansas',
+        fullName: 'Kansas, USA',
+        rankId: 300,
+        children: 0,
+      }),
+      handleRefresh,
+      [[1, parentId, nodeId], setFocusPath]
+    );
+
+    await user.click(screen.getByRole('button', { name: commonText.delete() }));
+
+    const dialog = await screen.findByRole('dialog', {
+      name: formsText.deleteConfirmation({
+        tableName: tables.Geography.label,
+      }),
+    });
+    await user.click(
+      within(dialog).getByRole('button', { name: commonText.delete() })
+    );
+
+    await waitFor(() => expect(handleRefresh).toHaveBeenCalled());
+    expect(deleteRequest).toHaveBeenCalledTimes(1);
+    expect(setFocusPath).toHaveBeenCalledWith([1, parentId]);
+  });
+});
