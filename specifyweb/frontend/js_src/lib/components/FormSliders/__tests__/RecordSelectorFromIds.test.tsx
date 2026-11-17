@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 
 import { localized } from '../../../utils/types';
 import { requireContext } from '../../../tests/helpers';
@@ -19,10 +19,6 @@ jest.mock('../../Forms/ResourceView', () => ({
   }) => <>{headerButtons(<span />, <span />)}</>,
 }));
 
-jest.mock('../../Attachments/RecordSetAttachment', () => ({
-  RecordSetAttachments: () => <div data-testid="record-set-attachments" />,
-}));
-
 jest.mock('../../Permissions/helpers', () => ({
   ...jest.requireActual('../../Permissions/helpers'),
   hasTablePermission: () => true,
@@ -30,28 +26,32 @@ jest.mock('../../Permissions/helpers', () => ({
 
 requireContext();
 
-// [FormSliders] Open attachment gallery from Browse in Forms
-test('shows the attachment gallery for collection objects', () => {
-  render(
-    <ReadOnlyContext.Provider value={false}>
-      <SetUnloadProtectsContext.Provider value={jest.fn()}>
-        <RecordSelectorFromIds
-          dialog={false}
-          ids={[101]}
-          isDependent={false}
-          newResource={undefined}
-          table={tables.CollectionObject}
-          title={localized('Collection Object')}
-          onAdd={undefined}
-          onClone={undefined}
-          onClose={jest.fn()}
-          onDelete={undefined}
-          onSaved={jest.fn()}
-          onSlide={undefined}
-        />
-      </SetUnloadProtectsContext.Provider>
-    </ReadOnlyContext.Provider>
-  );
+// [FormSliders] Show attachment gallery button in form browser
+test('shows the attachment gallery for collection objects', async () => {
+  await act(async () => {
+    render(
+      <ReadOnlyContext.Provider value={false}>
+        <SetUnloadProtectsContext.Provider value={jest.fn()}>
+          <RecordSelectorFromIds
+            dialog={false}
+            ids={[101]}
+            isDependent={false}
+            newResource={undefined}
+            table={tables.CollectionObject}
+            title={localized('Collection Object')}
+            onAdd={undefined}
+            onClone={undefined}
+            onClose={jest.fn()}
+            onDelete={undefined}
+            onSaved={jest.fn()}
+            onSlide={undefined}
+          />
+        </SetUnloadProtectsContext.Provider>
+      </ReadOnlyContext.Provider>
+    );
+  });
 
-  expect(screen.getByTestId('record-set-attachments')).toBeInTheDocument();
+  expect(
+    screen.getByRole('button', { name: 'attachments' })
+  ).toBeInTheDocument();
 });
