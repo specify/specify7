@@ -51,6 +51,13 @@ class Tree(ModelWithTable):
 
         model = type(self)
         self.set_rank_and_definition()
+        if self.parent_id is not None and self.parent.definition_id != self.definition_id:
+            raise TreeBusinessRuleException(
+                "Tree node's parent belongs to a different tree definition",
+                {"tree": self.__class__.__name__,
+                 "localizationKey": "operationAcrossTrees",
+                 "operation": "save",
+                 "node": {"id": self.id, "fullName": self.fullname}})
 
         prev_self = None if self.id is None \
                     else model.objects.select_for_update().get(id=self.id)
