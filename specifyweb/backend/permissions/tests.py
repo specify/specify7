@@ -374,6 +374,41 @@ class CollectionScopeApiTests(ApiTests):
                 {self.collection.id, self.other_collection.id},
             )
 
+    def test_record_checks_reuse_cached_unrestricted_collection_grants(self):
+        resource = '/table/collectionobject'
+        for allowed in (True, False):
+            with self.subTest(allowed=allowed):
+                if not allowed:
+                    models.UserPolicy.objects.all().delete()
+                with permissions.cache_permission_queries():
+                    unrestricted = permissions._permitted_collection_ids(
+                        self.agent, resource, 'read',
+                    )
+                    for obj in (self.collectionobjects[0], self.other_object):
+                        permissions._record_collection_ids(obj)
+                    with self.assertNumQueries(0):
+                        for obj in (self.collectionobjects[0], self.other_object):
+                            if allowed and obj is self.collectionobjects[0]:
+                                permissions.enforce_record(
+                                    self.agent, obj, [resource], 'read',
+                                )
+                            else:
+                                with self.assertRaises(permissions.NoMatchingRuleException):
+                                    permissions.enforce_record(
+                                        self.agent, obj, [resource], 'read',
+                                    )
+                        self.assertEqual(
+                            permissions._permitted_collection_ids(
+                                self.agent, resource, 'read',
+                                candidate_collection_ids=frozenset({self.other_collection.id}),
+                            ),
+                            frozenset(),
+                        )
+                        self.assertEqual(
+                            permissions._permitted_collection_ids(self.agent, resource, 'read'),
+                            unrestricted,
+                        )
+
     def test_list_permissions_bulk_load_policies_across_collections(self):
         for index in range(5):
             spmodels.Collection.objects.create(

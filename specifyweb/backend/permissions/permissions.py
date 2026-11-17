@@ -335,9 +335,13 @@ def _permitted_collection_ids(
     candidate_collection_ids: frozenset[int] | None = None,
 ) -> frozenset[int]:
     userid = _actor_userid(actor)
+    request = PermRequest(None, userid, resource, action)
 
     def calculate():
         if candidate_collection_ids is not None:
+            active, unrestricted = _permitted_collection_cache.get((request, None))
+            if active and unrestricted is not _permitted_collection_cache.MISSING:
+                return candidate_collection_ids & unrestricted
             return frozenset(
                 collectionid for collectionid in candidate_collection_ids
                 if query_pt(collectionid, userid, CollectionAccessPT.access).allowed
@@ -359,7 +363,7 @@ def _permitted_collection_ids(
         return frozenset(access_collection_ids & resource_collection_ids)
 
     return _permitted_collection_cache.get_or_set(
-        (PermRequest(None, userid, resource, action), candidate_collection_ids), calculate,
+        (request, candidate_collection_ids), calculate,
     )
 
 
