@@ -1,7 +1,8 @@
-import React from 'react';
 import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import React from 'react';
 
+import { localityText } from '../../../localization/locality';
 import { requireContext } from '../../../tests/helpers';
 import { LoadingContext } from '../../Core/Contexts';
 import type { SpecifyResource } from '../../DataModel/legacyTypes';
@@ -12,7 +13,7 @@ import { GeoLocatePlugin } from '../GeoLocate';
 
 jest.mock('../../Permissions/helpers', () => ({
   ...jest.requireActual('../../Permissions/helpers'),
-  hasTablePermission: (tableName: string) => tableName === 'Locality',
+  hasTablePermission: (tableName: string): boolean => tableName === 'Locality',
 }));
 
 requireContext();
@@ -24,31 +25,32 @@ beforeAll(() => {
 });
 afterAll(() => portalRoot.remove());
 
-test('sends locality geography to GeoLocate and applies returned coordinates', async () => {
-  function makeGeography(
-    name: string,
-    rank: string,
-    parent: SpecifyResource<Geography> | null
-  ): SpecifyResource<Geography> {
-    const geography = new tables.Geography.Resource(
-      { name },
+function makeGeography(
+  name: string,
+  rank: string,
+  parent: SpecifyResource<Geography> | null
+): SpecifyResource<Geography> {
+  const geography = new tables.Geography.Resource(
+    { name },
+    { noBusinessRules: true }
+  );
+  geography.set(
+    'definitionItem',
+    new tables.GeographyTreeDefItem.Resource(
+      { name: rank },
       { noBusinessRules: true }
-    );
-    geography.set(
-      'definitionItem',
-      new tables.GeographyTreeDefItem.Resource(
-        { name: rank },
-        { noBusinessRules: true }
-      )
-    );
-    if (parent !== null) geography.set('parent', parent);
-    return geography;
-  }
+    )
+  );
+  if (parent !== null) geography.set('parent', parent);
+  return geography;
+}
+
+test('sends locality geography to GeoLocate and applies returned coordinates', async () => {
   const country = makeGeography('USA', 'Country', null);
   const state = makeGeography('Kansas', 'State', country);
   const county = makeGeography('Douglas', 'County', state);
   const locality = new tables.Locality.Resource(
-    { localityName: 'Lawrence, KS', latitude1: null, longitude1: null },
+    { localityName: 'Lawrence', latitude1: null, longitude1: null },
     { noBusinessRules: true }
   );
   locality.set('geography', county);
@@ -67,13 +69,14 @@ test('sends locality geography to GeoLocate and applies returned coordinates', a
     await user.click(screen.getByRole('button', { name: 'GEOLocate' }));
   });
   const iframe = await screen.findByTitle('GEOLocate');
+  expect(screen.getByRole('dialog')).toBeVisible();
   const url = new URL(iframe.getAttribute('src')!);
   expect(url.origin).toBe('https://www.geo-locate.org');
   expect(url.pathname).toBe('/web/webgeoreflight.aspx');
   expect(Object.fromEntries(url.searchParams)).toEqual(
     expect.objectContaining({
       georef: 'run',
-      locality: 'Lawrence, KS',
+      locality: 'Lawrence',
       county: 'Douglas',
       state: 'Kansas',
       country: 'USA',
@@ -91,13 +94,50 @@ test('sends locality geography to GeoLocate and applies returned coordinates', a
     );
   });
 
-  expect(setLocalityField).toHaveBeenCalledWith('lat1text', '38.98');
-  expect(setLocalityField).toHaveBeenCalledWith('latitude1', 38.98);
-  expect(setLocalityField).toHaveBeenCalledWith('long1text', '-95.14');
-  expect(setLocalityField).toHaveBeenCalledWith('longitude1', -95.14);
-  expect(setLocalityField).toHaveBeenCalledWith('latLongType', 'Point');
-  expect(setLocalityField).toHaveBeenCalledWith('latLongMethod', 'GEOLocate');
+  expect({
+    latitude: locality.get('latitude1'),
+    longitude: locality.get('longitude1'),
+    latitudeText: locality.get('lat1text'),
+    longitudeText: locality.get('long1text'),
+    type: locality.get('latLongType'),
+    method: locality.get('latLongMethod'),
+  }).toEqual({
+    latitude: 38.98,
+    longitude: -95.14,
+    latitudeText: '38.98',
+    longitudeText: '-95.14',
+    type: 'Point',
+    method: 'GEOLocate',
+  });
   await waitFor(() =>
     expect(screen.queryByTitle('GEOLocate')).not.toBeInTheDocument()
   );
+});
+
+test('shows the geography-required dialog when locality has no geography', async () => {
+  const locality = new tables.Locality.Resource(
+    { localityName: 'Lawrence', latitude1: null, longitude1: null },
+    { noBusinessRules: true }
+  );
+  render(
+    <UnloadProtectsContext.Provider value={[]}>
+      <LoadingContext.Provider value={(promise) => void promise}>
+        <GeoLocatePlugin resource={locality} />
+      </LoadingContext.Provider>
+    </UnloadProtectsContext.Provider>
+  );
+  const user = userEvent.setup();
+  await act(async () => {
+    await user.click(screen.getByRole('button', { name: 'GEOLocate' }));
+  });
+  await expect(
+    screen.findByRole('dialog', {
+      name: localityText.geographyRequired({
+        geographyTable: tables.Geography.label,
+      }),
+    })
+  ).resolves.toBeVisible();
+  expect(screen.queryByTitle('GEOLocate')).not.toBeInTheDocument();
+  expect(locality.get('latitude1')).toBeNull();
+  expect(locality.get('longitude1')).toBeNull();
 });
