@@ -184,7 +184,9 @@ _permission_query_cache = ThreadCache[PermRequest, QueryResult](
     )
 )
 
-_permitted_collection_cache = ThreadCache[PermRequest, frozenset[int]](
+_permitted_collection_cache = ThreadCache[
+    tuple[PermRequest, frozenset[int] | None], frozenset[int]
+](
     ContextVar("permitted_collection_cache", default=None)
 )
 _scope_collection_cache = ThreadCache[
@@ -301,21 +303,61 @@ def invalidate_collection_scope_cache(obj: Model) -> None:
 
 TABLE_ACTION = Literal["read", "create", "update", "delete"]
 
-def _permitted_collection_ids(actor, resource: str, action: str) -> frozenset[int]:
+def _bulk_matching_policy_collection_ids(
+    userid: int, resource: str, action: str,
+) -> frozenset[int | None]:
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+        select collection_id
+        from spuserpolicy
+        where (specifyuser_id = %(userid)s or specifyuser_id is null)
+        and %(resource)s like resource
+        and %(action)s like action
+        union
+        select r.collection_id
+        from spuserrole ur
+        join sprole r on r.id = ur.role_id
+        join sprolepolicy rp on rp.role_id = r.id
+        where ur.specifyuser_id = %(userid)s
+        and %(resource)s like resource
+        and %(action)s like action
+        """,
+            {"userid": userid, "resource": resource, "action": action},
+        )
+        return frozenset(row[0] for row in cursor.fetchall())
+
+
+def _permitted_collection_ids(
+    actor, resource: str, action: str,
+    candidate_collection_ids: frozenset[int] | None = None,
+) -> frozenset[int]:
     userid = _actor_userid(actor)
 
     def calculate():
-        collection_ids = _scope_collection_cache.get_or_set(
-            (), lambda: frozenset(models.Collection.objects.values_list('id', flat=True)),
+        if candidate_collection_ids is not None:
+            return frozenset(
+                collectionid for collectionid in candidate_collection_ids
+                if query_pt(collectionid, userid, CollectionAccessPT.access).allowed
+                and query(collectionid, userid, resource, action).allowed
+            )
+
+        access_collection_ids = _bulk_matching_policy_collection_ids(
+            userid, CollectionAccessPT.access.resource(), CollectionAccessPT.access.action(),
         )
-        return frozenset(
-            collectionid for collectionid in collection_ids
-            if query_pt(collectionid, userid, CollectionAccessPT.access).allowed
-            and query(collectionid, userid, resource, action).allowed
+        resource_collection_ids = _bulk_matching_policy_collection_ids(
+            userid, resource, action,
         )
+        if None in access_collection_ids and None in resource_collection_ids:
+            return frozenset(models.Collection.objects.values_list('id', flat=True))
+        if None in access_collection_ids:
+            return frozenset(resource_collection_ids - {None})
+        if None in resource_collection_ids:
+            return frozenset(access_collection_ids - {None})
+        return frozenset(access_collection_ids & resource_collection_ids)
 
     return _permitted_collection_cache.get_or_set(
-        PermRequest(None, userid, resource, action), calculate,
+        (PermRequest(None, userid, resource, action), candidate_collection_ids), calculate,
     )
 
 
@@ -366,7 +408,9 @@ def enforce_record(
         return
     denials: list[PermRequest] = []
     for resource in resources:
-        if candidates.isdisjoint(_permitted_collection_ids(actor, resource, action)):
+        if candidates.isdisjoint(_permitted_collection_ids(
+            actor, resource, action, candidate_collection_ids=candidates,
+        )):
             denials.extend(
                 PermRequest(collectionid, userid, resource, action)
                 for collectionid in sorted(candidates) or (None,)

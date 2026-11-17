@@ -354,6 +354,38 @@ class CollectionScopeApiTests(ApiTests):
             with self.assertRaises(permissions.NoMatchingRuleException):
                 permissions.check_table_permissions(self.collection, self.agent, obj, 'read')
 
+    def test_restricted_collection_cache_does_not_replace_unrestricted_result(self):
+        self.grant_other_collection()
+        resource = '/table/collectionobject'
+        with permissions.cache_permission_queries():
+            self.assertEqual(
+                permissions._permitted_collection_ids(
+                    self.agent, resource, 'read',
+                    candidate_collection_ids=frozenset({self.collection.id}),
+                ),
+                frozenset({self.collection.id}),
+            )
+            self.assertEqual(
+                set(permissions.permitted_collections(self.agent, resource, 'read').values_list(
+                    'pk', flat=True,
+                )),
+                {self.collection.id, self.other_collection.id},
+            )
+
+    def test_list_permissions_bulk_load_policies_across_collections(self):
+        for index in range(5):
+            spmodels.Collection.objects.create(
+                collectionname=f'Unpermitted collection {index}', discipline=self.discipline,
+            )
+        with permissions.cache_permission_queries():
+            with self.assertNumQueries(3):
+                self.assertEqual(
+                    permissions.filter_readable(
+                        spmodels.Collectionobject.objects.all(), self.agent,
+                    ).count(),
+                    len(self.collectionobjects),
+                )
+
     def test_permission_cache_does_not_survive_request_context(self):
         with permissions.cache_permission_queries():
             permissions.check_table_permissions(
