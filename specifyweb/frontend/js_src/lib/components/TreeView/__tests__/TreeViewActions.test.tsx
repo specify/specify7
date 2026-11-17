@@ -295,3 +295,123 @@ describe('Delete taxon', () => {
     expect(setFocusPath).toHaveBeenCalledWith([1, parentId]);
   });
 });
+
+describe('Add geography', () => {
+  const parentId = 10;
+  const newNodeId = 11;
+  const countryRankId = 2;
+  const stateRankId = 4;
+  overrideTreeView('Geography');
+  (
+    [
+      [countryRankId, 'Country', 200],
+      [stateRankId, 'State', 300],
+      [5, 'County', 400],
+    ] as const
+  ).forEach(([id, name, rankId]) =>
+    overrideAjax(getResourceApiUrl('GeographyTreeDefItem', id), () =>
+      addMissingFields('GeographyTreeDefItem', {
+        id,
+        name,
+        rankId,
+        treeDef: getResourceApiUrl('GeographyTreeDef', 1),
+        resource_uri: getResourceApiUrl('GeographyTreeDefItem', id),
+      })
+    )
+  );
+  overrideAjax(getResourceApiUrl('Geography', parentId), () =>
+    addMissingFields('Geography', {
+      id: parentId,
+      name: 'USA',
+      fullName: 'USA',
+      rankId: 200,
+      isAccepted: true,
+      definition: getResourceApiUrl('GeographyTreeDef', 1),
+      definitionItem: getResourceApiUrl('GeographyTreeDefItem', countryRankId),
+      resource_uri: getResourceApiUrl('Geography', parentId),
+    })
+  );
+
+  overrideAjax(
+    '/api/specify/geography/',
+    () =>
+      addMissingFields('Geography', {
+        id: newNodeId,
+        name: 'Kansas',
+        parent: getResourceApiUrl('Geography', parentId),
+        resource_uri: getResourceApiUrl('Geography', newNodeId),
+      }),
+    {
+      method: 'POST',
+      responseCode: Http.CREATED,
+      body: jsonContaining({
+        name: 'Kansas',
+        parent: getResourceApiUrl('Geography', parentId),
+        definitionitem: getResourceApiUrl('GeographyTreeDefItem', stateRankId),
+      }),
+    }
+  );
+
+  overrideAjax(
+    `/delete_blockers/delete_blockers/geography/${newNodeId}/?limit=40`,
+    { results: [], next: [] }
+  );
+  overrideAjax(`/delete_blockers/count/geography/${newNodeId}/`, {
+    results: [],
+    total_count: 0,
+  });
+  overrideAjax(
+    `/trees/specify_tree/geography/${parentId}/predict_fullname/?name=Kansas&treedefitemid=${stateRankId}`,
+    'Kansas, USA'
+  );
+
+  test('"Add child" saves a new Geography under the focused node', async () => {
+    const handleRefresh = jest.fn();
+    const { user } = renderActions(
+      'Geography',
+      makeRow({
+        nodeId: parentId,
+        name: 'USA',
+        fullName: 'USA',
+        rankId: 200,
+      }),
+      handleRefresh
+    );
+
+    const addChild = screen.getByRole('link', {
+      name: new RegExp(`^${treeText.addChild()}`, 'u'),
+    });
+    expect(addChild).toHaveAttribute('aria-disabled', 'false');
+    expect(addChild).toHaveAttribute('href', '/specify/view/geography/new/');
+
+    await user.click(addChild);
+
+    const dialog = await screen.findByRole('dialog');
+    const parent = within(dialog).getByRole('combobox', {
+      name: tables.Geography.strictGetRelationship('parent').label,
+    });
+    await waitFor(() => expect(parent).toHaveValue('USA'));
+
+    const rank = within(dialog).getByRole('combobox', { name: /rank/i });
+    await waitFor(() => expect(rank).toHaveValue('County'));
+    await waitFor(() =>
+      expect(within(dialog).getByRole('textbox')).toHaveFocus()
+    );
+    await user.click(rank);
+    await user.clear(rank);
+    await user.type(rank, 'Sta');
+    await user.click(
+      await screen.findByRole('option', {
+        name: (_, element) => element.textContent === 'State',
+      })
+    );
+
+    await user.click(within(dialog).getByRole('textbox'));
+    await user.paste('Kansas');
+    await user.click(
+      within(dialog).getByRole('button', { name: commonText.save() })
+    );
+
+    await waitFor(() => expect(handleRefresh).toHaveBeenCalled());
+  });
+});
