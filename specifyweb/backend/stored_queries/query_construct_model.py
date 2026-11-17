@@ -41,7 +41,9 @@ def resolve_tree_rank(collection, tree_table_name: str, rank_name: str, tree_def
         def_id = tree_info['definition']['id']
         correct_ranks = tuple(
             filter(
-                lambda rank: rank['name'].lower() == rank_name.lower(),
+                # BUG:? Should this be case insensitive or remain case
+                # sensitive?
+                lambda rank: rank['name'] == rank_name,
                 tree_info['ranks']
             )
         )
