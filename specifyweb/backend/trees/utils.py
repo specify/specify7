@@ -57,10 +57,32 @@ def get_search_filters(collection: spmodels.Collection, tree: str):
     return discipline_query
 
 class TreeInformation(TypedDict):
+    # definition will be the serialized TreeDef
     definition: dict
+    # ranks will be a list of serialized TreeDefItems, ordered by RankID
+    # (ascending--lowest rank first)
     ranks: list[dict]
 
 def get_tree_defs_in_collection(collection: spmodels.Collection, tree_name: str, tree_def_filters: dict[str, Any] | None = None) -> list[TreeInformation]:
+    """
+    Given a particular Collection and tree name (Taxon, Storage, Geography,
+    etc.), return information on each trees and their ranks within scope of the
+    Collection (most of the time, this will be all trees within the
+    Collection's Discipline).
+
+    Additional filters can be directly passed to the TreeDef QuerySet in the
+    form of a dict via tree_def_filters.
+    
+    e.g., to return all Taxon trees in the collection's scope created before
+    2026:
+    ```py
+    get_tree_defs_in_collection(
+        collection,
+        "Taxon",
+        {"timestampcreated__year__lt": 2026}    
+    )
+    ```
+    """
     if tree_name.lower() not in SPECIFY_TREES:
         raise ValueError(f"unexpected tree type: {tree_name}")
 
