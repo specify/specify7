@@ -480,3 +480,117 @@ describe('Delete geography', () => {
     expect(setFocusPath).toHaveBeenCalledWith([1, parentId]);
   });
 });
+
+describe('Add storage', () => {
+  const parentId = 20;
+  const newNodeId = 21;
+  const buildingRankId = 2;
+  const roomRankId = 3;
+  overrideTreeView('Storage');
+  (
+    [
+      [buildingRankId, 'Building', 100],
+      [roomRankId, 'Room', 200],
+    ] as const
+  ).forEach(([id, name, rankId]) =>
+    overrideAjax(getResourceApiUrl('StorageTreeDefItem', id), () =>
+      addMissingFields('StorageTreeDefItem', {
+        id,
+        name,
+        rankId,
+        isEnforced: rankId === 200,
+        treeDef: getResourceApiUrl('StorageTreeDef', 1),
+        resource_uri: getResourceApiUrl('StorageTreeDefItem', id),
+      })
+    )
+  );
+  overrideAjax(getResourceApiUrl('Storage', parentId), () =>
+    addMissingFields('Storage', {
+      id: parentId,
+      name: 'Dyche Hall',
+      fullName: 'Dyche Hall',
+      rankId: 100,
+      isAccepted: true,
+      definition: getResourceApiUrl('StorageTreeDef', 1),
+      definitionItem: getResourceApiUrl('StorageTreeDefItem', buildingRankId),
+      resource_uri: getResourceApiUrl('Storage', parentId),
+    })
+  );
+
+  overrideAjax(
+    '/api/specify/storage/',
+    () =>
+      addMissingFields('Storage', {
+        id: newNodeId,
+        name: 'Fish Room',
+        parent: getResourceApiUrl('Storage', parentId),
+        resource_uri: getResourceApiUrl('Storage', newNodeId),
+      }),
+    {
+      method: 'POST',
+      responseCode: Http.CREATED,
+      body: jsonContaining({
+        name: 'Fish Room',
+        parent: getResourceApiUrl('Storage', parentId),
+        definitionitem: getResourceApiUrl('StorageTreeDefItem', roomRankId),
+      }),
+    }
+  );
+
+  overrideAjax(
+    `/delete_blockers/delete_blockers/storage/${newNodeId}/?limit=40`,
+    { results: [], next: [] }
+  );
+  overrideAjax(`/delete_blockers/count/storage/${newNodeId}/`, {
+    results: [],
+    total_count: 0,
+  });
+  overrideAjax(
+    `/trees/specify_tree/storage/${parentId}/predict_fullname/?name=Fish+Room&treedefitemid=${roomRankId}`,
+    'Dyche Hall Fish Room'
+  );
+
+  test('"Add child" saves a new Storage under the focused node', async () => {
+    const handleRefresh = jest.fn();
+    const { user } = renderActions(
+      'Storage',
+      makeRow({
+        nodeId: parentId,
+        name: 'Dyche Hall',
+        fullName: 'Dyche Hall',
+        rankId: 100,
+      }),
+      handleRefresh
+    );
+
+    const addChild = screen.getByRole('link', {
+      name: new RegExp(`^${treeText.addChild()}`, 'u'),
+    });
+    expect(addChild).toHaveAttribute('aria-disabled', 'false');
+    expect(addChild).toHaveAttribute('href', '/specify/view/storage/new/');
+
+    await user.click(addChild);
+
+    const dialog = await screen.findByRole('dialog');
+    const parent = within(dialog).getByRole('combobox', {
+      name: tables.Storage.strictGetRelationship('parent').label,
+    });
+    await waitFor(() => expect(parent).toHaveValue('Dyche Hall'));
+
+    const rank = within(dialog).getByRole('combobox', {
+      name: tables.Storage.strictGetRelationship('definitionItem').label,
+    });
+    await waitFor(() => expect(rank).toHaveValue('Room'));
+    await waitFor(() =>
+      expect(within(dialog).getByRole('textbox')).toHaveFocus()
+    );
+
+    await user.click(within(dialog).getByRole('textbox'));
+    await user.paste('Fish Room');
+    await user.click(
+      within(dialog).getByRole('button', { name: commonText.save() })
+    );
+
+    await waitFor(() => expect(handleRefresh).toHaveBeenCalled());
+  });
+});
