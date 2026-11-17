@@ -80,9 +80,9 @@ def get_tree_defs_in_collection(collection: spmodels.Collection, tree_name: str,
     )
     tree_defs_query = tree_model.objects.prefetch_related(rank_prefetch).filter(scoping_filters)
     if tree_def_filters is not None:
-        tree_defs_query.filter(tree_def_filters)
+        tree_defs_query.filter(**tree_def_filters)
     result = []
-    for definition in tree_defs_query:
+    for definition in tree_defs_query.distinct():
         ranks = definition.ordered_ranks
         serialized_tree_info = {
             'definition': obj_to_data(definition),
