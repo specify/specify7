@@ -2,7 +2,7 @@ from inspect import isclass
 from functools import cache
 
 from enum import Enum
-from django.db.models import Exists, Model, OuterRef, Q, QuerySet
+from django.db.models import Exists, F, Model, OuterRef, Q, QuerySet
 from django.core.exceptions import ObjectDoesNotExist
 
 from .. import models
