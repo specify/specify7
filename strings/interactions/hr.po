@@ -260,7 +260,8 @@ msgstr "Nije dostupno"
 
 #: components/Interactions/InteractionsDialog.tsx:81
 #: components/QueryBuilder/LoanReturn.tsx:148
-#. 🟥Example: Return Loan records. Used in: Components > Interactions > Interactions Dialog ⬤ Components > Query Builder > Loan Return
+#: components/QueryBuilder/__tests__/LoanReturn.test.tsx:55
+#. 🟥Example: Return Loan records. Used in: Components > Interactions > Interactions Dialog ⬤ Components > Query Builder > Loan Return ⬤ Query Builder > __tests__ > Loan Return
 #, fuzzy
 msgid "returnLoan"
 msgstr "Vrati {tableLoan:string} zapise"
