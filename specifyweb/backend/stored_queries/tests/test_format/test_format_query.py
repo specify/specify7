@@ -6,6 +6,8 @@ from specifyweb.backend.stored_queries.tests.base_format import SIMPLE_DEF
 from specifyweb.backend.stored_queries.tests.tests import SQLAlchemySetup
 from xml.etree import ElementTree
 from unittest.mock import patch, Mock
+from datetime import timedelta
+from django.utils import timezone
 import specifyweb.specify.models as spmodels
 import specifyweb.backend.stored_queries.models as models
 
@@ -212,11 +214,13 @@ class FormatterAggregatorTests(SQLAlchemySetup):
         spmodels.Accessionagent.objects.create(
             agent=agent,
             role='role1',
-            accession=accession)
+            accession=accession,
+            timestampcreated=timezone.now() - timedelta(seconds=2))
         spmodels.Accessionagent.objects.create(
             agent=agent,
             role='role2',
-            accession=accession)
+            accession=accession,
+            timestampcreated=timezone.now() - timedelta(seconds=1))
 
         table = spmodels.datamodel.get_table_strict("Accession")
         field_spec = QueryFieldSpec.from_path(("Accession", "accessionAgents"))
@@ -234,7 +238,7 @@ class FormatterAggregatorTests(SQLAlchemySetup):
         role_results = self._get_results(table, [role_field])
         name_results = self._get_results(table, [name_field])
 
-        self.assertCountEqual([(accession.id, "role2; role1")], role_results)
+        self.assertCountEqual([(accession.id, "role1; role2")], role_results)
         self.assertCountEqual([(accession.id, "User; User")], name_results)
 
     def test_detect_cycles(self):
