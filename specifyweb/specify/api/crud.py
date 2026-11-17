@@ -67,6 +67,9 @@ def _cascade_collection_membership(collection, agent, obj: Model, previous_membe
     owner's previous collection. Each dependent update is permission checked
     against both its current and destination scopes, so a move the agent is
     not allowed to cascade is rejected as a whole.
+
+    The owner's row lock serializes creates and moves. READ COMMITTED isolation
+    makes these scans see children committed while the move waited for its lock.
     """
     new_member_id = getattr(obj, 'collectionmemberid', None)
     if new_member_id == previous_member_id:
@@ -103,6 +106,7 @@ def _cascade_collection_membership(collection, agent, obj: Model, previous_membe
             )])
             _cascade_collection_membership(collection, agent, child, child_previous_member_id)
 
+@transaction.atomic
 def create_obj(collection, agent, model, data: dict[str, Any], parent_obj=None, parent_relationship=None):
     """Create a new instance of 'model' and populate it with 'data'."""
     from specifyweb.backend.setup_tool.api import create_institution, create_division, create_discipline, create_collection
@@ -146,6 +150,15 @@ def create_obj(collection, agent, model, data: dict[str, Any], parent_obj=None, 
     if is_tree_table(obj.specify_model):
         obj.set_rank_and_definition()
     set_field_if_exists(obj, 'createdbyagent', agent)
+    # Re-read owners under the same lock used by moves before deriving membership.
+    for name in Scoping.collection_owner_fields(model):
+        owner = getattr(obj, name)
+        if owner is not None:
+            owner = get_object_or_404(
+                type(owner)._base_manager.select_for_update(), pk=owner.pk,
+            )
+            check_table_permissions(collection, agent, owner, "read")
+            setattr(obj, name, owner)
     target_collection_id = getattr(obj, 'collection_id', None)
     if target_collection_id is None:
         for name in Scoping.collection_owner_fields(model):
@@ -215,11 +228,13 @@ def post_resource(collection, agent, name: str, data, recordsetid: int | None=No
         )
     return obj
 
+@transaction.atomic
 def update_obj(collection, agent, name: str, id, version, data: dict[str, Any], parent_obj=None, parent_relationship=None):
     """Update the resource with 'id' in model named 'name' with given
     'data'.
     """
-    obj = get_object_or_404(name, id=int(id))
+    model = get_model_or_404(name) if isinstance(name, str) else name
+    obj = get_object_or_404(model._base_manager.select_for_update(), id=int(id))
     check_table_permissions(collection, agent, obj, "update")
     previous_member_id = getattr(obj, 'collectionmemberid', None)
     original_collections = models.Collection.objects.filter(

@@ -1,14 +1,17 @@
 import json
+from concurrent.futures import ThreadPoolExecutor
+from threading import Event
 from unittest.mock import patch
 
-from django.test import Client
+from django.test import Client, skipUnlessDBFeature
 from django.db import connection
 from django.core.exceptions import FieldError
 from django.test.utils import CaptureQueriesContext
 from django.utils import timezone
 
-from specifyweb.specify.tests.test_api import ApiTests
+from specifyweb.specify.tests.test_api import ApiTests, ApiTransactionTests
 from specifyweb.specify import models as spmodels
+from specifyweb.specify.api import crud
 from specifyweb.specify.api.crud import _check_destination_scope, create_obj, get_collection, put_resource
 from specifyweb.specify.api.filter_by_col import filter_by_collection
 from specifyweb.specify.api.validators import GetCollectionForm
@@ -1327,6 +1330,89 @@ class CollectionScopeApiTests(ApiTests):
         }, content_type='application/json')
         self.assertEqual(response.status_code, 403, response.content)
         self.assertEqual(own.recordsetitems.count(), 2)
+
+
+@skipUnlessDBFeature('has_select_for_update')
+class CollectionScopeTransactionTests(ApiTransactionTests):
+    def test_create_waits_for_collectionobject_move(self):
+        self._assert_create_and_move_are_serialized(move_first=True)
+
+    def test_collectionobject_move_waits_for_create(self):
+        self._assert_create_and_move_are_serialized(move_first=False)
+
+    def _assert_create_and_move_are_serialized(self, *, move_first):
+        destination = spmodels.Collection.objects.create(
+            collectionname='Move destination', discipline=self.discipline,
+        )
+        co = self.collectionobjects[0]
+        first_paused = Event()
+        release_first = Event()
+        second_lock_attempted = Event()
+        original_save = crud.autonumber_and_save
+        original_cascade = crud._cascade_collection_membership
+
+        def pause():
+            first_paused.set()
+            self.assertTrue(release_first.wait(10), 'First operation was not released')
+
+        def save(collection, user, obj):
+            if not move_first and isinstance(obj, spmodels.Determination):
+                pause()
+            return original_save(collection, user, obj)
+
+        def cascade(collection, agent, obj, previous_member_id):
+            if move_first and isinstance(obj, spmodels.Collectionobject):
+                pause()
+            return original_cascade(collection, agent, obj, previous_member_id)
+
+        def observe_lock(execute, sql, params, many, context):
+            if 'FOR UPDATE' in sql.upper() and '`collectionobject`' in sql:
+                second_lock_attempted.set()
+            return execute(sql, params, many, context)
+
+        def create():
+            return create_obj(self.collection, self.agent, 'determination', {
+                'collectionobject': f'/api/specify/collectionobject/{co.id}/',
+                'iscurrent': True,
+            })
+
+        def move():
+            return crud.update_obj(
+                self.collection, self.agent, 'collectionobject', co.id, co.version, {
+                    'collection': f'/api/specify/collection/{destination.id}/',
+                    'collectionmemberid': destination.id,
+                },
+            )
+
+        def run(operation, *, observe=False):
+            try:
+                if observe:
+                    with connection.execute_wrapper(observe_lock):
+                        return operation()
+                return operation()
+            finally:
+                connection.close()
+
+        with (
+            patch.object(crud, 'autonumber_and_save', side_effect=save),
+            patch.object(crud, '_cascade_collection_membership', side_effect=cascade),
+            ThreadPoolExecutor(max_workers=2) as executor,
+        ):
+            first = executor.submit(run, move if move_first else create)
+            try:
+                self.assertTrue(first_paused.wait(10), 'First operation did not reach pause')
+                second = executor.submit(run, create if move_first else move, observe=True)
+                self.assertTrue(second_lock_attempted.wait(10), 'Owner lock was not requested')
+                self.assertFalse(second.done(), 'Competing operation did not wait for the owner')
+            finally:
+                release_first.set()
+            first.result(timeout=10)
+            second.result(timeout=10)
+
+        co.refresh_from_db()
+        determination = spmodels.Determination.objects.get(collectionobject=co)
+        self.assertEqual(co.collectionmemberid, destination.id)
+        self.assertEqual(determination.collectionmemberid, destination.id)
 
 
 class PermissionsApiTest(ApiTests):
