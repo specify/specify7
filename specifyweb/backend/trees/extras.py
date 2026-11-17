@@ -70,6 +70,15 @@ class Tree(ModelWithTable):
                  "operation": "save",
                  "node": {"id": self.id, "fullName": self.fullname}})
 
+        if prev_self is not None and prev_self.definition_id != self.definition_id \
+                and self.acceptedchildren.exists():
+            raise TreeBusinessRuleException(
+                "Tree node with synonyms cannot change tree definition",
+                {"tree": self.__class__.__name__,
+                 "localizationKey": "operationAcrossTrees",
+                 "operation": "save",
+                 "node": {"id": self.id, "fullName": self.fullname}})
+
         if prev_self is None:
             self.nodenumber = None
             self.highestchildnodenumber = None
