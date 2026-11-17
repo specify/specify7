@@ -72,16 +72,16 @@ def _cascade_collection_membership(collection, agent, obj: Model, previous_membe
     if new_member_id == previous_member_id:
         return
     for child_model, owner_field in Scoping.collection_member_dependents(type(obj)):
-        for child in child_model.objects.filter(**{owner_field: obj}):
-            if child.collectionmemberid == new_member_id:
+        for child in child_model._base_manager.filter(**{owner_field: obj}):
+            if getattr(child, 'collectionmemberid') == new_member_id:
                 continue
-            child_previous_member_id = child.collectionmemberid
+            child_previous_member_id = getattr(child, 'collectionmemberid')
             if child_previous_member_id is not None:
                 check_table_permissions(collection, agent, child, "update")
                 check_field_permissions(
                     collection, agent, child, ['collectionmemberid'], "update",
                 )
-            child.collectionmemberid = new_member_id
+            setattr(child, 'collectionmemberid', new_member_id)
             check_table_permissions(collection, agent, child, "update", destination=True)
             check_field_permissions(
                 collection, agent, child, ['collectionmemberid'], "update",

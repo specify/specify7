@@ -260,7 +260,9 @@ class Scoping:
 
     @staticmethod
     @cache
-    def collection_member_dependents(model_class) -> tuple[tuple[type, str], ...]:
+    def collection_member_dependents(
+        model_class: type[Model],
+    ) -> tuple[tuple[type[Model], str], ...]:
         """Find dependent collection members whose membership follows this owner."""
         dependents = []
         for table in datamodel.tables:
