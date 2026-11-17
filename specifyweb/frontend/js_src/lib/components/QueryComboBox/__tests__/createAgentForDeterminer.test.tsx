@@ -1,5 +1,11 @@
 import React from 'react';
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 
@@ -62,7 +68,11 @@ jest.mock('../../Forms/useViewDefinition', () => {
   >('../../Forms/generateFormDefinition').autoGenerateViewDefinition;
   return {
     ...mockActual,
-    useViewDefinition: ({ table, formType, mode }: Parameters<typeof useViewDefinition>[0]) => {
+    useViewDefinition: ({
+      table,
+      formType,
+      mode,
+    }: Parameters<typeof useViewDefinition>[0]) => {
       if (table === undefined) return undefined;
       const fieldsToShow =
         table.name === 'Agent'
@@ -153,7 +163,9 @@ test('creates an Agent with type and remarks for a Determiner', async () => {
   const input = screen.getByRole('combobox', { name: 'Agent' });
   await waitFor(() => expect(input).toBeEnabled());
   await act(async () => user.type(input, 'New Agent'));
-  await act(async () => user.click(screen.getByRole('button', { name: 'Add' })));
+  await act(async () =>
+    user.click(screen.getByRole('button', { name: 'Add' }))
+  );
 
   const agentType = tables.Agent.strictGetLiteralField('agentType');
   await screen.findByRole('textbox', { name: 'Last Name' });
