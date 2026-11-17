@@ -88,6 +88,20 @@ class TreeRanks:
             and path_key(self.current_field.fieldspec) in self.deferred
         )
         self.current_rank = (node, table, item_ids)
+        # Root tree-table queries need an explicit left side when adding
+        # multiple rank aliases.  Relationship-based tree queries already
+        # have a join graph whose node is an AliasedClass (for example,
+        # determinations.taxon); promoting that alias with select_from() would
+        # create a new top-level FROM and break the relationship join graph.
+        if not isinstance(node, orm.util.AliasedClass):
+            # QueryConstruct may already contain tree-definition filters.
+            # Legacy SQLAlchemy rejects select_from() after criteria have been
+            # added unless its construction assertion is disabled.
+            query = query._replace(
+                # BUG: this isn't great, see if there's a way to implement the
+                # query without this
+                query=query.query.enable_assertions(False).select_from(node)
+            )
         if deferred:
             return query.outerjoin(ancestor, ancestor._id == node._id)
         key = table if node in self.mapped_nodes else (table, node)
@@ -192,6 +206,13 @@ def resolve_page(query, order, ranks, limit, offset):
         node._id.label("ancestor_id"), node.ParentID.label("parent_id"),
         getattr(node, item).label("item_id"),
         getattr(node, definition).label("definition_id"),
+        # Carry the selected node's definition through the CTE.  The page
+        # query can contain several aliases of the same tree table (for
+        # example, an any-rank field alongside multiple explicit ranks), so
+        # rejoining the tree table here to recover this value leaves the ORM
+        # with multiple possible FROM clauses.  The seed row already has the
+        # required value.
+        getattr(node, definition).label("seed_definition_id"),
         sql.true().label("is_seed"),
     ).select_from(page.join(slots, sql.true()).outerjoin(
         node, node._id == seed_id)).cte(recursive=True)
@@ -199,7 +220,8 @@ def resolve_page(query, order, ranks, limit, offset):
     recursive = sql.select(
         *[walk.c[column.key] for column in page.c],
         walk.c.slot, walk.c.seed_id, parent._id, parent.ParentID,
-        getattr(parent, item), getattr(parent, definition), sql.false(),
+        getattr(parent, item), getattr(parent, definition),
+        walk.c.seed_definition_id, sql.false(),
     ).select_from(walk).join(parent, parent._id == walk.c.parent_id).where(
         getattr(parent, definition) == walk.c.definition_id)
     mapping = ranks.mappings.get(table)
@@ -212,20 +234,13 @@ def resolve_page(query, order, ranks, limit, offset):
         walk.c[f"value_{i}"] for i in range(len(columns))
     ]).select_from(walk).filter(walk.c.is_seed, walk.c.slot == 0)
     aliases = {}
-    selected_nodes = {}
     replacements = {}
     for index, (query_field, (original_node, _, item_ids), formatter) in ranks.displays.items():
         node_id = walk.c[f"node_{nodes.index(original_node)}"]
         key = (original_node, item_ids)
         if key not in aliases:
             ancestor = orm.aliased(model)
-            # Definition comes from the selected node; never use rank name alone.
-            if original_node not in selected_nodes:
-                selected_node = orm.aliased(model)
-                result = result.outerjoin(selected_node, selected_node._id == node_id)
-                selected_nodes[original_node] = selected_node
-            selected_node = selected_nodes[original_node]
-            definition_id = getattr(selected_node, definition)
+            definition_id = walk.c.seed_definition_id
             resolved_id = ancestor_id(walk, node_id, item_ids, definition_id, distinct=True)
             if mapping is not None:
                 resolved_id = sql.func.coalesce(
