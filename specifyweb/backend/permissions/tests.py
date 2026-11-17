@@ -343,6 +343,141 @@ class CollectionScopeApiTests(ApiTests):
                     self.collection, self.agent, determination, 'read',
                 )
 
+    def test_moving_collectionobject_updates_submitted_children_once(self):
+        self.grant_other_collection()
+        co = create_obj(self.collection, self.agent, 'collectionobject', {
+            'collection': f'/api/specify/collection/{self.collection.id}/',
+            'catalognumber': 'move-with-child-edits',
+            'collectionobjectattribute': {'text1': 'Original attribute'},
+        })
+        attribute = co.collectionobjectattribute
+        determination = spmodels.Determination.objects.create(
+            collectionobject=co, iscurrent=True,
+        )
+        preptype = spmodels.Preptype.objects.create(
+            name='Movable preparation', isloanable=False, collection=self.collection,
+        )
+        preparation = spmodels.Preparation.objects.create(
+            collectionobject=co, preptype=preptype,
+        )
+        sample = spmodels.Materialsample.objects.create(
+            preparation=preparation, collectionmemberid=self.collection.id,
+        )
+        remaining = spmodels.Otheridentifier.objects.create(
+            collectionobject=co, collectionmemberid=self.collection.id,
+        )
+        children = (attribute, determination, preparation, sample, remaining)
+        versions = [child.version for child in children]
+
+        def edit(child, **fields):
+            return {
+                'id': child.id, 'version': child.version,
+                'collectionmemberid': self.collection.id, **fields,
+            }
+
+        response = self.client.put(
+            f'/api/specify/collectionobject/{co.id}/', {
+                'version': co.version,
+                'collection': f'/api/specify/collection/{self.other_collection.id}/',
+                'collectionmemberid': self.other_collection.id,
+                'collectionobjectattribute': edit(attribute, text1='Edited attribute'),
+                'determinations': [edit(determination, remarks='Edited determination')],
+                'preparations': [edit(
+                    preparation, remarks='Edited preparation',
+                    materialsamples=[edit(sample, remarks='Edited sample')],
+                )],
+            }, content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 200, response.content)
+        for child, version in zip(children, versions):
+            child.refresh_from_db()
+            self.assertEqual(child.collectionmemberid, self.other_collection.id)
+            self.assertEqual(child.version, version + 1)
+        self.assertEqual(attribute.text1, 'Edited attribute')
+        self.assertEqual(determination.remarks, 'Edited determination')
+        self.assertEqual(preparation.remarks, 'Edited preparation')
+        self.assertEqual(sample.remarks, 'Edited sample')
+
+    def test_moving_collectionobject_rejects_stale_submitted_child(self):
+        self.grant_other_collection()
+        co = create_obj(self.collection, self.agent, 'collectionobject', {
+            'collection': f'/api/specify/collection/{self.collection.id}/',
+            'catalognumber': 'stale-child-move',
+            'collectionobjectattribute': {'text1': 'Original attribute'},
+        })
+        attribute = co.collectionobjectattribute
+        determination = spmodels.Determination.objects.create(
+            collectionobject=co, iscurrent=True, version=1, remarks='Original',
+        )
+        response = self.client.put(
+            f'/api/specify/collectionobject/{co.id}/', {
+                'version': co.version,
+                'collection': f'/api/specify/collection/{self.other_collection.id}/',
+                'collectionmemberid': self.other_collection.id,
+                'collectionobjectattribute': {
+                    'id': attribute.id, 'version': attribute.version, 'text1': 'Edited',
+                },
+                'determinations': [{
+                    'id': determination.id, 'version': 0, 'remarks': 'Stale edit',
+                }],
+            }, content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 409, response.content)
+        co.refresh_from_db()
+        determination.refresh_from_db()
+        self.assertEqual(co.collection_id, self.collection.id)
+        self.assertEqual(co.collectionmemberid, self.collection.id)
+        self.assertEqual(determination.collectionmemberid, self.collection.id)
+        self.assertEqual(determination.version, 1)
+        self.assertEqual(determination.remarks, 'Original')
+        attribute.refresh_from_db()
+        self.assertEqual(attribute.collectionmemberid, self.collection.id)
+        self.assertEqual(attribute.version, 0)
+        self.assertEqual(attribute.text1, 'Original attribute')
+
+    def test_moving_collectionobject_with_child_edits_requires_both_scopes(self):
+        co = self.collectionobjects[0]
+        determination = spmodels.Determination.objects.create(
+            collectionobject=co, iscurrent=True, remarks='Original',
+        )
+        for restricted in (self.collection, self.other_collection):
+            with self.subTest(restricted_collection=restricted.id):
+                models.UserPolicy.objects.all().delete()
+                for collection in (self.collection, self.other_collection):
+                    if collection != restricted:
+                        models.UserPolicy.objects.create(
+                            collection=collection, specifyuser=self.specifyuser,
+                            resource='%', action='%',
+                        )
+                for resource, action in (
+                    ('%', 'read'),
+                    ('/system/sp7/collection', 'access'),
+                    ('/table/collectionobject', 'update'),
+                    ('/field/collectionobject/%', 'update'),
+                ):
+                    models.UserPolicy.objects.create(
+                        collection=restricted, specifyuser=self.specifyuser,
+                        resource=resource, action=action,
+                    )
+                response = self.client.put(
+                    f'/api/specify/collectionobject/{co.id}/', {
+                        'version': co.version,
+                        'collection': f'/api/specify/collection/{self.other_collection.id}/',
+                        'collectionmemberid': self.other_collection.id,
+                        'determinations': [{
+                            'id': determination.id, 'version': determination.version,
+                            'remarks': 'Unauthorized edit',
+                        }],
+                    }, content_type='application/json',
+                )
+                self.assertEqual(response.status_code, 403, response.content)
+                co.refresh_from_db()
+                determination.refresh_from_db()
+                self.assertEqual(co.collection_id, self.collection.id)
+                self.assertEqual(determination.collectionmemberid, self.collection.id)
+                self.assertEqual(determination.version, 0)
+                self.assertEqual(determination.remarks, 'Original')
+
     def test_moving_collectionobject_rescopes_inline_attribute(self):
         self.grant_other_collection()
         co = create_obj(self.collection, self.agent, 'collectionobject', {

@@ -6,6 +6,7 @@ from django.db import transaction
 from django.core.exceptions import BadRequest, FieldError, FieldDoesNotExist
 from django.db.models import Model, F, Q, Subquery
 from django.db.models.deletion import Collector
+from django.db.models.fields.reverse_related import ForeignObjectRel
 from django.http import (HttpResponseServerError, Http404)
 from django.apps import apps
 
@@ -60,9 +61,31 @@ def _check_destination_scope(
             collection, agent, obj, action, destination=True,
         )
 
+def _rescope_submitted_children(obj: Model, data: dict[str, Any], new_member_id) -> None:
+    """Merge rescoping into submitted child edits so their version is checked once."""
+    for child_model, owner_field, owned_to_one in Scoping.collection_member_dependents(type(obj)):
+        if owned_to_one:
+            field_name = owner_field
+        else:
+            relationship = child_model._meta.get_field(owner_field).remote_field
+            assert isinstance(relationship, ForeignObjectRel)
+            accessor = relationship.get_accessor_name()
+            assert accessor is not None
+            field_name = accessor
+        value = data.get(field_name)
+        if isinstance(value, dict):
+            data[field_name] = {**value, 'collectionmemberid': new_member_id}
+        elif isinstance(value, list):
+            data[field_name] = [
+                {**child, 'collectionmemberid': new_member_id}
+                if isinstance(child, dict) else child
+                for child in value
+            ]
+
 def _cascade_collection_membership(collection, agent, obj: Model, previous_member_id) -> None:
     """Rescope dependent collection members when their owner moves collections.
 
+    Submitted child edits run first; children already at the destination are skipped.
     Otherwise dependents such as Determinations would stay readable in the
     owner's previous collection. Each dependent update is permission checked
     against both its current and destination scopes, so a move the agent is
@@ -244,6 +267,9 @@ def update_obj(collection, agent, name: str, id, version, data: dict[str, Any], 
     data = cleanData(obj.__class__, data, parent_relationship)
     if data.get(obj._meta.pk.name) is not None and str(data[obj._meta.pk.name]) != str(obj.pk):
         raise BadRequest("Cannot change a record's primary key")
+    new_member_id = data.get('collectionmemberid', previous_member_id)
+    if new_member_id != previous_member_id:
+        _rescope_submitted_children(obj, data, new_member_id)
     dependents_to_delete, fk_dirty, handle_remote_to_ones = handle_fk_fields(collection, agent, obj, data)
     dirty = fk_dirty + set_fields_from_data(obj, data)
 
@@ -267,12 +293,12 @@ def update_obj(collection, agent, name: str, id, version, data: dict[str, Any], 
     obj.save(force_update=True)
     invalidate_collection_scope_cache(obj)
     auditlog.update(obj, agent, parent_obj, dirty)
-    _cascade_collection_membership(collection, agent, obj, previous_member_id)
     deleter = make_default_deleter(collection=collection, agent=agent)
     for dep in dependents_to_delete:
         delete_obj(dep, deleter, parent_obj=obj)
     handle_remote_to_ones(obj)
     handle_to_many(collection, agent, obj, data)
+    _cascade_collection_membership(collection, agent, obj, previous_member_id)
     _handle_special_update_posts(obj)
     return obj
 
