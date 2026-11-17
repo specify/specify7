@@ -262,16 +262,24 @@ class Scoping:
     @cache
     def collection_member_dependents(
         model_class: type[Model],
-    ) -> tuple[tuple[type[Model], str], ...]:
-        """Find dependent collection members whose membership follows this owner."""
+    ) -> tuple[tuple[type[Model], str, bool], ...]:
+        """Find collection members as (model, field, owned_to_one) tuples."""
         dependents = []
+        owner_table = datamodel.get_table_strict(model_class.__name__)
+        for field in model_class._meta.fields:
+            if (
+                field.is_relation
+                and hasattr(field.related_model, 'collectionmemberid')
+                and owner_table.get_relationship_strict(field.name).dependent
+            ):
+                dependents.append((field.related_model, field.name, True))
         for table in datamodel.tables:
             child = getattr(models, table.django_name, None)
             if child is None or not hasattr(child, 'collectionmemberid'):
                 continue
             for name in Scoping.collection_owner_fields(child):
                 if child._meta.get_field(name).related_model is model_class:
-                    dependents.append((child, name))
+                    dependents.append((child, name, False))
         return tuple(dependents)
 
     @staticmethod

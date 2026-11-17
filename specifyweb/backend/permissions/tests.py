@@ -340,6 +340,69 @@ class CollectionScopeApiTests(ApiTests):
                     self.collection, self.agent, determination, 'read',
                 )
 
+    def test_moving_collectionobject_rescopes_inline_attribute(self):
+        self.grant_other_collection()
+        co = create_obj(self.collection, self.agent, 'collectionobject', {
+            'collection': f'/api/specify/collection/{self.collection.id}/',
+            'catalognumber': 'inline-attribute-move',
+            'collectionobjectattribute': {'text1': 'Inline attribute'},
+        })
+        attribute = co.collectionobjectattribute
+        original_version = attribute.version
+        self.assertEqual(attribute.collectionmemberid, self.collection.id)
+        response = self.client.put(
+            f'/api/specify/collectionobject/{co.id}/', {
+                'version': co.version,
+                'collection': f'/api/specify/collection/{self.other_collection.id}/',
+                'collectionmemberid': self.other_collection.id,
+            }, content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 200, response.content)
+        attribute.refresh_from_db()
+        self.assertEqual(attribute.collectionmemberid, self.other_collection.id)
+        self.assertEqual(attribute.version, original_version + 1)
+        self.assertEqual(attribute.text1, 'Inline attribute')
+
+    def test_moving_collectionobject_requires_inline_attribute_permissions(self):
+        co = create_obj(self.collection, self.agent, 'collectionobject', {
+            'collection': f'/api/specify/collection/{self.collection.id}/',
+            'catalognumber': 'restricted-attribute-move',
+            'collectionobjectattribute': {'text1': 'Inline attribute'},
+        })
+        attribute = co.collectionobjectattribute
+        original_version = attribute.version
+        for restricted in (self.collection, self.other_collection):
+            with self.subTest(restricted_collection=restricted.id):
+                models.UserPolicy.objects.all().delete()
+                for collection in (self.collection, self.other_collection):
+                    models.UserPolicy.objects.create(
+                        collection=collection, specifyuser=self.specifyuser,
+                        resource='%', action='%',
+                    )
+                models.UserPolicy.objects.filter(collection=restricted).delete()
+                for resource in (
+                    '/system/sp7/collection',
+                    '/table/collectionobject',
+                    '/field/collectionobject/%',
+                ):
+                    models.UserPolicy.objects.create(
+                        collection=restricted, specifyuser=self.specifyuser,
+                        resource=resource, action='%',
+                    )
+                response = self.client.put(
+                    f'/api/specify/collectionobject/{co.id}/', {
+                        'version': co.version,
+                        'collection': f'/api/specify/collection/{self.other_collection.id}/',
+                        'collectionmemberid': self.other_collection.id,
+                    }, content_type='application/json',
+                )
+                self.assertEqual(response.status_code, 403, response.content)
+                co.refresh_from_db()
+                attribute.refresh_from_db()
+                self.assertEqual(co.collection_id, self.collection.id)
+                self.assertEqual(attribute.collectionmemberid, self.collection.id)
+                self.assertEqual(attribute.version, original_version)
+
     def test_moving_collectionobject_requires_dependent_permissions_in_destination(self):
         for resource in (
             '/system/sp7/collection',

@@ -1,6 +1,6 @@
 import logging
 from typing import Any, Dict
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 import json
 from django.db import transaction
 from django.core.exceptions import BadRequest, FieldError, FieldDoesNotExist
@@ -71,8 +71,14 @@ def _cascade_collection_membership(collection, agent, obj: Model, previous_membe
     new_member_id = getattr(obj, 'collectionmemberid', None)
     if new_member_id == previous_member_id:
         return
-    for child_model, owner_field in Scoping.collection_member_dependents(type(obj)):
-        for child in child_model._base_manager.filter(**{owner_field: obj}):
+    for child_model, owner_field, owned_to_one in Scoping.collection_member_dependents(type(obj)):
+        children: Iterable[Model]
+        if owned_to_one:
+            related = getattr(obj, owner_field)
+            children = () if related is None else (related,)
+        else:
+            children = child_model._base_manager.filter(**{owner_field: obj})
+        for child in children:
             if getattr(child, 'collectionmemberid') == new_member_id:
                 continue
             child_previous_member_id = getattr(child, 'collectionmemberid')
