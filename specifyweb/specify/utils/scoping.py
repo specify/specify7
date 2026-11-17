@@ -272,6 +272,7 @@ class Scoping:
         if model_class in hierarchy:
             return ScopeType.from_model(model_class), 'pk'
         inherited = {
+            models.Conserveventattachment: ('conservevent', models.Conservevent),
             models.Conservevent: ('conservdescription', models.Conservdescription),
             models.Fieldnotebookpage: ('pageset', models.Fieldnotebookpageset),
             models.Fieldnotebookpageset: ('fieldnotebook', models.Fieldnotebook),
