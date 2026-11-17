@@ -856,6 +856,41 @@ class CollectionScopeApiTests(ApiTests):
         response = self.client.get(f'/api/specify/attachment/{attachments[1].id}/')
         self.assertEqual(response.status_code, 403, response.content)
 
+    def test_conservevent_attachment_links_respect_event_division(self):
+        foreign_division = spmodels.Division.objects.create(
+            institution=self.institution, name='Restricted division',
+        )
+        foreign_discipline = spmodels.Discipline.objects.create(
+            division=foreign_division, datatype=self.datatype,
+            geographytreedef=self.geographytreedef,
+            geologictimeperiodtreedef=self.geologictimeperiodtreedef,
+            name='Restricted discipline', type='botany',
+        )
+        self.other_collection.discipline = foreign_discipline
+        self.other_collection.save()
+        links = []
+        for division in (self.division, foreign_division):
+            description = spmodels.Conservdescription.objects.create(division=division)
+            event = spmodels.Conservevent.objects.create(conservdescription=description)
+            links.append(spmodels.Conserveventattachment.objects.create(
+                conservevent=event, attachment=spmodels.Attachment.objects.create(), ordinal=0,
+            ))
+
+        response = self.client.get('/api/specify/conserveventattachment/')
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual(
+            [row['id'] for row in response.json()['objects']], [links[0].id],
+        )
+        response = self.client.get('/api/specify/conserveventattachment/', {
+            'conservevent': links[1].conservevent_id,
+        })
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual(response.json()['objects'], [])
+        response = self.client.get(f'/api/specify/conserveventattachment/{links[0].id}/')
+        self.assertEqual(response.status_code, 200, response.content)
+        response = self.client.get(f'/api/specify/conserveventattachment/{links[1].id}/')
+        self.assertEqual(response.status_code, 403, response.content)
+
     def test_tree_scope_is_shared_only_with_its_discipline(self):
         foreign_discipline = spmodels.Discipline.objects.create(
             division=self.division, datatype=self.datatype,
