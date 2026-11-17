@@ -10,6 +10,7 @@ from django.utils import timezone
 from specifyweb.specify.tests.test_api import ApiTests
 from specifyweb.specify import models as spmodels
 from specifyweb.specify.api.crud import _check_destination_scope, get_collection, put_resource
+from specifyweb.specify.api.filter_by_col import filter_by_collection
 from specifyweb.specify.api.validators import GetCollectionForm
 from specifyweb.specify.models_utils.relationships import handle_fk_fields
 from specifyweb.specify.utils.scoping import Scoping, ScopeType
@@ -820,6 +821,87 @@ class CollectionScopeApiTests(ApiTests):
             self.assertFalse(Scoping.filter_records(
                 queryset, spmodels.Collection.objects.all(),
             ).exists())
+
+    def test_shared_tree_scope_uses_all_referencing_disciplines(self):
+        shared_discipline = spmodels.Discipline.objects.create(
+            name='Shared tree discipline',
+            geologictimeperiodtreedef=self.geologictimeperiodtreedef,
+            geographytreedef=self.geographytreedef,
+            division=self.division,
+            datatype=self.datatype,
+            type='paleobotany',
+        )
+        shared_collection = spmodels.Collection.objects.create(
+            collectionname='Shared tree collection',
+            discipline=shared_discipline,
+        )
+        geography = spmodels.Geography.objects.create(
+            name='Shared geography',
+            rankid=0,
+            definition=self.geographytreedef,
+            definitionitem=self.geographytreedef.treedefitems.get(rankid=0),
+        )
+
+        for model in (
+            spmodels.Geography, spmodels.Geologictimeperiod,
+            spmodels.Lithostrat, spmodels.Tectonicunit,
+        ):
+            self.assertEqual(
+                Scoping.record_scope_path(model),
+                (ScopeType.DISCIPLINE, 'definition__disciplines'),
+            )
+
+        scope_filter = Scoping.record_scope_filter(geography)
+        self.assertEqual(
+            scope_filter,
+            {'discipline__geographytreedef_id': self.geographytreedef.id},
+        )
+        self.assertCountEqual(
+            Scoping.collections_for_record(geography),
+            spmodels.Collection.objects.filter(
+                discipline__in=(self.discipline, shared_discipline),
+            ),
+        )
+        self.assertEqual(
+            list(Scoping.filter_records(
+                spmodels.Geography.objects.filter(pk=geography.pk),
+                spmodels.Collection.objects.filter(
+                    discipline__in=(self.discipline, shared_discipline),
+                ),
+            )),
+            [geography],
+        )
+        for collection in (self.collection, shared_collection):
+            self.assertEqual(
+                list(filter_by_collection(
+                    spmodels.Geography.objects.filter(pk=geography.pk), collection,
+                )),
+                [geography],
+            )
+
+        models.UserPolicy.objects.all().delete()
+        for resource, action in (
+            ('/system/sp7/collection', 'access'),
+            ('/table/geography', 'read'),
+        ):
+            models.UserPolicy.objects.create(
+                collection=shared_collection, specifyuser=self.specifyuser,
+                resource=resource, action=action,
+            )
+        with permissions.cache_permission_queries():
+            permissions.enforce_record(
+                self.agent, geography, ['/table/geography'], 'read',
+            )
+            with self.assertNumQueries(0):
+                permissions.enforce_record(
+                    self.agent, geography, ['/table/geography'], 'read',
+                )
+            self.assertEqual(
+                list(permissions.filter_readable(
+                    spmodels.Geography.objects.filter(pk=geography.pk), self.agent,
+                )),
+                [geography],
+            )
 
     def test_recordset_membership_and_navigation(self):
         own = spmodels.Recordset.objects.create(

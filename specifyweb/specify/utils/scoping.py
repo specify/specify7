@@ -2,7 +2,7 @@ from inspect import isclass
 from functools import cache
 
 from enum import Enum
-from django.db.models import Exists, Model, Q, QuerySet
+from django.db.models import Exists, Model, OuterRef, Q, QuerySet
 from django.core.exceptions import ObjectDoesNotExist
 
 from .. import models
@@ -282,11 +282,13 @@ class Scoping:
             scope_type, path = Scoping.record_scope_path(parent_model)
             return scope_type, f'{parent}__{path}' if path else None
         scope_type = Scoping.scope_type_from_class(model_class)
+        if model_class is models.Taxon:
+            return scope_type, 'definition__discipline'
         if model_class in (
-            models.Taxon, models.Geography, models.Geologictimeperiod,
+            models.Geography, models.Geologictimeperiod,
             models.Lithostrat, models.Tectonicunit,
         ):
-            return scope_type, 'definition__discipline'
+            return scope_type, 'definition__disciplines'
         if model_class is models.Storage:
             return scope_type, 'definition__institution'
         if model_class is models.Taxontreedefitem:
@@ -309,9 +311,23 @@ class Scoping:
         }[scope_type.name]
 
     @staticmethod
+    def tree_definition_discipline_field(model_class) -> str:
+        definition_model = model_class._meta.get_field('definition').related_model
+        return definition_model._meta.get_field('disciplines').field.name
+
+    @staticmethod
+    def filter_tree_records(queryset: QuerySet, disciplines) -> QuerySet:
+        discipline_field = Scoping.tree_definition_discipline_field(queryset.model)
+        matching_disciplines = models.Discipline.objects.filter(**{
+            f'{discipline_field}_id': OuterRef('definition_id'),
+            'pk__in': disciplines,
+        })
+        return queryset.filter(Exists(matching_disciplines))
+
+    @staticmethod
     def record_scope_filter(
         obj: Model, *, scope_path: tuple[ScopeType, str | None] | None = None,
-    ) -> dict[str, int | None] | None:
+    ) -> dict[str, int | tuple[int, ...] | None] | None:
         """Return scope predicates; None denotes the default institution.
 
         Taxon ranks without a discipline retain the default institution scope.
@@ -326,6 +342,12 @@ class Scoping:
         value = obj
         if path is None:
             return None
+        if path == 'definition__disciplines':
+            definition_id = getattr(obj, 'definition_id')
+            if definition_id is None:
+                return {'pk': None}
+            discipline_field = Scoping.tree_definition_discipline_field(type(obj))
+            return {f'discipline__{discipline_field}_id': definition_id}
         parts = path.split('__')
         for index, name in enumerate(parts):
             if value is None:
@@ -377,6 +399,10 @@ class Scoping:
         scope_type, path = Scoping.record_scope_path(model)
         if path is None:
             return queryset if collections.exists() else queryset.none()
+        if path == 'definition__disciplines':
+            return Scoping.filter_tree_records(
+                queryset, collections.values('discipline_id'),
+            )
         condition = Q(**{
             f'{path}__in': collections.values(Scoping.collection_lookup(scope_type)),
         })
