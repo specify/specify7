@@ -312,6 +312,13 @@ def moving_node(to_save):
     current = model.objects.get(id=to_save.id)
     size = current.highestchildnodenumber - current.nodenumber + 1
     new_parent = model.objects.select_for_update().get(id=to_save.parent.id)
+    if new_parent.definition_id != to_save.definition_id:
+        raise TreeBusinessRuleException(
+            "Tree node's parent belongs to a different tree definition",
+            {"tree": to_save.__class__.__name__,
+             "localizationKey": "operationAcrossTrees",
+             "operation": "Moving",
+             "node": {"id": to_save.id, "fullName": to_save.fullname}})
     if new_parent.accepted_id is not None:
         raise TreeBusinessRuleException(
             f'Moving node "{to_save.fullname}" to synonymized parent "{new_parent.fullname}"',
