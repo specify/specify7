@@ -1,3 +1,5 @@
+import logging
+
 from specifyweb.middleware.general import require_http_methods
 from specifyweb.specify.api.crud import apply_filters
 from specifyweb.specify.api.exceptions import FilterError, OrderByError
@@ -7,6 +9,8 @@ from specifyweb.specify.views import login_maybe_required
 from django.http import (HttpResponse, HttpResponseBadRequest)
 from specifyweb.backend.permissions.permissions import cache_permission_queries, enforce
 from django.core.exceptions import FieldError
+
+logger = logging.getLogger(__name__)
 
 @login_maybe_required
 @require_http_methods(['GET', 'HEAD'])
@@ -33,8 +37,9 @@ def rows(request, model: str) -> HttpResponse:
         query = query.values_list(*fields)
         if not form.cleaned_data['orderby']:
             query = query.order_by(*fields)
-    except (FieldError, FilterError, OrderByError) as e:
-        return HttpResponseBadRequest(e)
+    except (FieldError, FilterError, OrderByError):
+        logger.warning('Invalid table rows query', exc_info=True)
+        return HttpResponseBadRequest('Invalid table rows query.')
     if form.cleaned_data['distinct']:
         query = query.distinct()
 

@@ -1,4 +1,5 @@
 import json
+import logging
 from django.http import (
     HttpResponse,
     HttpResponseBadRequest,
@@ -18,6 +19,7 @@ from specifyweb.specify.api.validators import GetCollectionForm, RowsForm
 
 
 UNIQUENESS_RULE_MODELS = {'uniquenessrule', 'uniquenessrulefield'}
+logger = logging.getLogger(__name__)
 
 
 def _uniqueness_rule_write_forbidden(request, model: str) -> HttpResponse | None:
@@ -170,8 +172,9 @@ def rows(request, model_name: str) -> HttpResponse:
         query = query.values_list(*fields)
         if not form.cleaned_data['orderby']:
             query = query.order_by(*fields)
-    except (FieldError, FilterError, OrderByError) as e:
-        return HttpResponseBadRequest(e)
+    except (FieldError, FilterError, OrderByError):
+        logger.warning('Invalid table rows query', exc_info=True)
+        return HttpResponseBadRequest('Invalid table rows query.')
     if form.cleaned_data['distinct']:
         query = query.distinct()
 

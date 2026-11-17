@@ -1,4 +1,8 @@
-from django.test import Client
+from django.test import Client, RequestFactory
+from django.core.exceptions import FieldError
+from unittest.mock import patch
+from specifyweb.specify.api.exceptions import FilterError, OrderByError
+from specifyweb.specify.api.dispatch import rows
 from specifyweb.specify.models import Collection, Collectionobject, Geologictimeperiod
 import json
 
@@ -23,6 +27,32 @@ class TestRows(GeoTimeTestsContext):
             json.loads(result_rows.content.decode()), 
             [[co.catalognumber,co.collection.collectionname] for co in self.collectionobjects]
         )
+
+    def test_query_errors_do_not_expose_exception_details(self):
+        for module, prefix in (
+            ('specifyweb.backend.table_rows.views', '/table_rows/'),
+            ('specifyweb.specify.api.dispatch', '/api/'),
+        ):
+            for error_type in (FieldError, FilterError, OrderByError):
+                with self.subTest(module=module, error_type=error_type.__name__):
+                    with (
+                        patch(
+                            f'{module}.apply_filters',
+                            side_effect=error_type('Sensitive internal query details'),
+                        ),
+                        self.assertLogs(module, level='WARNING') as logs,
+                    ):
+                        url = f'{prefix}specify_rows/collectionobject/'
+                        if module == 'specifyweb.specify.api.dispatch':
+                            request = RequestFactory().get(url, {'fields': 'id'})
+                            request.specify_collection = self.collection
+                            request.specify_user_agent = self.agent
+                            response = rows(request, 'collectionobject')
+                        else:
+                            response = self.c.get(url, {'fields': 'id'})
+                    self.assertEqual(response.status_code, 400)
+                    self.assertEqual(response.content, b'Invalid table rows query.')
+                    self.assertIn('Sensitive internal query details', '\n'.join(logs.output))
 
     def test_order_by_fetch(self):
 
