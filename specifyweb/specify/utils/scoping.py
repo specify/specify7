@@ -166,9 +166,13 @@ class ModelInstanceScope:
         return ModelInstanceScope(self.obj.conservdescription).scope_model
 
     def fieldnotebookpage(self) -> Model:
+        if self.obj.pageset is None:
+            return self.obj.discipline
         return ModelInstanceScope(self.obj.pageset).scope_model
 
     def fieldnotebookpageset(self) -> Model:
+        if self.obj.fieldnotebook is None:
+            return self.obj.discipline
         return ModelInstanceScope(self.obj.fieldnotebook).scope_model
 
     def gift(self) -> Model:
@@ -343,6 +347,13 @@ class Scoping:
         value = obj
         if path is None:
             return None
+        if isinstance(obj, models.Fieldnotebookpage):
+            if obj.pageset is None:
+                return {'discipline_id': obj.discipline_id}
+            if obj.pageset.fieldnotebook is None:
+                return {'discipline_id': obj.pageset.discipline_id}
+        if isinstance(obj, models.Fieldnotebookpageset) and obj.fieldnotebook is None:
+            return {'discipline_id': obj.discipline_id}
         if path == 'definition__disciplines':
             definition_id = getattr(obj, 'definition_id')
             if definition_id is None:
@@ -400,6 +411,22 @@ class Scoping:
         scope_type, path = Scoping.record_scope_path(model)
         if path is None:
             return queryset if collections.exists() else queryset.none()
+        if model is models.Fieldnotebookpage:
+            disciplines = collections.values('discipline_id')
+            return queryset.filter(
+                Q(pageset__fieldnotebook__discipline_id__in=disciplines)
+                | Q(pageset__isnull=True, discipline_id__in=disciplines)
+                | Q(
+                    pageset__fieldnotebook__isnull=True,
+                    pageset__discipline_id__in=disciplines,
+                )
+            )
+        if model is models.Fieldnotebookpageset:
+            disciplines = collections.values('discipline_id')
+            return queryset.filter(
+                Q(fieldnotebook__discipline_id__in=disciplines)
+                | Q(fieldnotebook__isnull=True, discipline_id__in=disciplines)
+            )
         if path == 'definition__disciplines':
             return Scoping.filter_tree_records(
                 queryset, collections.values('discipline_id'),

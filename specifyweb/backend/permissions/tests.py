@@ -988,6 +988,54 @@ class CollectionScopeApiTests(ApiTests):
                 queryset, spmodels.Collection.objects.all(),
             ).exists())
 
+    def test_parentless_fieldnotebook_records_use_their_discipline_scope(self):
+        foreign_discipline = spmodels.Discipline.objects.create(
+            name='Restricted discipline', type='botany', datatype=self.datatype,
+            division=self.division, geographytreedef=self.geographytreedef,
+            geologictimeperiodtreedef=self.geologictimeperiodtreedef,
+        )
+        pageset = spmodels.Fieldnotebookpageset.objects.create(
+            discipline=self.discipline,
+        )
+        foreign_pageset = spmodels.Fieldnotebookpageset.objects.create(
+            discipline=foreign_discipline,
+        )
+        page = spmodels.Fieldnotebookpage.objects.create(
+            discipline=self.discipline, pagenumber='local',
+        )
+        foreign_page = spmodels.Fieldnotebookpage.objects.create(
+            discipline=foreign_discipline, pagenumber='foreign',
+        )
+
+        for obj, discipline in (
+            (pageset, self.discipline),
+            (foreign_pageset, foreign_discipline),
+            (page, self.discipline),
+            (foreign_page, foreign_discipline),
+        ):
+            with self.subTest(model=type(obj).__name__, discipline=discipline.name):
+                self.assertEqual(Scoping.model_from_instance(obj), discipline)
+                self.assertEqual(
+                    Scoping.record_scope_filter(obj), {'discipline_id': discipline.id},
+                )
+
+        for model, allowed, denied in (
+            (spmodels.Fieldnotebookpageset, pageset, foreign_pageset),
+            (spmodels.Fieldnotebookpage, page, foreign_page),
+        ):
+            with self.subTest(model=model.__name__):
+                self.assertEqual(
+                    list(permissions.filter_readable(model.objects.all(), self.agent)),
+                    [allowed],
+                )
+                permissions.check_table_permissions(
+                    self.collection, self.agent, allowed, 'read',
+                )
+                with self.assertRaises(permissions.NoMatchingRuleException):
+                    permissions.check_table_permissions(
+                        self.collection, self.agent, denied, 'read',
+                    )
+
     def test_shared_tree_scope_uses_all_referencing_disciplines(self):
         shared_discipline = spmodels.Discipline.objects.create(
             name='Shared tree discipline',
