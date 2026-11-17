@@ -131,7 +131,11 @@ class ModelClassScope:
             return ScopeType.DIVISION
         if is_related(self.model_class, "discipline"):
             return ScopeType.DISCIPLINE
-        if hasattr(self.model_class, "collectionmemberid") or is_related(self.model_class, "collection"):
+        if (
+            hasattr(self.model_class, "collectionmemberid")
+            or is_related(self.model_class, "collectionmember")
+            or is_related(self.model_class, "collection")
+        ):
             return ScopeType.COLLECTION
 
         return ScopeType.INSTITUTION
@@ -326,9 +330,9 @@ class Scoping:
         if scope_type == ScopeType.INSTITUTION:
             return scope_type, 'institution' if hasattr(model_class, 'institution') else None
         if scope_type == ScopeType.COLLECTION:
-            return scope_type, (
-                'collectionmemberid' if hasattr(model_class, 'collectionmemberid') else 'collection'
-            )
+            if hasattr(model_class, 'collectionmemberid'):
+                return scope_type, 'collectionmemberid'
+            return scope_type, 'collectionmember' if is_related(model_class, 'collectionmember') else 'collection'
         return scope_type, scope_type.name.lower()
 
     @staticmethod

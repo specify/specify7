@@ -1383,6 +1383,57 @@ class CollectionScopeApiTests(ApiTests):
         self.other_object.refresh_from_db()
         self.assertIsNone(self.other_object.remarks)
 
+    def test_age_attachments_and_citations_use_collection_membership_scope(self):
+        attachment = spmodels.Attachment.objects.create()
+        referencework = spmodels.Referencework.objects.create(
+            institution=self.institution, title='Age reference', referenceworktype=0,
+        )
+        permitted_collections = spmodels.Collection.objects.filter(pk=self.collection.pk)
+        for age_model, age_field, attachment_model, citation_model in (
+            (
+                spmodels.Absoluteage, 'absoluteage',
+                spmodels.Absoluteageattachment, spmodels.Absoluteagecitation,
+            ),
+            (
+                spmodels.Relativeage, 'relativeage',
+                spmodels.Relativeageattachment, spmodels.Relativeagecitation,
+            ),
+        ):
+            ages = [
+                age_model.objects.create(collectionobject=obj)
+                for obj in (self.collectionobjects[0], self.other_object)
+            ]
+            for model, related_field, related in (
+                (attachment_model, 'attachment', attachment),
+                (citation_model, 'referencework', referencework),
+            ):
+                with self.subTest(model=model.__name__):
+                    allowed, denied = [
+                        model.objects.create(
+                            collectionmember=collection,
+                            **{age_field: age, related_field: related},
+                        )
+                        for collection, age in zip(
+                            (self.collection, self.other_collection), ages,
+                        )
+                    ]
+                    self.assertEqual(
+                        list(Scoping.filter_records(
+                            model.objects.all(), permitted_collections,
+                        )),
+                        [allowed],
+                    )
+                    url = f'/api/specify/{model.__name__.lower()}/'
+                    response = self.client.get(url)
+                    self.assertEqual(response.status_code, 200, response.content)
+                    self.assertEqual(
+                        [row['id'] for row in response.json()['objects']], [allowed.id],
+                    )
+                    response = self.client.get(f'{url}{allowed.id}/')
+                    self.assertEqual(response.status_code, 200, response.content)
+                    response = self.client.get(f'{url}{denied.id}/')
+                    self.assertEqual(response.status_code, 403, response.content)
+
     def test_attachment_scope_is_enforced(self):
         attachments = [
             spmodels.Attachment.objects.create(scopetype=scope_type, scopeid=scope_id)
