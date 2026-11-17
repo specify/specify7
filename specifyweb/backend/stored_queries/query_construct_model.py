@@ -50,7 +50,7 @@ def resolve_tree_rank(collection, tree_table_name: str, rank_name: str, tree_def
         # REFACTOR:(performance) This check can be moved to the filter itself.
         # If filtering on TreeDef, something like the following:
         # AND NOT EXISTS (SELECT 1 FROM treedefitem WHERE name=? AND TreeDefID=?)
-        # i.e., tree_def_model.filter(...).filter(Exists(tree_def_item_model.objects.filter(...)))
+        # i.e., tree_def_model.filter(...).filter(Exists(tree_def_item_model.objects.filter(name=?, treedef=OuterRef('pk'))))
         if len(correct_ranks) == 0:
             continue
         if len(correct_ranks) > 1:
