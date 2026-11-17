@@ -211,11 +211,15 @@ describe('Add taxon', () => {
 
     const dialog = await screen.findByRole('dialog');
     const parent = within(dialog).getByRole('combobox', {
-      name: 'Parent of Taxon',
+      name: tables.Taxon.strictGetRelationship('parent').label,
     });
     await waitFor(() => expect(parent).toHaveValue('Carpiodes'));
 
     const rank = within(dialog).getByRole('combobox', { name: /rank/i });
+    await waitFor(() => expect(rank).toHaveValue('Subspecies'));
+    await waitFor(() =>
+      expect(within(dialog).getByRole('textbox')).toHaveFocus()
+    );
     await user.click(rank);
     await user.clear(rank);
     await user.type(rank, 'Spe');
