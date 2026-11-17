@@ -594,3 +594,64 @@ describe('Add storage', () => {
     await waitFor(() => expect(handleRefresh).toHaveBeenCalled());
   });
 });
+
+describe('Delete storage', () => {
+  const nodeId = 21;
+  const parentId = 20;
+  const deleteRequest = jest.fn(() => '');
+
+  overrideAjax(getResourceApiUrl('Storage', nodeId), () =>
+    addMissingFields('Storage', {
+      id: nodeId,
+      name: 'Fish Room',
+      fullName: 'Dyche Hall Fish Room',
+      rankId: 200,
+      parent: getResourceApiUrl('Storage', parentId),
+      resource_uri: getResourceApiUrl('Storage', nodeId),
+    })
+  );
+  overrideAjax(`/delete_blockers/delete_blockers/storage/${nodeId}/?limit=40`, {
+    results: [],
+    next: [],
+  });
+  overrideAjax(`/delete_blockers/count/storage/${nodeId}/`, {
+    results: [],
+    total_count: 0,
+  });
+  overrideAjax(getResourceApiUrl('Storage', nodeId), deleteRequest, {
+    method: 'DELETE',
+    responseCode: Http.NO_CONTENT,
+  });
+
+  test('"Delete" removes the focused node and focuses its parent', async () => {
+    const handleRefresh = jest.fn();
+    const setFocusPath = jest.fn();
+    const { user } = renderActions(
+      'Storage',
+      makeRow({
+        nodeId,
+        name: 'Fish Room',
+        fullName: 'Dyche Hall Fish Room',
+        rankId: 200,
+        children: 0,
+      }),
+      handleRefresh,
+      [[1, parentId, nodeId], setFocusPath]
+    );
+
+    await user.click(screen.getByRole('button', { name: commonText.delete() }));
+
+    const dialog = await screen.findByRole('dialog', {
+      name: formsText.deleteConfirmation({
+        tableName: tables.Storage.label,
+      }),
+    });
+    await user.click(
+      within(dialog).getByRole('button', { name: commonText.delete() })
+    );
+
+    await waitFor(() => expect(handleRefresh).toHaveBeenCalled());
+    expect(deleteRequest).toHaveBeenCalledTimes(1);
+    expect(setFocusPath).toHaveBeenCalledWith([1, parentId]);
+  });
+});
