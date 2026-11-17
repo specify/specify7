@@ -547,6 +547,77 @@ class CollectionScopeApiTests(ApiTests):
         self.assertEqual(response.status_code, 200, response.content)
         self.assertEqual(response.json()['meta']['total_count'], 0)
 
+    def test_rows_preserve_roots_with_unreadable_related_projections_and_ordering(self):
+        models.UserPolicy.objects.all().delete()
+        for resource, action in (
+            ('/system/sp7/collection', 'access'),
+            ('/table/collectionobject', 'read'),
+        ):
+            models.UserPolicy.objects.create(
+                collection=self.collection, specifyuser=self.specifyuser,
+                resource=resource, action=action,
+            )
+        obj = self.collectionobjects[0]
+        for prefix in ('/table_rows/', '/api/'):
+            for path in ('collection__collectionname', 'collection__discipline__name'):
+                for orderby in ('', path):
+                    for fields in ('id', f'id,{path}'):
+                        with self.subTest(prefix=prefix, path=path, fields=fields, orderby=orderby):
+                            response = self.client.get(f'{prefix}specify_rows/collectionobject/', {
+                                'fields': fields, 'id': obj.pk, 'orderby': orderby,
+                            })
+                            self.assertEqual(response.status_code, 200, response.content)
+                            self.assertEqual(
+                                response.json(), [[obj.pk]] if fields == 'id' else [[obj.pk, None]],
+                            )
+                response = self.client.get(f'{prefix}specify_rows/collectionobject/', {
+                    'fields': f'id,{path}', 'id': obj.pk,
+                    path: (
+                        self.collection.collectionname
+                        if path == 'collection__collectionname' else self.discipline.name
+                    ),
+                })
+                self.assertEqual(response.status_code, 200, response.content)
+                self.assertEqual(response.json(), [])
+
+        models.UserPolicy.objects.create(
+            collection=self.collection, specifyuser=self.specifyuser,
+            resource='/table/collection', action='read',
+        )
+        for prefix in ('/table_rows/', '/api/'):
+            response = self.client.get(f'{prefix}specify_rows/collectionobject/', {
+                'fields': 'id,collection__collectionname,collection__discipline__name',
+                'id': obj.pk, 'orderby': 'collection__discipline__name',
+            })
+            self.assertEqual(response.status_code, 200, response.content)
+            self.assertEqual(response.json(), [[obj.pk, self.collection.collectionname, None]])
+
+    def test_rows_mask_unreadable_reverse_relations_without_dropping_root(self):
+        obj = self.collectionobjects[0]
+        obj.collectingevent = self.collectingevent
+        obj.save()
+        models.UserPolicy.objects.all().delete()
+        for resource, action in (
+            ('/system/sp7/collection', 'access'), ('/table/collectingevent', 'read'),
+        ):
+            models.UserPolicy.objects.create(
+                collection=self.collection, specifyuser=self.specifyuser,
+                resource=resource, action=action,
+            )
+        for prefix in ('/table_rows/', '/api/'):
+            params = {
+                'fields': 'id,collectionobjects__catalognumber',
+                'id': self.collectingevent.pk, 'orderby': 'collectionobjects__catalognumber',
+            }
+            response = self.client.get(f'{prefix}specify_rows/collectingevent/', params)
+            self.assertEqual(response.status_code, 200, response.content)
+            self.assertEqual(response.json(), [[self.collectingevent.pk, None]])
+            response = self.client.get(f'{prefix}specify_rows/collectingevent/', {
+                **params, 'collectionobjects__catalognumber': obj.catalognumber,
+            })
+            self.assertEqual(response.status_code, 200, response.content)
+            self.assertEqual(response.json(), [])
+
     def test_read_projections_reject_forward_and_reverse_many_to_many_paths(self):
         for queryset, path in (
             (spmodels.Project.objects.all(), 'collectionobjects__catalognumber'),

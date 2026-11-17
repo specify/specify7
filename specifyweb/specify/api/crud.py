@@ -636,11 +636,13 @@ def apply_filters(
         if actor is not None:
             objs, aliases = prepare_read_queryset(
                 objs, actor, [path.lstrip('-') for path in paths],
+                filters=filters,
             )
+        else:
+            objs = objs.filter(**filters)
         aliases['?'] = '?'
         if field_aliases is not None:
             field_aliases.update(aliases)
-        objs = objs.filter(**{aliases[key]: value for key, value in filters.items()})
     except (ValueError, FieldError) as e:
         raise FilterError(e)
 

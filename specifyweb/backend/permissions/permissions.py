@@ -17,6 +17,8 @@ from django.db.models import (
     Exists, FilteredRelation, ForeignKey, ManyToManyField, Model, OuterRef, QuerySet, Q,
 )
 from django.db.models.fields.reverse_related import ManyToManyRel, ManyToOneRel
+from django.db.models.expressions import Col
+from django.db.models.sql.datastructures import Join
 
 from specifyweb.specify.models import Agent, Discipline, Division, Institution
 from specifyweb.specify.datamodel import Table
@@ -446,7 +448,8 @@ def _filter_readable_for_list(queryset: QuerySet, actor) -> QuerySet:
 
 
 def prepare_read_queryset(
-    queryset: QuerySet, actor, paths: Iterable[str],
+    queryset: QuerySet, actor, paths: Iterable[str], *,
+    filters: dict[str, Any] | None = None,
 ) -> tuple[QuerySet, dict[str, str]]:
     """Authorize joins before filtering, ordering or projecting related fields."""
     queryset = _filter_readable_for_list(queryset, actor)
@@ -492,6 +495,15 @@ def prepare_read_queryset(
                 joins[key] = alias
             path = [joins[key]]
         aliases[projection] = '__'.join(path)
+    if filters:
+        queryset = queryset.filter(**{aliases[key]: value for key, value in filters.items()})
+    for alias in joins.values():
+        reference = queryset.query.resolve_ref(alias)
+        assert isinstance(reference, Col)
+        join = queryset.query.alias_map[reference.alias]
+        assert isinstance(join, Join)
+        # Permission-filtered joins may be absent even for required foreign keys.
+        queryset.query.alias_map[reference.alias] = join.promote()
     return queryset, aliases
 
 
