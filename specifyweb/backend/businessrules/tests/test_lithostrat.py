@@ -14,6 +14,8 @@ class LithostratTests(ApiTests):
 
         self.lithostrattreedef = models.Lithostrattreedef.objects.create(
             name="Test Lithostrat tree def")
+        self.discipline.lithostrattreedef = self.lithostrattreedef
+        self.discipline.save()
 
         self.rootlithostrattreedefitem = self.lithostrattreedef.treedefitems.create(
             name="root",
