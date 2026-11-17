@@ -5,7 +5,7 @@ from specifyweb.backend.permissions.permissions import check_table_permissions, 
 from specifyweb.backend.workbench.upload.auditlog import auditlog
 from specifyweb.specify import models
 from ..datamodel import datamodel, Table, Relationship
-from specifyweb.specify.api.api_utils import strict_uri_to_model
+from specifyweb.specify.api_utils import strict_uri_to_model
 from specifyweb.specify.utils.field_change_info import FieldChangeInfo
 from specifyweb.specify.utils.scoping import Scoping
 from specifyweb.specify.models_utils.load_datamodel import Relationship, Table

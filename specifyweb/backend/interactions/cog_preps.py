@@ -3,7 +3,7 @@ from typing import Any
 from django.db.models import Subquery, Sum, F, Value, IntegerField, ExpressionWrapper, Q
 from django.db.models.query import QuerySet
 from django.db.models.functions import Coalesce
-from specifyweb.specify.api.api_utils import strict_uri_to_model
+from specifyweb.specify.api_utils import strict_uri_to_model
 from specifyweb.specify.models import (
     Collectionobject,
     Collectionobjectgroup,

@@ -14,7 +14,7 @@ from specifyweb.backend.permissions.permissions import TABLE_ACTION, check_field
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 from specifyweb.backend.workbench.upload.auditlog import auditlog
 from specifyweb.specify import models
-from specifyweb.specify.api.api_utils import objs_to_data_, CollectionPayload, strict_uri_to_model
+from specifyweb.specify.api_utils import objs_to_data_, CollectionPayload, strict_uri_to_model
 from specifyweb.specify.datamodel import is_tree_table
 from specifyweb.specify.utils.autonumbering import autonumber_and_save
 from specifyweb.specify.api.exceptions import FilterError, MissingVersionException, OrderByError, RecordSetException, StaleObjectException
