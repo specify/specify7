@@ -272,6 +272,14 @@ def adding_node(node,collection=None, user=None):
     model = type(node)
     parent = model.objects.select_for_update().get(id=node.parent.id)
 
+    if parent.definition_id != node.definition_id:
+        raise TreeBusinessRuleException(
+            "Tree node's parent belongs to a different tree definition",
+            {"tree": node.__class__.__name__,
+             "localizationKey": "operationAcrossTrees",
+             "operation": "save",
+             "node": {"id": node.id, "fullName": node.fullname}})
+
     if parent.accepted_id is not None:
         allow_adding_child = _allow_adding_child_to_synonymized_parent(node, collection, user)
         if not allow_adding_child:
