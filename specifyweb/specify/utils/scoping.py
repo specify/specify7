@@ -418,7 +418,9 @@ class Scoping:
             dangling = Q(collectionmemberid__isnull=False) & ~Q(
                 collectionmemberid__in=models.Collection.objects.values('pk'),
             )
-            condition = (condition | dangling) & Q(collection__in=collections)
+            condition = (
+                (condition & Q(collection_id=F('collectionmemberid'))) | dangling
+            ) & Q(collection__in=collections)        
         return queryset.filter(condition)
 
     @staticmethod
