@@ -45,6 +45,14 @@ def resolve_tree_rank(collection, tree_table_name: str, rank_name: str, tree_def
                 tree_info['ranks']
             )
         )
+        # If the tree exists but doesn't have the rank with the provided name,
+        # just skip considering the tree
+        # REFACTOR:(performance) This check can be moved to the filter itself.
+        # If filtering on TreeDef, something like the following:
+        # AND NOT EXISTS (SELECT 1 FROM treedefitem WHERE name=? AND TreeDefID=?)
+        # i.e., tree_def_model.filter(...).filter(Exists(tree_def_item_model.objects.filter(...)))
+        if len(correct_ranks) == 0:
+            continue
         if len(correct_ranks) > 1:
             raise Exception(f"Got more than once matching rank for name {rank_name} on {tree_table_name} with id {def_id}")
         resolved_rank_id = correct_ranks[0]['id']
