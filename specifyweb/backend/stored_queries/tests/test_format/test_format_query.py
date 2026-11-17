@@ -1,8 +1,11 @@
 from specifyweb.backend.stored_queries.format import ObjectFormatter
 from specifyweb.backend.stored_queries.query_construct_model import QueryConstruct
+from specifyweb.backend.stored_queries.queryfield import QueryField
+from specifyweb.backend.stored_queries.queryfieldspec import QueryFieldSpec
 from specifyweb.backend.stored_queries.tests.base_format import SIMPLE_DEF
 from specifyweb.backend.stored_queries.tests.tests import SQLAlchemySetup
 from xml.etree import ElementTree
+from unittest.mock import patch, Mock
 import specifyweb.specify.models as spmodels
 import specifyweb.backend.stored_queries.models as models
 
@@ -170,6 +173,69 @@ class FormatterAggregatorTests(SQLAlchemySetup):
                              )
             query = query.query.add_columns(models.Accession.accessionNumber, expr)
             self.assertCountEqual(list(query), [('a', 'role2; role1'), ('b', 'role3; role4')])
+
+    @patch('specifyweb.backend.stored_queries.format.app_resource.get_app_resource')
+    def test_changing_aggregator_changes_result(self, get_app_resource: Mock):
+        get_app_resource.return_value = ("""
+        <formatters>
+          <format name="AccessionAgent" title="AccessionAgent"
+            class="edu.ku.brc.specify.datamodel.AccessionAgent" default="true">
+            <switch single="true">
+              <fields><field>role</field></fields>
+            </switch>
+          </format>
+          <format name="AccessionAgentName" title="AccessionAgentName"
+            class="edu.ku.brc.specify.datamodel.AccessionAgent">
+            <switch single="true">
+              <fields><field>agent.lastName</field></fields>
+            </switch>
+          </format>
+          <aggregators>
+            <aggregator name="AccessionAgent" title="AccessionAgent"
+              class="edu.ku.brc.specify.datamodel.AccessionAgent"
+              default="true" separator="; " ending="" count=""
+              format="AccessionAgent" orderfieldname="timestampCreated" />
+            <aggregator name="AccessionAgentName" title="AccessionAgentName"
+              class="edu.ku.brc.specify.datamodel.AccessionAgent"
+              separator="; " ending="" count=""
+              format="AccessionAgentName" orderfieldname="timestampCreated" />
+          </aggregators>
+        </formatters>
+        """, None, None)
+        accession = spmodels.Accession.objects.create(
+            accessionnumber='a',
+            division=self.division)
+        agent = spmodels.Agent.objects.create(
+            agenttype=1,
+            lastname="User",
+            division=self.division)
+        spmodels.Accessionagent.objects.create(
+            agent=agent,
+            role='role1',
+            accession=accession)
+        spmodels.Accessionagent.objects.create(
+            agent=agent,
+            role='role2',
+            accession=accession)
+
+        table = spmodels.datamodel.get_table_strict("Accession")
+        field_spec = QueryFieldSpec.from_path(("Accession", "accessionAgents"))
+        role_field = QueryField(
+            fieldspec=field_spec,
+            op_num=8,
+            value=None,
+            negate=False,
+            display=True,
+            format_name="AccessionAgent",
+            sort_type=0,
+        )
+        name_field = role_field._replace(format_name="AccessionAgentName")
+
+        role_results = self._get_results(table, [role_field])
+        name_results = self._get_results(table, [name_field])
+
+        self.assertCountEqual([(accession.id, "role2; role1")], role_results)
+        self.assertCountEqual([(accession.id, "User; User")], name_results)
 
     def test_detect_cycles(self):
         formatter_def = """
