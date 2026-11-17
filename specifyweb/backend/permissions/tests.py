@@ -1103,6 +1103,81 @@ class CollectionScopeApiTests(ApiTests):
                     with self.assertRaises(FieldError):
                         permissions.prepare_read_queryset(queryset, self.agent, [path])
 
+    def test_determination_reassignment_inherits_target_membership(self):
+        self.grant_other_collection()
+        determination = spmodels.Determination.objects.create(
+            collectionobject=self.collectionobjects[0], iscurrent=True,
+        )
+        response = self.client.put(
+            f'/api/specify/determination/{determination.id}/', {
+                'version': determination.version,
+                'collectionobject': f'/api/specify/collectionobject/{self.other_object.id}/',
+            }, content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 200, response.content)
+        determination.refresh_from_db()
+        self.assertEqual(determination.collectionobject_id, self.other_object.id)
+        self.assertEqual(determination.collectionmemberid, self.other_collection.id)
+        self.assertEqual(determination.version, 1)
+        models.UserPolicy.objects.filter(collection=self.other_collection).delete()
+        response = self.client.get(f'/api/specify/determination/{determination.id}/')
+        self.assertEqual(response.status_code, 403, response.content)
+
+    def test_determination_reassignment_checks_membership_permissions_in_both_scopes(self):
+        determination = spmodels.Determination.objects.create(
+            collectionobject=self.collectionobjects[0], iscurrent=True,
+        )
+        for restricted in (self.collection, self.other_collection):
+            with self.subTest(restricted_collection=restricted.id):
+                models.UserPolicy.objects.all().delete()
+                for collection in (self.collection, self.other_collection):
+                    if collection != restricted:
+                        models.UserPolicy.objects.create(
+                            collection=collection, specifyuser=self.specifyuser,
+                            resource='%', action='%',
+                        )
+                for resource, action in (
+                    ('%', 'read'),
+                    ('/system/sp7/collection', 'access'),
+                    ('/table/determination', 'update'),
+                    ('/field/determination/collectionobject', 'update'),
+                ):
+                    models.UserPolicy.objects.create(
+                        collection=restricted, specifyuser=self.specifyuser,
+                        resource=resource, action=action,
+                    )
+                response = self.client.put(
+                    f'/api/specify/determination/{determination.id}/', {
+                        'version': determination.version,
+                        'collectionobject': f'/api/specify/collectionobject/{self.other_object.id}/',
+                    }, content_type='application/json',
+                )
+                self.assertEqual(response.status_code, 403, response.content)
+                determination.refresh_from_db()
+                self.assertEqual(determination.collectionobject_id, self.collectionobjects[0].id)
+                self.assertEqual(determination.collectionmemberid, self.collection.id)
+                self.assertEqual(determination.version, 0)
+
+    def test_determination_reassignment_refreshes_target_model_reference(self):
+        self.grant_other_collection()
+        target = self.collectionobjects[1]
+        determination = spmodels.Determination.objects.create(
+            collectionobject=self.collectionobjects[0], iscurrent=True,
+        )
+        put_resource(
+            self.collection, self.agent, 'collectionobject', target.id, target.version, {
+                'collection': f'/api/specify/collection/{self.other_collection.id}/',
+                'collectionmemberid': self.other_collection.id,
+            },
+        )
+        put_resource(
+            self.collection, self.agent, 'determination', determination.id,
+            determination.version, {'collectionobject': target},
+        )
+        determination.refresh_from_db()
+        self.assertEqual(determination.collectionobject_id, target.id)
+        self.assertEqual(determination.collectionmemberid, self.other_collection.id)
+
     def test_foreign_relationship_assignment_is_denied(self):
         obj = self.collectionobjects[0]
         response = self.client.put(
@@ -1197,7 +1272,7 @@ class CollectionScopeApiTests(ApiTests):
         self.assertEqual(foreign.collectionobject_id, self.other_object.id)
         self.assertEqual(spmodels.Determination.objects.count(), count)
 
-    def test_authorized_child_destinations_require_matching_membership(self):
+    def test_authorized_child_destinations_validate_creation_and_rescope_reassignment(self):
         self.grant_other_collection()
         destination = f'/api/specify/collectionobject/{self.other_object.id}/'
         for membership in ({}, {'collectionmemberid': None}):
@@ -1211,23 +1286,18 @@ class CollectionScopeApiTests(ApiTests):
         own = spmodels.Determination.objects.create(
             collectionobject=self.collectionobjects[0], iscurrent=True,
         )
-        for method, url, data in (
-            ('post', '/api/specify/determination/', {'iscurrent': False}),
-            ('put', f'/api/specify/determination/{own.id}/', {'version': own.version}),
-        ):
-            with self.subTest(method=method):
-                response = getattr(self.client, method)(url, {
-                    **data, 'collectionobject': destination,
-                    'collectionmemberid': self.collection.id,
-                }, content_type='application/json')
-                self.assertEqual(response.status_code, 403, response.content)
+        response = self.client.post('/api/specify/determination/', {
+            'iscurrent': False, 'collectionobject': destination,
+            'collectionmemberid': self.collection.id,
+        }, content_type='application/json')
+        self.assertEqual(response.status_code, 403, response.content)
         response = self.client.put(f'/api/specify/determination/{own.id}/', {
             'version': own.version, 'collectionmemberid': self.other_collection.id,
         }, content_type='application/json')
         self.assertEqual(response.status_code, 403, response.content)
         response = self.client.put(f'/api/specify/determination/{own.id}/', {
             'version': own.version, 'collectionobject': destination,
-            'collectionmemberid': self.other_collection.id,
+            'collectionmemberid': self.collection.id,
         }, content_type='application/json')
         self.assertEqual(response.status_code, 200, response.content)
         own.refresh_from_db()
@@ -1678,16 +1748,26 @@ class CollectionScopeApiTests(ApiTests):
 @skipUnlessDBFeature('has_select_for_update')
 class CollectionScopeTransactionTests(ApiTransactionTests):
     def test_create_waits_for_collectionobject_move(self):
-        self._assert_create_and_move_are_serialized(move_first=True)
+        self._assert_child_change_and_move_are_serialized(move_first=True)
 
     def test_collectionobject_move_waits_for_create(self):
-        self._assert_create_and_move_are_serialized(move_first=False)
+        self._assert_child_change_and_move_are_serialized(move_first=False)
 
-    def _assert_create_and_move_are_serialized(self, *, move_first):
+    def test_reassignment_waits_for_collectionobject_move(self):
+        self._assert_child_change_and_move_are_serialized(move_first=True, reassign=True)
+
+    def test_collectionobject_move_waits_for_reassignment(self):
+        self._assert_child_change_and_move_are_serialized(move_first=False, reassign=True)
+
+    def _assert_child_change_and_move_are_serialized(self, *, move_first, reassign=False):
         destination = spmodels.Collection.objects.create(
             collectionname='Move destination', discipline=self.discipline,
         )
         co = self.collectionobjects[0]
+        if reassign:
+            original = spmodels.Determination.objects.create(
+                collectionobject=self.collectionobjects[1], iscurrent=True,
+            )
         first_paused = Event()
         release_first = Event()
         second_lock_attempted = Event()
@@ -1699,12 +1779,15 @@ class CollectionScopeTransactionTests(ApiTransactionTests):
             self.assertTrue(release_first.wait(10), 'First operation was not released')
 
         def save(collection, user, obj):
-            if not move_first and isinstance(obj, spmodels.Determination):
+            if not move_first and not reassign and isinstance(obj, spmodels.Determination):
                 pause()
             return original_save(collection, user, obj)
 
         def cascade(collection, agent, obj, previous_member_id):
-            if move_first and isinstance(obj, spmodels.Collectionobject):
+            if (
+                move_first and isinstance(obj, spmodels.Collectionobject)
+                or not move_first and reassign and isinstance(obj, spmodels.Determination)
+            ):
                 pause()
             return original_cascade(collection, agent, obj, previous_member_id)
 
@@ -1713,7 +1796,13 @@ class CollectionScopeTransactionTests(ApiTransactionTests):
                 second_lock_attempted.set()
             return execute(sql, params, many, context)
 
-        def create():
+        def change_child():
+            if reassign:
+                return crud.update_obj(
+                    self.collection, self.agent, 'determination', original.id, original.version, {
+                        'collectionobject': f'/api/specify/collectionobject/{co.id}/',
+                    },
+                )
             return create_obj(self.collection, self.agent, 'determination', {
                 'collectionobject': f'/api/specify/collectionobject/{co.id}/',
                 'iscurrent': True,
@@ -1741,10 +1830,10 @@ class CollectionScopeTransactionTests(ApiTransactionTests):
             patch.object(crud, '_cascade_collection_membership', side_effect=cascade),
             ThreadPoolExecutor(max_workers=2) as executor,
         ):
-            first = executor.submit(run, move if move_first else create)
+            first = executor.submit(run, move if move_first else change_child)
             try:
                 self.assertTrue(first_paused.wait(10), 'First operation did not reach pause')
-                second = executor.submit(run, create if move_first else move, observe=True)
+                second = executor.submit(run, change_child if move_first else move, observe=True)
                 self.assertTrue(second_lock_attempted.wait(10), 'Owner lock was not requested')
                 self.assertFalse(second.done(), 'Competing operation did not wait for the owner')
             finally:

@@ -14,7 +14,7 @@ from specifyweb.backend.permissions.permissions import TABLE_ACTION, check_field
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 from specifyweb.backend.workbench.upload.auditlog import auditlog
 from specifyweb.specify import models
-from specifyweb.specify.api.api_utils import objs_to_data_, CollectionPayload
+from specifyweb.specify.api.api_utils import objs_to_data_, CollectionPayload, strict_uri_to_model
 from specifyweb.specify.datamodel import is_tree_table
 from specifyweb.specify.utils.autonumbering import autonumber_and_save
 from specifyweb.specify.api.exceptions import FilterError, MissingVersionException, OrderByError, RecordSetException, StaleObjectException
@@ -254,9 +254,27 @@ def post_resource(collection, agent, name: str, data, recordsetid: int | None=No
 @transaction.atomic
 def update_obj(collection, agent, name: str, id, version, data: dict[str, Any], parent_obj=None, parent_relationship=None):
     """Update the resource with 'id' in model named 'name' with given
-    'data'.
+    'data'. Determination reassignments inherit the locked target's membership.
     """
     model = get_model_or_404(name) if isinstance(name, str) else name
+    data = cleanData(model, data, parent_relationship)
+    if model is models.Determination:
+        target_data = data.get('collectionobject')
+        target_id = None
+        if isinstance(target_data, str):
+            _, target_id = strict_uri_to_model(target_data, 'Collectionobject')
+        elif isinstance(target_data, dict):
+            target_id = target_data.get('id')
+        elif isinstance(target_data, models.Collectionobject):
+            target_id = target_data.pk
+        if target_id is not None:
+            # Match moves' parent-before-child lock order and re-read stale references.
+            target = get_object_or_404(
+                models.Collectionobject._base_manager.select_for_update(), pk=target_id,
+            )
+            if isinstance(target_data, models.Collectionobject):
+                check_table_permissions(collection, agent, target, "read")
+                data['collectionobject'] = target
     obj = get_object_or_404(model._base_manager.select_for_update(), id=int(id))
     check_table_permissions(collection, agent, obj, "update")
     previous_member_id = getattr(obj, 'collectionmemberid', None)
@@ -264,13 +282,20 @@ def update_obj(collection, agent, name: str, id, version, data: dict[str, Any], 
         pk__in=list(Scoping.collections_for_record(obj).values_list('pk', flat=True)),
     )
 
-    data = cleanData(obj.__class__, data, parent_relationship)
     if data.get(obj._meta.pk.name) is not None and str(data[obj._meta.pk.name]) != str(obj.pk):
         raise BadRequest("Cannot change a record's primary key")
     new_member_id = data.get('collectionmemberid', previous_member_id)
     if new_member_id != previous_member_id:
         _rescope_submitted_children(obj, data, new_member_id)
     dependents_to_delete, fk_dirty, handle_remote_to_ones = handle_fk_fields(collection, agent, obj, data)
+    if (
+        isinstance(obj, models.Determination)
+        and any(change['field_name'] == 'collectionobject' for change in fk_dirty)
+        and obj.collectionobject is not None
+    ):
+        data['collectionmemberid'] = obj.collectionobject.collectionmemberid
+        if data['collectionmemberid'] != previous_member_id:
+            _rescope_submitted_children(obj, data, data['collectionmemberid'])
     dirty = fk_dirty + set_fields_from_data(obj, data)
 
     if is_tree_table(obj.specify_model):
