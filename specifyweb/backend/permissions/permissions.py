@@ -13,8 +13,10 @@ logger = logging.getLogger(__name__)
 
 from django.db import connection
 from django.core.exceptions import FieldDoesNotExist, FieldError
-from django.db.models import Exists, FilteredRelation, ForeignKey, Model, OuterRef, QuerySet, Q
-from django.db.models.fields.reverse_related import ManyToOneRel
+from django.db.models import (
+    Exists, FilteredRelation, ForeignKey, ManyToManyField, Model, OuterRef, QuerySet, Q,
+)
+from django.db.models.fields.reverse_related import ManyToManyRel, ManyToOneRel
 
 from specifyweb.specify.models import Agent, Discipline, Division, Institution
 from specifyweb.specify.datamodel import Table
@@ -459,6 +461,11 @@ def prepare_read_queryset(
                     path.append(name)
                     continue
                 raise FieldError(str(error)) from error
+            if isinstance(field, (ManyToManyField, ManyToManyRel)):
+                raise FieldError(
+                    f'Many-to-many relationship {model._meta.label}.{name} '
+                    'is not supported in read projections'
+                )
             if not isinstance(field, (ForeignKey, ManyToOneRel)):
                 path.extend(projection.split('__')[len(source):])
                 break

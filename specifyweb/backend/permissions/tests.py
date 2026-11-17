@@ -3,6 +3,7 @@ from unittest.mock import patch
 
 from django.test import Client
 from django.db import connection
+from django.core.exceptions import FieldError
 from django.test.utils import CaptureQueriesContext
 from django.utils import timezone
 
@@ -509,6 +510,16 @@ class CollectionScopeApiTests(ApiTests):
         })
         self.assertEqual(response.status_code, 200, response.content)
         self.assertEqual(response.json()['meta']['total_count'], 0)
+
+    def test_read_projections_reject_forward_and_reverse_many_to_many_paths(self):
+        for queryset, path in (
+            (spmodels.Project.objects.all(), 'collectionobjects__catalognumber'),
+            (spmodels.Collectionobject.objects.all(), 'projects__projectname'),
+        ):
+            with self.subTest(path=path):
+                with permissions.cache_permission_queries():
+                    with self.assertRaises(FieldError):
+                        permissions.prepare_read_queryset(queryset, self.agent, [path])
 
     def test_foreign_relationship_assignment_is_denied(self):
         obj = self.collectionobjects[0]
