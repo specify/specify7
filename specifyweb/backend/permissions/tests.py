@@ -9,7 +9,7 @@ from django.utils import timezone
 
 from specifyweb.specify.tests.test_api import ApiTests
 from specifyweb.specify import models as spmodels
-from specifyweb.specify.api.crud import _check_destination_scope, get_collection, put_resource
+from specifyweb.specify.api.crud import _check_destination_scope, create_obj, get_collection, put_resource
 from specifyweb.specify.api.filter_by_col import filter_by_collection
 from specifyweb.specify.api.validators import GetCollectionForm
 from specifyweb.specify.models_utils.relationships import get_recordset_info, handle_fk_fields
@@ -758,6 +758,31 @@ class CollectionScopeApiTests(ApiTests):
         own.refresh_from_db()
         self.assertEqual(own.collectionobject_id, self.other_object.id)
         self.assertEqual(own.collectionmemberid, self.other_collection.id)
+
+    def test_cross_collection_inline_attribute_inherits_parent_destination(self):
+        self.grant_other_collection()
+        response = self.client.post('/api/specify/collectionobject/', {
+            'collection': f'/api/specify/collection/{self.other_collection.pk}/',
+            'catalognumber': 'cross-inline',
+            'collectionobjectattribute': {'text1': 'Inline attribute'},
+        }, content_type='application/json')
+        self.assertEqual(response.status_code, 201, response.content)
+        obj = spmodels.Collectionobject.objects.get(pk=response.json()['id'])
+        self.assertEqual(obj.collection_id, self.other_collection.pk)
+        self.assertEqual(obj.collectionmemberid, self.other_collection.pk)
+        self.assertEqual(obj.collectionobjectattribute.collectionmemberid, self.other_collection.pk)
+        self.assertEqual(obj.collectionobjectattribute.text1, 'Inline attribute')
+
+    def test_inline_attribute_prefers_existing_parent_membership(self):
+        self.grant_other_collection()
+        parent = spmodels.Collectionobject(
+            collection=self.collection, collectionmemberid=self.other_collection.pk,
+        )
+        attribute = create_obj(
+            self.collection, self.agent, 'collectionobjectattribute',
+            {'text1': 'Inline attribute'}, parent_obj=parent,
+        )
+        self.assertEqual(attribute.collectionmemberid, self.other_collection.pk)
 
     def test_shared_scope_and_own_collection_remain_accessible(self):
         response = self.client.get(f'/api/specify/agent/{self.agent.id}/')

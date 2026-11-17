@@ -115,6 +115,8 @@ def create_obj(collection, agent, model, data: dict[str, Any], parent_obj=None, 
                     break
     if target_collection_id is None and parent_obj is not None:
         target_collection_id = getattr(parent_obj, 'collectionmemberid', None)
+        if target_collection_id is None:
+            target_collection_id = getattr(parent_obj, 'collection_id', None)
     if data.get('collectionmemberid') is None:
         set_field_if_exists(
             obj, 'collectionmemberid',
