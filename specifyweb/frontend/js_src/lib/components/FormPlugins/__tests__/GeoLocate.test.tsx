@@ -8,15 +8,22 @@ import { LoadingContext } from '../../Core/Contexts';
 import type { SpecifyResource } from '../../DataModel/legacyTypes';
 import { tables } from '../../DataModel/tables';
 import type { Geography } from '../../DataModel/types';
+import { hasTablePermission } from '../../Permissions/helpers';
 import { UnloadProtectsContext } from '../../Router/UnloadProtect';
 import { GeoLocatePlugin } from '../GeoLocate';
 
 jest.mock('../../Permissions/helpers', () => ({
   ...jest.requireActual('../../Permissions/helpers'),
-  hasTablePermission: (tableName: string): boolean => tableName === 'Locality',
+  hasTablePermission: jest.fn(),
 }));
 
 requireContext();
+
+beforeEach(() => {
+  jest
+    .mocked(hasTablePermission)
+    .mockImplementation((tableName) => tableName === 'Locality');
+});
 
 const portalRoot = document.createElement('div');
 beforeAll(() => {
@@ -141,3 +148,65 @@ test('shows the geography-required dialog when locality has no geography', async
   expect(locality.get('latitude1')).toBeNull();
   expect(locality.get('longitude1')).toBeNull();
 });
+
+test.each([false, true])(
+  'applies marker coordinates and uncertainty with existing details: %s',
+  async (hasDetails) => {
+    jest.mocked(hasTablePermission).mockReturnValue(true);
+    const locality = new tables.Locality.Resource(
+      { localityName: 'Lawrence', latitude1: null, longitude1: null },
+      { noBusinessRules: true }
+    );
+    locality.set('geography', makeGeography('USA', 'Country', null));
+    const originalDetails = hasDetails
+      ? new tables.GeoCoordDetail.Resource(
+          { maxUncertaintyEst: 100, maxUncertaintyEstUnit: 'm' },
+          { noBusinessRules: true }
+        )
+      : undefined;
+    if (originalDetails !== undefined)
+      locality.set('geoCoordDetails', originalDetails);
+    render(
+      <UnloadProtectsContext.Provider value={[]}>
+        <LoadingContext.Provider value={(promise) => void promise}>
+          <GeoLocatePlugin resource={locality} />
+        </LoadingContext.Provider>
+      </UnloadProtectsContext.Provider>
+    );
+    const user = userEvent.setup();
+    await act(async () => {
+      await user.click(screen.getByRole('button', { name: 'GEOLocate' }));
+    });
+    await screen.findByTitle('GEOLocate');
+    act(() => {
+      globalThis.dispatchEvent(
+        new MessageEvent('message', {
+          origin: 'https://www.geo-locate.org',
+          data: '38.111225|-96.00869|7061|Unavailable',
+        })
+      );
+    });
+    await waitFor(() =>
+      expect(screen.queryByTitle('GEOLocate')).not.toBeInTheDocument()
+    );
+    const details = await locality.rgetPromise('geoCoordDetails');
+    expect(details).not.toBeNull();
+    expect({
+      latitude: locality.get('latitude1'),
+      longitude: locality.get('longitude1'),
+      type: locality.get('latLongType'),
+      method: locality.get('latLongMethod'),
+      uncertainty: details?.get('maxUncertaintyEst'),
+      unit: details?.get('maxUncertaintyEstUnit'),
+      polygon: details?.get('errorPolygon') ?? null,
+    }).toEqual({
+      latitude: 38.111_225,
+      longitude: -96.008_69,
+      type: 'Point',
+      method: 'GEOLocate',
+      uncertainty: 7061,
+      unit: 'm',
+      polygon: null,
+    });
+  }
+);
