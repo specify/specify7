@@ -327,7 +327,7 @@ class Scoping:
     @staticmethod
     def record_scope_filter(
         obj: Model, *, scope_path: tuple[ScopeType, str | None] | None = None,
-    ) -> dict[str, int | tuple[int, ...] | None] | None:
+    ) -> dict[str, int | None] | None:
         """Return scope predicates; None denotes the default institution.
 
         Taxon ranks without a discipline retain the default institution scope.
