@@ -989,6 +989,7 @@ def build_query_construct_base(
     collection,
     user,
     model,
+    base_table: Table,
     props: BuildQueryProps,
 ):
 
@@ -1018,7 +1019,8 @@ def build_query_construct_base(
             props.replace_nulls,
             props=props.formatter_props,
         ),
-        query=query_construct_query
+        query=query_construct_query,
+        base_table=base_table
     )
     return query
 
@@ -1105,7 +1107,9 @@ def add_fields_to_query(
 ):
     query_fields = list(query_fields)
     ordinary_predicates = defaultdict(list)
-    if any(rank_path(f.fieldspec) is not None for f in query_fields):
+    # BUG: for Queries based on tree tables, #8560 might still occur
+    # See https://github.com/specify/specify7/pull/8670
+    if not is_tree_table(query.base_table) and any(rank_path(f.fieldspec) is not None for f in query_fields):
         for query_field in query_fields:
             if (rank_path(query_field.fieldspec) is None
                     and (query_field.op_num != 8 or query_field.negate)):
@@ -1232,12 +1236,14 @@ def build_query(
     remain unresolved until resolve_page() selects the requested page. Direct
     callers that execute the returned query must leave this disabled.
     """
+    base_table = datamodel.get_table_by_id_strict(tableid)
     model = models.models_by_tableid[tableid]
     id_field = model._id
     query = build_query_construct_base(
         session=session,
         collection=collection,
         user=user,
+        base_table=base_table,
         model=model,
         props=props,
     )
@@ -1278,7 +1284,6 @@ def build_query(
         query = group_by_displayed_fields(query, selected_fields)
 
     if props.search_synonymy:
-        base_table = datamodel.get_table_by_id_strict(tableid)
         query = search_on_synonyms(query, query_fields, base_table)
 
     internal_predicate = query.get_internal_filters()

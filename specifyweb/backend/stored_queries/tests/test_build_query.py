@@ -110,7 +110,8 @@ class TestBuildQuery(SQLAlchemySetup):
         query_fields = fields_from_json(base_query_fields)
         collection = self.collection
         user = self.specifyuser
-        tableid = datamodel.get_table_strict("collectionobject").tableId
+        co_table = datamodel.get_table_strict("collectionobject")
+        tableid = co_table.tableId
         with TestBuildQuery.test_session_context() as session:
             props = BuildQueryProps()
             model = models.models_by_tableid[tableid]
@@ -118,6 +119,7 @@ class TestBuildQuery(SQLAlchemySetup):
                 session=session,
                 collection=collection,
                 user=user,
+                base_table=co_table
                 model=model,
                 props=props
             )
