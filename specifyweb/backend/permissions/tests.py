@@ -12,7 +12,7 @@ from specifyweb.specify import models as spmodels
 from specifyweb.specify.api.crud import _check_destination_scope, get_collection, put_resource
 from specifyweb.specify.api.filter_by_col import filter_by_collection
 from specifyweb.specify.api.validators import GetCollectionForm
-from specifyweb.specify.models_utils.relationships import handle_fk_fields
+from specifyweb.specify.models_utils.relationships import get_recordset_info, handle_fk_fields
 from specifyweb.specify.utils.scoping import Scoping, ScopeType
 from . import models, permissions, initialize
 
@@ -937,6 +937,52 @@ class CollectionScopeApiTests(ApiTests):
                 )),
                 [geography],
             )
+
+    def test_recordset_navigation_includes_globally_readable_empty_hierarchy(self):
+        for model, fields in (
+            (spmodels.Discipline, {
+                'type': 'botany', 'datatype': self.datatype, 'division': self.division,
+                'geographytreedef': self.geographytreedef,
+                'geologictimeperiodtreedef': self.geologictimeperiodtreedef,
+            }),
+            (spmodels.Division, {'institution': self.institution}),
+            (spmodels.Institution, {
+                'isaccessionsglobal': True, 'issecurityon': False,
+                'isserverbased': False, 'issharinglocalities': True,
+                'issinglegeographytree': True,
+            }),
+        ):
+            with self.subTest(model=model.__name__):
+                targets = [
+                    model.objects.create(name=f'Empty {model.__name__} {index}', **fields)
+                    for index in range(3)
+                ]
+                recordset = spmodels.Recordset.objects.create(
+                    collectionmemberid=self.collection.id,
+                    dbtableid=model.specify_model.tableId,
+                    name=f'Empty {model.__name__} records', type=0,
+                    specifyuser=self.specifyuser,
+                )
+                for target in targets:
+                    recordset.recordsetitems.create(recordid=target.pk)
+                with permissions.cache_permission_queries():
+                    self.assertIsNone(get_recordset_info(
+                        targets[1], recordset.pk, actor=self.agent,
+                    ))
+                policy = models.UserPolicy.objects.create(
+                    collection=None, specifyuser=self.specifyuser,
+                    resource=f'/table/{model.specify_model.name.lower()}', action='read',
+                )
+                with permissions.cache_permission_queries():
+                    self.assertEqual(
+                        get_recordset_info(targets[1], recordset.pk, actor=self.agent),
+                        {
+                            'recordsetid': recordset.pk, 'total_count': 3, 'index': 1,
+                            'previous': f'/api/specify/{model.specify_model.name.lower()}/{targets[0].pk}/',
+                            'next': f'/api/specify/{model.specify_model.name.lower()}/{targets[2].pk}/',
+                        },
+                    )
+                policy.delete()
 
     def test_recordset_membership_and_navigation(self):
         own = spmodels.Recordset.objects.create(
