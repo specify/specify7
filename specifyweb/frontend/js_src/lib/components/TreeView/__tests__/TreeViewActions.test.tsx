@@ -1,4 +1,4 @@
-import { screen, waitFor, within } from '@testing-library/react';
+import { act, screen, waitFor, within } from '@testing-library/react';
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 
@@ -653,5 +653,119 @@ describe('Delete storage', () => {
     await waitFor(() => expect(handleRefresh).toHaveBeenCalled());
     expect(deleteRequest).toHaveBeenCalledTimes(1);
     expect(setFocusPath).toHaveBeenCalledWith([1, parentId]);
+  });
+});
+
+describe('Move storage items to another node', () => {
+  const sourceId = 30;
+  const targetId = 31;
+  const moveRequest = jest.fn(() => '');
+  const formDataContaining = (expected: Record<string, string>): unknown => ({
+    $$typeof: Symbol.for('jest.asymmetricMatcher'),
+    asymmetricMatch: (actual: unknown): boolean =>
+      typeof (actual as FormData | undefined)?.get === 'function' &&
+      Object.entries(expected).every(
+        ([key, value]) => (actual as FormData).get(key) === value
+      ),
+    toAsymmetricMatcher: (): string =>
+      `FormDataContaining ${JSON.stringify(expected)}`,
+  });
+  (
+    [
+      [sourceId, 'Room 1'],
+      [targetId, 'Room 2'],
+    ] as const
+  ).forEach(([id, name]) =>
+    overrideAjax(getResourceApiUrl('Storage', id), () =>
+      addMissingFields('Storage', {
+        id,
+        name,
+        fullName: name,
+        rankId: 200,
+        resource_uri: getResourceApiUrl('Storage', id),
+      })
+    )
+  );
+  overrideAjax(
+    `/trees/specify_tree/storage/${sourceId}/bulk_move/`,
+    moveRequest,
+    {
+      method: 'POST',
+      responseCode: Http.OK,
+      body: formDataContaining({ target: targetId.toString() }),
+    }
+  );
+
+  test('"Move Items" moves the preparations to the selected node', async () => {
+    const source = makeRow({
+      nodeId: sourceId,
+      name: 'Room 1',
+      fullName: 'Room 1',
+      rankId: 200,
+      children: 0,
+    });
+    const target = makeRow({
+      nodeId: targetId,
+      name: 'Room 2',
+      fullName: 'Room 2',
+      rankId: 200,
+      children: 0,
+    });
+    const handleRefresh = jest.fn();
+    let selectRow: (row: Row) => void = f.void;
+    function TreeViewer(): JSX.Element {
+      const [focusedRow, setFocusedRow] = React.useState<Row>(source);
+      const [actionRow, setActionRow] = React.useState<Row | undefined>(
+        undefined
+      );
+      selectRow = setFocusedRow;
+      return (
+        <TreeViewActions
+          actionRow={actionRow}
+          focusPath={[[], jest.fn()]}
+          focusRef={{ current: null }}
+          focusedRow={focusedRow}
+          ranks={ranks}
+          tableName="Storage"
+          onChange={setActionRow}
+          onRefresh={handleRefresh}
+        />
+      );
+    }
+    const { user } = mount(
+      <MemoryRouter>
+        <LoadingContext.Provider value={f.void}>
+          <UnloadProtectsContext.Provider value={[]}>
+            <SetUnloadProtectsContext.Provider value={f.void}>
+              <TreeViewer />
+            </SetUnloadProtectsContext.Provider>
+          </UnloadProtectsContext.Provider>
+        </LoadingContext.Provider>
+      </MemoryRouter>
+    );
+
+    await user.click(
+      screen.getByRole('button', {
+        name: new RegExp(`^${treeText.moveItems()}`, 'u'),
+      })
+    );
+    act(() => selectRow(target));
+    await user.click(
+      screen.getByRole('button', {
+        name: treeText.moveNodePreparationsHere({
+          nodeName: source.fullName,
+        }),
+      })
+    );
+
+    const dialog = await screen.findByRole('dialog', {
+      name: treeText.moveItems(),
+    });
+    await user.click(
+      within(dialog).getByRole('button', { name: treeText.moveItems() })
+    );
+
+    await waitFor(() => expect(handleRefresh).toHaveBeenCalled());
+    expect(moveRequest).toHaveBeenCalledTimes(1);
   });
 });
