@@ -61,6 +61,14 @@ class Tree(ModelWithTable):
 
         prev_self = None if self.id is None \
                     else model.objects.select_for_update().get(id=self.id)
+        if prev_self is not None and prev_self.definition_id != self.definition_id \
+                and model.objects.filter(parent=self).exists():
+            raise TreeBusinessRuleException(
+                "Tree node with children cannot change tree definition",
+                {"tree": self.__class__.__name__,
+                 "localizationKey": "operationAcrossTrees",
+                 "operation": "save",
+                 "node": {"id": self.id, "fullName": self.fullname}})
 
         if prev_self is None:
             self.nodenumber = None
