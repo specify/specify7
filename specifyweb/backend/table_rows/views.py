@@ -26,7 +26,10 @@ def rows(request, model: str) -> HttpResponse:
             request.specify_collection, request.GET, model, form.cleaned_data,
             actor=request.specify_user_agent, field_aliases=aliases,
         )
-        fields = [aliases[field] for field in fields]
+        try:
+            fields = [aliases[field] for field in fields]
+        except KeyError as e:
+            raise FilterError(f'Invalid projection field: {e.args[0]}')
         query = query.values_list(*fields)
         if not form.cleaned_data['orderby']:
             query = query.order_by(*fields)
