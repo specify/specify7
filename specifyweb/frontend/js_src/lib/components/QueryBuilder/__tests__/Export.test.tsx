@@ -36,6 +36,23 @@ const fields: readonly QueryField[] = [
   },
 ];
 
+const localityFields: readonly QueryField[] = [
+  {
+    id: 1,
+    mappingPath: ['latitude1'],
+    sortType: undefined,
+    isDisplay: true,
+    filters: [],
+  },
+  {
+    id: 2,
+    mappingPath: ['longitude1'],
+    sortType: undefined,
+    isDisplay: true,
+    filters: [],
+  },
+];
+
 const queryResource = () =>
   new tables.SpQuery.Resource(
     { id: 5, name: 'All results' },
@@ -49,12 +66,16 @@ const results = {
   ],
 } as never;
 
-function renderButtons(selectedRows: ReadonlySet<number>): void {
+function renderButtons(
+  selectedRows: ReadonlySet<number>,
+  exportFields: readonly QueryField[] = fields,
+  baseTableName: 'Agent' | 'Locality' = 'Agent'
+): void {
   render(
     <UnloadProtectsContext.Provider value={[]}>
       <QueryExportButtons
-        baseTableName="Agent"
-        fields={fields}
+        baseTableName={baseTableName}
+        fields={exportFields}
         getQueryFieldRecords={undefined}
         queryResource={queryResource()}
         recordSetId={undefined}
@@ -96,4 +117,42 @@ test('exports only selected results to CSV', async () => {
   expect(rows).toEqual([['B']]);
   expect(columns).toEqual(['Last Name']);
   expect(ping).not.toHaveBeenCalled();
+});
+
+// [QueryBuilder] Export all query results to KML
+test('exports all locality results to KML when nothing is selected', async () => {
+  renderButtons(new Set(), localityFields, 'Locality');
+  const user = userEvent.setup();
+  await act(async () => {
+    await user.click(
+      screen.getByRole('button', { name: queryText.createKml() })
+    );
+  });
+
+  expect(ping).toHaveBeenCalledWith(
+    '/stored_query/exportkml/',
+    expect.objectContaining({
+      method: 'POST',
+      body: expect.objectContaining({ selectedrows: undefined }),
+    })
+  );
+});
+
+// [QueryBuilder] Export selected query results to KML
+test('exports only selected locality results to KML', async () => {
+  renderButtons(new Set([2]), localityFields, 'Locality');
+  const user = userEvent.setup();
+  await act(async () => {
+    await user.click(
+      screen.getByRole('button', { name: queryText.createKml() })
+    );
+  });
+
+  expect(ping).toHaveBeenCalledWith(
+    '/stored_query/exportkml/',
+    expect.objectContaining({
+      method: 'POST',
+      body: expect.objectContaining({ selectedrows: [2] }),
+    })
+  );
 });
