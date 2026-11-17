@@ -260,6 +260,20 @@ class Scoping:
 
     @staticmethod
     @cache
+    def collection_member_dependents(model_class) -> tuple[tuple[type, str], ...]:
+        """Find dependent collection members whose membership follows this owner."""
+        dependents = []
+        for table in datamodel.tables:
+            child = getattr(models, table.django_name, None)
+            if child is None or not hasattr(child, 'collectionmemberid'):
+                continue
+            for name in Scoping.collection_owner_fields(child):
+                if child._meta.get_field(name).related_model is model_class:
+                    dependents.append((child, name))
+        return tuple(dependents)
+
+    @staticmethod
+    @cache
     def collection_owner_paths(model_class) -> tuple[str, ...]:
         """Return ownership joins needed to validate a destination scope."""
         paths = []

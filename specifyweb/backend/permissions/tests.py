@@ -301,6 +301,72 @@ class CollectionScopeApiTests(ApiTests):
                 with self.assertNumQueries(0):
                     _check_destination_scope(self.collection, self.agent, sample, data, 'create')
 
+    def test_moving_collectionobject_rescopes_dependent_collection_members(self):
+        self.grant_other_collection()
+        co = self.collectionobjects[0]
+        determination = spmodels.Determination.objects.create(
+            collectionobject=co, collectionmemberid=self.collection.id, iscurrent=True,
+        )
+        preptype = spmodels.Preptype.objects.create(
+            name='Movable preparation', isloanable=False, collection=self.collection,
+        )
+        preparation = spmodels.Preparation.objects.create(
+            collectionobject=co, preptype=preptype, collectionmemberid=self.collection.id,
+        )
+        sample = spmodels.Materialsample.objects.create(
+            preparation=preparation, collectionmemberid=self.collection.id,
+        )
+        response = self.client.put(
+            f'/api/specify/collectionobject/{co.id}/', {
+                'version': co.version,
+                'collection': f'/api/specify/collection/{self.other_collection.id}/',
+                'collectionmemberid': self.other_collection.id,
+            }, content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 200, response.content)
+        for child in (determination, preparation, sample):
+            child.refresh_from_db()
+            self.assertEqual(child.collectionmemberid, self.other_collection.id)
+        # An actor permitted only in the source collection loses access.
+        models.UserPolicy.objects.filter(collection=self.other_collection).delete()
+        response = self.client.get(f'/api/specify/determination/{determination.id}/')
+        self.assertEqual(response.status_code, 403, response.content)
+        response = self.client.get('/api/specify/determination/', {'id': determination.id})
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual([row['id'] for row in response.json()['objects']], [])
+        with permissions.cache_permission_queries():
+            with self.assertRaises(permissions.NoMatchingRuleException):
+                permissions.check_table_permissions(
+                    self.collection, self.agent, determination, 'read',
+                )
+
+    def test_moving_collectionobject_requires_dependent_permissions_in_destination(self):
+        for resource in (
+            '/system/sp7/collection',
+            '/table/collectionobject',
+            '/field/collectionobject/%',
+        ):
+            self.grant_other_collection(resource=resource)
+        co = self.collectionobjects[0]
+        determination = spmodels.Determination.objects.create(
+            collectionobject=co, collectionmemberid=self.collection.id, iscurrent=True,
+        )
+        response = self.client.put(
+            f'/api/specify/collectionobject/{co.id}/', {
+                'version': co.version,
+                'collection': f'/api/specify/collection/{self.other_collection.id}/',
+                'collectionmemberid': self.other_collection.id,
+            }, content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 403, response.content)
+        co.refresh_from_db()
+        determination.refresh_from_db()
+        self.assertEqual(co.collection_id, self.collection.id)
+        self.assertEqual(co.collectionmemberid, self.collection.id)
+        self.assertEqual(determination.collectionmemberid, self.collection.id)
+        response = self.client.get(f'/api/specify/determination/{determination.id}/')
+        self.assertEqual(response.status_code, 200, response.content)
+
     def test_list_permission_query_count_does_not_grow_with_records(self):
         recordset = spmodels.Recordset.objects.create(
             name='Scoped items', dbtableid=1, type=0,

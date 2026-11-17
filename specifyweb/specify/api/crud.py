@@ -60,6 +60,43 @@ def _check_destination_scope(
             collection, agent, obj, action, destination=True,
         )
 
+def _cascade_collection_membership(collection, agent, obj: Model, previous_member_id) -> None:
+    """Rescope dependent collection members when their owner moves collections.
+
+    Otherwise dependents such as Determinations would stay readable in the
+    owner's previous collection. Each dependent update is permission checked
+    against both its current and destination scopes, so a move the agent is
+    not allowed to cascade is rejected as a whole.
+    """
+    new_member_id = getattr(obj, 'collectionmemberid', None)
+    if new_member_id == previous_member_id:
+        return
+    for child_model, owner_field in Scoping.collection_member_dependents(type(obj)):
+        for child in child_model.objects.filter(**{owner_field: obj}):
+            if child.collectionmemberid == new_member_id:
+                continue
+            child_previous_member_id = child.collectionmemberid
+            if child_previous_member_id is not None:
+                check_table_permissions(collection, agent, child, "update")
+                check_field_permissions(
+                    collection, agent, child, ['collectionmemberid'], "update",
+                )
+            child.collectionmemberid = new_member_id
+            check_table_permissions(collection, agent, child, "update", destination=True)
+            check_field_permissions(
+                collection, agent, child, ['collectionmemberid'], "update",
+            )
+            child_version = getattr(child, 'version', None)
+            if child_version is not None:
+                bump_version(child, child_version)
+            child.save()
+            auditlog.update(child, agent, obj, [FieldChangeInfo(
+                field_name='collectionmemberid',
+                old_value=child_previous_member_id,
+                new_value=new_member_id,
+            )])
+            _cascade_collection_membership(collection, agent, child, child_previous_member_id)
+
 def create_obj(collection, agent, model, data: dict[str, Any], parent_obj=None, parent_relationship=None):
     """Create a new instance of 'model' and populate it with 'data'."""
     from specifyweb.backend.setup_tool.api import create_institution, create_division, create_discipline, create_collection
@@ -178,6 +215,7 @@ def update_obj(collection, agent, name: str, id, version, data: dict[str, Any], 
     """
     obj = get_object_or_404(name, id=int(id))
     check_table_permissions(collection, agent, obj, "update")
+    previous_member_id = getattr(obj, 'collectionmemberid', None)
     original_collections = models.Collection.objects.filter(
         pk__in=list(Scoping.collections_for_record(obj).values_list('pk', flat=True)),
     )
@@ -208,6 +246,7 @@ def update_obj(collection, agent, name: str, id, version, data: dict[str, Any], 
     obj.save(force_update=True)
     invalidate_collection_scope_cache(obj)
     auditlog.update(obj, agent, parent_obj, dirty)
+    _cascade_collection_membership(collection, agent, obj, previous_member_id)
     deleter = make_default_deleter(collection=collection, agent=agent)
     for dep in dependents_to_delete:
         delete_obj(dep, deleter, parent_obj=obj)
