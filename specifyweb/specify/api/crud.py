@@ -279,7 +279,6 @@ def update_obj(collection, agent, name: str, id, version, data: dict[str, Any], 
     dirty_fields = [d['field_name'] for d in dirty]
     _check_destination_scope(collection, agent, obj, data, "update")
     _check_recordset_reference(collection, agent, obj)
-    dirty_fields.extend(name for name, value in data.items() if isinstance(value, (list, dict)))
     check_field_permissions(
         collection, agent, obj, dirty_fields, "update", collections=original_collections,
     )
@@ -296,8 +295,13 @@ def update_obj(collection, agent, name: str, id, version, data: dict[str, Any], 
     deleter = make_default_deleter(collection=collection, agent=agent)
     for dep in dependents_to_delete:
         delete_obj(dep, deleter, parent_obj=obj)
-    handle_remote_to_ones(obj)
-    handle_to_many(collection, agent, obj, data)
+    relationship_fields = handle_remote_to_ones(obj)
+    relationship_fields.extend(handle_to_many(collection, agent, obj, data))
+    if relationship_fields:
+        check_field_permissions(
+            collection, agent, obj, relationship_fields, "update", collections=original_collections,
+        )
+        check_field_permissions(collection, agent, obj, relationship_fields, "update")
     _cascade_collection_membership(collection, agent, obj, previous_member_id)
     _handle_special_update_posts(obj)
     return obj

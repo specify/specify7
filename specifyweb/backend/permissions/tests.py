@@ -43,6 +43,122 @@ class CollectionScopeApiTests(ApiTests):
             resource=resource, action=action,
         )
 
+    def _grant_child_edit_permissions(self):
+        models.UserPolicy.objects.all().delete()
+        for resource, action in (
+            ('/system/sp7/collection', 'access'),
+            ('/table/%', '%'),
+            ('/field/determination/%', 'update'),
+            ('/field/collectionobjectattribute/%', 'update'),
+            ('/field/collectionobjectgroupjoin/%', 'update'),
+            ('/field/collectionobject/remarks', 'update'),
+            ('/field/collectionobject/collectingevent', 'update'),
+        ):
+            models.UserPolicy.objects.create(
+                collection=self.collection, specifyuser=self.specifyuser,
+                resource=resource, action=action,
+            )
+
+    def test_child_edits_do_not_require_unchanged_parent_relationship_permissions(self):
+        co = self.collectionobjects[0]
+        attribute = spmodels.Collectionobjectattribute.objects.create(
+            collectionmemberid=self.collection.id, text1='Original',
+        )
+        co.collectionobjectattribute = attribute
+        co.save()
+        determination = spmodels.Determination.objects.create(
+            collectionobject=co, iscurrent=True,
+        )
+        self._grant_child_edit_permissions()
+        response = self.client.put(
+            f'/api/specify/collectionobject/{co.id}/', {
+                'version': co.version, 'remarks': 'Parent edit',
+                'collectionobjectattribute': {
+                    'id': attribute.id, 'version': attribute.version, 'text1': 'Child edit',
+                },
+                'determinations': [{
+                    'id': determination.id, 'version': determination.version,
+                    'remarks': 'Child edit',
+                }],
+                'preparations': [],
+            }, content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 200, response.content)
+        attribute.refresh_from_db()
+        determination.refresh_from_db()
+        co.refresh_from_db()
+        self.assertEqual(attribute.text1, 'Child edit')
+        self.assertEqual(determination.remarks, 'Child edit')
+        self.assertEqual(co.remarks, 'Parent edit')
+        response = self.client.put(
+            f'/api/specify/collectionobject/{co.id}/',
+            {'version': co.version, 'text1': 'Unauthorized scalar edit'},
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 403, response.content)
+        co.refresh_from_db()
+        self.assertIsNone(co.text1)
+
+    def test_dependent_membership_changes_require_relationship_permission(self):
+        co, other_co = self.collectionobjects[:2]
+        determination = spmodels.Determination.objects.create(
+            collectionobject=co, iscurrent=True,
+        )
+        other = spmodels.Determination.objects.create(
+            collectionobject=other_co, iscurrent=True,
+        )
+        existing = {'id': determination.id, 'version': determination.version}
+        self._grant_child_edit_permissions()
+        for children in (
+            [existing, {'remarks': 'New child'}],
+            [],
+            [{'id': other.id, 'version': other.version}],
+        ):
+            with self.subTest(children=children):
+                response = self.client.put(
+                    f'/api/specify/collectionobject/{co.id}/',
+                    {'version': co.version, 'determinations': children},
+                    content_type='application/json',
+                )
+                self.assertEqual(response.status_code, 403, response.content)
+                self.assertEqual(
+                    list(co.determinations.values_list('id', flat=True)), [determination.id],
+                )
+                other.refresh_from_db()
+                self.assertEqual(other.collectionobject_id, other_co.id)
+
+    def test_unchanged_independent_membership_does_not_require_relationship_permission(self):
+        co = self.collectionobjects[0]
+        co.collectingevent = self.collectingevent
+        co.save()
+        self._grant_child_edit_permissions()
+        response = self.client.put(
+            f'/api/specify/collectingevent/{self.collectingevent.id}/', {
+                'version': self.collectingevent.version,
+                'collectionobjects': {
+                    'update': [{
+                        'id': co.id, 'version': co.version, 'remarks': 'Child edit',
+                    }],
+                    'remove': [],
+                },
+            }, content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 200, response.content)
+        co.refresh_from_db()
+        self.assertEqual(co.remarks, 'Child edit')
+        self.collectingevent.refresh_from_db()
+        response = self.client.put(
+            f'/api/specify/collectingevent/{self.collectingevent.id}/', {
+                'version': self.collectingevent.version,
+                'collectionobjects': {
+                    'remove': [f'/api/specify/collectionobject/{co.id}/'],
+                },
+            }, content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 403, response.content)
+        co.refresh_from_db()
+        self.assertEqual(co.collectingevent_id, self.collectingevent.id)
+
     def _create_scoped_group_joins(self):
         joins = []
         for collection, child in zip(
@@ -83,6 +199,31 @@ class CollectionScopeApiTests(ApiTests):
                 })
                 self.assertEqual(response.status_code, 200, response.content)
                 self.assertEqual(response.json(), [[join.id]] if readable else [])
+
+    def test_remote_to_one_requires_relationship_permission_only_when_changed(self):
+        join, _ = self._create_scoped_group_joins()
+        co = self.collectionobjects[0]
+        self._grant_child_edit_permissions()
+        response = self.client.put(
+            f'/api/specify/collectionobject/{co.id}/', {
+                'version': co.version,
+                'cojo': {'id': join.id, 'version': join.version, 'text1': 'Child edit'},
+            }, content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 200, response.content)
+        join.refresh_from_db()
+        self.assertEqual(join.text1, 'Child edit')
+        other_co = self.collectionobjects[2]
+        response = self.client.put(
+            f'/api/specify/collectionobject/{other_co.id}/', {
+                'version': other_co.version,
+                'cojo': {
+                    'parentcog': f'/api/specify/collectionobjectgroup/{join.parentcog_id}/',
+                },
+            }, content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 403, response.content)
+        self.assertFalse(spmodels.Collectionobjectgroupjoin.objects.filter(childco=other_co).exists())
 
     def test_group_join_updates_require_parent_collection_permissions(self):
         allowed, denied = self._create_scoped_group_joins()
