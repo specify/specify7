@@ -298,7 +298,7 @@ class QueryConstruct(
             node, table, tree_rank, next_join_path, current_field_spec
         )
 
-    def build_join(self, table, model, join_path):
+    def build_join(self, table: Table, model, join_path):
         query = self
         path = deque(join_path)
         field = None
