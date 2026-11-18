@@ -56,10 +56,29 @@ def _check_destination_scope(
     collection, agent, obj: Model, data: dict[str, Any], action: TABLE_ACTION,
 ) -> None:
     owners = Scoping.collection_owner_fields(type(obj))
-    if owners and any(name in data for name in (*owners, 'collectionmemberid', 'collection')):
+    if owners and any(
+        name in data
+        for name in (*owners, 'collectionmemberid', 'collectionmember', 'collection')
+    ):
         check_table_permissions(
             collection, agent, obj, action, destination=True,
         )
+
+def _collection_member_field(model_class):
+    try:
+        return model_class._meta.get_field('collectionmemberid')
+    except FieldDoesNotExist:
+        return model_class._meta.get_field('collectionmember')
+
+def _with_collection_member_data(
+    model_class, data: dict[str, Any], collection_member_id,
+) -> dict[str, Any]:
+    field = _collection_member_field(model_class)
+    if field.is_relation:
+        value = f'/api/specify/collection/{collection_member_id}/'
+    else:
+        value = collection_member_id
+    return {**data, field.name: value}
 
 def _rescope_submitted_children(obj: Model, data: dict[str, Any], new_member_id) -> None:
     """Merge rescoping into submitted child edits so their version is checked once."""
@@ -82,10 +101,14 @@ def _rescope_submitted_children(obj: Model, data: dict[str, Any], new_member_id)
                 nested = value.get(path[0])
                 if len(path) == 1:
                     if isinstance(nested, dict):
-                        value[path[0]] = {**nested, 'collectionmemberid': new_member_id}
+                        value[path[0]] = _with_collection_member_data(
+                            child_model, nested, new_member_id,
+                        )
                     elif isinstance(nested, list):
                         value[path[0]] = [
-                            {**item, 'collectionmemberid': new_member_id}
+                            _with_collection_member_data(
+                                child_model, item, new_member_id,
+                            )
                             if isinstance(item, dict) else item
                             for item in nested
                         ]
@@ -105,10 +128,12 @@ def _rescope_submitted_children(obj: Model, data: dict[str, Any], new_member_id)
             field_name = accessor
         value = data.get(field_name)
         if isinstance(value, dict):
-            data[field_name] = {**value, 'collectionmemberid': new_member_id}
+            data[field_name] = _with_collection_member_data(
+                child_model, value, new_member_id,
+            )
         elif isinstance(value, list):
             data[field_name] = [
-                {**child, 'collectionmemberid': new_member_id}
+                _with_collection_member_data(child_model, child, new_member_id)
                 if isinstance(child, dict) else child
                 for child in value
             ]
@@ -135,26 +160,28 @@ def _cascade_collection_membership(collection, agent, obj: Model, previous_membe
             children = () if related is None else (related,)
         else:
             children = child_model._base_manager.filter(**{owner_field: obj})
+        membership_field = _collection_member_field(child_model)
+        member_id_attr = membership_field.attname
         for child in children:
-            if getattr(child, 'collectionmemberid') == new_member_id:
+            if getattr(child, member_id_attr) == new_member_id:
                 continue
-            child_previous_member_id = getattr(child, 'collectionmemberid')
+            child_previous_member_id = getattr(child, member_id_attr)
             if child_previous_member_id is not None:
                 check_table_permissions(collection, agent, child, "update")
                 check_field_permissions(
-                    collection, agent, child, ['collectionmemberid'], "update",
+                    collection, agent, child, [membership_field.name], "update",
                 )
-            setattr(child, 'collectionmemberid', new_member_id)
+            setattr(child, member_id_attr, new_member_id)
             check_table_permissions(collection, agent, child, "update", destination=True)
             check_field_permissions(
-                collection, agent, child, ['collectionmemberid'], "update",
+                collection, agent, child, [membership_field.name], "update",
             )
             child_version = getattr(child, 'version', None)
             if child_version is not None:
                 bump_version(child, child_version)
             child.save()
             auditlog.update(child, agent, obj, [FieldChangeInfo(
-                field_name='collectionmemberid',
+                field_name=membership_field.name,
                 old_value=child_previous_member_id,
                 new_value=new_member_id,
             )])

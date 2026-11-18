@@ -1192,8 +1192,8 @@ class ScopingTests(ApiTests):
         _rescope_submitted_children(
             self.collectionobjects[0], data, new_member_id,
         )
-        rescaled_memberships = [
-            child['collectionmemberid']
+        rescaled_collectionmembers = [
+            child['collectionmember']
             for age in data['absoluteages'] + data['relativeages']
             for relation in (
                 'absoluteageattachments',
@@ -1202,14 +1202,14 @@ class ScopingTests(ApiTests):
                 'relativeagecitations',
             )
             for child in age.get(relation, [])
-            if 'collectionmemberid' in child
+            if 'collectionmember' in child
         ]
-        self.assertEqual(len(rescaled_memberships), 4)
+        self.assertEqual(len(rescaled_collectionmembers), 4)
         self.assertEqual(
-            set(rescaled_memberships),
             {
-                new_member_id,
+                f'/api/specify/collection/{new_member_id}/',
             },
+            set(rescaled_collectionmembers),
         )
 
 class DefaultsSetup(MainSetupTearDown, TestCase):

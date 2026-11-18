@@ -1478,6 +1478,97 @@ class CollectionScopeApiTests(ApiTests):
                     response = self.client.get(f'{url}{denied.id}/')
                     self.assertEqual(response.status_code, 403, response.content)
 
+    def test_moving_collectionobject_rescopes_age_membership_rows(self):
+        self.grant_other_collection()
+        collectionobject = self.collectionobjects[0]
+        attachment = spmodels.Attachment.objects.create()
+        referencework = spmodels.Referencework.objects.create(
+            institution=self.institution, title='Age move reference', referenceworktype=0,
+        )
+        absoluteage = spmodels.Absoluteage.objects.create(
+            collectionobject=collectionobject,
+        )
+        relativeage = spmodels.Relativeage.objects.create(
+            collectionobject=collectionobject,
+        )
+        rows = [
+            spmodels.Absoluteageattachment.objects.create(
+                absoluteage=absoluteage, attachment=attachment,
+                collectionmember=self.collection,
+            ),
+            spmodels.Absoluteagecitation.objects.create(
+                absoluteage=absoluteage, referencework=referencework,
+                collectionmember=self.collection,
+            ),
+            spmodels.Relativeageattachment.objects.create(
+                relativeage=relativeage, attachment=attachment,
+                collectionmember=self.collection,
+            ),
+            spmodels.Relativeagecitation.objects.create(
+                relativeage=relativeage, referencework=referencework,
+                collectionmember=self.collection,
+            ),
+        ]
+        nested_edits = {
+            'absoluteages': [{
+                'id': absoluteage.id,
+                'version': absoluteage.version,
+                'absoluteageattachments': [{
+                    'id': rows[0].id, 'version': rows[0].version,
+                }],
+            }],
+            'relativeages': [{
+                'id': relativeage.id,
+                'version': relativeage.version,
+                'relativeagecitations': [{
+                    'id': rows[3].id, 'version': rows[3].version,
+                }],
+            }],
+        }
+        response = self.client.put(
+            f'/api/specify/collectionobject/{collectionobject.id}/', {
+                'version': collectionobject.version,
+                'collection': f'/api/specify/collection/{self.other_collection.id}/',
+                'collectionmemberid': self.other_collection.id,
+                **nested_edits,
+            }, content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 200, response.content)
+        for row in rows:
+            row.refresh_from_db()
+            self.assertEqual(row.collectionmember_id, self.other_collection.id)
+
+        for row in rows:
+            model = type(row)
+            url = f'/api/specify/{model.__name__.lower()}/'
+            row_url = f'/table_rows/specify_rows/{model.__name__.lower()}/'
+            with self.subTest(model=model.__name__, collection=self.collection.id):
+                self.assertEqual(
+                    self.client.get(f'{url}{row.id}/').status_code, 403,
+                )
+                response = self.client.get(url)
+                self.assertEqual(response.status_code, 200, response.content)
+                self.assertNotIn(row.id, [item['id'] for item in response.json()['objects']])
+                response = self.client.get(row_url, {'fields': 'id', 'id': row.id})
+                self.assertEqual(response.status_code, 200, response.content)
+                self.assertEqual(response.json(), [])
+
+        self.client.cookies['collection'] = self.other_collection.id
+        for row in rows:
+            model = type(row)
+            url = f'/api/specify/{model.__name__.lower()}/'
+            row_url = f'/table_rows/specify_rows/{model.__name__.lower()}/'
+            with self.subTest(model=model.__name__, collection=self.other_collection.id):
+                self.assertEqual(
+                    self.client.get(f'{url}{row.id}/').status_code, 200,
+                )
+                response = self.client.get(url)
+                self.assertEqual(response.status_code, 200, response.content)
+                self.assertIn(row.id, [item['id'] for item in response.json()['objects']])
+                response = self.client.get(row_url, {'fields': 'id', 'id': row.id})
+                self.assertEqual(response.status_code, 200, response.content)
+                self.assertEqual(response.json(), [[row.id]])
+
     def test_attachment_scope_is_enforced(self):
         attachments = [
             spmodels.Attachment.objects.create(scopetype=scope_type, scopeid=scope_id)
