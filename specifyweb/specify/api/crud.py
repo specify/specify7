@@ -785,10 +785,9 @@ def _handle_special_update_priors(obj, data):
 
 @transaction.atomic
 def delete_resource(collection, agent, name, id, version) -> None:
-    """Delete the resource with 'id' and model named 'name' with optimistic
-    locking 'version'.
-    """
-    obj = get_object_or_404(name, id=int(id))
+    """Lock the record before authorizing deletion; check its version if supplied."""
+    model = get_model_or_404(name) if isinstance(name, str) else name
+    obj = get_object_or_404(model._base_manager.select_for_update(), id=int(id))
     check_table_permissions(collection, agent, obj, "delete")
     if is_discipline(obj):
         guard_blockers = get_discipline_delete_guard_blockers(obj)

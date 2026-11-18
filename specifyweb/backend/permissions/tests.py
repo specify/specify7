@@ -4,7 +4,7 @@ from threading import Event
 from unittest.mock import patch
 
 from django.test import Client, skipUnlessDBFeature
-from django.db import connection
+from django.db import connection, transaction
 from django.core.exceptions import FieldError
 from django.test.utils import CaptureQueriesContext
 from django.utils import timezone
@@ -2221,6 +2221,49 @@ class CollectionScopeApiTests(ApiTests):
 
 @skipUnlessDBFeature('has_select_for_update')
 class CollectionScopeTransactionTests(ApiTransactionTests):
+    def test_versionless_delete_uses_collection_after_waiting_for_move(self):
+        destination = spmodels.Collection.objects.create(
+            collectionname='Delete destination', discipline=self.discipline,
+        )
+        for can_delete_destination in (False, True):
+            with self.subTest(can_delete_destination=can_delete_destination):
+                co = spmodels.Collectionobject.objects.create(collection=self.collection)
+                models.UserPolicy.objects.filter(specifyuser=self.specifyuser).delete()
+                permitted = destination if can_delete_destination else self.collection
+                models.UserPolicy.objects.create(
+                    collection=permitted, specifyuser=self.specifyuser, resource='%', action='%',
+                )
+                lock_requested = Event()
+
+                def observe_lock(execute, sql, params, many, context):
+                    if 'FOR UPDATE' in sql.upper() and '`collectionobject`' in sql:
+                        lock_requested.set()
+                    return execute(sql, params, many, context)
+
+                def delete():
+                    try:
+                        with connection.execute_wrapper(observe_lock):
+                            crud.delete_resource(self.collection, self.agent, 'collectionobject', co.pk, None)
+                    finally:
+                        connection.close()
+
+                with ThreadPoolExecutor(max_workers=1) as executor:
+                    with transaction.atomic():
+                        spmodels.Collectionobject.objects.filter(pk=co.pk).update(
+                            collection=destination, collectionmemberid=destination.pk,
+                        )
+                        pending = executor.submit(delete)
+                        self.assertTrue(lock_requested.wait(10), 'Delete did not request the row lock')
+                        self.assertFalse(pending.done())
+                    if can_delete_destination:
+                        pending.result(timeout=10)
+                        self.assertFalse(spmodels.Collectionobject.objects.filter(pk=co.pk).exists())
+                    else:
+                        with self.assertRaises(permissions.NoMatchingRuleException):
+                            pending.result(timeout=10)
+                        co.refresh_from_db()
+                        self.assertEqual(co.collection_id, destination.pk)
+
     def test_create_waits_for_collectionobject_move(self):
         self._assert_child_change_and_move_are_serialized(move_first=True)
 
