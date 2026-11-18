@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+from typing import TYPE_CHECKING
 from collections import namedtuple, deque, defaultdict
 
 from sqlalchemy import orm, sql, or_
@@ -11,9 +12,11 @@ from specifyweb.backend.trees.utils import get_tree_defs_in_collection
 
 from specifyweb.backend.stored_queries import models
 from specifyweb.backend.stored_queries.tree_rank import TreeRankQuery
-from specifyweb.backend.stored_queries.queryfieldspec import QueryFieldSpec
 
 logger = logging.getLogger(__name__)
+
+if TYPE_CHECKING:
+    from specifyweb.backend.stored_queries.queryfieldspec import QueryFieldSpec
 
 
 def resolve_tree_ranks(
