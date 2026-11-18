@@ -116,13 +116,15 @@ class CollectionScopeApiTests(ApiTests):
             {'collectionobjectattribute': None, 'determinations': None},
             {field: detail[field] for field in ('collectionobjectattribute', 'determinations')},
         )
-        for relations in payloads:
+        for index, relations in enumerate(payloads, start=1):
             with self.subTest(relations=relations):
+                remarks = f'Edited by request {index}'
                 response = self.client.put(url, {
-                    'version': co.version, 'remarks': 'Edited', **relations,
+                    'version': co.version, 'remarks': remarks, **relations,
                 }, content_type='application/json')
                 self.assertEqual(response.status_code, 200, response.content)
                 co.refresh_from_db()
+                self.assertEqual(co.remarks, remarks)
                 self.assertEqual(co.collectionobjectattribute_id, attribute.pk)
                 self.assertCountEqual(co.determinations.values_list('pk', flat=True), [visible.pk, hidden.pk])
 
@@ -361,6 +363,8 @@ class CollectionScopeApiTests(ApiTests):
             'version': co.version, 'remarks': 'Edited', 'cojo': None,
         }, content_type='application/json')
         self.assertEqual(response.status_code, 200, response.content)
+        co.refresh_from_db()
+        self.assertEqual(co.remarks, 'Edited')
         hidden.refresh_from_db()
         self.assertEqual(hidden.childco_id, co.pk)
 
