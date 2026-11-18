@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-11-16 13:29+0000\n"
+"PO-Revision-Date: 2026-11-18 13:51+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/forms/"
 "ru/>\n"
@@ -59,7 +59,7 @@ msgstr ""
 #: components/DataModel/uniquenessRules.ts:138
 #, fuzzy
 msgid "valuesOfMustBeUniqueToDatabase"
-msgstr "Значения {values:string} должны быть уникальными для всей базы данных."
+msgstr "Значения {values:string} должны быть уникальными для базы данных."
 
 #. Used in: Components > Forms > Delete Button
 #: components/Forms/DeleteButton.tsx:138
