@@ -165,9 +165,14 @@ class TestBuildQuery(SQLAlchemySetup):
                     missing_preferred=missing_preferred,
                     first_field=ordered_fields[0][0],
                 ), self.__class__.test_session_context() as session:
+                    co_table = datamodel.get_table_strict("Collectionobject")
                     query = build_query_construct_base(
-                        session, self.collection, self.specifyuser,
-                        models.CollectionObject, BuildQueryProps(),
+                        session=session,
+                        collection=self.collection,
+                        user=self.specifyuser,
+                        model=models.CollectionObject,
+                        base_table=co_table,
+                        props=BuildQueryProps(),
                     )
                     self.assertNotIn("tree_ranks", query.join_cache)
                     query_fields = self._taxon_relationship_query_fields(ordered_fields)
