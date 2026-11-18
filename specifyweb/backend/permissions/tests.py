@@ -93,6 +93,93 @@ class CollectionScopeApiTests(ApiTests):
                 response = self.client.get(path)
                 self.assertEqual(response.status_code, 403, response.content)
 
+    def test_updates_preserve_masked_dependents_and_remove_readable_ones(self):
+        co = self.collectionobjects[0]
+        attribute = spmodels.Collectionobjectattribute.objects.create(
+            collectionmemberid=self.other_collection.pk,
+        )
+        co.collectionobjectattribute = attribute
+        co.save()
+        visible = spmodels.Determination.objects.create(collectionobject=co, iscurrent=False)
+        hidden = spmodels.Determination.objects.create(collectionobject=co, iscurrent=True)
+        spmodels.Determination.objects.filter(pk=hidden.pk).update(
+            collectionmemberid=self.other_collection.pk,
+        )
+
+        self._grant_child_edit_permissions()
+        self.grant_other_collection('/system/sp7/collection', 'access')
+        self.grant_other_collection('/table/%', 'delete')
+        url = f'/api/specify/collectionobject/{co.pk}/'
+        detail = self.client.get(url).json()
+        payloads = (
+            {},
+            {'collectionobjectattribute': None, 'determinations': None},
+            {field: detail[field] for field in ('collectionobjectattribute', 'determinations')},
+        )
+        for relations in payloads:
+            with self.subTest(relations=relations):
+                response = self.client.put(url, {
+                    'version': co.version, 'remarks': 'Edited', **relations,
+                }, content_type='application/json')
+                self.assertEqual(response.status_code, 200, response.content)
+                co.refresh_from_db()
+                self.assertEqual(co.collectionobjectattribute_id, attribute.pk)
+                self.assertCountEqual(co.determinations.values_list('pk', flat=True), [visible.pk, hidden.pk])
+
+        for field in ('collectionobjectattribute', 'determinations'):
+            models.UserPolicy.objects.create(
+                collection=self.collection, specifyuser=self.specifyuser,
+                resource=f'/field/collectionobject/{field}', action='update',
+            )
+        response = self.client.put(url, {
+            'version': co.version, 'collectionobjectattribute': {'text1': 'Replacement'},
+        }, content_type='application/json')
+        self.assertEqual(response.status_code, 403, response.content)
+        co.refresh_from_db()
+        self.assertEqual(co.collectionobjectattribute_id, attribute.pk)
+        self.assertFalse(spmodels.Collectionobjectattribute.objects.filter(text1='Replacement').exists())
+
+        response = self.client.put(url, {
+            'version': co.version, 'determinations': [],
+        }, content_type='application/json')
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual(list(co.determinations.values_list('pk', flat=True)), [hidden.pk])
+
+    def test_clearing_readable_dependent_to_one_requires_delete_permission(self):
+        co = self.collectionobjects[0]
+        attribute = spmodels.Collectionobjectattribute.objects.create(
+            collectionmemberid=self.collection.pk,
+        )
+        co.collectionobjectattribute = attribute
+        co.save()
+        models.UserPolicy.objects.all().delete()
+        for resource, action in (
+            ('/system/sp7/collection', 'access'),
+            ('/table/%', 'read'),
+            ('/table/collectionobject', 'update'),
+            ('/field/collectionobject/collectionobjectattribute', 'update'),
+        ):
+            models.UserPolicy.objects.create(
+                collection=self.collection, specifyuser=self.specifyuser,
+                resource=resource, action=action,
+            )
+        url = f'/api/specify/collectionobject/{co.pk}/'
+        data = {'version': co.version, 'collectionobjectattribute': None}
+        response = self.client.put(url, data, content_type='application/json')
+        self.assertEqual(response.status_code, 403, response.content)
+        co.refresh_from_db()
+        self.assertEqual(co.collectionobjectattribute_id, attribute.pk)
+
+        models.UserPolicy.objects.create(
+            collection=self.collection, specifyuser=self.specifyuser,
+            resource='/table/collectionobjectattribute', action='delete',
+        )
+        response = self.client.put(url, data, content_type='application/json')
+        self.assertEqual(response.status_code, 200, response.content)
+        co.refresh_from_db()
+        self.assertIsNone(co.collectionobjectattribute_id)
+        self.assertFalse(spmodels.Collectionobjectattribute.objects.filter(pk=attribute.pk).exists())
+
     def test_child_edits_do_not_require_unchanged_parent_relationship_permissions(self):
         co = self.collectionobjects[0]
         attribute = spmodels.Collectionobjectattribute.objects.create(
@@ -258,6 +345,24 @@ class CollectionScopeApiTests(ApiTests):
         )
         self.assertEqual(response.status_code, 403, response.content)
         self.assertFalse(spmodels.Collectionobjectgroupjoin.objects.filter(childco=other_co).exists())
+
+    def test_masked_reverse_to_one_is_preserved_when_cleared(self):
+        _, hidden = self._create_scoped_group_joins()
+        co = self.collectionobjects[1]
+        self._grant_child_edit_permissions()
+        self.grant_other_collection('/system/sp7/collection', 'access')
+        self.grant_other_collection('/table/collectionobjectgroupjoin', 'delete')
+
+        url = f'/api/specify/collectionobject/{co.pk}/'
+        detail = self.client.get(url)
+        self.assertEqual(detail.status_code, 200, detail.content)
+        self.assertIsNone(detail.json()['cojo'])
+        response = self.client.put(url, {
+            'version': co.version, 'remarks': 'Edited', 'cojo': None,
+        }, content_type='application/json')
+        self.assertEqual(response.status_code, 200, response.content)
+        hidden.refresh_from_db()
+        self.assertEqual(hidden.childco_id, co.pk)
 
     def test_group_join_updates_require_parent_collection_permissions(self):
         allowed, denied = self._create_scoped_group_joins()
