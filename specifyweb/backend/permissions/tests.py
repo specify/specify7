@@ -1525,7 +1525,6 @@ class CollectionScopeApiTests(ApiTests):
                     self.assertEqual(response.json(), [[age.pk]] if allowed else [])
 
     def test_age_attachments_and_citations_use_collection_membership_scope(self):
-        attachment = spmodels.Attachment.objects.create()
         referencework = spmodels.Referencework.objects.create(
             institution=self.institution, title='Age reference', referenceworktype=0,
         )
@@ -1544,20 +1543,26 @@ class CollectionScopeApiTests(ApiTests):
                 age_model.objects.create(collectionobject=obj)
                 for obj in (self.collectionobjects[0], self.other_object)
             ]
-            for model, related_field, related in (
-                (attachment_model, 'attachment', attachment),
-                (citation_model, 'referencework', referencework),
+            for model, related_field in (
+                (attachment_model, 'attachment'),
+                (citation_model, 'referencework'),
             ):
                 with self.subTest(model=model.__name__):
-                    allowed, denied = [
-                        model.objects.create(
+                    links = []
+                    for collection, age in zip(
+                        (self.collection, self.other_collection), ages,
+                    ):
+                        related = (
+                            spmodels.Attachment.objects.create(
+                                scopetype=ScopeType.COLLECTION.value, scopeid=collection.pk,
+                            )
+                            if related_field == 'attachment' else referencework
+                        )
+                        links.append(model.objects.create(
                             collectionmember=collection,
                             **{age_field: age, related_field: related},
-                        )
-                        for collection, age in zip(
-                            (self.collection, self.other_collection), ages,
-                        )
-                    ]
+                        ))
+                    allowed, denied = links
                     self.assertEqual(
                         list(Scoping.filter_records(
                             model.objects.all(), permitted_collections,
@@ -1572,6 +1577,10 @@ class CollectionScopeApiTests(ApiTests):
                     )
                     response = self.client.get(f'{url}{allowed.id}/')
                     self.assertEqual(response.status_code, 200, response.content)
+                    if related_field == 'attachment':
+                        self.assertEqual(
+                            response.json()['attachment']['id'], allowed.attachment_id,
+                        )
                     response = self.client.get(f'{url}{denied.id}/')
                     self.assertEqual(response.status_code, 403, response.content)
 
