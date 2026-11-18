@@ -59,6 +59,40 @@ class CollectionScopeApiTests(ApiTests):
                 resource=resource, action=action,
             )
 
+    def test_resource_reads_mask_unreadable_embedded_dependents(self):
+        co = self.collectionobjects[0]
+        attribute = spmodels.Collectionobjectattribute.objects.create(
+            collectionmemberid=self.other_collection.pk,
+        )
+        co.collectionobjectattribute = attribute
+        co.save()
+        visible = spmodels.Determination.objects.create(collectionobject=co, iscurrent=False)
+        hidden = spmodels.Determination.objects.create(collectionobject=co, iscurrent=True)
+        spmodels.Determination.objects.filter(pk=hidden.pk).update(
+            collectionmemberid=self.other_collection.pk,
+        )
+
+        url = '/api/specify/collectionobject/'
+        detail = self.client.get(f'{url}{co.pk}/')
+        self.assertEqual(detail.status_code, 200, detail.content)
+        listing = self.client.get(url, {'id': co.pk})
+        self.assertEqual(listing.status_code, 200, listing.content)
+        self.assertEqual(listing.json()['meta']['total_count'], 1)
+        self.assertEqual(listing.json()['objects'], [detail.json()])
+        data = detail.json()
+        self.assertIsNone(data['collectionobjectattribute'])
+        self.assertEqual([row['id'] for row in data['determinations']], [visible.pk])
+        self.assertIsNone(data['currentdetermination'])
+
+        for path in (
+            f'{url}{self.other_object.pk}/',
+            f'/api/specify/collectionobjectattribute/{attribute.pk}/',
+            f'/api/specify/determination/{hidden.pk}/',
+        ):
+            with self.subTest(path=path):
+                response = self.client.get(path)
+                self.assertEqual(response.status_code, 403, response.content)
+
     def test_child_edits_do_not_require_unchanged_parent_relationship_permissions(self):
         co = self.collectionobjects[0]
         attribute = spmodels.Collectionobjectattribute.objects.create(
