@@ -63,7 +63,11 @@ class TreeInformation(TypedDict):
     # (ascending--lowest rank first)
     ranks: list[dict]
 
-def get_tree_defs_in_collection(collection: spmodels.Collection, tree_name: str, tree_def_filters: dict[str, Any] | None = None) -> list[TreeInformation]:
+def get_tree_defs_in_collection(
+        collection: spmodels.Collection,
+        tree_name: str,
+        tree_def_filters: dict[str, Any] | None = None,
+        rank_filters: dict[str, Any] | None = None) -> list[TreeInformation]:
     """
     Given a particular Collection and tree name (Taxon, Storage, Geography,
     etc.), return information on each trees and their ranks within scope of the
@@ -72,6 +76,10 @@ def get_tree_defs_in_collection(collection: spmodels.Collection, tree_name: str,
 
     Additional filters can be directly passed to the TreeDef QuerySet in the
     form of a dict via tree_def_filters.
+    Filters on the ranks for each tree can be passed in the form of a dict via
+    rank_filters.
+    Note that if a tree exists in scope but no ranks match the filters, the
+    tree will still be returned, but ranks will be an empty list.
     
     e.g., to return all Taxon trees in the collection's scope created before
     2026:
@@ -79,10 +87,22 @@ def get_tree_defs_in_collection(collection: spmodels.Collection, tree_name: str,
     get_tree_defs_in_collection(
         collection,
         "Taxon",
-        {"timestampcreated__year__lt": 2026}    
+        {"timestampcreated__year__lt": 2026}
+    )
+    ```
+
+    To return the Taxon trees and just the "Genus" rank for all Taxon trees in
+    the collection's scope:
+    ```py
+    get_tree_defs_in_collection(
+        collection=collection,
+        tree_name="Taxon",
+        rank_filters={"name": "Genus"}
     )
     ```
     """
+    # REFACTOR: For flexibility, instead type tree_def_filters and rank_filters
+    # as Q objects. Thus the caller can perform more advanced filtering.
     if tree_name.lower() not in SPECIFY_TREES:
         raise ValueError(f"unexpected tree type: {tree_name}")
 
@@ -95,9 +115,12 @@ def get_tree_defs_in_collection(collection: spmodels.Collection, tree_name: str,
     # the .field accesses the FK on the TreeDef model, and the .model retreives
     # its related model (the TreeDefItem)
     tree_rank_model = tree_model.treedefitems.field.model
+    tree_rank_query = tree_rank_model.objects.order_by('rankid')
+    if rank_filters is not None:
+        tree_rank_query = tree_rank_query.filter(**rank_filters)
     rank_prefetch = Prefetch(
         'treedefitems',
-        queryset=tree_rank_model.objects.order_by('rankid'),
+        queryset=tree_rank_query,
         to_attr='ordered_ranks'
     )
     tree_defs_query = tree_model.objects.prefetch_related(rank_prefetch).filter(scoping_filters)

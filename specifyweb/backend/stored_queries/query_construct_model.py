@@ -16,7 +16,11 @@ from specifyweb.backend.stored_queries.queryfieldspec import QueryFieldSpec
 logger = logging.getLogger(__name__)
 
 
-def resolve_tree_ranks(collection, tree_table_name: str, rank_name: str | None = None, tree_def_id: int | None = None) -> list[tuple[int, int]]:
+def resolve_tree_ranks(
+        collection,
+        tree_table_name: str,
+        rank_name: str | None = None,
+        tree_def_id: int | None = None) -> list[tuple[int, int]]:
     """
     This is just a helper function to map trees scoped to the collection to a
     list containing objects of the form (definition_id, rank_id) given some
@@ -30,42 +34,45 @@ def resolve_tree_ranks(collection, tree_table_name: str, rank_name: str | None =
     if collection is None:
         raise AssertionError(f"No Collection found in Query for {tree_table_name}")
 
-    filters = None
+    tree_def_filters = None
     if tree_def_id is not None:
-        filters = {
+        tree_def_filters = {
             "pk": tree_def_id
+        }
+    rank_filters = None
+    if rank_name is not None:
+        rank_filters = {
+            "name": rank_name
         }
     # REFACTOR: (performance) this makes two queries, one for the definition
     # info and one for the ranks.
     # This can theoretically be optimized to a single query for the ranks.
-    tree_defs = get_tree_defs_in_collection(collection, tree_table_name, filters)
+
+    # e.g., if filtering on TreeDef, something like the following:
+    # AND NOT EXISTS (SELECT 1 FROM treedefitem WHERE name=? AND TreeDefID=?)
+    # i.e., tree_def_model.filter(...).filter(Exists(tree_def_item_model.objects.filter(name=?, treedef=OuterRef('pk'))))
+    tree_defs = get_tree_defs_in_collection(
+        collection=collection,
+        tree_name=tree_table_name,
+        tree_def_filters=tree_def_filters,
+        rank_filters=rank_filters)
     result = []
     for tree_info in tree_defs:
         def_id = tree_info['definition']['id']
-        if rank_name is None:
-            for rank in tree_info['ranks']:
-                result.append((def_id, rank['id']))
-        else:
-            correct_ranks = tuple(
-                filter(
-                    # BUG:? Should this be case insensitive or remain case
-                    # sensitive?
-                    lambda rank: rank['name'] == rank_name,
-                    tree_info['ranks']
-                )
-            )
+        ranks = tree_info['ranks']
+        # Some data integrity checks if a specific rank name is provided
+        if rank_name is not None:
             # If the tree exists but doesn't have the rank with the provided name,
             # just skip considering the tree
-            # REFACTOR:(performance) This check can be moved to the filter itself.
-            # If filtering on TreeDef, something like the following:
-            # AND NOT EXISTS (SELECT 1 FROM treedefitem WHERE name=? AND TreeDefID=?)
-            # i.e., tree_def_model.filter(...).filter(Exists(tree_def_item_model.objects.filter(name=?, treedef=OuterRef('pk'))))
-            if len(correct_ranks) == 0:
+            if len(ranks) == 0:
                 continue
-            if len(correct_ranks) > 1:
+            # Trees shouldn't have more than one rank with the same name
+            if len(ranks) > 1:
                 raise Exception(f"Got more than once matching rank for name {rank_name} on {tree_table_name} with id {def_id}")
-            resolved_rank_id = correct_ranks[0]['id']
-            result.append((def_id, resolved_rank_id))
+
+        for rank in ranks:
+            result.append((def_id, rank['id']))
+
     return result
 
 class QueryConstruct(
