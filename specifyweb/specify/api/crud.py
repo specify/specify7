@@ -4,7 +4,7 @@ from collections.abc import Callable, Iterable
 import json
 from django.db import transaction
 from django.core.exceptions import BadRequest, FieldError, FieldDoesNotExist
-from django.db.models import Model, F, Q, Subquery
+from django.db.models import Model, F, OuterRef, Q, Subquery
 from django.db.models.deletion import Collector
 from django.db.models.fields.reverse_related import ForeignObjectRel
 from django.http import (HttpResponseServerError, Http404)
@@ -769,7 +769,9 @@ def get_collection(logged_in_collection, model, checker: ReadPermChecker, contro
     """Return a list of structured data for the objects from 'model'
     subject to the request 'params'."""
 
-    objs = apply_filters(logged_in_collection, params, model, control_params, actor=actor)
+    objs = apply_filters(
+        logged_in_collection, params, model, control_params, actor=actor, resource_list=True,
+    )
     if actor is not None:
         _, scope_path = Scoping.record_scope_path(objs.model)
         if scope_path is not None and '__' in scope_path:
@@ -782,7 +784,7 @@ def get_collection(logged_in_collection, model, checker: ReadPermChecker, contro
     
 def apply_filters(
     logged_in_collection, params, model, control_params=GetCollectionForm.defaults, *,
-    actor=None, field_aliases: dict[str, str] | None = None,
+    actor=None, field_aliases: dict[str, str] | None = None, resource_list: bool = False,
 ):
     filters = {}
 
@@ -820,9 +822,10 @@ def apply_filters(
         orderby = control_params['orderby']
         fields = control_params.get('fields')
         paths = [*filters]
-        if orderby:
+        if orderby and not resource_list:
             paths.extend(field for field in orderby.split(',') if field != '?')
-        paths.extend(fields.split(',') if fields else [])
+        if fields and not resource_list:
+            paths.extend(fields.split(','))
         aliases = {path.lstrip('-'): path.lstrip('-') for path in paths}
         if actor is not None:
             objs, aliases = prepare_read_queryset(
@@ -842,11 +845,43 @@ def apply_filters(
     if control_params['orderby']:
         try:
             fields = control_params['orderby'].split(',')
-            objs = objs.order_by(*[
-                ('-' if field.startswith('-') else '') + aliases[field.lstrip('-')]
-                for field in fields
-            ])
-        except FieldError as e:
+            if resource_list:
+                ordering = []
+                related_ordering = False
+                for field in fields:
+                    name = field.lstrip('-')
+                    if name in ('?', 'pk') or (
+                        '__' not in name and not model._meta.get_field(name).is_relation
+                    ):
+                        ordering.append(field)
+                        continue
+                    related_ordering = True
+                    # Pick the first matching readable value in the requested direction
+                    # without joining related rows into the root query.
+                    sort_rows = model.objects.filter(pk=OuterRef('pk'))
+                    sort_name = name
+                    if actor is not None:
+                        sort_rows, sort_aliases = prepare_read_queryset(
+                            sort_rows, actor, [*filters, name], filters=filters,
+                        )
+                        sort_name = sort_aliases[name]
+                    else:
+                        sort_rows = sort_rows.filter(**filters)
+                    sort_field = ('-' if field.startswith('-') else '') + sort_name
+                    value = Subquery(sort_rows.order_by(sort_field).values(sort_name)[:1])
+                    ordering.append(value.desc() if field.startswith('-') else value.asc())
+                if related_ordering:
+                    # A reverse filter can also produce several rows for one resource.
+                    if filters:
+                        objs = model.objects.filter(pk__in=objs.order_by().values('pk'))
+                    ordering.append('pk')
+                objs = objs.order_by(*ordering)
+            else:
+                objs = objs.order_by(*[
+                    ('-' if field.startswith('-') else '') + aliases[field.lstrip('-')]
+                    for field in fields
+                ])
+        except (FieldError, FieldDoesNotExist) as e:
             raise OrderByError(e)
 
     return objs

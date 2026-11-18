@@ -1022,6 +1022,38 @@ class CollectionScopeApiTests(ApiTests):
         self.assertEqual(response.status_code, 200, response.content)
         self.assertEqual(response.json()['meta']['total_count'], 0)
 
+    def test_resource_list_reverse_ordering_counts_and_paginates_roots(self):
+        first = self.collectingevent
+        second = spmodels.Collectingevent.objects.create(discipline=self.discipline)
+        third = spmodels.Collectingevent.objects.create(discipline=self.discipline)
+        for obj, event, number in zip(
+            self.collectionobjects,
+            (first, first, second, third),
+            ('B', 'D', 'C', 'A'),
+        ):
+            spmodels.Collectionobject.objects.filter(pk=obj.pk).update(
+                collectingevent=event, catalognumber=number,
+            )
+        self.other_object.collectingevent = second
+        self.other_object.catalognumber = 'Z'
+        self.other_object.save()
+
+        for filters in ({}, {'collectionobjects__catalognumber__in': 'A,B,C,D,Z'}):
+            for prefix, expected in (
+                ('', (third, first, second)),
+                ('-', (first, second, third)),
+            ):
+                for offset, event in enumerate(expected):
+                    with self.subTest(filters=filters, direction=prefix, offset=offset):
+                        response = self.client.get('/api/specify/collectingevent/', {
+                            'id__in': ','.join(str(item.pk) for item in expected),
+                            'orderby': f'{prefix}collectionobjects__catalognumber',
+                            'limit': 1, 'offset': offset, **filters,
+                        })
+                        self.assertEqual(response.status_code, 200, response.content)
+                        self.assertEqual(response.json()['meta']['total_count'], 3)
+                        self.assertEqual([row['id'] for row in response.json()['objects']], [event.pk])
+
     def test_rows_preserve_roots_with_unreadable_related_projections_and_ordering(self):
         models.UserPolicy.objects.all().delete()
         for resource, action in (
