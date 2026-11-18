@@ -5,9 +5,12 @@ from specifyweb.backend.stored_queries.tests.tests import SQLAlchemySetup
 from xml.etree import ElementTree
 import specifyweb.specify.models as spmodels
 import specifyweb.backend.stored_queries.models as models
+from specifyweb.specify.datamodel import datamodel
 
 # Used for pretty-formatting sql code for testing
 import sqlparse
+
+
 
 class FormatterAggregatorTests(SQLAlchemySetup):
 
@@ -18,6 +21,7 @@ class FormatterAggregatorTests(SQLAlchemySetup):
             object_formatter.formattersDom = ElementTree.fromstring(formatter_def)
             return object_formatter
         self.get_formatter = _get_formatter
+        self.query_table = datamodel.get_table_strict('Accession')
 
     def test_basic_formatters(self):
 
@@ -54,7 +58,8 @@ class FormatterAggregatorTests(SQLAlchemySetup):
             query = QueryConstruct(
                 collection=self.collection,
                 objectformatter=object_formatter,
-                query=session.query()
+                query=session.query(),
+                base_table=self.query_table
             )
             _, accession_expr = object_formatter.objformat(query, models.Accession, None)
             self.assertEqual(str(accession_expr), 'IFNULL(accession."AccessionNumber", \'\')')
@@ -158,7 +163,8 @@ class FormatterAggregatorTests(SQLAlchemySetup):
             query = QueryConstruct(
                 collection=self.collection,
                 objectformatter=object_formatter,
-                query=session.query()
+                query=session.query(),
+                base_table=self.query_table
             )
             query, expr = object_formatter.objformat(query, models.Accession, None)
             self.assertEqual(sqlparse.format(str(expr), reindent=True),
@@ -228,7 +234,8 @@ class FormatterAggregatorTests(SQLAlchemySetup):
             query = QueryConstruct(
                 collection=self.collection,
                 objectformatter=object_formatter,
-                query=session.query()
+                query=session.query(),
+                base_table=self.query_table
             )
             query, expr = object_formatter.objformat(query, models.Accession, None)
             query = query.query.add_column(expr)
@@ -299,7 +306,8 @@ class FormatterAggregatorTests(SQLAlchemySetup):
             query = QueryConstruct(
                 collection=self.collection,
                 objectformatter=object_formatter,
-                query=session.query()
+                query=session.query(),
+                base_table=self.query_table
             )
             query, expr = object_formatter.objformat(query, models.AccessionAgent, None)
             query = query.query.add_columns(expr)
