@@ -13,7 +13,8 @@ where most lookups are full table scans.
 
 The repair only runs when localityNameIDX is missing, which is the signature of
 that failure. Healthy databases, including those upgraded from Specify 6, always
-have it, so they are left untouched.
+have it, so they are left untouched. The repair creates localityNameIDX last, so
+an interrupted repair is resumed on the next attempt.
 """
 import logging
 
@@ -30,6 +31,10 @@ SIGNATURE_INDEX = "localityNameIDX"
 DROPPED_UNIQUE_CONSTRAINTS = {
     ("collectionobject", ("collectionid", "catalognumber")),
 }
+
+# MySQL/MariaDB errors raised when existing data prevents a constraint from being
+# created: duplicate values (1062, 1022) and orphaned references (1452, 1216).
+DATA_CONFLICT_ERRORS = {1022, 1062, 1216, 1452}
 
 # Indexes on varchar(1024) columns need a prefix to fit InnoDB's key limit.
 PREFIX_INDEX_SQL = {
@@ -84,7 +89,7 @@ def _planned_statements(apps, schema_editor):
         m for m in apps.get_app_config("specify").get_models()
         if m._meta.managed and not m._meta.proxy and m._meta.db_table in tables
     ]
-    indexes, uniques, foreign_keys = [], [], []
+    indexes, uniques, foreign_keys, signature = [], [], [], []
     for model in models:
         meta = model._meta
         table = meta.db_table
@@ -99,7 +104,8 @@ def _planned_statements(apps, schema_editor):
             columns = [meta.get_field(name.lstrip("-")).column for name in index.fields]
             if not _has_index(existing, columns, index.name):
                 sql = PREFIX_INDEX_SQL.get((table, index.name)) or str(index.create_sql(model, schema_editor))
-                indexes.append((f"index {index.name} on {table}", sql))
+                target = signature if (table, index.name) == (SIGNATURE_TABLE, SIGNATURE_INDEX) else indexes
+                target.append((f"index {index.name} on {table}", sql))
 
         for field_names in meta.unique_together:
             fields = [meta.get_field(name) for name in field_names]
@@ -118,6 +124,19 @@ def _planned_statements(apps, schema_editor):
     yield from indexes
     yield from uniques
     yield from foreign_keys
+    # The signature index is created last so that it only exists once everything
+    # else has been restored. If the repair is interrupted, the next attempt still
+    # sees the database as affected and resumes; statements that already ran are
+    # no longer planned.
+    yield from signature
+
+
+def _error_code(error):
+    for candidate in (error, error.__cause__):
+        args = getattr(candidate, "args", ())
+        if args and isinstance(args[0], int):
+            return args[0]
+    return None
 
 
 def restore_missing_constraints(apps, schema_editor, dry_run=False, force=False):
@@ -125,8 +144,10 @@ def restore_missing_constraints(apps, schema_editor, dry_run=False, force=False)
     Create missing indexes, then unique constraints, then foreign keys.
 
     A unique constraint or foreign key that cannot be created because of existing
-    data (duplicates or orphaned references) is logged and skipped so the rest of
-    the repair still completes. Returns a dict of planned, applied and failed items.
+    data (duplicate values or orphaned references) is logged and skipped so the rest
+    of the repair still completes. Any other database error, such as a lock wait
+    timeout or a lost connection, is raised so the migration fails and is retried.
+    Returns a dict of planned, applied and failed items.
     """
     report = {"planned": [], "applied": [], "failed": []}
     if not force and not needs_repair(schema_editor.connection):
@@ -140,7 +161,9 @@ def restore_missing_constraints(apps, schema_editor, dry_run=False, force=False)
             schema_editor.execute(sql)
             report["applied"].append(description)
         except DatabaseError as e:
-            logger.warning("Could not restore %s: %s", description, e)
+            if _error_code(e) not in DATA_CONFLICT_ERRORS:
+                raise
+            logger.warning("Could not restore %s because of existing data: %s", description, e)
             report["failed"].append((description, str(e)))
     logger.info(
         "Restored %d of %d missing schema constraints (%d failed).",

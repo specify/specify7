@@ -1,5 +1,7 @@
+from unittest.mock import patch
+
 from django.apps import apps
-from django.db import connection
+from django.db import IntegrityError, OperationalError, connection
 from django.test import TransactionTestCase
 
 from specifyweb.specify.migration_utils.restore_schema_constraints import (
@@ -66,6 +68,57 @@ class RestoreSchemaConstraintsTests(TransactionTestCase):
 
             self.assertFalse(needs_repair(connection))
             self.assertEqual(self.run_repair(dry_run=True, force=True)["planned"], [])
+        finally:
+            self.run_repair(force=True)
+
+    def break_schema(self):
+        fk = foreign_key_name("collectionobject", "CollectingEventID")
+        with connection.cursor() as cursor:
+            cursor.execute(f"ALTER TABLE `collectionobject` DROP FOREIGN KEY `{fk}`")
+            cursor.execute("DROP INDEX `localityNameIDX` ON `locality`")
+            cursor.execute("DROP INDEX `ColObjGuidIDX` ON `collectionobject`")
+
+    def run_repair_failing_on(self, fragment, error):
+        """Run the repair with statements containing `fragment` raising `error`."""
+        with connection.schema_editor(atomic=False) as editor:
+            original = editor.execute
+
+            def execute(sql, params=()):
+                if fragment in str(sql):
+                    raise error
+                return original(sql, params)
+
+            with patch.object(editor, "execute", side_effect=execute):
+                return restore_missing_constraints(apps, editor)
+
+    def test_interrupted_repair_is_resumed(self):
+        self.break_schema()
+        try:
+            with self.assertRaises(OperationalError):
+                self.run_repair_failing_on(
+                    "CollectingEventID", OperationalError(1205, "Lock wait timeout exceeded")
+                )
+            # The signature index is created last, so the database still needs repair.
+            self.assertTrue(needs_repair(connection))
+            self.assertIn("ColObjGuidIDX", constraints("collectionobject"))
+
+            report = self.run_repair()
+            self.assertEqual(report["failed"], [])
+            self.assertTrue(foreign_key_name("collectionobject", "CollectingEventID"))
+            self.assertFalse(needs_repair(connection))
+        finally:
+            self.run_repair(force=True)
+
+    def test_data_conflicts_are_skipped_and_reported(self):
+        self.break_schema()
+        try:
+            report = self.run_repair_failing_on(
+                "CollectingEventID",
+                IntegrityError(1452, "Cannot add or update a child row: a foreign key constraint fails"),
+            )
+            self.assertEqual([d for d, _ in report["failed"]], ["foreign key collectionobject.CollectingEventID"])
+            self.assertIn("ColObjGuidIDX", constraints("collectionobject"))
+            self.assertFalse(needs_repair(connection))
         finally:
             self.run_repair(force=True)
 
