@@ -1383,6 +1383,50 @@ class CollectionScopeApiTests(ApiTests):
         self.other_object.refresh_from_db()
         self.assertIsNone(self.other_object.remarks)
 
+    def test_age_models_inherit_collectionobject_scope_for_reads(self):
+        for model in (spmodels.Absoluteage, spmodels.Relativeage):
+            with self.subTest(model=model.__name__):
+                allowed, denied = [
+                    model.objects.create(collectionobject=obj)
+                    for obj in (self.collectionobjects[0], self.other_object)
+                ]
+                self.assertEqual(Scoping.model_from_instance(allowed), self.collection)
+                self.assertEqual(Scoping.model_from_instance(denied), self.other_collection)
+                self.assertEqual(Scoping.scope_type_from_class(model), ScopeType.COLLECTION)
+
+                self.assertEqual(
+                    list(permissions.filter_readable(model.objects.all(), self.agent)),
+                    [allowed],
+                )
+                permissions.check_table_permissions(
+                    self.collection, self.agent, allowed, 'read',
+                )
+                with self.assertRaises(permissions.NoMatchingRuleException):
+                    permissions.check_table_permissions(
+                        self.collection, self.agent, denied, 'read',
+                    )
+
+                url = f'/api/specify/{model.__name__.lower()}/'
+                response = self.client.get(url)
+                self.assertEqual(response.status_code, 200, response.content)
+                self.assertEqual(
+                    [row['id'] for row in response.json()['objects']], [allowed.id],
+                )
+                self.assertEqual(
+                    self.client.get(f'{url}{allowed.id}/').status_code, 200,
+                )
+                self.assertEqual(
+                    self.client.get(f'{url}{denied.id}/').status_code, 403,
+                )
+
+                row_url = f'/table_rows/specify_rows/{model.__name__.lower()}/'
+                for age, readable in ((allowed, True), (denied, False)):
+                    response = self.client.get(row_url, {
+                        'fields': 'id', 'id': age.id,
+                    })
+                    self.assertEqual(response.status_code, 200, response.content)
+                    self.assertEqual(response.json(), [[age.id]] if readable else [])
+
     def test_age_attachments_and_citations_use_collection_membership_scope(self):
         attachment = spmodels.Attachment.objects.create()
         referencework = spmodels.Referencework.objects.create(

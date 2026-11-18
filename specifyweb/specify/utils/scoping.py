@@ -122,6 +122,12 @@ class ModelClassScope:
     def storage(self):
         return ScopeType.INSTITUTION
 
+    def absoluteage(self):
+        return ModelClassScope(models.Collectionobject).scope_type
+
+    def relativeage(self):
+        return ModelClassScope(models.Collectionobject).scope_type
+
 
 #############################################################################
 
@@ -212,6 +218,12 @@ class ModelInstanceScope:
 
     def storage(self):
         return self.obj.definition.institution
+
+    def absoluteage(self) -> Model:
+        return ModelInstanceScope(self.obj.collectionobject).scope_model
+
+    def relativeage(self) -> Model:
+        return ModelInstanceScope(self.obj.collectionobject).scope_model
 
     def _infer_scope_model(self) -> Model:
         if is_related(self.obj.__class__, "division") and has_related(self.obj, "division"):
@@ -311,6 +323,8 @@ class Scoping:
         if model_class in hierarchy:
             return ScopeType.from_model(model_class), 'pk'
         inherited = {
+            models.Absoluteage: ('collectionobject', models.Collectionobject),
+            models.Relativeage: ('collectionobject', models.Collectionobject),
             models.Collectionobjectgroupjoin: ('parentcog', models.Collectionobjectgroup),
             models.Conserveventattachment: ('conservevent', models.Conservevent),
             models.Conservevent: ('conservdescription', models.Conservdescription),
