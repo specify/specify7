@@ -1478,6 +1478,43 @@ class CollectionScopeApiTests(ApiTests):
                     response = self.client.get(f'{url}{denied.id}/')
                     self.assertEqual(response.status_code, 403, response.content)
 
+    def test_age_membership_writes_require_the_owning_collection(self):
+        self.grant_other_collection()
+        attachment = spmodels.Attachment.objects.create()
+        referencework = spmodels.Referencework.objects.create(
+            institution=self.institution, title='Age reference', referenceworktype=0,
+        )
+        for age_model, age_field, row_model, related in (
+            (spmodels.Absoluteage, 'absoluteage', spmodels.Absoluteageattachment, {'attachment': attachment}),
+            (spmodels.Absoluteage, 'absoluteage', spmodels.Absoluteagecitation, {'referencework': referencework}),
+            (spmodels.Relativeage, 'relativeage', spmodels.Relativeageattachment, {'attachment': attachment}),
+            (spmodels.Relativeage, 'relativeage', spmodels.Relativeagecitation, {'referencework': referencework}),
+        ):
+            with self.subTest(model=row_model.__name__):
+                age = age_model.objects.create(collectionobject=self.collectionobjects[0])
+                other_age = age_model.objects.create(collectionobject=self.other_object)
+                source_membership = f'/api/specify/collection/{self.collection.pk}/'
+                other_membership = f'/api/specify/collection/{self.other_collection.pk}/'
+                with self.assertRaises(permissions.NoMatchingRuleException):
+                    create_obj(self.collection, self.agent, row_model, {
+                        age_field: age, 'collectionmember': other_membership, **related,
+                    })
+                row = create_obj(self.collection, self.agent, row_model, {
+                    age_field: age, 'collectionmember': source_membership, **related,
+                })
+                url = f'/api/specify/{row_model.__name__.lower()}/{row.pk}/'
+                for data in (
+                    {'collectionmember': other_membership},
+                    {age_field: f'/api/specify/{age_field}/{other_age.pk}/'},
+                ):
+                    response = self.client.put(
+                        url, {'version': row.version, **data}, content_type='application/json',
+                    )
+                    self.assertEqual(response.status_code, 403, response.content)
+                row.refresh_from_db()
+                self.assertEqual(row.collectionmember_id, self.collection.pk)
+                self.assertEqual(getattr(row, f'{age_field}_id'), age.pk)
+
     def test_moving_collectionobject_rescopes_age_membership_rows(self):
         self.grant_other_collection()
         collectionobject = self.collectionobjects[0]

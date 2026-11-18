@@ -266,7 +266,9 @@ class Scoping:
     def collection_owner_fields(model_class) -> tuple[str, ...]:
         """Find parent references that own collection-scoped child records."""
         if not (
-            hasattr(model_class, 'collectionmemberid') or is_related(model_class, 'collection')
+            hasattr(model_class, 'collectionmemberid')
+            or is_related(model_class, 'collectionmember')
+            or is_related(model_class, 'collection')
         ) or Scoping.scope_type_from_class(model_class) != ScopeType.COLLECTION:
             return ()
         return tuple(
