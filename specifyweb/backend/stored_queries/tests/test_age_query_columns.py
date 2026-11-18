@@ -79,7 +79,7 @@ class TestAgeQueryColumns(TestCase):
                 collection=None,
                 user=None,
                 query=query,
-                query_field=fields
+                query_fields=fields
             )
 
     def test_displayed_age_has_one_column_in_field_order(self):
