@@ -23,11 +23,10 @@ overrideAjax(
 );
 
 overrideAjax(
-  getResourceApiUrl('CollectionObject', 456),
+  getResourceApiUrl('CollectingEvent', 456),
   () =>
-    addMissingFields('CollectionObject', {
+    addMissingFields('CollectingEvent', {
       id: 456,
-      catalogNumber: '456',
     }) as never
 );
 
@@ -46,7 +45,7 @@ test('formats audit log field names', async () => {
   const result = await formatter!([
     999,
     tables.CollectionObject.tableId,
-    tables.CollectionObject.tableId,
+    tables.CollectingEvent.tableId,
     'catalogNumber',
     123,
     456,
@@ -62,7 +61,7 @@ test('formats audit log field names', async () => {
   });
   expect(result[4]).toMatchObject({
     props: {
-      href: new tables.CollectionObject.Resource({ id: 456 }).viewUrl(),
+      href: new tables.CollectingEvent.Resource({ id: 456 }).viewUrl(),
     },
   });
 });
