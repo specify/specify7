@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-11-16 13:30+0000\n"
+"PO-Revision-Date: 2026-11-18 13:51+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Croatian <https://hosted.weblate.org/projects/specify-7/forms/"
 "hr/>\n"
@@ -880,7 +880,7 @@ msgstr "Broj kataloga Numerički"
 #: components/FormCells/COJODialog.tsx:96
 #, fuzzy
 msgid "addCOGChildren"
-msgstr "Dodajte COG djecu"
+msgstr "Dodajte djecu COG-a"
 
 #. Used in: Components > Form Sliders > Slider ⬤ Components > Form Sliders > Use Slider Buttons ⬤ Components > Preferences > User Definitions
 #: components/FormSliders/Slider.tsx:81
