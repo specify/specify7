@@ -33,3 +33,33 @@ test('maps the age range filter to a query field', () => {
     isDisplay: true,
   });
 });
+
+// [QueryBuilder] Map the age name filter
+test('maps the age name filter to a query field', () => {
+  const field: QueryField = {
+    id: 0,
+    mappingPath: ['age'],
+    sortType: undefined,
+    isDisplay: true,
+    filters: [
+      {
+        type: 'ageName',
+        startValue: 'Paleocene',
+        isNot: false,
+        isStrict: false,
+      },
+    ],
+  };
+
+  const [serialized] = unParseQueryFields('CollectionObject', [field]);
+
+  expect(serialized).toMatchObject({
+    tableList: '1',
+    stringId: '1.collectionobject.age',
+    fieldName: 'age',
+    operStart: 17,
+    startValue: 'Paleocene',
+    isStrict: false,
+    isDisplay: true,
+  });
+});
