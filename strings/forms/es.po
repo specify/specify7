@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-11-16 13:29+0000\n"
+"PO-Revision-Date: 2026-11-18 13:51+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/forms/"
 "es/>\n"
@@ -594,7 +594,7 @@ msgstr "Configurar los campos que se transferirán"
 #: components/FormMeta/CarryForward.tsx:225
 #, fuzzy
 msgid "bulkCarryForwardSettingsDescription"
-msgstr "Configure los campos para transferirlos masivamente."
+msgstr "Configure los campos para transferir masivamente."
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:394
