@@ -1817,6 +1817,7 @@ class CollectionScopeApiTests(ApiTests):
         attachment = spmodels.Attachment.objects.create()
         spmodels.Collectionobjectattachment.objects.create(
             collectionobject=self.other_object, attachment=attachment, ordinal=0,
+            collectionmemberid=self.other_collection.pk,
         )
         # An attachment may already be global or have outdated scope metadata.
         spmodels.Attachment.objects.filter(pk=attachment.pk).update(
@@ -1843,6 +1844,7 @@ class CollectionScopeApiTests(ApiTests):
         attachment = spmodels.Attachment.objects.create()
         spmodels.Collectionobjectattachment.objects.create(
             collectionobject=self.collectionobjects[0], attachment=attachment, ordinal=0,
+            collectionmemberid=self.collection.pk,
         )
         url = f'/api/specify/attachment/{attachment.pk}/'
         version = attachment.version

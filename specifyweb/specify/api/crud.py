@@ -381,14 +381,14 @@ def update_obj(collection, agent, name: str, id, version, data: dict[str, Any], 
         ]
     original_collection_ids = []
     if attachment_scopes:
-        for scope in attachment_scopes:
-            check_table_permissions(collection, agent, obj, "update", collections=scope)
+        for owner_scope in attachment_scopes:
+            check_table_permissions(collection, agent, obj, "update", collections=owner_scope)
     else:
         check_table_permissions(collection, agent, obj, "update")
         original_collection_ids = list(Scoping.collections_for_record(obj).values_list('pk', flat=True))
-    field_permission_scopes = attachment_scopes or [
+    field_permission_scopes: tuple[QuerySet | None, ...] = tuple(attachment_scopes) or (
         models.Collection.objects.filter(pk__in=original_collection_ids), None,
-    ]
+    )
     is_age = isinstance(obj, (models.Absoluteage, models.Relativeage))
     previous_member_id = (
         next(iter(original_collection_ids), None) if is_age
