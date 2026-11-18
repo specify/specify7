@@ -40,9 +40,11 @@ test('navigates to next and last records and typed record number', async () => {
   expect(onChange).toHaveBeenLastCalledWith(2);
 
   const input = screen.getByRole('spinbutton');
+  onChange.mockClear();
   await act(async () => {
     await user.clear(input);
     await user.type(input, '1');
   });
-  expect(onChange).toHaveBeenLastCalledWith(0);
+  expect(onChange).toHaveBeenCalledTimes(1);
+  expect(onChange).toHaveBeenNthCalledWith(1, 0);
 });
