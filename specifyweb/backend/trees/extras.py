@@ -20,11 +20,14 @@ from  specifyweb.backend.workbench.upload.auditcodes import TREE_BULK_MOVE, TREE
 
 @contextmanager
 def validate_node_numbers(table: str, revalidate_after=True):
+    """Repair invalid numbering and report whether intervals were renumbered."""
+    renumbered = False
     try:
         validate_tree_numbering(table)
     except AssertionError:
         renumber_tree(table)
-    yield
+        renumbered = True
+    yield renumbered
     if revalidate_after:
         validate_tree_numbering(table)
 
@@ -97,20 +100,8 @@ class Tree(ModelWithTable):
                  "operation": "save",
                  "node": {"id": self.id, "fullName": self.fullname}})
 
-        if self.accepted_id is not None and (
-            prev_self is None or prev_self.accepted_id != self.accepted_id
-        ):
-            accepted_definition_id = (
-                model.objects.select_for_update().values_list('definition_id', flat=True)
-                .get(pk=self.accepted_id)
-            )
-            if accepted_definition_id != self.definition_id:
-                raise TreeBusinessRuleException(
-                    "Tree node's accepted node belongs to a different tree definition",
-                    {"tree": self.__class__.__name__,
-                     "localizationKey": "operationAcrossTrees",
-                     "operation": "save",
-                     "node": {"id": self.id, "fullName": self.fullname}})
+        if prev_self is not None and prev_self.accepted_id != self.accepted_id:
+            self._validate_accepted_target()
 
         if prev_self is None:
             self.nodenumber = None
@@ -125,12 +116,12 @@ class Tree(ModelWithTable):
                 # Not sure if anything else needs to be
                 # done here, but the validation stuff won't
                 # work so skipping it.
+                self._validate_accepted_target()
                 save()
                 return
 
-            with validate_node_numbers(self._meta.db_table, revalidate_after=False):
-                adding_node(self, collection, user)
-                save()
+            adding_node(self, collection, user)
+            save()
         elif prev_self.parent_id != self.parent_id:
             with validate_node_numbers(self._meta.db_table):
                 moving_node(self)
@@ -182,6 +173,21 @@ class Tree(ModelWithTable):
             or prev_self.parent_id != self.parent_id
         ):
             set_fullnames(self.definition, node_number_range=[self.nodenumber, self.highestchildnodenumber])
+
+    def _validate_accepted_target(self):
+        if self.accepted_id is None:
+            return
+        accepted_definition_id = (
+            type(self).objects.select_for_update().values_list('definition_id', flat=True)
+            .get(pk=self.accepted_id)
+        )
+        if accepted_definition_id != self.definition_id:
+            raise TreeBusinessRuleException(
+                "Tree node's accepted node belongs to a different tree definition",
+                {"tree": self.__class__.__name__,
+                 "localizationKey": "operationAcrossTrees",
+                 "operation": "save",
+                 "node": {"id": self.id, "fullName": self.fullname}})
 
     def accepted_id_attr(self):
         return f'accepted{self._meta.db_table}_id'
@@ -322,6 +328,9 @@ def adding_node(node,collection=None, user=None):
              "operation": "save",
              "node": {"id": node.id, "fullName": node.fullname}})
 
+    # Ordinary inserts lock the parent before shifting child intervals.
+    node._validate_accepted_target()
+
     if parent.accepted_id is not None:
         allow_adding_child = _allow_adding_child_to_synonymized_parent(node, collection, user)
         if not allow_adding_child:
@@ -345,7 +354,10 @@ def adding_node(node,collection=None, user=None):
                     "children": list(parent.children.values('id', 'fullname'))
                  }})
 
-    insertion_point = open_interval(model, parent.nodenumber, 1)
+    with validate_node_numbers(node._meta.db_table, revalidate_after=False) as renumbered:
+        if renumbered:
+            parent.refresh_from_db(fields=['nodenumber'])
+        insertion_point = open_interval(model, parent.nodenumber, 1)
     node.highestchildnodenumber = node.nodenumber = insertion_point
 
 def moving_node(to_save):

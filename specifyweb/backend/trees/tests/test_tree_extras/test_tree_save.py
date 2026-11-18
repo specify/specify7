@@ -7,7 +7,9 @@ import random
 from unittest import skip
 from unittest.mock import Mock, patch
 
+from django.db import connection
 from django.db.models import F, Q
+from django.test import skipUnlessDBFeature
 
 class TestTreeSave(GeographyTree):
 
@@ -170,6 +172,12 @@ class TestTreeSave(GeographyTree):
         foreign_target = Taxon.objects.create(name="Other life", definitionitem=other_rank)
         foreign_target.definition = self.taxontreedef
 
+        with self.assertRaises(TreeBusinessRuleException) as context:
+            Taxon.objects.create(
+                name="Synonym root", definitionitem=self.taxon_root, acceptedtaxon=foreign_target,
+            )
+        self.assertEqual(context.exception.args[1]['localizationKey'], "operationAcrossTrees")
+
         synonym = Taxon(name="Synonym", definitionitem=self.taxon_kingdom, parent=root)
         synonym.acceptedtaxon = foreign_target
         with self.assertRaises(TreeBusinessRuleException) as context:
@@ -193,6 +201,27 @@ class TestTreeSave(GeographyTree):
         synonym.save()
         synonym.refresh_from_db()
         self.assertEqual(synonym.accepted_id, second_target.pk)
+
+    @skipUnlessDBFeature("has_select_for_update")
+    def test_inserting_synonym_locks_parent_then_accepted_target_before_updating_intervals(self):
+        root = self._create_life()
+        accepted = self.make_taxontree("Animalia", "Kingdom", parent=root)
+        operations = []
+
+        def record_tree_operations(execute, sql, params, many, context):
+            if '`taxon`' in sql:
+                if sql.endswith("FOR UPDATE"):
+                    operations.append(("lock", params[0]))
+                elif sql.startswith("UPDATE"):
+                    operations.append(("update", None))
+            return execute(sql, params, many, context)
+
+        with connection.execute_wrapper(record_tree_operations):
+            Taxon.objects.create(
+                name="Synonym", definitionitem=self.taxon_kingdom, parent=root, acceptedtaxon=accepted,
+            )
+
+        self.assertEqual(operations[:3], [("lock", root.pk), ("lock", accepted.pk), ("update", None)])
 
     def _create_tree_structure(self):
 
