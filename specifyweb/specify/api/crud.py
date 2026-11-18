@@ -166,7 +166,10 @@ def _cascade_collection_membership(collection, agent, obj: Model, previous_membe
     The owner's row lock serializes creates and moves. READ COMMITTED isolation
     makes these scans see children committed while the move waited for its lock.
     """
-    new_member_id = getattr(obj, 'collectionmemberid', None)
+    if isinstance(obj, (models.Absoluteage, models.Relativeage)):
+        new_member_id = Scoping.collections_for_record(obj).values_list('pk', flat=True).first()
+    else:
+        new_member_id = getattr(obj, 'collectionmemberid', None)
     if new_member_id == previous_member_id:
         return
     for child_model, owner_field, owned_to_one in Scoping.collection_member_dependents(type(obj)):
@@ -328,11 +331,11 @@ def post_resource(collection, agent, name: str, data, recordsetid: int | None=No
 @transaction.atomic
 def update_obj(collection, agent, name: str, id, version, data: dict[str, Any], parent_obj=None, parent_relationship=None):
     """Update the resource with 'id' in model named 'name' with given
-    'data'. Determination reassignments inherit the locked target's membership.
+    'data'. Determination and age reassignments use the locked target's scope.
     """
     model = get_model_or_404(name) if isinstance(name, str) else name
     data = cleanData(model, data, parent_relationship)
-    if model is models.Determination:
+    if model in (models.Determination, models.Absoluteage, models.Relativeage):
         target_data = data.get('collectionobject')
         target_id = None
         if isinstance(target_data, str):
@@ -351,9 +354,12 @@ def update_obj(collection, agent, name: str, id, version, data: dict[str, Any], 
                 data['collectionobject'] = target
     obj = get_object_or_404(model._base_manager.select_for_update(), id=int(id))
     check_table_permissions(collection, agent, obj, "update")
-    previous_member_id = getattr(obj, 'collectionmemberid', None)
-    original_collections = models.Collection.objects.filter(
-        pk__in=list(Scoping.collections_for_record(obj).values_list('pk', flat=True)),
+    original_collection_ids = list(Scoping.collections_for_record(obj).values_list('pk', flat=True))
+    original_collections = models.Collection.objects.filter(pk__in=original_collection_ids)
+    is_age = isinstance(obj, (models.Absoluteage, models.Relativeage))
+    previous_member_id = (
+        next(iter(original_collection_ids), None) if is_age
+        else getattr(obj, 'collectionmemberid', None)
     )
 
     if data.get(obj._meta.pk.name) is not None and str(data[obj._meta.pk.name]) != str(obj.pk):
@@ -370,6 +376,10 @@ def update_obj(collection, agent, name: str, id, version, data: dict[str, Any], 
         data['collectionmemberid'] = obj.collectionobject.collectionmemberid
         if data['collectionmemberid'] != previous_member_id:
             _rescope_submitted_children(obj, data, data['collectionmemberid'])
+    if is_age and any(change['field_name'] == 'collectionobject' for change in fk_dirty):
+        destination_id = Scoping.collections_for_record(obj).values_list('pk', flat=True).first()
+        if destination_id != previous_member_id:
+            _rescope_submitted_children(obj, data, destination_id)
     dirty = fk_dirty + set_fields_from_data(obj, data)
 
     if is_tree_table(obj.specify_model):

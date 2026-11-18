@@ -1621,6 +1621,82 @@ class CollectionScopeApiTests(ApiTests):
                 self.assertEqual(row.collectionmember_id, self.collection.pk)
                 self.assertEqual(getattr(row, f'{age_field}_id'), age.pk)
 
+    def test_reassigning_age_rescopes_membership_rows_only_across_collections(self):
+        source = self.collectionobjects[0]
+        same_collection = self.collectionobjects[1]
+        spmodels.Collectionobject.objects.filter(pk=same_collection.pk).update(
+            collectionmemberid=-1,
+        )
+        reference = spmodels.Referencework.objects.create(
+            institution=self.institution, title='Age reassignment reference', referenceworktype=0,
+        )
+        for age_model, attachment_model, citation_model in (
+            (spmodels.Absoluteage, spmodels.Absoluteageattachment, spmodels.Absoluteagecitation),
+            (spmodels.Relativeage, spmodels.Relativeageattachment, spmodels.Relativeagecitation),
+        ):
+            age_name = age_model.__name__.lower()
+            with self.subTest(age=age_name):
+                age = age_model.objects.create(collectionobject=source)
+                attachment = attachment_model.objects.create(
+                    **{age_name: age}, attachment=spmodels.Attachment.objects.create(),
+                    collectionmember=self.collection,
+                )
+                citation = citation_model.objects.create(
+                    **{age_name: age}, referencework=reference, collectionmember=self.collection,
+                )
+                versions = (attachment.version, citation.version)
+                url = f'/api/specify/{age_name}/{age.pk}/'
+
+                def reassign(target, **edits):
+                    return self.client.put(url, {
+                        'version': age.version,
+                        'collectionobject': f'/api/specify/collectionobject/{target.pk}/',
+                        **edits,
+                    }, content_type='application/json')
+
+                response = reassign(same_collection)
+                self.assertEqual(response.status_code, 200, response.content)
+                age.refresh_from_db()
+                self.assertEqual(age.collectionobject_id, same_collection.pk)
+                for row, version in zip((attachment, citation), versions):
+                    row.refresh_from_db()
+                    self.assertEqual(row.collectionmember_id, self.collection.pk)
+                    self.assertEqual(row.version, version)
+
+                self.grant_other_collection('/system/sp7/collection', 'access')
+                self.grant_other_collection('/table/collectionobject', 'read')
+                self.grant_other_collection(f'/table/{age_name}', 'update')
+                self.grant_other_collection(f'/field/{age_name}/collectionobject', 'update')
+                self.grant_other_collection(f'/table/{age_name}attachment', 'update')
+                self.grant_other_collection(f'/field/{age_name}attachment/collectionmember', 'update')
+                original_version = age.version
+                response = reassign(self.other_object)
+                self.assertEqual(response.status_code, 403, response.content)
+                self.assertIn(f'/table/{age_name}citation', response.content.decode())
+                age.refresh_from_db()
+                self.assertEqual(age.collectionobject_id, same_collection.pk)
+                self.assertEqual(age.version, original_version)
+                for row, version in zip((attachment, citation), versions):
+                    row.refresh_from_db()
+                    self.assertEqual(row.collectionmember_id, self.collection.pk)
+                    self.assertEqual(row.version, version)
+
+                self.grant_other_collection()
+                response = reassign(self.other_object, **{
+                    f'{age_name}attachments': [{
+                        'id': attachment.pk, 'version': attachment.version, 'remarks': 'Moved',
+                    }],
+                })
+                self.assertEqual(response.status_code, 200, response.content)
+                age.refresh_from_db()
+                self.assertEqual(age.collectionobject_id, self.other_object.pk)
+                for row, version in zip((attachment, citation), versions):
+                    row.refresh_from_db()
+                    self.assertEqual(row.collectionmember_id, self.other_collection.pk)
+                    self.assertEqual(row.version, version + 1)
+                self.assertEqual(attachment.remarks, 'Moved')
+                models.UserPolicy.objects.filter(collection=self.other_collection).delete()
+
     def test_moving_collectionobject_rescopes_age_membership_rows(self):
         self.grant_other_collection()
         collectionobject = self.collectionobjects[0]

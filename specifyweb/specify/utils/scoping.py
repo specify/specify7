@@ -302,13 +302,15 @@ class Scoping:
             for name in Scoping.collection_owner_fields(child):
                 if child._meta.get_field(name).related_model is model_class:
                     dependents.append((child, name, False))
-        if model_class is models.Collectionobject:
-            dependents.extend((
-                (models.Absoluteageattachment, 'absoluteage__collectionobject', False),
-                (models.Absoluteagecitation, 'absoluteage__collectionobject', False),
-                (models.Relativeageattachment, 'relativeage__collectionobject', False),
-                (models.Relativeagecitation, 'relativeage__collectionobject', False),
-            ))
+        for age_model, owner, attachment, citation in (
+            (models.Absoluteage, 'absoluteage', models.Absoluteageattachment, models.Absoluteagecitation),
+            (models.Relativeage, 'relativeage', models.Relativeageattachment, models.Relativeagecitation),
+        ):
+            if model_class is models.Collectionobject:
+                owner = f'{owner}__collectionobject'
+            elif model_class is not age_model:
+                continue
+            dependents.extend(((attachment, owner, False), (citation, owner, False)))
         return tuple(dependents)
 
     @staticmethod
