@@ -10,7 +10,7 @@ class TestGetTreedefs(TestMultipleTaxonTreeContext, GeographyTree):
     
     def test_geography(self):
         geo_ranks = list(Geographytreedefitem.objects
-            .filter(definition=self.geographytreedef)
+            .filter(treedef=self.geographytreedef)
             .order_by("rankid")
             .values_list("name", flat=True))
         tree_info = get_tree_defs_in_collection(
@@ -27,7 +27,7 @@ class TestGetTreedefs(TestMultipleTaxonTreeContext, GeographyTree):
         self._update(self.discipline, dict(taxontreedef=self.taxontreedef))
         Taxontreedef.objects.exclude(id=self.taxontreedef.id).delete()
         taxa_ranks = list(Taxontreedefitem.objects
-            .filter(definition=self.taxontreedef)
+            .filter(treedef=self.taxontreedef)
             .order_by("rankid")
             .values_list("name", flat=True))
 
@@ -61,7 +61,7 @@ class TestGetTreedefs(TestMultipleTaxonTreeContext, GeographyTree):
 
         expected_ranks = [
             list(Taxontreedefitem.objects
-                .filter(definition=treedef)
+                .filter(treedef=treedef)
                 .order_by("rankid")
                 .values_list("name", flat=True))
             for treedef in (taxontreedef_1, taxontreedef_2)
@@ -95,7 +95,7 @@ class TestGetTreedefs(TestMultipleTaxonTreeContext, GeographyTree):
         taxontreedef_2.treedefitems.create(name="Subvariety", rankid=270)
 
         expected_ranks = list(Taxontreedefitem.objects
-            .filter(definition=taxontreedef_1)
+            .filter(treedef=taxontreedef_1)
             .order_by("rankid")
             .values_list("name", flat=True))
 
