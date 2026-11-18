@@ -172,18 +172,16 @@ class TestBuildQuery(SQLAlchemySetup):
                         user=self.specifyuser,
                         model=models.CollectionObject,
                         base_table=co_table,
-                        props=BuildQueryProps(),
+                        props=BuildQueryProps()
                     )
                     self.assertNotIn("tree_ranks", query.join_cache)
                     query_fields = self._taxon_relationship_query_fields(ordered_fields)
-                    for query_field in query_fields:
-                        query, column, predicate = query_field.add_to_query(
-                            query, collection=self.collection, user=self.specifyuser
-                        )
-                        query = query.add_columns(column)
-                        if predicate is not None:
-                            query = query.filter(predicate)
-                    query = query.filter(query.get_internal_filters())
+                    query, _selected_fields, _order_by_exprs = add_fields_to_query(
+                        collection=self.collection,
+                        user=self.specifyuser,
+                        query=query,
+                        query_fields=query_fields
+                    )
                     self.assertEqual(len(query.query.statement.get_final_froms()), 1)
                     with warnings.catch_warnings():
                         warnings.simplefilter("error", SAWarning)
