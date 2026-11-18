@@ -1510,11 +1510,12 @@ class CollectionScopeApiTests(ApiTests):
             ),
         ]
         nested_edits = {
-            'absoluteages': [{
+            'absoluteAges': [{
                 'id': absoluteage.id,
                 'version': absoluteage.version,
-                'absoluteageattachments': [{
+                'absoluteAgeAttachments': [{
                     'id': rows[0].id, 'version': rows[0].version,
+                    'remarks': 'Edited during the move',
                 }],
             }],
             'relativeages': [{
@@ -1525,6 +1526,7 @@ class CollectionScopeApiTests(ApiTests):
                 }],
             }],
         }
+        versions = [row.version for row in rows]
         response = self.client.put(
             f'/api/specify/collectionobject/{collectionobject.id}/', {
                 'version': collectionobject.version,
@@ -1534,10 +1536,13 @@ class CollectionScopeApiTests(ApiTests):
             }, content_type='application/json',
         )
         self.assertEqual(response.status_code, 200, response.content)
-        for row in rows:
+        for row, version in zip(rows, versions):
             row.refresh_from_db()
             self.assertEqual(row.collectionmember_id, self.other_collection.id)
+            self.assertEqual(row.version, version + 1)
+        self.assertEqual(rows[0].remarks, 'Edited during the move')
 
+        models.UserPolicy.objects.filter(collection=self.other_collection).delete()
         for row in rows:
             model = type(row)
             url = f'/api/specify/{model.__name__.lower()}/'
@@ -1553,6 +1558,8 @@ class CollectionScopeApiTests(ApiTests):
                 self.assertEqual(response.status_code, 200, response.content)
                 self.assertEqual(response.json(), [])
 
+        self.grant_other_collection()
+        models.UserPolicy.objects.filter(collection=self.collection).delete()
         self.client.cookies['collection'] = self.other_collection.id
         for row in rows:
             model = type(row)

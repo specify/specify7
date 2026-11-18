@@ -78,7 +78,10 @@ def _with_collection_member_data(
         value = f'/api/specify/collection/{collection_member_id}/'
     else:
         value = collection_member_id
-    return {**data, field.name: value}
+    return {
+        **{key: item for key, item in data.items() if key.lower() != field.name.lower()},
+        field.name: value,
+    }
 
 def _rescope_submitted_children(obj: Model, data: dict[str, Any], new_member_id) -> None:
     """Merge rescoping into submitted child edits so their version is checked once."""
@@ -102,14 +105,23 @@ def _rescope_submitted_children(obj: Model, data: dict[str, Any], new_member_id)
                     return [rescope_nested(item, path) for item in value]
                 if not isinstance(value, dict):
                     return value
-                nested = value.get(path[0])
+                field_name = path[0]
+                matching_keys = [key for key in value if key.lower() == field_name.lower()]
+                if not matching_keys:
+                    return value
+                # Like cleanData, use the last value when spellings overlap.
+                nested = value[matching_keys[-1]]
+                for key in matching_keys:
+                    if key != field_name:
+                        del value[key]
+                value[field_name] = nested
                 if len(path) == 1:
                     if isinstance(nested, dict):
-                        value[path[0]] = _with_collection_member_data(
+                        value[field_name] = _with_collection_member_data(
                             child_model, nested, new_member_id,
                         )
                     elif isinstance(nested, list):
-                        value[path[0]] = [
+                        value[field_name] = [
                             _with_collection_member_data(
                                 child_model, item, new_member_id,
                             )
@@ -117,7 +129,7 @@ def _rescope_submitted_children(obj: Model, data: dict[str, Any], new_member_id)
                             for item in nested
                         ]
                 elif nested is not None:
-                    value[path[0]] = rescope_nested(nested, path[1:])
+                    value[field_name] = rescope_nested(nested, path[1:])
                 return value
 
             rescope_nested(data, tuple(reversed(reverse_path)))
