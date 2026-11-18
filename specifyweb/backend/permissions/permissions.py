@@ -509,13 +509,16 @@ def prepare_read_queryset(
 
 def check_table_permissions(
     collection, actor, obj, action: TABLE_ACTION, *, destination: bool = False,
+    collections: QuerySet | None = None,
 ) -> None:
     if isinstance(obj, Table):
         name = obj.name.lower()
     else:
         name = obj.specify_model.name.lower()
     if isinstance(obj, Model):
-        enforce_record(actor, obj, [f"/table/{name}"], action, destination=destination)
+        enforce_record(
+            actor, obj, [f"/table/{name}"], action, collections=collections, destination=destination,
+        )
     else:
         enforce(collection, actor, [f"/table/{name}"], action)
 

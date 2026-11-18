@@ -4,7 +4,7 @@ from collections.abc import Callable, Iterable
 import json
 from django.db import transaction
 from django.core.exceptions import BadRequest, FieldError, FieldDoesNotExist
-from django.db.models import Model, F, OuterRef, Q, Subquery
+from django.db.models import Model, F, OuterRef, Q, QuerySet, Subquery
 from django.db.models.deletion import Collector
 from django.db.models.fields.reverse_related import ForeignObjectRel
 from django.http import (HttpResponseServerError, Http404)
@@ -24,7 +24,7 @@ from specifyweb.specify.models_utils.models_by_table_id import get_model_by_tabl
 from specifyweb.specify.models_utils.relationships import get_recordset_info, get_related_or_none, handle_fk_fields, handle_to_many, is_dependent_field
 from specifyweb.specify.utils.uiformatters import AutonumberOverflowException
 from specifyweb.specify.api.validators import GetCollectionForm, cleanData, fld_change_info
-from specifyweb.specify.utils.scoping import Scoping
+from specifyweb.specify.utils.scoping import Scoping, ScopeType
 
 logger = logging.getLogger(__name__)
 
@@ -63,6 +63,25 @@ def _check_destination_scope(
         check_table_permissions(
             collection, agent, obj, action, destination=True,
         )
+
+def _check_attachment_scope_change(
+    collection, agent, obj: models.Attachment, fields: list[str], owner_scopes: list[QuerySet],
+) -> None:
+    if 'scopetype' not in fields and 'scopeid' not in fields:
+        return
+    if obj.scopetype is not None:
+        try:
+            obj.scopetype = ScopeType(int(obj.scopetype)).value
+        except (TypeError, ValueError, OverflowError) as error:
+            raise BadRequest("Invalid attachment scope type") from error
+    if obj.scopetype in (None, ScopeType.GLOBAL.value):
+        if 'scopetype' in fields:
+            check_table_permissions(None, agent, models.Attachment, "update")
+        return
+    destination = Scoping.collections_for_record(obj)
+    check_table_permissions(collection, agent, obj, "update", collections=destination)
+    if any(destination.exclude(pk__in=scope).exists() for scope in owner_scopes):
+        check_table_permissions(None, agent, models.Attachment, "update")
 
 def _collection_member_field(model_class):
     try:
@@ -353,9 +372,23 @@ def update_obj(collection, agent, name: str, id, version, data: dict[str, Any], 
                 check_table_permissions(collection, agent, target, "read")
                 data['collectionobject'] = target
     obj = get_object_or_404(model._base_manager.select_for_update(), id=int(id))
-    check_table_permissions(collection, agent, obj, "update")
-    original_collection_ids = list(Scoping.collections_for_record(obj).values_list('pk', flat=True))
-    original_collections = models.Collection.objects.filter(pk__in=original_collection_ids)
+    attachment_scopes = []
+    if isinstance(obj, models.Attachment):
+        from specifyweb.backend.businessrules.rules.attachment_rules import get_attachment_owners
+
+        attachment_scopes = [
+            Scoping.collections_for_record(owner) for owner in get_attachment_owners(obj)
+        ]
+    original_collection_ids = []
+    if attachment_scopes:
+        for scope in attachment_scopes:
+            check_table_permissions(collection, agent, obj, "update", collections=scope)
+    else:
+        check_table_permissions(collection, agent, obj, "update")
+        original_collection_ids = list(Scoping.collections_for_record(obj).values_list('pk', flat=True))
+    field_permission_scopes = attachment_scopes or [
+        models.Collection.objects.filter(pk__in=original_collection_ids), None,
+    ]
     is_age = isinstance(obj, (models.Absoluteage, models.Relativeage))
     previous_member_id = (
         next(iter(original_collection_ids), None) if is_age
@@ -384,14 +417,15 @@ def update_obj(collection, agent, name: str, id, version, data: dict[str, Any], 
 
     if is_tree_table(obj.specify_model):
         obj.set_rank_and_definition()
-    check_table_permissions(collection, agent, obj, "update")
     dirty_fields = [d['field_name'] for d in dirty]
-    _check_destination_scope(collection, agent, obj, data, "update")
+    if isinstance(obj, models.Attachment) and attachment_scopes:
+        _check_attachment_scope_change(collection, agent, obj, dirty_fields, attachment_scopes)
+    else:
+        check_table_permissions(collection, agent, obj, "update")
+        _check_destination_scope(collection, agent, obj, data, "update")
     _check_recordset_reference(collection, agent, obj)
-    check_field_permissions(
-        collection, agent, obj, dirty_fields, "update", collections=original_collections,
-    )
-    check_field_permissions(collection, agent, obj, dirty_fields, "update")
+    for scope in field_permission_scopes:
+        check_field_permissions(collection, agent, obj, dirty_fields, "update", collections=scope)
 
     if hasattr(obj, 'modifiedbyagent'):
         setattr(obj, 'modifiedbyagent', agent)
@@ -407,10 +441,10 @@ def update_obj(collection, agent, name: str, id, version, data: dict[str, Any], 
     relationship_fields = handle_remote_to_ones(obj)
     relationship_fields.extend(handle_to_many(collection, agent, obj, data))
     if relationship_fields:
-        check_field_permissions(
-            collection, agent, obj, relationship_fields, "update", collections=original_collections,
-        )
-        check_field_permissions(collection, agent, obj, relationship_fields, "update")
+        for scope in field_permission_scopes:
+            check_field_permissions(
+                collection, agent, obj, relationship_fields, "update", collections=scope,
+            )
     _cascade_collection_membership(collection, agent, obj, previous_member_id)
     _handle_special_update_posts(obj)
     return obj

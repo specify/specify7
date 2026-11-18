@@ -1813,6 +1813,66 @@ class CollectionScopeApiTests(ApiTests):
         response = self.client.get(f'/api/specify/attachment/{attachments[1].id}/')
         self.assertEqual(response.status_code, 403, response.content)
 
+    def test_linked_attachment_updates_use_the_owner_scope(self):
+        attachment = spmodels.Attachment.objects.create()
+        spmodels.Collectionobjectattachment.objects.create(
+            collectionobject=self.other_object, attachment=attachment, ordinal=0,
+        )
+        # An attachment may already be global or have outdated scope metadata.
+        spmodels.Attachment.objects.filter(pk=attachment.pk).update(
+            scopetype=ScopeType.GLOBAL.value, scopeid=None,
+            tableid=spmodels.Attachment.specify_model.tableId,
+        )
+        url = f'/api/specify/attachment/{attachment.pk}/'
+        data = {'version': attachment.version, 'title': 'Updated title'}
+        response = self.client.put(url, data, content_type='application/json')
+        self.assertEqual(response.status_code, 403, response.content)
+
+        self.grant_other_collection('/system/sp7/collection', 'access')
+        self.grant_other_collection('/table/attachment', 'update')
+        response = self.client.put(url, data, content_type='application/json')
+        self.assertEqual(response.status_code, 403, response.content)
+
+        self.grant_other_collection('/field/attachment/title', 'update')
+        response = self.client.put(url, data, content_type='application/json')
+        self.assertEqual(response.status_code, 200, response.content)
+        attachment.refresh_from_db()
+        self.assertEqual(attachment.title, 'Updated title')
+
+    def test_linked_attachment_publication_requires_global_update_permission(self):
+        attachment = spmodels.Attachment.objects.create()
+        spmodels.Collectionobjectattachment.objects.create(
+            collectionobject=self.collectionobjects[0], attachment=attachment, ordinal=0,
+        )
+        url = f'/api/specify/attachment/{attachment.pk}/'
+        version = attachment.version
+        for scope_type, scope_id in (
+            (None, None),
+            (str(ScopeType.GLOBAL.value), None),
+            (ScopeType.DISCIPLINE.value, self.discipline.pk),
+        ):
+            with self.subTest(scope_type=scope_type):
+                response = self.client.put(url, {
+                    'version': version, 'scopetype': scope_type, 'scopeid': scope_id,
+                }, content_type='application/json')
+                self.assertEqual(response.status_code, 403, response.content)
+                attachment.refresh_from_db()
+                self.assertEqual(attachment.scopetype, ScopeType.COLLECTION.value)
+                self.assertEqual(attachment.scopeid, self.collection.pk)
+                self.assertEqual(attachment.version, version)
+
+        models.UserPolicy.objects.create(
+            collection=None, specifyuser=self.specifyuser,
+            resource='/table/attachment', action='update',
+        )
+        response = self.client.put(url, {
+            'version': version, 'scopetype': ScopeType.GLOBAL.value, 'scopeid': None,
+        }, content_type='application/json')
+        self.assertEqual(response.status_code, 200, response.content)
+        attachment.refresh_from_db()
+        self.assertEqual(attachment.scopetype, ScopeType.GLOBAL.value)
+        self.assertIsNone(attachment.scopeid)
+
     def test_conservevent_attachment_links_respect_event_division(self):
         foreign_division = spmodels.Division.objects.create(
             institution=self.institution, name='Restricted division',

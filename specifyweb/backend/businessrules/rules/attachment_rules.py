@@ -76,6 +76,22 @@ def get_attachee(jointable_inst):
     return getattr(jointable_inst, main_table_name.lower())
 
 
+def get_attachment_owners(attachment):
+    # Resolve the actual links because tableid can be stale or edited.
+    owners = []
+    for jointable in attachment_tables - {Spdatasetattachment}:
+        owner_field = JOINTABLE_NAME_RE.fullmatch(jointable._meta.model_name).group(1)
+        links = jointable.objects.filter(attachment=attachment).select_related(owner_field)
+        owners.extend(get_attachee(link) for link in links)
+    if owners:
+        return owners
+    # WorkBench retains a dataset link after importing an attachment into a record.
+    return [
+        link.spdataset
+        for link in attachment.spdatasetattachments.select_related('spdataset')
+    ]
+
+
 def get_jointable_model(main_table_model):
     jointable_name = f"{main_table_model.__name__}attachment"
     return apps.get_model(main_table_model._meta.app_label, jointable_name)
