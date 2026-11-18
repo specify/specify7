@@ -161,7 +161,7 @@ class TestIteratorUsage(SimpleTestCase):
 
         with patch.object(views, 'COMMON_TREES', ('Taxon',)), \
              patch.object(views, 'has_table_permission', return_value=True), \
-             patch.object(views, 'get_search_filters', return_value={}), \
+             patch.object(views, 'get_tree_defs_in_collection', return_value={}), \
              patch.object(views, 'obj_to_data', return_value={}), \
              patch.object(views, 'spmodels', SimpleNamespace(Taxontreedef=treedef_model)), \
              patch.object(QuerySet, 'iterator', autospec=True, side_effect=QuerySet.iterator) as iterator:
