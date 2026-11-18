@@ -438,7 +438,7 @@ class TestBuildQuery(SQLAlchemySetup):
             op_num=1, value="No match", sort_type=QuerySort.ASC
         )
         with self.assertLogs(
-            "specifyweb.backend.stored_queries.query_construct", level="WARNING"
+            "specifyweb.backend.stored_queries.query_construct_model", level="WARNING"
         ):
             with self.__class__.test_session_context() as session:
                 query, order_by = build_query(
