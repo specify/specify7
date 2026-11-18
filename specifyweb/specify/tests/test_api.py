@@ -1176,7 +1176,7 @@ class ScopingTests(ApiTests):
             (models.Relativeageattachment, 'relativeage__collectionobject', False),
             (models.Relativeagecitation, 'relativeage__collectionobject', False),
         }
-        self.assertTrue(age_dependents <= dependents)
+        self.assertLessEqual(age_dependents, dependents)
 
         data = {
             'absoluteages': [{
