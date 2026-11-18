@@ -64,6 +64,37 @@ def _check_destination_scope(
 def _rescope_submitted_children(obj: Model, data: dict[str, Any], new_member_id) -> None:
     """Merge rescoping into submitted child edits so their version is checked once."""
     for child_model, owner_field, owned_to_one in Scoping.collection_member_dependents(type(obj)):
+        if '__' in owner_field:
+            reverse_path = []
+            current_model = child_model
+            for name in owner_field.split('__'):
+                field = current_model._meta.get_field(name)
+                accessor = field.remote_field.get_accessor_name()
+                assert accessor is not None
+                reverse_path.append(accessor)
+                current_model = field.related_model
+
+            def rescope_nested(value, path):
+                if isinstance(value, list):
+                    return [rescope_nested(item, path) for item in value]
+                if not isinstance(value, dict):
+                    return value
+                nested = value.get(path[0])
+                if len(path) == 1:
+                    if isinstance(nested, dict):
+                        value[path[0]] = {**nested, 'collectionmemberid': new_member_id}
+                    elif isinstance(nested, list):
+                        value[path[0]] = [
+                            {**item, 'collectionmemberid': new_member_id}
+                            if isinstance(item, dict) else item
+                            for item in nested
+                        ]
+                elif nested is not None:
+                    value[path[0]] = rescope_nested(nested, path[1:])
+                return value
+
+            rescope_nested(data, tuple(reversed(reverse_path)))
+            continue
         if owned_to_one:
             field_name = owner_field
         else:

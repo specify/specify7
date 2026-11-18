@@ -13,7 +13,15 @@ from specifyweb.specify import models
 from specifyweb.backend.businessrules.uniqueness_rules import UNIQUENESS_DISPATCH_UID, validate_unique, apply_default_uniqueness_rules
 from specifyweb.backend.businessrules.rules.cogtype_rules import SYSTEM_COGTYPES_PICKLIST
 from specifyweb.backend.businessrules.orm_signal_handler import connect_signal, disconnect_signal
-from specifyweb.specify.api.crud import create_obj, delete_resource, get_collection, get_resource, post_resource, update_obj
+from specifyweb.specify.api.crud import (
+    _rescope_submitted_children,
+    create_obj,
+    delete_resource,
+    get_collection,
+    get_resource,
+    post_resource,
+    update_obj,
+)
 from specifyweb.specify.api.exceptions import MissingVersionException, RecordSetException, StaleObjectException
 from specifyweb.specify.models_utils.model_extras import Specifyuser
 from specifyweb.specify.models import (
@@ -1157,6 +1165,52 @@ class ScopingTests(ApiTests):
         )
         self.assertEqual(scoping.in_same_scope(agent, other_collectionobject), True)
         self.assertEqual(scoping.in_same_scope(self.collectionobjects[0], agent), False)
+
+    def test_collectionobject_age_membership_dependents(self):
+        dependents = set(
+            scoping.Scoping.collection_member_dependents(Collectionobject)
+        )
+        age_dependents = {
+            (models.Absoluteageattachment, 'absoluteage__collectionobject', False),
+            (models.Absoluteagecitation, 'absoluteage__collectionobject', False),
+            (models.Relativeageattachment, 'relativeage__collectionobject', False),
+            (models.Relativeagecitation, 'relativeage__collectionobject', False),
+        }
+        self.assertTrue(age_dependents <= dependents)
+
+        data = {
+            'absoluteages': [{
+                'absoluteageattachments': [{}],
+                'absoluteagecitations': [{}],
+            }],
+            'relativeages': [{
+                'relativeageattachments': [{}],
+                'relativeagecitations': [{}],
+            }],
+        }
+        new_member_id = self.other_collection.id
+        _rescope_submitted_children(
+            self.collectionobjects[0], data, new_member_id,
+        )
+        rescaled_memberships = [
+            child['collectionmemberid']
+            for age in data['absoluteages'] + data['relativeages']
+            for relation in (
+                'absoluteageattachments',
+                'absoluteagecitations',
+                'relativeageattachments',
+                'relativeagecitations',
+            )
+            for child in age.get(relation, [])
+            if 'collectionmemberid' in child
+        ]
+        self.assertEqual(len(rescaled_memberships), 4)
+        self.assertEqual(
+            set(rescaled_memberships),
+            {
+                new_member_id,
+            },
+        )
 
 class DefaultsSetup(MainSetupTearDown, TestCase):
     def setUp(self):
