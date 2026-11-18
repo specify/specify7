@@ -2,8 +2,10 @@ import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
+import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
 import { Button } from '../Atoms/Button';
+import { dialogIcons } from '../Atoms/Icons';
 import { LoadingContext } from '../Core/Contexts';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import type { WbVariantLocalization } from '../Toolbar/WbsDialog';
@@ -57,6 +59,7 @@ function RollbackConfirmation({
   const loading = React.useContext(LoadingContext);
   return (
     <Dialog
+      icon={dialogIcons.question}
       buttons={
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
@@ -65,6 +68,7 @@ function RollbackConfirmation({
               loading(
                 ping(`/api/workbench/unupload/${datasetId}/`, {
                   method: 'POST',
+                  expectedErrors: [Http.CONFLICT],
                 })
                   .then(handleRollback)
                   .finally(handleClose)

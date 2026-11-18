@@ -35,7 +35,7 @@ describe('Button.Small', () => {
     'custom variant'
   );
 });
-snapshot(Button.Fancy, { onClick: f.never });
+snapshot(Button.BorderedGray, { onClick: f.never });
 snapshot(Button.Secondary, { onClick: f.never });
 snapshot(Button.BorderedGray, { onClick: f.never });
 snapshot(Button.Danger, { onClick: f.never });

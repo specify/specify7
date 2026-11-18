@@ -61,13 +61,15 @@ export function addMissingFields<TABLE_NAME extends keyof Tables>(
                   : (record[field.name as keyof typeof record] ??
                     (field.name === 'version'
                       ? 1
-                      : (
-                            field.isRequired
-                              ? requiredFields === 'set'
-                              : optionalFields === 'set'
-                          )
-                        ? parserFromType(field.type).value
-                        : null)),
+                      : field.type === 'java.lang.Boolean' && field.isRequired
+                        ? false
+                        : (
+                              field.isRequired
+                                ? requiredFields === 'set'
+                                : optionalFields === 'set'
+                            )
+                          ? parserFromType(field.type).value
+                          : null)),
               ]
             : undefined
         )

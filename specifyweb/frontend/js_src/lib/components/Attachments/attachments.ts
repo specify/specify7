@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { commonText } from '../../localization/common';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
@@ -11,7 +13,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { tables } from '../DataModel/tables';
 import type { Attachment } from '../DataModel/types';
 import { load } from '../InitialContext';
-import { getPref } from '../InitialContext/remotePrefs';
+import { globalPreferences } from '../Preferences/globalPreferences';
 import { downloadFile } from '../Molecules/FilePicker';
 import { formatUrl } from '../Router/queryString';
 // Import SVG icons, but better than in Icons.tsx
@@ -41,15 +43,129 @@ type AttachmentSettings = {
 };
 
 let settings: AttachmentSettings | undefined;
+export type AttachmentServerStatus = 'unknown' | 'available' | 'unavailable';
+
+let serverStatus: AttachmentServerStatus = 'unknown';
+const serverStatusListeners = new Set<() => void>();
+let healthCheckTimer: ReturnType<typeof setInterval> | undefined;
+
+const attachmentSettingsPath = '/context/attachment_settings.json';
+
+const setAttachmentServerStatus = (newStatus: AttachmentServerStatus): void => {
+  if (serverStatus === newStatus) return;
+  const previousStatus = serverStatus;
+  serverStatus = newStatus;
+  // Only log actual connection loss/restoration, not the initial unknown state
+  if (previousStatus === 'available' && newStatus === 'unavailable')
+    console.error(
+      `[${new Date().toISOString()}] Attachment server connection lost`
+    );
+  else if (previousStatus === 'unavailable' && newStatus === 'available')
+    console.warn(
+      `[${new Date().toISOString()}] Attachment server connection restored`
+    );
+  serverStatusListeners.forEach((listener) => listener());
+};
+
 export const attachmentSettingsPromise = load<AttachmentSettings | IR<never>>(
-  '/context/attachment_settings.json',
+  attachmentSettingsPath,
   'application/json'
-).then((data) => {
-  if (Object.keys(data).length > 0) settings = data as AttachmentSettings;
-  return attachmentsAvailable();
+).then(async (data) => {
+  if (Object.keys(data).length > 0) {
+    settings = data as AttachmentSettings;
+    checkAttachmentServer().catch(() => {
+      setAttachmentServerStatus('unavailable');
+    });
+    return true;
+  } else {
+    settings = undefined;
+    const status = await checkAttachmentServer().catch(() => Http.SERVER_ERROR);
+    return status !== Http.NOT_FOUND;
+  }
 });
 
 export const attachmentsAvailable = (): boolean => typeof settings === 'object';
+
+const checkAttachmentServer = async (): Promise<number> => {
+  const { status } = await ajax('/attachment_gw/health/', {
+    cache: 'no-store',
+    errorMode: 'silent',
+    expectedErrors: Object.values(Http),
+    headers: { Accept: 'text/plain' },
+  });
+  if (status === Http.NO_CONTENT && settings === undefined) {
+    const { data } = await ajax<AttachmentSettings | IR<never>>(
+      attachmentSettingsPath,
+      {
+        cache: 'no-store',
+        errorMode: 'silent',
+        expectedErrors: Object.values(Http),
+        headers: { Accept: 'application/json' },
+      }
+    );
+    if (Object.keys(data).length > 0) settings = data as AttachmentSettings;
+  }
+  setAttachmentServerStatus(
+    status === Http.NO_CONTENT && settings !== undefined
+      ? 'available'
+      : 'unavailable'
+  );
+  return status;
+};
+
+/*
+ * A single caller error (e.g. a missing or corrupt attachment) doesn't mean
+ * the server is down, so confirm with a health check before marking it unavailable
+ */
+export const reportAttachmentServerFailure = (): void => {
+  checkAttachmentServer().catch(() => setAttachmentServerStatus('unavailable'));
+};
+
+const stopAttachmentServerHealthPolling = (): void => {
+  if (serverStatusListeners.size === 0 && healthCheckTimer !== undefined) {
+    clearInterval(healthCheckTimer);
+    healthCheckTimer = undefined;
+  }
+};
+
+const startAttachmentServerHealthPolling = (): (() => void) => {
+  const poll = (): void => {
+    checkAttachmentServer().catch(() =>
+      setAttachmentServerStatus('unavailable')
+    );
+  };
+  if (healthCheckTimer === undefined) {
+    poll();
+
+    healthCheckTimer = setInterval(() => {
+      poll();
+    }, 30_000);
+  }
+  return stopAttachmentServerHealthPolling;
+};
+
+export const useAttachmentServerStatus = (): AttachmentServerStatus => {
+  const subscribe = React.useCallback((listener: () => void) => {
+    serverStatusListeners.add(listener);
+    const stopPolling = startAttachmentServerHealthPolling();
+    return () => {
+      serverStatusListeners.delete(listener);
+      stopPolling();
+    };
+  }, []);
+  const getSnapshot = React.useCallback(() => serverStatus, []);
+  return React.useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
+};
+
+/*
+ * This function is only used in automated tests.
+ */
+export const overrideAttachmentServerStatus = (
+  newStatus: AttachmentServerStatus
+): void => {
+  serverStatus = newStatus;
+};
+const uploadTimeoutMilliseconds = 30 * 60 * 1000;
 
 /*
  * This function is useful when testing functions that depend on the settings.
@@ -66,6 +182,8 @@ const thumbnailable = new Set([
   'image/gif',
   'image/png',
   'image/tiff',
+  'image/heic',
+  'image/heif',
   'application/pdf',
 ]);
 
@@ -147,11 +265,16 @@ export type AttachmentThumbnail = {
   readonly alt: string | undefined;
   readonly width: number;
   readonly height: number;
+  readonly isServerBacked?: boolean;
 };
 
 export async function fetchThumbnail(
   attachment: SerializedResource<Attachment>,
-  scale = getPref('attachment.preview_size')
+  scale = globalPreferences.get(
+    'general',
+    'attachments',
+    'attachmentThumbnailSize'
+  )
 ): Promise<AttachmentThumbnail | undefined> {
   const mimeType = attachment.mimeType ?? undefined;
   const thumbnail =
@@ -182,6 +305,7 @@ export async function fetchThumbnail(
     alt: attachment.attachmentLocation ?? undefined,
     width: scale,
     height: scale,
+    isServerBacked: true,
   };
 }
 
@@ -213,12 +337,19 @@ export const fetchOriginalUrl = async (
       )
     : Promise.resolve(undefined);
 
-export async function uploadFile(
-  file: File,
-  handleProgress: (percentage: number | true) => void,
-  uploadAttachmentSpec?: UploadAttachmentSpec,
-  strict = true
-): Promise<SpecifyResource<Attachment> | undefined> {
+export async function uploadFile({
+  file,
+  handleProgress,
+  uploadAttachmentSpec,
+  strict,
+  attachmentIsPublicDefault,
+}: {
+  readonly file: File;
+  readonly handleProgress?: (percentage: number | true) => void;
+  readonly uploadAttachmentSpec?: UploadAttachmentSpec;
+  readonly strict?: boolean;
+  readonly attachmentIsPublicDefault?: boolean;
+}): Promise<SpecifyResource<Attachment> | undefined> {
   if (settings === undefined) return undefined;
 
   const data =
@@ -252,42 +383,102 @@ export async function uploadFile(
    */
 
   const xhr = new XMLHttpRequest();
-  xhr.upload?.addEventListener('progress', (event) =>
-    handleProgress(event.lengthComputable ? event.loaded / event.total : true)
-  );
-  xhr.open('POST', settings.write);
-  xhr.send(formData);
+  if (handleProgress !== undefined) {
+    xhr.upload?.addEventListener('progress', (event) =>
+      handleProgress(event.lengthComputable ? event.loaded / event.total : true)
+    );
+  }
   const DONE = 4;
-  await new Promise((resolve, reject) =>
-    xhr.addEventListener('readystatechange', () => {
-      if (xhr.readyState === DONE)
-        try {
-          resolve(
-            handleAjaxResponse({
-              expectedErrors: [],
-              accept: undefined,
-              // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-              response: {
-                ok: xhr.status === Http.OK,
-                status: xhr.status,
-                url: settings!.write,
-              } as Response,
+  xhr.open('POST', settings.write);
+  xhr.timeout = uploadTimeoutMilliseconds;
+  await new Promise<void>((resolve, reject) => {
+    let settled = false;
 
-              errorMode: strict ? 'visible' : 'silent',
-              text: xhr.responseText,
-            })
-          );
+    const handleReadyStateChange = () => {
+      if (xhr.readyState !== DONE) return;
+      settle(() => {
+        try {
+          handleAjaxResponse({
+            expectedErrors: [],
+            accept: undefined,
+            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+            response: {
+              ok: xhr.status === Http.OK,
+              status: xhr.status,
+              url: settings!.write,
+            } as Response,
+            errorMode: strict ? 'visible' : 'silent',
+            text: xhr.responseText,
+          });
+          resolve();
         } catch (error) {
           reject(error);
         }
-    })
-  );
+      });
+    };
+
+    const handleFailureWithoutResponse = (message: string) => {
+      settle(() => {
+        try {
+          handleAjaxResponse({
+            expectedErrors: [],
+            accept: undefined,
+            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+            response: {
+              ok: false,
+              status: 0,
+              url: settings!.write,
+            } as Response,
+            errorMode: strict ? 'visible' : 'silent',
+            text: message,
+          });
+          reject(new Error(message));
+        } catch (error) {
+          reject(error);
+        }
+      });
+    };
+
+    const settle = (callback: () => void) => {
+      if (settled) return;
+      settled = true;
+      cleanup();
+      callback();
+    };
+
+    const handleError = () =>
+      handleFailureWithoutResponse(
+        'Upload failed before receiving a response.'
+      );
+    const handleAbort = () =>
+      handleFailureWithoutResponse(
+        'Upload was aborted before receiving a response.'
+      );
+    const handleTimeout = () =>
+      handleFailureWithoutResponse(
+        `Upload timed out after ${uploadTimeoutMilliseconds} milliseconds.`
+      );
+
+    const cleanup = () => {
+      xhr.removeEventListener('readystatechange', handleReadyStateChange);
+      xhr.removeEventListener('error', handleError);
+      xhr.removeEventListener('abort', handleAbort);
+      xhr.removeEventListener('timeout', handleTimeout);
+    };
+
+    xhr.addEventListener('readystatechange', handleReadyStateChange);
+    xhr.addEventListener('error', handleError);
+    xhr.addEventListener('abort', handleAbort);
+    xhr.addEventListener('timeout', handleTimeout);
+    xhr.send(formData);
+  });
+
   return new tables.Attachment.Resource({
     attachmentlocation: data.attachmentLocation,
     mimetype: fixMimeType(file.type),
     origfilename: file.name,
     title: file.name,
-    isPublic: getPref('attachment.is_public_default'),
+    isPublic: attachmentIsPublicDefault,
   });
 }
 
@@ -319,20 +510,23 @@ export function downloadAttachment(
       const fileName = cleanAttachmentDownloadName(
         attachment.origFilename ?? attachment.attachmentLocation
       );
-      downloadFile(
-        fileName,
-        `/attachment_gw/proxy/${new URL(url).search}`,
-        true
-      );
+      // Cannot use downloadFile because of iframe restrictions
+      const element = document.createElement('a');
+      element.href = `/attachment_gw/proxy/${new URL(url).search}`;
+      element.download = fileName;
+      document.body.append(element);
+      element.click();
+      element.remove();
     }
   });
 }
 
 export async function downloadAllAttachments(
-  attachments: readonly SerializedResource<Attachment>[],
-  archiveName?: string
+  attachments: RA<SerializedResource<Attachment>>,
+  archiveName?: string,
+  recordSetId?: number
 ): Promise<void> {
-  if (attachments.length === 0) return;
+  if (attachments.length === 0 && recordSetId === undefined) return;
   if (attachments.length === 1) {
     downloadAttachment(attachments[0]);
     return;
@@ -353,6 +547,7 @@ export async function downloadAllAttachments(
     method: 'POST',
     body: keysToLowerCase({
       attachmentLocations,
+      recordSetId: recordSetId ?? undefined,
       origFilenames,
     }),
     headers: {

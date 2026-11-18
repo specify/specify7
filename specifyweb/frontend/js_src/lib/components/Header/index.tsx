@@ -7,17 +7,22 @@ import { useLocation } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { useCachedState } from '../../hooks/useCachedState';
+import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
+import { ping } from '../../utils/ajax/ping';
 import { listen } from '../../utils/events';
 import type { RA } from '../../utils/types';
 import { localized } from '../../utils/types';
+import { useAttachmentServerStatus } from '../Attachments/attachments';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
+import { MINUTE } from '../Atoms/timeUnits';
 import type { TagProps } from '../Atoms/wrapper';
 import type { MenuItem } from '../Core/Main';
 import { schema } from '../DataModel/schema';
 import { userInformation } from '../InitialContext/userInformation';
+import { useUrlShortcuts } from '../KeyboardShortcuts/useUrlShortcuts';
 import { titleDelay, titlePosition } from '../Molecules/Tooltips';
 import { Notifications } from '../Notifications/Notifications';
 import { useDarkMode } from '../Preferences/Hooks';
@@ -30,12 +35,15 @@ import { useUserTools } from './menuItemProcessing';
 import { UserTools } from './UserTools';
 
 const collapseThreshold = 900;
+const PRESENCE_ACTIVE_TIMEOUT = 5 * MINUTE;
 
 export function Header({
   menuItems,
 }: {
   readonly menuItems: RA<MenuItem>;
 }): JSX.Element {
+  usePresenceHeartbeat();
+
   const [rawIsCollapsed = false, setIsCollapsed] = useCachedState(
     'header',
     'isCollapsed'
@@ -95,27 +103,25 @@ export function Header({
     []
   );
 
+  useUrlShortcuts();
+
   const activeMenuItem = React.useContext(MenuContext);
   return (
     <header
       className={`
-        hover:[&_a.link]:text-brand-300 flex [z-index:1]
+        flex [z-index:1]
         dark:border-neutral-700 dark:bg-neutral-900 print:hidden
         ${isHorizontal ? '' : 'flex-col'}
         ${
           position === 'left'
-            ? 'dark:border-r'
+            ? 'border-r'
             : position === 'top'
-              ? 'dark:border-b'
+              ? 'border-b'
               : position === 'right'
-                ? 'dark:border-l'
-                : 'dark:border-t'
+                ? 'border-l'
+                : 'border-t'
         }
-        ${
-          isMenuLight
-            ? 'bg-gray-100 shadow-md shadow-gray-400'
-            : 'border-neutral-700 bg-neutral-800'
-        }
+        ${isMenuLight ? 'border-neutral-300 bg-gray-100' : 'bg-brown-100'}
       `}
     >
       <Logo isCollapsed={isCollapsed} isHorizontal={isHorizontal} />
@@ -164,7 +170,53 @@ export function Header({
   );
 }
 
-function HeaderItems({
+function usePresenceHeartbeat(): void {
+  React.useEffect(() => {
+    let lastActivity = Date.now();
+    const updateLastActivity = (): void => {
+      lastActivity = Date.now();
+    };
+    const heartbeat = (): void => {
+      void ping('/accounts/presence/', {
+        method: 'POST',
+        body: {
+          active: Date.now() - lastActivity <= PRESENCE_ACTIVE_TIMEOUT,
+        },
+        errorMode: 'silent',
+      }).catch((error: unknown) =>
+        console.error('Unable to update user presence', error)
+      );
+    };
+    const onVisibilityChange = (): void => {
+      if (document.visibilityState === 'visible') heartbeat();
+    };
+
+    const activityEvents = [
+      'pointerdown',
+      'pointermove',
+      'keydown',
+      'scroll',
+      'touchstart',
+    ];
+    activityEvents.forEach((event) =>
+      document.addEventListener(event, updateLastActivity, { passive: true })
+    );
+    document.addEventListener('visibilitychange', onVisibilityChange);
+
+    heartbeat();
+    const interval = globalThis.setInterval(heartbeat, MINUTE);
+
+    return (): void => {
+      globalThis.clearInterval(interval);
+      activityEvents.forEach((event) =>
+        document.removeEventListener(event, updateLastActivity)
+      );
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+    };
+  }, []);
+}
+
+export function HeaderItems({
   menuItems,
   isCollapsed,
   activeMenuItem,
@@ -173,17 +225,28 @@ function HeaderItems({
   readonly isCollapsed: boolean;
   readonly activeMenuItem: MenuItemName | undefined;
 }): JSX.Element {
+  const attachmentServerStatus = useAttachmentServerStatus();
   return (
     <>
-      {menuItems.map(({ url, name, ...menuItem }) => (
-        <MenuButton
-          {...menuItem}
-          isActive={name === activeMenuItem}
-          isCollapsed={isCollapsed}
-          key={name}
-          onClick={url}
-        />
-      ))}
+      {menuItems.map(({ url, name, ...menuItem }) => {
+        const isAttachmentsUnavailable =
+          name === 'attachments' && attachmentServerStatus !== 'available';
+        return (
+          <MenuButton
+            {...menuItem}
+            disabled={isAttachmentsUnavailable}
+            disabledTitle={
+              isAttachmentsUnavailable
+                ? attachmentsText.attachmentServerUnavailable()
+                : undefined
+            }
+            isActive={name === activeMenuItem}
+            isCollapsed={isCollapsed}
+            key={name}
+            onClick={url}
+          />
+        );
+      })}
     </>
   );
 }
@@ -194,6 +257,8 @@ export function MenuButton({
   isActive = false,
   isCollapsed,
   preventOverflow = false,
+  disabled = false,
+  disabledTitle,
   onClick: handleClick,
   props: extraProps,
 }: {
@@ -202,6 +267,8 @@ export function MenuButton({
   readonly isCollapsed: boolean;
   readonly isActive?: boolean;
   readonly preventOverflow?: boolean;
+  readonly disabled?: boolean;
+  readonly disabledTitle?: LocalizedString;
   readonly onClick: string | (() => void);
   readonly props?: Omit<TagProps<'a'> & TagProps<'button'>, 'aria-label'>;
 }): JSX.Element | null {
@@ -209,14 +276,15 @@ export function MenuButton({
   const [isSideBarLight] = userPreferences.use('general', 'ui', 'sidebarTheme');
   const isDarkMode = useDarkMode();
   const isSideBarDark = isDarkMode || isSideBarLight === 'dark';
+  const descriptionId = React.useId();
   const getClassName = (isActive: boolean): string => `
     p-[1.4vh]
     ${
       isActive
-        ? 'bg-brand-300 !text-white'
+        ? 'bg-brand-400 !text-white'
         : isSideBarDark
-          ? 'text-white'
-          : 'text-gray-700'
+          ? 'text-white hover:!text-brand-100'
+          : 'text-gray-700 hover:!text-brand-300'
     }
     ${className.ariaHandled}
     ${extraProps?.className ?? ''}
@@ -228,7 +296,10 @@ export function MenuButton({
     [titlePosition]:
       position === 'left' ? 'right' : position === 'right' ? 'left' : undefined,
     'aria-current': isActive ? 'page' : undefined,
-    title: isCollapsed ? title : undefined,
+    'aria-disabled': disabled ? true : undefined,
+    'aria-describedby':
+      disabled && typeof disabledTitle === 'string' ? descriptionId : undefined,
+    title: disabled ? disabledTitle : isCollapsed ? title : undefined,
   } as const;
 
   const children = (
@@ -243,8 +314,23 @@ export function MenuButton({
       ) : (
         <span className={isCollapsed ? 'sr-only' : ''}>{title}</span>
       )}
+      {disabled && typeof disabledTitle === 'string' ? (
+        <span className="sr-only" id={descriptionId}>
+          {disabledTitle}
+        </span>
+      ) : undefined}
     </>
   );
+
+  if (disabled)
+    return (
+      <span
+        {...props}
+        className={`${getClassName(false)} inline-flex items-center gap-2 cursor-not-allowed opacity-50`}
+      >
+        {children}
+      </span>
+    );
 
   return typeof handleClick === 'string' ? (
     <ActiveLink

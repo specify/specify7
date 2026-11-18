@@ -6,6 +6,7 @@ import { headerText } from '../../localization/header';
 import { preferencesText } from '../../localization/preferences';
 import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
+import { specifyNetworkText } from '../../localization/specifyNetwork';
 import { statsText } from '../../localization/stats';
 import { userText } from '../../localization/user';
 import { welcomeText } from '../../localization/welcome';
@@ -14,18 +15,18 @@ import type { RA } from '../../utils/types';
 import { Redirect } from './Redirect';
 import type { EnhancedRoute } from './RouterUtils';
 
-// FEATURE: go over non-dynamic routes in all routers to make sure they have titles
 /* eslint-disable @typescript-eslint/promise-function-async */
 export const routes: RA<EnhancedRoute> = [
   {
     path: 'specify-network-collection',
+    title: specifyNetworkText.specifyNetwork(),
     element: () =>
       import('../SpecifyNetworkCollection').then(
         ({ SpecifyNetworkCollection }) => SpecifyNetworkCollection
       ),
   },
   {
-    path: 'simple-search',
+    path: 'express-search',
     element: () =>
       import('../Header/ExpressSearchTask').then(
         ({ ExpressSearchView }) => ExpressSearchView
@@ -33,12 +34,12 @@ export const routes: RA<EnhancedRoute> = [
     title: headerText.simpleSearch(),
   },
   {
-    path: 'express_search',
-    element: <Redirect to="/specify/simple-search/" />,
+    path: 'simple_search',
+    element: <Redirect to="/specify/express-search/" />,
   },
   {
-    path: 'express-search',
-    element: <Redirect to="/specify/simple-search/" />,
+    path: 'simple-search',
+    element: <Redirect to="/specify/express-search/" />,
   },
   {
     path: 'data-model',
@@ -89,6 +90,7 @@ export const routes: RA<EnhancedRoute> = [
             children: [
               {
                 path: 'create',
+                title: userText.createRole(),
                 element: () =>
                   import('../Security/CreateLibraryRole').then(
                     ({ CreateLibraryRole }) => CreateLibraryRole
@@ -175,6 +177,14 @@ export const routes: RA<EnhancedRoute> = [
     ],
   },
   {
+    path: 'system-configuration',
+    title: userText.securityPanel(),
+    element: () =>
+      import('../SystemConfigurationTool/SystemConfigTool').then(
+        ({ SystemConfigurationTool }) => SystemConfigurationTool
+      ),
+  },
+  {
     path: 'attachments',
     children: [
       {
@@ -209,6 +219,14 @@ export const routes: RA<EnhancedRoute> = [
           import('../WbImport').then(({ WbImportView }) => WbImportView),
       },
       {
+        path: 'import-attachments',
+        title: attachmentsText.importAttachments(),
+        element: () =>
+          import('../WbImportAttachments').then(
+            ({ WbImportAttachmentsView }) => WbImportAttachmentsView
+          ),
+      },
+      {
         path: 'plan/:id',
         element: () =>
           import('../WbPlanView').then(
@@ -229,11 +247,11 @@ export const routes: RA<EnhancedRoute> = [
     path: 'import',
     children: [
       {
+        title: headerText.localityUpdateTool(),
         path: 'locality-dataset',
         element: () =>
           import('../LocalityUpdate').then(
-            ({ LocalityUpdateFromDataSet: ImportLocalitySet }) =>
-              ImportLocalitySet
+            ({ LocalityUpdateFromDataSet }) => LocalityUpdateFromDataSet
           ),
       },
     ],
@@ -361,16 +379,43 @@ export const routes: RA<EnhancedRoute> = [
     ],
   },
   {
+    path: 'dataviews',
+    children: [
+      {
+        path: ':tableName',
+        element: () =>
+          import('../DataViews/index').then(
+            ({ TableDataView }) => TableDataView
+          ),
+      },
+    ],
+  },
+  {
     path: 'user-preferences',
     title: preferencesText.preferences(),
     element: () =>
       import('../Preferences').then(
-        ({ PreferencesWrapper }) => PreferencesWrapper
+        ({ UserPreferencesWrapper }) => UserPreferencesWrapper
+      ),
+  },
+  {
+    path: 'collection-preferences',
+    title: preferencesText.collectionPreferences(),
+    element: () =>
+      import('../Preferences').then(
+        ({ CollectionPreferencesWrapper }) => CollectionPreferencesWrapper
+      ),
+  },
+  {
+    path: 'global-preferences',
+    title: resourcesText.globalPreferences(),
+    element: () =>
+      import('../Preferences').then(
+        ({ GlobalPreferencesWrapper }) => GlobalPreferencesWrapper
       ),
   },
   {
     path: 'schema-config',
-    title: schemaText.schemaConfig(),
     element: () =>
       import('../Toolbar/SchemaConfig').then(
         ({ SchemaConfig }) => SchemaConfig
@@ -378,6 +423,7 @@ export const routes: RA<EnhancedRoute> = [
     children: [
       {
         index: true,
+        title: schemaText.schemaConfig(),
         element: () =>
           import('../SchemaConfig/Languages').then(
             ({ ChooseSchemaLanguage }) => ChooseSchemaLanguage
@@ -393,13 +439,17 @@ export const routes: RA<EnhancedRoute> = [
       },
       {
         path: ':language',
+        element: () =>
+          import('../SchemaConfig/Layout').then(
+            ({ SchemaConfigLayout }) => SchemaConfigLayout
+          ),
         children: [
           {
             index: true,
             title: schemaText.tables(),
             element: () =>
-              import('../SchemaConfig/Tables').then(
-                ({ SchemaConfigTables }) => SchemaConfigTables
+              import('../SchemaConfig/Redirect').then(
+                ({ SchemaConfigRedirect }) => SchemaConfigRedirect
               ),
           },
           {
@@ -438,6 +488,11 @@ export const routes: RA<EnhancedRoute> = [
             ({ CacheBuster }) => CacheBuster
           ),
       },
+      {
+        path: 'logout',
+        title: userText.logOut(),
+        element: () => import('../Logout').then(({ Logout }) => Logout),
+      },
     ],
   },
   {
@@ -463,6 +518,14 @@ export const routes: RA<EnhancedRoute> = [
     index: true,
     title: welcomeText.pageTitle(),
     element: () => import('../HomePage').then(({ WelcomeView }) => WelcomeView),
+  },
+  {
+    path: 'workbench-attachment',
+    title: attachmentsText.attachments(),
+    element: () =>
+      import('../WbAttachmentViewer/index').then(
+        ({ WbAttachmentViewerView }) => WbAttachmentViewerView
+      ),
   },
   /*
    * The "*" route (the 404 case) was not added, as otherwise it would be

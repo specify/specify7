@@ -1,16 +1,16 @@
+from specifyweb.backend.merge.utils import get_app_model
 
 from specifyweb.specify.tests.test_api import ApiTests
-from specifyweb.specify.utils import get_app_model, APP_MODELS
 
 # These are done as part of tests.
-from specifyweb.accounts import models as acccounts_models
-from specifyweb.attachment_gw import models as attachment_gw_models
-from specifyweb.businessrules import models as businessrules_models
-from specifyweb.context import models as context_models
-from specifyweb.notifications import models as notifications_models
-from specifyweb.permissions import models as permissions_models
-from specifyweb.interactions import models as interactions_models
-from specifyweb.workbench import models as workbench_models
+from specifyweb.backend.accounts import models as acccounts_models
+from specifyweb.backend.attachment_gw import models as attachment_gw_models
+from specifyweb.backend.businessrules import models as businessrules_models
+from specifyweb.backend.context import models as context_models
+from specifyweb.backend.notifications import models as notifications_models
+from specifyweb.backend.permissions import models as permissions_models
+from specifyweb.backend.interactions import models as interactions_models
+from specifyweb.backend.workbench import models as workbench_models
 from specifyweb.specify import models as spmodels
 
 class TestGetAppModel(ApiTests):
@@ -19,7 +19,7 @@ class TestGetAppModel(ApiTests):
 
         models = [
             (spmodels, ['Absoluteage', 'Absoluteageattachment', 'Absoluteagecitation', 'Accession']),
-            (acccounts_models, ['Specifyuser', 'Spuserexternalid']),
+            (acccounts_models, ['Specifyuser', 'Spuserexternalid', 'UserPresence']),
             (attachment_gw_models, ['Spattachmentdataset']),
             (businessrules_models, ['UniquenessRule', 'UniquenessRuleField']),
             (context_models, []),
@@ -39,6 +39,4 @@ class TestGetAppModel(ApiTests):
     
     def test_model_not_found(self):
         self.assertIsNone(get_app_model("TableThatDoesNotExist"))
-
-
 

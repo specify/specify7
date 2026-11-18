@@ -8,13 +8,20 @@ import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import { fetchPickList, getPickListItems } from '../PickLists/fetch';
 import { mappingElementDivider } from '../WbPlanView/LineComponents';
 import { IsQueryBasicContext } from './Context';
-import { resolvePickListItem } from './FieldFilter';
+import { resolvePickListItem } from './FieldFilterSpec';
 import type { QueryField } from './helpers';
-import { useQueryFieldFilters } from './useQueryFieldFilters';
+import { useQueryFieldFilterSpecs } from './useQueryFieldFilterSpecs';
+
+const supportedCatalogNumberRangeFormatters = new Set([
+  'CatalogNumber',
+  'CatalogNumberAlphaNumByYear',
+  'CatalogNumberNumeric',
+]);
 
 export function QueryLineFilter({
   filter,
   fieldName,
+  formatterName,
   terminatingField,
   parser: originalParser,
   enforceLengthLimit,
@@ -22,27 +29,35 @@ export function QueryLineFilter({
 }: {
   readonly filter: QueryField['filters'][number];
   readonly fieldName: string;
+  readonly formatterName: string | undefined;
   readonly terminatingField: LiteralField | Relationship | undefined;
   readonly parser: Parser;
   readonly enforceLengthLimit: boolean;
   readonly onChange: ((newValue: string) => void) | undefined;
 }): JSX.Element | null {
-  const queryFieldFilters = useQueryFieldFilters();
+  const queryFieldFilterSpecs = useQueryFieldFilterSpecs();
+  const isCatalogNumberInFilter =
+    filter.type === 'in' &&
+    terminatingField?.isRelationship === false &&
+    terminatingField.table.name === 'CollectionObject' &&
+    terminatingField.name === 'catalogNumber' &&
+    supportedCatalogNumberRangeFormatters.has(formatterName ?? '');
 
-  const parser = queryFieldFilters[filter.type].hasParser
-    ? originalParser
-    : ({
-        ...removeKey(
-          originalParser,
-          'pattern',
-          'min',
-          'step',
-          'formatters',
-          'parser',
-          'validators'
-        ),
-        type: 'text',
-      } as const);
+  const parser =
+    queryFieldFilterSpecs[filter.type].hasParser && !isCatalogNumberInFilter
+      ? originalParser
+      : ({
+          ...removeKey(
+            originalParser,
+            'pattern',
+            'min',
+            'step',
+            'formatters',
+            'parser',
+            'validators'
+          ),
+          type: 'text',
+        } as const);
 
   const [pickListItems] = useAsyncState(
     React.useCallback(
@@ -67,7 +82,7 @@ export function QueryLineFilter({
     if (newStartValue !== filter.startValue) handleChange?.(newStartValue);
   }, [pickListItems, filter]);
 
-  const Component = queryFieldFilters[filter.type].component;
+  const Component = queryFieldFilterSpecs[filter.type].component;
 
   const isBasic = React.useContext(IsQueryBasicContext);
 
@@ -82,7 +97,7 @@ export function QueryLineFilter({
         fieldName={fieldName}
         parser={parser}
         pickListItems={
-          queryFieldFilters[filter.type].renderPickList
+          queryFieldFilterSpecs[filter.type].renderPickList
             ? pickListItems === false
               ? undefined
               : pickListItems

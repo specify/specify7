@@ -2,6 +2,13 @@
 
 from django.db import migrations, models
 
+from specifyweb.specify.migration_utils.migration_helpers.helper_0035_version_required import revert_version_required, update_version_required
+
+def apply_migration(apps, schema_editor):
+    update_version_required(apps)
+
+def revert_migration(apps, schema_editor):
+    revert_version_required(apps)
 
 class Migration(migrations.Migration):
 
@@ -969,5 +976,10 @@ class Migration(migrations.Migration):
             model_name='workbenchtemplatemappingitem',
             name='version',
             field=models.IntegerField(blank=True, db_column='Version', default=0),
+        ),
+        migrations.RunPython(
+            apply_migration,
+            revert_migration,
+            atomic=True,
         ),
     ]

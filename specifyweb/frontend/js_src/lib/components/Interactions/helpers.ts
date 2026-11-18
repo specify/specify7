@@ -81,6 +81,21 @@ export const getPrepsAvailableForLoanCoIds = async (
     }),
   }).then(({ data }) => data);
 
+export const getPrepsAvailableForLoanPrepField = async (
+  preparationField: string,
+  preparationValues: RA<string>,
+  isLoan: boolean
+) =>
+  ajax<RA<PreparationRow>>('/interactions/preparations_available_preps/', {
+    method: 'POST',
+    headers: { Accept: 'application/json' },
+    body: formData({
+      prep_fld: preparationField,
+      prep_values: JSON.stringify(preparationValues),
+      isLoan,
+    }),
+  }).then(({ data }) => data);
+
 export const getInteractionsForPrepId = async (prepId: number) =>
   ajax<RA<readonly [number, string | null, string | null, string | null]>>(
     '/interactions/prep_interactions/',

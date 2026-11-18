@@ -33,8 +33,7 @@ import {
   pushContext,
   setLogContext,
 } from '../Errors/logContext';
-import { cachableUrl } from '../InitialContext';
-import { getPref } from '../InitialContext/remotePrefs';
+import { cacheableUrl } from '../InitialContext';
 import { formatUrl } from '../Router/queryString';
 import type { SimpleXmlNode } from '../Syncer/xmlToJson';
 import { toSimpleXmlNode, xmlToJson } from '../Syncer/xmlToJson';
@@ -51,6 +50,7 @@ export type ViewDescription = ParsedFormDefinition & {
   readonly errors?: RA<LogMessage>;
   readonly viewSetId?: number;
   readonly name: string;
+  readonly isAttachmentPlugin?: true;
 };
 
 type AltView = {
@@ -90,6 +90,8 @@ export const formTypes = ['form', 'formTable'] as const;
 export type FormType = (typeof formTypes)[number];
 export type FormMode = 'edit' | 'search' | 'view';
 
+const defaultColumnDefinitionOs = 'lnx';
+
 let views: R<ViewDefinition | undefined> = {};
 
 export const getViewSetApiUrl = (viewName: string): string =>
@@ -117,7 +119,7 @@ export const fetchView = async (
          * NOTE: If getView hasn't yet been invoked, the view URL won't be
          * marked as cachable
          */
-        cachableUrl(getViewSetApiUrl(name)),
+        cacheableUrl(getViewSetApiUrl(name)),
         {
           headers: { Accept: 'text/plain' },
           expectedErrors: [Http.NOT_FOUND],
@@ -532,11 +534,7 @@ export async function parseFormDefinition(
 }
 
 function getColumnDefinitions(viewDefinition: SimpleXmlNode): string {
-  const definition =
-    getColumnDefinition(
-      viewDefinition,
-      getPref('form.definition.columnSource')
-    ) ?? getColumnDefinition(viewDefinition, undefined);
+  const definition = getColumnDefinition(viewDefinition, undefined);
   // Specify 7 handles forms without column definition fine, so no need to warn for this
   return definition ?? getParsedAttribute(viewDefinition, 'colDef') ?? '';
 }
@@ -544,10 +542,25 @@ function getColumnDefinitions(viewDefinition: SimpleXmlNode): string {
 const getColumnDefinition = (
   viewDefinition: SimpleXmlNode,
   os: string | undefined
-): string | undefined =>
-  viewDefinition.children.columnDef?.find((child) =>
-    typeof os === 'string' ? getParsedAttribute(child, 'os') === os : true
-  )?.text;
+): string | undefined => {
+  const columnDefinitions = viewDefinition.children.columnDef;
+  if (columnDefinitions === undefined) return undefined;
+
+  if (typeof os === 'string')
+    return columnDefinitions.find(
+      (child) => getParsedAttribute(child, 'os') === os
+    )?.text;
+
+  return (
+    columnDefinitions.find(
+      (child) => getParsedAttribute(child, 'os') === defaultColumnDefinitionOs
+    )?.text ??
+    columnDefinitions.find(
+      (child) => getParsedAttribute(child, 'os') === undefined
+    )?.text ??
+    columnDefinitions[0]?.text
+  );
+};
 
 const parseRows = async (
   rawRows: RA<SimpleXmlNode>,

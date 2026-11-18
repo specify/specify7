@@ -8,9 +8,8 @@ import { ajax } from '../../utils/ajax';
 import { ping } from '../../utils/ajax/ping';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
-import { sortFunction } from '../../utils/utils';
 import { schema } from '../DataModel/schema';
-import { getTable } from '../DataModel/tables';
+import { getTable, sortTablesByCaption } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { isTreeTable } from '../InitialContext/treeRanks';
 import { AutoMapper } from './autoMapper';
@@ -37,6 +36,7 @@ import {
 import { getMappingLineData } from './navigator';
 import { navigatorSpecs } from './navigatorSpecs';
 import { uploadPlanBuilder } from './uploadPlanBuilder';
+import type { DatasetAttachmentPrefs } from './uploadPlanParser';
 import type { Dataset } from './Wrapped';
 
 export async function savePlan({
@@ -45,12 +45,14 @@ export async function savePlan({
   lines,
   mustMatchPreferences,
   batchEditPrefs,
+  attachmentPrefs,
 }: {
   readonly dataset: Dataset;
   readonly baseTableName: keyof Tables;
   readonly lines: RA<MappingLine>;
   readonly mustMatchPreferences: IR<boolean>;
   readonly batchEditPrefs?: BatchEditPrefs;
+  readonly attachmentPrefs?: DatasetAttachmentPrefs;
 }): Promise<void> {
   const renamedLines = renameNewlyCreatedHeaders(
     baseTableName,
@@ -71,7 +73,8 @@ export async function savePlan({
     baseTableName,
     renamedLines,
     getMustMatchTables({ baseTableName, lines, mustMatchPreferences }),
-    batchEditPrefs
+    batchEditPrefs,
+    attachmentPrefs
   );
 
   const dataSetRequestUrl = `/api/workbench/dataset/${dataset.id}/`;
@@ -168,12 +171,12 @@ export function getMustMatchTables({
         (!tableName.endsWith('attribute') &&
           // Exclude embedded paleo context
           (!schema.embeddedPaleoContext || tableName !== 'PaleoContext'))
-    )
-    .sort(sortFunction((tableName) => getTable(tableName)?.label ?? null));
+    );
+  const sortedTables = sortTablesByCaption(tables, (tableName) => tableName);
 
   return {
     ...Object.fromEntries(
-      Array.from(new Set(tables), (tableName) => [
+      Array.from(new Set(sortedTables), (tableName) => [
         tableName,
         // Whether "mustMatch" is checked by default
         tableName === 'PrepType' && !('preptype' in mustMatchPreferences),

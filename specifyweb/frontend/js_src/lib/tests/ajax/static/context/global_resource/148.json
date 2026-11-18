@@ -1,0 +1,7 @@
+{
+  "id": 148,
+  "name": "GlobalPreferences",
+  "mimetype": "application/json",
+  "metadata": "",
+  "data": "{\"general\":{\"auditing\":{\"enableAuditLog\":true,\"logFieldLevelChanges\":true},\"formatting\":{\"fullDateFormat\":\"yyyy-MM-dd\",\"monthYearDateFormat\":\"MM/yyyy\"},\"attachments\":{\"attachmentThumbnailSize\":256}}}"
+}

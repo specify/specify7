@@ -31,8 +31,8 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { ProtectedAction } from '../Permissions/PermissionDenied';
 import { userPreferences } from '../Preferences/userPreferences';
 import { createQuery } from '../QueryBuilder';
-import type { QueryFieldFilter } from '../QueryBuilder/FieldFilter';
-import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
+import type { QueryFieldFilter } from '../QueryBuilder/FieldFilterSpec';
+import { queryFieldFilterSpecs } from '../QueryBuilder/FieldFilterSpec';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
 import type { MappingPath } from '../WbPlanView/Mapper';
@@ -87,6 +87,7 @@ export function SearchDialog<SCHEMA extends AnySchema>(
     <QueryBuilderSearch
       // BUG: pass on extraFilters
       {...props}
+      extraFilters={props.extraFilters}
       onSelected={(records): void => {
         props.onSelected(records);
         props.onClose();
@@ -405,7 +406,7 @@ const toQueryFields = <SCHEMA extends AnySchema>(
   filters.map(({ field, queryBuilderFieldPath, operation, isNot, value }) =>
     QueryFieldSpec.fromPath(table.name, queryBuilderFieldPath ?? [field])
       .toSpQueryField()
-      .set('operStart', queryFieldFilters[operation].id)
+      .set('operStart', queryFieldFilterSpecs[operation].id)
       .set('isNot', isNot)
       .set('startValue', value)
   );

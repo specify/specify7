@@ -7,12 +7,12 @@ import { batchEditText } from '../../localization/batchEdit';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { ajax } from '../../utils/ajax';
-import type { DeepPartial, RA } from '../../utils/types';
+import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { keysToLowerCase } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
-import type { AnyTree } from '../DataModel/helperTypes';
+import type { AnyTree, SerializedRecord } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import { serializeResource } from '../DataModel/serializers';
@@ -44,6 +44,41 @@ type TreeDefsFilter =
     }
   | {};
 
+type BatchEditFromQueryBodyProps = {
+  readonly query: SerializedRecord<SpQuery> | SpecifyResource<SpQuery>;
+  readonly limit: number;
+  readonly fields: RA<QueryField>;
+  readonly baseTableName: keyof Tables;
+  readonly dataSetName: string;
+  readonly recordSetId?: number;
+  readonly treeDefsFilter: TreeDefsFilter;
+  readonly hasRelationships: boolean;
+};
+
+export const buildBatchEditFromQueryBody = ({
+  query,
+  limit,
+  fields,
+  baseTableName,
+  dataSetName,
+  recordSetId,
+  treeDefsFilter,
+  hasRelationships,
+}: BatchEditFromQueryBodyProps) =>
+  keysToLowerCase({
+    ...serializeResource(query),
+    captions: fields
+      .filter(({ isDisplay }) => isDisplay)
+      .map(({ mappingPath }) =>
+        generateMappingPathPreview(baseTableName, mappingPath)
+      ),
+    name: dataSetName,
+    recordSetId,
+    limit,
+    treeDefsFilter,
+    omitRelationships: !hasRelationships,
+  });
+
 export function BatchEditFromQuery({
   query,
   fields,
@@ -69,18 +104,15 @@ export function BatchEditFromQuery({
       method: 'POST',
       errorMode: 'dismissible',
       headers: { Accept: 'application/json' },
-      body: keysToLowerCase({
-        ...serializeResource(query),
-        captions: fields
-          .filter(({ isDisplay }) => isDisplay)
-          .map(({ mappingPath }) =>
-            generateMappingPathPreview(baseTableName, mappingPath)
-          ),
-        name: dataSetName,
+      body: buildBatchEditFromQueryBody({
+        query,
+        fields,
+        baseTableName,
+        dataSetName,
         recordSetId,
-        limit: userPreferences.get('batchEdit', 'query', 'limit'),
         treeDefsFilter,
-        omitRelationships: !hasRelationships,
+        limit: userPreferences.get('batchEdit', 'query', 'limit'),
+        hasRelationships,
       }),
     });
 
@@ -232,41 +264,20 @@ function containsFaultyNestedToMany(queryFieldSpec: QueryFieldSpec): boolean {
   return nestedToManyCount.length > allowedToMany;
 }
 
-const containsSystemTables = (queryFieldSpec: QueryFieldSpec) =>
-  queryFieldSpec.joinPath.some((field) => field.table.isSystem);
+const containsSystemTables = (queryFieldSpec: QueryFieldSpec) => {
+  const baseIsBlocked =
+    queryFieldSpec.baseTable?.isSystem &&
+    !queryFieldSpec.baseTable?.name?.toLowerCase?.().includes('attachment');
 
-const DISALLOWED_FIELDS: DeepPartial<{
-  readonly [TABLE in keyof Tables]: RA<keyof Tables[TABLE]['fields']>;
-}> = {
-  /*
-   * FEATURE: Remove these when lat/long is officially supported
-   * See https://github.com/specify/specify7/issues/6251 and
-   * https://github.com/specify/specify7/issues/6655
-   */
-  Locality: [
-    'latitude1',
-    'longitude1',
-    'lat1text',
-    'long1text',
-    'latitude2',
-    'longitude2',
-    'lat2text',
-    'long2text',
-  ],
+  const pathHasBlockedSystem = queryFieldSpec.joinPath?.some((field: any) => {
+    const isAttachment =
+      field?.relatedTable?.name?.toLowerCase?.().includes('attachment') ||
+      field?.table?.name?.toLowerCase?.().includes('attachment');
+    return field?.table?.isSystem && !isAttachment;
+  });
+
+  return Boolean(baseIsBlocked || pathHasBlockedSystem);
 };
-
-function containsDisallowedFields(queryFieldSpec: QueryFieldSpec) {
-  const field = queryFieldSpec.getField();
-  if (
-    field === undefined ||
-    field.isRelationship ||
-    DISALLOWED_FIELDS[field.table.name] === undefined
-  )
-    return false;
-  return (
-    DISALLOWED_FIELDS[field.table.name]?.includes(field.name as never) ?? false
-  );
-}
 
 const hasHierarchyBaseTable = (queryFieldSpec: QueryFieldSpec) =>
   Object.keys(schema.domainLevelIds).includes(
@@ -285,5 +296,4 @@ const containsDisallowedTables = (query: SpecifyResource<SpQuery>) =>
 const filters: RA<(queryFieldSpec: QueryFieldSpec) => boolean> = [
   containsFaultyNestedToMany,
   containsSystemTables,
-  containsDisallowedFields,
 ];

@@ -4,7 +4,7 @@ from datetime import datetime
 from unittest import skip
 from .test_api import ApiTests
 from django.test import Client
-from specifyweb.specify import geo_time
+from specifyweb.backend.stored_queries import geology_time
 from specifyweb.specify.models import (
     Geologictimeperiod,
     Geologictimeperiodtreedefitem,
@@ -214,7 +214,7 @@ class GeoTimeTests(GeoTimeTestsContext):
         co_1 = Collectionobject.objects.create(collection=self.collection)
         absolute_age_200 = Absoluteage.objects.create(absoluteage=200, collectionobject=co_1)
 
-        self.assertTrue(co_1.id in geo_time.search_co_ids_in_time_range(250, 150))
+        self.assertTrue(co_1.id in geology_time.search_co_ids_in_time_range(250, 150))
         
         # Test relative age
         co_2 = Collectionobject.objects.create(collection=self.collection)
@@ -223,7 +223,7 @@ class GeoTimeTests(GeoTimeTestsContext):
             collectionobject=co_2
         )
 
-        self.assertTrue(co_2.id in geo_time.search_co_ids_in_time_range(65, 55))
+        self.assertTrue(co_2.id in geology_time.search_co_ids_in_time_range(65, 55))
 
         # Test relative age with uncertainty
         co_3 = Collectionobject.objects.create(collection=self.collection)
@@ -233,13 +233,13 @@ class GeoTimeTests(GeoTimeTestsContext):
             collectionobject=co_3
         )
 
-        self.assertTrue(co_3.id in geo_time.search_co_ids_in_time_range(65, 55))
-        self.assertTrue(co_3.id in geo_time.search_co_ids_in_time_range(67, 53))
-        self.assertTrue(co_3.id in geo_time.search_co_ids_in_time_range(60, 0))
-        self.assertTrue(co_3.id in geo_time.search_co_ids_in_time_range(200, 60))
-        self.assertTrue(co_3.id in geo_time.search_co_ids_in_time_range(200, 0))
-        self.assertFalse(co_3.id in geo_time.search_co_ids_in_time_range(200, 100))
-        self.assertFalse(co_3.id in geo_time.search_co_ids_in_time_range(20, 10))
+        self.assertTrue(co_3.id in geology_time.search_co_ids_in_time_range(65, 55))
+        self.assertTrue(co_3.id in geology_time.search_co_ids_in_time_range(67, 53))
+        self.assertTrue(co_3.id in geology_time.search_co_ids_in_time_range(60, 0))
+        self.assertTrue(co_3.id in geology_time.search_co_ids_in_time_range(200, 60))
+        self.assertTrue(co_3.id in geology_time.search_co_ids_in_time_range(200, 0))
+        self.assertFalse(co_3.id in geology_time.search_co_ids_in_time_range(200, 100))
+        self.assertFalse(co_3.id in geology_time.search_co_ids_in_time_range(20, 10))
 
         # Test relative age with agenameend
         co_4 = Collectionobject.objects.create(collection=self.collection)
@@ -249,8 +249,8 @@ class GeoTimeTests(GeoTimeTestsContext):
             collectionobject=co_4
         )
 
-        self.assertTrue(co_4.id in geo_time.search_co_ids_in_time_range(200, 100))
-        self.assertTrue(co_4.id in geo_time.search_co_ids_in_time_range(200, 10))
+        self.assertTrue(co_4.id in geology_time.search_co_ids_in_time_range(200, 100))
+        self.assertTrue(co_4.id in geology_time.search_co_ids_in_time_range(200, 10))
 
         # Test collection object paleo context
         co_paleo_context = Paleocontext.objects.create(
@@ -259,7 +259,7 @@ class GeoTimeTests(GeoTimeTestsContext):
         )
         co_5 = Collectionobject.objects.create(collection=self.collection, paleocontext=co_paleo_context)
 
-        self.assertTrue(co_5.id in geo_time.search_co_ids_in_time_range(65, 55))
+        self.assertTrue(co_5.id in geology_time.search_co_ids_in_time_range(65, 55))
 
         # Test collecting event paleo context
         ce_paleo_context = Paleocontext.objects.create(
@@ -269,7 +269,7 @@ class GeoTimeTests(GeoTimeTestsContext):
         collecting_event_1 = Collectingevent.objects.create(paleocontext=ce_paleo_context, discipline=self.discipline)
         co_6 = Collectionobject.objects.create(collection=self.collection, collectingevent=collecting_event_1)
 
-        self.assertTrue(co_6.id in geo_time.search_co_ids_in_time_range(65, 55))
+        self.assertTrue(co_6.id in geology_time.search_co_ids_in_time_range(65, 55))
 
         # Test locality paleo context
         loc_paleo_context = Paleocontext.objects.create(
@@ -280,7 +280,7 @@ class GeoTimeTests(GeoTimeTestsContext):
         collecting_event_2 = Collectingevent.objects.create(locality=locality_1, discipline=self.discipline)
         co_7 = Collectionobject.objects.create(collection=self.collection, collectingevent=collecting_event_2)
 
-        self.assertTrue(co_7.id in geo_time.search_co_ids_in_time_range(65, 55))
+        self.assertTrue(co_7.id in geology_time.search_co_ids_in_time_range(65, 55))
 
         # Test collection object paleo context with chronosstratend
         co_paleo_context = Paleocontext.objects.create(
@@ -290,7 +290,7 @@ class GeoTimeTests(GeoTimeTestsContext):
         )
         co_8 = Collectionobject.objects.create(collection=self.collection, paleocontext=co_paleo_context)
 
-        self.assertTrue(co_8.id in geo_time.search_co_ids_in_time_range(200, 100))
+        self.assertTrue(co_8.id in geology_time.search_co_ids_in_time_range(200, 100))
 
         # Test exclusions with relative age with uncertainty
         co_9 = Collectionobject.objects.create(collection=self.collection)
@@ -300,7 +300,7 @@ class GeoTimeTests(GeoTimeTestsContext):
             collectionobject=co_9
         )
 
-        self.assertFalse(co_9.id in geo_time.search_co_ids_in_time_range(200, 100))
+        self.assertFalse(co_9.id in geology_time.search_co_ids_in_time_range(200, 100))
 
         # Test range coverage of relaiveage with uncertainty
         co_10 = Collectionobject.objects.create(collection=self.collection)
@@ -309,26 +309,26 @@ class GeoTimeTests(GeoTimeTestsContext):
             collectionobject=co_10
         )
 
-        self.assertTrue(co_10.id in geo_time.search_co_ids_in_time_range(100, 50))
-        self.assertTrue(co_10.id in geo_time.search_co_ids_in_time_range(200, 45))
-        self.assertTrue(co_10.id in geo_time.search_co_ids_in_time_range(110, 10))
-        self.assertTrue(co_10.id in geo_time.search_co_ids_in_time_range(200, 10))
-        self.assertTrue(co_10.id in geo_time.search_co_ids_in_time_range(200, 105))
-        self.assertTrue(co_10.id in geo_time.search_co_ids_in_time_range(48, 10))
-        self.assertTrue(co_10.id in geo_time.search_co_ids_in_time_range(90, 55))
-        self.assertTrue(co_10.id in geo_time.search_co_ids_in_time_range(80, 70))
-        self.assertTrue(co_10.id in geo_time.search_co_ids_in_time_range(89, 56))
-        self.assertFalse(co_10.id in geo_time.search_co_ids_in_time_range(200, 112))
-        self.assertFalse(co_10.id in geo_time.search_co_ids_in_time_range(43, 10))
-        self.assertTrue(co_10.id in geo_time.search_co_ids_in_time_range(110, 45, require_full_overlap=True))
-        self.assertTrue(co_10.id in geo_time.search_co_ids_in_time_range(90, 55, require_full_overlap=True))
-        self.assertTrue(co_10.id in geo_time.search_co_ids_in_time_range(200, 10, require_full_overlap=True))
-        self.assertFalse(co_10.id in geo_time.search_co_ids_in_time_range(80, 70, require_full_overlap=True))
-        self.assertFalse(co_10.id in geo_time.search_co_ids_in_time_range(48, 10, require_full_overlap=True))
-        self.assertFalse(co_10.id in geo_time.search_co_ids_in_time_range(58, 10, require_full_overlap=True))
-        self.assertFalse(co_10.id in geo_time.search_co_ids_in_time_range(200, 110, require_full_overlap=True))
-        self.assertFalse(co_10.id in geo_time.search_co_ids_in_time_range(200, 92, require_full_overlap=True))
-        self.assertFalse(co_10.id in geo_time.search_co_ids_in_time_range(200, 70, require_full_overlap=True))
+        self.assertTrue(co_10.id in geology_time.search_co_ids_in_time_range(100, 50))
+        self.assertTrue(co_10.id in geology_time.search_co_ids_in_time_range(200, 45))
+        self.assertTrue(co_10.id in geology_time.search_co_ids_in_time_range(110, 10))
+        self.assertTrue(co_10.id in geology_time.search_co_ids_in_time_range(200, 10))
+        self.assertTrue(co_10.id in geology_time.search_co_ids_in_time_range(200, 105))
+        self.assertTrue(co_10.id in geology_time.search_co_ids_in_time_range(48, 10))
+        self.assertTrue(co_10.id in geology_time.search_co_ids_in_time_range(90, 55))
+        self.assertTrue(co_10.id in geology_time.search_co_ids_in_time_range(80, 70))
+        self.assertTrue(co_10.id in geology_time.search_co_ids_in_time_range(89, 56))
+        self.assertFalse(co_10.id in geology_time.search_co_ids_in_time_range(200, 112))
+        self.assertFalse(co_10.id in geology_time.search_co_ids_in_time_range(43, 10))
+        self.assertTrue(co_10.id in geology_time.search_co_ids_in_time_range(110, 45, require_full_overlap=True))
+        self.assertTrue(co_10.id in geology_time.search_co_ids_in_time_range(90, 55, require_full_overlap=True))
+        self.assertTrue(co_10.id in geology_time.search_co_ids_in_time_range(200, 10, require_full_overlap=True))
+        self.assertFalse(co_10.id in geology_time.search_co_ids_in_time_range(80, 70, require_full_overlap=True))
+        self.assertFalse(co_10.id in geology_time.search_co_ids_in_time_range(48, 10, require_full_overlap=True))
+        self.assertFalse(co_10.id in geology_time.search_co_ids_in_time_range(58, 10, require_full_overlap=True))
+        self.assertFalse(co_10.id in geology_time.search_co_ids_in_time_range(200, 110, require_full_overlap=True))
+        self.assertFalse(co_10.id in geology_time.search_co_ids_in_time_range(200, 92, require_full_overlap=True))
+        self.assertFalse(co_10.id in geology_time.search_co_ids_in_time_range(200, 70, require_full_overlap=True))
 
         # Test relaiveage with uncertainty and require_full_overlap
         co_11 = Collectionobject.objects.create(collection=self.collection)
@@ -338,9 +338,9 @@ class GeoTimeTests(GeoTimeTestsContext):
             collectionobject=co_11
         )
 
-        self.assertTrue(co_11.id in geo_time.search_co_ids_in_time_range(65, 55, require_full_overlap=True))
-        self.assertFalse(co_11.id in geo_time.search_co_ids_in_time_range(75, 65, require_full_overlap=True))
-        self.assertFalse(co_11.id in geo_time.search_co_ids_in_time_range(60, 50, require_full_overlap=True))
+        self.assertTrue(co_11.id in geology_time.search_co_ids_in_time_range(65, 55, require_full_overlap=True))
+        self.assertFalse(co_11.id in geology_time.search_co_ids_in_time_range(75, 65, require_full_overlap=True))
+        self.assertFalse(co_11.id in geology_time.search_co_ids_in_time_range(60, 50, require_full_overlap=True))
 
     def test_geotime_period(self):
         # Test relative age
@@ -350,25 +350,25 @@ class GeoTimeTests(GeoTimeTestsContext):
             collectionobject=co_1
         )
 
-        self.assertTrue(co_1.id in geo_time.search_co_ids_in_time_period('paleocene'))
+        self.assertTrue(co_1.id in geology_time.search_co_ids_in_time_period('paleocene'))
 
     def test_geotime_simple(self):
         co_1 = Collectionobject.objects.create(collection=self.collection)
         absolute_age_200 = Absoluteage.objects.create(absoluteage=200, ageuncertainty=10.0, collectionobject=co_1)
 
-        self.assertTrue(co_1.id in geo_time.search_co_ids_in_time_range(300, 100))
-        self.assertTrue(co_1.id in geo_time.search_co_ids_in_time_range(300, 200))
-        self.assertTrue(co_1.id in geo_time.search_co_ids_in_time_range(200, 100))
-        self.assertTrue(co_1.id in geo_time.search_co_ids_in_time_range(300, 201))
-        self.assertTrue(co_1.id in geo_time.search_co_ids_in_time_range(199, 100))
-        self.assertTrue(co_1.id in geo_time.search_co_ids_in_time_range(300, 199))
-        self.assertTrue(co_1.id in geo_time.search_co_ids_in_time_range(201, 100))
-        self.assertTrue(co_1.id in geo_time.search_co_ids_in_time_range(300, 100, require_full_overlap=True))
-        self.assertTrue(co_1.id in geo_time.search_co_ids_in_time_range(201, 199, require_full_overlap=True))
-        self.assertFalse(co_1.id in geo_time.search_co_ids_in_time_range(300, 250))
-        self.assertFalse(co_1.id in geo_time.search_co_ids_in_time_range(150, 100))
-        self.assertFalse(co_1.id in geo_time.search_co_ids_in_time_range(300, 250, require_full_overlap=True))
-        self.assertFalse(co_1.id in geo_time.search_co_ids_in_time_range(150, 100, require_full_overlap=True))
+        self.assertTrue(co_1.id in geology_time.search_co_ids_in_time_range(300, 100))
+        self.assertTrue(co_1.id in geology_time.search_co_ids_in_time_range(300, 200))
+        self.assertTrue(co_1.id in geology_time.search_co_ids_in_time_range(200, 100))
+        self.assertTrue(co_1.id in geology_time.search_co_ids_in_time_range(300, 201))
+        self.assertTrue(co_1.id in geology_time.search_co_ids_in_time_range(199, 100))
+        self.assertTrue(co_1.id in geology_time.search_co_ids_in_time_range(300, 199))
+        self.assertTrue(co_1.id in geology_time.search_co_ids_in_time_range(201, 100))
+        self.assertTrue(co_1.id in geology_time.search_co_ids_in_time_range(300, 100, require_full_overlap=True))
+        self.assertTrue(co_1.id in geology_time.search_co_ids_in_time_range(201, 199, require_full_overlap=True))
+        self.assertFalse(co_1.id in geology_time.search_co_ids_in_time_range(300, 250))
+        self.assertFalse(co_1.id in geology_time.search_co_ids_in_time_range(150, 100))
+        self.assertFalse(co_1.id in geology_time.search_co_ids_in_time_range(300, 250, require_full_overlap=True))
+        self.assertFalse(co_1.id in geology_time.search_co_ids_in_time_range(150, 100, require_full_overlap=True))
 
         co_2 = Collectionobject.objects.create(collection=self.collection)
         relative_age_1 = Relativeage.objects.create(
@@ -376,22 +376,22 @@ class GeoTimeTests(GeoTimeTestsContext):
             collectionobject=co_2
         )
 
-        self.assertTrue(co_2.id in geo_time.search_co_ids_in_time_range(220, 140))
-        self.assertTrue(co_2.id in geo_time.search_co_ids_in_time_range(180, 160))
-        self.assertTrue(co_2.id in geo_time.search_co_ids_in_time_range(220, 100))
-        self.assertTrue(co_2.id in geo_time.search_co_ids_in_time_range(300, 140))
-        self.assertTrue(co_2.id in geo_time.search_co_ids_in_time_range(180, 100))
-        self.assertTrue(co_2.id in geo_time.search_co_ids_in_time_range(300, 160))
-        self.assertTrue(co_2.id in geo_time.search_co_ids_in_time_range(300, 100))
-        self.assertTrue(co_2.id in geo_time.search_co_ids_in_time_range(300, 100, require_full_overlap=True))
-        self.assertTrue(co_2.id in geo_time.search_co_ids_in_time_range(195, 145, require_full_overlap=True))
-        self.assertFalse(co_2.id in geo_time.search_co_ids_in_time_range(300, 250))
-        self.assertFalse(co_2.id in geo_time.search_co_ids_in_time_range(120, 100))
-        self.assertFalse(co_2.id in geo_time.search_co_ids_in_time_range(300, 250, require_full_overlap=True))
-        self.assertFalse(co_2.id in geo_time.search_co_ids_in_time_range(120, 100, require_full_overlap=True))
-        self.assertFalse(co_2.id in geo_time.search_co_ids_in_time_range(180, 160, require_full_overlap=True))
-        self.assertFalse(co_2.id in geo_time.search_co_ids_in_time_range(180, 100, require_full_overlap=True))
-        self.assertFalse(co_2.id in geo_time.search_co_ids_in_time_range(300, 160, require_full_overlap=True))
+        self.assertTrue(co_2.id in geology_time.search_co_ids_in_time_range(220, 140))
+        self.assertTrue(co_2.id in geology_time.search_co_ids_in_time_range(180, 160))
+        self.assertTrue(co_2.id in geology_time.search_co_ids_in_time_range(220, 100))
+        self.assertTrue(co_2.id in geology_time.search_co_ids_in_time_range(300, 140))
+        self.assertTrue(co_2.id in geology_time.search_co_ids_in_time_range(180, 100))
+        self.assertTrue(co_2.id in geology_time.search_co_ids_in_time_range(300, 160))
+        self.assertTrue(co_2.id in geology_time.search_co_ids_in_time_range(300, 100))
+        self.assertTrue(co_2.id in geology_time.search_co_ids_in_time_range(300, 100, require_full_overlap=True))
+        self.assertTrue(co_2.id in geology_time.search_co_ids_in_time_range(195, 145, require_full_overlap=True))
+        self.assertFalse(co_2.id in geology_time.search_co_ids_in_time_range(300, 250))
+        self.assertFalse(co_2.id in geology_time.search_co_ids_in_time_range(120, 100))
+        self.assertFalse(co_2.id in geology_time.search_co_ids_in_time_range(300, 250, require_full_overlap=True))
+        self.assertFalse(co_2.id in geology_time.search_co_ids_in_time_range(120, 100, require_full_overlap=True))
+        self.assertFalse(co_2.id in geology_time.search_co_ids_in_time_range(180, 160, require_full_overlap=True))
+        self.assertFalse(co_2.id in geology_time.search_co_ids_in_time_range(180, 100, require_full_overlap=True))
+        self.assertFalse(co_2.id in geology_time.search_co_ids_in_time_range(300, 160, require_full_overlap=True))
 
         co_3 = Collectionobject.objects.create(collection=self.collection)
         relative_age_2 = Relativeage.objects.create(
@@ -400,8 +400,8 @@ class GeoTimeTests(GeoTimeTestsContext):
             collectionobject=co_3
         )
 
-        self.assertTrue(co_3.id in geo_time.search_co_ids_in_time_range(200, 100))
-        self.assertTrue(co_3.id in geo_time.search_co_ids_in_time_range(200, 10))
+        self.assertTrue(co_3.id in geology_time.search_co_ids_in_time_range(200, 100))
+        self.assertTrue(co_3.id in geology_time.search_co_ids_in_time_range(200, 10))
 
         ce_paleo_context_1 = Paleocontext.objects.create(
             chronosstrat=self.geo_time_period_dict['late_jurassic'], # 163-144
@@ -441,13 +441,13 @@ class GeoTimeTests(GeoTimeTestsContext):
             collectionobject=co_1
         )
 
-        self.assertFalse(co_1.id in geo_time.search_co_ids_in_time_range(200, 10))
+        self.assertFalse(co_1.id in geology_time.search_co_ids_in_time_range(200, 10))
 
         bad_chronostrat.startperiod = 100
         bad_chronostrat.name = 'GoodBoyz' # important, don't change this :)
         bad_chronostrat.save()
 
-        self.assertTrue(co_1.id in geo_time.search_co_ids_in_time_range(200, 10))
+        self.assertTrue(co_1.id in geology_time.search_co_ids_in_time_range(200, 10))
     
     @skip('Fix API test call')
     def test_geotime_any(self):

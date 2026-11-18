@@ -4,7 +4,11 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { Attachment } from '../DataModel/types';
 import type { AttachmentThumbnail } from './attachments';
-import { fetchThumbnail } from './attachments';
+import {
+  fetchThumbnail,
+  reportAttachmentServerFailure,
+  useAttachmentServerStatus,
+} from './attachments';
 
 export function AttachmentPreview({
   attachment,
@@ -13,17 +17,24 @@ export function AttachmentPreview({
   readonly attachment: SerializedResource<Attachment>;
   readonly onOpen: () => void;
 }): JSX.Element {
+  const attachmentServerStatus = useAttachmentServerStatus();
   const [thumbnail] = useAsyncState(
-    React.useCallback(async () => fetchThumbnail(attachment), [attachment]),
+    React.useCallback(
+      async () =>
+        attachmentServerStatus !== 'unavailable'
+          ? fetchThumbnail(attachment)
+          : undefined,
+      [attachment, attachmentServerStatus]
+    ),
     false
   );
 
   return (
     <div
       className={`
-        flex items-center justify-center rounded bg-white shadow-md
-        shadow-gray-300 transition hover:shadow-md hover:shadow-gray-400
-        dark:bg-black
+        flex items-center justify-center rounded bg-white
+        outline outline-1 outline-neutral-300 transition
+        dark:bg-black dark:outline-neutral-800
       `}
     >
       <button type="button" onClick={handleOpen}>
@@ -56,6 +67,11 @@ export function Thumbnail({
         width: `${thumbnail.width}px`,
         height: `${thumbnail.height}px`,
       }}
+      onError={
+        thumbnail.isServerBacked === true
+          ? reportAttachmentServerFailure
+          : undefined
+      }
     />
   );
 }

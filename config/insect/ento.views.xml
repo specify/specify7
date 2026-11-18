@@ -15,20 +15,6 @@
                   <altview name="COS Table View" viewdef="AccessionItems Table" mode="view"/>
               </altviews>      
          </view>
-		<view name="CollectionObjectAttachment"
-			class="edu.ku.brc.specify.datamodel.CollectionObjectAttachment"
-			busrules="edu.ku.brc.specify.datamodel.busrules.AttachmentBusRules"
-			resourcelabels="false">
-			<desc><![CDATA[The Collection Object-Attachment View.]]></desc>
-            <altviews>
-                <altview name="CollectionObjectAttachment Icon View"  viewdef="CollectionObjectAttachment IconView" mode="view"/>
-                <altview name="CollectionObjectAttachment Icon Edit"  viewdef="CollectionObjectAttachment IconView" mode="edit"/>
-                <altview name="CollectionObjectAttachment Table View" viewdef="CollectionObjectAttachment Table"    mode="view" />
-                <altview name="CollectionObjectAttachment Table Edit" viewdef="CollectionObjectAttachment Table"    mode="edit"/>
-                <altview name="CollectionObjectAttachment Form View"  viewdef="CollectionObjectAttachment Form"     label="Form" mode="view" default="true"/>
-                <altview name="CollectionObjectAttachment Form Edit"  viewdef="CollectionObjectAttachment Form" 	label="Form" mode="edit"/>
-            </altviews>
-        </view>
 
         <view name="CollectingEvent"
             class="edu.ku.brc.specify.datamodel.CollectingEvent"
@@ -323,77 +309,6 @@
                     <cell type="label" labelfor="12"/>
                     <cell type="field" id="12" name="timestampCreated" uitype="label" readonly="true"/>
                 </row>-->
-            </rows>
-        </viewdef>
-        
-        <viewdef
-            type="form"
-            name="CollectionObjectAttachment Form"
-            class="edu.ku.brc.specify.datamodel.CollectionObjectAttachment"
-            gettable="edu.ku.brc.af.ui.forms.DataGetterForObj"
-            settable="edu.ku.brc.af.ui.forms.DataSetterForObj"
-            useresourcelabels="true">
-            <desc><![CDATA[The CollectionObjectAttachment form.]]></desc>
-            
-            <!--<columnDef>110px,2dlu,p:g,5dlu,100px,2dlu,85px</columnDef> -->
-            <columnDef>p,5dlu,p:g</columnDef>
-            <rowDef auto="true" cell="p" sep="2px"/>
-
-              <rows>
-                <row>
-                    <cell type="label" labelfor="origFilename" label="FILENAME"/>
-                    <cell type="field" id="origFilename" name="attachment.origFilename" initialize="editoncreate=true" uitype="browse" isrequired="true"/>
-                </row>
-                <row>
-                      <cell type="label" labelfor="title"  label="TITLE"/>
-                    <cell type="field" id="title" name="attachment.title" isrequired="true"/>
-                </row>
-                <!--<row>
-                    <cell type="subview" id="metadata" name="attachment.metadata" viewname="AttachmentMetadata" colspan="3"/>
-                </row> -->
-                <row>
-                    <cell type="label" labelfor="dateImaged" label="DATE_IMAGED"/>
-                    <cell type="field" id="dateImaged" name="attachment.dateImaged" uitype="text"/>
-                </row>
-                <row>
-                    <cell type="label" labelfor="fileCreatedDate" label="FILE_CREATED_DATE"/>
-                    <cell type="field" id="fileCreatedDate" name="attachment.fileCreatedDate" uitype= "formattedtext" uifieldformatter="Date" default="today"/>
-                </row>
-                <row>
-                    <cell type="label" labelfor="copyrightHolder" label="COPYRIGHT_HOLDER"/>
-                    <cell type="field" id="copyrightHolder" name="attachment.copyrightHolder" uitype="text"/>
-                </row>
-                <row>
-                    <cell type="label" labelfor="copyrightDate" label="COPYRIGHT_DATE"/>
-                    <cell type="field" id="copyrightDate" name="attachment.copyrightDate" uitype="text"/>
-                </row>
-                <row>
-                    <cell type="label" labelfor="attachmentLocation" label="ATTACHMENT_LOCATION"/>
-                    <cell type="field" id="attachmentLocation" name="attachment.attachmentLocation" uitype="text"/>
-                </row>
-                <row>
-                    <cell type="label" labelfor="isPublic" label="is public"/>
-                    <cell type="field" id="isPublic" name="attachment.isPublic" isrequired="true" uitype="checkbox"/>
-                </row>
-                <row>
-                    <cell type="label" labelfor="license" label="LICENSE"/>
-                    <cell type="field" id="license" name="attachment.license" uitype="text"/>
-                </row>
-                <row>
-                    <cell type="label" labelfor="credit" label="CREDIT"/>
-                    <cell type="field" id="credit" name="attachment.credit" uitype="text"/>
-                </row>
-                <row>
-                    <cell type="label" labelfor="mimeType" label="MIME_TYPE"/>
-                    <cell type="field" id="mimeType" name="attachment.mimeType" uitype="text"/>
-                </row>
-                <row>
-                    <cell type="label" labelfor="remarks" label="REMARKS"/>
-                    <cell type="field" id="remarks" name="attachment.remarks" uitype="textareabrief" rows="2"/>
-                </row>
-                <row>
-                    <cell type="subview" id="imageatt" viewname="AttachmentImageAttribute" name="attachment.attachmentImageAttribute" colspan="3" />
-                </row>
             </rows>
         </viewdef>
 

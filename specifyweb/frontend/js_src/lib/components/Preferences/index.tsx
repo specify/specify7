@@ -9,9 +9,14 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { usePromise } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
+import { formsText } from '../../localization/forms';
+import { headerText } from '../../localization/header';
 import { preferencesText } from '../../localization/preferences';
+import { queryText } from '../../localization/query';
+import { resourcesText } from '../../localization/resources';
 import { StringToJsx } from '../../localization/utils';
 import { f } from '../../utils/functools';
+import type { IR, RA } from '../../utils/types';
 import { Container, H2, Key } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
@@ -20,9 +25,18 @@ import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
+import { ShortcutConflictProvider } from '../KeyboardShortcuts/Conflicts';
 import { hasPermission } from '../Permissions/helpers';
+import {
+  ProtectedAction,
+  ProtectedTool,
+} from '../Permissions/PermissionDenied';
 import { PreferencesAside } from './Aside';
+import type { BasePreferences } from './BasePreferences';
+import { collectionPreferenceDefinitions } from './CollectionDefinitions';
 import { collectionPreferences } from './collectionPreferences';
+import { globalPreferenceDefinitions } from './GlobalDefinitions';
+import { globalPreferences } from './globalPreferences';
 import { useDarkMode } from './Hooks';
 import { DefaultPreferenceItemRender } from './Renderers';
 import type { GenericPreferences, PreferenceItem } from './types';
@@ -30,10 +44,65 @@ import { userPreferenceDefinitions } from './UserDefinitions';
 import { userPreferences } from './userPreferences';
 import { useTopChild } from './useTopChild';
 
+export type PreferenceType = keyof typeof preferenceInstances;
+
+const preferenceInstances: IR<BasePreferences<any>> = {
+  user: userPreferences,
+  collection: collectionPreferences,
+  global: globalPreferences,
+};
+
+const preferenceDefinitions: IR<GenericPreferences> = {
+  user: userPreferenceDefinitions,
+  collection: collectionPreferenceDefinitions,
+  global: globalPreferenceDefinitions,
+};
+
+type SubcategoryDocumentation = {
+  readonly href: string;
+  readonly label: LocalizedString | (() => LocalizedString);
+};
+
+type VisiblePreferenceSubcategory = readonly [
+  string,
+  {
+    readonly title: GenericPreferences[string]['subCategories'][string]['title'];
+    readonly description?: GenericPreferences[string]['subCategories'][string]['description'];
+    readonly items: RA<readonly [string, PreferenceItem<any>]>;
+  },
+];
+
+type VisiblePreferenceCategory = readonly [
+  string,
+  {
+    readonly title: GenericPreferences[string]['title'];
+    readonly description?: GenericPreferences[string]['description'];
+    readonly subCategories: RA<VisiblePreferenceSubcategory>;
+  },
+];
+
+const SUBCATEGORY_DOCS_MAP: Record<
+  string,
+  Record<string, SubcategoryDocumentation>
+> = {
+  treeManagement: {
+    synonymized: {
+      href: 'https://speciforum.org/t/enable-creating-children-for-synonymized-nodes/987',
+      label: headerText.documentation(),
+    },
+  },
+  statistics: {
+    appearance: {
+      href: 'https://speciforum.org/t/statistics-page/1135',
+      label: headerText.documentation(),
+    },
+  },
+};
+
 /**
  * Fetch app resource that stores current user preferences
  *
- * If app resource data with user preferences does not exists does not exist,
+ * If app resource data with user preferences does not exist,
  * check if SpAppResourceDir and SpAppResource exist and create them if needed,
  * then, create the app resource data itself
  */
@@ -41,21 +110,35 @@ const preferencesPromise = Promise.all([
   userPreferences.fetch(),
   collectionPreferences.fetch(),
 ]).then(f.true);
+const globalPreferencesPromise = globalPreferences.fetch().then(f.true);
 
-function Preferences(): JSX.Element {
+function Preferences({
+  prefType = 'user',
+}: {
+  readonly prefType?: PreferenceType;
+}): JSX.Element {
   const [changesMade, handleChangesMade] = useBooleanState();
   const [needsRestart, handleRestartNeeded] = useBooleanState();
 
   const loading = React.useContext(LoadingContext);
   const navigate = useNavigate();
 
+  const basePreferences = preferenceInstances[prefType];
+  const definitions = usePrefDefinitions(prefType);
+  const heading =
+    prefType === 'collection'
+      ? preferencesText.collectionPreferences()
+      : prefType === 'global'
+        ? resourcesText.globalPreferences()
+        : preferencesText.preferences();
+
   React.useEffect(
     () =>
-      userPreferences.events.on('update', (payload) => {
+      basePreferences.events.on('update', (payload) => {
         if (payload?.definition?.requiresReload === true) handleRestartNeeded();
         handleChangesMade();
       }),
-    [handleChangesMade, handleRestartNeeded]
+    [basePreferences, handleChangesMade, handleRestartNeeded]
   );
 
   const {
@@ -68,12 +151,12 @@ function Preferences(): JSX.Element {
 
   return (
     <Container.FullGray>
-      <H2 className="text-2xl">{preferencesText.preferences()}</H2>
+      <H2 className="text-2xl">{heading}</H2>
       <Form
         className="contents"
         onSubmit={(): void =>
           loading(
-            userPreferences
+            basePreferences
               .awaitSynced()
               .then(() =>
                 needsRestart
@@ -89,11 +172,16 @@ function Preferences(): JSX.Element {
         >
           <PreferencesAside
             activeCategory={visibleChild}
+            definitions={definitions}
+            prefType={prefType}
             references={references}
             setActiveCategory={setVisibleChild}
           />
-          <PreferencesContent forwardRefs={forwardRefs} />
-          <span className="flex-1" />
+          <PreferencesContent
+            definitions={definitions}
+            forwardRefs={forwardRefs}
+            prefType={prefType}
+          />
         </div>
         <div className="flex justify-end">
           {changesMade ? (
@@ -110,7 +198,7 @@ function Preferences(): JSX.Element {
 }
 
 /** Hide invisible preferences. Remote empty categories and subCategories */
-export function usePrefDefinitions() {
+export function usePrefDefinitions(prefType: PreferenceType = 'user') {
   const isDarkMode = useDarkMode();
   const isRedirecting = React.useContext(userPreferences.Context) !== undefined;
   const preferencesVisibilityContext = React.useMemo(
@@ -121,189 +209,405 @@ export function usePrefDefinitions() {
     [isDarkMode, isRedirecting]
   );
 
-  return React.useMemo(
-    () =>
-      Object.entries(userPreferenceDefinitions as GenericPreferences)
-        .map(
-          ([category, { subCategories, ...categoryData }]) =>
-            [
-              category,
-              {
-                ...categoryData,
-                subCategories: Object.entries(subCategories)
-                  .map(
-                    ([subCategory, { items, ...subCategoryData }]) =>
-                      [
-                        subCategory,
-                        {
-                          ...subCategoryData,
-                          items: Object.entries(items).filter(
-                            ([_name, { visible }]) =>
-                              typeof visible === 'function'
-                                ? visible(preferencesVisibilityContext)
-                                : visible !== false
-                          ),
-                        },
-                      ] as const
-                  )
-                  .filter(([_name, { items }]) => items.length > 0),
-              },
-            ] as const
-        )
-        .filter(([_name, { subCategories }]) => subCategories.length > 0),
-    [preferencesVisibilityContext]
-  );
+  const definitions = preferenceDefinitions[prefType];
+
+  return React.useMemo<RA<VisiblePreferenceCategory>>(() => {
+    const visibleDefinitions: RA<VisiblePreferenceCategory> = Object.entries(
+      definitions
+    )
+      .map(([category, { subCategories, ...categoryData }]) => {
+        const visibleSubCategories = Object.entries(subCategories)
+          .map(([subCategory, { items, ...subCategoryData }]) => {
+            const visibleItems = Object.entries(items).filter(
+              ([_name, item]) =>
+                typeof item.visible === 'function'
+                  ? item.visible(preferencesVisibilityContext)
+                  : item.visible !== false
+            );
+            return [
+              subCategory,
+              { ...subCategoryData, items: visibleItems },
+            ] as const;
+          })
+          .filter(([_name, { items }]) => items.length > 0);
+        return [
+          category,
+          { ...categoryData, subCategories: visibleSubCategories },
+        ] as const;
+      })
+      .filter(
+        ([_name, { subCategories }]) => subCategories.length > 0
+      ) as unknown as RA<VisiblePreferenceCategory>;
+
+    if (prefType !== 'user') return visibleDefinitions;
+
+    const shortcutSubCategories = visibleDefinitions.flatMap(
+      ([category, { subCategories }]) =>
+        subCategories.flatMap(([subCategory, subCategoryData]) => {
+          const shortcutItems = subCategoryData.items.filter(
+            ([_name, item]) =>
+              'renderer' in item &&
+              item.renderer.name === 'KeyboardShortcutPreferenceItem'
+          );
+          return shortcutItems.length === 0
+            ? []
+            : [
+                [
+                  `${category}.${subCategory}`,
+                  {
+                    ...subCategoryData,
+                    ...(category === 'form' && subCategory === 'actions'
+                      ? {
+                          title: `${formsText.forms()} ${commonText.actions()}`,
+                          description: preferencesText.formActionsDescription(),
+                        }
+                      : category === 'form' && subCategory === 'dialogs'
+                        ? {
+                            title: `${preferencesText.dialogs()} ${commonText.actions()}`,
+                            description:
+                              preferencesText.dialogActionsDescription(),
+                          }
+                        : category === 'treeEditor' && subCategory === 'actions'
+                          ? {
+                              title: `${preferencesText.treeEditor()} ${commonText.actions()}`,
+                              description:
+                                preferencesText.treeActionsDescription(),
+                            }
+                          : category === 'queryBuilder' &&
+                              subCategory === 'actions'
+                            ? {
+                                title: `${queryText.queryBuilder()} ${commonText.actions()}`,
+                                description:
+                                  preferencesText.queryBuilderActionsDescription(),
+                              }
+                            : {}),
+                    items: shortcutItems,
+                  },
+                ] as const,
+              ];
+        })
+    );
+
+    const urlShortcutSubCategories = visibleDefinitions.flatMap(
+      ([category, { subCategories }]) =>
+        subCategories.flatMap(([subCategory, subCategoryData]) => {
+          const urlShortcutItems = subCategoryData.items.filter(
+            ([_name, item]) =>
+              'renderer' in item && item.renderer.name === 'UrlShortcutsEditor'
+          );
+          return urlShortcutItems.length === 0
+            ? []
+            : [
+                [
+                  `${category}.${subCategory}`,
+                  {
+                    ...subCategoryData,
+                    title: preferencesText.navigationAndTools(),
+                    items: urlShortcutItems,
+                  },
+                ] as const,
+              ];
+        })
+    );
+
+    const shortcutToggleSubCategory = visibleDefinitions.flatMap(
+      ([category, { subCategories }]) =>
+        subCategories.flatMap(([subCategory, subCategoryData]) => {
+          const shortcutToggle = subCategoryData.items.find(
+            ([name]) =>
+              category === 'header' &&
+              subCategory === 'actions' &&
+              name === 'shortcutsEnabled'
+          );
+          return shortcutToggle === undefined
+            ? []
+            : [
+                [
+                  `${category}.${subCategory}.shortcutsEnabled`,
+                  {
+                    title: preferencesText.keyboardShortcuts(),
+                    items: [shortcutToggle],
+                  },
+                ] as const,
+              ];
+        })
+    );
+
+    const regularDefinitions = visibleDefinitions.map(
+      ([category, categoryData]) =>
+        [
+          category,
+          {
+            ...categoryData,
+            subCategories: categoryData.subCategories
+              .map(
+                ([subCategory, subCategoryData]) =>
+                  [
+                    subCategory,
+                    {
+                      ...subCategoryData,
+                      items: subCategoryData.items.filter(([_name, item]) => {
+                        const isShortcutToggle =
+                          category === 'header' &&
+                          subCategory === 'actions' &&
+                          _name === 'shortcutsEnabled';
+                        return (
+                          !isShortcutToggle &&
+                          (!('renderer' in item) ||
+                            (item.renderer.name !==
+                              'KeyboardShortcutPreferenceItem' &&
+                              item.renderer.name !== 'UrlShortcutsEditor'))
+                        );
+                      }),
+                    },
+                  ] as const
+              )
+              .filter(([_subCategory, { items }]) => items.length > 0),
+          },
+        ] as const
+    );
+
+    return [
+      ...regularDefinitions,
+      [
+        'keyboardShortcuts',
+        {
+          title: preferencesText.keyboardShortcuts(),
+          subCategories: [
+            ...shortcutToggleSubCategory,
+            ...shortcutSubCategories,
+            ...urlShortcutSubCategories,
+          ],
+        },
+      ] as const,
+    ].filter(
+      ([_name, { subCategories }]) => subCategories.length > 0
+    ) as unknown as RA<VisiblePreferenceCategory>;
+  }, [definitions, preferencesVisibilityContext, prefType]);
 }
 
 export function PreferencesContent({
   forwardRefs,
+  prefType = 'user',
+  definitions: passedDefinitions,
 }: {
   readonly forwardRefs?: (index: number, element: HTMLElement | null) => void;
+  readonly prefType?: PreferenceType;
+  readonly definitions?: ReturnType<typeof usePrefDefinitions>;
 }): JSX.Element {
   const isReadOnly = React.useContext(ReadOnlyContext);
-  const definitions = usePrefDefinitions();
-  return (
-    <div className="flex h-fit flex-col gap-6">
-      {definitions.map(
-        (
-          [category, { title, description = undefined, subCategories }],
-          index
-        ) => (
-          <ErrorBoundary dismissible key={category}>
-            <Container.Center
-              className="gap-8 overflow-y-visible"
-              forwardRef={forwardRefs?.bind(undefined, index)}
-              id={category}
-            >
-              <h3 className="text-2xl">
-                {typeof title === 'function' ? title() : title}
-              </h3>
-              {description !== undefined && (
-                <p>
-                  {typeof description === 'function'
-                    ? description()
-                    : description}
-                </p>
-              )}
-              {subCategories.map(
-                ([subcategory, { title, description = undefined, items }]) => (
-                  <section
-                    className="flex flex-col items-start gap-4 md:items-stretch"
-                    key={subcategory}
-                  >
-                    <div className="flex items-center gap-2">
-                      <h4
-                        className={`${className.headerGray} text-xl md:text-center`}
-                      >
-                        {typeof title === 'function' ? title() : title}
-                      </h4>
-                      <div className="flex flex-1 justify-end">
-                        <Button.Small
-                          onClick={(): void =>
-                            items.forEach(([name]) => {
-                              userPreferences.set(
-                                category as 'general',
-                                subcategory as 'ui',
-                                name as 'theme',
-                                /*
-                                 * Need to get default value via this
-                                 * function as defaults may be changed
-                                 */
-                                userPreferences.definition(
-                                  category as 'general',
-                                  subcategory as 'ui',
-                                  name as 'theme'
-                                ).defaultValue
-                              );
-                            })
-                          }
-                        >
-                          {commonText.reset()}
-                        </Button.Small>
-                      </div>
-                    </div>
-                    {description !== undefined && (
-                      <p>
-                        {typeof description === 'function'
-                          ? description()
-                          : description}
+
+  const hookDefinitions = usePrefDefinitions(prefType);
+  const definitions = passedDefinitions ?? hookDefinitions;
+
+  const basePreferences = preferenceInstances[prefType];
+  const sectionRefs = React.useMemo(
+    () => definitions.map((_, index) => forwardRefs?.bind(undefined, index)),
+    [definitions, forwardRefs]
+  );
+
+  const renderSubCategory = React.useCallback(
+    (
+      categoryKey: string,
+      subcategoryKey: string,
+      {
+        title,
+        description = undefined,
+        items,
+      }: {
+        readonly title: LocalizedString | (() => LocalizedString);
+        readonly description?: LocalizedString | (() => LocalizedString);
+        readonly items: readonly (readonly [string, PreferenceItem<any>])[];
+      }
+    ): JSX.Element => {
+      const renderedSubcategoryKey = subcategoryKey;
+      if (categoryKey === 'keyboardShortcuts')
+        [categoryKey, subcategoryKey] = subcategoryKey.split('.');
+      const subcategoryDocument =
+        SUBCATEGORY_DOCS_MAP[categoryKey]?.[subcategoryKey];
+
+      return (
+        <section
+          className="flex flex-col items-start gap-4 md:items-stretch"
+          key={`${categoryKey}-${renderedSubcategoryKey}`}
+        >
+          <div className="flex items-center gap-2">
+            <h4 className={`${className.headerGray} text-xl md:text-center`}>
+              {typeof title === 'function' ? title() : title}
+            </h4>
+            <div className="flex flex-1 justify-end">
+              <Button.Small
+                onClick={(): void =>
+                  items.forEach(([name]) => {
+                    const definition = basePreferences.definition(
+                      categoryKey as never,
+                      subcategoryKey as never,
+                      name as never
+                    );
+                    basePreferences.set(
+                      categoryKey as never,
+                      subcategoryKey as never,
+                      name as never,
+                      definition.defaultValue as never
+                    );
+                  })
+                }
+              >
+                {commonText.reset()}
+              </Button.Small>
+            </div>
+          </div>
+          {subcategoryDocument !== undefined && (
+            <p className="text-gray-500">
+              <Link.NewTab href={subcategoryDocument.href}>
+                <FormatString
+                  text={
+                    typeof subcategoryDocument.label === 'function'
+                      ? subcategoryDocument.label()
+                      : subcategoryDocument.label
+                  }
+                />
+              </Link.NewTab>
+            </p>
+          )}
+          {description !== undefined && (
+            <p>
+              {typeof description === 'function' ? description() : description}
+            </p>
+          )}
+          {items.map(([name, item]) => {
+            const isUrlShortcutEditor =
+              'renderer' in item && item.renderer.name === 'UrlShortcutsEditor';
+            const canEdit =
+              !isReadOnly &&
+              (item.visible !== 'protected' ||
+                hasPermission('/preferences/user', 'edit_protected'));
+            const props = {
+              className: `
+                flex items-start gap-2 md:flex-row flex-col
+                ${isUrlShortcutEditor ? 'w-full' : ''}
+                ${canEdit ? '' : '!cursor-not-allowed'}
+              `,
+              key: name,
+              title: canEdit
+                ? undefined
+                : preferencesText.adminsOnlyPreference(),
+            };
+            const children = (
+              <>
+                {!isUrlShortcutEditor && (
+                  <div className="flex flex-col items-start gap-2 md:flex-1 md:items-stretch">
+                    <p
+                      className={`
+                    flex min-h-[theme(spacing.8)] flex-1 items-center
+                    justify-end md:text-right
+                  `}
+                    >
+                      <FormatString
+                        text={
+                          typeof item.title === 'function'
+                            ? item.title()
+                            : item.title
+                        }
+                      />
+                    </p>
+                    {item.description !== undefined && (
+                      <p className="flex flex-1 text-gray-500 md:text-right justify-end">
+                        {item.description !== undefined && (
+                          <FormatString
+                            text={
+                              typeof item.description === 'function'
+                                ? item.description()
+                                : item.description
+                            }
+                          />
+                        )}
                       </p>
                     )}
-                    {items.map(([name, item]) => {
-                      const canEdit =
-                        !isReadOnly &&
-                        (item.visible !== 'protected' ||
-                          hasPermission('/preferences/user', 'edit_protected'));
-                      const props = {
-                        className: `
-                            flex items-start gap-2 md:flex-row flex-col
-                            ${canEdit ? '' : '!cursor-not-allowed'}
-                          `,
-                        key: name,
-                        title: canEdit
-                          ? undefined
-                          : preferencesText.adminsOnlyPreference(),
-                      };
-                      const children = (
-                        <>
-                          <div className="flex flex-col items-start gap-2 md:flex-1 md:items-stretch">
-                            <p
-                              className={`
-                                flex min-h-[theme(spacing.8)] flex-1 items-center
-                                justify-end md:text-right
-                              `}
-                            >
-                              <FormatString
-                                text={
-                                  typeof item.title === 'function'
-                                    ? item.title()
-                                    : item.title
-                                }
-                              />
-                            </p>
-                            {item.description !== undefined && (
-                              <p className="flex flex-1 justify-end text-gray-500 md:text-right">
-                                <FormatString
-                                  text={
-                                    typeof item.description === 'function'
-                                      ? item.description()
-                                      : item.description
-                                  }
-                                />
-                              </p>
-                            )}
-                          </div>
-                          <div
-                            className={`
-                              flex min-h-[theme(spacing.8)] flex-1 flex-col justify-center
-                              gap-2
-                            `}
-                          >
-                            <ReadOnlyContext.Provider value={!canEdit}>
-                              <Item
-                                category={category}
-                                item={item}
-                                name={name}
-                                subcategory={subcategory}
-                              />
-                            </ReadOnlyContext.Provider>
-                          </div>
-                        </>
-                      );
-                      return 'container' in item && item.container === 'div' ? (
-                        <div {...props}>{children}</div>
-                      ) : (
-                        <label {...props}>{children}</label>
-                      );
-                    })}
-                  </section>
-                )
-              )}
-            </Container.Center>
-          </ErrorBoundary>
-        )
-      )}
-    </div>
+                  </div>
+                )}
+                <div
+                  className={`
+                  flex min-h-[theme(spacing.8)] flex-1 flex-col justify-center
+                  gap-2 ${isUrlShortcutEditor ? 'w-full min-w-0' : ''}
+                `}
+                >
+                  <ReadOnlyContext.Provider value={!canEdit}>
+                    {prefType === 'user' ? (
+                      // Needed with UserPrefItem and CollectionPrefItem to avoid calling preferences.use() conditionally
+                      <UserPrefItem
+                        category={categoryKey}
+                        item={item}
+                        name={name}
+                        subcategory={subcategoryKey}
+                      />
+                    ) : prefType === 'collection' ? (
+                      <CollectionPrefItem
+                        category={categoryKey}
+                        item={item}
+                        name={name}
+                        subcategory={subcategoryKey}
+                      />
+                    ) : (
+                      <GlobalPrefItem
+                        category={categoryKey}
+                        item={item}
+                        name={name}
+                        subcategory={subcategoryKey}
+                      />
+                    )}
+                  </ReadOnlyContext.Provider>
+                </div>
+              </>
+            );
+            return 'container' in item && item.container === 'div' ? (
+              <div {...props}>{children}</div>
+            ) : (
+              <label {...props}>{children}</label>
+            );
+          })}
+        </section>
+      );
+    },
+    [isReadOnly, prefType, basePreferences]
+  );
+
+  return (
+    <ShortcutConflictProvider
+      preferences={basePreferences}
+      definitions={preferenceDefinitions[prefType]}
+    >
+      <div className="flex h-fit min-w-0 flex-1 flex-col gap-6">
+        {definitions.map(
+          (
+            [category, { title, description = undefined, subCategories }],
+            index
+          ) => (
+            <ErrorBoundary dismissible key={category}>
+              <Container.Center
+                className="gap-8 overflow-y-visible"
+                forwardRef={sectionRefs[index]}
+                id={category}
+              >
+                <h3 className="text-2xl">
+                  {typeof title === 'function' ? title() : title}
+                </h3>
+                {description !== undefined && (
+                  <p>
+                    {typeof description === 'function'
+                      ? description()
+                      : description}
+                  </p>
+                )}
+                {subCategories.map(([subcategory, data]) =>
+                  renderSubCategory(category, subcategory, data)
+                )}
+              </Container.Center>
+            </ErrorBoundary>
+          )
+        )}
+      </div>
+    </ShortcutConflictProvider>
   );
 }
 
@@ -328,25 +632,24 @@ function FormatString({
   );
 }
 
-function Item({
+function ItemBase({
   item,
   category,
   subcategory,
   name,
+  value,
+  setValue,
 }: {
   readonly item: PreferenceItem<any>;
   readonly category: string;
   readonly subcategory: string;
   readonly name: string;
-}): JSX.Element {
+  readonly value: any;
+  readonly setValue: (value: any) => void;
+}) {
   const Renderer =
     'renderer' in item ? item.renderer : DefaultPreferenceItemRender;
-  const [value, setValue] = userPreferences.use(
-    // Asserting types just to simplify typing
-    category as 'general',
-    subcategory as 'ui',
-    name as 'theme'
-  );
+
   const children = (
     <Renderer
       category={category}
@@ -357,6 +660,7 @@ function Item({
       onChange={setValue}
     />
   );
+
   return 'renderer' in item ? (
     <ErrorBoundary dismissible>{children}</ErrorBoundary>
   ) : (
@@ -364,7 +668,88 @@ function Item({
   );
 }
 
-export function PreferencesWrapper(): JSX.Element | null {
-  const [hasFetched] = usePromise(preferencesPromise, true);
-  return hasFetched === true ? <Preferences /> : null;
+// Needed with UserPrefItem and CollectionPrefItem to avoid calling preferences.use() conditionally
+type PreferenceItemProps<T> = {
+  readonly item: PreferenceItem<T>;
+  readonly category: string;
+  readonly subcategory: string;
+  readonly name: string;
+};
+
+function UserPrefItem<T>(props: PreferenceItemProps<T>) {
+  const [value, setValue] = userPreferences.use(
+    props.category as any,
+    props.subcategory as any,
+    props.name as any
+  );
+  return <ItemBase {...props} setValue={setValue} value={value} />;
 }
+
+function CollectionPrefItem<T>(props: PreferenceItemProps<T>) {
+  const [value, setValue] = collectionPreferences.use(
+    props.category as any,
+    props.subcategory as any,
+    props.name as any
+  );
+  return <ItemBase {...props} setValue={setValue} value={value} />;
+}
+
+function GlobalPrefItem<T>(props: PreferenceItemProps<T>) {
+  const [value, setValue] = globalPreferences.use(
+    props.category as any,
+    props.subcategory as any,
+    props.name as any
+  );
+  return <ItemBase {...props} setValue={setValue} value={value} />;
+}
+
+function CollectionPreferences(): JSX.Element {
+  return (
+    <ProtectedAction
+      action="edit_collection"
+      resource="/preferences/collection"
+    >
+      <ProtectedTool action="update" tool="resources">
+        <Preferences prefType="collection" />
+      </ProtectedTool>
+    </ProtectedAction>
+  );
+}
+
+function createPreferencesWrapper(
+  Component: React.ComponentType,
+  promise: Promise<boolean>
+) {
+  return function Wrapper(): JSX.Element | null {
+    const [hasFetched] = usePromise(promise, true);
+    return hasFetched ? <Component /> : null;
+  };
+}
+
+export const PreferencesWrapper = createPreferencesWrapper(
+  Preferences,
+  preferencesPromise
+);
+export const UserPreferencesWrapper = createPreferencesWrapper(
+  Preferences,
+  preferencesPromise
+);
+export const CollectionPreferencesWrapper = createPreferencesWrapper(
+  CollectionPreferences,
+  preferencesPromise
+);
+
+function GlobalPreferences(): JSX.Element {
+  return (
+    <ProtectedAction action="update" resource="/preferences/global">
+      <ProtectedTool action="update" tool="resources">
+        <Preferences prefType="global" />
+      </ProtectedTool>
+    </ProtectedAction>
+  );
+}
+
+export const GlobalPreferencesWrapper = createPreferencesWrapper(
+  GlobalPreferences,
+  globalPreferencesPromise
+);

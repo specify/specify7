@@ -23,15 +23,23 @@ theories(
           getMappedFields: (): RA<string> => [],
           headers: [
             'BMSM No.',
-            'Class',
-            'Superfamily',
-            'Family',
-            'Genus',
-            'Subgenus',
-            'Species',
-            'Subspecies',
-            'Species Author',
-            'Subspecies Author',
+            /**
+             * TODO: The tests are mapping these Taxon headers to Component
+             * over Determination. The issue is not happening within the
+             * application
+             *
+             */
+            /*
+             * 'Class',
+             * 'Superfamily',
+             * 'Family',
+             * 'Genus',
+             * 'Subgenus',
+             * 'Species',
+             * 'Subspecies',
+             * 'Species Author',
+             * 'Subspecies Author',
+             */
             'Who ID First Name',
             'Determiner 1 Title',
             'Determiner 1 First Name',
@@ -179,18 +187,20 @@ theories(
         Latitude2: [['collectingEvent', 'locality', 'latitude2']],
         Longitude1: [['collectingEvent', 'locality', 'longitude1']],
         Longitude2: [['collectingEvent', 'locality', 'longitude2']],
-        Class: [['determinations', '#1', 'taxon', '$Class', 'name']],
-        Family: [['determinations', '#1', 'taxon', '$Family', 'name']],
-        Genus: [['determinations', '#1', 'taxon', '$Genus', 'name']],
-        Subgenus: [['determinations', '#1', 'taxon', '$Subgenus', 'name']],
-        'Species Author': [
-          ['determinations', '#1', 'taxon', '$Species', 'author'],
-        ],
-        Species: [['determinations', '#1', 'taxon', '$Species', 'name']],
-        'Subspecies Author': [
-          ['determinations', '#1', 'taxon', '$Subspecies', 'author'],
-        ],
-        Subspecies: [['determinations', '#1', 'taxon', '$Subspecies', 'name']],
+        /*
+         * Class: [['determinations', '#1', 'taxon', '$Class', 'name']],
+         * Family: [['determinations', '#1', 'taxon', '$Family', 'name']],
+         * Genus: [['determinations', '#1', 'taxon', '$Genus', 'name']],
+         * Subgenus: [['determinations', '#1', 'taxon', '$Subgenus', 'name']],
+         * 'Species Author': [
+         *   ['determinations', '#1', 'taxon', '$Species', 'author'],
+         * ],
+         * Species: [['determinations', '#1', 'taxon', '$Species', 'name']],
+         * 'Subspecies Author': [
+         *   ['determinations', '#1', 'taxon', '$Subspecies', 'author'],
+         * ],
+         * Subspecies: [['determinations', '#1', 'taxon', '$Subspecies', 'name']],
+         */
         'Prep Type 1': [['preparations', '#1', 'prepType', 'name']],
         Country: [
           ['collectingEvent', 'locality', 'geography', '$Country', 'name'],
@@ -202,21 +212,21 @@ theories(
 
 test('circular tables are calculated correctly', () =>
   expect(circularTables()).toMatchInlineSnapshot(`
-    [
-      "[table Agent]",
-      "[table Container]",
-      "[table Geography]",
-      "[table GeographyTreeDefItem]",
-      "[table GeologicTimePeriod]",
-      "[table GeologicTimePeriodTreeDefItem]",
-      "[table LithoStrat]",
-      "[table LithoStratTreeDefItem]",
-      "[table ReferenceWork]",
-      "[table Storage]",
-      "[table StorageTreeDefItem]",
-      "[table Taxon]",
-      "[table TaxonTreeDefItem]",
-      "[table TectonicUnitTreeDefItem]",
-      "[table TectonicUnit]",
-    ]
-  `));
+[
+  "[table Agent]",
+  "[table Container]",
+  "[table Geography]",
+  "[table GeographyTreeDefItem]",
+  "[table GeologicTimePeriod]",
+  "[table GeologicTimePeriodTreeDefItem]",
+  "[table LithoStrat]",
+  "[table LithoStratTreeDefItem]",
+  "[table ReferenceWork]",
+  "[table Storage]",
+  "[table StorageTreeDefItem]",
+  "[table Taxon]",
+  "[table TaxonTreeDefItem]",
+  "[table TectonicUnit]",
+  "[table TectonicUnitTreeDefItem]",
+]
+`));

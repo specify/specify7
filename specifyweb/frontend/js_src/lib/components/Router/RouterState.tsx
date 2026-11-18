@@ -1,5 +1,5 @@
-import type { SafeLocation } from 'history';
 import React from 'react';
+import type { SafeLocation } from 'react-router';
 import type { State } from 'typesafe-reducer';
 
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';

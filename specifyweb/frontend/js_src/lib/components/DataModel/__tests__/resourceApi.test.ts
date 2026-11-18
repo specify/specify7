@@ -13,6 +13,7 @@ import { tables } from '../tables';
 import type {
   CollectionObject,
   CollectionObjectAttribute,
+  CollectionObjectType,
   Determination,
 } from '../types';
 
@@ -46,6 +47,21 @@ const determinationsResponse: RA<Partial<SerializedRecord<Determination>>> = [
   },
 ];
 
+const collectionObjectTypeResponse: Partial<
+  SerializedRecord<CollectionObjectType>
+> = {
+  id: 1,
+  name: 'TestType',
+  taxontreedef: getResourceApiUrl('TaxonTreeDef', 1),
+  collection: getResourceApiUrl('Collection', 4),
+  resource_uri: getResourceApiUrl('CollectionObjectType', 1),
+};
+
+overrideAjax(
+  getResourceApiUrl('CollectionObjectType', 1),
+  collectionObjectTypeResponse
+);
+
 const collectionObjectResponse = {
   id: collectionObjectId,
   collectionobjecttype: getResourceApiUrl('CollectionObjectType', 1),
@@ -56,8 +72,6 @@ const collectionObjectResponse = {
   collection: getResourceApiUrl('Collection', 4),
   determinations: determinationsResponse,
 };
-
-overrideAjax(getResourceApiUrl('CollectionObjectType', 1), {});
 
 overrideAjax(collectionObjectUrl, collectionObjectResponse);
 overrideAjax(
@@ -70,6 +84,30 @@ overrideAjax(
       total_count: 1,
     },
   }
+);
+
+const emptyCollection = {
+  objects: [],
+  meta: {
+    limit: 20,
+    offset: 0,
+    total_count: 0,
+  },
+};
+
+overrideAjax(
+  '/api/specify/component/?catalognumber=000029432&domainfilter=true',
+  emptyCollection
+);
+
+overrideAjax(
+  '/api/specify/component/?catalognumber=000000001&domainfilter=true',
+  emptyCollection
+);
+
+overrideAjax(
+  '/api/specify/component/?catalognumber=%23%23%23%23%23%23%23%23%23&domainfilter=true',
+  emptyCollection
 );
 
 const firstCollectionObjectUrl = getResourceApiUrl('CollectionObject', 1);
@@ -257,6 +295,11 @@ describe('rgetCollection', () => {
 });
 
 describe('eventHandlerForToMany', () => {
+  overrideAjax(getResourceApiUrl('Taxon', 1), {
+    id: 1,
+    resource_uri: getResourceApiUrl('Taxon', 1),
+  });
+
   test('saverequired', () => {
     const resource = new tables.CollectionObject.Resource(
       addMissingFields('CollectionObject', {
@@ -424,6 +467,125 @@ test('save', async () => {
   const newDetermination =
     resource.getDependentResource('determinations')!.models[0];
   expect(newDetermination.get('number1')).toBe(2);
+});
+
+describe('independent resource change propagation', () => {
+  overrideAjax(
+    '/api/specify/collectionobject/?domainfilter=false&accession=11&offset=0',
+    emptyCollection
+  );
+  overrideAjax(accessionUrl, accessionResponse, { method: 'PUT' });
+
+  test('needsSaved propagates from independent collection to parent', async () => {
+    const parentResource = new tables.Accession.Resource({ id: accessionId });
+    expect(parentResource.needsSaved).toBe(false);
+
+    const collectionObjectRel =
+      tables.CollectionObject.strictGetRelationship('accession')!;
+
+    const independentCollection =
+      new tables.CollectionObject.IndependentCollection({
+        related: parentResource,
+        field: collectionObjectRel,
+      }) as Collection<CollectionObject>;
+
+    await independentCollection.fetch();
+
+    // Connect the collection to the parent's event system, as rgetCollection would do internally.
+    // storeIndependent is not in the public TS types so cast to any.
+    (parentResource as any).storeIndependent(
+      collectionObjectRel.getReverse(),
+      independentCollection
+    );
+
+    const newCollectionObject = new tables.CollectionObject.Resource({
+      id: 998,
+    });
+    independentCollection.add(newCollectionObject);
+
+    // Adding an existing resource to an independent collection does not mark the resource itself needsSaved;
+    // only the parent is notified via saverequired
+    expect(newCollectionObject.needsSaved).toBe(false);
+    expect(parentResource.needsSaved).toBe(true);
+
+    await parentResource.save();
+
+    expect(parentResource.needsSaved).toBe(false);
+  });
+});
+
+describe('save base record which has independent subviews', () => {
+  overrideAjax(
+    '/api/specify/collectionobject/?domainfilter=false&accession=11&offset=0',
+    {
+      objects: [collectionObjectResponse],
+      meta: { limit: 20, offset: 0, total_count: 1 },
+    }
+  );
+  overrideAjax(accessionUrl, accessionResponse, { method: 'PUT' });
+
+  async function setupParentWithIndependentCollection() {
+    const parentResource = new tables.Accession.Resource({ id: accessionId });
+    const collectionObjectRel =
+      tables.CollectionObject.strictGetRelationship('accession')!;
+    const independentCollection =
+      new tables.CollectionObject.IndependentCollection({
+        related: parentResource,
+        field: collectionObjectRel,
+      }) as Collection<CollectionObject>;
+    await independentCollection.fetch();
+    (parentResource as any).storeIndependent(
+      collectionObjectRel.getReverse(),
+      independentCollection
+    );
+    return { parentResource, independentCollection };
+  }
+
+  test('modifying a field on an independent resource marks base record as needsSaved and save applies the change', async () => {
+    const { parentResource, independentCollection } =
+      await setupParentWithIndependentCollection();
+
+    expect(parentResource.needsSaved).toBe(false);
+
+    const existingCollectionObject = independentCollection.models[0];
+    existingCollectionObject.set('text1', 'changed-value');
+
+    expect(parentResource.needsSaved).toBe(true);
+
+    await parentResource.save();
+
+    expect(parentResource.needsSaved).toBe(false);
+    // Change is preserved in memory after save
+    expect(existingCollectionObject.get('text1')).toBe('changed-value');
+  });
+
+  test('modifying a sub-record of an independent resource propagates needsSaved to base record and save completes', async () => {
+    const { parentResource, independentCollection } =
+      await setupParentWithIndependentCollection();
+
+    expect(parentResource.needsSaved).toBe(false);
+
+    const collectionObject = independentCollection.models[0];
+
+    const determinations =
+      collectionObject.getDependentResource('determinations');
+
+    const determination = determinations!.models[0];
+
+    determination.set('number1', 99);
+
+    // Change to sub-record propagates needsSaved all the way up to base record
+
+    expect(parentResource.needsSaved).toBe(true);
+
+    await parentResource.save();
+
+    expect(parentResource.needsSaved).toBe(false);
+
+    // Change to sub-record is preserved in memory after save
+
+    expect(determination.get('number1')).toBe(99);
+  });
 });
 
 describe('resource initialization', () => {

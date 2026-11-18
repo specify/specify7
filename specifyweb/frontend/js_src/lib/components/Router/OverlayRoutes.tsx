@@ -2,6 +2,7 @@ import React from 'react';
 
 import { attachmentsText } from '../../localization/attachments';
 import { batchEditText } from '../../localization/batchEdit';
+import { batchIdentifyText } from '../../localization/batchIdentify';
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { interactionsText } from '../../localization/interactions';
@@ -13,9 +14,10 @@ import { treeText } from '../../localization/tree';
 import { userText } from '../../localization/user';
 import { welcomeText } from '../../localization/welcome';
 import { wbText } from '../../localization/workbench';
-import type { RA } from '../../utils/types';
+import { RA } from '../../utils/types';
 import { Redirect } from './Redirect';
 import type { EnhancedRoute } from './RouterUtils';
+import { dataViewsText } from '../../localization/dataViews';
 
 /* eslint-disable @typescript-eslint/promise-function-async */
 /**
@@ -47,7 +49,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
           ),
       },
       {
-        path: 'simple-search',
+        path: 'express-search',
         title: headerText.simpleSearch(),
         element: () =>
           import('../Header/ExpressSearchTask').then(
@@ -56,7 +58,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
       },
       {
         path: 'express-search',
-        element: <Redirect to="/specify/overlay/simple-search/" />,
+        element: <Redirect to="/specify/overlay/express-search/" />,
       },
       {
         path: 'choose-collection',
@@ -72,6 +74,14 @@ export const overlayRoutes: RA<EnhancedRoute> = [
         element: () =>
           import('../DataEntryTables').then(
             ({ FormsDialogOverlay }) => FormsDialogOverlay
+          ),
+      },
+      {
+        path: 'batch-identify',
+        title: batchIdentifyText.batchIdentify(),
+        element: () =>
+          import('../BatchIdentify').then(
+            ({ BatchIdentifyOverlay }) => BatchIdentifyOverlay
           ),
       },
       {
@@ -111,7 +121,6 @@ export const overlayRoutes: RA<EnhancedRoute> = [
       },
       {
         path: 'queries',
-        title: queryText.queries(),
         element: () =>
           import('../Toolbar/Query').then(
             ({ QueriesOverlay }) => QueriesOverlay
@@ -119,6 +128,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
         children: [
           {
             index: true,
+            title: queryText.queries(),
             element: () =>
               import('../Toolbar/Query').then(
                 ({ QueryListOutlet }) => QueryListOutlet
@@ -131,6 +141,14 @@ export const overlayRoutes: RA<EnhancedRoute> = [
               import('../Toolbar/Query').then(({ NewQuery }) => NewQuery),
           },
         ],
+      },
+      {
+        path: 'dataviews',
+        title: dataViewsText.dataViewsTitle(),
+        element: () =>
+          import('../DataViews/DataViewTables').then(
+            ({ DataViewTables }) => DataViewTables
+          ),
       },
       {
         path: 'record-sets',
@@ -175,6 +193,14 @@ export const overlayRoutes: RA<EnhancedRoute> = [
         element: () =>
           import('../Toolbar/MasterKey').then(
             ({ MasterKeyOverlay }) => MasterKeyOverlay
+          ),
+      },
+      {
+        path: 'backup-database',
+        title: headerText.backupDatabase(),
+        element: () =>
+          import('../Toolbar/BackupDatabase').then(
+            ({ BackupDatabaseOverlay }) => BackupDatabaseOverlay
           ),
       },
       {
@@ -247,6 +273,14 @@ export const overlayRoutes: RA<EnhancedRoute> = [
         element: () =>
           import('../Toolbar/WbsDialog').then(
             ({ BatchEditDataSetsOverlay }) => BatchEditDataSetsOverlay
+          ),
+      },
+      {
+        path: 'backup-status/:taskId',
+        title: headerText.backupDatabase(),
+        element: () =>
+          import('../Toolbar/BackupStatus').then(
+            ({ BackupStatusOverlay }) => BackupStatusOverlay
           ),
       },
     ],

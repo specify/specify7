@@ -1,6 +1,5 @@
-import type { SafeLocation } from 'history';
 import React from 'react';
-import type { SafeNavigateFunction } from 'react-router';
+import type { SafeLocation, SafeNavigateFunction } from 'react-router';
 import { useLocation, useNavigate, useRoutes } from 'react-router-dom';
 
 import { useErrorContext } from '../../hooks/useErrorContext';

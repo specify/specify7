@@ -6,13 +6,16 @@ import { useCachedState } from '../../hooks/useCachedState';
 import { useId } from '../../hooks/useId';
 import { batchEditText } from '../../localization/batchEdit';
 import { commonText } from '../../localization/common';
+import { headerText } from '../../localization/header';
 import { schemaText } from '../../localization/schema';
 import { wbPlanText } from '../../localization/wbPlan';
 import type { IR, RA, RR } from '../../utils/types';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
+import { Link } from '../Atoms/Link';
 import { ReadOnlyContext } from '../Core/Contexts';
+import { datasetVariants } from '../WbUtils/datasetVariants';
 import { strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
@@ -20,8 +23,9 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { userPreferences } from '../Preferences/userPreferences';
 import { ButtonWithConfirmation } from './Components';
+import { FieldSearch } from './FieldSearchComponent';
 import type {
-  HtmlGeneratorFieldData,
+  MapperComponentData,
   MappingElementProps,
 } from './LineComponents';
 import { MappingPathComponent } from './LineComponents';
@@ -31,8 +35,13 @@ import {
   DEFAULT_BATCH_EDIT_PREFS,
 } from './Mapper';
 import { getMappingLineData } from './navigator';
+import type { NavigatorSpec } from './navigatorSpecs';
 import { navigatorSpecs } from './navigatorSpecs';
-import type { ColumnOptions, MatchBehaviors } from './uploadPlanParser';
+import type {
+  ColumnOptions,
+  DisambiguationBehaviors,
+  MatchBehaviors,
+} from './uploadPlanParser';
 
 export function MappingsControlPanel({
   showHiddenFields,
@@ -75,6 +84,10 @@ export function MappingsControlPanel({
         />
         {wbPlanText.revealHiddenFormFields()}
       </Label.Inline>
+      <span className="-ml-2 flex-1" />
+      <Link.NewTab href={datasetVariants.workbench.documentationUrl}>
+        {headerText.documentation()}
+      </Link.NewTab>
     </div>
   );
 }
@@ -142,9 +155,17 @@ const defaultValue = 300;
 
 export function MappingView({
   mappingElementProps,
+  baseTableName,
+  showHiddenFields,
+  searchSpec = navigatorSpecs.wbPlanView,
+  onSelectSearchResult: handleSelectSearchResult,
   children,
 }: {
   readonly mappingElementProps: RA<MappingElementProps>;
+  readonly baseTableName?: keyof Tables;
+  readonly showHiddenFields?: boolean;
+  readonly searchSpec?: NavigatorSpec;
+  readonly onSelectSearchResult?: (mappingPath: MappingPath) => void;
   readonly children: JSX.Element | undefined;
 }): JSX.Element | null {
   // `resize` event listener for the mapping view
@@ -169,6 +190,20 @@ export function MappingView({
     return (): void => resizeObserver.disconnect();
   }, [mappingView, setMappingViewHeight]);
 
+  const fieldSearch = (
+    <FieldSearch
+      baseTableName={baseTableName}
+      searchSpec={searchSpec}
+      showHiddenFields={showHiddenFields}
+      onSelectSearchResult={handleSelectSearchResult}
+    />
+  );
+
+  const mappingElementPropsWithSearch = mappingElementProps.map(
+    (mappingElement, index) =>
+      index === 0 ? { ...mappingElement, fieldSearch } : mappingElement
+  );
+
   return (
     <section
       aria-label={wbPlanText.mappingEditor()}
@@ -185,7 +220,9 @@ export function MappingView({
     >
       <div className="flex h-full w-max gap-8">
         <div className="flex gap-1" role="list">
-          <MappingPathComponent mappingLineData={mappingElementProps} />
+          <MappingPathComponent
+            mappingLineData={mappingElementPropsWithSearch}
+          />
         </div>
         {children}
       </div>
@@ -229,6 +266,7 @@ export function mappingOptionsMenu({
   onChangeMatchBehaviour: handleChangeMatchBehaviour,
   onToggleAllowNulls: handleToggleAllowNulls,
   onChangeDefaultValue: handleChangeDefaultValue,
+  onChangeDisambiguationBehavior: handleChangeDisambiguationBehavior,
 }: {
   readonly id: (suffix: string) => string;
   readonly isReadOnly: boolean;
@@ -236,7 +274,10 @@ export function mappingOptionsMenu({
   readonly onChangeMatchBehaviour: (matchBehavior: MatchBehaviors) => void;
   readonly onToggleAllowNulls: (allowNull: boolean) => void;
   readonly onChangeDefaultValue: (defaultValue: string | null) => void;
-}): IR<HtmlGeneratorFieldData> {
+  readonly onChangeDisambiguationBehavior: (
+    disambiguationBehavior: DisambiguationBehaviors
+  ) => void;
+}): IR<MapperComponentData> {
   return {
     matchBehavior: {
       optionLabel: (
@@ -318,6 +359,40 @@ export function mappingOptionsMenu({
       ),
       title: wbPlanText.defaultValueDescription(),
     },
+    disambiguationBehavior: {
+      optionLabel: (
+        <>
+          {wbPlanText.disambiguationBehavior()}
+          <Ul>
+            {Object.entries({
+              ask: {
+                title: wbPlanText.ask(),
+                description: wbPlanText.askDescription(),
+              },
+              pickFirst: {
+                title: wbPlanText.pickFirst(),
+                description: wbPlanText.pickFirstDescription(),
+              },
+            }).map(([id, { title, description }]) => (
+              <li key={id}>
+                <Label.Inline title={description}>
+                  <Input.Radio
+                    checked={columnOptions.disambiguationBehavior === id}
+                    isReadOnly={isReadOnly}
+                    name="disambiguation-behavior"
+                    value={id}
+                    onChange={(): void =>
+                      handleChangeDisambiguationBehavior(id)
+                    }
+                  />
+                  {` ${title}`}
+                </Label.Inline>
+              </li>
+            ))}
+          </Ul>
+        </>
+      ),
+    },
   };
 }
 
@@ -368,6 +443,33 @@ export function ReRunAutoMapper({
       onConfirm={handleClick}
     >
       {wbPlanText.autoMapper()}
+    </ButtonWithConfirmation>
+  );
+}
+
+export function ClearMappings({
+  onClick: handleClick,
+  showConfirmation,
+}: {
+  readonly onClick: () => void;
+  readonly showConfirmation: () => boolean;
+}): JSX.Element {
+  return (
+    <ButtonWithConfirmation
+      dialogButtons={(confirm) => (
+        <>
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+          <Button.Warning onClick={confirm}>
+            {wbPlanText.clearMappings()}
+          </Button.Warning>
+        </>
+      )}
+      dialogHeader={wbPlanText.clearMappingsConfirmation()}
+      dialogMessage={wbPlanText.clearMappingsConfirmationDescription()}
+      showConfirmation={showConfirmation}
+      onConfirm={handleClick}
+    >
+      {wbPlanText.clearMappings()}
     </ButtonWithConfirmation>
   );
 }

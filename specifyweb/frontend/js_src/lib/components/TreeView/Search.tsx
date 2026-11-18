@@ -27,6 +27,7 @@ export function TreeViewSearch<SCHEMA extends AnyTree>({
   treeDefinitionId,
   treeDefinitionItems,
   forwardRef,
+  biostratFilter = 'all',
   onFocusPath: handleFocusPath,
 }: {
   readonly tableName: SCHEMA['tableName'];
@@ -34,7 +35,8 @@ export function TreeViewSearch<SCHEMA extends AnyTree>({
   readonly treeDefinitionItems: RA<
     SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>
   >;
-  readonly forwardRef: React.RefObject<HTMLInputElement | null>;
+  readonly forwardRef: React.MutableRefObject<HTMLInputElement | null>;
+  readonly biostratFilter?: 'all' | 'bio' | 'chrono';
   readonly onFocusPath: (focusPath: RA<number>) => void;
 }): JSX.Element {
   const [searchValue, setSearchValue] = React.useState<string>('');
@@ -60,16 +62,28 @@ export function TreeViewSearch<SCHEMA extends AnyTree>({
     searchAlgorithm
   );
 
+  const searchBoxRef = React.useRef<HTMLInputElement | null>(null);
+  const keyboardShortcut = userPreferences.useKeyboardShortcut(
+    'treeEditor',
+    'actions',
+    'search',
+    (): void => searchBoxRef.current?.focus()
+  );
+
   return (
     <div>
       {/* A React component that is also a TypeScript generic */}
       <AutoComplete<SerializedResource<SCHEMA>>
+        delay={500}
         filterItems={false}
-        forwardRef={forwardRef}
+        forwardRef={(element): void => {
+          forwardRef.current = element;
+          searchBoxRef.current = element;
+        }}
         inputProps={{
           'aria-label': treeText.searchTreePlaceholder(),
           placeholder: treeText.searchTreePlaceholder(),
-          title: treeText.searchTreePlaceholder(),
+          title: `${treeText.searchTreePlaceholder()}${keyboardShortcut}`,
         }}
         source={async (value) =>
           fetchCollection(
@@ -79,32 +93,47 @@ export function TreeViewSearch<SCHEMA extends AnyTree>({
               definition: treeDefinitionId,
               limit: DEFAULT_FETCH_SEARCH_LIMIT,
               orderBy: 'name',
-              domainFilter: true,
+              domainFilter: false,
             },
             {
               [resolvedSearchField]: searchCaseSensitive
                 ? value
                 : value.toLowerCase(),
+              ...(biostratFilter === 'bio' && tableName === 'GeologicTimePeriod'
+                ? { isBioStrat: 'True' }
+                : {}),
             }
           ).then(({ records }) =>
-            records.map((node) => {
-              const rankDefinition = treeDefinitionItems.find(
-                ({ rankId }) => rankId === node.rankId
-              );
-              const rankName = rankDefinition?.title || rankDefinition?.name;
-              return {
-                label: node.fullName ?? node.name,
-                subLabel: rankName,
-                data: node as SerializedResource<SCHEMA>,
-              };
-            })
+            records
+              .filter((node) => {
+                if (
+                  tableName !== 'GeologicTimePeriod' ||
+                  biostratFilter === 'all'
+                )
+                  return true;
+                const isBioStrat = (node as any).isBioStrat;
+                return biostratFilter === 'bio'
+                  ? isBioStrat === true
+                  : isBioStrat !== true;
+              })
+              .map((node) => {
+                const rankDefinition = treeDefinitionItems.find(
+                  ({ rankId }) => rankId === node.rankId
+                );
+                const rankName = rankDefinition?.title || rankDefinition?.name;
+                return {
+                  label: node.fullName ?? node.name,
+                  subLabel: rankName,
+                  data: node as SerializedResource<SCHEMA>,
+                };
+              })
           )
         }
         value={searchValue}
         onChange={({ label, data }): void => {
           setSearchValue(label as string);
           ajax<IR<string | { readonly rankid: number; readonly id: number }>>(
-            `/api/specify_tree/${tableName.toLowerCase()}/${data.id}/path/`,
+            `/trees/specify_tree/${tableName.toLowerCase()}/${data.id}/path/`,
             {
               headers: { Accept: 'application/json' },
             }

@@ -88,7 +88,6 @@ test('Key with JSX', () =>
     })
   ).toMatchInlineSnapshot(`
     <>
-
       <>
         <span>
           A

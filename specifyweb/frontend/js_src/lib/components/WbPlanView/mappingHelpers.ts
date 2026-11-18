@@ -72,7 +72,9 @@ export const getNumberFromToManyIndex = (value: string): number =>
  * Opposite of formatTreeDefinition
  */
 export const getNameFromTreeDefinitionName = (value: string): string =>
-  value.slice(schema.treeDefinitionSymbol.length);
+  valueIsTreeDefinition(value)
+    ? value.slice(schema.treeDefinitionSymbol.length)
+    : value;
 
 /*
  * BUG: in places where output of this function is displayed to the user,
@@ -85,7 +87,7 @@ export const getNameFromTreeDefinitionName = (value: string): string =>
  *
  */
 export const getNameFromTreeRankName = (value: string): string =>
-  value.slice(schema.treeRankSymbol.length);
+  valueIsTreeRank(value) ? value.slice(schema.treeRankSymbol.length) : value;
 
 /**
  * Returns a formatted -to-many index from an index (e.x 1 => #1)

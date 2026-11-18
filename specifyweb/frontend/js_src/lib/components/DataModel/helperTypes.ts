@@ -1,5 +1,5 @@
 import type { IR, RA, ValueOf } from '../../utils/types';
-import type { Preparation, Tables } from './types';
+import type { PaleoContext, Preparation, Tables } from './types';
 
 /**
  * Represents a schema for any table
@@ -64,6 +64,15 @@ export type AnyInteractionPreparation = Extract<
   } & {
     readonly toOneIndependent: {
       readonly preparation: Preparation | null;
+    };
+  }
+>;
+
+export type AnyPaleoContextChild = Extract<
+  ValueOf<Tables>,
+  {
+    readonly toOneIndependent: {
+      readonly paleoContext: PaleoContext | null;
     };
   }
 >;

@@ -35,20 +35,31 @@ const linkComponent = <EXTRA_PROPS extends IR<unknown> = RR<never, never>>(
 
 export const Link = {
   Default: linkComponent('Link.Default', className.link),
-  NewTab: linkComponent('Link.NewTab', className.link, (props) => ({
-    ...props,
-    target: '_blank',
-    rel: 'noopener',
-    children: (
-      <>
-        {props.children}
-        <span title={commonText.opensInNewTab()}>
-          <span className="sr-only">{commonText.opensInNewTab()}</span>
-          {icons.externalLink}
-        </span>
-      </>
-    ),
-  })),
+  NewTab: linkComponent('Link.NewTab', className.link, (props) => {
+    const hasChildren = React.Children.count(props.children) > 0;
+    return {
+      ...props,
+      target: '_blank',
+      rel: 'noopener',
+      'aria-label':
+        props['aria-label'] ??
+        (hasChildren ? undefined : (props.title ?? props.href)),
+      children: (
+        <>
+          {props.children}
+          <span
+            title={
+              (props.children === undefined ? props.title : undefined) ??
+              commonText.opensInNewTab()
+            }
+          >
+            <span className="sr-only">{commonText.opensInNewTab()}</span>
+            {icons.externalLink}
+          </span>
+        </>
+      ),
+    };
+  }),
   Small: linkComponent<{
     /*
      * A class name that is responsible for text and background color

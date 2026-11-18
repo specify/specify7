@@ -29,7 +29,7 @@ import { Select } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import { ReadOnlyContext } from '../Core/Contexts';
 import { raise } from '../Errors/Crash';
-import { cachableUrl } from '../InitialContext';
+import { cacheableUrl } from '../InitialContext';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import type {
   PreferenceItem,
@@ -84,7 +84,7 @@ export function LanguageSelection<LANGUAGES extends string>({
             <StringToJsx
               components={{
                 link: (label) => (
-                  <Link.NewTab href="https://discourse.specifysoftware.org/t/get-started-with-specify-7-localization/956">
+                  <Link.NewTab href="https://speciforum.org/t/get-started-with-specify-7-localization/956">
                     {label}
                   </Link.NewTab>
                 ),
@@ -119,7 +119,7 @@ export function LanguageSelection<LANGUAGES extends string>({
             <StringToJsx
               components={{
                 link: (label) => (
-                  <Link.NewTab href="https://discourse.specifysoftware.org/t/get-started-with-specify-7-localization/956">
+                  <Link.NewTab href="https://speciforum.org/t/get-started-with-specify-7-localization/956">
                     {label}
                   </Link.NewTab>
                 ),
@@ -170,7 +170,7 @@ export function LanguageSelection<LANGUAGES extends string>({
   );
 }
 
-const url = cachableUrl(
+const url = cacheableUrl(
   formatUrl('/context/language/', {
     languages: languages.join(','),
   })

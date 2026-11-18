@@ -133,7 +133,7 @@ function Wrapped({
   const loading = React.useContext(LoadingContext);
   return (
     <SplashScreen>
-      <Form forwardRef={formRef} method="post">
+      <Form forwardRef={formRef} method="POST">
         <h2>
           {commonText.colonHeader({ header: commonText.chooseCollection() })}
         </h2>
@@ -160,28 +160,28 @@ function Wrapped({
               value={csrfToken ?? ''}
             />
             <input name="next" type="hidden" value={nextUrl} />
-            <Submit.Fancy forwardRef={submitRef}>
+            <Submit.Secondary forwardRef={submitRef}>
               {commonText.open()}
-            </Submit.Fancy>
+            </Submit.Secondary>
           </>
         ) : (
           <>
             <ErrorMessage>
               <span>{userText.noAccessToCollections()}</span>
             </ErrorMessage>
-            <Button.Fancy
+            <Button.BorderedGray
               onClick={(): void =>
                 loading(
-                  ping('/accounts/logout/').then(() =>
+                  ping('/accounts/logout/', { method: 'POST' }).then(() =>
                     globalThis.location.assign(
-                      formatUrl('/accounts/logout/', { next: nextUrl })
+                      formatUrl('/specify/command/logout/', { next: nextUrl })
                     )
                   )
                 )
               }
             >
               {userText.logIn()}
-            </Button.Fancy>
+            </Button.BorderedGray>
           </>
         )}
       </Form>

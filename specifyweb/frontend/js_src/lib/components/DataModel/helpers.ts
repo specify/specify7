@@ -3,6 +3,7 @@ import type { RA, ValueOf } from '../../utils/types';
 import { caseInsensitiveHash } from '../../utils/utils';
 import { isTreeResource } from '../InitialContext/treeRanks';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
+import { isRelationshipCollection } from './collectionApi';
 import type {
   AnySchema,
   AnyTree,
@@ -47,6 +48,10 @@ const _backendFilters = (field: string, ...fieldTransforms: RA<string>) =>
   ({
     equals: (value: number | string) => ({
       [[field, ...fieldTransforms, 'exact'].join(djangoLookupSeparator)]: value,
+    }),
+    caseInsensitiveEquals: (value: string) => ({
+      [[field, ...fieldTransforms, 'iexact'].join(djangoLookupSeparator)]:
+        value,
     }),
     contains: (value: string) => ({
       [[field, ...fieldTransforms, 'contains'].join(djangoLookupSeparator)]:
@@ -244,6 +249,22 @@ export async function fetchDistantRelated(
         resource: relatedResource,
         field,
       };
+}
+
+export function gatherAllDependents(
+  resource: SpecifyResource<AnySchema>
+): RA<SpecifyResource<AnySchema>> {
+  const directDependents = Object.values(resource.dependentResources)
+    .filter((related) => related !== null && related !== undefined)
+    .flatMap((related) =>
+      isRelationshipCollection(related)
+        ? related.models
+        : // Typescript still thinks related can be undefined or null here, so
+          // using a cast
+          (related as SpecifyResource<AnySchema>)
+    );
+  const cascadedDependents = directDependents.flatMap(gatherAllDependents);
+  return [...directDependents, ...cascadedDependents];
 }
 
 // Cog types: Discrete, Consolidated, Drill Core

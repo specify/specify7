@@ -25,7 +25,7 @@ import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getFieldBlockerKey, useSaveBlockers } from '../DataModel/saveBlockers';
 import type { SpAppResource, SpViewSetObj } from '../DataModel/types';
-import { DeleteButton } from '../Forms/DeleteButton';
+import { DeleteButtonWrapped } from '../Forms/DeleteButton';
 import { Dialog } from '../Molecules/Dialog';
 import { downloadFile, FilePicker, fileToText } from '../Molecules/FilePicker';
 import { hasToolPermission } from '../Permissions/helpers';
@@ -63,25 +63,27 @@ export function AppResourceEditButton({
   children,
   appResource,
   onDeleted: handleDeleted,
+  readOnly,
 }: {
   readonly title: LocalizedString;
   readonly children: JSX.Element;
   readonly appResource: SpecifyResource<SpAppResource>;
   readonly onDeleted: (() => void) | undefined;
+  readonly readOnly?: boolean;
 }): JSX.Element {
   const [isEditingMeta, handleEditingMeta, handleEditedMeta] =
     useBooleanState();
   return (
     <>
-      <DataEntry.Edit onClick={handleEditingMeta} />
-      {isEditingMeta && (
+      {!readOnly && <DataEntry.Edit onClick={handleEditingMeta} />}
+      {isEditingMeta && !readOnly && (
         <Dialog
           buttons={
             <>
               {!appResource.isNew() &&
               hasToolPermission('resources', 'delete') &&
               typeof handleDeleted === 'function' ? (
-                <DeleteButton
+                <DeleteButtonWrapped
                   resource={appResource}
                   onDeleted={handleDeleted}
                 />

@@ -24,7 +24,7 @@ import type { Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import { fieldFormat } from '../Formatters/fieldFormat';
 import {
-  cachableUrl,
+  cacheableUrl,
   contextUnlockedPromise,
   foreverFetch,
 } from '../InitialContext';
@@ -73,7 +73,7 @@ export const fetchFormatters: Promise<{
 }> = contextUnlockedPromise.then(async (entrypoint) =>
   entrypoint === 'main'
     ? ajax<Document>(
-        cachableUrl(
+        cacheableUrl(
           formatUrl('/context/app.resource', { name: 'DataObjFormatters' })
         ),
         {

@@ -145,6 +145,7 @@ export function Dialog({
   forceToTop = false,
   // eslint-disable-next-line react/no-object-type-as-default-prop
   forwardRef: { content: contentRef, container: externalContainerRef } = {},
+  defaultSize,
 }: {
   readonly isOpen?: boolean;
   readonly header: LocalizedString;
@@ -183,6 +184,7 @@ export function Dialog({
     readonly content?: React.Ref<HTMLDivElement>;
     readonly container?: React.RefCallback<HTMLDivElement>;
   };
+  readonly defaultSize?: { readonly width: number; readonly height: number };
 }): JSX.Element {
   const id = useId('modal');
 
@@ -215,7 +217,6 @@ export function Dialog({
   );
   const [showIcon] = userPreferences.use('general', 'dialog', 'showIcon');
 
-  const [closeOnEsc] = userPreferences.use('general', 'dialog', 'closeOnEsc');
   const [closeOnOutsideClick] = userPreferences.use(
     'general',
     'dialog',
@@ -284,6 +285,7 @@ export function Dialog({
     container,
     isOpen,
     dimensionsKey,
+    defaultSize,
     handleResize
   );
 
@@ -350,6 +352,24 @@ export function Dialog({
 
   const [buttonContainer, setButtonContainer] =
     React.useState<HTMLDivElement | null>(null);
+  const saveButton = buttonContainer?.querySelector<HTMLElement>(
+    'input[type="submit"], button[type="submit"]'
+  );
+  userPreferences.useKeyboardShortcut(
+    'form',
+    'dialogs',
+    'close',
+    isOpen && typeof handleClose === 'function' ? handleClose : undefined
+  );
+  userPreferences.useKeyboardShortcut(
+    'form',
+    'dialogs',
+    'save',
+    isOpen && saveButton !== null && saveButton !== undefined
+      ? (): void => saveButton.click()
+      : undefined
+  );
+
   const iconType = React.useMemo(() => {
     if (!showIcon) return 'none';
     if (typeof defaultIcon === 'string') return defaultIcon;
@@ -476,9 +496,7 @@ export function Dialog({
       }}
       overlayElement={overlayElement}
       portalClassName=""
-      shouldCloseOnEsc={
-        modal && typeof handleClose === 'function' && closeOnEsc
-      }
+      shouldCloseOnEsc={false}
       /*
        * Adding aria-hidden to #root is a legacy solution. Modern solution
        * involves displaying an element with [role="dialog"][aria-modal="true"],
@@ -511,7 +529,7 @@ export function Dialog({
       >
         <div className="flex items-center gap-2">
           {resolvedIcon === undefined ? undefined : (
-            <span className="text-blue-500">{resolvedIcon}</span>
+            <span className="text-brand-300">{resolvedIcon}</span>
           )}
           <h2 className={headerClassName} id={id('header')}>
             {header}
@@ -564,6 +582,7 @@ function useDialogSize(
   container: HTMLElement | null,
   isOpen: boolean,
   dimensionsKey: string | undefined,
+  defaultSize: { readonly width: number; readonly height: number } | undefined,
   handleResize: ((container: HTMLElement) => void) | undefined
 ): { readonly width: number; readonly height: number } | undefined {
   const [rememberSize] = userPreferences.use(
@@ -587,7 +606,7 @@ function useDialogSize(
           width: sizes[0],
           height: sizes[1],
         }
-      : undefined;
+      : (defaultSize ?? undefined);
   }, [sizeKey]);
 
   // Resize listener

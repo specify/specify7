@@ -48,7 +48,7 @@ export function MergeStatus({
         };
         readonly taskid: string;
         readonly response: string;
-      }>(`/api/specify/merge/status/${mergingId}/`, {
+      }>(`/merge/status/${mergingId}/`, {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         headers: { Accept: 'application/json' },
       })

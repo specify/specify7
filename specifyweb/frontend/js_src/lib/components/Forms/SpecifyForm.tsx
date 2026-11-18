@@ -18,7 +18,6 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { FormCell } from '../FormCells';
 import type { ViewDescription } from '../FormParse';
-import { attachmentView } from '../FormParse/webOnlyViews';
 import { loadingGif } from '../Molecules';
 import { userPreferences } from '../Preferences/userPreferences';
 import { unsafeTriggerNotFound } from '../Router/Router';
@@ -107,7 +106,7 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
     React.useContext(SearchDialogContext) || viewDefinition?.mode === 'search';
   const [language] = userPreferences.use('form', 'schema', 'language');
 
-  return viewDefinition?.name === attachmentView ? (
+  return viewDefinition?.isAttachmentPlugin ? (
     <AttachmentsPlugin resource={resource} />
   ) : (
     <SpecifyFormContext.Provider value={newFormContext}>

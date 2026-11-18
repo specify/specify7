@@ -7,6 +7,7 @@ Object.defineProperty(globalThis, 'ResizeObserver', {
   value: function () {
     return {
       observe: (): void => {},
+      unobserve: (): void => {},
       disconnect: (): void => {},
     };
   },

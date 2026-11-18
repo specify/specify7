@@ -36,6 +36,14 @@
         "type": "java.util.Calendar"
       },
       {
+        "name": "dateAccessionedPrecision",
+        "column": "DateAccessionedPrecision",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Integer"
+      },
+      {
         "name": "dateAcknowledged",
         "column": "DateAcknowledged",
         "indexed": false,
@@ -44,12 +52,60 @@
         "type": "java.util.Calendar"
       },
       {
+        "name": "dateAcknowledgedPrecision",
+        "column": "DateAcknowledgedPrecision",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Integer"
+      },
+      {
         "name": "dateReceived",
         "column": "DateReceived",
         "indexed": false,
         "unique": false,
         "required": false,
         "type": "java.util.Calendar"
+      },
+      {
+        "name": "dateReceivedPrecision",
+        "column": "DateReceivedPrecision",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Integer"
+      },
+      {
+        "name": "date1",
+        "column": "Date1",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.util.Calendar"
+      },
+      {
+        "name": "date1Precision",
+        "column": "Date1Precision",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Integer"
+      },
+      {
+        "name": "date2",
+        "column": "Date2",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.util.Calendar"
+      },
+      {
+        "name": "date2Precision",
+        "column": "Date2Precision",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Integer"
       },
       {
         "name": "integer1",
@@ -1620,6 +1676,14 @@
         "dependent": true,
         "relatedModelName": "AgentVariant",
         "otherSideName": "agent"
+      },
+      {
+        "name": "components",
+        "type": "one-to-many",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Component",
+        "otherSideName": "identifiedBy"
       }
     ],
     "fieldAliases": []
@@ -2833,6 +2897,14 @@
         "dependent": false,
         "relatedModelName": "SpecifyUser",
         "column": "VisibilitySetByID"
+      },
+      {
+        "name": "spDataSetAttachments",
+        "type": "one-to-many",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "SpDataSetAttachment",
+        "otherSideName": "attachment"
       }
     ],
     "fieldAliases": []
@@ -7584,6 +7656,14 @@
         "dependent": true,
         "relatedModelName": "RelativeAge",
         "otherSideName": "collectionObject"
+      },
+      {
+        "name": "components",
+        "type": "one-to-many",
+        "required": false,
+        "dependent": true,
+        "relatedModelName": "Component",
+        "otherSideName": "collectionObject"
       }
     ],
     "fieldAliases": []
@@ -10997,6 +11077,360 @@
         "dependent": false,
         "relatedModelName": "ReferenceWork",
         "column": "ReferenceWorkID"
+      }
+    ],
+    "fieldAliases": []
+  },
+  {
+    "classname": "edu.ku.brc.specify.datamodel.Component",
+    "table": "component",
+    "tableId": 1029,
+    "view": "Component",
+    "system": false,
+    "idColumn": "ComponentID",
+    "idFieldName": "componentId",
+    "fields": [
+      {
+        "name": "catalogNumber",
+        "column": "CatalogNumber",
+        "indexed": true,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.String",
+        "length": 32
+      },
+      {
+        "name": "verbatimName",
+        "column": "VerbatimName",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "text"
+      },
+      {
+        "name": "role",
+        "column": "Role",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.String",
+        "length": 64
+      },
+      {
+        "name": "proportion",
+        "column": "Proportion",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Integer"
+      },
+      {
+        "name": "uniqueIdentifier",
+        "column": "UniqueIdentifier",
+        "indexed": true,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.String",
+        "length": 128
+      },
+      {
+        "name": "text1",
+        "column": "Text1",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "text",
+        "length": 65535
+      },
+      {
+        "name": "text2",
+        "column": "Text2",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "text",
+        "length": 65535
+      },
+      {
+        "name": "text3",
+        "column": "Text3",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "text",
+        "length": 65535
+      },
+      {
+        "name": "text4",
+        "column": "Text4",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "text",
+        "length": 65535
+      },
+      {
+        "name": "text5",
+        "column": "Text5",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "text",
+        "length": 65535
+      },
+      {
+        "name": "text6",
+        "column": "Text6",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "text",
+        "length": 65535
+      },
+      {
+        "name": "yesNo1",
+        "column": "YesNo1",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Boolean"
+      },
+      {
+        "name": "yesNo2",
+        "column": "YesNo2",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Boolean"
+      },
+      {
+        "name": "yesNo3",
+        "column": "YesNo3",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Boolean"
+      },
+      {
+        "name": "yesNo4",
+        "column": "YesNo4",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Boolean"
+      },
+      {
+        "name": "yesNo5",
+        "column": "YesNo5",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Boolean"
+      },
+      {
+        "name": "yesNo6",
+        "column": "YesNo6",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Boolean"
+      },
+      {
+        "name": "integer1",
+        "column": "Integer1",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Integer"
+      },
+      {
+        "name": "integer2",
+        "column": "Integer2",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Integer"
+      },
+      {
+        "name": "integer3",
+        "column": "Integer3",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Integer"
+      },
+      {
+        "name": "integer4",
+        "column": "Integer4",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Integer"
+      },
+      {
+        "name": "integer5",
+        "column": "Integer5",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Integer"
+      },
+      {
+        "name": "integer6",
+        "column": "Integer6",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Integer"
+      },
+      {
+        "name": "number1",
+        "column": "Number1",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.math.BigDecimal"
+      },
+      {
+        "name": "number2",
+        "column": "Number2",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.math.BigDecimal"
+      },
+      {
+        "name": "number3",
+        "column": "Number3",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.math.BigDecimal"
+      },
+      {
+        "name": "number4",
+        "column": "Number4",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.math.BigDecimal"
+      },
+      {
+        "name": "number5",
+        "column": "Number5",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.math.BigDecimal"
+      },
+      {
+        "name": "number6",
+        "column": "Number6",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.math.BigDecimal"
+      },
+      {
+        "name": "version",
+        "column": "Version",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Integer"
+      },
+      {
+        "name": "timestampCreated",
+        "column": "TimestampCreated",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.sql.Timestamp"
+      },
+      {
+        "name": "timestampModified",
+        "column": "TimestampModified",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.sql.Timestamp"
+      },
+      {
+        "name": "identifiedDate",
+        "column": "IdentifiedDate",
+        "indexed": true,
+        "unique": false,
+        "required": false,
+        "type": "java.util.Calendar"
+      }
+    ],
+    "relationships": [
+      {
+        "name": "collectionObject",
+        "type": "many-to-one",
+        "required": true,
+        "dependent": false,
+        "relatedModelName": "CollectionObject",
+        "column": "CollectionObjectID",
+        "otherSideName": "components"
+      },
+      {
+        "name": "name",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Taxon",
+        "column": "TaxonID",
+        "otherSideName": "components"
+      },
+      {
+        "name": "identifiedBy",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Agent",
+        "column": "AgentID",
+        "otherSideName": "components"
+      },
+      {
+        "name": "type",
+        "type": "many-to-one",
+        "required": true,
+        "dependent": false,
+        "relatedModelName": "CollectionObjectType",
+        "column": "CollectionObjectTypeID"
+      },
+      {
+        "name": "createdByAgent",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Agent",
+        "column": "CreatedByAgentID"
+      },
+      {
+        "name": "modifiedByAgent",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Agent",
+        "column": "ModifiedByAgentID"
+      },
+      {
+        "name": "absoluteAges",
+        "type": "one-to-many",
+        "required": false,
+        "dependent": true,
+        "relatedModelName": "AbsoluteAge",
+        "otherSideName": "component"
+      },
+      {
+        "name": "relativeAges",
+        "type": "one-to-many",
+        "required": false,
+        "dependent": true,
+        "relatedModelName": "RelativeAge",
+        "otherSideName": "component"
       }
     ],
     "fieldAliases": []
@@ -19288,6 +19722,46 @@
         "column": "AddressOfRecordID"
       },
       {
+        "name": "agent1",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Agent",
+        "column": "Agent1ID"
+      },
+      {
+        "name": "agent2",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Agent",
+        "column": "Agent2ID"
+      },
+      {
+        "name": "agent3",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Agent",
+        "column": "Agent3ID"
+      },
+      {
+        "name": "agent4",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Agent",
+        "column": "Agent4ID"
+      },
+      {
+        "name": "agent5",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Agent",
+        "column": "Agent5ID"
+      },
+      {
         "name": "createdByAgent",
         "type": "many-to-one",
         "required": false,
@@ -19596,6 +20070,22 @@
       {
         "name": "quantity",
         "column": "Quantity",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Integer"
+      },
+      {
+        "name": "quantityResolved",
+        "column": "QuantityResolved",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Integer"
+      },
+      {
+        "name": "quantityReturned",
+        "column": "QuantityReturned",
         "indexed": false,
         "unique": false,
         "required": false,
@@ -21567,6 +22057,46 @@
         "relatedModelName": "AddressOfRecord",
         "column": "AddressOfRecordID",
         "otherSideName": "loans"
+      },
+      {
+        "name": "agent1",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Agent",
+        "column": "Agent1ID"
+      },
+      {
+        "name": "agent2",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Agent",
+        "column": "Agent2ID"
+      },
+      {
+        "name": "agent3",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Agent",
+        "column": "Agent3ID"
+      },
+      {
+        "name": "agent4",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Agent",
+        "column": "Agent4ID"
+      },
+      {
+        "name": "agent5",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Agent",
+        "column": "Agent5ID"
       },
       {
         "name": "createdByAgent",
@@ -32435,6 +32965,15 @@
         "unique": false,
         "required": false,
         "type": "java.lang.Integer"
+      },
+      {
+        "name": "uniqueIdentifier",
+        "column": "UniqueIdentifier",
+        "indexed": true,
+        "unique": true,
+        "required": false,
+        "type": "java.lang.String",
+        "length": 128
       }
     ],
     "relationships": [
@@ -33792,6 +34331,14 @@
         "dependent": false,
         "relatedModelName": "SpecifyUser",
         "column": "VisibilitySetByID"
+      },
+      {
+        "name": "components",
+        "type": "one-to-many",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Component",
+        "otherSideName": "name"
       }
     ],
     "fieldAliases": [
@@ -38108,7 +38655,9 @@
         "unique": false,
         "required": false,
         "type": "java.sql.Timestamp"
-      },
+      }
+    ],
+    "relationships": [
       {
         "name": "spDataSetAttachments",
         "type": "one-to-many",
@@ -38116,9 +38665,7 @@
         "dependent": true,
         "relatedModelName": "SpDataSetAttachment",
         "otherSideName": "spdataset"
-      }
-    ],
-    "relationships": [
+      },
       {
         "name": "collection",
         "type": "many-to-one",
@@ -38933,6 +39480,15 @@
         "dependent": false,
         "relatedModelName": "Agent",
         "column": "ModifiedByAgentID"
+      },
+      {
+        "name": "component",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Component",
+        "column": "ComponentID",
+        "otherSideName": "absoluteAges"
       }
     ],
     "fieldAliases": []
@@ -39181,6 +39737,15 @@
         "dependent": false,
         "relatedModelName": "Agent",
         "column": "ModifiedByAgentID"
+      },
+      {
+        "name": "component",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Component",
+        "column": "ComponentID",
+        "otherSideName": "relativeAges"
       }
     ],
     "fieldAliases": []
@@ -40093,6 +40658,14 @@
         "relatedModelName": "TectonicUnitTreeDefItem",
         "column": "TectonicUnitTreeDefItemID",
         "otherSideName": "treeEntries"
+      },
+      {
+        "name": "paleoContexts",
+        "type": "one-to-many",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "PaleoContext",
+        "otherSideName": "tectonicUnit"
       }
     ],
     "fieldAliases": [
@@ -40123,7 +40696,7 @@
         "column": "Ordinal",
         "indexed": false,
         "unique": false,
-        "required": false,
+        "required": true,
         "type": "java.lang.Integer"
       },
       {

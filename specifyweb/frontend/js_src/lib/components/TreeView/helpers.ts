@@ -25,8 +25,14 @@ export const fetchRows = async (fetchUrl: string) =>
         number | null,
         string | null,
         string | null,
+        string | null,
+        string | null,
+        string | null,
+        string | null,
         number,
         string | null,
+        boolean | null,
+        number | null,
       ]
     >
   >(fetchUrl, {
@@ -44,8 +50,14 @@ export const fetchRows = async (fetchUrl: string) =>
           acceptedId = undefined,
           acceptedName = undefined,
           author = undefined,
+          startPeriod = undefined,
+          startUncertainty = undefined,
+          endPeriod = undefined,
+          endUncertainty = undefined,
           children,
           synonyms = undefined,
+          isBioStrat = undefined,
+          matchingDescendantCount = undefined,
         ],
         index,
         { length }
@@ -59,9 +71,15 @@ export const fetchRows = async (fetchUrl: string) =>
         acceptedId,
         acceptedName,
         author,
+        startPeriod,
+        startUncertainty,
+        endPeriod,
+        endUncertainty,
         children,
         isLastChild: index + 1 === length,
         synonyms,
+        isBioStrat: isBioStrat as boolean | null | undefined,
+        matchingDescendantCount: matchingDescendantCount as number | undefined,
       })
     )
   );
@@ -71,6 +89,8 @@ export type Stats = RR<
   {
     readonly directCount: number;
     readonly childCount: number;
+    // Only present when the "show counts for synonymized nodes" pref is on
+    readonly synonymCount: number | undefined;
   }
 >;
 
@@ -78,17 +98,18 @@ export type Stats = RR<
  * Fetch tree node usage stats
  */
 export const fetchStats = async (url: string): Promise<Stats> =>
-  ajax<RA<readonly [number, number, number]>>(url, {
+  ajax<RA<readonly [number, number, number, number?]>>(url, {
     headers: { Accept: 'application/json' },
     errorMode: 'silent',
   })
     .then(({ data }) =>
       Object.fromEntries(
-        data.map(([childId, directCount, allCount]) => [
+        data.map(([childId, directCount, allCount, synonymCount]) => [
           childId,
           {
             directCount,
             childCount: allCount - directCount,
+            synonymCount,
           },
         ])
       )
@@ -190,30 +211,53 @@ export const formatTreeStats = (
 ): {
   readonly title: string;
   readonly text: string;
-} => ({
-  title: filterArray([
-    commonText.colonLine({
-      label: treeText.directCollectionObjectCount({
-        collectionObjectTable: tables.CollectionObject.label,
-      }),
-      value: nodeStats.directCount.toString(),
-    }),
-    isLeaf
-      ? undefined
-      : commonText.colonLine({
-          label: treeText.indirectCollectionObjectCount({
-            collectionObjectTable: tables.CollectionObject.label,
-          }),
-          value: nodeStats.childCount.toString(),
+} => {
+  const { synonymCount } = nodeStats;
+  return {
+    title: filterArray([
+      commonText.colonLine({
+        label: treeText.directCollectionObjectCount({
+          collectionObjectTable: tables.CollectionObject.label,
         }),
-  ]).join('\n'),
-  text: isLeaf
-    ? treeText.leafNodeStats({ directCount: nodeStats.directCount })
-    : treeText.nodeStats({
-        directCount: nodeStats.directCount,
-        childCount: nodeStats.childCount,
+        value: nodeStats.directCount.toString(),
       }),
-});
+      isLeaf
+        ? undefined
+        : commonText.colonLine({
+            label: treeText.indirectCollectionObjectCount({
+              collectionObjectTable: tables.CollectionObject.label,
+            }),
+            value: nodeStats.childCount.toString(),
+          }),
+      typeof synonymCount === 'number'
+        ? commonText.colonLine({
+            label: treeText.synonymizedCollectionObjectCount({
+              collectionObjectTable: tables.CollectionObject.label,
+            }),
+            value: synonymCount.toString(),
+          })
+        : undefined,
+    ]).join('\n\n'),
+    text:
+      typeof synonymCount === 'number'
+        ? isLeaf
+          ? treeText.leafNodeStatsWithSynonyms({
+              directCount: nodeStats.directCount,
+              synonymCount,
+            })
+          : treeText.nodeStatsWithSynonyms({
+              directCount: nodeStats.directCount,
+              childCount: nodeStats.childCount,
+              synonymCount,
+            })
+        : isLeaf
+          ? treeText.leafNodeStats({ directCount: nodeStats.directCount })
+          : treeText.nodeStats({
+              directCount: nodeStats.directCount,
+              childCount: nodeStats.childCount,
+            }),
+  };
+};
 
 /**
  * Check if there are any enforced ranks between current tree node parent

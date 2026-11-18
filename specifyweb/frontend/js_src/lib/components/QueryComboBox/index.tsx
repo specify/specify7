@@ -13,8 +13,8 @@ import type { RA } from '../../utils/types';
 import { filterArray, localized } from '../../utils/types';
 import { DataEntry } from '../Atoms/DataEntry';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
-import { backboneFieldSeparator } from '../DataModel/helpers';
-import type { AnySchema } from '../DataModel/helperTypes';
+import { backboneFieldSeparator, toTable } from '../DataModel/helpers';
+import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import {
   fetchResource,
@@ -25,10 +25,9 @@ import { serializeResource } from '../DataModel/serializers';
 import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
-import type {
-  CollectionObject,
-  CollectionObjectType,
-} from '../DataModel/types';
+import type { CollectionObject } from '../DataModel/types';
+import type { CollectionObjectType } from '../DataModel/types';
+import type { SpQuery } from '../DataModel/types';
 import { format, naiveFormatter } from '../Formatters/formatters';
 import type { FormType } from '../FormParse';
 import { ResourceView, RESTRICT_ADDING } from '../Forms/ResourceView';
@@ -43,11 +42,14 @@ import { hasTablePermission } from '../Permissions/helpers';
 import { runQuery } from '../QueryBuilder/ResultsWrapper';
 import type { QueryComboBoxFilter } from '../SearchDialog';
 import { SearchDialog } from '../SearchDialog';
+import { QUERY_COMBO_BOX_PAGE_SIZE } from './constants';
 import {
   getQueryComboBoxConditions,
   getRelatedCollectionId,
   makeComboBoxQuery,
+  deduplicateQueryComboBoxResults,
   pendingValueToResource,
+  scopeNewResourceToCollection,
   useQueryComboBoxDefaults,
 } from './helpers';
 import type { TypeSearch } from './spec';
@@ -76,6 +78,7 @@ export function QueryComboBox({
   searchView,
   defaultRecord,
   relatedTable: initialRelatedTable,
+  onSavingNewRecord: handleSavingNewRecord,
 }: {
   readonly id: string | undefined;
   readonly resource: SpecifyResource<AnySchema> | undefined;
@@ -92,6 +95,9 @@ export function QueryComboBox({
   readonly searchView?: string;
   readonly defaultRecord?: string | undefined;
   readonly relatedTable?: SpecifyTable | undefined;
+  readonly onSavingNewRecord?:
+    | ((resource: SpecifyResource<AnySchema>) => void)
+    | undefined;
 }): JSX.Element {
   React.useEffect(() => {
     useQueryComboBoxDefaults({ resource, field, defaultRecord });
@@ -223,6 +229,7 @@ export function QueryComboBox({
     typeof collectionRelationships === 'object' && typeof resource === 'object'
       ? getRelatedCollectionId(collectionRelationships, resource, field.name)
       : undefined;
+  const targetCollectionId = forceCollection ?? relatedCollectionId;
 
   const loading = React.useContext(LoadingContext);
   const handleOpenRelated = (isReadOnly: boolean): void =>
@@ -250,6 +257,19 @@ export function QueryComboBox({
     (typeof typeSearch === 'object' ? typeSearch?.table : undefined) ??
     field.relatedTable;
 
+  const createPendingResource = React.useCallback(
+    async () =>
+      scopeNewResourceToCollection(
+        pendingValueToResource(field, typeSearch, pendingValueRef.current),
+        targetCollectionId
+      ),
+    [field, typeSearch, targetCollectionId]
+  );
+
+  // Used to fetch again tree def if the component type changes
+  const componentType =
+    resource?.specifyTable === tables.Component ? resource?.get('type') : null;
+
   const [fetchedTreeDefinition] = useAsyncState(
     React.useCallback(async () => {
       if (resource?.specifyTable === tables.Determination) {
@@ -265,6 +285,17 @@ export function QueryComboBox({
                 ) => collectionObjectType?.get('taxonTreeDef')
               )
           : undefined;
+      } else if (resource?.specifyTable === tables.Component) {
+        const typeResource = await toTable(resource, 'Component')?.rgetPromise(
+          'type'
+        );
+        if (typeResource === undefined || typeResource === null) {
+          console.warn('Could not scope Component -> name without type', {
+            component: resource,
+          });
+          return undefined;
+        }
+        return typeResource.get('taxonTreeDef');
       } else if (resource?.specifyTable === tables.Taxon) {
         const definition = resource.get('definition');
         const parentDefinition = (
@@ -273,7 +304,11 @@ export function QueryComboBox({
         return definition || parentDefinition;
       }
       return undefined;
-    }, [resource, resource?.collection?.related?.get('collectionObjectType')]),
+    }, [
+      resource,
+      resource?.collection?.related?.get('collectionObjectType'),
+      componentType,
+    ]),
     false
   );
 
@@ -281,90 +316,174 @@ export function QueryComboBox({
   const parentTreeDefinition = React.useContext(TreeDefinitionContext);
   const treeDefinition = fetchedTreeDefinition ?? parentTreeDefinition;
 
-  // FEATURE: use main table field if type search is not defined
-  const fetchSource = React.useCallback(
-    async (value: string): Promise<RA<AutoCompleteItem<string>>> =>
-      isLoaded && typeof typeSearch === 'object' && typeof resource === 'object'
-        ? Promise.all(
-            typeSearch.searchFields
-              .map((fields) =>
-                makeComboBoxQuery({
+  // Pagination state for batch-on-scroll loading
+  const [isLoadingMore, setIsLoadingMore] = React.useState(false);
+  const loadingMoreRef = React.useRef<
+    RA<SerializedResource<SpQuery>> | undefined
+  >(undefined);
+  const paginationRef = React.useRef({
+    hasMore: true,
+    offset: 0,
+    queries: [] as RA<SerializedResource<SpQuery>>,
+  });
+
+  const makeQueries = React.useCallback(
+    (value: string): RA<SerializedResource<SpQuery>> =>
+      typeof typeSearch === 'object' && typeof resource === 'object'
+        ? typeSearch.searchFields
+            .map((fields) =>
+              makeComboBoxQuery({
+                fieldName: fields
+                  .map(({ name }) => name)
+                  .join(backboneFieldSeparator),
+                value,
+                isTreeTable: isTreeTable(field.relatedTable.name),
+                typeSearch,
+                specialConditions: getQueryComboBoxConditions({
+                  resource,
                   fieldName: fields
                     .map(({ name }) => name)
                     .join(backboneFieldSeparator),
-                  value,
-                  isTreeTable: isTreeTable(field.relatedTable.name),
-                  typeSearch,
-                  specialConditions: getQueryComboBoxConditions({
-                    resource,
-                    fieldName: fields
-                      .map(({ name }) => name)
-                      .join(backboneFieldSeparator),
-                    collectionRelationships:
-                      typeof collectionRelationships === 'object'
-                        ? collectionRelationships
-                        : undefined,
-                    treeData:
-                      typeof treeData === 'object' ? treeData : undefined,
-                    relatedTable,
-                    subViewRelationship,
-                    treeDefinition,
-                  }),
-                })
-              )
-              .map(serializeResource)
-              .map((query) => ({
-                ...query,
-                fields: query.fields.map((field, index) => ({
-                  ...field,
-                  position: index,
-                })),
-              }))
-              .map(async (query) =>
-                runQuery<readonly [id: number, label: LocalizedString]>(query, {
-                  collectionId: forceCollection ?? relatedCollectionId,
-                  // REFACTOR: allow customizing these arbitrary limits
-                  limit: 1000,
-                })
-              )
-          ).then((responses) =>
-            /*
-             * If there are multiple search fields and both returns the
-             * same record, it may be presented in results twice. Would
-             * be fixed by using OR queries
-             * REFACTOR: refactor to use OR queries across fields once
-             *   supported
-             */
-            responses.flat().map(([id, label]) => ({
-              data: getResourceApiUrl(
-                field.isRelationship
-                  ? field.relatedTable.name
-                  : resource.specifyTable.name,
-                id
-              ),
-              label,
+                  collectionRelationships:
+                    typeof collectionRelationships === 'object'
+                      ? collectionRelationships
+                      : undefined,
+                  treeData: typeof treeData === 'object' ? treeData : undefined,
+                  relatedTable,
+                  subViewRelationship,
+                  treeDefinition,
+                  typeSearchName: typeSearch.name,
+                }),
+              })
+            )
+            .map(serializeResource)
+            .map((query) => ({
+              ...query,
+              fields: query.fields.map((queryField, index) => ({
+                ...queryField,
+                position: index,
+              })),
             }))
-          )
         : [],
     [
       field,
-      isLoaded,
       typeSearch,
       relatedTable,
       subViewRelationship,
       collectionRelationships,
-      forceCollection,
-      relatedCollectionId,
       resource,
       treeData,
-      fetchedTreeDefinition,
-      parentTreeDefinition,
+      treeDefinition,
     ]
   );
 
+  const rowsToItems = React.useCallback(
+    (
+      responses: RA<RA<readonly [id: number, label: LocalizedString]>>
+    ): RA<AutoCompleteItem<string>> =>
+      deduplicateQueryComboBoxResults(responses).map(([id, label]) => ({
+        data: getResourceApiUrl(
+          field.isRelationship
+            ? field.relatedTable.name
+            : resource!.specifyTable.name,
+          id
+        ),
+        label,
+      })),
+    [field, resource]
+  );
+
+  const runPage = React.useCallback(
+    async (offset: number) =>
+      Promise.all(
+        paginationRef.current.queries.map(async (query) =>
+          runQuery<readonly [id: number, label: LocalizedString]>(query, {
+            collectionId: forceCollection ?? relatedCollectionId,
+            limit: QUERY_COMBO_BOX_PAGE_SIZE,
+            offset,
+          })
+        )
+      ),
+    [forceCollection, relatedCollectionId]
+  );
+
+  // FEATURE: use main table field if type search is not defined
+  const fetchSource = React.useCallback(
+    async (value: string): Promise<RA<AutoCompleteItem<string>>> => {
+      if (
+        !isLoaded ||
+        typeof typeSearch !== 'object' ||
+        typeof resource !== 'object'
+      )
+        return [];
+
+      // Reset pagination on new search
+      setExtraItems([]);
+      loadingMoreRef.current = undefined;
+      setIsLoadingMore(false);
+      const queries = makeQueries(value);
+      const state = { hasMore: true, offset: 0, queries };
+      paginationRef.current = state;
+
+      const responses = await runPage(0);
+      if (paginationRef.current !== state) return [];
+
+      const items = rowsToItems(responses);
+      state.offset = QUERY_COMBO_BOX_PAGE_SIZE;
+      state.hasMore = responses.some(
+        (r) => r.length >= QUERY_COMBO_BOX_PAGE_SIZE
+      );
+      return items;
+    },
+    [isLoaded, typeSearch, resource, makeQueries, rowsToItems, runPage]
+  );
+
+  const handleScrollEnd = React.useCallback((): void => {
+    if (!paginationRef.current.hasMore || loadingMoreRef.current !== undefined)
+      return;
+
+    const queries = paginationRef.current.queries;
+    const offset = paginationRef.current.offset;
+    loadingMoreRef.current = queries;
+
+    setIsLoadingMore(true);
+    void runPage(offset)
+      .then((responses) => {
+        if (
+          paginationRef.current.queries !== queries ||
+          loadingMoreRef.current !== queries
+        )
+          return undefined;
+        const newItems = rowsToItems(responses);
+        paginationRef.current.offset += QUERY_COMBO_BOX_PAGE_SIZE;
+        paginationRef.current.hasMore = responses.some(
+          (r) => r.length >= QUERY_COMBO_BOX_PAGE_SIZE
+        );
+        return newItems;
+      })
+      .then((newItems) => {
+        if (newItems === undefined || loadingMoreRef.current !== queries)
+          return;
+        loadingMoreRef.current = undefined;
+        setIsLoadingMore(false);
+        setExtraItems((prev) => [...prev, ...newItems]);
+      })
+      .catch(() => {
+        if (loadingMoreRef.current === queries) {
+          loadingMoreRef.current = undefined;
+          setIsLoadingMore(false);
+        }
+      });
+  }, [rowsToItems, runPage]);
+
+  // Extra items appended via scroll pagination
+  const [extraItems, setExtraItems] = React.useState<
+    RA<AutoCompleteItem<string>>
+  >([]);
+
   const canAdd =
     !RESTRICT_ADDING.has(field.relatedTable.name) &&
-    hasTablePermission(field.relatedTable.name, 'create');
+    hasTablePermission(field.relatedTable.name, 'create', targetCollectionId);
 
   const isReadOnly = React.useContext(ReadOnlyContext);
 
@@ -384,11 +503,10 @@ export function QueryComboBox({
     <div className="flex w-full min-w-[theme(spacing.40)] items-center sm:min-w-[unset]">
       <TreeDefinitionContext.Provider value={treeDefinition}>
         <AutoComplete<string>
-          aria-label={undefined}
+          delay={isTreeTable(field.relatedTable.name) ? 500 : undefined}
           disabled={
             !isLoaded ||
             isReadOnly ||
-            formType === 'formTable' ||
             typeSearch === undefined ||
             /**
              * Don't disable the input if it is currently focused
@@ -400,14 +518,18 @@ export function QueryComboBox({
           filterItems={false}
           forwardRef={validationRef}
           inputProps={{
+            'aria-label': field.label,
             id,
             required: isRequired,
             title:
-              typeof typeSearch === 'object' ? typeSearch.title : undefined,
+              (typeof typeSearch === 'object' ? typeSearch.title : undefined) ??
+              field.label,
             ...getValidationAttributes(parser),
             type: 'text',
             [titlePosition]: 'top',
           }}
+          extraItems={extraItems}
+          isLoadingMore={isLoadingMore}
           pendingValueRef={pendingValueRef}
           source={fetchSource}
           value={
@@ -423,19 +545,20 @@ export function QueryComboBox({
             updateValue(data);
           }}
           onCleared={(): void => updateValue('')}
+          onScrollEnd={handleScrollEnd}
           onNewValue={
             formType !== 'formTable' && canAdd
               ? (): void =>
                   state.type === 'AddResourceState'
                     ? setState({ type: 'MainState' })
-                    : setState({
-                        type: 'AddResourceState',
-                        resource: pendingValueToResource(
-                          field,
-                          typeSearch,
-                          pendingValueRef.current
-                        ),
-                      })
+                    : loading(
+                        createPendingResource().then((pendingResource) =>
+                          setState({
+                            type: 'AddResourceState',
+                            resource: pendingResource,
+                          })
+                        )
+                      )
               : undefined
           }
         />
@@ -460,17 +583,18 @@ export function QueryComboBox({
               {canAdd && hasNewButton ? (
                 <DataEntry.Add
                   aria-pressed={state.type === 'AddResourceState'}
+                  enableShortcut={false}
                   onClick={(): void =>
                     state.type === 'AddResourceState'
                       ? setState({ type: 'MainState' })
-                      : setState({
-                          type: 'AddResourceState',
-                          resource: pendingValueToResource(
-                            field,
-                            typeSearch,
-                            pendingValueRef.current
-                          ),
-                        })
+                      : loading(
+                          createPendingResource().then((pendingResource) =>
+                            setState({
+                              type: 'AddResourceState',
+                              resource: pendingResource,
+                            })
+                          )
+                        )
                   }
                 />
               ) : undefined}
@@ -514,6 +638,10 @@ export function QueryComboBox({
                                 relatedTable,
                                 subViewRelationship,
                                 treeDefinition,
+                                typeSearchName:
+                                  typeof typeSearch === 'object'
+                                    ? typeSearch.name
+                                    : undefined,
                               })
                                 .map(serializeResource)
                                 .map(({ fieldName, startValue }) =>
@@ -541,21 +669,34 @@ export function QueryComboBox({
                                             isNot: false,
                                             value: startValue,
                                           }
-                                        : fieldName === 'taxonTreeDefId'
+                                        : fieldName === 'taxonTreeDefId' ||
+                                            fieldName === 'definitionId'
                                           ? {
                                               field: 'definition',
+                                              queryBuilderFieldPath: [
+                                                'definition',
+                                                'id',
+                                              ],
                                               isRelationship: true,
                                               operation: 'in',
                                               isNot: false,
                                               value: startValue,
                                             }
-                                          : f.error(
-                                              `extended filter not created`,
-                                              {
-                                                fieldName,
-                                                startValue,
+                                          : fieldName === 'isBioStrat'
+                                            ? {
+                                                field: 'isBioStrat',
+                                                isRelationship: false,
+                                                operation: 'in',
+                                                isNot: false,
+                                                value: '1',
                                               }
-                                            )
+                                            : f.error(
+                                                `extended filter not created`,
+                                                {
+                                                  fieldName,
+                                                  startValue,
+                                                }
+                                              )
                                 )
                             ),
                           })
@@ -617,21 +758,22 @@ export function QueryComboBox({
               resource?.set(field.name, state.resource as never);
               setState({ type: 'MainState' });
             }}
-            onSaving={
-              field.isDependent()
-                ? (): false => {
-                    resource?.set(field.name, state.resource as never);
-                    setState({ type: 'MainState' });
-                    return false;
-                  }
-                : undefined
-            }
+            onSaving={(unsetUnloadProtect): false | void => {
+              handleSavingNewRecord?.(state.resource);
+              if (field.isDependent()) {
+                resource?.set(field.name, state.resource as never);
+                setState({ type: 'MainState' });
+                unsetUnloadProtect();
+                return false;
+              }
+              return undefined;
+            }}
           />
         ) : undefined}
         {state.type === 'SearchState' ? (
           <SearchDialog
             extraFilters={state.extraConditions}
-            forceCollection={forceCollection ?? relatedCollectionId}
+            forceCollection={targetCollectionId}
             multiple={false}
             searchView={searchView}
             table={relatedTable}

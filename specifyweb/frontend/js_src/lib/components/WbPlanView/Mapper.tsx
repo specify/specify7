@@ -29,6 +29,7 @@ import type { Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { TableIcon } from '../Molecules/TableIcon';
+import { ATTACHMENTS_COLUMN } from '../WorkBench/attachmentHelpers';
 import { Layout } from './Header';
 import {
   fetchAutoMapperSuggestions,
@@ -42,6 +43,7 @@ import { columnOptionsAreDefault } from './linesGetter';
 import {
   BatchEditPrefsView,
   ChangeBaseTable,
+  ClearMappings,
   EmptyDataSetDialog,
   mappingOptionsMenu,
   MappingsControlPanel,
@@ -56,7 +58,7 @@ import { reducer } from './mappingReducer';
 import { findRequiredMissingFields } from './modelHelpers';
 import { getMappingLineData } from './navigator';
 import { navigatorSpecs } from './navigatorSpecs';
-import type { ColumnOptions } from './uploadPlanParser';
+import type { ColumnOptions, DatasetAttachmentPrefs } from './uploadPlanParser';
 import type { Dataset } from './Wrapped';
 
 /*
@@ -104,6 +106,7 @@ export type MappingState = State<
     readonly openSelectElement?: SelectElementPosition;
     readonly validationResults: RA<MappingPath>;
     readonly batchEditPrefs?: BatchEditPrefs;
+    readonly attachmentPrefs?: DatasetAttachmentPrefs;
   }
 >;
 
@@ -123,16 +126,23 @@ export const DEFAULT_BATCH_EDIT_PREFS: BatchEditPrefs = {
   deferForNullCheck: false,
 } as const;
 
+export const DEFAULT_ATTACHMENT_PREFS: DatasetAttachmentPrefs = {
+  usesAttachments: true,
+  attachmentsColumn: ATTACHMENTS_COLUMN,
+} as const;
+
 export const getDefaultMappingState = ({
   changesMade,
   lines,
   mustMatchPreferences,
   batchEditPrefs,
+  attachmentPrefs,
 }: {
   readonly changesMade: boolean;
   readonly lines: RA<MappingLine>;
   readonly mustMatchPreferences: IR<boolean>;
   readonly batchEditPrefs?: BatchEditPrefs;
+  readonly attachmentPrefs?: DatasetAttachmentPrefs;
 }): MappingState => ({
   type: 'MappingState',
   showHiddenFields: getCache('wbPlanViewUi', 'showHiddenFields') ?? false,
@@ -145,6 +155,7 @@ export const getDefaultMappingState = ({
   changesMade,
   mustMatchPreferences,
   batchEditPrefs,
+  attachmentPrefs,
 });
 
 // REFACTOR: split component into smaller components
@@ -155,7 +166,8 @@ export function Mapper(props: {
   readonly onSave: (
     lines: RA<MappingLine>,
     mustMatchPreferences: IR<boolean>,
-    batchEditPrefs?: BatchEditPrefs
+    batchEditPrefs?: BatchEditPrefs,
+    attachmentPrefs?: DatasetAttachmentPrefs
   ) => Promise<void>;
   // Initial values for the state:
   readonly changesMade: boolean;
@@ -163,6 +175,7 @@ export function Mapper(props: {
   readonly mustMatchPreferences: IR<boolean>;
   readonly readonlySpec?: ReadonlySpec;
   readonly batchEditPrefs?: BatchEditPrefs;
+  readonly attachmentPrefs?: DatasetAttachmentPrefs;
 }): JSX.Element {
   const [state, dispatch] = React.useReducer(
     reducer,
@@ -171,6 +184,7 @@ export function Mapper(props: {
       lines: props.lines,
       mustMatchPreferences: props.mustMatchPreferences,
       batchEditPrefs: props.batchEditPrefs,
+      attachmentPrefs: props.attachmentPrefs,
     },
     getDefaultMappingState
   );
@@ -293,7 +307,8 @@ export function Mapper(props: {
         props.onSave(
           state.lines,
           state.mustMatchPreferences,
-          state.batchEditPrefs
+          state.batchEditPrefs,
+          state.attachmentPrefs
         )
       );
     } else
@@ -336,16 +351,18 @@ export function Mapper(props: {
         isReadOnly ? undefined : (
           <>
             <ChangeBaseTable onClick={props.onChangeBaseTable} />
-            <Button.Small
-              aria-haspopup="dialog"
+            <ClearMappings
+              showConfirmation={(): boolean =>
+                state.lines.some(({ mappingPath }) =>
+                  mappingPath.some((segment) => segment !== emptyMapping)
+                )
+              }
               onClick={(): void =>
                 dispatch({
                   type: 'ResetMappingsAction',
                 })
               }
-            >
-              {wbPlanText.clearMappings()}
-            </Button.Small>
+            />
             <ReRunAutoMapper
               showConfirmation={(): boolean =>
                 state.lines.some(({ mappingPath }) =>
@@ -432,7 +449,7 @@ export function Mapper(props: {
             <Button.Small
               className={
                 state.mappingsAreValidated
-                  ? 'bg-green-400 dark:bg-green-700'
+                  ? 'bg-brand-100 dark:bg-brand-300'
                   : undefined
               }
               disabled={state.lines.every(
@@ -453,7 +470,7 @@ export function Mapper(props: {
             aria-haspopup="dialog"
             href={`/specify/workbench/${props.dataset.id}/`}
           >
-            {isReadOnly ? wbText.dataEditor() : commonText.cancel()}
+            {wbText.dataEditor()}
           </Link.Small>
           {!disableSave && (
             <Button.Small
@@ -508,6 +525,7 @@ export function Mapper(props: {
       )}
       {state.showMappingView && (
         <MappingView
+          baseTableName={props.baseTableName}
           mappingElementProps={getMappingLineProps({
             mappingLineData: getMappingLineData({
               baseTableName: props.baseTableName,
@@ -530,6 +548,20 @@ export function Mapper(props: {
                 });
             },
           })}
+          showHiddenFields={state.showHiddenFields}
+          onSelectSearchResult={(mappingPath): void => {
+            dispatch({ type: 'SetMappingViewAction', mappingPath });
+            if (
+              !isReadOnly &&
+              state.lines.length > 0 &&
+              !mappingPathIsComplete(
+                state.lines[state.focusedLine]?.mappingPath ?? [emptyMapping]
+              ) &&
+              mappingPathIsComplete(mappingPath) &&
+              getMappedFieldsBind(mappingPath).length === 0
+            )
+              dispatch({ type: 'MappingViewMapAction' });
+          }}
         >
           <Button.Small
             className="flex-col justify-center p-2"
@@ -636,6 +668,12 @@ export function Mapper(props: {
                         type: 'ChangeDefaultValueAction',
                         line,
                         defaultValue,
+                      }),
+                    onChangeDisambiguationBehavior: (disambiguationBehavior) =>
+                      dispatch({
+                        type: 'ChangeDisambiguationBehaviorAction',
+                        line,
+                        disambiguationBehavior,
                       }),
                   }),
                   previewOption: {

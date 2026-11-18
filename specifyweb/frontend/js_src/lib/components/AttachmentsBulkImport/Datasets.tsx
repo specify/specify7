@@ -208,6 +208,11 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
                     />
                     {attachmentDataSet.name}
                   </Link.Default>
+                  {attachmentDataSet.matchingmode === 'mappingFile' && (
+                    <div className="text-xs text-gray-500">
+                      {attachmentsText.matchByMappingFile()}
+                    </div>
+                  )}
                 </td>
                 <td>
                   <DateElement date={attachmentDataSet.timestampcreated} />

@@ -1,27 +1,8 @@
-
 from django.db import migrations
-from django.db.models import F
-
-from specifyweb.specify.migration_utils.sp7_schemaconfig import (
-MIGRATION_0033_TABLES
-)
-
-CONTAINER_MIGRATIONS = MIGRATION_0033_TABLES
-
-def fix_table_description(apps):
-    Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
-    Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
-
-    for table_name, table_desc in CONTAINER_MIGRATIONS:
-        containers = Splocalecontainer.objects.filter(
-            name=table_name.lower(), schematype=0)
-
-        Splocaleitemstr.objects.filter(
-         containerdesc__in=containers
-        ).update(text=table_desc)
+from specifyweb.specify.migration_utils.migration_helpers.helper_0033_update_paleo_desc import update_paleo_desc
 
 def schemaconfig_fixes(apps, schema_editor):
-    fix_table_description(apps)
+    update_paleo_desc(apps)
 
 class Migration(migrations.Migration):
     dependencies = [

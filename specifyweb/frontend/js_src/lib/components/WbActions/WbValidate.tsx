@@ -14,12 +14,14 @@ export function WbValidate({
   validation,
   isMapped,
   isResultsOpen,
+  isInWorkBench = true,
 }: {
   readonly hasUnsavedChanges: boolean;
   readonly startUpload: (mode: WbStatus) => void;
   readonly validation: WbValidation;
   readonly isMapped: boolean;
   readonly isResultsOpen: boolean;
+  readonly isInWorkBench?: boolean;
 }): JSX.Element {
   const [canLiveValidate] = userPreferences.use(
     'workBench',
@@ -27,6 +29,13 @@ export function WbValidate({
     'liveValidation'
   );
   const [isLiveValidateOn, _, __, toggleLiveValidate] = useBooleanState();
+
+  // When in Batch Edit, we need to make sure live validation
+  // is stopped since the toggle is not rendered to turn it off manually.
+  React.useEffect(() => {
+    if (!isInWorkBench) validation.stopLiveValidation();
+  }, [isInWorkBench, validation]);
+
   const handleValidate = () => startUpload('validate');
   const handleToggleDataCheck = () => {
     validation.toggleDataCheck();
@@ -35,7 +44,7 @@ export function WbValidate({
 
   return (
     <>
-      {canLiveValidate && (
+      {canLiveValidate && isInWorkBench && (
         <Button.Small
           aria-pressed={validation.validationMode === 'live'}
           disabled={!isMapped || isResultsOpen}

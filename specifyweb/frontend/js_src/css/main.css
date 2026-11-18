@@ -4,6 +4,16 @@
  */
 @tailwind base;
 
+@keyframes notification-toast-progress {
+  from {
+    transform: scaleX(1);
+  }
+
+  to {
+    transform: scaleX(0);
+  }
+}
+
 /*
  * REFACTOR: get rid of most global styles once everything is using React components
  *   (can use arbitrary variants too)
@@ -17,10 +27,12 @@
 
   body.dark {
     color-scheme: dark;
+    @apply text-white;
   }
 
   body:not(.dark) {
     color-scheme: light;
+    @apply text-black;
   }
 
   body.no-rounded-corners *:not(.rounded-full) {
@@ -34,8 +46,9 @@
      * Disables transitions for text color.
      * See https://github.com/specify/specify7/issues/1561
      */
-    transition-property: background-color, border-color, text-decoration-color,
-      fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+    transition-property:
+      background-color, border-color, text-decoration-color, fill, stroke,
+      opacity, box-shadow, transform, filter, backdrop-filter;
   }
 
   [type='text'],
@@ -101,7 +114,7 @@
 
   [type='checkbox'],
   [type='radio'] {
-    @apply text-brand-200 dark:text-brand-400 cursor-pointer focus:border-none focus:!ring-2
+    @apply text-brand-300 dark:text-brand-400 cursor-pointer focus:border-none focus:!ring-2
       focus:!ring-offset-0;
   }
 
@@ -192,7 +205,7 @@
   }
 
   .icon {
-    @apply active:bg-brand-100 dark:active:bg-brand-500
+    @apply active:bg-brand-100 dark:active:bg-brand-400
       disabled:!cursor-not-allowed disabled:!text-gray-400
       disabled:hover:!text-gray-400 disabled:dark:!text-neutral-600
       disabled:hover:dark:!text-neutral-600;
@@ -203,11 +216,11 @@
   }
 
   progress::-webkit-progress-value {
-    @apply bg-brand-200 dark:bg-brand-400 rounded;
+    @apply bg-brand-300 dark:bg-brand-400 rounded;
   }
 
   progress::-moz-progress-bar {
-    @apply bg-brand-200 dark:bg-brand-400 rounded;
+    @apply bg-brand-300 dark:bg-brand-400 rounded;
   }
 
   /*
@@ -272,9 +285,9 @@
     --custom-select-b1: theme('colors.white');
     --custom-select-b2: theme('colors.brand.100');
     --custom-select-accent: theme('colors.brand.100');
-    @apply dark:[--custom-select-accent:theme('colors.brand.500')]
+    @apply dark:[--custom-select-accent:theme('colors.brand.400')]
       dark:[--custom-select-b1:theme('colors.neutral.800')]
-      dark:[--custom-select-b2:theme('colors.brand.500')];
+      dark:[--custom-select-b2:theme('colors.brand.400')];
   }
 
   .custom-select-group-required-fields,

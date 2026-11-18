@@ -19,6 +19,7 @@ import { reportsText } from '../../localization/report';
 import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
 import { statsText } from '../../localization/stats';
+import { treeText } from '../../localization/tree';
 import type { Language } from '../../localization/utils/config';
 import { LANGUAGE } from '../../localization/utils/config';
 import { wbPlanText } from '../../localization/wbPlan';
@@ -32,12 +33,17 @@ import {
   overwriteReadOnly,
 } from '../../utils/types';
 import { camelToHuman } from '../../utils/utils';
+import { Select } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import { getField } from '../DataModel/helpers';
 import type { TableFields } from '../DataModel/helperTypes';
-import { genericTables } from '../DataModel/tables';
+import { genericTables, tables } from '../DataModel/tables';
 import type { Collection, Tables } from '../DataModel/types';
 import { error, softError } from '../Errors/assert';
+import type { KeyboardShortcuts } from '../KeyboardShortcuts/config';
+import { KeyboardShortcutPreferenceItem } from '../KeyboardShortcuts/Shortcuts';
+import type { UrlShortcuts } from '../KeyboardShortcuts/UrlShortcuts';
+import { UrlShortcutsEditor } from '../KeyboardShortcuts/UrlShortcuts';
 import type { StatLayout } from '../Statistics/types';
 import {
   LanguagePreferencesItem,
@@ -50,10 +56,17 @@ import {
   defaultFont,
   FontFamilyPreferenceItem,
   HeaderItemsPreferenceItem,
+  ThresholdRank,
   WelcomePageModePreferenceItem,
 } from './Renderers';
-import type { GenericPreferences, PreferencesVisibilityContext } from './types';
+import type {
+  GenericPreferences,
+  PreferenceItem,
+  PreferenceRendererProps,
+  PreferencesVisibilityContext,
+} from './types';
 import { definePref } from './types';
+import { dataViewsText } from '../../localization/dataViews';
 
 const isLightMode = ({
   isDarkMode,
@@ -71,11 +84,109 @@ const altKeyName =
     ? 'Option'
     : 'Alt';
 
+const defaultPreparationField = 'barCode';
+const defaultCollectionObjectField = 'catalogNumber';
+
+const isAllowedCollectionObjectField = (name: string): boolean => {
+  const lowered = name.toLowerCase();
+  return (
+    lowered === 'catalognumber' ||
+    lowered === 'altcatalognumber' ||
+    lowered === 'fieldnumber' ||
+    lowered === 'guid' ||
+    /^text\d+$/.test(lowered)
+  );
+};
+
+const isAllowedPrepField = (name: string): boolean => {
+  const lowered = name.toLowerCase();
+  return (
+    lowered === 'barcode' ||
+    lowered === 'samplenumber' ||
+    lowered === 'samplenum' ||
+    lowered === 'guid' ||
+    lowered === 'uniqueidentifier' ||
+    /^text\d+$/.test(lowered)
+  );
+};
+
+function PreparationFieldPreferenceItem({
+  value,
+  onChange: handleChange,
+}: PreferenceRendererProps<string>): JSX.Element {
+  const options = React.useMemo(
+    () =>
+      (tables.Preparation?.literalFields.length ?? 0) === 0
+        ? [{ value: 'barCode', title: camelToHuman('barCode') }]
+        : tables.Preparation.literalFields
+            .filter(({ name }) => isAllowedPrepField(name))
+            .map(({ name, label }) => ({
+              value: name,
+              title: label ?? camelToHuman(name),
+            })),
+    []
+  );
+
+  return (
+    <Select value={value} onValueChange={handleChange}>
+      {options.map(({ value: optionValue, title }) => (
+        <option key={optionValue} value={optionValue}>
+          {title}
+        </option>
+      ))}
+    </Select>
+  );
+}
+
+function CollectionObjectFieldPreferenceItem({
+  value,
+  onChange: handleChange,
+}: PreferenceRendererProps<string>): JSX.Element {
+  const options = React.useMemo(
+    () =>
+      (tables.CollectionObject?.literalFields.length ?? 0) === 0
+        ? [{ value: 'catalogNumber', title: camelToHuman('catalogNumber') }]
+        : tables.CollectionObject.literalFields
+            .filter(({ name }) => isAllowedCollectionObjectField(name))
+            .map(({ name, label }) => ({
+              value: name,
+              title: label ?? camelToHuman(name),
+            })),
+    []
+  );
+
+  return (
+    <Select value={value} onValueChange={handleChange}>
+      {options.map(({ value: optionValue, title }) => (
+        <option key={optionValue} value={optionValue}>
+          {title}
+        </option>
+      ))}
+    </Select>
+  );
+}
+
 /**
  * Have to be careful as preferences may be used before schema is loaded
  */
-const tableLabel = (tableName: keyof Tables): LocalizedString =>
+export const tableLabel = (tableName: keyof Tables): LocalizedString =>
   genericTables[tableName]?.label ?? camelToHuman(tableName);
+
+const defineKeyboardShortcut = (
+  title: LocalizedString,
+  defaultValue: KeyboardShortcuts | string
+): PreferenceItem<KeyboardShortcuts> =>
+  definePref<KeyboardShortcuts>({
+    title,
+    requiresReload: false,
+    visible: true,
+    defaultValue:
+      typeof defaultValue === 'string'
+        ? { other: [defaultValue] }
+        : defaultValue,
+    renderer: KeyboardShortcutPreferenceItem,
+    container: 'div',
+  });
 
 export const userPreferenceDefinitions = {
   general: {
@@ -256,7 +367,7 @@ export const userPreferenceDefinitions = {
             title: preferencesText.accentColor1(),
             requiresReload: false,
             visible: true,
-            defaultValue: '#ffcda3',
+            defaultValue: '#e0e2b9',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
@@ -264,7 +375,7 @@ export const userPreferenceDefinitions = {
             title: preferencesText.accentColor2(),
             requiresReload: false,
             visible: true,
-            defaultValue: '#ff9742',
+            defaultValue: '#ACB389',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
@@ -272,7 +383,7 @@ export const userPreferenceDefinitions = {
             title: preferencesText.accentColor3(),
             requiresReload: false,
             visible: true,
-            defaultValue: '#ff811a',
+            defaultValue: '#74914A',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
@@ -280,15 +391,7 @@ export const userPreferenceDefinitions = {
             title: preferencesText.accentColor4(),
             requiresReload: false,
             visible: true,
-            defaultValue: '#d15e00',
-            renderer: ColorPickerPreferenceItem,
-            container: 'label',
-          }),
-          accentColor5: definePref({
-            title: preferencesText.accentColor5(),
-            requiresReload: false,
-            visible: true,
-            defaultValue: '#703200',
+            defaultValue: '#687D3B',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
@@ -308,7 +411,7 @@ export const userPreferenceDefinitions = {
             title: preferencesText.saveButtonColor(),
             requiresReload: false,
             visible: isLightMode,
-            defaultValue: '#ff811a',
+            defaultValue: '#598137',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
@@ -316,7 +419,7 @@ export const userPreferenceDefinitions = {
             title: preferencesText.dangerButtonColor(),
             requiresReload: false,
             visible: isLightMode,
-            defaultValue: '#b91c1c',
+            defaultValue: '#b72f2f',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
@@ -324,7 +427,7 @@ export const userPreferenceDefinitions = {
             title: preferencesText.warningButtonColor(),
             requiresReload: false,
             visible: isLightMode,
-            defaultValue: '#f97316',
+            defaultValue: '#598137',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
@@ -332,7 +435,7 @@ export const userPreferenceDefinitions = {
             title: preferencesText.infoButtonColor(),
             requiresReload: false,
             visible: isLightMode,
-            defaultValue: '#1d4ed8',
+            defaultValue: '#0074B5',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
@@ -340,7 +443,7 @@ export const userPreferenceDefinitions = {
             title: preferencesText.successButtonColor(),
             requiresReload: false,
             visible: isLightMode,
-            defaultValue: '#166534',
+            defaultValue: '#596c32',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
@@ -369,7 +472,7 @@ export const userPreferenceDefinitions = {
             title: preferencesText.saveButtonColor(),
             requiresReload: false,
             visible: isDarkMode,
-            defaultValue: '#ff811a',
+            defaultValue: '#77AA49',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
@@ -385,7 +488,7 @@ export const userPreferenceDefinitions = {
             title: preferencesText.warningButtonColor(),
             requiresReload: false,
             visible: isDarkMode,
-            defaultValue: '#f97316',
+            defaultValue: '#77AA49',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
@@ -393,7 +496,7 @@ export const userPreferenceDefinitions = {
             title: preferencesText.infoButtonColor(),
             requiresReload: false,
             visible: isDarkMode,
-            defaultValue: '#1d4ed8',
+            defaultValue: '#0074B5',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
@@ -468,13 +571,6 @@ export const userPreferenceDefinitions = {
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
-          closeOnEsc: definePref<boolean>({
-            title: preferencesText.closeOnEsc(),
-            requiresReload: false,
-            visible: true,
-            defaultValue: true,
-            type: 'java.lang.Boolean',
-          }),
           closeOnOutsideClick: definePref<boolean>({
             title: preferencesText.closeOnOutsideClick(),
             requiresReload: false,
@@ -539,7 +635,7 @@ export const userPreferenceDefinitions = {
           mode: definePref<WelcomePageMode>({
             title: preferencesText.content(),
             description: (
-              <Link.NewTab href="https://discourse.specifysoftware.org/t/customizing-the-splash-screen/2604">
+              <Link.NewTab href="https://speciforum.org/t/customizing-the-splash-screen/2604">
                 {headerText.documentation()}
               </Link.NewTab>
             ),
@@ -608,6 +704,27 @@ export const userPreferenceDefinitions = {
           }),
         },
       },
+      actions: {
+        title: commonText.actions(),
+        items: {
+          shortcutsEnabled: definePref<boolean>({
+            title: preferencesText.shortcutsEnabled(),
+            description: preferencesText.shortcutsEnabledDescription(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
+          urlShortcuts: definePref<UrlShortcuts>({
+            title: headerText.userTools(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: {},
+            renderer: UrlShortcutsEditor,
+            container: 'div',
+          }),
+        },
+      },
     },
   },
   interactions: {
@@ -629,6 +746,28 @@ export const userPreferenceDefinitions = {
       createInteractions: {
         title: preferencesText.createInteractions(),
         items: {
+          collectionObjectField: definePref<string>({
+            title: () =>
+              preferencesText.tableIdentifier({
+                tableName: tables.CollectionObject.label,
+              }),
+            requiresReload: false,
+            visible: true,
+            defaultValue: defaultCollectionObjectField,
+            renderer: CollectionObjectFieldPreferenceItem,
+            container: 'label',
+          }),
+          preparationField: definePref<string>({
+            title: () =>
+              preferencesText.tableIdentifier({
+                tableName: tables.Preparation.label,
+              }),
+            requiresReload: false,
+            visible: true,
+            defaultValue: defaultPreparationField,
+            renderer: PreparationFieldPreferenceItem,
+            container: 'label',
+          }),
           useSpaceAsDelimiter: definePref<'auto' | 'false' | 'true'>({
             title: preferencesText.useSpaceAsDelimiter(),
             requiresReload: false,
@@ -802,6 +941,32 @@ export const userPreferenceDefinitions = {
           }),
         },
       },
+      actions: {
+        title: commonText.actions(),
+        items: {
+          openFormMeta: defineKeyboardShortcut(
+            preferencesText.openFormMeta(),
+            'KeyM'
+          ),
+          save: defineKeyboardShortcut(commonText.save(), 'Alt+Ctrl+KeyS'),
+          carryForward: defineKeyboardShortcut(
+            formsText.carryForward(),
+            'Alt+Ctrl+Shift+KeyC'
+          ),
+          clone: defineKeyboardShortcut(formsText.clone(), 'Ctrl+Shift+KeyL'),
+        },
+      },
+      dialogs: {
+        title: preferencesText.dialogs(),
+        items: {
+          close: defineKeyboardShortcut(commonText.close(), 'Escape'),
+          save: defineKeyboardShortcut(commonText.save(), 'Alt+Ctrl+KeyS'),
+          openRelatedRecordInNewTab: defineKeyboardShortcut(
+            preferencesText.openRelatedRecordInNewTab(),
+            'KeyO'
+          ),
+        },
+      },
       definition: {
         title: resourcesText.formDefinition(),
         items: {
@@ -856,6 +1021,13 @@ export const userPreferenceDefinitions = {
               min: 100,
               max: 10_000,
             },
+          }),
+          showSubviewBorders: definePref<boolean>({
+            title: preferencesText.showSubviewBorders(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
           }),
           limitMaxFieldWidth: definePref<boolean>({
             title: preferencesText.limitMaxFieldWidth(),
@@ -1080,7 +1252,7 @@ export const userPreferenceDefinitions = {
             title: preferencesText.treeSearchAlgorithm(),
             requiresReload: false,
             visible: true,
-            defaultValue: 'contains',
+            defaultValue: 'startsWith',
             values: [
               {
                 value: 'startsWith',
@@ -1125,6 +1297,26 @@ export const userPreferenceDefinitions = {
               },
             ],
           }),
+          goToFirstRecord: defineKeyboardShortcut(
+            formsText.goToFirstRecord(),
+            'Ctrl+Shift+ArrowUp'
+          ),
+          goToPreviousRecord: defineKeyboardShortcut(
+            formsText.goToPreviousRecord(),
+            'Ctrl+Shift+ArrowLeft'
+          ),
+          goToNextRecord: defineKeyboardShortcut(
+            formsText.goToNextRecord(),
+            'Ctrl+Shift+ArrowRight'
+          ),
+          goToLastRecord: defineKeyboardShortcut(
+            formsText.goToLastRecord(),
+            'Ctrl+Shift+ArrowDown'
+          ),
+          addResource: defineKeyboardShortcut(
+            resourcesText.addResource(),
+            'KeyA'
+          ),
         },
       },
       formTable: {
@@ -1342,6 +1534,22 @@ export const userPreferenceDefinitions = {
               },
             ],
           }),
+          showControls: definePref<boolean>({
+            title: attachmentsText.showControls(),
+            description: attachmentsText.showControlsDescription(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
+          collapseFormByDefault: definePref<boolean>({
+            title: attachmentsText.collapseFormByDefault(),
+            description: attachmentsText.collapseFormByDefaultDescription(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
         },
       },
     },
@@ -1428,6 +1636,19 @@ export const userPreferenceDefinitions = {
           }),
         },
       },
+      actions: {
+        title: commonText.actions(),
+        items: {
+          search: defineKeyboardShortcut(commonText.search(), 'KeyS'),
+          query: defineKeyboardShortcut(queryText.query(), 'KeyQ'),
+          edit: defineKeyboardShortcut(commonText.edit(), 'KeyE'),
+          add: defineKeyboardShortcut(treeText.addChild(), 'KeyA'),
+          move: defineKeyboardShortcut(treeText.moveNode(), 'KeyM'),
+          bulkMove: defineKeyboardShortcut(treeText.moveItems(), 'KeyB'),
+          merge: defineKeyboardShortcut(treeText.mergeNode(), 'KeyC'),
+          synonymize: defineKeyboardShortcut(treeText.synonymizeNode(), 'KeyY'),
+        },
+      },
       geography: {
         /*
          * This would be replaced with labels from schema once
@@ -1449,6 +1670,17 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: '#dc2626',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          rankThreshold: definePref<number>({
+            title: preferencesText.rankThreshold(),
+            description: preferencesText.rankThresholdDescription(),
+            requiresReload: true,
+            visible: true,
+            defaultValue: 0,
+            renderer: (props) => (
+              <ThresholdRank {...props} tableName="Geography" />
+            ),
             container: 'label',
           }),
         },
@@ -1479,6 +1711,40 @@ export const userPreferenceDefinitions = {
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
+          showSynonymCounts: definePref<boolean>({
+            title: preferencesText.showSynonymCounts(),
+            description: preferencesText.showSynonymCountsDescription(),
+            requiresReload: true,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+          queryField: definePref<'preferredTaxon' | 'taxon'>({
+            title: preferencesText.queryButtonTaxonField(),
+            description: preferencesText.queryButtonTaxonFieldDescription(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 'preferredTaxon',
+            values: [
+              {
+                value: 'preferredTaxon',
+                title: localized('_preferredTaxon'),
+              },
+              {
+                value: 'taxon',
+                title: localized('_taxon'),
+              },
+            ],
+          }),
+          rankThreshold: definePref<number>({
+            title: preferencesText.rankThreshold(),
+            description: preferencesText.rankThresholdDescription(),
+            requiresReload: true,
+            visible: true,
+            defaultValue: 0,
+            renderer: (props) => <ThresholdRank {...props} tableName="Taxon" />,
+            container: 'label',
+          }),
         },
       },
       storage: {
@@ -1498,6 +1764,17 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: '#dc2626',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          rankThreshold: definePref<number>({
+            title: preferencesText.rankThreshold(),
+            description: preferencesText.rankThresholdDescription(),
+            requiresReload: true,
+            visible: true,
+            defaultValue: 0,
+            renderer: (props) => (
+              <ThresholdRank {...props} tableName="Storage" />
+            ),
             container: 'label',
           }),
         },
@@ -1521,6 +1798,24 @@ export const userPreferenceDefinitions = {
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
+          displayChronoPeriods: definePref<boolean>({
+            title: preferencesText.displayChronoPeriods(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
+          rankThreshold: definePref<number>({
+            title: preferencesText.rankThreshold(),
+            description: preferencesText.rankThresholdDescription(),
+            requiresReload: true,
+            visible: true,
+            defaultValue: 0,
+            renderer: (props) => (
+              <ThresholdRank {...props} tableName="GeologicTimePeriod" />
+            ),
+            container: 'label',
+          }),
         },
       },
       lithoStrat: {
@@ -1540,6 +1835,17 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: '#dc2626',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          rankThreshold: definePref<number>({
+            title: preferencesText.rankThreshold(),
+            description: preferencesText.rankThresholdDescription(),
+            requiresReload: true,
+            visible: true,
+            defaultValue: 0,
+            renderer: (props) => (
+              <ThresholdRank {...props} tableName="LithoStrat" />
+            ),
             container: 'label',
           }),
         },
@@ -1563,6 +1869,17 @@ export const userPreferenceDefinitions = {
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
+          rankThreshold: definePref<number>({
+            title: preferencesText.rankThreshold(),
+            description: preferencesText.rankThresholdDescription(),
+            requiresReload: true,
+            visible: true,
+            defaultValue: 0,
+            renderer: (props) => (
+              <ThresholdRank {...props} tableName="TectonicUnit" />
+            ),
+            container: 'label',
+          }),
         },
       },
     },
@@ -1573,6 +1890,30 @@ export const userPreferenceDefinitions = {
       general: {
         title: preferencesText.general(),
         items: {
+          splitViewByDefault: definePref<boolean>({
+            title: dataViewsText.splitViewByDefault({
+              splitView: treeText.splitView(),
+            }),
+            description: dataViewsText.splitViewDescription({
+              splitView: treeText.splitView(),
+            }),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+          splitViewOrientation: definePref<'horizontal' | 'vertical'>({
+            title: dataViewsText.splitViewOrientation({
+              splitView: treeText.splitView(),
+            }),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 'horizontal',
+            values: [
+              { value: 'horizontal', title: treeText.horizontal() },
+              { value: 'vertical', title: treeText.vertical() },
+            ],
+          }),
           noRestrictionsMode: definePref<boolean>({
             title: preferencesText.noRestrictionsMode(),
             description: (
@@ -1672,6 +2013,18 @@ export const userPreferenceDefinitions = {
           }),
         },
       },
+      actions: {
+        title: commonText.actions(),
+        items: {
+          query: defineKeyboardShortcut(queryText.query(), 'KeyR'),
+          count: defineKeyboardShortcut(queryText.countOnly(), 'KeyC'),
+          distinct: defineKeyboardShortcut(queryText.distinct(), 'KeyD'),
+          browseInForms: defineKeyboardShortcut(
+            queryText.browseInForms(),
+            'KeyF'
+          ),
+        },
+      },
       appearance: {
         title: preferencesText.appearance(),
         items: {
@@ -1689,6 +2042,55 @@ export const userPreferenceDefinitions = {
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
+          wrapQueryResults: definePref<boolean>({
+            title: preferencesText.lineWrap(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+        },
+      },
+    },
+  },
+  dataViews: {
+    title: dataViewsText.dataViewsTitle(),
+    subCategories: {
+      general: {
+        title: preferencesText.general(),
+        items: {
+          splitViewByDefault: definePref<boolean>({
+            title: dataViewsText.splitViewByDefault({
+              splitView: treeText.splitView(),
+            }),
+            description: dataViewsText.splitViewDescription({
+              splitView: treeText.splitView(),
+            }),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
+          splitViewOrientation: definePref<'horizontal' | 'vertical'>({
+            title: dataViewsText.splitViewOrientation({
+              splitView: treeText.splitView(),
+            }),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 'horizontal',
+            values: [
+              { value: 'horizontal', title: treeText.horizontal() },
+              { value: 'vertical', title: treeText.vertical() },
+            ],
+          }),
+          shownTables: definePref<RA<number>>({
+            title: localized('_shownTables'),
+            requiresReload: false,
+            visible: false,
+            defaultValue: [],
+            renderer: f.never,
+            container: 'div',
+          }),
         },
       },
     },
@@ -1704,7 +2106,7 @@ export const userPreferenceDefinitions = {
             description: preferencesText.autoPopulateDescription(),
             requiresReload: false,
             visible: 'protected',
-            defaultValue: false,
+            defaultValue: true,
             type: 'java.lang.Boolean',
           }),
         },
@@ -1766,7 +2168,7 @@ export const userPreferenceDefinitions = {
             description: wbText.dataCheckDescription(),
             requiresReload: false,
             visible: true,
-            defaultValue: false,
+            defaultValue: true,
             type: 'java.lang.Boolean',
           }),
         },
@@ -2190,6 +2592,44 @@ import('../DataModel/tables')
       } else {
         softError(
           'Unable to replace the tree preferences item title for orderByField'
+        );
+      }
+
+      const taxonQueryField =
+        userPreferenceDefinitions.treeEditor.subCategories.taxon.items
+          .queryField;
+      if ('values' in taxonQueryField) {
+        const queryFieldValues = taxonQueryField.values as RA<{
+          readonly value: string;
+          readonly title: string;
+        }>;
+        const preferredTaxon = defined(
+          queryFieldValues.find(
+            (entry) =>
+              typeof entry === 'object' && entry.value === 'preferredTaxon'
+          ),
+          'Unable to find tree query preferredTaxon value'
+        );
+        const taxon = defined(
+          queryFieldValues.find(
+            (entry) => typeof entry === 'object' && entry.value === 'taxon'
+          ),
+          'Unable to find tree query taxon value'
+        );
+
+        overwriteReadOnly(
+          preferredTaxon,
+          'title',
+          getField(tables.Determination, 'preferredTaxon').label
+        );
+        overwriteReadOnly(
+          taxon,
+          'title',
+          getField(tables.Determination, 'taxon').label
+        );
+      } else {
+        softError(
+          'Unable to replace the tree preferences item title for queryField'
         );
       }
     })

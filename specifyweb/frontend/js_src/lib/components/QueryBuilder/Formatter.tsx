@@ -180,7 +180,7 @@ function FormatSelect({
   ) : showSingular || availableFormatters.length > 1 ? (
     <>
       <Button.Small
-        aria-controls={id('list')}
+        aria-controls={formatterSelectIsOpen ? id('list') : undefined}
         aria-label={queryText.chooseFormatter()}
         className={`${
           availableFormatters.find(

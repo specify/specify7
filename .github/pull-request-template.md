@@ -13,6 +13,8 @@ Fixes #
 - [ ] Add pr to documentation list
 - [ ] Add automated tests
 - [ ] Add a reverse migration if a migration is present in the PR
+- [ ] Add migration function to https://github.com/specify/specify7/blob/ea04665987e1b8a1b76955c7b7f702b7bf701b47/specifyweb/specify/management/commands/run_key_migration_functions.py#L50
+
 
 ### Testing instructions
 

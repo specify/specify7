@@ -99,7 +99,7 @@ export const saveResource = async <TABLE_NAME extends keyof Tables>(
   tableName: TABLE_NAME,
   id: number,
   data: DeepPartial<SerializedResource<Tables[TABLE_NAME]>>,
-  handleConflict: (() => void) | void
+  handleConflict?: () => void
 ): Promise<SerializedResource<Tables[TABLE_NAME]>> =>
   ajax<SerializedRecord<Tables[TABLE_NAME]>>(
     `/api/specify/${tableName.toLowerCase()}/${id}/`,
@@ -332,7 +332,12 @@ export const getUniqueFields = (
           .map(({ name }) => name)
       : []),
     ...filterArray(
-      uniqueFields.map((fieldName) => table.getField(fieldName)?.name)
+      uniqueFields
+        .filter(
+          (fieldName) =>
+            !(table.name === 'Determination' && fieldName === 'isCurrent')
+        )
+        .map((fieldName) => table.getField(fieldName)?.name)
     ),
   ]);
 

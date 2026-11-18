@@ -90,6 +90,7 @@ export function AppResourcesTab({
   );
 }
 
+// Move this at the top of the file?
 type Component = (props: AppResourceTabProps) => JSX.Element;
 
 export function useEditorTabs(
@@ -211,3 +212,7 @@ export function Tabs({
     </Tab.Group>
   );
 }
+
+export const exportsForTests = {
+  OtherCollectionWarning,
+};

@@ -6,6 +6,7 @@ import { ajax } from '../../utils/ajax';
 import type { GetOrSet, IR, RA, RR } from '../../utils/types';
 import { localized } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
+import { SECOND } from '../Atoms/timeUnits';
 import type { KeysToLowerCase } from '../DataModel/helperTypes';
 import { fetchResource } from '../DataModel/resource';
 import { userInformation } from '../InitialContext/userInformation';
@@ -13,6 +14,8 @@ import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import type { UserRoles } from './Collection';
 
 type User = { readonly userId: number; readonly userName: LocalizedString };
+
+const PRESENCE_REFRESH_INTERVAL = 30 * SECOND;
 
 export function useCollectionUsersWithPolicies(
   collectionId: number
@@ -50,32 +53,55 @@ export function useCollectionUsersWithPolicies(
 export function useCollectionUserRoles(
   collectionId: number
 ): GetOrSet<UserRoles | undefined> {
-  return useAsyncState<UserRoles>(
-    React.useCallback(
-      async () =>
-        hasPermission('/permissions/user/roles', 'read', collectionId)
-          ? ajax<RA<KeysToLowerCase<UserRoles[number]>>>(
-              `/permissions/user_roles/${collectionId}/`,
-              {
-                headers: { Accept: 'application/json' },
-              }
-            ).then(({ data }) =>
-              data.map(({ userid, username, roles }) => ({
-                userId: userid,
-                userName: username,
-                roles: roles
-                  .map(({ roleid, rolename }) => ({
-                    roleId: roleid,
-                    roleName: rolename,
-                  }))
-                  .sort(sortFunction(({ roleName }) => roleName)),
-              }))
-            )
-          : undefined,
-      [collectionId]
-    ),
+  const fetchUserRoles = React.useCallback(
+    async () =>
+      hasPermission('/permissions/user/roles', 'read', collectionId)
+        ? ajax<RA<KeysToLowerCase<UserRoles[number]>>>(
+            `/permissions/user_roles/${collectionId}/`,
+            {
+              headers: { Accept: 'application/json' },
+            }
+          ).then(({ data }) =>
+            data.map(({ userid, username, roles, presence }) => ({
+              userId: userid,
+              userName: username,
+              presence,
+              roles: roles
+                .map(({ roleid, rolename }) => ({
+                  roleId: roleid,
+                  roleName: rolename,
+                }))
+                .sort(sortFunction(({ roleName }) => roleName)),
+            }))
+          )
+        : undefined,
+    [collectionId]
+  );
+  const [userRoles, setUserRoles] = useAsyncState<UserRoles>(
+    fetchUserRoles,
     false
   );
+
+  React.useEffect(() => {
+    if (!hasPermission('/permissions/user/roles', 'read', collectionId))
+      return undefined;
+    let isCancelled = false;
+    const interval = globalThis.setInterval(() => {
+      void fetchUserRoles()
+        .then((roles) => {
+          if (!isCancelled) setUserRoles(roles);
+        })
+        .catch((error: unknown) =>
+          console.error('Unable to refresh collection user presence', error)
+        );
+    }, PRESENCE_REFRESH_INTERVAL);
+    return (): void => {
+      isCancelled = true;
+      globalThis.clearInterval(interval);
+    };
+  }, [collectionId, fetchUserRoles, setUserRoles]);
+
+  return [userRoles, setUserRoles];
 }
 
 /**
@@ -94,13 +120,13 @@ export const mergeCollectionUsers = (
               (user) => user.userId !== userId || user.roles.length === 0
             )
           )
-          .map(
-            ({ userId, userName }) =>
-              ({
-                userId,
-                userName,
-                roles: [],
-              }) as const
-          ),
+          .map(({ userId, userName }) => ({
+            userId,
+            presence:
+              userRoles.find((user) => user.userId === userId)?.presence ??
+              'offline',
+            userName,
+            roles: [],
+          })),
       ].sort(sortFunction(({ userName }) => userName))
     : undefined;

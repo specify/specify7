@@ -8,6 +8,7 @@ import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { listen } from '../../utils/events';
+import { getListKeyboardNavigationIndex } from '../../utils/keyboardNavigation';
 import type { RA } from '../../utils/types';
 import { DialogContext } from '../Atoms/Button';
 import { className } from '../Atoms/className';
@@ -31,19 +32,10 @@ export type AutoCompleteItem<T> = {
   readonly data: T;
 };
 
-/**
- * Get the nearest scrollable parent.
- * Adapted from https://stackoverflow.com/a/35940276/8584605
- */
-const getScrollParent = (node: Element | undefined): Element =>
-  node === undefined
-    ? document.body
-    : node.scrollHeight > node.clientHeight
-      ? node
-      : getScrollParent(node.parentElement ?? undefined);
+type AutoCompleteValue<T> = AutoCompleteItem<T> | string | null;
 
 const optionClassName = (isActive: boolean, isSelected: boolean) => `
-  p-0.5 active:bg-brand-100 dark:active:bg-brand-500
+  p-0.5 active:bg-brand-100 dark:active:bg-brand-400
   disabled:cursor-default rounded ${isSelected ? 'text-brand-300' : ''}
   ${isActive ? 'bg-gray-100 dark:bg-neutral-800' : ''}
 `;
@@ -79,6 +71,9 @@ export function AutoComplete<T>({
   inputProps = {},
   value: currentValue,
   pendingValueRef,
+  onScrollEnd,
+  isLoadingMore = false,
+  extraItems,
 }: {
   readonly source:
     | RA<AutoCompleteItem<T>>
@@ -113,11 +108,13 @@ export function AutoComplete<T>({
    * typing
    */
   readonly pendingValueRef?: React.MutableRefObject<string>;
+  readonly onScrollEnd?: () => void;
+  readonly isLoadingMore?: boolean;
+  readonly extraItems?: RA<AutoCompleteItem<T>>;
 }): JSX.Element {
   const [results, setResults] = React.useState<
     RA<AutoCompleteItem<T>> | undefined
   >(undefined);
-  const resultsRef = React.useRef<RA<AutoCompleteItem<T>> | undefined>(results);
 
   const [searchAlgorithm] = userPreferences.use(
     'form',
@@ -163,48 +160,57 @@ export function AutoComplete<T>({
   );
 
   const updateItems = React.useCallback(
-    (items: RA<AutoCompleteItem<T>>, pendingValue: string): void => {
+    (items: RA<AutoCompleteItem<T>>): void => {
       setResults(items);
-      resultsRef.current = items;
-      setFilteredItems(filterItems(items, pendingValue));
     },
-    [filterItems]
+    []
   );
 
   // Update source array on changes if statically supplied
   React.useEffect(() => {
-    if (Array.isArray(source)) updateItems(source, '');
+    if (Array.isArray(source)) updateItems(source);
   }, [source, updateItems]);
 
   const [isLoading, handleLoading, handleLoaded] = useBooleanState();
   const previousValue = React.useRef<string>(currentValue);
+  const requestId = React.useRef(0);
   const handleRefreshItems = React.useCallback(
     _.debounce(function onKeyDown(
       fetchItems: typeof source,
       value: string
     ): void {
-      if (typeof fetchItems !== 'function' || previousValue.current === value)
-        return;
+      if (previousValue.current === value) return;
+
+      previousValue.current = value;
+      const currentRequestId = ++requestId.current;
+
+      if (typeof fetchItems !== 'function') return;
 
       if (results === undefined) {
         setResults([]);
-        resultsRef.current = [];
       }
-
-      previousValue.current = value;
 
       if (value.length < minLength) return;
 
       handleLoading();
       void fetchItems(value)
-        .then((items) => updateItems(items, value))
+        .then((items) => {
+          if (currentRequestId === requestId.current) updateItems(items);
+        })
         .catch(softFail)
-        .finally(handleLoaded);
+        .finally(() => {
+          if (currentRequestId === requestId.current) handleLoaded();
+        });
     }, delay),
     []
   );
+  React.useEffect(
+    () => (): void => handleRefreshItems.cancel(),
+    [handleRefreshItems]
+  );
 
   const [input, setInput] = React.useState<HTMLInputElement | null>(null);
+  const inputRef = React.useRef<HTMLInputElement | null>(null);
   const dataListRef = React.useRef<HTMLUListElement | null>(null);
   const [dataList, setDataList] = React.useState<HTMLUListElement | null>(null);
   const dataListRefCallback = React.useCallback(
@@ -215,18 +221,21 @@ export function AutoComplete<T>({
     []
   );
 
-  const [filteredItems, setFilteredItems] = React.useState<
-    RA<AutoCompleteItem<T>>
-  >([]);
-
   const [pendingValue, setPendingValue] = useTriggerState<string>(currentValue);
   React.useEffect(() => {
     if (typeof pendingValueRef === 'object')
       pendingValueRef.current ??= currentValue;
   }, [currentValue, pendingValueRef]);
-  React.useEffect(
-    () => setFilteredItems(filterItems(results ?? [], pendingValue)),
-    [pendingValue, filterItems, results]
+  const allResults = React.useMemo(
+    () =>
+      extraItems !== undefined && extraItems.length > 0
+        ? [...(results ?? []), ...extraItems]
+        : results,
+    [results, extraItems]
+  );
+  const filteredItems = React.useMemo(
+    () => filterItems(allResults ?? [], pendingValue),
+    [allResults, pendingValue, filterItems]
   );
 
   /*
@@ -236,9 +245,37 @@ export function AutoComplete<T>({
    * thus the filtered list of items has only one item.
    */
   const ignoreFilter = currentValue === pendingValue;
-  const itemSource = ignoreFilter ? (results ?? []) : filteredItems;
+  const itemSource = ignoreFilter ? (allResults ?? []) : filteredItems;
+  const [lastResultOption, setLastResultOption] =
+    React.useState<HTMLLIElement | null>(null);
+  const [shouldFocusLastResult, setShouldFocusLastResult] =
+    React.useState(false);
+  const lastResultOptionRefCallback = React.useCallback(
+    (option: HTMLLIElement | null): void => setLastResultOption(option),
+    []
+  );
 
-  const pendingItem = results?.find(
+  React.useLayoutEffect(() => {
+    if (
+      typeof onScrollEnd !== 'function' ||
+      dataList === null ||
+      dataList.clientHeight === 0 ||
+      isLoading ||
+      isLoadingMore ||
+      dataList.scrollHeight - dataList.clientHeight >= 40
+    )
+      return;
+    onScrollEnd();
+  }, [dataList, itemSource.length, isLoading, isLoadingMore, onScrollEnd]);
+
+  const [activeIndex, setActiveIndex] = React.useState(-1);
+
+  const scrollToItem = (index: number): void =>
+    dataList
+      ?.querySelector<HTMLElement>(`[data-index="${index}"]`)
+      ?.scrollIntoView({ block: 'nearest' });
+
+  const pendingItem = allResults?.find(
     ({ label, searchValue }) => (searchValue ?? label) === pendingValue
   );
   const showAdd =
@@ -248,12 +285,66 @@ export function AutoComplete<T>({
     pendingItem === undefined;
   const listHasItems = showAdd || isLoading || itemSource.length > 0;
 
+  /*
+   * Reset the keyboard highlight when the search text changes or the base
+   * results are replaced, but not when a new page of results is appended
+   * (issue #8691)
+   */
+  React.useEffect(() => setActiveIndex(-1), [pendingValue, results]);
+  React.useLayoutEffect(() => {
+    if (!shouldFocusLastResult || lastResultOption === null) return;
+    lastResultOption.focus();
+    inputRef.current?.focus({ preventScroll: true });
+    setShouldFocusLastResult(false);
+  }, [shouldFocusLastResult, lastResultOption]);
+
   function handleChanged(item: AutoCompleteItem<T>): void {
     handleChange(item);
     const value =
       typeof item.label === 'string' ? item.label : (item.searchValue ?? '');
     setPendingValue(value);
     if (typeof pendingValueRef === 'object') pendingValueRef.current = value;
+  }
+
+  function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>): void {
+    if (itemSource.length === 0 && !showAdd) return;
+
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+      event.preventDefault();
+      event.stopPropagation();
+      const nextIndex = getListKeyboardNavigationIndex({
+        activeIndex,
+        itemCount: itemSource.length,
+        key: event.key,
+      });
+      setActiveIndex(nextIndex);
+      scrollToItem(nextIndex);
+    } else if (event.key === 'End' && event.shiftKey) {
+      return;
+    } else if (event.key === 'Home' || event.key === 'End') {
+      event.preventDefault();
+      event.stopPropagation();
+      const nextIndex = getListKeyboardNavigationIndex({
+        activeIndex,
+        itemCount: itemSource.length,
+        key: event.key,
+      });
+      setActiveIndex(nextIndex);
+      scrollToItem(nextIndex);
+      if (event.key === 'End' && lastResultOption !== null) {
+        // Avoid activating a trailing Add option when the list is focused.
+        event.preventDefault();
+        setShouldFocusLastResult(true);
+      }
+    } else if (event.key === 'Enter' && activeIndex >= 0) {
+      const item = itemSource[activeIndex];
+      if (item !== undefined) {
+        event.preventDefault();
+        event.stopPropagation();
+        handleChanged(item);
+        inputRef.current?.blur();
+      }
+    }
   }
 
   const isInDialog = typeof React.useContext(DialogContext) === 'function';
@@ -276,9 +367,10 @@ export function AutoComplete<T>({
      */
     const listHeight = dataList.getBoundingClientRect().height;
 
-    const scrollableParent = getScrollParent(input);
-    const { top: parentTop, bottom: parentBottom } =
-      scrollableParent.getBoundingClientRect();
+    // The options are rendered in a fixed portal, so form-table overflow must
+    // not determine whether the list is visible.
+    const parentTop = 0;
+    const parentBottom = globalThis.innerHeight;
 
     const {
       left: inputLeft,
@@ -320,7 +412,7 @@ export function AutoComplete<T>({
         const isOverflowing = inputBottom + listHeight > parentBottom;
         if (isOverflowing) {
           dataList.style.top = '';
-          dataList.style.bottom = `${document.body.clientHeight - inputTop}px`;
+          dataList.style.bottom = `${globalThis.innerHeight - inputTop}px`;
         } else {
           dataList.style.top = `${inputBottom}px`;
           dataList.style.bottom = '';
@@ -340,7 +432,7 @@ export function AutoComplete<T>({
     'highlightMatch'
   );
 
-  const inputRef = React.useRef<HTMLInputElement | null>(null);
+  const shouldBlurAfterMouseSelection = React.useRef(false);
   const forwardChildRef: React.RefCallback<HTMLInputElement> =
     React.useCallback(
       (input): void => {
@@ -357,55 +449,62 @@ export function AutoComplete<T>({
     AutoCompleteItem<T> | string | undefined
   >(undefined);
   React.useLayoutEffect(() => {
-    const newCurrentItem = resultsRef.current?.find(
+    const newCurrentItem = allResults?.find(
       ({ label, searchValue }) => (searchValue ?? label) === currentValue
     );
-    setCurrentItem(
-      newCurrentItem === undefined
-        ? currentValue
-        : (currentItem) =>
-            currentItem === undefined ||
-            typeof currentItem === 'string' ||
-            newCurrentItem.data !== currentItem.data
-              ? newCurrentItem
-              : currentItem
-    );
-  }, [currentValue]);
+    setCurrentItem(newCurrentItem ?? currentValue);
+  }, [currentValue, allResults]);
+
+  const handleOptionMouseDown = React.useCallback(
+    (e: React.MouseEvent): void => {
+      e.preventDefault();
+      e.stopPropagation();
+      shouldBlurAfterMouseSelection.current = true;
+    },
+    []
+  );
 
   return (
-    <Combobox<'div', AutoCompleteItem<T> | string | null | undefined>
+    <Combobox
       as="div"
       className="relative w-full"
       disabled={disabled}
       nullable
-      value={currentItem}
+      value={currentItem ?? null}
       // Triggers on enter or selects new item
-      onChange={(
-        value: AutoCompleteItem<T> | string | null | undefined
-      ): void => {
-        if (value === null || value === undefined) handleCleared?.();
+      onChange={(value): void => {
+        const blurAfterSelection = shouldBlurAfterMouseSelection.current;
+        shouldBlurAfterMouseSelection.current = false;
+        if (value === null) handleCleared?.();
         else if (typeof value === 'string') handleNewValue?.(value);
-        else handleChanged(value);
+        else {
+          handleChanged(value);
+          if (blurAfterSelection)
+            globalThis.setTimeout(() => inputRef.current?.blur(), 0);
+        }
       }}
     >
-      <Combobox.Input<'input'>
+      <Combobox.Input
         autoComplete="off"
         onChange={({ target }): void => {
           const value = (target as HTMLInputElement).value;
+          ++requestId.current;
           handleRefreshItems(source, value);
           setPendingValue(value);
           if (typeof pendingValueRef === 'object')
             pendingValueRef.current = value;
         }}
         {...inputProps}
-        displayValue={(item: AutoCompleteItem<T> | null): string =>
-          typeof item === 'string'
-            ? item
-            : typeof item?.label === 'string'
-              ? item.label
-              : (item?.searchValue ?? '')
-        }
+        displayValue={(item: unknown): string => {
+          const currentItem = item as AutoCompleteValue<T>;
+          return typeof currentItem === 'string'
+            ? currentItem
+            : typeof currentItem?.label === 'string'
+              ? currentItem.label
+              : (currentItem?.searchValue ?? '');
+        }}
         ref={forwardChildRef}
+        onKeyDown={handleKeyDown}
         onBlur={withHandleBlur(inputProps?.onBlur).onBlur}
         /*
          * Padding for the button. Using "em" so as to match @tailwind/forms
@@ -423,16 +522,29 @@ export function AutoComplete<T>({
        * of parents with overflow:hidden
        */}
       <Portal>
-        <Combobox.Options<'ul'>
+        <Combobox.Options
           className={`
             fixed z-[10000] max-h-[50vh] w-[inherit] cursor-pointer
             overflow-y-auto rounded rounded bg-white shadow-lg
             shadow-gray-400 dark:border dark:border-gray-500 dark:bg-neutral-900
           `}
           ref={dataListRefCallback}
+          onScroll={
+            typeof onScrollEnd === 'function'
+              ? (event: React.UIEvent<HTMLUListElement>): void => {
+                  const target = event.currentTarget;
+                  const nearBottom =
+                    target.scrollHeight -
+                      target.scrollTop -
+                      target.clientHeight <
+                    40;
+                  if (nearBottom) onScrollEnd();
+                }
+              : undefined
+          }
         >
           {isLoading && (
-            <Combobox.Option<'li'>
+            <Combobox.Option
               className={`${optionClassName(false, false)} cursor-auto`}
               disabled
               value=""
@@ -440,7 +552,14 @@ export function AutoComplete<T>({
               {commonText.loading()}
             </Combobox.Option>
           )}
+          {/*
+           * Not virtualized: Headless UI tracks the active option by its index
+           * among mounted options, so unmounting rows while scrolling makes it
+           * scroll the wrong row into view (see #8691)
+           */}
           {itemSource.map((item, index) => {
+            if (item === undefined) return null;
+
             /**
              * Highlight relevant part of the string.
              * Note, if item.searchValue and item.value is different,
@@ -499,9 +618,19 @@ export function AutoComplete<T>({
                 label
               );
             return (
-              <Combobox.Option as={React.Fragment} key={index} value={item}>
+              <Combobox.Option key={index} as={React.Fragment} value={item}>
                 {({ active, selected }): JSX.Element => (
-                  <li className={optionClassName(active, selected)}>
+                  <AutoCompleteOption
+                    active={active || index === activeIndex}
+                    selected={selected}
+                    data-index={index}
+                    ref={
+                      index === itemSource.length - 1
+                        ? lastResultOptionRefCallback
+                        : undefined
+                    }
+                    onMouseDown={handleOptionMouseDown}
+                  >
                     {typeof item.icon === 'string' ? (
                       <div className="flex items-center">
                         {item.icon}
@@ -510,7 +639,7 @@ export function AutoComplete<T>({
                     ) : (
                       fullLabel
                     )}
-                  </li>
+                  </AutoCompleteOption>
                 )}
               </Combobox.Option>
             );
@@ -518,16 +647,30 @@ export function AutoComplete<T>({
           {showAdd && (
             <Combobox.Option as={React.Fragment} value={pendingValue}>
               {({ active, selected }): JSX.Element => (
-                <li className={optionClassName(active, selected)}>
+                <AutoCompleteOption
+                  active={active}
+                  selected={selected}
+                  onMouseDown={(e: React.MouseEvent): void => {
+                    e.stopPropagation();
+                    shouldBlurAfterMouseSelection.current = true;
+                  }}
+                >
                   <div className="flex items-center">
                     <span className={className.dataEntryAdd}>{icons.plus}</span>
                     {commonText.add()}
                   </div>
-                </li>
+                </AutoCompleteOption>
               )}
             </Combobox.Option>
           )}
-          {!listHasItems && (
+          {isLoadingMore && (
+            <li
+              className={`${optionClassName(false, false)} cursor-auto text-gray-500`}
+            >
+              {commonText.loading()}
+            </li>
+          )}
+          {!listHasItems && !isLoadingMore && (
             <div className={`${optionClassName(false, false)} cursor-auto`}>
               {formsText.nothingFound()}
             </div>
@@ -537,6 +680,29 @@ export function AutoComplete<T>({
     </Combobox>
   );
 }
+
+const AutoCompleteOption = React.forwardRef<
+  HTMLLIElement,
+  TagProps<'li'> & {
+    readonly active: boolean;
+    readonly selected: boolean;
+  }
+>(function AutoCompleteOption(
+  { active, selected, ...props },
+  forwardedRef
+): JSX.Element {
+  const ref = React.useCallback(
+    (option: HTMLLIElement | null): void => {
+      if (typeof forwardedRef === 'function') forwardedRef(option);
+      else if (forwardedRef !== null) forwardedRef.current = option;
+    },
+    [forwardedRef]
+  );
+
+  return (
+    <li {...props} className={optionClassName(active, selected)} ref={ref} />
+  );
+});
 
 const toggleButton = (
   <Combobox.Button

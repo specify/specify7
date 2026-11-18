@@ -1,0 +1,499 @@
+from typing import Any, NamedTuple, cast
+
+from typing import Literal
+
+from .parsing import WorkBenchParseFailure
+
+Failure = Literal["Failure"]
+BUSINESS_RULE_EXCEPTION_MODULE = "specifyweb.backend.businessrules.exceptions"
+BUSINESS_RULE_EXCEPTION_NAME = "BusinessRuleException"
+BusinessRulePayloadValue = (
+    str
+    | int
+    | bool
+    | None
+    | list[str | int | bool | None]
+    | dict[str, str | int | bool | None]
+)
+BusinessRulePayload = dict[str, BusinessRulePayloadValue]
+
+
+class TreeInfo(NamedTuple):
+    rank: str
+    name: str
+
+
+class ReportInfo(NamedTuple):
+    "Records the table and wb cols an upload result refers to."
+    tableName: str
+    columns: list[str]
+    treeInfo: TreeInfo | None
+
+    def to_json(self) -> dict:
+        return {
+            **self._asdict(),
+            **{"treeInfo": self.treeInfo._asdict() if self.treeInfo else None},
+        }
+
+
+def json_to_ReportInfo(json: dict) -> ReportInfo:
+    return ReportInfo(
+        tableName=json["tableName"],
+        columns=json["columns"],
+        treeInfo=(
+            TreeInfo(**json["treeInfo"])
+            if "treeInfo" in json and json["treeInfo"]
+            else None
+        ),
+    )
+
+
+class PicklistAddition(NamedTuple):
+    name: str  # Name of the picklist receiving the new item
+    value: str  # The value of the new item
+    caption: str  # The dataset column caption generating the addition
+    id: int  # The new picklistitem id
+
+    def to_json(self) -> dict:
+        return self._asdict()
+
+
+def json_to_PicklistAddition(json: dict) -> PicklistAddition:
+    return PicklistAddition(**json)
+
+
+class Uploaded(NamedTuple):
+    id: int
+    info: ReportInfo
+    picklistAdditions: list[PicklistAddition]
+
+    def get_id(self) -> int:
+        return self.id
+
+    def to_json(self) -> dict:
+        return {
+            "Uploaded": dict(
+                id=self.id,
+                info=self.info.to_json(),
+                picklistAdditions=[a.to_json()
+                                   for a in self.picklistAdditions],
+            )
+        }
+
+    @staticmethod
+    def from_json(json: dict) -> "Uploaded":
+        uploaded = json["Uploaded"]
+        return Uploaded(
+            id=uploaded["id"],
+            info=json_to_ReportInfo(uploaded["info"]),
+            picklistAdditions=[
+                json_to_PicklistAddition(i) for i in uploaded["picklistAdditions"]
+            ],
+        )
+
+
+class Updated(NamedTuple):
+    id: int
+    info: ReportInfo
+    picklistAdditions: list[PicklistAddition]
+
+    def get_id(self) -> int:
+        return self.id
+
+    def to_json(self) -> dict:
+        return {
+            "Updated": dict(
+                id=self.id,
+                info=self.info.to_json(),
+                picklistAdditions=[a.to_json()
+                                   for a in self.picklistAdditions],
+            )
+        }
+
+    @staticmethod
+    def from_json(json: dict) -> "Updated":
+        uploaded = json["Updated"]
+        return Updated(
+            id=uploaded["id"],
+            info=json_to_ReportInfo(uploaded["info"]),
+            picklistAdditions=[
+                json_to_PicklistAddition(i) for i in uploaded["picklistAdditions"]
+            ],
+        )
+
+
+class Matched(NamedTuple):
+    id: int
+    info: ReportInfo
+
+    def get_id(self) -> int:
+        return self.id
+
+    def to_json(self) -> dict:
+        return {"Matched": dict(id=self.id, info=self.info.to_json())}
+
+    @staticmethod
+    def from_json(json: dict) -> "Matched":
+        matched = json["Matched"]
+        return Matched(id=matched["id"], info=json_to_ReportInfo(matched["info"]))
+
+
+class MatchedAndChanged(Matched):
+    def to_json(self) -> dict:
+        return {"MatchedAndChanged": super().to_json()["Matched"]}
+
+    @staticmethod
+    def from_json(json: dict) -> Matched:
+        matchedAndChanged = json["MatchedAndChanged"]
+        return MatchedAndChanged(
+            id=matchedAndChanged["id"],
+            info=json_to_ReportInfo(matchedAndChanged["info"]),
+        )
+
+
+class MatchedMultiple(NamedTuple):
+    ids: list[int]
+    key: str
+    info: ReportInfo
+
+    def get_id(self) -> Failure:
+        return "Failure"
+
+    def to_json(self):
+        return {
+            "MatchedMultiple": dict(
+                ids=self.ids, key=self.key, info=self.info.to_json()
+            )
+        }
+
+    @staticmethod
+    def from_json(json: dict) -> "MatchedMultiple":
+        matchedMultiple = json["MatchedMultiple"]
+        return MatchedMultiple(
+            ids=matchedMultiple["ids"],
+            key=matchedMultiple.get("key", ""),
+            info=json_to_ReportInfo(matchedMultiple["info"]),
+        )
+
+
+class NullRecord(NamedTuple):
+    info: ReportInfo
+
+    def get_id(self) -> None:
+        return None
+
+    def to_json(self):
+        return {"NullRecord": dict(info=self.info.to_json())}
+
+    @staticmethod
+    def from_json(json: dict) -> "NullRecord":
+        nullRecord = json["NullRecord"]
+        return NullRecord(info=json_to_ReportInfo(nullRecord["info"]))
+
+
+class NoChange(NamedTuple):
+    id: int
+    info: ReportInfo
+
+    def get_id(self) -> int:
+        return self.id
+
+    def to_json(self):
+        return {"NoChange": dict(id=self.id, info=self.info.to_json())}
+
+    @staticmethod
+    def from_json(json: dict) -> "NoChange":
+        noChange = json["NoChange"]
+        return NoChange(id=noChange["id"], info=json_to_ReportInfo(noChange["info"]))
+
+
+class Deleted(NamedTuple):
+    id: int
+    info: ReportInfo
+
+    def get_id(self) -> None:
+        return None
+
+    def to_json(self):
+        assert self.id is not None
+        return {"Deleted": dict(id=self.id, info=self.info.to_json())}
+
+    @staticmethod
+    def from_json(json: dict) -> "Deleted":
+        deleted = json["Deleted"]
+        return Deleted(id=deleted["id"], info=json_to_ReportInfo(deleted["info"]))
+
+
+class FailedBusinessRule(NamedTuple):
+    message: str
+    payload: BusinessRulePayload
+    info: ReportInfo
+
+    def get_id(self) -> Failure:
+        return "Failure"
+
+    def to_json(self):
+        return {
+            "FailedBusinessRule": dict(
+                message=self.message, payload=self.payload, info=self.info.to_json()
+            )
+        }
+
+    @staticmethod
+    def from_json(json: dict) -> "FailedBusinessRule":
+        r = json["FailedBusinessRule"]
+        return FailedBusinessRule(
+            message=r["message"],
+            payload=r["payload"],
+            info=json_to_ReportInfo(r["info"]),
+        )
+
+
+def is_business_rule_exception_with_payload(exception: Exception) -> bool:
+    exception_class = exception.__class__
+    payload_like_exception = (
+        len(exception.args) >= 2
+        and isinstance(exception.args[0], str)
+        and isinstance(exception.args[1], dict)
+    )
+
+    if not payload_like_exception:
+        return False
+
+    # Some wrapped code paths can preserve a business-rule payload without
+    # preserving the original exception class identity.
+    has_business_rule_shape = isinstance(
+        exception.args[1].get("localizationKey"), str
+    )
+
+    return (
+        (
+            exception_class.__module__ == BUSINESS_RULE_EXCEPTION_MODULE
+            and exception_class.__name__ == BUSINESS_RULE_EXCEPTION_NAME
+        )
+        or has_business_rule_shape
+    )
+
+
+def _is_business_rule_scalar(value: Any) -> bool:
+    return isinstance(value, (str, int, bool)) or value is None
+
+
+_SANITIZE_FAILED = object()
+
+
+def _sanitize_business_rule_payload_value(value: Any) -> BusinessRulePayloadValue | object:
+    if _is_business_rule_scalar(value):
+        return value
+
+    if isinstance(value, list):
+        if all(_is_business_rule_scalar(item) for item in value):
+            return value
+        return _SANITIZE_FAILED
+
+    if isinstance(value, dict):
+        sanitized: dict[str, str | int | bool | None] = {}
+        for key, item in value.items():
+            if not isinstance(key, str) or not _is_business_rule_scalar(item):
+                return _SANITIZE_FAILED
+            sanitized[key] = item
+        return sanitized
+
+    return _SANITIZE_FAILED
+
+
+def _sanitize_business_rule_payload(payload: dict[Any, Any]) -> BusinessRulePayload:
+    sanitized: BusinessRulePayload = {}
+    for key, value in payload.items():
+        if not isinstance(key, str):
+            continue
+        sanitized_value = _sanitize_business_rule_payload_value(value)
+        if sanitized_value is _SANITIZE_FAILED:
+            continue
+        sanitized[key] = cast(BusinessRulePayloadValue, sanitized_value)
+    return sanitized
+
+
+def to_failed_business_rule(exception: Exception, info: ReportInfo) -> FailedBusinessRule:
+    if is_business_rule_exception_with_payload(exception):
+        payload = _sanitize_business_rule_payload(exception.args[1])
+        return FailedBusinessRule(exception.args[0], payload, info)
+
+    return FailedBusinessRule(str(exception), {}, info)
+
+
+class NoMatch(NamedTuple):
+    info: ReportInfo
+
+    def get_id(self) -> Failure:
+        return "Failure"
+
+    def to_json(self):
+        return {"NoMatch": dict(info=self.info.to_json())}
+
+    @staticmethod
+    def from_json(json: dict) -> "NoMatch":
+        r = json["NoMatch"]
+        return NoMatch(info=json_to_ReportInfo(r["info"]))
+
+
+class ParseFailures(NamedTuple):
+    failures: list[WorkBenchParseFailure]
+
+    def get_id(self) -> Failure:
+        return "Failure"
+
+    def to_json(self):
+        return {
+            self.__class__.__name__: dict(
+                failures=[f.to_json() for f in self.failures])
+        }
+
+    @staticmethod
+    def from_json(json: dict) -> "ParseFailures":
+        r = json["ParseFailures"]
+        return ParseFailures(
+            failures=[WorkBenchParseFailure(*i) for i in r["failures"]]
+        )
+
+
+class PropagatedFailure(NamedTuple):
+    def get_id(self) -> Failure:
+        return "Failure"
+
+    def to_json(self):
+        return {"PropagatedFailure": {}}
+
+    @staticmethod
+    def from_json(json: dict) -> "PropagatedFailure":
+        return PropagatedFailure()
+
+
+class AttachmentFailure(NamedTuple):
+    message: str
+    info: ReportInfo
+
+    def get_id(self) -> Failure:
+        return "Failure"
+
+    def to_json(self):
+        return {"AttachmentFailure": dict(message=self.message, info=self.info.to_json())}
+
+    @staticmethod
+    def from_json(json: dict) -> "AttachmentFailure":
+        r = json["AttachmentFailure"]
+        return AttachmentFailure(
+            message=r["message"],
+            info=json_to_ReportInfo(r["info"])
+        )
+
+
+RecordResult = (
+    Uploaded
+    | NoMatch
+    | Matched
+    | MatchedMultiple
+    | NullRecord
+    | FailedBusinessRule
+    | ParseFailures
+    | PropagatedFailure
+    | NoChange
+    | Updated
+    | Deleted
+    | MatchedAndChanged
+    | AttachmentFailure
+)
+
+
+class UploadResult(NamedTuple):
+    record_result: RecordResult
+    toOne: dict[str, Any]
+    toMany: dict[str, list[Any]]
+
+    def get_id(self) -> int | None | Failure:
+        return self.record_result.get_id()
+
+    def contains_failure(self) -> bool:
+        return (
+            self.record_result.get_id() == "Failure"
+            or any(result.contains_failure() for result in self.toOne.values())
+            or any(
+                result.contains_failure()
+                for results in self.toMany.values()
+                for result in results
+            )
+        )
+
+    # BUG:? Shouldn't NoChange also be considered a "success"?
+    # It's not a failure at least
+    def contains_success(
+        self, success=[Uploaded, Matched, MatchedAndChanged, Updated, Deleted]
+    ) -> bool:
+        return (
+            any(isinstance(self.record_result, _success)
+                for _success in success)
+            or any(result.contains_success() for result in self.toOne.values())
+            or any(
+                result.contains_success()
+                for results in self.toMany.values()
+                for result in results
+            )
+        )
+
+    def to_json(self) -> dict:
+        return {
+            "UploadResult": {
+                "record_result": self.record_result.to_json(),
+                "toOne": {k: v.to_json() for k, v in self.toOne.items()},
+                "toMany": {
+                    k: [v.to_json() for v in vs] for k, vs in self.toMany.items()
+                },
+            }
+        }
+
+    @staticmethod
+    def from_json(json: dict) -> "UploadResult":
+        return UploadResult(
+            record_result=json_to_record_result(
+                json["UploadResult"]["record_result"]),
+            toOne={
+                k: UploadResult.from_json(v)
+                for k, v in json["UploadResult"]["toOne"].items()
+            },
+            toMany={
+                k: [UploadResult.from_json(v) for v in vs]
+                for k, vs in json["UploadResult"]["toMany"].items()
+            },
+        )
+
+
+def json_to_record_result(json: dict) -> RecordResult:
+    for record_type in json:
+        if record_type == "Uploaded":
+            return Uploaded.from_json(json)
+        elif record_type == "NoMatch":
+            return NoMatch.from_json(json)
+        elif record_type == "Matched":
+            return Matched.from_json(json)
+        elif record_type == "MatchedMultiple":
+            return MatchedMultiple.from_json(json)
+        elif record_type == "NullRecord":
+            return NullRecord.from_json(json)
+        elif record_type == "FailedBusinessRule":
+            return FailedBusinessRule.from_json(json)
+        elif record_type == "ParseFailures":
+            return ParseFailures.from_json(json)
+        elif record_type == "PropagatedFailure":
+            return PropagatedFailure.from_json(json)
+        elif record_type == "NoChange":
+            return NoChange.from_json(json)
+        elif record_type == "Updated":
+            return Updated.from_json(json)
+        elif record_type == "Deleted":
+            return Deleted.from_json(json)
+        elif record_type == "MatchedAndChanged":
+            return MatchedAndChanged.from_json(json)
+        elif record_type == "AttachmentFailure":
+            return AttachmentFailure.from_json(json)
+        assert False, f"record_result is unknown type: {record_type}"
+    assert False, f"record_result contains no data: {json}"

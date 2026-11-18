@@ -1,0 +1,680 @@
+{
+  "bird": [
+    {
+      "name": "CollectingMethod",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [
+        { "title": "Shot", "value": "Shot" },
+        { "title": "Salvage", "value": "Salvage" },
+        { "title": "Mist Net", "value": "Mist Net" },
+        { "title": "Egg Collecting", "value": "Egg Collecting" },
+        { "title": "Trap", "value": "Trap" }
+      ]
+    },
+    {
+      "name": "LifeStage",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 8,
+      "items": [
+        { "title": "Unknown", "value": "Unknown" },
+        { "title": "Egg", "value": "Egg" },
+        { "title": "Embryo", "value": "Embryo" },
+        { "title": "Fledgling", "value": "Fledgling" },
+        { "title": "Nestling", "value": "Nestling" },
+        { "title": "Hatchling", "value": "Hatchling" },
+        { "title": "Juvenile", "value": "Juvenile" },
+        { "title": "Adult", "value": "Adult" }
+      ]
+    },
+    {
+      "name": "Method",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 4,
+      "items": [
+        { "title": "Unknown", "value": "Unknown" },
+        { "title": "Hand", "value": "Hand" },
+        { "title": "Net", "value": "Net" },
+        { "title": "Trap", "value": "Trap" }
+      ]
+    },
+    {
+      "name": "BiologicalSex",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [
+        { "title": "Indeterminate", "value": "Indeterminate" },
+        { "title": "Mixed", "value": "Mixed" },
+        { "title": "Female", "value": "Female" },
+        { "title": "Male", "value": "Male" },
+        { "title": "Other", "value": "Other" }
+      ]
+    },
+    {
+      "name": "LatLongMethod",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 7,
+      "items": [
+        { "title": "Unknown", "value": "Unknown" },
+        { "title": "Dead Reckoning", "value": "Dead Reckoning" },
+        { "title": "Gazetteer", "value": "Gazetteer" },
+        { "title": "GPS", "value": "GPS" },
+        { "title": "Map", "value": "Map" },
+        { "title": "None", "value": "None" },
+        { "title": "Sextant", "value": "Sextant" }
+      ]
+    },
+    {
+      "name": "Preparation",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 10,
+      "items": [
+        { "title": "Egg", "value": "Egg" },
+        { "title": "Feather", "value": "Feather" },
+        { "title": "Misc", "value": "Misc" },
+        { "title": "Mounted", "value": "Mounted" },
+        { "title": "Nest", "value": "Nest" },
+        { "title": "Skel", "value": "Skel" },
+        { "title": "Skin", "value": "Skin" },
+        { "title": "Tissue", "value": "Tissue" }
+      ]
+    }
+  ],
+  "botany": [
+    {
+      "name": "CollectingMethod",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [
+        { "title": "Cut", "value": "Cut" }
+      ]
+    },
+    {
+      "name": "LifeStage",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 8,
+      "items": [
+        { "title": "Unknown", "value": "Unknown" },
+        { "title": "Seedling", "value": "Seedling" },
+        { "title": "Flowering", "value": "Flowering" },
+        { "title": "Fruiting", "value": "Fruiting" },
+        { "title": "Mature", "value": "Mature" },
+        { "title": "Embryo", "value": "Embryo" },
+        { "title": "Seed", "value": "Seed" },
+        { "title": "Senescent", "value": "Senescent" }
+      ]
+    },
+    {
+      "name": "Phenology",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 8,
+      "items": [
+        { "title": "Unknown", "value": "Unknown" },
+        { "title": "Flowering", "value": "Flowering" },
+        { "title": "Flowering And Fruiting", "value": "Flowering And Fruiting" },
+        { "title": "Fruiting", "value": "Fruiting" },
+        { "title": "Mature", "value": "Mature" },
+        { "title": "Seed", "value": "Seed" },
+        { "title": "Seedling", "value": "Seedling" }
+      ]
+    }
+  ],
+  "fish": [
+    {
+      "name": "Sex",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 4,
+      "items": [
+        { "title": "Unknown", "value": "Unknown" },
+        { "title": "Both", "value": "Both" },
+        { "title": "Female", "value": "Female" },
+        { "title": "Male", "value": "Male" }
+      ]
+    },
+    {
+      "name": "LifeStage",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 50,
+      "items": [
+        { "title": "Unknown", "value": "Unknown" },
+        { "title": "Egg", "value": "Egg" },
+        { "title": "Embryo", "value": "Embryo" },
+        { "title": "Larva", "value": "Larva" },
+        { "title": "Juvenile", "value": "Juvenile" },
+        { "title": "Adult", "value": "Adult" }
+      ]
+    },
+    {
+      "name": "CollectingMethod",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [
+        { "title": "Trap", "value": "Trap" },
+        { "title": "Sweep Net", "value": "Sweep Net" },
+        { "title": "Boat Electro-Shocker", "value": "Boat Electro-Shocker" },
+        { "title": "Seine", "value": "Seine" },
+        { "title": "Unknown", "value": "Unknown" },
+        { "title": "Hook & Line", "value": "Hook & Line" },
+        { "title": "By Hand", "value": "By Hand" }
+      ]
+    },
+    {
+      "name": "HabitatType",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 8,
+      "items": [
+        { "title": "Reef", "value": "Reef" },
+        { "title": "Sand", "value": "Sand" },
+        { "title": "Rock", "value": "Rock" },
+        { "title": "Sand/Rock Interface", "value": "Sand/Rock Interface" },
+        { "title": "Vegetation", "value": "Vegetation" },
+        { "title": "Open Water", "value": "Open Water" },
+        { "title": "Riffle", "value": "Riffle" },
+        { "title": "Pelagic", "value": "Pelagic" }
+      ]
+    }
+  ],
+  "herpetology": [
+    {
+      "name": "CollectingMethod",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [
+        { "title": "Trap", "value": "Trap" }
+      ]
+    },
+    {
+      "name": "Method",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 4,
+      "items": [
+        { "title": "Unknown", "value": "Unknown" },
+        { "title": "Hand", "value": "Hand" },
+        { "title": "Net", "value": "Net" },
+        { "title": "Trap", "value": "Trap" }
+      ]
+    },
+    {
+      "name": "Sex",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 4,
+      "items": [
+        { "title": "Unknown", "value": "Unknown" },
+        { "title": "Male", "value": "Male" },
+        { "title": "Female", "value": "Female" },
+        { "title": "Both", "value": "Both" }
+      ]
+    },
+    {
+      "name": "LifeStage",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 9,
+      "items": [
+        { "title": "Unknown", "value": "Unknown" },
+        { "title": "Adult", "value": "Adult" },
+        { "title": "Egg", "value": "Egg" },
+        { "title": "Embryo", "value": "Embryo" },
+        { "title": "Hatchling", "value": "Hatchling" },
+        { "title": "Juvenile", "value": "Juvenile" },
+        { "title": "Larva", "value": "Larva" },
+        { "title": "Meta-Young", "value": "Meta-Young" },
+        { "title": "Young", "value": "Young" }
+      ]
+    }
+  ],
+  "insect": [
+    {
+      "name": "CollectingMethod",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 10,
+      "items": [
+        { "title": "Trap", "value": "Trap" },
+        { "title": "Malaise Trap", "value": "Malaise Trap" },
+        { "title": "Light Trap", "value": "Light Trap" },
+        { "title": "Bowl Trap", "value": "Bowl Trap" },
+        { "title": "Pitfall Trap", "value": "Pitfall Trap" },
+        { "title": "Flight Intercept Trap", "value": "Flight Intercept Trap" },
+        { "title": "Netting", "value": "Netting" },
+        { "title": "Sweeping", "value": "Sweeping" }
+      ]
+    },
+    {
+      "name": "Confidence",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [
+        { "title": "Unknown", "value": "Unknown" },
+        { "title": "High", "value": "High" },
+        { "title": "Low", "value": "Low" },
+        { "title": "Medium", "value": "Medium" },
+        { "title": "Unknown", "value": "Unknown" }
+      ]
+    },
+    {
+      "name": "Sex",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 3,
+      "items": [
+        { "title": "Unknown", "value": "Unknown" },
+        { "title": "Male", "value": "Male" },
+        { "title": "Female", "value": "Female" }
+      ]
+    },
+    {
+      "name": "LifeStage",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [
+        { "title": "Adult", "value": "Adult" },
+        { "title": "Egg", "value": "Egg" },
+        { "title": "Larva", "value": "Larva" },
+        { "title": "Nymph", "value": "Nymph" },
+        { "title": "Pupa", "value": "Pupa" }
+      ]
+    },
+    {
+      "name": "Method",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 50,
+      "items": [
+        { "title": "Beating", "value": "Beating" },
+        { "title": "Bee Baits", "value": "Bee Baits" },
+        { "title": "Berlese Funnel Extraction", "value": "Berlese Funnel Extraction" },
+        { "title": "Carrion Trap", "value": "Carrion Trap" },
+        { "title": "Cineole, Attracted To", "value": "Cineole, Attracted To" },
+        { "title": "Dung Trap", "value": "Dung Trap" },
+        { "title": "Eucalyptus Oil", "value": "Eucalyptus Oil" },
+        { "title": "Flight Intercept Trap", "value": "Flight Intercept Trap" },
+        { "title": "Fruit Trap", "value": "Fruit Trap" },
+        { "title": "Funnel Trap", "value": "Funnel Trap" },
+        { "title": "Light Trap", "value": "Light Trap" },
+        { "title": "Light, At", "value": "Light, At" },
+        { "title": "Light, Incandescent, At", "value": "Light, Incandescent, At" },
+        { "title": "Light, Mercury Vapor, At", "value": "Light, Mercury Vapor, At" },
+        { "title": "Light, Uv, At", "value": "Light, Uv, At" },
+        { "title": "Malaise Trap", "value": "Malaise Trap" },
+        { "title": "Methyl Salicylate, Attracted To", "value": "Methyl Salicylate, Attracted To" },
+        { "title": "Miscellaneous Collecting", "value": "Miscellaneous Collecting" },
+        { "title": "Molassas Trap", "value": "Molassas Trap" },
+        { "title": "Pan Trap", "value": "Pan Trap" },
+        { "title": "Pheromone Trap", "value": "Pheromone Trap" },
+        { "title": "Pitfall Trap", "value": "Pitfall Trap" },
+        { "title": "Pyrethrum/Insecticide Fogging", "value": "Pyrethrum/Insecticide Fogging" },
+        { "title": "Sifting", "value": "Sifting" },
+        { "title": "Skatol, Attracted To", "value": "Skatol, Attracted To" },
+        { "title": "Sweep Net", "value": "Sweep Net" },
+        { "title": "Washing", "value": "Washing" }
+      ]
+    }
+  ],
+  "invertebrate": [
+    {
+      "name": "BiologicalSex",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 4,
+      "items": [
+        { "title": "Unknown", "value": "Unknown" },
+        { "title": "Both", "value": "Both" },
+        { "title": "Female", "value": "Female" },
+        { "title": "Male", "value": "Male" }
+      ]
+    },
+    {
+      "name": "LifeStage",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 50,
+      "items": [
+        { "title": "Unknown", "value": "Unknown" },
+        { "title": "Egg", "value": "Egg" },
+        { "title": "Embryo", "value": "Embryo" },
+        { "title": "Larva", "value": "Larva" },
+        { "title": "Nymph", "value": "Nymph" },
+        { "title": "Pupa", "value": "Pupa" },
+        { "title": "Juvenile", "value": "Juvenile" },
+        { "title": "Adult", "value": "Adult" },
+        { "title": "Nauplius", "value": "Nauplius" },
+        { "title": "Veliger", "value": "Veliger" }
+      ]
+    },
+    {
+      "name": "CollectingMethod",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [
+        { "title": "Trap", "value": "Trap" },
+        { "title": "Boat Electro-Shocker", "value": "Boat Electro-Shocker" },
+        { "title": "Seine", "value": "Seine" },
+        { "title": "Unknown", "value": "Unknown" },
+        { "title": "Hook & Line", "value": "Hook & Line" }
+      ]
+    }
+  ],
+  "invertpaleo": [
+    {
+      "name": "CollectingMethod",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 10,
+      "items": [
+        { "title": "Dug", "value": "Dug" },
+        { "title": "By Hand", "value": "By Hand" },
+        { "title": "Excavation", "value": "Excavation" },
+        { "title": "Surface Collection", "value": "Surface Collection" },
+        { "title": "Trawling", "value": "Trawling" }
+      ]
+    }
+  ],
+  "mammal": [
+    {
+      "name": "BiologicalSex",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 4,
+      "items": [
+        { "title": "Unknown", "value": "Unknown" },
+        { "title": "Both", "value": "Both" },
+        { "title": "Female", "value": "Female" },
+        { "title": "Male", "value": "Male" }
+      ]
+    },
+    {
+      "name": "LifeStage",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 50,
+      "items": [
+        { "title": "Unknown", "value": "Unknown" },
+        { "title": "Embryo", "value": "Embryo" },
+        { "title": "Fetus", "value": "Fetus" },
+        { "title": "Neonate", "value": "Neonate" },
+        { "title": "Juvenile", "value": "Juvenile" },
+        { "title": "Subadult", "value": "Subadult" },
+        { "title": "Adult", "value": "Adult" }
+      ]
+    },
+    {
+      "name": "CollectingMethod",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 9,
+      "items": [
+        { "title": "Trap", "value": "Trap" },
+        { "title": "Sherman Trap", "value": "Sherman Trap" },
+        { "title": "Elliot Trap", "value": "Elliot Trap" },
+        { "title": "Pitfall Trap", "value": "Pitfall Trap" },
+        { "title": "Sample-Release", "value": "Sample-Release" },
+        { "title": "Roadkill", "value": "Roadkill" },
+        { "title": "Salvage", "value": "Salvage" },
+        { "title": "Mist Net", "value": "Mist Net" },
+        { "title": "Shot", "value": "Shot" }
+      ]
+    }
+  ],
+  "paleobotany": [
+    {
+      "name": "CollectingMethod",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [
+        { "title": "Dug", "value": "Dug" }
+      ]
+    },
+    {
+      "name": "LifeStage",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 8,
+      "items": [
+        { "title": "Unknown", "value": "Unknown" },
+        { "title": "Seedling", "value": "Seedling" },
+        { "title": "Flowering", "value": "Flowering" },
+        { "title": "Fruiting", "value": "Fruiting" },
+        { "title": "Mature", "value": "Mature" },
+        { "title": "Embryo", "value": "Embryo" },
+        { "title": "Seed", "value": "Seed" },
+        { "title": "Senescent", "value": "Senescent" }
+      ]
+    }
+  ],
+  "reptile": [
+    {
+      "name": "BiologicalSex",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 4,
+      "items": [
+        { "title": "Unknown", "value": "Unknown" },
+        { "title": "Both", "value": "Both" },
+        { "title": "Female", "value": "Female" },
+        { "title": "Male", "value": "Male" }
+      ]
+    },
+    {
+      "name": "LifeStage",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 10,
+      "items": [
+        { "title": "Egg", "value": "Egg" },
+        { "title": "Juvenile", "value": "Juvenile" },
+        { "title": "Immature", "value": "Immature" },
+        { "title": "Embryo", "value": "Embryo" },
+        { "title": "Adult", "value": "Adult" }
+      ]
+    },
+    {
+      "name": "CollectingMethod",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [
+        { "title": "Trap", "value": "Trap" },
+        { "title": "Boat Electro-Shocker", "value": "Boat Electro-Shocker" },
+        { "title": "Seine", "value": "Seine" },
+        { "title": "Unknown", "value": "Unknown" },
+        { "title": "Hook & Line", "value": "Hook & Line" }
+      ]
+    }
+  ],
+  "vascplant": [
+    {
+      "name": "CollectingMethod",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [
+        { "title": "Cut", "value": "Cut" }
+      ]
+    },
+    {
+      "name": "LifeStage",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 8,
+      "items": [
+        { "title": "Unknown", "value": "Unknown" },
+        { "title": "Seedling", "value": "Seedling" },
+        { "title": "Flowering", "value": "Flowering" },
+        { "title": "Fruiting", "value": "Fruiting" },
+        { "title": "Mature", "value": "Mature" },
+        { "title": "Embryo", "value": "Embryo" },
+        { "title": "Seed", "value": "Seed" },
+        { "title": "Senescent", "value": "Senescent" }
+      ]
+    },
+    {
+      "name": "Phenology",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 8,
+      "items": [
+        { "title": "Unknown", "value": "Unknown" },
+        { "title": "Flowering", "value": "Flowering" },
+        { "title": "Flowering and Fruiting", "value": "Flowering and Fruiting" },
+        { "title": "Fruiting", "value": "Fruiting" },
+        { "title": "Mature", "value": "Mature" },
+        { "title": "Seed", "value": "Seed" },
+        { "title": "Seedling", "value": "Seedling" },
+        { "title": "Senescent", "value": "Senescent" }
+      ]
+    }
+  ],
+  "vertpaleo": [
+    {
+      "name": "BiologicalSex",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [
+        { "title": "Indeterminate", "value": "Indeterminate" },
+        { "title": "Mixed", "value": "Mixed" },
+        { "title": "Male", "value": "Male" },
+        { "title": "Female", "value": "Female" },
+        { "title": "Other", "value": "Other" }
+      ]
+    },
+    {
+      "name": "LifeStage",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 50,
+      "items": [
+        { "title": "Unknown", "value": "Unknown" },
+        { "title": "Egg", "value": "Egg" },
+        { "title": "Embryo", "value": "Embryo" },
+        { "title": "Juvenile", "value": "Juvenile" },
+        { "title": "Subadult", "value": "Subadult" },
+        { "title": "Adult", "value": "Adult" }
+      ]
+    },
+    {
+      "name": "CollectingMethod",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [
+        { "title": "Dug", "value": "Dug" }
+      ]
+    }
+  ],
+  "geology": [
+    {
+      "name": "CollectingMethod",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 10,
+      "items": [
+        { "title": "Dug", "value": "Dug" },
+        { "title": "Surface Collection", "value": "Surface Collection" },
+        { "title": "Excavation", "value": "Excavation" },
+        { "title": "By Hand", "value": "By Hand" },
+        { "title": "Hammer & Chisel", "value": "Hammer & Chisel" },
+        { "title": "Screening", "value": "Screening" },
+        { "title": "Trawling", "value": "Trawling" },
+        { "title": "Metal Detecting", "value": "Metal Detecting" },
+        { "title": "Magnet", "value": "Magnet" },
+        { "title": "Observed Fall", "value": "Observed Fall" }
+      ]
+    },
+    {
+      "name": "Quality",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [
+        { "title": "1 Star", "value": "1 Star" },
+        { "title": "2 Stars", "value": "2 Stars" },
+        { "title": "3 Stars", "value": "3 Stars" },
+        { "title": "4 Stars", "value": "4 Stars" },
+        { "title": "5 Stars", "value": "5 Stars" }
+      ]
+    },
+    {
+      "name": "HazardType",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 10,
+      "items": [
+        { "title": "Dry", "value": "Dry" },
+        { "title": "Radioactive", "value": "Radioactive" },
+        { "title": "Toxic", "value": "Toxic" },
+        { "title": "Asbestos", "value": "Asbestos" },
+        { "title": "Heavy Metals", "value": "Heavy Metals" },
+        { "title": "Sharp Edges", "value": "Sharp Edges" },
+        { "title": "Fragile", "value": "Fragile" },
+        { "title": "Explosive", "value": "Explosive" },
+        { "title": "Flammable", "value": "Flammable" },
+        { "title": "Biohazard", "value": "Biohazard" }
+      ]
+    }
+  ]
+}

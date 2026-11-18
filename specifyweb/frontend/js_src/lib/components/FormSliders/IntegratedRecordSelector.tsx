@@ -7,6 +7,7 @@ import { commonText } from '../../localization/common';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
+import { className } from '../Atoms/className';
 import { DataEntry } from '../Atoms/DataEntry';
 import { ReadOnlyContext } from '../Core/Contexts';
 import type { CollectionFetchFilters } from '../DataModel/collection';
@@ -23,6 +24,7 @@ import { COJODialog } from '../FormCells/COJODialog';
 import { FormTableCollection } from '../FormCells/FormTableCollection';
 import type { FormType } from '../FormParse';
 import type { SubViewSortField } from '../FormParse/cells';
+import { DeleteButtonWrapped } from '../Forms/DeleteButton';
 import { augmentMode, ResourceView } from '../Forms/ResourceView';
 import { useFirstFocus } from '../Forms/SpecifyForm';
 import { SubViewContext } from '../Forms/SubView';
@@ -33,6 +35,7 @@ import { hasTablePermission } from '../Permissions/helpers';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { AttachmentsCollection } from './AttachmentsCollection';
 import { AttachmentWarningDeletion } from './AttachmentWarningDeletion';
+import { shouldBeToOne } from './helpers';
 import { RecordSelectorFromCollection } from './RecordSelectorFromCollection';
 
 /** A wrapper for RecordSelector to integrate with Backbone.Collection */
@@ -53,7 +56,7 @@ export function IntegratedRecordSelector({
   ...rest
 }: Omit<
   Parameters<typeof RecordSelectorFromCollection>[0],
-  'children' | 'onSlide' | 'table'
+  'children' | 'enableKeyboardShortcuts' | 'onSlide' | 'table'
 > & {
   readonly dialog: 'modal' | 'nonModal' | false;
   readonly formType: FormType;
@@ -70,8 +73,7 @@ export function IntegratedRecordSelector({
   const focusFirstField = useFirstFocus(containerRef);
 
   const isDependent = collection instanceof DependentCollection;
-  const isToOne =
-    !relationshipIsToMany(relationship) || relationship.type === 'zero-to-one';
+  const isToOne = shouldBeToOne(relationship);
   const isReadOnly = augmentMode(
     React.useContext(ReadOnlyContext),
     false,
@@ -137,6 +139,8 @@ export function IntegratedRecordSelector({
   const isAttachmentTable =
     collection.table.specifyTable.name.includes('Attachment');
 
+  const isTreeTable = collection.table.specifyTable.name.includes('Tree');
+
   const subviewContext = React.useContext(SubViewContext);
   const parentContext = React.useMemo(
     () => subviewContext?.parentContext ?? [],
@@ -157,6 +161,12 @@ export function IntegratedRecordSelector({
     [parentContext, relationship]
   );
 
+  const isSystemConfigResource =
+    (relationship.relatedTable.name === 'Collection' &&
+      relationship.name === 'collections') ||
+    (relationship.relatedTable.name === 'Discipline' &&
+      relationship.name === 'disciplines');
+
   const isCOJO =
     relationship.relatedTable.name === 'CollectionObjectGroupJoin' &&
     relationship.name === 'children';
@@ -176,6 +186,7 @@ export function IntegratedRecordSelector({
       <RecordSelectorFromCollection
         collection={collection}
         defaultIndex={isToOne ? 0 : index}
+        enableKeyboardShortcuts={dialog !== false}
         relationship={relationship}
         onAdd={(resources): void => {
           if (isInteraction) {
@@ -233,7 +244,10 @@ export function IntegratedRecordSelector({
                 <ResourceView
                   containerRef={containerRef}
                   dialog={dialog}
-                  headerButtons={(specifyNetworkBadge): JSX.Element => (
+                  headerButtons={(
+                    specifyNetworkBadge,
+                    showParentResource
+                  ): JSX.Element => (
                     <>
                       <DataEntry.Visit
                         /*
@@ -256,7 +270,8 @@ export function IntegratedRecordSelector({
                           disabled={
                             isReadOnly ||
                             (isToOne && collection.models.length > 0) ||
-                            isTaxonTreeDefItemTable
+                            isTaxonTreeDefItemTable ||
+                            isSystemConfigResource
                           }
                           onClick={showSearchDialog}
                         />
@@ -278,7 +293,8 @@ export function IntegratedRecordSelector({
                             disabled={
                               isReadOnly ||
                               (isToOne && collection.models.length > 0) ||
-                              isTaxonTreeDefItemTable
+                              isTaxonTreeDefItemTable ||
+                              isSystemConfigResource
                             }
                             onClick={(): void => {
                               const resource =
@@ -302,31 +318,59 @@ export function IntegratedRecordSelector({
                                   handleAdd,
                                 });
                             }}
+                            enableShortcut={dialog !== false}
                           />
                         )
                       ) : undefined}
                       {hasTablePermission(
                         relationship.relatedTable.name,
                         isDependent ? 'delete' : 'read'
-                      ) && typeof handleRemove === 'function' ? (
-                        <DataEntry.Remove
-                          disabled={
-                            isReadOnly ||
-                            collection.models.length === 0 ||
-                            resource === undefined ||
-                            (renderedResourceId !== undefined &&
-                              resource?.id === renderedResourceId) ||
-                            disableRemove
-                          }
-                          onClick={(): void => {
-                            if (isAttachmentTable) {
-                              handleWarning();
-                            } else {
+                      ) &&
+                      typeof handleRemove === 'function' &&
+                      resource !== undefined ? (
+                        isTreeTable &&
+                        resource.id !== undefined &&
+                        resource.id !== null ? (
+                          <DeleteButtonWrapped
+                            deferred={true}
+                            isIcon={true}
+                            resource={resource}
+                            onDeleted={(): void => {
                               handleRemove('minusButton');
+                            }}
+                          >
+                            {(onClick, disabled) => (
+                              <Button.Icon
+                                className={className.dataEntryRemove}
+                                disabled={disabled}
+                                icon="minus"
+                                title={commonText.remove()}
+                                onClick={onClick}
+                              />
+                            )}
+                          </DeleteButtonWrapped>
+                        ) : (
+                          <DataEntry.Remove
+                            disabled={
+                              isReadOnly ||
+                              collection.models.length === 0 ||
+                              resource === undefined ||
+                              (renderedResourceId !== undefined &&
+                                resource?.id === renderedResourceId) ||
+                              disableRemove ||
+                              isSystemConfigResource
                             }
-                          }}
-                        />
+                            onClick={(): void => {
+                              if (isAttachmentTable) {
+                                handleWarning();
+                              } else {
+                                handleRemove('minusButton');
+                              }
+                            }}
+                          />
+                        )
                       ) : undefined}
+                      {showParentResource}
                       <span
                         className={`flex-1 ${
                           dialog === false ? '-ml-2' : '-ml-4'
@@ -336,7 +380,9 @@ export function IntegratedRecordSelector({
                         <AttachmentsCollection collection={collection} />
                       )}
                       {specifyNetworkBadge}
-                      {!isToOne && slider}
+                      {(!isToOne ||
+                        (isToOne && collection.models.length > 1)) &&
+                        slider}
                     </>
                   )}
                   isCollapsed={isCollapsed}

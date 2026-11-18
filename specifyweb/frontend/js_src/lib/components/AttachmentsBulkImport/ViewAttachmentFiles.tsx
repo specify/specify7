@@ -19,6 +19,7 @@ import type { PartialAttachmentUploadSpec } from './Import';
 import { ResourceDisambiguationDialog } from './ResourceDisambiguation';
 import type { PartialUploadableFileSpec } from './types';
 import {
+  isMappingFilePlaceholder,
   keyLocalizationMapAttachment,
   resolveAttachmentRecord,
   resolveAttachmentStatus,
@@ -27,7 +28,8 @@ import {
 const resolveAttachmentDatasetData = (
   uploadableFiles: RA<PartialUploadableFileSpec>,
   setDisambiguationIndex: (index: number) => void,
-  baseTableName: keyof Tables | undefined
+  baseTableName: keyof Tables | undefined,
+  isMappingMode: boolean = false
 ) =>
   uploadableFiles.map(
     ({ uploadFile, status, matchedId, disambiguated, attachmentId }, index) => {
@@ -46,7 +48,8 @@ const resolveAttachmentDatasetData = (
           : resolveAttachmentRecord(
               matchedId,
               disambiguated,
-              uploadFile.parsedName
+              uploadFile.parsedName,
+              isMappingMode
             );
 
       const isRuntimeError =
@@ -54,12 +57,24 @@ const resolveAttachmentDatasetData = (
         typeof status === 'object' &&
         (status.type === 'cancelled' || status.type === 'skipped');
 
-      const statusText = f.maybe(status, resolveAttachmentStatus) ?? '';
-      return {
+      const isPlaceholder =
+        isMappingMode &&
+        isMappingFilePlaceholder({
+          uploadFile,
+          status,
+        } as PartialUploadableFileSpec);
+
+      const statusText = isPlaceholder
+        ? attachmentsText.awaitingFile()
+        : (f.maybe(status, resolveAttachmentStatus) ?? '');
+
+      const baseData = {
         selectedFileName: [
           uploadFile.file.name,
           <div className="flex w-fit gap-1">
-            {uploadFile.file instanceof File ? '' : dialogIcons.warning}
+            {uploadFile.file instanceof File || isPlaceholder
+              ? ''
+              : dialogIcons.warning}
             {uploadFile.file.name}
           </div>,
         ],
@@ -100,6 +115,16 @@ const resolveAttachmentDatasetData = (
         isNativeError: resolvedRecord?.type === 'invalid',
         isRuntimeError,
       } as const;
+
+      return isMappingMode
+        ? {
+            ...baseData,
+            matchValue: [
+              uploadFile.mappingMatchValue ?? '',
+              <span>{uploadFile.mappingMatchValue ?? ''}</span>,
+            ] as const,
+          }
+        : baseData;
     }
   );
 
@@ -109,6 +134,7 @@ export function ViewAttachmentFiles({
   onDisambiguation: handleDisambiguation,
   onFilesDropped: handleFilesDropped,
   headers,
+  isMappingMode = false,
 }: {
   readonly uploadableFiles: RA<PartialUploadableFileSpec>;
   readonly baseTableName: keyof Tables | undefined;
@@ -122,6 +148,7 @@ export function ViewAttachmentFiles({
     | undefined;
   readonly onFilesDropped?: (file: FileList) => void;
   readonly headers: IR<JSX.Element | LocalizedString>;
+  readonly isMappingMode?: boolean;
 }): JSX.Element | null {
   const [disambiguationIndex, setDisambiguationIndex] = React.useState<
     number | undefined
@@ -132,9 +159,10 @@ export function ViewAttachmentFiles({
       resolveAttachmentDatasetData(
         uploadableFiles,
         setDisambiguationIndex,
-        baseTableName
+        baseTableName,
+        isMappingMode
       ),
-    [uploadableFiles, setDisambiguationIndex, baseTableName]
+    [uploadableFiles, setDisambiguationIndex, baseTableName, isMappingMode]
   );
 
   const fileDropDivRef = React.useRef<HTMLDivElement>(null);
@@ -163,7 +191,9 @@ export function ViewAttachmentFiles({
                 </div>
                 <div className="flex min-w-fit gap-1">
                   {uploadableFiles.some(
-                    ({ uploadFile: { file } }) => !(file instanceof File)
+                    (row) =>
+                      !(row.uploadFile.file instanceof File) &&
+                      !(isMappingMode && isMappingFilePlaceholder(row))
                   ) && (
                     <>
                       {dialogIcons.warning}
@@ -172,6 +202,12 @@ export function ViewAttachmentFiles({
                   )}
                 </div>
               </div>
+              {isMappingMode &&
+                uploadableFiles.some(isMappingFilePlaceholder) && (
+                  <div className="text-gray-500">
+                    {attachmentsText.mappingAwaitingFiles()}
+                  </div>
+                )}
               <GenericSortedDataViewer
                 cellClassName={(row, column, index) =>
                   `bg-[color:var(--background)] p-2 print:p-1 ${

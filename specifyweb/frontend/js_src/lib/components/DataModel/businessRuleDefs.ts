@@ -1,12 +1,13 @@
 import { resourcesText } from '../../localization/resources';
 import { resolveParser } from '../../utils/parser/definitions';
-import type { ValueOf } from '../../utils/types';
+import type { RA, ValueOf } from '../../utils/types';
 import type { BusinessRuleResult } from './businessRules';
 import {
-  CO_HAS_PARENT,
+  CATALOG_NUMBER_EXISTS,
   COG_PRIMARY_KEY,
   COG_TOITSELF,
   COJO_PRIMARY_DELETE_KEY,
+  COMPONENT_NAME_TAXON_KEY,
   CURRENT_DETERMINATION_KEY,
   DETERMINATION_TAXON_KEY,
   ensureSingleCollectionObjectCheck,
@@ -20,7 +21,8 @@ import {
   PREPARATION_LOANED_KEY,
   PREPARATION_NEGATIVE_KEY,
 } from './businessRuleUtils';
-import { cogTypes } from './helpers';
+import { fetchCollection } from './collection';
+import { backendFilter, cogTypes } from './helpers';
 import type { AnySchema, CommonFields, TableFields } from './helperTypes';
 import {
   checkPrepAvailability,
@@ -31,7 +33,6 @@ import {
   updateLoanPrep,
 } from './interactionBusinessRules';
 import type { SpecifyResource } from './legacyTypes';
-import { idFromUrl } from './resource';
 import { setSaveBlockers } from './saveBlockers';
 import { schema } from './schema';
 import type { LiteralField, Relationship } from './specifyField';
@@ -42,6 +43,7 @@ import type {
   CollectionObject,
   CollectionObjectGroup,
   CollectionObjectGroupJoin,
+  Component,
   Determination,
   DNASequence,
   LoanPreparation,
@@ -198,6 +200,74 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
 
         return undefined;
       },
+      catalogNumber: async (resource): Promise<undefined> => {
+        const preferences =
+          await import('../Preferences/collectionPreferences').then(
+            ({ collectionPreferences }) => collectionPreferences
+          );
+
+        const uniqueCatalogNumberAccrossComponentAndCOPref = preferences.get(
+          'uniqueCatalogNumberAccrossComponentAndCO',
+          'behavior',
+          'uniqueness'
+        );
+
+        const catalogNumberValue = resource.get('catalogNumber');
+
+        if (
+          !uniqueCatalogNumberAccrossComponentAndCOPref ||
+          catalogNumberValue === null
+        ) {
+          setSaveBlockers(
+            resource,
+            resource.specifyTable.field.catalogNumber,
+            [],
+            CATALOG_NUMBER_EXISTS
+          );
+          return undefined;
+        }
+
+        const databaseContainsComponentDuplicates = await fetchCollection(
+          'Component',
+          {
+            catalogNumber: catalogNumberValue,
+            domainFilter: true,
+            limit: 1,
+          }
+        ).then(({ totalCount }) => totalCount !== 0);
+
+        // BUG: When a local Component is modified to have a catalogNumber that
+        // matches this CollectionObject, a change event is being triggered on
+        // the CO -> catalogNumber and triggering this rule as well
+        // Found out what is causing the change event...
+        const localCollectionContainsComponentDuplicates = resource
+          .getDependentResource('components')
+          ?.models.some(
+            (component) =>
+              catalogNumberValue !== null &&
+              component.get('catalogNumber') === catalogNumberValue
+          );
+
+        const isInvalid =
+          databaseContainsComponentDuplicates ||
+          localCollectionContainsComponentDuplicates;
+
+        setSaveBlockers(
+          resource,
+          resource.specifyTable.field.catalogNumber,
+          isInvalid
+            ? [
+                resourcesText.catalogNumberAlreadyUsed({
+                  catalogNumberFieldName:
+                    resource.specifyTable.field.catalogNumber.label,
+                  catalogNumber: catalogNumberValue!,
+                }),
+              ]
+            : [],
+          CATALOG_NUMBER_EXISTS
+        );
+        return undefined;
+      },
     },
   },
 
@@ -280,33 +350,6 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           saveBlockerKey: COG_TOITSELF,
         };
       },
-      childCo: async (
-        cojo: SpecifyResource<CollectionObjectGroupJoin>
-      ): Promise<BusinessRuleResult> => {
-        const childCO = cojo.get('childCo');
-        const childCOId = idFromUrl(childCO!);
-        const CO: SpecifyResource<CollectionObject> | void =
-          await new tables.CollectionObject.Resource({ id: childCOId })
-            .fetch()
-            .then((co) => co)
-            .catch((error) => {
-              console.error('Failed to fetch CollectionObject:', error);
-            });
-        let coParent;
-        if (CO !== undefined) {
-          coParent = CO.get('componentParent');
-        }
-        return coParent === null || coParent === undefined
-          ? {
-              isValid: true,
-              saveBlockerKey: CO_HAS_PARENT,
-            }
-          : {
-              isValid: false,
-              reason: resourcesText.coHasParent(),
-              saveBlockerKey: CO_HAS_PARENT,
-            };
-      },
     },
     onAdded: (cojo, collection) => {
       if (
@@ -357,6 +400,187 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
       }
     },
     onAdded: onAddedEnsureBoolInCollection('isPrimary'),
+  },
+
+  Component: {
+    customInit: (component: SpecifyResource<Component>): void => {
+      if (
+        typeof schema.defaultCollectionObjectType === 'string' &&
+        typeof component.get('type') !== 'string'
+      )
+        component.set('type', schema.defaultCollectionObjectType);
+    },
+    fieldChecks: {
+      type: async (resource): Promise<undefined> => {
+        const name = await resource.rgetPromise('name');
+        if (name === null) return;
+
+        const coType = await resource.rgetPromise('type');
+        const coTypeTreeDef = coType.get('taxonTreeDef');
+
+        const taxonTreeDef = name?.get('definition');
+
+        const isValid =
+          typeof taxonTreeDef === 'string' && taxonTreeDef === coTypeTreeDef;
+
+        setSaveBlockers(
+          resource,
+          resource.specifyTable.field.name,
+          isValid
+            ? []
+            : [
+                resourcesText.invalidNameTaxon({
+                  taxonName: resource.specifyTable.field.name.label,
+                  taxonTableLabel: tables.Taxon.label,
+                  typeName: resource.specifyTable.label,
+                }),
+              ],
+          COMPONENT_NAME_TAXON_KEY
+        );
+
+        return undefined;
+      },
+      name: async (resource): Promise<undefined> => {
+        const name = await resource.rgetPromise('name');
+        if (name === null) {
+          setSaveBlockers(
+            resource,
+            resource.specifyTable.field.name,
+            [],
+            COMPONENT_NAME_TAXON_KEY
+          );
+        }
+        return undefined;
+      },
+      catalogNumber: async (resource): Promise<undefined> => {
+        const preferences =
+          await import('../Preferences/collectionPreferences').then(
+            ({ collectionPreferences }) => collectionPreferences
+          );
+
+        const uniqueCatalogNumberAccrossComponentAndCOPref = preferences.get(
+          'uniqueCatalogNumberAccrossComponentAndCO',
+          'behavior',
+          'uniqueness'
+        );
+
+        if (!uniqueCatalogNumberAccrossComponentAndCOPref) {
+          setSaveBlockers(
+            resource,
+            resource.specifyTable.field.catalogNumber,
+            [],
+            CATALOG_NUMBER_EXISTS
+          );
+          return undefined;
+        }
+
+        const catalogNumberValue = resource.get('catalogNumber');
+
+        // Check the Database for CollectionObject records that have the same
+        // catalogNumber
+        const containsCoDuplicates = () =>
+          fetchCollection('CollectionObject', {
+            domainFilter: true,
+            catalogNumber: catalogNumberValue,
+            limit: 1,
+          }).then(({ totalCount }) => totalCount !== 0);
+
+        // Check the Database for other existing Component records with the
+        // same catalogNumber
+        const containsComponentDuplicates = () =>
+          fetchCollection('Component', {
+            catalogNumber: catalogNumberValue,
+            domainFilter: true,
+            limit: 1,
+            ...(resource.id === undefined
+              ? {}
+              : backendFilter('id').not.equals(resource.id)),
+          }).then(({ totalCount }) => totalCount !== 0);
+
+        // If the Components are in a collection (such as when viewing the
+        // Components SubView from CollectionObject), then make sure that no
+        // unsaved Component in the collection has the same catalogNumber as
+        // this Component
+        // BUG: Consider the following case:
+        // - There's a Component collection with a saved Component (1) with
+        //   catalogNumber A
+        // - a Component (2) is added to the Collection with catalogNumber A
+        // - Component 1's catalogNumber is changed from A
+        // - a saveblocker will be set on Component 2, even though we know the
+        //   existing duplicate has been locally changed
+        const localComponentCollectionHasValue = () =>
+          Promise.resolve(
+            resource.collection === undefined || catalogNumberValue === null
+              ? false
+              : resource.collection.models
+                  .filter((component) =>
+                    resource.id === undefined
+                      ? component.cid !== resource.cid
+                      : resource.id !== component.id
+                  )
+                  .map((component) => component.get('catalogNumber'))
+                  .filter(
+                    (catalogNumber) => catalogNumber === catalogNumberValue
+                  ).length >= 1
+          );
+
+        // Finally, check whether the Component's CollectionObject has the same
+        // catalogNumber as the Component
+        const collectionObjectHasValue = () =>
+          resource.collection?.related?.specifyTable.name === 'CollectionObject'
+            ? Promise.resolve(
+                catalogNumberValue !== null &&
+                  (
+                    resource.collection
+                      .related as SpecifyResource<CollectionObject>
+                  ).get('catalogNumber') === catalogNumberValue
+              )
+            : // This case should be subsumed by the prior check in
+              // containsCoDuplicates, but leaving this here just in case
+              resource
+                .rgetPromise('collectionObject')
+                .then(
+                  (collectionObject) =>
+                    collectionObject !== null &&
+                    collectionObject.get('catalogNumber') === catalogNumberValue
+                );
+        // REFACTOR: Change this when we upgrade to HTTP 2+
+        // Aggregate all of the invalid checks into a singe array to be
+        // processed sequentially
+        // It would be slightly more performant to have these all executing at
+        // the same time, but don't want to overwhelm the browser with the 6
+        // in-flight request limit of HTTP 1.1
+        const invalidChecks: RA<() => Promise<boolean>> = [
+          containsCoDuplicates,
+          containsComponentDuplicates,
+          localComponentCollectionHasValue,
+          collectionObjectHasValue,
+        ];
+
+        let isInvalid = false;
+
+        for (const checkInvalid of invalidChecks) {
+          isInvalid = await checkInvalid();
+          if (isInvalid) break;
+        }
+
+        setSaveBlockers(
+          resource,
+          resource.specifyTable.field.catalogNumber,
+          isInvalid
+            ? [
+                resourcesText.catalogNumberAlreadyUsed({
+                  catalogNumberFieldName:
+                    resource.specifyTable.field.catalogNumber.label,
+                  catalogNumber: catalogNumberValue!,
+                }),
+              ]
+            : [],
+          CATALOG_NUMBER_EXISTS
+        );
+        return undefined;
+      },
+    },
   },
 
   Determination: {
@@ -451,11 +675,13 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
        * Collection the Determination is leaving contains a current
        * Determination and prevent the operation (via saveblocker?) if so.
        */
-      determination.set('isCurrent', true);
-      collection.models.forEach((otherDetermination) => {
-        if (determination.cid !== otherDetermination.cid)
-          otherDetermination.set('isCurrent', false);
-      });
+      if (determination.createdBy !== 'clone') {
+        determination.set('isCurrent', true);
+        collection.models.forEach((otherDetermination) => {
+          if (determination.cid !== otherDetermination.cid)
+            otherDetermination.set('isCurrent', false);
+        });
+      }
       // Clear any existing save blocker on adding a new current determination
       setSaveBlockers(
         collection.related ?? determination,
@@ -626,11 +852,15 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
       countAmt: async (prep): Promise<BusinessRuleResult | undefined> => {
         const loanPrep = await prep.rgetCollection('loanPreparations');
         const totalPrep = prep.get('countAmt') ?? 0;
-        let totalPrepLoaned = 0;
+        let totalPrepOnLoan = 0;
 
         loanPrep.models.forEach((loan) => {
           const quantity = loan.get('quantity') ?? 0;
-          totalPrepLoaned += quantity;
+          const quantityResolved = loan.get('quantityResolved') ?? 0;
+          const unresolvedQuantity = loan.get('isResolved')
+            ? 0
+            : Math.max(quantity - quantityResolved, 0);
+          totalPrepOnLoan += unresolvedQuantity;
         });
 
         if (totalPrep < 0) {
@@ -640,7 +870,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
             [resourcesText.preparationIsNegative()],
             PREPARATION_NEGATIVE_KEY
           );
-        } else if (totalPrep < totalPrepLoaned) {
+        } else if (totalPrep < totalPrepOnLoan) {
           setSaveBlockers(
             prep,
             prep.specifyTable.field.countAmt,

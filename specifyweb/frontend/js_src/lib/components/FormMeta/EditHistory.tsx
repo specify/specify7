@@ -11,7 +11,7 @@ import { tables } from '../DataModel/tables';
 import type { SpQuery } from '../DataModel/types';
 import { Dialog, dialogClassNames, LoadingScreen } from '../Molecules/Dialog';
 import { createQuery } from '../QueryBuilder';
-import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
+import { queryFieldFilterSpecs } from '../QueryBuilder/FieldFilterSpec';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { flippedSortTypes } from '../QueryBuilder/helpers';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
@@ -85,12 +85,12 @@ function useEditHistoryQuery(
             QueryFieldSpec.fromPath('SpAuditLog', ['tableNum'])
               .toSpQueryField()
               .set('isDisplay', false)
-              .set('operStart', queryFieldFilters.equal.id)
+              .set('operStart', queryFieldFilterSpecs.equal.id)
               .set('startValue', resource.specifyTable.tableId.toString()),
             QueryFieldSpec.fromPath('SpAuditLog', ['recordId'])
               .toSpQueryField()
               .set('isDisplay', false)
-              .set('operStart', queryFieldFilters.equal.id)
+              .set('operStart', queryFieldFilterSpecs.equal.id)
               .set('startValue', resource.id.toString()),
             QueryFieldSpec.fromPath('SpAuditLog', ['action']).toSpQueryField(),
             QueryFieldSpec.fromPath('SpAuditLog', [

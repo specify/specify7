@@ -1,0 +1,175 @@
+﻿Erathem/Era,System/Period,Series/Epoch,Stage/Age,Start Period,Start Uncertainty,End Period,End Uncertainty
+Cenozoic,,,,66,,,
+Cenozoic,Neogene,,,23.04,,2.58,
+Cenozoic,Neogene,Miocene,,23.04,,5.333,
+Cenozoic,Neogene,Miocene,Aquitanian,23.03,,20.45,
+Cenozoic,Neogene,Miocene,Burdigalian,20.45,,15.98,
+Cenozoic,Neogene,Miocene,Langhian,15.98,,13.82,
+Cenozoic,Neogene,Miocene,Messinian,7.246,,5.333,
+Cenozoic,Neogene,Miocene,Serravallian,13.82,,11.63,
+Cenozoic,Neogene,Miocene,Tortonian,11.63,,7.246,
+Cenozoic,Neogene,Pliocene,,5.333,,2.58,
+Cenozoic,Neogene,Pliocene,Piacenzian,3.6,,2.58,
+Cenozoic,Neogene,Pliocene,Zanclean,5.333,,3.6,
+Cenozoic,Paleogene,,,66,,23.04,
+Cenozoic,Paleogene,Eocene,,56,,33.9,
+Cenozoic,Paleogene,Eocene,Bartonian,41.03,,37.71,
+Cenozoic,Paleogene,Eocene,Lutetian,48.07,,41.03,
+Cenozoic,Paleogene,Eocene,Priabonian,37.71,,33.9,
+Cenozoic,Paleogene,Eocene,Ypresian,56,,48.07,
+Cenozoic,Paleogene,Oligocene,,33.9,,23.04,
+Cenozoic,Paleogene,Oligocene,Chattian,27.3,,23.04,
+Cenozoic,Paleogene,Oligocene,Rupelian,33.9,,27.3,
+Cenozoic,Paleogene,Paleocene,,66,,56,
+Cenozoic,Paleogene,Paleocene,Danian,66,,61.66,
+Cenozoic,Paleogene,Paleocene,Selandian,61.66,,59.24,
+Cenozoic,Paleogene,Paleocene,Thanetian,59.24,,56,
+Cenozoic,Quaternary,,,2.58,,,
+Cenozoic,Quaternary,Holocene,,0.0117,,,
+Cenozoic,Quaternary,Holocene,Greenlandian,0.0117,,0.0082,
+Cenozoic,Quaternary,Holocene,Meghalayan,0.0042,,,
+Cenozoic,Quaternary,Holocene,Northgrippian,0.0082,,0.0042,
+Cenozoic,Quaternary,Pleistocene,,2.58,,0.0117,
+Cenozoic,Quaternary,Pleistocene,Calabrian,1.8,,0.774,
+Cenozoic,Quaternary,Pleistocene,Chibanian,0.774,,0.129,
+Cenozoic,Quaternary,Pleistocene,Gelasian,2.58,,1.8,
+Cenozoic,Quaternary,Pleistocene,Upper Pleistocene,0.129,,0.0117,
+Mesozoic,,,,251.902,0.024,66,
+Mesozoic,Cretaceous,,,143.1,0.6,66,
+Mesozoic,Cretaceous,Lower Cretaceous,,143.1,0.6,100.5,0.1
+Mesozoic,Cretaceous,Lower Cretaceous,Albian,113.2,0.3,100.5,0.1
+Mesozoic,Cretaceous,Lower Cretaceous,Aptian,121.4,0.6,113.2,0.3
+Mesozoic,Cretaceous,Lower Cretaceous,Barremian,125.77,,121.4,0.6
+Mesozoic,Cretaceous,Lower Cretaceous,Berriasian,143.1,0.6,137.05,0.2
+Mesozoic,Cretaceous,Lower Cretaceous,Hauterivian,132.6,0.6,125.77,
+Mesozoic,Cretaceous,Lower Cretaceous,Valanginian,137.05,0.2,132.6,0.6
+Mesozoic,Cretaceous,Upper Cretaceous,,100.5,0.1,66,
+Mesozoic,Cretaceous,Upper Cretaceous,Campanian,83.6,0.2,72.2,0.2
+Mesozoic,Cretaceous,Upper Cretaceous,Cenomanian,100.5,0.1,93.9,0.2
+Mesozoic,Cretaceous,Upper Cretaceous,Coniacian,89.8,0.3,85.7,0.2
+Mesozoic,Cretaceous,Upper Cretaceous,Maastrichtian,72.2,0.2,66,
+Mesozoic,Cretaceous,Upper Cretaceous,Santonian,85.7,0.2,83.6,0.2
+Mesozoic,Cretaceous,Upper Cretaceous,Turonian,93.9,0.2,89.8,0.3
+Mesozoic,Jurassic,,,201.4,0.2,143.1,0.6
+Mesozoic,Jurassic,Lower Jurassic,,201.4,0.2,174.7,0.8
+Mesozoic,Jurassic,Lower Jurassic,Hettangian,201.4,0.2,199.5,0.3
+Mesozoic,Jurassic,Lower Jurassic,Pliensbachian,192.9,0.3,184.2,0.3
+Mesozoic,Jurassic,Lower Jurassic,Sinemurian,199.5,0.3,192.9,0.3
+Mesozoic,Jurassic,Lower Jurassic,Toarcian,184.2,0.3,174.7,0.8
+Mesozoic,Jurassic,Middle Jurassic,,174.7,0.8,161.5,1
+Mesozoic,Jurassic,Middle Jurassic,Aalenian,174.7,0.8,170.9,0.8
+Mesozoic,Jurassic,Middle Jurassic,Bajocian,170.9,0.8,168.2,1.2
+Mesozoic,Jurassic,Middle Jurassic,Bathonian,168.2,1.2,165.3,1.1
+Mesozoic,Jurassic,Middle Jurassic,Callovian,165.3,1.1,161.5,1
+Mesozoic,Jurassic,Upper Jurassic,,161.5,1,143.1,0.6
+Mesozoic,Jurassic,Upper Jurassic,Kimmeridgian,154.8,0.8,149.2,0.7
+Mesozoic,Jurassic,Upper Jurassic,Oxfordian,161.5,1,154.8,0.8
+Mesozoic,Jurassic,Upper Jurassic,Tithonian,149.2,0.7,143.1,0.6
+Mesozoic,Triassic,,,251.902,0.024,201.4,0.2
+Mesozoic,Triassic,Lower Triassic,,251.902,0.024,246.7,
+Mesozoic,Triassic,Lower Triassic,Induan,251.902,0.024,249.9,
+Mesozoic,Triassic,Lower Triassic,Olenekian,249.9,,246.7,
+Mesozoic,Triassic,Middle Triassic,,246.7,,237,
+Mesozoic,Triassic,Middle Triassic,Anisian,246.7,,241.464,0.28
+Mesozoic,Triassic,Middle Triassic,Ladinian,241.464,0.28,237,
+Mesozoic,Triassic,Upper Triassic,,237,,201.4,0.2
+Mesozoic,Triassic,Upper Triassic,Carnian,237,,227.3,
+Mesozoic,Triassic,Upper Triassic,Norian,227.3,,205.7,
+Mesozoic,Triassic,Upper Triassic,Rhaetian,205.7,,201.4,0.2
+Paleozoic,,,,538.8,0.6,251.902,0.024
+Paleozoic,Cambrian,,,538.8,0.6,486.85,1.5
+Paleozoic,Cambrian,Furongian,,497,,486.85,1.5
+Paleozoic,Cambrian,Furongian,Jiangshanian,494.2,,491,
+Paleozoic,Cambrian,Furongian,Paibian,497,,494.2,
+Paleozoic,Cambrian,Furongian,Stage 10,491,,486.85,1.5
+Paleozoic,Cambrian,Miaolingian,,506.5,,497,
+Paleozoic,Cambrian,Miaolingian,Drumian,504.5,,500.5,
+Paleozoic,Cambrian,Miaolingian,Guzhangian,500.5,,497,
+Paleozoic,Cambrian,Miaolingian,Wuliuan,506.5,,504.5,
+Paleozoic,Cambrian,Series 2,,521,,506.5,
+Paleozoic,Cambrian,Series 2,Stage 3,521,,514.5,
+Paleozoic,Cambrian,Series 2,Stage 4,514.5,,506.5,
+Paleozoic,Cambrian,Terreneuvian,,538.8,0.6,521,
+Paleozoic,Cambrian,Terreneuvian,Fortunian,538.8,0.6,529,
+Paleozoic,Cambrian,Terreneuvian,Stage 2,529,,521,
+Paleozoic,Carboniferous,,,358.86,0.19,298.9,0.15
+Paleozoic,Carboniferous,Lower Mississippian,,358.86,0.19,346.7,0.4
+Paleozoic,Carboniferous,Lower Mississippian,Tournaisian,358.86,0.19,346.7,0.4
+Paleozoic,Carboniferous,Middle Mississippian,,346.7,0.4,330.3,0.4
+Paleozoic,Carboniferous,Middle Mississippian,Visean,346.7,0.4,330.3,0.4
+Paleozoic,Carboniferous,Upper Mississippian,,330.3,0.4,323.4,0.4
+Paleozoic,Carboniferous,Upper Mississippian,Serpukhovian,330.3,0.4,323.4,0.4
+Paleozoic,Carboniferous,Lower Pennsylvanian,,323.4,0.4,315.2,0.2
+Paleozoic,Carboniferous,Lower Pennsylvanian,Bashkirian,323.4,0.4,315.2,0.2
+Paleozoic,Carboniferous,Middle Pennsylvanian,,315.2,0.2,307,0.1
+Paleozoic,Carboniferous,Middle Pennsylvanian,Moscovian,315.2,0.2,307,0.1
+Paleozoic,Carboniferous,Upper Pennsylvanian,,307,0.1,298.9,0.15
+Paleozoic,Carboniferous,Upper Pennsylvanian,Gzhelian,303.7,0.1,298.9,0.15
+Paleozoic,Carboniferous,Upper Pennsylvanian,Kasimovian,307,0.1,303.7,0.1
+Paleozoic,Devonian,,,419.62,1.36,358.86,0.19
+Paleozoic,Devonian,Lower Devonian,,419.62,1.36,393.47,0.99
+Paleozoic,Devonian,Lower Devonian,Emsian,410.62,1.95,393.47,0.99
+Paleozoic,Devonian,Lower Devonian,Lochkovian,419.62,1.36,413.02,1.91
+Paleozoic,Devonian,Lower Devonian,Pragian,413.02,1.91,410.62,1.95
+Paleozoic,Devonian,Middle Devonian,,393.47,0.99,382.31,1.36
+Paleozoic,Devonian,Middle Devonian,Eifelian,393.47,0.99,387.95,1.04
+Paleozoic,Devonian,Middle Devonian,Givetian,387.95,1.04,382.31,1.36
+Paleozoic,Devonian,Upper Devonian,,382.31,1.36,358.86,0.19
+Paleozoic,Devonian,Upper Devonian,Famennian,372.15,0.46,358.86,0.19
+Paleozoic,Devonian,Upper Devonian,Frasnian,382.31,1.36,372.15,0.46
+Paleozoic,Ordovician,,,486.85,1.5,443.1,1
+Paleozoic,Ordovician,Lower Ordovician,,486.85,1.5,471.3,1.4
+Paleozoic,Ordovician,Lower Ordovician,Floian,477.1,1.2,471.3,1.4
+Paleozoic,Ordovician,Lower Ordovician,Tremadocian,486.85,1.5,477.1,1.2
+Paleozoic,Ordovician,Middle Ordovician,,471.3,1.4,458.2,0.7
+Paleozoic,Ordovician,Middle Ordovician,Dapingian,471.3,1.4,469.4,0.9
+Paleozoic,Ordovician,Middle Ordovician,Darriwilian,469.4,0.9,458.2,0.7
+Paleozoic,Ordovician,Upper Ordovician,,458.2,0.7,443.1,1
+Paleozoic,Ordovician,Upper Ordovician,Hirnantian,445.2,0.9,443.1,1
+Paleozoic,Ordovician,Upper Ordovician,Katian,452.8,0.7,445.2,0.9
+Paleozoic,Ordovician,Upper Ordovician,Sandbian,458.2,0.7,452.8,0.7
+Paleozoic,Permian,,,298.9,0.15,251.902,0.024
+Paleozoic,Permian,Cisuralian,,298.9,0.15,274.4,0.4
+Paleozoic,Permian,Cisuralian,Artinskian,290.1,0.26,283.3,0.4
+Paleozoic,Permian,Cisuralian,Asselian,298.9,0.15,293.52,0.17
+Paleozoic,Permian,Cisuralian,Kungurian,283.3,0.4,274.4,0.4
+Paleozoic,Permian,Cisuralian,Sakmarian,293.52,0.17,290.1,0.26
+Paleozoic,Permian,Guadalupian,,274.4,0.4,259.51,0.21
+Paleozoic,Permian,Guadalupian,Capitanian,264.28,0.16,259.51,0.21
+Paleozoic,Permian,Guadalupian,Roadian,274.4,0.4,266.9,0.4
+Paleozoic,Permian,Guadalupian,Wordian,266.9,0.4,264.28,0.16
+Paleozoic,Permian,Lopingian,,259.51,0.21,251.902,0.024
+Paleozoic,Permian,Lopingian,Changhsingian,254.14,0.07,251.902,0.024
+Paleozoic,Permian,Lopingian,Wuchiapingian,259.51,0.21,254.14,0.07
+Paleozoic,Silurian,,,443.1,1,419.62,1.36
+Paleozoic,Silurian,Llandovery,,443.1,1,432.9,1.2
+Paleozoic,Silurian,Llandovery,Aeronian,440.5,1,438.6,1
+Paleozoic,Silurian,Llandovery,Rhuddanian,443.1,1,440.5,1
+Paleozoic,Silurian,Llandovery,Telychian,438.6,1,432.9,1.2
+Paleozoic,Silurian,Ludlow,,426.7,1.5,419.62,1.36
+Paleozoic,Silurian,Ludlow,Gorstian,426.7,1.5,425,1.5
+Paleozoic,Silurian,Ludlow,Ludfordian,425,1.5,422.7,1.6
+Paleozoic,Silurian,Pridoli,,422.7,1.6,419.62,1.36
+Paleozoic,Silurian,Wenlock,,432.9,1.2,426.7,1.5
+Paleozoic,Silurian,Wenlock,Homerian,430.6,1.3,426.7,1.5
+Paleozoic,Silurian,Wenlock,Sheinwoodian,432.9,1.2,430.6,1.3
+Hadean,,,,4567,,4031,3
+Archean,,,,4031,3,2500,
+Eoarchean,,,,4031,3,3600,
+Mesoarchean,,,,3200,,2800,
+Neoarchean,,,,2800,,2500,
+Paleoarchean,,,,3600,,3200,
+Proterozoic,,,,2500,,538.8,0.6
+Mesoproterozoic,,,,1600,,1000,
+Mesoproterozoic,Calymmian,,,1600,,1400,
+Mesoproterozoic,Ectasian,,,1400,,1200,
+Mesoproterozoic,Stenian,,,1200,,1000,
+Neoproterozoic,,,,1000,,538.8,0.6
+Neoproterozoic,Cryogenian,,,720,,635,
+Neoproterozoic,Ediacaran,,,635,,538.8,0.6
+Neoproterozoic,Tonian,,,1000,,720,
+Paleoproterozoic,,,,2500,,1600,
+Paleoproterozoic,Orosirian,,,2050,,1800,
+Paleoproterozoic,Rhyacian,,,2300,,2050,
+Paleoproterozoic,Siderian,,,2500,,2300,
+Paleoproterozoic,Statherian,,,1800,,1600,

@@ -18,6 +18,7 @@ import { localized } from '../../utils/types';
 import { H2, Progress } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Label } from '../Atoms/Form';
+import { dialogIcons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { SECOND } from '../Atoms/timeUnits';
 import { LoadingContext } from '../Core/Contexts';
@@ -32,6 +33,7 @@ import { Dialog } from '../Molecules/Dialog';
 import { downloadFile } from '../Molecules/FilePicker';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasToolPermission } from '../Permissions/helpers';
+import { userPreferences } from '../Preferences/userPreferences';
 import { CreateRecordSet } from '../QueryBuilder/CreateRecordSet';
 import { downloadDataSet } from '../WorkBench/helpers';
 import { RemainingLoadingTime } from '../WorkBench/RemainingLoadingTime';
@@ -66,9 +68,12 @@ export function LocalityUpdateStatus({
   React.useEffect(() => {
     let destructorCalled = false;
     const fetchStatus = () =>
-      void ajax<LocalityUpdateState>(`/api/localityset/status/${taskId}/`, {
-        headers: { Accept: 'application/json' },
-      })
+      void ajax<LocalityUpdateState>(
+        `/locality_update_tool/localityset/status/${taskId}/`,
+        {
+          headers: { Accept: 'application/json' },
+        }
+      )
         .then(({ data }) => {
           setState(data);
           if (
@@ -89,7 +94,7 @@ export function LocalityUpdateStatus({
 
   const handleTaskCancel = React.useCallback(
     () =>
-      void ping(`/api/localityset/abort/${taskId}/`, {
+      void ping(`/locality_update_tool/localityset/abort/${taskId}/`, {
         method: 'POST',
       }).catch(softFail),
     [taskId]
@@ -154,6 +159,7 @@ export function LocalityUpdateStatus({
       children={null}
       dimensionsKey={statusDimensionKey}
       header={title}
+      icon={dialogIcons.error}
       modal={false}
       onClose={handleClose}
     />
@@ -231,6 +237,7 @@ function LocalityUpdateParsed({
         </>
       }
       header={localityUpdateStatusLocalization.PARSED}
+      icon={dialogIcons.question}
       modal={false}
       onClose={handleClose}
     >
@@ -281,6 +288,7 @@ export function LocalityUpdateSuccess({
     <Dialog
       buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
       header={localityUpdateStatusLocalization.SUCCEEDED}
+      icon={dialogIcons.success}
       modal={false}
       onClose={handleClose}
     >
@@ -314,9 +322,7 @@ export function LocalityUpdateSuccess({
       )}
       {recordSet === undefined && (
         <div className="w-fit">
-          <Button.Small onClick={handleFormsOpened}>
-            {queryText.browseInForms()}
-          </Button.Small>
+          <BrowseInFormsButton onClick={handleFormsOpened} />
           {formsOpened && (
             <RecordSelectorFromIds
               canRemove={false}
@@ -346,6 +352,24 @@ export function LocalityUpdateSuccess({
         </div>
       )}
     </Dialog>
+  );
+}
+
+function BrowseInFormsButton({
+  onClick: handleClick,
+}: {
+  readonly onClick: () => void;
+}): JSX.Element {
+  const keyboardShortcut = userPreferences.useKeyboardShortcut(
+    'queryBuilder',
+    'actions',
+    'browseInForms',
+    handleClick
+  );
+  return (
+    <Button.Small title={keyboardShortcut} onClick={handleClick}>
+      {queryText.browseInForms()}
+    </Button.Small>
   );
 }
 

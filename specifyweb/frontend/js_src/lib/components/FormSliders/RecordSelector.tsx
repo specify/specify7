@@ -8,6 +8,8 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { useSearchDialog } from '../SearchDialog';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
+import { shouldBeToOne } from './helpers';
 import { Slider } from './Slider';
 
 export type RecordSelectorProps<SCHEMA extends AnySchema> = {
@@ -34,6 +36,7 @@ export type RecordSelectorProps<SCHEMA extends AnySchema> = {
     | ((newIndex: number, replace: boolean, callback?: () => void) => void)
     | undefined;
   readonly isCollapsed?: boolean;
+  readonly enableKeyboardShortcuts: boolean;
 };
 
 export type RecordSelectorState<SCHEMA extends AnySchema> = {
@@ -70,6 +73,7 @@ export function useRecordSelector<SCHEMA extends AnySchema>({
   index,
   onSlide: handleSlide,
   totalCount,
+  enableKeyboardShortcuts,
 }: RecordSelectorProps<SCHEMA> & {
   // Total number of elements in the collection
   readonly totalCount: number;
@@ -83,7 +87,9 @@ export function useRecordSelector<SCHEMA extends AnySchema>({
   );
 
   const isToOne =
-    field === undefined ? false : !field.type.includes('-to-many');
+    field === undefined
+      ? false
+      : !relationshipIsToMany(field) || shouldBeToOne(field);
 
   const handleResourcesSelected = React.useMemo(
     () =>
@@ -116,6 +122,7 @@ export function useRecordSelector<SCHEMA extends AnySchema>({
     slider: (
       <Slider
         count={totalCount}
+        enableKeyboardShortcuts={enableKeyboardShortcuts}
         value={index}
         onChange={
           handleSlide === undefined

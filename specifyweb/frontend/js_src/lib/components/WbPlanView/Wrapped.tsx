@@ -15,11 +15,16 @@ import type { IR, RA } from '../../utils/types';
 import type { Tables } from '../DataModel/types';
 import { useTitle } from '../Molecules/AppTitle';
 import { ProtectedAction } from '../Permissions/PermissionDenied';
+import { usesAttachments } from '../WorkBench/attachmentHelpers';
 import type { UploadResult } from '../WorkBench/resultsParser';
 import { savePlan } from './helpers';
 import { getLinesFromHeaders, getLinesFromUploadPlan } from './linesGetter';
 import type { MappingLine, ReadonlySpec } from './Mapper';
-import { DEFAULT_BATCH_EDIT_PREFS, Mapper } from './Mapper';
+import {
+  DEFAULT_ATTACHMENT_PREFS,
+  DEFAULT_BATCH_EDIT_PREFS,
+  Mapper,
+} from './Mapper';
 import { BaseTableSelection } from './State';
 import type { UploadPlan } from './uploadPlanParser';
 
@@ -79,6 +84,8 @@ export type Dataset = DatasetBase &
     readonly visualorder: RA<number> | null;
     readonly isupdate: boolean;
     readonly rolledback: boolean;
+    readonly usesattachments: boolean;
+    readonly attachments: RA<string> | null;
   };
 
 /**
@@ -125,11 +132,17 @@ export function WbPlanView({
   );
   useErrorContext('state', state);
 
+  const hasAttachments = React.useMemo(
+    () => usesAttachments(dataset),
+    [dataset.columns]
+  );
+
   const navigate = useNavigate();
   return state.type === 'SelectBaseTable' ? (
     <ProtectedAction action="update" resource="/workbench/dataset">
       <BaseTableSelection
         headers={headers}
+        onlyAttachmentTables={hasAttachments}
         onClose={(): void => navigate(`/specify/workbench/${dataset.id}/`)}
         onSelected={(baseTableName): void =>
           setState({
@@ -155,6 +168,10 @@ export function WbPlanView({
     </ProtectedAction>
   ) : (
     <Mapper
+      attachmentPrefs={
+        uploadPlan?.attachmentPrefs ??
+        (hasAttachments ? DEFAULT_ATTACHMENT_PREFS : undefined)
+      }
       baseTableName={state.baseTableName}
       changesMade={state.changesMade}
       dataset={dataset}
@@ -168,7 +185,8 @@ export function WbPlanView({
       onSave={async (
         lines,
         mustMatchPreferences,
-        batchEditPrefs
+        batchEditPrefs,
+        attachmentPrefs
       ): Promise<void> =>
         savePlan({
           dataset,
@@ -176,6 +194,7 @@ export function WbPlanView({
           lines,
           mustMatchPreferences,
           batchEditPrefs,
+          attachmentPrefs,
         }).then(() => navigate(`/specify/workbench/${dataset.id}/`))
       }
       readonlySpec={readonlySpec}

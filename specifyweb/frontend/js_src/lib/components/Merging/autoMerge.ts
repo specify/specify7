@@ -54,6 +54,78 @@ export function autoMerge(
   );
 }
 
+export async function buildInitialMergedResource(
+  table: SpecifyTable,
+  resources: RA<SerializedResource<AnySchema>>,
+  shouldAutoPopulate: boolean,
+  targetId?: number
+): Promise<SerializedResource<AnySchema>> {
+  return (
+    shouldAutoPopulate
+      ? await postMergeResource(
+          resources,
+          autoMerge(table, resources, false, targetId)
+        )
+      : addMissingFields(
+          table.name,
+          getPreservedFieldsWithoutAutoPopulate(table, resources, targetId)
+        )
+  ) as SerializedResource<AnySchema>;
+}
+
+const preservedFieldsWithoutAutoPopulate: Partial<
+  RR<
+    keyof Tables,
+    (
+      resources: RA<SerializedResource<AnySchema>>,
+      targetId?: number
+    ) => Partial<SerializedResource<AnySchema>>
+  >
+> = {
+  Agent: (resources, targetId) => ({
+    agentType: parseNumber(
+      getSharedNumberFieldValue(resources, 'agentType') ??
+        getTargetResource(resources, targetId)?.agentType
+    ),
+  }),
+};
+
+const getPreservedFieldsWithoutAutoPopulate = (
+  table: SpecifyTable,
+  resources: RA<SerializedResource<AnySchema>>,
+  targetId?: number
+): Partial<SerializedResource<AnySchema>> =>
+  preservedFieldsWithoutAutoPopulate[table.name]?.(resources, targetId) ?? {};
+
+const getTargetResource = (
+  resources: RA<SerializedResource<AnySchema>>,
+  targetId?: number
+): SerializedResource<AnySchema> | undefined =>
+  targetId === undefined
+    ? resources[0]
+    : (resources.find(({ id }) => id === targetId) ?? resources[0]);
+
+const getSharedNumberFieldValue = (
+  resources: RA<SerializedResource<AnySchema>>,
+  fieldName: string
+): number | undefined => {
+  const values = f.unique(
+    resources
+      .map((resource) => parseNumber(resource[fieldName]))
+      .filter((value) => value !== undefined)
+  );
+  return values.length === 1 ? values[0] : undefined;
+};
+
+const parseNumber = (
+  value: boolean | number | string | null | undefined
+): number | undefined =>
+  typeof value === 'number'
+    ? value
+    : typeof value === 'string'
+      ? f.parseInt(value)
+      : undefined;
+
 /**
  * Sort from newest to oldest
  */
@@ -88,7 +160,16 @@ function mergeField(
     resource[field.name],
   ]);
   const values = parentChildValues.map(([_, child]) => child);
-  const nonFalsyValues = f.unique(values.filter(Boolean));
+  const nonFalsyValues = f.unique(
+    values.filter(
+      (value) =>
+        value !== null &&
+        value !== undefined &&
+        value !== '' &&
+        // Preserve zeros and false, but drop NaN
+        value === value
+    )
+  );
   const firstValue = nonFalsyValues[0] ?? values[0];
   if (field.isRelationship)
     if (field.isDependent())
@@ -150,8 +231,9 @@ function mergeField(
     // Pick the longest value
     return (
       Array.from(nonFalsyValues).sort(
-        sortFunction((string) =>
-          typeof string === 'string' ? string.length : 0
+        sortFunction(
+          (string) => (typeof string === 'string' ? string.length : 0),
+          true
         )
       )[0] ?? firstValue
     );
@@ -213,10 +295,15 @@ function mergeDependentField(
   sourceValue: ReturnType<typeof mergeField>
 ): ReturnType<typeof mergeField> {
   const sourceField = strictDependentFields()[fieldName];
-  const sourceResource = resources.find(
+  const matchingResources = resources.filter(
     (resource) => resource[sourceField] === sourceValue
   );
-  return sourceResource?.[fieldName] ?? null;
+  const preferredResource =
+    matchingResources.find((resource) => {
+      const value = resource[fieldName];
+      return value !== null && value !== undefined;
+    }) ?? matchingResources[0];
+  return preferredResource?.[fieldName] ?? null;
 }
 
 /**

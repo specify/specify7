@@ -54,7 +54,7 @@ function ChangePassword({
 
   return (
     <SplashScreen>
-      <Form method="post">
+      <Form method="POST">
         <input
           name="csrfmiddlewaretoken"
           type="hidden"
@@ -96,7 +96,7 @@ function ChangePassword({
             type="password"
           />
         </Label.Block>
-        <Submit.Fancy>{userText.changePassword()}</Submit.Fancy>
+        <Submit.Secondary>{userText.changePassword()}</Submit.Secondary>
       </Form>
     </SplashScreen>
   );

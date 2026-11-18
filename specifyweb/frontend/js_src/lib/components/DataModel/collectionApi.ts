@@ -10,6 +10,7 @@ import { Backbone } from './backbone';
 import { DEFAULT_FETCH_LIMIT } from './collection';
 import type { AnySchema } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
+import { Collection } from './specifyTable';
 
 // REFACTOR: remove @ts-nocheck
 
@@ -20,7 +21,9 @@ const Base = Backbone.Collection.extend({
   },
 });
 
-export const isRelationshipCollection = (value: unknown): boolean =>
+export const isRelationshipCollection = (
+  value: unknown
+): value is Collection<AnySchema> =>
   value instanceof DependentCollection ||
   value instanceof IndependentCollection;
 
@@ -91,13 +94,7 @@ export const DependentCollection = Base.extend({
         ),
         { table: this.table.name, records }
       );
-    Base.call(this, null, options);
-    /*
-     * If models are passed during collection initializtion, manually add them
-     * to the collection after initialization.
-     * This ensures proper onAdd functionality is triggered on initialization
-     */
-    records.forEach((record) => this.add(record));
+    Base.call(this, records, options);
   },
   initialize(_tables, options) {
     setupToOne(this, options);

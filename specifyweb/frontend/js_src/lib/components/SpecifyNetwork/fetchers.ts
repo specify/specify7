@@ -12,7 +12,7 @@ import {
 
 export const fetchOccurrence = async (
   guid: string
-): Promise<RA<BrokerRecord> | undefined> =>
+): Promise<BrokerFetchResult> =>
   fetchFromEndpoint(
     `${brokerUrl}/api/v1/occ/?occid=${guid}`,
     occurrenceDataProviders
@@ -21,25 +21,36 @@ export const fetchOccurrence = async (
 const fetchFromEndpoint = async (
   url: string,
   providers: RA<string>
-): Promise<RA<BrokerRecord>> =>
+): Promise<BrokerFetchResult> =>
   Promise.all(
     providers.map(async (provider) =>
       fetchFromBroker(`${url}&provider=${provider}`)
     )
-  ).then((responses) =>
-    Array.from(filterArray(responses)).sort(
-      sortFunction(({ provider }) => providers.indexOf(provider.code))
-    )
-  );
+  ).then((responses) => ({
+    records: Array.from(
+      filterArray(responses.map(({ record }) => record))
+    ).sort(sortFunction(({ provider }) => providers.indexOf(provider.code))),
+    isUnavailable:
+      providers.length > 0 && responses.every(({ failed }) => failed),
+  }));
 
 const fetchFromBroker = async (
   requestUrl: string
-): Promise<BrokerRecord | undefined> =>
+): Promise<{
+  readonly record: BrokerRecord | undefined;
+  readonly failed: boolean;
+}> =>
   ajax<RawBrokerResponse>(requestUrl, {
+    errorMode: 'silent',
     headers: {
       Accept: 'application/json',
     },
-  }).then(({ data }) => extractResponseRecord(data));
+  })
+    .then(({ data }) => ({
+      record: extractResponseRecord(data),
+      failed: false,
+    }))
+    .catch(() => ({ record: undefined, failed: true }));
 
 const extractResponseRecord = (
   response: RawBrokerResponse
@@ -67,11 +78,16 @@ export function validateBrokerResponse(response: {
 
 export const fetchName = async (
   speciesName: string
-): Promise<RA<BrokerRecord>> =>
+): Promise<BrokerFetchResult> =>
   fetchFromEndpoint(
     `${brokerUrl}/api/v1/name/?namestr=${speciesName}`,
     speciesDataProviders
   );
+
+export type BrokerFetchResult = {
+  readonly records: RA<BrokerRecord>;
+  readonly isUnavailable: boolean;
+};
 
 export type BrokerRecord = {
   readonly provider: BrokerProvider;
