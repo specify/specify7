@@ -30,3 +30,22 @@ class TestAgeQueryOps(TestCase):
         )
         self.field.in_.assert_called_once_with({1, 2})
         self.assertEqual(result, "age predicate")
+
+    @patch("specifyweb.backend.stored_queries.query_ops.geo_time_period_query")
+    def test_age_period_forwards_strict_flag(self, geo_time_period_query: Mock):
+        geo_time_period_query.return_value = {3, 4}
+
+        result = self.ops.op_age_period(
+            self.field,
+            "Paleocene",
+            self.query,
+            is_strict=False,
+        )
+
+        geo_time_period_query.assert_called_once_with(
+            "Paleocene",
+            require_full_overlap=False,
+            query=self.query.query,
+        )
+        self.field.in_.assert_called_once_with({3, 4})
+        self.assertEqual(result, "age predicate")
