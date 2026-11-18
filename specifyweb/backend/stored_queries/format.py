@@ -439,8 +439,6 @@ class ObjectFormatter:
 
         aggregator_label = f"aggregator_{self.aggregator_count}"
         self.aggregator_count += 1
-        sql_query = subquery.query.add_column(aggregated).limit(limit).label(aggregator_label)
-        raise KeyError(str(sql_query))
         return subquery.query.add_column(aggregated).limit(limit).label(aggregator_label)
 
     def fieldformat(self, query_field: "QueryField",
