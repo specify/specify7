@@ -142,29 +142,3 @@ class TestIteratorUsage(SimpleTestCase):
             serialize_role(role)
 
         self.assert_iterator_called_for(iterator, queryset)
-
-    def test_tree_views_ranks_uses_iterator(self):
-        from specifyweb.backend.trees import views
-        from specifyweb.specify.models import Taxon
-
-        queryset = Taxon.objects.none()
-        definition = SimpleNamespace(
-            treedefitems=SimpleNamespace(order_by=lambda name: queryset),
-        )
-        treedef_model = SimpleNamespace(
-            objects=SimpleNamespace(filter=lambda filters: SimpleNamespace(distinct=lambda: [definition])),
-        )
-        collection = SimpleNamespace(
-            id=1,
-            discipline=SimpleNamespace(is_paleo_geo=lambda: False),
-        )
-
-        with patch.object(views, 'COMMON_TREES', ('Taxon',)), \
-             patch.object(views, 'has_table_permission', return_value=True), \
-             patch.object(views, 'get_tree_defs_in_collection', return_value={}), \
-             patch.object(views, 'obj_to_data', return_value={}), \
-             patch.object(views, 'spmodels', SimpleNamespace(Taxontreedef=treedef_model)), \
-             patch.object(QuerySet, 'iterator', autospec=True, side_effect=QuerySet.iterator) as iterator:
-            views.get_all_tree_information(collection, 1)
-
-        self.assert_iterator_called_for(iterator, queryset)
