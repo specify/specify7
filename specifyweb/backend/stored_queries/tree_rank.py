@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Protocol
+from typing import TYPE_CHECKING, Any
 
 from sqlalchemy import orm, sql
 
@@ -9,14 +9,12 @@ from . import models
 from specifyweb.specify.datamodel import datamodel, is_tree_table
 from specifyweb.specify.models_utils.load_datamodel import Table, Relationship
 
-ObjectFormatter = object
 Rank = tuple[object, Table, tuple[int, ...]]
 
-
-class RankField(Protocol):
-    @property
-    def fieldspec(self) -> object:
-        raise NotImplementedError
+if TYPE_CHECKING:
+    from specifyweb.backend.stored_queries.query_construct_model import QueryConstruct
+    from specifyweb.backend.stored_queries.queryfield import QueryField
+    from specifyweb.backend.stored_queries.format import ObjectFormatter
 
 RANK_KEY_DELIMITER = "~>"
 
@@ -32,7 +30,7 @@ def rank_path(spec):
     return None
 
 
-def path_key(spec):
+def path_key(spec) -> tuple[Any, tuple[str, ...], str, str, int | None]:
     path, rank, _ = rank_path(spec)
     return (spec.root_sql_table, tuple(part.name for part in path),
             rank.relatedModelName, rank.name, rank.treedef_id)
@@ -75,8 +73,8 @@ def ancestor_id(mapping, node_id, item_ids, definition_id, distinct=False):
 class TreeRanks:
     deferred: set = field(default_factory=set)
     mappings: dict = field(default_factory=dict)
-    displays: dict[int, tuple[RankField, Rank, ObjectFormatter]] = field(default_factory=dict)
-    current_field: RankField | None = None
+    displays: dict[int, tuple[QueryField, Rank, ObjectFormatter]] = field(default_factory=dict)
+    current_field: QueryField | None = None
     current_rank: Rank | None = None
     mapped_nodes: set = field(default_factory=set)
     row_ids: list = field(default_factory=list)
@@ -103,7 +101,11 @@ class TreeRanks:
         ))
 
 
-def prepare_tree_ranks(query, query_fields, defer_display, count_only=False):
+def prepare_tree_ranks(
+        query: QueryConstruct,
+        query_fields: list[QueryField],
+        defer_display: bool,
+        count_only=False):
     """Seed ancestors from ordinary filters, before adding any rank predicates."""
     ranks = TreeRanks()
     tree_fields = [f for f in query_fields if rank_path(f.fieldspec) is not None]
