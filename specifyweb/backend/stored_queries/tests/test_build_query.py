@@ -119,7 +119,7 @@ class TestBuildQuery(SQLAlchemySetup):
                 session=session,
                 collection=collection,
                 user=user,
-                base_table=co_table
+                base_table=co_table,
                 model=model,
                 props=props
             )
