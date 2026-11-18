@@ -1,0 +1,438 @@
+import React from 'react';
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+
+import { localized } from '../../../utils/types';
+import { requireContext } from '../../../tests/helpers';
+import type { AnySchema } from '../../DataModel/helperTypes';
+import type { SpecifyResource } from '../../DataModel/legacyTypes';
+import { LoadingContext } from '../../Core/Contexts';
+import { getResourceApiUrl } from '../../DataModel/resource';
+import { tables } from '../../DataModel/tables';
+import { queryFieldFilterSpecs } from '../../QueryBuilder/FieldFilterSpec';
+import { runQuery } from '../../QueryBuilder/ResultsWrapper';
+import { QueryComboBox } from '../index';
+import type { TypeSearch } from '../spec';
+
+jest.mock('../../../hooks/useResourceValue', () => ({
+  useResourceValue: () => ({
+    value: undefined,
+    updateValue: jest.fn(),
+    validationRef: jest.fn(),
+    inputRef: { current: null },
+    setValidation: jest.fn(),
+    parser: undefined,
+  }),
+}));
+
+jest.mock('../../../utils/parser/definitions', () => ({
+  ...jest.requireActual('../../../utils/parser/definitions'),
+  getValidationAttributes: () => ({}),
+}));
+
+jest.mock('../../Atoms/DataEntry', () => {
+  const mockReact = jest.requireActual<typeof import('react')>('react');
+  const makeButton =
+    (label: string) =>
+    ({
+      enableShortcut: _enableShortcut,
+      ...props
+    }: React.ButtonHTMLAttributes<HTMLButtonElement> & {
+      readonly enableShortcut?: boolean;
+    }) =>
+      mockReact.createElement('button', props, label);
+  return {
+    DataEntry: {
+      Add: makeButton('Add'),
+      Clone: makeButton('Clone'),
+      Edit: makeButton('Edit'),
+      Search: makeButton('Search'),
+      View: makeButton('View'),
+    },
+  };
+});
+
+jest.mock('../../Forms/ResourceView', () => {
+  const mockReact = jest.requireActual<typeof import('react')>('react');
+  const ResourceView = ({
+    resource,
+    onSaved,
+  }: {
+    readonly resource: {
+      readonly get: (fieldName: string) => unknown;
+      readonly save: () => Promise<unknown>;
+    };
+    readonly onSaved?: () => void;
+  }) => {
+    jest.spyOn(resource, 'save').mockResolvedValue(resource);
+    return mockReact.createElement(
+      'button',
+      {
+        type: 'button',
+        onClick: async () => {
+          await resource.save();
+          onSaved?.();
+        },
+      },
+      `Save ${String(resource.get('name') ?? resource.get('lastName') ?? 'Record')}`
+    );
+  };
+  return { ResourceView, RESTRICT_ADDING: new Set() };
+});
+
+jest.mock('../../Formatters/formatters', () => ({
+  format: jest.fn(async () => ''),
+  naiveFormatter: jest.fn(() => ''),
+  getMainTableFields: (tableName: string) => {
+    const { tables: mockTables } = jest.requireActual<
+      typeof import('../../DataModel/tables')
+    >('../../DataModel/tables');
+    return mockTables[tableName as keyof typeof mockTables].literalFields;
+  },
+}));
+
+jest.mock('../../Molecules/AutoComplete', () => {
+  const mockReact = jest.requireActual<typeof import('react')>('react');
+  type MockItem = { readonly data: string; readonly label: React.ReactNode };
+  type MockProps = {
+    readonly disabled: boolean;
+    readonly inputProps: React.InputHTMLAttributes<HTMLInputElement>;
+    readonly pendingValueRef?: React.MutableRefObject<string>;
+    readonly source: (value: string) => Promise<ReadonlyArray<MockItem>>;
+  };
+  const AutoComplete = ({
+    disabled,
+    inputProps,
+    pendingValueRef,
+    source,
+  }: MockProps) => {
+    const [items, setItems] = mockReact.useState<ReadonlyArray<MockItem>>([]);
+    return mockReact.createElement(
+      mockReact.Fragment,
+      null,
+      mockReact.createElement('input', {
+        ...inputProps,
+        disabled,
+        onChange: async (event: React.ChangeEvent<HTMLInputElement>) => {
+          const value = event.currentTarget.value;
+          if (pendingValueRef !== undefined) pendingValueRef.current = value;
+          setItems(await source(value));
+        },
+      }),
+      mockReact.createElement(
+        'ul',
+        { role: 'listbox' },
+        ...items.map(({ data, label }) =>
+          mockReact.createElement('li', { key: data, role: 'option' }, label)
+        )
+      )
+    );
+  };
+  return { AutoComplete };
+});
+
+jest.mock('../../Permissions/helpers', () => ({
+  ...jest.requireActual('../../Permissions/helpers'),
+  hasTablePermission: () => true,
+}));
+
+jest.mock('../../QueryBuilder/ResultsWrapper', () => ({
+  runQuery: jest.fn(),
+}));
+
+jest.mock('../../SearchDialog', () => {
+  const mockReact = jest.requireActual<typeof import('react')>('react');
+  const SearchDialog = ({ extraFilters }: { readonly extraFilters: unknown }) =>
+    mockReact.createElement(
+      'output',
+      { 'data-testid': 'search-filters' },
+      JSON.stringify(extraFilters)
+    );
+  return { SearchDialog };
+});
+
+jest.mock('../helpers', () => ({
+  ...jest.requireActual('../helpers'),
+  useQueryComboBoxDefaults: jest.fn(),
+}));
+
+jest.mock('../useCollectionRelationships', () => ({
+  useCollectionRelationships: () => false,
+}));
+
+jest.mock('../useTreeData', () => {
+  const mockReact = jest.requireActual<typeof import('react')>('react');
+  return {
+    TreeDefinitionContext: mockReact.createContext(undefined),
+    useTreeData: () => false,
+  };
+});
+
+jest.mock('../useTypeSearch', () => ({
+  useTypeSearch: (typeSearch: TypeSearch) => typeSearch,
+}));
+
+requireContext();
+
+const taxa = [
+  { id: 1, name: 'Taxon A1', treeId: 101 },
+  { id: 2, name: 'Taxon A2', treeId: 101 },
+  { id: 3, name: 'Taxon A3', treeId: 101 },
+  { id: 4, name: 'Taxon B1', treeId: 202 },
+  { id: 5, name: 'Taxon B2', treeId: 202 },
+  { id: 6, name: 'Taxon B3', treeId: 202 },
+];
+
+type QueryField = {
+  readonly fieldName?: string;
+  readonly startValue?: string;
+  readonly stringId?: string;
+  readonly operStart?: number;
+};
+type ComboBoxQuery = { readonly fields: ReadonlyArray<QueryField> };
+
+const mockedRunQuery = jest.mocked(runQuery);
+
+describe('Determination QueryComboBox behavior', () => {
+  test.each([
+    {
+      cot: 'COT A',
+      treeId: 101,
+      taxa: ['Taxon A1', 'Taxon A2', 'Taxon A3'],
+      excludedTaxa: ['Taxon B1', 'Taxon B2', 'Taxon B3'],
+    },
+    {
+      cot: 'COT B',
+      treeId: 202,
+      taxa: ['Taxon B1', 'Taxon B2', 'Taxon B3'],
+      excludedTaxa: ['Taxon A1', 'Taxon A2', 'Taxon A3'],
+    },
+  ])(
+    'filters the dropdown and Search dialog using the tree for $cot',
+    async ({ treeId, taxa: expectedTaxa, excludedTaxa }) => {
+      mockedRunQuery.mockImplementation(async (query) => {
+        const fields = (query as unknown as ComboBoxQuery).fields;
+        const definitionIdFilter = fields.find(
+          ({ fieldName }) => fieldName === 'taxonTreeDefId'
+        );
+        expect(definitionIdFilter).toEqual(
+          expect.objectContaining({
+            fieldName: 'taxonTreeDefId',
+            stringId: expect.stringContaining(
+              '-definition.taxontreedef.taxonTreeDefId'
+            ),
+            operStart: queryFieldFilterSpecs.equal.id,
+            startValue: treeId.toString(),
+          })
+        );
+        const queriedTreeId = Number(definitionIdFilter?.startValue);
+        return taxa
+          .filter((taxon) => taxon.treeId === queriedTreeId)
+          .map(({ id, name }) => [id, localized(name)]) as never;
+      });
+      const typeSearch: TypeSearch = {
+        name: localized('Taxon'),
+        table: tables.Taxon,
+        title: localized('Taxon'),
+        formatter: localized(''),
+        format: localized('%s'),
+        displayFields: undefined,
+        searchFields: [[tables.Taxon.strictGetField('name')!]],
+      };
+      const treeDefinition = getResourceApiUrl('TaxonTreeDef', treeId);
+      const collectionObjectType = {
+        get: (fieldName: string) =>
+          fieldName === 'taxonTreeDef' ? treeDefinition : undefined,
+      };
+      const collectionObject = {
+        specifyTable: tables.CollectionObject,
+        get: (fieldName: string) =>
+          fieldName === 'collectionObjectType'
+            ? collectionObjectType
+            : undefined,
+        rgetPromise: async () => collectionObjectType,
+      };
+      const determination = {
+        specifyTable: tables.Determination,
+        collection: { related: collectionObject },
+        rgetPromise: async () => undefined,
+        on: () => undefined,
+        off: () => undefined,
+      } as unknown as SpecifyResource<AnySchema>;
+
+      render(
+        <QueryComboBox
+          id="determination-taxon"
+          resource={determination}
+          field={tables.Determination.strictGetRelationship('taxon')}
+          formType="form"
+          isRequired={false}
+          hasNewButton={false}
+          hasEditButton={false}
+          typeSearch={typeSearch}
+          forceCollection={undefined}
+        />
+      );
+
+      const input = screen.getByRole('textbox', { name: 'Taxon' });
+      await waitFor(() => expect(input).toBeEnabled());
+      await act(async () => {
+        await userEvent.type(input, 'Taxon');
+      });
+
+      for (const taxon of expectedTaxa)
+        expect(
+          await screen.findByRole('option', { name: taxon })
+        ).toBeVisible();
+      for (const taxon of excludedTaxa)
+        expect(
+          screen.queryByRole('option', { name: taxon })
+        ).not.toBeInTheDocument();
+
+      fireEvent.click(screen.getByRole('button', { name: 'Search' }));
+      const searchFilters = JSON.parse(
+        screen.getByRole('status').textContent ?? '[]'
+      ) as ReadonlyArray<{ readonly value: string }>;
+      expect(searchFilters).toContainEqual(
+        expect.objectContaining({
+          field: 'definition',
+          queryBuilderFieldPath: ['definition', 'id'],
+          isRelationship: true,
+          operation: 'in',
+          value: treeId.toString(),
+        })
+      );
+    }
+  );
+
+  test('creates a new Taxon with the QCBX Add button', async () => {
+    mockedRunQuery.mockResolvedValue([]);
+    const typeSearch: TypeSearch = {
+      name: localized('Taxon'),
+      table: tables.Taxon,
+      title: localized('Taxon'),
+      formatter: localized(''),
+      format: localized('%s'),
+      displayFields: undefined,
+      searchFields: [[tables.Taxon.strictGetField('name')!]],
+    };
+    const setTaxon = jest.fn();
+    const determination = {
+      specifyTable: tables.Determination,
+      set: setTaxon,
+      collection: { related: undefined },
+      rgetPromise: async () => undefined,
+      on: () => undefined,
+      off: () => undefined,
+    } as unknown as SpecifyResource<AnySchema>;
+
+    render(
+      <LoadingContext.Provider value={(promise) => void promise}>
+        <QueryComboBox
+          id="determination-taxon"
+          resource={determination}
+          field={tables.Determination.strictGetRelationship('taxon')}
+          formType="form"
+          isRequired={false}
+          hasNewButton
+          hasEditButton={false}
+          typeSearch={typeSearch}
+          forceCollection={undefined}
+        />
+      </LoadingContext.Provider>
+    );
+
+    const input = screen.getByRole('textbox', { name: 'Taxon' });
+    await waitFor(() => expect(input).toBeEnabled());
+    await act(async () => {
+      await userEvent.type(input, 'New taxon');
+    });
+
+    await act(async () => {
+      await userEvent.click(screen.getByRole('button', { name: 'Add' }));
+    });
+    const saveButton = await screen.findByRole('button', {
+      name: 'Save New taxon',
+    });
+    await act(async () => {
+      await userEvent.click(saveButton);
+    });
+
+    expect(setTaxon).toHaveBeenCalledWith(
+      'taxon',
+      expect.objectContaining({ specifyTable: tables.Taxon })
+    );
+    const assignedTaxon = setTaxon.mock
+      .calls[0]?.[1] as SpecifyResource<AnySchema>;
+    expect(assignedTaxon.get('name')).toBe('New taxon');
+    expect(assignedTaxon.save).toHaveBeenCalledTimes(1);
+  });
+
+  test('creates a new Agent for a Determiner with the QCBX Add button', async () => {
+    mockedRunQuery.mockResolvedValue([]);
+    const typeSearch: TypeSearch = {
+      name: localized('Agent'),
+      table: tables.Agent,
+      title: localized('Agent'),
+      formatter: localized(''),
+      format: localized('%s'),
+      displayFields: undefined,
+      searchFields: [[tables.Agent.strictGetLiteralField('lastName')]],
+    };
+    const setAgent = jest.fn();
+    const determiner = {
+      specifyTable: tables.Determiner,
+      set: setAgent,
+      rgetPromise: async () => undefined,
+      on: () => undefined,
+      off: () => undefined,
+    } as unknown as SpecifyResource<AnySchema>;
+
+    render(
+      <LoadingContext.Provider value={(promise) => void promise}>
+        <QueryComboBox
+          id="determiner-agent"
+          resource={determiner}
+          field={tables.Determiner.strictGetRelationship('agent')}
+          formType="form"
+          isRequired={false}
+          hasNewButton
+          hasEditButton={false}
+          typeSearch={typeSearch}
+          forceCollection={undefined}
+        />
+      </LoadingContext.Provider>
+    );
+
+    const input = screen.getByRole('textbox', { name: 'Agent' });
+    await waitFor(() => expect(input).toBeEnabled());
+    await act(async () => {
+      await userEvent.type(input, 'New Agent');
+    });
+
+    await act(async () => {
+      await userEvent.click(screen.getByRole('button', { name: 'Add' }));
+    });
+    const saveButton = await screen.findByRole('button', {
+      name: 'Save New Agent',
+    });
+    await act(async () => {
+      await userEvent.click(saveButton);
+    });
+
+    expect(setAgent).toHaveBeenCalledWith(
+      'agent',
+      expect.objectContaining({ specifyTable: tables.Agent })
+    );
+    const assignedAgent = setAgent.mock
+      .calls[0]?.[1] as SpecifyResource<AnySchema>;
+    expect(assignedAgent.get('lastName')).toBe('New Agent');
+    expect(assignedAgent.save).toHaveBeenCalledTimes(1);
+  });
+});
