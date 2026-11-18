@@ -33,9 +33,7 @@ const fields: readonly QueryField[] = [
     mappingPath: ['lastName'],
     sortType: undefined,
     isDisplay: true,
-    filters: [
-      { type: 'any', startValue: '', isNot: false, isStrict: false },
-    ],
+    filters: [{ type: 'any', startValue: '', isNot: false, isStrict: false }],
   },
 ];
 
@@ -45,18 +43,14 @@ const localityFields: readonly QueryField[] = [
     mappingPath: ['latitude1'],
     sortType: undefined,
     isDisplay: true,
-    filters: [
-      { type: 'any', startValue: '', isNot: false, isStrict: false },
-    ],
+    filters: [{ type: 'any', startValue: '', isNot: false, isStrict: false }],
   },
   {
     id: 2,
     mappingPath: ['longitude1'],
     sortType: undefined,
     isDisplay: true,
-    filters: [
-      { type: 'any', startValue: '', isNot: false, isStrict: false },
-    ],
+    filters: [{ type: 'any', startValue: '', isNot: false, isStrict: false }],
   },
 ];
 
