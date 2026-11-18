@@ -1,5 +1,5 @@
 from specifyweb.backend.businessrules.exceptions import TreeBusinessRuleException
-from specifyweb.backend.trees.extras import renumber_tree, validate_tree_numbering
+from specifyweb.backend.trees.extras import moving_node, renumber_tree, validate_tree_numbering
 from specifyweb.specify.models import Taxon, Taxontreedef, Taxontreedefitem
 from specifyweb.backend.trees.tests.test_trees import GeographyTree
 
@@ -95,6 +95,40 @@ class TestTreeSave(GeographyTree):
         phylum.save()
         phylum.refresh_from_db()
         self.assertEqual(phylum.parent_id, plantae.id)
+
+    def test_move_endpoint_rolls_back_rejected_cross_definition_move(self):
+        root = self._create_life()
+        animalia = self.make_taxontree("Animalia", "Kingdom", parent=root)
+        plantae = self.make_taxontree("Plantae", "Kingdom", parent=root)
+        phylum = self.make_taxontree("TestPhylum", "Phylum", parent=animalia)
+        other_definition = Taxontreedef.objects.create(name="Other taxonomy")
+        other_rank = other_definition.treedefitems.create(name="Other root", rankid=0)
+        foreign_root = Taxon.objects.create(name="Other life", definitionitem=other_rank)
+        original_text = phylum.text1
+
+        def move_with_partial_write(node):
+            Taxon.objects.filter(pk=node.pk).update(text1="Partial move")
+            return moving_node(node)
+
+        self.client.force_login(self.specifyuser)
+        self.client.cookies["collection"] = self.collection.id
+        url = f"/trees/specify_tree/taxon/{phylum.pk}/move/"
+        with patch(
+            "specifyweb.backend.trees.extras.moving_node", side_effect=move_with_partial_write,
+        ):
+            response = self.client.post(url, {"target": foreign_root.pk})
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertIs(response.json()["success"], False)
+        self.assertIn("different tree definition", response.json()["error"])
+        phylum.refresh_from_db()
+        self.assertEqual(phylum.parent_id, animalia.pk)
+        self.assertEqual(phylum.text1, original_text)
+
+        response = self.client.post(url, {"target": plantae.pk})
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual(response.json(), {"success": True})
+        phylum.refresh_from_db()
+        self.assertEqual(phylum.parent_id, plantae.pk)
 
     def test_unchanged_cross_definition_link_allows_unrelated_edits(self):
         root = self._create_life()
