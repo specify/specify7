@@ -200,6 +200,34 @@ describe('formatField', () => {
       formatField({ ...base, format: localized('%d') }, parentResource)
     ).resolves.toEqual({ formatted: '', separator: '' });
   });
+
+  test('does not repeat an existing identifier URL prefix', async () => {
+    const field = [tables.AgentIdentifier.strictGetField('identifier')];
+    const base = {
+      field,
+      formatter: undefined,
+      aggregator: undefined,
+      fieldFormatter: undefined,
+      format: localized('https://orcid.org/%s'),
+      separator: localized(''),
+      trimZeros: false,
+    } as const;
+
+    for (const [identifier, expected] of [
+      ['0000-0001', 'https://orcid.org/0000-0001'],
+      ['https://orcid.org/0000-0001', 'https://orcid.org/0000-0001'],
+    ]) {
+      await expect(
+        formatField(base, new tables.AgentIdentifier.Resource({ identifier }))
+      ).resolves.toEqual({ formatted: expected, separator: '' });
+    }
+    await expect(
+      formatField(
+        { ...base, format: localized('A%s') },
+        new tables.AgentIdentifier.Resource({ identifier: 'Apple' })
+      )
+    ).resolves.toEqual({ formatted: 'AApple', separator: '' });
+  });
 });
 
 const referenceWorkId = 1;

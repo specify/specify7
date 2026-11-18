@@ -5579,7 +5579,7 @@
 						<!-- Shown if the Identifier Type is Wikidata -->
 						<rows condition="identifierType=Wikidata">
 							<row>
-								<cell type="field" id="Wikidata" name="this" uitype="plugin" initialize="name=WebLinkButton;weblink=Wikidata;icon=https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Wikidata-logo.svg/2560px-Wikidata-logo.svg.png"/>
+								<cell type="field" id="Wikidata" name="this" uitype="plugin" initialize="name=WebLinkButton;weblink=Wikidata;icon=https://upload.wikimedia.org/wikipedia/commons/b/be/Wikidata-logo.png"/>
 							</row>
 						</rows>
 					</cell>

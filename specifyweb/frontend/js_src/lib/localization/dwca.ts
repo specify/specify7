@@ -1,0 +1,179 @@
+/**
+ * Localization strings used by the Darwin Core editor
+ *
+ * @module
+ */
+
+import { createDictionary } from './utils';
+
+// Refer to "Guidelines for Programmers" in ./README.md before editing this file
+
+export const dwcaText = createDictionary({
+  dwcaQueryFieldsMustMatch: {
+    'en-us':
+      'All queries in a mapping must export the same fields and terms. Update the other queries in the XML editor before saving.',
+  },
+  dwcaChangeCoreConfirmation: {
+    'en-us': 'Change the Darwin Core type and reset mappings?',
+  },
+  dwcaChangeCoreConfirmationDescription: {
+    'en-us':
+      'Changing the core changes the query base table and will erase the current core and extension mappings.',
+  },
+  dwcaReplaceMappingConfirmation: {
+    'en-us': 'Replace the current mapping?',
+  },
+  dwcaReplaceMappingConfirmationDescription: {
+    'en-us':
+      'The selected template or query will replace the current field mappings and filters. A template may also replace the file name.',
+  },
+  dwcaReplaceMapping: {
+    'en-us': 'Replace mapping',
+  },
+  dwcaDefinition: {
+    'en-us': 'Darwin Core definition',
+  },
+  dwcaInvalidDefinition: {
+    'en-us':
+      'This definition contains invalid XML. Please fix it in the XML editor before using the visual editor.',
+  },
+  dwcaOpenXmlEditor: {
+    'en-us': 'Open XML Editor',
+  },
+  dwcaMismatchedExtensionContext: {
+    'en-us': 'An extension query uses a different context table',
+  },
+  dwcaMismatchedExtensionContextDescription: {
+    'en-us':
+      'Remove the extension below, or correct its Table ID in the XML editor.',
+  },
+  dwcaTerm: {
+    'en-us': 'Term',
+  },
+  dwcaSpecifyField: {
+    'en-us': 'Specify Field',
+  },
+  dwcaFilter: {
+    'en-us': 'Filter',
+  },
+  dwcaOptions: {
+    'en-us': 'Options',
+  },
+  dwcaVocabulary: {
+    'en-us': 'Vocabulary',
+  },
+  dwcaGroup: {
+    'en-us': 'Group',
+  },
+  dwcaNoGroupSpecified: {
+    'en-us': 'No group specified.',
+  },
+  dwcaUnspecifiedGroup: {
+    'en-us': 'Unspecified group',
+  },
+  dwcaIri: {
+    'en-us': 'IRI',
+  },
+  dwcaRequired: {
+    'en-us': 'Required',
+  },
+  dwcaDescription: {
+    'en-us': 'Description',
+  },
+  dwcaExamples: {
+    'en-us': 'Examples',
+  },
+  dwcaNoDescriptionAvailable: {
+    'en-us': 'No description is available.',
+  },
+  dwcaExtension: {
+    'en-us': 'Extension',
+  },
+  dwcaRowType: {
+    'en-us': 'Row type',
+  },
+  dwcaRowTypeRequired: {
+    'en-us': 'Row type is required.',
+  },
+  dwcaCustomRowTypePlaceholder: {
+    'en-us': 'http://rs.tdwg.org/dwc/terms/custom',
+  },
+  dwcaFileNamesMustBeUnique: {
+    'en-us': 'File names must be unique.',
+  },
+  dwcaInvalidFileNames: {
+    'en-us':
+      'Query file names must not be empty, contain paths, or use the reserved names meta.xml and eml.xml.',
+  },
+  dwcaStartFromScratch: {
+    'en-us': 'Start from scratch',
+  },
+  dwcaChooseExtension: {
+    'en-us': 'Choose an extension',
+  },
+  dwcaChooseTerm: {
+    'en-us': 'Choose a term',
+  },
+  dwcaUnmappedTerm: {
+    'en-us': 'Unmapped Darwin Core term',
+  },
+  dwcaSaveWithUnmappedFields: {
+    'en-us': 'Save with unmapped fields?',
+  },
+  dwcaSaveWithUnmappedFieldsDescription: {
+    'en-us':
+      'Any fields that are not mapped to a term will be hidden in the query and not included in the export.',
+  },
+  dwcaChooseRowType: {
+    'en-us': 'Choose a row type',
+  },
+  dwcaChooseQuery: {
+    'en-us': 'Choose a query',
+  },
+  dwcaNoDefaultOrSaved: {
+    'en-us':
+      'No {default:string} or saved {query:string} is available for this {extension:string}.',
+  },
+  dwcaChooseTemplateOrQuery: {
+    'en-us': 'Choose Template or Query',
+  },
+  dwcaMappingSettings: {
+    'en-us': 'Mapping Settings',
+  },
+  dwcaCheckFileNameInSettings: {
+    'en-us': 'Check file name in settings',
+  },
+  dwcaRequiredTermsUnmapped: {
+    'en-us': '{count:number} required terms unmapped',
+  },
+  dwcaRequiredTermUnmapped: {
+    'en-us': '1 required term unmapped',
+  },
+  dwcaTemplates: {
+    'en-us': 'Templates',
+  },
+  dwcaGeneric: {
+    'en-us': 'Generic',
+  },
+  dwcaSavedQueries: {
+    'en-us': 'Saved Queries',
+  },
+  dwcaAddField: {
+    'en-us': 'Add a {query:string} field to begin mapping.',
+  },
+  dwcaRequiredTerm: {
+    'en-us': '{title:string} ({name:string})',
+  },
+  dwcaTermWithQualifier: {
+    'en-us': '{title:string} ({qualifier:string})',
+  },
+  dwcaMapRequiredTerms: {
+    'en-us': 'Map all required terms before saving: {terms:string}',
+  },
+  dwcaMapRequiredTermsHeading: {
+    'en-us': 'Map all required terms before saving:',
+  },
+  dwcaCore: {
+    'en-us': 'Core',
+  },
+} as const);

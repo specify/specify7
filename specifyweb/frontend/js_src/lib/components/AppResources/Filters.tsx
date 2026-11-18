@@ -1,18 +1,17 @@
 import React from 'react';
-import type { LocalizedString } from 'typesafe-i18n';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
+import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
+import { formsText } from '../../localization/forms';
 import { headerText } from '../../localization/header';
 import { resourcesText } from '../../localization/resources';
-import type { RA } from '../../utils/types';
 import { toggleItem } from '../../utils/utils';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Input, Label } from '../Atoms/Form';
-import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { Dialog } from '../Molecules/Dialog';
 import { hasPermission } from '../Permissions/helpers';
@@ -20,10 +19,12 @@ import {
   allAppResources,
   countAppResources,
   defaultAppResourceFilters,
-  isAllAppResourceTypes,
 } from './filtersHelpers';
 import type { AppResources } from './hooks';
 import { appResourceSubTypes, appResourceTypes } from './types';
+
+const filterOptionClassName =
+  'flex h-full items-center justify-center rounded px-1 py-0.5 text-center hover:bg-gray-200 dark:hover:bg-neutral-700 peer-checked:bg-[color:var(--info-button-color)] peer-checked:text-white peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-brand-300';
 
 export function AppResourcesFilters({
   initialResources,
@@ -40,8 +41,6 @@ export function AppResourcesFilters({
     'edit_collection'
   );
 
-  const showAllResources = isAllAppResourceTypes(filters.appResources);
-
   const filteredAppResources = React.useMemo(
     () =>
       hasCollectionPrefEditPermission
@@ -49,6 +48,18 @@ export function AppResourcesFilters({
         : allAppResources.filter((type) => type !== 'collectionPreferences'),
     [hasCollectionPrefEditPermission]
   );
+  const id = useId('resource-filters');
+  // Ignore inaccessible types when recognizing the current preset.
+  const selectedTypes = filteredAppResources.filter((type) =>
+    filters.appResources.includes(type)
+  );
+  const showAllResources = selectedTypes.length === filteredAppResources.length;
+  const isAll = filters.viewSets && showAllResources;
+  const isFormsOnly = filters.viewSets && selectedTypes.length === 0;
+  const isAppResourcesOnly = !filters.viewSets && showAllResources;
+  const isCustom = !isAll && !isFormsOnly && !isAppResourcesOnly;
+  const handleShowAll = (): void =>
+    setFilters({ viewSets: true, appResources: filteredAppResources });
 
   const handleToggleResources = (): void =>
     setFilters({
@@ -60,44 +71,69 @@ export function AppResourcesFilters({
 
   return (
     <>
-      <RadioContainer screenReaderLabel={resourcesText.filters()}>
-        <RadioButton
-          isPressed={filters.viewSets}
-          onClick={(): void =>
-            setFilters({
-              viewSets: showAllResources ? true : !filters.viewSets,
-              appResources: [],
-            })
-          }
-        >
-          {resourcesText.formDefinitions()}
-        </RadioButton>
-        <RadioButton
-          isPressed={showAllResources}
-          onClick={(): void =>
-            setFilters({
-              viewSets: false,
-              appResources:
-                filters.viewSets || !showAllResources
-                  ? filteredAppResources
-                  : [],
-            })
-          }
-        >
-          {resourcesText.appResources()}
-        </RadioButton>
-        <Button.Info
-          aria-label={resourcesText.custom()}
-          title={resourcesText.custom()}
-          onClick={handleOpen}
-        >
-          {icons.cog}
-        </Button.Info>
-      </RadioContainer>
+      <fieldset className="min-w-0">
+        <legend className="mb-1 text-sm text-gray-600 dark:text-neutral-400">
+          {resourcesText.showResources()}
+        </legend>
+        <div className="grid min-w-0 grid-cols-[auto_auto_auto_2rem] items-stretch gap-0.5 rounded bg-[color:var(--field-background)] p-0.5 shadow-sm ring-1 ring-gray-400 dark:ring-0">
+          <label className="min-w-0 cursor-pointer">
+            <Input.Radio
+              aria-label={resourcesText.allResources()}
+              className="peer sr-only"
+              checked={isAll}
+              name={id('visibility')}
+              value="all"
+              onChange={handleShowAll}
+            />
+            <span className={filterOptionClassName}>{commonText.all()}</span>
+          </label>
+          <label className="min-w-0 cursor-pointer">
+            <Input.Radio
+              className="peer sr-only"
+              checked={isFormsOnly}
+              name={id('visibility')}
+              value="forms"
+              onChange={(): void =>
+                setFilters({ viewSets: true, appResources: [] })
+              }
+            />
+            <span className={filterOptionClassName}>{formsText.forms()}</span>
+          </label>
+          <label className="min-w-0 cursor-pointer">
+            <Input.Radio
+              className="peer sr-only"
+              checked={isAppResourcesOnly}
+              name={id('visibility')}
+              value="appResources"
+              onChange={(): void =>
+                setFilters({
+                  viewSets: false,
+                  appResources: filteredAppResources,
+                })
+              }
+            />
+            <span className={filterOptionClassName}>
+              {resourcesText.appResources()}
+            </span>
+          </label>
+          <Button.Icon
+            aria-label={resourcesText.filterByType()}
+            aria-pressed={isCustom}
+            className={`self-stretch p-1 ${className.ariaHandled} ${
+              isCustom
+                ? className.infoButton
+                : 'hover:bg-gray-200 dark:hover:bg-neutral-700'
+            }`}
+            icon="cog"
+            title={resourcesText.filterByType()}
+            onClick={handleOpen}
+          />
+        </div>
+      </fieldset>
       {isOpen && (
         <Dialog
           buttons={commonText.close()}
-          header={resourcesText.custom()}
+          header={resourcesText.filters()}
           modal={false}
           onClose={handleClose}
         >
@@ -127,6 +163,11 @@ export function AppResourcesFilters({
               <Label.Inline>
                 <Input.Checkbox
                   checked={showAllResources}
+                  forwardRef={(input): void => {
+                    if (input !== null)
+                      input.indeterminate =
+                        selectedTypes.length > 0 && !showAllResources;
+                  }}
                   onValueChange={handleToggleResources}
                 />
                 {appResourceTypes.appResources.icon}
@@ -139,63 +180,54 @@ export function AppResourcesFilters({
                 })}
               </Label.Inline>
               <Ul className="pl-6">
-                {Object.entries(appResourceSubTypes).map(
-                  ([key, { label, icon, documentationUrl }]): JSX.Element => (
-                    <li key={key}>
-                      <Label.Inline>
-                        <Input.Checkbox
-                          checked={filters.appResources.includes(key)}
-                          onValueChange={(): void =>
-                            setFilters({
-                              ...filters,
-                              appResources: toggleItem(
-                                filters.appResources,
-                                key
-                              ),
-                            })
-                          }
-                        />
-                        {icon}
-                        {commonText.countLine({
-                          resource: label,
-                          count: countAppResources(initialResources, {
-                            appResources: [key],
-                            viewSets: false,
-                          }),
-                        })}
-                        {typeof documentationUrl === 'string' && (
-                          <Link.Icon
-                            href={documentationUrl}
-                            icon="externalLink"
-                            target="_blank"
-                            title={headerText.documentation()}
-                          />
-                        )}
-                      </Label.Inline>
-                    </li>
+                {Object.entries(appResourceSubTypes)
+                  .filter(
+                    ([key]) =>
+                      hasCollectionPrefEditPermission ||
+                      key !== 'collectionPreferences'
                   )
-                )}
+                  .map(
+                    ([key, { label, icon, documentationUrl }]): JSX.Element => (
+                      <li key={key}>
+                        <Label.Inline>
+                          <Input.Checkbox
+                            checked={filters.appResources.includes(key)}
+                            onValueChange={(): void =>
+                              setFilters({
+                                ...filters,
+                                appResources: toggleItem(
+                                  filters.appResources,
+                                  key
+                                ),
+                              })
+                            }
+                          />
+                          {icon}
+                          {commonText.countLine({
+                            resource: label,
+                            count: countAppResources(initialResources, {
+                              appResources: [key],
+                              viewSets: false,
+                            }),
+                          })}
+                          {typeof documentationUrl === 'string' && (
+                            <Link.Icon
+                              href={documentationUrl}
+                              icon="externalLink"
+                              target="_blank"
+                              title={headerText.documentation()}
+                            />
+                          )}
+                        </Label.Inline>
+                      </li>
+                    )
+                  )}
               </Ul>
             </li>
           </Ul>
         </Dialog>
       )}
     </>
-  );
-}
-
-function RadioContainer({
-  screenReaderLabel,
-  children,
-}: {
-  readonly screenReaderLabel: LocalizedString;
-  readonly children: RA<JSX.Element>;
-}): JSX.Element {
-  return (
-    <div className="flex flex-wrap gap-2 rounded bg-[color:var(--background)]">
-      <span className="sr-only">{screenReaderLabel}</span>
-      {children}
-    </div>
   );
 }
 
@@ -207,25 +239,3 @@ export const radioButtonClassName = (isPressed: boolean): string => `
       : 'hover:bg-gray-300 hover:dark:bg-neutral-600'
   }
 `;
-
-function RadioButton({
-  isPressed,
-  children,
-  onClick: handleClick,
-}: {
-  readonly isPressed: boolean;
-  readonly children: LocalizedString;
-  readonly onClick: () => void;
-}): JSX.Element {
-  return (
-    // REFACTOR: this should reuse Button.Small
-    <button
-      aria-pressed={isPressed}
-      className={radioButtonClassName(isPressed)}
-      type="button"
-      onClick={handleClick}
-    >
-      {children}
-    </button>
-  );
-}

@@ -264,6 +264,132 @@
 @tailwind components;
 
 @layer components {
+  .query-fields-container {
+    scrollbar-color: theme('colors.gray.500') theme('colors.gray.200');
+    scrollbar-width: auto;
+    @apply flex w-full min-w-0 max-w-full flex-col overflow-auto overscroll-x-contain [scrollbar-gutter:stable];
+  }
+
+  .query-fields-container::-webkit-scrollbar {
+    @apply h-3;
+  }
+
+  .query-fields-container::-webkit-scrollbar-track {
+    @apply rounded bg-gray-200 dark:bg-neutral-800;
+  }
+
+  .query-fields-container::-webkit-scrollbar-thumb {
+    @apply rounded bg-gray-500 dark:bg-neutral-500;
+  }
+
+  .query-fields-table {
+    width: max-content;
+    min-width: 100%;
+    @apply grid flex-1 content-start gap-x-2;
+  }
+
+  .query-fields-list {
+    grid-column: 1 / -1;
+    grid-template-columns: subgrid;
+    @apply grid flex-1;
+  }
+
+  .query-fields-header,
+  .query-field-row {
+    grid-column: 1 / -1;
+    grid-template-columns: subgrid;
+    @apply grid min-w-0 items-center gap-2;
+  }
+
+  .query-fields-header {
+    @apply px-2 pb-2 font-semibold;
+  }
+
+  .query-fields-table--with-prefix {
+    grid-template-columns:
+      2.5rem minmax(12rem, 18rem) fit-content(28rem)
+      minmax(max-content, 1fr) max-content;
+  }
+
+  .query-fields-header--with-prefix,
+  .query-field-row--with-prefix {
+    grid-template-areas: 'remove prefix field filter options';
+  }
+
+  .query-fields-table--without-prefix {
+    grid-template-columns:
+      2.5rem fit-content(28rem) minmax(max-content, 1fr)
+      max-content;
+  }
+
+  .query-fields-header--without-prefix,
+  .query-field-row--without-prefix {
+    grid-template-areas: 'remove field filter options';
+  }
+
+  .query-field-row {
+    @apply bg-[color:var(--form-foreground)] px-2 py-2;
+  }
+
+  .query-field-row--focused {
+    @apply rounded bg-gray-300 dark:bg-neutral-700;
+  }
+
+  .query-field-separator {
+    grid-column: 1 / -1;
+  }
+
+  .query-field-header-prefix,
+  .query-field-prefix {
+    grid-area: prefix;
+  }
+
+  .query-field-row--with-prefix .query-field-prefix {
+    @apply pl-2;
+  }
+
+  .query-field-header-field,
+  .query-field-mapping {
+    grid-area: field;
+  }
+
+  .query-field-row--without-prefix .query-field-mapping {
+    @apply pl-2;
+  }
+
+  .query-field-row--with-prefix .query-field-mapping {
+    @apply pl-1;
+  }
+
+  .query-field-header-filter,
+  .query-field-filter {
+    grid-area: filter;
+  }
+
+  .query-field-header-options,
+  .query-field-options {
+    grid-area: options;
+  }
+
+  .query-field-header-options {
+    @apply text-right;
+  }
+
+  .query-field-remove {
+    grid-area: remove;
+  }
+
+  .query-field-prefix,
+  .query-field-mapping,
+  .query-field-filter,
+  .query-field-options {
+    @apply min-w-0;
+  }
+
+  .query-field-label {
+    @apply mb-1 hidden text-sm font-semibold text-gray-700 dark:text-neutral-300;
+  }
+
   .wbs-form {
     --new-cell: theme('colors.indigo.350');
     --invalid-cell: theme('colors.red.300');

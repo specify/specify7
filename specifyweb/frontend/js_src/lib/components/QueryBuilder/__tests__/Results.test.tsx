@@ -89,6 +89,38 @@ test.each([
   expect(screen.getByText('Old last')).toBeInTheDocument();
 });
 
+test('keeps repeated express-search fields aligned with result columns', async () => {
+  const fields = makeFields(['lastName']);
+  const fieldSpec = queryFieldsToFieldSpecs('Agent', fields)[0]?.[1];
+  expect(fieldSpec).toBeDefined();
+
+  render(
+    <QueryResults
+      allFields={fields}
+      createRecordSet={undefined}
+      displayedFields={fields}
+      extraButtons={undefined}
+      fetchCount={undefined}
+      fetchResults={undefined}
+      fetchSize={40}
+      fieldSpecs={[fieldSpec!, fieldSpec!]}
+      initialData={[[1, 'First value', 'Repeated value']]}
+      isExpressSearch
+      queryResource={undefined}
+      selectedRows={[new Set<number>(), jest.fn()]}
+      table={tables.Agent}
+      totalCount={1}
+      onReRun={jest.fn()}
+    />
+  );
+
+  expect(await screen.findByText('First value')).toBeInTheDocument();
+  expect(screen.getByText('Repeated value')).toBeInTheDocument();
+  expect(
+    document.querySelectorAll('[data-query-results-header-col]')
+  ).toHaveLength(2);
+});
+
 test('row clicks add, range-select, and toggle result selections', async () => {
   const fields = makeFields(['lastName']);
   const props = {

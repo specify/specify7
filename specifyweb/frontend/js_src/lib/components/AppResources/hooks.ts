@@ -217,6 +217,7 @@ function getResourceExtension(
 
 const mimeMapper: IR<'json' | 'properties' | 'txt' | 'xml'> = {
   'application/json': 'json',
+  'application/vnd.specify.dwca+xml': 'xml',
   'text/xml': 'xml',
   'text/plain': 'txt',
 };

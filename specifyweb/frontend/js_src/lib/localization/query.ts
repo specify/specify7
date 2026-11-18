@@ -42,6 +42,12 @@ export const queryText = createDictionary({
     'hr-hr': 'Alat za izradu upita',
     nb: 'Bygg utvidet søk',
   },
+  queryField: {
+    'en-us': 'Field',
+  },
+  queryOptions: {
+    'en-us': 'Options',
+  },
   newQueryName: {
     'en-us': 'New Query',
     'es-es': 'Nueva consulta',

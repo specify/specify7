@@ -8,6 +8,7 @@ test('allAppResources', () => {
   "dataObjectFormatters",
   "dataViewQueries",
   "defaultUserPreferences",
+  "dwcaDefinition",
   "expressSearchConfig",
   "globalPreferences",
   "interactionsTables",

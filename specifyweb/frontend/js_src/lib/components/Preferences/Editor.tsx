@@ -101,7 +101,6 @@ function createPreferencesEditor<DEFINITIONS extends GenericPreferences>(
             setActiveCategory={setVisibleChild}
           />
           <PreferencesContent forwardRefs={forwardRefs} {...contentProps} />
-          <span className="flex-1" />
         </div>
       </Provider>
     );

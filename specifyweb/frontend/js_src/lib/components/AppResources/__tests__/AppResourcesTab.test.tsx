@@ -37,6 +37,7 @@ describe('AppResourcesTab', () => {
         tab={Component}
         onChange={f.void}
         onSetCleanup={f.void}
+        onSetSaveConfirmation={f.void}
       />
     );
 
@@ -58,6 +59,7 @@ describe('AppResourcesTab', () => {
           tab={Component}
           onChange={f.void}
           onSetCleanup={f.void}
+          onSetSaveConfirmation={f.void}
         />
       </UnloadProtectsContext.Provider>
     );

@@ -3,7 +3,7 @@ from copy import deepcopy
 from functools import lru_cache
 
 from specifyweb.specify.models_utils.models_by_table_id import model_names_by_table_id
-from specifyweb.backend.context.app_resource import DISCIPLINE_NAMES
+from specifyweb.backend.discipline_names import get_discipline_names
 from specifyweb.celery_tasks import app
 from .utils import load_json_from_file
 from .task_tracking import queue_discipline_background_task, finish_discipline_background_task
@@ -16,6 +16,8 @@ from uuid import uuid4
 
 import logging
 logger = logging.getLogger(__name__)
+
+DISCIPLINE_NAMES = get_discipline_names()
 
 SCHEMA_DEFAULTS_MISSING_DISCIPLINE_RETRY_DELAY_SEC = 2
 SCHEMA_DEFAULTS_MISSING_DISCIPLINE_MAX_RETRIES = 5
