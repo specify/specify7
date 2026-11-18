@@ -99,19 +99,19 @@ class TestFormatSprintf(SQLAlchemySetup):
     def test_changing_format_changes_result(self, get_app_resource: Mock):
         get_app_resource.return_value = ("""
             <formatters>
-                <format name="Accession" title="Accession"
-                    class="edu.ku.brc.specify.datamodel.Accession" default="true">
-                    <switch single="true">
-                        <fields>
-                            <field>remarks</field>
-                        </fields>
-                    </switch>
-                </format>
                 <format name="AccessionCustom" title="AccessionCustom"
                     class="edu.ku.brc.specify.datamodel.Accession">
                     <switch single="true">
                         <fields>
                             <field>accessionNumber</field>
+                        </fields>
+                    </switch>
+                </format>
+                <format name="Accession" title="Accession"
+                    class="edu.ku.brc.specify.datamodel.Accession" default="true">
+                    <switch single="true">
+                        <fields>
+                            <field>remarks</field>
                         </fields>
                     </switch>
                 </format>

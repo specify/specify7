@@ -197,7 +197,7 @@ class FormatterAggregatorTests(SQLAlchemySetup):
               class="edu.ku.brc.specify.datamodel.AccessionAgent"
               default="true" separator="; " ending="" count=""
               format="AccessionAgent" orderfieldname="timestampCreated" />
-            <aggregator name="AccessionAgentName" title="AccessionAgentName"
+            <aggregator name="AccessionAgentNamesAggregator" title="AccessionAgentName"
               class="edu.ku.brc.specify.datamodel.AccessionAgent"
               separator="; " ending="" count=""
               format="AccessionAgentName" orderfieldname="timestampCreated" />
@@ -233,7 +233,9 @@ class FormatterAggregatorTests(SQLAlchemySetup):
             format_name="AccessionAgent",
             sort_type=0,
         )
-        name_field = role_field._replace(format_name="AccessionAgentName")
+        name_field = role_field._replace(
+            format_name="AccessionAgentNamesAggregator"
+        )
 
         role_results = self._get_results(table, [role_field])
         name_results = self._get_results(table, [name_field])
