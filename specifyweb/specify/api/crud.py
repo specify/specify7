@@ -88,10 +88,14 @@ def _rescope_submitted_children(obj: Model, data: dict[str, Any], new_member_id)
             current_model = child_model
             for name in owner_field.split('__'):
                 field = current_model._meta.get_field(name)
-                accessor = field.remote_field.get_accessor_name()
+                reverse_relation = field.remote_field
+                assert isinstance(reverse_relation, ForeignObjectRel)
+                accessor = reverse_relation.get_accessor_name()
                 assert accessor is not None
                 reverse_path.append(accessor)
-                current_model = field.related_model
+                related_model = field.related_model
+                assert isinstance(related_model, type) and issubclass(related_model, Model)
+                current_model = related_model
 
             def rescope_nested(value, path):
                 if isinstance(value, list):
