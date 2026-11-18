@@ -69,6 +69,7 @@ test('sort button cycles the field sort order', () => {
   );
 
   fireEvent.click(screen.getByRole('button', { name: queryText.sort() }));
+  expect(onChange).toHaveBeenCalledTimes(1);
   expect(onChange.mock.calls[0][0]).toEqual({
     ...field,
     sortType: 'ascending',
@@ -91,6 +92,7 @@ test('sort button cycles the field sort order', () => {
   fireEvent.click(
     screen.getByRole('button', { name: queryText.ascendingSort() })
   );
+  expect(onChange).toHaveBeenCalledTimes(2);
   expect(onChange.mock.calls[1][0]).toEqual({
     ...field,
     sortType: 'descending',
@@ -113,6 +115,7 @@ test('sort button cycles the field sort order', () => {
   fireEvent.click(
     screen.getByRole('button', { name: queryText.descendingSort() })
   );
+  expect(onChange).toHaveBeenCalledTimes(3);
   expect(onChange.mock.calls[2][0]).toEqual({
     ...field,
     sortType: undefined,
