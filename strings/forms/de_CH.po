@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-11-16 13:29+0000\n"
+"PO-Revision-Date: 2026-11-18 13:51+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/forms/de_CH/>\n"
@@ -314,7 +314,7 @@ msgstr "Dieser Befehl ist für Specify 7 derzeit nicht verfügbar."
 #, fuzzy
 msgid "commandUnavailableSecondDescription"
 msgstr ""
-"Es wurde wahrscheinlich in Specify 6 in dieses Formular aufgenommen und wird "
+"Es wurde wahrscheinlich in dieser Version von Specify 6 übernommen und wird "
 "möglicherweise auch in Zukunft unterstützt."
 
 #. Used in: Components > Form Commands > Index
@@ -488,7 +488,9 @@ msgstr "Fortfahren ohne Speichern?"
 #: components/FormSliders/RecordSelectorFromPage.tsx:257
 #, fuzzy
 msgid "recordSelectorUnloadProtectDescription"
-msgstr "Sie sollten diesen Eintrag speichern, bevor Sie die Seite verlassen."
+msgstr ""
+"Sie sollten diesen Eintrag möglicherweise speichern, bevor Sie die Seite "
+"verlassen."
 
 #. Used in: Components > Form Sliders > Record Selector From Ids
 #: components/FormSliders/RecordSelectorFromIds.tsx:234
