@@ -97,6 +97,21 @@ class Tree(ModelWithTable):
                  "operation": "save",
                  "node": {"id": self.id, "fullName": self.fullname}})
 
+        if self.accepted_id is not None and (
+            prev_self is None or prev_self.accepted_id != self.accepted_id
+        ):
+            accepted_definition_id = (
+                model.objects.select_for_update().values_list('definition_id', flat=True)
+                .get(pk=self.accepted_id)
+            )
+            if accepted_definition_id != self.definition_id:
+                raise TreeBusinessRuleException(
+                    "Tree node's accepted node belongs to a different tree definition",
+                    {"tree": self.__class__.__name__,
+                     "localizationKey": "operationAcrossTrees",
+                     "operation": "save",
+                     "node": {"id": self.id, "fullName": self.fullname}})
+
         if prev_self is None:
             self.nodenumber = None
             self.highestchildnodenumber = None

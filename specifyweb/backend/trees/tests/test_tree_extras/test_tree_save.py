@@ -127,6 +127,39 @@ class TestTreeSave(GeographyTree):
         kingdom.refresh_from_db()
         self.assertEqual(kingdom.definition_id, self.taxontreedef.id)
 
+    def test_saving_new_or_changed_accepted_link_checks_target_definition(self):
+        root = self._create_life()
+        first_target = self.make_taxontree("Animalia", "Kingdom", parent=root)
+        second_target = self.make_taxontree("Plantae", "Kingdom", parent=root)
+        other_definition = Taxontreedef.objects.create(name="Other taxonomy")
+        other_rank = other_definition.treedefitems.create(name="Other root", rankid=0)
+        foreign_target = Taxon.objects.create(name="Other life", definitionitem=other_rank)
+        foreign_target.definition = self.taxontreedef
+
+        synonym = Taxon(name="Synonym", definitionitem=self.taxon_kingdom, parent=root)
+        synonym.acceptedtaxon = foreign_target
+        with self.assertRaises(TreeBusinessRuleException) as context:
+            synonym.save()
+        self.assertEqual(context.exception.args[1]['localizationKey'], "operationAcrossTrees")
+        self.assertIsNone(synonym.pk)
+
+        synonym.acceptedtaxon = first_target
+        synonym.save()
+        synonym.refresh_from_db()
+        self.assertEqual(synonym.accepted_id, first_target.pk)
+
+        synonym.acceptedtaxon = foreign_target
+        with self.assertRaises(TreeBusinessRuleException) as context:
+            synonym.save()
+        self.assertEqual(context.exception.args[1]['localizationKey'], "operationAcrossTrees")
+        synonym.refresh_from_db()
+        self.assertEqual(synonym.accepted_id, first_target.pk)
+
+        synonym.acceptedtaxon = second_target
+        synonym.save()
+        synonym.refresh_from_db()
+        self.assertEqual(synonym.accepted_id, second_target.pk)
+
     def _create_tree_structure(self):
 
         self._node_list = []
