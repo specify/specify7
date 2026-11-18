@@ -1,6 +1,6 @@
 from specifyweb.backend.businessrules.exceptions import TreeBusinessRuleException
 from specifyweb.backend.trees.extras import renumber_tree, validate_tree_numbering
-from specifyweb.specify.models import Taxon, Taxontreedefitem
+from specifyweb.specify.models import Taxon, Taxontreedef, Taxontreedefitem
 from specifyweb.backend.trees.tests.test_trees import GeographyTree
 
 import random
@@ -79,6 +79,53 @@ class TestTreeSave(GeographyTree):
         test_phylum.save()
         test_phylum.refresh_from_db()
         self.assertEqual(test_phylum.fullname, "PlantaeTestPhylum")
+
+    def test_adding_and_moving_validate_the_persisted_parent_definition(self):
+        root = self._create_life()
+        other_definition = Taxontreedef.objects.create(name="Other taxonomy")
+        animalia = self.make_taxontree("Animalia", "Kingdom", parent=root)
+        plantae = self.make_taxontree("Plantae", "Kingdom", parent=root)
+
+        animalia.definition = other_definition
+        phylum = self.make_taxontree("TestPhylum", "Phylum", parent=animalia)
+        self.assertEqual(phylum.parent_id, animalia.id)
+
+        plantae.definition = other_definition
+        phylum.parent = plantae
+        phylum.save()
+        phylum.refresh_from_db()
+        self.assertEqual(phylum.parent_id, plantae.id)
+
+    def test_unchanged_cross_definition_link_allows_unrelated_edits(self):
+        root = self._create_life()
+        kingdom = self.make_taxontree("Animalia", "Kingdom", parent=root)
+        other_definition = Taxontreedef.objects.create(name="Other taxonomy")
+        Taxon.objects.filter(pk=root.pk).update(definition=other_definition)
+        kingdom.refresh_from_db()
+
+        kingdom.text1 = "Updated description"
+        kingdom.save()
+        kingdom.refresh_from_db()
+        self.assertEqual(kingdom.text1, "Updated description")
+        self.assertEqual(kingdom.parent_id, root.id)
+        self.assertEqual(kingdom.definition_id, self.taxontreedef.id)
+
+    def test_changing_definition_checks_the_unchanged_parent_in_database(self):
+        root = self._create_life()
+        kingdom = self.make_taxontree("Animalia", "Kingdom", parent=root)
+        other_definition = Taxontreedef.objects.create(name="Other taxonomy")
+        other_definition.treedefitems.create(name="Other root", rankid=0)
+        kingdom.definitionitem = other_definition.treedefitems.create(
+            name="Other kingdom", rankid=10,
+        )
+        root.definition = other_definition
+
+        with self.assertRaises(TreeBusinessRuleException) as context:
+            kingdom.save()
+
+        self.assertEqual(context.exception.args[1]['localizationKey'], "operationAcrossTrees")
+        kingdom.refresh_from_db()
+        self.assertEqual(kingdom.definition_id, self.taxontreedef.id)
 
     def _create_tree_structure(self):
 

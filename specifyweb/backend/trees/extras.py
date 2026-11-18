@@ -51,7 +51,18 @@ class Tree(ModelWithTable):
 
         model = type(self)
         self.set_rank_and_definition()
-        if self.parent_id is not None and self.parent.definition_id != self.definition_id:
+        prev_self = None if self.id is None \
+                    else model.objects.select_for_update().get(id=self.id)
+        # Additions and moves validate the destination under lock. Leave legacy
+        # cross-definition links alone when neither side of the link changes.
+        if (
+            prev_self is not None
+            and prev_self.definition_id != self.definition_id
+            and self.parent_id is not None
+            and prev_self.parent_id == self.parent_id
+            and model.objects.select_for_update().values_list('definition_id', flat=True)
+            .get(id=self.parent_id) != self.definition_id
+        ):
             raise TreeBusinessRuleException(
                 "Tree node's parent belongs to a different tree definition",
                 {"tree": self.__class__.__name__,
@@ -59,8 +70,6 @@ class Tree(ModelWithTable):
                  "operation": "save",
                  "node": {"id": self.id, "fullName": self.fullname}})
 
-        prev_self = None if self.id is None \
-                    else model.objects.select_for_update().get(id=self.id)
         if prev_self is not None and prev_self.definition_id != self.definition_id \
                 and model.objects.filter(parent=self).exists():
             raise TreeBusinessRuleException(
@@ -288,7 +297,7 @@ def _allow_adding_child_to_synonymized_parent(node, collection=None, user=None):
 def adding_node(node,collection=None, user=None):
     logger.info('adding node %s', node)
     model = type(node)
-    parent = model.objects.select_for_update().get(id=node.parent.id)
+    parent = model.objects.select_for_update().get(id=node.parent_id)
 
     if parent.definition_id != node.definition_id:
         raise TreeBusinessRuleException(
@@ -329,7 +338,7 @@ def moving_node(to_save):
     model = type(to_save)
     current = model.objects.get(id=to_save.id)
     size = current.highestchildnodenumber - current.nodenumber + 1
-    new_parent = model.objects.select_for_update().get(id=to_save.parent.id)
+    new_parent = model.objects.select_for_update().get(id=to_save.parent_id)
     if new_parent.definition_id != to_save.definition_id:
         raise TreeBusinessRuleException(
             "Tree node's parent belongs to a different tree definition",
