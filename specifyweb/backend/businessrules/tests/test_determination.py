@@ -18,3 +18,22 @@ class DeterminationTests(ApiTests):
         for co in self.collectionobjects:
             co.determinations.get(iscurrent=True)
 
+    def test_add_existing_taxon_to_determination(self):
+        collection_object = self.collectionobjects[0]
+        taxon_tree_item = self.taxontreedef.treedefitems.create(
+            name="taxonomy_root",
+            rankid=0
+        )
+        taxon = taxon_tree_item.treeentries.create(
+            name="Test taxon",
+            definition=taxon_tree_item.treedef,
+            rankid=taxon_tree_item.rankid
+        )
+        determination = collection_object.determinations.create(
+            taxon=taxon,
+            iscurrent=True
+        )
+        fetched_determination = collection_object.determinations.get(
+            id=determination.id
+        )
+        self.assertEqual(fetched_determination.taxon_id, taxon.id)
