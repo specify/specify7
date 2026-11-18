@@ -1427,6 +1427,37 @@ class CollectionScopeApiTests(ApiTests):
                     self.assertEqual(response.status_code, 200, response.content)
                     self.assertEqual(response.json(), [[age.id]] if readable else [])
 
+    def test_age_reads_use_collectionobject_membership_fallback_and_mismatch_rules(self):
+        obj = self.collectionobjects[0]
+        for model in (spmodels.Absoluteage, spmodels.Relativeage):
+            age = model.objects.create(collectionobject=obj)
+            table = model._meta.model_name
+            url = f'/api/specify/{table}/'
+            for collection, membership, allowed in (
+                (self.collection, self.collection.pk, True),
+                (self.collection, -1, True),
+                (self.other_collection, -1, False),
+                (self.other_collection, self.collection.pk, False),
+                (self.collection, self.other_collection.pk, False),
+            ):
+                with self.subTest(model=table, collection=collection.pk, membership=membership):
+                    spmodels.Collectionobject.objects.filter(pk=obj.pk).update(
+                        collection=collection, collectionmemberid=membership,
+                    )
+                    response = self.client.get(f'{url}{age.pk}/')
+                    self.assertEqual(response.status_code, 200 if allowed else 403, response.content)
+                    response = self.client.get(url, {'id': age.pk})
+                    self.assertEqual(response.status_code, 200, response.content)
+                    self.assertEqual(
+                        [row['id'] for row in response.json()['objects']],
+                        [age.pk] if allowed else [],
+                    )
+                    response = self.client.get(f'/table_rows/specify_rows/{table}/', {
+                        'fields': 'id', 'id': age.pk,
+                    })
+                    self.assertEqual(response.status_code, 200, response.content)
+                    self.assertEqual(response.json(), [[age.pk]] if allowed else [])
+
     def test_age_attachments_and_citations_use_collection_membership_scope(self):
         attachment = spmodels.Attachment.objects.create()
         referencework = spmodels.Referencework.objects.create(

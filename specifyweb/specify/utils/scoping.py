@@ -399,6 +399,8 @@ class Scoping:
             return {
                 Scoping.collection_lookup(ScopeType(obj.scopetype)): obj.scopeid,
             }
+        if isinstance(obj, (models.Absoluteage, models.Relativeage)):
+            return Scoping.record_scope_filter(obj.collectionobject)
         scope_type, path = scope_path if scope_path is not None else Scoping.record_scope_path(type(obj))
         value = obj
         if path is None:
@@ -454,6 +456,9 @@ class Scoping:
     @staticmethod
     def filter_records(queryset: QuerySet, collections: QuerySet) -> QuerySet:
         model = queryset.model
+        if model in (models.Absoluteage, models.Relativeage):
+            owners = Scoping.filter_records(models.Collectionobject.objects.all(), collections)
+            return queryset.filter(collectionobject__in=owners)
         if model is models.Attachment:
             condition = Q(scopetype__isnull=True) | Q(scopetype=ScopeType.GLOBAL.value)
             for scope_type in (
