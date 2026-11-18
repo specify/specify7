@@ -28,6 +28,11 @@ overrideAjax(
   [['abc']]
 );
 
+overrideAjax(
+  '/table_rows/specify_rows/geologictimeperiod/?limit=0&domainfilter=false&filterchronostrat=false&distinct=true&fields=fullname',
+  [['Paleocene']]
+);
+
 // [PickLists] Filter invalid chronostrat names
 test('filters chronostrat name pick lists', async () => {
   const items = await fetchPickListItems(
@@ -44,4 +49,13 @@ test('does not filter other field pick lists', async () => {
   );
 
   expect(items.map(({ value }) => value)).toEqual(['abc']);
+});
+
+// [PickLists] Do not filter other chronostrat fields
+test('does not filter other chronostrat fields', async () => {
+  const items = await fetchPickListItems(
+    makePickList('geologictimeperiod', 'fullName')
+  );
+
+  expect(items.map(({ value }) => value)).toEqual(['Paleocene']);
 });
