@@ -230,6 +230,10 @@ class ModelInstanceScope:
             return self.obj.division
         if is_related(self.obj.__class__, "discipline") and has_related(self.obj, "discipline"):
             return self.obj.discipline
+        if is_related(self.obj.__class__, "collectionmember"):
+            collection_member = getattr(self.obj, "collectionmember", None)
+            if collection_member is not None:
+                return collection_member
         if has_related(self.obj, "collectionmemberid") or (is_related(self.obj.__class__, "collection") and has_related(self.obj, "collection")):
             return self._simple_collection_scope()
 

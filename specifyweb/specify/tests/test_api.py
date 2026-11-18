@@ -1166,6 +1166,22 @@ class ScopingTests(ApiTests):
         self.assertEqual(scoping.in_same_scope(agent, other_collectionobject), True)
         self.assertEqual(scoping.in_same_scope(self.collectionobjects[0], agent), False)
 
+    def test_instance_scope_resolves_collectionmember_foreign_key(self):
+        for model in (
+            models.Absoluteageattachment, models.Absoluteagecitation,
+            models.Relativeageattachment, models.Relativeagecitation,
+        ):
+            with self.subTest(model=model.__name__):
+                obj = model(collectionmember_id=self.other_collection.pk)
+                self.assertEqual(
+                    scoping.Scoping.from_instance(obj),
+                    (scoping.ScopeType.COLLECTION, self.other_collection),
+                )
+                self.assertEqual(
+                    scoping.Scoping.scope_type_from_class(model),
+                    scoping.ScopeType.COLLECTION,
+                )
+
     def test_collectionobject_age_membership_dependents(self):
         dependents = set(
             scoping.Scoping.collection_member_dependents(Collectionobject)
