@@ -8,6 +8,7 @@ import { ResourceView } from '../../Forms/ResourceView';
 import { tables } from '../../DataModel/tables';
 import { UnloadProtectsContext } from '../../Router/UnloadProtect';
 import type { QueryField } from '../helpers';
+import { unParseQueryFields } from '../helpers';
 import { MakeRecordSetButton } from '../Components';
 
 jest.mock('../../Forms/ResourceView', () => ({
@@ -24,30 +25,34 @@ const fields: readonly QueryField[] = [
     mappingPath: ['lastName'],
     sortType: undefined,
     isDisplay: true,
-    filters: [],
+    filters: [
+      { type: 'any', startValue: '', isNot: false, isStrict: false },
+    ],
   },
 ];
 
-const fieldRecords = [
-  {
-    id: 1,
-    stringId: '1.collectionobject.lastName',
-    fieldName: 'lastName',
-    tableList: '1',
-    isDisplay: true,
-    isRelFld: false,
-    sortType: 0,
-    position: 0,
-    operStart: 8,
-    startValue: '',
-  },
-] as never;
-
 // [QueryBuilder] Create record set from all results
 test('creates a record set from the whole query', async () => {
-  jest.spyOn(console, 'warn').mockImplementation(() => undefined);
+  const fieldRecords = unParseQueryFields('Agent', fields);
+  expect(fieldRecords[0].stringId).toBe(
+    `${tables.Agent.tableId}.agent.lastName`
+  );
+  const originalWarn = console.warn.bind(console);
+  jest.spyOn(console, 'warn').mockImplementation((message, ...args) => {
+    if (
+      typeof message === 'string' &&
+      message.includes('unknown field fromquery')
+    )
+      return;
+    originalWarn(message, ...args);
+  });
   const queryResource = new tables.SpQuery.Resource(
-    { id: 5, name: 'All results' },
+    {
+      id: 5,
+      name: 'All results',
+      contextname: 'Agent',
+      contexttableid: tables.Agent.tableId,
+    },
     { noBusinessRules: true }
   );
   const getQueryFieldRecords = jest.fn(() => fieldRecords);
@@ -84,6 +89,7 @@ test('creates a record set from the whole query', async () => {
   expect(fromQuery).toEqual(
     expect.objectContaining({
       name: 'All results',
+      contexttableid: tables.Agent.tableId,
       recordsetid: undefined,
     })
   );
@@ -91,7 +97,7 @@ test('creates a record set from the whole query', async () => {
   expect(fromQuery.fields[0]).toEqual(
     expect.objectContaining({
       fieldname: 'lastName',
-      stringid: '1.collectionobject.lastName',
+      stringid: fieldRecords[0].stringId,
       startvalue: '',
     })
   );
