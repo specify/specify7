@@ -26,3 +26,23 @@ test('merges multiple localities', () => {
 
   expect(merged.localityName).toBe('Locality Number Three');
 });
+
+const makePaleoContext = (id: number, paleoContextName: string) =>
+  addMissingFields('PaleoContext', {
+    id,
+    paleoContextName,
+    timestampModified: `2023-01-0${id}T00:00:00`,
+  }) as unknown as SerializedResource<AnySchema>;
+
+// [RecordMerging] Merge multiple paleo contexts
+test('merges multiple paleo contexts', () => {
+  const records = [
+    makePaleoContext(1, 'P1'),
+    makePaleoContext(2, 'Paleo Context Two'),
+    makePaleoContext(3, 'Paleo Context Number Three'),
+  ] as RA<SerializedResource<AnySchema>>;
+
+  const merged = autoMerge(tables.PaleoContext, records, false);
+
+  expect(merged.paleoContextName).toBe('Paleo Context Number Three');
+});
