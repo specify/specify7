@@ -4,9 +4,11 @@ import { schema } from '../../DataModel/schema';
 import { tables } from '../../DataModel/tables';
 import { canMerge } from '../Results';
 
+let mockHasMergePermission = true;
+
 jest.mock('../../Permissions/helpers', () => ({
   ...jest.requireActual('../../Permissions/helpers'),
-  hasPermission: () => true,
+  hasPermission: () => mockHasMergePermission,
   hasTablePermission: () => true,
 }));
 
@@ -16,6 +18,7 @@ const originalEmbeddedCollectingEvent = schema.embeddedCollectingEvent;
 const originalEmbeddedPaleoContext = schema.embeddedPaleoContext;
 
 afterEach(() => {
+  mockHasMergePermission = true;
   overwriteReadOnly(
     schema,
     'embeddedCollectingEvent',
@@ -54,4 +57,16 @@ test('shows paleo context merge when not embedded', () => {
   overwriteReadOnly(schema, 'embeddedPaleoContext', false);
 
   expect(canMerge(tables.PaleoContext)).toBe(true);
+});
+
+// [RecordMerging] Require merge permission
+test('requires merge permission', () => {
+  mockHasMergePermission = false;
+
+  expect(canMerge(tables.Agent)).toBe(false);
+});
+
+// [RecordMerging] Allow merging other tables with permission
+test('allows merging other tables with permission', () => {
+  expect(canMerge(tables.Locality)).toBe(true);
 });
