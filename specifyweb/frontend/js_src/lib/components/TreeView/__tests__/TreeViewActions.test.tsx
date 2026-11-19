@@ -9,6 +9,7 @@ import { treeText } from '../../../localization/tree';
 import { overrideAjax } from '../../../tests/ajax';
 import { Http } from '../../../utils/ajax/definitions';
 import { requireContext } from '../../../tests/helpers';
+import specifyTrees from '../../../tests/ajax/static/trees/specify_trees.json';
 import { mount } from '../../../tests/reactUtils';
 import type { GetSet, RA } from '../../../utils/types';
 import { LoadingContext } from '../../Core/Contexts';
@@ -22,6 +23,40 @@ import {
 } from '../../Router/UnloadProtect';
 import { TreeViewActions } from '../Actions';
 import type { Row } from '../helpers';
+
+const chronostratRankUrl = (id: number): string =>
+  getResourceApiUrl('GeologicTimePeriodTreeDefItem', id);
+overrideAjax('/trees/specify_trees/', {
+  ...specifyTrees,
+  GeologicTimePeriod: [
+    {
+      definition: {
+        id: 1,
+        name: 'Chronostratigraphy',
+        fullnamedirection: -1,
+        resource_uri: getResourceApiUrl('GeologicTimePeriodTreeDef', 1),
+      },
+      ranks: (
+        [
+          [1, 'Root', 0, true],
+          [2, 'Era', 100, false],
+          [3, 'Period', 200, false],
+          [4, 'Epoch', 300, false],
+          [5, 'Age', 400, false],
+        ] as const
+      ).map(([id, name, rankid, isenforced]) => ({
+        id,
+        name,
+        title: name,
+        rankid,
+        isenforced,
+        parent: id === 1 ? null : chronostratRankUrl(id - 1),
+        treedef: getResourceApiUrl('GeologicTimePeriodTreeDef', 1),
+        resource_uri: chronostratRankUrl(id),
+      })),
+    },
+  ],
+});
 
 requireContext();
 
@@ -767,5 +802,122 @@ describe('Move storage items to another node', () => {
 
     await waitFor(() => expect(handleRefresh).toHaveBeenCalled());
     expect(moveRequest).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('Add a chronostrat', () => {
+  const parentId = 40;
+  const newNodeId = 41;
+  const epochRankId = 4;
+  const ageRankId = 5;
+  overrideTreeView('GeologicTimePeriod');
+  (
+    [
+      [epochRankId, 'Epoch', 300],
+      [ageRankId, 'Age', 400],
+    ] as const
+  ).forEach(([id, name, rankId]) =>
+    overrideAjax(chronostratRankUrl(id), () =>
+      addMissingFields('GeologicTimePeriodTreeDefItem', {
+        id,
+        name,
+        rankId,
+        treeDef: getResourceApiUrl('GeologicTimePeriodTreeDef', 1),
+        resource_uri: chronostratRankUrl(id),
+      })
+    )
+  );
+  overrideAjax(getResourceApiUrl('GeologicTimePeriod', parentId), () =>
+    addMissingFields('GeologicTimePeriod', {
+      id: parentId,
+      name: 'Paleocene',
+      fullName: 'Paleocene',
+      rankId: 300,
+      isAccepted: true,
+      definition: getResourceApiUrl('GeologicTimePeriodTreeDef', 1),
+      definitionItem: chronostratRankUrl(epochRankId),
+      resource_uri: getResourceApiUrl('GeologicTimePeriod', parentId),
+    })
+  );
+
+  overrideAjax(
+    '/api/specify/geologictimeperiod/',
+    () =>
+      addMissingFields('GeologicTimePeriod', {
+        id: newNodeId,
+        name: 'Danian',
+        parent: getResourceApiUrl('GeologicTimePeriod', parentId),
+        resource_uri: getResourceApiUrl('GeologicTimePeriod', newNodeId),
+      }),
+    {
+      method: 'POST',
+      responseCode: Http.CREATED,
+      body: jsonContaining({
+        name: 'Danian',
+        parent: getResourceApiUrl('GeologicTimePeriod', parentId),
+        definitionitem: chronostratRankUrl(ageRankId),
+      }),
+    }
+  );
+
+  overrideAjax(
+    `/delete_blockers/delete_blockers/geologictimeperiod/${newNodeId}/?limit=40`,
+    { results: [], next: [] }
+  );
+  overrideAjax(`/delete_blockers/count/geologictimeperiod/${newNodeId}/`, {
+    results: [],
+    total_count: 0,
+  });
+  overrideAjax(
+    `/trees/specify_tree/geologictimeperiod/${parentId}/predict_fullname/?name=Danian&treedefitemid=${ageRankId}`,
+    'Danian'
+  );
+
+  test('"Add child" saves a new GeologicTimePeriod under the focused node', async () => {
+    const handleRefresh = jest.fn();
+    const { user } = renderActions(
+      'GeologicTimePeriod',
+      makeRow({
+        nodeId: parentId,
+        name: 'Paleocene',
+        fullName: 'Paleocene',
+        rankId: 300,
+      }),
+      handleRefresh
+    );
+
+    const addChild = screen.getByRole('link', {
+      name: new RegExp(`^${treeText.addChild()}`, 'u'),
+    });
+    expect(addChild).toHaveAttribute('aria-disabled', 'false');
+    expect(addChild).toHaveAttribute(
+      'href',
+      '/specify/view/geologictimeperiod/new/'
+    );
+
+    await user.click(addChild);
+
+    const dialog = await screen.findByRole('dialog');
+    const parent = within(dialog).getByRole('combobox', {
+      name: tables.GeologicTimePeriod.strictGetRelationship('parent').label,
+    });
+    await waitFor(() => expect(parent).toHaveValue('Paleocene'));
+
+    const rank = within(dialog).getByRole('combobox', {
+      name: tables.GeologicTimePeriod.strictGetRelationship('definitionItem')
+        .label,
+    });
+    await waitFor(() => expect(rank).toHaveValue('Age'));
+    await waitFor(() =>
+      expect(within(dialog).getByRole('textbox')).toHaveFocus()
+    );
+
+    await user.click(within(dialog).getByRole('textbox'));
+    await user.paste('Danian');
+    await user.click(
+      within(dialog).getByRole('button', { name: commonText.save() })
+    );
+
+    await waitFor(() => expect(handleRefresh).toHaveBeenCalled());
   });
 });
