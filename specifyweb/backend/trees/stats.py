@@ -21,9 +21,12 @@ def get_tree_stats(treedef, tree, parentid, specify_collection, session_context,
     def make_joins(query):
         descendent = aliased(tree_node)
         query = query.outerjoin(descendent,
-                                descendent.nodeNumber.between(
-                                    child.nodeNumber,
-                                    child.highestChildNodeNumber
+                                sql.and_(
+                                    descendent.nodeNumber.between(
+                                        child.nodeNumber,
+                                        child.highestChildNodeNumber,
+                                    ),
+                                    getattr(descendent, treedef_col) == int(treedef),
                                 )
                                 )
         make_target_joins = getattr(
@@ -94,6 +97,7 @@ def get_tree_stats(treedef, tree, parentid, specify_collection, session_context,
                         (cte_definition.c.depth + 1).label('depth')
                     ).join(descendent,
                            sql.and_(descendent.ParentID == cte_definition.c.top_or_descendent_id,
+                                    getattr(descendent, treedef_col) == int(treedef),
                                     # Restricting join depth to (depth - 1) because a join was made in
                                     # seed query of the cte
                                     cte_definition.c.depth <= depth - 1)

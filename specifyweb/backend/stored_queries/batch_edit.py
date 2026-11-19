@@ -11,7 +11,8 @@ from typing import (
 )
 from collections.abc import Callable
 
-from specifyweb.backend.permissions.permissions import has_target_permission
+from specifyweb.backend.permissions.permissions import check_table_permissions, has_target_permission
+from specifyweb.specify.api.crud import get_model_or_404, get_object_or_404
 from specifyweb.backend.stored_queries.batch_edit_helper_classes import (
     BATCH_EDIT_NULL_RECORD_DESCRIPTION,
     BATCH_EDIT_READONLY_TABLES,
@@ -53,6 +54,7 @@ from specifyweb.backend.workbench.upload.upload_plan_schema import schema
 from jsonschema import validate
 
 from django.db import transaction
+from django.http import Http404
 
 import logging
 
@@ -989,6 +991,9 @@ def run_batch_edit_query(props: BatchEditProps):
     limit = props["limit"]
 
     recordsetid = props["recordsetid"]
+    if recordsetid is not None:
+        recordset = get_object_or_404("recordset", pk=recordsetid)
+        check_table_permissions(props["collection"], props["user"], recordset, "read")
     fields = props["fields"]
     visible_fields = [field for field in fields if field.display]
     
@@ -1085,6 +1090,7 @@ def run_batch_edit_query(props: BatchEditProps):
 
     visited_rows = visited_rows[1:]
     assert len(visited_rows) > 0, "nothing to return!"
+    _authorize_batch_edit_records(base_table, visited_rows, props["collection"], props["user"])
 
     raw_rows: list[tuple[list[Any], dict[str, Any] | None]] = []
     for visited_row in visited_rows:
@@ -1142,6 +1148,39 @@ def run_batch_edit_query(props: BatchEditProps):
         json_upload_plan,
         visual_order,
     )
+
+
+def _authorize_batch_edit_records(base_table, rows, collection, user):
+    """Authorize every materialized record before storing editable data or backups."""
+    records = {}
+
+    def collect(table, row):
+        recordid = row.batch_edit_pack.id.value
+        if recordid is not None:
+            records.setdefault(table.name, set()).add(recordid)
+        for name, related in row.to_one.items():
+            field = table.get_field(name)
+            related_table = (
+                table if is_tree_table(table) and field is None
+                else datamodel.get_table_strict(field.relatedModelName)
+            )
+            collect(related_table, related)
+        for name, related_rows in row.to_many.items():
+            field = table.get_relationship_strict(name)
+            related_table = datamodel.get_table_strict(field.relatedModelName)
+            for related in related_rows:
+                collect(related_table, related)
+
+    for row in rows:
+        collect(base_table, row)
+    for name, ids in records.items():
+        model = get_model_or_404(name)
+        objects = model.objects.in_bulk(ids)
+        for recordid in ids:
+            obj = objects.get(recordid)
+            if obj is None:
+                raise Http404(f"{name} with id {recordid} does not exist")
+            check_table_permissions(collection, user, obj, "read")
 
 def reorder_batch_edit_columns(key_and_headers: list[tuple[tuple[int, int], str]], visible_fields: list[int]) -> list[int]:
     """

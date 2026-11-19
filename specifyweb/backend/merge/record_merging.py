@@ -15,6 +15,10 @@ from specifyweb.backend.notifications.models import Message, Spmerging
 from django.db.models import Q
 
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
+from specifyweb.backend.permissions.permissions import (
+    check_field_permissions,
+    check_table_permissions,
+)
 from specifyweb.celery_tasks import LogErrorsTask, app
 from specifyweb.specify import models as spmodels
 from specifyweb.specify.models_utils.build_models import orderings
@@ -168,7 +172,8 @@ RESTRICT_UPDATE_FIELDS = {'spappresourcedata'}
 @transaction.atomic
 def record_merge_fx(model_name: str, old_model_ids: list[int], new_model_id: int,
                     progress: Progress | None=None,
-                    new_record_info: dict[str, Any]=None):
+                    new_record_info: dict[str, Any]=None,
+                    authorization: tuple[spmodels.Collection, Any] | None=None):
     """Replaces all the foreign keys referencing the old record ID
     with the new record ID, and deletes the old record.
     """
@@ -187,6 +192,17 @@ def record_merge_fx(model_name: str, old_model_ids: list[int], new_model_id: int
 
     # Get dependent fields and objects of the target object
     target_object = target_model.objects.get(id=new_model_id)
+    if authorization is not None:
+        collection, actor = authorization
+        if (
+            new_record_info is not None
+            and new_record_info.get('new_record_data') is not None
+        ):
+            check_table_permissions(collection, actor, target_object, "update")
+        for old_record in target_model.objects.filter(
+            id__in=old_model_ids,
+        ).iterator(chunk_size=2000):
+            check_table_permissions(collection, actor, old_record, "delete")
     dependant_relationships = [(rel.relatedModelName, rel.name)
         for rel in target_object.specify_model.relationships
         if is_dependent_field(target_object, rel.name)]
@@ -234,6 +250,18 @@ def record_merge_fx(model_name: str, old_model_ids: list[int], new_model_id: int
                     query = Q(**{field_name_id: old_model_ids[0]})
                     for old_model_id in old_model_ids[1:]:
                         query.add(Q(**{field_name_id: old_model_id}), Q.OR)
+                    if authorization is not None:
+                        collection, actor = authorization
+                        for foreign_object in foreign_model.objects.filter(query).iterator(
+                            chunk_size=2000,
+                        ):
+                            check_table_permissions(
+                                collection, actor, foreign_object, "update",
+                            )
+                            check_field_permissions(
+                                collection, actor, foreign_object,
+                                [field_name], "update",
+                            )
                     foreign_model.objects.filter(query).update(**{field_name_id: new_model_id})
                     progress(1, 0) if progress is not None else None
                     continue
@@ -247,7 +275,17 @@ def record_merge_fx(model_name: str, old_model_ids: list[int], new_model_id: int
             for obj in foreign_objects:
                 # If it is a dependent field, continue
                 if table_name in dependant_table_names:
+                    if authorization is not None:
+                        check_table_permissions(
+                            authorization[0], authorization[1], obj, "delete",
+                        )
                     continue
+                if authorization is not None:
+                    collection, actor = authorization
+                    check_table_permissions(collection, actor, obj, "update")
+                    check_field_permissions(
+                        collection, actor, obj, [field_name], "update",
+                    )
 
                 # Set new value for the field
                 setattr(obj, field_name_id, new_model_id)
@@ -285,7 +323,10 @@ def record_merge_fx(model_name: str, old_model_ids: list[int], new_model_id: int
                     old_record, new_record = sorted([old_record, new_record], key=key_function)
 
                     # Make a recursive call to record_merge to resolve duplication error
-                    record_merge_fx(table_name, [old_record.pk], new_record.pk, progress)
+                    record_merge_fx(
+                        table_name, [old_record.pk], new_record.pk, progress,
+                        authorization=authorization,
+                    )
                     if old_record.pk != obj.pk:
                         update_record(new_record)
 
@@ -320,7 +361,12 @@ def record_merge_fx(model_name: str, old_model_ids: list[int], new_model_id: int
         # EXAMPLE: ProtectedError: ("Cannot delete some instances of model 'Address' because they are
         # referenced through protected foreign keys:
         # 'Division.address'.", {<Division: Division object (2)>})
-        delete_obj(target_model.objects.get(id=old_model_id), clean_predelete=clean_fields_pre_delete)
+        old_record = target_model.objects.get(id=old_model_id)
+        if authorization is not None:
+            check_table_permissions(
+                authorization[0], authorization[1], old_record, "delete",
+            )
+        delete_obj(old_record, clean_predelete=clean_fields_pre_delete)
 
     # Update new record with json info, if given
     has_new_record_info = new_record_info is not None
@@ -380,7 +426,11 @@ def record_merge_task(self, model_name: str, old_model_ids: list[int], new_model
     logger.info('Starting record merge')
 
     response = resolve_record_merge_response(
-        lambda: record_merge_fx(model_name, old_model_ids, int(new_model_id), progress, new_record_info))
+        lambda: record_merge_fx(
+            model_name, old_model_ids, int(new_model_id), progress,
+            new_record_info,
+            authorization=(new_record_info['collection'], specify_user_agent),
+        ))
 
     logger.info('Finishing record merge')
 

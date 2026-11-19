@@ -12,6 +12,7 @@ from zipfile import ZipFile, BadZipFile
 from tempfile import TemporaryDirectory
 
 from django import http
+from django.core.exceptions import BadRequest
 from django.conf import settings
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_http_methods
@@ -68,7 +69,7 @@ def api_view(dispatch_func):
             return dispatch_func(request, *args, **kwargs)
         except StaleObjectException as e:
             return HttpResponseConflict(e)
-        except MissingVersionException as e:
+        except (MissingVersionException, BadRequest) as e:
             return http.HttpResponseBadRequest(e)
         except http.Http404 as e:
             return http.HttpResponseNotFound(e)
