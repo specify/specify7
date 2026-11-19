@@ -1,6 +1,13 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react';
 import React from 'react';
 
+import { commonText } from '../../../localization/common';
 import { requireContext } from '../../../tests/helpers';
 import { tables } from '../../DataModel/tables';
 import type { QueryField } from '../helpers';
@@ -87,6 +94,56 @@ test.each([
   rerender(<QueryResults {...props} />);
   expect(await screen.findByText('Old first')).toBeInTheDocument();
   expect(screen.getByText('Old last')).toBeInTheDocument();
+});
+
+// [QueryBuilder] Click result heading to change sort
+test('clicking a results heading cycles the sort order', async () => {
+  const fields = makeFields(['lastName']);
+  const fieldSpecs = queryFieldsToFieldSpecs('Agent', fields).map(
+    ([, fieldSpec]) => fieldSpec
+  );
+  const onSortChange = jest.fn();
+  const props = {
+    table: tables.Agent,
+    queryResource: undefined,
+    fetchSize: 40,
+    fetchResults: undefined,
+    fetchCount: undefined,
+    totalCount: 1,
+    fieldSpecs,
+    displayedFields: fields,
+    allFields: fields,
+    initialData: [[1, 'Old last']],
+    selectedRows: [new Set<number>(), jest.fn()] as const,
+    onReRun: jest.fn(),
+    createRecordSet: undefined,
+    extraButtons: undefined,
+  };
+  const { rerender } = render(
+    <QueryResults
+      {...props}
+      sortConfig={[undefined]}
+      onSortChange={onSortChange}
+    />
+  );
+  await screen.findByText('Old last');
+
+  fireEvent.click(within(screen.getByRole('columnheader')).getByRole('button'));
+  expect(onSortChange).toHaveBeenLastCalledWith(fieldSpecs[0], 'ascending');
+  expect(onSortChange).toHaveBeenCalledTimes(1);
+
+  rerender(
+    <QueryResults
+      {...props}
+      sortConfig={['ascending']}
+      onSortChange={onSortChange}
+    />
+  );
+  expect(screen.getByText(commonText.ascending())).toBeInTheDocument();
+
+  fireEvent.click(within(screen.getByRole('columnheader')).getByRole('button'));
+  expect(onSortChange).toHaveBeenLastCalledWith(fieldSpecs[0], 'descending');
+  expect(onSortChange).toHaveBeenCalledTimes(2);
 });
 
 test('row clicks add, range-select, and toggle result selections', async () => {
