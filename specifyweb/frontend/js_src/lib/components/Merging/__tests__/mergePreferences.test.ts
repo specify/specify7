@@ -45,3 +45,14 @@ test('keeps only shared fields without auto populate', async () => {
   expect(merged.lastName).toBeNull();
   expect(merged.agentType).toBe(1);
 });
+
+// [RecordMerging] Auto populate the merge dialog
+test('auto populates the merge dialog', async () => {
+  const merged = await buildInitialMergedResource(
+    tables.Agent,
+    makeRecords(),
+    true
+  );
+
+  expect(merged.lastName).toBe('Longer Name');
+});
