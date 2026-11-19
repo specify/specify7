@@ -37,3 +37,10 @@ test('shows collecting event merge when not embedded', () => {
 
   expect(canMerge(tables.CollectingEvent)).toBe(true);
 });
+
+// [RecordMerging] Hide paleo context merge when embedded
+test('hides paleo context merge when embedded', () => {
+  overwriteReadOnly(schema, 'embeddedPaleoContext', true);
+
+  expect(canMerge(tables.PaleoContext)).toBe(false);
+});
