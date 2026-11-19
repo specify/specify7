@@ -11,6 +11,25 @@ from specifyweb.specify.models_utils.relationships import _is_circular_relations
 
 logger = logging.getLogger(__name__)
 
+
+def has_unfiltered_query_path(model, path: str) -> bool:
+    """Return whether a path traverses a query relation from an unfiltered root."""
+    query_models = (models.Spquery, models.Spqueryfield)
+    for name in path.split('__'):
+        try:
+            field = model._meta.get_field(name)
+        except FieldDoesNotExist:
+            # Lookup names and field transforms terminate a valid filter path.
+            return False
+        related_model = field.related_model
+        if related_model is None:
+            return False
+        if related_model in query_models and model not in query_models:
+            return True
+        model = related_model
+    return False
+
+
 class GetCollectionForm(forms.Form):
     # Use the logged_in_collection to limit request
     # to relevant items.
@@ -155,5 +174,4 @@ def fld_change_info(obj, field, val) -> FieldChangeInfo | None:
         if str(old_value) != str(value): # ugh
             return FieldChangeInfo(field_name=field.name, old_value=old_value, new_value=value)
     return None
-
 

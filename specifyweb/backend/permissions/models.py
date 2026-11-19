@@ -75,3 +75,25 @@ class LibraryRolePolicy(models.Model):
         db_table = 'splibraryrolepolicy'
     
     # save = partialmethod(custom_save)
+
+
+class SpqueryShare(models.Model):
+    query = models.ForeignKey(
+        'specify.Spquery',
+        on_delete=models.CASCADE,
+        related_name='share_grants',
+    )
+    recipient = models.ForeignKey(
+        Specifyuser,
+        on_delete=models.CASCADE,
+        related_name='shared_query_grants',
+    )
+
+    class Meta:
+        db_table = 'spqueryshare'
+        constraints = [
+            models.UniqueConstraint(
+                fields=('query', 'recipient'),
+                name='unique_spqueryshare_query_recipient',
+            ),
+        ]

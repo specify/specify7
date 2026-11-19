@@ -5,7 +5,7 @@ import requests
 from django.conf import settings
 from django.db import transaction
 from django.db.models import Q
-from django.http import HttpResponse
+from django.http import Http404, HttpResponse
 from django.template import loader
 from django.utils.translation import gettext as _
 from django.views.decorators.cache import cache_control
@@ -21,6 +21,7 @@ from specifyweb.specify.api.serializers import _obj_to_data, obj_to_data, toJson
 from specifyweb.specify.views import login_maybe_required
 from specifyweb.backend.stored_queries.execution import run_ephemeral_query, models
 from specifyweb.backend.stored_queries.queryfield import QueryField
+from specifyweb.backend.stored_queries.access import ensure_query_access
 
 
 class ReportException(Exception):
@@ -217,17 +218,19 @@ def get_reports_by_table(request, table_id):
     if table_id is not None:
         reports = reports.filter(Q(spreports__query__contexttableid=table_id))
 
-    def map(app_resource):
+    response = []
+    for app_resource in reports:
         report = app_resource.spreports.first()
-        return dict(
+        if report is not None and report.query_id is not None:
+            try:
+                ensure_query_access(report.query_id, request.specify_user.id)
+            except Http404:
+                continue
+        response.append(dict(
             app_resource=app_resource,
             report=report,
             query=None if report is None else report.query
-        )
-
-    response = [
-        map(app_resource) for app_resource in reports
-    ]
+        ))
 
     data = objs_to_data_(
         response,
@@ -246,6 +249,7 @@ def get_reports_by_table(request, table_id):
 @login_maybe_required
 def create(request):
     check_table_permissions(request.specify_collection, request.specify_user, Spreport, "create")
+    ensure_query_access(int(request.POST['queryid']), request.specify_user.id)
     report = create_report(
         request.specify_user.id,
         request.specify_collection.discipline.id,
