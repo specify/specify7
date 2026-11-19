@@ -6,7 +6,9 @@ import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
 import { mount } from '../../../tests/reactUtils';
 import * as collection from '../../DataModel/collection';
+import { addMissingFields } from '../../DataModel/addMissingFields';
 import type { SerializedResource } from '../../DataModel/helperTypes';
+import { getResourceApiUrl } from '../../DataModel/resource';
 import type { Taxon } from '../../DataModel/types';
 import { strictGetTreeDefinitionItems } from '../../InitialContext/treeRanks';
 import { TreeViewSearch } from '../Search';
@@ -74,5 +76,55 @@ describe('Use Search Tree to find a node', () => {
       expect(handleFocusPath).toHaveBeenCalledWith([1, 3, 2, nodeId])
     );
     expect(search).toHaveValue('Carpiodes velifer');
+  });
+});
+
+describe('Search is not limited to 20 results', () => {
+  const resultCount = 25;
+  const names = Array.from(
+    { length: resultCount },
+    (_, index) => `Carpiodes ${(index + 1).toString().padStart(2, '0')}`
+  );
+  overrideAjax(
+    '/api/specify/taxon/?definition=1&limit=200&orderby=name&name__istartswith=carpiodes',
+    () => ({
+      meta: { limit: 200, offset: 0, total_count: resultCount },
+      objects: names.map((fullName, index) =>
+        addMissingFields('Taxon', {
+          id: 100 + index,
+          name: fullName.split(' ')[1],
+          fullName,
+          rankId: 220,
+          resource_uri: getResourceApiUrl('Taxon', 100 + index),
+        })
+      ),
+    })
+  );
+
+  test('more than 20 matching nodes are all offered', async () => {
+    const { user } = mount(
+      <TreeViewSearch
+        forwardRef={React.createRef<HTMLInputElement>()}
+        tableName="Taxon"
+        treeDefinitionId={1}
+        treeDefinitionItems={strictGetTreeDefinitionItems('Taxon', false, 1)}
+        onFocusPath={jest.fn()}
+      />
+    );
+
+    await user.type(
+      screen.getByRole('combobox', { name: treeText.searchTreePlaceholder() }),
+      'carpiodes'
+    );
+
+    await waitFor(
+      () =>
+        expect(
+          screen
+            .getAllByRole('option')
+            .map((option) => option.textContent?.replace('Species', ''))
+        ).toEqual(names),
+      { timeout: 3000 }
+    );
   });
 });
