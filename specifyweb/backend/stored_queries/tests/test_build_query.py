@@ -1,6 +1,5 @@
 import re
 import warnings
-from types import SimpleNamespace
 
 from django.db import connection
 from django.test.utils import CaptureQueriesContext
