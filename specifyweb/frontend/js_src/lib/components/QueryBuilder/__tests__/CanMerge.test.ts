@@ -30,3 +30,10 @@ test('hides collecting event merge when embedded', () => {
 
   expect(canMerge(tables.CollectingEvent)).toBe(false);
 });
+
+// [RecordMerging] Show collecting event merge when not embedded
+test('shows collecting event merge when not embedded', () => {
+  overwriteReadOnly(schema, 'embeddedCollectingEvent', false);
+
+  expect(canMerge(tables.CollectingEvent)).toBe(true);
+});
