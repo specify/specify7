@@ -1510,3 +1510,111 @@ describe('Can delete a parent when its children reference nothing', () => {
     expect(setFocusPath).toHaveBeenCalledWith([parentId]);
   });
 });
+
+describe('Move', () => {
+  const sourceId = 4;
+  const targetId = 8;
+  const moveRequest = jest.fn(() => '');
+  const formDataContaining = (expected: Record<string, string>): unknown => ({
+    $$typeof: Symbol.for('jest.asymmetricMatcher'),
+    asymmetricMatch: (actual: unknown): boolean =>
+      typeof (actual as FormData | undefined)?.get === 'function' &&
+      Object.entries(expected).every(
+        ([key, value]) => (actual as FormData).get(key) === value
+      ),
+    toAsymmetricMatcher: (): string =>
+      `FormDataContaining ${JSON.stringify(expected)}`,
+  });
+  (
+    [
+      [sourceId, 'velifer', 'Carpiodes velifer', 220],
+      [targetId, 'Ictiobus', 'Ictiobus', 180],
+    ] as const
+  ).forEach(([id, name, fullName, rankId]) =>
+    overrideAjax(getResourceApiUrl('Taxon', id), () =>
+      addMissingFields('Taxon', {
+        id,
+        name,
+        fullName,
+        rankId,
+        resource_uri: getResourceApiUrl('Taxon', id),
+      })
+    )
+  );
+  overrideAjax(`/trees/specify_tree/taxon/${sourceId}/move/`, moveRequest, {
+    method: 'POST',
+    responseCode: Http.OK,
+    body: formDataContaining({ target: targetId.toString() }),
+  });
+
+  test('"Move" places the node under the selected parent', async () => {
+    const source = makeRow({
+      nodeId: sourceId,
+      name: 'velifer',
+      fullName: 'Carpiodes velifer',
+      rankId: 220,
+      children: 0,
+    });
+    const target = makeRow({
+      nodeId: targetId,
+      name: 'Ictiobus',
+      fullName: 'Ictiobus',
+      rankId: 180,
+      children: 2,
+    });
+    const handleRefresh = jest.fn();
+    let selectRow: (row: Row) => void = f.void;
+    function TreeViewer(): JSX.Element {
+      const [focusedRow, setFocusedRow] = React.useState<Row>(source);
+      const [actionRow, setActionRow] = React.useState<Row | undefined>(
+        undefined
+      );
+      selectRow = setFocusedRow;
+      return (
+        <TreeViewActions
+          actionRow={actionRow}
+          focusPath={[[], jest.fn()]}
+          focusRef={{ current: null }}
+          focusedRow={focusedRow}
+          ranks={ranks}
+          tableName="Taxon"
+          onChange={setActionRow}
+          onRefresh={handleRefresh}
+        />
+      );
+    }
+    const { user } = mount(
+      <MemoryRouter>
+        <LoadingContext.Provider value={f.void}>
+          <UnloadProtectsContext.Provider value={[]}>
+            <SetUnloadProtectsContext.Provider value={f.void}>
+              <TreeViewer />
+            </SetUnloadProtectsContext.Provider>
+          </UnloadProtectsContext.Provider>
+        </LoadingContext.Provider>
+      </MemoryRouter>
+    );
+
+    await user.click(
+      screen.getByRole('button', {
+        name: new RegExp(`^${treeText.move()}(\\s|$)`, 'u'),
+      })
+    );
+    act(() => selectRow(target));
+    await user.click(
+      screen.getByRole('button', {
+        name: treeText.moveNodeHere({ nodeName: source.fullName }),
+      })
+    );
+
+    const dialog = await screen.findByRole('dialog', {
+      name: treeText.moveNode(),
+    });
+    await user.click(
+      within(dialog).getByRole('button', { name: treeText.moveNode() })
+    );
+
+    await waitFor(() => expect(handleRefresh).toHaveBeenCalled());
+    expect(moveRequest).toHaveBeenCalledTimes(1);
+  });
+});
