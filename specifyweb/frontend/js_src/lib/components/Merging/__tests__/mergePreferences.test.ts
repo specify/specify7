@@ -76,3 +76,17 @@ test('does not create agent variants when disabled', async () => {
 
   expect(merged.variants).toEqual([]);
 });
+
+// [RecordMerging] Create agent variants when enabled
+test('creates agent variants when enabled', async () => {
+  userPreferences.set('recordMerging', 'agent', 'createVariants', true);
+  const records = makeRecords();
+  const merged = await postMergeResource(
+    records,
+    autoMerge(tables.Agent, records, false, 1)
+  );
+
+  expect(merged.variants).toEqual(
+    expect.arrayContaining([expect.objectContaining({ name: 'A' })])
+  );
+});
