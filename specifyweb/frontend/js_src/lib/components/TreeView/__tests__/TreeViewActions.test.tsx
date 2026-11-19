@@ -1449,3 +1449,64 @@ describe("Can't delete a node with an associated CO", () => {
     expect(handleRefresh).not.toHaveBeenCalled();
   });
 });
+
+describe('Can delete a parent when its children reference nothing', () => {
+  const nodeId = 8;
+  const parentId = 1;
+  const deleteRequest = jest.fn(() => '');
+
+  overrideAjax(getResourceApiUrl('Taxon', nodeId), () =>
+    addMissingFields('Taxon', {
+      id: nodeId,
+      name: 'Ictiobus',
+      fullName: 'Ictiobus',
+      rankId: 180,
+      parent: getResourceApiUrl('Taxon', parentId),
+      resource_uri: getResourceApiUrl('Taxon', nodeId),
+    })
+  );
+  overrideAjax(`/delete_blockers/delete_blockers/taxon/${nodeId}/?limit=40`, {
+    results: [],
+    next: [],
+  });
+  overrideAjax(`/delete_blockers/count/taxon/${nodeId}/`, {
+    results: [],
+    total_count: 0,
+  });
+  overrideAjax(getResourceApiUrl('Taxon', nodeId), deleteRequest, {
+    method: 'DELETE',
+    responseCode: Http.NO_CONTENT,
+  });
+
+  test('"Delete" removes a node that has children', async () => {
+    const handleRefresh = jest.fn();
+    const setFocusPath = jest.fn();
+    const { user } = renderActions(
+      'Taxon',
+      makeRow({
+        nodeId,
+        name: 'Ictiobus',
+        fullName: 'Ictiobus',
+        rankId: 180,
+        children: 2,
+      }),
+      handleRefresh,
+      [[parentId, nodeId], setFocusPath]
+    );
+
+    await user.click(screen.getByRole('button', { name: commonText.delete() }));
+
+    const dialog = await screen.findByRole('dialog', {
+      name: formsText.deleteConfirmation({
+        tableName: tables.Taxon.label,
+      }),
+    });
+    await user.click(
+      within(dialog).getByRole('button', { name: commonText.delete() })
+    );
+
+    await waitFor(() => expect(handleRefresh).toHaveBeenCalled());
+    expect(deleteRequest).toHaveBeenCalledTimes(1);
+    expect(setFocusPath).toHaveBeenCalledWith([parentId]);
+  });
+});
