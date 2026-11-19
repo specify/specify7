@@ -920,14 +920,14 @@ def execute(
     )
 
     if count_only:
-        log_sqlalchemy_query(query)
         if series:
             cat_num_sort_type = 0
             for query_field in query_fields:
                 if query_field.fieldspec.get_field() and query_field.fieldspec.get_field().name.lower() == 'catalognumber':
                     cat_num_sort_type = query_field.sort_type
                     break
-            return {'count': len(series_post_query(query, limit=SERIES_MAX_ROWS, offset=0, sort_type=cat_num_sort_type, is_count=True))}
+            series_query = series_post_query(query, limit=SERIES_MAX_ROWS, offset=0, sort_type=cat_num_sort_type, is_count=True)
+            return {'count': len(series_query)}
         else:
             return {'count': query.count()}
     else:
@@ -953,7 +953,7 @@ def execute(
             order_by_exprs.insert(0, text("collectionobject.`CatalogNumber`"))
 
             # query = query.limit(SERIES_MAX_ROWS)
-            log_sqlalchemy_query(query)
+            log_sqlalchemy_query(query, logger=logger)
             return {'results': series_post_query(query, limit=limit, offset=offset, sort_type=cat_num_sort_type)}
         
         logger.debug("order by: %s", order_by_exprs)
@@ -965,7 +965,7 @@ def execute(
             if limit:
                 query = query.limit(limit)
 
-        log_sqlalchemy_query(query)
+        log_sqlalchemy_query(query, logger=logger)
         results = list(
             apply_special_post_query_processing(
                 query=query,
@@ -1350,14 +1350,6 @@ def series_post_query(query, limit=40, offset=0, sort_type=0, co_id_cat_num_pair
                 return (int(number), prefix, postfix)
             
             return (None, s, '')
-
-    # REFACTOR: Remove this if it really is and should be unused
-    def parse_catalog_for_sorting(catalog): # pragma: no cover
-        m = re.match(r'^([A-Za-z]*)(\d+)$', catalog)
-        if m:
-            return m.group(1), int(m.group(2))
-        else:
-            return catalog, None
 
     def catalog_sort_key(x):
         num, prefix, postfix = parse_catalog_for_comparing(x[1])
