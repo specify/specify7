@@ -7,6 +7,7 @@ const dictionary: IR<boolean> = {
   '(prefers-color-scheme: dark)': true,
   '(prefers-reduced-transparency: reduce)': false,
   print: false,
+  '(min-width: 1024px)': true,
 };
 
 Object.defineProperty(globalThis, 'matchMedia', {

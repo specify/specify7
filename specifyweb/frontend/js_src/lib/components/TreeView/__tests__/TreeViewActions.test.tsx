@@ -1367,3 +1367,85 @@ describe('Delete tectonic unit', () => {
     expect(setFocusPath).toHaveBeenCalledWith([1, parentId]);
   });
 });
+
+describe("Can't delete a node with an associated CO", () => {
+  const nodeId = 7;
+  const determinationId = 100;
+  const deleteRequest = jest.fn(() => '');
+
+  overrideAjax(getResourceApiUrl('Taxon', nodeId), () =>
+    addMissingFields('Taxon', {
+      id: nodeId,
+      name: 'carpio',
+      fullName: 'Carpiodes carpio',
+      rankId: 220,
+      resource_uri: getResourceApiUrl('Taxon', nodeId),
+    })
+  );
+  overrideAjax(`/delete_blockers/delete_blockers/taxon/${nodeId}/?limit=40`, {
+    results: [
+      {
+        table: 'determination',
+        field: 'taxon',
+        ids: [determinationId],
+        limit: 40,
+        complete: true,
+        anchor: null,
+        backwards: false,
+      },
+    ],
+    next: [],
+  });
+  overrideAjax(`/delete_blockers/count/taxon/${nodeId}/`, {
+    results: [{ table: 'determination', field: 'taxon', count: 1 }],
+    total_count: 1,
+  });
+  overrideAjax(getResourceApiUrl('Taxon', nodeId), deleteRequest, {
+    method: 'DELETE',
+    responseCode: Http.NO_CONTENT,
+  });
+
+  test('"Delete" shows the blockers instead of deleting', async () => {
+    const handleRefresh = jest.fn();
+    const { user } = renderActions(
+      'Taxon',
+      makeRow({
+        nodeId,
+        name: 'carpio',
+        fullName: 'Carpiodes carpio',
+        rankId: 220,
+        children: 0,
+      }),
+      handleRefresh
+    );
+
+    await user.click(
+      screen.getByRole('button', {
+        name: new RegExp(
+          `^(${commonText.delete()}|${formsText.deleteBlocked()})$`,
+          'u'
+        ),
+      })
+    );
+
+    const dialog = await screen.findByRole('dialog', {
+      name: formsText.deleteBlocked(),
+    });
+    expect(dialog).toHaveTextContent(formsText.deleteBlockedDescription());
+    expect(
+      await within(dialog).findByRole('button', {
+        name: new RegExp(`${tables.Determination.label} \\(1\\)$`, 'u'),
+      })
+    ).toBeInTheDocument();
+    expect(
+      within(dialog).queryByRole('button', { name: commonText.delete() })
+    ).not.toBeInTheDocument();
+
+    await user.click(
+      within(dialog).getByRole('button', { name: commonText.close() })
+    );
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(deleteRequest).not.toHaveBeenCalled();
+    expect(handleRefresh).not.toHaveBeenCalled();
+  });
+});
