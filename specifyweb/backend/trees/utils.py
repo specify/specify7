@@ -5,11 +5,14 @@ from django.db.models import Q, Model, Prefetch
 import specifyweb.specify.models as spmodels
 from specifyweb.specify.datamodel import datamodel, Table
 from specifyweb.specify.api.serializers import obj_to_data
+from specifyweb.specify.utils.func import Func
+from specifyweb.specify.api.crud import strict_get_model
 
 import logging
 logger = logging.getLogger(__name__)
 
-lookup = lambda tree: (tree.lower() + 'treedef')
+treedef_lookup = lambda tree: (tree.lower() + 'treedef')
+treedefitem_lookup = lambda tree: (tree.lower() + 'treedefitem')
 
 SPECIFY_TREES = {"taxon", "storage", "geography", "geologictimeperiod", "lithostrat", 'tectonicunit'}
 
@@ -39,22 +42,62 @@ DISCIPLINE_TREE_MODELS = (
     spmodels.Tectonicunittreedef,
 )
 
-def get_search_filters(collection: spmodels.Collection, tree: str):
+def _get_treedef_filter_dict(collection: spmodels.Collection, tree: str) -> list[dict]:
+    """
+    Returns a dictonary of filters that can be passed to a TreeDef QuerySet.
+    Each dictonary in the returned list is meant to be OR'd together.
+    Example usage:
+    ```py
+    raw_filters = _get_treedef_filter_dict(collection, tree)
+    q_objs = [Q(**filter_dict) for filter_dict in raw_filters]
+    filters = reduce(lambda accum, curr: accum | curr, q_objs)
+
+    scoped_trees = tree_model.objects.filter(filters)
+    ```
+    """
     tree_name = tree.lower()
     if tree_name not in SPECIFY_TREES:
         raise ValueError(f"unexpected tree type: {tree}")
+    filters = []
     if tree_name == 'storage':
-        return Q(institution=collection.discipline.division.institution)
-    discipline_query = Q(discipline=collection.discipline)
+        filters.append({
+            "institution": collection.discipline.division.institution
+        })
+        return filters
+    filters.append({
+        "discipline": collection.discipline
+    })
     if tree_name == 'taxon':
-        discipline_query |= Q(
-            # TEST: should this only be added if discipline is null?
-            cotypes__collection=collection
-            )
-    tree_at_discipline = getattr(collection.discipline, lookup(tree))
+        filters.append({
+            "cotypes__collection": collection
+        })
+    tree_at_discipline = getattr(collection.discipline, treedef_lookup(tree))
     if tree_at_discipline:
-        discipline_query |= Q(id=tree_at_discipline.id)
-    return discipline_query
+        filters.append({
+            "id": tree_at_discipline.id
+        })
+    return filters
+
+def get_treedef_scope_filters(collection: spmodels.Collection, tree: str):
+    initial_filters = _get_treedef_filter_dict(collection, tree)
+    transformed_filters = [Q(**filter_dict) for filter_dict in initial_filters]
+    filters = Func.make_ors(transformed_filters)
+    return filters
+
+def get_treedefitem_scope_filters(collection: spmodels.Collection, tree: str):
+    """
+    Returns a Q object that can be applied to a TreeDefItem QuerySet to scope
+    the returned TreeDefItems to the respective collection
+    """
+    treedef_filters = _get_treedef_filter_dict(collection, tree)
+    query_filter = Q()
+    for treedef_filter in treedef_filters:
+        q_obj = Q(**{
+            f"treedef__{k}": v
+            for k,v in treedef_filter.items()
+        })
+        query_filter |= q_obj
+    return query_filter
 
 class TreeInformation(TypedDict):
     # definition will be the serialized TreeDef
@@ -106,11 +149,11 @@ def get_tree_defs_in_collection(
     if tree_name.lower() not in SPECIFY_TREES:
         raise ValueError(f"unexpected tree type: {tree_name}")
 
-    tree_table = datamodel.get_table_strict(lookup(tree_name))
+    tree_table = datamodel.get_table_strict(treedef_lookup(tree_name))
     # BUG: prefer get_model here in case a tree is defined in an app that is
     # not 'specify'
     tree_model: Model = getattr(spmodels, tree_table.django_name)
-    scoping_filters = get_search_filters(collection, tree_name)
+    scoping_filters = get_treedef_scope_filters(collection, tree_name)
     # REFACTOR: prefer using string lookup with tree + 'treedefitem' lookup?
     # the .field accesses the FK on the TreeDef model, and the .model retreives
     # its related model (the TreeDefItem)
@@ -135,6 +178,25 @@ def get_tree_defs_in_collection(
         }
         result.append(serialized_tree_info)
     return result
+
+def get_tree_ranks_in_collection(collection: spmodels.Collection, tree_name: str, rank_name: str):
+    """
+    """
+    if tree_name.lower() not in SPECIFY_TREES:
+        raise ValueError(f"unexpected tree type: {tree_name}")
+    scoping_filters = get_treedefitem_scope_filters(collection, tree_name)
+    treedefitem_table_name = treedefitem_lookup(tree_name)
+    treedefitem_table = datamodel.get_table_strict(treedefitem_table_name)
+    treedefitem_model = strict_get_model(treedefitem_table.django_name)
+
+    rank_query = (
+        treedefitem_model.objects
+        .filter(scoping_filters)
+        .filter(name=rank_name)
+        .distinct()
+    )
+    return rank_query
+
 
 def get_default_treedef(table: Table, collection):
     if table.name.lower() not in SPECIFY_TREES:

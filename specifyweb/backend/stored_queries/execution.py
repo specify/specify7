@@ -23,7 +23,7 @@ from sqlalchemy.sql.expression import asc, desc, insert, literal
 
 from specifyweb.specify.models_utils.models_by_table_id import get_table_id_by_model_name
 from specifyweb.backend.stored_queries.group_concat import group_by_displayed_fields
-from specifyweb.backend.trees.utils import get_search_filters
+from specifyweb.backend.trees.utils import get_treedef_scope_filters
 
 from . import models
 from .format import ObjectFormatter, ObjectFormatterProps
@@ -123,12 +123,12 @@ def filter_by_collection(model, query, collection):
 
     if model is models.Taxon:
         logger.info("filtering taxon to discipline: %s", collection.discipline.name)
-        treedef_ids = Taxontreedef.objects.filter(get_search_filters(collection, 'taxon')).values_list('id', flat=True)
+        treedef_ids = Taxontreedef.objects.filter(get_treedef_scope_filters(collection, 'taxon')).values_list('id', flat=True)
         return query.filter(model.TaxonTreeDefID.in_(tuple(treedef_ids)))
 
     if model is models.TaxonTreeDefItem:
         logger.info("filtering taxon rank to discipline: %s", collection.discipline.name)
-        treedef_ids = Taxontreedef.objects.filter(get_search_filters(collection, 'taxon')).values_list('id', flat=True)
+        treedef_ids = Taxontreedef.objects.filter(get_treedef_scope_filters(collection, 'taxon')).values_list('id', flat=True)
         return query.filter(model.TaxonTreeDefID.in_(tuple(treedef_ids)))
 
     if model is models.Geography:
