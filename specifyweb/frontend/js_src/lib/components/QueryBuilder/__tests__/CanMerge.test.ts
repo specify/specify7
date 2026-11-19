@@ -21,7 +21,11 @@ afterEach(() => {
     'embeddedCollectingEvent',
     originalEmbeddedCollectingEvent
   );
-  overwriteReadOnly(schema, 'embeddedPaleoContext', originalEmbeddedPaleoContext);
+  overwriteReadOnly(
+    schema,
+    'embeddedPaleoContext',
+    originalEmbeddedPaleoContext
+  );
 });
 
 // [RecordMerging] Hide collecting event merge when embedded

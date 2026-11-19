@@ -1,7 +1,10 @@
 import { requireContext } from '../../../tests/helpers';
 import type { RA } from '../../../utils/types';
 import { addMissingFields } from '../../DataModel/addMissingFields';
-import type { AnySchema, SerializedResource } from '../../DataModel/helperTypes';
+import type {
+  AnySchema,
+  SerializedResource,
+} from '../../DataModel/helperTypes';
 import { tables } from '../../DataModel/tables';
 import { autoMerge } from '../autoMerge';
 
