@@ -29,7 +29,7 @@ const makeRecords = () =>
     }),
     addMissingFields('Agent', {
       id: 2,
-      agentType: 2,
+      agentType: 1,
       lastName: 'Longer Name',
       timestampModified: '2023-02-01T00:00:00',
     }),
@@ -89,7 +89,9 @@ test('creates agent variants when enabled', async () => {
     autoMerge(tables.Agent, records, false, 1)
   );
 
-  expect(merged.variants).toEqual(
-    expect.arrayContaining([expect.objectContaining({ name: 'A' })])
-  );
+  expect(
+    (merged.variants as unknown as RA<{ readonly name: string }>).map(
+      ({ name }) => name
+    )
+  ).toEqual(['A']);
 });
