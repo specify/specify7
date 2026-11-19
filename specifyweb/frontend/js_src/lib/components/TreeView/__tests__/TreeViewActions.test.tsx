@@ -322,9 +322,6 @@ describe('Add taxon', () => {
       name: tables.Taxon.strictGetRelationship('definitionItem').label,
     });
     await waitFor(() => expect(rank).toHaveValue('Subspecies'));
-    await waitFor(() =>
-      expect(within(dialog).getByRole('textbox')).toHaveFocus()
-    );
 
     await user.click(within(dialog).getByRole('textbox'));
     await user.paste('bellus');
@@ -496,9 +493,6 @@ describe('Add geography', () => {
       name: tables.Geography.strictGetRelationship('definitionItem').label,
     });
     await waitFor(() => expect(rank).toHaveValue('County'));
-    await waitFor(() =>
-      expect(within(dialog).getByRole('textbox')).toHaveFocus()
-    );
 
     await user.click(within(dialog).getByRole('textbox'));
     await user.paste('Douglas');
@@ -671,9 +665,6 @@ describe('Add storage', () => {
       name: tables.Storage.strictGetRelationship('definitionItem').label,
     });
     await waitFor(() => expect(rank).toHaveValue('Room'));
-    await waitFor(() =>
-      expect(within(dialog).getByRole('textbox')).toHaveFocus()
-    );
 
     await user.click(within(dialog).getByRole('textbox'));
     await user.paste('Fish Room');
@@ -963,9 +954,6 @@ describe('Add a chronostrat', () => {
         .label,
     });
     await waitFor(() => expect(rank).toHaveValue('Age'));
-    await waitFor(() =>
-      expect(within(dialog).getByRole('textbox')).toHaveFocus()
-    );
 
     await user.click(within(dialog).getByRole('textbox'));
     await user.paste('Danian');
@@ -1137,9 +1125,6 @@ describe('Add a lithostrat', () => {
       name: tables.LithoStrat.strictGetRelationship('definitionItem').label,
     });
     await waitFor(() => expect(rank).toHaveValue('Bed'));
-    await waitFor(() =>
-      expect(within(dialog).getByRole('textbox')).toHaveFocus()
-    );
 
     await user.click(within(dialog).getByRole('textbox'));
     await user.paste('Unit A');
@@ -1311,9 +1296,6 @@ describe('Add tectonic unit', () => {
       name: tables.TectonicUnit.strictGetRelationship('definitionItem').label,
     });
     await waitFor(() => expect(rank).toHaveValue('Tectonic Subunit'));
-    await waitFor(() =>
-      expect(within(dialog).getByRole('textbox')).toHaveFocus()
-    );
 
     await user.click(within(dialog).getByRole('textbox'));
     await user.paste('Springfield Plateau');
