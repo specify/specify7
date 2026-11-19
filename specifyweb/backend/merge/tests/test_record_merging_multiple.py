@@ -57,3 +57,55 @@ class MultipleRecordMergeTests(ApiTests):
             models.Collectingevent.objects.get(id=collecting_event_3.id).locality_id,
             locality_2.id,
         )
+
+    def test_replace_multiple_paleo_contexts(self):
+        c = Client()
+        c.force_login(self.specifyuser)
+
+        paleo_context_1 = models.Paleocontext.objects.create(
+            discipline=self.discipline,
+        )
+        paleo_context_2 = models.Paleocontext.objects.create(
+            discipline=self.discipline,
+        )
+        paleo_context_3 = models.Paleocontext.objects.create(
+            discipline=self.discipline,
+        )
+        collecting_event_1 = models.Collectingevent.objects.create(
+            discipline=self.discipline,
+            paleocontext=paleo_context_1,
+        )
+        collecting_event_3 = models.Collectingevent.objects.create(
+            discipline=self.discipline,
+            paleocontext=paleo_context_3,
+        )
+
+        response = c.post(
+            f"/merge/paleocontext/replace/{paleo_context_2.id}/",
+            data=json.dumps(
+                {
+                    "old_record_ids": [paleo_context_1.id, paleo_context_3.id],
+                    "background": False,
+                }
+            ),
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 204)
+        self.assertFalse(
+            models.Paleocontext.objects.filter(
+                id__in=[paleo_context_1.id, paleo_context_3.id]
+            ).exists()
+        )
+        self.assertEqual(
+            models.Collectingevent.objects.get(
+                id=collecting_event_1.id
+            ).paleocontext_id,
+            paleo_context_2.id,
+        )
+        self.assertEqual(
+            models.Collectingevent.objects.get(
+                id=collecting_event_3.id
+            ).paleocontext_id,
+            paleo_context_2.id,
+        )
