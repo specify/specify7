@@ -228,13 +228,17 @@ msgid "searchSynonyms"
 msgstr "Пошук синонімів"
 
 #: components/QueryBuilder/Export.tsx:201
-#. Used in: Components > Query Builder > Export
+#: components/QueryBuilder/__tests__/Export.test.tsx:108
+#: components/QueryBuilder/__tests__/Export.test.tsx:130
+#. Used in: Components > Query Builder > Export ⬤ Query Builder > __tests__ > Export
 #, fuzzy
 msgid "createCsv"
 msgstr "Створити CSV-файл"
 
 #: components/QueryBuilder/Export.tsx:219
-#. Used in: Components > Query Builder > Export
+#: components/QueryBuilder/__tests__/Export.test.tsx:145
+#: components/QueryBuilder/__tests__/Export.test.tsx:168
+#. Used in: Components > Query Builder > Export ⬤ Query Builder > __tests__ > Export
 #, fuzzy
 msgid "createKml"
 msgstr "Створити KML"
@@ -270,9 +274,10 @@ msgstr ""
 #: components/BatchIdentify/index.tsx:769
 #: components/QueryBuilder/Components.tsx:236
 #: components/QueryBuilder/CreateRecordSet.tsx:68
+#: components/QueryBuilder/__tests__/MakeRecordSetButton.test.tsx:73
 #: components/QueryBuilder/__tests__/SearchResultsActions.test.tsx:72
 #: components/QueryBuilder/__tests__/SearchResultsActions.test.tsx:230
-#. Used in: Components > Batch Identify > Index ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Create Record Set ⬤ Query Builder > __tests__ > Search Results Actions
+#. Used in: Components > Batch Identify > Index ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Create Record Set ⬤ Query Builder > __tests__ > Make Record Set Button ⬤ Query Builder > __tests__ > Search Results Actions
 #, fuzzy
 msgid "createRecordSet"
 msgstr "Створити {recordSetTable:string}"
@@ -299,8 +304,9 @@ msgstr "(будь-яке дерево)"
 #: components/Formatters/Fields.tsx:245
 #: components/QueryBuilder/QueryLineTools.tsx:103
 #: components/QueryBuilder/QueryLineTools.tsx:105
+#: components/QueryBuilder/__tests__/QueryLineTools.test.tsx:45
 #: components/Toolbar/ListEdit.tsx:111
-#. 🟥As in move it up. Used in: Components > Formatters > Fields ⬤ Components > Query Builder > Query Line Tools ⬤ Components > Toolbar > List Edit
+#. 🟥As in move it up. Used in: Components > Formatters > Fields ⬤ Components > Query Builder > Query Line Tools ⬤ Query Builder > __tests__ > Query Line Tools ⬤ Components > Toolbar > List Edit
 #, fuzzy
 msgid "moveUp"
 msgstr "Перемістити вгору"
@@ -309,29 +315,33 @@ msgstr "Перемістити вгору"
 #: components/Formatters/Fields.tsx:252
 #: components/QueryBuilder/QueryLineTools.tsx:111
 #: components/QueryBuilder/QueryLineTools.tsx:113
+#: components/QueryBuilder/__tests__/QueryLineTools.test.tsx:49
 #: components/Toolbar/ListEdit.tsx:117
-#. 🟥As in move it down. Used in: Components > Formatters > Fields ⬤ Components > Query Builder > Query Line Tools ⬤ Components > Toolbar > List Edit
+#. 🟥As in move it down. Used in: Components > Formatters > Fields ⬤ Components > Query Builder > Query Line Tools ⬤ Query Builder > __tests__ > Query Line Tools ⬤ Components > Toolbar > List Edit
 #, fuzzy
 msgid "moveDown"
 msgstr "Перемістити вниз"
 
 #: components/QueryBuilder/QueryLineTools.tsx:76
 #: components/QueryBuilder/QueryLineTools.tsx:86
-#. Used in: Components > Query Builder > Query Line Tools
+#: components/QueryBuilder/__tests__/QueryLineTools.test.tsx:71
+#. Used in: Components > Query Builder > Query Line Tools ⬤ Query Builder > __tests__ > Query Line Tools
 #, fuzzy
 msgid "sort"
 msgstr "Сортувати"
 
 #: components/QueryBuilder/QueryLineTools.tsx:73
 #: components/QueryBuilder/QueryLineTools.tsx:83
-#. Used in: Components > Query Builder > Query Line Tools
+#: components/QueryBuilder/__tests__/QueryLineTools.test.tsx:93
+#. Used in: Components > Query Builder > Query Line Tools ⬤ Query Builder > __tests__ > Query Line Tools
 #, fuzzy
 msgid "ascendingSort"
 msgstr "Сортування за зростанням"
 
 #: components/QueryBuilder/QueryLineTools.tsx:75
 #: components/QueryBuilder/QueryLineTools.tsx:85
-#. Used in: Components > Query Builder > Query Line Tools
+#: components/QueryBuilder/__tests__/QueryLineTools.test.tsx:116
+#. Used in: Components > Query Builder > Query Line Tools ⬤ Query Builder > __tests__ > Query Line Tools
 #, fuzzy
 msgid "descendingSort"
 msgstr "Сортування за спаданням"

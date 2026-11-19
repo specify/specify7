@@ -896,8 +896,9 @@ msgstr "Idi na prvi zapis"
 #: components/FormSliders/Slider.tsx:147
 #: components/FormSliders/useSliderButtons.tsx:69
 #: components/FormSliders/useSliderButtons.tsx:71
+#: components/FormSliders/__tests__/Slider.test.tsx:38
 #: components/Preferences/UserDefinitions.tsx:1313
-#. Used in: Components > Form Sliders > Slider ⬤ Components > Form Sliders > Use Slider Buttons ⬤ Components > Preferences > User Definitions
+#. Used in: Components > Form Sliders > Slider ⬤ Components > Form Sliders > Use Slider Buttons ⬤ Form Sliders > __tests__ > Slider ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "goToLastRecord"
 msgstr "Idi na zadnji zapis"
@@ -916,8 +917,9 @@ msgstr "Idi na prethodni zapis"
 #: components/FormSliders/Slider.tsx:139
 #: components/FormSliders/useSliderButtons.tsx:57
 #: components/FormSliders/useSliderButtons.tsx:60
+#: components/FormSliders/__tests__/Slider.test.tsx:25
 #: components/Preferences/UserDefinitions.tsx:1309
-#. Used in: Components > Form Sliders > Slider ⬤ Components > Form Sliders > Use Slider Buttons ⬤ Components > Preferences > User Definitions
+#. Used in: Components > Form Sliders > Slider ⬤ Components > Form Sliders > Use Slider Buttons ⬤ Form Sliders > __tests__ > Slider ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "goToNextRecord"
 msgstr "Idi na sljedeći zapis"

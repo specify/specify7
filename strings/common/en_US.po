@@ -919,7 +919,8 @@ msgstr "Choose Collection"
 
 #: components/Molecules/Sorting.tsx:30
 #: components/Preferences/Renderers.tsx:186
-#. 🟥As in "Ascending sort". Used in: Components > Molecules > Sorting ⬤ Components > Preferences > Renderers
+#: components/QueryBuilder/__tests__/Results.test.tsx:142
+#. 🟥As in "Ascending sort". Used in: Components > Molecules > Sorting ⬤ Components > Preferences > Renderers ⬤ Query Builder > __tests__ > Results
 msgid "ascending"
 msgstr "Ascending"
 
