@@ -1119,3 +1119,64 @@ describe('Add a lithostrat', () => {
     await waitFor(() => expect(handleRefresh).toHaveBeenCalled());
   });
 });
+
+describe('Delete a lithostrat', () => {
+  const nodeId = 51;
+  const parentId = 50;
+  const deleteRequest = jest.fn(() => '');
+
+  overrideAjax(getResourceApiUrl('LithoStrat', nodeId), () =>
+    addMissingFields('LithoStrat', {
+      id: nodeId,
+      name: 'Unit A',
+      fullName: 'Unit A',
+      rankId: 500,
+      parent: getResourceApiUrl('LithoStrat', parentId),
+      resource_uri: getResourceApiUrl('LithoStrat', nodeId),
+    })
+  );
+  overrideAjax(
+    `/delete_blockers/delete_blockers/lithostrat/${nodeId}/?limit=40`,
+    { results: [], next: [] }
+  );
+  overrideAjax(`/delete_blockers/count/lithostrat/${nodeId}/`, {
+    results: [],
+    total_count: 0,
+  });
+  overrideAjax(getResourceApiUrl('LithoStrat', nodeId), deleteRequest, {
+    method: 'DELETE',
+    responseCode: Http.NO_CONTENT,
+  });
+
+  test('"Delete" removes the focused node and focuses its parent', async () => {
+    const handleRefresh = jest.fn();
+    const setFocusPath = jest.fn();
+    const { user } = renderActions(
+      'LithoStrat',
+      makeRow({
+        nodeId,
+        name: 'Unit A',
+        fullName: 'Unit A',
+        rankId: 500,
+        children: 0,
+      }),
+      handleRefresh,
+      [[1, parentId, nodeId], setFocusPath]
+    );
+
+    await user.click(screen.getByRole('button', { name: commonText.delete() }));
+
+    const dialog = await screen.findByRole('dialog', {
+      name: formsText.deleteConfirmation({
+        tableName: tables.LithoStrat.label,
+      }),
+    });
+    await user.click(
+      within(dialog).getByRole('button', { name: commonText.delete() })
+    );
+
+    await waitFor(() => expect(handleRefresh).toHaveBeenCalled());
+    expect(deleteRequest).toHaveBeenCalledTimes(1);
+    expect(setFocusPath).toHaveBeenCalledWith([1, parentId]);
+  });
+});
