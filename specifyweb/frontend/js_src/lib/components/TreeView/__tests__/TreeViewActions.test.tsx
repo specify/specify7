@@ -915,3 +915,64 @@ describe('Add a chronostrat', () => {
     await waitFor(() => expect(handleRefresh).toHaveBeenCalled());
   });
 });
+
+describe('Delete a chronostrat', () => {
+  const nodeId = 41;
+  const parentId = 40;
+  const deleteRequest = jest.fn(() => '');
+
+  overrideAjax(getResourceApiUrl('GeologicTimePeriod', nodeId), () =>
+    addMissingFields('GeologicTimePeriod', {
+      id: nodeId,
+      name: 'Danian',
+      fullName: 'Danian',
+      rankId: 400,
+      parent: getResourceApiUrl('GeologicTimePeriod', parentId),
+      resource_uri: getResourceApiUrl('GeologicTimePeriod', nodeId),
+    })
+  );
+  overrideAjax(
+    `/delete_blockers/delete_blockers/geologictimeperiod/${nodeId}/?limit=40`,
+    { results: [], next: [] }
+  );
+  overrideAjax(`/delete_blockers/count/geologictimeperiod/${nodeId}/`, {
+    results: [],
+    total_count: 0,
+  });
+  overrideAjax(getResourceApiUrl('GeologicTimePeriod', nodeId), deleteRequest, {
+    method: 'DELETE',
+    responseCode: Http.NO_CONTENT,
+  });
+
+  test('"Delete" removes the focused node and focuses its parent', async () => {
+    const handleRefresh = jest.fn();
+    const setFocusPath = jest.fn();
+    const { user } = renderActions(
+      'GeologicTimePeriod',
+      makeRow({
+        nodeId,
+        name: 'Danian',
+        fullName: 'Danian',
+        rankId: 400,
+        children: 0,
+      }),
+      handleRefresh,
+      [[1, parentId, nodeId], setFocusPath]
+    );
+
+    await user.click(screen.getByRole('button', { name: commonText.delete() }));
+
+    const dialog = await screen.findByRole('dialog', {
+      name: formsText.deleteConfirmation({
+        tableName: tables.GeologicTimePeriod.label,
+      }),
+    });
+    await user.click(
+      within(dialog).getByRole('button', { name: commonText.delete() })
+    );
+
+    await waitFor(() => expect(handleRefresh).toHaveBeenCalled());
+    expect(deleteRequest).toHaveBeenCalledTimes(1);
+    expect(setFocusPath).toHaveBeenCalledWith([1, parentId]);
+  });
+});
