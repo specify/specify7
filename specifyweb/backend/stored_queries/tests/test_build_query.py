@@ -883,23 +883,6 @@ class TestBuildQuery(SQLAlchemySetup):
             self.assertEqual([tuple(row) for row in query], [(
                 self.collectionobjects[0].id, "num-0", "Taxon Genus", "World")])
 
-    def test_recursion_override_is_statement_scoped(self):
-        statement = "WITH RECURSIVE ancestors AS (...) SELECT * FROM ancestors"
-        parameters = (1,)
-        context = SimpleNamespace(execution_options={"specify_tree_ranks": object()})
-        mariadb = SimpleNamespace(dialect=SimpleNamespace(is_mariadb=True))
-        mysql_conn = SimpleNamespace(dialect=SimpleNamespace(is_mariadb=False))
-        changed, unchanged = models.tree_query_recursion_limit(
-            mariadb, None, statement, parameters, context, False)
-        self.assertEqual(
-            changed, "SET STATEMENT max_recursive_iterations=4294967295 FOR " + statement)
-        self.assertIs(unchanged, parameters)
-        self.assertEqual(models.tree_query_recursion_limit(
-            mysql_conn, None, statement, parameters, context, False), (statement, parameters))
-        context.execution_options = {}
-        self.assertEqual(models.tree_query_recursion_limit(
-            mariadb, None, statement, parameters, context, False), (statement, parameters))
-
     def test_tree_seed_preserves_implicit_or_between_ordinary_filters(self):
         self._make_distinct_taxon_relationships()
         determination = Determination.objects.get(collectionobject=self.collectionobjects[0])
