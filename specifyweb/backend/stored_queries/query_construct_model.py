@@ -2,13 +2,14 @@ from __future__ import annotations
 
 import logging
 from typing import TYPE_CHECKING
-from collections import namedtuple, deque, defaultdict
+from collections import namedtuple, deque
 
+from django.db.models import QuerySet, Count
 from sqlalchemy import orm, sql, or_
 
 from specifyweb.specify.datamodel import datamodel, is_tree_table
 from specifyweb.specify.models_utils.load_datamodel import Table
-from specifyweb.backend.trees.utils import get_tree_defs_in_collection
+from specifyweb.backend.trees.utils import get_tree_defs_in_collection, get_treedef_scope_filters, get_treedef_model, SPECIFY_TREES
 
 from specifyweb.backend.stored_queries import models
 from specifyweb.backend.stored_queries.tree_rank import TreeRankQuery
@@ -18,6 +19,23 @@ logger = logging.getLogger(__name__)
 if TYPE_CHECKING:
     from specifyweb.backend.stored_queries.queryfieldspec import QueryFieldSpec
 
+def tree_depths_in_collection(collection, tree_name: str) -> QuerySet:
+    """
+    Returns a QuerySet that returns the IDs and number of ranks for each tree
+    scopable to the given collection
+    """
+    if tree_name.lower() not in SPECIFY_TREES:
+        raise ValueError(f"unexpected tree type: {tree_name}")
+
+    treedef_model = get_treedef_model(tree_name)
+    scoping_filters = get_treedef_scope_filters(collection, tree_name)
+    query = (
+        treedef_model.objects.filter(scoping_filters)
+        .annotate(rank_count=Count("treedefitems", distinct=True))
+        .distinct()
+        .values_list("pk", "rank_count")
+    )
+    return query
 
 def resolve_tree_ranks(
         collection,
@@ -127,19 +145,16 @@ class QueryConstruct(
         treedefitem_column = table.name + "TreeDefItemID"
         treedef_column = table.name + "TreeDefID"
 
-        cache_key = (table, "TreeRanks")
+        cache_key = (table, "TreeAncestors")
         if cache_key in query.join_cache:
             logger.debug("using join cache for %r tree ranks.", node)
-            ancestors, treedefs_with_rank_ids = query.join_cache[cache_key]
+            ancestors = query.join_cache[cache_key]
         else:
-            treedefs_with_rank_ids = resolve_tree_ranks(
-                collection=query.collection,
-                tree_table_name=table.name,
-                rank_name=None,
-                tree_def_id=tree_rank.treedef_id
-            )
-
-            if not treedefs_with_rank_ids:
+            tree_depths = tree_depths_in_collection(query.collection, table.name)
+            # Not using exists here because we want to use the return value of
+            # the Query. This will evaluate it and cache the results, which
+            # we'll use soon.
+            if len(tree_depths) == 0:
                 logger.warning(
                     "Didn't find tree rank %r across any %s tree; skipping field",
                     tree_rank.name,
@@ -149,11 +164,8 @@ class QueryConstruct(
 
             # We need to take the max here. Otherwise, it is possible that the same rank
             # name may not occur at the same level across tree defs.
-            rank_counts = defaultdict(int)
-            for treedef_id, _rank_id in treedefs_with_rank_ids:
-                rank_counts[treedef_id] += 1
             max_depth = max(
-                rank_count for _treedef_id, rank_count in rank_counts.items()
+                depth for _, depth in tree_depths
             )
 
             ancestors = [node]
@@ -164,7 +176,7 @@ class QueryConstruct(
 
             logger.debug("adding to join cache for %r tree ranks.", node)
             query = query._replace(join_cache=query.join_cache.copy())
-            query.join_cache[cache_key] = (ancestors, treedefs_with_rank_ids)
+            query.join_cache[cache_key] = ancestors
 
         treedefs_with_rank_ids = resolve_tree_ranks(
             collection=query.collection,

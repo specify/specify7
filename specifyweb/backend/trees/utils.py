@@ -42,6 +42,13 @@ DISCIPLINE_TREE_MODELS = (
     spmodels.Tectonicunittreedef,
 )
 
+def get_treedef_model(tree_name: str):
+    tree_table = datamodel.get_table_strict(treedef_lookup(tree_name))
+    # BUG: prefer get_model here in case a tree is defined in an app that is
+    # not 'specify'
+    tree_model: Model = strict_get_model(tree_table.django_name)
+    return tree_model
+
 def _get_treedef_filter_dict(collection: spmodels.Collection, tree: str) -> list[dict]:
     """
     Returns a dictonary of filters that can be passed to a TreeDef QuerySet.
@@ -149,10 +156,7 @@ def get_tree_defs_in_collection(
     if tree_name.lower() not in SPECIFY_TREES:
         raise ValueError(f"unexpected tree type: {tree_name}")
 
-    tree_table = datamodel.get_table_strict(treedef_lookup(tree_name))
-    # BUG: prefer get_model here in case a tree is defined in an app that is
-    # not 'specify'
-    tree_model: Model = getattr(spmodels, tree_table.django_name)
+    tree_model = get_treedef_model(tree_name)
     scoping_filters = get_treedef_scope_filters(collection, tree_name)
     # REFACTOR: prefer using string lookup with tree + 'treedefitem' lookup?
     # the .field accesses the FK on the TreeDef model, and the .model retreives
