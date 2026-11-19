@@ -44,3 +44,10 @@ test('hides paleo context merge when embedded', () => {
 
   expect(canMerge(tables.PaleoContext)).toBe(false);
 });
+
+// [RecordMerging] Show paleo context merge when not embedded
+test('shows paleo context merge when not embedded', () => {
+  overwriteReadOnly(schema, 'embeddedPaleoContext', false);
+
+  expect(canMerge(tables.PaleoContext)).toBe(true);
+});
