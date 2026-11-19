@@ -67,7 +67,7 @@ beforeAll(() => {
 });
 afterAll(() => portalRoot.remove());
 
-const ranks = [0, 10, 100, 140, 180, 220];
+const ranks = [0, 10, 100, 140, 180, 220, 230];
 
 function makeRow(overrides: Partial<Row> = {}): Row {
   return {
@@ -161,15 +161,14 @@ function overrideTreeView(tableName: AnyTree['tableName']): void {
 
 describe('Add taxon', () => {
   const parentId = 2;
-  const genusRankId = 9;
+  const newNodeId = 3;
   const speciesRankId = 2;
+  const subspeciesRankId = 22;
   overrideTreeView('Taxon');
   (
     [
-      [genusRankId, 'Genus', 180],
-      [15, 'Subgenus', 190],
       [speciesRankId, 'Species', 220],
-      [22, 'Subspecies', 230],
+      [subspeciesRankId, 'Subspecies', 230],
     ] as const
   ).forEach(([id, name, rankId]) =>
     overrideAjax(getResourceApiUrl('TaxonTreeDefItem', id), () =>
@@ -185,12 +184,12 @@ describe('Add taxon', () => {
   overrideAjax(getResourceApiUrl('Taxon', parentId), () =>
     addMissingFields('Taxon', {
       id: parentId,
-      name: 'Carpiodes',
-      fullName: 'Carpiodes',
-      rankId: 180,
+      name: 'velifer',
+      fullName: 'Carpiodes velifer',
+      rankId: 220,
       isAccepted: true,
       definition: getResourceApiUrl('TaxonTreeDef', 1),
-      definitionItem: getResourceApiUrl('TaxonTreeDefItem', genusRankId),
+      definitionItem: getResourceApiUrl('TaxonTreeDefItem', speciesRankId),
       resource_uri: getResourceApiUrl('Taxon', parentId),
     })
   );
@@ -199,40 +198,48 @@ describe('Add taxon', () => {
     '/api/specify/taxon/',
     () =>
       addMissingFields('Taxon', {
-        id: 3,
-        name: 'velifer',
+        id: newNodeId,
+        name: 'bellus',
         parent: getResourceApiUrl('Taxon', parentId),
-        resource_uri: getResourceApiUrl('Taxon', 3),
+        resource_uri: getResourceApiUrl('Taxon', newNodeId),
       }),
     {
       method: 'POST',
       responseCode: Http.CREATED,
       body: jsonContaining({
-        name: 'velifer',
+        name: 'bellus',
         parent: getResourceApiUrl('Taxon', parentId),
-        definitionitem: getResourceApiUrl('TaxonTreeDefItem', speciesRankId),
+        definitionitem: getResourceApiUrl('TaxonTreeDefItem', subspeciesRankId),
       }),
     }
   );
 
-  overrideAjax('/delete_blockers/delete_blockers/taxon/3/?limit=40', {
-    results: [],
-    next: [],
-  });
-  overrideAjax('/delete_blockers/count/taxon/3/', {
+  overrideAjax(
+    `/delete_blockers/delete_blockers/taxon/${newNodeId}/?limit=40`,
+    {
+      results: [],
+      next: [],
+    }
+  );
+  overrideAjax(`/delete_blockers/count/taxon/${newNodeId}/`, {
     results: [],
     total_count: 0,
   });
   overrideAjax(
-    `/trees/specify_tree/taxon/${parentId}/predict_fullname/?name=velifer&treedefitemid=${speciesRankId}`,
-    'Carpiodes velifer'
+    `/trees/specify_tree/taxon/${parentId}/predict_fullname/?name=bellus&treedefitemid=${subspeciesRankId}`,
+    'Carpiodes velifer bellus'
   );
 
   test('"Add child" saves a new Taxon under the focused node', async () => {
     const handleRefresh = jest.fn();
     const { user } = renderActions(
       'Taxon',
-      makeRow({ nodeId: parentId }),
+      makeRow({
+        nodeId: parentId,
+        name: 'velifer',
+        fullName: 'Carpiodes velifer',
+        rankId: 220,
+      }),
       handleRefresh
     );
 
@@ -248,24 +255,18 @@ describe('Add taxon', () => {
     const parent = within(dialog).getByRole('combobox', {
       name: tables.Taxon.strictGetRelationship('parent').label,
     });
-    await waitFor(() => expect(parent).toHaveValue('Carpiodes'));
+    await waitFor(() => expect(parent).toHaveValue('Carpiodes velifer'));
 
-    const rank = within(dialog).getByRole('combobox', { name: /rank/i });
+    const rank = within(dialog).getByRole('combobox', {
+      name: tables.Taxon.strictGetRelationship('definitionItem').label,
+    });
     await waitFor(() => expect(rank).toHaveValue('Subspecies'));
     await waitFor(() =>
       expect(within(dialog).getByRole('textbox')).toHaveFocus()
     );
-    await user.click(rank);
-    await user.clear(rank);
-    await user.type(rank, 'Spe');
-    await user.click(
-      await screen.findByRole('option', {
-        name: (_, element) => element.textContent === 'Species',
-      })
-    );
 
     await user.click(within(dialog).getByRole('textbox'));
-    await user.paste('velifer');
+    await user.paste('bellus');
     await user.click(
       within(dialog).getByRole('button', { name: commonText.save() })
     );
@@ -338,14 +339,13 @@ describe('Delete taxon', () => {
 describe('Add geography', () => {
   const parentId = 10;
   const newNodeId = 11;
-  const countryRankId = 2;
   const stateRankId = 4;
+  const countyRankId = 5;
   overrideTreeView('Geography');
   (
     [
-      [countryRankId, 'Country', 200],
       [stateRankId, 'State', 300],
-      [5, 'County', 400],
+      [countyRankId, 'County', 400],
     ] as const
   ).forEach(([id, name, rankId]) =>
     overrideAjax(getResourceApiUrl('GeographyTreeDefItem', id), () =>
@@ -361,12 +361,12 @@ describe('Add geography', () => {
   overrideAjax(getResourceApiUrl('Geography', parentId), () =>
     addMissingFields('Geography', {
       id: parentId,
-      name: 'USA',
-      fullName: 'USA',
-      rankId: 200,
+      name: 'Kansas',
+      fullName: 'Kansas',
+      rankId: 300,
       isAccepted: true,
       definition: getResourceApiUrl('GeographyTreeDef', 1),
-      definitionItem: getResourceApiUrl('GeographyTreeDefItem', countryRankId),
+      definitionItem: getResourceApiUrl('GeographyTreeDefItem', stateRankId),
       resource_uri: getResourceApiUrl('Geography', parentId),
     })
   );
@@ -376,7 +376,7 @@ describe('Add geography', () => {
     () =>
       addMissingFields('Geography', {
         id: newNodeId,
-        name: 'Kansas',
+        name: 'Douglas',
         parent: getResourceApiUrl('Geography', parentId),
         resource_uri: getResourceApiUrl('Geography', newNodeId),
       }),
@@ -384,9 +384,9 @@ describe('Add geography', () => {
       method: 'POST',
       responseCode: Http.CREATED,
       body: jsonContaining({
-        name: 'Kansas',
+        name: 'Douglas',
         parent: getResourceApiUrl('Geography', parentId),
-        definitionitem: getResourceApiUrl('GeographyTreeDefItem', stateRankId),
+        definitionitem: getResourceApiUrl('GeographyTreeDefItem', countyRankId),
       }),
     }
   );
@@ -400,8 +400,8 @@ describe('Add geography', () => {
     total_count: 0,
   });
   overrideAjax(
-    `/trees/specify_tree/geography/${parentId}/predict_fullname/?name=Kansas&treedefitemid=${stateRankId}`,
-    'Kansas, USA'
+    `/trees/specify_tree/geography/${parentId}/predict_fullname/?name=Douglas&treedefitemid=${countyRankId}`,
+    'Douglas, Kansas'
   );
 
   test('"Add child" saves a new Geography under the focused node', async () => {
@@ -410,9 +410,9 @@ describe('Add geography', () => {
       'Geography',
       makeRow({
         nodeId: parentId,
-        name: 'USA',
-        fullName: 'USA',
-        rankId: 200,
+        name: 'Kansas',
+        fullName: 'Kansas',
+        rankId: 300,
       }),
       handleRefresh
     );
@@ -429,24 +429,18 @@ describe('Add geography', () => {
     const parent = within(dialog).getByRole('combobox', {
       name: tables.Geography.strictGetRelationship('parent').label,
     });
-    await waitFor(() => expect(parent).toHaveValue('USA'));
+    await waitFor(() => expect(parent).toHaveValue('Kansas'));
 
-    const rank = within(dialog).getByRole('combobox', { name: /rank/i });
+    const rank = within(dialog).getByRole('combobox', {
+      name: tables.Geography.strictGetRelationship('definitionItem').label,
+    });
     await waitFor(() => expect(rank).toHaveValue('County'));
     await waitFor(() =>
       expect(within(dialog).getByRole('textbox')).toHaveFocus()
     );
-    await user.click(rank);
-    await user.clear(rank);
-    await user.type(rank, 'Sta');
-    await user.click(
-      await screen.findByRole('option', {
-        name: (_, element) => element.textContent === 'State',
-      })
-    );
 
     await user.click(within(dialog).getByRole('textbox'));
-    await user.paste('Kansas');
+    await user.paste('Douglas');
     await user.click(
       within(dialog).getByRole('button', { name: commonText.save() })
     );
