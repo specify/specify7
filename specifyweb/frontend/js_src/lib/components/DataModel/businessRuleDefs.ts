@@ -188,7 +188,9 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           const taxon = taxons[index];
           const taxonTreeDef = taxon?.get('definition');
           const isValid =
-            typeof taxonTreeDef === 'string' && taxonTreeDef === coTypeTreeDef;
+            taxon === null ||
+            (typeof taxonTreeDef === 'string' &&
+              taxonTreeDef === coTypeTreeDef);
 
           setSaveBlockers(
             determination,

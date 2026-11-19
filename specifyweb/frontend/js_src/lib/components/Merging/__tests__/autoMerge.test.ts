@@ -7,7 +7,7 @@ import type {
 } from '../../DataModel/helperTypes';
 import { tables } from '../../DataModel/tables';
 import type { Agent } from '../../DataModel/types';
-import { autoMerge } from '../autoMerge';
+import { autoMerge, reconcileCurrentDeterminations } from '../autoMerge';
 
 requireContext();
 mockTime();
@@ -141,4 +141,36 @@ describe('autoMerge', () => {
   });
 
   test('not cautious', () => expect(run(false)).toMatchSnapshot());
+});
+
+test('CollectionObject merge keeps at most one current determination', () => {
+  const merged = reconcileCurrentDeterminations(tables.CollectionObject, {
+    _tableName: 'CollectionObject',
+    determinations: [
+      { id: 1, isCurrent: true },
+      { id: 2, isCurrent: true },
+    ],
+  } as unknown as SerializedResource<AnySchema>);
+
+  expect(
+    (
+      merged.determinations as unknown as RA<{
+        readonly isCurrent?: boolean;
+      }>
+    ).filter(({ isCurrent }) => isCurrent === true)
+  ).toHaveLength(1);
+});
+
+test('CollectionObject merge does not create an empty COG membership', () => {
+  const merged = autoMerge(
+    tables.CollectionObject,
+    [
+      { id: 1, cojo: null, _tableName: 'CollectionObject' },
+      { id: 2, cojo: null, _tableName: 'CollectionObject' },
+    ] as unknown as RA<SerializedResource<AnySchema>>,
+    false,
+    1
+  );
+
+  expect(merged.cojo).toBeNull();
 });

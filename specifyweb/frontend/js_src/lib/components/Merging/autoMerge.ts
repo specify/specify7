@@ -40,7 +40,7 @@ export function autoMerge(
     .filter((fieldName) => !specialFields.has(fieldName))
     .map((fieldName) => table.strictGetField(fieldName));
 
-  return addMissingFields(
+  const merged = addMissingFields(
     table.name,
     mergeDependentFields(
       resources,
@@ -52,6 +52,43 @@ export function autoMerge(
       )
     )
   );
+  return reconcileCurrentDeterminations(table, merged);
+}
+
+/** Keep CollectionObject determinations valid when their dependent rows merge. */
+export function reconcileCurrentDeterminations(
+  table: SpecifyTable,
+  resource: SerializedResource<AnySchema>
+): SerializedResource<AnySchema> {
+  if (table.name !== 'CollectionObject') return resource;
+  const determinations = (
+    resource as SerializedResource<AnySchema> & {
+      readonly determinations?: unknown;
+    }
+  ).determinations;
+  if (!Array.isArray(determinations)) return resource;
+
+  const currentDeterminations = determinations.filter(
+    (determination) =>
+      typeof determination === 'object' &&
+      determination !== null &&
+      'isCurrent' in determination &&
+      determination.isCurrent === true
+  );
+  if (currentDeterminations.length <= 1) return resource;
+
+  const currentToKeep = currentDeterminations[0];
+  return {
+    ...resource,
+    determinations: determinations.map((determination) =>
+      typeof determination === 'object' && determination !== null
+        ? {
+            ...determination,
+            isCurrent: determination === currentToKeep,
+          }
+        : determination
+    ),
+  } as unknown as SerializedResource<AnySchema>;
 }
 
 export async function buildInitialMergedResource(
@@ -218,7 +255,8 @@ function mergeField(
         });
 
         return resourcesToReturn.map((resource) => JSON.parse(resource));
-      } else
+      } else if (nonFalsyValues.length === 0) return null;
+      else
         return autoMerge(
           field.relatedTable,
           nonFalsyValues as unknown as RA<SerializedResource<AnySchema>>,

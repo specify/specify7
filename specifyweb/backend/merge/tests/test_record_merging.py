@@ -7,6 +7,48 @@ from specifyweb.specify import models
 from unittest.mock import patch
 
 class ReplaceRecordTests(ApiTests):
+    def test_collection_object_merge_with_cog_memberships(self):
+        from specifyweb.backend.merge.record_merging import record_merge_fx
+        from specifyweb.backend.businessrules.rules.cogtype_rules import (
+            SYSTEM_COGTYPES_PICKLIST,
+        )
+
+        cog_type_picklist = models.Picklist.objects.create(
+            name=SYSTEM_COGTYPES_PICKLIST,
+            issystem=True,
+            type=0,
+            readonly=True,
+            collection=self.collection,
+        )
+        models.Picklistitem.objects.create(
+            title="Discrete", value="Discrete", picklist=cog_type_picklist
+        )
+
+        cog_type = models.Collectionobjectgrouptype.objects.create(
+            name="Discrete", type="Discrete", collection=self.collection
+        )
+        groups = [
+            models.Collectionobjectgroup.objects.create(
+                name=f"Group {index}", cogtype=cog_type, collection=self.collection
+            )
+            for index in range(2)
+        ]
+        old_co, new_co = self.collectionobjects[:2]
+        models.Collectionobjectgroupjoin.objects.create(
+            parentcog=groups[0], childco=old_co, isprimary=False
+        )
+        models.Collectionobjectgroupjoin.objects.create(
+            parentcog=groups[1], childco=new_co, isprimary=False
+        )
+
+        record_merge_fx("Collectionobject", [old_co.id], new_co.id)
+
+        self.assertTrue(models.Collectionobject.objects.filter(id=new_co.id).exists())
+        self.assertFalse(models.Collectionobject.objects.filter(id=old_co.id).exists())
+        joins = models.Collectionobjectgroupjoin.objects.filter(childco=new_co)
+        self.assertEqual(joins.count(), 1)
+        self.assertIsNotNone(joins.get().parentcog_id)
+
     def test_replace_agents(self):
         c = Client()
         c.force_login(self.specifyuser)
