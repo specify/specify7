@@ -4,7 +4,15 @@ import { addMissingFields } from '../../DataModel/addMissingFields';
 import type { AnySchema, SerializedResource } from '../../DataModel/helperTypes';
 import { tables } from '../../DataModel/tables';
 import { userPreferences } from '../../Preferences/userPreferences';
-import { buildInitialMergedResource } from '../autoMerge';
+import {
+  autoMerge,
+  buildInitialMergedResource,
+  postMergeResource,
+} from '../autoMerge';
+
+jest.mock('../../Formatters/formatters', () => ({
+  format: jest.fn(async (resource) => resource.get('lastName')),
+}));
 
 requireContext();
 
@@ -55,4 +63,16 @@ test('auto populates the merge dialog', async () => {
   );
 
   expect(merged.lastName).toBe('Longer Name');
+});
+
+// [RecordMerging] Do not create agent variants when disabled
+test('does not create agent variants when disabled', async () => {
+  userPreferences.set('recordMerging', 'agent', 'createVariants', false);
+  const records = makeRecords();
+  const merged = await postMergeResource(
+    records,
+    autoMerge(tables.Agent, records, false, 1)
+  );
+
+  expect(merged.variants).toEqual([]);
 });
