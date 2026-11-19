@@ -1324,3 +1324,64 @@ describe('Add tectonic unit', () => {
     await waitFor(() => expect(handleRefresh).toHaveBeenCalled());
   });
 });
+
+describe('Delete tectonic unit', () => {
+  const nodeId = 61;
+  const parentId = 60;
+  const deleteRequest = jest.fn(() => '');
+
+  overrideAjax(getResourceApiUrl('TectonicUnit', nodeId), () =>
+    addMissingFields('TectonicUnit', {
+      id: nodeId,
+      name: 'Springfield Plateau',
+      fullName: 'Springfield Plateau',
+      rankId: 50,
+      parent: getResourceApiUrl('TectonicUnit', parentId),
+      resource_uri: getResourceApiUrl('TectonicUnit', nodeId),
+    })
+  );
+  overrideAjax(
+    `/delete_blockers/delete_blockers/tectonicunit/${nodeId}/?limit=40`,
+    { results: [], next: [] }
+  );
+  overrideAjax(`/delete_blockers/count/tectonicunit/${nodeId}/`, {
+    results: [],
+    total_count: 0,
+  });
+  overrideAjax(getResourceApiUrl('TectonicUnit', nodeId), deleteRequest, {
+    method: 'DELETE',
+    responseCode: Http.NO_CONTENT,
+  });
+
+  test('"Delete" removes the focused node and focuses its parent', async () => {
+    const handleRefresh = jest.fn();
+    const setFocusPath = jest.fn();
+    const { user } = renderActions(
+      'TectonicUnit',
+      makeRow({
+        nodeId,
+        name: 'Springfield Plateau',
+        fullName: 'Springfield Plateau',
+        rankId: 50,
+        children: 0,
+      }),
+      handleRefresh,
+      [[1, parentId, nodeId], setFocusPath]
+    );
+
+    await user.click(screen.getByRole('button', { name: commonText.delete() }));
+
+    const dialog = await screen.findByRole('dialog', {
+      name: formsText.deleteConfirmation({
+        tableName: tables.TectonicUnit.label,
+      }),
+    });
+    await user.click(
+      within(dialog).getByRole('button', { name: commonText.delete() })
+    );
+
+    await waitFor(() => expect(handleRefresh).toHaveBeenCalled());
+    expect(deleteRequest).toHaveBeenCalledTimes(1);
+    expect(setFocusPath).toHaveBeenCalledWith([1, parentId]);
+  });
+});
