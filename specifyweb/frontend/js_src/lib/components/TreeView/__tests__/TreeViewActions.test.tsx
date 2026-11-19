@@ -28,6 +28,8 @@ const chronostratRankUrl = (id: number): string =>
   getResourceApiUrl('GeologicTimePeriodTreeDefItem', id);
 const lithostratRankUrl = (id: number): string =>
   getResourceApiUrl('LithoStratTreeDefItem', id);
+const tectonicUnitRankUrl = (id: number): string =>
+  getResourceApiUrl('TectonicUnitTreeDefItem', id);
 overrideAjax('/trees/specify_trees/', {
   ...specifyTrees,
   GeologicTimePeriod: [
@@ -83,6 +85,35 @@ overrideAjax('/trees/specify_trees/', {
         parent: id === 1 ? null : lithostratRankUrl(id - 1),
         treedef: getResourceApiUrl('LithoStratTreeDef', 1),
         resource_uri: lithostratRankUrl(id),
+      })),
+    },
+  ],
+  TectonicUnit: [
+    {
+      definition: {
+        id: 1,
+        name: 'Tectonic Unit',
+        fullnamedirection: -1,
+        resource_uri: getResourceApiUrl('TectonicUnitTreeDef', 1),
+      },
+      ranks: (
+        [
+          [1, 'Root', 0, true],
+          [2, 'Superstructure', 10, false],
+          [3, 'Tectonic Domain', 20, false],
+          [4, 'Tectonic Subdomain', 30, false],
+          [5, 'Tectonic Unit', 40, false],
+          [6, 'Tectonic Subunit', 50, false],
+        ] as const
+      ).map(([id, name, rankid, isenforced]) => ({
+        id,
+        name,
+        title: name,
+        rankid,
+        isenforced,
+        parent: id === 1 ? null : tectonicUnitRankUrl(id - 1),
+        treedef: getResourceApiUrl('TectonicUnitTreeDef', 1),
+        resource_uri: tectonicUnitRankUrl(id),
       })),
     },
   ],
@@ -1178,5 +1209,118 @@ describe('Delete a lithostrat', () => {
     await waitFor(() => expect(handleRefresh).toHaveBeenCalled());
     expect(deleteRequest).toHaveBeenCalledTimes(1);
     expect(setFocusPath).toHaveBeenCalledWith([1, parentId]);
+  });
+});
+
+describe('Add tectonic unit', () => {
+  const parentId = 60;
+  const newNodeId = 61;
+  const unitRankId = 5;
+  const subunitRankId = 6;
+  overrideTreeView('TectonicUnit');
+  (
+    [
+      [unitRankId, 'Tectonic Unit', 40],
+      [subunitRankId, 'Tectonic Subunit', 50],
+    ] as const
+  ).forEach(([id, name, rankId]) =>
+    overrideAjax(tectonicUnitRankUrl(id), () =>
+      addMissingFields('TectonicUnitTreeDefItem', {
+        id,
+        name,
+        rankId,
+        treeDef: getResourceApiUrl('TectonicUnitTreeDef', 1),
+        resource_uri: tectonicUnitRankUrl(id),
+      })
+    )
+  );
+  overrideAjax(getResourceApiUrl('TectonicUnit', parentId), () =>
+    addMissingFields('TectonicUnit', {
+      id: parentId,
+      name: 'Ozark Plateau',
+      fullName: 'Ozark Plateau',
+      rankId: 40,
+      isAccepted: true,
+      definition: getResourceApiUrl('TectonicUnitTreeDef', 1),
+      definitionItem: tectonicUnitRankUrl(unitRankId),
+      resource_uri: getResourceApiUrl('TectonicUnit', parentId),
+    })
+  );
+
+  overrideAjax(
+    '/api/specify/tectonicunit/',
+    () =>
+      addMissingFields('TectonicUnit', {
+        id: newNodeId,
+        name: 'Springfield Plateau',
+        parent: getResourceApiUrl('TectonicUnit', parentId),
+        resource_uri: getResourceApiUrl('TectonicUnit', newNodeId),
+      }),
+    {
+      method: 'POST',
+      responseCode: Http.CREATED,
+      body: jsonContaining({
+        name: 'Springfield Plateau',
+        parent: getResourceApiUrl('TectonicUnit', parentId),
+        definitionitem: tectonicUnitRankUrl(subunitRankId),
+      }),
+    }
+  );
+
+  overrideAjax(
+    `/delete_blockers/delete_blockers/tectonicunit/${newNodeId}/?limit=40`,
+    { results: [], next: [] }
+  );
+  overrideAjax(`/delete_blockers/count/tectonicunit/${newNodeId}/`, {
+    results: [],
+    total_count: 0,
+  });
+  overrideAjax(
+    `/trees/specify_tree/tectonicunit/${parentId}/predict_fullname/?name=Springfield+Plateau&treedefitemid=${subunitRankId}`,
+    'Springfield Plateau'
+  );
+
+  test('"Add child" saves a new TectonicUnit under the focused node', async () => {
+    const handleRefresh = jest.fn();
+    const { user } = renderActions(
+      'TectonicUnit',
+      makeRow({
+        nodeId: parentId,
+        name: 'Ozark Plateau',
+        fullName: 'Ozark Plateau',
+        rankId: 40,
+      }),
+      handleRefresh
+    );
+
+    const addChild = screen.getByRole('link', {
+      name: new RegExp(`^${treeText.addChild()}`, 'u'),
+    });
+    expect(addChild).toHaveAttribute('aria-disabled', 'false');
+    expect(addChild).toHaveAttribute('href', '/specify/view/tectonicunit/new/');
+
+    await user.click(addChild);
+
+    const dialog = await screen.findByRole('dialog');
+    const parent = within(dialog).getByRole('combobox', {
+      name: tables.TectonicUnit.strictGetRelationship('parent').label,
+    });
+    await waitFor(() => expect(parent).toHaveValue('Ozark Plateau'));
+
+    const rank = within(dialog).getByRole('combobox', {
+      name: tables.TectonicUnit.strictGetRelationship('definitionItem').label,
+    });
+    await waitFor(() => expect(rank).toHaveValue('Tectonic Subunit'));
+    await waitFor(() =>
+      expect(within(dialog).getByRole('textbox')).toHaveFocus()
+    );
+
+    await user.click(within(dialog).getByRole('textbox'));
+    await user.paste('Springfield Plateau');
+    await user.click(
+      within(dialog).getByRole('button', { name: commonText.save() })
+    );
+
+    await waitFor(() => expect(handleRefresh).toHaveBeenCalled());
   });
 });
