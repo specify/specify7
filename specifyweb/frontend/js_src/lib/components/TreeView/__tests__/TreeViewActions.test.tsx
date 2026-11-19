@@ -26,6 +26,8 @@ import type { Row } from '../helpers';
 
 const chronostratRankUrl = (id: number): string =>
   getResourceApiUrl('GeologicTimePeriodTreeDefItem', id);
+const lithostratRankUrl = (id: number): string =>
+  getResourceApiUrl('LithoStratTreeDefItem', id);
 overrideAjax('/trees/specify_trees/', {
   ...specifyTrees,
   GeologicTimePeriod: [
@@ -53,6 +55,34 @@ overrideAjax('/trees/specify_trees/', {
         parent: id === 1 ? null : chronostratRankUrl(id - 1),
         treedef: getResourceApiUrl('GeologicTimePeriodTreeDef', 1),
         resource_uri: chronostratRankUrl(id),
+      })),
+    },
+  ],
+  LithoStrat: [
+    {
+      definition: {
+        id: 1,
+        name: 'Lithostratigraphy',
+        fullnamedirection: -1,
+        resource_uri: getResourceApiUrl('LithoStratTreeDef', 1),
+      },
+      ranks: (
+        [
+          [1, 'Root', 0, true],
+          [2, 'Group', 200, false],
+          [3, 'Formation', 300, false],
+          [4, 'Member', 400, false],
+          [5, 'Bed', 500, false],
+        ] as const
+      ).map(([id, name, rankid, isenforced]) => ({
+        id,
+        name,
+        title: name,
+        rankid,
+        isenforced,
+        parent: id === 1 ? null : lithostratRankUrl(id - 1),
+        treedef: getResourceApiUrl('LithoStratTreeDef', 1),
+        resource_uri: lithostratRankUrl(id),
       })),
     },
   ],
@@ -974,5 +1004,118 @@ describe('Delete a chronostrat', () => {
     await waitFor(() => expect(handleRefresh).toHaveBeenCalled());
     expect(deleteRequest).toHaveBeenCalledTimes(1);
     expect(setFocusPath).toHaveBeenCalledWith([1, parentId]);
+  });
+});
+
+describe('Add a lithostrat', () => {
+  const parentId = 50;
+  const newNodeId = 51;
+  const memberRankId = 4;
+  const bedRankId = 5;
+  overrideTreeView('LithoStrat');
+  (
+    [
+      [memberRankId, 'Member', 400],
+      [bedRankId, 'Bed', 500],
+    ] as const
+  ).forEach(([id, name, rankId]) =>
+    overrideAjax(lithostratRankUrl(id), () =>
+      addMissingFields('LithoStratTreeDefItem', {
+        id,
+        name,
+        rankId,
+        treeDef: getResourceApiUrl('LithoStratTreeDef', 1),
+        resource_uri: lithostratRankUrl(id),
+      })
+    )
+  );
+  overrideAjax(getResourceApiUrl('LithoStrat', parentId), () =>
+    addMissingFields('LithoStrat', {
+      id: parentId,
+      name: 'Plattsmouth',
+      fullName: 'Plattsmouth',
+      rankId: 400,
+      isAccepted: true,
+      definition: getResourceApiUrl('LithoStratTreeDef', 1),
+      definitionItem: lithostratRankUrl(memberRankId),
+      resource_uri: getResourceApiUrl('LithoStrat', parentId),
+    })
+  );
+
+  overrideAjax(
+    '/api/specify/lithostrat/',
+    () =>
+      addMissingFields('LithoStrat', {
+        id: newNodeId,
+        name: 'Unit A',
+        parent: getResourceApiUrl('LithoStrat', parentId),
+        resource_uri: getResourceApiUrl('LithoStrat', newNodeId),
+      }),
+    {
+      method: 'POST',
+      responseCode: Http.CREATED,
+      body: jsonContaining({
+        name: 'Unit A',
+        parent: getResourceApiUrl('LithoStrat', parentId),
+        definitionitem: lithostratRankUrl(bedRankId),
+      }),
+    }
+  );
+
+  overrideAjax(
+    `/delete_blockers/delete_blockers/lithostrat/${newNodeId}/?limit=40`,
+    { results: [], next: [] }
+  );
+  overrideAjax(`/delete_blockers/count/lithostrat/${newNodeId}/`, {
+    results: [],
+    total_count: 0,
+  });
+  overrideAjax(
+    `/trees/specify_tree/lithostrat/${parentId}/predict_fullname/?name=Unit+A&treedefitemid=${bedRankId}`,
+    'Unit A'
+  );
+
+  test('"Add child" saves a new LithoStrat under the focused node', async () => {
+    const handleRefresh = jest.fn();
+    const { user } = renderActions(
+      'LithoStrat',
+      makeRow({
+        nodeId: parentId,
+        name: 'Plattsmouth',
+        fullName: 'Plattsmouth',
+        rankId: 400,
+      }),
+      handleRefresh
+    );
+
+    const addChild = screen.getByRole('link', {
+      name: new RegExp(`^${treeText.addChild()}`, 'u'),
+    });
+    expect(addChild).toHaveAttribute('aria-disabled', 'false');
+    expect(addChild).toHaveAttribute('href', '/specify/view/lithostrat/new/');
+
+    await user.click(addChild);
+
+    const dialog = await screen.findByRole('dialog');
+    const parent = within(dialog).getByRole('combobox', {
+      name: tables.LithoStrat.strictGetRelationship('parent').label,
+    });
+    await waitFor(() => expect(parent).toHaveValue('Plattsmouth'));
+
+    const rank = within(dialog).getByRole('combobox', {
+      name: tables.LithoStrat.strictGetRelationship('definitionItem').label,
+    });
+    await waitFor(() => expect(rank).toHaveValue('Bed'));
+    await waitFor(() =>
+      expect(within(dialog).getByRole('textbox')).toHaveFocus()
+    );
+
+    await user.click(within(dialog).getByRole('textbox'));
+    await user.paste('Unit A');
+    await user.click(
+      within(dialog).getByRole('button', { name: commonText.save() })
+    );
+
+    await waitFor(() => expect(handleRefresh).toHaveBeenCalled());
   });
 });
