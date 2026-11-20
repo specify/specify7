@@ -4,12 +4,12 @@ import logging
 from typing import TYPE_CHECKING
 from collections import namedtuple, deque
 
-from django.db.models import QuerySet, Count
+from django.db.models import QuerySet, Count, Q
 from sqlalchemy import orm, sql, or_
 
 from specifyweb.specify.datamodel import datamodel, is_tree_table
 from specifyweb.specify.models_utils.load_datamodel import Table
-from specifyweb.backend.trees.utils import get_tree_defs_in_collection, get_treedef_scope_filters, get_treedef_model, SPECIFY_TREES
+from specifyweb.backend.trees.utils import get_tree_defs_in_collection, get_tree_ranks_in_collection, get_treedef_scope_filters, get_treedef_model, SPECIFY_TREES
 
 from specifyweb.backend.stored_queries import models
 from specifyweb.backend.stored_queries.tree_rank import TreeRankQuery
@@ -55,46 +55,18 @@ def resolve_tree_ranks(
     if collection is None:
         raise AssertionError(f"No Collection found in Query for {tree_table_name}")
 
-    tree_def_filters = None
-    if tree_def_id is not None:
-        tree_def_filters = {
-            "pk": tree_def_id
-        }
     rank_filters = None
-    if rank_name is not None:
-        rank_filters = {
-            "name": rank_name
-        }
-    # REFACTOR: (performance) this makes two queries, one for the definition
-    # info and one for the ranks.
-    # This can theoretically be optimized to a single query for the ranks.
+    if tree_def_id is not None:
+        rank_filters = Q(treedef_id=tree_def_id)
 
-    # e.g., if filtering on TreeDef, something like the following:
-    # AND NOT EXISTS (SELECT 1 FROM treedefitem WHERE name=? AND TreeDefID=?)
-    # i.e., tree_def_model.filter(...).filter(Exists(tree_def_item_model.objects.filter(name=?, treedef=OuterRef('pk'))))
-    tree_defs = get_tree_defs_in_collection(
-        collection=collection,
-        tree_name=tree_table_name,
-        tree_def_filters=tree_def_filters,
-        rank_filters=rank_filters)
-    result = []
-    for tree_info in tree_defs:
-        def_id = tree_info['definition']['id']
-        ranks = tree_info['ranks']
-        # Some data integrity checks if a specific rank name is provided
-        if rank_name is not None:
-            # If the tree exists but doesn't have the rank with the provided name,
-            # just skip considering the tree
-            if len(ranks) == 0:
-                continue
-            # Trees shouldn't have more than one rank with the same name
-            if len(ranks) > 1:
-                raise Exception(f"Got more than once matching rank for name {rank_name} on {tree_table_name} with id {def_id}")
-
-        for rank in ranks:
-            result.append((def_id, rank['id']))
-
-    return result
+    tree_ranks = get_tree_ranks_in_collection(
+        collection,
+        tree_table_name,
+        rank_name,
+        additional_rank_filters=rank_filters
+    )
+    formatted_results = tree_ranks.values_list("treedef_id", "pk")
+    return list(formatted_results)
 
 class QueryConstruct(
     namedtuple(
@@ -178,12 +150,21 @@ class QueryConstruct(
             query = query._replace(join_cache=query.join_cache.copy())
             query.join_cache[cache_key] = ancestors
 
+        # FEAT: Cache this rank lookup on the Query?
         treedefs_with_rank_ids = resolve_tree_ranks(
             collection=query.collection,
             tree_table_name=table.name,
             rank_name=tree_rank.name,
             tree_def_id=tree_rank.treedef_id
         )
+
+        if not treedefs_with_rank_ids:
+            logger.warning(
+                "Didn't find tree rank %r across any %s tree; skipping field",
+                tree_rank.name,
+                table.name,
+            )
+            return query_before_tree_joins, None, None, table
 
         treedefitem_params = [treedefitem_id for (_, treedefitem_id) in treedefs_with_rank_ids]
 
@@ -254,6 +235,7 @@ class QueryConstruct(
 
         treedef_column = table.name + 'TreeDefID'
 
+        # FEAT: Cache this rank lookup on the Query?
         treedefs_with_ranks = resolve_tree_ranks(
             collection=query.collection,
             tree_table_name=table.name,

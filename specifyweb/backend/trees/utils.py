@@ -183,7 +183,11 @@ def get_tree_defs_in_collection(
         result.append(serialized_tree_info)
     return result
 
-def get_tree_ranks_in_collection(collection: spmodels.Collection, tree_name: str, rank_name: str):
+def get_tree_ranks_in_collection(
+        collection: spmodels.Collection,
+        tree_name: str,
+        rank_name: str,
+        additional_rank_filters: Q | None = None):
     """
     """
     if tree_name.lower() not in SPECIFY_TREES:
@@ -197,9 +201,10 @@ def get_tree_ranks_in_collection(collection: spmodels.Collection, tree_name: str
         treedefitem_model.objects
         .filter(scoping_filters)
         .filter(name=rank_name)
-        .distinct()
     )
-    return rank_query
+    if additional_rank_filters is not None:
+        rank_query = rank_query.filter(additional_rank_filters)
+    return rank_query.distinct()
 
 
 def get_default_treedef(table: Table, collection):
