@@ -357,3 +357,109 @@ describe('Delete new taxon tree', () => {
     consoleError.mockRestore();
   });
 });
+
+describe('Rename tree', () => {
+  const treeId = 5;
+  const newName = 'Ichthyology Taxonomy';
+  const disciplineUrl = getResourceApiUrl('Discipline', 3);
+  const saveRequest = jest.fn(() =>
+    addMissingFields('TaxonTreeDef', {
+      id: treeId,
+      name: newName,
+      version: 1,
+      discipline: disciplineUrl,
+      resource_uri: getResourceApiUrl('TaxonTreeDef', treeId),
+    })
+  );
+
+  beforeAll(() => clearViewLocal('TaxonTreeDef'));
+  overrideAjax(
+    '/context/view.json?name=TaxonTreeDef',
+    {
+      name: 'TaxonTreeDef',
+      class: 'edu.ku.brc.specify.datamodel.TaxonTreeDef',
+      isinternal: 'false',
+      resourcelabels: 'false',
+      altviews: {
+        'TaxonTreeDef Edit': {
+          name: 'TaxonTreeDef Edit',
+          viewdef: 'TaxonTreeDef',
+          mode: 'edit',
+          default: 'true',
+        },
+      },
+      viewdefs: {
+        TaxonTreeDef: `<viewdef name="TaxonTreeDef" type="form" class="edu.ku.brc.specify.datamodel.TaxonTreeDef" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+          <columnDef>p,p</columnDef>
+          <rowDef>p</rowDef>
+          <rows>
+            <row><cell type="label" labelfor="name" /><cell type="field" id="name" uitype="text" name="name" /></row>
+          </rows>
+        </viewdef>`,
+      },
+    },
+    {},
+    true
+  );
+  overrideAjax(
+    `/delete_blockers/delete_blockers/taxontreedef/${treeId}/?limit=40`,
+    { results: [], next: [] }
+  );
+  overrideAjax(`/delete_blockers/count/taxontreedef/${treeId}/`, {
+    results: [],
+    total_count: 0,
+  });
+  overrideAjax(
+    `/api/specify/taxontreedef/?${new URLSearchParams({
+      domainfilter: 'false',
+      name: newName,
+      discipline: '3',
+      offset: '0',
+    }).toString()}`,
+    { objects: [], meta: { limit: 20, offset: 0, total_count: 0 } }
+  );
+  overrideAjax(getResourceApiUrl('TaxonTreeDef', treeId), saveRequest, {
+    method: 'PUT',
+    body: jsonContaining({ name: newName }),
+  });
+
+  test('saving a new name in the tree form renames the tree', async () => {
+    const handleSaved = jest.fn();
+    const tree = deserializeResource(
+      addMissingFields('TaxonTreeDef', {
+        id: treeId,
+        name: treeText.emptyTree(),
+        version: 0,
+        discipline: disciplineUrl,
+        resource_uri: getResourceApiUrl('TaxonTreeDef', treeId),
+      })
+    );
+
+    const { user } = mount(
+      <MemoryRouter>
+        <LoadingContext.Provider value={f.void}>
+          <UnloadProtectsContext.Provider value={[]}>
+            <SetUnloadProtectsContext.Provider value={f.void}>
+              <ResourceEdit resource={tree} onSaved={handleSaved} />
+            </SetUnloadProtectsContext.Provider>
+          </UnloadProtectsContext.Provider>
+        </LoadingContext.Provider>
+      </MemoryRouter>
+    );
+
+    await user.click(screen.getByRole('link', { name: commonText.edit() }));
+    const form = await screen.findByRole('dialog', {
+      name: new RegExp(treeText.emptyTree(), 'u'),
+    });
+    const name = within(form).getByRole('textbox');
+    await waitFor(() => expect(name).toHaveValue(treeText.emptyTree()));
+    await user.tripleClick(name);
+    await user.paste(newName);
+    await user.click(
+      within(form).getByRole('button', { name: commonText.save() })
+    );
+
+    await waitFor(() => expect(handleSaved).toHaveBeenCalled());
+    expect(saveRequest).toHaveBeenCalledTimes(1);
+  });
+});
