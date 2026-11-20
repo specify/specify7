@@ -92,7 +92,7 @@ def deduplicate_splocalecontainers(apps):
             )
         ).filter(earlier_exists=True)
 
-        # Remove the items and strings shouldn't be strictly neccesary as they
+        # Removing the items and strings shouldn't be strictly neccesary as they
         # should both cascade if we call duplicate_containers.delete()
         # But this is the safer option for any edge cases with historical
         # models in migrations and if we ever decide to change the delete
