@@ -144,7 +144,7 @@ export function SchemaConfigStoreProvider({
             request,
           }))
         )
-        .map(({ tableName, request }) =>
+        .map(async ({ tableName, request }) =>
           request.promise.then(
             (result) => ({
               status: 'fulfilled' as const,
@@ -170,8 +170,10 @@ export function SchemaConfigStoreProvider({
       }
     }
 
-    // Reconcile against the latest state so edits made while requests were
-    // in flight aren't overwritten
+    /*
+     * Reconcile against the latest state so edits made while requests were
+     * in flight aren't overwritten
+     */
     setEditors((current) => {
       const newEditors: Record<string, SchemaConfigEditorState> = {
         ...current,

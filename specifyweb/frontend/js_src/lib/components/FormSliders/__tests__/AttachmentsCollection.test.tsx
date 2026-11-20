@@ -7,11 +7,11 @@ import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
 import { mount } from '../../../tests/reactUtils';
 import { Http } from '../../../utils/ajax/definitions';
+import * as attachments from '../../Attachments/attachments';
 import {
   attachmentSettingsPromise,
   overrideAttachmentServerStatus,
 } from '../../Attachments/attachments';
-import * as attachments from '../../Attachments/attachments';
 import type { Collection } from '../../DataModel/specifyTable';
 import { tables } from '../../DataModel/tables';
 import type { CollectionObjectAttachment } from '../../DataModel/types';

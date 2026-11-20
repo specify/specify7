@@ -2,14 +2,16 @@ import { softError } from '../components/Errors/assert';
 
 const MISSING = {};
 
-// FEATURE: This can be fairly easily extended to support a TTL for each entry
-// Or we can import some external library
+/*
+ * FEATURE: This can be fairly easily extended to support a TTL for each entry
+ * Or we can import some external library
+ */
 // eslint-disable-next-line functional/no-class
 export class LRUCache<K, V> {
   private readonly cache: Map<K, V>;
-  // eslint-disable-next-line functional/prefer-readonly-type
+
   private maxSize: number;
-  // eslint-disable-next-line functional/prefer-readonly-type
+
   private size: number;
   private readonly getItemSize: ((item: V) => number) | undefined;
   private readonly onEvict?: (key: K, item: V) => void;
@@ -60,8 +62,10 @@ export class LRUCache<K, V> {
    * deleted, and false if the key was not in the cache.
    */
   public delete(key: K): boolean {
-    // We're going to be removing this item anyways, so no need to change its
-    // recency
+    /*
+     * We're going to be removing this item anyways, so no need to change its
+     * recency
+     */
     const item = this._get(key, false);
     if (item === MISSING) {
       // This should always return false here, but just in case
@@ -158,8 +162,10 @@ export class LRUCache<K, V> {
       return itemSize;
     }
 
-    // The new item can not fit into the cache, so we keep removing least
-    // accessed objects until we have enough space for the new item
+    /*
+     * The new item can not fit into the cache, so we keep removing least
+     * accessed objects until we have enough space for the new item
+     */
     const cacheIterator = this.cache.entries();
     while (this.getSize() + itemSize > this.maxSize) {
       const nextEntry = cacheIterator.next().value;

@@ -22,8 +22,10 @@ describe('fetchContainerItems', () => {
     resource_uri: getResourceApiUrl('SpLocaleContainer', 1),
   } as unknown as SerializedResource<SpLocaleContainer>;
 
-  // The item name must be a real field of the container table, otherwise
-  // fetchContainerItems filters it out as a removed field
+  /*
+   * The item name must be a real field of the container table, otherwise
+   * fetchContainerItems filters it out as a removed field
+   */
   const itemRecord = {
     resource_uri: getResourceApiUrl('SpLocaleContainerItem', 1),
     id: 1,

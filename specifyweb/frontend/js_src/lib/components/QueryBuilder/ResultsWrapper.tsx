@@ -77,19 +77,19 @@ export function QueryResultsWrapper({
       <ErrorBoundary dismissible>
         <QueryResults
           {...newProps}
-          onResults={handleResults}
-          onDeleted={handleDeleted}
           createRecordSet={createRecordSet}
           extraButtons={extraButtons}
-          onReRun={handleReRun}
-          renderSplitPane={renderSplitPane}
+          isLoading={isLoading}
           isSplit={isSplit}
+          refreshToken={refreshToken}
+          renderSplitPane={renderSplitPane}
           splitHorizontal={splitHorizontal}
           splitPrimaryPaneMaxWidth={splitPrimaryPaneMaxWidth}
+          onDeleted={handleDeleted}
           onMerged={handleMerged}
+          onReRun={handleReRun}
+          onResults={handleResults}
           onSelected={handleSelected}
-          refreshToken={refreshToken}
-          isLoading={isLoading}
         />
       </ErrorBoundary>
     </div>

@@ -100,7 +100,7 @@ export type LeafletInstance = L.Map & {
       readonly name: string;
     }>;
   };
-  /* eslint-disable functional/prefer-readonly-type */
+
   sp7MarkerCount: number;
 };
 

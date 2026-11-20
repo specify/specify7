@@ -183,9 +183,7 @@ export function CollectionView({
                                 </span>
                               )}
                               <span
-                                role="img"
                                 aria-label={presenceLabel}
-                                title={presenceLabel}
                                 className={`ml-2 inline-block w-2.5 h-2.5 rounded-full ${
                                   currentPresence === 'active'
                                     ? 'bg-green-500'
@@ -193,6 +191,8 @@ export function CollectionView({
                                       ? 'bg-yellow-500'
                                       : 'bg-red-500'
                                 }`}
+                                role="img"
+                                title={presenceLabel}
                               />
                             </>
                           );

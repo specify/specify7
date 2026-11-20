@@ -2,11 +2,12 @@ import { waitFor } from '@testing-library/react';
 
 import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
-import { PromiseQueue } from '../../../utils/promiseQueue';
+import type { PromiseQueue } from '../../../utils/promiseQueue';
 import type { RA } from '../../../utils/types';
 import { tables } from '../../DataModel/tables';
 import { DELETE_BLOCKER_LIMIT } from '../deleteBlockers';
-import { DeleteBlockerLRUPage, makeBlockerKey } from '../pageCache';
+import type { DeleteBlockerLRUPage} from '../pageCache';
+import { makeBlockerKey } from '../pageCache';
 import { DeleteBlockerState, resourceToStringIdentifier } from '../state';
 
 requireContext();
@@ -184,15 +185,15 @@ describe('DeleteBlockerState: Accession -> CollectionObject blockers', () => {
     );
 
     const queues = getStateQueues(state);
-    const activeResolvers: Array<() => void> = [];
+    const activeResolvers: (() => void)[] = [];
     const activeRequest = jest.fn(
-      () =>
+      async () =>
         new Promise<RA<DeleteBlockerLRUPage> | undefined>((resolve) => {
           activeResolvers.push(() => resolve(undefined));
         })
     );
-    const queuedCount = jest.fn(() => Promise.resolve());
-    const queuedPage = jest.fn(() =>
+    const queuedCount = jest.fn(async () => Promise.resolve());
+    const queuedPage = jest.fn(async () =>
       Promise.resolve<RA<DeleteBlockerLRUPage>>([])
     );
     const activeCountPromise = queues.countPromiseQueue.enqueue(
@@ -222,7 +223,7 @@ describe('DeleteBlockerState: Accession -> CollectionObject blockers', () => {
     activeResolvers.forEach((resolve) => resolve());
     await Promise.all([
       activeCountPromise === false ? Promise.resolve() : activeCountPromise,
-      ...activePagePromises.map((promise) =>
+      ...activePagePromises.map(async (promise) =>
         promise === false ? Promise.resolve() : promise
       ),
     ]);

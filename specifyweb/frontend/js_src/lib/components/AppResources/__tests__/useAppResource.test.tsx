@@ -2,6 +2,7 @@ import { render, waitFor } from '@testing-library/react';
 import React from 'react';
 
 import { requireContext } from '../../../tests/helpers';
+import { TestComponentWrapperRouter } from '../../../tests/utils';
 import type { SerializedResource } from '../../DataModel/helperTypes';
 import { serializeResource } from '../../DataModel/serializers';
 import { tables } from '../../DataModel/tables';
@@ -10,7 +11,6 @@ import { exportsForTests } from '../EditorWrapper';
 import type { AppResourceMode } from '../helpers';
 import type { AppResources } from '../hooks';
 import { staticAppResources } from './staticAppResources';
-import { TestComponentWrapperRouter } from '../../../tests/utils';
 
 requireContext();
 
@@ -62,8 +62,8 @@ describe('useAppResource', () => {
 
     await waitFor(() => {
       expect(onResultSet).toHaveBeenCalledTimes(1);
-      expect(onResultSet).toHaveBeenCalledWith(appResourceToUse);
-    });
+    })
+    expect(onResultSet).toHaveBeenCalledWith(appResourceToUse);;
   });
 
   test('appResource mode (new resorurce)', async () => {
@@ -87,8 +87,8 @@ describe('useAppResource', () => {
 
     await waitFor(() => {
       expect(onResultSet).toHaveBeenCalledTimes(1);
-      expect(onResultSet).toHaveBeenCalledWith(serializedNewResource);
-    });
+    })
+    expect(onResultSet).toHaveBeenCalledWith(serializedNewResource);;
   });
 
   test('viewSets mode (existing resorurce)', async () => {
@@ -116,8 +116,8 @@ describe('useAppResource', () => {
 
     await waitFor(() => {
       expect(onResultSet).toHaveBeenCalledTimes(1);
-      expect(onResultSet).toHaveBeenCalledWith(viewSetToUse);
-    });
+    })
+    expect(onResultSet).toHaveBeenCalledWith(viewSetToUse);;
   });
 
   test('viewSets mode (new resorurce)', async () => {
@@ -141,7 +141,7 @@ describe('useAppResource', () => {
 
     await waitFor(() => {
       expect(onResultSet).toHaveBeenCalledTimes(1);
-      expect(onResultSet).toHaveBeenCalledWith(serializedNewResource);
-    });
+    })
+    expect(onResultSet).toHaveBeenCalledWith(serializedNewResource);;
   });
 });

@@ -21,9 +21,9 @@ export function AttachmentPreview({
   const [thumbnail] = useAsyncState(
     React.useCallback(
       async () =>
-        attachmentServerStatus !== 'unavailable'
-          ? fetchThumbnail(attachment)
-          : undefined,
+        attachmentServerStatus === 'unavailable'
+          ? undefined
+          : fetchThumbnail(attachment),
       [attachment, attachmentServerStatus]
     ),
     false

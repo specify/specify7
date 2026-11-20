@@ -1,5 +1,5 @@
-import type Handsontable from 'handsontable';
 import { screen } from '@testing-library/react';
+import type Handsontable from 'handsontable';
 import React from 'react';
 
 import { commonText } from '../../../localization/common';
@@ -25,7 +25,7 @@ jest.mock('../../WorkBench/attachmentHelpers', () => ({
 }));
 
 jest.mock('../../WorkBench/helpers', () => ({
-  downloadDataSet: jest.fn(() => Promise.resolve()),
+  downloadDataSet: jest.fn(async () => Promise.resolve()),
 }));
 
 jest.mock('../DevShowPlan', () => ({

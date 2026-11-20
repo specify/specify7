@@ -21,7 +21,7 @@ import { WebLinksContext } from './Editor';
 import type { WebLink } from './spec';
 import { webLinksSpec } from './spec';
 
-const loadWebLinks = (refresh = false): Promise<RA<WebLink>> =>
+const loadWebLinks = async (refresh = false): Promise<RA<WebLink>> =>
   Promise.all([
     load<Element>(getAppResourceUrl('WebLinks'), 'text/xml', refresh),
     import('../DataModel/tables').then(

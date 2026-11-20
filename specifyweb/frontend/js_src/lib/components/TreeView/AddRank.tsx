@@ -1,11 +1,13 @@
 import React from 'react';
 
+import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { interactionsText } from '../../localization/interactions';
 import { treeText } from '../../localization/tree';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Form, Label, Select } from '../Atoms/Form';
+import { Submit } from '../Atoms/Submit';
 import type {
   FilterTablesByEndsWith,
   SerializedResource,
@@ -13,8 +15,6 @@ import type {
 import { tables } from '../DataModel/tables';
 import { ResourceView } from '../Forms/ResourceView';
 import { Dialog } from '../Molecules/Dialog';
-import { Submit } from '../Atoms/Submit';
-import { useId } from '../../hooks/useId';
 
 export function AddRank({
   treeDefinitionItems,
@@ -53,11 +53,11 @@ export function AddRank({
             <>
               <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
               <Submit.Save
+                form={id('form')}
                 onClick={() => {
                   treeResource.set('parent', parentRank);
                   setState('add');
                 }}
-                form={id('form')}
               >
                 {interactionsText.continue()}
               </Submit.Save>

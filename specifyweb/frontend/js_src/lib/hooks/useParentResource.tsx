@@ -1,12 +1,13 @@
 import React from 'react';
-import { AnySchema } from '../components/DataModel/helperTypes';
-import { SpecifyResource } from '../components/DataModel/legacyTypes';
-import { parentTableRelationship } from '../components/Forms/parentTables';
-import { useAsyncState } from './useAsyncState';
-import { Relationship } from '../components/DataModel/specifyField';
+
 import { fetchCollection } from '../components/DataModel/collection';
 import { backendFilter } from '../components/DataModel/helpers';
+import type { AnySchema } from '../components/DataModel/helperTypes';
+import type { SpecifyResource } from '../components/DataModel/legacyTypes';
 import { resourceEvents } from '../components/DataModel/resource';
+import type { Relationship } from '../components/DataModel/specifyField';
+import { parentTableRelationship } from '../components/Forms/parentTables';
+import { useAsyncState } from './useAsyncState';
 
 /**
  * React hook to get basic parent information about a particular resource.
@@ -40,13 +41,15 @@ export function useParentResource(
           .getRelationship(relationship.otherSideName)
           ?.isDependent()
     );
-    // If there's exactly one relationship that's required and the otherside is
-    // dependent, we should be able to safely assume that relationship is the
-    // parent.
-    // If needed, we could broaden the filtering criteria to either required or
-    // otherside is dependent, as they should mean the same thing but might
-    // have some discrepancies (e.g., #8583)
-    // FEAT: Handle returning all dependent relationships
+    /*
+     * If there's exactly one relationship that's required and the otherside is
+     * dependent, we should be able to safely assume that relationship is the
+     * parent.
+     * If needed, we could broaden the filtering criteria to either required or
+     * otherside is dependent, as they should mean the same thing but might
+     * have some discrepancies (e.g., #8583)
+     * FEAT: Handle returning all dependent relationships
+     */
     if (dependentRelationships?.length === 1) {
       return dependentRelationships.at(0);
     }
@@ -57,11 +60,13 @@ export function useParentResource(
     false | SpecifyResource<AnySchema>
   >(
     React.useCallback(
-      () =>
+      async () =>
         parentRelationship === undefined ||
         resource === undefined ||
-        // REFACTOR: We can probably use resourceEvents here to check for
-        // deletion instead?
+        /*
+         * REFACTOR: We can probably use resourceEvents here to check for
+         * deletion instead?
+         */
         resource.deleted
           ? false
           : resource.fetch({ strict: false }).then(async (newResource) => {

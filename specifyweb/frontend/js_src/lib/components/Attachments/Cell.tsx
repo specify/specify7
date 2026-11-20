@@ -36,8 +36,7 @@ export function AttachmentCell({
   readonly onOpen: () => void;
   readonly related: GetSet<SpecifyResource<AnySchema> | undefined>;
   readonly onViewRecord:
-    | ((table: SpecifyTable, recordId: number) => void)
-    | undefined;
+    ((table: SpecifyTable, recordId: number) => void) | undefined;
 }): JSX.Element {
   const attachmentServerStatus = useAttachmentServerStatus();
   const table = f.maybe(attachment.tableID ?? undefined, getAttachmentTable);
@@ -45,9 +44,9 @@ export function AttachmentCell({
   const [originalUrl] = useAsyncState(
     React.useCallback(
       async () =>
-        attachmentServerStatus !== 'unavailable'
-          ? fetchOriginalUrl(attachment)
-          : undefined,
+        attachmentServerStatus === 'unavailable'
+          ? undefined
+          : fetchOriginalUrl(attachment),
       [attachment, attachmentServerStatus]
     ),
     false

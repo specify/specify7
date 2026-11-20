@@ -256,7 +256,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
           smoothScroll(form, 0);
           loading(
             carryForwardResources().then((resources) =>
-              resources !== undefined ? handleAdd(resources) : undefined
+              resources === undefined ? undefined : handleAdd(resources)
             )
           );
         }

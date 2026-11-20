@@ -17,6 +17,7 @@ import { ReadOnlyContext, SearchDialogContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Tables } from '../DataModel/types';
+import { DeleteBlockerProvider } from '../DeleteBlockers/Context';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { InFormEditorContext } from '../FormEditor/Context';
 import { AppTitle } from '../Molecules/AppTitle';
@@ -30,9 +31,8 @@ import { UnloadProtectDialog } from '../Router/UnloadProtect';
 import { useResourceView } from './BaseResourceView';
 import { DeleteButtonWrapped } from './DeleteButton';
 import { SaveButton } from './Save';
-import { propsToFormMode } from './useViewDefinition';
-import { DeleteBlockerProvider } from '../DeleteBlockers/Context';
 import { useShowParentButton } from './useShowParentButton';
+import { propsToFormMode } from './useViewDefinition';
 
 /**
  * There is special behavior required when creating one of these resources,
@@ -136,8 +136,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
   readonly onSaving?: (unsetUnloadProtect: () => void) => false | void;
   readonly onSaved: (() => void) | undefined;
   readonly onAdd:
-    | ((resources: RA<SpecifyResource<SCHEMA>>) => void)
-    | undefined;
+    ((resources: RA<SpecifyResource<SCHEMA>>) => void) | undefined;
   readonly onDeleted: (() => void) | undefined;
   readonly onClose: () => void;
   readonly onParentDeleted?: () => void;
@@ -146,8 +145,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
   readonly isSubForm: boolean;
   readonly isDependent: boolean;
   readonly title?:
-    | LocalizedString
-    | ((formatted: LocalizedString) => LocalizedString);
+    LocalizedString | ((formatted: LocalizedString) => LocalizedString);
   readonly isCollapsed?: boolean;
   readonly preHeaderButtons?: JSX.Element | undefined;
   readonly containerRef?: React.RefObject<HTMLDivElement>;

@@ -87,16 +87,12 @@ const hasUploadInfo = (
 
 /* eslint-disable functional/no-this-expression */
 export class WbValidation {
-  // eslint-disable-next-line functional/prefer-readonly-type
   public liveValidationStack: WritableArray<number> = [];
 
-  // eslint-disable-next-line functional/prefer-readonly-type
   private liveValidationActive: boolean = false;
 
-  // eslint-disable-next-line functional/prefer-readonly-type
   public validationMode: 'live' | 'off' | 'static';
 
-  // eslint-disable-next-line functional/prefer-readonly-type
   public uploadResults: UploadResults = {
     ambiguousMatches: [],
     recordCounts: {},

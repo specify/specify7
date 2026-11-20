@@ -275,9 +275,11 @@ export function crossReferenceMappingFiles(
     if (existing === undefined) {
       byName.set(f.uploadFile.file.name, f);
     } else {
-      // Keep the "better" entry: real file > placeholder,
-      // File instance > plain object (serialized from server),
-      // row with mappingMatchValue > row without
+      /*
+       * Keep the "better" entry: real file > placeholder,
+       * File instance > plain object (serialized from server),
+       * row with mappingMatchValue > row without
+       */
       const existingIsPlaceholder =
         existing.status?.type === 'cancelled' &&
         existing.status.reason === 'fileMissing';
@@ -314,21 +316,7 @@ export function crossReferenceMappingFiles(
   for (const row of mappingData) {
     const existing = byName.get(row.fileName);
 
-    if (existing !== undefined) {
-      // Only emit once per filename even if CSV has duplicate rows
-      if (matchedFileNames.has(row.fileName)) continue;
-      matchedFileNames.add(row.fileName);
-      result.push({
-        ...existing,
-        uploadFile: {
-          ...existing.uploadFile,
-          // Always take the match value from the CSV – it is the source of truth
-          parsedName: row.matchValue,
-          mappingMatchValue: row.matchValue,
-          mappingFileName: row.fileName,
-        },
-      });
-    } else {
+    if (existing === undefined) {
       // File not yet uploaded — add placeholder (once per filename)
       if (matchedFileNames.has(row.fileName)) continue;
       matchedFileNames.add(row.fileName);
@@ -342,6 +330,20 @@ export function crossReferenceMappingFiles(
         status: {
           type: 'cancelled' as const,
           reason: 'fileMissing' as const,
+        },
+      });
+    } else {
+      // Only emit once per filename even if CSV has duplicate rows
+      if (matchedFileNames.has(row.fileName)) continue;
+      matchedFileNames.add(row.fileName);
+      result.push({
+        ...existing,
+        uploadFile: {
+          ...existing.uploadFile,
+          // Always take the match value from the CSV – it is the source of truth
+          parsedName: row.matchValue,
+          mappingMatchValue: row.matchValue,
+          mappingFileName: row.fileName,
         },
       });
     }
@@ -405,7 +407,6 @@ const validationPromiseGenerator = async (
   }>('/stored_query/ephemeral/', {
     method: 'POST',
     headers: {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       Accept: 'application/json',
     },
     body: keysToLowerCase({

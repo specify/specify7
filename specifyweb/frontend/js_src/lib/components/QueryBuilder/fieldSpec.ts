@@ -60,19 +60,14 @@ function extractDatePart(fieldName: string): {
 export class QueryFieldSpec {
   public readonly baseTable: SpecifyTable;
 
-  // eslint-disable-next-line functional/prefer-readonly-type
   public joinPath: RA<LiteralField | Relationship> = [];
 
-  // eslint-disable-next-line functional/prefer-readonly-type
   public table: SpecifyTable;
 
-  // eslint-disable-next-line functional/prefer-readonly-type
   public datePart: DatePart | undefined = undefined;
 
-  // eslint-disable-next-line functional/prefer-readonly-type
   public treeRank: string | undefined = undefined;
 
-  // eslint-disable-next-line functional/prefer-readonly-type
   public parser: Parser = {};
 
   /**
@@ -81,7 +76,7 @@ export class QueryFieldSpec {
    * They are returned in the back-end response, but they are not
    * visible in the results table, unless user explicitly adds them.
    */
-  // eslint-disable-next-line functional/prefer-readonly-type
+
   public isPhantom: boolean = false;
 
   public constructor(baseTable: SpecifyTable) {

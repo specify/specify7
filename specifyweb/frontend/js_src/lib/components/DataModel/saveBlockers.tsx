@@ -26,8 +26,7 @@ const saveBlockers = new WeakMap<
 
 type ResourceBlockers = {
   readonly blockers: RA<Blocker>;
-  // eslint-disable-next-line eslint-comments/disable-enable-pair
-  /* eslint-disable functional/prefer-readonly-type */
+
   readonly listeners: Map<
     LiteralField | Relationship,
     RA<(blocker: BlockerWithResource) => boolean>

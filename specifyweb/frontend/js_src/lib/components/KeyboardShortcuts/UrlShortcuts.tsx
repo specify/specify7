@@ -23,11 +23,11 @@ import { rawUserToolsPromise } from '../Header/userToolDefinitions';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import type { PreferenceRendererProps } from '../Preferences/types';
 import type { EnhancedRoute } from '../Router/RouterUtils';
+import type { KeyboardShortcuts } from './config';
 import {
   ShortcutConflictWarning,
   UrlShortcutConflictProvider,
 } from './Conflicts';
-import type { KeyboardShortcuts } from './config';
 import { emptyShortcuts, KeyboardShortcutPreferenceItem } from './Shortcuts';
 import { localizeKeyboardShortcut, resolvePlatformShortcuts } from './utils';
 
@@ -186,14 +186,14 @@ function EditorDialog({
       >
         <H3>{preferencesText.pages()}</H3>
         <RouteBrowser
-          routes={categorizedRoutes.pages}
           excludedPaths={shortcutToolPaths}
+          routes={categorizedRoutes.pages}
           value={localValue}
         />
         <H3>{preferencesText.overlays()}</H3>
         <RouteBrowser
-          routes={categorizedRoutes.overlays}
           excludedPaths={shortcutToolPaths}
+          routes={categorizedRoutes.overlays}
           value={localValue}
         />
         <H3>{preferencesText.customPages()}</H3>
@@ -543,8 +543,8 @@ export function UrlField({
         }
         try {
           const trimmed = target.value.trim();
-          const isRelativePath = /^(?:\/|\.\.?\/|[?#])/u.test(trimmed);
-          const hasScheme = /^[a-z][a-z\d+.-]*:/iu.test(trimmed);
+          const isRelativePath = /^(?:[#/?]|\.\.?\/)/u.test(trimmed);
+          const hasScheme = /^[a-z][\d+\-.a-z]*:/iu.test(trimmed);
           const destination =
             isRelativePath || hasScheme ? trimmed : `https://${trimmed}`;
           const url = new URL(destination, globalThis.location.href);

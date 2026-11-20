@@ -1,12 +1,13 @@
 import type Handsontable from 'handsontable';
 
 import { ajax } from '../../utils/ajax';
+import { ping } from '../../utils/ajax/ping';
 import { f } from '../../utils/functools';
 import type { RA, WritableArray } from '../../utils/types';
 import { uploadFile } from '../Attachments/attachments';
 import type {
-  SerializedResource,
   SerializedRecord,
+  SerializedResource,
 } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import {
@@ -22,7 +23,6 @@ import type {
 } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
 import type { Dataset } from '../WbPlanView/Wrapped';
-import { ping } from '../../utils/ajax/ping';
 
 export const ATTACHMENTS_COLUMN = '_UPLOADED_ATTACHMENTS';
 export const BASE_TABLE_NAME = 'baseTable' as const;

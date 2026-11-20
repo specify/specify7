@@ -59,7 +59,6 @@ function RollbackConfirmation({
   const loading = React.useContext(LoadingContext);
   return (
     <Dialog
-      icon={dialogIcons.question}
       buttons={
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
@@ -83,6 +82,7 @@ function RollbackConfirmation({
         container: dialogClassNames.narrowContainer,
       }}
       header={viewerLocalization.undoConfirm}
+      icon={dialogIcons.question}
       onClose={handleClose}
     >
       {viewerLocalization.undoStartDescription}

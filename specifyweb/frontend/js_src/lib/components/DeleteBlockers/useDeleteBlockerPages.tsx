@@ -1,11 +1,12 @@
 import React from 'react';
-import { SpecifyResource } from '../DataModel/legacyTypes';
-import { AnySchema } from '../DataModel/helperTypes';
-import { Relationship } from '../DataModel/specifyField';
-import { DeleteBlockerLRUPage } from './pageCache';
-import { PageMetaData } from '../FormSliders/RecordSelectorFromPage';
-import { useDeleteBlockerStore } from './Context';
+
 import { useLiveState } from '../../hooks/useLiveState';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { Relationship } from '../DataModel/specifyField';
+import type { PageMetaData } from '../FormSliders/RecordSelectorFromPage';
+import { useDeleteBlockerStore } from './Context';
+import type { DeleteBlockerLRUPage } from './pageCache';
 import { useRelationshipReferenceCount } from './useReferenceCount';
 
 export function useDeleteBlockerPages(
@@ -42,10 +43,12 @@ export function useDeleteBlockerPages(
     store.getCachedPage(resource, relationship, pageCursor.anchor)
   );
 
-  // When the cursor changes, this useEffect tells the DeleteBlockerStore to
-  // fetch the page
-  // The useSyncExternalStore will update deleteBlockerPage when the promise
-  // resolves and the blockers are cached
+  /*
+   * When the cursor changes, this useEffect tells the DeleteBlockerStore to
+   * fetch the page
+   * The useSyncExternalStore will update deleteBlockerPage when the promise
+   * resolves and the blockers are cached
+   */
   React.useEffect(() => {
     store.filterBlockers(
       resource,

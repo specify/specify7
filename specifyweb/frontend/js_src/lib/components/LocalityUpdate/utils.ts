@@ -6,8 +6,8 @@ import { f } from '../../utils/functools';
 import type { IR, RA, RR } from '../../utils/types';
 import { tables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
-import type { LocalityUpdateHeader, LocalityUpdateTaskStatus } from './types';
 import { resolveBackendParsingMessage } from '../WorkBench/resultMessageResolvers';
+import type { LocalityUpdateHeader, LocalityUpdateTaskStatus } from './types';
 
 const localityUpdateAcceptedLocalityFields: RA<
   Lowercase<keyof Tables['Locality']['fields']>

@@ -7,8 +7,8 @@ import { Button } from '../Atoms/Button';
 import { Input, Select } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { genericTables } from '../DataModel/tables';
-import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { TableIcon } from '../Molecules/TableIcon';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 
 /** Return the localized label for a field, falling back to camelToHuman. */
 function fieldLabel(tableName: string, fieldName: string): string {
@@ -22,8 +22,7 @@ function fieldLabel(tableName: string, fieldName: string): string {
 function tableLabel(tableName: string): string {
   return (
     (genericTables[tableName as keyof typeof genericTables]?.label as
-      | string
-      | undefined) ?? camelToHuman(tableName)
+      string | undefined) ?? camelToHuman(tableName)
   );
 }
 

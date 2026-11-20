@@ -49,8 +49,7 @@ export const f = {
   /** Like Promise.all, but accepts a dictionary instead of an array */
   all: async <T extends IR<unknown>>(dictionary: {
     readonly [PROMISE_NAME in keyof T]:
-      | Promise<T[PROMISE_NAME]>
-      | T[PROMISE_NAME];
+      Promise<T[PROMISE_NAME]> | T[PROMISE_NAME];
   }): Promise<T> =>
     Object.fromEntries(
       await Promise.all(
@@ -158,7 +157,7 @@ export const f = {
    */
   fastParseInt(value: string): number {
     // TODO: update babel config to not polyfil Number.parseInt and then replace fastParseInt usages with Number.parseInt
-    // eslint-disable-next-line unicorn/prefer-math-trunc, no-bitwise
+    // eslint-disable-next-line no-bitwise
     return (value as unknown as number) | 0;
   },
   /** Like f.parseInt, but for floats */

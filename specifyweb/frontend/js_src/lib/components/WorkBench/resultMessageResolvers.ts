@@ -124,7 +124,7 @@ function getSchemaFieldLabel(
   tableName: string,
   fieldName: string
 ): LocalizedString {
-  const lookupFieldName = fieldName.split('__').join('.');
+  const lookupFieldName = fieldName.replaceAll('__', '.');
   return (
     getTable(tableName)?.getField(lookupFieldName)?.label ??
     localized(fieldName)

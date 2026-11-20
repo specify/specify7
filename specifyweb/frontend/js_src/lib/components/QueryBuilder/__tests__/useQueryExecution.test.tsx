@@ -1,8 +1,8 @@
 import { act, renderHook } from '@testing-library/react';
 
-import { hasPermission } from '../../Permissions/helpers';
 import type { SerializedResource } from '../../DataModel/helperTypes';
 import type { SpQuery } from '../../DataModel/types';
+import { hasPermission } from '../../Permissions/helpers';
 import { useQueryExecution } from '../useQueryExecution';
 
 jest.mock('../../Permissions/helpers', () => ({

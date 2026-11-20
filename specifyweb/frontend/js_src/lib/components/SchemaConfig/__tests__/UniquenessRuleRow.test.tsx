@@ -149,16 +149,12 @@ test('exports the actual two-column CSV with headers and every duplicate group',
   expect(fileName).toMatch(/\.csv$/u);
   if (typeof csv !== 'string')
     throw new TypeError('Expected exported CSV to be a text string');
-  const records = await new Promise<Array<Record<string, string>>>(
+  const records = await new Promise<Record<string, string>[]>(
     (resolve, reject) => {
-      parse(
-        csv,
-        { columns: true },
-        (error, data: Array<Record<string, string>>) => {
-          if (error === undefined) resolve(data);
-          else reject(error);
-        }
-      );
+      parse(csv, { columns: true }, (error, data: Record<string, string>[]) => {
+        if (error === undefined) resolve(data);
+        else reject(error);
+      });
     }
   );
   expect(records).toEqual([

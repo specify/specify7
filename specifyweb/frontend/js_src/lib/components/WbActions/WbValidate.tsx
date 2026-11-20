@@ -30,8 +30,10 @@ export function WbValidate({
   );
   const [isLiveValidateOn, _, __, toggleLiveValidate] = useBooleanState();
 
-  // When in Batch Edit, we need to make sure live validation
-  // is stopped since the toggle is not rendered to turn it off manually.
+  /*
+   * When in Batch Edit, we need to make sure live validation
+   * is stopped since the toggle is not rendered to turn it off manually.
+   */
   React.useEffect(() => {
     if (!isInWorkBench) validation.stopLiveValidation();
   }, [isInWorkBench, validation]);

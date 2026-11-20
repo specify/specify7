@@ -138,7 +138,6 @@ export function WbUpload({
 
       {showUpload && (
         <Dialog
-          icon={dialogIcons.question}
           buttons={
             <>
               <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
@@ -148,6 +147,7 @@ export function WbUpload({
             </>
           }
           header={viewerLocalization.doStart}
+          icon={dialogIcons.question}
           onClose={closeUpload}
         >
           <div className="flex flex-col gap-4">

@@ -55,8 +55,8 @@ test('warns after recording a duplicate, accepts it, and clears after reassignme
   const onChange = jest.fn();
   const { user } = mount(
     <ShortcutConflictProvider
-      preferences={preferences}
       definitions={definitions}
+      preferences={preferences}
     >
       <KeyboardShortcutPreferenceItem
         shortcutId="/example"
@@ -78,13 +78,13 @@ test('does not warn for its own assignment or bindings on another platform', asy
   const preferences = createPreferences();
   const { rerender } = mount(
     <ShortcutConflictProvider
-      preferences={preferences}
       definitions={definitions}
+      preferences={preferences}
     >
       <KeyboardShortcutPreferenceItem
         category="form"
-        subcategory="actions"
         item="save"
+        subcategory="actions"
         value={{ other: ['Ctrl+KeyS'] }}
       />
     </ShortcutConflictProvider>
@@ -92,8 +92,8 @@ test('does not warn for its own assignment or bindings on another platform', asy
   expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   rerender(
     <ShortcutConflictProvider
-      preferences={preferences}
       definitions={definitions}
+      preferences={preferences}
     >
       <KeyboardShortcutPreferenceItem
         shortcutId="/example"
@@ -133,8 +133,8 @@ test('checks the redirected preference instance when editing another user', asyn
   mount(
     <preferences.Context.Provider value={redirected}>
       <ShortcutConflictProvider
-        preferences={preferences}
         definitions={definitions}
+        preferences={preferences}
       >
         <KeyboardShortcutPreferenceItem
           shortcutId="/example"
@@ -175,16 +175,16 @@ test('allows sharing between contextual groups but warns within a group and for 
   });
   const content = (urls: boolean) => (
     <ShortcutConflictProvider
-      preferences={preferences}
       definitions={scopedDefinitions}
+      preferences={preferences}
     >
       <UrlShortcutConflictProvider
         value={urls ? { '/global': { other: ['Ctrl+KeyS'] } } : {}}
       >
         <KeyboardShortcutPreferenceItem
           category="treeEditor"
-          subcategory="actions"
           item="edit"
+          subcategory="actions"
           value={{ other: ['Ctrl+KeyS'] }}
         />
       </UrlShortcutConflictProvider>
@@ -207,8 +207,8 @@ test('shows friendly route names and preserves unknown custom URLs', async () =>
   const preferences = createPreferences();
   mount(
     <ShortcutConflictProvider
-      preferences={preferences}
       definitions={definitions}
+      preferences={preferences}
     >
       <UrlShortcutConflictProvider
         value={{
