@@ -5,10 +5,11 @@ import { overrideAjax } from '../../../tests/ajax';
 import { mockTime, requireContext } from '../../../tests/helpers';
 import type { RA } from '../../../utils/types';
 import { overwriteReadOnly } from '../../../utils/types';
+import { businessRuleDefs } from '../businessRuleDefs';
 import { cogTypes } from '../helpers';
 import type { SerializedResource } from '../helperTypes';
 import { getResourceApiUrl } from '../resource';
-import { useSaveBlockers } from '../saveBlockers';
+import { getFieldBlockers, useSaveBlockers } from '../saveBlockers';
 import { schema } from '../schema';
 import type { SpecifyTable } from '../specifyTable';
 import { tables } from '../tables';
@@ -90,11 +91,26 @@ describe('Collection Object business rules', () => {
 
   overrideAjax(getResourceApiUrl('Taxon', otherTaxonId), otherTaxon);
 
+  const matchingTaxonId = 2;
+  const matchingTaxon: Partial<SerializedResource<Taxon>> = {
+    id: matchingTaxonId,
+    isAccepted: true,
+    rankId: 10,
+    definition: getResourceApiUrl('TaxonTreeDef', 1),
+    resource_uri: getResourceApiUrl('Taxon', matchingTaxonId),
+  };
+  overrideAjax(getResourceApiUrl('Taxon', matchingTaxonId), matchingTaxon);
+
   const collectionObjectlId = 2;
   const collectionObjectUrl = getResourceApiUrl(
     'CollectionObject',
     collectionObjectlId
   );
+  overrideAjax(collectionObjectUrl, {
+    id: collectionObjectlId,
+    collectionObjectType: collectionObjectTypeUrl,
+    resource_uri: collectionObjectUrl,
+  });
 
   const getBaseCollectionObject = () =>
     new tables.CollectionObject.Resource({
@@ -159,6 +175,88 @@ describe('Collection Object business rules', () => {
   overrideAjax(otherCollectionObjectTypeUrl, otherCollectionObjectType);
 
   describe('determinations', () => {
+    test('Determination taxon validation uses the locally edited parent type', async () => {
+      const collectionObject = getBaseCollectionObject();
+      const determination =
+        collectionObject.getDependentResource('determinations')!.models[0];
+      determination.set('collectionObject', collectionObjectUrl);
+      const persistedParent =
+        await determination.rgetPromise('collectionObject');
+      expect(persistedParent?.get('collectionObjectType')).toBe(
+        collectionObjectTypeUrl
+      );
+      const { result } = renderHook(() =>
+        useSaveBlockers(determination, tables.Determination.getField('Taxon'))
+      );
+
+      await act(async () => {
+        // The persisted parent has type 1; the local parent has type 2.
+        collectionObject.set(
+          'collectionObjectType',
+          otherCollectionObjectTypeUrl
+        );
+        await collectionObject.businessRuleManager?.checkField(
+          'collectionObjectType'
+        );
+        await collectionObject.businessRuleManager?.pendingPromise;
+      });
+      expect(persistedParent).not.toBe(collectionObject);
+      expect(persistedParent?.get('collectionObjectType')).toBe(
+        collectionObjectTypeUrl
+      );
+      await act(async () => {
+        const check = await businessRuleDefs.Determination!.fieldChecks!.taxon!(
+          determination,
+          tables.Determination.strictGetRelationship('taxon')
+        );
+        if (check?.isValid) check.action?.();
+        expect(
+          getFieldBlockers(determination, tables.Determination.field.taxon)
+        ).toStrictEqual([]);
+      });
+      expect(result.current[0]).toStrictEqual([]);
+
+      await act(async () => {
+        determination.set('taxon', getResourceApiUrl('Taxon', matchingTaxonId));
+        await determination.businessRuleManager?.checkField('taxon');
+      });
+      expect(result.current[0]).toStrictEqual([
+        resourcesText.invalidDeterminationTaxon(),
+      ]);
+
+      await act(async () => {
+        determination.set('taxon', getResourceApiUrl('Taxon', otherTaxonId));
+        await determination.businessRuleManager?.checkField('taxon');
+      });
+      expect(result.current[0]).toStrictEqual([]);
+    });
+
+    test('Determination taxon changes validate and clear the tree blocker', async () => {
+      const collectionObject = getBaseCollectionObject();
+      collectionObject.set(
+        'collectionObjectType',
+        getResourceApiUrl('CollectionObjectType', 1)
+      );
+      const determination =
+        collectionObject.getDependentResource('determinations')?.models[0];
+      const { result } = renderHook(() =>
+        useSaveBlockers(determination, tables.Determination.getField('Taxon'))
+      );
+
+      await act(async () => {
+        await determination?.businessRuleManager?.checkField('taxon');
+      });
+      expect(result.current[0]).toStrictEqual([
+        resourcesText.invalidDeterminationTaxon(),
+      ]);
+
+      determination?.set('taxon', getResourceApiUrl('Taxon', matchingTaxonId));
+      await act(async () => {
+        await determination?.businessRuleManager?.checkField('taxon');
+      });
+      expect(result.current[0]).toStrictEqual([]);
+    });
+
     test('CollectionObject -> determinations: Save blocked when a determination does not belong to COT tree', async () => {
       const collectionObject = getBaseCollectionObject();
       collectionObject.set(
@@ -191,6 +289,29 @@ describe('Collection Object business rules', () => {
           'collectionObjectType'
         );
       });
+      expect(result.current[0]).toStrictEqual([]);
+    });
+
+    test('CollectionObject -> determinations: An unassigned taxon does not block save', async () => {
+      const collectionObject = getBaseCollectionObject();
+      collectionObject.set(
+        'collectionObjectType',
+        getResourceApiUrl('CollectionObjectType', 1)
+      );
+      const determination =
+        collectionObject.getDependentResource('determinations')?.models[0];
+      determination?.set('taxon', null);
+
+      const { result } = renderHook(() =>
+        useSaveBlockers(determination, tables.Determination.getField('Taxon'))
+      );
+
+      await act(async () => {
+        await collectionObject.businessRuleManager?.checkField(
+          'collectionObjectType'
+        );
+      });
+
       expect(result.current[0]).toStrictEqual([]);
     });
 

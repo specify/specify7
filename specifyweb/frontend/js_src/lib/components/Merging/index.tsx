@@ -38,6 +38,7 @@ import {
   autoMerge,
   buildInitialMergedResource,
   postMergeResource,
+  reconcileCurrentDeterminations,
 } from './autoMerge';
 import { CompareRecords } from './Compare';
 import { recordMergingTableSpec } from './definitions';
@@ -316,7 +317,10 @@ function Merging({
               },
               body: {
                 old_record_ids: clones.map((clone) => clone.id),
-                new_record_data: merged.toJSON(),
+                new_record_data: reconcileCurrentDeterminations(
+                  table,
+                  merged.toJSON() as SerializedResource<AnySchema>
+                ),
               },
               expectedErrors: [Http.NOT_ALLOWED],
               errorMode: 'dismissible',

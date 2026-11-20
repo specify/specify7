@@ -26,4 +26,5 @@ export const recordMergingTableSpec: Partial<{
   Locality: {},
   PaleoContext: {},
   CollectingEvent: {},
+  CollectionObject: {},
 };

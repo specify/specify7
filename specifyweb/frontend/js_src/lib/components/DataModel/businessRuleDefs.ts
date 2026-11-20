@@ -83,6 +83,25 @@ type MappedBusinessRuleDefs = {
   readonly [TABLE in keyof Tables]?: BusinessRuleDefs<Tables[TABLE]>;
 };
 
+function updateDeterminationTaxonSaveBlocker(
+  determination: SpecifyResource<Determination>,
+  taxon: SpecifyResource<Taxon> | null,
+  coTypeTreeDef: string | null | undefined
+): () => void {
+  const taxonTreeDef = taxon?.get('definition');
+  const isValid =
+    taxon === null ||
+    (typeof taxonTreeDef === 'string' && taxonTreeDef === coTypeTreeDef);
+
+  return () =>
+    setSaveBlockers(
+      determination,
+      determination.specifyTable.field.taxon,
+      isValid ? [] : [resourcesText.invalidDeterminationTaxon()],
+      DETERMINATION_TAXON_KEY
+    );
+}
+
 export const businessRuleDefs: MappedBusinessRuleDefs = {
   Address: {
     fieldChecks: {
@@ -184,19 +203,13 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         const coTypeTreeDef = coType.get('taxonTreeDef');
 
         // Block save when a Determination -> Taxon does not belong to the COType's tree definition
-        determinations.models.forEach((determination, index) => {
-          const taxon = taxons[index];
-          const taxonTreeDef = taxon?.get('definition');
-          const isValid =
-            typeof taxonTreeDef === 'string' && taxonTreeDef === coTypeTreeDef;
-
-          setSaveBlockers(
+        determinations.models.forEach((determination, index) =>
+          updateDeterminationTaxonSaveBlocker(
             determination,
-            determination.specifyTable.field.taxon,
-            isValid ? [] : [resourcesText.invalidDeterminationTaxon()],
-            DETERMINATION_TAXON_KEY
-          );
-        });
+            taxons[index],
+            coTypeTreeDef
+          )()
+        );
 
         return undefined;
       },
@@ -590,7 +603,21 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
       ): Promise<BusinessRuleResult | undefined> =>
         determination
           .rgetPromise('taxon', true)
-          .then((taxon: SpecifyResource<Taxon> | null) => {
+          .then(async (taxon: SpecifyResource<Taxon> | null) => {
+            const related = determination.collection?.related;
+            const collectionObject =
+              related?.specifyTable === tables.CollectionObject
+                ? (related as SpecifyResource<CollectionObject>)
+                : await determination.rgetPromise('collectionObject');
+            const collectionObjectType = await collectionObject?.rgetPromise(
+              'collectionObjectType'
+            );
+            const updateSaveBlocker = updateDeterminationTaxonSaveBlocker(
+              determination,
+              taxon,
+              collectionObjectType?.get('taxonTreeDef')
+            );
+
             const getLastAccepted = async (
               taxon: SpecifyResource<Taxon>
             ): Promise<SpecifyResource<Taxon>> =>
@@ -603,15 +630,20 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
             return taxon === null
               ? {
                   isValid: true,
-                  action: () => determination.set('preferredTaxon', null),
+                  action: () => {
+                    updateSaveBlocker();
+                    determination.set('preferredTaxon', null);
+                  },
                 }
               : {
                   isValid: true,
-                  action: async () =>
+                  action: async () => {
+                    updateSaveBlocker();
                     determination.set(
                       'preferredTaxon',
                       await getLastAccepted(taxon)
-                    ),
+                    );
+                  },
                 };
           }),
       isCurrent: async (determination): Promise<BusinessRuleResult> => {

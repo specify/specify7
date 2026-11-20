@@ -40,7 +40,7 @@ export function autoMerge(
     .filter((fieldName) => !specialFields.has(fieldName))
     .map((fieldName) => table.strictGetField(fieldName));
 
-  return addMissingFields(
+  const merged = addMissingFields(
     table.name,
     mergeDependentFields(
       resources,
@@ -52,6 +52,91 @@ export function autoMerge(
       )
     )
   );
+  return preserveCollectionObjectMergeTarget(
+    table,
+    resources,
+    targetId,
+    reconcileCurrentDeterminations(table, merged)
+  );
+}
+
+/** Keep CollectionObject determinations valid when their dependent rows merge. */
+export function reconcileCurrentDeterminations(
+  table: SpecifyTable,
+  resource: SerializedResource<AnySchema>
+): SerializedResource<AnySchema> {
+  if (table.name !== 'CollectionObject') return resource;
+  const determinations = (
+    resource as SerializedResource<AnySchema> & {
+      readonly determinations?: unknown;
+    }
+  ).determinations;
+  if (!Array.isArray(determinations)) return resource;
+
+  const currentDeterminations = determinations.filter(
+    (determination) =>
+      typeof determination === 'object' &&
+      determination !== null &&
+      'isCurrent' in determination &&
+      determination.isCurrent === true
+  );
+  const currentToKeep = currentDeterminations[0];
+  const reconciledDeterminations =
+    currentDeterminations.length <= 1
+      ? determinations
+      : determinations.map((determination) =>
+          typeof determination === 'object' && determination !== null
+            ? {
+                ...determination,
+                isCurrent: determination === currentToKeep,
+              }
+            : determination
+        );
+
+  const deduplicatedDeterminations: unknown[] = [];
+  const determinationsByKey = new Map<string, number>();
+  reconciledDeterminations.forEach((determination) => {
+    if (typeof determination !== 'object' || determination === null) {
+      deduplicatedDeterminations.push(determination);
+      return;
+    }
+
+    const determinationWithoutCurrent = { ...determination } as Record<
+      string,
+      unknown
+    >;
+    delete determinationWithoutCurrent.isCurrent;
+    const key = JSON.stringify(
+      resourceToGeneric(
+        determinationWithoutCurrent as SerializedResource<AnySchema>,
+        false
+      )
+    );
+    const existingIndex = determinationsByKey.get(key);
+    if (existingIndex === undefined) {
+      determinationsByKey.set(key, deduplicatedDeterminations.length);
+      deduplicatedDeterminations.push(determination);
+      return;
+    }
+
+    const existing = deduplicatedDeterminations[existingIndex] as Record<
+      string,
+      unknown
+    >;
+    const preferIncoming =
+      typeof determination.id === 'number' && typeof existing.id !== 'number';
+    const selected = preferIncoming ? determination : existing;
+    deduplicatedDeterminations[existingIndex] = {
+      ...selected,
+      isCurrent:
+        existing.isCurrent === true || determination.isCurrent === true,
+    };
+  });
+
+  return {
+    ...resource,
+    determinations: deduplicatedDeterminations,
+  } as unknown as SerializedResource<AnySchema>;
 }
 
 export async function buildInitialMergedResource(
@@ -60,7 +145,7 @@ export async function buildInitialMergedResource(
   shouldAutoPopulate: boolean,
   targetId?: number
 ): Promise<SerializedResource<AnySchema>> {
-  return (
+  const merged = (
     shouldAutoPopulate
       ? await postMergeResource(
           resources,
@@ -71,6 +156,12 @@ export async function buildInitialMergedResource(
           getPreservedFieldsWithoutAutoPopulate(table, resources, targetId)
         )
   ) as SerializedResource<AnySchema>;
+  return preserveCollectionObjectMergeTarget(
+    table,
+    resources,
+    targetId,
+    merged
+  );
 }
 
 const preservedFieldsWithoutAutoPopulate: Partial<
@@ -104,6 +195,24 @@ const getTargetResource = (
   targetId === undefined
     ? resources[0]
     : (resources.find(({ id }) => id === targetId) ?? resources[0]);
+
+const preserveCollectionObjectMergeTarget = (
+  table: SpecifyTable,
+  resources: RA<SerializedResource<AnySchema>>,
+  targetId: number | undefined,
+  merged: SerializedResource<AnySchema>
+): SerializedResource<AnySchema> => {
+  if (table.name !== 'CollectionObject' || targetId === undefined)
+    return merged;
+  const target = getTargetResource(resources, targetId);
+  return target === undefined
+    ? merged
+    : {
+        ...merged,
+        id: targetId,
+        catalogNumber: target.catalogNumber,
+      };
+};
 
 const getSharedNumberFieldValue = (
   resources: RA<SerializedResource<AnySchema>>,
@@ -218,7 +327,8 @@ function mergeField(
         });
 
         return resourcesToReturn.map((resource) => JSON.parse(resource));
-      } else
+      } else if (nonFalsyValues.length === 0) return null;
+      else
         return autoMerge(
           field.relatedTable,
           nonFalsyValues as unknown as RA<SerializedResource<AnySchema>>,
