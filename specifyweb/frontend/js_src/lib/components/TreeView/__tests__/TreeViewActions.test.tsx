@@ -154,6 +154,18 @@ function makeRow(overrides: Partial<Row> = {}): Row {
   };
 }
 
+const withProviders = (element: JSX.Element): JSX.Element => (
+  <MemoryRouter>
+    <LoadingContext.Provider value={f.void}>
+      <UnloadProtectsContext.Provider value={[]}>
+        <SetUnloadProtectsContext.Provider value={f.void}>
+          {element}
+        </SetUnloadProtectsContext.Provider>
+      </UnloadProtectsContext.Provider>
+    </LoadingContext.Provider>
+  </MemoryRouter>
+);
+
 function renderActions(
   tableName: AnyTree['tableName'],
   focusedRow: Row,
@@ -161,25 +173,53 @@ function renderActions(
   focusPath: GetSet<RA<number>> = [[], jest.fn()]
 ): ReturnType<typeof mount> {
   return mount(
-    <MemoryRouter>
-      <LoadingContext.Provider value={f.void}>
-        <UnloadProtectsContext.Provider value={[]}>
-          <SetUnloadProtectsContext.Provider value={f.void}>
-            <TreeViewActions
-              actionRow={undefined}
-              focusPath={focusPath}
-              focusRef={{ current: null }}
-              focusedRow={focusedRow}
-              ranks={ranks}
-              tableName={tableName}
-              onChange={jest.fn()}
-              onRefresh={handleRefresh}
-            />
-          </SetUnloadProtectsContext.Provider>
-        </UnloadProtectsContext.Provider>
-      </LoadingContext.Provider>
-    </MemoryRouter>
+    withProviders(
+      <TreeViewActions
+        actionRow={undefined}
+        focusPath={focusPath}
+        focusRef={{ current: null }}
+        focusedRow={focusedRow}
+        ranks={ranks}
+        tableName={tableName}
+        onChange={jest.fn()}
+        onRefresh={handleRefresh}
+      />
+    )
   );
+}
+
+function renderTreeViewer(
+  tableName: AnyTree['tableName'],
+  selectedRow: Row,
+  handleRefresh: () => void
+): {
+  readonly user: ReturnType<typeof mount>['user'];
+  readonly selectRow: (row: Row) => void;
+} {
+  let setSelectedRow: (row: Row) => void = f.void;
+  function TreeViewer(): JSX.Element {
+    const [focusedRow, setFocusedRow] = React.useState<Row>(selectedRow);
+    const [actionRow, setActionRow] = React.useState<Row | undefined>(
+      undefined
+    );
+    setSelectedRow = setFocusedRow;
+    return (
+      <TreeViewActions
+        actionRow={actionRow}
+        focusPath={[[], jest.fn()]}
+        focusRef={{ current: null }}
+        focusedRow={focusedRow}
+        ranks={ranks}
+        tableName={tableName}
+        onChange={setActionRow}
+        onRefresh={handleRefresh}
+      />
+    );
+  }
+  return {
+    user: mount(withProviders(<TreeViewer />)).user,
+    selectRow: (row): void => act(() => setSelectedRow(row)),
+  };
 }
 
 const jsonContaining = (expected: Record<string, unknown>): unknown => ({
@@ -189,6 +229,17 @@ const jsonContaining = (expected: Record<string, unknown>): unknown => ({
     expect.objectContaining(expected).asymmetricMatch(JSON.parse(actual)),
   toAsymmetricMatcher: (): string =>
     `JsonContaining ${JSON.stringify(expected)}`,
+});
+
+const formDataContaining = (expected: Record<string, string>): unknown => ({
+  $$typeof: Symbol.for('jest.asymmetricMatcher'),
+  asymmetricMatch: (actual: unknown): boolean =>
+    typeof (actual as FormData | undefined)?.get === 'function' &&
+    Object.entries(expected).every(
+      ([key, value]) => (actual as FormData).get(key) === value
+    ),
+  toAsymmetricMatcher: (): string =>
+    `FormDataContaining ${JSON.stringify(expected)}`,
 });
 
 function overrideTreeView(tableName: AnyTree['tableName']): void {
@@ -741,16 +792,6 @@ describe('Move storage items to another node', () => {
   const sourceId = 30;
   const targetId = 31;
   const moveRequest = jest.fn(() => '');
-  const formDataContaining = (expected: Record<string, string>): unknown => ({
-    $$typeof: Symbol.for('jest.asymmetricMatcher'),
-    asymmetricMatch: (actual: unknown): boolean =>
-      typeof (actual as FormData | undefined)?.get === 'function' &&
-      Object.entries(expected).every(
-        ([key, value]) => (actual as FormData).get(key) === value
-      ),
-    toAsymmetricMatcher: (): string =>
-      `FormDataContaining ${JSON.stringify(expected)}`,
-  });
   (
     [
       [sourceId, 'Room 1'],
@@ -793,36 +834,10 @@ describe('Move storage items to another node', () => {
       children: 0,
     });
     const handleRefresh = jest.fn();
-    let selectRow: (row: Row) => void = f.void;
-    function TreeViewer(): JSX.Element {
-      const [focusedRow, setFocusedRow] = React.useState<Row>(source);
-      const [actionRow, setActionRow] = React.useState<Row | undefined>(
-        undefined
-      );
-      selectRow = setFocusedRow;
-      return (
-        <TreeViewActions
-          actionRow={actionRow}
-          focusPath={[[], jest.fn()]}
-          focusRef={{ current: null }}
-          focusedRow={focusedRow}
-          ranks={ranks}
-          tableName="Storage"
-          onChange={setActionRow}
-          onRefresh={handleRefresh}
-        />
-      );
-    }
-    const { user } = mount(
-      <MemoryRouter>
-        <LoadingContext.Provider value={f.void}>
-          <UnloadProtectsContext.Provider value={[]}>
-            <SetUnloadProtectsContext.Provider value={f.void}>
-              <TreeViewer />
-            </SetUnloadProtectsContext.Provider>
-          </UnloadProtectsContext.Provider>
-        </LoadingContext.Provider>
-      </MemoryRouter>
+    const { user, selectRow } = renderTreeViewer(
+      'Storage',
+      source,
+      handleRefresh
     );
 
     await user.click(
@@ -830,7 +845,7 @@ describe('Move storage items to another node', () => {
         name: new RegExp(`^${treeText.moveItems()}`, 'u'),
       })
     );
-    act(() => selectRow(target));
+    selectRow(target);
     await user.click(
       screen.getByRole('button', {
         name: treeText.moveNodePreparationsHere({
@@ -1515,16 +1530,6 @@ describe('Move', () => {
   const sourceId = 4;
   const targetId = 8;
   const moveRequest = jest.fn(() => '');
-  const formDataContaining = (expected: Record<string, string>): unknown => ({
-    $$typeof: Symbol.for('jest.asymmetricMatcher'),
-    asymmetricMatch: (actual: unknown): boolean =>
-      typeof (actual as FormData | undefined)?.get === 'function' &&
-      Object.entries(expected).every(
-        ([key, value]) => (actual as FormData).get(key) === value
-      ),
-    toAsymmetricMatcher: (): string =>
-      `FormDataContaining ${JSON.stringify(expected)}`,
-  });
   (
     [
       [sourceId, 'velifer', 'Carpiodes velifer', 220],
@@ -1563,36 +1568,10 @@ describe('Move', () => {
       children: 2,
     });
     const handleRefresh = jest.fn();
-    let selectRow: (row: Row) => void = f.void;
-    function TreeViewer(): JSX.Element {
-      const [focusedRow, setFocusedRow] = React.useState<Row>(source);
-      const [actionRow, setActionRow] = React.useState<Row | undefined>(
-        undefined
-      );
-      selectRow = setFocusedRow;
-      return (
-        <TreeViewActions
-          actionRow={actionRow}
-          focusPath={[[], jest.fn()]}
-          focusRef={{ current: null }}
-          focusedRow={focusedRow}
-          ranks={ranks}
-          tableName="Taxon"
-          onChange={setActionRow}
-          onRefresh={handleRefresh}
-        />
-      );
-    }
-    const { user } = mount(
-      <MemoryRouter>
-        <LoadingContext.Provider value={f.void}>
-          <UnloadProtectsContext.Provider value={[]}>
-            <SetUnloadProtectsContext.Provider value={f.void}>
-              <TreeViewer />
-            </SetUnloadProtectsContext.Provider>
-          </UnloadProtectsContext.Provider>
-        </LoadingContext.Provider>
-      </MemoryRouter>
+    const { user, selectRow } = renderTreeViewer(
+      'Taxon',
+      source,
+      handleRefresh
     );
 
     await user.click(
@@ -1600,7 +1579,7 @@ describe('Move', () => {
         name: new RegExp(`^${treeText.move()}(\\s|$)`, 'u'),
       })
     );
-    act(() => selectRow(target));
+    selectRow(target);
     await user.click(
       screen.getByRole('button', {
         name: treeText.moveNodeHere({ nodeName: source.fullName }),
@@ -1623,16 +1602,6 @@ describe('Merge', () => {
   const sourceId = 4;
   const targetId = 7;
   const mergeRequest = jest.fn(() => '');
-  const formDataContaining = (expected: Record<string, string>): unknown => ({
-    $$typeof: Symbol.for('jest.asymmetricMatcher'),
-    asymmetricMatch: (actual: unknown): boolean =>
-      typeof (actual as FormData | undefined)?.get === 'function' &&
-      Object.entries(expected).every(
-        ([key, value]) => (actual as FormData).get(key) === value
-      ),
-    toAsymmetricMatcher: (): string =>
-      `FormDataContaining ${JSON.stringify(expected)}`,
-  });
   (
     [
       [sourceId, 'velifer', 'Carpiodes velifer'],
@@ -1671,36 +1640,10 @@ describe('Merge', () => {
       children: 0,
     });
     const handleRefresh = jest.fn();
-    let selectRow: (row: Row) => void = f.void;
-    function TreeViewer(): JSX.Element {
-      const [focusedRow, setFocusedRow] = React.useState<Row>(source);
-      const [actionRow, setActionRow] = React.useState<Row | undefined>(
-        undefined
-      );
-      selectRow = setFocusedRow;
-      return (
-        <TreeViewActions
-          actionRow={actionRow}
-          focusPath={[[], jest.fn()]}
-          focusRef={{ current: null }}
-          focusedRow={focusedRow}
-          ranks={ranks}
-          tableName="Taxon"
-          onChange={setActionRow}
-          onRefresh={handleRefresh}
-        />
-      );
-    }
-    const { user } = mount(
-      <MemoryRouter>
-        <LoadingContext.Provider value={f.void}>
-          <UnloadProtectsContext.Provider value={[]}>
-            <SetUnloadProtectsContext.Provider value={f.void}>
-              <TreeViewer />
-            </SetUnloadProtectsContext.Provider>
-          </UnloadProtectsContext.Provider>
-        </LoadingContext.Provider>
-      </MemoryRouter>
+    const { user, selectRow } = renderTreeViewer(
+      'Taxon',
+      source,
+      handleRefresh
     );
 
     await user.click(
@@ -1708,7 +1651,7 @@ describe('Merge', () => {
         name: new RegExp(`^${treeText.merge()}(\\s|$)`, 'u'),
       })
     );
-    act(() => selectRow(target));
+    selectRow(target);
     await user.click(
       screen.getByRole('button', {
         name: treeText.mergeNodeHere({ nodeName: source.fullName }),
@@ -1731,16 +1674,6 @@ describe('Synonymize', () => {
   const sourceId = 4;
   const targetId = 7;
   const synonymizeRequest = jest.fn(() => '');
-  const formDataContaining = (expected: Record<string, string>): unknown => ({
-    $$typeof: Symbol.for('jest.asymmetricMatcher'),
-    asymmetricMatch: (actual: unknown): boolean =>
-      typeof (actual as FormData | undefined)?.get === 'function' &&
-      Object.entries(expected).every(
-        ([key, value]) => (actual as FormData).get(key) === value
-      ),
-    toAsymmetricMatcher: (): string =>
-      `FormDataContaining ${JSON.stringify(expected)}`,
-  });
   (
     [
       [sourceId, 'velifer', 'Carpiodes velifer'],
@@ -1783,36 +1716,10 @@ describe('Synonymize', () => {
       children: 0,
     });
     const handleRefresh = jest.fn();
-    let selectRow: (row: Row) => void = f.void;
-    function TreeViewer(): JSX.Element {
-      const [focusedRow, setFocusedRow] = React.useState<Row>(source);
-      const [actionRow, setActionRow] = React.useState<Row | undefined>(
-        undefined
-      );
-      selectRow = setFocusedRow;
-      return (
-        <TreeViewActions
-          actionRow={actionRow}
-          focusPath={[[], jest.fn()]}
-          focusRef={{ current: null }}
-          focusedRow={focusedRow}
-          ranks={ranks}
-          tableName="Taxon"
-          onChange={setActionRow}
-          onRefresh={handleRefresh}
-        />
-      );
-    }
-    const { user } = mount(
-      <MemoryRouter>
-        <LoadingContext.Provider value={f.void}>
-          <UnloadProtectsContext.Provider value={[]}>
-            <SetUnloadProtectsContext.Provider value={f.void}>
-              <TreeViewer />
-            </SetUnloadProtectsContext.Provider>
-          </UnloadProtectsContext.Provider>
-        </LoadingContext.Provider>
-      </MemoryRouter>
+    const { user, selectRow } = renderTreeViewer(
+      'Taxon',
+      source,
+      handleRefresh
     );
 
     await user.click(
@@ -1820,7 +1727,7 @@ describe('Synonymize', () => {
         name: new RegExp(`^${treeText.synonymize()}(\\s|$)`, 'u'),
       })
     );
-    act(() => selectRow(target));
+    selectRow(target);
     await user.click(
       screen.getByRole('button', {
         name: treeText.makeSynonym({
