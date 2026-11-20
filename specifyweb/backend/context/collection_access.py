@@ -18,6 +18,12 @@ def users_collections_for_sp6(cursor, user_id) -> list[tuple[int, str]]:
 
     return list(cursor.fetchall())
 
+def has_collection_access(collection_id: int, user_id: int) -> bool:
+    """
+    Returns whether a user has access (through Specify 7) to a specific collection
+    """
+    return query_pt(collection_id, user_id, CollectionAccessPT.access).allowed
+
 def users_collections_for_sp7(userid: int) -> list[Collection]: # pragma: no cover
     """
     Given a SpecifyUser ID, returns a list of Collections they can access
@@ -26,7 +32,7 @@ def users_collections_for_sp7(userid: int) -> list[Collection]: # pragma: no cov
     return [
         c
         for c in Collection.objects.all()
-        if query_pt(c.id, userid, CollectionAccessPT.access).allowed
+        if has_collection_access(c.pk, userid)
     ]
 
 def set_users_collections_for_sp6(cursor, user: Specifyuser, collectionids: list[int]): # pragma: no cover
