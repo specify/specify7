@@ -40,10 +40,11 @@ const makePaleoContext = (id: number, paleoContextName: string) =>
 
 // [RecordMerging] Merge multiple paleo contexts
 test('merges multiple paleo contexts', () => {
+  // Newest name is shortest so this can't pass by recency
   const records = [
-    makePaleoContext(1, 'P1'),
+    makePaleoContext(1, 'Paleo Context Number Three'),
     makePaleoContext(2, 'Paleo Context Two'),
-    makePaleoContext(3, 'Paleo Context Number Three'),
+    makePaleoContext(3, 'P3'),
   ] as RA<SerializedResource<AnySchema>>;
 
   const merged = autoMerge(tables.PaleoContext, records, false);
