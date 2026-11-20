@@ -320,7 +320,13 @@ def record_merge_fx(model_name: str, old_model_ids: list[int], new_model_id: int
         # EXAMPLE: ProtectedError: ("Cannot delete some instances of model 'Address' because they are
         # referenced through protected foreign keys:
         # 'Division.address'.", {<Division: Division object (2)>})
-        delete_obj(target_model.objects.get(id=old_model_id), clean_predelete=clean_fields_pre_delete)
+        old_object = target_model.objects.get(id=old_model_id)
+        if isinstance(old_object, spmodels.Collectionobject):
+            # The source membership is dependent data; preserve the target's
+            # membership and remove this reverse FK before deleting the source.
+            for membership in spmodels.Collectionobjectgroupjoin.objects.filter(childco=old_object):
+                delete_obj(membership, clean_predelete=clean_fields_pre_delete)
+        delete_obj(old_object, clean_predelete=clean_fields_pre_delete)
 
     # Update new record with json info, if given
     has_new_record_info = new_record_info is not None

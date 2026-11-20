@@ -9,6 +9,7 @@ from unittest.mock import patch
 class ReplaceRecordTests(ApiTests):
     def test_collection_object_merge_with_cog_memberships(self):
         from specifyweb.backend.merge.record_merging import record_merge_fx
+        from specifyweb.specify.api.crud import delete_obj
         from specifyweb.backend.businessrules.rules.cogtype_rules import (
             SYSTEM_COGTYPES_PICKLIST,
         )
@@ -41,13 +42,59 @@ class ReplaceRecordTests(ApiTests):
             parentcog=groups[1], childco=new_co, isprimary=False
         )
 
+        def fail_source_delete(obj, **kwargs):
+            if isinstance(obj, models.Collectionobject):
+                raise RuntimeError("Source deletion failed")
+            return delete_obj(obj, **kwargs)
+
+        with patch(
+            "specifyweb.backend.merge.record_merging.delete_obj",
+            side_effect=fail_source_delete,
+        ):
+            with self.assertRaisesMessage(RuntimeError, "Source deletion failed"):
+                record_merge_fx("Collectionobject", [old_co.id], new_co.id)
+
+        self.assertTrue(models.Collectionobject.objects.filter(id=old_co.id).exists())
+        self.assertTrue(
+            models.Collectionobjectgroupjoin.objects.filter(
+                childco=old_co, parentcog=groups[0]
+            ).exists()
+        )
+
         record_merge_fx("Collectionobject", [old_co.id], new_co.id)
 
         self.assertTrue(models.Collectionobject.objects.filter(id=new_co.id).exists())
         self.assertFalse(models.Collectionobject.objects.filter(id=old_co.id).exists())
         joins = models.Collectionobjectgroupjoin.objects.filter(childco=new_co)
         self.assertEqual(joins.count(), 1)
-        self.assertIsNotNone(joins.get().parentcog_id)
+        self.assertEqual(joins.get().parentcog_id, groups[1].id)
+        self.assertEqual(models.Collectionobjectgroupjoin.objects.count(), 1)
+
+    def test_collection_object_merge_with_embedded_collecting_events(self):
+        from specifyweb.backend.merge.record_merging import record_merge_fx
+
+        self.collection.isembeddedcollectingevent = True
+        self.collection.save()
+        old_co, new_co = self.collectionobjects[:2]
+        events = [
+            models.Collectingevent.objects.create(discipline=self.discipline)
+            for _ in range(2)
+        ]
+        for collection_object, event in zip((old_co, new_co), events):
+            collection_object.collectingevent = event
+            collection_object.save()
+
+        record_merge_fx("Collectionobject", [old_co.id], new_co.id)
+
+        self.assertFalse(
+            models.Collectionobject.objects.filter(id=old_co.id).exists()
+        )
+        self.assertFalse(
+            models.Collectingevent.objects.filter(id=events[0].id).exists()
+        )
+        new_co.refresh_from_db()
+        self.assertEqual(new_co.collectingevent_id, events[1].id)
+        self.assertTrue(models.Collectingevent.objects.filter(id=events[1].id).exists())
 
     def test_replace_agents(self):
         c = Client()

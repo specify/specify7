@@ -90,11 +90,26 @@ describe('Collection Object business rules', () => {
 
   overrideAjax(getResourceApiUrl('Taxon', otherTaxonId), otherTaxon);
 
+  const matchingTaxonId = 2;
+  const matchingTaxon: Partial<SerializedResource<Taxon>> = {
+    id: matchingTaxonId,
+    isAccepted: true,
+    rankId: 10,
+    definition: getResourceApiUrl('TaxonTreeDef', 1),
+    resource_uri: getResourceApiUrl('Taxon', matchingTaxonId),
+  };
+  overrideAjax(getResourceApiUrl('Taxon', matchingTaxonId), matchingTaxon);
+
   const collectionObjectlId = 2;
   const collectionObjectUrl = getResourceApiUrl(
     'CollectionObject',
     collectionObjectlId
   );
+  overrideAjax(collectionObjectUrl, {
+    id: collectionObjectlId,
+    collectionObjectType: collectionObjectTypeUrl,
+    resource_uri: collectionObjectUrl,
+  });
 
   const getBaseCollectionObject = () =>
     new tables.CollectionObject.Resource({
@@ -159,6 +174,32 @@ describe('Collection Object business rules', () => {
   overrideAjax(otherCollectionObjectTypeUrl, otherCollectionObjectType);
 
   describe('determinations', () => {
+    test('Determination taxon changes validate and clear the tree blocker', async () => {
+      const collectionObject = getBaseCollectionObject();
+      collectionObject.set(
+        'collectionObjectType',
+        getResourceApiUrl('CollectionObjectType', 1)
+      );
+      const determination =
+        collectionObject.getDependentResource('determinations')?.models[0];
+      const { result } = renderHook(() =>
+        useSaveBlockers(determination, tables.Determination.getField('Taxon'))
+      );
+
+      await act(async () => {
+        await determination?.businessRuleManager?.checkField('taxon');
+      });
+      expect(result.current[0]).toStrictEqual([
+        resourcesText.invalidDeterminationTaxon(),
+      ]);
+
+      determination?.set('taxon', getResourceApiUrl('Taxon', matchingTaxonId));
+      await act(async () => {
+        await determination?.businessRuleManager?.checkField('taxon');
+      });
+      expect(result.current[0]).toStrictEqual([]);
+    });
+
     test('CollectionObject -> determinations: Save blocked when a determination does not belong to COT tree', async () => {
       const collectionObject = getBaseCollectionObject();
       collectionObject.set(

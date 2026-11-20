@@ -5,9 +5,14 @@ import type {
   AnySchema,
   SerializedResource,
 } from '../../DataModel/helperTypes';
+import { deserializeResource } from '../../DataModel/serializers';
 import { tables } from '../../DataModel/tables';
 import type { Agent } from '../../DataModel/types';
-import { autoMerge, reconcileCurrentDeterminations } from '../autoMerge';
+import {
+  autoMerge,
+  buildInitialMergedResource,
+  reconcileCurrentDeterminations,
+} from '../autoMerge';
 
 requireContext();
 mockTime();
@@ -161,6 +166,50 @@ test('CollectionObject merge keeps at most one current determination', () => {
   ).toHaveLength(1);
 });
 
+test('autoMerge deduplicates determinations that differ only by isCurrent', () => {
+  const taxon = '/api/specify/taxon/1/';
+  const merged = autoMerge(
+    tables.CollectionObject,
+    [
+      {
+        id: 1,
+        determinations: [
+          {
+            id: 10,
+            collectionObject: '/api/specify/collectionobject/1/',
+            taxon,
+            isCurrent: false,
+            _tableName: 'Determination',
+          },
+        ],
+        _tableName: 'CollectionObject',
+      },
+      {
+        id: 2,
+        determinations: [
+          {
+            id: 20,
+            collectionObject: '/api/specify/collectionobject/2/',
+            taxon,
+            isCurrent: true,
+            _tableName: 'Determination',
+          },
+        ],
+        _tableName: 'CollectionObject',
+      },
+    ] as unknown as RA<SerializedResource<AnySchema>>,
+    false,
+    1
+  );
+
+  const determinations = merged.determinations as unknown as RA<{
+    readonly id?: number;
+    readonly isCurrent?: boolean;
+  }>;
+  expect(determinations).toHaveLength(1);
+  expect(determinations[0]).toMatchObject({ id: 10, isCurrent: true });
+});
+
 test('CollectionObject merge does not create an empty COG membership', () => {
   const merged = autoMerge(
     tables.CollectionObject,
@@ -173,4 +222,28 @@ test('CollectionObject merge does not create an empty COG membership', () => {
   );
 
   expect(merged.cojo).toBeNull();
+});
+
+test('CollectionObject merge initialization preserves an existing target', async () => {
+  const merged = await buildInitialMergedResource(
+    tables.CollectionObject,
+    [
+      {
+        id: 1,
+        catalogNumber: 'target-catalog-number',
+        _tableName: 'CollectionObject',
+      },
+      {
+        id: 2,
+        catalogNumber: 'source-catalog-number',
+        _tableName: 'CollectionObject',
+      },
+    ] as unknown as RA<SerializedResource<AnySchema>>,
+    false,
+    1
+  );
+  const resource = deserializeResource(merged);
+
+  expect(resource.isNew()).toBe(false);
+  expect(resource.get('catalogNumber')).toBe('target-catalog-number');
 });
