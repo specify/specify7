@@ -9,7 +9,7 @@ from sqlalchemy import orm, sql, or_
 
 from specifyweb.specify.datamodel import datamodel, is_tree_table
 from specifyweb.specify.models_utils.load_datamodel import Table
-from specifyweb.backend.trees.utils import get_tree_defs_in_collection, get_tree_ranks_in_collection, get_treedef_scope_filters, get_treedef_model, SPECIFY_TREES
+from specifyweb.backend.trees.utils import get_tree_ranks_in_collection, get_treedef_scope_filters, get_treedef_model, SPECIFY_TREES
 
 from specifyweb.backend.stored_queries import models
 from specifyweb.backend.stored_queries.tree_rank import TreeRankQuery
@@ -40,7 +40,7 @@ def tree_depths_in_collection(collection, tree_name: str) -> QuerySet:
 def resolve_tree_ranks(
         collection,
         tree_table_name: str,
-        rank_name: str | None = None,
+        rank_name: str,
         tree_def_id: int | None = None) -> list[tuple[int, int]]:
     """
     This is just a helper function to map trees scoped to the collection to a
@@ -49,8 +49,15 @@ def resolve_tree_ranks(
     In other words, this creates a mapping of ranks with a specific name to
     their tree definitions.
 
-    Alternatively, rank_name can be omitted or None to retrieve all ranks
-    within each tree.
+    For example: if there are two trees (a Tree A and Tree B) in the
+    collection's discipline that both have a Genus rank (Rank A for Genus in
+    Tree A and Rank B for Genus in Tree B), this function will return:
+        [(tree_a_id, rank_a_id), (tree_b_id, rank_b_id)]
+
+    The helper will only return tree and rank ids where the rank exists with
+    the given name.
+    e.g., if only Tree A has a "Genus" rank, the function will only return:
+        [(tree_a_id, rank_a_id)]
     """
     if collection is None:
         raise AssertionError(f"No Collection found in Query for {tree_table_name}")
