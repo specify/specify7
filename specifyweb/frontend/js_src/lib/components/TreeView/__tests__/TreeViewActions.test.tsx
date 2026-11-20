@@ -1618,3 +1618,111 @@ describe('Move', () => {
     expect(moveRequest).toHaveBeenCalledTimes(1);
   });
 });
+
+describe('Merge', () => {
+  const sourceId = 4;
+  const targetId = 7;
+  const mergeRequest = jest.fn(() => '');
+  const formDataContaining = (expected: Record<string, string>): unknown => ({
+    $$typeof: Symbol.for('jest.asymmetricMatcher'),
+    asymmetricMatch: (actual: unknown): boolean =>
+      typeof (actual as FormData | undefined)?.get === 'function' &&
+      Object.entries(expected).every(
+        ([key, value]) => (actual as FormData).get(key) === value
+      ),
+    toAsymmetricMatcher: (): string =>
+      `FormDataContaining ${JSON.stringify(expected)}`,
+  });
+  (
+    [
+      [sourceId, 'velifer', 'Carpiodes velifer'],
+      [targetId, 'carpio', 'Carpiodes carpio'],
+    ] as const
+  ).forEach(([id, name, fullName]) =>
+    overrideAjax(getResourceApiUrl('Taxon', id), () =>
+      addMissingFields('Taxon', {
+        id,
+        name,
+        fullName,
+        rankId: 220,
+        resource_uri: getResourceApiUrl('Taxon', id),
+      })
+    )
+  );
+  overrideAjax(`/trees/specify_tree/taxon/${sourceId}/merge/`, mergeRequest, {
+    method: 'POST',
+    responseCode: Http.OK,
+    body: formDataContaining({ target: targetId.toString() }),
+  });
+
+  test('"Merge" merges the node into the selected node', async () => {
+    const source = makeRow({
+      nodeId: sourceId,
+      name: 'velifer',
+      fullName: 'Carpiodes velifer',
+      rankId: 220,
+      children: 0,
+    });
+    const target = makeRow({
+      nodeId: targetId,
+      name: 'carpio',
+      fullName: 'Carpiodes carpio',
+      rankId: 220,
+      children: 0,
+    });
+    const handleRefresh = jest.fn();
+    let selectRow: (row: Row) => void = f.void;
+    function TreeViewer(): JSX.Element {
+      const [focusedRow, setFocusedRow] = React.useState<Row>(source);
+      const [actionRow, setActionRow] = React.useState<Row | undefined>(
+        undefined
+      );
+      selectRow = setFocusedRow;
+      return (
+        <TreeViewActions
+          actionRow={actionRow}
+          focusPath={[[], jest.fn()]}
+          focusRef={{ current: null }}
+          focusedRow={focusedRow}
+          ranks={ranks}
+          tableName="Taxon"
+          onChange={setActionRow}
+          onRefresh={handleRefresh}
+        />
+      );
+    }
+    const { user } = mount(
+      <MemoryRouter>
+        <LoadingContext.Provider value={f.void}>
+          <UnloadProtectsContext.Provider value={[]}>
+            <SetUnloadProtectsContext.Provider value={f.void}>
+              <TreeViewer />
+            </SetUnloadProtectsContext.Provider>
+          </UnloadProtectsContext.Provider>
+        </LoadingContext.Provider>
+      </MemoryRouter>
+    );
+
+    await user.click(
+      screen.getByRole('button', {
+        name: new RegExp(`^${treeText.merge()}(\\s|$)`, 'u'),
+      })
+    );
+    act(() => selectRow(target));
+    await user.click(
+      screen.getByRole('button', {
+        name: treeText.mergeNodeHere({ nodeName: source.fullName }),
+      })
+    );
+
+    const dialog = await screen.findByRole('dialog', {
+      name: treeText.mergeNode(),
+    });
+    await user.click(
+      within(dialog).getByRole('button', { name: treeText.mergeNode() })
+    );
+
+    await waitFor(() => expect(handleRefresh).toHaveBeenCalled());
+    expect(mergeRequest).toHaveBeenCalledTimes(1);
+  });
+});
