@@ -604,8 +604,11 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         determination
           .rgetPromise('taxon', true)
           .then(async (taxon: SpecifyResource<Taxon> | null) => {
+            const related = determination.collection?.related;
             const collectionObject =
-              await determination.rgetPromise('collectionObject');
+              related?.specifyTable === tables.CollectionObject
+                ? (related as SpecifyResource<CollectionObject>)
+                : await determination.rgetPromise('collectionObject');
             const collectionObjectType = await collectionObject?.rgetPromise(
               'collectionObjectType'
             );

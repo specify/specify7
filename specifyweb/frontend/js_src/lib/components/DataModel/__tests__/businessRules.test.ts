@@ -5,10 +5,11 @@ import { overrideAjax } from '../../../tests/ajax';
 import { mockTime, requireContext } from '../../../tests/helpers';
 import type { RA } from '../../../utils/types';
 import { overwriteReadOnly } from '../../../utils/types';
+import { businessRuleDefs } from '../businessRuleDefs';
 import { cogTypes } from '../helpers';
 import type { SerializedResource } from '../helperTypes';
 import { getResourceApiUrl } from '../resource';
-import { useSaveBlockers } from '../saveBlockers';
+import { getFieldBlockers, useSaveBlockers } from '../saveBlockers';
 import { schema } from '../schema';
 import type { SpecifyTable } from '../specifyTable';
 import { tables } from '../tables';
@@ -174,6 +175,62 @@ describe('Collection Object business rules', () => {
   overrideAjax(otherCollectionObjectTypeUrl, otherCollectionObjectType);
 
   describe('determinations', () => {
+    test('Determination taxon validation uses the locally edited parent type', async () => {
+      const collectionObject = getBaseCollectionObject();
+      const determination =
+        collectionObject.getDependentResource('determinations')!.models[0];
+      determination.set('collectionObject', collectionObjectUrl);
+      const persistedParent =
+        await determination.rgetPromise('collectionObject');
+      expect(persistedParent?.get('collectionObjectType')).toBe(
+        collectionObjectTypeUrl
+      );
+      const { result } = renderHook(() =>
+        useSaveBlockers(determination, tables.Determination.getField('Taxon'))
+      );
+
+      await act(async () => {
+        // The persisted parent has type 1; the local parent has type 2.
+        collectionObject.set(
+          'collectionObjectType',
+          otherCollectionObjectTypeUrl
+        );
+        await collectionObject.businessRuleManager?.checkField(
+          'collectionObjectType'
+        );
+        await collectionObject.businessRuleManager?.pendingPromise;
+      });
+      expect(persistedParent).not.toBe(collectionObject);
+      expect(persistedParent?.get('collectionObjectType')).toBe(
+        collectionObjectTypeUrl
+      );
+      await act(async () => {
+        const check = await businessRuleDefs.Determination!.fieldChecks!.taxon!(
+          determination,
+          tables.Determination.strictGetRelationship('taxon')
+        );
+        if (check?.isValid) check.action?.();
+        expect(
+          getFieldBlockers(determination, tables.Determination.field.taxon)
+        ).toStrictEqual([]);
+      });
+      expect(result.current[0]).toStrictEqual([]);
+
+      await act(async () => {
+        determination.set('taxon', getResourceApiUrl('Taxon', matchingTaxonId));
+        await determination.businessRuleManager?.checkField('taxon');
+      });
+      expect(result.current[0]).toStrictEqual([
+        resourcesText.invalidDeterminationTaxon(),
+      ]);
+
+      await act(async () => {
+        determination.set('taxon', getResourceApiUrl('Taxon', otherTaxonId));
+        await determination.businessRuleManager?.checkField('taxon');
+      });
+      expect(result.current[0]).toStrictEqual([]);
+    });
+
     test('Determination taxon changes validate and clear the tree blocker', async () => {
       const collectionObject = getBaseCollectionObject();
       collectionObject.set(
