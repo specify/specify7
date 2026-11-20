@@ -10,12 +10,25 @@ class Migration(migrations.Migration):
 
     operations = [
         # Agentidentifier
-        migrations.AddIndex(
-            model_name='agentidentifier',
-            index=models.Index(
-                fields=['identifier'],
-                name='agentidentifier_identifier_idx',
-            ),
+        # Identifier is varchar(2048) (8192 bytes in utf8mb4), which exceeds InnoDB's
+        # 3072-byte key limit. MariaDB silently shortens the key, but MySQL 8 raises
+        # error 1071 in strict mode, so create a 768-character prefix index.
+        migrations.SeparateDatabaseAndState(
+            database_operations=[
+                migrations.RunSQL(
+                    sql='CREATE INDEX `agentidentifier_identifier_idx` ON `agentidentifier` (`Identifier`(768))',
+                    reverse_sql='DROP INDEX `agentidentifier_identifier_idx` ON `agentidentifier`',
+                ),
+            ],
+            state_operations=[
+                migrations.AddIndex(
+                    model_name='agentidentifier',
+                    index=models.Index(
+                        fields=['identifier'],
+                        name='agentidentifier_identifier_idx',
+                    ),
+                ),
+            ],
         ),
         migrations.AddIndex(
             model_name='agentidentifier',
