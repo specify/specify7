@@ -16,7 +16,7 @@ import { LoadingContext } from '../../Core/Contexts';
 import { addMissingFields } from '../../DataModel/addMissingFields';
 import type { AnyTree } from '../../DataModel/helperTypes';
 import { getResourceApiUrl } from '../../DataModel/resource';
-import { tables } from '../../DataModel/tables';
+import { genericTables, tables } from '../../DataModel/tables';
 import {
   SetUnloadProtectsContext,
   UnloadProtectsContext,
@@ -271,520 +271,347 @@ function overrideTreeView(tableName: AnyTree['tableName']): void {
   });
 }
 
-describe('Add taxon', () => {
-  const parentId = 2;
-  const newNodeId = 3;
-  const speciesRankId = 2;
-  const subspeciesRankId = 22;
-  overrideTreeView('Taxon');
-  (
-    [
-      [speciesRankId, 'Species', 220],
-      [subspeciesRankId, 'Subspecies', 230],
-    ] as const
-  ).forEach(([id, name, rankId]) =>
-    overrideAjax(getResourceApiUrl('TaxonTreeDefItem', id), () =>
-      addMissingFields('TaxonTreeDefItem', {
-        id,
-        name,
+type TreeNode = {
+  readonly id: number;
+  readonly name: string;
+  readonly fullName: string;
+  readonly rankId: number;
+};
+
+type RankedNode = TreeNode & {
+  readonly rankItemId: number;
+  readonly rankName: string;
+};
+
+const treeDefinitionUrl = (tableName: AnyTree['tableName']): string =>
+  getResourceApiUrl(`${tableName}TreeDef`, 1);
+
+const rankItemUrl = (tableName: AnyTree['tableName'], id: number): string =>
+  getResourceApiUrl(`${tableName}TreeDefItem`, id);
+
+function mockNoDeleteBlockers(
+  tableName: AnyTree['tableName'],
+  id: number
+): void {
+  const table = tableName.toLowerCase();
+  overrideAjax(`/delete_blockers/delete_blockers/${table}/${id}/?limit=40`, {
+    results: [],
+    next: [],
+  });
+  overrideAjax(`/delete_blockers/count/${table}/${id}/`, {
+    results: [],
+    total_count: 0,
+  });
+}
+
+function mockAddChild(
+  tableName: AnyTree['tableName'],
+  parent: RankedNode,
+  child: RankedNode
+): void {
+  overrideTreeView(tableName);
+  [parent, child].forEach(({ rankItemId, rankName, rankId }) =>
+    overrideAjax(rankItemUrl(tableName, rankItemId), () =>
+      addMissingFields(`${tableName}TreeDefItem`, {
+        id: rankItemId,
+        name: rankName,
         rankId,
-        treeDef: getResourceApiUrl('TaxonTreeDef', 1),
-        resource_uri: getResourceApiUrl('TaxonTreeDefItem', id),
+        treeDef: treeDefinitionUrl(tableName),
+        resource_uri: rankItemUrl(tableName, rankItemId),
       })
     )
   );
-  overrideAjax(getResourceApiUrl('Taxon', parentId), () =>
-    addMissingFields('Taxon', {
-      id: parentId,
-      name: 'velifer',
-      fullName: 'Carpiodes velifer',
-      rankId: 220,
+  overrideAjax(getResourceApiUrl(tableName, parent.id), () =>
+    addMissingFields(tableName, {
+      id: parent.id,
+      name: parent.name,
+      fullName: parent.fullName,
+      rankId: parent.rankId,
       isAccepted: true,
-      definition: getResourceApiUrl('TaxonTreeDef', 1),
-      definitionItem: getResourceApiUrl('TaxonTreeDefItem', speciesRankId),
-      resource_uri: getResourceApiUrl('Taxon', parentId),
+      definition: treeDefinitionUrl(tableName),
+      definitionItem: rankItemUrl(tableName, parent.rankItemId),
+      resource_uri: getResourceApiUrl(tableName, parent.id),
     })
   );
-
   overrideAjax(
-    '/api/specify/taxon/',
+    `/api/specify/${tableName.toLowerCase()}/`,
     () =>
-      addMissingFields('Taxon', {
-        id: newNodeId,
-        name: 'bellus',
-        parent: getResourceApiUrl('Taxon', parentId),
-        resource_uri: getResourceApiUrl('Taxon', newNodeId),
+      addMissingFields(tableName, {
+        id: child.id,
+        name: child.name,
+        parent: getResourceApiUrl(tableName, parent.id),
+        resource_uri: getResourceApiUrl(tableName, child.id),
       }),
     {
       method: 'POST',
       responseCode: Http.CREATED,
       body: jsonContaining({
-        name: 'bellus',
-        parent: getResourceApiUrl('Taxon', parentId),
-        definitionitem: getResourceApiUrl('TaxonTreeDefItem', subspeciesRankId),
+        name: child.name,
+        parent: getResourceApiUrl(tableName, parent.id),
+        definitionitem: rankItemUrl(tableName, child.rankItemId),
       }),
     }
   );
+  mockNoDeleteBlockers(tableName, child.id);
+  overrideAjax(
+    `/trees/specify_tree/${tableName.toLowerCase()}/${parent.id}/predict_fullname/?${new URLSearchParams(
+      { name: child.name, treedefitemid: child.rankItemId.toString() }
+    ).toString()}`,
+    child.fullName
+  );
+}
 
-  overrideAjax(
-    `/delete_blockers/delete_blockers/taxon/${newNodeId}/?limit=40`,
-    {
-      results: [],
-      next: [],
-    }
+async function addChildFromTreeViewer(
+  tableName: AnyTree['tableName'],
+  parent: RankedNode,
+  child: RankedNode,
+  handleRefresh: () => void
+): Promise<void> {
+  const { user } = renderActions(
+    tableName,
+    makeRow({
+      nodeId: parent.id,
+      name: parent.name,
+      fullName: parent.fullName,
+      rankId: parent.rankId,
+    }),
+    handleRefresh
   );
-  overrideAjax(`/delete_blockers/count/taxon/${newNodeId}/`, {
-    results: [],
-    total_count: 0,
+
+  const addChild = screen.getByRole('link', {
+    name: new RegExp(`^${treeText.addChild()}`, 'u'),
   });
-  overrideAjax(
-    `/trees/specify_tree/taxon/${parentId}/predict_fullname/?name=bellus&treedefitemid=${subspeciesRankId}`,
-    'Carpiodes velifer bellus'
+  expect(addChild).toHaveAttribute('aria-disabled', 'false');
+  expect(addChild).toHaveAttribute(
+    'href',
+    `/specify/view/${tableName.toLowerCase()}/new/`
   );
+
+  await user.click(addChild);
+
+  const table = genericTables[tableName];
+  const dialog = await screen.findByRole('dialog');
+  const parentField = within(dialog).getByRole('combobox', {
+    name: table.strictGetRelationship('parent').label,
+  });
+  await waitFor(() => expect(parentField).toHaveValue(parent.fullName));
+
+  const rank = within(dialog).getByRole('combobox', {
+    name: table.strictGetRelationship('definitionItem').label,
+  });
+  await waitFor(() => expect(rank).toHaveValue(child.rankName));
+
+  await user.click(within(dialog).getByRole('textbox'));
+  await user.paste(child.name);
+  await user.click(
+    within(dialog).getByRole('button', { name: commonText.save() })
+  );
+}
+
+function mockDeletableNode(
+  tableName: AnyTree['tableName'],
+  node: TreeNode,
+  parentId: number
+): jest.Mock {
+  const deleteRequest = jest.fn(() => '');
+  overrideAjax(getResourceApiUrl(tableName, node.id), () =>
+    addMissingFields(tableName, {
+      id: node.id,
+      name: node.name,
+      fullName: node.fullName,
+      rankId: node.rankId,
+      parent: getResourceApiUrl(tableName, parentId),
+      resource_uri: getResourceApiUrl(tableName, node.id),
+    })
+  );
+  mockNoDeleteBlockers(tableName, node.id);
+  overrideAjax(getResourceApiUrl(tableName, node.id), deleteRequest, {
+    method: 'DELETE',
+    responseCode: Http.NO_CONTENT,
+  });
+  return deleteRequest;
+}
+
+async function deleteFromTreeViewer(
+  tableName: AnyTree['tableName'],
+  node: TreeNode & { readonly children?: number },
+  focusPath: RA<number>,
+  handleRefresh: () => void,
+  setFocusPath: (path: RA<number>) => void
+): Promise<void> {
+  const { user } = renderActions(
+    tableName,
+    makeRow({
+      nodeId: node.id,
+      name: node.name,
+      fullName: node.fullName,
+      rankId: node.rankId,
+      children: node.children ?? 0,
+    }),
+    handleRefresh,
+    [focusPath, setFocusPath]
+  );
+
+  await user.click(screen.getByRole('button', { name: commonText.delete() }));
+
+  const dialog = await screen.findByRole('dialog', {
+    name: formsText.deleteConfirmation({
+      tableName: genericTables[tableName].label,
+    }),
+  });
+  await user.click(
+    within(dialog).getByRole('button', { name: commonText.delete() })
+  );
+}
+
+describe('Add taxon', () => {
+  const parent = {
+    id: 2,
+    name: 'velifer',
+    fullName: 'Carpiodes velifer',
+    rankId: 220,
+    rankItemId: 2,
+    rankName: 'Species',
+  };
+  const child = {
+    id: 3,
+    name: 'bellus',
+    fullName: 'Carpiodes velifer bellus',
+    rankId: 230,
+    rankItemId: 22,
+    rankName: 'Subspecies',
+  };
+  mockAddChild('Taxon', parent, child);
 
   test('"Add child" saves a new Taxon under the focused node', async () => {
     const handleRefresh = jest.fn();
-    const { user } = renderActions(
-      'Taxon',
-      makeRow({
-        nodeId: parentId,
-        name: 'velifer',
-        fullName: 'Carpiodes velifer',
-        rankId: 220,
-      }),
-      handleRefresh
-    );
-
-    const addChild = screen.getByRole('link', {
-      name: new RegExp(`^${treeText.addChild()}`, 'u'),
-    });
-    expect(addChild).toHaveAttribute('aria-disabled', 'false');
-    expect(addChild).toHaveAttribute('href', '/specify/view/taxon/new/');
-
-    await user.click(addChild);
-
-    const dialog = await screen.findByRole('dialog');
-    const parent = within(dialog).getByRole('combobox', {
-      name: tables.Taxon.strictGetRelationship('parent').label,
-    });
-    await waitFor(() => expect(parent).toHaveValue('Carpiodes velifer'));
-
-    const rank = within(dialog).getByRole('combobox', {
-      name: tables.Taxon.strictGetRelationship('definitionItem').label,
-    });
-    await waitFor(() => expect(rank).toHaveValue('Subspecies'));
-
-    await user.click(within(dialog).getByRole('textbox'));
-    await user.paste('bellus');
-    await user.click(
-      within(dialog).getByRole('button', { name: commonText.save() })
-    );
-
+    await addChildFromTreeViewer('Taxon', parent, child, handleRefresh);
     await waitFor(() => expect(handleRefresh).toHaveBeenCalled());
   });
 });
 
 describe('Delete taxon', () => {
-  const nodeId = 4;
-  const parentId = 2;
-  const deleteRequest = jest.fn(() => '');
-
-  overrideAjax(getResourceApiUrl('Taxon', nodeId), () =>
-    addMissingFields('Taxon', {
-      id: nodeId,
-      name: 'velifer',
-      fullName: 'Carpiodes velifer',
-      rankId: 220,
-      parent: getResourceApiUrl('Taxon', parentId),
-      resource_uri: getResourceApiUrl('Taxon', nodeId),
-    })
-  );
-  overrideAjax(`/delete_blockers/delete_blockers/taxon/${nodeId}/?limit=40`, {
-    results: [],
-    next: [],
-  });
-  overrideAjax(`/delete_blockers/count/taxon/${nodeId}/`, {
-    results: [],
-    total_count: 0,
-  });
-  overrideAjax(getResourceApiUrl('Taxon', nodeId), deleteRequest, {
-    method: 'DELETE',
-    responseCode: Http.NO_CONTENT,
-  });
+  const node = {
+    id: 4,
+    name: 'velifer',
+    fullName: 'Carpiodes velifer',
+    rankId: 220,
+  };
+  const deleteRequest = mockDeletableNode('Taxon', node, 2);
 
   test('"Delete" removes the focused node and focuses its parent', async () => {
     const handleRefresh = jest.fn();
     const setFocusPath = jest.fn();
-    const { user } = renderActions(
+    await deleteFromTreeViewer(
       'Taxon',
-      makeRow({
-        nodeId,
-        name: 'velifer',
-        fullName: 'Carpiodes velifer',
-        rankId: 220,
-        children: 0,
-      }),
+      node,
+      [1, 2, 4],
       handleRefresh,
-      [[1, parentId, nodeId], setFocusPath]
-    );
-
-    await user.click(screen.getByRole('button', { name: commonText.delete() }));
-
-    const dialog = await screen.findByRole('dialog', {
-      name: formsText.deleteConfirmation({
-        tableName: tables.Taxon.label,
-      }),
-    });
-    await user.click(
-      within(dialog).getByRole('button', { name: commonText.delete() })
+      setFocusPath
     );
 
     await waitFor(() => expect(handleRefresh).toHaveBeenCalled());
     expect(deleteRequest).toHaveBeenCalledTimes(1);
-    expect(setFocusPath).toHaveBeenCalledWith([1, parentId]);
+    expect(setFocusPath).toHaveBeenCalledWith([1, 2]);
   });
 });
 
 describe('Add geography', () => {
-  const parentId = 10;
-  const newNodeId = 11;
-  const stateRankId = 4;
-  const countyRankId = 5;
-  overrideTreeView('Geography');
-  (
-    [
-      [stateRankId, 'State', 300],
-      [countyRankId, 'County', 400],
-    ] as const
-  ).forEach(([id, name, rankId]) =>
-    overrideAjax(getResourceApiUrl('GeographyTreeDefItem', id), () =>
-      addMissingFields('GeographyTreeDefItem', {
-        id,
-        name,
-        rankId,
-        treeDef: getResourceApiUrl('GeographyTreeDef', 1),
-        resource_uri: getResourceApiUrl('GeographyTreeDefItem', id),
-      })
-    )
-  );
-  overrideAjax(getResourceApiUrl('Geography', parentId), () =>
-    addMissingFields('Geography', {
-      id: parentId,
-      name: 'Kansas',
-      fullName: 'Kansas',
-      rankId: 300,
-      isAccepted: true,
-      definition: getResourceApiUrl('GeographyTreeDef', 1),
-      definitionItem: getResourceApiUrl('GeographyTreeDefItem', stateRankId),
-      resource_uri: getResourceApiUrl('Geography', parentId),
-    })
-  );
-
-  overrideAjax(
-    '/api/specify/geography/',
-    () =>
-      addMissingFields('Geography', {
-        id: newNodeId,
-        name: 'Douglas',
-        parent: getResourceApiUrl('Geography', parentId),
-        resource_uri: getResourceApiUrl('Geography', newNodeId),
-      }),
-    {
-      method: 'POST',
-      responseCode: Http.CREATED,
-      body: jsonContaining({
-        name: 'Douglas',
-        parent: getResourceApiUrl('Geography', parentId),
-        definitionitem: getResourceApiUrl('GeographyTreeDefItem', countyRankId),
-      }),
-    }
-  );
-
-  overrideAjax(
-    `/delete_blockers/delete_blockers/geography/${newNodeId}/?limit=40`,
-    { results: [], next: [] }
-  );
-  overrideAjax(`/delete_blockers/count/geography/${newNodeId}/`, {
-    results: [],
-    total_count: 0,
-  });
-  overrideAjax(
-    `/trees/specify_tree/geography/${parentId}/predict_fullname/?name=Douglas&treedefitemid=${countyRankId}`,
-    'Douglas, Kansas'
-  );
+  const parent = {
+    id: 10,
+    name: 'Kansas',
+    fullName: 'Kansas',
+    rankId: 300,
+    rankItemId: 4,
+    rankName: 'State',
+  };
+  const child = {
+    id: 11,
+    name: 'Douglas',
+    fullName: 'Douglas, Kansas',
+    rankId: 400,
+    rankItemId: 5,
+    rankName: 'County',
+  };
+  mockAddChild('Geography', parent, child);
 
   test('"Add child" saves a new Geography under the focused node', async () => {
     const handleRefresh = jest.fn();
-    const { user } = renderActions(
-      'Geography',
-      makeRow({
-        nodeId: parentId,
-        name: 'Kansas',
-        fullName: 'Kansas',
-        rankId: 300,
-      }),
-      handleRefresh
-    );
-
-    const addChild = screen.getByRole('link', {
-      name: new RegExp(`^${treeText.addChild()}`, 'u'),
-    });
-    expect(addChild).toHaveAttribute('aria-disabled', 'false');
-    expect(addChild).toHaveAttribute('href', '/specify/view/geography/new/');
-
-    await user.click(addChild);
-
-    const dialog = await screen.findByRole('dialog');
-    const parent = within(dialog).getByRole('combobox', {
-      name: tables.Geography.strictGetRelationship('parent').label,
-    });
-    await waitFor(() => expect(parent).toHaveValue('Kansas'));
-
-    const rank = within(dialog).getByRole('combobox', {
-      name: tables.Geography.strictGetRelationship('definitionItem').label,
-    });
-    await waitFor(() => expect(rank).toHaveValue('County'));
-
-    await user.click(within(dialog).getByRole('textbox'));
-    await user.paste('Douglas');
-    await user.click(
-      within(dialog).getByRole('button', { name: commonText.save() })
-    );
-
+    await addChildFromTreeViewer('Geography', parent, child, handleRefresh);
     await waitFor(() => expect(handleRefresh).toHaveBeenCalled());
   });
 });
 
 describe('Delete geography', () => {
-  const nodeId = 11;
-  const parentId = 10;
-  const deleteRequest = jest.fn(() => '');
-
-  overrideAjax(getResourceApiUrl('Geography', nodeId), () =>
-    addMissingFields('Geography', {
-      id: nodeId,
-      name: 'Kansas',
-      fullName: 'Kansas, USA',
-      rankId: 300,
-      parent: getResourceApiUrl('Geography', parentId),
-      resource_uri: getResourceApiUrl('Geography', nodeId),
-    })
-  );
-  overrideAjax(
-    `/delete_blockers/delete_blockers/geography/${nodeId}/?limit=40`,
-    { results: [], next: [] }
-  );
-  overrideAjax(`/delete_blockers/count/geography/${nodeId}/`, {
-    results: [],
-    total_count: 0,
-  });
-  overrideAjax(getResourceApiUrl('Geography', nodeId), deleteRequest, {
-    method: 'DELETE',
-    responseCode: Http.NO_CONTENT,
-  });
+  const node = { id: 11, name: 'Kansas', fullName: 'Kansas, USA', rankId: 300 };
+  const deleteRequest = mockDeletableNode('Geography', node, 10);
 
   test('"Delete" removes the focused node and focuses its parent', async () => {
     const handleRefresh = jest.fn();
     const setFocusPath = jest.fn();
-    const { user } = renderActions(
+    await deleteFromTreeViewer(
       'Geography',
-      makeRow({
-        nodeId,
-        name: 'Kansas',
-        fullName: 'Kansas, USA',
-        rankId: 300,
-        children: 0,
-      }),
+      node,
+      [1, 10, 11],
       handleRefresh,
-      [[1, parentId, nodeId], setFocusPath]
-    );
-
-    await user.click(screen.getByRole('button', { name: commonText.delete() }));
-
-    const dialog = await screen.findByRole('dialog', {
-      name: formsText.deleteConfirmation({
-        tableName: tables.Geography.label,
-      }),
-    });
-    await user.click(
-      within(dialog).getByRole('button', { name: commonText.delete() })
+      setFocusPath
     );
 
     await waitFor(() => expect(handleRefresh).toHaveBeenCalled());
     expect(deleteRequest).toHaveBeenCalledTimes(1);
-    expect(setFocusPath).toHaveBeenCalledWith([1, parentId]);
+    expect(setFocusPath).toHaveBeenCalledWith([1, 10]);
   });
 });
 
 describe('Add storage', () => {
-  const parentId = 20;
-  const newNodeId = 21;
-  const buildingRankId = 2;
-  const roomRankId = 3;
-  overrideTreeView('Storage');
-  (
-    [
-      [buildingRankId, 'Building', 100],
-      [roomRankId, 'Room', 200],
-    ] as const
-  ).forEach(([id, name, rankId]) =>
-    overrideAjax(getResourceApiUrl('StorageTreeDefItem', id), () =>
-      addMissingFields('StorageTreeDefItem', {
-        id,
-        name,
-        rankId,
-        isEnforced: rankId === 200,
-        treeDef: getResourceApiUrl('StorageTreeDef', 1),
-        resource_uri: getResourceApiUrl('StorageTreeDefItem', id),
-      })
-    )
-  );
-  overrideAjax(getResourceApiUrl('Storage', parentId), () =>
-    addMissingFields('Storage', {
-      id: parentId,
-      name: 'Dyche Hall',
-      fullName: 'Dyche Hall',
-      rankId: 100,
-      isAccepted: true,
-      definition: getResourceApiUrl('StorageTreeDef', 1),
-      definitionItem: getResourceApiUrl('StorageTreeDefItem', buildingRankId),
-      resource_uri: getResourceApiUrl('Storage', parentId),
-    })
-  );
-
-  overrideAjax(
-    '/api/specify/storage/',
-    () =>
-      addMissingFields('Storage', {
-        id: newNodeId,
-        name: 'Fish Room',
-        parent: getResourceApiUrl('Storage', parentId),
-        resource_uri: getResourceApiUrl('Storage', newNodeId),
-      }),
-    {
-      method: 'POST',
-      responseCode: Http.CREATED,
-      body: jsonContaining({
-        name: 'Fish Room',
-        parent: getResourceApiUrl('Storage', parentId),
-        definitionitem: getResourceApiUrl('StorageTreeDefItem', roomRankId),
-      }),
-    }
-  );
-
-  overrideAjax(
-    `/delete_blockers/delete_blockers/storage/${newNodeId}/?limit=40`,
-    { results: [], next: [] }
-  );
-  overrideAjax(`/delete_blockers/count/storage/${newNodeId}/`, {
-    results: [],
-    total_count: 0,
-  });
-  overrideAjax(
-    `/trees/specify_tree/storage/${parentId}/predict_fullname/?name=Fish+Room&treedefitemid=${roomRankId}`,
-    'Dyche Hall Fish Room'
-  );
+  const parent = {
+    id: 20,
+    name: 'Dyche Hall',
+    fullName: 'Dyche Hall',
+    rankId: 100,
+    rankItemId: 2,
+    rankName: 'Building',
+  };
+  const child = {
+    id: 21,
+    name: 'Fish Room',
+    fullName: 'Dyche Hall Fish Room',
+    rankId: 200,
+    rankItemId: 3,
+    rankName: 'Room',
+  };
+  mockAddChild('Storage', parent, child);
 
   test('"Add child" saves a new Storage under the focused node', async () => {
     const handleRefresh = jest.fn();
-    const { user } = renderActions(
-      'Storage',
-      makeRow({
-        nodeId: parentId,
-        name: 'Dyche Hall',
-        fullName: 'Dyche Hall',
-        rankId: 100,
-      }),
-      handleRefresh
-    );
-
-    const addChild = screen.getByRole('link', {
-      name: new RegExp(`^${treeText.addChild()}`, 'u'),
-    });
-    expect(addChild).toHaveAttribute('aria-disabled', 'false');
-    expect(addChild).toHaveAttribute('href', '/specify/view/storage/new/');
-
-    await user.click(addChild);
-
-    const dialog = await screen.findByRole('dialog');
-    const parent = within(dialog).getByRole('combobox', {
-      name: tables.Storage.strictGetRelationship('parent').label,
-    });
-    await waitFor(() => expect(parent).toHaveValue('Dyche Hall'));
-
-    const rank = within(dialog).getByRole('combobox', {
-      name: tables.Storage.strictGetRelationship('definitionItem').label,
-    });
-    await waitFor(() => expect(rank).toHaveValue('Room'));
-
-    await user.click(within(dialog).getByRole('textbox'));
-    await user.paste('Fish Room');
-    await user.click(
-      within(dialog).getByRole('button', { name: commonText.save() })
-    );
-
+    await addChildFromTreeViewer('Storage', parent, child, handleRefresh);
     await waitFor(() => expect(handleRefresh).toHaveBeenCalled());
   });
 });
 
 describe('Delete storage', () => {
-  const nodeId = 21;
-  const parentId = 20;
-  const deleteRequest = jest.fn(() => '');
-
-  overrideAjax(getResourceApiUrl('Storage', nodeId), () =>
-    addMissingFields('Storage', {
-      id: nodeId,
-      name: 'Fish Room',
-      fullName: 'Dyche Hall Fish Room',
-      rankId: 200,
-      parent: getResourceApiUrl('Storage', parentId),
-      resource_uri: getResourceApiUrl('Storage', nodeId),
-    })
-  );
-  overrideAjax(`/delete_blockers/delete_blockers/storage/${nodeId}/?limit=40`, {
-    results: [],
-    next: [],
-  });
-  overrideAjax(`/delete_blockers/count/storage/${nodeId}/`, {
-    results: [],
-    total_count: 0,
-  });
-  overrideAjax(getResourceApiUrl('Storage', nodeId), deleteRequest, {
-    method: 'DELETE',
-    responseCode: Http.NO_CONTENT,
-  });
+  const node = {
+    id: 21,
+    name: 'Fish Room',
+    fullName: 'Dyche Hall Fish Room',
+    rankId: 200,
+  };
+  const deleteRequest = mockDeletableNode('Storage', node, 20);
 
   test('"Delete" removes the focused node and focuses its parent', async () => {
     const handleRefresh = jest.fn();
     const setFocusPath = jest.fn();
-    const { user } = renderActions(
+    await deleteFromTreeViewer(
       'Storage',
-      makeRow({
-        nodeId,
-        name: 'Fish Room',
-        fullName: 'Dyche Hall Fish Room',
-        rankId: 200,
-        children: 0,
-      }),
+      node,
+      [1, 20, 21],
       handleRefresh,
-      [[1, parentId, nodeId], setFocusPath]
-    );
-
-    await user.click(screen.getByRole('button', { name: commonText.delete() }));
-
-    const dialog = await screen.findByRole('dialog', {
-      name: formsText.deleteConfirmation({
-        tableName: tables.Storage.label,
-      }),
-    });
-    await user.click(
-      within(dialog).getByRole('button', { name: commonText.delete() })
+      setFocusPath
     );
 
     await waitFor(() => expect(handleRefresh).toHaveBeenCalled());
     expect(deleteRequest).toHaveBeenCalledTimes(1);
-    expect(setFocusPath).toHaveBeenCalledWith([1, parentId]);
+    expect(setFocusPath).toHaveBeenCalledWith([1, 20]);
   });
 });
 
@@ -867,519 +694,153 @@ describe('Move storage items to another node', () => {
 });
 
 describe('Add a chronostrat', () => {
-  const parentId = 40;
-  const newNodeId = 41;
-  const epochRankId = 4;
-  const ageRankId = 5;
-  overrideTreeView('GeologicTimePeriod');
-  (
-    [
-      [epochRankId, 'Epoch', 300],
-      [ageRankId, 'Age', 400],
-    ] as const
-  ).forEach(([id, name, rankId]) =>
-    overrideAjax(chronostratRankUrl(id), () =>
-      addMissingFields('GeologicTimePeriodTreeDefItem', {
-        id,
-        name,
-        rankId,
-        treeDef: getResourceApiUrl('GeologicTimePeriodTreeDef', 1),
-        resource_uri: chronostratRankUrl(id),
-      })
-    )
-  );
-  overrideAjax(getResourceApiUrl('GeologicTimePeriod', parentId), () =>
-    addMissingFields('GeologicTimePeriod', {
-      id: parentId,
-      name: 'Paleocene',
-      fullName: 'Paleocene',
-      rankId: 300,
-      isAccepted: true,
-      definition: getResourceApiUrl('GeologicTimePeriodTreeDef', 1),
-      definitionItem: chronostratRankUrl(epochRankId),
-      resource_uri: getResourceApiUrl('GeologicTimePeriod', parentId),
-    })
-  );
-
-  overrideAjax(
-    '/api/specify/geologictimeperiod/',
-    () =>
-      addMissingFields('GeologicTimePeriod', {
-        id: newNodeId,
-        name: 'Danian',
-        parent: getResourceApiUrl('GeologicTimePeriod', parentId),
-        resource_uri: getResourceApiUrl('GeologicTimePeriod', newNodeId),
-      }),
-    {
-      method: 'POST',
-      responseCode: Http.CREATED,
-      body: jsonContaining({
-        name: 'Danian',
-        parent: getResourceApiUrl('GeologicTimePeriod', parentId),
-        definitionitem: chronostratRankUrl(ageRankId),
-      }),
-    }
-  );
-
-  overrideAjax(
-    `/delete_blockers/delete_blockers/geologictimeperiod/${newNodeId}/?limit=40`,
-    { results: [], next: [] }
-  );
-  overrideAjax(`/delete_blockers/count/geologictimeperiod/${newNodeId}/`, {
-    results: [],
-    total_count: 0,
-  });
-  overrideAjax(
-    `/trees/specify_tree/geologictimeperiod/${parentId}/predict_fullname/?name=Danian&treedefitemid=${ageRankId}`,
-    'Danian'
-  );
+  const parent = {
+    id: 40,
+    name: 'Paleocene',
+    fullName: 'Paleocene',
+    rankId: 300,
+    rankItemId: 4,
+    rankName: 'Epoch',
+  };
+  const child = {
+    id: 41,
+    name: 'Danian',
+    fullName: 'Danian',
+    rankId: 400,
+    rankItemId: 5,
+    rankName: 'Age',
+  };
+  mockAddChild('GeologicTimePeriod', parent, child);
 
   test('"Add child" saves a new GeologicTimePeriod under the focused node', async () => {
     const handleRefresh = jest.fn();
-    const { user } = renderActions(
+    await addChildFromTreeViewer(
       'GeologicTimePeriod',
-      makeRow({
-        nodeId: parentId,
-        name: 'Paleocene',
-        fullName: 'Paleocene',
-        rankId: 300,
-      }),
+      parent,
+      child,
       handleRefresh
     );
-
-    const addChild = screen.getByRole('link', {
-      name: new RegExp(`^${treeText.addChild()}`, 'u'),
-    });
-    expect(addChild).toHaveAttribute('aria-disabled', 'false');
-    expect(addChild).toHaveAttribute(
-      'href',
-      '/specify/view/geologictimeperiod/new/'
-    );
-
-    await user.click(addChild);
-
-    const dialog = await screen.findByRole('dialog');
-    const parent = within(dialog).getByRole('combobox', {
-      name: tables.GeologicTimePeriod.strictGetRelationship('parent').label,
-    });
-    await waitFor(() => expect(parent).toHaveValue('Paleocene'));
-
-    const rank = within(dialog).getByRole('combobox', {
-      name: tables.GeologicTimePeriod.strictGetRelationship('definitionItem')
-        .label,
-    });
-    await waitFor(() => expect(rank).toHaveValue('Age'));
-
-    await user.click(within(dialog).getByRole('textbox'));
-    await user.paste('Danian');
-    await user.click(
-      within(dialog).getByRole('button', { name: commonText.save() })
-    );
-
     await waitFor(() => expect(handleRefresh).toHaveBeenCalled());
   });
 });
 
 describe('Delete a chronostrat', () => {
-  const nodeId = 41;
-  const parentId = 40;
-  const deleteRequest = jest.fn(() => '');
-
-  overrideAjax(getResourceApiUrl('GeologicTimePeriod', nodeId), () =>
-    addMissingFields('GeologicTimePeriod', {
-      id: nodeId,
-      name: 'Danian',
-      fullName: 'Danian',
-      rankId: 400,
-      parent: getResourceApiUrl('GeologicTimePeriod', parentId),
-      resource_uri: getResourceApiUrl('GeologicTimePeriod', nodeId),
-    })
-  );
-  overrideAjax(
-    `/delete_blockers/delete_blockers/geologictimeperiod/${nodeId}/?limit=40`,
-    { results: [], next: [] }
-  );
-  overrideAjax(`/delete_blockers/count/geologictimeperiod/${nodeId}/`, {
-    results: [],
-    total_count: 0,
-  });
-  overrideAjax(getResourceApiUrl('GeologicTimePeriod', nodeId), deleteRequest, {
-    method: 'DELETE',
-    responseCode: Http.NO_CONTENT,
-  });
+  const node = { id: 41, name: 'Danian', fullName: 'Danian', rankId: 400 };
+  const deleteRequest = mockDeletableNode('GeologicTimePeriod', node, 40);
 
   test('"Delete" removes the focused node and focuses its parent', async () => {
     const handleRefresh = jest.fn();
     const setFocusPath = jest.fn();
-    const { user } = renderActions(
+    await deleteFromTreeViewer(
       'GeologicTimePeriod',
-      makeRow({
-        nodeId,
-        name: 'Danian',
-        fullName: 'Danian',
-        rankId: 400,
-        children: 0,
-      }),
+      node,
+      [1, 40, 41],
       handleRefresh,
-      [[1, parentId, nodeId], setFocusPath]
-    );
-
-    await user.click(screen.getByRole('button', { name: commonText.delete() }));
-
-    const dialog = await screen.findByRole('dialog', {
-      name: formsText.deleteConfirmation({
-        tableName: tables.GeologicTimePeriod.label,
-      }),
-    });
-    await user.click(
-      within(dialog).getByRole('button', { name: commonText.delete() })
+      setFocusPath
     );
 
     await waitFor(() => expect(handleRefresh).toHaveBeenCalled());
     expect(deleteRequest).toHaveBeenCalledTimes(1);
-    expect(setFocusPath).toHaveBeenCalledWith([1, parentId]);
+    expect(setFocusPath).toHaveBeenCalledWith([1, 40]);
   });
 });
 
 describe('Add a lithostrat', () => {
-  const parentId = 50;
-  const newNodeId = 51;
-  const memberRankId = 4;
-  const bedRankId = 5;
-  overrideTreeView('LithoStrat');
-  (
-    [
-      [memberRankId, 'Member', 400],
-      [bedRankId, 'Bed', 500],
-    ] as const
-  ).forEach(([id, name, rankId]) =>
-    overrideAjax(lithostratRankUrl(id), () =>
-      addMissingFields('LithoStratTreeDefItem', {
-        id,
-        name,
-        rankId,
-        treeDef: getResourceApiUrl('LithoStratTreeDef', 1),
-        resource_uri: lithostratRankUrl(id),
-      })
-    )
-  );
-  overrideAjax(getResourceApiUrl('LithoStrat', parentId), () =>
-    addMissingFields('LithoStrat', {
-      id: parentId,
-      name: 'Plattsmouth',
-      fullName: 'Plattsmouth',
-      rankId: 400,
-      isAccepted: true,
-      definition: getResourceApiUrl('LithoStratTreeDef', 1),
-      definitionItem: lithostratRankUrl(memberRankId),
-      resource_uri: getResourceApiUrl('LithoStrat', parentId),
-    })
-  );
-
-  overrideAjax(
-    '/api/specify/lithostrat/',
-    () =>
-      addMissingFields('LithoStrat', {
-        id: newNodeId,
-        name: 'Unit A',
-        parent: getResourceApiUrl('LithoStrat', parentId),
-        resource_uri: getResourceApiUrl('LithoStrat', newNodeId),
-      }),
-    {
-      method: 'POST',
-      responseCode: Http.CREATED,
-      body: jsonContaining({
-        name: 'Unit A',
-        parent: getResourceApiUrl('LithoStrat', parentId),
-        definitionitem: lithostratRankUrl(bedRankId),
-      }),
-    }
-  );
-
-  overrideAjax(
-    `/delete_blockers/delete_blockers/lithostrat/${newNodeId}/?limit=40`,
-    { results: [], next: [] }
-  );
-  overrideAjax(`/delete_blockers/count/lithostrat/${newNodeId}/`, {
-    results: [],
-    total_count: 0,
-  });
-  overrideAjax(
-    `/trees/specify_tree/lithostrat/${parentId}/predict_fullname/?name=Unit+A&treedefitemid=${bedRankId}`,
-    'Unit A'
-  );
+  const parent = {
+    id: 50,
+    name: 'Plattsmouth',
+    fullName: 'Plattsmouth',
+    rankId: 400,
+    rankItemId: 4,
+    rankName: 'Member',
+  };
+  const child = {
+    id: 51,
+    name: 'Unit A',
+    fullName: 'Unit A',
+    rankId: 500,
+    rankItemId: 5,
+    rankName: 'Bed',
+  };
+  mockAddChild('LithoStrat', parent, child);
 
   test('"Add child" saves a new LithoStrat under the focused node', async () => {
     const handleRefresh = jest.fn();
-    const { user } = renderActions(
-      'LithoStrat',
-      makeRow({
-        nodeId: parentId,
-        name: 'Plattsmouth',
-        fullName: 'Plattsmouth',
-        rankId: 400,
-      }),
-      handleRefresh
-    );
-
-    const addChild = screen.getByRole('link', {
-      name: new RegExp(`^${treeText.addChild()}`, 'u'),
-    });
-    expect(addChild).toHaveAttribute('aria-disabled', 'false');
-    expect(addChild).toHaveAttribute('href', '/specify/view/lithostrat/new/');
-
-    await user.click(addChild);
-
-    const dialog = await screen.findByRole('dialog');
-    const parent = within(dialog).getByRole('combobox', {
-      name: tables.LithoStrat.strictGetRelationship('parent').label,
-    });
-    await waitFor(() => expect(parent).toHaveValue('Plattsmouth'));
-
-    const rank = within(dialog).getByRole('combobox', {
-      name: tables.LithoStrat.strictGetRelationship('definitionItem').label,
-    });
-    await waitFor(() => expect(rank).toHaveValue('Bed'));
-
-    await user.click(within(dialog).getByRole('textbox'));
-    await user.paste('Unit A');
-    await user.click(
-      within(dialog).getByRole('button', { name: commonText.save() })
-    );
-
+    await addChildFromTreeViewer('LithoStrat', parent, child, handleRefresh);
     await waitFor(() => expect(handleRefresh).toHaveBeenCalled());
   });
 });
 
 describe('Delete a lithostrat', () => {
-  const nodeId = 51;
-  const parentId = 50;
-  const deleteRequest = jest.fn(() => '');
-
-  overrideAjax(getResourceApiUrl('LithoStrat', nodeId), () =>
-    addMissingFields('LithoStrat', {
-      id: nodeId,
-      name: 'Unit A',
-      fullName: 'Unit A',
-      rankId: 500,
-      parent: getResourceApiUrl('LithoStrat', parentId),
-      resource_uri: getResourceApiUrl('LithoStrat', nodeId),
-    })
-  );
-  overrideAjax(
-    `/delete_blockers/delete_blockers/lithostrat/${nodeId}/?limit=40`,
-    { results: [], next: [] }
-  );
-  overrideAjax(`/delete_blockers/count/lithostrat/${nodeId}/`, {
-    results: [],
-    total_count: 0,
-  });
-  overrideAjax(getResourceApiUrl('LithoStrat', nodeId), deleteRequest, {
-    method: 'DELETE',
-    responseCode: Http.NO_CONTENT,
-  });
+  const node = { id: 51, name: 'Unit A', fullName: 'Unit A', rankId: 500 };
+  const deleteRequest = mockDeletableNode('LithoStrat', node, 50);
 
   test('"Delete" removes the focused node and focuses its parent', async () => {
     const handleRefresh = jest.fn();
     const setFocusPath = jest.fn();
-    const { user } = renderActions(
+    await deleteFromTreeViewer(
       'LithoStrat',
-      makeRow({
-        nodeId,
-        name: 'Unit A',
-        fullName: 'Unit A',
-        rankId: 500,
-        children: 0,
-      }),
+      node,
+      [1, 50, 51],
       handleRefresh,
-      [[1, parentId, nodeId], setFocusPath]
-    );
-
-    await user.click(screen.getByRole('button', { name: commonText.delete() }));
-
-    const dialog = await screen.findByRole('dialog', {
-      name: formsText.deleteConfirmation({
-        tableName: tables.LithoStrat.label,
-      }),
-    });
-    await user.click(
-      within(dialog).getByRole('button', { name: commonText.delete() })
+      setFocusPath
     );
 
     await waitFor(() => expect(handleRefresh).toHaveBeenCalled());
     expect(deleteRequest).toHaveBeenCalledTimes(1);
-    expect(setFocusPath).toHaveBeenCalledWith([1, parentId]);
+    expect(setFocusPath).toHaveBeenCalledWith([1, 50]);
   });
 });
 
 describe('Add tectonic unit', () => {
-  const parentId = 60;
-  const newNodeId = 61;
-  const unitRankId = 5;
-  const subunitRankId = 6;
-  overrideTreeView('TectonicUnit');
-  (
-    [
-      [unitRankId, 'Tectonic Unit', 40],
-      [subunitRankId, 'Tectonic Subunit', 50],
-    ] as const
-  ).forEach(([id, name, rankId]) =>
-    overrideAjax(tectonicUnitRankUrl(id), () =>
-      addMissingFields('TectonicUnitTreeDefItem', {
-        id,
-        name,
-        rankId,
-        treeDef: getResourceApiUrl('TectonicUnitTreeDef', 1),
-        resource_uri: tectonicUnitRankUrl(id),
-      })
-    )
-  );
-  overrideAjax(getResourceApiUrl('TectonicUnit', parentId), () =>
-    addMissingFields('TectonicUnit', {
-      id: parentId,
-      name: 'Ozark Plateau',
-      fullName: 'Ozark Plateau',
-      rankId: 40,
-      isAccepted: true,
-      definition: getResourceApiUrl('TectonicUnitTreeDef', 1),
-      definitionItem: tectonicUnitRankUrl(unitRankId),
-      resource_uri: getResourceApiUrl('TectonicUnit', parentId),
-    })
-  );
-
-  overrideAjax(
-    '/api/specify/tectonicunit/',
-    () =>
-      addMissingFields('TectonicUnit', {
-        id: newNodeId,
-        name: 'Springfield Plateau',
-        parent: getResourceApiUrl('TectonicUnit', parentId),
-        resource_uri: getResourceApiUrl('TectonicUnit', newNodeId),
-      }),
-    {
-      method: 'POST',
-      responseCode: Http.CREATED,
-      body: jsonContaining({
-        name: 'Springfield Plateau',
-        parent: getResourceApiUrl('TectonicUnit', parentId),
-        definitionitem: tectonicUnitRankUrl(subunitRankId),
-      }),
-    }
-  );
-
-  overrideAjax(
-    `/delete_blockers/delete_blockers/tectonicunit/${newNodeId}/?limit=40`,
-    { results: [], next: [] }
-  );
-  overrideAjax(`/delete_blockers/count/tectonicunit/${newNodeId}/`, {
-    results: [],
-    total_count: 0,
-  });
-  overrideAjax(
-    `/trees/specify_tree/tectonicunit/${parentId}/predict_fullname/?name=Springfield+Plateau&treedefitemid=${subunitRankId}`,
-    'Springfield Plateau'
-  );
+  const parent = {
+    id: 60,
+    name: 'Ozark Plateau',
+    fullName: 'Ozark Plateau',
+    rankId: 40,
+    rankItemId: 5,
+    rankName: 'Tectonic Unit',
+  };
+  const child = {
+    id: 61,
+    name: 'Springfield Plateau',
+    fullName: 'Springfield Plateau',
+    rankId: 50,
+    rankItemId: 6,
+    rankName: 'Tectonic Subunit',
+  };
+  mockAddChild('TectonicUnit', parent, child);
 
   test('"Add child" saves a new TectonicUnit under the focused node', async () => {
     const handleRefresh = jest.fn();
-    const { user } = renderActions(
-      'TectonicUnit',
-      makeRow({
-        nodeId: parentId,
-        name: 'Ozark Plateau',
-        fullName: 'Ozark Plateau',
-        rankId: 40,
-      }),
-      handleRefresh
-    );
-
-    const addChild = screen.getByRole('link', {
-      name: new RegExp(`^${treeText.addChild()}`, 'u'),
-    });
-    expect(addChild).toHaveAttribute('aria-disabled', 'false');
-    expect(addChild).toHaveAttribute('href', '/specify/view/tectonicunit/new/');
-
-    await user.click(addChild);
-
-    const dialog = await screen.findByRole('dialog');
-    const parent = within(dialog).getByRole('combobox', {
-      name: tables.TectonicUnit.strictGetRelationship('parent').label,
-    });
-    await waitFor(() => expect(parent).toHaveValue('Ozark Plateau'));
-
-    const rank = within(dialog).getByRole('combobox', {
-      name: tables.TectonicUnit.strictGetRelationship('definitionItem').label,
-    });
-    await waitFor(() => expect(rank).toHaveValue('Tectonic Subunit'));
-
-    await user.click(within(dialog).getByRole('textbox'));
-    await user.paste('Springfield Plateau');
-    await user.click(
-      within(dialog).getByRole('button', { name: commonText.save() })
-    );
-
+    await addChildFromTreeViewer('TectonicUnit', parent, child, handleRefresh);
     await waitFor(() => expect(handleRefresh).toHaveBeenCalled());
   });
 });
 
 describe('Delete tectonic unit', () => {
-  const nodeId = 61;
-  const parentId = 60;
-  const deleteRequest = jest.fn(() => '');
-
-  overrideAjax(getResourceApiUrl('TectonicUnit', nodeId), () =>
-    addMissingFields('TectonicUnit', {
-      id: nodeId,
-      name: 'Springfield Plateau',
-      fullName: 'Springfield Plateau',
-      rankId: 50,
-      parent: getResourceApiUrl('TectonicUnit', parentId),
-      resource_uri: getResourceApiUrl('TectonicUnit', nodeId),
-    })
-  );
-  overrideAjax(
-    `/delete_blockers/delete_blockers/tectonicunit/${nodeId}/?limit=40`,
-    { results: [], next: [] }
-  );
-  overrideAjax(`/delete_blockers/count/tectonicunit/${nodeId}/`, {
-    results: [],
-    total_count: 0,
-  });
-  overrideAjax(getResourceApiUrl('TectonicUnit', nodeId), deleteRequest, {
-    method: 'DELETE',
-    responseCode: Http.NO_CONTENT,
-  });
+  const node = {
+    id: 61,
+    name: 'Springfield Plateau',
+    fullName: 'Springfield Plateau',
+    rankId: 50,
+  };
+  const deleteRequest = mockDeletableNode('TectonicUnit', node, 60);
 
   test('"Delete" removes the focused node and focuses its parent', async () => {
     const handleRefresh = jest.fn();
     const setFocusPath = jest.fn();
-    const { user } = renderActions(
+    await deleteFromTreeViewer(
       'TectonicUnit',
-      makeRow({
-        nodeId,
-        name: 'Springfield Plateau',
-        fullName: 'Springfield Plateau',
-        rankId: 50,
-        children: 0,
-      }),
+      node,
+      [1, 60, 61],
       handleRefresh,
-      [[1, parentId, nodeId], setFocusPath]
-    );
-
-    await user.click(screen.getByRole('button', { name: commonText.delete() }));
-
-    const dialog = await screen.findByRole('dialog', {
-      name: formsText.deleteConfirmation({
-        tableName: tables.TectonicUnit.label,
-      }),
-    });
-    await user.click(
-      within(dialog).getByRole('button', { name: commonText.delete() })
+      setFocusPath
     );
 
     await waitFor(() => expect(handleRefresh).toHaveBeenCalled());
     expect(deleteRequest).toHaveBeenCalledTimes(1);
-    expect(setFocusPath).toHaveBeenCalledWith([1, parentId]);
+    expect(setFocusPath).toHaveBeenCalledWith([1, 60]);
   });
 });
 
@@ -1466,63 +927,29 @@ describe("Can't delete a node with an associated CO", () => {
 });
 
 describe('Can delete a parent when its children reference nothing', () => {
-  const nodeId = 8;
-  const parentId = 1;
-  const deleteRequest = jest.fn(() => '');
-
-  overrideAjax(getResourceApiUrl('Taxon', nodeId), () =>
-    addMissingFields('Taxon', {
-      id: nodeId,
-      name: 'Ictiobus',
-      fullName: 'Ictiobus',
-      rankId: 180,
-      parent: getResourceApiUrl('Taxon', parentId),
-      resource_uri: getResourceApiUrl('Taxon', nodeId),
-    })
-  );
-  overrideAjax(`/delete_blockers/delete_blockers/taxon/${nodeId}/?limit=40`, {
-    results: [],
-    next: [],
-  });
-  overrideAjax(`/delete_blockers/count/taxon/${nodeId}/`, {
-    results: [],
-    total_count: 0,
-  });
-  overrideAjax(getResourceApiUrl('Taxon', nodeId), deleteRequest, {
-    method: 'DELETE',
-    responseCode: Http.NO_CONTENT,
-  });
+  const node = {
+    id: 8,
+    name: 'Ictiobus',
+    fullName: 'Ictiobus',
+    rankId: 180,
+    children: 2,
+  };
+  const deleteRequest = mockDeletableNode('Taxon', node, 1);
 
   test('"Delete" removes a node that has children', async () => {
     const handleRefresh = jest.fn();
     const setFocusPath = jest.fn();
-    const { user } = renderActions(
+    await deleteFromTreeViewer(
       'Taxon',
-      makeRow({
-        nodeId,
-        name: 'Ictiobus',
-        fullName: 'Ictiobus',
-        rankId: 180,
-        children: 2,
-      }),
+      node,
+      [1, 8],
       handleRefresh,
-      [[parentId, nodeId], setFocusPath]
-    );
-
-    await user.click(screen.getByRole('button', { name: commonText.delete() }));
-
-    const dialog = await screen.findByRole('dialog', {
-      name: formsText.deleteConfirmation({
-        tableName: tables.Taxon.label,
-      }),
-    });
-    await user.click(
-      within(dialog).getByRole('button', { name: commonText.delete() })
+      setFocusPath
     );
 
     await waitFor(() => expect(handleRefresh).toHaveBeenCalled());
     expect(deleteRequest).toHaveBeenCalledTimes(1);
-    expect(setFocusPath).toHaveBeenCalledWith([parentId]);
+    expect(setFocusPath).toHaveBeenCalledWith([1]);
   });
 });
 
