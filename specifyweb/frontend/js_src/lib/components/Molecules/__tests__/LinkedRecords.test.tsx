@@ -1,10 +1,12 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 
 import { mergingText } from '../../../localization/merging';
 import { requireContext } from '../../../tests/helpers';
 import { tables } from '../../DataModel/tables';
+import { DeleteBlockers } from '../../DeleteBlockers';
 import { useDirectDeleteBlockersForResource } from '../../DeleteBlockers/useDeleteBlockersForResource';
+import { UnloadProtectsContext } from '../../Router/UnloadProtect';
 import { LinkedRecordsWrapped } from '../LinkedRecords';
 
 jest.mock('../../DeleteBlockers/useDeleteBlockersForResource', () => ({
@@ -12,7 +14,7 @@ jest.mock('../../DeleteBlockers/useDeleteBlockersForResource', () => ({
 }));
 
 jest.mock('../../DeleteBlockers', () => ({
-  DeleteBlockers: () => null,
+  DeleteBlockers: jest.fn(() => null),
   MIN_DELETEBLOCKER_CONTAINER_WIDTH: 0,
 }));
 
@@ -34,7 +36,9 @@ const mockBlockers = (count: number) =>
 
 const renderLinkedRecords = () =>
   render(
-    <LinkedRecordsWrapped resource={new tables.Agent.Resource({ id: 1 })} />
+    <UnloadProtectsContext.Provider value={[]}>
+      <LinkedRecordsWrapped resource={new tables.Agent.Resource({ id: 1 })} />
+    </UnloadProtectsContext.Provider>
   );
 
 // [LinkedRecords] Show linked record count
@@ -46,4 +50,26 @@ test('shows the linked record count', () => {
   expect(
     screen.getByRole('button', { name: mergingText.linkedRecords() })
   ).toHaveTextContent('2');
+});
+
+// [LinkedRecords] Open linked records dialog
+test('opens the linked records dialog', () => {
+  const blockers = makeBlockers(2);
+  jest.mocked(useDirectDeleteBlockersForResource).mockReturnValue({
+    blockers,
+    onBlockersRequested: jest.fn(),
+  });
+  renderLinkedRecords();
+
+  fireEvent.click(
+    screen.getByRole('button', { name: mergingText.linkedRecords() })
+  );
+
+  expect(screen.getByRole('dialog')).toBeInTheDocument();
+  expect(DeleteBlockers).toHaveBeenCalledWith(
+    expect.objectContaining({
+      blockers: [expect.objectContaining({ count: 2 })],
+    }),
+    expect.anything()
+  );
 });
