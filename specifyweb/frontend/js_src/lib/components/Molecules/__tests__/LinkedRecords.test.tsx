@@ -14,6 +14,12 @@ jest.mock('../../DeleteBlockers/useDeleteBlockersForResource', () => ({
   useDirectDeleteBlockersForResource: jest.fn(),
 }));
 
+jest.mock('../../Permissions/helpers', () => ({
+  ...jest.requireActual('../../Permissions/helpers'),
+  hasPermission: () => false,
+  hasTablePermission: () => false,
+}));
+
 jest.mock('../../DeleteBlockers', () => ({
   DeleteBlockers: jest.fn(() => null),
   MIN_DELETEBLOCKER_CONTAINER_WIDTH: 0,
@@ -86,4 +92,15 @@ test('disables the button without linked records', () => {
   });
   expect(button).toBeDisabled();
   expect(button).toHaveAttribute('title', formsText.noLinkedRecords());
+});
+
+// [LinkedRecords] Keep the button without delete permission
+test('keeps the button without delete permission', () => {
+  mockBlockers(1);
+
+  renderLinkedRecords();
+
+  expect(
+    screen.getByRole('button', { name: mergingText.linkedRecords() })
+  ).toBeEnabled();
 });
