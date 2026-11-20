@@ -2,6 +2,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 
 import { mergingText } from '../../../localization/merging';
+import { formsText } from '../../../localization/forms';
 import { requireContext } from '../../../tests/helpers';
 import { tables } from '../../DataModel/tables';
 import { DeleteBlockers } from '../../DeleteBlockers';
@@ -72,4 +73,17 @@ test('opens the linked records dialog', () => {
     }),
     expect.anything()
   );
+});
+
+// [LinkedRecords] Disable without linked records
+test('disables the button without linked records', () => {
+  mockBlockers(0);
+
+  renderLinkedRecords();
+
+  const button = screen.getByRole('button', {
+    name: mergingText.linkedRecords(),
+  });
+  expect(button).toBeDisabled();
+  expect(button).toHaveAttribute('title', formsText.noLinkedRecords());
 });
