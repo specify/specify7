@@ -20,17 +20,18 @@ jest.mock('../../Formatters/formatters', () => ({
 requireContext();
 
 const makeRecords = () =>
+  // Newest name is shortest so this can't pass by recency
   [
     addMissingFields('Agent', {
       id: 1,
       agentType: 1,
-      lastName: 'A',
+      lastName: 'Longer Name',
       timestampModified: '2023-01-01T00:00:00',
     }),
     addMissingFields('Agent', {
       id: 2,
       agentType: 1,
-      lastName: 'Longer Name',
+      lastName: 'A',
       timestampModified: '2023-02-01T00:00:00',
     }),
   ] as unknown as RA<SerializedResource<AnySchema>>;
