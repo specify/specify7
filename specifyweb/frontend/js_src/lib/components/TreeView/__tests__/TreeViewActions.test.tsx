@@ -17,6 +17,7 @@ import { addMissingFields } from '../../DataModel/addMissingFields';
 import type { AnyTree } from '../../DataModel/helperTypes';
 import { getResourceApiUrl } from '../../DataModel/resource';
 import { genericTables, tables } from '../../DataModel/tables';
+import { collectionPreferences } from '../../Preferences/collectionPreferences';
 import {
   SetUnloadProtectsContext,
   UnloadProtectsContext,
@@ -1173,5 +1174,67 @@ describe('Synonymize', () => {
 
     await waitFor(() => expect(handleRefresh).toHaveBeenCalled());
     expect(synonymizeRequest).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('Children can only be added to synonymized nodes if stated in Collection Prefs', () => {
+  const synonym = makeRow({
+    nodeId: 9,
+    name: 'cyprinus',
+    fullName: 'Carpiodes cyprinus',
+    rankId: 220,
+    acceptedId: 4,
+    acceptedName: 'Carpiodes velifer',
+    children: 0,
+  });
+  const addChildName = new RegExp(`^${treeText.addChild()}`, 'u');
+  overrideAjax(getResourceApiUrl('Taxon', synonym.nodeId), () =>
+    addMissingFields('Taxon', {
+      id: synonym.nodeId,
+      name: synonym.name,
+      fullName: synonym.fullName,
+      rankId: synonym.rankId,
+      isAccepted: false,
+      acceptedTaxon: getResourceApiUrl('Taxon', 4),
+      resource_uri: getResourceApiUrl('Taxon', synonym.nodeId),
+    })
+  );
+  let originalPreferences: ReturnType<typeof collectionPreferences.getRaw>;
+  beforeEach(() => {
+    originalPreferences = collectionPreferences.getRaw();
+  });
+  afterEach(() => collectionPreferences.setRaw(originalPreferences));
+
+  function allowChildrenOfSynonyms(allow: boolean): void {
+    collectionPreferences.setRaw({
+      ...originalPreferences,
+      treeManagement: {
+        ...originalPreferences.treeManagement,
+        synonymized: {
+          ...originalPreferences.treeManagement?.synonymized,
+          'sp7.allow_adding_child_to_synonymized_parent.Taxon': allow,
+        },
+      },
+    } as typeof originalPreferences);
+  }
+
+  test('"Add child" is disabled for a synonym when the preference is off', () => {
+    allowChildrenOfSynonyms(false);
+    renderActions('Taxon', synonym);
+
+    expect(screen.getByRole('button', { name: addChildName })).toBeDisabled();
+    expect(
+      screen.queryByRole('link', { name: addChildName })
+    ).not.toBeInTheDocument();
+  });
+
+  test('"Add child" is enabled for a synonym when the preference is on', () => {
+    allowChildrenOfSynonyms(true);
+    renderActions('Taxon', synonym);
+
+    expect(screen.getByRole('link', { name: addChildName })).toHaveAttribute(
+      'aria-disabled',
+      'false'
+    );
   });
 });
