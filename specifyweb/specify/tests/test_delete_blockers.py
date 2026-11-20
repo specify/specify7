@@ -10,7 +10,7 @@ from specifyweb.specify import models
 from specifyweb.specify.api.crud import delete_resource
 
 def _url(obj):
-    return f"/delete_blockers/delete_blockers/{obj._meta.model_name}/{obj.id}/"
+    return f"/delete_blockers/old_delete_blockers/{obj._meta.model_name}/{obj.id}/"
 
 class TestDeleteBlockers(GeographyTree):
 

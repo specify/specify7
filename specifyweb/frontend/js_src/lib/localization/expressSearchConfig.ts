@@ -487,7 +487,7 @@ export const expressSearchConfigText = createDictionary({
   },
   OtherSynsCollObjs: {
     'en-us': 'Collection Object Taxon (all synonyms)',
-    'de-ch': 'Sammlung Objekt Taxon (alle Synonyme)',
+    'de-ch': 'Sammlungsobjekt-Taxon (alle Synonyme)',
     'es-es': 'Taxonomía de objetos de colección (todos los sinónimos)',
     'fr-fr': 'Objets et leurs taxons (tous les synonymes)',
     'hr-hr': 'Takson objekta zbirke (svi sinonimi)',
@@ -937,7 +937,7 @@ export const expressSearchConfigText = createDictionary({
     'fr-fr': 'Objets et lieux',
     'hr-hr': 'Geografija objekata zbirke',
     nb: 'Geografisk avgrensning for samlingsobjekt',
-    'pt-br': 'Coleção de Geografia de Objetos',
+    'pt-br': 'Geografia de Objetos de Coleção',
     'ru-ru': 'География объектов коллекции',
     'uk-ua': "Географія об'єктів колекції",
   },
@@ -1184,7 +1184,7 @@ export const expressSearchConfigText = createDictionary({
     nb: 'Prosjekter og deres tildelte agenter.',
     'pt-br': 'Projetos e seus respectivos agentes designados.',
     'ru-ru': 'Проекты и назначенные им агенты.',
-    'uk-ua': 'Проекти та призначені їм агенти.',
+    'uk-ua': 'Проекти та їхні призначені агенти.',
   },
   RepoAgreeAgent: {
     'en-us': 'Agent Repository Agreement',
@@ -1202,7 +1202,7 @@ export const expressSearchConfigText = createDictionary({
     'de-ch': 'Repository-Vereinbarungen und ihre Ursprungsagenten.',
     'es-es': 'Acuerdos de depósito y sus agentes originadores.',
     'fr-fr': 'Accords de dépôt et leurs agents initiateurs.',
-    'hr-hr': 'Sporazumi o repozitoriju i njihovi izvorni agenti.',
+    'hr-hr': 'Ugovori o repozitoriji i njihovi izvorni agenti.',
     nb: 'Depot avtaler og deres opprinnnelige agenter.',
     'pt-br': 'Acordos de repositório e seus agentes originadores.',
     'ru-ru': 'Соглашения о хранении и их инициаторы.',
@@ -1274,8 +1274,7 @@ export const expressSearchConfigText = createDictionary({
       'Intercambios entrantes con objetos de la colección en preparaciones intercambiadas.',
     'fr-fr':
       'Échanges entrants avec des objets dans les préparations échangées.',
-    'hr-hr':
-      'Dolazne razmjene s objektima kolekcije u razmijenjenim pripremama.',
+    'hr-hr': 'Dolazne razmjene s objektima zbirke u razmijenjenim pripremama.',
     nb: 'Innkommende utvekslingsmateriale med samleobjekter i utvekslede preparater.',
     'pt-br': 'Trocas recebidas com objetos de coleção em preparações trocadas.',
     'ru-ru': 'Входящие обмены с объектами коллекции в рамках обмена.',

@@ -86,7 +86,14 @@ describe('AppResourceEditButton', () => {
     expect(handleDeleted).not.toHaveBeenCalled();
   });
 
-  overrideAjax(`/delete_blockers/delete_blockers/spappresource/3/`, []);
+  overrideAjax(`/delete_blockers/delete_blockers/spappresource/3/?limit=40`, {
+    results: [],
+    next: [],
+  });
+  overrideAjax(`/delete_blockers/count/spappresource/3/`, {
+    results: [],
+    total_count: 0,
+  });
   overrideAjax(`/api/specify/spappresource/3/`, {
     id: 3,
     name: 'TestName',

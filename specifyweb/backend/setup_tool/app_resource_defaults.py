@@ -14,15 +14,37 @@ from specifyweb.specify.migration_utils.utils import batch_query
 
 logger = logging.getLogger(__name__)
 
-DEFAULT_REMOTE_PREFS = b'''ui.formatting.scrdateformat=yyyy-MM-dd
-auditing.do_audits=true
-auditing.audit_field_updates=true
-'''
+DEFAULT_GLOBAL_PREFERENCES = b'''{"general":{"auditing":{"enableAuditLog":true,"logFieldLevelChanges":true},"formatting":{"fullDateFormat":"yyyy-MM-dd","monthYearDateFormat":"MM/yyyy"},"attachments":{"attachmentThumbnailSize":256}}}'''
+DEFAULT_REMOTE_PREFS = b''
 
 def create_app_resource_defaults() -> None:
     """Adds initial app resource files to the database."""
-    # create_global_prefs() # Replacing globabl prefs with remote to avoid user confusion
-    create_remote_prefs()
+    create_global_preferences()
+
+
+def create_global_preferences(user: Optional[Specifyuser] = None) -> None:
+    """Create the JSON resource used by the Global Preferences page."""
+    directory, _ = Spappresourcedir.objects.get_or_create(
+        usertype='Global Prefs',
+        defaults={
+            'ispersonal': False
+        }
+    )
+    admin_user = user or Specifyuser.objects.first()
+    resource, _ = Spappresource.objects.get_or_create(
+        spappresourcedir=directory,
+        name='GlobalPreferences',
+        defaults={
+            'specifyuser': admin_user,
+            'level': 0,
+            'mimetype': 'application/json',
+            'metadata': '',
+        }
+    )
+    Spappresourcedata.objects.get_or_create(
+        spappresource=resource,
+        defaults={'data': DEFAULT_GLOBAL_PREFERENCES}
+    )
 
 def create_global_prefs(user: Optional[Specifyuser] = None) -> None:
     """Create a blank Global Prefs file."""

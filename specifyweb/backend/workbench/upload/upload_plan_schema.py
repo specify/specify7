@@ -361,7 +361,7 @@ def parse_uploadable(table: Table, to_parse: dict) -> Uploadable:
 def parse_upload_table(table: Table, to_parse: dict) -> UploadTable:
 
     def rel_table(key: str) -> Table:
-        related_model_name = table.get_relationship(key).relatedModelName
+        related_model_name = table.get_relationship_strict(key).relatedModelName
         if related_model_name is None:
             raise ValueError(f"Related model name for key '{key}' is None.")
         return datamodel.get_table_strict(related_model_name)

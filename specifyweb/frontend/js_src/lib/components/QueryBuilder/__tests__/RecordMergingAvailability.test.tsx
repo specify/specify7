@@ -107,6 +107,7 @@ test('hides merging in Data Views without changing Query Builder availability', 
 test('hides the preview form merge action when merging is disabled', async () => {
   const formMeta = (
     <FormMeta
+      enableKeyboardShortcut={false}
       resource={new tables.Agent.Resource({ id: 1 })}
       viewDescription={undefined}
     />

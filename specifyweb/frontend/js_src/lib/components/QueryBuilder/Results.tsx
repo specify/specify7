@@ -157,7 +157,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     onFetchMore: handleFetchMore,
     totalCount: [totalCount, setTotalCount],
     canFetchMore,
-  } = usePaginatedCollection<QueryResultRow | undefined>({
+  } = usePaginatedCollection({
     initialRecords: initialData,
     fetchMore: fetchResults,
     fetchSize: props.fetchSize,

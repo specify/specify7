@@ -95,6 +95,17 @@ export const appResourceSubTypes = ensure<IR<AppResourceSubType>>()({
     useTemplate: false,
     scope: ['user'],
   },
+  globalPreferences: {
+    mimeType: 'application/json',
+    name: 'GlobalPreferences',
+    //TODO: Update the documentation URL
+    documentationUrl:
+      'https://discourse.specifysoftware.org/t/configure-database-date-format/1109',
+    icon: icons.library,
+    label: resourcesText.globalPreferences(),
+    useTemplate: false,
+    scope: ['global'],
+  },
   defaultUserPreferences: {
     mimeType: 'application/json',
     name: 'DefaultUserPreferences',

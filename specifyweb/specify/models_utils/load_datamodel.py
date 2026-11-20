@@ -47,7 +47,7 @@ class Datamodel:
     def get_table_strict(self, tablename: str) -> "Table":
         tablename = tablename.lower()
         for table in self.tables:
-            if table.name.lower() == tablename:
+            if table.name.lower() == tablename or table.table.lower() == tablename:
                 return table
         raise TableDoesNotExistError(
             _("No table with name: %(table_name)r") % {"table_name": tablename}
@@ -69,7 +69,7 @@ class Datamodel:
     ) -> Optional["Relationship"]:
         if relationship.relatedModelName is None or relationship.otherSideName is None:
             return None
-        return self.get_table_strict(relationship.relatedModelName).get_relationship(
+        return self.get_table_strict(relationship.relatedModelName).get_relationship_strict(
             cast(str, relationship.otherSideName)
         )
 
@@ -192,7 +192,10 @@ class Table:
         raise FieldDoesNotExistError(_("Field %(field_name)s not in table %(table_name)s. ") % {'field_name':fieldname, 'table_name':self.name} +
                                      _("Fields: %(fields)s") % {'fields':[f.name for f in self.all_fields]})
 
-    def get_relationship(self, name: str) -> "Relationship":
+    def get_relationship(self, name: str, strict = False) -> "Relationship | None":
+        return strict_to_optional(self.get_relationship_strict, name, strict)
+
+    def get_relationship_strict(self, name: str) -> "Relationship":
         field = self.get_field_strict(name)
         if not isinstance(field, Relationship):
             raise FieldDoesNotExistError(
@@ -217,10 +220,10 @@ class Table:
     @property
     def attachments_field(self) -> Optional["Relationship"]:
         try:
-            return self.get_relationship("attachments")
+            return self.get_relationship_strict("attachments")
         except FieldDoesNotExistError:
             try:
-                return self.get_relationship(self.name + "attachments")
+                return self.get_relationship_strict(self.name + "attachments")
             except FieldDoesNotExistError:
                 return None
 
@@ -414,7 +417,7 @@ def add_collectingevents_to_locality(datamodel: Datamodel) -> None:
         relatedModelName="collectingEvent",
         otherSideName="locality",
     )
-    datamodel.get_table_strict("collectingevent").get_relationship(
+    datamodel.get_table_strict("collectingevent").get_relationship_strict(
         "locality"
     ).otherSideName = "collectingEvents"
     relationships = datamodel.get_table_strict("locality").relationships
@@ -426,7 +429,7 @@ def flag_dependent_fields(datamodel: Datamodel) -> None:
     for name in sp6_dependent_fields:
         tablename, fieldname = name.split('.')
         try:
-            field = datamodel.get_table_strict(tablename).get_relationship(fieldname)
+            field = datamodel.get_table_strict(tablename).get_relationship_strict(fieldname)
         except DoesNotExistError as e:
             logger.warn(
                 "missing table or relationship setting dependent field: %s", name
@@ -437,7 +440,7 @@ def flag_dependent_fields(datamodel: Datamodel) -> None:
 
     for table in datamodel.tables:
         if table.is_attachment_jointable:
-            table.get_relationship("attachment").dependent = True
+            table.get_relationship_strict("attachment").dependent = True
         if table.attachments_field:
             table.attachments_field.dependent = True
 

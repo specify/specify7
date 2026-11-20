@@ -32,7 +32,7 @@ import type {
 import { useResourceView } from '../Forms/BaseResourceView';
 import { SaveButton } from '../Forms/Save';
 import { AppTitle } from '../Molecules/AppTitle';
-import { hasToolPermission } from '../Permissions/helpers';
+import { hasPermission, hasToolPermission } from '../Permissions/helpers';
 import { isOverlay, OverlayContext } from '../Router/Router';
 import { clearUrlCache } from '../RouterCommands/CacheBuster';
 import { isXmlSubType } from './Create';
@@ -118,7 +118,12 @@ export function AppResourceEditor({
   const [formElement, setForm] = React.useState<HTMLFormElement | null>(null);
   const isReadOnly =
     React.useContext(ReadOnlyContext) ||
-    !hasToolPermission('resources', appResource.isNew() ? 'create' : 'update');
+    !hasToolPermission(
+      'resources',
+      appResource.isNew() ? 'create' : 'update'
+    ) ||
+    (appResource.get('name') === 'GlobalPreferences' &&
+      !hasPermission('/preferences/global', 'update'));
 
   const loading = React.useContext(LoadingContext);
 
@@ -396,6 +401,7 @@ export function AppResourceEditor({
           </h3>
           <AppResourceEditButton
             appResource={appResource}
+            readOnly={isReadOnly}
             title={title}
             onDeleted={handleDeleted}
           >

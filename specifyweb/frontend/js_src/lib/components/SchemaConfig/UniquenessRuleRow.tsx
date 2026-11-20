@@ -220,7 +220,10 @@ function ModifyUniquenessRule({
                   ({ duplicates, fields }) => [
                     duplicates.toString(),
                     ...Object.values(fields).map((fieldValue) =>
-                      JSON.stringify(fieldValue)
+                      typeof fieldValue === 'string' &&
+                      /^[=+\-@\t\r]/u.test(fieldValue)
+                        ? `'${fieldValue}`
+                        : fieldValue
                     ),
                   ]
                 );

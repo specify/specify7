@@ -418,7 +418,7 @@ class TreeUpdateTests(UploadTestsBase):
         Taxon = get_table("Taxon")
 
         treedef_items = self.taxontreedef.treedefitems.order_by("rankid").all()
-        get_rank = partial(TreeUpdateTests.get_treedefitem_at_rankid, treedef_items)
+        get_rank = partial(UploadTestsBase.get_treedefitem_at_rankid, treedef_items)
         root = Taxon.objects.create(
             name="Life",
             fullname="Life",
@@ -499,14 +499,6 @@ class TreeUpdateTests(UploadTestsBase):
             }
         )
         return genus, species
-
-    @staticmethod
-    def get_treedefitem_at_rankid(treedefitems: list, rankid: int):
-        for treedefitem in treedefitems:
-            if treedefitem.rankid == rankid:
-                return treedefitem
-
-        raise ValueError(f"Unable to find treedefitem with rank {rankid} in {treedefitems}")
 
     def _upload_collection_objects(self, datas: list[dict]):
         Collectionobject = get_table("Collectionobject")

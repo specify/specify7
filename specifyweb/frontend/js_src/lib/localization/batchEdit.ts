@@ -121,8 +121,7 @@ export const batchEditText = createDictionary({
   },
   missingRanksInQuery: {
     'en-us': 'Query requires additional ranks for batch editing',
-    'de-ch':
-      'Für die Stapelbearbeitung sind zusätzliche Rangfolgen erforderlich.',
+    'de-ch': 'Für die Stapelbearbeitung sind zusätzliche Ränge erforderlich.',
     'es-es':
       'La consulta requiere rangos adicionales para la edición por lotes.',
     'fr-fr':
@@ -228,7 +227,7 @@ export const batchEditText = createDictionary({
     'uk-ua':
       'Відкат набору даних призведе до повторного оновлення значень, видалення створених записів та створення нових записів.',
     'hr-hr':
-      'Vraćanje skupa podataka ponovno će ažurirati vrijednosti, izbrisati kreirane zapise i kreirati nove zapise',
+      'Vraćanjem skupa podataka unatrag ponovno će se ažurirati vrijednosti, izbrisati kreirani zapisi i kreirati novi zapisi',
     nb: 'Tilbakerulling av datasettet vil oppdatere verdiene på nytt, slette opprettede poster og opprette nye poster',
   },
   commitSuccessfulDescription: {
@@ -345,7 +344,7 @@ export const batchEditText = createDictionary({
   commitCancelledDescription: {
     'en-us': 'Commit Cancelled Description',
     'de-ch': 'Commit abgebrochen Beschreibung',
-    'es-es': 'Descripción de la cancelación del compromiso',
+    'es-es': 'Compromiso Cancelado Descripción',
     'fr-fr': "Description de l'annulation du versement",
     'pt-br': 'Descrição do Compromisso Cancelado',
     'ru-ru': 'Подтверждение отменено Описание',
@@ -483,7 +482,7 @@ export const batchEditText = createDictionary({
     'es-es': 'Facilitar las relaciones',
     'fr-fr': 'Activer les relations',
     'pt-br': 'Promover relacionamentos',
-    'ru-ru': 'Развивайте отношения',
+    'ru-ru': 'Обеспечьте развитие отношений',
     'uk-ua': "Увімкнути зв'язки",
     'hr-hr': 'Omogući odnose',
     nb: 'Aktiver relasjoner',

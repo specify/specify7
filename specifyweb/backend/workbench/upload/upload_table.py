@@ -6,6 +6,7 @@ from django.db import transaction, IntegrityError
 
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 from specifyweb.specify import models
+from specifyweb.specify.models_utils.model_extras import ModelWithTable
 from specifyweb.specify.utils.func import Func
 from specifyweb.specify.utils.field_change_info import FieldChangeInfo
 from specifyweb.specify.utils.autonumbering import AutonumberingLockDispatcher
@@ -366,7 +367,7 @@ class BoundUploadTable(NamedTuple):
         return isinstance(self.current_id, int)
 
     @property
-    def django_model(self) -> models.ModelWithTable:
+    def django_model(self) -> ModelWithTable:
         return getattr(models, self.name.capitalize())
 
     @property
@@ -394,7 +395,7 @@ class BoundUploadTable(NamedTuple):
         model = self.django_model
 
         if self.disambiguation is not None:
-            if model.objects.filter(id=self.disambiguation).exists():
+            if model.objects.filter(pk=self.disambiguation).exists():
                 return DjangoPredicates(filters={"id": self.disambiguation})
 
         # here's why the line below matters: If some records were added during record epansion, we cannot _filter_ or _eclude_ on them.
@@ -509,8 +510,8 @@ class BoundUploadTable(NamedTuple):
             else update_table.process_row_with_null()
         )
 
-    def _get_reference(self, should_cache=True) -> models.ModelWithTable | None:
-        model: models.ModelWithTable = self.django_model
+    def _get_reference(self, should_cache=True) -> ModelWithTable | None:
+        model: ModelWithTable = self.django_model
         current_id = self.current_id
 
         if current_id is None:
@@ -553,7 +554,7 @@ class BoundUploadTable(NamedTuple):
     def _handle_row(self, skip_match: bool, allow_null: bool) -> UploadResult:
         model = self.django_model
         if self.disambiguation is not None:
-            if model.objects.filter(id=self.disambiguation).exists():
+            if model.objects.filter(pk=self.disambiguation).exists():
                 return UploadResult(
                     Matched(
                         id=self.disambiguation, info=ReportInfo(self.name, [], None)
@@ -712,7 +713,7 @@ class BoundUploadTable(NamedTuple):
 
     def _do_upload(
         self,
-        model: models.ModelWithTable,
+        model: ModelWithTable,
         to_one_results: dict[str, UploadResult],
         info: ReportInfo,
     ) -> UploadResult:
@@ -786,7 +787,7 @@ class BoundUploadTable(NamedTuple):
         return UploadResult(record, to_one_results, to_many_results)
 
     def _handle_to_many(
-        self, update: bool, parent_id: int, model: models.ModelWithTable
+        self, update: bool, parent_id: int, model: ModelWithTable
     ):
         return {
             fieldname: _upload_to_manys(
@@ -897,7 +898,7 @@ class BoundUploadTable(NamedTuple):
         if field_name in self.toOne and self.toOne[field_name].is_one_to_one():
             return True
         
-        return django_model.specify_model.get_relationship(field_name).dependent
+        return django_model.specify_model.get_relationship_strict(field_name).dependent
 
 
 class BoundOneToOneTable(BoundUploadTable):
@@ -1038,6 +1039,7 @@ class BoundUpdateTable(BoundUploadTable):
             **self.static,
         }
 
+        # .attname suffixes all relationship table names with '_id'
         to_one_ids = {
             model._meta.get_field(fieldname).attname: result.get_id()
             for fieldname, result in to_one_results.items()
@@ -1056,7 +1058,9 @@ class BoundUpdateTable(BoundUploadTable):
             scope_change_error = ParseFailures([WorkBenchParseFailure("scopeChangeError", {}, self.parsedFields[0].column)])
             return UploadResult(scope_change_error, {}, {})
 
-        to_one_changes = BoundUpdateTable._field_changed(reference_record, to_one_ids)
+        # finds -to-ones that have been changed and that 
+        # need to be logged in the audit log and committed to the database
+        to_one_changes_ids = BoundUpdateTable._field_changed(reference_record, to_one_ids)
 
         to_one_matched_and_changed = {
             related: result._replace(
@@ -1064,7 +1068,7 @@ class BoundUpdateTable(BoundUploadTable):
             )
             for related, result in to_one_results.items()
             if isinstance(result.record_result, Matched)
-            and model._meta.get_field(related).attname in to_one_changes
+            and model._meta.get_field(related).attname in to_one_changes_ids
         }
 
         to_one_results = {**to_one_results, **to_one_matched_and_changed}
@@ -1086,7 +1090,7 @@ class BoundUpdateTable(BoundUploadTable):
 
         # Changed is just concrete field changes. We might have changed a to-one too.
         # This is done like this to avoid an unecessary save when we know there is no
-        if changed or to_one_changes:
+        if changed or to_one_changes_ids:
             attrs = {
                 **attrs,
                 **to_one_ids,
@@ -1097,11 +1101,27 @@ class BoundUpdateTable(BoundUploadTable):
                 ),
             }
 
+            
+            # this object has the same form as to_one_changes_ids
+            # but the keys and field_name do not have the '_id' suffix
+            # we pass this to the audit log to be consistent with how changing 
+            # -to-ones  is logged when changes are made through forms
+            to_one_changes_names = {
+                model._meta.get_field(fieldname).name: FieldChangeInfo( 
+                    field_name= model._meta.get_field(fieldname).name,
+                    old_value=getattr(reference_record, model._meta.get_field(fieldname).attname),
+                    new_value=newval.get_id()
+                )
+                for fieldname, newval in to_one_results.items() 
+                if model._meta.get_field(fieldname).attname in to_one_changes_ids.keys()
+            }
+
+
             with transaction.atomic():
                 try:
                     updated = self._do_update(
                         reference_record,
-                        [*to_one_changes.values(), *concrete_field_changes.values()],
+                        [*to_one_changes_names.values(), *concrete_field_changes.values()],
                         **attrs,
                     )
                     picklist_additions = self._do_picklist_additions()

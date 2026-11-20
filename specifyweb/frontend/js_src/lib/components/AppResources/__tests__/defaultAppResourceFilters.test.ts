@@ -10,6 +10,7 @@ test('defaultAppResourceFilters', () => {
     "dataViewQueries",
     "defaultUserPreferences",
     "expressSearchConfig",
+    "globalPreferences",
     "interactionsTables",
     "label",
     "leafletLayers",

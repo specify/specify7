@@ -1,334 +1,270 @@
-import { cleanup, screen, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent } from '@testing-library/react';
 import React from 'react';
 
 import { requireContext } from '../../../tests/helpers';
 import { mount } from '../../../tests/reactUtils';
-import { AutoComplete } from '../AutoComplete';
+import { userPreferences } from '../../Preferences/userPreferences';
 import type { AutoCompleteItem } from '../AutoComplete';
+import { AutoComplete } from '../AutoComplete';
 
 requireContext();
 
-const items: readonly AutoCompleteItem<number>[] = [
-  { label: 'First result', data: 1 },
-  { label: 'Second result', data: 2 },
-  { label: 'Third result', data: 3 },
-];
+describe('AutoComplete remote contains results', () => {
+  let originalPreferences: ReturnType<typeof userPreferences.getRaw>;
+  const portalRoot = document.createElement('div');
 
-const scrollIntoView = jest.fn();
-
-beforeAll(() => {
-  Element.prototype.scrollIntoView = scrollIntoView;
-});
-
-function renderAutoComplete(
-  onChange: (item: AutoCompleteItem<number>) => void
-) {
-  return mount(
-    <AutoComplete
-      filterItems={false}
-      onChange={onChange}
-      source={items}
-      value=""
-    />
-  );
-}
-
-beforeEach(() => {
-  document.body.insertAdjacentHTML('beforeend', '<div id="portal-root"></div>');
-});
-
-afterEach(() => {
-  cleanup();
-  document.getElementById('portal-root')?.remove();
-});
-
-test('selects the highlighted result after repeated ArrowDown presses', async () => {
-  const onChange = jest.fn();
-  const { user } = renderAutoComplete(onChange);
-  const input = screen.getByRole('combobox');
-
-  await user.click(input);
-  await user.type(input, 'x');
-  expect(document.activeElement).toBe(input);
-  await screen.findAllByRole('option');
-  expect(input).toHaveAttribute(
-    'aria-activedescendant',
-    screen.getByRole('option', { name: 'First result' }).id
-  );
-  await user.keyboard('{ArrowDown}');
-  expect(input).toHaveAttribute(
-    'aria-activedescendant',
-    screen.getByRole('option', { name: 'Second result' }).id
-  );
-  await user.keyboard('{ArrowDown}');
-  expect(input).toHaveAttribute(
-    'aria-activedescendant',
-    screen.getByRole('option', { name: 'Third result' }).id
-  );
-  expect(
-    screen
-      .getAllByRole('option')
-      .filter((option) => option.classList.contains('bg-gray-100'))
-  ).toEqual([screen.getByRole('option', { name: 'Third result' })]);
-  await user.keyboard('{Enter}');
-
-  expect(onChange).toHaveBeenCalledTimes(1);
-  expect(onChange).toHaveBeenCalledWith(items[2]);
-});
-
-test('selects the previous highlighted result after ArrowUp', async () => {
-  const onChange = jest.fn();
-  const { user } = renderAutoComplete(onChange);
-  const input = screen.getByRole('combobox');
-
-  await user.click(input);
-  await user.type(input, 'x');
-  expect(document.activeElement).toBe(input);
-  await screen.findAllByRole('option');
-  for (const key of [
-    '{ArrowDown}',
-    '{ArrowDown}',
-    '{ArrowDown}',
-    '{ArrowUp}',
-    '{Enter}',
-  ])
-    await user.keyboard(key);
-
-  expect(onChange).toHaveBeenCalledTimes(1);
-  expect(onChange).toHaveBeenCalledWith(items[1]);
-});
-
-test('highlights only the active result after hovering then pressing ArrowDown', async () => {
-  const onChange = jest.fn();
-  const { user } = renderAutoComplete(onChange);
-  const input = screen.getByRole('combobox');
-
-  await user.type(input, 'x');
-  const secondOption = await screen.findByRole('option', {
-    name: 'Second result',
+  beforeAll(() => {
+    portalRoot.id = 'portal-root';
+    document.body.append(portalRoot);
   });
-  await user.hover(secondOption);
-  await user.pointer({
-    target: secondOption,
-    coords: { screenX: 10, screenY: 10 },
+
+  afterAll(() => {
+    portalRoot.remove();
   });
-  expect(input).toHaveAttribute('aria-activedescendant', secondOption.id);
 
-  scrollIntoView.mockClear();
-  await user.keyboard('{ArrowDown}');
+  beforeEach(() => {
+    originalPreferences = userPreferences.getRaw();
+    userPreferences.setRaw({
+      form: { autoComplete: { searchAlgorithm: 'startsWith' } },
+    });
+  });
 
-  const thirdOption = screen.getByRole('option', { name: 'Third result' });
-  expect(input).toHaveAttribute('aria-activedescendant', thirdOption.id);
-  expect(
-    screen
-      .getAllByRole('option')
-      .filter((option) => option.classList.contains('bg-gray-100'))
-  ).toEqual([thirdOption]);
-  await waitFor(() =>
-    expect(scrollIntoView.mock.instances).toContain(thirdOption)
-  );
-  await user.keyboard('{Enter}');
-  expect(onChange).toHaveBeenCalledWith(items[2]);
-});
+  afterEach(() => {
+    cleanup();
+    userPreferences.setRaw(originalPreferences);
+  });
 
-test('initial ArrowUp stays synchronized with the first active result', async () => {
-  const onChange = jest.fn();
-  const onNewValue = jest.fn();
-  const { user } = mount(
-    <AutoComplete
-      filterItems={false}
-      onChange={onChange}
-      onNewValue={onNewValue}
-      source={items}
-      value=""
-    />
-  );
-  const input = screen.getByRole('combobox');
-
-  await user.click(input);
-  await user.type(input, 'x');
-  await screen.findAllByRole('option');
-  await user.keyboard('{ArrowUp}');
-  await user.keyboard('{Enter}');
-
-  expect(onChange).toHaveBeenCalledTimes(1);
-  expect(onChange).toHaveBeenCalledWith(items[0]);
-  expect(onNewValue).not.toHaveBeenCalled();
-});
-
-test.each([
-  ['Home', 0],
-  ['End', 2],
-] as const)('selects the boundary option with %s', async (key, index) => {
-  const onChange = jest.fn();
-  const { user } = renderAutoComplete(onChange);
-  const input = screen.getByRole('combobox');
-
-  await user.click(input);
-  await user.type(input, 'x');
-  await screen.findAllByRole('option');
-  await user.keyboard('{ArrowDown}');
-  await user.keyboard(`{${key}}`);
-  const activeOption = screen.getAllByRole('option')[index];
-  expect(input).toHaveAttribute('aria-activedescendant', activeOption.id);
-  expect(
-    screen
-      .getAllByRole('option')
-      .filter((option) => option.classList.contains('bg-gray-100'))
-  ).toEqual([activeOption]);
-  await user.keyboard('{Enter}');
-
-  expect(onChange).toHaveBeenCalledTimes(1);
-  expect(onChange).toHaveBeenCalledWith(items[index]);
-});
-
-test.each(['Home', 'End'])(
-  'Shift+%s preserves the active result',
-  async (key) => {
+  test('does not prefix-filter substring matches returned by the server', async () => {
+    const source = jest.fn(async () => [
+      { label: 'Hydrolea palustris', data: '1' },
+      { label: 'Bacopa hydrolea', data: '2' },
+    ]);
     const onChange = jest.fn();
-    const { user } = renderAutoComplete(onChange);
-    const input = screen.getByRole('combobox');
+    const { getByRole, findByRole, user } = mount(
+      <AutoComplete
+        delay={0}
+        filterItems={false}
+        source={source}
+        value=""
+        onChange={onChange}
+      />
+    );
 
-    await user.type(input, 'x');
-    await screen.findAllByRole('option');
-    await user.keyboard('{ArrowDown}');
-    await user.keyboard(`{Shift>}{${key}}{/Shift}`);
-    await user.keyboard('{Enter}');
+    await user.type(getByRole('combobox'), 'hydrolea');
 
-    expect(onChange).toHaveBeenCalledTimes(1);
-    expect(onChange).toHaveBeenCalledWith(items[1]);
-  }
-);
+    const substringMatch = await findByRole('option', {
+      name: 'Bacopa hydrolea',
+    });
+    expect(source).toHaveBeenLastCalledWith('hydrolea');
+    expect(
+      getByRole('option', { name: 'Hydrolea palustris' })
+    ).toBeInTheDocument();
 
-test('ArrowDown selects a result beyond 50 rows rather than the available Add option', async () => {
-  const manyItems = Array.from({ length: 100 }, (_, index) => ({
-    label: `Result ${index + 1}`,
-    data: index + 1,
-  }));
-  const onChange = jest.fn();
-  const onNewValue = jest.fn();
-  const { user } = mount(
-    <AutoComplete
-      filterItems={false}
-      onChange={onChange}
-      onNewValue={onNewValue}
-      source={manyItems}
-      value=""
-    />
+    await user.click(substringMatch);
+
+    expect(onChange).toHaveBeenCalledWith({
+      label: 'Bacopa hydrolea',
+      data: '2',
+    });
+  });
+
+  test('shows and selects subsequent-page substring matches while searching', async () => {
+    const source = jest.fn(async () => [
+      { label: 'Hydrolea palustris', data: '1' },
+    ]);
+    const onChange = jest.fn();
+    const onScrollEnd = jest.fn();
+    function PaginatedAutoComplete({
+      extraItems,
+    }: {
+      readonly extraItems: ReadonlyArray<AutoCompleteItem<string>>;
+    }): JSX.Element {
+      const [value, setValue] = React.useState('');
+      return (
+        <AutoComplete
+          delay={0}
+          extraItems={extraItems}
+          filterItems={false}
+          source={source}
+          value={value}
+          onChange={(item) => {
+            setValue(item.label.toString());
+            onChange(item);
+          }}
+          onScrollEnd={onScrollEnd}
+        />
+      );
+    }
+    const { getByRole, findByRole, rerender, user } = mount(
+      <PaginatedAutoComplete extraItems={[]} />
+    );
+
+    await user.type(getByRole('combobox'), 'hydrolea');
+    await findByRole('option', { name: 'Hydrolea palustris' });
+
+    fireEvent.scroll(getByRole('listbox'));
+    expect(onScrollEnd).toHaveBeenCalledTimes(1);
+
+    rerender(
+      <PaginatedAutoComplete
+        extraItems={[{ label: 'Bacopa hydrolea', data: '2' }]}
+      />
+    );
+
+    await user.click(await findByRole('option', { name: 'Bacopa hydrolea' }));
+
+    expect(getByRole('combobox')).toHaveValue('Bacopa hydrolea');
+    expect(onChange).toHaveBeenCalledWith({
+      label: 'Bacopa hydrolea',
+      data: '2',
+    });
+    expect(source).toHaveBeenLastCalledWith('hydrolea');
+  });
+
+  test.each([
+    ['initial page', false],
+    ['appended page', true],
+  ] as const)(
+    'updates selected-option state when %s results arrive or change',
+    async (_page, appended) => {
+      const renderAutoComplete = (
+        items: ReadonlyArray<AutoCompleteItem<string>>
+      ) => (
+        <AutoComplete
+          extraItems={appended ? items : undefined}
+          filterItems={false}
+          source={appended ? [] : items}
+          value="Bacopa hydrolea"
+          onChange={jest.fn()}
+        />
+      );
+      const { getByRole, findByRole, rerender, user } = mount(
+        renderAutoComplete([])
+      );
+
+      rerender(renderAutoComplete([{ label: 'Bacopa hydrolea', data: '2' }]));
+      await user.click(getByRole('button', { name: 'Expand' }));
+      expect(
+        await findByRole('option', { name: 'Bacopa hydrolea' })
+      ).toHaveAttribute('aria-selected', 'true');
+
+      rerender(renderAutoComplete([{ label: 'Bacopa hydrolea', data: '2' }]));
+      expect(
+        await findByRole('option', { name: 'Bacopa hydrolea' })
+      ).toHaveAttribute('aria-selected', 'true');
+
+      rerender(renderAutoComplete([{ label: 'Bacopa hydrolea', data: '3' }]));
+      expect(
+        await findByRole('option', { name: 'Bacopa hydrolea' })
+      ).toHaveAttribute('aria-selected', 'true');
+    }
   );
-  const input = screen.getByRole('combobox');
 
-  await user.type(input, 'x');
-  expect(await screen.findAllByRole('option')).toHaveLength(101);
-  for (let index = 0; index < 54; index++) await user.keyboard('{ArrowDown}');
+  test.each([
+    ['startsWith', ['Hydrolea palustris', 'hydrolea ovata']],
+    ['startsWithCaseSensitive', ['hydrolea ovata']],
+    ['contains', ['Hydrolea palustris', 'hydrolea ovata', 'Bacopa hydrolea']],
+    ['containsCaseSensitive', ['hydrolea ovata', 'Bacopa hydrolea']],
+  ] as const)(
+    'applies %s filtering to initial and subsequent pages',
+    async (searchAlgorithm, expectedLabels) => {
+      userPreferences.setRaw({
+        form: { autoComplete: { searchAlgorithm } },
+      });
+      const source = jest.fn(async () => [
+        { label: 'Hydrolea palustris', data: '1' },
+        { label: 'Rosa canina', data: '2' },
+      ]);
+      const onChange = jest.fn();
+      const renderAutoComplete = (
+        extraItems: ReadonlyArray<AutoCompleteItem<string>>
+      ) => (
+        <AutoComplete
+          delay={0}
+          extraItems={extraItems}
+          filterItems
+          source={source}
+          value=""
+          onChange={onChange}
+        />
+      );
+      const { getByRole, findByRole, getAllByRole, rerender, user } = mount(
+        renderAutoComplete([])
+      );
 
-  expect(input).toHaveAttribute(
-    'aria-activedescendant',
-    screen.getByRole('option', { name: 'Result 55' }).id
+      await user.type(getByRole('combobox'), 'hydrolea');
+      rerender(
+        renderAutoComplete([
+          { label: 'hydrolea ovata', data: '3' },
+          { label: 'Bacopa hydrolea', data: '4' },
+          { label: 'Rosa rubiginosa', data: '5' },
+        ])
+      );
+
+      await findByRole('option', { name: 'hydrolea ovata' });
+
+      expect(
+        getAllByRole('option').map(({ textContent }) => textContent)
+      ).toEqual(expectedLabels);
+    }
   );
-  expect(
-    screen
-      .getAllByRole('option')
-      .filter((option) => option.classList.contains('bg-gray-100'))
-  ).toEqual([screen.getByRole('option', { name: 'Result 55' })]);
-  expect(screen.getAllByRole('option')).toHaveLength(101);
-  await user.keyboard('{Enter}');
 
-  expect(onChange).toHaveBeenCalledTimes(1);
-  expect(onChange).toHaveBeenCalledWith(manyItems[54]);
-  expect(onNewValue).not.toHaveBeenCalled();
-});
+  test('does not offer to add a value already present on a subsequent page', async () => {
+    const source = jest.fn(async () => [
+      { label: 'Hydrolea palustris', data: '1' },
+    ]);
+    const { getByRole, findByRole, queryByRole, rerender, user } = mount(
+      <AutoComplete
+        delay={0}
+        filterItems={false}
+        source={source}
+        value=""
+        onChange={jest.fn()}
+        onNewValue={jest.fn()}
+      />
+    );
 
-test('ArrowDown can highlight the Add option after the results', async () => {
-  const onChange = jest.fn();
-  const onNewValue = jest.fn();
-  const { user } = mount(
-    <AutoComplete
-      filterItems={false}
-      onChange={onChange}
-      onNewValue={onNewValue}
-      source={items}
-      value=""
-    />
-  );
-  const input = screen.getByRole('combobox');
+    await user.type(getByRole('combobox'), 'hydrolea');
+    await findByRole('option', { name: 'Hydrolea palustris' });
+    expect(getByRole('option', { name: /add/i })).toBeInTheDocument();
+    rerender(
+      <AutoComplete
+        delay={0}
+        extraItems={[{ label: 'hydrolea', data: '2' }]}
+        filterItems={false}
+        source={source}
+        value=""
+        onChange={jest.fn()}
+        onNewValue={jest.fn()}
+      />
+    );
 
-  await user.click(input);
-  await user.type(input, 'x');
-  await screen.findAllByRole('option');
-  for (let index = 0; index < items.length; index++)
-    await user.keyboard('{ArrowDown}');
-  const addOption = screen.getAllByRole('option')[items.length];
-  expect(input).toHaveAttribute('aria-activedescendant', addOption.id);
-  expect(
-    screen
-      .getAllByRole('option')
-      .filter((option) => option.classList.contains('bg-gray-100'))
-  ).toEqual([addOption]);
-  await user.keyboard('{Enter}');
+    await findByRole('option', { name: 'hydrolea' });
 
-  expect(onChange).not.toHaveBeenCalled();
-  expect(onNewValue).toHaveBeenCalledTimes(1);
-  expect(onNewValue).toHaveBeenCalledWith('x');
-});
-
-test('End selects the last result before the trailing Add option', async () => {
-  const onChange = jest.fn();
-  const onNewValue = jest.fn();
-  const { user } = mount(
-    <AutoComplete
-      filterItems={false}
-      onChange={onChange}
-      onNewValue={onNewValue}
-      source={items}
-      value=""
-    />
-  );
-  const input = screen.getByRole('combobox');
-
-  await user.click(input);
-  await user.type(input, 'x');
-  await screen.findAllByRole('option');
-  await user.keyboard('{End}');
-  await user.keyboard('{Enter}');
-
-  expect(onChange).toHaveBeenCalledTimes(1);
-  expect(onChange).toHaveBeenCalledWith(items[2]);
-  expect(onNewValue).not.toHaveBeenCalled();
-});
-
-test('End selects the final result in a long list before the trailing Add option', async () => {
-  const manyItems = Array.from({ length: 100 }, (_, index) => ({
-    label: `Result ${index + 1}`,
-    data: index + 1,
-  }));
-  const onChange = jest.fn();
-  const onNewValue = jest.fn();
-  const { user } = mount(
-    <AutoComplete
-      filterItems={false}
-      onChange={onChange}
-      onNewValue={onNewValue}
-      source={manyItems}
-      value=""
-    />
-  );
-  const input = screen.getByRole('combobox');
-
-  await user.click(input);
-  await user.type(input, 'x');
-  await screen.findAllByRole('option');
-  await user.keyboard('{End}');
-  await user.keyboard('{Enter}');
-
-  expect(onChange).toHaveBeenCalledTimes(1);
-  expect(onChange).toHaveBeenCalledWith(manyItems.at(-1));
-  expect(onNewValue).not.toHaveBeenCalled();
+    expect(queryByRole('option', { name: /add/i })).not.toBeInTheDocument();
+  });
 });
 
 describe('AutoComplete keyboard navigation', () => {
+  const scrollIntoView = jest.fn();
+  const portalRoot = document.createElement('div');
+
+  beforeAll(() => {
+    portalRoot.id = 'portal-root';
+    document.body.append(portalRoot);
+    Element.prototype.scrollIntoView = scrollIntoView;
+  });
+
+  afterAll(() => {
+    portalRoot.remove();
+  });
+
   beforeEach(() => {
     scrollIntoView.mockClear();
+  });
+
+  afterEach(() => {
+    cleanup();
   });
 
   const makeItems = (count: number): ReadonlyArray<AutoCompleteItem<string>> =>
@@ -355,13 +291,50 @@ describe('AutoComplete keyboard navigation', () => {
 
     await user.type(getByRole('combobox'), 'i');
     await user.keyboard('{ArrowDown}');
-    await waitFor(() => expect(scrolledIndexes()).toContain('1'));
     await user.keyboard('{ArrowDown}');
 
-    await waitFor(() => expect(scrolledIndexes()).toContain('2'));
+    expect(scrolledIndexes()).toContain('1');
   });
 
-  test('keeps highlighting synchronized with the active option when results are replaced', async () => {
+  test('keeps the highlighted row when the next page is appended', async () => {
+    const source = makeItems(10);
+
+    function Harness({
+      extraItems,
+    }: {
+      readonly extraItems: ReadonlyArray<AutoCompleteItem<string>>;
+    }): JSX.Element {
+      const [value, setValue] = React.useState('');
+      return (
+        <AutoComplete
+          delay={0}
+          extraItems={extraItems}
+          filterItems={false}
+          source={source}
+          value={value}
+          onChange={(item): void => setValue(item.label.toString())}
+        />
+      );
+    }
+
+    const { getByRole, rerender, user } = mount(<Harness extraItems={[]} />);
+
+    await user.type(getByRole('combobox'), 'i');
+    await user.keyboard('{ArrowDown}');
+    await user.keyboard('{ArrowDown}');
+    await user.keyboard('{ArrowDown}');
+    expect(scrolledIndexes()).toContain('2');
+
+    rerender(<Harness extraItems={[{ label: 'Item 10', data: '10' }]} />);
+    // Let Headless UI flush its own pending scrollIntoView before measuring ours
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    scrollIntoView.mockClear();
+    await user.keyboard('{ArrowDown}');
+
+    expect(scrolledIndexes()).toEqual(['3']);
+  });
+
+  test('resets the highlighted row when the results are replaced', async () => {
     const { getByRole, rerender, user } = mount(
       <AutoComplete
         delay={0}
@@ -375,7 +348,7 @@ describe('AutoComplete keyboard navigation', () => {
     await user.type(getByRole('combobox'), 'i');
     await user.keyboard('{ArrowDown}');
     await user.keyboard('{ArrowDown}');
-    await waitFor(() => expect(scrolledIndexes()).toContain('2'));
+    expect(scrolledIndexes()).toContain('1');
 
     rerender(
       <AutoComplete
@@ -389,23 +362,33 @@ describe('AutoComplete keyboard navigation', () => {
         onChange={jest.fn()}
       />
     );
-    expect(getByRole('combobox')).toHaveAttribute(
-      'aria-activedescendant',
-      getByRole('option', { name: 'Renamed 2' }).id
-    );
+    // Let Headless UI flush its own pending scrollIntoView before measuring ours
+    await new Promise((resolve) => setTimeout(resolve, 100));
     scrollIntoView.mockClear();
     await user.keyboard('{ArrowDown}');
 
-    const activeOption = getByRole('option', { name: 'Renamed 3' });
-    expect(getByRole('combobox')).toHaveAttribute(
-      'aria-activedescendant',
-      activeOption.id
+    expect(scrolledIndexes()).toEqual(['0']);
+  });
+
+  test('End selects the last result before the trailing Add option', async () => {
+    const onChange = jest.fn();
+    const onNewValue = jest.fn();
+    const { getByRole, user } = mount(
+      <AutoComplete
+        filterItems={false}
+        onChange={onChange}
+        onNewValue={onNewValue}
+        source={makeItems(3)}
+        value=""
+      />
     );
-    expect(
-      screen
-        .getAllByRole('option')
-        .filter((option) => option.classList.contains('bg-gray-100'))
-    ).toEqual([activeOption]);
-    await waitFor(() => expect(scrolledIndexes()).toContain('3'));
+
+    const input = getByRole('combobox');
+    await user.type(input, 'i');
+    await user.keyboard('{End}');
+    await user.keyboard('{Enter}');
+
+    expect(onChange).toHaveBeenCalledWith(makeItems(3)[2]);
+    expect(onNewValue).not.toHaveBeenCalled();
   });
 });

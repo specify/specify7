@@ -3,6 +3,8 @@ from unittest import skip
 from django.db.models import ProtectedError
 
 from specifyweb.specify import models
+from specifyweb.specify.api.crud import delete_resource, post_resource, update_obj
+from specifyweb.specify.api.serializers import uri_for_model
 from specifyweb.specify.tests.test_api import ApiTests
 
 
@@ -21,6 +23,131 @@ class TaxonTests(ApiTests):
             name="Life",
             definition=self.roottaxontreedefitem.treedef,
             rankid=self.roottaxontreedefitem.rankid)
+
+        self.kingdom = self.roottaxontreedefitem.children.create(
+            name="Test Kingdom",
+            rankid=100,
+            treedef=self.taxontreedef,
+        )
+
+    def _taxon_data(self, name, **overrides):
+        data = {
+            "name": name,
+            "parent": uri_for_model("taxon", self.roottaxon.id),
+            "definitionitem": uri_for_model("taxontreedefitem", self.kingdom.id),
+            "author": "Linnaeus",
+            "remarks": "Test taxon",
+        }
+        data.update(overrides)
+        return data
+
+    def _create_taxon(self, name, **overrides):
+        return post_resource(
+            self.collection,
+            self.agent,
+            "taxon",
+            self._taxon_data(name, **overrides),
+        )
+
+    def _create_existing_taxon(self, name):
+        return self.roottaxon.children.create(
+            name=name,
+            definition=self.taxontreedef,
+            definitionitem=self.kingdom,
+            rankid=self.kingdom.rankid,
+            author="Old author",
+            remarks="Created before this version",
+        )
+
+    def test_add_taxon(self):
+        taxon = self._create_taxon("Animalia")
+
+        self.assertIsNotNone(taxon.id)
+        self.assertExists(
+            models.Taxon.objects.filter(
+                id=taxon.id,
+                name="Animalia",
+                parent=self.roottaxon,
+            )
+        )
+        self.assertEqual(taxon.definition_id, self.taxontreedef.id)
+        self.assertEqual(taxon.definitionitem_id, self.kingdom.id)
+        self.assertEqual(taxon.rankid, self.kingdom.rankid)
+
+        taxon.delete()
+
+    def test_clone_taxon(self):
+        original = self._create_taxon(
+            "Animalia",
+            author="Linnaeus",
+            remarks="Original remarks",
+        )
+
+        clone = self._create_taxon(
+            original.name,
+            author=original.author,
+            remarks=original.remarks,
+        )
+
+        self.assertNotEqual(clone.id, original.id)
+        self.assertEqual(clone.name, original.name)
+        self.assertEqual(clone.parent_id, original.parent_id)
+        self.assertEqual(clone.definitionitem_id, original.definitionitem_id)
+        self.assertEqual(clone.author, original.author)
+        self.assertEqual(clone.remarks, original.remarks)
+
+        original.refresh_from_db()
+        self.assertEqual(original.name, "Animalia")
+
+        clone.delete()
+        original.delete()
+
+    def test_delete_new_taxon(self):
+        taxon = self._create_taxon("Animalia")
+        taxon_id = taxon.id
+
+        delete_resource(
+            self.collection,
+            self.agent,
+            "taxon",
+            taxon_id,
+            taxon.version,
+        )
+
+        self.assertNotExists(models.Taxon.objects.filter(id=taxon_id))
+
+    def test_edit_taxon_created_in_previous_version(self):
+        taxon = self._create_existing_taxon("Animalia")
+
+        update_obj(
+            self.collection,
+            self.agent,
+            "taxon",
+            taxon.id,
+            taxon.version,
+            {"name": "Animalia updated", "author": "New author"},
+        )
+
+        taxon.refresh_from_db()
+        self.assertEqual(taxon.name, "Animalia updated")
+        self.assertEqual(taxon.author, "New author")
+        self.assertEqual(taxon.version, 1)
+
+        taxon.delete()
+
+    def test_delete_taxon_created_in_previous_version(self):
+        taxon = self._create_existing_taxon("Animalia")
+        taxon_id = taxon.id
+
+        delete_resource(
+            self.collection,
+            self.agent,
+            "taxon",
+            taxon_id,
+            taxon.version,
+        )
+
+        self.assertNotExists(models.Taxon.objects.filter(id=taxon_id))
 
     def test_delete_blocked_by_collectingeventattributes(self):
         collectingeventattribute = models.Collectingeventattribute.objects.create(

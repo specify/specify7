@@ -29,10 +29,11 @@ export function SchemaConfigSidebar({
       }
       cacheKey="schemaConfig"
       currentTableName={tableName}
+      showAllTables
+      showTableCaptionToggle
       getAction={(table): string =>
         `/specify/schema-config/${language}/${table.name}/`
       }
-      localizeTableNames={false}
     />
   );
 }

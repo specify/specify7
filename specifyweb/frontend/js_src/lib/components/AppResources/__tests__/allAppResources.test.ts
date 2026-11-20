@@ -9,6 +9,7 @@ test('allAppResources', () => {
   "dataViewQueries",
   "defaultUserPreferences",
   "expressSearchConfig",
+  "globalPreferences",
   "interactionsTables",
   "label",
   "leafletLayers",
