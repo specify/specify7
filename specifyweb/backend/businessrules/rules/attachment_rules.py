@@ -6,8 +6,8 @@ from specifyweb.specify.utils.scoping import Scoping
 from specifyweb.specify import models
 from specifyweb.specify.models_utils.models_by_table_id import get_model_by_table_id, models_iterator
 from specifyweb.backend.workbench.models import Spdataset, Spdatasetattachment
-from django.db import transaction
 from django.apps import apps
+from django.db.models import F, Value
 
 from specifyweb.backend.businessrules.exceptions import AbortSave
 
@@ -74,6 +74,39 @@ def get_attachee(jointable_inst):
     main_table_name = JOINTABLE_NAME_RE.match(
         jointable_inst.__class__.__name__).group(1)
     return getattr(jointable_inst, main_table_name.lower())
+
+
+def get_attachment_owners(attachment):
+    # Resolve the actual links because tableid can be stale or edited.
+    owner_models = {}
+    link_queries = []
+    for jointable in attachment_tables - {Spdatasetattachment}:
+        owner_field = jointable._meta.get_field(jointable._meta.model_name.removesuffix('attachment'))
+        owner_model = owner_field.related_model
+        owner_label = owner_model._meta.label_lower
+        owner_models[owner_label] = owner_model
+        link_queries.append(
+            jointable.objects.filter(attachment_id=attachment.pk).order_by().values_list(
+                Value(owner_label), F(owner_field.attname),
+            )
+        )
+
+    first_query, *other_queries = link_queries
+    owner_ids = {}
+    for owner_label, owner_id in first_query.union(*other_queries, all=True):
+        owner_ids.setdefault(owner_label, set()).add(owner_id)
+    owners = [
+        owner
+        for owner_label, ids in owner_ids.items()
+        for owner in owner_models[owner_label].objects.filter(pk__in=ids)
+    ]
+    if owners:
+        return owners
+    # WorkBench retains a dataset link after importing an attachment into a record.
+    return [
+        link.spdataset
+        for link in attachment.spdatasetattachments.select_related('spdataset')
+    ]
 
 
 def get_jointable_model(main_table_model):

@@ -48,7 +48,7 @@ def filter_by_collection(queryset, collection, strict=True):
         return queryset.filter(**filters)
 
     if queryset.model in (Geography, Geologictimeperiod, Lithostrat, Tectonicunit):
-        return queryset.filter(definition__disciplines=collection.discipline)
+        return Scoping.filter_tree_records(queryset, (collection.discipline_id,))
 
     if queryset.model is Taxon:
         return queryset.filter(definition__discipline=collection.discipline)

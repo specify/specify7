@@ -13,10 +13,12 @@ from tempfile import TemporaryDirectory
 
 from django import http
 from django.conf import settings
+from django.core.exceptions import BadRequest
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_http_methods
 
 from specifyweb.middleware.general import require_http_methods
+from specifyweb.backend.permissions.permissions import cache_permission_queries
 from specifyweb.specify.api.dispatch import collection_dispatch, resource_dispatch
 from specifyweb.specify.api.exceptions import MissingVersionException, StaleObjectException
 from . import models as spmodels
@@ -59,6 +61,7 @@ def api_view(dispatch_func):
     in the api logic."""
     @login_maybe_required
     @cache_control(private=True, max_age=2)
+    @cache_permission_queries()
     def view(request, *args, **kwargs):
         """RESTful API endpoint for most Specify datamodel resources.
         <model> is the table from the Specify datamodel. <id> is the
@@ -68,7 +71,7 @@ def api_view(dispatch_func):
             return dispatch_func(request, *args, **kwargs)
         except StaleObjectException as e:
             return HttpResponseConflict(e)
-        except MissingVersionException as e:
+        except (BadRequest, MissingVersionException) as e:
             return http.HttpResponseBadRequest(e)
         except http.Http404 as e:
             return http.HttpResponseNotFound(e)

@@ -13,6 +13,8 @@ class TectonicunitTests(ApiTests):
         self.tectonicunittreedef = models.Tectonicunittreedef.objects.create(
             name="Test Tectonic Unit tree def"
         )
+        self.discipline.tectonicunittreedef = self.tectonicunittreedef
+        self.discipline.save()
         self.root_treedefitem = self.tectonicunittreedef.treedefitems.create(
             name="root", rankid=0
         )

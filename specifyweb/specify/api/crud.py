@@ -1,19 +1,21 @@
 import logging
 from typing import Any, Dict
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 import json
 from django.db import transaction
-from django.core.exceptions import FieldError, FieldDoesNotExist
-from django.db.models import Model, F, Q, Subquery
+from django.core.exceptions import BadRequest, FieldError, FieldDoesNotExist
+from django.db.models import Model, F, OuterRef, Q, QuerySet, Subquery
 from django.db.models.deletion import Collector
+from django.db.models.fields.reverse_related import ForeignObjectRel
 from django.http import (HttpResponseServerError, Http404)
 from django.apps import apps
 
-from specifyweb.backend.permissions.permissions import check_field_permissions, check_table_permissions
+from specifyweb.backend.permissions.permissions import TABLE_ACTION, check_field_permissions, check_table_permissions, invalidate_collection_scope_cache, prepare_read_queryset
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 from specifyweb.backend.workbench.upload.auditlog import auditlog
 from specifyweb.specify import models
-from specifyweb.specify.api.api_utils import objs_to_data_, CollectionPayload
+from specifyweb.specify.api_utils import objs_to_data_, CollectionPayload, strict_uri_to_model
+from specifyweb.specify.datamodel import is_tree_table
 from specifyweb.specify.utils.autonumbering import autonumber_and_save
 from specifyweb.specify.api.exceptions import FilterError, MissingVersionException, OrderByError, RecordSetException, StaleObjectException
 from specifyweb.specify.utils.field_change_info import FieldChangeInfo
@@ -22,12 +24,13 @@ from specifyweb.specify.models_utils.models_by_table_id import get_model_by_tabl
 from specifyweb.specify.models_utils.relationships import get_recordset_info, get_related_or_none, handle_fk_fields, handle_to_many, is_dependent_field
 from specifyweb.specify.utils.uiformatters import AutonumberOverflowException
 from specifyweb.specify.api.validators import GetCollectionForm, cleanData, fld_change_info
+from specifyweb.specify.utils.scoping import Scoping, ScopeType
 
 logger = logging.getLogger(__name__)
 
 ReadPermChecker = Callable[[Any], None]
 
-def get_resource(name, id, checker: ReadPermChecker, recordsetid=None) -> dict:
+def get_resource(name, id, checker: ReadPermChecker, recordsetid=None, *, actor=None) -> dict:
     from specifyweb.specify.api.serializers import _obj_to_data
 
     """Return a dict of the fields from row 'id' in model 'name'.
@@ -38,9 +41,191 @@ def get_resource(name, id, checker: ReadPermChecker, recordsetid=None) -> dict:
     obj = get_object_or_404(name, id=int(id))
     data = _obj_to_data(obj, checker)
     if recordsetid is not None:
-        data['recordset_info'] = get_recordset_info(obj, recordsetid)
+        checker(get_object_or_404(models.Recordset, id=recordsetid))
+        data['recordset_info'] = get_recordset_info(obj, recordsetid, actor=actor)
     return data
 
+def _check_recordset_reference(collection, agent, obj) -> None:
+    if isinstance(obj, models.Recordsetitem):
+        target = get_object_or_404(
+            get_model_by_table_id(obj.recordset.dbtableid), pk=obj.recordid,
+        )
+        check_table_permissions(collection, agent, target, "read")
+
+def _check_destination_scope(
+    collection, agent, obj: Model, data: dict[str, Any], action: TABLE_ACTION,
+) -> None:
+    owners = Scoping.collection_owner_fields(type(obj))
+    if owners and any(
+        name in data
+        for name in (*owners, 'collectionmemberid', 'collectionmember', 'collection')
+    ):
+        check_table_permissions(
+            collection, agent, obj, action, destination=True,
+        )
+
+def _check_attachment_scope_change(
+    collection, agent, obj: models.Attachment, fields: list[str], owner_scopes: list[QuerySet],
+) -> None:
+    if 'scopetype' not in fields and 'scopeid' not in fields:
+        return
+    if obj.scopetype is not None:
+        try:
+            obj.scopetype = ScopeType(int(obj.scopetype)).value
+        except (TypeError, ValueError, OverflowError) as error:
+            raise BadRequest("Invalid attachment scope type") from error
+    if obj.scopetype in (None, ScopeType.GLOBAL.value):
+        if 'scopetype' in fields:
+            check_table_permissions(None, agent, models.Attachment, "update")
+        return
+    destination = Scoping.collections_for_record(obj)
+    check_table_permissions(collection, agent, obj, "update", collections=destination)
+    if any(destination.exclude(pk__in=scope).exists() for scope in owner_scopes):
+        check_table_permissions(None, agent, models.Attachment, "update")
+
+def _collection_member_field(model_class):
+    try:
+        return model_class._meta.get_field('collectionmemberid')
+    except FieldDoesNotExist:
+        return model_class._meta.get_field('collectionmember')
+
+def _with_collection_member_data(
+    model_class, data: dict[str, Any], collection_member_id,
+) -> dict[str, Any]:
+    field = _collection_member_field(model_class)
+    if field.is_relation:
+        value = f'/api/specify/collection/{collection_member_id}/'
+    else:
+        value = collection_member_id
+    return {
+        **{key: item for key, item in data.items() if key.lower() != field.name.lower()},
+        field.name: value,
+    }
+
+def _rescope_submitted_children(obj: Model, data: dict[str, Any], new_member_id) -> None:
+    """Merge rescoping into submitted child edits so their version is checked once."""
+    for child_model, owner_field, owned_to_one in Scoping.collection_member_dependents(type(obj)):
+        if '__' in owner_field:
+            reverse_path = []
+            current_model = child_model
+            for name in owner_field.split('__'):
+                field = current_model._meta.get_field(name)
+                reverse_relation = field.remote_field
+                assert isinstance(reverse_relation, ForeignObjectRel)
+                accessor = reverse_relation.get_accessor_name()
+                assert accessor is not None
+                reverse_path.append(accessor)
+                related_model = field.related_model
+                assert isinstance(related_model, type) and issubclass(related_model, Model)
+                current_model = related_model
+
+            def rescope_nested(value, path):
+                if isinstance(value, list):
+                    return [rescope_nested(item, path) for item in value]
+                if not isinstance(value, dict):
+                    return value
+                field_name = path[0]
+                matching_keys = [key for key in value if key.lower() == field_name.lower()]
+                if not matching_keys:
+                    return value
+                # Like cleanData, use the last value when spellings overlap.
+                nested = value[matching_keys[-1]]
+                for key in matching_keys:
+                    if key != field_name:
+                        del value[key]
+                value[field_name] = nested
+                if len(path) == 1:
+                    if isinstance(nested, dict):
+                        value[field_name] = _with_collection_member_data(
+                            child_model, nested, new_member_id,
+                        )
+                    elif isinstance(nested, list):
+                        value[field_name] = [
+                            _with_collection_member_data(
+                                child_model, item, new_member_id,
+                            )
+                            if isinstance(item, dict) else item
+                            for item in nested
+                        ]
+                elif nested is not None:
+                    value[field_name] = rescope_nested(nested, path[1:])
+                return value
+
+            rescope_nested(data, tuple(reversed(reverse_path)))
+            continue
+        if owned_to_one:
+            field_name = owner_field
+        else:
+            relationship = child_model._meta.get_field(owner_field).remote_field
+            assert isinstance(relationship, ForeignObjectRel)
+            accessor = relationship.get_accessor_name()
+            assert accessor is not None
+            field_name = accessor
+        value = data.get(field_name)
+        if isinstance(value, dict):
+            data[field_name] = _with_collection_member_data(
+                child_model, value, new_member_id,
+            )
+        elif isinstance(value, list):
+            data[field_name] = [
+                _with_collection_member_data(child_model, child, new_member_id)
+                if isinstance(child, dict) else child
+                for child in value
+            ]
+
+def _cascade_collection_membership(collection, agent, obj: Model, previous_member_id) -> None:
+    """Rescope dependent collection members when their owner moves collections.
+
+    Submitted child edits run first; children already at the destination are skipped.
+    Otherwise dependents such as Determinations would stay readable in the
+    owner's previous collection. Each dependent update is permission checked
+    against both its current and destination scopes, so a move the agent is
+    not allowed to cascade is rejected as a whole.
+
+    The owner's row lock serializes creates and moves. READ COMMITTED isolation
+    makes these scans see children committed while the move waited for its lock.
+    """
+    if isinstance(obj, (models.Absoluteage, models.Relativeage)):
+        new_member_id = Scoping.collections_for_record(obj).values_list('pk', flat=True).first()
+    else:
+        new_member_id = getattr(obj, 'collectionmemberid', None)
+    if new_member_id == previous_member_id:
+        return
+    for child_model, owner_field, owned_to_one in Scoping.collection_member_dependents(type(obj)):
+        children: Iterable[Model]
+        if owned_to_one:
+            related = getattr(obj, owner_field)
+            children = () if related is None else (related,)
+        else:
+            children = child_model._base_manager.filter(**{owner_field: obj})
+        membership_field = _collection_member_field(child_model)
+        member_id_attr = membership_field.attname
+        for child in children:
+            if getattr(child, member_id_attr) == new_member_id:
+                continue
+            child_previous_member_id = getattr(child, member_id_attr)
+            if child_previous_member_id is not None:
+                check_table_permissions(collection, agent, child, "update")
+                check_field_permissions(
+                    collection, agent, child, [membership_field.name], "update",
+                )
+            setattr(child, member_id_attr, new_member_id)
+            check_table_permissions(collection, agent, child, "update", destination=True)
+            check_field_permissions(
+                collection, agent, child, [membership_field.name], "update",
+            )
+            child_version = getattr(child, 'version', None)
+            if child_version is not None:
+                bump_version(child, child_version)
+            child.save()
+            auditlog.update(child, agent, obj, [FieldChangeInfo(
+                field_name=membership_field.name,
+                old_value=child_previous_member_id,
+                new_value=new_member_id,
+            )])
+            _cascade_collection_membership(collection, agent, child, child_previous_member_id)
+
+@transaction.atomic
 def create_obj(collection, agent, model, data: dict[str, Any], parent_obj=None, parent_relationship=None):
     """Create a new instance of 'model' and populate it with 'data'."""
     from specifyweb.backend.setup_tool.api import create_institution, create_division, create_discipline, create_collection
@@ -70,21 +255,57 @@ def create_obj(collection, agent, model, data: dict[str, Any], parent_obj=None, 
             Message.objects.create(user_id=agent.specifyuser.id, content=json.dumps({
                 'type': 'collection-creation-starting'
             }))
-        return model.objects.filter(id=result[f'{model_name}_id']).first()
+        obj = model.objects.filter(id=result[f'{model_name}_id']).first()
+        if obj is not None:
+            invalidate_collection_scope_cache(obj)
+        return obj
 
     data = cleanData(model, data, parent_relationship)
+    if data.get(model._meta.pk.name) is not None:
+        raise BadRequest("Cannot create a record with an explicit primary key")
     obj = model()
     _, _, handle_remote_to_ones = handle_fk_fields(collection, agent, obj, data)
     set_fields_from_data(obj, data)
+    if is_tree_table(obj.specify_model):
+        obj.set_rank_and_definition()
     set_field_if_exists(obj, 'createdbyagent', agent)
-    set_field_if_exists(obj, 'collectionmemberid', collection.id)
+    # Re-read owners under the same lock used by moves before deriving membership.
+    for name in Scoping.collection_owner_fields(model):
+        owner = getattr(obj, name)
+        if owner is not None:
+            owner = get_object_or_404(
+                type(owner)._base_manager.select_for_update(), pk=owner.pk,
+            )
+            check_table_permissions(collection, agent, owner, "read")
+            setattr(obj, name, owner)
+    target_collection_id = getattr(obj, 'collection_id', None)
+    if target_collection_id is None:
+        for name in Scoping.collection_owner_fields(model):
+            owner = getattr(obj, name)
+            if owner is not None:
+                target_collection_id = getattr(owner, 'collection_id', None)
+                if target_collection_id is None:
+                    target_collection_id = getattr(owner, 'collectionmemberid', None)
+                if target_collection_id is not None:
+                    break
+    if target_collection_id is None and parent_obj is not None:
+        target_collection_id = getattr(parent_obj, 'collectionmemberid', None)
+        if target_collection_id is None:
+            target_collection_id = getattr(parent_obj, 'collection_id', None)
+    if data.get('collectionmemberid') is None:
+        set_field_if_exists(
+            obj, 'collectionmemberid',
+            collection.id if target_collection_id is None else target_collection_id,
+        )
+    check_table_permissions(collection, agent, obj, "create")
+    _check_destination_scope(collection, agent, obj, data, "create")
+    _check_recordset_reference(collection, agent, obj)
     try:
         autonumber_and_save(collection, agent.specifyuser, obj)
     except AutonumberOverflowException as e:
         logger.warn("autonumbering overflow: %s", e)
 
     if obj.id is not None: # was the object actually saved?
-        check_table_permissions(collection, agent, obj, "create")
         auditlog.insert(obj, agent, parent_obj)
 
     handle_remote_to_ones(obj)
@@ -113,27 +334,98 @@ def post_resource(collection, agent, name: str, data, recordsetid: int | None=No
         except Recordset.DoesNotExist as e:
             raise RecordSetException(e)
 
+        check_table_permissions(collection, agent, recordset, "update")
         if recordset.dbtableid != obj.specify_model.tableId:
             # the resource is not of the right kind to go in the recordset
             raise RecordSetException(
                 "expected %s, got %s when adding object to recordset",
                 (get_model_by_table_id(recordset.dbtableid), obj.__class__))
 
-        recordset.recordsetitems.create(recordid=obj.id)
+        create_obj(
+            collection, agent, models.Recordsetitem,
+            {'recordset': recordset, 'recordid': obj.id}, parent_obj=recordset,
+        )
     return obj
 
+@transaction.atomic
 def update_obj(collection, agent, name: str, id, version, data: dict[str, Any], parent_obj=None, parent_relationship=None):
     """Update the resource with 'id' in model named 'name' with given
-    'data'.
+    'data'. Determination and age reassignments use the locked target's scope.
     """
-    obj = get_object_or_404(name, id=int(id))
-    check_table_permissions(collection, agent, obj, "update")
+    model = get_model_or_404(name) if isinstance(name, str) else name
+    data = cleanData(model, data, parent_relationship)
+    if model in (models.Determination, models.Absoluteage, models.Relativeage):
+        target_data = data.get('collectionobject')
+        target_id = None
+        if isinstance(target_data, str):
+            _, target_id = strict_uri_to_model(target_data, 'Collectionobject')
+        elif isinstance(target_data, dict):
+            target_id = target_data.get('id')
+        elif isinstance(target_data, models.Collectionobject):
+            target_id = target_data.pk
+        if target_id is not None:
+            # Match moves' parent-before-child lock order and re-read stale references.
+            target = get_object_or_404(
+                models.Collectionobject._base_manager.select_for_update(), pk=target_id,
+            )
+            if isinstance(target_data, models.Collectionobject):
+                check_table_permissions(collection, agent, target, "read")
+                data['collectionobject'] = target
+    obj = get_object_or_404(model._base_manager.select_for_update(), id=int(id))
+    attachment_scopes = []
+    if isinstance(obj, models.Attachment):
+        from specifyweb.backend.businessrules.rules.attachment_rules import get_attachment_owners
 
-    data = cleanData(obj.__class__, data, parent_relationship)
+        attachment_scopes = [
+            Scoping.collections_for_record(owner) for owner in get_attachment_owners(obj)
+        ]
+    original_collection_ids = []
+    if attachment_scopes:
+        for owner_scope in attachment_scopes:
+            check_table_permissions(collection, agent, obj, "update", collections=owner_scope)
+    else:
+        check_table_permissions(collection, agent, obj, "update")
+        original_collection_ids = list(Scoping.collections_for_record(obj).values_list('pk', flat=True))
+    field_permission_scopes: tuple[QuerySet | None, ...] = tuple(attachment_scopes) or (
+        models.Collection.objects.filter(pk__in=original_collection_ids), None,
+    )
+    is_age = isinstance(obj, (models.Absoluteage, models.Relativeage))
+    previous_member_id = (
+        next(iter(original_collection_ids), None) if is_age
+        else getattr(obj, 'collectionmemberid', None)
+    )
+
+    if data.get(obj._meta.pk.name) is not None and str(data[obj._meta.pk.name]) != str(obj.pk):
+        raise BadRequest("Cannot change a record's primary key")
+    new_member_id = data.get('collectionmemberid', previous_member_id)
+    if new_member_id != previous_member_id:
+        _rescope_submitted_children(obj, data, new_member_id)
     dependents_to_delete, fk_dirty, handle_remote_to_ones = handle_fk_fields(collection, agent, obj, data)
+    if (
+        isinstance(obj, models.Determination)
+        and any(change['field_name'] == 'collectionobject' for change in fk_dirty)
+        and obj.collectionobject is not None
+    ):
+        data['collectionmemberid'] = obj.collectionobject.collectionmemberid
+        if data['collectionmemberid'] != previous_member_id:
+            _rescope_submitted_children(obj, data, data['collectionmemberid'])
+    if is_age and any(change['field_name'] == 'collectionobject' for change in fk_dirty):
+        destination_id = Scoping.collections_for_record(obj).values_list('pk', flat=True).first()
+        if destination_id != previous_member_id:
+            _rescope_submitted_children(obj, data, destination_id)
     dirty = fk_dirty + set_fields_from_data(obj, data)
 
-    check_field_permissions(collection, agent, obj, [d['field_name'] for d in dirty], "update")
+    if is_tree_table(obj.specify_model):
+        obj.set_rank_and_definition()
+    dirty_fields = [d['field_name'] for d in dirty]
+    if isinstance(obj, models.Attachment) and attachment_scopes:
+        _check_attachment_scope_change(collection, agent, obj, dirty_fields, attachment_scopes)
+    else:
+        check_table_permissions(collection, agent, obj, "update")
+        _check_destination_scope(collection, agent, obj, data, "update")
+    _check_recordset_reference(collection, agent, obj)
+    for scope in field_permission_scopes:
+        check_field_permissions(collection, agent, obj, dirty_fields, "update", collections=scope)
 
     if hasattr(obj, 'modifiedbyagent'):
         setattr(obj, 'modifiedbyagent', agent)
@@ -141,12 +433,19 @@ def update_obj(collection, agent, name: str, id, version, data: dict[str, Any], 
     data = _handle_special_update_priors(obj, data)
     bump_version(obj, version)
     obj.save(force_update=True)
+    invalidate_collection_scope_cache(obj)
     auditlog.update(obj, agent, parent_obj, dirty)
     deleter = make_default_deleter(collection=collection, agent=agent)
     for dep in dependents_to_delete:
         delete_obj(dep, deleter, parent_obj=obj)
-    handle_remote_to_ones(obj)
-    handle_to_many(collection, agent, obj, data)
+    relationship_fields = handle_remote_to_ones(obj)
+    relationship_fields.extend(handle_to_many(collection, agent, obj, data))
+    if relationship_fields:
+        for scope in field_permission_scopes:
+            check_field_permissions(
+                collection, agent, obj, relationship_fields, "update", collections=scope,
+            )
+    _cascade_collection_membership(collection, agent, obj, previous_member_id)
     _handle_special_update_posts(obj)
     return obj
 
@@ -196,6 +495,7 @@ def delete_obj(obj, deleter: Callable[[Any, Any], None] | None=None, version=Non
         deleter(obj, parent_obj)
 
     obj.delete()
+    invalidate_collection_scope_cache(obj)
 
     # before delete obj, store dep id to avoid accessing deleted obj in recursive delete calls
     for dep in dependents_to_delete:
@@ -485,10 +785,10 @@ def _handle_special_update_priors(obj, data):
 
 @transaction.atomic
 def delete_resource(collection, agent, name, id, version) -> None:
-    """Delete the resource with 'id' and model named 'name' with optimistic
-    locking 'version'.
-    """
-    obj = get_object_or_404(name, id=int(id))
+    """Lock the record before authorizing deletion; check its version if supplied."""
+    model = get_model_or_404(name) if isinstance(name, str) else name
+    obj = get_object_or_404(model._base_manager.select_for_update(), id=int(id))
+    check_table_permissions(collection, agent, obj, "delete")
     if is_discipline(obj):
         guard_blockers = get_discipline_delete_guard_blockers(obj)
         if guard_blockers:
@@ -506,20 +806,29 @@ def delete_resource(collection, agent, name, id, version) -> None:
         clean_predelete=clean_predelete,
     )
 
-def get_collection(logged_in_collection, model, checker: ReadPermChecker, control_params=GetCollectionForm.defaults, params={}) -> CollectionPayload:
+def get_collection(logged_in_collection, model, checker: ReadPermChecker, control_params=GetCollectionForm.defaults, params={}, *, actor=None) -> CollectionPayload:
     from specifyweb.specify.api.serializers import _obj_to_data
     
     """Return a list of structured data for the objects from 'model'
     subject to the request 'params'."""
 
-    objs = apply_filters(logged_in_collection, params, model, control_params)
+    objs = apply_filters(
+        logged_in_collection, params, model, control_params, actor=actor, resource_list=True,
+    )
+    if actor is not None:
+        _, scope_path = Scoping.record_scope_path(objs.model)
+        if scope_path is not None and '__' in scope_path:
+            objs = objs.select_related(scope_path.rsplit('__', 1)[0])
 
     try:
         return objs_to_data_(objs, objs.count(), lambda o: _obj_to_data(o, checker), control_params['offset'], control_params['limit'])
     except FieldError as e:
         raise OrderByError(e)
     
-def apply_filters(logged_in_collection, params, model, control_params=GetCollectionForm.defaults):
+def apply_filters(
+    logged_in_collection, params, model, control_params=GetCollectionForm.defaults, *,
+    actor=None, field_aliases: dict[str, str] | None = None, resource_list: bool = False,
+):
     filters = {}
 
     if isinstance(model, str):
@@ -552,7 +861,25 @@ def apply_filters(logged_in_collection, params, model, control_params=GetCollect
         })
 
     try:
-        objs = model.objects.filter(**filters)
+        objs = model.objects.all()
+        orderby = control_params['orderby']
+        fields = control_params.get('fields')
+        paths = [*filters]
+        if orderby and not resource_list:
+            paths.extend(field for field in orderby.split(',') if field != '?')
+        if fields and not resource_list:
+            paths.extend(fields.split(','))
+        aliases = {path.lstrip('-'): path.lstrip('-') for path in paths}
+        if actor is not None:
+            objs, aliases = prepare_read_queryset(
+                objs, actor, [path.lstrip('-') for path in paths],
+                filters=filters,
+            )
+        else:
+            objs = objs.filter(**filters)
+        aliases['?'] = '?'
+        if field_aliases is not None:
+            field_aliases.update(aliases)
     except (ValueError, FieldError) as e:
         raise FilterError(e)
 
@@ -561,8 +888,43 @@ def apply_filters(logged_in_collection, params, model, control_params=GetCollect
     if control_params['orderby']:
         try:
             fields = control_params['orderby'].split(',')
-            objs = objs.order_by(*fields)
-        except FieldError as e:
+            if resource_list:
+                ordering = []
+                related_ordering = False
+                for field in fields:
+                    name = field.lstrip('-')
+                    if name in ('?', 'pk') or (
+                        '__' not in name and not model._meta.get_field(name).is_relation
+                    ):
+                        ordering.append(field)
+                        continue
+                    related_ordering = True
+                    # Pick the first matching readable value in the requested direction
+                    # without joining related rows into the root query.
+                    sort_rows = model.objects.filter(pk=OuterRef('pk'))
+                    sort_name = name
+                    if actor is not None:
+                        sort_rows, sort_aliases = prepare_read_queryset(
+                            sort_rows, actor, [*filters, name], filters=filters,
+                        )
+                        sort_name = sort_aliases[name]
+                    else:
+                        sort_rows = sort_rows.filter(**filters)
+                    sort_field = ('-' if field.startswith('-') else '') + sort_name
+                    value = Subquery(sort_rows.order_by(sort_field).values(sort_name)[:1])
+                    ordering.append(value.desc() if field.startswith('-') else value.asc())
+                if related_ordering:
+                    # A reverse filter can also produce several rows for one resource.
+                    if filters:
+                        objs = model.objects.filter(pk__in=objs.order_by().values('pk'))
+                    ordering.append('pk')
+                objs = objs.order_by(*ordering)
+            else:
+                objs = objs.order_by(*[
+                    ('-' if field.startswith('-') else '') + aliases[field.lstrip('-')]
+                    for field in fields
+                ])
+        except (FieldError, FieldDoesNotExist) as e:
             raise OrderByError(e)
 
     return objs

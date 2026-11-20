@@ -1,10 +1,12 @@
 from inspect import isclass
+from functools import cache
 
 from enum import Enum
-from django.db.models import Model
+from django.db.models import Exists, F, Model, OuterRef, Q, QuerySet
 from django.core.exceptions import ObjectDoesNotExist
 
 from .. import models
+from ..datamodel import datamodel
 
 
 class ScopeType(Enum):
@@ -120,6 +122,12 @@ class ModelClassScope:
     def storage(self):
         return ScopeType.INSTITUTION
 
+    def absoluteage(self):
+        return ModelClassScope(models.Collectionobject).scope_type
+
+    def relativeage(self):
+        return ModelClassScope(models.Collectionobject).scope_type
+
 
 #############################################################################
 
@@ -129,7 +137,11 @@ class ModelClassScope:
             return ScopeType.DIVISION
         if is_related(self.model_class, "discipline"):
             return ScopeType.DISCIPLINE
-        if hasattr(self.model_class, "collectionmemberid") or is_related(self.model_class, "collection"):
+        if (
+            hasattr(self.model_class, "collectionmemberid")
+            or is_related(self.model_class, "collectionmember")
+            or is_related(self.model_class, "collection")
+        ):
             return ScopeType.COLLECTION
 
         return ScopeType.INSTITUTION
@@ -164,9 +176,13 @@ class ModelInstanceScope:
         return ModelInstanceScope(self.obj.conservdescription).scope_model
 
     def fieldnotebookpage(self) -> Model:
+        if self.obj.pageset is None:
+            return self.obj.discipline
         return ModelInstanceScope(self.obj.pageset).scope_model
 
     def fieldnotebookpageset(self) -> Model:
+        if self.obj.fieldnotebook is None:
+            return self.obj.discipline
         return ModelInstanceScope(self.obj.fieldnotebook).scope_model
 
     def gift(self) -> Model:
@@ -203,11 +219,21 @@ class ModelInstanceScope:
     def storage(self):
         return self.obj.definition.institution
 
+    def absoluteage(self) -> Model:
+        return ModelInstanceScope(self.obj.collectionobject).scope_model
+
+    def relativeage(self) -> Model:
+        return ModelInstanceScope(self.obj.collectionobject).scope_model
+
     def _infer_scope_model(self) -> Model:
         if is_related(self.obj.__class__, "division") and has_related(self.obj, "division"):
             return self.obj.division
         if is_related(self.obj.__class__, "discipline") and has_related(self.obj, "discipline"):
             return self.obj.discipline
+        if is_related(self.obj.__class__, "collectionmember"):
+            collection_member = getattr(self.obj, "collectionmember", None)
+            if collection_member is not None:
+                return collection_member
         if has_related(self.obj, "collectionmemberid") or (is_related(self.obj.__class__, "collection") and has_related(self.obj, "collection")):
             return self._simple_collection_scope()
 
@@ -234,6 +260,259 @@ class ModelInstanceScope:
 
 
 class Scoping:
+
+    @staticmethod
+    @cache
+    def collection_owner_fields(model_class) -> tuple[str, ...]:
+        """Find parent references that own collection-scoped child records."""
+        if not (
+            hasattr(model_class, 'collectionmemberid')
+            or is_related(model_class, 'collectionmember')
+            or is_related(model_class, 'collection')
+        ) or Scoping.scope_type_from_class(model_class) != ScopeType.COLLECTION:
+            return ()
+        return tuple(
+            field.name for field in model_class._meta.fields
+            if field.is_relation
+            and (reverse := datamodel.reverse_relationship(
+                model_class.specify_model.get_relationship_strict(field.name),
+            )) is not None
+            and reverse.dependent
+        )
+
+    @staticmethod
+    @cache
+    def collection_member_dependents(
+        model_class: type[Model],
+    ) -> tuple[tuple[type[Model], str, bool], ...]:
+        """Find collection members as (model, field, owned_to_one) tuples."""
+        dependents = []
+        owner_table = datamodel.get_table_strict(model_class.__name__)
+        for field in model_class._meta.fields:
+            if (
+                field.is_relation
+                and hasattr(field.related_model, 'collectionmemberid')
+                and owner_table.get_relationship_strict(field.name).dependent
+            ):
+                dependents.append((field.related_model, field.name, True))
+        for table in datamodel.tables:
+            child = getattr(models, table.django_name, None)
+            if child is None or not hasattr(child, 'collectionmemberid'):
+                continue
+            for name in Scoping.collection_owner_fields(child):
+                if child._meta.get_field(name).related_model is model_class:
+                    dependents.append((child, name, False))
+        for age_model, owner, attachment, citation in (
+            (models.Absoluteage, 'absoluteage', models.Absoluteageattachment, models.Absoluteagecitation),
+            (models.Relativeage, 'relativeage', models.Relativeageattachment, models.Relativeagecitation),
+        ):
+            if model_class is models.Collectionobject:
+                owner = f'{owner}__collectionobject'
+            elif model_class is not age_model:
+                continue
+            dependents.extend(((attachment, owner, False), (citation, owner, False)))
+        return tuple(dependents)
+
+    @staticmethod
+    @cache
+    def collection_owner_paths(model_class) -> tuple[str, ...]:
+        """Return ownership joins needed to validate a destination scope."""
+        paths = []
+        for name in Scoping.collection_owner_fields(model_class):
+            parent_model = model_class._meta.get_field(name).related_model
+            for path in Scoping.collection_owner_paths(parent_model) or ('',):
+                paths.append(f'{name}__{path}' if path else name)
+        return tuple(paths)
+
+    @staticmethod
+    def record_scope_path(model_class) -> tuple[ScopeType, str | None]:
+        """Use the same hierarchy path for instance and queryset authorization."""
+        hierarchy = (models.Collection, models.Discipline, models.Division, models.Institution)
+        if model_class in hierarchy:
+            return ScopeType.from_model(model_class), 'pk'
+        inherited = {
+            models.Absoluteage: ('collectionobject', models.Collectionobject),
+            models.Relativeage: ('collectionobject', models.Collectionobject),
+            models.Collectionobjectgroupjoin: ('parentcog', models.Collectionobjectgroup),
+            models.Conserveventattachment: ('conservevent', models.Conservevent),
+            models.Conservevent: ('conservdescription', models.Conservdescription),
+            models.Fieldnotebookpage: ('pageset', models.Fieldnotebookpageset),
+            models.Fieldnotebookpageset: ('fieldnotebook', models.Fieldnotebook),
+            models.Recordsetitem: ('recordset', models.Recordset),
+        }
+        if model_class in inherited:
+            parent, parent_model = inherited[model_class]
+            scope_type, path = Scoping.record_scope_path(parent_model)
+            return scope_type, f'{parent}__{path}' if path else None
+        scope_type = Scoping.scope_type_from_class(model_class)
+        if model_class is models.Taxon:
+            return scope_type, 'definition__discipline'
+        if model_class in (
+            models.Geography, models.Geologictimeperiod,
+            models.Lithostrat, models.Tectonicunit,
+        ):
+            return scope_type, 'definition__disciplines'
+        if model_class is models.Storage:
+            return scope_type, 'definition__institution'
+        if model_class is models.Taxontreedefitem:
+            return ScopeType.DISCIPLINE, 'treedef__discipline'
+        if scope_type == ScopeType.INSTITUTION:
+            return scope_type, 'institution' if hasattr(model_class, 'institution') else None
+        if scope_type == ScopeType.COLLECTION:
+            if hasattr(model_class, 'collectionmemberid'):
+                return scope_type, 'collectionmemberid'
+            return scope_type, 'collectionmember' if is_related(model_class, 'collectionmember') else 'collection'
+        return scope_type, scope_type.name.lower()
+
+    @staticmethod
+    def collection_lookup(scope_type: ScopeType) -> str:
+        return {
+            ScopeType.COLLECTION.name: 'pk',
+            ScopeType.DISCIPLINE.name: 'discipline_id',
+            ScopeType.DIVISION.name: 'discipline__division_id',
+            ScopeType.INSTITUTION.name: 'discipline__division__institution_id',
+        }[scope_type.name]
+
+    @staticmethod
+    def tree_definition_discipline_field(model_class) -> str:
+        definition_model = model_class._meta.get_field('definition').related_model
+        return definition_model._meta.get_field('disciplines').field.name
+
+    @staticmethod
+    def filter_tree_records(queryset: QuerySet, disciplines) -> QuerySet:
+        discipline_field = Scoping.tree_definition_discipline_field(queryset.model)
+        matching_disciplines = models.Discipline.objects.filter(**{
+            f'{discipline_field}_id': OuterRef('definition_id'),
+            'pk__in': disciplines,
+        })
+        return queryset.filter(Exists(matching_disciplines))
+
+    @staticmethod
+    def record_scope_filter(
+        obj: Model, *, scope_path: tuple[ScopeType, str | None] | None = None,
+    ) -> dict[str, int | None] | None:
+        """Return scope predicates; None denotes the default institution.
+
+        Taxon ranks without a discipline retain the default institution scope.
+        """
+        if isinstance(obj, models.Attachment):
+            if obj.scopetype is None or obj.scopetype == ScopeType.GLOBAL.value:
+                return {}
+            return {
+                Scoping.collection_lookup(ScopeType(obj.scopetype)): obj.scopeid,
+            }
+        if isinstance(obj, (models.Absoluteage, models.Relativeage)):
+            return Scoping.record_scope_filter(obj.collectionobject)
+        scope_type, path = scope_path if scope_path is not None else Scoping.record_scope_path(type(obj))
+        value = obj
+        if path is None:
+            return None
+        if isinstance(obj, models.Fieldnotebookpage):
+            if obj.pageset is None:
+                return {'discipline_id': obj.discipline_id}
+            if obj.pageset.fieldnotebook is None:
+                return {'discipline_id': obj.pageset.discipline_id}
+        if isinstance(obj, models.Fieldnotebookpageset) and obj.fieldnotebook is None:
+            return {'discipline_id': obj.discipline_id}
+        if path == 'definition__disciplines':
+            definition_id = getattr(obj, 'definition_id')
+            if definition_id is None:
+                return {'pk': None}
+            discipline_field = Scoping.tree_definition_discipline_field(type(obj))
+            return {f'discipline__{discipline_field}_id': definition_id}
+        parts = path.split('__')
+        for index, name in enumerate(parts):
+            if value is None:
+                return {'pk': None}
+            if index == len(parts) - 1 and hasattr(value, f'{name}_id'):
+                name = f'{name}_id'
+            value = getattr(value, name)
+        if isinstance(value, Model):
+            value = value.pk
+        if value is None and scope_type != ScopeType.COLLECTION:
+            return None if isinstance(obj, models.Taxontreedefitem) else {}
+        filters = {Scoping.collection_lookup(scope_type): value}
+        # Retain both values in cache keys, including when membership is dangling.
+        if path == 'collectionmemberid' and hasattr(obj, 'collection_id'):
+            filters['id'] = obj.collection_id
+        return filters
+
+    @staticmethod
+    def collections_for_record(obj: Model) -> QuerySet:
+        """Resolve scope, using collection when its membership ID is dangling."""
+        filters = Scoping.record_scope_filter(obj)
+        if filters is None:
+            filters = {
+                Scoping.collection_lookup(ScopeType.INSTITUTION): models.Institution.objects.get().pk,
+            }
+        condition = Q(**filters)
+        if (
+            'id' in filters
+            and filters.get('pk') is not None
+            and filters['pk'] != filters['id']
+        ):
+            membership = models.Collection.objects.filter(pk=filters['pk'])
+            condition |= Q(pk=filters['id']) & ~Exists(membership)
+        return models.Collection.objects.filter(condition)
+
+    @staticmethod
+    def filter_records(queryset: QuerySet, collections: QuerySet) -> QuerySet:
+        model = queryset.model
+        if model in (models.Absoluteage, models.Relativeage):
+            owners = Scoping.filter_records(models.Collectionobject.objects.all(), collections)
+            return queryset.filter(collectionobject__in=owners)
+        if model is models.Attachment:
+            condition = Q(scopetype__isnull=True) | Q(scopetype=ScopeType.GLOBAL.value)
+            for scope_type in (
+                ScopeType.COLLECTION, ScopeType.DISCIPLINE, ScopeType.DIVISION, ScopeType.INSTITUTION,
+            ):
+                condition |= Q(
+                    scopetype=scope_type.value,
+                    scopeid__in=collections.values(Scoping.collection_lookup(scope_type)),
+                )
+            return queryset.filter(condition) if collections.exists() else queryset.none()
+        scope_type, path = Scoping.record_scope_path(model)
+        if path is None:
+            return queryset if collections.exists() else queryset.none()
+        if model is models.Fieldnotebookpage:
+            disciplines = collections.values('discipline_id')
+            return queryset.filter(
+                Q(pageset__fieldnotebook__discipline_id__in=disciplines)
+                | Q(pageset__isnull=True, discipline_id__in=disciplines)
+                | Q(
+                    pageset__fieldnotebook__isnull=True,
+                    pageset__discipline_id__in=disciplines,
+                )
+            )
+        if model is models.Fieldnotebookpageset:
+            disciplines = collections.values('discipline_id')
+            return queryset.filter(
+                Q(fieldnotebook__discipline_id__in=disciplines)
+                | Q(fieldnotebook__isnull=True, discipline_id__in=disciplines)
+            )
+        if path == 'definition__disciplines':
+            return Scoping.filter_tree_records(
+                queryset, collections.values('discipline_id'),
+            )
+        condition = Q(**{
+            f'{path}__in': collections.values(Scoping.collection_lookup(scope_type)),
+        })
+        if scope_type != ScopeType.COLLECTION and collections.exists():
+            missing = Q(**{f'{path}__isnull': True})
+            if '__' in path:
+                missing &= Q(**{f"{path.rsplit('__', 1)[0]}__isnull": False})
+            if model is not models.Taxontreedefitem or collections.filter(
+                discipline__division__institution=models.Institution.objects.get(),
+            ).exists():
+                condition |= missing
+        if path == 'collectionmemberid' and hasattr(model, 'collection_id'):
+            dangling = Q(collectionmemberid__isnull=False) & ~Q(
+                collectionmemberid__in=models.Collection.objects.values('pk'),
+            )
+            condition = (
+                (condition & Q(collection_id=F('collectionmemberid'))) | dangling
+            ) & Q(collection__in=collections)        
+        return queryset.filter(condition)
 
     @staticmethod
     def scope_type_from_class(model_class) -> ScopeType:

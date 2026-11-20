@@ -1,12 +1,15 @@
 import logging
 from collections.abc import Callable
 from django.http import Http404
-from specifyweb.backend.permissions.permissions import check_table_permissions, table_permissions_checker
+from specifyweb.backend.permissions.permissions import (
+    NoMatchingRuleException, check_table_permissions, table_permissions_checker,
+)
 from specifyweb.backend.workbench.upload.auditlog import auditlog
 from specifyweb.specify import models
 from ..datamodel import datamodel, Table, Relationship
-from specifyweb.specify.api.api_utils import strict_uri_to_model
+from specifyweb.specify.api_utils import strict_uri_to_model
 from specifyweb.specify.utils.field_change_info import FieldChangeInfo
+from specifyweb.specify.utils.scoping import Scoping
 from specifyweb.specify.models_utils.load_datamodel import Relationship, Table
 from typing import Any, Iterable, TypedDict, cast
 from django.core.exceptions import ObjectDoesNotExist
@@ -81,6 +84,22 @@ def get_related_or_none(obj, field_name: str) -> Any:
     except ObjectDoesNotExist:
         return None
 
+def _can_read_dependent(obj, read_checker: Callable[[Any], None]) -> bool:
+    try:
+        read_checker(obj)
+    except NoMatchingRuleException:
+        return False
+    return True
+
+def _should_apply_dependent_to_one_update(old_related, value, read_checker) -> bool:
+    if value is None:
+        # The serializer also uses null for an unreadable dependent.
+        return _can_read_dependent(old_related, read_checker)
+    new_id = value.get('id') if hasattr(value, 'items') else getattr(value, 'pk', None)
+    if str(new_id) != str(old_related.pk):
+        read_checker(old_related)
+    return True
+
 def reorder_fields_for_embedding(cls, data: dict[str, Any]) -> Iterable[tuple[str, Any]]:
     """For objects which can have embedded collectingevent or
     paleocontext, we have to make sure the domain field gets set
@@ -97,14 +116,24 @@ def reorder_fields_for_embedding(cls, data: dict[str, Any]) -> Iterable[tuple[st
     for key in data.keys() - {put_first}:
         yield (key, data[key])
 
-def handle_fk_fields(collection, agent, obj, data: dict[str, Any]) -> tuple[list, list[FieldChangeInfo], Callable[[Any], None]]:
+def handle_fk_fields(collection, agent, obj, data: dict[str, Any]) -> tuple[list, list[FieldChangeInfo], Callable[[Any], list[str]]]:
     from specifyweb.specify.api.crud import update_or_create_resource
     """Where 'obj' is a Django model instance and 'data' is a dict,
     set foreign key fields in the object from the provided data.
+
+    The returned callback applies deferred to-one updates and reports changed relationship names.
     """
 
     # This function looks at arbitrary related objects so it needs to be able to check read permissions
     read_checker = table_permissions_checker(collection, agent, "read")
+
+    # A submitted domain change can change which relationships are embedded.
+    previously_embedded = set()
+    if obj.pk is not None and ('collection' in data or 'discipline' in data):
+        previously_embedded = {
+            name for name in ('collectingevent', 'paleocontext')
+            if name in data and is_dependent_field(obj, name)
+        }
 
     items = reorder_fields_for_embedding(obj.__class__, data)
     dependents_to_delete = []
@@ -116,7 +145,10 @@ def handle_fk_fields(collection, agent, obj, data: dict[str, Any]) -> tuple[list
 
         if field.concrete: 
             some_remote_to_ones = []
-            extra_data, some_dependents_to_delete, some_dirty = _handle_fk_field(collection, agent, obj, field, val, read_checker)
+            extra_data, some_dependents_to_delete, some_dirty = _handle_fk_field(
+                collection, agent, obj, field, val, read_checker,
+                was_embedded=field_name in previously_embedded,
+            )
         else:
             extra_data = dict()
             some_dependents_to_delete, some_dirty, some_remote_to_ones = _handle_remote_fk_field(obj, field, val, read_checker)
@@ -126,15 +158,19 @@ def handle_fk_fields(collection, agent, obj, data: dict[str, Any]) -> tuple[list
         dependents_to_delete += some_dependents_to_delete
         remote_to_ones += some_remote_to_ones
 
-    def _set_remote_to_ones(created_obj): 
-        for field, related_data, is_dependent in remote_to_ones: 
+    def _set_remote_to_ones(created_obj) -> list[str]:
+        changed_fields = []
+        for field, related_data, is_dependent, old_related_id in remote_to_ones:
             related_data[field.name] = created_obj
             rel_obj = update_or_create_resource(collection, agent, field.model, related_data, created_obj if is_dependent else None)
             setattr(obj, field.remote_field.name, rel_obj)
+            if str(old_related_id) != str(rel_obj.id):
+                changed_fields.append(field.remote_field.name)
+        return changed_fields
 
     return dependents_to_delete, dirty, _set_remote_to_ones
 
-def _handle_fk_field(collection, agent, obj, field, value, read_checker): 
+def _handle_fk_field(collection, agent, obj, field, value, read_checker, *, was_embedded=False):
     from specifyweb.specify.api.crud import get_object_or_404, update_or_create_resource
     from specifyweb.specify.api.serializers import _obj_to_data
 
@@ -147,6 +183,11 @@ def _handle_fk_field(collection, agent, obj, field, value, read_checker):
     dependents_to_delete = []
     dirty: list[FieldChangeInfo] = []
     data = dict()
+
+    if (dependent or was_embedded) and old_related is not None and not _should_apply_dependent_to_one_update(
+        old_related, value, read_checker,
+    ):
+        return data, dependents_to_delete, dirty
 
     if value is None:
         setattr(obj, field_name, None)
@@ -163,8 +204,16 @@ def _handle_fk_field(collection, agent, obj, field, value, read_checker):
     elif isinstance(value, str):
         # The related object is given by a URI reference.
         assert not dependent, f"didn't get inline data for dependent field {field_name} in {obj}: {value!r}"
-        fk_model, fk_id = strict_uri_to_model(value, field.related_model.__name__)
-        rel_obj = get_object_or_404(fk_model, id=fk_id)
+        _, fk_id = strict_uri_to_model(value, field.related_model.__name__)
+        paths = (
+            Scoping.collection_owner_paths(field.related_model)
+            if field_name in Scoping.collection_owner_fields(type(obj)) else ()
+        )
+        queryset = field.related_model.objects.all()
+        if paths:
+            queryset = queryset.select_related(*paths)
+        rel_obj = get_object_or_404(queryset, id=fk_id)
+        read_checker(rel_obj)
         setattr(obj, field_name, rel_obj)
         new_related_id = fk_id
 
@@ -201,6 +250,11 @@ def _handle_remote_fk_field(obj, field, value, read_checker):
     dependents_to_delete = []
     dirty: list[FieldChangeInfo] = []
 
+    if dependent and old_related is not None and not _should_apply_dependent_to_one_update(
+        old_related, value, read_checker,
+    ):
+        return dependents_to_delete, dirty, remote_to_ones
+
     if value is None:
         rel_data = None
         setattr(obj, field_name, None)
@@ -226,7 +280,7 @@ def _handle_remote_fk_field(obj, field, value, read_checker):
         # The related object is represented by a nested dict of data.
         rel_data = value
         new_related_id = value.get("id", None)
-        if dependent and old_related and new_related_id and old_related.id != new_related_id:
+        if dependent and old_related and new_related_id and str(old_related.id) != str(new_related_id):
             dependents_to_delete.append(old_related)
     else:
         raise Exception(f'bad foreign key field in data: {field_name}')
@@ -235,20 +289,20 @@ def _handle_remote_fk_field(obj, field, value, read_checker):
         dirty.append(FieldChangeInfo(field_name=field_name, old_value=old_related_id, new_value=new_related_id))
 
     if not rel_data is None: 
-        remote_to_ones.append((field.remote_field, rel_data, dependent))
+        remote_to_ones.append((field.remote_field, rel_data, dependent, old_related_id))
     return dependents_to_delete, dirty, remote_to_ones
 
-def handle_to_many(collection, agent, obj, data: dict[str, Any]) -> None:
+def handle_to_many(collection, agent, obj, data: dict[str, Any]) -> list[str]:
     """For every key in the dict 'data' which is a *-to-many field in the
     Django model instance 'obj', if nested data is provided, use it to
     update the set of related objects.
 
-    The assumption is that provided data represents ALL related objects for
-    'obj'. Any existing related objects not in the nested data will be deleted.
+    A submitted dependent list replaces the actor's readable membership.
+    Existing unreadable dependents omitted from the list are retained.
     Nested data items with ids will be updated. Those without ids will be
-    created as new resources.
+    created as new resources. Return names of relationships whose membership changed.
     """
-    
+    changed_fields = []
     for field_name, val in list(data.items()):
         field = obj._meta.get_field(field_name)
         if not field.is_relation or (field.many_to_one or field.one_to_one): continue # Skip *-to-one fields.
@@ -265,40 +319,50 @@ def handle_to_many(collection, agent, obj, data: dict[str, Any]) -> None:
             continue
 
         if dependent or (isinstance(obj, models.Recordset) and field_name == 'recordsetitems'): 
-            _handle_dependent_to_many(collection, agent, obj, field, val)
+            changed = _handle_dependent_to_many(collection, agent, obj, field, val)
         else: 
-            _handle_independent_to_many(collection, agent, obj, field, val)
+            changed = _handle_independent_to_many(collection, agent, obj, field, val)
+        if changed:
+            changed_fields.append(field_name)
+    return changed_fields
 
-def _handle_dependent_to_many(collection, agent, obj, field, value):
+def _handle_dependent_to_many(collection, agent, obj, field, value) -> bool:
     from specifyweb.specify.api.crud import update_or_create_resource
 
     if not isinstance(value, list): 
         assert isinstance(value, list), f"didn't get inline data for dependent field {field.name} in {obj}: {value!r}"
 
     rel_model = field.related_model
-    ids = [] # Ids not in this list will be deleted at the end.
+    related = getattr(obj, field.name)
+    existing_ids = set(related.values_list('pk', flat=True)) if obj.pk is not None else set()
+    submitted_ids = set()
 
     for rel_data in value:
         rel_data[field.field.name] = obj
         rel_obj = update_or_create_resource(collection, agent, rel_model, rel_data, parent_obj=obj)
 
-        ids.append(rel_obj.id) # Record the id as one to keep.
+        submitted_ids.add(rel_obj.pk)
 
-    # Delete related objects not in the ids list.
     # TODO: Check versions for optimistic locking.
-    to_remove = getattr(obj, field.name).exclude(id__in=ids).select_for_update()
-    for rel_obj in to_remove:
+    read_checker = table_permissions_checker(collection, agent, "read")
+    removed_ids = []
+    for rel_obj in related.exclude(pk__in=submitted_ids).select_for_update():
+        if not _can_read_dependent(rel_obj, read_checker):
+            continue
         check_table_permissions(collection, agent, rel_obj, "delete")
         auditlog.remove(rel_obj, agent, obj)
-    
-    to_remove.delete()
+        removed_ids.append(rel_obj.pk)
+
+    if removed_ids:
+        related.filter(pk__in=removed_ids).delete()
+    return bool(removed_ids) or not submitted_ids.issubset(existing_ids)
 
 
 class IndependentInline(TypedDict): 
     update: list[str | dict[str, Any]]
     remove: list[str]
 
-def _handle_independent_to_many(collection, agent, obj, field, value: IndependentInline):
+def _handle_independent_to_many(collection, agent, obj, field, value: IndependentInline) -> bool:
     from ..api.crud import get_model, update_or_create_resource, update_obj  
     from ..api.serializers import obj_to_data, uri_for_model
 
@@ -308,6 +372,8 @@ def _handle_independent_to_many(collection, agent, obj, field, value: Independen
 
     to_update = value.get('update', [])
     to_remove = value.get('remove', [])
+    current_ids = set(getattr(obj, field.name).values_list('pk', flat=True)) if obj.pk is not None else set()
+    changed = False
 
     ids_to_fetch: list[int] = []
     cached_objs: dict[int, dict[str, Any]] = dict()
@@ -335,7 +401,10 @@ def _handle_independent_to_many(collection, agent, obj, field, value: Independen
             rel_data = raw_rel_data
 
         rel_data[field.field.name] = obj
-        update_or_create_resource(collection, agent, rel_model, rel_data, parent_obj=None)
+        rel_obj = update_or_create_resource(collection, agent, rel_model, rel_data, parent_obj=None)
+        if rel_obj.pk not in current_ids:
+            changed = True
+            current_ids.add(rel_obj.pk)
     
     if len(to_remove) > 0:
         assert obj.pk is not None, f"Unable to remove {obj.__class__.__name__}.{field.field.name} resources from new {obj.__class__.__name__}"
@@ -351,6 +420,10 @@ def _handle_independent_to_many(collection, agent, obj, field, value: Independen
                 assert rel_data[field.field.name] == uri_for_model(obj.__class__, obj.pk), f"Related {related_field.relatedModelName} does not belong to {obj.__class__.__name__}.{field.field.name}: {resource_uri}"
             rel_data[field.field.name] = None
             update_obj(collection, agent, rel_model, rel_data["id"], rel_data["version"], rel_data)
+            if fk_id in current_ids:
+                changed = True
+                current_ids.remove(fk_id)
+    return changed
 
 
 class RecordSetInfo(TypedDict):
@@ -360,8 +433,9 @@ class RecordSetInfo(TypedDict):
     previous: str | None
     next: str | None
 
-def get_recordset_info(obj, recordsetid: int) -> RecordSetInfo | None:
+def get_recordset_info(obj, recordsetid: int, *, actor=None) -> RecordSetInfo | None:
     from specifyweb.specify.api.serializers import uri_for_model
+    from specifyweb.backend.permissions.permissions import _filter_readable_for_list
 
     """Return a dict of info about how the resource 'obj' is related to
     the recordset with id 'recordsetid'.
@@ -371,6 +445,8 @@ def get_recordset_info(obj, recordsetid: int) -> RecordSetInfo | None:
     Recordsetitem = models.Recordsetitem
     rsis = Recordsetitem.objects.filter(
         recordset__id=recordsetid, recordset__dbtableid=obj.specify_model.tableId)
+    if actor is not None:
+        rsis = rsis.filter(recordid__in=_filter_readable_for_list(obj.__class__.objects.all(), actor).values('pk'))
 
     # Get the one which points to the resource 'obj'.
     try:
