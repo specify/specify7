@@ -104,3 +104,19 @@ test('keeps the button without delete permission', () => {
     screen.getByRole('button', { name: mergingText.linkedRecords() })
   ).toBeEnabled();
 });
+
+// [LinkedRecords] Request blockers when opened
+test('requests blockers when opened', () => {
+  const onBlockersRequested = jest.fn();
+  jest.mocked(useDirectDeleteBlockersForResource).mockReturnValue({
+    blockers: makeBlockers(1),
+    onBlockersRequested,
+  });
+  renderLinkedRecords();
+
+  fireEvent.click(
+    screen.getByRole('button', { name: mergingText.linkedRecords() })
+  );
+
+  expect(onBlockersRequested).toHaveBeenCalledTimes(1);
+});
