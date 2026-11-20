@@ -19,10 +19,11 @@ const makeLocality = (id: number, localityName: string) =>
 
 // [RecordMerging] Merge multiple localities
 test('merges multiple localities', () => {
+  // Newest name is shortest so this can't pass by recency
   const records = [
-    makeLocality(1, 'L1'),
+    makeLocality(1, 'Locality Number Three'),
     makeLocality(2, 'Locality Two'),
-    makeLocality(3, 'Locality Number Three'),
+    makeLocality(3, 'L3'),
   ] as RA<SerializedResource<AnySchema>>;
 
   const merged = autoMerge(tables.Locality, records, false);
