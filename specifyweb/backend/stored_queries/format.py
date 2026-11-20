@@ -347,7 +347,7 @@ class ObjectFormatter:
 
         logger.info('aggregating field %s on %s using %s', field, rel_table,
                     aggregator_formatter_name)
-        specify_model = datamodel.get_table(field.relatedModelName, strict=True)
+        specify_model = datamodel.get_table_strict(field.relatedModelName)
         aggregatorNode = self.getAggregatorDef(specify_model, aggregator_formatter_name)
         cycle_with_self = [*cycle_detector, (field.relatedModelName, 'aggregating')] if (
                 cycle_detector is not None) else None
