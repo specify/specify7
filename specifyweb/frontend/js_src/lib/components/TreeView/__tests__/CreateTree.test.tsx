@@ -11,8 +11,11 @@ import { mount } from '../../../tests/reactUtils';
 import { getCache, setCache } from '../../../utils/cache';
 import { Http } from '../../../utils/ajax/definitions';
 import { f } from '../../../utils/functools';
+import type { IR, RA } from '../../../utils/types';
 import { LoadingContext } from '../../Core/Contexts';
 import { addMissingFields } from '../../DataModel/addMissingFields';
+import type { AnySchema } from '../../DataModel/helperTypes';
+import type { SpecifyResource } from '../../DataModel/legacyTypes';
 import { getResourceApiUrl } from '../../DataModel/resource';
 import { deserializeResource } from '../../DataModel/serializers';
 import { tables } from '../../DataModel/tables';
@@ -44,6 +47,16 @@ afterEach(() => {
   globalThis.fetch = originalFetch;
 });
 
+overrideAjax('/trees/db_encoding/', { encoding: 'utf8mb4' });
+
+const newTreeId = 5;
+const disciplineUrl = getResourceApiUrl('Discipline', 3);
+
+const nameRow =
+  '<row><cell type="label" labelfor="name" /><cell type="field" id="name" uitype="text" name="name" /></row>';
+const ranksRow =
+  '<row><cell type="subview" id="items" name="treeDefItems" colspan="2" defaulttype="table" initialize="sortField=rankId" /></row>';
+
 const jsonContaining = (expected: Record<string, unknown>): unknown => ({
   $$typeof: Symbol.for('jest.asymmetricMatcher'),
   asymmetricMatch: (actual: unknown): boolean =>
@@ -53,37 +66,128 @@ const jsonContaining = (expected: Record<string, unknown>): unknown => ({
     `JsonContaining ${JSON.stringify(expected)}`,
 });
 
-overrideAjax('/trees/db_encoding/', { encoding: 'utf8mb4' });
-overrideAjax('/context/view.json?name=TaxonTreeDef', {
-  name: 'TaxonTreeDef',
-  class: 'edu.ku.brc.specify.datamodel.TaxonTreeDef',
+const formView = (
+  tableName: 'TaxonTreeDef' | 'TaxonTreeDefItem',
+  rows: RA<string>
+): IR<unknown> => ({
+  name: tableName,
+  class: `edu.ku.brc.specify.datamodel.${tableName}`,
   isinternal: 'false',
   resourcelabels: 'false',
   altviews: {
-    'TaxonTreeDef Edit': {
-      name: 'TaxonTreeDef Edit',
-      viewdef: 'TaxonTreeDef',
+    [`${tableName} Edit`]: {
+      name: `${tableName} Edit`,
+      viewdef: tableName,
       mode: 'edit',
       default: 'true',
     },
   },
   viewdefs: {
-    TaxonTreeDef: `<viewdef name="TaxonTreeDef" type="form" class="edu.ku.brc.specify.datamodel.TaxonTreeDef" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+    [tableName]: `<viewdef name="${tableName}" type="form" class="edu.ku.brc.specify.datamodel.${tableName}" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
       <columnDef>p,p</columnDef>
-      <rowDef>p</rowDef>
+      <rowDef>${rows.map(() => 'p').join(',')}</rowDef>
       <rows>
-        <row><cell type="label" labelfor="name" /><cell type="field" id="name" uitype="text" name="name" /></row>
+        ${rows.join('\n        ')}
       </rows>
     </viewdef>`,
   },
 });
 
+function useTaxonTreeDefForm(rows: RA<string>): void {
+  beforeAll(() => clearViewLocal('TaxonTreeDef'));
+  overrideAjax(
+    '/context/view.json?name=TaxonTreeDef',
+    formView('TaxonTreeDef', rows),
+    {},
+    true
+  );
+}
+
+function mockNoDeleteBlockers(treeId: number): void {
+  overrideAjax(
+    `/delete_blockers/delete_blockers/taxontreedef/${treeId}/?limit=40`,
+    { results: [], next: [] }
+  );
+  overrideAjax(`/delete_blockers/count/taxontreedef/${treeId}/`, {
+    results: [],
+    total_count: 0,
+  });
+}
+
+const renderWithProviders = (element: JSX.Element): ReturnType<typeof mount> =>
+  mount(
+    <MemoryRouter>
+      <LoadingContext.Provider value={f.void}>
+        <UnloadProtectsContext.Provider value={[]}>
+          <SetUnloadProtectsContext.Provider value={f.void}>
+            {element}
+          </SetUnloadProtectsContext.Provider>
+        </UnloadProtectsContext.Provider>
+      </LoadingContext.Provider>
+    </MemoryRouter>
+  );
+
+const newTreeDefinition = (
+  fields: IR<unknown> = {}
+): SpecifyResource<AnySchema> =>
+  deserializeResource(
+    addMissingFields('TaxonTreeDef', {
+      id: newTreeId,
+      name: treeText.emptyTree(),
+      discipline: disciplineUrl,
+      resource_uri: getResourceApiUrl('TaxonTreeDef', newTreeId),
+      ...fields,
+    })
+  ) as SpecifyResource<AnySchema>;
+
+async function openEmptyTreeForm(
+  user: ReturnType<typeof mount>['user']
+): Promise<HTMLElement> {
+  await user.click(screen.getByRole('button', { name: treeText.addTree() }));
+  const addTreeDialog = await screen.findByRole('dialog', {
+    name: treeText.addTree(),
+  });
+  await user.click(
+    within(addTreeDialog).getByRole('button', { name: treeText.emptyTree() })
+  );
+  return screen.findByRole('dialog', { name: /Taxon Tree/u });
+}
+
+async function openTreeForm(
+  user: ReturnType<typeof mount>['user']
+): Promise<HTMLElement> {
+  await user.click(screen.getByRole('link', { name: commonText.edit() }));
+  return screen.findByRole('dialog', {
+    name: new RegExp(treeText.emptyTree(), 'u'),
+  });
+}
+
+function spyOnNavigation(): {
+  readonly hasNavigated: () => boolean;
+  readonly onlyNavigationErrors: () => boolean;
+  readonly restore: () => void;
+} {
+  const consoleError = jest.spyOn(console, 'error').mockImplementation(f.void);
+  const isNavigation = (error: unknown): boolean =>
+    (error as Error | undefined)?.message?.startsWith(
+      'Not implemented: navigation'
+    ) === true;
+  return {
+    hasNavigated: (): boolean =>
+      consoleError.mock.calls.some(([error]) => isNavigation(error)),
+    onlyNavigationErrors: (): boolean =>
+      consoleError.mock.calls.every(([error]) => isNavigation(error)),
+    restore: (): void => consoleError.mockRestore(),
+  };
+}
+
 describe('Add new taxon tree', () => {
+  useTaxonTreeDefForm([nameRow]);
   const createRequest = jest.fn(() =>
     addMissingFields('TaxonTreeDef', {
-      id: 5,
+      id: newTreeId,
       name: treeText.emptyTree(),
-      resource_uri: getResourceApiUrl('TaxonTreeDef', 5),
+      resource_uri: getResourceApiUrl('TaxonTreeDef', newTreeId),
     })
   );
   overrideAjax('/api/specify/taxontreedef/', createRequest, {
@@ -96,34 +200,12 @@ describe('Add new taxon tree', () => {
   });
 
   test('an empty tree can be created from the "Add Tree" dialog', async () => {
-    const consoleError = jest
-      .spyOn(console, 'error')
-      .mockImplementation(f.void);
-    const isReload = (error: unknown): boolean =>
-      (error as Error | undefined)?.message?.startsWith(
-        'Not implemented: navigation'
-      ) === true;
-    const { user } = mount(
-      <MemoryRouter>
-        <LoadingContext.Provider value={f.void}>
-          <UnloadProtectsContext.Provider value={[]}>
-            <SetUnloadProtectsContext.Provider value={f.void}>
-              <CreateTree tableName="Taxon" treeDefinitions={[]} />
-            </SetUnloadProtectsContext.Provider>
-          </UnloadProtectsContext.Provider>
-        </LoadingContext.Provider>
-      </MemoryRouter>
+    const navigation = spyOnNavigation();
+    const { user } = renderWithProviders(
+      <CreateTree tableName="Taxon" treeDefinitions={[]} />
     );
 
-    await user.click(screen.getByRole('button', { name: treeText.addTree() }));
-    const addTreeDialog = await screen.findByRole('dialog', {
-      name: treeText.addTree(),
-    });
-    await user.click(
-      within(addTreeDialog).getByRole('button', { name: treeText.emptyTree() })
-    );
-
-    const form = await screen.findByRole('dialog', { name: /Taxon Tree/u });
+    const form = await openEmptyTreeForm(user);
     await waitFor(() =>
       expect(within(form).getByRole('textbox')).toHaveValue(
         treeText.emptyTree()
@@ -133,100 +215,32 @@ describe('Add new taxon tree', () => {
       within(form).getByRole('button', { name: commonText.save() })
     );
 
-    await waitFor(() =>
-      expect(consoleError.mock.calls.some(([error]) => isReload(error))).toBe(
-        true
-      )
-    );
+    await waitFor(() => expect(navigation.hasNavigated()).toBe(true));
     expect(createRequest).toHaveBeenCalledTimes(1);
-    expect(consoleError.mock.calls.every(([error]) => isReload(error))).toBe(
-      true
-    );
-    consoleError.mockRestore();
+    expect(navigation.onlyNavigationErrors()).toBe(true);
+    navigation.restore();
   });
 });
 
 describe('Cannot add rank in tree creation dialog', () => {
-  beforeAll(() => clearViewLocal('TaxonTreeDef'));
+  useTaxonTreeDefForm([nameRow, ranksRow]);
+  overrideAjax(
+    '/context/view.json?name=TaxonTreeDefItem',
+    formView('TaxonTreeDefItem', [
+      '<row><cell type="label" labelfor="1" /><cell type="field" id="1" name="name" uitype="text" /></row>',
+    ])
+  );
   beforeEach(() => {
     jest.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(null);
   });
   afterEach(() => jest.restoreAllMocks());
-  overrideAjax(
-    '/context/view.json?name=TaxonTreeDef',
-    {
-      name: 'TaxonTreeDef',
-      class: 'edu.ku.brc.specify.datamodel.TaxonTreeDef',
-      isinternal: 'false',
-      resourcelabels: 'false',
-      altviews: {
-        'TaxonTreeDef Edit': {
-          name: 'TaxonTreeDef Edit',
-          viewdef: 'TaxonTreeDef',
-          mode: 'edit',
-          default: 'true',
-        },
-      },
-      viewdefs: {
-        TaxonTreeDef: `<viewdef name="TaxonTreeDef" type="form" class="edu.ku.brc.specify.datamodel.TaxonTreeDef" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
-          <columnDef>p,p</columnDef>
-          <rowDef>p,p</rowDef>
-          <rows>
-            <row><cell type="label" labelfor="name" /><cell type="field" id="name" uitype="text" name="name" /></row>
-            <row><cell type="subview" id="items" name="treeDefItems" colspan="2" defaulttype="table" initialize="sortField=rankId" /></row>
-          </rows>
-        </viewdef>`,
-      },
-    },
-    {},
-    true
-  );
-  overrideAjax('/context/view.json?name=TaxonTreeDefItem', {
-    name: 'TaxonTreeDefItem',
-    class: 'edu.ku.brc.specify.datamodel.TaxonTreeDefItem',
-    isinternal: 'false',
-    resourcelabels: 'false',
-    altviews: {
-      'TaxonTreeDefItem Edit': {
-        name: 'TaxonTreeDefItem Edit',
-        viewdef: 'TaxonTreeDefItem',
-        mode: 'edit',
-        default: 'true',
-      },
-    },
-    viewdefs: {
-      TaxonTreeDefItem: `<viewdef name="TaxonTreeDefItem" type="form" class="edu.ku.brc.specify.datamodel.TaxonTreeDefItem" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
-        <columnDef>p,p</columnDef>
-        <rowDef>p</rowDef>
-        <rows>
-          <row><cell type="label" labelfor="1" /><cell type="field" id="1" name="name" uitype="text" /></row>
-        </rows>
-      </viewdef>`,
-    },
-  });
 
   test('the ranks of a new tree have no enabled "Add" button', async () => {
-    const { user } = mount(
-      <MemoryRouter>
-        <LoadingContext.Provider value={f.void}>
-          <UnloadProtectsContext.Provider value={[]}>
-            <SetUnloadProtectsContext.Provider value={f.void}>
-              <CreateTree tableName="Taxon" treeDefinitions={[]} />
-            </SetUnloadProtectsContext.Provider>
-          </UnloadProtectsContext.Provider>
-        </LoadingContext.Provider>
-      </MemoryRouter>
+    const { user } = renderWithProviders(
+      <CreateTree tableName="Taxon" treeDefinitions={[]} />
     );
 
-    await user.click(screen.getByRole('button', { name: treeText.addTree() }));
-    const addTreeDialog = await screen.findByRole('dialog', {
-      name: treeText.addTree(),
-    });
-    await user.click(
-      within(addTreeDialog).getByRole('button', { name: treeText.emptyTree() })
-    );
-
-    const form = await screen.findByRole('dialog', { name: /Taxon Tree/u });
+    const form = await openEmptyTreeForm(user);
     await waitFor(() =>
       expect(
         within(form)
@@ -251,87 +265,23 @@ describe('Cannot add rank in tree creation dialog', () => {
 });
 
 describe('Delete new taxon tree', () => {
-  const treeId = 5;
   const defaultTreeId = 1;
-  const disciplineUrl = getResourceApiUrl('Discipline', 3);
   const deleteRequest = jest.fn(() => '');
-
-  beforeAll(() => clearViewLocal('TaxonTreeDef'));
-  overrideAjax(
-    '/context/view.json?name=TaxonTreeDef',
-    {
-      name: 'TaxonTreeDef',
-      class: 'edu.ku.brc.specify.datamodel.TaxonTreeDef',
-      isinternal: 'false',
-      resourcelabels: 'false',
-      altviews: {
-        'TaxonTreeDef Edit': {
-          name: 'TaxonTreeDef Edit',
-          viewdef: 'TaxonTreeDef',
-          mode: 'edit',
-          default: 'true',
-        },
-      },
-      viewdefs: {
-        TaxonTreeDef: `<viewdef name="TaxonTreeDef" type="form" class="edu.ku.brc.specify.datamodel.TaxonTreeDef" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
-          <columnDef>p,p</columnDef>
-          <rowDef>p</rowDef>
-          <rows>
-            <row><cell type="label" labelfor="name" /><cell type="field" id="name" uitype="text" name="name" /></row>
-          </rows>
-        </viewdef>`,
-      },
-    },
-    {},
-    true
-  );
-  overrideAjax(
-    `/delete_blockers/delete_blockers/taxontreedef/${treeId}/?limit=40`,
-    { results: [], next: [] }
-  );
-  overrideAjax(`/delete_blockers/count/taxontreedef/${treeId}/`, {
-    results: [],
-    total_count: 0,
-  });
-  overrideAjax(getResourceApiUrl('TaxonTreeDef', treeId), deleteRequest, {
+  useTaxonTreeDefForm([nameRow]);
+  mockNoDeleteBlockers(newTreeId);
+  overrideAjax(getResourceApiUrl('TaxonTreeDef', newTreeId), deleteRequest, {
     method: 'DELETE',
     responseCode: Http.NO_CONTENT,
   });
 
   test('deleting the new tree returns to the default taxon tree', async () => {
-    const consoleError = jest
-      .spyOn(console, 'error')
-      .mockImplementation(f.void);
-    const isNavigation = (error: unknown): boolean =>
-      (error as Error | undefined)?.message?.startsWith(
-        'Not implemented: navigation'
-      ) === true;
-    setCache('tree', 'definitionTaxon', treeId);
-    const tree = deserializeResource(
-      addMissingFields('TaxonTreeDef', {
-        id: treeId,
-        name: treeText.emptyTree(),
-        discipline: disciplineUrl,
-        resource_uri: getResourceApiUrl('TaxonTreeDef', treeId),
-      })
+    const navigation = spyOnNavigation();
+    setCache('tree', 'definitionTaxon', newTreeId);
+    const { user } = renderWithProviders(
+      <ResourceEdit resource={newTreeDefinition()} />
     );
 
-    const { user } = mount(
-      <MemoryRouter>
-        <LoadingContext.Provider value={f.void}>
-          <UnloadProtectsContext.Provider value={[]}>
-            <SetUnloadProtectsContext.Provider value={f.void}>
-              <ResourceEdit resource={tree} />
-            </SetUnloadProtectsContext.Provider>
-          </UnloadProtectsContext.Provider>
-        </LoadingContext.Provider>
-      </MemoryRouter>
-    );
-
-    await user.click(screen.getByRole('link', { name: commonText.edit() }));
-    const form = await screen.findByRole('dialog', {
-      name: new RegExp(treeText.emptyTree(), 'u'),
-    });
+    const form = await openTreeForm(user);
     await user.click(
       await within(form).findByRole('button', { name: commonText.delete() })
     );
@@ -344,71 +294,27 @@ describe('Delete new taxon tree', () => {
       within(confirmation).getByRole('button', { name: commonText.delete() })
     );
 
-    await waitFor(() =>
-      expect(
-        consoleError.mock.calls.some(([error]) => isNavigation(error))
-      ).toBe(true)
-    );
+    await waitFor(() => expect(navigation.hasNavigated()).toBe(true));
     expect(deleteRequest).toHaveBeenCalledTimes(1);
     expect(getCache('tree', 'definitionTaxon')).toBe(defaultTreeId);
-    expect(
-      consoleError.mock.calls.every(([error]) => isNavigation(error))
-    ).toBe(true);
-    consoleError.mockRestore();
+    expect(navigation.onlyNavigationErrors()).toBe(true);
+    navigation.restore();
   });
 });
 
 describe('Rename tree', () => {
-  const treeId = 5;
   const newName = 'Ichthyology Taxonomy';
-  const disciplineUrl = getResourceApiUrl('Discipline', 3);
   const saveRequest = jest.fn(() =>
     addMissingFields('TaxonTreeDef', {
-      id: treeId,
+      id: newTreeId,
       name: newName,
       version: 1,
       discipline: disciplineUrl,
-      resource_uri: getResourceApiUrl('TaxonTreeDef', treeId),
+      resource_uri: getResourceApiUrl('TaxonTreeDef', newTreeId),
     })
   );
-
-  beforeAll(() => clearViewLocal('TaxonTreeDef'));
-  overrideAjax(
-    '/context/view.json?name=TaxonTreeDef',
-    {
-      name: 'TaxonTreeDef',
-      class: 'edu.ku.brc.specify.datamodel.TaxonTreeDef',
-      isinternal: 'false',
-      resourcelabels: 'false',
-      altviews: {
-        'TaxonTreeDef Edit': {
-          name: 'TaxonTreeDef Edit',
-          viewdef: 'TaxonTreeDef',
-          mode: 'edit',
-          default: 'true',
-        },
-      },
-      viewdefs: {
-        TaxonTreeDef: `<viewdef name="TaxonTreeDef" type="form" class="edu.ku.brc.specify.datamodel.TaxonTreeDef" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
-          <columnDef>p,p</columnDef>
-          <rowDef>p</rowDef>
-          <rows>
-            <row><cell type="label" labelfor="name" /><cell type="field" id="name" uitype="text" name="name" /></row>
-          </rows>
-        </viewdef>`,
-      },
-    },
-    {},
-    true
-  );
-  overrideAjax(
-    `/delete_blockers/delete_blockers/taxontreedef/${treeId}/?limit=40`,
-    { results: [], next: [] }
-  );
-  overrideAjax(`/delete_blockers/count/taxontreedef/${treeId}/`, {
-    results: [],
-    total_count: 0,
-  });
+  useTaxonTreeDefForm([nameRow]);
+  mockNoDeleteBlockers(newTreeId);
   overrideAjax(
     `/api/specify/taxontreedef/?${new URLSearchParams({
       domainfilter: 'false',
@@ -418,39 +324,21 @@ describe('Rename tree', () => {
     }).toString()}`,
     { objects: [], meta: { limit: 20, offset: 0, total_count: 0 } }
   );
-  overrideAjax(getResourceApiUrl('TaxonTreeDef', treeId), saveRequest, {
+  overrideAjax(getResourceApiUrl('TaxonTreeDef', newTreeId), saveRequest, {
     method: 'PUT',
     body: jsonContaining({ name: newName }),
   });
 
   test('saving a new name in the tree form renames the tree', async () => {
     const handleSaved = jest.fn();
-    const tree = deserializeResource(
-      addMissingFields('TaxonTreeDef', {
-        id: treeId,
-        name: treeText.emptyTree(),
-        version: 0,
-        discipline: disciplineUrl,
-        resource_uri: getResourceApiUrl('TaxonTreeDef', treeId),
-      })
+    const { user } = renderWithProviders(
+      <ResourceEdit
+        resource={newTreeDefinition({ version: 0 })}
+        onSaved={handleSaved}
+      />
     );
 
-    const { user } = mount(
-      <MemoryRouter>
-        <LoadingContext.Provider value={f.void}>
-          <UnloadProtectsContext.Provider value={[]}>
-            <SetUnloadProtectsContext.Provider value={f.void}>
-              <ResourceEdit resource={tree} onSaved={handleSaved} />
-            </SetUnloadProtectsContext.Provider>
-          </UnloadProtectsContext.Provider>
-        </LoadingContext.Provider>
-      </MemoryRouter>
-    );
-
-    await user.click(screen.getByRole('link', { name: commonText.edit() }));
-    const form = await screen.findByRole('dialog', {
-      name: new RegExp(treeText.emptyTree(), 'u'),
-    });
+    const form = await openTreeForm(user);
     const name = within(form).getByRole('textbox');
     await waitFor(() => expect(name).toHaveValue(treeText.emptyTree()));
     await user.tripleClick(name);
