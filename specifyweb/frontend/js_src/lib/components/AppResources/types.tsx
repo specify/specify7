@@ -153,7 +153,7 @@ export const appResourceSubTypes = ensure<IR<AppResourceSubType>>()({
     mimeType: 'application/vnd.specify.dwca+xml',
     name: undefined,
     documentationUrl: undefined,
-    icon: icons.upload,
+    icon: icons.archive,
     label: dwcaText.dwcaDefinition(),
     useTemplate: false,
   },
