@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-11-22 18:26+0000\n"
-"Last-Translator: Maxime GRIVEAU <mgriveau@users.noreply.hosted.weblate.org>\n"
+"Last-Translator: Nathan <nathanbnm@users.noreply.hosted.weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/user/"
 "fr/>\n"
 "Language: fr\n"
@@ -518,8 +518,8 @@ msgstr "Autorisations de Specify 6"
 #: components/Security/UserComponents.tsx:198
 msgid "setPasswordBeforeSavePrompt"
 msgstr ""
-"Pensez à définir un mot de passe pour cet utilisateur. Les utilisateurs "
-"sans mot de passe ne pourront pas se connecter"
+"Pensez à définir un mot de passe pour cet utilisateur. Les utilisateurs sans "
+"mot de passe ne pourront pas se connecter"
 
 #. Used in: Components > Security > User Collections
 #: components/Security/UserCollections.tsx:135
