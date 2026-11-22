@@ -28,9 +28,9 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { deserializeResource } from '../DataModel/serializers';
 import { serializeResource } from '../DataModel/serializers';
 import type { Attachment } from '../DataModel/types';
+import { Slider } from '../FormSliders/Slider';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { NotFoundView } from '../Router/NotFoundView';
-import { Slider } from '../FormSliders/Slider';
 
 const { parseCacheKey } = exportsForTests;
 
@@ -133,9 +133,9 @@ export function WbAttachmentViewerView(): JSX.Element {
       headerButtons={
         <div className="flex items-center gap-2 md:gap-2 ml-auto">
           <Slider
-            value={selectedAttachment}
             count={attachmentIds?.length ?? 1}
             enableKeyboardShortcuts={false}
+            value={selectedAttachment}
             onChange={(newValue: number) => {
               setSelectedAttachment(newValue);
             }}

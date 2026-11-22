@@ -31,7 +31,7 @@ export type ValueOf<T> = T[keyof T];
  * - It makes it explicitly known that the value is meant to be mutated
  * - It doesn't trigger the "functional/prefer-readonly-type" ESLint rule.
  */
-// eslint-disable-next-line functional/prefer-readonly-type
+
 export type WritableArray<T> = T[];
 
 /** Cast a type as defined. Throws at runtime if it is not defined */
@@ -62,7 +62,6 @@ export type DeepPartial<RECORD extends IR<unknown>> = {
       : RECORD[KEY];
 };
 
-// eslint-disable-next-line functional/prefer-readonly-type
 export type Writable<T> = {
   -readonly [K in keyof T]: T[K];
 };
@@ -128,7 +127,7 @@ export const isFunction = <T>(
  */
 export function overwriteReadOnly<
   KEY extends string,
-  OBJECT extends { readonly [key in KEY]?: unknown },
+  OBJECT extends Readonly<Partial<Record<KEY, unknown>>>,
 >(object: OBJECT, key: KEY, value: unknown): void {
   // @ts-expect-error Overwriting read-only
   object[key] = value;

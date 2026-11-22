@@ -86,8 +86,8 @@ export function KeyboardShortcutCheatSheet(): JSX.Element | null {
     <Portal>
       <section
         aria-label={preferencesText.keyboardShortcuts()}
-        role="dialog"
         className="pointer-events-none fixed inset-0 z-[10000] flex items-center justify-center bg-black/20 p-8"
+        role="dialog"
       >
         <div
           className={`

@@ -2,16 +2,15 @@
  * Show upload plan as JSON
  */
 
-import React from 'react';
-
 import { json } from '@codemirror/lang-json';
 import type { Diagnostic } from '@codemirror/lint';
 import { lintGutter } from '@codemirror/lint';
 import { search } from '@codemirror/search';
-import { EditorView } from 'codemirror';
 import { okaidia } from '@uiw/codemirror-theme-okaidia';
 import { xcodeLight } from '@uiw/codemirror-theme-xcode';
 import CodeMirror from '@uiw/react-codemirror';
+import { EditorView } from 'codemirror';
+import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
@@ -22,13 +21,13 @@ import type { RA } from '../../utils/types';
 import { overwriteReadOnly } from '../../utils/types';
 import { jsonLinter } from '../AppResources/codeMirrorLinters';
 import { Button } from '../Atoms/Button';
+import { dialogIcons, icons } from '../Atoms/Icons';
 import { LoadingContext } from '../Core/Contexts';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { downloadFile, fileToText } from '../Molecules/FilePicker';
 import { useDarkMode } from '../Preferences/Hooks';
 import type { UploadPlan } from '../WbPlanView/uploadPlanParser';
 import type { Dataset } from '../WbPlanView/Wrapped';
-import { dialogIcons, icons } from '../Atoms/Icons';
 
 /**
  * Button + dialog that opens a CodeMirror-powered JSON editor for
@@ -103,8 +102,10 @@ function RawUploadPlan({
     JSON.stringify(rawPlan, null, 4)
   );
 
-  // Shown when a file import fails JSON.parse() or when Save encounters
-  // invalid JSON that bypassed lint detection
+  /*
+   * Shown when a file import fails JSON.parse() or when Save encounters
+   * invalid JSON that bypassed lint detection
+   */
   const [invalidJson, showInvalid, closeInvalid] = useBooleanState();
 
   // Errors disable the Save button to prevent submitting invalid JSON.
@@ -134,17 +135,15 @@ function RawUploadPlan({
     <>
       {invalidJson && (
         <Dialog
-          icon={dialogIcons.warning}
           buttons={commonText.close()}
           header={wbPlanText.invalidJsonFile()}
+          icon={dialogIcons.warning}
           onClose={closeInvalid}
         >
           {wbPlanText.invalidJsonFileDescription()}
         </Dialog>
       )}
       <Dialog
-        className={{ container: dialogClassNames.extraWideContainer }}
-        icon={icons.clipboard}
         buttons={
           <>
             <input
@@ -202,15 +201,16 @@ function RawUploadPlan({
             </Button.Save>
           </>
         }
+        className={{ container: dialogClassNames.extraWideContainer }}
         header={wbPlanText.importExportMapping()}
+        icon={icons.clipboard}
         onClose={handleClose}
       >
         <p className="text-wrap mb-4">
           {wbPlanText.importExportMappingDescription()}
         </p>
         <CodeMirror
-          value={uploadPlan}
-          height="300px"
+          className="border-brand-300 w-full overflow-y-auto overflow-x-hidden border dark:border-none"
           extensions={[
             json(),
             lintGutter(),
@@ -218,8 +218,9 @@ function RawUploadPlan({
             EditorView.lineWrapping,
             search(),
           ]}
+          height="300px"
           theme={isDarkMode ? okaidia : xcodeLight}
-          className="border-brand-300 w-full overflow-y-auto overflow-x-hidden border dark:border-none"
+          value={uploadPlan}
           onChange={(value): void => setUploadPlane(value)}
         />
       </Dialog>

@@ -65,9 +65,11 @@ function initialize(): void {
        */
       const parsedValue = JSON.parse(newValue);
       const [category, key] = parsedKey;
-      // Update in-memory cache and fire change event so React hooks
-      // in this tab update, but skip the localStorage write since
-      // the originating tab already committed the value.
+      /*
+       * Update in-memory cache and fire change event so React hooks
+       * in this tab update, but skip the localStorage write since
+       * the originating tab already committed the value.
+       */
       genericSet(category, key, parsedValue, true, true);
     }
   );

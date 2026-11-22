@@ -1,5 +1,6 @@
-import type { RA, WritableArray } from '../../utils/types';
 import type { LocalizedString } from 'typesafe-i18n';
+
+import type { RA, WritableArray } from '../../utils/types';
 import { toTable, toTreeTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -24,7 +25,7 @@ import type { CollectionRelationships } from './useCollectionRelationships';
 import type { QueryComboBoxTreeData } from './useTreeData';
 
 export function deduplicateQueryComboBoxResults(
-  responses: ReadonlyArray<ReadonlyArray<readonly [number, LocalizedString]>>
+  responses: readonly (readonly (readonly [number, LocalizedString])[])[]
 ): RA<readonly [number, LocalizedString]> {
   const uniqueResults = new Map<number, readonly [number, LocalizedString]>();
   for (const result of responses.flat())
@@ -339,7 +340,7 @@ export function useQueryComboBoxDefaults({
   readonly field: Relationship;
   readonly defaultRecord?: string | undefined;
 }): void {
-  if (resource === undefined || !resource.isNew()) return;
+  if (!resource?.isNew()) return;
 
   if (defaultRecord !== undefined) {
     const defaultUri: string | null =

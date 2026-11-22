@@ -23,7 +23,7 @@ function createNamedConstructor(name, constructor) {
 const originalExtend = BackboneBase.View.extend;
 const nameProperty = '__name__';
 const newExtend = function (protoProps, classProps) {
-  if (protoProps && protoProps.hasOwnProperty(nameProperty)) {
+  if (protoProps?.hasOwnProperty(nameProperty)) {
     // BUG: check that name is a valid identifier
     const name = protoProps[nameProperty];
     // Wrap constructor from protoProps if supplied or 'this' (thi function we are extending)

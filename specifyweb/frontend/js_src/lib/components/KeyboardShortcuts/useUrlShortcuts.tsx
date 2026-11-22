@@ -11,8 +11,8 @@ import {
 } from '../Header/menuItemDefinitions';
 import { rawUserToolsPromise } from '../Header/userToolDefinitions';
 import { userPreferences } from '../Preferences/userPreferences';
-import { pathIsOverlay } from '../Router/UnloadProtect';
 import { locationToState } from '../Router/RouterState';
+import { pathIsOverlay } from '../Router/UnloadProtect';
 import { bindKeyboardShortcut, setKeyboardShortcutsEnabled } from './context';
 
 export function useUrlShortcuts(): void {
@@ -67,6 +67,5 @@ export function useUrlShortcuts(): void {
           );
     });
     return (): void => cleanup.forEach((cleanup) => cleanup?.());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shortcuts, menuItems, userTools, location, navigate]);
 }

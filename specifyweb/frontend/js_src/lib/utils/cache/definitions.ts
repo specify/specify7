@@ -82,16 +82,13 @@ export type CacheDefinitions = {
   } & {
     /** Open nodes in a given tree */
     readonly [key in `conformations${AnyTree['tableName']}`]: Conformations;
-  } & {
-    readonly [key in `definition${AnyTree['tableName']}`]: number;
-  } & {
-    readonly [key in `focusPath${AnyTree['tableName']}`]: RA<number>;
-  } & {
-    readonly hideEmptyNodes: boolean;
-    readonly isSplit: boolean;
-    readonly isHorizontal: boolean;
-    readonly biostratFilter: 'all' | 'bio' | 'chrono';
-  };
+  } & Readonly<Record<`definition${AnyTree['tableName']}`, number>> &
+    Readonly<Record<`focusPath${AnyTree['tableName']}`, RA<number>>> & {
+      readonly hideEmptyNodes: boolean;
+      readonly isSplit: boolean;
+      readonly isHorizontal: boolean;
+      readonly biostratFilter: 'all' | 'bio' | 'chrono';
+    };
   readonly workBenchSortConfig: {
     /**
      * WorkBench column sort setting in a given dataset
@@ -219,14 +216,9 @@ export type SortConfigs = {
     | 'relationshipCount'
     | 'tableId';
   readonly attachmentImport:
-    | 'fileSize'
-    | 'matchedId'
-    | 'selectedFileName'
-    | 'status';
+    'fileSize' | 'matchedId' | 'selectedFileName' | 'status';
   readonly attachmentDatasets:
-    | 'name'
-    | 'timestampCreated'
-    | 'timestampModified';
+    'name' | 'timestampCreated' | 'timestampModified';
   readonly listOfBatchEditDataSets: 'dateCreated' | 'dateUploaded' | 'name';
 };
 
@@ -238,13 +230,7 @@ interface CacheValueDict extends IR<CacheValue> {}
 interface CacheValues extends RA<CacheValue> {}
 
 type CacheValue =
-  | CacheValueDict
-  | CacheValues
-  | boolean
-  | number
-  | string
-  | null
-  | undefined;
+  CacheValueDict | CacheValues | boolean | number | string | null | undefined;
 
 /**
  * This will trigger a TypeScript type error if any cache definition

@@ -8,6 +8,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { attachmentsText } from '../../localization/attachments';
 import { batchEditText } from '../../localization/batchEdit';
 import { commonText } from '../../localization/common';
+import { dataViewsText } from '../../localization/dataViews';
 import { formsText } from '../../localization/forms';
 import { headerText } from '../../localization/header';
 import { interactionsText } from '../../localization/interactions';
@@ -66,7 +67,6 @@ import type {
   PreferencesVisibilityContext,
 } from './types';
 import { definePref } from './types';
-import { dataViewsText } from '../../localization/dataViews';
 
 const isLightMode = ({
   isDarkMode,

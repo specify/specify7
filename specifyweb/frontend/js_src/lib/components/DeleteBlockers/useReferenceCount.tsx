@@ -1,7 +1,8 @@
 import React from 'react';
-import { AnySchema } from '../DataModel/helperTypes';
-import { SpecifyResource } from '../DataModel/legacyTypes';
-import { Relationship } from '../DataModel/specifyField';
+
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { Relationship } from '../DataModel/specifyField';
 import { useDeleteBlockerStore } from './Context';
 
 export function useDeleteBlockerCount(resource: SpecifyResource<AnySchema>) {

@@ -154,7 +154,7 @@ const fieldRenderers: {
       defaultRecord,
     },
   }) {
-    return field === undefined || !field.isRelationship ? null : (
+    return field?.isRelationship ? (
       <QueryComboBox
         defaultRecord={defaultRecord}
         field={field}
@@ -171,7 +171,7 @@ const fieldRenderers: {
         searchView={searchView}
         typeSearch={typeSearch}
       />
-    );
+    ) : null;
   },
   Text({
     id,

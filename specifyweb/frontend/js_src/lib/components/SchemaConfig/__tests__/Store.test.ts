@@ -1,5 +1,5 @@
-import type { SchemaConfigEditorState } from '../types';
 import { isEditorModified } from '../helpers';
+import type { SchemaConfigEditorState } from '../types';
 
 const base = {
   container: { id: 1 },

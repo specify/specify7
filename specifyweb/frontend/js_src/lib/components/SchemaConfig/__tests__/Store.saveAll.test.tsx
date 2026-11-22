@@ -23,9 +23,11 @@ jest.mock('../data', () => ({
 
 const { buildSaveRequests } = exportsForTests;
 
-// A SpLocaleContainerItem-shaped fixture. Strings deliberately lack
-// resource_uri so saveString routes through createResource and the
-// assertions stay predictable
+/*
+ * A SpLocaleContainerItem-shaped fixture. Strings deliberately lack
+ * resource_uri so saveString routes through createResource and the
+ * assertions stay predictable
+ */
 type TestItem = {
   readonly id: number;
   readonly name: string;
@@ -266,8 +268,10 @@ describe('saveAll', () => {
       await result.current.saveAll();
     });
 
-    // Only the 10 changed Accession items get saved, CollectionObject stays
-    // untouched
+    /*
+     * Only the 10 changed Accession items get saved, CollectionObject stays
+     * untouched
+     */
     expect(saveResource).toHaveBeenCalledTimes(10);
     expect(saveResource).toHaveBeenNthCalledWith(
       1,

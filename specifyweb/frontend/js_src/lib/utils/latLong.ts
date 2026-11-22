@@ -52,10 +52,7 @@ function parse(rawValue: string): Coord | undefined {
     if (match === null) return undefined;
     const sign = match[components[0]].startsWith('-') ? -1 : 1;
     const parsedDirection = match[direction].toLowerCase() as
-      | 'e'
-      | 'n'
-      | 's'
-      | 'w';
+      'e' | 'n' | 's' | 'w';
     const comps = components
       .slice(0, -1)
       .map((index) => Math.abs(Number.parseInt(match[index])));
@@ -93,10 +90,8 @@ function makeLatLong(
 }
 
 export class Coord {
-  // eslint-disable-next-line functional/prefer-readonly-type
   public sign;
 
-  // eslint-disable-next-line functional/prefer-readonly-type
   public components: RA<number>;
 
   public constructor(float = 0) {

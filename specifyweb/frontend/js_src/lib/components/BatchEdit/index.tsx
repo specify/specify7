@@ -38,11 +38,7 @@ const queryFieldSpecHeader = (queryFieldSpec: QueryFieldSpec) =>
   );
 
 // Data structure for passing the treedefs to use for batch edit in case of missing ranks
-type TreeDefsFilter =
-  | {
-      readonly [KEY in AnyTree['tableName']]: RA<number>;
-    }
-  | {};
+type TreeDefsFilter = Readonly<Record<AnyTree['tableName'], RA<number>>> | {};
 
 type BatchEditFromQueryBodyProps = {
   readonly query: SerializedRecord<SpQuery> | SpecifyResource<SpQuery>;

@@ -15,13 +15,13 @@ import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import { ReadOnlyContext } from '../Core/Contexts';
-import { datasetVariants } from '../WbUtils/datasetVariants';
 import { strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { userPreferences } from '../Preferences/userPreferences';
+import { datasetVariants } from '../WbUtils/datasetVariants';
 import { ButtonWithConfirmation } from './Components';
 import { FieldSearch } from './FieldSearchComponent';
 import type {
@@ -31,8 +31,8 @@ import type {
 import { MappingPathComponent } from './LineComponents';
 import {
   type BatchEditPrefs,
-  type MappingPath,
   DEFAULT_BATCH_EDIT_PREFS,
+  type MappingPath,
 } from './Mapper';
 import { getMappingLineData } from './navigator';
 import type { NavigatorSpec } from './navigatorSpecs';

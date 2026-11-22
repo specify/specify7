@@ -33,7 +33,6 @@ export function pairNodes(nodes: RA<Node>): RA<PairedNode> {
 }
 
 type PairedNode = Node & {
-  // eslint-disable-next-line functional/prefer-readonly-type
   children: WritableArray<PairedNode> | undefined;
 };
 

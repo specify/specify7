@@ -2,16 +2,16 @@ import { act, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 
-import { queryText } from '../../../localization/query';
 import { mergingText } from '../../../localization/merging';
+import { queryText } from '../../../localization/query';
 import { requireContext } from '../../../tests/helpers';
 import { mount } from '../../../tests/reactUtils';
+import * as resourceModule from '../../DataModel/resource';
 import { tables } from '../../DataModel/tables';
 import { defaultDataViewQuery } from '../../DataViews/queries';
-import * as resourceModule from '../../DataModel/resource';
+import { ResourceView } from '../../Forms/ResourceView';
 import { RecordSelectorFromIds } from '../../FormSliders/RecordSelectorFromIds';
 import { RecordMergingLink } from '../../Merging';
-import { ResourceView } from '../../Forms/ResourceView';
 import { UnloadProtectsContext } from '../../Router/UnloadProtect';
 import { CreateRecordSet } from '../CreateRecordSet';
 import { parseQueryFields, queryFieldsToFieldSpecs } from '../helpers';
@@ -97,9 +97,9 @@ test('Simple Search result selection creates a set in result order and excludes 
   rerender(
     <QueryResults
       {...props}
-      totalCount={0}
       initialData={[]}
       selectedRows={[new Set(), jest.fn()]}
+      totalCount={0}
     />
   );
   expect(screen.queryByRole('button', { name })).not.toBeInTheDocument();
@@ -109,11 +109,11 @@ test('result links open the correct record in a separate tab without selecting a
   const onSelected = jest.fn();
   const { container, user } = mount(
     <QueryResultsTable
-      table={tables.Agent}
       fieldSpecs={[]}
       results={[[17], [91]]}
       selectedRows={new Set()}
       showCellEllipsis={false}
+      table={tables.Agent}
       wrapQueryResults={false}
       onSelected={onSelected}
     />
@@ -122,7 +122,7 @@ test('result links open the correct record in a separate tab without selecting a
   const link = await screen.findByRole('link', { name: href });
   expect(link).toHaveAttribute('href', href);
   expect(link).toHaveAttribute('target', '_blank');
-  // jsdom cannot open a browser tab; assert the native link contract and click propagation.
+  // Jsdom cannot open a browser tab; assert the native link contract and click propagation.
   link.addEventListener('click', (event) => event.preventDefault());
   await user.click(link);
   expect(onSelected).not.toHaveBeenCalled();
@@ -134,12 +134,12 @@ test.each([{ selection: [] }, { selection: [91] }])(
   async ({ selection }) => {
     const { user } = mount(
       <QueryToForms
-        table={tables.Agent}
         results={[[17], [91]]}
         selectedRows={new Set(selection)}
+        table={tables.Agent}
         totalCount={2}
-        onFetchMore={undefined}
         onDelete={jest.fn()}
+        onFetchMore={undefined}
       />
     );
     await user.click(
@@ -162,12 +162,12 @@ test.each([{ selection: [] }, { selection: [91] }])(
 test('Browse in Forms cannot open empty results', async () => {
   const { user } = mount(
     <QueryToForms
-      table={tables.Agent}
       results={[]}
       selectedRows={new Set()}
+      table={tables.Agent}
       totalCount={0}
-      onFetchMore={undefined}
       onDelete={jest.fn()}
+      onFetchMore={undefined}
     />
   );
   const button = screen.getByRole('button', {
@@ -214,8 +214,8 @@ test('Record Set save includes only unique result IDs with the correct table', a
   const { user } = mount(
     <CreateRecordSet
       baseTableName="Agent"
-      recordIds={[91, 17, 91]}
       defaultRecordSetName="Search results"
+      recordIds={[91, 17, 91]}
     />,
     {
       wrapper: ({ children }) => (
@@ -246,7 +246,7 @@ test('Record Set save includes only unique result IDs with the correct table', a
       })
     )
   );
-  expect(
-    await screen.findByRole('link', { name: /Search results/u })
-  ).toHaveAttribute('href', '/specify/record-set/500/');
+  await expect(
+    screen.findByRole('link', { name: /Search results/u })
+  ).resolves.toHaveAttribute('href', '/specify/record-set/500/');
 });

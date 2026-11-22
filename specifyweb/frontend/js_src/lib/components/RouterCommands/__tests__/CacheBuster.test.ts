@@ -31,7 +31,7 @@ test('clearAllCache clears local storage and pings cachable urls', async () => {
   cachableUrls.delete(url);
 
   expect(result).toBe(true);
-  expect(localStorage.length).toBe(0);
+  expect(localStorage).toHaveLength(0);
   expect(pingSpy).toHaveBeenCalledWith(
     url,
     expect.objectContaining({ method: 'HEAD' })

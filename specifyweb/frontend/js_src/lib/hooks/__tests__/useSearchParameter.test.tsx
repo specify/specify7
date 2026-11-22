@@ -64,7 +64,7 @@ describe('useSearchParameter', () => {
     mount(
       <Router.MemoryRouter
         initialEntries={[initialEntry]}
-        useTransitions={true}
+        useTransitions
       >
         <TestSearchParameter
           rawName="records"
@@ -86,7 +86,7 @@ describe('useSearchParameter', () => {
     mount(
       <Router.MemoryRouter
         initialEntries={[initialEntry]}
-        useTransitions={true}
+        useTransitions
       >
         <TestSearchParameter
           rawName="records"
@@ -130,7 +130,7 @@ describe('useSearchParameter', () => {
     mount(
       <Router.MemoryRouter
         initialEntries={[initialEntry]}
-        useTransitions={true}
+        useTransitions
       >
         <TestSearchParameter
           rawName={undefined}
@@ -156,7 +156,7 @@ describe('useSearchParameter', () => {
     mount(
       <Router.MemoryRouter
         initialEntries={[initialEntry]}
-        useTransitions={true}
+        useTransitions
       >
         <TestSearchParameter
           rawName="records"

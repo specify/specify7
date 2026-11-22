@@ -7,8 +7,8 @@ import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
 import { Dialog } from '../Molecules/Dialog';
-import { TemplateSelection } from '../WbPlanView/State';
 import { hasPermission } from '../Permissions/helpers';
+import { TemplateSelection } from '../WbPlanView/State';
 import type { WbMapping } from '../WorkBench/mapping';
 
 export function WbNoUploadPlan({

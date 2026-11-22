@@ -6,10 +6,10 @@ import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { MergeRow } from './Header';
-import { useDeleteBlockersForResource } from '../DeleteBlockers/useDeleteBlockersForResource';
 import { DeleteBlockers } from '../DeleteBlockers';
 import { DeleteBlockerProvider } from '../DeleteBlockers/Context';
+import { useDeleteBlockersForResource } from '../DeleteBlockers/useDeleteBlockersForResource';
+import { MergeRow } from './Header';
 
 export function UsagesSection({
   resources,

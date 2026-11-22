@@ -578,7 +578,7 @@ describe('end-to-end: seeding then full file selection', () => {
         file: { name, size: 91, type: 'image/jpeg' } as File,
         parsedName: mv,
         mappingMatchValue: mv,
-        mappingFileName: mv !== undefined ? name : undefined,
+        mappingFileName: mv === undefined ? undefined : name,
       },
     }) as PartialUploadableFileSpec;
 
@@ -750,9 +750,11 @@ describe('crossReferenceMappingFiles CSV always wins matchValue', () => {
   });
 });
 
-// ---------------------------------------------------------------------------
-// isMappingFilePlaceholder
-// ---------------------------------------------------------------------------
+/*
+ * ---------------------------------------------------------------------------
+ * isMappingFilePlaceholder
+ * ---------------------------------------------------------------------------
+ */
 describe('isMappingFilePlaceholder', () => {
   test('returns true for fileMissing cancelled status', () => {
     expect(
@@ -808,9 +810,11 @@ describe('isMappingFilePlaceholder', () => {
   });
 });
 
-// ---------------------------------------------------------------------------
-// matchSelectedFiles – existing function, now tested with mapping scenarios
-// ---------------------------------------------------------------------------
+/*
+ * ---------------------------------------------------------------------------
+ * matchSelectedFiles – existing function, now tested with mapping scenarios
+ * ---------------------------------------------------------------------------
+ */
 describe('matchSelectedFiles', () => {
   const mk = (name: string, size = 91) =>
     ({
@@ -910,9 +914,11 @@ describe('matchSelectedFiles', () => {
   });
 });
 
-// ---------------------------------------------------------------------------
-// crossReferenceMappingFiles – additional edge cases
-// ---------------------------------------------------------------------------
+/*
+ * ---------------------------------------------------------------------------
+ * crossReferenceMappingFiles – additional edge cases
+ * ---------------------------------------------------------------------------
+ */
 describe('crossReferenceMappingFiles – edge cases', () => {
   const mk = (
     name: string,
@@ -924,7 +930,7 @@ describe('crossReferenceMappingFiles – edge cases', () => {
         file: { name, size, type: size > 0 ? 'image/jpeg' : '' },
         parsedName: mv,
         mappingMatchValue: mv,
-        mappingFileName: mv !== undefined ? name : undefined,
+        mappingFileName: mv === undefined ? undefined : name,
       },
     }) as PartialUploadableFileSpec;
 
@@ -983,7 +989,7 @@ describe('crossReferenceMappingFiles – edge cases', () => {
   test('byName prefers real File (size 91) over plain object (size 91)', () => {
     const csv = [{ fileName: 'a.jpg', matchValue: '1' }];
     // Plain object first (would be first in byName), then real file
-    const plainObj = {
+    const plainObject = {
       uploadFile: {
         file: { name: 'a.jpg', size: 91, type: 'image/jpeg' },
         parsedName: '1',
@@ -992,9 +998,9 @@ describe('crossReferenceMappingFiles – edge cases', () => {
     } as PartialUploadableFileSpec;
     const realFile = mk('a.jpg', 91, '1');
     // Give realFile a distinguishable property — it has mappingMatchValue set correctly
-    const result = crossReferenceMappingFiles([plainObj, realFile], csv);
+    const result = crossReferenceMappingFiles([plainObject, realFile], csv);
     expect(result).toHaveLength(1);
-    // mappingMatchValue from CSV overrides regardless — both should be '1'
+    // MappingMatchValue from CSV overrides regardless — both should be '1'
     expect(result[0].uploadFile.mappingMatchValue).toBe('1');
   });
 
@@ -1043,9 +1049,11 @@ describe('crossReferenceMappingFiles – edge cases', () => {
   });
 });
 
-// ---------------------------------------------------------------------------
-// prepareMappingFileSelection – additional edge cases
-// ---------------------------------------------------------------------------
+/*
+ * ---------------------------------------------------------------------------
+ * prepareMappingFileSelection – additional edge cases
+ * ---------------------------------------------------------------------------
+ */
 describe('prepareMappingFileSelection – edge cases', () => {
   const CSV = [
     { matchValue: 'A', fileName: 'a.jpg' },
@@ -1058,7 +1066,7 @@ describe('prepareMappingFileSelection – edge cases', () => {
         file: { name, size, type: size > 0 ? 'image/jpeg' : '' },
         parsedName: mv,
         mappingMatchValue: mv,
-        mappingFileName: mv !== undefined ? name : undefined,
+        mappingFileName: mv === undefined ? undefined : name,
       },
       ...(size === 0
         ? {
@@ -1108,7 +1116,7 @@ describe('prepareMappingFileSelection – edge cases', () => {
     );
     expect(duplicateFiles).toHaveLength(0);
     expect(resolvedFiles).toHaveLength(2);
-    // a.jpg should now be real (91 bytes), b.jpg should be a placeholder
+    // A.jpg should now be real (91 bytes), b.jpg should be a placeholder
     const a = resolvedFiles.find((r) => r.uploadFile.file.name === 'a.jpg');
     const b = resolvedFiles.find((r) => r.uploadFile.file.name === 'b.jpg');
     expect(a?.uploadFile.file.size).toBe(91);
@@ -1134,7 +1142,7 @@ describe('prepareMappingFileSelection – edge cases', () => {
       CSV
     );
     expect(duplicateFiles).toHaveLength(1);
-    expect(resolvedFiles).toHaveLength(2); // a (existing) + b (placeholder)
+    expect(resolvedFiles).toHaveLength(2); // A (existing) + b (placeholder)
   });
 
   test('files with attachmentId are preserved through selection', () => {

@@ -35,7 +35,7 @@ import { fieldFormat } from './fieldFormat';
 import type { Aggregator, Formatter } from './spec';
 import { formattersSpec } from './spec';
 
-const loadFormatters = (
+const loadFormatters = async (
   refresh = false
 ): Promise<{
   readonly formatters: RA<Formatter>;
@@ -186,8 +186,10 @@ async function formatField(
 
   let formatted: string | undefined = undefined;
   if (fields === undefined) {
-    // An unmapped field is a static formatter entry. Its separator is the
-    // text to emit, rather than a separator for another value.
+    /*
+     * An unmapped field is a static formatter entry. Its separator is the
+     * text to emit, rather than a separator for another value.
+     */
     return {
       formatted: displayFormat ?? separator ?? '',
       separator: localized(''),
@@ -229,13 +231,13 @@ async function formatField(
       : userText.noPermission();
 
   if (trimZeros) {
-    const num = Number(formatted);
+    const number_ = Number(formatted);
     formatted =
-      Number.isNaN(num) ||
+      Number.isNaN(number_) ||
       (formatted ?? '').trim() === '' ||
-      !Number.isSafeInteger(num)
+      !Number.isSafeInteger(number_)
         ? formatted
-        : num.toString();
+        : number_.toString();
   }
 
   if (displayFormat !== undefined) {

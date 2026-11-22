@@ -10,7 +10,7 @@ import { Backbone } from './backbone';
 import { DEFAULT_FETCH_LIMIT } from './collection';
 import type { AnySchema } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
-import { Collection } from './specifyTable';
+import type { Collection } from './specifyTable';
 
 // REFACTOR: remove @ts-nocheck
 

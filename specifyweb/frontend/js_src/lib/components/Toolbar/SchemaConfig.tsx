@@ -25,8 +25,10 @@ export type WithFetchedStrings = {
 export function SchemaConfig(): JSX.Element | null {
   const [schemaData, setSchemaData] = useAsyncState(fetchSchemaData, true);
 
-  // Refresh schema data when an overlay closes. useLocation won't work here
-  // since the main route is rendered under the scoped background location
+  /*
+   * Refresh schema data when an overlay closes. useLocation won't work here
+   * since the main route is rendered under the scoped background location
+   */
   const overlayLocation = React.useContext(OverlayLocation);
   const wasInOverlay = React.useRef(false);
   const refreshSequence = React.useRef(0);

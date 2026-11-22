@@ -8,13 +8,15 @@ import { schemaText } from '../../localization/schema';
 import { ajax } from '../../utils/ajax';
 import { Container } from '../Atoms';
 import { Button } from '../Atoms/Button';
+import { dialogIcons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
+import { raise } from '../Errors/Crash';
 import { Dialog } from '../Molecules/Dialog';
 import { fileToText } from '../Molecules/FilePicker';
 import { hasToolPermission } from '../Permissions/helpers';
-import { SetSingleResourceContext } from '../Router/Router';
 import { formatUrl } from '../Router/queryString';
+import { SetSingleResourceContext } from '../Router/Router';
 import { SchemaConfigHeader } from './Components';
 import type { SchemaData } from './schemaData';
 import { SchemaConfigSidebar } from './Sidebar';
@@ -23,8 +25,6 @@ import {
   SchemaConfigStoreProvider,
   useSchemaConfig,
 } from './Store';
-import { dialogIcons } from '../Atoms/Icons';
-import { raise } from '../Errors/Crash';
 
 export function SchemaConfigLayout(): JSX.Element {
   const schemaData = useOutletContext<SchemaData>();
@@ -36,8 +36,8 @@ export function SchemaConfigLayout(): JSX.Element {
 
   return (
     <SchemaConfigStoreProvider
-      key={rawLanguage}
       isReadOnly={isReadOnly}
+      key={rawLanguage}
       rawLanguage={rawLanguage}
       schemaData={schemaData}
     >
@@ -73,7 +73,7 @@ function SchemaConfigLayoutContent(): JSX.Element {
   const handleSave = (): void => {
     if (!canSave) return;
     loading(
-      saveAll().then(() => {
+      saveAll().then(async () => {
         unsetUnloadProtect();
         return handleSchemaSaved(rawLanguage, tableName);
       })
@@ -89,7 +89,7 @@ function SchemaConfigLayoutContent(): JSX.Element {
     loading(
       fileToText(file)
         .then((text) => JSON.parse(text))
-        .then((schema) =>
+        .then(async (schema) =>
           ajax('/context/schema_localization_import.json', {
             method: 'POST',
             headers: { Accept: 'application/json' },
@@ -117,7 +117,7 @@ function SchemaConfigLayoutContent(): JSX.Element {
                       : schemaText.importSchemaErrorInternalError(),
               });
           },
-          (err) => raise(err)
+          (error) => raise(error)
         )
     );
   };
@@ -133,11 +133,11 @@ function SchemaConfigLayoutContent(): JSX.Element {
   return (
     <Container.Full>
       <SchemaConfigHeader
-        languages={schemaData.languages}
-        onSave={canSave ? handleSave : undefined}
-        onImport={isReadOnly ? undefined : handleImport}
         importDisabled={anyModified}
+        languages={schemaData.languages}
         rawLanguage={rawLanguage}
+        onImport={isReadOnly ? undefined : handleImport}
+        onSave={canSave ? handleSave : undefined}
       />
       <div className="flex flex-1 flex-col gap-4 overflow-auto lg:flex-row lg:overflow-hidden">
         <SchemaConfigSidebar tableName={tableName} />
@@ -167,10 +167,10 @@ function SchemaConfigLayoutContent(): JSX.Element {
               </Button.Info>
             </>
           }
-          icon={dialogIcons.warning}
           header={schemaText.importSchema({
             schemaConfig: schemaText.schemaConfig(),
           })}
+          icon={dialogIcons.warning}
           onClose={(): void => setImportFile(undefined)}
         >
           <p>
@@ -192,10 +192,10 @@ function SchemaConfigLayoutContent(): JSX.Element {
           buttons={
             <Button.DialogClose>{commonText.close()}</Button.DialogClose>
           }
-          icon={dialogIcons.success}
           header={schemaText.importSchemaSuccess({
             schemaConfig: schemaText.schemaConfig(),
           })}
+          icon={dialogIcons.success}
           onClose={closeImportSuccess}
         >
           <p>
@@ -212,10 +212,10 @@ function SchemaConfigLayoutContent(): JSX.Element {
               {schemaText.reloadSchemaConfig()}
             </Button.Success>
           }
-          icon={dialogIcons.success}
           header={schemaText.importSchemaSuccess({
             schemaConfig: schemaText.schemaConfig(),
           })}
+          icon={dialogIcons.success}
           onClose={(): void => setImportRefreshError(false)}
         >
           <p>{schemaText.importSchemaRefreshError()}</p>

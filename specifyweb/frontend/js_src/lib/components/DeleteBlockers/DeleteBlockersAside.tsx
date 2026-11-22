@@ -1,26 +1,27 @@
 import React from 'react';
-import { Button } from '../Atoms/Button';
-import { SpecifyResource } from '../DataModel/legacyTypes';
-import { AnySchema } from '../DataModel/helperTypes';
-import { resourceToStringIdentifier } from './state';
-import { RA } from '../../utils/types';
-import { format } from '../Formatters/formatters';
+
 import { useAsyncState } from '../../hooks/useAsyncState';
-import { commonText } from '../../localization/common';
 import { useBooleanState } from '../../hooks/useBooleanState';
-import { TableIcon } from '../Molecules/TableIcon';
+import { commonText } from '../../localization/common';
+import type { RA } from '../../utils/types';
+import { localized } from '../../utils/types';
+import { Button } from '../Atoms/Button';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { Relationship } from '../DataModel/specifyField';
 import {
   getTable,
   sortTablesByCaption,
   strictGetTable,
 } from '../DataModel/tables';
-import { localized } from '../../utils/types';
-import {
+import { format } from '../Formatters/formatters';
+import { TableIcon } from '../Molecules/TableIcon';
+import { resourceToStringIdentifier } from './state';
+import type {
+  DeleteBlockerRelationship,
   DeleteBlockerResource,
   DeleteBlockerTable,
-  DeleteBlockerRelationship,
 } from './store';
-import { Relationship } from '../DataModel/specifyField';
 
 export function DeleteBlockersAside({
   resource,
@@ -44,9 +45,11 @@ export function DeleteBlockersAside({
       className={`flex flex-1 flex-col min-h-0 w-full min-w-0 gap-1 overflow-y-auto ${useSmallLayout ? '' : 'lg:w-1/3 lg:flex-none lg:pr-3'}`}
     >
       {
-        // There's only one "blocking resource" and the blocking resource is
-        // the one we're getting blockers for, so skip showing the resource and
-        // go straight to blocking resources referencing the resource
+        /*
+         * There's only one "blocking resource" and the blocking resource is
+         * the one we're getting blockers for, so skip showing the resource and
+         * go straight to blocking resources referencing the resource
+         */
         records.length === 1 &&
         resourceToStringIdentifier(resource) ===
           resourceToStringIdentifier(records.at(0)!.resource)
@@ -55,9 +58,9 @@ export function DeleteBlockersAside({
               ({ tableName }) => tableName
             ).map((blockerTable, index) => (
               <DeleteBlockersTable
-                key={`${resourceToStringIdentifier(records.at(0)!.resource)}_${blockerTable.tableName}_${index}`}
                 activeRelationshipKey={activeRelationshipKey}
                 blockerTable={blockerTable}
+                key={`${resourceToStringIdentifier(records.at(0)!.resource)}_${blockerTable.tableName}_${index}`}
                 onRelationshipActive={(relationship, relationshipKey) =>
                   handleRelationshipActive(
                     records.at(0)!.resource,
@@ -68,15 +71,17 @@ export function DeleteBlockersAside({
               />
             ))
           : // In this case, there are at least two blocking references that
-            // point to different records.
-            // This should only be in the case where at least one of the
-            // blocking references point to a CASCADE/dependent record that
-            // would be deleted when the parent is deleted
+            /*
+             * Point to different records.
+             * This should only be in the case where at least one of the
+             * blocking references point to a CASCADE/dependent record that
+             * would be deleted when the parent is deleted
+             */
             records.map((record, index) => (
               <BlockerResource
                 activeRelationshipKey={activeRelationshipKey}
-                record={record}
                 key={index}
+                record={record}
                 onRelationshipActive={handleRelationshipActive}
               />
             ))
@@ -99,7 +104,7 @@ function BlockerResource({
   ) => void;
 }): JSX.Element | null {
   const [formatted] = useAsyncState(
-    React.useCallback(() => format(record.resource), [record.resource]),
+    React.useCallback(async () => format(record.resource), [record.resource]),
     false
   );
 
@@ -111,19 +116,19 @@ function BlockerResource({
   return record.tables.length === 0 ? null : (
     <div className="w-full">
       <Button.BorderedGray
-        onClick={handleToggleOpen}
         aria-expanded={isOpen}
         className="flex min-h-10 w-full min-w-0 items-center !justify-start gap-2 rounded-md border-0 px-2 py-2 text-left"
+        onClick={handleToggleOpen}
       >
-        <TableIcon name={record.resource.specifyTable.name} label={false} />
+        <TableIcon label={false} name={record.resource.specifyTable.name} />
         <span className="min-w-0 flex-1">
-          {record.count !== undefined
-            ? commonText.countLine({
+          {record.count === undefined
+            ? `${resourceLabel} (${commonText.loading()})`
+            : // FIXME: Localize this?
+              commonText.countLine({
                 resource: resourceLabel,
                 count: record.count,
-              })
-            : // FIXME: Localize this?
-              `${resourceLabel} (${commonText.loading()})`}
+              })}
         </span>
       </Button.BorderedGray>
       {isOpen && (
@@ -131,9 +136,9 @@ function BlockerResource({
           {sortTablesByCaption(record.tables, ({ tableName }) => tableName).map(
             (blockerTable, index) => (
               <DeleteBlockersTable
-                key={`${resourceToStringIdentifier(record.resource)}_${blockerTable.tableName}_${index}`}
                 activeRelationshipKey={activeRelationshipKey}
                 blockerTable={blockerTable}
+                key={`${resourceToStringIdentifier(record.resource)}_${blockerTable.tableName}_${index}`}
                 onRelationshipActive={(relationship, relationshipKey) =>
                   handleRelationshipActive(
                     record.resource,
@@ -182,25 +187,25 @@ function DeleteBlockersTable({
         aria-pressed={isOpen}
         onClick={handleToggleOpen}
       >
-        <TableIcon name={tableName} label={false} />
+        <TableIcon label={false} name={tableName} />
         <span>
-          {blockerTable.count !== undefined
-            ? commonText.countLine({
+          {blockerTable.count === undefined
+            ? `${localized(tableLabel)} (${commonText.loading()})`
+            : // FIXME: Localize this?
+              commonText.countLine({
                 resource: localized(tableLabel),
                 count: blockerTable.count,
-              })
-            : // FIXME: Localize this?
-              `${localized(tableLabel)} (${commonText.loading()})`}
+              })}
         </span>
       </Button.BorderedGray>
       {isOpen && (
         <div className="ml-3 flex w-full min-w-0 flex-col gap-1 py-1 pl-2">
           {blockerTable.relationships.map((blockerRel, index) => (
             <DeleteBlockersRelationship
-              tableName={tableName}
-              key={`${blockerRel.key}_${index}`}
-              isActive={blockerRel.key === activeRelationshipKey}
               blockerRelationship={blockerRel}
+              isActive={blockerRel.key === activeRelationshipKey}
+              key={`${blockerRel.key}_${index}`}
+              tableName={tableName}
               onRelationshipActive={handleRelationshipActive}
             />
           ))}
@@ -233,20 +238,20 @@ function DeleteBlockersRelationship({
   }, [tableName, blockerRelationship]);
   return (
     <Button.BorderedGray
-      className="flex min-h-9 w-full min-w-0 items-center !justify-start text-left"
       aria-pressed={isActive}
+      className="flex min-h-9 w-full min-w-0 items-center !justify-start text-left"
       onClick={() => {
         handleRelationshipActive(relationship, blockerRelationship.key);
       }}
     >
       <span className="flex-1 min-w-0">
-        {blockerRelationship.count !== undefined
-          ? commonText.countLine({
+        {blockerRelationship.count === undefined
+          ? `${relationship.label} (${commonText.loading()})`
+          : // FIXME: Localize this?
+            commonText.countLine({
               resource: relationship.label,
               count: blockerRelationship.count,
-            })
-          : // FIXME: Localize this?
-            `${relationship.label} (${commonText.loading()})`}
+            })}
       </span>
     </Button.BorderedGray>
   );

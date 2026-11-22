@@ -8,9 +8,7 @@ export type ParsedDom = RA<
     readonly [tagName: string]: ParsedDom;
   }> & {
     readonly '#text'?: boolean | number | string;
-    readonly ':@'?: {
-      readonly [ATTRIBUTE in `@_${string}`]: string;
-    };
+    readonly ':@'?: Readonly<Record<`@_${string}`, string>>;
   }
 >;
 

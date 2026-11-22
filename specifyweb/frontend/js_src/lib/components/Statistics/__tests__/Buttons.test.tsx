@@ -22,7 +22,7 @@ test('Refresh is disabled and ignores clicks until requests finish', async () =>
     readonly response: Response;
   }) => void;
   jest.mocked(ajax).mockImplementationOnce(
-    () =>
+    async () =>
       new Promise((resolve) => {
         finish = resolve;
       })
@@ -58,7 +58,7 @@ test('Refresh is disabled for queued requests before their network request start
   let finish!: (value: number) => void;
   const running = throttledPromise(
     'backendStats',
-    () =>
+    async () =>
       new Promise<number>((resolve) => {
         finish = resolve;
       }),
