@@ -2,8 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-11-22 18:28+0000\n"
-"Last-Translator: Gunnhild Marthinsen "
-"<gunnhilm@users.noreply.hosted.weblate.org>\n"
+"Last-Translator: Eirik Rindal <rindis@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/header/nb/>\n"
 "Language: nb_NO\n"
@@ -75,8 +74,7 @@ msgstr "Oppdatering av eksportfeed startet"
 #: components/ExportFeed/ForceUpdate.tsx:27
 msgid "feedExportStartedDescription"
 msgstr ""
-"Oppdatering startet. Du vil motta et varsel for hvert element som "
-"oppdateres."
+"Oppdatering startet. Du vil motta et varsel for hvert element som oppdateres."
 
 #. Used in: Components > Export Feed > Dwca
 #: components/ExportFeed/Dwca.tsx:129
@@ -227,8 +225,8 @@ msgid "incompleteLocalizationDescription"
 msgstr ""
 "Oversettelsen til dette språket er ikke fullført ennå. Noen elementer kan "
 "mangle lokal tilpasning, eller ha feil lokal tilpasning. Hvis du er "
-"interessert i å hjelpe oss med å fullføre lokal tilpasning, kan du "
-"<link>følge instruksjonene.</link>"
+"interessert i å hjelpe oss med å fullføre lokal tilpasning, kan du <link>"
+"følge instruksjonene.</link>"
 
 #. Used in: Components > Header > User Tool Definitions
 #: components/Header/userToolDefinitions.ts:187
