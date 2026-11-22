@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-11-22 18:27+0000\n"
+"PO-Revision-Date: 2026-11-22 19:52+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Croatian <https://hosted.weblate.org/projects/specify-7/user/"
 "hr/>\n"
@@ -65,18 +65,21 @@ msgstr "Promjena lozinke"
 
 #. Used in: Components > Security > Collection
 #: components/Security/Collection.tsx:171
+#, fuzzy
 msgid "presenceActive"
-msgstr ""
+msgstr "Aktivan"
 
 #. Used in: Components > Security > Collection
 #: components/Security/Collection.tsx:172
+#, fuzzy
 msgid "presenceInactive"
-msgstr ""
+msgstr "Neaktivno"
 
 #. Used in: Components > Security > Collection
 #: components/Security/Collection.tsx:173
+#, fuzzy
 msgid "presenceOffline"
-msgstr ""
+msgstr "Izvan mreže"
 
 #. Used in: Components > Password Change > Index
 #: components/PasswordChange/index.tsx:65
