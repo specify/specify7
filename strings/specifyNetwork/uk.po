@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-11-22 18:26+0000\n"
-"Last-Translator: Ardev Prisec <ard_pris@users.noreply.hosted.weblate.org>\n"
+"Last-Translator: Deleted User <mgorpinic2005@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "specifyNetwork/uk/>\n"
 "Language: uk\n"
@@ -66,7 +66,8 @@ msgstr "Дата збору"
 #. Used in: Components > Specify Network > Map
 #: components/SpecifyNetwork/Map.tsx:232
 msgid "mapDescription"
-msgstr "Ця карта показує випадки появи цього таксону з агрегаторів iDigBio та GBIF."
+msgstr ""
+"Ця карта показує випадки появи цього таксону з агрегаторів iDigBio та GBIF."
 
 #. Used in: Components > Specify Network > Overlays
 #: components/SpecifyNetwork/overlays.ts:140
@@ -83,9 +84,9 @@ msgstr ""
 msgid "gbifDescription"
 msgstr ""
 "Для даних GBIF окремі точки та кластери точок відображаються у вигляді "
-"шестикутників різних кольорів від жовтого до оранжевого та червоного. "
-"Темно-червоні шестикутники відповідають найщільнішому розподілу зібраних "
-"зразків цього виду."
+"шестикутників різних кольорів від жовтого до оранжевого та червоного. Темно-"
+"червоні шестикутники відповідають найщільнішому розподілу зібраних зразків "
+"цього виду."
 
 #. Used in: Components > Specify Network Collection > Setup
 #: components/SpecifyNetworkCollection/Setup.tsx:59
