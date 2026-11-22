@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-11-22 18:26+0000\n"
+"PO-Revision-Date: 2026-11-22 19:52+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "common/uk/>\n"
@@ -767,8 +767,9 @@ msgstr "Немає результатів"
 #: components/WbPlanView/FieldSearchComponent.tsx:221
 #: components/WbPlanView/__tests__/FieldSearchComponent.test.tsx:38
 #: components/WbPlanView/__tests__/FieldSearchComponent.test.tsx:113
+#, fuzzy
 msgid "showMore"
-msgstr ""
+msgstr "Показати більше"
 
 #. Used in: Components > Form Plugins > Lat Long Ui ⬤ Components > Merging > Header ⬤ Components > Merging > Usages ⬤ Components > Work Bench > Data Set Meta
 #: components/FormPlugins/LatLongUi.tsx:100
