@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-11-22 18:27+0000\n"
-"Last-Translator: Josh Jenkins Shaw "
-"<joshuajm@users.noreply.hosted.weblate.org>\n"
+"Last-Translator: Gunnhild Marthinsen "
+"<gunnhilm@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/setupTool/nb/>\n"
 "Language: nb_NO\n"
@@ -231,8 +231,8 @@ msgstr "I fullt navn"
 #: components/SetupTool/setupResources.ts:136
 msgid "inFullNameDescription"
 msgstr ""
-"«Er i fullt navn» inkluderer nivået når du bygger et fullt-navn-uttrykk, "
-"som kan spørres og brukes i rapporter."
+"«Er i fullt navn» inkluderer nivået når du bygger et fullt-navn-uttrykk, som "
+"kan spørres og brukes i rapporter."
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:143
