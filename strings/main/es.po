@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-11-22 18:26+0000\n"
-"Last-Translator: Deleted User <deleted-"
-"48943@users.noreply.hosted.weblate.org>\n"
+"Last-Translator: Manuel Sánchez Ruiz "
+"<cycloderes@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/main/"
 "es/>\n"
 "Language: es\n"
@@ -78,16 +78,16 @@ msgstr ""
 msgid "errorResolutionDescription"
 msgstr ""
 "Si el problema persiste, póngase en contacto con el servicio de asistencia "
-"informática. Si se trata de una base de datos de Specify Cloud, descargue "
-"el mensaje de error y envíelo a <email />."
+"informática. Si se trata de una base de datos de Specify Cloud, descargue el "
+"mensaje de error y envíelo a <email />."
 
 #. 🟥Careful with the <xml> tags when localizing. Used in: Components > Errors > Error Dialog
 #: components/Errors/ErrorDialog.tsx:54
 msgid "errorResolutionSecondDescription"
 msgstr ""
 "Los usuarios de <memberLink>miembros de las instituciones</memberLink> "
-"pueden buscar preguntas respondidas y pedir ayuda en nuestro "
-"<discourseLink>Foro</discourseLink>."
+"pueden buscar preguntas respondidas y pedir ayuda en nuestro <discourseLink>"
+"Foro</discourseLink>."
 
 #. Used in: Core > __tests__ > Contexts ⬤ Components > Errors > Error Dialog ⬤ Components > Locality Update > Status
 #: components/Core/__tests__/Contexts.test.tsx:48
