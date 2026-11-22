@@ -2,7 +2,8 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-11-22 18:27+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Gunnhild Marthinsen "
+"<gunnhilm@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/main/nb/>\n"
 "Language: nb_NO\n"
@@ -84,8 +85,8 @@ msgstr ""
 msgid "errorResolutionSecondDescription"
 msgstr ""
 "Brukere fra <memberLink>medlemsinstitusjoner</memberLink> kan søke etter "
-"besvarte spørsmål og be om hjelp på vårt "
-"<discourseLink>fellesskapsforum</discourseLink>."
+"besvarte spørsmål og be om hjelp på vårt <discourseLink>fellesskapsforum</"
+"discourseLink>."
 
 #. Used in: Core > __tests__ > Contexts ⬤ Components > Errors > Error Dialog ⬤ Components > Locality Update > Status
 #: components/Core/__tests__/Contexts.test.tsx:48
@@ -128,7 +129,8 @@ msgstr ""
 #. Used in: Components > Core > Version Mismatch
 #: components/Core/VersionMismatch.tsx:39
 msgid "versionMismatchSecondDescription"
-msgstr "Enkelte funksjoner i Specify 7 fungerer kanskje derfor ikke som de skal."
+msgstr ""
+"Enkelte funksjoner i Specify 7 fungerer kanskje derfor ikke som de skal."
 
 #. Used in: Components > Core > Version Mismatch
 #: components/Core/VersionMismatch.tsx:42
