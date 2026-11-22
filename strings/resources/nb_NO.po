@@ -2,7 +2,8 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-11-22 18:27+0000\n"
-"Last-Translator: Heini Emilia Rämä <heini@users.noreply.hosted.weblate.org>\n"
+"Last-Translator: Gunnhild Marthinsen "
+"<gunnhilm@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/resources/nb/>\n"
 "Language: nb_NO\n"
@@ -591,8 +592,7 @@ msgstr "Velg ett taksontre for å fortsette med:"
 #: components/DataModel/__tests__/businessRules.test.ts:182
 msgid "invalidDeterminationTaxon"
 msgstr ""
-"Bestemmelsen tilhører ikke taksontreet som er knyttet til "
-"samlingsobjekttypen"
+"Bestemmelsen tilhører ikke taksontreet som er knyttet til samlingsobjekttypen"
 
 #. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Component
 #: components/DataModel/businessRuleDefs.ts:432
