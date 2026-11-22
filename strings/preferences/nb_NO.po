@@ -2,8 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-11-22 18:28+0000\n"
-"Last-Translator: Gunnhild Marthinsen "
-"<gunnhilm@users.noreply.hosted.weblate.org>\n"
+"Last-Translator: Eirik Rindal <rindis@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/preferences/nb/>\n"
 "Language: nb_NO\n"
@@ -670,8 +669,8 @@ msgstr "Bevegelsesretning når <key>Tab</key>-tasten trykkes"
 #: components/Preferences/UserDefinitions.tsx:2206
 msgid "tabMoveDirectionDescription"
 msgstr ""
-"Du kan bevege deg i motsatt retning ved å trykke "
-"<key>Shift</key>+<key>Tab</key>."
+"Du kan bevege deg i motsatt retning ved å trykke <key>Shift</key>+<key>Tab</"
+"key>."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2213
