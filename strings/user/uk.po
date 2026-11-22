@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-11-22 18:26+0000\n"
-"Last-Translator: Ardev Prisec <ard_pris@users.noreply.hosted.weblate.org>\n"
+"PO-Revision-Date: 2026-11-22 19:51+0000\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/user/"
 "uk/>\n"
 "Language: uk\n"
@@ -59,18 +59,21 @@ msgstr "Змінити пароль"
 
 #. Used in: Components > Security > Collection
 #: components/Security/Collection.tsx:171
+#, fuzzy
 msgid "presenceActive"
-msgstr ""
+msgstr "Активний"
 
 #. Used in: Components > Security > Collection
 #: components/Security/Collection.tsx:172
+#, fuzzy
 msgid "presenceInactive"
-msgstr ""
+msgstr "Неактивний"
 
 #. Used in: Components > Security > Collection
 #: components/Security/Collection.tsx:173
+#, fuzzy
 msgid "presenceOffline"
-msgstr ""
+msgstr "Офлайн"
 
 #. Used in: Components > Password Change > Index
 #: components/PasswordChange/index.tsx:65
