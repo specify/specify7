@@ -2,8 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-11-22 18:26+0000\n"
-"Last-Translator: Daniel Fernandez "
-"<funkyferdy@users.noreply.hosted.weblate.org>\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/locality/de_CH/>\n"
 "Language: de_CH\n"
@@ -312,8 +311,8 @@ msgstr ""
 msgid "localityUpdateEffectCounts"
 msgstr ""
 "Die folgende Anzahl von {localityTabelLabel: string} Datensätzen wird von "
-"der Aktualisierung betroffen sein und es werden {geoCoordDetailTableLabel: "
-"string} Datensätze erstellt:"
+"der Aktualisierung betroffen sein und {geoCoordDetailTableLabel: string} "
+"Datensätze werden erstellt:"
 
 #. Used in: Components > Locality Update > Status
 #: components/LocalityUpdate/Status.tsx:297
@@ -328,7 +327,7 @@ msgstr ""
 #: components/Notifications/NotificationRenderers.tsx:70
 #, fuzzy
 msgid "localityUpdateStarted"
-msgstr "Der Prozess zur Aktualisierung der Ortsdaten wurde gestartet."
+msgstr "Der Aktualisierungsprozess der Ortsdaten wurde gestartet."
 
 #. Used in: Components > Locality Update > Status ⬤ Components > Notifications > Notification Renderers
 #: components/LocalityUpdate/Status.tsx:342
