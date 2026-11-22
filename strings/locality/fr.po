@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-11-22 18:25+0000\n"
-"Last-Translator: Heather <heathercole@users.noreply.hosted.weblate.org>\n"
+"Last-Translator: Maxime GRIVEAU <mgriveau@users.noreply.hosted.weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "locality/fr/>\n"
 "Language: fr\n"
@@ -257,7 +257,8 @@ msgstr "Mise à jour des localités réussie"
 #: components/LocalityUpdate/Status.tsx:495
 #: components/LocalityUpdate/Status.tsx:533
 msgid "localityUpdateWentWrong"
-msgstr "Une erreur s'est produite lors du processus de mise à jour des localités."
+msgstr ""
+"Une erreur s'est produite lors du processus de mise à jour des localités."
 
 #. 🟥The file name which is used when Parse Errors are exported. The .csv file extension is appended to the end of this string. Used in: Components > Locality Update > Status
 #: components/LocalityUpdate/Status.tsx:392
@@ -286,8 +287,8 @@ msgstr "Aucune localité avec guid : '{guid:string}'"
 #: components/LocalityUpdate/utils.ts:59
 msgid "multipleLocalitiesWithGuid"
 msgstr ""
-"Plusieurs localités ont été trouvées avec l'identifiant GUID : "
-"{guid:string}. Identifiants des localités : {localityIds: string}"
+"Plusieurs localités ont été trouvées avec l'identifiant GUID : {guid:string}"
+". Identifiants des localités : {localityIds: string}"
 
 #. Used in: Components > Locality Update > Status
 #: components/LocalityUpdate/Status.tsx:246
@@ -301,8 +302,8 @@ msgstr ""
 #: components/LocalityUpdate/Status.tsx:297
 msgid "localityUploadedDescription"
 msgstr ""
-"Le nombre suivant d'enregistrements {localityTableLabel: string} a été mis "
-"à jour et d'enregistrements {geoCoordDetailTableLabel: string} a été créé :"
+"Le nombre suivant d'enregistrements {localityTableLabel: string} a été mis à "
+"jour et d'enregistrements {geoCoordDetailTableLabel: string} a été créé :"
 
 #. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:70
