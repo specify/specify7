@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-11-22 18:27+0000\n"
+"PO-Revision-Date: 2026-11-22 19:52+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Croatian <https://hosted.weblate.org/projects/specify-7/"
 "schema/hr/>\n"
@@ -15,79 +15,111 @@ msgstr ""
 
 #. Used in: Components > Schema Config > Layout
 #: components/SchemaConfig/Layout.tsx:171
+#, fuzzy
 msgid "importSchema"
-msgstr ""
+msgstr "Uvoz {schemaConfig:string}"
 
 #. Used in: Components > Schema Config > Layout
 #: components/SchemaConfig/Layout.tsx:177
+#, fuzzy
 msgid "importSchemaWarning"
 msgstr ""
+"Uvoz {schemaConfig:string} će prebrisati trenutni. Ova se radnja ne može "
+"poništiti."
 
 #. Used in: Components > Schema Config > Layout
 #: components/SchemaConfig/Layout.tsx:181
+#, fuzzy
 msgid "importSchemaLanguageWarning"
 msgstr ""
+"Izvezeni jezik sheme mora odgovarati jeziku koji se trenutno konfigurira."
 
 #. Used in: Components > Schema Config > Layout
 #: components/SchemaConfig/Layout.tsx:184
+#, fuzzy
 msgid "importSchemaBackupPrompt"
 msgstr ""
+"Prije uvoza toplo preporučujemo preuzimanje sigurnosne kopije trenutne "
+"verzije {schemaConfig:string}."
 
 #. Used in: Components > Schema Config > Layout
 #: components/SchemaConfig/Layout.tsx:182
+#, fuzzy
 msgid "importSchemaLimitations"
 msgstr ""
+"Ovaj uvoz neće dodijeliti liste za odabir, formate polja ili web-veze osim "
+"ako već ne postoje."
 
 #. Used in: Components > Schema Config > Layout
 #: components/SchemaConfig/Layout.tsx:159
+#, fuzzy
 msgid "downloadSchemaBackup"
-msgstr ""
+msgstr "Izvoz {schemaConfig:string}"
 
 #. Used in: Components > Schema Config > Layout
 #: components/SchemaConfig/Layout.tsx:166
+#, fuzzy
 msgid "importSchemaContinue"
-msgstr ""
+msgstr "Nastavi uvoz"
 
 #. Used in: Components > Schema Config > Layout
 #: components/SchemaConfig/Layout.tsx:105
+#, fuzzy
 msgid "importSchemaError"
 msgstr ""
+"Izvoz {schemaConfig:string} nije valjan ili je izvezen za drugi jezik i ne "
+"može se uvesti."
 
 #. Used in: Components > Schema Config > Layout
 #: components/SchemaConfig/Layout.tsx:114
+#, fuzzy
 msgid "importSchemaErrorBadRequest"
 msgstr ""
+"Izvoz {schemaConfig:string} nije valjan ili je izvezen za drugi jezik i ne "
+"može se uvesti."
 
 #. Used in: Components > Schema Config > Layout
 #: components/SchemaConfig/Layout.tsx:110
+#, fuzzy
 msgid "importSchemaErrorTimeout"
 msgstr ""
+"Isteklo je vrijeme za mrežni zahtjev. Navedite hoće li i dalje uvoziti izvoz "
+"{schemaConfig:string} u pozadini, a možda i neće. Molimo provjerite kasnije "
+"jesu li vaše promjene primijenjene."
 
 #. Used in: Components > Schema Config > Layout
 #: components/SchemaConfig/Layout.tsx:117
+#, fuzzy
 msgid "importSchemaErrorInternalError"
 msgstr ""
+"Došlo je do pogreške, molimo vas da obrišete predmemoriju i pokušate ponovno."
 
 #. Used in: Components > Schema Config > Layout
 #: components/SchemaConfig/Layout.tsx:196
 #: components/SchemaConfig/Layout.tsx:216
+#, fuzzy
 msgid "importSchemaSuccess"
-msgstr ""
+msgstr "{schemaConfig:string} uspješno uvezeno"
 
 #. Used in: Components > Schema Config > Layout
 #: components/SchemaConfig/Layout.tsx:202
+#, fuzzy
 msgid "importSchemaSuccessDescription"
-msgstr ""
+msgstr "Uvezeni {schemaConfig:string} je spremljen."
 
 #. Used in: Components > Schema Config > Layout
 #: components/SchemaConfig/Layout.tsx:221
+#, fuzzy
 msgid "importSchemaRefreshError"
 msgstr ""
+"Uvoz je uspio, ali stranica se nije mogla automatski osvježiti. Ponovno "
+"učitajte stranicu da biste vidjeli uvezene promjene."
 
 #. Used in: Components > Schema Config > Layout
 #: components/SchemaConfig/Layout.tsx:212
+#, fuzzy
 msgid "reloadSchemaConfig"
-msgstr ""
+msgstr "Ponovno učitavanje stranice"
 
 #. Used in: Components > Schema Config > Table ⬤ Components > Schema Viewer > Schema To Tsv ⬤ Components > Security > Preview Tables ⬤ Components > Security > Registry ⬤ Components > Web Links > Element
 #: components/SchemaConfig/Table.tsx:51
@@ -579,5 +611,6 @@ msgstr "Vidljivo"
 
 #. Used in: Components > Schema Config > Tables
 #: components/SchemaConfig/Tables.tsx:177
+#, fuzzy
 msgid "useTableCaptions"
-msgstr ""
+msgstr "Koristite natpise tablica"
