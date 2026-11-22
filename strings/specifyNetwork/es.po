@@ -2,8 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-11-22 18:26+0000\n"
-"Last-Translator: Manuel Sánchez Ruiz "
-"<cycloderes@users.noreply.hosted.weblate.org>\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "specifyNetwork/es/>\n"
 "Language: es\n"
@@ -48,7 +47,8 @@ msgstr "Especificar red no disponible"
 #: components/SpecifyNetwork/Overlay.tsx:152
 #, fuzzy
 msgid "brokerUnavailableDescription"
-msgstr "No se pudo conectar a la red especificada. Inténtelo de nuevo más tarde."
+msgstr ""
+"No se pudo conectar a la red especificada. Inténtelo de nuevo más tarde."
 
 #. Used in: Components > Specify Network > Table
 #: components/SpecifyNetwork/Table.tsx:54
