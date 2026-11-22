@@ -2,8 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-11-22 18:25+0000\n"
-"Last-Translator: Miguel Díaz de León "
-"<migueldlm1307@users.noreply.hosted.weblate.org>\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "locality/es/>\n"
 "Language: es\n"
@@ -199,16 +198,15 @@ msgstr "Se han encontrado errores en los encabezados de columna."
 #, fuzzy
 msgid "localityUpdateMissingHeader"
 msgstr ""
-"Las siguientes columnas son obligatorias pero faltan en el conjunto de "
-"datos."
+"Las siguientes columnas son obligatorias pero faltan en el conjunto de datos."
 
 #. Used in: Components > Locality Update > Index
 #: components/LocalityUpdate/index.tsx:161
 #, fuzzy
 msgid "localityUpdateUnrecognizedHeaders"
 msgstr ""
-"Las siguientes columnas del conjunto de datos no se reconocen y se "
-"ignorarán durante la importación."
+"Las siguientes columnas del conjunto de datos no se reconocen y se ignorarán "
+"durante la importación."
 
 #. Used in: Components > Locality Update > Index
 #: components/LocalityUpdate/index.tsx:169
@@ -333,7 +331,7 @@ msgstr ""
 #: components/Notifications/NotificationRenderers.tsx:70
 #, fuzzy
 msgid "localityUpdateStarted"
-msgstr "El proceso de actualización de localidad ha comenzado."
+msgstr "El proceso de actualización de localidades ha comenzado."
 
 #. Used in: Components > Locality Update > Status ⬤ Components > Notifications > Notification Renderers
 #: components/LocalityUpdate/Status.tsx:342
