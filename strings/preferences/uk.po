@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-11-22 18:25+0000\n"
+"PO-Revision-Date: 2026-11-22 19:51+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "preferences/uk/>\n"
@@ -14,8 +14,11 @@ msgstr ""
 
 #. Used in: Components > Keyboard Shortcuts > Conflicts
 #: components/KeyboardShortcuts/Conflicts.tsx:159
+#, fuzzy
 msgid "shortcutConflict"
 msgstr ""
+"Також призначено наступним діям. Лише одна дія може бути виконана, якщо вони "
+"доступні разом."
 
 #. Used in: Components > Preferences > Index ⬤ Components > Router > Routes
 #: components/Preferences/index.tsx:133
@@ -1267,63 +1270,77 @@ msgstr "Налаштування колекції"
 
 #. Used in: Components > Preferences > Global Definitions
 #: components/Preferences/GlobalDefinitions.tsx:59
+#, fuzzy
 msgid "globalAuditing"
-msgstr ""
+msgstr "Аудит"
 
 #. Used in: Components > Preferences > Global Definitions
 #: components/Preferences/GlobalDefinitions.tsx:62
+#, fuzzy
 msgid "enableAuditLog"
-msgstr ""
+msgstr "Увімкнути журнал аудиту"
 
 #. Used in: Components > Preferences > Global Definitions
 #: components/Preferences/GlobalDefinitions.tsx:63
+#, fuzzy
 msgid "enableAuditLogDescription"
-msgstr ""
+msgstr "Запис подій створення, видалення та зміни записів."
 
 #. Used in: Components > Preferences > Global Definitions
 #: components/Preferences/GlobalDefinitions.tsx:70
+#, fuzzy
 msgid "logFieldLevelChanges"
-msgstr ""
+msgstr "Запис змін на рівні поля"
 
 #. Used in: Components > Preferences > Global Definitions
 #: components/Preferences/GlobalDefinitions.tsx:71
+#, fuzzy
 msgid "logFieldLevelChangesDescription"
-msgstr ""
+msgstr "Записуйте зміни значень окремих полів у журналі аудиту."
 
 #. Used in: Components > Preferences > Global Definitions
 #: components/Preferences/GlobalDefinitions.tsx:80
+#, fuzzy
 msgid "formatting"
-msgstr ""
+msgstr "Форматування дати"
 
 #. Used in: Components > Preferences > Global Definitions
 #: components/Preferences/GlobalDefinitions.tsx:83
+#, fuzzy
 msgid "fullDateFormat"
-msgstr ""
+msgstr "Повний формат дати"
 
 #. Used in: Components > Preferences > Global Definitions
 #: components/Preferences/GlobalDefinitions.tsx:84
+#, fuzzy
 msgid "fullDateFormatDescription"
-msgstr ""
+msgstr "Формат, який використовується для відображення повних дат."
 
 #. Used in: Components > Preferences > Global Definitions
 #: components/Preferences/GlobalDefinitions.tsx:94
+#, fuzzy
 msgid "monthYearDateFormat"
-msgstr ""
+msgstr "Формат дати місяць/рік"
 
 #. Used in: Components > Preferences > Global Definitions
 #: components/Preferences/GlobalDefinitions.tsx:95
+#, fuzzy
 msgid "monthYearDateFormatDescription"
 msgstr ""
+"Формат, який використовується для відображення дат, що містять лише місяць і "
+"рік."
 
 #. Used in: Components > Preferences > Global Definitions
 #: components/Preferences/GlobalDefinitions.tsx:110
+#, fuzzy
 msgid "attachmentThumbnailSize"
-msgstr ""
+msgstr "Розмір мініатюри вкладеного файлу"
 
 #. Used in: Components > Preferences > Global Definitions
 #: components/Preferences/GlobalDefinitions.tsx:111
+#, fuzzy
 msgid "attachmentThumbnailSizeDescription"
-msgstr ""
+msgstr "Розмір у пікселях згенерованих мініатюр вкладень."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:589
@@ -1590,49 +1607,58 @@ msgstr ""
 
 #. 🟥Alt key on the keyboard. Used in: Components > Keyboard Shortcuts > Config
 #: components/KeyboardShortcuts/config.ts:54
+#, fuzzy
 msgid "alt"
-msgstr ""
+msgstr "Альтернативний"
 
 #. 🟥Option key on the macOS keyboard. Used in: Components > Keyboard Shortcuts > Config
 #: components/KeyboardShortcuts/config.ts:53
+#, fuzzy
 msgid "macOption"
-msgstr ""
+msgstr "⌥"
 
 #. 🟥Ctrl key on the keyboard. Used in: Components > Keyboard Shortcuts > Config
 #: components/KeyboardShortcuts/config.ts:58
+#, fuzzy
 msgid "ctrl"
-msgstr ""
+msgstr "Ctrl"
 
 #. 🟥Control key on the macOS keyboard. Used in: Components > Keyboard Shortcuts > Config
 #: components/KeyboardShortcuts/config.ts:57
+#, fuzzy
 msgid "macControl"
-msgstr ""
+msgstr "⌃"
 
 #. 🟥Meta/Command key on the macOS keyboard. Used in: Components > Keyboard Shortcuts > Config
 #: components/KeyboardShortcuts/config.ts:60
+#, fuzzy
 msgid "macMeta"
-msgstr ""
+msgstr "⌘"
 
 #. 🟥Shift key on the macOS keyboard. Used in: Components > Keyboard Shortcuts > Config
 #: components/KeyboardShortcuts/config.ts:63
+#, fuzzy
 msgid "macShift"
-msgstr ""
+msgstr "⇧"
 
 #. 🟥Shift key on the keyboard. Used in: Components > Keyboard Shortcuts > Config
 #: components/KeyboardShortcuts/config.ts:64
+#, fuzzy
 msgid "shift"
-msgstr ""
+msgstr "Зсув"
 
 #. Used in: Components > Keyboard Shortcuts > Shortcuts
 #: components/KeyboardShortcuts/Shortcuts.tsx:227
+#, fuzzy
 msgid "pressKeys"
-msgstr ""
+msgstr "Натисніть потрібну комбінацію клавіш..."
 
 #. Used in: Components > Keyboard Shortcuts > Shortcuts ⬤ Components > Keyboard Shortcuts > Url Shortcuts
 #: components/KeyboardShortcuts/Shortcuts.tsx:229
 #: components/KeyboardShortcuts/UrlShortcuts.tsx:133
+#, fuzzy
 msgid "noKeyAssigned"
-msgstr ""
+msgstr "Немає призначеного зв'язку клавіш"
 
 #. Used in: Components > Keyboard Shortcuts > Cheat Sheet ⬤ Keyboard Shortcuts > __tests__ > Cheat Sheet ⬤ Components > Preferences > Index
 #: components/KeyboardShortcuts/CheatSheet.tsx:88
@@ -1642,92 +1668,120 @@ msgstr ""
 #: components/KeyboardShortcuts/__tests__/CheatSheet.test.tsx:44
 #: components/Preferences/index.tsx:328
 #: components/Preferences/index.tsx:375
+#, fuzzy
 msgid "keyboardShortcuts"
-msgstr ""
+msgstr "Комбінації клавіш"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:711
+#, fuzzy
 msgid "shortcutsEnabled"
-msgstr ""
+msgstr "Увімкнути комбінації клавіш"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:712
+#, fuzzy
 msgid "shortcutsEnabledDescription"
 msgstr ""
+"Якщо ввімкнено, комбінації клавіш можна використовувати для виконання різних "
+"дій у Specify. Ви можете натиснути та утримувати клавішу <key>Ctrl</key> "
+"(або клавішу <key>⌘</key> на Mac), щоб переглянути список доступних "
+"комбінацій клавіш. Якщо вимкнено, усі комбінації клавіш ігноруються."
 
 #. Used in: Components > Preferences > Index
 #: components/Preferences/index.tsx:305
+#, fuzzy
 msgid "navigationAndTools"
-msgstr ""
+msgstr "Навігація та інструменти користувача"
 
 #. Used in: Components > Keyboard Shortcuts > Url Shortcuts
 #: components/KeyboardShortcuts/UrlShortcuts.tsx:227
+#, fuzzy
 msgid "navigationShortcutsDescription"
 msgstr ""
+"Відкрийте відповідне меню навігації або сторінку, так само як і клацання її "
+"значка на панелі навігації."
 
 #. Used in: Components > Keyboard Shortcuts > Url Shortcuts
 #: components/KeyboardShortcuts/UrlShortcuts.tsx:240
+#, fuzzy
 msgid "userToolShortcutsDescription"
-msgstr ""
+msgstr "Виконайте відповідну дію з меню «Інструменти користувача»."
 
 #. Used in: Components > Preferences > Index
 #: components/Preferences/index.tsx:262
+#, fuzzy
 msgid "formActionsDescription"
-msgstr ""
+msgstr "Скорочення для дій у звичайних формах введення даних."
 
 #. Used in: Components > Preferences > Index
 #: components/Preferences/index.tsx:268
+#, fuzzy
 msgid "dialogActionsDescription"
 msgstr ""
+"Скорочення для дій, доступних у діалогових вікнах, таких як закриття або "
+"збереження."
 
 #. Used in: Components > Preferences > Index
 #: components/Preferences/index.tsx:274
+#, fuzzy
 msgid "treeActionsDescription"
-msgstr ""
+msgstr "Скорочення для дій у редакторі дерев."
 
 #. Used in: Components > Preferences > Index
 #: components/Preferences/index.tsx:281
+#, fuzzy
 msgid "queryBuilderActionsDescription"
-msgstr ""
+msgstr "Скорочення для дій у конструкторі запитів."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:965
+#, fuzzy
 msgid "openRelatedRecordInNewTab"
-msgstr ""
+msgstr "Відкрити пов'язаний запис у новій вкладці"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:948
+#, fuzzy
 msgid "openFormMeta"
-msgstr ""
+msgstr "Відкрити метаформу"
 
 #. Used in: Components > Keyboard Shortcuts > Url Shortcuts
 #: components/KeyboardShortcuts/UrlShortcuts.tsx:71
 #: components/KeyboardShortcuts/UrlShortcuts.tsx:178
+#, fuzzy
 msgid "urlShortcuts"
-msgstr ""
+msgstr "Сполучення клавіш для URL-адрес"
 
 #. Used in: Components > Keyboard Shortcuts > Url Shortcuts
 #: components/KeyboardShortcuts/UrlShortcuts.tsx:74
+#, fuzzy
 msgid "urlShortcutsDescription"
 msgstr ""
+"Скорочення для відкриття користувацьких сторінок або інших URL-адрес з будь-"
+"якого місця в Specify."
 
 #. Used in: Components > Keyboard Shortcuts > Url Shortcuts
 #: components/KeyboardShortcuts/UrlShortcuts.tsx:187
+#, fuzzy
 msgid "pages"
-msgstr ""
+msgstr "Сторінки"
 
 #. Used in: Components > Keyboard Shortcuts > Url Shortcuts
 #: components/KeyboardShortcuts/UrlShortcuts.tsx:193
+#, fuzzy
 msgid "overlays"
-msgstr ""
+msgstr "Накладання"
 
 #. Used in: Components > Keyboard Shortcuts > Url Shortcuts
 #: components/KeyboardShortcuts/UrlShortcuts.tsx:199
+#, fuzzy
 msgid "customPages"
-msgstr ""
+msgstr "Користувацькі сторінки"
 
 #. Used in: Components > Keyboard Shortcuts > Url Shortcuts
 #: components/KeyboardShortcuts/UrlShortcuts.tsx:534
 #: components/KeyboardShortcuts/UrlShortcuts.tsx:536
+#, fuzzy
 msgid "relativeOrAbsoluteUrl"
-msgstr ""
+msgstr "Відносна або абсолютна URL-адреса"
