@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-11-22 18:27+0000\n"
+"PO-Revision-Date: 2026-11-22 19:52+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/user/pt_BR/>\n"
@@ -64,18 +64,21 @@ msgstr "Alterar a senha"
 
 #. Used in: Components > Security > Collection
 #: components/Security/Collection.tsx:171
+#, fuzzy
 msgid "presenceActive"
-msgstr ""
+msgstr "Ativo"
 
 #. Used in: Components > Security > Collection
 #: components/Security/Collection.tsx:172
+#, fuzzy
 msgid "presenceInactive"
-msgstr ""
+msgstr "Inativo"
 
 #. Used in: Components > Security > Collection
 #: components/Security/Collection.tsx:173
+#, fuzzy
 msgid "presenceOffline"
-msgstr ""
+msgstr "Offline"
 
 #. Used in: Components > Password Change > Index
 #: components/PasswordChange/index.tsx:65
