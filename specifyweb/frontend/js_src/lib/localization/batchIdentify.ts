@@ -68,7 +68,7 @@ export const batchIdentifyText = createDictionary({
     'hr-hr': 'Svi zapisi su identificirani s navedenim taksonom.',
     nb: 'Alle poster ble identifisert til det angitte taksonet.',
     'pt-br': 'Todos os registros foram identificados até o táxon especificado.',
-    'ru-ru': 'Все записи были идентифицированы по указанному таксону.',
+    'ru-ru': 'Все записи были идентифицированы до указанного таксона.',
     'uk-ua': 'Усі записи були ідентифіковані до зазначеного таксону.',
   },
   updatedRecordSet: {

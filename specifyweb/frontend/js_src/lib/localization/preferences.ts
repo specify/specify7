@@ -308,7 +308,7 @@ export const preferencesText = createDictionary({
     'pt-br':
       'Você pode especificar qualquer fonte que esteja instalada no seu computador, mesmo que ela não esteja na lista. Também é possível usar uma lista de fontes separadas por vírgulas, em que cada fonte subsequente será usada caso a anterior não esteja disponível.',
     'hr-hr':
-      'Možete odrediti bilo koji font koji se nalazi na vašem računalu, čak i ako nije na popisu. Također je podržan popis fontova odvojen zarezima, gdje će se svaki sljedeći font koristiti ako prethodni nije dostupan.',
+      'Možete odrediti bilo koji font koji se nalazi na vašem računalu, čak i ako nije na popisu. Podržan je i popis fontova odvojen zarezima, gdje će se svaki sljedeći font koristiti ako prethodni nije dostupan.',
     nb: 'Du kan angi hvilken som helst skrift-font som finnes på datamaskinen din, selv om den ikke er i listen. En kommaseparert liste over skrift-fonter støttes også, der hver påfølgende skrift-font vil bli brukt hvis den forrige ikke er tilgjengelig.',
   },
   defaultFont: {
@@ -505,7 +505,7 @@ export const preferencesText = createDictionary({
     'fr-fr': 'Toujours invité à choisir la collection',
     'uk-ua': 'Завжди пропонувати вибрати колекцію',
     'de-ch': 'Immer zur Auswahl der Sammlung auffordern',
-    'pt-br': 'Sempre solicitando a seleção da coleção',
+    'pt-br': 'Sempre solicitando a escolha da coleção',
     'hr-hr': 'Uvijek se traži odabir kolekcije',
     nb: 'Alltid oppfordre til å velge samling',
   },
@@ -538,7 +538,7 @@ export const preferencesText = createDictionary({
     'fr-fr': 'Couleur des synonymes',
     'uk-ua': 'Синонім кольору',
     'de-ch': 'Synonymfarbe',
-    'pt-br': 'Cor (sinônimo)',
+    'pt-br': 'Cor (Sinônimo)',
     'hr-hr': 'Sinonimna boja',
     nb: 'Synonymfarge',
   },
@@ -689,7 +689,7 @@ export const preferencesText = createDictionary({
   startsWithInsensitive: {
     'en-us': 'Starts With (case-insensitive)',
     'ru-ru': 'Начинается с (регистр не учитывается)',
-    'es-es': 'Comienza con (sin distinción entre mayúsculas y minúsculas)',
+    'es-es': 'Comienza con (sin distinción de mayúsculas y minúsculas)',
     'fr-fr': 'Commence par (insensible à la casse)',
     'uk-ua': 'Починається з (без урахування регістру)',
     'de-ch': 'Beginnt mit (Groß-/Kleinschreibung wird nicht beachtet)',
@@ -825,7 +825,7 @@ export const preferencesText = createDictionary({
     'uk-ua': 'Виділіть збіг підрядка',
     'de-ch': 'Übereinstimmende Teilzeichenkette hervorheben',
     'pt-br': 'Destacar a substring correspondente',
-    'hr-hr': 'Označi podudarni podniz',
+    'hr-hr': 'Označi odgovarajući podniz',
     nb: 'Marker matchede delstreng',
   },
   languageDescription: {
@@ -871,7 +871,7 @@ export const preferencesText = createDictionary({
     'en-us': 'Scale interface to match font size.',
     'ru-ru': 'Масштабируйте интерфейс в соответствии с размером шрифта.',
     'es-es':
-      'Ajusta el tamaño de la interfaz para que coincida con el tamaño de la fuente.',
+      'Ajustar el tamaño de la interfaz para que coincida con el tamaño de la fuente.',
     'fr-fr': "Adapter l'interface à la taille de la police.",
     'uk-ua': 'Масштабувати інтерфейс відповідно до розміру шрифту.',
     'de-ch': 'Skalieren Sie die Benutzeroberfläche an die Schriftgröße an.',
@@ -935,7 +935,7 @@ export const preferencesText = createDictionary({
     'en-us': 'Show counts for synonymized nodes',
     'de-ch': 'Anzahl der synonymisierten Knoten anzeigen',
     'hr-hr': 'Prikaži broj sinonimiziranih čvorova',
-    'pt-br': 'Exibir contagens para nós sinonimizados',
+    'pt-br': 'Mostrar a contagem de nós sinonimizados',
     'es-es': 'Mostrar recuentos de nodos sinonimizados',
     'fr-fr': 'Afficher le nombre de nœuds associés à des synonymes',
     nb: 'Vis antall for synonymiserte noder',
@@ -1589,7 +1589,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Закрыть всплывающее окно при внешнем клике',
     'es-es': 'Cerrar ventana emergente al hacer clic fuera',
     'fr-fr': "Fermer la pop-up lors d'un clic extérieur",
-    'uk-ua': 'Закрити спливаюче вікно при зовнішньому кліку',
+    'uk-ua': 'Закривати спливаюче вікно при зовнішньому кліку',
     'de-ch': 'Pop-up bei Klick von außen schließen',
     'pt-br': 'Fechar janela pop-up ao clicar fora dela',
     'hr-hr': 'Zatvori skočni prozor vanjskim klikom',
@@ -1740,7 +1740,7 @@ export const preferencesText = createDictionary({
   },
   limitMaxFieldWidth: {
     'en-us': 'Limit max field width',
-    'ru-ru': 'Ограничение максимальной ширины поля',
+    'ru-ru': 'Ограничить максимальную ширину поля',
     'es-es': 'Limitar el ancho máximo del campo',
     'fr-fr': 'Limiter la largeur maximale du champ',
     'uk-ua': 'Обмеження максимальної ширини поля',
@@ -1757,7 +1757,7 @@ export const preferencesText = createDictionary({
     'uk-ua': 'Стиснути результати запиту',
     'de-ch': 'Suchergebnisse zusammenfassen',
     'pt-br': 'Condensar resultados da consulta',
-    'hr-hr': 'Sažeti rezultati upita',
+    'hr-hr': 'Sažetak rezultata upita',
     nb: 'Kondenser søkeresultatene',
   },
   blurContentBehindDialog: {
@@ -1847,7 +1847,7 @@ export const preferencesText = createDictionary({
   autoScrollTree: {
     'en-us': 'Auto scroll tree to focused node',
     'ru-ru': 'Автоматическая прокрутка дерева к сфокусированному узлу',
-    'es-es': 'Árbol de desplazamiento automático al nodo enfocado',
+    'es-es': 'Desplazamiento automático del árbol al nodo enfocado',
     'fr-fr': "Défilement automatique dans l'arbre vers le nœud ciblé",
     'uk-ua': 'Автоматичне прокручування дерева до фокусованого вузла',
     'de-ch': 'Automatisches Scrollen des Baums zum fokussierten Knoten',
@@ -1959,7 +1959,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Búsqueda que distingue entre mayúsculas y minúsculas',
     'fr-fr': 'Recherche sensible à la casse',
     'uk-ua': 'Пошук з урахуванням регістру',
-    'de-ch': 'Suche mit Berücksichtigung der Groß- und Kleinschreibung',
+    'de-ch': 'Suche mit Berücksichtigung der Groß-/Kleinschreibung',
     'ru-ru': 'Поиск с учетом регистра',
     'pt-br': 'Pesquisa que diferencia maiúsculas de minúsculas',
     'hr-hr': 'Pretraživanje koje razlikuje velika i mala slova',
@@ -2394,7 +2394,7 @@ export const preferencesText = createDictionary({
     'uk-ua': "Запам'ятайте розміри діалогових вікон",
     'de-ch': 'Dialogfenstergrößen merken',
     'pt-br': 'Lembre-se dos tamanhos das janelas de diálogo.',
-    'hr-hr': 'Zapamti veličine dijaloških prozora',
+    'hr-hr': 'Zapamtite veličine dijaloških prozora',
     nb: 'Husk størrelsen på dialogvinduer',
   },
   rememberDialogPositions: {
@@ -2790,7 +2790,7 @@ export const preferencesText = createDictionary({
     'fr-fr':
       "Activer l'héritage de {catalogNumberFieldName: string} pour les éléments frères de {collectionObjectGroupTableName: string}",
     'pt-br':
-      'Habilitar herança de {catalogNumberFieldName: string} para itens irmãos de {collectionObjectGroupTableName: string}',
+      'Habilitar herança de {catalogNumberFieldName: string} para os elementos irmãos de {collectionObjectGroupTableName: string}',
     'ru-ru':
       'Включить наследование {catalogNumberFieldName: string} для соседних элементов {collectionObjectGroupTableName: string}',
     'uk-ua':

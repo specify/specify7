@@ -884,7 +884,7 @@ export const schemaText = createDictionary({
     'uk-ua': 'Specify 7 моделей даних',
     'de-ch': 'Specify 7 Datenmodell',
     'pt-br': 'Especifique 7 modelos de dados',
-    'hr-hr': 'Navedite 7 podatkovnih modela',
+    'hr-hr': 'Navedite 7 modela podataka',
     nb: 'Specify 7 datamodell',
   },
   hidden: {
