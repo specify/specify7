@@ -2,8 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-11-22 18:26+0000\n"
-"Last-Translator: Максим Горпиніч "
-"<maksimgorpinic4@users.noreply.hosted.weblate.org>\n"
+"Last-Translator: Ardev Prisec <ard_pris@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/user/"
 "uk/>\n"
 "Language: uk\n"
@@ -135,9 +134,9 @@ msgstr "Увійти за допомогою Вказати обліковий �
 msgid "unknownOicUser"
 msgstr ""
 "Наразі з вашим обліковим записом {providerName:string} не пов’язано жодного "
-"користувача типу «Вказати». Якщо у вас є ім’я користувача та пароль типу "
-"«Вказати», ви можете ввести їх нижче, щоб пов’язати цього користувача з "
-"вашим обліковим записом {providerName:string} для майбутніх входів."
+"користувача типу «Вказати». Якщо у вас є ім’я користувача та пароль типу «"
+"Вказати», ви можете ввести їх нижче, щоб пов’язати цього користувача з вашим "
+"обліковим записом {providerName:string} для майбутніх входів."
 
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Master Key
 #: components/Header/userToolDefinitions.ts:117
@@ -288,7 +287,8 @@ msgstr "Облікові записи користувачів"
 #. Used in: Components > Security > Institution
 #: components/Security/Institution.tsx:140
 msgid "institutionUsers"
-msgstr "Облікові записи користувачів, визначені в цьому {institutionTable:string}"
+msgstr ""
+"Облікові записи користувачів, визначені в цьому {institutionTable:string}"
 
 #. Used in: Components > Security > Collection
 #: components/Security/Collection.tsx:154
@@ -370,7 +370,8 @@ msgstr "Політики дозволів користувачів"
 #. Used in: Components > Security > User
 #: components/Security/User.tsx:396
 msgid "customUserPolices"
-msgstr "Політики на рівні користувацьких колекцій (стосуються лише цієї колекції)"
+msgstr ""
+"Політики на рівні користувацьких колекцій (стосуються лише цієї колекції)"
 
 #. Used in: Components > Security > Role
 #: components/Security/Role.tsx:117
@@ -586,7 +587,8 @@ msgstr "Користувачів не буде видалено, але вони
 #. Used in: Components > Security > User
 #: components/Security/User.tsx:312
 msgid "institutionPolicies"
-msgstr "Спеціальні правила на рівні установи (стосуються всіх призначених колекцій)"
+msgstr ""
+"Спеціальні правила на рівні установи (стосуються всіх призначених колекцій)"
 
 #. Used in: Components > Security > User
 #: components/Security/User.tsx:685
