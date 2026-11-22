@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-11-22 18:25+0000\n"
-"Last-Translator: Maxime GRIVEAU <mgriveau@users.noreply.hosted.weblate.org>\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "preferences/fr/>\n"
 "Language: fr\n"
@@ -707,8 +707,8 @@ msgstr "Direction du mouvement lorsque la touche <key>Entrer</key> est enfoncée
 #, fuzzy
 msgid "enterMoveDirectionDescription"
 msgstr ""
-"Vous pouvez vous déplacer dans la direction opposée en appuyant sur "
-"<key>Shift</key>+<key>Entrée</key>."
+"Vous pouvez vous déplacer dans la direction opposée en appuyant sur <key>"
+"Shift</key>+<key>Entrée</key>."
 
 #. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
 #: components/Preferences/CollectionDefinitions.tsx:34
