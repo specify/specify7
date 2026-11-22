@@ -2,8 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-11-22 18:26+0000\n"
-"Last-Translator: Philippe Verley "
-"<philippeverley@users.noreply.hosted.weblate.org>\n"
+"Last-Translator: Nathan <nathanbnm@users.noreply.hosted.weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/main/"
 "fr/>\n"
 "Language: fr\n"
@@ -77,9 +76,9 @@ msgstr ""
 #: components/Errors/ErrorDialog.tsx:39
 msgid "errorResolutionDescription"
 msgstr ""
-"Si ce problème persiste, veuillez contacter votre support informatique. "
-"S'il s'agit d'une base de données Specify Cloud, veuillez télécharger le "
-"message d'erreur et l'envoyer à <email />."
+"Si ce problème persiste, veuillez contacter votre support informatique. S'il "
+"s'agit d'une base de données Specify Cloud, veuillez télécharger le message "
+"d'erreur et l'envoyer à <email />."
 
 #. 🟥Careful with the <xml> tags when localizing. Used in: Components > Errors > Error Dialog
 #: components/Errors/ErrorDialog.tsx:54
@@ -119,7 +118,8 @@ msgstr "Quitter"
 #. Used in: Components > Core > Version Mismatch
 #: components/Core/VersionMismatch.tsx:30
 msgid "versionMismatch"
-msgstr "La version de Specify ne correspond pas à la version de la base de données"
+msgstr ""
+"La version de Specify ne correspond pas à la version de la base de données"
 
 #. Used in: Components > Core > Version Mismatch
 #: components/Core/VersionMismatch.tsx:34
