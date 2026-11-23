@@ -17,7 +17,7 @@ import { CreateRecordSet } from '../CreateRecordSet';
 import { parseQueryFields, queryFieldsToFieldSpecs } from '../helpers';
 import { QueryResults } from '../Results';
 import { QueryResultsTable } from '../ResultsTable';
-import { QueryToForms } from '../ToForms';
+import { SelectedQueryForms } from '../SelectedQueryForms';
 
 requireContext();
 
@@ -133,7 +133,7 @@ test.each([{ selection: [] }, { selection: [91] }])(
   'Browse in Forms passes results and selection $selection to the form browser',
   async ({ selection }) => {
     const { user } = mount(
-      <QueryToForms
+      <SelectedQueryForms
         table={tables.Agent}
         results={[[17], [91]]}
         selectedRows={new Set(selection)}
@@ -161,7 +161,7 @@ test.each([{ selection: [] }, { selection: [91] }])(
 
 test('Browse in Forms cannot open empty results', async () => {
   const { user } = mount(
-    <QueryToForms
+    <SelectedQueryForms
       table={tables.Agent}
       results={[]}
       selectedRows={new Set()}
