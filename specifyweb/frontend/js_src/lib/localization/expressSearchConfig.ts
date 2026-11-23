@@ -380,7 +380,7 @@ export const expressSearchConfigText = createDictionary({
     'en-us':
       'Taxa linked to geography records through collection object determinations and collecting event localities.',
     'de-ch':
-      'Taxa, die über die Bestimmung von Sammelobjekten und Sammelorten mit geographischen Aufzeichnungen verknüpft sind.',
+      'Taxa, die über die Bestimmung von Sammlungsobjekten und Sammelorten mit geographischen Aufzeichnungen verknüpft sind.',
     'es-es':
       'Taxones vinculados a registros geográficos mediante la determinación de objetos de colección y localidades de eventos de recolección.',
     'fr-fr':
@@ -487,7 +487,7 @@ export const expressSearchConfigText = createDictionary({
   },
   OtherSynsCollObjs: {
     'en-us': 'Collection Object Taxon (all synonyms)',
-    'de-ch': 'Sammlungsobjekt-Taxon (alle Synonyme)',
+    'de-ch': 'Sammlungsobjekt Taxon (alle Synonyme)',
     'es-es': 'Taxonomía de objetos de colección (todos los sinónimos)',
     'fr-fr': 'Objets et leurs taxons (tous les synonymes)',
     'hr-hr': 'Takson objekta zbirke (svi sinonimi)',
@@ -803,7 +803,7 @@ export const expressSearchConfigText = createDictionary({
     'fr-fr': 'Chronostratigraphie des objets',
     'hr-hr': 'Kronostratigrafija zbirke objekata',
     nb: 'Kronostratigrafi for samlingsobjekt',
-    'pt-br': 'Cronoestratigrafia de objetos da coleção',
+    'pt-br': 'Cronoestratigrafia de objetos de coleção',
     'ru-ru': 'Коллекция «Хроностратиграфия»',
     'uk-ua': "Хроностратиграфія колекційних об'єктів",
   },
@@ -822,7 +822,7 @@ export const expressSearchConfigText = createDictionary({
     'pt-br':
       'Períodos geológicos com objetos de coleção conectados por contextos cronoestratigráficos.',
     'ru-ru':
-      'Геологические временные периоды, объекты коллекции которых связаны хроностратиграфическим контекстом.',
+      'Геологические периоды времени, объекты коллекции которых связаны хроностратиграфическим контекстом.',
     'uk-ua':
       "Геологічні періоди часу з об'єктами колекції, пов'язаними через хроностратиграфічні контексти.",
   },
@@ -1021,8 +1021,7 @@ export const expressSearchConfigText = createDictionary({
   },
   LoanCO_desc: {
     'en-us': 'Loans with the collection objects on loan preparations.',
-    'de-ch':
-      'Leihgaben mit den Sammlungsgegenständen auf Leihvorbereitungsbasis.',
+    'de-ch': 'Leihgaben mit Sammlungsgegenständen auf Leihvorbereitungsbasis.',
     'es-es':
       'Préstamos con los objetos de la colección en preparación de préstamos.',
     'fr-fr': 'Prêts associés aux objets et à leurs préparations',
@@ -1184,7 +1183,7 @@ export const expressSearchConfigText = createDictionary({
     nb: 'Prosjekter og deres tildelte agenter.',
     'pt-br': 'Projetos e seus respectivos agentes designados.',
     'ru-ru': 'Проекты и назначенные им агенты.',
-    'uk-ua': 'Проекти та їхні призначені агенти.',
+    'uk-ua': 'Проекти та призначені їм агенти.',
   },
   RepoAgreeAgent: {
     'en-us': 'Agent Repository Agreement',
@@ -1202,7 +1201,7 @@ export const expressSearchConfigText = createDictionary({
     'de-ch': 'Repository-Vereinbarungen und ihre Ursprungsagenten.',
     'es-es': 'Acuerdos de depósito y sus agentes originadores.',
     'fr-fr': 'Accords de dépôt et leurs agents initiateurs.',
-    'hr-hr': 'Ugovori o repozitoriji i njihovi izvorni agenti.',
+    'hr-hr': 'Ugovori o repozitorijumu i njihovi izvorni agenti.',
     nb: 'Depot avtaler og deres opprinnnelige agenter.',
     'pt-br': 'Acordos de repositório e seus agentes originadores.',
     'ru-ru': 'Соглашения о хранении и их инициаторы.',
@@ -1250,7 +1249,7 @@ export const expressSearchConfigText = createDictionary({
       'Objets de collection et leurs fiches taxonomiques de détermination.',
     'hr-hr': 'Zbirni objekti i njihovi taksonomski zapisi o determinaciji.',
     nb: 'Samlingsobjekter og deres bestemmelses-taksonposter.',
-    'pt-br': 'Objetos da coleção e seus registros taxonômicos de determinação.',
+    'pt-br': 'Objetos de coleção e seus registros taxonômicos de determinação.',
     'ru-ru': 'Объекты коллекции и записи об их определении по таксонам.',
     'uk-ua': "Колекційні об'єкти та записи їх детермінації.",
   },
