@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-11-06 14:51+0000\n"
+"PO-Revision-Date: 2026-11-23 18:16+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/forms/pt_BR/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 2026.11.2.dev0\n"
+"X-Generator: Weblate 2026.12.dev0\n"
 
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Preferences > Index
 #: components/Preferences/UserDefinitions.tsx:847
@@ -193,8 +193,8 @@ msgstr "Adicionar ao {pickListTable:string}?"
 #, fuzzy
 msgid "addToPickListConfirmationDescription"
 msgstr ""
-"Adicionar o valor \"{value:string}\" ao {pickListTable:string} nomeado "
-"\"{pickListName:string}\"?"
+"Adicionar o valor \"{value:string}\" ao {pickListTable:string} nomeado \""
+"{pickListName:string}\"?"
 
 #. Used in: Components > Pick Lists > Index
 #: components/PickLists/index.tsx:252
