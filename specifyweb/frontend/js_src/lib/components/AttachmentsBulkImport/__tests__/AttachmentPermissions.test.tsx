@@ -71,3 +71,37 @@ test('hides rollback without permission', () => {
     'rollback'
   );
 });
+
+// [AttachmentsBulkImport] Show upload with permission
+test('shows upload with permission', () => {
+  mockHasPermission.mockReturnValue(true);
+
+  render(
+    <AttachmentUpload
+      baseTableName={undefined}
+      dataSet={dataSet}
+      onSync={jest.fn()}
+    />
+  );
+
+  expect(
+    screen.getByRole('button', { name: wbText.upload() })
+  ).toBeInTheDocument();
+});
+
+// [AttachmentsBulkImport] Show rollback with permission
+test('shows rollback with permission', () => {
+  mockHasPermission.mockReturnValue(true);
+
+  render(
+    <AttachmentRollback
+      baseTableName={undefined}
+      dataSet={dataSet}
+      onSync={jest.fn()}
+    />
+  );
+
+  expect(
+    screen.getByRole('button', { name: wbText.rollback() })
+  ).toBeInTheDocument();
+});
