@@ -21,8 +21,8 @@ msgstr ""
 msgid "dataViewsTitle"
 msgstr "Datenansichten"
 
-#: components/DataViews/index.tsx:320
-#: components/DataViews/index.tsx:343
+#: components/DataViews/index.tsx:321
+#: components/DataViews/index.tsx:344
 #. 🟥Used as a dialog header within the Data Views component. Used in: Components > Data Views > Index
 #, fuzzy
 msgid "tableRecords"

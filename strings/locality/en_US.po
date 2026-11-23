@@ -9,21 +9,22 @@ msgstr "Open Map"
 
 #: components/Leaflet/Map.tsx:108
 #: components/Preferences/UserDefinitions.tsx:2409
-#: components/QueryBuilder/ToMap.tsx:67
-#: components/QueryBuilder/ToMap.tsx:264
+#: components/QueryBuilder/ToMap.tsx:101
+#: components/QueryBuilder/ToMap.tsx:307
+#: components/QueryBuilder/__tests__/ToMap.test.tsx:58
 #: components/WbToolkit/WbLeafletMap.tsx:65
-#. Used in: Components > Leaflet > Map ⬤ Components > Preferences > User Definitions ⬤ Components > Query Builder > To Map ⬤ Components > Wb Toolkit > Wb Leaflet Map
+#. Used in: Components > Leaflet > Map ⬤ Components > Preferences > User Definitions ⬤ Components > Query Builder > To Map ⬤ Query Builder > __tests__ > To Map ⬤ Components > Wb Toolkit > Wb Leaflet Map
 msgid "geoMap"
 msgstr "GeoMap"
 
-#: components/QueryBuilder/ToMap.tsx:260
+#: components/QueryBuilder/ToMap.tsx:303
 #. 🟥Used in GeoMap header while records are still being fetched. Used in: Components > Query Builder > To Map
 msgid "queryMapSubset"
 msgstr ""
 "GeoMap - Plotted {plotted:number|formatted} of {total:number|formatted} "
 "records"
 
-#: components/QueryBuilder/ToMap.tsx:257
+#: components/QueryBuilder/ToMap.tsx:300
 #. Used in: Components > Query Builder > To Map
 msgid "queryMapAll"
 msgstr "GeoMap - Plotted {plotted:number|formatted} records"

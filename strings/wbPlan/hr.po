@@ -371,14 +371,14 @@ msgstr "AutoMapper"
 msgid "mappingEditor"
 msgstr "Istraživač karte"
 
-#: components/QueryBuilder/Components.tsx:145
+#: components/QueryBuilder/Components.tsx:148
 #: components/WbPlanView/MapperComponents.tsx:487
 #. Used in: Components > Query Builder > Components ⬤ Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "hideFieldMapper"
 msgstr "Sakrij alat za mapiranje polja"
 
-#: components/QueryBuilder/Components.tsx:146
+#: components/QueryBuilder/Components.tsx:149
 #: components/WbPlanView/MapperComponents.tsx:488
 #. Used in: Components > Query Builder > Components ⬤ Components > Wb Plan View > Mapper Components
 #, fuzzy

@@ -1,6 +1,29 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
+#: components/QueryBuilder/Results.tsx:563
+#. Used in: Components > Query Builder > Results
+msgid "selectionCount"
+msgstr "{selected:string} of {total:string} result rows selected"
+
+#: components/QueryBuilder/Results.tsx:589
+#. Used in: Components > Query Builder > Results
+msgid "selectionUnavailable"
+msgstr "Record selection is not available for grouped or count-only results."
+
+#: components/QueryBuilder/Results.tsx:825
+#. Used in: Components > Query Builder > Results
+msgid "selectionLimit"
+msgstr ""
+"At most {limit:number} individual selections or exclusions are supported. "
+"Refine the query to select a larger subset."
+
+#: components/QueryBuilder/ToMap.tsx:96
+#: components/QueryBuilder/__tests__/ToMap.test.tsx:65
+#. Used in: Components > Query Builder > To Map ⬤ Query Builder > __tests__ > To Map
+msgid "mapSelectionLimit"
+msgstr "Select at most {limit:number} result rows to display on the map."
+
 #: components/Preferences/UserDefinitions.tsx:1643
 #: components/Preferences/UserDefinitions.tsx:2019
 #: components/Preferences/UserDefinitions.tsx:2464
@@ -37,7 +60,7 @@ msgstr "Queries"
 msgid "queryBuilder"
 msgstr "Query Builder"
 
-#: components/QueryBuilder/Export.tsx:118
+#: components/QueryBuilder/Export.tsx:147
 #: components/QueryBuilder/index.tsx:130
 #: components/Router/OverlayRoutes.tsx:139
 #: components/Statistics/AddStatDialog.tsx:64
@@ -72,7 +95,7 @@ msgstr "Start Value"
 msgid "endValue"
 msgstr "End Value"
 
-#: components/QueryBuilder/Components.tsx:111
+#: components/QueryBuilder/Components.tsx:114
 #: components/QueryBuilder/Save.tsx:73
 #. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Save
 msgid "saveQuery"
@@ -88,12 +111,12 @@ msgstr "Save query as..."
 msgid "saveClonedQueryDescription"
 msgstr "The query will be saved with a new name leaving the current query unchanged."
 
-#: components/QueryBuilder/Components.tsx:172
+#: components/QueryBuilder/Components.tsx:175
 #. Used in: Components > Query Builder > Components
 msgid "queryDeleteIncomplete"
 msgstr "Query definition contains incomplete fields"
 
-#: components/QueryBuilder/Components.tsx:173
+#: components/QueryBuilder/Components.tsx:176
 #. Used in: Components > Query Builder > Components
 msgid "queryDeleteIncompleteDescription"
 msgstr ""
@@ -105,38 +128,38 @@ msgstr ""
 msgid "queryUnloadProtect"
 msgstr "The new or modified query definition has not been saved"
 
-#: components/QueryBuilder/Components.tsx:272
+#: components/QueryBuilder/Components.tsx:290
 #. 🟥Example: Creating a Record Set from Query. Used in: Components > Query Builder > Components
 msgid "recordSetToQuery"
 msgstr "Creating a {recordSetTable:string} from Query"
 
-#: components/QueryBuilder/Components.tsx:277
+#: components/QueryBuilder/Components.tsx:295
 #: components/QueryBuilder/CreateRecordSet.tsx:134
 #. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Create Record Set
 msgid "recordSetToQueryDescription"
 msgstr "Generating {recordSetTable:string}..."
 
-#: components/QueryBuilder/Components.tsx:294
+#: components/QueryBuilder/Components.tsx:312
 #. Used in: Components > Query Builder > Components
 msgid "recordSetCreated"
 msgstr "{recordSetTable:string} Created"
 
-#: components/QueryBuilder/Export.tsx:168
+#: components/QueryBuilder/Export.tsx:197
 #. Used in: Components > Query Builder > Export
 msgid "missingCoordinatesForKml"
 msgstr "Unable to export to KML"
 
-#: components/QueryBuilder/Export.tsx:171
+#: components/QueryBuilder/Export.tsx:200
 #. Used in: Components > Query Builder > Export
 msgid "missingCoordinatesForKmlDescription"
 msgstr "Please add latitude and longitude fields to the query."
 
-#: components/QueryBuilder/Export.tsx:160
+#: components/QueryBuilder/Export.tsx:189
 #. Used in: Components > Query Builder > Export
 msgid "queryExportStarted"
 msgstr "Export File Being Created"
 
-#: components/QueryBuilder/Export.tsx:163
+#: components/QueryBuilder/Export.tsx:192
 #. Used in: Components > Query Builder > Export
 msgid "queryExportStartedDescription"
 msgstr ""
@@ -189,38 +212,41 @@ msgstr "Series"
 msgid "searchSynonyms"
 msgstr "Search Synonyms"
 
-#: components/QueryBuilder/Export.tsx:201
+#: components/QueryBuilder/Export.tsx:234
 #: components/QueryBuilder/__tests__/Export.test.tsx:108
 #: components/QueryBuilder/__tests__/Export.test.tsx:130
-#. Used in: Components > Query Builder > Export ⬤ Query Builder > __tests__ > Export
+#: components/QueryBuilder/__tests__/SelectionActions.test.tsx:73
+#: components/QueryBuilder/__tests__/SelectionActions.test.tsx:97
+#. Used in: Components > Query Builder > Export ⬤ Query Builder > __tests__ > Export ⬤ Query Builder > __tests__ > Selection Actions
 msgid "createCsv"
 msgstr "Create CSV"
 
-#: components/QueryBuilder/Export.tsx:219
+#: components/QueryBuilder/Export.tsx:256
 #: components/QueryBuilder/__tests__/Export.test.tsx:145
 #: components/QueryBuilder/__tests__/Export.test.tsx:168
 #. Used in: Components > Query Builder > Export ⬤ Query Builder > __tests__ > Export
 msgid "createKml"
 msgstr "Create KML"
 
-#: components/QueryBuilder/Export.tsx:241
-#. Used in: Components > Query Builder > Export
+#: components/QueryBuilder/Export.tsx:282
+#: components/QueryBuilder/__tests__/SelectionActions.test.tsx:145
+#. Used in: Components > Query Builder > Export ⬤ Query Builder > __tests__ > Selection Actions
 msgid "exportToWebPortal"
 msgstr "Export to Web Portal"
 
-#: components/QueryBuilder/Export.tsx:177
+#: components/QueryBuilder/Export.tsx:206
 #. Used in: Components > Query Builder > Export
 msgid "webPortalExportDuplicateRecordIds"
 msgstr "Query contains duplicate record IDs"
 
-#: components/QueryBuilder/Export.tsx:180
+#: components/QueryBuilder/Export.tsx:209
 #. Used in: Components > Query Builder > Export
 msgid "webPortalExportDuplicateRecordIdsDescription"
 msgstr ""
 "Please modify the query so that it returns unique records for each returned "
 "row."
 
-#: components/QueryBuilder/Export.tsx:182
+#: components/QueryBuilder/Export.tsx:211
 #. Used in: Components > Query Builder > Export
 msgid "webPortalExportDuplicateHint"
 msgstr ""
@@ -228,16 +254,18 @@ msgstr ""
 "aggregator for preparations or collectors.)"
 
 #: components/BatchIdentify/index.tsx:769
-#: components/QueryBuilder/Components.tsx:236
+#: components/QueryBuilder/Components.tsx:254
 #: components/QueryBuilder/CreateRecordSet.tsx:68
 #: components/QueryBuilder/__tests__/MakeRecordSetButton.test.tsx:73
 #: components/QueryBuilder/__tests__/SearchResultsActions.test.tsx:72
 #: components/QueryBuilder/__tests__/SearchResultsActions.test.tsx:230
-#. Used in: Components > Batch Identify > Index ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Create Record Set ⬤ Query Builder > __tests__ > Make Record Set Button ⬤ Query Builder > __tests__ > Search Results Actions
+#: components/QueryBuilder/__tests__/SelectionActions.test.tsx:101
+#: components/QueryBuilder/__tests__/SelectionActions.test.tsx:114
+#. Used in: Components > Batch Identify > Index ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Create Record Set ⬤ Query Builder > __tests__ > Make Record Set Button ⬤ Query Builder > __tests__ > Search Results Actions ⬤ Query Builder > __tests__ > Selection Actions
 msgid "createRecordSet"
 msgstr "Create {recordSetTable:string}"
 
-#: components/QueryBuilder/Components.tsx:122
+#: components/QueryBuilder/Components.tsx:125
 #. Used in: Components > Query Builder > Components
 msgid "saveAs"
 msgstr "Save As"
@@ -431,19 +459,22 @@ msgstr "or"
 msgid "yes"
 msgstr "Yes"
 
-#: components/QueryBuilder/ResultsTable.tsx:231
-#: components/QueryBuilder/ToForms.tsx:63
-#. Used in: Components > Query Builder > Results Table ⬤ Components > Query Builder > To Forms
+#: components/QueryBuilder/ResultsTable.tsx:236
+#: components/QueryBuilder/SelectedQueryForms.tsx:116
+#. Used in: Components > Query Builder > Results Table ⬤ Components > Query Builder > Selected Query Forms
 msgid "queryResults"
 msgstr "Query Results"
 
 #: components/BatchIdentify/index.tsx:778
 #: components/LocalityUpdate/Status.tsx:371
 #: components/Preferences/UserDefinitions.tsx:2023
-#: components/QueryBuilder/ToForms.tsx:50
+#: components/QueryBuilder/SelectedQueryForms.tsx:157
 #: components/QueryBuilder/__tests__/SearchResultsActions.test.tsx:146
 #: components/QueryBuilder/__tests__/SearchResultsActions.test.tsx:174
-#. Used in: Components > Batch Identify > Index ⬤ Components > Locality Update > Status ⬤ Components > Preferences > User Definitions ⬤ Components > Query Builder > To Forms ⬤ Query Builder > __tests__ > Search Results Actions
+#: components/QueryBuilder/__tests__/SelectedQueryForms.test.tsx:62
+#: components/QueryBuilder/__tests__/SelectedQueryForms.test.tsx:144
+#: components/QueryBuilder/__tests__/SelectedQueryForms.test.tsx:166
+#. Used in: Components > Batch Identify > Index ⬤ Components > Locality Update > Status ⬤ Components > Preferences > User Definitions ⬤ Components > Query Builder > Selected Query Forms ⬤ Query Builder > __tests__ > Search Results Actions ⬤ Query Builder > __tests__ > Selected Query Forms
 msgid "browseInForms"
 msgstr "Browse in Forms"
 
@@ -577,7 +608,7 @@ msgid "scrollToEditor"
 msgstr "Scroll to editor"
 
 #: components/LocalityUpdate/Status.tsx:313
-#: components/QueryBuilder/ResultsTable.tsx:216
+#: components/QueryBuilder/ResultsTable.tsx:221
 #. Used in: Components > Locality Update > Status ⬤ Components > Query Builder > Results Table
 msgid "viewRecords"
 msgstr "View records"

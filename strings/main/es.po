@@ -4,147 +4,147 @@ msgstr ""
 "PO-Revision-Date: 2026-11-22 18:26+0000\n"
 "Last-Translator: Manuel Sánchez Ruiz "
 "<cycloderes@users.noreply.hosted.weblate.org>\n"
-"Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/main/"
-"es/>\n"
+"Language-Team: Spanish "
+"<https://hosted.weblate.org/projects/specify-7/main/es/>\n"
 "Language: es\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 2026.12.dev0\n"
 
-#. 🟥Formatting for the title in the web page title bar. Used in: Components > Molecules > App Title
 #: components/Molecules/AppTitle.tsx:65
+#. 🟥Formatting for the title in the web page title bar. Used in: Components > Molecules > App Title
 msgid "appTitle"
 msgstr "{baseTitle:string} | Specify 7"
 
-#. 🟥Default page title. Used in: Components > Molecules > App Title
 #: components/Molecules/AppTitle.tsx:64
+#. 🟥Default page title. Used in: Components > Molecules > App Title
 msgid "baseAppTitle"
 msgstr "Specify 7"
 
-#. 🟥Used in title. Used in: Components > Formatters > Element ⬤ Components > Router > Not Found View ⬤ Components > Router > Router Utils
 #: components/Formatters/Element.tsx:66
 #: components/Router/NotFoundView.tsx:15
 #: components/Router/NotFoundView.tsx:20
 #: components/Router/RouterUtils.tsx:200
+#. 🟥Used in title. Used in: Components > Formatters > Element ⬤ Components > Router > Not Found View ⬤ Components > Router > Router Utils
 msgid "pageNotFound"
 msgstr "Página no encontrada"
 
-#. 🟥Used in the heading on 404 page. Used in: Components > Router > Not Found View
 #: components/Router/NotFoundView.tsx:25
+#. 🟥Used in the heading on 404 page. Used in: Components > Router > Not Found View
 msgid "nothingWasFound"
 msgstr "¡Uy! No se encontró nada"
 
-#. 🟥Used in the paragraph on 404 page. Used in: Components > Router > Not Found View
 #: components/Router/NotFoundView.tsx:26
+#. 🟥Used in the paragraph on 404 page. Used in: Components > Router > Not Found View
 msgid "pageNotFoundDescription"
 msgstr ""
 "Es posible que la página que busca haya sido eliminada, haya cambiado de "
 "nombre o no esté disponible temporalmente."
 
-#. Used in: Components > Router > Not Found View
 #: components/Router/NotFoundView.tsx:29
+#. Used in: Components > Router > Not Found View
 msgid "returnToHomepage"
 msgstr "Regresar a la página de inicio"
 
-#. Used in: Components > Errors > Error Dialog ⬤ Components > Errors > Format Error
 #: components/Errors/ErrorDialog.tsx:60
 #: components/Errors/FormatError.tsx:197
 #: components/Errors/FormatError.tsx:227
+#. Used in: Components > Errors > Error Dialog ⬤ Components > Errors > Format Error
 msgid "errorOccurred"
 msgstr "Lo sentimos, algo ha ido mal"
 
-#. Used in: Components > Errors > Toasts
 #: components/Errors/Toasts.tsx:166
+#. Used in: Components > Errors > Toasts
 msgid "clickToSeeDetails"
 msgstr "Haz clic para ver los detalles"
 
-#. Used in: Components > Errors > Error Dialog
 #: components/Errors/ErrorDialog.tsx:185
+#. Used in: Components > Errors > Error Dialog
 msgid "errorOccurredDescription"
 msgstr ""
-"Lo sentimos, parece que ha encontrado un error en Specify 7 del que no somos "
-"conscientes."
+"Lo sentimos, parece que ha encontrado un error en Specify 7 del que no "
+"somos conscientes."
 
-#. Used in: Components > Errors > Error Dialog
 #: components/Errors/ErrorDialog.tsx:186
+#. Used in: Components > Errors > Error Dialog
 msgid "criticalErrorOccurredDescription"
 msgstr ""
 "Para evitar corromper los registros de datos, debe comenzar de nuevo desde "
 "un lugar seguro: la página de inicio."
 
-#. Used in: Components > Errors > Error Dialog
 #: components/Errors/ErrorDialog.tsx:39
+#. Used in: Components > Errors > Error Dialog
 msgid "errorResolutionDescription"
 msgstr ""
 "Si el problema persiste, póngase en contacto con el servicio de asistencia "
-"informática. Si se trata de una base de datos de Specify Cloud, descargue el "
-"mensaje de error y envíelo a <email />."
+"informática. Si se trata de una base de datos de Specify Cloud, descargue "
+"el mensaje de error y envíelo a <email />."
 
-#. 🟥Careful with the <xml> tags when localizing. Used in: Components > Errors > Error Dialog
 #: components/Errors/ErrorDialog.tsx:54
+#. 🟥Careful with the <xml> tags when localizing. Used in: Components > Errors > Error Dialog
 msgid "errorResolutionSecondDescription"
 msgstr ""
 "Los usuarios de <memberLink>miembros de las instituciones</memberLink> "
-"pueden buscar preguntas respondidas y pedir ayuda en nuestro <discourseLink>"
-"Foro</discourseLink>."
+"pueden buscar preguntas respondidas y pedir ayuda en nuestro "
+"<discourseLink>Foro</discourseLink>."
 
-#. Used in: Core > __tests__ > Contexts ⬤ Components > Errors > Error Dialog ⬤ Components > Locality Update > Status
 #: components/Core/__tests__/Contexts.test.tsx:48
 #: components/Errors/ErrorDialog.tsx:194
 #: components/LocalityUpdate/Status.tsx:399
 #: components/LocalityUpdate/Status.tsx:446
+#. Used in: Core > __tests__ > Contexts ⬤ Components > Errors > Error Dialog ⬤ Components > Locality Update > Status
 msgid "errorMessage"
 msgstr "Mensaje de error"
 
-#. Used in: Components > Router > Unload Protect
 #: components/Router/UnloadProtect.tsx:33
+#. Used in: Components > Router > Unload Protect
 msgid "leavePageConfirmation"
 msgstr "¿Está seguro de que quiere abandonar esta página?"
 
-#. Used in: Components > Attachments Bulk Import > Use Eager Dataset ⬤ Components > Schema Config > Table Uniqueness Rules ⬤ Components > Security > Role
 #: components/AttachmentsBulkImport/useEagerDataset.ts:115
 #: components/SchemaConfig/TableUniquenessRules.tsx:56
 #: components/SchemaConfig/TableUniquenessRules.tsx:209
 #: components/Security/Role.tsx:89
+#. Used in: Components > Attachments Bulk Import > Use Eager Dataset ⬤ Components > Schema Config > Table Uniqueness Rules ⬤ Components > Security > Role
 msgid "leavePageConfirmationDescription"
 msgstr "Los cambios no guardados se perderán si abandona esta página."
 
-#. Used in: Components > Router > Unload Protect
 #: components/Router/UnloadProtect.tsx:28
+#. Used in: Components > Router > Unload Protect
 msgid "leave"
 msgstr "Abandonar"
 
-#. Used in: Components > Core > Version Mismatch
 #: components/Core/VersionMismatch.tsx:30
+#. Used in: Components > Core > Version Mismatch
 msgid "versionMismatch"
 msgstr "La versión de Specify no coincide con la versión de la base de datos"
 
-#. Used in: Components > Core > Version Mismatch
 #: components/Core/VersionMismatch.tsx:34
+#. Used in: Components > Core > Version Mismatch
 msgid "versionMismatchDescription"
 msgstr ""
 "La versión de Specify {specifySixVersion:string} no coincide con la versión "
 "{databaseVersion:string} de la base de datos."
 
-#. Used in: Components > Core > Version Mismatch
 #: components/Core/VersionMismatch.tsx:39
+#. Used in: Components > Core > Version Mismatch
 msgid "versionMismatchSecondDescription"
 msgstr ""
 "Por lo tanto, es posible que algunas funciones de Specific 7 no funcionen "
 "correctamente."
 
-#. Used in: Components > Core > Version Mismatch
 #: components/Core/VersionMismatch.tsx:42
+#. Used in: Components > Core > Version Mismatch
 msgid "versionMismatchInstructions"
 msgstr "Instrucciones para resolver la discrepancia de los esquema de Specify"
 
-#. Used in: Components > Core > Online Status
 #: components/Core/OnlineStatus.tsx:38
+#. Used in: Components > Core > Online Status
 msgid "online"
 msgstr "conectado"
 
-#. Used in: Components > Core > Online Status
 #: components/Core/OnlineStatus.tsx:44
+#. Used in: Components > Core > Online Status
 msgid "offline"
 msgstr "desconectado"

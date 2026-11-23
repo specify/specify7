@@ -61,7 +61,7 @@ msgstr "No"
 #: components/Molecules/LinkedRecords.tsx:104
 #: components/Molecules/SyncAttachmentPicker.tsx:126
 #: components/PickLists/index.tsx:282
-#: components/QueryBuilder/Components.tsx:169
+#: components/QueryBuilder/Components.tsx:172
 #: components/QueryBuilder/Edit.tsx:174
 #: components/QueryBuilder/FromMap.tsx:72
 #: components/QueryBuilder/Import.tsx:69
@@ -272,11 +272,11 @@ msgstr "Create"
 #: components/Preferences/UserDefinitions.tsx:962
 #: components/Preferences/index.tsx:191
 #: components/QueryBuilder/CheckReadAccess.tsx:42
-#: components/QueryBuilder/Components.tsx:293
+#: components/QueryBuilder/Components.tsx:311
 #: components/QueryBuilder/Edit.tsx:144
-#: components/QueryBuilder/Export.tsx:159
-#: components/QueryBuilder/Export.tsx:167
-#: components/QueryBuilder/Export.tsx:176
+#: components/QueryBuilder/Export.tsx:188
+#: components/QueryBuilder/Export.tsx:196
+#: components/QueryBuilder/Export.tsx:205
 #: components/QueryBuilder/Import.tsx:154
 #: components/QueryBuilder/LoanReturn.tsx:156
 #: components/QueryBuilder/LoanReturn.tsx:222
@@ -612,8 +612,11 @@ msgstr "Tools"
 #: components/Preferences/Renderers.tsx:119
 #: components/QueryBuilder/Formatter.tsx:178
 #: components/QueryBuilder/QueryLineFilter.tsx:90
-#: components/QueryBuilder/Results.tsx:503
-#: components/QueryBuilder/Results.tsx:504
+#: components/QueryBuilder/Results.tsx:564
+#: components/QueryBuilder/Results.tsx:565
+#: components/QueryBuilder/Results.tsx:573
+#: components/QueryBuilder/Results.tsx:576
+#: components/QueryBuilder/Results.tsx:577
 #: components/QueryComboBox/index.tsx:538
 #: components/SchemaConfig/Fields.tsx:181
 #: components/SchemaConfig/index.tsx:98
@@ -668,7 +671,7 @@ msgstr "Uploaded"
 #: components/Formatters/Fields.tsx:236
 #: components/Formatters/Fields.tsx:237
 #: components/KeyboardShortcuts/Shortcuts.tsx:243
-#: components/QueryBuilder/Components.tsx:167
+#: components/QueryBuilder/Components.tsx:170
 #: components/QueryBuilder/FieldFilterTool.tsx:100
 #: components/QueryBuilder/FieldFilterTool.tsx:103
 #: components/QueryBuilder/Line.tsx:297
@@ -919,7 +922,7 @@ msgstr "Choose Collection"
 
 #: components/Molecules/Sorting.tsx:30
 #: components/Preferences/Renderers.tsx:186
-#: components/QueryBuilder/__tests__/Results.test.tsx:142
+#: components/QueryBuilder/__tests__/Results.test.tsx:149
 #. 🟥As in "Ascending sort". Used in: Components > Molecules > Sorting ⬤ Components > Preferences > Renderers ⬤ Query Builder > __tests__ > Results
 msgid "ascending"
 msgstr "Ascending"
@@ -1088,7 +1091,7 @@ msgstr "ID"
 msgid "filter"
 msgstr "Filter"
 
-#: components/QueryBuilder/Results.tsx:124
+#: components/QueryBuilder/Results.tsx:140
 #: components/WbActions/index.tsx:130
 #. Used in: Components > Query Builder > Results ⬤ Components > Wb Actions > Index
 msgid "results"
@@ -1164,7 +1167,7 @@ msgstr "Reset"
 #: components/AttachmentsBulkImport/MappingFileSetup.tsx:310
 #: components/BatchIdentify/index.tsx:932
 #: components/FormEditor/Create.tsx:210
-#: components/QueryBuilder/ResultsTable.tsx:189
+#: components/QueryBuilder/ResultsTable.tsx:194
 #: components/SearchDialog/index.tsx:379
 #: components/SetupTool/SetupForm.tsx:219
 #. Used in: Components > Attachments Bulk Import > Mapping File Setup ⬤ Components > Batch Identify > Index ⬤ Components > Form Editor > Create ⬤ Components > Query Builder > Results Table ⬤ Components > Search Dialog > Index ⬤ Components > Setup Tool > Setup Form
@@ -1258,9 +1261,9 @@ msgstr "{header:string}:"
 #: components/Merging/Header.tsx:213
 #: components/Molecules/FilePicker.tsx:113
 #: components/QueryBuilder/Header.tsx:107
-#: components/QueryBuilder/Results.tsx:499
-#: components/QueryBuilder/ResultsTable.tsx:230
-#: components/QueryBuilder/ToForms.tsx:62
+#: components/QueryBuilder/Results.tsx:569
+#: components/QueryBuilder/ResultsTable.tsx:235
+#: components/QueryBuilder/SelectedQueryForms.tsx:115
 #: components/QueryComboBox/spec.ts:72
 #: components/SchemaConfig/Field.tsx:42
 #: components/SchemaConfig/Table.tsx:50
@@ -1277,7 +1280,7 @@ msgstr "{header:string}:"
 #: components/WorkBench/DataSetMeta.tsx:379
 #: components/WorkBench/RemainingLoadingTime.tsx:44
 #: components/WorkBench/Results.tsx:162
-#. 🟥Example usage: "Created by: Full Name" OR "Record Set: Record Set Name". Used in: Components > Attachments Bulk Import > Action State ⬤ Components > Attachments Bulk Import > View Attachment Files ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Batch Identify > Index ⬤ Components > Form Cells > Index ⬤ Components > Form Commands > Index ⬤ Components > Form Plugins > Index ⬤ Components > Form Sliders > Record Set ⬤ Components > Formatters > Element ⬤ Components > Formatters > Formatter ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Save ⬤ Components > Leaflet > Index ⬤ Components > Locality Update > Status ⬤ Components > Locality Update > Utils ⬤ Components > Merging > Header ⬤ Components > Molecules > File Picker ⬤ Components > Query Builder > Header ⬤ Components > Query Builder > Results ⬤ Components > Query Builder > Results Table ⬤ Components > Query Builder > To Forms ⬤ Components > Query Combo Box > Spec ⬤ Components > Schema Config > Field ⬤ Components > Schema Config > Table ⬤ Components > Schema Viewer > Fields ⬤ Components > Security > Collection ⬤ Components > Security > Institution ⬤ Components > Security > Role ⬤ Components > Tree View > Helpers ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Remaining Loading Time ⬤ Components > Work Bench > Results
+#. 🟥Example usage: "Created by: Full Name" OR "Record Set: Record Set Name". Used in: Components > Attachments Bulk Import > Action State ⬤ Components > Attachments Bulk Import > View Attachment Files ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Batch Identify > Index ⬤ Components > Form Cells > Index ⬤ Components > Form Commands > Index ⬤ Components > Form Plugins > Index ⬤ Components > Form Sliders > Record Set ⬤ Components > Formatters > Element ⬤ Components > Formatters > Formatter ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Save ⬤ Components > Leaflet > Index ⬤ Components > Locality Update > Status ⬤ Components > Locality Update > Utils ⬤ Components > Merging > Header ⬤ Components > Molecules > File Picker ⬤ Components > Query Builder > Header ⬤ Components > Query Builder > Results ⬤ Components > Query Builder > Results Table ⬤ Components > Query Builder > Selected Query Forms ⬤ Components > Query Combo Box > Spec ⬤ Components > Schema Config > Field ⬤ Components > Schema Config > Table ⬤ Components > Schema Viewer > Fields ⬤ Components > Security > Collection ⬤ Components > Security > Institution ⬤ Components > Security > Role ⬤ Components > Tree View > Helpers ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Remaining Loading Time ⬤ Components > Work Bench > Results
 msgid "colonLine"
 msgstr "{label:string}: {value:string}"
 

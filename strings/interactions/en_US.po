@@ -154,7 +154,13 @@ msgstr "Select all available preparations"
 #: components/Interactions/__tests__/PrepDialog.test.tsx:69
 #: components/Interactions/__tests__/PrepDialogRow.test.tsx:48
 #: components/Interactions/__tests__/PrepDialogRow.test.tsx:64
-#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Dialog Row ⬤ Components > Interactions > Prep Return Row ⬤ Interactions > __tests__ > Prep Dialog ⬤ Interactions > __tests__ > Prep Dialog Row
+#: components/QueryBuilder/Results.tsx:597
+#: components/QueryBuilder/__tests__/QuerySelection.test.tsx:122
+#: components/QueryBuilder/__tests__/QuerySelection.test.tsx:147
+#: components/QueryBuilder/__tests__/QuerySelection.test.tsx:166
+#: components/QueryBuilder/__tests__/QuerySelection.test.tsx:199
+#: components/QueryBuilder/__tests__/QuerySelection.test.tsx:210
+#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Dialog Row ⬤ Components > Interactions > Prep Return Row ⬤ Interactions > __tests__ > Prep Dialog ⬤ Interactions > __tests__ > Prep Dialog Row ⬤ Components > Query Builder > Results ⬤ Query Builder > __tests__ > Query Selection
 msgid "selectAll"
 msgstr "Select All"
 
@@ -209,8 +215,11 @@ msgstr ""
 #: components/Interactions/LoanReturn.tsx:197
 #: components/Interactions/PrepDialog.tsx:140
 #: components/Interactions/__tests__/PrepDialog.test.tsx:73
-#: components/QueryBuilder/Results.tsx:515
-#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Interactions > __tests__ > Prep Dialog ⬤ Components > Query Builder > Results
+#: components/QueryBuilder/Results.tsx:613
+#: components/QueryBuilder/__tests__/QuerySelection.test.tsx:132
+#: components/QueryBuilder/__tests__/QuerySelection.test.tsx:150
+#: components/QueryBuilder/__tests__/QuerySelection.test.tsx:154
+#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Interactions > __tests__ > Prep Dialog ⬤ Components > Query Builder > Results ⬤ Query Builder > __tests__ > Query Selection
 msgid "deselectAll"
 msgstr "Deselect all"
 

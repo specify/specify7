@@ -4,15 +4,35 @@ msgstr ""
 "PO-Revision-Date: 2026-11-22 18:27+0000\n"
 "Last-Translator: Gunnhild Marthinsen "
 "<gunnhilm@users.noreply.hosted.weblate.org>\n"
-"Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
-"7/query/nb/>\n"
+"Language-Team: Norwegian Bokmål "
+"<https://hosted.weblate.org/projects/specify-7/query/nb/>\n"
 "Language: nb_NO\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 2026.12.dev0\n"
 
-#. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Header ⬤ Components > Query Builder > Toolbar ⬤ Query Builder > __tests__ > Submit ⬤ Components > Reports > Record Sets ⬤ Components > Toolbar > Record Set Edit ⬤ Components > Tree View > Actions
+#: components/QueryBuilder/Results.tsx:563
+#. Used in: Components > Query Builder > Results
+msgid "selectionCount"
+msgstr ""
+
+#: components/QueryBuilder/Results.tsx:589
+#. Used in: Components > Query Builder > Results
+msgid "selectionUnavailable"
+msgstr ""
+
+#: components/QueryBuilder/Results.tsx:825
+#. Used in: Components > Query Builder > Results
+msgid "selectionLimit"
+msgstr ""
+
+#: components/QueryBuilder/ToMap.tsx:96
+#: components/QueryBuilder/__tests__/ToMap.test.tsx:65
+#. Used in: Components > Query Builder > To Map ⬤ Query Builder > __tests__ > To Map
+msgid "mapSelectionLimit"
+msgstr ""
+
 #: components/Preferences/UserDefinitions.tsx:1643
 #: components/Preferences/UserDefinitions.tsx:2019
 #: components/Preferences/UserDefinitions.tsx:2464
@@ -24,10 +44,10 @@ msgstr ""
 #: components/TreeView/Actions.tsx:100
 #: components/TreeView/Actions.tsx:113
 #: components/TreeView/Actions.tsx:259
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Header ⬤ Components > Query Builder > Toolbar ⬤ Query Builder > __tests__ > Submit ⬤ Components > Reports > Record Sets ⬤ Components > Toolbar > Record Set Edit ⬤ Components > Tree View > Actions
 msgid "query"
 msgstr "Utvidet søk"
 
-#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Query
 #: components/Header/menuItemDefinitions.ts:70
 #: components/Router/OverlayRoutes.tsx:131
 #: components/Toolbar/Query.tsx:79
@@ -35,21 +55,21 @@ msgstr "Utvidet søk"
 #: components/Toolbar/Query.tsx:246
 #: components/Toolbar/Query.tsx:268
 #: components/Toolbar/Query.tsx:270
+#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Query
 msgid "queries"
 msgstr "Utvidede søk"
 
-#. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Preferences > Index ⬤ Components > Search Dialog > Index ⬤ Components > Security > Registry
 #: components/Preferences/CollectionDefinitions.tsx:317
 #: components/Preferences/UserDefinitions.tsx:1888
 #: components/Preferences/index.tsx:279
 #: components/SearchDialog/index.tsx:243
 #: components/SearchDialog/index.tsx:387
 #: components/Security/registry.ts:210
+#. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Preferences > Index ⬤ Components > Search Dialog > Index ⬤ Components > Security > Registry
 msgid "queryBuilder"
 msgstr "Bygg utvidet søk"
 
-#. Used in: Components > Query Builder > Export ⬤ Components > Query Builder > Index ⬤ Components > Router > Overlay Routes ⬤ Components > Statistics > Add Stat Dialog ⬤ Statistics > __tests__ > Stats Page Create Statistic ⬤ Components > Toolbar > Query Tables Wrapper
-#: components/QueryBuilder/Export.tsx:118
+#: components/QueryBuilder/Export.tsx:147
 #: components/QueryBuilder/index.tsx:130
 #: components/Router/OverlayRoutes.tsx:139
 #: components/Statistics/AddStatDialog.tsx:64
@@ -59,493 +79,500 @@ msgstr "Bygg utvidet søk"
 #: components/Statistics/__tests__/StatsPageCreateStatistic.test.tsx:66
 #: components/Statistics/__tests__/StatsPageCreateStatistic.test.tsx:100
 #: components/Toolbar/QueryTablesWrapper.tsx:187
+#. Used in: Components > Query Builder > Export ⬤ Components > Query Builder > Index ⬤ Components > Router > Overlay Routes ⬤ Components > Statistics > Add Stat Dialog ⬤ Statistics > __tests__ > Stats Page Create Statistic ⬤ Components > Toolbar > Query Tables Wrapper
 msgid "newQueryName"
 msgstr "Nytt utvidet søk"
 
-#. 🟥Used in a Query Combo Box's hover-over message to show which fields are being searched on. Used in: Components > Query Combo Box > Spec
 #: components/QueryComboBox/spec.ts:73
+#. 🟥Used in a Query Combo Box's hover-over message to show which fields are being searched on. Used in: Components > Query Combo Box > Spec
 msgid "searchFields"
 msgstr "Felter det er søkt i"
 
-#. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:427
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "any"
 msgstr "Hva som helst"
 
-#. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:342
 #: components/QueryBuilder/FieldFilterSpec.tsx:392
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "startValue"
 msgstr "Startverdi"
 
-#. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:353
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "endValue"
 msgstr "Sluttverdi"
 
-#. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Save
-#: components/QueryBuilder/Components.tsx:111
+#: components/QueryBuilder/Components.tsx:114
 #: components/QueryBuilder/Save.tsx:73
+#. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Save
 msgid "saveQuery"
 msgstr "Lagre søk"
 
-#. Used in: Components > Query Builder > Save
 #: components/QueryBuilder/Save.tsx:73
+#. Used in: Components > Query Builder > Save
 msgid "saveClonedQuery"
 msgstr "Lagre søk som..."
 
-#. Used in: Components > Query Builder > Save
 #: components/QueryBuilder/Save.tsx:76
+#. Used in: Components > Query Builder > Save
 msgid "saveClonedQueryDescription"
 msgstr ""
 "Søket vil bli lagret med et nytt navn, og det originale søket forblir "
 "uendret."
 
+#: components/QueryBuilder/Components.tsx:175
 #. Used in: Components > Query Builder > Components
-#: components/QueryBuilder/Components.tsx:172
 msgid "queryDeleteIncomplete"
 msgstr "Søke-definisjonen inneholder ufullstendige felt"
 
+#: components/QueryBuilder/Components.tsx:176
 #. Used in: Components > Query Builder > Components
-#: components/QueryBuilder/Components.tsx:173
 msgid "queryDeleteIncompleteDescription"
 msgstr "Det er ufullførte felt i søkedefinisjonen. Vil du fjerne dem?"
 
-#. Used in: Components > Query Builder > Wrapped
 #: components/QueryBuilder/Wrapped.tsx:183
+#. Used in: Components > Query Builder > Wrapped
 msgid "queryUnloadProtect"
 msgstr "Den nye eller endrede søkedefinisjonen er ikke lagret"
 
+#: components/QueryBuilder/Components.tsx:290
 #. 🟥Example: Creating a Record Set from Query. Used in: Components > Query Builder > Components
-#: components/QueryBuilder/Components.tsx:272
 msgid "recordSetToQuery"
 msgstr "Oppretter en {recordSetTable:string} fra Utvidet søk"
 
-#. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Create Record Set
-#: components/QueryBuilder/Components.tsx:277
+#: components/QueryBuilder/Components.tsx:295
 #: components/QueryBuilder/CreateRecordSet.tsx:134
+#. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Create Record Set
 msgid "recordSetToQueryDescription"
 msgstr "Genererer {recordSetTable:string}..."
 
+#: components/QueryBuilder/Components.tsx:312
 #. Used in: Components > Query Builder > Components
-#: components/QueryBuilder/Components.tsx:294
 msgid "recordSetCreated"
 msgstr "{recordSetTable:string} Opprettet"
 
+#: components/QueryBuilder/Export.tsx:197
 #. Used in: Components > Query Builder > Export
-#: components/QueryBuilder/Export.tsx:168
 msgid "missingCoordinatesForKml"
 msgstr "Kan ikke eksportere til KML"
 
+#: components/QueryBuilder/Export.tsx:200
 #. Used in: Components > Query Builder > Export
-#: components/QueryBuilder/Export.tsx:171
 msgid "missingCoordinatesForKmlDescription"
 msgstr "Legg til felt for breddegrad og lengdegrad i søket."
 
+#: components/QueryBuilder/Export.tsx:189
 #. Used in: Components > Query Builder > Export
-#: components/QueryBuilder/Export.tsx:160
 msgid "queryExportStarted"
 msgstr "Eksportfil opprettes"
 
+#: components/QueryBuilder/Export.tsx:192
 #. Used in: Components > Query Builder > Export
-#: components/QueryBuilder/Export.tsx:163
 msgid "queryExportStartedDescription"
-msgstr ""
-"Det vises et varsel når eksportfilen er fullført og klar for nedlasting."
+msgstr "Det vises et varsel når eksportfilen er fullført og klar for nedlasting."
 
-#. 🟥Used when selected pick list value is not one of allowed values. Used in: Components > Pick Lists > Index ⬤ Components > Query Builder > Formatter ⬤ Components > Schema Config > Components
 #: components/PickLists/index.tsx:188
 #: components/QueryBuilder/Formatter.tsx:220
 #: components/SchemaConfig/Components.tsx:122
+#. 🟥Used when selected pick list value is not one of allowed values. Used in: Components > Pick Lists > Index ⬤ Components > Query Builder > Formatter ⬤ Components > Schema Config > Components
 msgid "invalidPicklistValue"
 msgstr "{value:string} (gjeldende, ugyldig verdi)"
 
-#. 🟥Used in query builder header when querying on record set. Used in: Components > Query Builder > Header
 #: components/QueryBuilder/Header.tsx:102
+#. 🟥Used in query builder header when querying on record set. Used in: Components > Query Builder > Header
 msgid "queryRecordSetTitle"
 msgstr ""
-"Søk: \"{queryName:string}\" på {recordSetTable:string}: \""
-"{recordSetName:string}\""
+"Søk: \"{queryName:string}\" på {recordSetTable:string}: "
+"\"{recordSetName:string}\""
 
-#. 🟥Used in query builder header when querying on tree node usages. Used in: Components > Query Builder > From Tree
 #: components/QueryBuilder/fromTree.ts:218
+#. 🟥Used in query builder header when querying on tree node usages. Used in: Components > Query Builder > From Tree
 msgid "treeQueryName"
 msgstr "{tableName:string} bruker «{nodeFullName:string}»"
 
-#. Used in: Components > Query Builder > Wrapped
 #: components/QueryBuilder/Wrapped.tsx:501
+#. Used in: Components > Query Builder > Wrapped
 msgid "newButtonDescription"
 msgstr "Legg til nytt felt"
 
-#. 🟥Verb. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Toolbar
 #: components/Preferences/UserDefinitions.tsx:2020
 #: components/QueryBuilder/Toolbar.tsx:114
+#. 🟥Verb. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Toolbar
 msgid "countOnly"
 msgstr "Antall"
 
-#. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Toolbar
 #: components/Preferences/UserDefinitions.tsx:2021
 #: components/QueryBuilder/Toolbar.tsx:98
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Toolbar
 msgid "distinct"
 msgstr "Distinkt"
 
-#. Used in: Components > Query Builder > Toolbar
 #: components/QueryBuilder/Toolbar.tsx:84
+#. Used in: Components > Query Builder > Toolbar
 msgid "series"
 msgstr "Serier"
 
-#. Used in: Components > Query Builder > Toolbar
 #: components/QueryBuilder/Toolbar.tsx:107
+#. Used in: Components > Query Builder > Toolbar
 msgid "searchSynonyms"
 msgstr "Søk etter synonymer"
 
-#. Used in: Components > Query Builder > Export ⬤ Query Builder > __tests__ > Export
-#: components/QueryBuilder/Export.tsx:201
+#: components/QueryBuilder/Export.tsx:234
 #: components/QueryBuilder/__tests__/Export.test.tsx:108
 #: components/QueryBuilder/__tests__/Export.test.tsx:130
+#: components/QueryBuilder/__tests__/SelectionActions.test.tsx:73
+#: components/QueryBuilder/__tests__/SelectionActions.test.tsx:97
+#. Used in: Components > Query Builder > Export ⬤ Query Builder > __tests__ > Export ⬤ Query Builder > __tests__ > Selection Actions
 msgid "createCsv"
 msgstr "Opprett CSV"
 
-#. Used in: Components > Query Builder > Export ⬤ Query Builder > __tests__ > Export
-#: components/QueryBuilder/Export.tsx:219
+#: components/QueryBuilder/Export.tsx:256
 #: components/QueryBuilder/__tests__/Export.test.tsx:145
 #: components/QueryBuilder/__tests__/Export.test.tsx:168
+#. Used in: Components > Query Builder > Export ⬤ Query Builder > __tests__ > Export
 msgid "createKml"
 msgstr "Opprett KML"
 
-#. Used in: Components > Query Builder > Export
-#: components/QueryBuilder/Export.tsx:241
+#: components/QueryBuilder/Export.tsx:282
+#: components/QueryBuilder/__tests__/SelectionActions.test.tsx:145
+#. Used in: Components > Query Builder > Export ⬤ Query Builder > __tests__ > Selection Actions
 msgid "exportToWebPortal"
 msgstr "Eksporter til nettportal"
 
+#: components/QueryBuilder/Export.tsx:206
 #. Used in: Components > Query Builder > Export
-#: components/QueryBuilder/Export.tsx:177
 msgid "webPortalExportDuplicateRecordIds"
 msgstr "Søket inneholder dupliserte databasepost-ID'er"
 
+#: components/QueryBuilder/Export.tsx:209
 #. Used in: Components > Query Builder > Export
-#: components/QueryBuilder/Export.tsx:180
 msgid "webPortalExportDuplicateRecordIdsDescription"
 msgstr ""
 "Vennligst endre søket slik at det returnerer unike poster for hver "
 "returnerte rad."
 
+#: components/QueryBuilder/Export.tsx:211
 #. Used in: Components > Query Builder > Export
-#: components/QueryBuilder/Export.tsx:182
 msgid "webPortalExportDuplicateHint"
 msgstr ""
-"(Hint: Du må kanskje legge til en betingelse for nåværende bestemmelse eller "
-"bruke en aggregator for preparater eller samlere.)"
+"(Hint: Du må kanskje legge til en betingelse for nåværende bestemmelse "
+"eller bruke en aggregator for preparater eller samlere.)"
 
-#. Used in: Components > Batch Identify > Index ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Create Record Set ⬤ Query Builder > __tests__ > Make Record Set Button ⬤ Query Builder > __tests__ > Search Results Actions
 #: components/BatchIdentify/index.tsx:769
-#: components/QueryBuilder/Components.tsx:236
+#: components/QueryBuilder/Components.tsx:254
 #: components/QueryBuilder/CreateRecordSet.tsx:68
 #: components/QueryBuilder/__tests__/MakeRecordSetButton.test.tsx:73
 #: components/QueryBuilder/__tests__/SearchResultsActions.test.tsx:72
 #: components/QueryBuilder/__tests__/SearchResultsActions.test.tsx:230
+#: components/QueryBuilder/__tests__/SelectionActions.test.tsx:101
+#: components/QueryBuilder/__tests__/SelectionActions.test.tsx:114
+#. Used in: Components > Batch Identify > Index ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Create Record Set ⬤ Query Builder > __tests__ > Make Record Set Button ⬤ Query Builder > __tests__ > Search Results Actions ⬤ Query Builder > __tests__ > Selection Actions
 msgid "createRecordSet"
 msgstr "Opprett {recordSetTable:string}"
 
+#: components/QueryBuilder/Components.tsx:125
 #. Used in: Components > Query Builder > Components
-#: components/QueryBuilder/Components.tsx:122
 msgid "saveAs"
 msgstr "Lagre som"
 
-#. Used in: Components > Wb Plan View > Navigator
 #: components/WbPlanView/navigator.ts:453
+#. Used in: Components > Wb Plan View > Navigator
 msgid "anyRank"
 msgstr "(hvilken som helst plassering)"
 
-#. Used in: Components > Wb Plan View > Navigator
 #: components/WbPlanView/navigator.ts:405
+#. Used in: Components > Wb Plan View > Navigator
 msgid "anyTree"
 msgstr "(hvilket som helst tre)"
 
-#. 🟥As in move it up. Used in: Components > Formatters > Fields ⬤ Components > Query Builder > Query Line Tools ⬤ Query Builder > __tests__ > Query Line Tools ⬤ Components > Toolbar > List Edit
 #: components/Formatters/Fields.tsx:244
 #: components/Formatters/Fields.tsx:245
 #: components/QueryBuilder/QueryLineTools.tsx:103
 #: components/QueryBuilder/QueryLineTools.tsx:105
 #: components/QueryBuilder/__tests__/QueryLineTools.test.tsx:45
 #: components/Toolbar/ListEdit.tsx:111
+#. 🟥As in move it up. Used in: Components > Formatters > Fields ⬤ Components > Query Builder > Query Line Tools ⬤ Query Builder > __tests__ > Query Line Tools ⬤ Components > Toolbar > List Edit
 msgid "moveUp"
 msgstr "Flytt opp"
 
-#. 🟥As in move it down. Used in: Components > Formatters > Fields ⬤ Components > Query Builder > Query Line Tools ⬤ Query Builder > __tests__ > Query Line Tools ⬤ Components > Toolbar > List Edit
 #: components/Formatters/Fields.tsx:251
 #: components/Formatters/Fields.tsx:252
 #: components/QueryBuilder/QueryLineTools.tsx:111
 #: components/QueryBuilder/QueryLineTools.tsx:113
 #: components/QueryBuilder/__tests__/QueryLineTools.test.tsx:49
 #: components/Toolbar/ListEdit.tsx:117
+#. 🟥As in move it down. Used in: Components > Formatters > Fields ⬤ Components > Query Builder > Query Line Tools ⬤ Query Builder > __tests__ > Query Line Tools ⬤ Components > Toolbar > List Edit
 msgid "moveDown"
 msgstr "Flytt ned"
 
-#. Used in: Components > Query Builder > Query Line Tools ⬤ Query Builder > __tests__ > Query Line Tools
 #: components/QueryBuilder/QueryLineTools.tsx:76
 #: components/QueryBuilder/QueryLineTools.tsx:86
 #: components/QueryBuilder/__tests__/QueryLineTools.test.tsx:71
+#. Used in: Components > Query Builder > Query Line Tools ⬤ Query Builder > __tests__ > Query Line Tools
 msgid "sort"
 msgstr "Sorter"
 
-#. Used in: Components > Query Builder > Query Line Tools ⬤ Query Builder > __tests__ > Query Line Tools
 #: components/QueryBuilder/QueryLineTools.tsx:73
 #: components/QueryBuilder/QueryLineTools.tsx:83
 #: components/QueryBuilder/__tests__/QueryLineTools.test.tsx:93
+#. Used in: Components > Query Builder > Query Line Tools ⬤ Query Builder > __tests__ > Query Line Tools
 msgid "ascendingSort"
 msgstr "Stigende sortering"
 
-#. Used in: Components > Query Builder > Query Line Tools ⬤ Query Builder > __tests__ > Query Line Tools
 #: components/QueryBuilder/QueryLineTools.tsx:75
 #: components/QueryBuilder/QueryLineTools.tsx:85
 #: components/QueryBuilder/__tests__/QueryLineTools.test.tsx:116
+#. Used in: Components > Query Builder > Query Line Tools ⬤ Query Builder > __tests__ > Query Line Tools
 msgid "descendingSort"
 msgstr "Synkende sortering"
 
-#. 🟥as in negate query condition. Used in: Components > Query Builder > Field Filter Tool
 #: components/QueryBuilder/FieldFilterTool.tsx:113
 #: components/QueryBuilder/FieldFilterTool.tsx:117
+#. 🟥as in negate query condition. Used in: Components > Query Builder > Field Filter Tool
 msgid "negate"
 msgstr "Motsatt"
 
-#. Used in: Components > Query Builder > Query Line Tools
 #: components/QueryBuilder/QueryLineTools.tsx:50
 #: components/QueryBuilder/QueryLineTools.tsx:57
+#. Used in: Components > Query Builder > Query Line Tools
 msgid "showButtonDescription"
 msgstr "Vis i resultatene"
 
-#. Used in: Components > Wb Plan View > Field Search ⬤ Components > Wb Plan View > Navigator
 #: components/WbPlanView/fieldSearch.ts:350
 #: components/WbPlanView/navigator.ts:510
+#. Used in: Components > Wb Plan View > Field Search ⬤ Components > Wb Plan View > Navigator
 msgid "aggregatedInline"
 msgstr "(aggregert)"
 
-#. Used in: Components > Wb Plan View > Field Search ⬤ Components > Wb Plan View > Navigator
 #: components/WbPlanView/fieldSearch.ts:351
 #: components/WbPlanView/navigator.ts:511
+#. Used in: Components > Wb Plan View > Field Search ⬤ Components > Wb Plan View > Navigator
 msgid "formattedInline"
 msgstr "(formatert)"
 
-#. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:434
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "like"
 msgstr "Ligner"
 
-#. 🟥Explains the use of special symbols for the "like" query filter. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:435
+#. 🟥Explains the use of special symbols for the "like" query filter. Used in: Components > Query Builder > Field Filter Spec
 msgid "likeDescription"
 msgstr ""
 "Bruk «%» for å finne et hvilket som helst antall tegn.\n"
 "Bruk «_» for å finne ett enkelt tegn."
 
-#. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:442
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "equal"
 msgstr "Lik"
 
-#. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:450
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "greaterThan"
 msgstr "Større enn"
 
-#. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:458
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "lessThan"
 msgstr "Mindre enn"
 
-#. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:466
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "greaterOrEqualTo"
 msgstr "Større enn eller lik"
 
-#. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:474
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "lessOrEqualTo"
 msgstr "Mindre enn eller lik"
 
-#. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:482
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "true"
 msgstr "Sant"
 
-#. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:489
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "false"
 msgstr "Usant"
 
-#. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:543
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "trueOrNull"
 msgstr "Sant eller tom"
 
-#. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:550
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "falseOrNull"
 msgstr "Usant eller tom"
 
-#. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:496
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "between"
 msgstr "Mellom"
 
-#. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:504
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "in"
 msgstr "I"
 
-#. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:505
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "inDescription"
 msgstr "En kommaseparert liste med verdier"
 
-#. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter Spec
 #: components/Preferences/UserDefinitions.tsx:1633
 #: components/QueryBuilder/FieldFilterSpec.tsx:512
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter Spec
 msgid "contains"
 msgstr "Inneholder"
 
-#. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:536
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "empty"
 msgstr "Tom"
 
-#. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:348
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "and"
 msgstr "og"
 
-#. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter Spec
 #: components/Preferences/UserDefinitions.tsx:1629
 #: components/QueryBuilder/FieldFilterSpec.tsx:520
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter Spec
 msgid "startsWith"
 msgstr "Starter med"
 
-#. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:528
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "endsWith"
 msgstr "Slutter med"
 
-#. Used in: Components > Query Builder > Field Filter Tool
 #: components/QueryBuilder/FieldFilterTool.tsx:60
 #: components/QueryBuilder/FieldFilterTool.tsx:68
 #: components/QueryBuilder/FieldFilterTool.tsx:96
+#. Used in: Components > Query Builder > Field Filter Tool
 msgid "or"
 msgstr "eller"
 
-#. Used in: Components > Setup Tool > Setup Overview ⬤ Components > Tree View > Create Tree ⬤ Utils > __tests__ > Field Format ⬤ Utils > Parser > Definitions
 #: components/SetupTool/SetupOverview.tsx:85
 #: components/TreeView/CreateTree.tsx:552
 #: utils/__tests__/fieldFormat.test.ts:92
 #: utils/parser/definitions.ts:121
+#. Used in: Components > Setup Tool > Setup Overview ⬤ Components > Tree View > Create Tree ⬤ Utils > __tests__ > Field Format ⬤ Utils > Parser > Definitions
 msgid "yes"
 msgstr "Ja"
 
-#. Used in: Components > Query Builder > Results Table ⬤ Components > Query Builder > To Forms
-#: components/QueryBuilder/ResultsTable.tsx:231
-#: components/QueryBuilder/ToForms.tsx:63
+#: components/QueryBuilder/ResultsTable.tsx:236
+#: components/QueryBuilder/SelectedQueryForms.tsx:116
+#. Used in: Components > Query Builder > Results Table ⬤ Components > Query Builder > Selected Query Forms
 msgid "queryResults"
 msgstr "Søkeresultater"
 
-#. Used in: Components > Batch Identify > Index ⬤ Components > Locality Update > Status ⬤ Components > Preferences > User Definitions ⬤ Components > Query Builder > To Forms ⬤ Query Builder > __tests__ > Search Results Actions
 #: components/BatchIdentify/index.tsx:778
 #: components/LocalityUpdate/Status.tsx:371
 #: components/Preferences/UserDefinitions.tsx:2023
-#: components/QueryBuilder/ToForms.tsx:50
+#: components/QueryBuilder/SelectedQueryForms.tsx:157
 #: components/QueryBuilder/__tests__/SearchResultsActions.test.tsx:146
 #: components/QueryBuilder/__tests__/SearchResultsActions.test.tsx:174
+#: components/QueryBuilder/__tests__/SelectedQueryForms.test.tsx:62
+#: components/QueryBuilder/__tests__/SelectedQueryForms.test.tsx:144
+#: components/QueryBuilder/__tests__/SelectedQueryForms.test.tsx:166
+#. Used in: Components > Batch Identify > Index ⬤ Components > Locality Update > Status ⬤ Components > Preferences > User Definitions ⬤ Components > Query Builder > Selected Query Forms ⬤ Query Builder > __tests__ > Search Results Actions ⬤ Query Builder > __tests__ > Selected Query Forms
 msgid "browseInForms"
 msgstr "Bla gjennom i skjemaer"
 
-#. Used in: Components > Toolbar > Query Tables Edit
 #: components/Toolbar/QueryTablesEdit.tsx:32
+#. Used in: Components > Toolbar > Query Tables Edit
 msgid "configureQueryTables"
 msgstr "Konfigurer synlige søketabeller"
 
-#. Used in: Components > Query Builder > Edit
 #: components/QueryBuilder/Edit.tsx:95
 #: components/QueryBuilder/Edit.tsx:148
+#. Used in: Components > Query Builder > Edit
 msgid "exportQueryForDwca"
 msgstr "Eksportforespørsel for DwCA-definisjon"
 
-#. Used in: Components > Query Builder > Edit
 #: components/QueryBuilder/Edit.tsx:100
+#. Used in: Components > Query Builder > Edit
 msgid "exportQueryAsReport"
 msgstr "Definer rapport basert på søk"
 
-#. Used in: Components > Query Builder > Edit
 #: components/QueryBuilder/Edit.tsx:103
+#. Used in: Components > Query Builder > Edit
 msgid "exportQueryAsLabel"
 msgstr "Definer etikett basert på søk"
 
-#. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:50
+#. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 msgid "treeMerge"
 msgstr "Tresammenslåing"
 
-#. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:51
+#. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 msgid "treeMove"
 msgstr "Treflytting"
 
-#. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:52
+#. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 msgid "treeSynonymize"
 msgstr "Tresynonymisering"
 
-#. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:53
+#. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 msgid "treeDesynonymize"
 msgstr "Tre-desynonymisering"
 
-#. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:54
+#. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 msgid "treeBulkMove"
 msgstr "Bulk-flytting av tre"
 
-#. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:118
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "tooLongErrorMessage"
 msgstr ""
 "Feltverdien er for lang. Maksimalt tillatt lengde er "
 "{maxLength:number|formatted}"
 
-#. Used in: Components > Query Builder > Relative Date
 #: components/QueryBuilder/RelativeDate.tsx:216
+#. Used in: Components > Query Builder > Relative Date
 msgid "future"
 msgstr "i fremtiden"
 
-#. Used in: Components > Query Builder > Relative Date
 #: components/QueryBuilder/RelativeDate.tsx:215
+#. Used in: Components > Query Builder > Relative Date
 msgid "past"
 msgstr "i fortiden"
 
-#. Used in: Components > Query Builder > Relative Date
 #: components/QueryBuilder/RelativeDate.tsx:189
+#. Used in: Components > Query Builder > Relative Date
 msgid "days"
 msgstr "Dager"
 
-#. Used in: Components > Query Builder > Relative Date
 #: components/QueryBuilder/RelativeDate.tsx:190
+#. Used in: Components > Query Builder > Relative Date
 msgid "weeks"
 msgstr "Uker"
 
-#. Used in: Components > Query Builder > Relative Date
 #: components/QueryBuilder/RelativeDate.tsx:191
+#. Used in: Components > Query Builder > Relative Date
 msgid "months"
 msgstr "Måneder"
 
-#. Used in: Components > Query Builder > Relative Date
 #: components/QueryBuilder/RelativeDate.tsx:192
+#. Used in: Components > Query Builder > Relative Date
 msgid "years"
 msgstr "År"
 
-#. Used in: Components > Field Formatters > Index
 #: components/FieldFormatters/index.ts:404
+#. Used in: Components > Field Formatters > Index
 msgid "year"
 msgstr "År"
 
-#. 🟥Used in query builder lines, will be shown as a number followed by a period of time (ie: day, month or week) then a direction (past or future). Used in: Components > Query Builder > Relative Date
 #: components/QueryBuilder/RelativeDate.tsx:146
 #: components/QueryBuilder/RelativeDate.tsx:153
 #: components/QueryBuilder/RelativeDate.tsx:171
@@ -553,109 +580,110 @@ msgstr "År"
 #: components/QueryBuilder/RelativeDate.tsx:197
 #: components/QueryBuilder/RelativeDate.tsx:203
 #: components/QueryBuilder/RelativeDate.tsx:220
+#. 🟥Used in query builder lines, will be shown as a number followed by a period of time (ie: day, month or week) then a direction (past or future). Used in: Components > Query Builder > Relative Date
 msgid "relativeDate"
 msgstr ""
-"<count>{size:number}</count> <length>{type:string}</length> <direction>"
-"{direction:string}</direction>"
+"<count>{size:number}</count> <length>{type:string}</length> "
+"<direction>{direction:string}</direction>"
 
-#. Used in: Components > Query Builder > Import
 #: components/QueryBuilder/Import.tsx:159
+#. Used in: Components > Query Builder > Import
 msgid "importHiddenFields"
 msgstr "Følgende felt er skjult i søket du importerte:"
 
-#. Used in: Components > Query Builder > Check Read Access
 #: components/QueryBuilder/CheckReadAccess.tsx:46
+#. Used in: Components > Query Builder > Check Read Access
 msgid "importNoReadPermission"
 msgstr "Søket du importerte inneholder tabeller du ikke har lesetilgang til:"
 
-#. Used in: Components > Query Builder > Check Read Access
 #: components/QueryBuilder/CheckReadAccess.tsx:43
+#. Used in: Components > Query Builder > Check Read Access
 msgid "noReadPermission"
 msgstr "Ingen lesetillatelse"
 
-#. Used in: Components > Query Builder > Relative Date
 #: components/QueryBuilder/RelativeDate.tsx:60
+#. Used in: Components > Query Builder > Relative Date
 msgid "switchToRelative"
 msgstr "Bytt til relativ"
 
-#. Used in: Components > Query Builder > Relative Date
 #: components/QueryBuilder/RelativeDate.tsx:61
+#. Used in: Components > Query Builder > Relative Date
 msgid "switchToAbsolute"
 msgstr "Bytt til absolutt"
 
-#. Used in: Components > Query Builder > Header
 #: components/QueryBuilder/Header.tsx:116
+#. Used in: Components > Query Builder > Header
 msgid "scrollToEditor"
 msgstr "Bla til editor"
 
-#. Used in: Components > Locality Update > Status ⬤ Components > Query Builder > Results Table
 #: components/LocalityUpdate/Status.tsx:313
-#: components/QueryBuilder/ResultsTable.tsx:216
+#: components/QueryBuilder/ResultsTable.tsx:221
+#. Used in: Components > Locality Update > Status ⬤ Components > Query Builder > Results Table
 msgid "viewRecords"
 msgstr "Vis poster"
 
-#. Used in: Components > Query Builder > Formatter
 #: components/QueryBuilder/Formatter.tsx:184
 #: components/QueryBuilder/Formatter.tsx:194
 #: components/QueryBuilder/Formatter.tsx:202
+#. Used in: Components > Query Builder > Formatter
 msgid "chooseFormatter"
 msgstr "Velg formatering"
 
-#. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:565
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "range"
 msgstr "Spekter"
 
-#. Used in: Components > Query Builder > Field Filter Tool
 #: components/QueryBuilder/FieldFilterTool.tsx:137
 #: components/QueryBuilder/FieldFilterTool.tsx:145
+#. Used in: Components > Query Builder > Field Filter Tool
 msgid "strict"
 msgstr "Streng"
 
-#. Used in: Components > Query Builder > Field Filter Tool
 #: components/QueryBuilder/FieldFilterTool.tsx:138
 #: components/QueryBuilder/FieldFilterTool.tsx:146
+#. Used in: Components > Query Builder > Field Filter Tool
 msgid "nonStrict"
 msgstr "Ikke streng"
 
-#. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:213
+#. Used in: Components > Preferences > Collection Definitions
 msgid "primaryCatalogNumberInheritance"
 msgstr "{samlingObjektTabellNavn: streng}"
 
-#. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:253
+#. Used in: Components > Preferences > Collection Definitions
 msgid "parentCatalogNumberInheritance"
 msgstr "{komponentTabellnavn: streng}"
 
-#. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:289
+#. Used in: Components > Preferences > Collection Definitions
 msgid "uniqueCatalogNumberAcrossComponentAndCoTitle"
 msgstr "{komponenttabellnavn: streng} og {samlingObjekttabellnavn: streng}"
 
-#. 🟥Used to indicate a text field will be formatted with a specific format. If a format can be identified/named in more than one way, names can be displayed in a comma-separated format Example: Format As: Ichthyology Example: Format As: Rock, Mineral. Used in: Components > Query Builder > Formatter
 #: components/QueryBuilder/Formatter.tsx:127
+#. 🟥Used to indicate a text field will be formatted with a specific format. If a format can be identified/named in more than one way, names can be displayed in a comma-separated format Example: Format As: Ichthyology Example: Format As: Rock, Mineral. Used in: Components > Query Builder > Formatter
 msgid "formatInputAs"
 msgstr "Formater som: {commaSeparatedFormats:string}"
 
-#. Used in: Components > Batch Edit > Index ⬤ Batch Edit > __tests__ > Batch Edit From Query
 #: components/BatchEdit/index.tsx:241
 #: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:147
 #: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:156
+#. Used in: Components > Batch Edit > Index ⬤ Batch Edit > __tests__ > Batch Edit From Query
 msgid "unsavedChangesInQuery"
 msgstr "Søket har ulagrede endringer"
 
-#. Used in: Components > Batch Edit > Index
 #: components/BatchEdit/index.tsx:244
+#. Used in: Components > Batch Edit > Index
 msgid "unsavedChangesInQueryDescription"
 msgstr "Lagre søket før du kjører batchredigering"
 
-#. Used in: Components > Query Builder > Loan Return
 #: components/QueryBuilder/LoanReturn.tsx:173
+#. Used in: Components > Query Builder > Loan Return
 msgid "noPreparationsToReturn"
 msgstr "Det finnes ingen uavklarte elementer å returnere"
 
-#. Used in: Components > Query Builder > Loan Return
 #: components/QueryBuilder/LoanReturn.tsx:226
+#. Used in: Components > Query Builder > Loan Return
 msgid "itemsReturned"
 msgstr "Elementene har blitt returnert"
