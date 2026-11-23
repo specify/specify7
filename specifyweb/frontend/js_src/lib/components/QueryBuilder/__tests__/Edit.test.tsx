@@ -1,4 +1,10 @@
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  render,
+  renderHook,
+  screen,
+} from '@testing-library/react';
 import React from 'react';
 
 import { commonText } from '../../../localization/common';
@@ -41,6 +47,118 @@ jest.mock('../Share', () => ({
 }));
 
 afterEach(() => jest.restoreAllMocks());
+
+test.each([true, false])(
+  'keeps the newest accepted refresh when the older response arrives %s',
+  async (olderLast) => {
+    const original = new tables.SpQuery.Resource<SpQuery>(
+      addMissingFields('SpQuery', {
+        id: 100,
+        version: 1,
+        name: 'Original',
+        contextTableId: tables.CollectionObject.tableId,
+        fields: [],
+      })
+    );
+    const oldSnapshot = new tables.SpQuery.Resource<SpQuery>({
+      ...serializeResource(original),
+      version: 7,
+      name: 'Older definition',
+    });
+    const newSnapshot = new tables.SpQuery.Resource<SpQuery>({
+      ...serializeResource(original),
+      version: 8,
+      name: 'Newer definition',
+    });
+    let resolveOld!: (query: SpecifyResource<SpQuery>) => void;
+    let resolveNew!: (query: SpecifyResource<SpQuery>) => void;
+    jest
+      .spyOn(tables.SpQuery.Resource.prototype, 'fetch')
+      .mockReturnValueOnce(new Promise((resolve) => (resolveOld = resolve)))
+      .mockReturnValueOnce(new Promise((resolve) => (resolveNew = resolve)));
+    const pending: Promise<unknown>[] = [];
+    const refreshed = jest.fn();
+    const { result } = renderHook(
+      () => useQueryRefresh(original, undefined, refreshed),
+      {
+        wrapper: ({ children }) => (
+          <LoadingContext.Provider
+            value={(promise): void => {
+              pending.push(promise);
+            }}
+          >
+            {children}
+          </LoadingContext.Provider>
+        ),
+      }
+    );
+    act(() => {
+      result.current.refreshQuery();
+      result.current.refreshQuery();
+    });
+    await act(async () => {
+      if (olderLast) resolveNew(newSnapshot);
+      else resolveOld(oldSnapshot);
+      await pending[olderLast ? 1 : 0];
+    });
+    original.set('remarks', 'Unsaved local remarks');
+    await act(async () => {
+      if (olderLast) resolveOld(oldSnapshot);
+      else resolveNew(newSnapshot);
+      await pending[olderLast ? 0 : 1];
+    });
+
+    expect(serializeResource(original)).toMatchObject({
+      version: 8,
+      name: 'Newer definition',
+      remarks: 'Unsaved local remarks',
+    });
+    expect(result.current.savedQuery.current).toMatchObject({
+      version: 8,
+      name: 'Newer definition',
+    });
+    expect(result.current.conflictDialog).toBeNull();
+    expect(refreshed).toHaveBeenCalledTimes(olderLast ? 1 : 2);
+  }
+);
+
+test('accepts a refresh with the same version', async () => {
+  const original = new tables.SpQuery.Resource<SpQuery>(
+    addMissingFields('SpQuery', {
+      id: 100,
+      version: 8,
+      name: 'Original',
+      contextTableId: tables.CollectionObject.tableId,
+      fields: [],
+    })
+  );
+  const server = new tables.SpQuery.Resource<SpQuery>({
+    ...serializeResource(original),
+    name: 'Refreshed definition',
+  });
+  jest
+    .spyOn(tables.SpQuery.Resource.prototype, 'fetch')
+    .mockResolvedValue(server);
+  const refreshed = jest.fn();
+  const { result } = renderHook(
+    () => useQueryRefresh(original, undefined, refreshed),
+    {
+      wrapper: ({ children }) => (
+        <LoadingContext.Provider
+          value={(promise): void => {
+            void promise;
+          }}
+        >
+          {children}
+        </LoadingContext.Provider>
+      ),
+    }
+  );
+  await act(async () => result.current.refreshQuery());
+
+  expect(original.get('name')).toBe('Refreshed definition');
+  expect(refreshed).toHaveBeenCalledTimes(1);
+});
 
 test('discards name and remarks edits on close without reverting other changes', () => {
   const resource = new tables.SpQuery.Resource<SpQuery>(

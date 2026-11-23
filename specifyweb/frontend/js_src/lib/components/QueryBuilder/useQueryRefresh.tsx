@@ -66,7 +66,16 @@ export function useQueryRefresh(
         // A new resource bypasses fetch()'s populated-instance cache.
         new tables.SpQuery.Resource({ id: resource.id })
           .fetch()
-          .then((server): void => reconcile(serializeResource(server)))
+          .then((server): void => {
+            const snapshot = serializeResource(server);
+            if (
+              typeof snapshot.version === 'number' &&
+              typeof savedQuery.current.version === 'number' &&
+              snapshot.version < savedQuery.current.version
+            )
+              return;
+            reconcile(snapshot);
+          })
       ),
     conflictDialog:
       pending === undefined ? null : (
