@@ -340,6 +340,8 @@ function Wrapped({
     'stickyScrolling'
   );
   const resultsShown = state.queryRunCount !== 0;
+  const sharedSortChanged =
+    isShared && initialFields.current !== JSON.stringify(state.fields);
 
   const [isBasic] = useQueryViewPref(query.id);
 
@@ -371,12 +373,12 @@ function Wrapped({
   );
 
   React.useEffect(() => {
-    if (!showSeries)
+    if (!showSeries && !isShared)
       setQuery({
         ...query,
         smushed: false,
       });
-  }, [showSeries]);
+  }, [showSeries, isShared]);
 
   return treeRanksLoaded ? (
     <ReadOnlyContext.Provider value={isReadOnly}>
@@ -690,7 +692,7 @@ function Wrapped({
                 queryResource={queryResource}
                 recordSet={recordSet}
                 resultsRef={resultsRef}
-                saveRequired={saveRequired}
+                saveRequired={isShared ? sharedSortChanged : saveRequired}
                 selectedIndex={selectedIndex}
                 selectedRows={selectedRows}
                 setSelectedIndex={setSelectedIndex}
@@ -708,6 +710,17 @@ function Wrapped({
                   dispatch({ type: 'ChangeFieldsAction', fields });
                   runQuery('regular');
                 }}
+                onDiscardSortChanges={
+                  sharedSortChanged && !inheritedReadOnly && hasAccess
+                    ? (): void => {
+                        dispatch({
+                          type: 'ChangeFieldsAction',
+                          fields: parseQueryFields(savedQuery.current.fields),
+                        });
+                        runQuery('regular');
+                      }
+                    : undefined
+                }
               />
             </ReadOnlyContext.Provider>
           </Form>

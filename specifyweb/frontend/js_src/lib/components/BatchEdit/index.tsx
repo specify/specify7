@@ -85,8 +85,10 @@ export function BatchEditFromQuery({
   baseTableName,
   saveRequired,
   recordSetId,
+  onDiscardSortChanges: handleDiscardSortChanges,
 }: {
   readonly query: SpecifyResource<SpQuery>;
+  readonly onDiscardSortChanges?: () => void;
   readonly fields: RA<QueryField>;
   readonly baseTableName: keyof Tables;
   readonly saveRequired: boolean;
@@ -234,14 +236,28 @@ export function BatchEditFromQuery({
       {showWarningDialog && (
         <Dialog
           buttons={
-            <Button.Danger onClick={closeWarningDialog}>
-              {commonText.close()}
-            </Button.Danger>
+            <>
+              {handleDiscardSortChanges !== undefined && (
+                <Button.Warning
+                  onClick={(): void => {
+                    closeWarningDialog();
+                    handleDiscardSortChanges();
+                  }}
+                >
+                  {queryText.discardTemporarySort()}
+                </Button.Warning>
+              )}
+              <Button.Danger onClick={closeWarningDialog}>
+                {commonText.close()}
+              </Button.Danger>
+            </>
           }
           header={queryText.unsavedChangesInQuery()}
           onClose={closeWarningDialog}
         >
-          {queryText.unsavedChangesInQueryDescription()}
+          {handleDiscardSortChanges === undefined
+            ? queryText.unsavedChangesInQueryDescription()
+            : queryText.discardTemporarySortDescription()}
         </Dialog>
       )}
     </>

@@ -25,6 +25,7 @@ export function QueryBuilderResults({
   state,
   isReadOnly,
   saveRequired,
+  onDiscardSortChanges,
   isCountOnly,
   getQueryFieldRecords,
   selectedRows,
@@ -49,6 +50,7 @@ export function QueryBuilderResults({
   readonly state: MainState;
   readonly isReadOnly: boolean;
   readonly saveRequired: boolean;
+  readonly onDiscardSortChanges: (() => void) | undefined;
   readonly isCountOnly: boolean;
   readonly getQueryFieldRecords:
     | (() => RA<SerializedResource<SpQueryField>>)
@@ -94,6 +96,7 @@ export function QueryBuilderResults({
               baseTableName={state.baseTableName}
               fields={state.fields}
               query={queryResource}
+              onDiscardSortChanges={onDiscardSortChanges}
               recordSetId={recordSet?.id}
               saveRequired={saveRequired}
             />

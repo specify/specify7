@@ -1355,6 +1355,13 @@ export const queryText = createDictionary({
     'hr-hr': 'Spremite upit prije pokretanja skupnog uređivanja',
     nb: 'Lagre søket før du kjører batchredigering',
   },
+  discardTemporarySort: {
+    'en-us': 'Discard temporary sorting',
+  },
+  discardTemporarySortDescription: {
+    'en-us':
+      'Discard the temporary sorting and rerun the query before starting Batch Edit.',
+  },
   noPreparationsToReturn: {
     'en-us': 'There are no unresolved items to return',
     'ru-ru': 'Нет нерешенных вопросов, требующих возврата.',
