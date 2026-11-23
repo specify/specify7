@@ -94,3 +94,49 @@ test('hides save without update permission', () => {
     'update'
   );
 });
+
+// [AttachmentsBulkImport] Show delete with permission
+test('shows delete with permission', () => {
+  mockHasPermission.mockReturnValue(true);
+
+  render(
+    <UnloadProtectsContext.Provider value={[]}>
+      <DataSetMeta
+        dataset={dataset}
+        datasetVariant="bulkAttachment"
+        deleteDescription={localized('Delete dataset')}
+        onChange={jest.fn()}
+        onClose={jest.fn()}
+        onDeleted={jest.fn()}
+        permissionResource="/attachment_import/dataset"
+      />
+    </UnloadProtectsContext.Provider>
+  );
+
+  expect(
+    screen.getByRole('button', { name: commonText.delete() })
+  ).toBeInTheDocument();
+});
+
+// [AttachmentsBulkImport] Show save with permission
+test('shows save with permission', () => {
+  mockHasPermission.mockReturnValue(true);
+
+  render(
+    <UnloadProtectsContext.Provider value={[]}>
+      <DataSetMeta
+        dataset={dataset}
+        datasetVariant="bulkAttachment"
+        deleteDescription={localized('Delete dataset')}
+        onChange={jest.fn()}
+        onClose={jest.fn()}
+        onDeleted={jest.fn()}
+        permissionResource="/attachment_import/dataset"
+      />
+    </UnloadProtectsContext.Provider>
+  );
+
+  expect(
+    screen.getByRole('button', { name: commonText.save() })
+  ).toBeInTheDocument();
+});
