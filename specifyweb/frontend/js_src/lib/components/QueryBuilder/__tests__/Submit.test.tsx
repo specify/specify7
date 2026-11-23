@@ -7,7 +7,9 @@ import { requireContext } from '../../../tests/helpers';
 import * as ajaxModule from '../../../utils/ajax';
 import { Http } from '../../../utils/ajax/definitions';
 import { serializeResource } from '../../DataModel/serializers';
+import { tables } from '../../DataModel/tables';
 import { makeDataViewQuery } from '../../DataViews/queries';
+import { userInformation } from '../../InitialContext/userInformation';
 import { QueryInputField as MockQueryInputField } from '../FieldFilterSpec';
 import type { QueryFields } from '../Fields';
 import { QueryFieldSpec } from '../fieldSpec';
@@ -20,7 +22,10 @@ requireContext();
 jest.mock('../../../hooks/navigation', () => ({
   useUnloadProtect: () => jest.fn(),
 }));
-jest.mock('../../Molecules/AppTitle', () => ({ useTitle: () => undefined }));
+jest.mock('../../Molecules/AppTitle', () => ({
+  ...jest.requireActual('../../Molecules/AppTitle'),
+  useTitle: () => undefined,
+}));
 jest.mock('../../Header/MenuContext', () => ({
   useMenuItem: () => undefined,
 }));
@@ -75,6 +80,83 @@ jest.mock('../QueryBuilderResults', () => ({
 afterEach(() => {
   jest.useRealTimers();
   jest.restoreAllMocks();
+});
+
+test.each(['shared', 'personal'] as const)(
+  'initializes and executes a %s Series query without clearing Series',
+  async (ownership) => {
+    const ajax = jest.spyOn(ajaxModule, 'ajax').mockResolvedValue({
+      data: { count: 1, results: [[1, '123']] },
+      status: Http.OK,
+      response: new Response('', { status: Http.OK }),
+    });
+    const field = QueryFieldSpec.fromPath('CollectionObject', [
+      'catalogNumber',
+    ]).toSpQueryField();
+    field.set('operStart', 1);
+    const newQuery = makeDataViewQuery('CollectionObject', {
+      fields: [serializeResource(field)],
+      smushed: true,
+    });
+    newQuery.set('id', 100);
+    newQuery.set(
+      'specifyUser',
+      ownership === 'shared'
+        ? `/api/specify/specifyuser/${userInformation.id + 1}/`
+        : userInformation.resource_uri
+    );
+    const query = new tables.SpQuery.Resource(serializeResource(newQuery));
+    const original = serializeResource(query);
+
+    await act(async () => {
+      render(
+        <QueryBuilder autoRun forceCollection={undefined} query={query} />
+      );
+    });
+
+    await screen.findByRole('checkbox', { name: queryText.series() });
+    await waitFor(() => expect(ajax).toHaveBeenCalledTimes(2));
+    await act(async () => {
+      await Promise.resolve();
+    });
+    for (const [url, options] of ajax.mock.calls) {
+      expect(url).toBe('/stored_query/ephemeral/');
+      expect(options.body).toEqual(expect.objectContaining({ smushed: true }));
+    }
+    expect(query.get('smushed')).toBe(true);
+    if (ownership === 'shared')
+      expect(serializeResource(query)).toEqual(original);
+  }
+);
+
+test('clears Series after fields initialize without a displayed catalog number', async () => {
+  const ajax = jest.spyOn(ajaxModule, 'ajax').mockResolvedValue({
+    data: { count: 1, results: [[1, 'Smith']] },
+    status: Http.OK,
+    response: new Response('', { status: Http.OK }),
+  });
+  const field = QueryFieldSpec.fromPath('Agent', ['lastName']).toSpQueryField();
+  field.set('operStart', 1);
+  const query = makeDataViewQuery('Agent', {
+    fields: [serializeResource(field)],
+    smushed: true,
+  });
+  render(<QueryBuilder forceCollection={undefined} query={query} />);
+  const queryButton = await screen.findByRole('button', {
+    name: queryText.query(),
+  });
+  await waitFor(() => expect(query.get('smushed')).toBe(false));
+
+  await act(async () => {
+    await userEvent.click(queryButton);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+  });
+  await waitFor(() => expect(ajax).toHaveBeenCalledTimes(2));
+  await act(async () => {
+    await Promise.resolve();
+  });
+  for (const [, options] of ajax.mock.calls)
+    expect(options.body).toEqual(expect.objectContaining({ smushed: false }));
 });
 
 test.each([

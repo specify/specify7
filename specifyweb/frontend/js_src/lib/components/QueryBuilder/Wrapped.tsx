@@ -371,14 +371,15 @@ function Wrapped({
       ),
     [state, table.name]
   );
+  const fieldsInitialized = state !== pendingState;
 
   React.useEffect(() => {
-    if (!showSeries && !isShared)
+    if (fieldsInitialized && !showSeries && !isShared)
       setQuery({
         ...query,
         smushed: false,
       });
-  }, [showSeries, isShared]);
+  }, [fieldsInitialized, showSeries, isShared]);
 
   return treeRanksLoaded ? (
     <ReadOnlyContext.Provider value={isReadOnly}>
