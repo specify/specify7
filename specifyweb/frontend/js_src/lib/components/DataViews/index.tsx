@@ -27,7 +27,7 @@ import {
   SplitViewToggleButton,
   useSplitViewOrientation,
 } from '../QueryBuilder/SplitView';
-import { QueryFormView } from '../QueryBuilder/ToForms';
+import { SelectedQueryForms } from '../QueryBuilder/SelectedQueryForms';
 import { NotFoundView } from '../Router/NotFoundView';
 import type { DataViewQueriesFile } from './queries';
 import {
@@ -312,7 +312,8 @@ function LoadedDataViewFromTable({
         onFetchMore,
         onDelete,
       }) => (
-        <QueryFormView
+        <SelectedQueryForms
+          inline
           results={results}
           selectedRows={resultSelection}
           selectedIndex={selectedIndex}
