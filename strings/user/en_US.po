@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Content-Type: text/plain\n"
+msgstr "Content-Type: text/plain; charset=UTF-8\n"
 
 #: components/ChooseCollection/index.tsx:183
 #: components/Header/UserTools.tsx:54

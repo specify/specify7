@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Content-Type: text/plain\n"
+msgstr "Content-Type: text/plain; charset=UTF-8\n"
 
 #: components/BatchEdit/index.tsx:221
 #: components/BatchEdit/__tests__/BatchEditFromQuery.test.tsx:110

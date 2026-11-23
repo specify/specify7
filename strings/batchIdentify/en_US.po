@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Content-Type: text/plain\n"
+msgstr "Content-Type: text/plain; charset=UTF-8\n"
 
 #: components/BatchIdentify/index.tsx:787
 #: components/BatchIdentify/index.tsx:812

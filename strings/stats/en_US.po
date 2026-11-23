@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Content-Type: text/plain\n"
+msgstr "Content-Type: text/plain; charset=UTF-8\n"
 
 #: components/Statistics/StatsSpec.tsx:29
 #: components/Statistics/__tests__/layout.tests.ts:18

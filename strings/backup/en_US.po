@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Content-Type: text/plain\n"
+msgstr "Content-Type: text/plain; charset=UTF-8\n"
 
 #: components/Toolbar/BackupStatus.tsx:99
 #. Used in: Components > Toolbar > Backup Status

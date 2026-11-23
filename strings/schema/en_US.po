@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Content-Type: text/plain\n"
+msgstr "Content-Type: text/plain; charset=UTF-8\n"
 
 #: components/SchemaConfig/Layout.tsx:171
 #. Used in: Components > Schema Config > Layout

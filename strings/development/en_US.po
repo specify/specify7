@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Content-Type: text/plain\n"
+msgstr "Content-Type: text/plain; charset=UTF-8\n"
 
 #: components/Developer/CrashReportVisualizer.tsx:21
 #: components/Router/Routes.tsx:509

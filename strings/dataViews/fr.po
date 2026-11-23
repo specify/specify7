@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "PO-Revision-Date: 2026-10-20 13:51+0000\n"
 "Last-Translator: Maxime GRIVEAU <mgriveau@users.noreply.hosted.weblate.org>\n"
 "Language-Team: French "

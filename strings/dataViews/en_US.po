@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Content-Type: text/plain\n"
+msgstr "Content-Type: text/plain; charset=UTF-8\n"
 
 #: components/DataViews/DataViewTables.tsx:107
 #: components/DataViews/DataViewTables.tsx:115
