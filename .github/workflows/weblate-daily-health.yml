@@ -93,8 +93,9 @@ jobs:
 
           api_url="https://hosted.weblate.org/api/projects/specify-7/repository/"
           api_file="$RUNNER_TEMP/weblate-repository.json"
-          lock_url="https://hosted.weblate.org/api/components/specify-7/common/lock/"
-          lock_file="$RUNNER_TEMP/weblate-common-lock.json"
+          components_url="https://hosted.weblate.org/api/projects/specify-7/components/"
+          components_file="$RUNNER_TEMP/weblate-components.json"
+          component_status_file="$RUNNER_TEMP/weblate-component-status.tsv"
           result="healthy"
           detail=""
 
@@ -132,25 +133,83 @@ jobs:
           fi
 
           if [ -n "$WEBLATE_API_TOKEN" ]; then
-            if ! lock_http_code=$(curl --silent --show-error \
-              --connect-timeout 10 --max-time 30 \
-              --output "$lock_file" --write-out '%{http_code}' \
-              --header "Authorization: Token $WEBLATE_API_TOKEN" \
-              "$lock_url"); then
-              result="error"
-              detail="Could not query the Specify 7/common lock status."
-            elif [ "$lock_http_code" != "200" ]; then
-              result="error"
-              detail="Weblate component lock API returned HTTP $lock_http_code."
-            elif ! locked=$(jq -er 'if (.locked | type) == "boolean" then (.locked | tostring) else error("missing locked status") end' "$lock_file"); then
-              result="error"
-              detail="Weblate returned an unexpected component lock response."
-            elif [ "$locked" = "true" ]; then
-              if [ "$result" = "healthy" ]; then
-                result="attention"
-                detail="Specify 7/common is locked for contributions."
+            : >"$component_status_file"
+            component_total=""
+            component_error=""
+            while [ -n "$components_url" ]; do
+              case "$components_url" in
+                https://hosted.weblate.org/api/projects/specify-7/components/*) ;;
+                *)
+                  component_error="Weblate returned an unexpected component-list URL."
+                  break
+                  ;;
+              esac
+
+              if ! components_http_code=$(curl --silent --show-error \
+                --connect-timeout 10 --max-time 30 \
+                --output "$components_file" --write-out '%{http_code}' \
+                --header "Authorization: Token $WEBLATE_API_TOKEN" \
+                "$components_url"); then
+                component_error="Could not query the Weblate component list."
+                break
+              elif [ "$components_http_code" != "200" ]; then
+                component_error="Weblate component API returned HTTP $components_http_code."
+                break
+              elif ! jq -e '
+                type == "object" and
+                has("count") and has("next") and has("results") and
+                (.count | type == "number") and
+                (.results | type == "array") and
+                (.next == null or (.next | type == "string")) and
+                all(.results[];
+                  (.slug | type == "string" and test("^[A-Za-z0-9_.-]+$")) and
+                  (.locked | type == "boolean")
+                )
+              ' "$components_file" >/dev/null; then
+                component_error="Weblate returned an unexpected component lock response."
+                break
+              fi
+
+              page_total=$(jq -r '.count' "$components_file")
+              if [ -z "$component_total" ]; then
+                component_total="$page_total"
+              elif [ "$component_total" != "$page_total" ]; then
+                component_error="Weblate component count changed during the status check."
+                break
+              fi
+
+              jq -r '.results[] | [.slug, (.locked | tostring)] | @tsv' \
+                "$components_file" >>"$component_status_file"
+              components_next=$(jq -r '.next // empty' "$components_file")
+              if [ -z "$components_next" ]; then
+                components_url=""
+              elif [ "${components_next#/}" != "$components_next" ]; then
+                components_url="https://hosted.weblate.org$components_next"
               else
-                detail="$detail; Specify 7/common is locked for contributions"
+                components_url="$components_next"
+              fi
+            done
+
+            if [ -n "$component_error" ]; then
+              result="error"
+              detail="$component_error"
+            else
+              component_count=$(awk 'END { print NR + 0 }' "$component_status_file")
+              unique_component_count=$(cut -f1 "$component_status_file" | sort -u | awk 'END { print NR + 0 }')
+              if [ "$component_count" != "$component_total" ] || [ "$unique_component_count" != "$component_total" ]; then
+                result="error"
+                detail="Weblate returned $unique_component_count unique components out of $component_total; lock status is incomplete."
+              else
+                locked_count=$(awk -F '\t' '$2 == "true" { count++ } END { print count + 0 }' "$component_status_file")
+                locked_components=$(awk -F '\t' '$2 == "true" { printf "%s%s", separator, $1; separator = ", " } END { print "" }' "$component_status_file")
+                if [ "$locked_count" -gt 0 ]; then
+                  if [ "$result" = "healthy" ]; then
+                    result="attention"
+                    detail="$locked_count of $component_count components are locked: $locked_components"
+                  else
+                    detail="$detail; $locked_count of $component_count components are locked: $locked_components"
+                  fi
+                fi
               fi
             fi
           fi
@@ -182,9 +241,13 @@ jobs:
             echo "Weblate is healthy; no Slack message sent."
             exit 0
           elif [ "$result" = "attention" ]; then
-            message=":warning: *Daily Weblate check needs attention:* $detail\n<https://hosted.weblate.org/projects/specify-7/|Open Specify 7 on Weblate> · <${GITHUB_RUN_URL}|Workflow run>"
+            message=$(printf '%s\n%s' \
+              ":warning: *Daily Weblate check needs attention:* $detail" \
+              "<https://hosted.weblate.org/projects/specify-7/|Open Specify 7 on Weblate> · <${GITHUB_RUN_URL}|Workflow run>")
           else
-            message=":x: *Daily Weblate check failed:* $detail\n<${GITHUB_RUN_URL}|Workflow run>"
+            message=$(printf '%s\n%s' \
+              ":x: *Daily Weblate check failed:* $detail" \
+              "<${GITHUB_RUN_URL}|Workflow run>")
           fi
 
           payload=$(jq -n --arg text "$message" '{text: $text}')
