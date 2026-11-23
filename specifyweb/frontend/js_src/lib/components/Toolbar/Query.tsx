@@ -5,7 +5,6 @@
 import React from 'react';
 import { useOutletContext } from 'react-router';
 
-import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
@@ -18,6 +17,7 @@ import { Link } from '../Atoms/Link';
 import { DataEntry } from '../Atoms/DataEntry';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { fetchCollection } from '../DataModel/collection';
+import type { SerializedCollection } from '../DataModel/collection';
 import { backendFilter, getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { idFromUrl, resourceEvents } from '../DataModel/resource';
@@ -133,7 +133,7 @@ export function QueryListDialog({
   >({});
   const ownerId = filters?.specifyUser ?? userInformation.id;
   const fetchQueries = React.useCallback(
-    async () =>
+    async (waitForPendingGet = false) =>
       fetchCollection(
         'SpQuery',
         {
@@ -154,11 +154,34 @@ export function QueryListDialog({
           ...(searchFilter === ''
             ? {}
             : backendFilter('name').caseInsensitiveContains(searchFilter)),
-        }
+        },
+        { waitForPendingGet }
       ),
     [filters, ownerId, limit, offset, orderBy, searchFilter, section]
   );
-  const [data, setData] = useAsyncState(fetchQueries, false);
+  const [data, setData] = React.useState<
+    SerializedCollection<SpQuery> | undefined
+  >(undefined);
+  const lastFetchQueries = React.useRef(fetchQueries);
+  const lastRefreshToken = React.useRef(refreshToken);
+  React.useLayoutEffect(() => {
+    const isRefresh = lastRefreshToken.current !== refreshToken;
+    lastRefreshToken.current = refreshToken;
+    if (lastFetchQueries.current !== fetchQueries) {
+      lastFetchQueries.current = fetchQueries;
+      setData(undefined);
+    }
+
+    let isCurrent = true;
+    void fetchQueries(isRefresh)
+      .then((newData) => {
+        if (isCurrent) setData(newData);
+      })
+      .catch(raise);
+    return (): void => {
+      isCurrent = false;
+    };
+  }, [fetchQueries, refreshToken]);
 
   React.useEffect(
     () =>
@@ -182,22 +205,6 @@ export function QueryListDialog({
       window.removeEventListener('focus', handleFocus);
     };
   }, [section]);
-
-  const lastRefreshToken = React.useRef(refreshToken);
-  React.useEffect(() => {
-    if (lastRefreshToken.current === refreshToken) return;
-    lastRefreshToken.current = refreshToken;
-
-    let isCurrent = true;
-    void fetchQueries()
-      .then((newData) => {
-        if (isCurrent) setData(newData);
-      })
-      .catch(raise);
-    return (): void => {
-      isCurrent = false;
-    };
-  }, [fetchQueries, refreshToken, setData]);
 
   React.useEffect(() => {
     if (data === undefined) return;

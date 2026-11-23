@@ -87,6 +87,8 @@ export type AjaxProps = Omit<RequestInit, 'body' | 'headers' | 'method'> & {
    * If 'dismissible', show the error dialog, but allow closing it
    */
   readonly errorMode?: AjaxErrorMode;
+  /** Wait for an existing GET to finish before fetching this URL again. */
+  readonly waitForPendingGet?: boolean;
 };
 
 /**
@@ -108,6 +110,7 @@ export async function ajax<RESPONSE_TYPE = string>(
     /** Ajax-specific options that are not passed to fetch() */
     expectedErrors = [],
     errorMode = safeMethods.has(method) ? 'dismissible' : 'visible',
+    waitForPendingGet = false,
     ...options
   }: AjaxProps
 ): Promise<AjaxResponseObject<RESPONSE_TYPE>> {
@@ -128,8 +131,18 @@ export async function ajax<RESPONSE_TYPE = string>(
       ...options,
     });
   }
-  if (method === 'GET' && typeof pendingRequests[url] === 'object')
-    return pendingRequests[url] as Promise<AjaxResponseObject<RESPONSE_TYPE>>;
+  const pending = pendingRequests[url];
+  if (method === 'GET' && pending !== undefined) {
+    if (!waitForPendingGet)
+      return pending as Promise<AjaxResponseObject<RESPONSE_TYPE>>;
+    // The original caller handles any error; a refresh should still proceed.
+    await pending.then(
+      () => undefined,
+      () => undefined
+    );
+    if (typeof pendingRequests[url] === 'object')
+      return pendingRequests[url] as Promise<AjaxResponseObject<RESPONSE_TYPE>>;
+  }
   const acceptBlobResponse = accept === 'application/octet-stream';
   pendingRequests[url] = fetch(url, {
     ...options,

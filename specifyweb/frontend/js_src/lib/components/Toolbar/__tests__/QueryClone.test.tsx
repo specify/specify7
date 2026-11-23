@@ -36,6 +36,57 @@ afterEach(() => {
   jest.restoreAllMocks();
 });
 
+test('focus refresh ignores an older in-flight shared query result', async () => {
+  const fetch = jest
+    .spyOn(collection, 'fetchCollection')
+    .mockResolvedValueOnce({ records: [], totalCount: 0 });
+  let resolveOld!: (value: { records: []; totalCount: number }) => void;
+  let resolveRefresh!: (value: { records: []; totalCount: number }) => void;
+  let resolveLatest!: (value: { records: []; totalCount: number }) => void;
+  fetch
+    .mockReturnValueOnce(new Promise((resolve) => (resolveOld = resolve)))
+    .mockReturnValueOnce(new Promise((resolve) => (resolveRefresh = resolve)))
+    .mockReturnValueOnce(new Promise((resolve) => (resolveLatest = resolve)));
+
+  render(
+    <QueryListDialog newQueryUrl="/specify/query/new/" onClose={jest.fn()}>
+      {({ children, records, totalCount }) => (
+        <>
+          {children}
+          <div aria-label="Query count" role="status">
+            {records === undefined ? 'loading' : totalCount}
+          </div>
+        </>
+      )}
+    </QueryListDialog>
+  );
+  await waitFor(() =>
+    expect(
+      screen.getByRole('status', { name: 'Query count' })
+    ).toHaveTextContent('0')
+  );
+
+  fireEvent.click(
+    screen.getByRole('button', { name: queryText.sharedQueries() })
+  );
+  expect(fetch).toHaveBeenCalledTimes(2);
+  fireEvent(window, new Event('focus'));
+  expect(fetch).toHaveBeenCalledTimes(3);
+  expect(fetch.mock.calls[2][3]).toEqual({ waitForPendingGet: true });
+  fireEvent(window, new Event('focus'));
+  expect(fetch).toHaveBeenCalledTimes(4);
+
+  await act(async () => resolveLatest({ records: [], totalCount: 2 }));
+  expect(screen.getByRole('status', { name: 'Query count' })).toHaveTextContent(
+    '2'
+  );
+  await act(async () => resolveRefresh({ records: [], totalCount: 3 }));
+  await act(async () => resolveOld({ records: [], totalCount: 1 }));
+  expect(screen.getByRole('status', { name: 'Query count' })).toHaveTextContent(
+    '2'
+  );
+});
+
 test.each(['success', 'failure'] as const)(
   'preserves shared-query clone state across refreshes and resets it on %s',
   async (outcome) => {

@@ -60,7 +60,8 @@ export const fetchCollection = async <
    * Can query partial dates (e.g. catalogedDate__year=2030)
    * More info: https://docs.djangoproject.com/en/4.0/topics/db/queries/
    */
-  advancedFilters: IR<number | string> = {}
+  advancedFilters: IR<number | string> = {},
+  options: { readonly waitForPendingGet?: boolean } = {}
 ): Promise<SerializedCollection<SCHEMA>> =>
   ajax<{
     readonly meta: {
@@ -93,7 +94,7 @@ export const fetchCollection = async <
       )
     ),
 
-    { headers: { Accept: 'application/json' } }
+    { headers: { Accept: 'application/json' }, ...options }
   ).then(({ data: { meta, objects } }) => ({
     records: objects.map(serializeResource),
     totalCount: meta.total_count,
