@@ -1634,7 +1634,7 @@ export const formsText = createDictionary({
   },
   noParentFound: {
     'en-us': 'Could not find parent resource',
-    'de-ch': 'Die übergeordnete Ressource konnte nicht gefunden werden.',
+    'de-ch': 'Übergeordnete Ressource konnte nicht gefunden werden',
     'es-es': 'No se pudo encontrar el recurso principal',
     'fr-fr': 'Impossible de trouver la ressource parente',
     'hr-hr': 'Nije moguće pronaći nadređeni resurs',
