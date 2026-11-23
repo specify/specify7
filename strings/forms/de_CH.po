@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-11-06 14:51+0000\n"
+"PO-Revision-Date: 2026-11-23 18:16+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/forms/de_CH/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2026.11.2.dev0\n"
+"X-Generator: Weblate 2026.12.dev0\n"
 
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Preferences > Index
 #: components/Preferences/UserDefinitions.tsx:847
@@ -192,8 +192,8 @@ msgstr "Zu {pickListTable:string} hinzufügen?"
 #, fuzzy
 msgid "addToPickListConfirmationDescription"
 msgstr ""
-"Den Wert \"{value:string}\" zum {pickListTable:string} mit dem Namen "
-"\"{pickListName:string}\" hinzufügen?"
+"Den Wert \"{value:string}\" zum {pickListTable:string} mit dem Namen \""
+"{pickListName:string}\" hinzufügen?"
 
 #. Used in: Components > Pick Lists > Index
 #: components/PickLists/index.tsx:252
@@ -594,8 +594,7 @@ msgstr "Felder für den Massenübertrag konfigurieren"
 #: components/FormMeta/CarryForward.tsx:394
 #, fuzzy
 msgid "carryForwardTableSettingsDescription"
-msgstr ""
-"Felder konfigurieren, die übertragen werden sollen ({tableName:string})"
+msgstr "Felder konfigurieren, die übertragen werden sollen ({tableName:string})"
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:391
@@ -916,4 +915,4 @@ msgstr "Übergeordnete Ressource anzeigen"
 #: components/Forms/useShowParentButton.tsx:93
 #, fuzzy
 msgid "noParentFound"
-msgstr "Die übergeordnete Ressource konnte nicht gefunden werden."
+msgstr "Übergeordnete Ressource konnte nicht gefunden werden"
