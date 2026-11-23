@@ -38,6 +38,25 @@ Documentation for used GitHub secrets.
                 </a>,
                 <a href="https://github.com/specify/specify7/blob/weblate-localization/.github/workflows/push.yml">
                     push.yml
+                </a>,
+                <a href="https://github.com/specify/specify7/blob/main/.github/workflows/weblate-daily-health.yml">
+                    weblate-daily-health.yml
+                </a>
+            </td>
+        </tr>
+        <tr>
+            <td>SLACK_WEBLATE_WEBHOOK_URL</td>
+            <td>Yes</td>
+            <td>
+                Slack incoming webhook for Weblate workflow failures and the
+                daily repository health report
+            </td>
+            <td>
+                <a href="https://github.com/specify/specify7/blob/weblate-localization/.github/workflows/push.yml">
+                    push.yml
+                </a>,
+                <a href="https://github.com/specify/specify7/blob/main/.github/workflows/weblate-daily-health.yml">
+                    weblate-daily-health.yml
                 </a>
             </td>
         </tr>
@@ -52,6 +71,8 @@ Documentation for used GitHub secrets.
             <td>
                 <a href="https://github.com/specify/specify7/blob/weblate-localization/.github/workflows/push.yml">
                     push.yml
+                </a>,
+                    weblate-daily-health.yml
                 </a>
             </td>
         </tr>
