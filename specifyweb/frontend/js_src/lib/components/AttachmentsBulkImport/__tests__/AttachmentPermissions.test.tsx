@@ -6,14 +6,15 @@ import { requireContext } from '../../../tests/helpers';
 import { AttachmentRollback } from '../Rollback';
 import { AttachmentUpload } from '../Upload';
 
-const mockHasPermission = jest.fn(() => true);
+const mockHasPermission = jest.fn((_resource: string, _action: string) => true);
 
 jest.mock('../../../hooks/useAsyncState', () => ({
   usePromise: () => [true],
 }));
 
 jest.mock('../../Permissions/helpers', () => ({
-  hasPermission: (...args: unknown[]) => mockHasPermission(...args),
+  hasPermission: (resource: string, action: string) =>
+    mockHasPermission(resource, action),
   hasTablePermission: () => true,
   hasToolPermission: () => true,
 }));
