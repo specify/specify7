@@ -506,20 +506,20 @@ def delete_resource(collection, agent, name, id, version) -> None:
         clean_predelete=clean_predelete,
     )
 
-def get_collection(logged_in_collection, model, checker: ReadPermChecker, control_params=GetCollectionForm.defaults, params={}) -> CollectionPayload:
+def get_collection(logged_in_collection, model, checker: ReadPermChecker, control_params=GetCollectionForm.defaults, params={}, user=None) -> CollectionPayload:
     from specifyweb.specify.api.serializers import _obj_to_data
     
     """Return a list of structured data for the objects from 'model'
     subject to the request 'params'."""
 
-    objs = apply_filters(logged_in_collection, params, model, control_params)
+    objs = apply_filters(logged_in_collection, params, model, control_params, user=user)
 
     try:
         return objs_to_data_(objs, objs.count(), lambda o: _obj_to_data(o, checker), control_params['offset'], control_params['limit'])
     except FieldError as e:
         raise OrderByError(e)
     
-def apply_filters(logged_in_collection, params, model, control_params=GetCollectionForm.defaults):
+def apply_filters(logged_in_collection, params, model, control_params=GetCollectionForm.defaults, user=None):
     filters = {}
 
     if isinstance(model, str):
@@ -556,7 +556,14 @@ def apply_filters(logged_in_collection, params, model, control_params=GetCollect
     except (ValueError, FieldError) as e:
         raise FilterError(e)
 
-    if control_params['domainfilter'] == 'true':
+    if model in (models.Spquery, models.Spqueryfolder):
+        # Query folders and queries always enforce their collection/discipline
+        objs = filter_by_collection(
+            objs,
+            logged_in_collection,
+            user=user,
+        )
+    elif control_params['domainfilter'] == 'true':
         objs = filter_by_collection(objs, logged_in_collection)
     if control_params['orderby']:
         try:

@@ -6712,7 +6712,7 @@ datamodel = Datamodel(tables=[
     Table(
         classname='edu.ku.brc.specify.datamodel.SpQueryFolder',
         table='spqueryfolder',
-        tableId=518,
+        tableId=534,
         system=True,
         idColumn='SpQueryFolderID',
         idFieldName='spQueryFolderId',
