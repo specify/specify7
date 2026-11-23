@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-11-06 14:51+0000\n"
+"PO-Revision-Date: 2026-11-23 18:23+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "wbPlan/uk/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 2026.11.2.dev0\n"
+"X-Generator: Weblate 2026.12.dev0\n"
 
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Work Bench > Wb View
 #: components/Preferences/UserDefinitions.tsx:2298
@@ -443,7 +443,7 @@ msgstr "Це видалить існуючі зіставлення полів �
 #: components/WbPlanView/MapperComponents.tsx:537
 #, fuzzy
 msgid "changeMatchingLogic"
-msgstr "Логіка зіставлення змін"
+msgstr "Зміна логіки зіставлення"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:545
