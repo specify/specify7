@@ -16,6 +16,11 @@ on:
         required: false
         default: weblate-localization
         type: string
+      unlock_all_components:
+        description: "Unlock every component only when repository and PO checks are healthy"
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -28,7 +33,7 @@ jobs:
   repository-health:
     name: Check Weblate repository health
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
       - name: Checkout Specify 7
         uses: actions/checkout@v4
@@ -88,6 +93,7 @@ jobs:
           APP_PO_CHECK_OUTCOME: ${{ steps.app_po_check.outcome }}
           PO_CHECK_OUTCOME: ${{ steps.po_check.outcome }}
           PO_REPAIR_OUTCOME: ${{ steps.po_repair.outcome }}
+          UNLOCK_ALL_COMPONENTS: ${{ inputs.unlock_all_components }}
         run: |
           set -u
 
@@ -98,6 +104,7 @@ jobs:
           component_status_file="$RUNNER_TEMP/weblate-component-status.tsv"
           result="healthy"
           detail=""
+          unlock_safe="false"
 
           if [ -z "$WEBLATE_API_TOKEN" ]; then
             result="error"
@@ -127,7 +134,9 @@ jobs:
             ' "$api_file")
             if [ -n "$detail" ]; then
               result="attention"
+              unlock_safe="false"
             else
+              unlock_safe="true"
               detail="No pending commits, merges, pushes, or repository permission gaps were reported."
             fi
           fi
@@ -193,12 +202,14 @@ jobs:
             if [ -n "$component_error" ]; then
               result="error"
               detail="$component_error"
+              unlock_safe="false"
             else
               component_count=$(awk 'END { print NR + 0 }' "$component_status_file")
               unique_component_count=$(cut -f1 "$component_status_file" | sort -u | awk 'END { print NR + 0 }')
               if [ "$component_count" != "$component_total" ] || [ "$unique_component_count" != "$component_total" ]; then
                 result="error"
                 detail="Weblate returned $unique_component_count unique components out of $component_total; lock status is incomplete."
+                unlock_safe="false"
               else
                 locked_count=$(awk -F '\t' '$2 == "true" { count++ } END { print count + 0 }' "$component_status_file")
                 locked_components=$(awk -F '\t' '$2 == "true" { printf "%s%s", separator, $1; separator = ", " } END { print "" }' "$component_status_file")
@@ -215,6 +226,7 @@ jobs:
           fi
 
           if [ "$APP_PO_CHECK_OUTCOME" != "success" ]; then
+            unlock_safe="false"
             if [ "$result" = "healthy" ]; then
               result="attention"
               detail="Default-branch PO check failed or found no PO files at specifyweb/frontend/locale."
@@ -224,6 +236,7 @@ jobs:
           fi
 
           if [ "$PO_CHECK_OUTCOME" != "success" ]; then
+            unlock_safe="false"
             if [ "$result" = "healthy" ]; then
               result="attention"
               detail="PO files are missing UTF-8 charset headers; run the Weblate repair workflow."
@@ -233,8 +246,50 @@ jobs:
           fi
 
           if [ "$PO_REPAIR_OUTCOME" = "failure" ]; then
+            unlock_safe="false"
             result="error"
             detail="PO header repair failed; review the workflow run."
+          fi
+
+          if [ "$UNLOCK_ALL_COMPONENTS" = "true" ]; then
+            if [ "$GITHUB_REF_NAME" != "main" ]; then
+              result="error"
+              detail="Unlock canceled; run the workflow from the main branch."
+            elif [ "$unlock_safe" != "true" ]; then
+              result="error"
+              detail="Unlock canceled because repository or PO health checks did not pass: $detail"
+            else
+              unlock_count=0
+              unlock_failures=""
+              unlock_response_file="$RUNNER_TEMP/weblate-unlock-response.json"
+              while IFS=$'\t' read -r component_slug component_locked; do
+                [ "$component_locked" = "true" ] || continue
+                component_lock_url="https://hosted.weblate.org/api/components/specify-7/$component_slug/lock/"
+                if ! unlock_http_code=$(curl --silent --show-error \
+                  --connect-timeout 5 --max-time 10 \
+                  --output "$unlock_response_file" --write-out '%{http_code}' \
+                  --request POST \
+                  --header "Authorization: Token $WEBLATE_API_TOKEN" \
+                  --header 'Content-Type: application/json' \
+                  --data '{"lock":false}' \
+                  "$component_lock_url"); then
+                  unlock_failures="${unlock_failures}${unlock_failures:+, }$component_slug (request failed)"
+                elif [ "$unlock_http_code" != "200" ] || ! jq -e '.locked == false' "$unlock_response_file" >/dev/null; then
+                  unlock_failures="${unlock_failures}${unlock_failures:+, }$component_slug (HTTP $unlock_http_code)"
+                else
+                  unlock_count=$((unlock_count + 1))
+                fi
+              done <"$component_status_file"
+
+              if [ -n "$unlock_failures" ]; then
+                result="error"
+                detail="Could not unlock all components; succeeded for $unlock_count. Failures: $unlock_failures"
+              else
+                result="healthy"
+                detail="Health checks passed; unlocked $unlock_count components."
+                echo "$detail"
+              fi
+            fi
           fi
 
           if [ "$result" = "healthy" ]; then
