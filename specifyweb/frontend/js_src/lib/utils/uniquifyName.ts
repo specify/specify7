@@ -38,6 +38,7 @@ export function getUniqueName(
   /**
    * In the process of making the name unique, its length may increase.
    * This trims the string if needed, while still keeping it unique
+   * Throws if no well-formed unique name fits within maxLength.
    *
    * @remarks
    * Can get this number from SQL schema for a given field
@@ -94,9 +95,7 @@ export function getUniqueName(
 }
 
 /**
- * Search for a unique truncated `${prefix}${index}${suffix}` name within
- * maxLength. If none is found after a bounded number of attempts, give up on
- * uniqueness and return a truncated name to guarantee termination.
+ * Prefer truncated suffixes before searching all well-formed UTF-16 names.
  */
 function findBoundedFallback(
   usedNames: RA<string>,
@@ -104,9 +103,34 @@ function findBoundedFallback(
   prefix: string,
   suffix: string
 ): LocalizedString {
+  const used = new Set(usedNames);
   for (let index = 2; index <= usedNames.length + 2; index += 1) {
     const candidate = truncateName(`${prefix}${index}${suffix}`, maxLength);
-    if (!usedNames.includes(candidate)) return localized(candidate);
+    if (!used.has(candidate)) return localized(candidate);
   }
-  return localized(truncateName(`${prefix}2${suffix}`, maxLength));
+
+  if (maxLength < 1)
+    throw new RangeError('No unique name fits within maxLength');
+
+  // Enumerate UTF-16 code units starting with "a", shortest names first.
+  const digits = [0];
+  while (true) {
+    const candidate = digits
+      .map((digit) => String.fromCharCode((digit + 0x61) % 0x1_00_00))
+      .join('');
+    const wellFormed = Array.from(candidate).every((character) => {
+      const codeUnit = character.charCodeAt(0);
+      return character.length === 2 || codeUnit < 0xd8_00 || codeUnit > 0xdf_ff;
+    });
+    if (wellFormed && !used.has(candidate)) return localized(candidate);
+
+    let index = digits.length - 1;
+    while (index >= 0 && digits[index] === 0xff_ff) {
+      digits[index] = 0;
+      index -= 1;
+    }
+    if (index >= 0) digits[index] += 1;
+    else if (digits.length + 1 <= maxLength) digits.push(0);
+    else throw new RangeError('No unique name fits within maxLength');
+  }
 }

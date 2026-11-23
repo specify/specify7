@@ -28,6 +28,23 @@ theories(getUniqueName, [
   { in: ['a', ['a', ''], 1, 'name'], out: '_' },
   // A bounded unique name with a lower index exists and is found
   { in: ['', ['', ' (99)'], 4], out: ' (2)' },
-  // No unique name within maxLength exists - still terminates
-  { in: ['a', [''], 0], out: '' },
+  { in: ['a', ['a', '', ' '], 1], out: 'b' },
+  { in: ['a', ['a', '', '_'], 1, 'name'], out: 'b' },
+  { in: ['a', [], 0], out: '' },
 ]);
+
+test('reports when no unique name fits', () => {
+  expect(() => getUniqueName('a', [''], 0)).toThrow(RangeError);
+});
+
+test('uses longer names after exhausting well-formed single-unit names', () => {
+  const singleUnitNames = Array.from({ length: 0x1_00_00 }, (_, codeUnit) =>
+    codeUnit < 0xd8_00 || codeUnit > 0xdf_ff
+      ? String.fromCharCode(codeUnit)
+      : undefined
+  ).filter((name): name is string => name !== undefined);
+  const usedNames = ['', ' (', ...singleUnitNames];
+
+  expect(getUniqueName('a', usedNames, 2)).toBe('aa');
+  expect(() => getUniqueName('a', usedNames, 1)).toThrow(RangeError);
+});
