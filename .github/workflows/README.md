@@ -72,6 +72,7 @@ Documentation for used GitHub secrets.
                 <a href="https://github.com/specify/specify7/blob/weblate-localization/.github/workflows/push.yml">
                     push.yml
                 </a>,
+                <a href="https://github.com/specify/specify7/blob/main/.github/workflows/weblate-daily-health.yml">
                     weblate-daily-health.yml
                 </a>
             </td>
