@@ -114,7 +114,7 @@ export const welcomeText = createDictionary({
     'en-us':
       'Specify 7, Copyright 2026, University of Kansas Center for Research. Specify comes with ABSOLUTELY NO WARRANTY. This is free, open-source software licensed under GNU General Public License v3.',
     'de-ch':
-      'Specify 7, Copyright 2026, University of Kansas Center for Research. Specify wird OHNE JEGLICHE GEWÄHRLEISTUNG bereitgestellt. Dies ist freie Open-Source-Software, lizenziert unter der GNU General Public License v3.',
+      'Specify 7, Copyright 2026, University of Kansas Center for Research. Specify wird ohne jegliche Gewährleistung bereitgestellt. Es handelt sich um freie Open-Source-Software, lizenziert unter der GNU General Public License v3.',
     'es-es':
       'Specify 7, Copyright 2026, Centro de Investigación de la Universidad de Kansas. Specify se distribuye SIN GARANTÍA ALGUNA. Este es un software libre de código abierto, licenciado bajo la Licencia Pública General GNU v3.',
     'fr-fr':

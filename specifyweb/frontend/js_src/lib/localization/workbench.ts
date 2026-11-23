@@ -44,7 +44,7 @@ export const wbText = createDictionary({
   },
   validation: {
     'en-us': 'Validation',
-    'ru-ru': 'Валидация',
+    'ru-ru': 'Проверка',
     'es-es': 'Validación',
     'fr-fr': 'Validation',
     'uk-ua': 'Перевірка',
@@ -154,7 +154,7 @@ export const wbText = createDictionary({
   },
   dataCheckOn: {
     'en-us': 'Live Validation: On',
-    'ru-ru': 'Проверка в реальном времени: включена',
+    'ru-ru': 'Проверка в реальном времени: включена.',
     'es-es': 'Validación en vivo: En',
     'fr-fr': 'Validation en direct : activée',
     'uk-ua': 'Перевірка в реальному часі: увімкнено',
@@ -233,7 +233,7 @@ export const wbText = createDictionary({
     'fr-fr': 'valeur de remplacement',
     'uk-ua': 'Вартість заміщення',
     'de-ch': 'Wiederbeschaffungswert',
-    'pt-br': 'Valor de reposição',
+    'pt-br': 'Valor de substituição',
     'hr-hr': 'Zamjenska vrijednost',
     nb: 'Ny verdi',
   },
@@ -1195,7 +1195,7 @@ export const wbText = createDictionary({
     'fr-fr': 'Importer un fichier pour créer un nouvel ensemble de données',
     'uk-ua': 'Імпорт файлу для створення нового набору даних',
     'de-ch':
-      'Importieren Sie eine Datei, um einen neuen Datensatz zu erstellen.',
+      'Importieren Sie eine Datei, um einen neuen Datensatz zu erstellen',
     'pt-br': 'Importe um arquivo para criar um novo conjunto de dados.',
     'hr-hr': 'Uvoz datoteke za stvaranje novog skupa podataka',
     nb: 'Importer en fil for å opprette et nytt datasett',
