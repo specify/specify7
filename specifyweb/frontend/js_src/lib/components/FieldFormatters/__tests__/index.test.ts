@@ -7,7 +7,16 @@ import {
   fieldFormatterTypeMapper,
   getUiFormatters,
 } from '..';
+import { exportsForTests } from '../spec';
 import { localized } from '../../../utils/types';
+
+const { trimRegexString } = exportsForTests;
+
+test('regular expression anchors and JavaScript slashes are removed', () => {
+  expect(trimRegexString('/^ABC-\\d{3}$/')).toBe('ABC-\\d{3}');
+  expect(trimRegexString('^ABC-\\d{3}$')).toBe('ABC-\\d{3}');
+  expect(trimRegexString('ABC-\\d{3}')).toBe('ABC-\\d{3}');
+});
 
 mockTime();
 requireContext();

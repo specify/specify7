@@ -8,10 +8,28 @@ from sqlalchemy import Column, Integer, MetaData, Table, create_engine
 from sqlalchemy.orm import Session
 
 from specifyweb.backend.stored_queries import execution, views
-from specifyweb.backend.stored_queries.query_construct import QueryConstruct
+from specifyweb.backend.stored_queries.query_construct_model import QueryConstruct
 
 
 class TestSelectionExecution(TestCase):
+    def test_statistics_cache_distinguishes_selected_results(self):
+        query = {
+            "contexttableid": 1,
+            "selectdistinct": False,
+            "countonly": True,
+            "fields": [],
+        }
+        keys = {
+            views.ephemeral_statistics_to_str({**query, "selection": selection})
+            for selection in (
+                None,
+                {"mode": "include", "ids": []},
+                {"mode": "include", "ids": [1]},
+                {"mode": "exclude", "ids": [1]},
+            )
+        }
+        self.assertEqual(len(keys), 4)
+
     def test_query_builder_filters_selection_before_counting_or_paginating(self):
         engine = create_engine("sqlite://")
         metadata = MetaData()

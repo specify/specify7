@@ -369,4 +369,26 @@ describe('AutoComplete keyboard navigation', () => {
 
     expect(scrolledIndexes()).toEqual(['0']);
   });
+
+  test('End selects the last result before the trailing Add option', async () => {
+    const onChange = jest.fn();
+    const onNewValue = jest.fn();
+    const { getByRole, user } = mount(
+      <AutoComplete
+        filterItems={false}
+        onChange={onChange}
+        onNewValue={onNewValue}
+        source={makeItems(3)}
+        value=""
+      />
+    );
+
+    const input = getByRole('combobox');
+    await user.type(input, 'i');
+    await user.keyboard('{End}');
+    await user.keyboard('{Enter}');
+
+    expect(onChange).toHaveBeenCalledWith(makeItems(3)[2]);
+    expect(onNewValue).not.toHaveBeenCalled();
+  });
 });

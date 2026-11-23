@@ -173,7 +173,7 @@ def assign_users_to_roles(apps=apps) -> None:
         logger.info(f"Assigned user {user_name} to role {role_name} for collection {collection_name}.")
 
 def assign_users_to_roles_during_testing(apps=apps) -> None:
-    from specifyweb.backend.context.views import users_collections_for_sp6
+    from specifyweb.backend.context.collection_access import users_collections_for_sp6
 
     Role = apps.get_model('permissions', 'Role')
     UserPolicy = apps.get_model('permissions', 'UserPolicy')

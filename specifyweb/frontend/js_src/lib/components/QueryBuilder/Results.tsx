@@ -386,7 +386,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
         if (resultsRef !== undefined) resultsRef.current = newResults;
         return newResults;
       }
-      setResults(newResults(currentResultsRef.current));
+      setResults(newResults);
       // Delete deletingRef if no records are able to be removed
       if (removeCount === 0 && explicitSelection === undefined) {
         deletingRef.current.delete(recordId);
@@ -423,10 +423,12 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
       setTimeout(() => deletingRef.current.delete(recordId), 100); // Remove the record from the deletingRef
     },
     [
+      resultsRef,
+      selectedRows,
       setResults,
+      setSelectedRows,
       setTotalCount,
       totalCount,
-      selectedRows,
       explicitSelection,
       setExplicitSelection,
       fetchCount,
@@ -839,22 +841,6 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
                 setSelectedRows(new Set(newSelectedRows));
                 handleSelected?.(uniqueSelectedRows);
 
-                lastSelectedRow.current = rowIndex;
-              }}
-              onRowSelected={(rowIndex): void => {
-                if (isLoading) return;
-                const rawId = loadedResults[rowIndex][queryIdField];
-                if (typeof rawId !== 'number') return;
-                const id = rawId;
-                if (typeof id !== 'number' || !Number.isFinite(id)) return;
-
-                const newSelectedRows = new Set([id]);
-                setExplicitSelection?.({
-                  mode: 'include',
-                  ids: newSelectedRows,
-                });
-                setSelectedRows(newSelectedRows);
-                handleSelected?.(Array.from(newSelectedRows));
                 lastSelectedRow.current = rowIndex;
               }}
             />

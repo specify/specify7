@@ -13,5 +13,7 @@ module.exports = {
   readme: '../../../README.md',
 
   // Validation
-  listInvalidSymbolLinks: true,
+  validation: {
+    invalidLink: true,
+  },
 };
