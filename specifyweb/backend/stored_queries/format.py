@@ -413,8 +413,13 @@ class ObjectFormatter:
         subquery = QueryConstruct(
             collection=query.collection,
             objectformatter=self,
-            query=subquery_query
+            query=subquery_query,
+            query_user_id=query.query_user_id,
         )
+        subquery_model = aliased_orm_table if is_self_join_aggregation else orm_table
+        visibility_filter = subquery.query_visibility_filter(subquery_model, specify_model)
+        if visibility_filter is not None:
+            subquery = subquery.filter(visibility_filter)
 
         subquery, formatted = self.objformat(subquery, orm_table, formatter_name, cycle_with_self) \
             if not is_self_join_aggregation \

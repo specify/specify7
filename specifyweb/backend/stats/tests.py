@@ -1,7 +1,9 @@
 import json
 from contextlib import closing, contextmanager
 from time import sleep
+from unittest.mock import patch
 from uuid import uuid4
+from xml.etree import ElementTree
 
 import sqlalchemy
 from django.conf import settings
@@ -9,7 +11,7 @@ from django.db import connection
 from django.test import override_settings
 
 from specifyweb.backend.cache.redis.connect import RedisConnection
-from specifyweb.backend.permissions.models import UserPolicy
+from specifyweb.backend.permissions.models import SpqueryShare, UserPolicy
 from specifyweb.backend.permissions.permissions import NoMatchingRuleException
 from specifyweb.backend.stored_queries import models as query_models
 from specifyweb.backend.stored_queries.execution import check_query_permissions
@@ -414,6 +416,78 @@ class StatisticsIntegrationTests(ApiTransactionTests):
         )
         with self.hold_statistics_lock():
             self.assert_count_response(self.post_ephemeral(query), 1)
+
+    def test_ephemeral_query_results_respect_revoked_shares(self):
+        owner = models.Specifyuser.objects.create(name="statistics query owner")
+        shared = models.Spquery.objects.create(
+            name="Shared statistics result", contextname="Collectionobject",
+            contexttableid=1, specifyuser=owner,
+        )
+        grant = SpqueryShare.objects.create(query=shared, recipient=self.specifyuser)
+        table = models.Spquery.specify_model
+        query = self.ephemeral_query(count_only=False)
+        query.update(contextname=table.name, contexttableid=table.tableId)
+        query["fields"][0].update(stringid=f"{table.tableId}.spquery.name")
+
+        response = self.post_ephemeral(query)
+        self._assertStatusCodeEqual(response, 200)
+        self.assertIn("Shared statistics result", response.content.decode())
+        self.assertEqual(self.cache_keys(), [])
+        grant.delete()
+        response = self.post_ephemeral(query)
+        self._assertStatusCodeEqual(response, 200)
+        self.assertNotIn("Shared statistics result", response.content.decode())
+
+    def test_ephemeral_formatted_relationship_does_not_cache_shared_values(self):
+        owner = models.Specifyuser.objects.create(name="statistics formatter owner")
+        shared = models.Spquery.objects.create(
+            name="Formatted shared result", contextname="Collectionobject",
+            contexttableid=1, specifyuser=owner,
+        )
+        models.Agent.objects.create(
+            agenttype=0, lastname="Statistics formatter owner",
+            specifyuser=owner, division=self.division,
+        )
+        grant = SpqueryShare.objects.create(query=shared, recipient=self.specifyuser)
+        agent_table = models.Agent.specify_model
+        user_table = models.Specifyuser.specify_model
+        query = self.ephemeral_query(count_only=False)
+        query.update(contextname=agent_table.name, contexttableid=agent_table.tableId)
+        query["fields"][0].update(
+            stringid=f"{agent_table.tableId},{user_table.tableId}-specifyUser.specifyuser.specifyUser",
+            isrelfld=True,
+        )
+        aggregator = ElementTree.fromstring(
+            '<aggregator format="SpQuery" separator="; "/>'
+        )
+        formatter = ElementTree.fromstring(
+            '<format><switch single="true"><fields><field>name</field>'
+            '</fields></switch></format>'
+        )
+        user_formatter = ElementTree.fromstring(
+            '<format><switch single="true"><fields><field>spquerys</field>'
+            '</fields></switch></format>'
+        )
+        with (
+            patch(
+                "specifyweb.backend.stored_queries.format.ObjectFormatter.getAggregatorDef",
+                return_value=aggregator,
+            ),
+            patch(
+                "specifyweb.backend.stored_queries.format.ObjectFormatter.getFormatterDef",
+                side_effect=lambda model, name: (
+                    user_formatter if model.name == "SpecifyUser" else formatter
+                ),
+            ),
+        ):
+            response = self.post_ephemeral(query)
+            self._assertStatusCodeEqual(response, 200)
+            self.assertIn("Formatted shared result", response.content.decode())
+            self.assertEqual(self.cache_keys(), [])
+            grant.delete()
+            response = self.post_ephemeral(query)
+            self._assertStatusCodeEqual(response, 200)
+            self.assertNotIn("Formatted shared result", response.content.decode())
 
     def test_ephemeral_query_error_does_not_cache_or_leak_lock(self):
         query = self.ephemeral_query()

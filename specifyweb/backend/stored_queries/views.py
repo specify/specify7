@@ -13,7 +13,7 @@ from django.utils import timezone
 
 from specifyweb.middleware.general import require_GET
 from specifyweb.backend.stats.coordination import (
-    StatisticsBusy, busy_response, statistics_result,
+    StatisticsBusy, busy_response, run_statistics_query, statistics_result,
 )
 from specifyweb.backend.stored_queries.batch_edit import run_batch_edit
 from specifyweb.backend.stored_queries.access import ensure_query_access
@@ -152,22 +152,35 @@ def query(request, id):
     return HttpResponse(toJson(data), content_type='application/json')
 
 def run_statistic_query(collection, user, spquery) -> HttpResponse:
+    query_fields = fields_from_json(spquery["fields"])
+    tables = get_query_tables(query_fields)
+    tables.add(datamodel.get_table_by_id_strict(spquery["contexttableid"]))
+    # Cached results cannot recheck query grants; formatters may follow extra paths.
+    needs_live_visibility = any(
+        table.name.lower() in {"spquery", "spqueryfield"} for table in tables
+    ) or any(
+        field.fieldspec.needs_formatted() for field in query_fields
+    )
+
     def calculate_statistics() -> str:
         data = run_ephemeral_query(collection, user, spquery)
-        tables = get_query_tables(fields_from_json(spquery["fields"]))
         return json.dumps({
             "content": toJson(data),
             "tables": sorted(table.name for table in tables),
         })
 
     try:
-        # Keep metadata-bearing entries separate from older body-only cache entries.
-        content = statistics_result(
-            collection,
-            user,
-            ephemeral_statistics_to_str(spquery),
-            calculate_statistics,
-        )
+        if needs_live_visibility:
+            with run_statistics_query(calculate_statistics) as content:
+                pass
+        else:
+            # Keep metadata-bearing entries separate from older body-only cache entries.
+            content = statistics_result(
+                collection,
+                user,
+                ephemeral_statistics_to_str(spquery),
+                calculate_statistics,
+            )
     except StatisticsBusy:
         return busy_response()
     result = json.loads(content)
@@ -181,11 +194,7 @@ def run_statistic_query(collection, user, spquery) -> HttpResponse:
 @login_maybe_required
 @never_cache
 def ephemeral(request):
-    """Execute the query provided as JSON in the POST body.
-
-    Statistics cache hits authorize the recorded table dependencies without
-    reparsing or rebuilding the query.
-    """
+    """Execute the query provided as JSON in the POST body."""
 
     spquery, collection = get_query(request)
     if request.headers.get("Specify-Statistic") == "true":

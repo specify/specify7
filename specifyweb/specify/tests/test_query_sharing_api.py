@@ -1,6 +1,7 @@
 import json
 
 from unittest.mock import patch
+from xml.etree import ElementTree
 
 from django.core.exceptions import PermissionDenied
 from django.test import Client, SimpleTestCase
@@ -13,6 +14,9 @@ from specifyweb.backend.stored_queries.access import (
     filter_queries_for_user,
 )
 from specifyweb.backend.stored_queries.tests.tests import SQLAlchemySetup
+from specifyweb.backend.stored_queries import models as query_models
+from specifyweb.backend.stored_queries.format import ObjectFormatter
+from specifyweb.backend.stored_queries.query_construct_model import QueryConstruct
 from specifyweb.specify import models
 from specifyweb.specify.api.serializers import obj_to_data
 from specifyweb.specify.tests.test_api import ApiTests
@@ -1249,6 +1253,69 @@ class SharedQueryExecutionTests(SharedQueryFixture, SQLAlchemySetup):
         patcher.start()
         self.addCleanup(patcher.stop)
 
+    def test_formatted_aggregations_hide_private_and_revoked_queries_and_fields(self):
+        private_query = models.Spquery.objects.create(
+            name="Private aggregation", contextname="Collectionobject",
+            contexttableid=1, specifyuser=self.specifyuser,
+        )
+        shared_query = models.Spquery.objects.create(
+            name="Shared aggregation", contextname="Collectionobject",
+            contexttableid=1, specifyuser=self.specifyuser,
+        )
+        grant = SpqueryShare.objects.create(query=shared_query, recipient=self.recipient)
+        for query, name in ((private_query, "Private field"), (shared_query, "Shared field")):
+            models.Spqueryfield.objects.create(
+                query=query, fieldname=name, operstart=1, position=0, sorttype=0,
+                startvalue="", stringid="1.collectionobject.catalogNumber", tablelist="1",
+            )
+        formatter = ObjectFormatter(self.collection, self.recipient, False)
+        formatter.formattersDom = ElementTree.fromstring("""
+            <formatters>
+              <format name="SpQuery" class="edu.ku.brc.specify.datamodel.SpQuery" default="true">
+                <switch single="true"><fields>
+                  <field>name</field><field sep=": ">fields</field>
+                </fields></switch>
+              </format>
+              <format name="SpQueryField" class="edu.ku.brc.specify.datamodel.SpQueryField" default="true">
+                <switch single="true"><fields><field>fieldName</field></fields></switch>
+              </format>
+              <aggregators>
+                <aggregator name="SpQuery" class="edu.ku.brc.specify.datamodel.SpQuery"
+                  default="true" format="SpQuery" separator="; "/>
+                <aggregator name="SpQueryField" class="edu.ku.brc.specify.datamodel.SpQueryField"
+                  default="true" format="SpQueryField" separator="; "/>
+              </aggregators>
+            </formatters>
+        """)
+
+        def result(user_id):
+            with type(self).test_session_context() as session:
+                construct = QueryConstruct(
+                    collection=self.collection, objectformatter=formatter,
+                    query=session.query(query_models.SpecifyUser._id).filter(
+                        query_models.SpecifyUser._id == self.specifyuser.id
+                    ),
+                    query_user_id=user_id,
+                )
+                relation = models.Specifyuser.specify_model.get_relationship_strict("spquerys")
+                expression = formatter.aggregate(
+                    construct, relation, query_models.SpecifyUser, None
+                )
+                return construct.query.add_columns(expression).one()[1]
+
+        recipient_result = result(self.recipient.id)
+        self.assertIn("Shared aggregation: Shared field", recipient_result)
+        self.assertNotIn("Private aggregation", recipient_result)
+        self.assertNotIn("Private field", recipient_result)
+        owner_result = result(self.specifyuser.id)
+        self.assertIn("Shared aggregation: Shared field", owner_result)
+        self.assertIn("Private aggregation: Private field", owner_result)
+        grant.delete()
+        revoked_result = result(self.recipient.id)
+        self.assertNotIn("Shared aggregation", revoked_result)
+        self.assertNotIn("Shared field", revoked_result)
+        self.assertIn("Shared aggregation: Shared field", result(self.specifyuser.id))
+
     def test_query_results_hide_unshared_queries_and_relationship_values(self):
         private_query = models.Spquery.objects.create(
             name="Unshared result query",
@@ -1262,12 +1329,19 @@ class SharedQueryExecutionTests(SharedQueryFixture, SQLAlchemySetup):
             contexttableid=models.Collectionobject.specify_model.tableId,
             specifyuser=self.specifyuser,
         )
+        owned_result_query = models.Spquery.objects.create(
+            name="Owned result query",
+            contextname="Collectionobject",
+            contexttableid=models.Collectionobject.specify_model.tableId,
+            specifyuser=self.recipient,
+        )
         SpqueryShare.objects.create(
             query=shared_result_query, recipient=self.recipient
         )
         for query, fieldname in (
             (private_query, "Unshared result field"),
             (shared_result_query, "Shared result field"),
+            (owned_result_query, "Owned result field"),
         ):
             models.Spqueryfield.objects.create(
                 query=query,
@@ -1328,32 +1402,44 @@ class SharedQueryExecutionTests(SharedQueryFixture, SQLAlchemySetup):
             f"{spqueryfield_table.tableId}.spqueryfield.fieldname",
             str(spqueryfield_table.tableId),
         )
+        related_field_query = create_results_query(
+            specifyuser_table,
+            f"{specifyuser_table.tableId},{spquery_table.tableId}-spquerys,"
+            f"{spqueryfield_table.tableId}-fields.spqueryfield.fieldname",
+            f"{specifyuser_table.tableId},{spquery_table.tableId}-spquerys,"
+            f"{spqueryfield_table.tableId}-fields",
+        )
 
-        for query in (direct_query, relationship_query, field_query):
+        queries = (direct_query, relationship_query, field_query, related_field_query)
+        for query in queries:
             with self.subTest(root=query.contextname):
                 response = recipient.get(f"/stored_query/query/{query.id}/")
                 self.assertEqual(response.status_code, 200, response.content)
                 result_content = response.content.decode()
-                if query is field_query:
+                if query in (field_query, related_field_query):
                     self.assertIn("Shared result field", result_content)
+                    self.assertIn("Owned result field", result_content)
                     self.assertNotIn("Unshared result field", result_content)
                 else:
                     self.assertIn("Shared result query", result_content)
+                    self.assertIn("Owned result query", result_content)
                     self.assertNotIn("Unshared result query", result_content)
 
         SpqueryShare.objects.filter(
             query=shared_result_query, recipient=self.recipient
         ).delete()
-        for query in (direct_query, relationship_query, field_query):
+        for query in queries:
             with self.subTest(root=query.contextname, revoked=True):
                 response = recipient.get(f"/stored_query/query/{query.id}/")
                 self.assertEqual(response.status_code, 200, response.content)
                 result_content = response.content.decode()
-                if query is field_query:
+                if query in (field_query, related_field_query):
                     self.assertNotIn("Shared result field", result_content)
+                    self.assertIn("Owned result field", result_content)
                     self.assertNotIn("Unshared result field", result_content)
                 else:
                     self.assertNotIn("Shared result query", result_content)
+                    self.assertIn("Owned result query", result_content)
                     self.assertNotIn("Unshared result query", result_content)
 
     def test_direct_links_fail_after_access_is_revoked(self):
