@@ -181,6 +181,7 @@ export type Tables = {
   readonly SpPrincipal: SpPrincipal;
   readonly SpQuery: SpQuery;
   readonly SpQueryField: SpQueryField;
+  readonly SpQueryFolder: SpQueryFolder;
   readonly SpReport: SpReport;
   readonly SpSymbiotaInstance: SpSymbiotaInstance;
   readonly SpTaskSemaphore: SpTaskSemaphore;

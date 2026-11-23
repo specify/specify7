@@ -14,7 +14,7 @@ import type { RA } from '../../utils/types';
 import { removeKey } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Input, Label, Select } from '../Atoms/Form';
-import { iconClassName, icons } from '../Atoms/Icons';
+import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
@@ -146,52 +146,53 @@ function FolderTreeItem({
   const [isOpen, setIsOpen] = React.useState(true);
   const hasChildren = node.children.length > 0;
   const isSelected = selectedFolderId === node.folder.id;
+  const disclosureLabel = `${isOpen ? commonText.collapse() : commonText.expand()} ${node.folder.name}`;
 
   return (
     <div>
-      <Button.LikeLink
-        className={`flex w-full items-center gap-1 rounded px-1 py-0.5 text-left group relative ${
-          isSelected ? 'bg-brand-100 dark:bg-brand-400 dark:text-white font-bold dark:hover:text-white' : ''
-        }`}
-        style={{ paddingLeft: `${depth * 1.25 + 0.25}rem` }}
-        onClick={(): void => onSelect(node.folder.id)}
+      <div className="group relative flex items-center">
+        <div
+          className="flex min-w-0 flex-1 items-center"
+          style={{ paddingLeft: `${depth * 0.85}rem` }}
       >
         {hasChildren ? (
-          <span
-            className="flex-shrink-0 cursor-pointer"
-            onClick={(e): void => {
-              e.stopPropagation();
-              setIsOpen(!isOpen);
-            }}
-          >
-            {isOpen ? icons.chevronDown : icons.chevronRight}
-          </span>
+            <Button.Icon
+              icon={isOpen ? 'chevronDown' : 'chevronRight'}
+              aria-label={disclosureLabel}
+              title={disclosureLabel}
+              aria-expanded={isOpen}
+              className="flex-shrink-0 rounded p-0.5 focus-visible:outline focus-visible:outline-2"
+              onClick={(): void => setIsOpen(!isOpen)}
+            />
         ) : (
-          <span className="w-5 flex-shrink-0" />
+            <span className="w-7 flex-shrink-0" />
         )}
+          <Button.LikeLink
+            className={`flex min-w-0 flex-1 items-center gap-1.5 rounded-md px-1.5 py-0.5 pr-7 text-left ${
+              isSelected
+                ? 'bg-brand-100 font-semibold dark:bg-brand-400 dark:text-white dark:hover:text-white'
+                : 'hover:bg-brand-50 dark:hover:bg-neutral-700'
+            }`}
+            onClick={(): void => onSelect(node.folder.id)}
+          >
         {isSharedFolder(node.folder)
           ? icons.globe
           : isOpen
             ? icons.folderOpen
             : icons.folder}
         <span className="truncate flex-1">{node.folder.name}</span>
+          </Button.LikeLink>
+        </div>
         {typeof onEdit === 'function' && (
-        <span
-          className="absolute right-0 top-0 bottom-0 invisible group-hover:visible bg-[color:var(--form-foreground)] flex items-center pr-1 pl-2"
-          onClick={(e): void => {
-            e.stopPropagation();
-            onEdit(node.folder);
-          }}
-          role="button"
+          <Button.Icon
+            icon="pencil"
+            className="absolute right-1 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-orange-400 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100"
           aria-label={commonText.edit()}
-          tabIndex={0}
-        >
-          <span className={`${iconClassName} !text-orange-400`} aria-hidden="true">
-            {icons.pencil}
-          </span>
-        </span>
+            title={commonText.edit()}
+            onClick={(): void => onEdit(node.folder)}
+          />
         )}
-      </Button.LikeLink>
+      </div>
       {isOpen &&
         node.children.map((child) => (
           <FolderTreeItem
@@ -211,10 +212,12 @@ function EditFolderDialog({
   folder,
   onClose: handleClose,
   onDeleted,
+  onSaved,
 }: {
   readonly folder: SerializedResource<SpQueryFolder>;
   readonly onClose: () => void;
-  readonly onDeleted: () => void;
+  readonly onDeleted: (folderId: number) => void;
+  readonly onSaved: () => void;
 }): JSX.Element {
   const [name, setName] = React.useState(folder.name);
   const [scopeType, setScopeType] = React.useState(folder.scopeType ?? '');
@@ -240,7 +243,7 @@ function EditFolderDialog({
     loading(
       deleteResource('SpQueryFolder', folder.id).then(() => {
         handleClose();
-        onDeleted();
+        onDeleted(folder.id);
       })
     );
   };
@@ -254,10 +257,7 @@ function EditFolderDialog({
           </Button.Danger>
           <span className="flex-1" />
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Submit.Save
-            disabled={name.trim() === ''}
-            form="editFolderForm"
-          >
+          <Submit.Save disabled={name.trim() === ''} form="editFolderForm">
             {commonText.save()}
           </Submit.Save>
         </>
@@ -284,7 +284,7 @@ function EditFolderDialog({
               payload as Partial<SerializedResource<SpQueryFolder>>
             ).then(() => {
               handleClose();
-              onDeleted();
+              onSaved();
             })
           );
         }}
@@ -367,7 +367,7 @@ function MoveToFolderDialog({
   );
   const currentFolderName =
     currentFolderId !== null
-      ? folders.find((f) => f.id === currentFolderId)?.name ?? null
+      ? (folders.find((f) => f.id === currentFolderId)?.name ?? null)
       : null;
   return (
     <Dialog
@@ -380,8 +380,7 @@ function MoveToFolderDialog({
           <>
             <div className="flex items-center gap-1 rounded px-2 py-1 font-bold">
               {icons.folder}
-              {currentFolderName}
-              {' '}
+              {currentFolderName}{' '}
               <span className="font-normal text-gray-500">
                 ({queryText.currentFolder()})
               </span>
@@ -444,10 +443,7 @@ function CreateFolderDialog({
       buttons={
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Submit.Save
-            disabled={name.trim() === ''}
-            form="createFolderForm"
-          >
+          <Submit.Save disabled={name.trim() === ''} form="createFolderForm">
             {commonText.create()}
           </Submit.Save>
         </>
@@ -574,27 +570,74 @@ export function QueryListDialog({
     useBooleanState();
 
   // Resizable folder panel
-  const [folderPanelWidth, setFolderPanelWidth] = React.useState(208);
+  const [folderPanelWidth, setFolderPanelWidth] = React.useState(280);
+  const folderPanelRef = React.useRef<HTMLDivElement>(null);
   const isResizing = React.useRef(false);
 
+  const getFolderPanelWidthLimits = React.useCallback((): {
+    readonly minimum: number;
+    readonly maximum: number;
+  } => {
+    const panel = folderPanelRef.current;
+    const availableWidth =
+      panel?.parentElement?.getBoundingClientRect().width ?? 720;
+    const minimumWidth = Math.min(160, Math.max(120, availableWidth * 0.3));
+    const maximumWidth = Math.max(
+      minimumWidth,
+      Math.min(480, availableWidth * 0.62)
+    );
+    return { minimum: minimumWidth, maximum: maximumWidth };
+  }, []);
+  const [folderPanelWidthLimits, setFolderPanelWidthLimits] = React.useState(
+    getFolderPanelWidthLimits
+  );
+
+  const updateFolderPanelWidth = React.useCallback(
+    (clientX: number): void => {
+      const panel = folderPanelRef.current;
+      if (panel === null) return;
+      const { minimum, maximum } = getFolderPanelWidthLimits();
+      const left = panel.getBoundingClientRect().left;
+      setFolderPanelWidth(Math.max(minimum, Math.min(maximum, clientX - left)));
+    },
+    [getFolderPanelWidthLimits]
+  );
+
   React.useEffect(() => {
-    const handleMouseMove = (e: MouseEvent): void => {
+    const handlePointerMove = (e: PointerEvent): void => {
       if (!isResizing.current) return;
-      const newWidth = Math.max(150, Math.min(400, e.clientX - 100));
-      setFolderPanelWidth(newWidth);
+      updateFolderPanelWidth(e.clientX);
     };
-    const handleMouseUp = (): void => {
+    const handlePointerUp = (): void => {
       isResizing.current = false;
       document.body.style.cursor = '';
       document.body.style.userSelect = '';
     };
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
+    document.addEventListener('pointermove', handlePointerMove);
+    document.addEventListener('pointerup', handlePointerUp);
+    document.addEventListener('pointercancel', handlePointerUp);
     return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener('pointermove', handlePointerMove);
+      document.removeEventListener('pointerup', handlePointerUp);
+      document.removeEventListener('pointercancel', handlePointerUp);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
     };
-  }, []);
+  }, [updateFolderPanelWidth]);
+
+  React.useEffect(() => {
+    const container = folderPanelRef.current?.parentElement;
+    if (container === null || container === undefined) return;
+    const resizeObserver = new ResizeObserver(() => {
+      const { minimum, maximum } = getFolderPanelWidthLimits();
+      setFolderPanelWidthLimits({ minimum, maximum });
+      setFolderPanelWidth((width) =>
+        Math.max(minimum, Math.min(maximum, width))
+      );
+    });
+    resizeObserver.observe(container);
+    return (): void => resizeObserver.disconnect();
+  }, [getFolderPanelWidthLimits]);
 
   // Debounce search
   React.useEffect(() => {
@@ -604,7 +647,10 @@ export function QueryListDialog({
 
   // Fetch folders visible to this user (own personal + shared)
   const [folders] = useAsyncState(
-    React.useCallback(async () => fetchVisibleQueryFolders(), [folderRefreshKey]),
+    React.useCallback(
+      async () => fetchVisibleQueryFolders(),
+      [folderRefreshKey]
+    ),
     false
   );
 
@@ -619,8 +665,13 @@ export function QueryListDialog({
     false
   );
 
-  const { paginator, limit, offset, currentPage } = usePaginator('queryBuilder');
+  const { paginator, limit, offset, currentPage } =
+    usePaginator('queryBuilder');
   const [, setCurrentPage] = currentPage;
+  const currentPageRef = React.useRef(currentPage[0]);
+  currentPageRef.current = currentPage[0];
+  const selectedFolderIdRef = React.useRef(selectedFolderId);
+  selectedFolderIdRef.current = selectedFolderId;
 
   // Reset to page 0 when filters change
   React.useEffect(() => {
@@ -634,20 +685,23 @@ export function QueryListDialog({
 
   const collectionFilters: Record<string, unknown> = {
     limit,
-    domainFilter: false,
+    domainFilter: true,
     // When viewing a specific folder or shared queries, show all queries
     // (shared folders contain queries from multiple users).
     // When viewing "Your Queries", show only the current user's queries.
     ...(typeof selectedFolderId === 'number' || selectedFolderId === 'shared'
+      ? filters?.contextTableId === undefined
       ? {}
-      : filters ?? { specifyUser: userInformation.id }),
+        : { contextTableId: filters.contextTableId }
+      : (filters ?? { specifyUser: userInformation.id })),
     offset,
     orderBy,
   };
 
   const advancedFilters: Record<string, string> = {};
   if (selectedFolderId === 'shared') {
-    advancedFilters['spqueryfolder__scopetype__isnull'] = 'false';
+    advancedFilters['spqueryfolder__scopetype__in'] =
+      'Collection,Discipline,Database';
   }
 
   // Folder filter
@@ -674,7 +728,8 @@ export function QueryListDialog({
 
   const [data, setData] = useAsyncState(
     React.useCallback(
-      async () => fetchCollection('SpQuery', collectionFilters, advancedFilters),
+      async () =>
+        fetchCollection('SpQuery', collectionFilters, advancedFilters),
       [
         filters,
         limit,
@@ -716,7 +771,6 @@ export function QueryListDialog({
         const matchesSpecifyUser =
           !appliesUserFilters || specifyUserId === activeFilters.specifyUser;
         const matchesContextTableId =
-          !appliesUserFilters ||
           !('contextTableId' in activeFilters) ||
           resource.get('contextTableId') === activeFilters.contextTableId;
         const queryFolderId = idFromUrl(
@@ -726,7 +780,8 @@ export function QueryListDialog({
           typeof selectedFolderId !== 'number' ||
           queryFolderId === selectedFolderId;
         const matchesFavorite =
-          selectedFolderId !== 'favorites' || resource.get('isFavorite') === true;
+          selectedFolderId !== 'favorites' ||
+          resource.get('isFavorite') === true;
         const matchesArchive =
           selectedFolderId === 'archive'
             ? resource.get('isArchived') === true
@@ -741,7 +796,7 @@ export function QueryListDialog({
           .map(({ id }) => id);
         const matchesShared =
           selectedFolderId !== 'shared' ||
-          (queryFolderId !== null && sharedFolderIds.includes(queryFolderId));
+          (queryFolderId != null && sharedFolderIds.includes(queryFolderId));
         if (
           !matchesSearch ||
           !matchesSpecifyUser ||
@@ -783,15 +838,38 @@ export function QueryListDialog({
   const isReadOnly = React.useContext(ReadOnlyContext);
 
   const handleRefresh = (): void => setFolderRefreshKey((k) => k + 1);
+  const handleFolderDeleted = (folderId: number): void => {
+    if (selectedFolderId === folderId) setSelectedFolderId(null);
+    handleRefresh();
+  };
+  const clampPageAfterRemovingVisibleQuery = (): void => {
+    if (data === undefined || data.records.length !== 1) return;
+    const newTotalCount = Math.max(0, data.totalCount - 1);
+    setCurrentPage(
+      Math.min(
+        currentPage[0],
+        Math.max(0, Math.ceil(newTotalCount / limit) - 1)
+      )
+    );
+  };
 
   const handleToggleFavorite = async (
     query: SerializedResource<SpQuery>
   ): Promise<void> => {
     const newValue = !query.isFavorite;
+    const shouldClampPage = selectedFolderId === 'favorites' && !newValue;
+    const pageAtRequestStart = currentPage[0];
+    const folderAtRequestStart = selectedFolderId;
     await saveResource('SpQuery', query.id, {
       ...removeKey(query, '_tableName'),
       isFavorite: newValue,
     });
+    if (
+      shouldClampPage &&
+      currentPageRef.current === pageAtRequestStart &&
+      selectedFolderIdRef.current === folderAtRequestStart
+    )
+      clampPageAfterRemovingVisibleQuery();
     handleRefresh();
   };
 
@@ -799,10 +877,21 @@ export function QueryListDialog({
     query: SerializedResource<SpQuery>
   ): Promise<void> => {
     const newValue = !query.isArchived;
+    const leavesCurrentView =
+      (selectedFolderId === 'archive' && !newValue) ||
+      (selectedFolderId !== 'archive' && newValue);
+    const pageAtRequestStart = currentPage[0];
+    const folderAtRequestStart = selectedFolderId;
     await saveResource('SpQuery', query.id, {
       ...removeKey(query, '_tableName'),
       isArchived: newValue,
     });
+    if (
+      leavesCurrentView &&
+      currentPageRef.current === pageAtRequestStart &&
+      selectedFolderIdRef.current === folderAtRequestStart
+    )
+      clampPageAfterRemovingVisibleQuery();
     handleRefresh();
   };
 
@@ -814,17 +903,34 @@ export function QueryListDialog({
     SerializedResource<SpQueryFolder> | undefined
   >(undefined);
 
-  const handleMoveToFolder = async (
-    folderId: number | null
-  ): Promise<void> => {
+  const handleMoveToFolder = async (folderId: number | null): Promise<void> => {
     if (moveTarget === undefined) return;
+    const oldFolderId = parseResourceId(
+      moveTarget.spQueryFolder as unknown as string | null
+    );
+    const leavesCurrentFolder =
+      typeof selectedFolderId === 'number' &&
+      selectedFolderId === oldFolderId &&
+      selectedFolderId !== folderId;
+    const leavesSharedQueries =
+      selectedFolderId === 'shared' &&
+      !(folders ?? []).some(
+        (folder) => folder.id === folderId && isSharedFolder(folder)
+      );
+    const shouldClampPage = leavesCurrentFolder || leavesSharedQueries;
+    const pageAtRequestStart = currentPage[0];
+    const folderAtRequestStart = selectedFolderId;
     await saveResource('SpQuery', moveTarget.id, {
       ...removeKey(moveTarget, '_tableName'),
       spQueryFolder:
-        folderId !== null
-          ? `/api/specify/spqueryfolder/${folderId}/`
-          : null,
+        folderId !== null ? `/api/specify/spqueryfolder/${folderId}/` : null,
     });
+    if (
+      shouldClampPage &&
+      currentPageRef.current === pageAtRequestStart &&
+      selectedFolderIdRef.current === folderAtRequestStart
+    )
+      clampPageAfterRemovingVisibleQuery();
     setMoveTarget(undefined);
     handleRefresh();
   };
@@ -834,96 +940,144 @@ export function QueryListDialog({
     records: displayData?.records,
     children: (
       <>
-        <div className="flex items-center">
-          <span className="flex-1" />
-          <Input.Text
-            className="w-48"
-            placeholder={queryText.searchQueries()}
-            value={searchQuery}
-            onValueChange={setSearchQuery}
-          />
-        </div>
-        <div className="flex gap-2 flex-1 overflow-hidden">
+        <div className="flex min-h-0 min-w-0 flex-1 gap-2 overflow-hidden">
           {/* Folder tree sidebar */}
           <div
-            className="flex-shrink-0 flex flex-col border-r pr-2 relative"
+            ref={folderPanelRef}
+            className="relative flex min-h-0 shrink-0 flex-col border-r border-gray-200 pr-3 dark:border-neutral-700"
             style={{ width: folderPanelWidth }}
           >
-            {/* Resize handle */}
             <div
-              className="absolute right-0 top-0 bottom-0 w-1 cursor-col-resize hover:bg-brand-300 z-10"
-              onMouseDown={(e): void => {
-                e.preventDefault();
+              aria-label={queryText.folders()}
+              aria-orientation="vertical"
+              aria-valuemax={Math.round(folderPanelWidthLimits.maximum)}
+              aria-valuemin={Math.round(folderPanelWidthLimits.minimum)}
+              aria-valuenow={Math.round(folderPanelWidth)}
+              className="absolute inset-y-0 -right-2 z-20 w-4 touch-none cursor-col-resize before:absolute before:inset-y-2 before:right-1/2 before:w-px before:bg-gray-300 before:content-[''] hover:before:bg-brand-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-400 dark:before:bg-neutral-600"
+              role="separator"
+              tabIndex={0}
+              title={queryText.folders()}
+              onKeyDown={(event): void => {
+                if (
+                  event.key !== 'ArrowLeft' &&
+                  event.key !== 'ArrowRight' &&
+                  event.key !== 'Home' &&
+                  event.key !== 'End'
+                )
+                  return;
+                event.preventDefault();
+                const left =
+                  folderPanelRef.current?.getBoundingClientRect().left ?? 0;
+                if (event.key === 'Home') {
+                  updateFolderPanelWidth(left + folderPanelWidthLimits.minimum);
+                } else if (event.key === 'End') {
+                  updateFolderPanelWidth(left + folderPanelWidthLimits.maximum);
+                } else {
+                  updateFolderPanelWidth(
+                    left +
+                      folderPanelWidth +
+                      (event.key === 'ArrowRight' ? 16 : -16)
+                  );
+                }
+              }}
+              onPointerDown={(event): void => {
+                event.preventDefault();
                 isResizing.current = true;
                 document.body.style.cursor = 'col-resize';
                 document.body.style.userSelect = 'none';
               }}
             />
-            <div className="flex-1 overflow-y-auto relative z-0">
-            {/* Top section: Your Queries + Shared Queries */}
-            <div className="flex-shrink-0 border-b pb-1 mb-1">
+            <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-hidden pb-1 pr-1">
+              <nav
+                aria-label={queryText.queries()}
+                className="space-y-0.5 border-b border-gray-200 pb-2 dark:border-neutral-700"
+              >
             <Button.LikeLink
-              className={`w-full rounded px-1 py-0.5 text-left flex items-center gap-1 ${
-                selectedFolderId === null ? 'bg-brand-100 dark:bg-brand-400 dark:text-white dark:hover:text-white font-bold' : ''
+                  className={`flex w-full items-center gap-2 rounded-md px-1.5 py-1 text-left ${
+                    selectedFolderId === null
+                      ? 'bg-brand-100 font-semibold dark:bg-brand-400 dark:text-white dark:hover:text-white'
+                      : 'hover:bg-brand-50 dark:hover:bg-neutral-700'
               }`}
               onClick={(): void => setSelectedFolderId(null)}
             >
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center">
               {icons.folder}
+                  </span>
               {queryText.yourQueries()}
             </Button.LikeLink>
             <Button.LikeLink
-              className={`w-full rounded px-1 py-0.5 text-left flex items-center gap-1 ${
-                selectedFolderId === 'shared' ? 'bg-brand-100 dark:bg-brand-400 dark:text-white dark:hover:text-white font-bold' : ''
+                  className={`flex w-full items-center gap-2 rounded-md px-1.5 py-1 text-left ${
+                    selectedFolderId === 'shared'
+                      ? 'bg-brand-100 font-semibold dark:bg-brand-400 dark:text-white dark:hover:text-white'
+                      : 'hover:bg-brand-50 dark:hover:bg-neutral-700'
               }`}
               onClick={(): void => setSelectedFolderId('shared')}
             >
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center">
               {icons.globe}
+                  </span>
               {queryText.sharedQueries()}
             </Button.LikeLink>
-            </div>
-            {/* Folder tree */}
-            <div className="mb-1 flex items-center justify-between">
-              <span className="text-sm font-bold">{queryText.folders()}</span>
-              <Button.Small
+              </nav>
+              <section className="flex min-h-0 flex-1 flex-col">
+                <div className="flex items-center justify-between gap-2 pb-1">
+                  <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-200">
+                    {queryText.folders()}
+                  </h2>
+                  <Button.Icon
+                    icon="plus"
+                  className="shrink-0 rounded-full p-0.5 hover:bg-brand-100 dark:hover:bg-neutral-700"
                 aria-label={queryText.newFolder()}
                 title={queryText.newFolder()}
                 onClick={handleOpenCreateFolder}
-              >
-                {icons.plus}
-              </Button.Small>
+                  />
             </div>
+                <div className="min-h-0 flex-1 space-y-0.5 overflow-y-auto pr-1">
             {folderTree.map((node) => (
               <FolderTreeItem
                 depth={0}
                 key={node.folder.id}
                 node={node}
-                selectedFolderId={typeof selectedFolderId === 'number' ? selectedFolderId : null}
+                      selectedFolderId={
+                        typeof selectedFolderId === 'number'
+                          ? selectedFolderId
+                          : null
+                      }
                 onSelect={(id): void => setSelectedFolderId(id)}
                 onEdit={setEditingFolder}
               />
             ))}
             </div>
-            {/* Fixed Favorites and Archive at bottom */}
-            <div className="flex-shrink-0 border-t pt-1">
+              </section>
+            </div>
+            <nav className="space-y-0.5 border-t border-gray-200 pt-2 dark:border-neutral-700">
             <Button.LikeLink
-              className={`w-full rounded px-1 py-0.5 text-left flex items-center gap-1 ${
-                selectedFolderId === 'favorites' ? 'bg-brand-100 dark:bg-brand-400 dark:text-white dark:hover:text-white font-bold' : ''
+                className={`flex w-full items-center gap-2 rounded-md px-1.5 py-1 text-left ${
+                  selectedFolderId === 'favorites'
+                    ? 'bg-brand-100 font-semibold dark:bg-brand-400 dark:text-white dark:hover:text-white'
+                    : 'hover:bg-brand-50 dark:hover:bg-neutral-700'
               }`}
               onClick={(): void => setSelectedFolderId('favorites')}
             >
+                <span className="flex h-5 w-5 shrink-0 items-center justify-center">
               {icons.star}
+                </span>
               {queryText.favorites()}
             </Button.LikeLink>
             <Button.LikeLink
-              className={`w-full rounded px-1 py-0.5 text-left flex items-center gap-1 ${
-                selectedFolderId === 'archive' ? 'bg-brand-100 dark:bg-brand-400 dark:text-white dark:hover:text-white font-bold' : ''
+                className={`flex w-full items-center gap-2 rounded-md px-1.5 py-1 text-left ${
+                  selectedFolderId === 'archive'
+                    ? 'bg-brand-100 font-semibold dark:bg-brand-400 dark:text-white dark:hover:text-white'
+                    : 'hover:bg-brand-50 dark:hover:bg-neutral-700'
               }`}
               onClick={(): void => setSelectedFolderId('archive')}
             >
+                <span className="flex h-5 w-5 shrink-0 items-center justify-center">
               {icons.archive}
+                </span>
               {queryText.archived()}
             </Button.LikeLink>
-            </div>
+            </nav>
             {/* Add folder to root */}
             {isCreateFolderOpen && (
               <CreateFolderDialog
@@ -936,8 +1090,8 @@ export function QueryListDialog({
           </div>
 
           {/* Query table */}
-          <div className="min-w-0 flex-1 flex flex-col">
-            <div className="flex-1 overflow-y-auto">
+          <div className="flex min-h-0 min-w-0 flex-1 flex-col">
+            <div className="min-h-0 flex-1 overflow-y-auto">
             <table className="grid-table grid-cols-[repeat(3,auto)_min-content] gap-2">
               <thead>
                 <tr>
@@ -947,7 +1101,10 @@ export function QueryListDialog({
                   >
                     <Button.LikeLink onClick={(): void => handleSort('name')}>
                       {getField(tables.SpQuery, 'name').label}
-                      <SortIndicator fieldName="name" sortConfig={sortConfig} />
+                        <SortIndicator
+                          fieldName="name"
+                          sortConfig={sortConfig}
+                        />
                     </Button.LikeLink>
                   </th>
                   <th scope="col">
@@ -993,7 +1150,8 @@ export function QueryListDialog({
             <div className="flex flex-shrink-0 items-center border-t pt-2">
             <span className="-ml-2 flex-1" />
             {data === undefined && loadingGif}
-            {displayData !== undefined && displayData.records.length > 0
+              {displayData !== undefined &&
+              (displayData.records.length > 0 || displayData.totalCount > limit)
               ? paginator(displayData?.totalCount)
               : null}
             </div>
@@ -1012,7 +1170,8 @@ export function QueryListDialog({
           <EditFolderDialog
             folder={editingFolder}
             onClose={(): void => setEditingFolder(undefined)}
-            onDeleted={handleRefresh}
+            onDeleted={handleFolderDeleted}
+            onSaved={handleRefresh}
           />
         )}
       </>
@@ -1044,9 +1203,10 @@ export function QueryListDialog({
           </>
         }
         className={{
-          container: `${dialogClassNames.narrowContainer}
-            h-[min(40rem)] w-[min(45rem)]`,
+          container: `${dialogClassNames.freeContainer}
+            max-h-[90vh] min-w-[min(30rem,90%)] w-[min(60rem,90vw)]`,
         }}
+        defaultSize={{ width: 960, height: 640 }}
         header={
           totalCount === undefined
             ? queryText.queries()
@@ -1097,10 +1257,7 @@ export function QueryList({
     <tr title={query.remarks ?? undefined}>
       <td>
         {typeof callBack === 'string' ? (
-          <Link.Default
-            className="overflow-x-auto"
-            href={callBack}
-          >
+          <Link.Default className="overflow-x-auto" href={callBack}>
             {text}
           </Link.Default>
         ) : (
@@ -1131,14 +1288,10 @@ export function QueryList({
               disabled={!isOwnQuery}
               icon="star"
               title={
-                query.isFavorite
-                  ? queryText.unfavorite()
-                  : queryText.favorite()
+                query.isFavorite ? queryText.unfavorite() : queryText.favorite()
               }
               onClick={
-                isOwnQuery
-                  ? (): void => onFavoriteToggle(query)
-                  : undefined
+                isOwnQuery ? (): void => onFavoriteToggle(query) : undefined
               }
             />
             <Button.Icon
@@ -1146,11 +1299,7 @@ export function QueryList({
               disabled={!isOwnQuery}
               icon="folder"
               title={queryText.moveToFolder()}
-              onClick={
-                isOwnQuery
-                  ? (): void => onMoveClick(query)
-                  : undefined
-              }
+              onClick={isOwnQuery ? (): void => onMoveClick(query) : undefined}
             />
             <Button.Icon
               className={!isOwnQuery ? '!text-gray-300' : undefined}
@@ -1162,9 +1311,7 @@ export function QueryList({
                   : queryText.archiveQuery()
               }
               onClick={
-                isOwnQuery
-                  ? (): void => onArchiveToggle(query)
-                  : undefined
+                isOwnQuery ? (): void => onArchiveToggle(query) : undefined
               }
             />
             <QueryEditButton query={query} />

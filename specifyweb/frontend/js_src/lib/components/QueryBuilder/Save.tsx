@@ -32,8 +32,10 @@ async function doSave(
   const clonedQuery = isSaveAs ? await query.clone(true) : query;
   clonedQuery.set('name', name.trim());
   if (isSaveAs) clonedQuery.set('specifyUser', userInformation.resource_uri);
-  if (folderId !== null)
-    clonedQuery.set('spQueryFolder', `/api/specify/spqueryfolder/${folderId}/`);
+  clonedQuery.set(
+    'spQueryFolder',
+    folderId === null ? null : `/api/specify/spqueryfolder/${folderId}/`
+  );
   return clonedQuery
     .save({
       errorOnAlreadySaving: false,

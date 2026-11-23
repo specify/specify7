@@ -33,7 +33,7 @@ export const fetchVisibleQueryFolders = async (): Promise<
 > =>
   fetchCollection('SpQueryFolder', {
     limit: 0,
-    domainFilter: false,
+    domainFilter: true,
     orderBy: 'name',
   }).then(({ records }) =>
     records.filter(
