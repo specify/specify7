@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-11-16 13:29+0000\n"
+"PO-Revision-Date: 2026-11-23 18:23+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "attachments/uk/>\n"
@@ -292,7 +292,7 @@ msgstr "Перервано. Повторна спроба через {remainingT
 #: components/AttachmentsBulkImport/Rollback.tsx:137
 #, fuzzy
 msgid "rollbackDescription"
-msgstr "Відкат видалить вкладення з бази даних Specify та Asset Server."
+msgstr "Відкат видалить вкладення з бази даних Specify та Asset Server"
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:621
@@ -478,7 +478,7 @@ msgstr ""
 #, fuzzy
 msgid "deleteAttachmentDataSetDescription"
 msgstr ""
-"Видалення набору даних видаляє його та шлях завантаження безповоротно. Також "
+"Видалення набору даних остаточно видаляє його та шлях завантаження. Також "
 "після видалення відкат більше не буде можливим для завантаженого набору "
 "даних."
 
@@ -595,7 +595,7 @@ msgstr "Дублікат у файлі зіставлення"
 #: components/AttachmentsBulkImport/MappingFileSetup.tsx:270
 #, fuzzy
 msgid "selectMatchValueColumn"
-msgstr "Стовпець зі значенням відповідності"
+msgstr "Стовпець зі значеннями відповідності"
 
 #. Used in: Components > Attachments Bulk Import > Mapping File Setup
 #: components/AttachmentsBulkImport/MappingFileSetup.tsx:296
