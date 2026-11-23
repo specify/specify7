@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-11-06 14:51+0000\n"
+"PO-Revision-Date: 2026-11-23 18:15+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/forms/"
 "ru/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 2026.11.2.dev0\n"
+"X-Generator: Weblate 2026.12.dev0\n"
 
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Preferences > Index
 #: components/Preferences/UserDefinitions.tsx:847
@@ -194,8 +194,8 @@ msgstr "Добавить в {pickListTable:string}?"
 #, fuzzy
 msgid "addToPickListConfirmationDescription"
 msgstr ""
-"Добавить значение \"{value:string}\" к {pickListTable:string} с именем "
-"\"{pickListName:string}\"?"
+"Добавить значение \"{value:string}\" к {pickListTable:string} с именем \""
+"{pickListName:string}\"?"
 
 #. Used in: Components > Pick Lists > Index
 #: components/PickLists/index.tsx:252
@@ -473,8 +473,7 @@ msgstr "Продолжить без сохранения?"
 #: components/FormSliders/RecordSelectorFromPage.tsx:257
 #, fuzzy
 msgid "recordSelectorUnloadProtectDescription"
-msgstr ""
-"Возможно, вам стоит сохранить эту запись, прежде чем покинуть страницу."
+msgstr "Возможно, вам стоит сохранить эту запись, прежде чем покинуть страницу."
 
 #. Used in: Components > Form Sliders > Record Selector From Ids
 #: components/FormSliders/RecordSelectorFromIds.tsx:234
