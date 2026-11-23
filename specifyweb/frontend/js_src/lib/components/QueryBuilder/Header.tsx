@@ -51,7 +51,13 @@ export function QueryHeader({
   isHorizontal,
   onToggleSplit,
   onToggleOrientation,
+  isShared = false,
+  canCloneShared = false,
+  onRefresh,
 }: {
+  readonly isShared?: boolean;
+  readonly canCloneShared?: boolean;
+  readonly onRefresh: () => void;
   readonly recordSet?: SpecifyResource<RecordSet>;
   readonly query: SerializedResource<SpQuery>;
   readonly queryResource: SpecifyResource<SpQuery>;
@@ -109,7 +115,16 @@ export function QueryHeader({
                 value: query.name,
               })}
         </H2>
-        {!queryResource.isNew() && <QueryEditButton query={query} />}
+        {!queryResource.isNew() && (
+          <QueryEditButton
+            queryResource={queryResource}
+            onRefresh={onRefresh}
+          />
+        )}
+        {isShared && <span>{queryText.sharedQueryReadOnly()}</span>}
+        {isShared && canCloneShared && (
+          <span>{queryText.sharedQuerySaveCopy()}</span>
+        )}
         {!isScrolledTop && (
           <Button.Icon
             icon="arrowCircleUp"
@@ -151,11 +166,14 @@ export function QueryHeader({
             : preferencesText.basicView()}
         </Button.Small>
         <ToggleMappingViewButton fields={state.fields} />
-        {hasToolPermission(
-          'queryBuilder',
-          queryResource.isNew() ? 'create' : 'update'
-        ) && !isEmbedded ? (
+        {(canCloneShared ||
+          hasToolPermission(
+            'queryBuilder',
+            queryResource.isNew() ? 'create' : 'update'
+          )) &&
+        !isEmbedded ? (
           <SaveQueryButtons
+            canCloneShared={canCloneShared}
             fields={state.fields}
             getQueryFieldRecords={getQueryFieldRecords}
             isValid={(): boolean => form?.reportValidity() ?? false}
@@ -170,7 +188,7 @@ export function QueryHeader({
                 Number.POSITIVE_INFINITY;
               return state.fields.every((field) =>
                 field.filters.every(
-                  ({ startValue }) => startValue.length < fieldLengthLimit
+                  ({ startValue }) => startValue.length <= fieldLengthLimit
                 )
               );
             }}

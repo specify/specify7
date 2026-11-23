@@ -1011,7 +1011,8 @@ def build_query_construct_base(
             props.replace_nulls,
             props=props.formatter_props,
         ),
-        query=query_construct_query
+        query=query_construct_query,
+        query_user_id=user.id,
     )
     return query
 
@@ -1195,6 +1196,11 @@ def build_query(
         model=model,
         props=props,
     )
+
+    root_table = datamodel.get_table_by_id_strict(tableid)
+    visibility_filter = query.query_visibility_filter(model, root_table)
+    if visibility_filter is not None:
+        query = query.filter(visibility_filter)
 
     query_fields = list(transform_field_specs(query_fields, user))
 

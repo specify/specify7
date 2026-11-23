@@ -28,6 +28,7 @@ import { tables } from '../DataModel/tables';
 import { getSystemInfo } from '../InitialContext/systemInfo';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { ResourceLink } from '../Molecules/ResourceLink';
+import { colorByKind, type HierarchyNodeKind } from './hierarchyColors';
 import { hasTablePermission } from '../Permissions/helpers';
 import { tableLabel } from '../Preferences/UserDefinitions';
 import {
@@ -41,12 +42,6 @@ import { nestAllResources } from '../SetupTool/utils';
 import type { TaxonFileDefaultDefinition } from '../TreeView/CreateTree';
 import { CollapsibleSection } from './CollapsibleSection';
 import type { InstitutionData } from './Utils';
-
-type HierarchyNodeKind =
-  | 'collection'
-  | 'discipline'
-  | 'division'
-  | 'institution';
 
 type HierarchyNodeDatum = {
   readonly id: number;
@@ -67,13 +62,6 @@ const NODE_HEIGHT = 64;
 const NODE_HORIZONTAL_GAP = 24;
 const NODE_VERTICAL_GAP = 10;
 const CHART_MARGIN = { top: 12, right: 16, bottom: 12, left: 16 } as const;
-
-const colorByKind: Record<HierarchyNodeKind, string> = {
-  institution: '#b72f2f',
-  division: '#598137',
-  discipline: '#0074B5',
-  collection: '#f1a43c',
-};
 
 const textByKind: Record<HierarchyNodeKind, string> = {
   institution: tableLabel('Institution'),
@@ -262,7 +250,13 @@ function HierarchyDiagram({
                   width={NODE_WIDTH}
                   y={6}
                 >
-                  <div className="text-white h-full px-3 flex flex-col items-center justify-center text-center leading-tight break-words">
+                  <div
+                    className={`h-full px-3 flex flex-col items-center justify-center text-center leading-tight break-words ${
+                      node.data.kind === 'collection'
+                        ? 'text-white dark:text-neutral-900'
+                        : 'text-white'
+                    }`}
+                  >
                     <div className="text-sm font-semibold">
                       {node.data.name}
                     </div>
