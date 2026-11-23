@@ -37,6 +37,10 @@ const dataset = {
   uploadplan: { baseTableName: 'CollectionObject' },
 } as never;
 
+beforeEach(() => {
+  mockHasPermission.mockClear();
+});
+
 // [AttachmentsBulkImport] Hide delete without permission
 test('hides delete without permission', () => {
   mockHasPermission.mockReturnValue(false);
@@ -61,5 +65,32 @@ test('hides delete without permission', () => {
   expect(mockHasPermission).toHaveBeenCalledWith(
     '/attachment_import/dataset',
     'delete'
+  );
+});
+
+// [AttachmentsBulkImport] Hide save without update permission
+test('hides save without update permission', () => {
+  mockHasPermission.mockReturnValue(false);
+
+  render(
+    <UnloadProtectsContext.Provider value={[]}>
+      <DataSetMeta
+        dataset={dataset}
+        datasetVariant="bulkAttachment"
+        deleteDescription={localized('Delete dataset')}
+        onChange={jest.fn()}
+        onClose={jest.fn()}
+        onDeleted={jest.fn()}
+        permissionResource="/attachment_import/dataset"
+      />
+    </UnloadProtectsContext.Provider>
+  );
+
+  expect(
+    screen.queryByRole('button', { name: commonText.save() })
+  ).not.toBeInTheDocument();
+  expect(mockHasPermission).toHaveBeenCalledWith(
+    '/attachment_import/dataset',
+    'update'
   );
 });
