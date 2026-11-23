@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-11-16 13:30+0000\n"
+"PO-Revision-Date: 2026-11-23 18:23+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Croatian <https://hosted.weblate.org/projects/specify-7/"
 "attachments/hr/>\n"
@@ -271,7 +271,7 @@ msgstr "Započeti prijenos priloga?"
 msgid "beginUploadDescription"
 msgstr ""
 "Prijenosom privitaka stvorit će se privitci na poslužitelju imovine i u "
-"Navedite bazu podataka"
+"Navedite bazu podataka."
 
 #. Used in: Components > Attachments Bulk Import > Action State
 #: components/AttachmentsBulkImport/ActionState.tsx:59
