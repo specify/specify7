@@ -34,7 +34,7 @@ def main() -> int:
     for path in files:
         content = path.read_text(encoding="utf-8")
         header, separator, body = content.partition("\n\n")
-        match = CONTENT_TYPE.search(header) if separator else None
+        match = CONTENT_TYPE.search(header)
         if match is None:
             invalid.append(path)
             continue

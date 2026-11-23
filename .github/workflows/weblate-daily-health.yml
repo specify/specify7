@@ -11,6 +11,11 @@ on:
         required: false
         default: false
         type: boolean
+      repair_target_branch:
+        description: "Use weblate-localization-test-* to test without changing production translations"
+        required: false
+        default: weblate-localization
+        type: string
 
 permissions:
   contents: read
@@ -28,10 +33,15 @@ jobs:
       - name: Checkout Specify 7
         uses: actions/checkout@v4
 
+      - name: Check default-branch PO headers
+        id: app_po_check
+        continue-on-error: true
+        run: python3 scripts/weblate/po_charset.py specifyweb/frontend/locale --check
+
       - name: Checkout Weblate localization branch
         uses: actions/checkout@v4
         with:
-          ref: weblate-localization
+          ref: ${{ inputs.repair_po_headers && inputs.repair_target_branch || 'weblate-localization' }}
           path: weblate-localization
           token: ${{ inputs.repair_po_headers && secrets.WEBLATE_PUSH_TO_GITHUB || github.token }}
 
@@ -39,7 +49,18 @@ jobs:
         id: po_repair
         if: inputs.repair_po_headers == true
         continue-on-error: true
+        env:
+          PO_REPAIR_BRANCH: ${{ inputs.repair_target_branch || 'weblate-localization' }}
         run: |
+          case "$PO_REPAIR_BRANCH" in
+            weblate-localization|weblate-localization-test-*) ;;
+            *) echo "Repair target must be weblate-localization or weblate-localization-test-*" >&2; exit 1 ;;
+          esac
+          if [ "$PO_REPAIR_BRANCH" = "weblate-localization" ] && [ "$GITHUB_REF_NAME" != "main" ]; then
+            echo "Production PO repair can only run from the main branch." >&2
+            exit 1
+          fi
+          git check-ref-format --branch "$PO_REPAIR_BRANCH"
           python3 scripts/weblate/po_charset.py weblate-localization/strings
           cd weblate-localization
           if git diff --quiet -- strings; then
@@ -49,7 +70,7 @@ jobs:
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add strings
             git commit -m "Ensure gettext PO files declare UTF-8"
-            git push origin HEAD:weblate-localization
+            git push origin "HEAD:$PO_REPAIR_BRANCH"
           fi
 
       - name: Check PO charset headers
@@ -64,6 +85,7 @@ jobs:
           WEBLATE_API_TOKEN: ${{ secrets.WEBLATE_API_TOKEN }}
           SLACK_WEBLATE_WEBHOOK_URL: ${{ secrets.SLACK_WEBLATE_WEBHOOK_URL }}
           GITHUB_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          APP_PO_CHECK_OUTCOME: ${{ steps.app_po_check.outcome }}
           PO_CHECK_OUTCOME: ${{ steps.po_check.outcome }}
           PO_REPAIR_OUTCOME: ${{ steps.po_repair.outcome }}
         run: |
@@ -71,6 +93,8 @@ jobs:
 
           api_url="https://hosted.weblate.org/api/projects/specify-7/repository/"
           api_file="$RUNNER_TEMP/weblate-repository.json"
+          lock_url="https://hosted.weblate.org/api/components/specify-7/common/lock/"
+          lock_file="$RUNNER_TEMP/weblate-common-lock.json"
           result="healthy"
           detail=""
 
@@ -78,6 +102,7 @@ jobs:
             result="error"
             detail="WEBLATE_API_TOKEN is not configured."
           elif ! http_code=$(curl --silent --show-error \
+            --connect-timeout 10 --max-time 30 \
             --output "$api_file" --write-out '%{http_code}' \
             --header "Authorization: Token $WEBLATE_API_TOKEN" \
             "$api_url"); then
@@ -106,6 +131,39 @@ jobs:
             fi
           fi
 
+          if [ -n "$WEBLATE_API_TOKEN" ]; then
+            if ! lock_http_code=$(curl --silent --show-error \
+              --connect-timeout 10 --max-time 30 \
+              --output "$lock_file" --write-out '%{http_code}' \
+              --header "Authorization: Token $WEBLATE_API_TOKEN" \
+              "$lock_url"); then
+              result="error"
+              detail="Could not query the Specify 7/common lock status."
+            elif [ "$lock_http_code" != "200" ]; then
+              result="error"
+              detail="Weblate component lock API returned HTTP $lock_http_code."
+            elif ! locked=$(jq -er 'if (.locked | type) == "boolean" then (.locked | tostring) else error("missing locked status") end' "$lock_file"); then
+              result="error"
+              detail="Weblate returned an unexpected component lock response."
+            elif [ "$locked" = "true" ]; then
+              if [ "$result" = "healthy" ]; then
+                result="attention"
+                detail="Specify 7/common is locked for contributions."
+              else
+                detail="$detail; Specify 7/common is locked for contributions"
+              fi
+            fi
+          fi
+
+          if [ "$APP_PO_CHECK_OUTCOME" != "success" ]; then
+            if [ "$result" = "healthy" ]; then
+              result="attention"
+              detail="Default-branch PO check failed or found no PO files at specifyweb/frontend/locale."
+            else
+              detail="$detail; default-branch PO check failed or found no PO files"
+            fi
+          fi
+
           if [ "$PO_CHECK_OUTCOME" != "success" ]; then
             if [ "$result" = "healthy" ]; then
               result="attention"
@@ -131,14 +189,22 @@ jobs:
 
           payload=$(jq -n --arg text "$message" '{text: $text}')
           if [ -z "$SLACK_WEBLATE_WEBHOOK_URL" ]; then
-            echo "SLACK_WEBLATE_WEBHOOK_URL is not configured; cannot send daily report." >&2
-            exit 1
+            if [ "$GITHUB_REF_NAME" = "main" ]; then
+              echo "SLACK_WEBLATE_WEBHOOK_URL is not configured; cannot send daily report." >&2
+              exit 1
+            fi
           fi
-          curl --fail --silent --show-error \
-            --header 'Content-Type: application/json' \
-            --data "$payload" \
-            "$SLACK_WEBLATE_WEBHOOK_URL"
+          if [ "$GITHUB_REF_NAME" = "main" ]; then
+            curl --fail --silent --show-error \
+              --connect-timeout 10 --max-time 30 \
+              --header 'Content-Type: application/json' \
+              --data "$payload" \
+              "$SLACK_WEBLATE_WEBHOOK_URL"
+          else
+            echo "Slack preview (not sent from a non-main branch):"
+            printf '%s\n' "$message"
+          fi
 
-          if [ "$result" = "error" ] || [ "$PO_CHECK_OUTCOME" != "success" ]; then
+          if [ "$result" = "error" ] || [ "$APP_PO_CHECK_OUTCOME" != "success" ] || [ "$PO_CHECK_OUTCOME" != "success" ]; then
             exit 1
           fi
