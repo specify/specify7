@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-11-16 13:29+0000\n"
+"PO-Revision-Date: 2026-11-23 18:23+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "attachments/es/>\n"
@@ -64,7 +64,7 @@ msgstr "Escala"
 #: components/WbImportAttachments/index.tsx:134
 #, fuzzy
 msgid "attachmentServerUnavailable"
-msgstr "Servidor de adjuntos no disponible"
+msgstr "Servidor de archivos adjuntos no disponible"
 
 #. Used in: Components > Attachments > Viewer ⬤ Components > Attachments > Index
 #: components/Attachments/Viewer.tsx:384
@@ -591,7 +591,7 @@ msgstr "Seleccione sus archivos o arrástrelos y suéltelos para comenzar."
 #: components/AttachmentsBulkImport/utils.ts:630
 #, fuzzy
 msgid "notInMappingFile"
-msgstr "No se encuentra en el archivo de asignación."
+msgstr "No se encuentra en el archivo de mapeo."
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:631
