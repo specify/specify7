@@ -60,6 +60,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('businessrules', '0009_alter_uniquenessrule_discipline'),
+        ('specify', '0050_query_folder_feature'),
     ]
 
     operations = [
