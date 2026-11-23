@@ -3,15 +3,21 @@ import logging
 from django.db import models
 from django.contrib.auth.base_user import BaseUserManager
 from django.conf import settings
-from django.utils import timezone
+from specifyweb.specify.datamodel import Table
 
 from .model_timestamp import save_auto_timestamp_field_with_override
-from specifyweb.backend.trees.extras import Tree, TreeRank
 
 if settings.AUTH_LDAP_SERVER_URI is not None:
     from .auth import ldap_extras
 
 logger = logging.getLogger(__name__)
+
+# TODO: Use this everywhere
+class ModelWithTable(models.Model):
+    specify_model: Table
+    objects: models.Manager["ModelWithTable"]
+    class Meta:
+        abstract = True
 
 class SpecifyUserManager(BaseUserManager):
     def create_user(self, name, password=None):
@@ -226,53 +232,5 @@ class Discipline(models.Model):
     def is_paleo_geo(self): 
         return self.is_paleo() or self.is_geo()
     
-    class Meta:
-        abstract = True
-
-class Taxon(Tree):
-    class Meta:
-        abstract = True
-
-class Storage(Tree):
-    class Meta:
-        abstract = True
-
-class Geography(Tree):
-    class Meta:
-        abstract = True
-
-class Geologictimeperiod(Tree):
-    class Meta:
-        abstract = True
-
-class Lithostrat(Tree):
-    class Meta:
-        abstract = True
-
-class Tectonicunit(Tree):
-    class Meta:
-        abstract = True
-
-class Geographytreedefitem(TreeRank):
-    class Meta:
-        abstract = True
-
-class Geologictimeperiodtreedefitem(TreeRank):
-    class Meta:
-        abstract = True
-
-class Lithostrattreedefitem(TreeRank):
-    class Meta:
-        abstract = True
-
-class Storagetreedefitem(TreeRank):
-    class Meta:
-        abstract = True
-
-class Taxontreedefitem(TreeRank):
-    class Meta:
-        abstract = True
-
-class Tectonicunittreedefitem(TreeRank):
     class Meta:
         abstract = True

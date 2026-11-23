@@ -1881,7 +1881,7 @@
 				</row>
 				<row>
 					<cell type="label" labelfor="acceptedParent"/>
-					<cell type="field" id="acceptedParent" uitype="querycbx" initialize="editbtn=false;newbtn=false" name="acceptedParent" colspan="4"/>
+					<cell type="field" id="acceptedParent" uitype="querycbx" initialize="name=ChronosStrat;editbtn=false;newbtn=false" name="acceptedParent" colspan="4"/>
 					<cell type="field" id="isAccepted" uitype="checkbox" name="isAccepted" default="true"/>
 				</row>
 				<row>
@@ -1964,7 +1964,7 @@
 				</row>
 				<row>
 					<cell type="label" labelfor="acceptedParent"/>
-					<cell type="field" id="acceptedParent" uitype="querycbx" initialize="editbtn=false;newbtn=false" name="acceptedParent" colspan="4"/>
+					<cell type="field" id="acceptedParent" uitype="querycbx" initialize="name=ChronosStrat;editbtn=false;newbtn=false" name="acceptedParent" colspan="4"/>
 					<cell type="field" id="isAccepted" uitype="checkbox" name="isAccepted" default="true"/>
 				</row>
 				<row>

@@ -1,13 +1,67 @@
 from django.test import Client
 
 from specifyweb.specify.tests.test_api import ApiTests
+from specifyweb.specify.models import (
+    Agent,
+    Spappresourcedata,
+    Spappresourcedir,
+    Spappresource,
+    Specifyuser,
+)
+from specifyweb.backend.permissions.models import UserPolicy
 from unittest.mock import Mock, patch
+
+from specifyweb.backend.context.app_resource import get_data_view_queries_resource
 
 
 FOUND_RESOURCE = ('<resource><text>"Value"</text></resource>', "text/xml", 4)
 
 
 class TestAppResource(ApiTests):
+
+    @patch("specifyweb.backend.context.app_resource.load_resource_at_level")
+    @patch("specifyweb.backend.context.app_resource.get_app_resource_from_db")
+    def test_data_view_queries_inherit_by_table(
+        self, get_from_db: Mock, load_from_filesystem: Mock
+    ):
+        discipline = ('{"version": 1, "queries": {"Agent": {"fields": [{"marker": 1, "stringId": "Agent", "fieldName": "Name", "tableList": "Agent", "isDisplay": true, "isNot": false, "sortType": 0, "operStart": 1, "startValue": "", "isRelFld": null}]}, "Loan": {"fields": [{"marker": 2, "stringId": "Loan", "fieldName": "LoanNumber", "tableList": "Loan", "isDisplay": true, "isNot": false, "sortType": 0, "operStart": 1, "startValue": "", "isRelFld": null}]}}}', 'application/json', 1)
+        personal = ('{"version": 1, "queries": {"Agent": {"fields": [{"marker": 3, "stringId": "Agent", "fieldName": "Name", "tableList": "Agent", "isDisplay": true, "isNot": false, "sortType": 0, "operStart": 1, "startValue": "", "isRelFld": null}]}}}', 'application/json', 2)
+        get_from_db.side_effect = lambda _collection, _user, level, _name: {
+            'Discipline': discipline,
+            'Personal': personal,
+        }.get(level)
+        load_from_filesystem.return_value = None
+
+        result = get_data_view_queries_resource(self.collection, self.specifyuser)
+
+        self.assertIsNotNone(result)
+        self.assertEqual(
+            result[0],
+            '{"version": 1, "queries": {"Agent": {"fields": [{"marker": 3, "stringId": "Agent", "fieldName": "Name", "tableList": "Agent", "isDisplay": true, "isNot": false, "sortType": 0, "operStart": 1, "startValue": "", "isRelFld": null}]}, "Loan": {"fields": [{"marker": 2, "stringId": "Loan", "fieldName": "LoanNumber", "tableList": "Loan", "isDisplay": true, "isNot": false, "sortType": 0, "operStart": 1, "startValue": "", "isRelFld": null}]}}}',
+        )
+        self.assertEqual(result[1:], ('application/json', 2))
+
+    @patch("specifyweb.backend.context.app_resource.load_resource_at_level")
+    @patch("specifyweb.backend.context.app_resource.get_app_resource_from_db")
+    def test_data_view_queries_skip_malformed_override_entry(
+        self, get_from_db: Mock, load_from_filesystem: Mock
+    ):
+        discipline = ('{"version": 1, "queries": {"Agent": {"fields": [{"marker": 1, "stringId": "Agent", "fieldName": "Name", "tableList": "Agent", "isDisplay": true, "isNot": false, "sortType": 0, "operStart": 1, "startValue": "", "isRelFld": null}]}, "Loan": {"fields": [{"marker": 2, "stringId": "Loan", "fieldName": "LoanNumber", "tableList": "Loan", "isDisplay": true, "isNot": false, "sortType": 0, "operStart": 1, "startValue": "", "isRelFld": null}]}}}', 'application/json', 1)
+        personal = ('{"version": 1, "queries": {"Agent": {}, "Loan": {"fields": [{"marker": 3, "stringId": "Loan", "fieldName": "LoanNumber", "tableList": "Loan", "isDisplay": true, "isNot": false, "sortType": 0, "operStart": 1, "startValue": "", "isRelFld": null}]}}}', 'application/json', 2)
+        get_from_db.side_effect = lambda _collection, _user, level, _name: {
+            'Discipline': discipline,
+            'Personal': personal,
+        }.get(level)
+        load_from_filesystem.return_value = None
+
+        result = get_data_view_queries_resource(self.collection, self.specifyuser)
+
+        self.assertIsNotNone(result)
+        self.assertEqual(
+            result[0],
+            '{"version": 1, "queries": {"Agent": {"fields": [{"marker": 1, "stringId": "Agent", "fieldName": "Name", "tableList": "Agent", "isDisplay": true, "isNot": false, "sortType": 0, "operStart": 1, "startValue": "", "isRelFld": null}]}, "Loan": {"fields": [{"marker": 3, "stringId": "Loan", "fieldName": "LoanNumber", "tableList": "Loan", "isDisplay": true, "isNot": false, "sortType": 0, "operStart": 1, "startValue": "", "isRelFld": null}]}}}',
+        )
+        self.assertEqual(result[1:], ('application/json', 2))
 
     def test_no_name(self):
         c = Client()
@@ -44,3 +98,50 @@ class TestAppResource(ApiTests):
 
         response = c.get("/context/app.resource?name='simple'&quiet='true'")
         self._assertStatusCodeEqual(response, 204)
+
+    def test_collection_preferences_cannot_be_modified_without_permission(self):
+        directory = Spappresourcedir.objects.create(
+            collection=self.collection,
+            ispersonal=False,
+        )
+        resource = Spappresource.objects.create(
+            spappresourcedir=directory,
+            specifyuser=self.specifyuser,
+            level=0,
+            name="CollectionPreferences",
+            mimetype="application/json",
+        )
+        Spappresourcedata.objects.create(
+            spappresource=resource,
+            data=b'{"general":{}}',
+        )
+
+        user = Specifyuser.objects.create(
+            isloggedin=False,
+            isloggedinreport=False,
+            name="no-permission-user",
+            password="test",
+        )
+        UserPolicy.objects.create(
+            collection=self.collection,
+            specifyuser=user,
+            resource="/system/sp7/collection",
+            action="access",
+        )
+        Agent.objects.create(
+            agenttype=0,
+            firstname="No",
+            lastname="Permission",
+            division=self.division,
+            specifyuser=user,
+        )
+
+        c = Client()
+        c.force_login(user)
+        response = c.put(
+            f"/api/specify/spappresource/{resource.id}/",
+            data={"version": resource.version, "name": "Changed"},
+            content_type="application/json",
+        )
+
+        self._assertStatusCodeEqual(response, 403)

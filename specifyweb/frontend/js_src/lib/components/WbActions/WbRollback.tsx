@@ -2,6 +2,7 @@ import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
+import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
 import { Button } from '../Atoms/Button';
 import { dialogIcons } from '../Atoms/Icons';
@@ -67,6 +68,7 @@ function RollbackConfirmation({
               loading(
                 ping(`/api/workbench/unupload/${datasetId}/`, {
                   method: 'POST',
+                  expectedErrors: [Http.CONFLICT],
                 })
                   .then(handleRollback)
                   .finally(handleClose)

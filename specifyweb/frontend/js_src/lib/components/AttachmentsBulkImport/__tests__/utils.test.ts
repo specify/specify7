@@ -1,5 +1,6 @@
 import type { LocalizedString } from 'typesafe-i18n';
 
+import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
 import { fieldFormatterToParser } from '../../../utils/parser/definitions';
 import type { IR, RA } from '../../../utils/types';
@@ -21,6 +22,7 @@ import {
   matchSelectedFiles,
   prepareMappingFileSelection,
   resolveFileNames,
+  validateAttachmentFiles,
 } from '../utils';
 
 requireContext();
@@ -379,7 +381,9 @@ describe('crossReferenceMappingFiles', () => {
   test('initial seeding produces all placeholders', () => {
     const result = crossReferenceMappingFiles([], CSV);
     expect(result).toHaveLength(4);
-    expect(result.every((r) => (r.status as any)?.reason === 'fileMissing')).toBe(true);
+    expect(
+      result.every((r) => (r.status as any)?.reason === 'fileMissing')
+    ).toBe(true);
   });
 
   test('adding one real file replaces corresponding placeholder', () => {
@@ -390,8 +394,8 @@ describe('crossReferenceMappingFiles', () => {
     );
     expect(result).toHaveLength(4);
     expect(
-      result.find((r) => r.uploadFile.file.name === '601146.jpg')
-        ?.uploadFile.file.size
+      result.find((r) => r.uploadFile.file.name === '601146.jpg')?.uploadFile
+        .file.size
     ).toBe(91);
     expect(
       result.filter((r) => (r.status as any)?.reason === 'fileMissing')
@@ -450,7 +454,10 @@ describe('crossReferenceMappingFiles', () => {
       CSV
     );
     expect(
-      (result.find((r) => r.uploadFile.file.name === 'unknown.jpg')!.status as any).reason
+      (
+        result.find((r) => r.uploadFile.file.name === 'unknown.jpg')!
+          .status as any
+      ).reason
     ).toBe('notInMappingFile');
   });
 
@@ -527,7 +534,13 @@ describe('prepareMappingFileSelection', () => {
     );
 
     expect(resolvedFiles).toHaveLength(3);
-    expect(resolvedFiles.every((r) => r.uploadFile.file.size === 91 || (r.status as any)?.reason === 'fileMissing')).toBe(true);
+    expect(
+      resolvedFiles.every(
+        (r) =>
+          r.uploadFile.file.size === 91 ||
+          (r.status as any)?.reason === 'fileMissing'
+      )
+    ).toBe(true);
     expect(
       resolvedFiles.filter((r) => r.uploadFile.file.name === '601146.jpg')
     ).toHaveLength(1);
@@ -926,7 +939,9 @@ describe('crossReferenceMappingFiles – edge cases', () => {
     ];
     const result = crossReferenceMappingFiles([], csv);
     expect(result).toHaveLength(2);
-    expect(result.every((r) => (r.status as any)?.reason === 'fileMissing')).toBe(true);
+    expect(
+      result.every((r) => (r.status as any)?.reason === 'fileMissing')
+    ).toBe(true);
     expect(result[0].uploadFile.mappingMatchValue).toBe('1');
     expect(result[1].uploadFile.mappingMatchValue).toBe('2');
   });
@@ -1046,7 +1061,12 @@ describe('prepareMappingFileSelection – edge cases', () => {
         mappingFileName: mv !== undefined ? name : undefined,
       },
       ...(size === 0
-        ? { status: { type: 'cancelled' as const, reason: 'fileMissing' as const } }
+        ? {
+            status: {
+              type: 'cancelled' as const,
+              reason: 'fileMissing' as const,
+            },
+          }
         : {}),
     }) as PartialUploadableFileSpec;
 
@@ -1058,9 +1078,9 @@ describe('prepareMappingFileSelection – edge cases', () => {
     );
     expect(duplicateFiles).toHaveLength(0);
     expect(resolvedFiles).toHaveLength(2);
-    expect(resolvedFiles.every((r) => (r.status as any)?.reason === 'fileMissing')).toBe(
-      true
-    );
+    expect(
+      resolvedFiles.every((r) => (r.status as any)?.reason === 'fileMissing')
+    ).toBe(true);
   });
 
   test('existing real files not in new selection are preserved', () => {
@@ -1080,10 +1100,7 @@ describe('prepareMappingFileSelection – edge cases', () => {
   });
 
   test('existing placeholders are NOT preserved', () => {
-    const placeholders = [
-      mk('a.jpg', 0, 'A'),
-      mk('b.jpg', 0, 'B'),
-    ];
+    const placeholders = [mk('a.jpg', 0, 'A'), mk('b.jpg', 0, 'B')];
     const { resolvedFiles, duplicateFiles } = prepareMappingFileSelection(
       placeholders,
       [mk('a.jpg', 91, 'A')],
@@ -1104,7 +1121,11 @@ describe('prepareMappingFileSelection – edge cases', () => {
     const existingFile = new File([content], 'a.jpg', { type: 'image/jpeg' });
     const existing = [
       {
-        uploadFile: { file: existingFile, parsedName: 'A', mappingMatchValue: 'A' },
+        uploadFile: {
+          file: existingFile,
+          parsedName: 'A',
+          mappingMatchValue: 'A',
+        },
       },
     ] as RA<PartialUploadableFileSpec>;
     const { resolvedFiles, duplicateFiles } = prepareMappingFileSelection(
@@ -1146,15 +1167,70 @@ describe('prepareMappingFileSelection – edge cases', () => {
         }) as PartialUploadableFileSpec
     );
 
-    const { resolvedFiles } = prepareMappingFileSelection(
-      savedRows,
-      [],
-      CSV
-    );
+    const { resolvedFiles } = prepareMappingFileSelection(savedRows, [], CSV);
 
     for (const r of resolvedFiles) {
       expect(r.uploadFile.mappingMatchValue).toBeTruthy();
       expect(r.uploadFile.parsedName).toBeTruthy();
     }
+  });
+});
+
+describe('validateAttachmentFiles', () => {
+  const matchingName = '000000001';
+  const missingName = '000000002';
+
+  overrideAjax(
+    '/stored_query/ephemeral/',
+    { results: [[1, matchingName]] },
+    {
+      method: 'POST',
+      body: expect.objectContaining({
+        contexttableid: 1,
+        contextname: 'CollectionObject',
+        fields: [
+          expect.objectContaining({
+            tablelist: '1',
+            stringid: '1.collectionobject.catalogNumber',
+            fieldname: 'catalogNumber',
+            operstart: 10,
+            startvalue: `${matchingName},${missingName}`,
+          }),
+        ],
+      }),
+    }
+  );
+
+  test('matches files returned by the validation query', async () => {
+    const files = [
+      {
+        uploadFile: {
+          file: {
+            name: `${matchingName}.jpg`,
+            size: 0,
+            type: 'image/jpeg',
+          },
+          parsedName: matchingName,
+        },
+      },
+      {
+        uploadFile: {
+          file: {
+            name: `${missingName}.jpg`,
+            size: 0,
+            type: 'image/jpeg',
+          },
+          parsedName: missingName,
+        },
+      },
+    ] as RA<PartialUploadableFileSpec>;
+
+    const result = await validateAttachmentFiles(files, {
+      staticPathKey: 'collectionObjectCatalogNumber',
+      formatQueryResults: (value) => value?.toString(),
+    });
+
+    expect(result[0].matchedId).toEqual([1]);
+    expect(result[1].matchedId).toEqual([]);
   });
 });

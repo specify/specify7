@@ -45,7 +45,8 @@ class CreateDefaultCollectionTypesTests(unittest.TestCase):
         )
 
         Collectionobject.objects.filter.assert_called_once_with(
-            collection=collection
+            collection=collection,
+            collectionobjecttype__isnull=True,
         )
 
         Collectionobject.objects.filter.return_value.update.assert_called_once_with(
@@ -54,6 +55,41 @@ class CreateDefaultCollectionTypesTests(unittest.TestCase):
 
         self.assertEqual(collection.collectionobjecttype, cot)
         collection.save.assert_called_once()
+
+    def test_does_not_overwrite_existing_collectionobject_types(self):
+        apps = MagicMock()
+
+        Collection = MagicMock()
+        Collectionobject = MagicMock()
+        Collectionobjecttype = MagicMock()
+
+        apps.get_model.side_effect = [
+            Collection,
+            Collectionobject,
+            Collectionobjecttype,
+        ]
+
+        discipline = MagicMock()
+        discipline.name = "Botany"
+        discipline.taxontreedef_id = 42
+
+        collection = MagicMock()
+        collection.discipline = discipline
+
+        Collection.objects.filter.return_value = [collection]
+
+        cot = MagicMock()
+        Collectionobjecttype.objects.get_or_create.return_value = (cot, True)
+
+        create_default_collection_types(apps)
+
+        Collectionobject.objects.filter.assert_called_once_with(
+            collection=collection,
+            collectionobjecttype__isnull=True,
+        )
+        Collectionobject.objects.filter.return_value.update.assert_called_once_with(
+            collectionobjecttype=cot,
+        )
 
 
 class CreateDefaultDisciplineForTreeDefsTests(unittest.TestCase):

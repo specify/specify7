@@ -32,7 +32,7 @@ import type {
 import { useResourceView } from '../Forms/BaseResourceView';
 import { SaveButton } from '../Forms/Save';
 import { AppTitle } from '../Molecules/AppTitle';
-import { hasToolPermission } from '../Permissions/helpers';
+import { hasPermission, hasToolPermission } from '../Permissions/helpers';
 import { isOverlay, OverlayContext } from '../Router/Router';
 import { clearUrlCache } from '../RouterCommands/CacheBuster';
 import { isXmlSubType } from './Create';
@@ -118,7 +118,12 @@ export function AppResourceEditor({
   const [formElement, setForm] = React.useState<HTMLFormElement | null>(null);
   const isReadOnly =
     React.useContext(ReadOnlyContext) ||
-    !hasToolPermission('resources', appResource.isNew() ? 'create' : 'update');
+    !hasToolPermission(
+      'resources',
+      appResource.isNew() ? 'create' : 'update'
+    ) ||
+    (appResource.get('name') === 'GlobalPreferences' &&
+      !hasPermission('/preferences/global', 'update'));
 
   const loading = React.useContext(LoadingContext);
 
@@ -240,11 +245,18 @@ export function AppResourceEditor({
 
   const footer = (
     <>
-      <Button.Secondary
-        onClick={(): void => navigate('/specify/resources/', { replace: true })}
-      >
-        {commonText.close()}
-      </Button.Secondary>
+      {
+        // handleClone is undefined when the editor is used in a dialog, so don't show the close button in that case
+        handleClone === undefined ? undefined : (
+          <Button.Secondary
+            onClick={(): void =>
+              navigate('/specify/resources/', { replace: true })
+            }
+          >
+            {commonText.close()}
+          </Button.Secondary>
+        )
+      }
       <span className="-ml-2 flex-1" />
       {formElement !== null &&
       hasToolPermission(
@@ -389,6 +401,7 @@ export function AppResourceEditor({
           </h3>
           <AppResourceEditButton
             appResource={appResource}
+            readOnly={isReadOnly}
             title={title}
             onDeleted={handleDeleted}
           >

@@ -3,7 +3,11 @@ from specifyweb.specify.models import (
     Collectionobject,
     Collectionobjecttype,
     Component,
+    Agent,
+    Accession,
 )
+from specifyweb.specify.api.crud import update_obj
+from specifyweb.specify.api.serializers import uri_for_model
 from specifyweb.specify.tests.test_api import ApiTests
 from specifyweb.backend.businessrules.tests.test_component import enable_unique_catnum_pref
 
@@ -30,6 +34,116 @@ class CollectionObjectTests(ApiTests):
             collection=self.collection,
             catalognumber=self.collectionobjects[0].catalognumber + 'foo')
         test_co.delete()
+
+    def test_add_existing_accession_to_collectionobject(self):
+        accession = Accession.objects.create(
+            accessionnumber="Test Accession",
+            division=self.division,
+        )
+
+        collection_object = Collectionobject.objects.create(
+            collection=self.collection,
+            accession=accession,
+        )
+
+        fetched_object = Collectionobject.objects.get(id=collection_object.id)
+        self.assertEqual(fetched_object.accession, accession)
+        self.assertEqual(fetched_object.accession.accessionnumber, "Test Accession")
+
+    def test_add_new_accession_to_collectionobject(self):
+        accession = Accession.objects.create(
+            accessionnumber="New Test Accession",
+            division=self.division,
+        )
+
+        collection_object = Collectionobject.objects.create(
+            collection=self.collection,
+            accession=accession,
+        )
+
+        fetched_object = Collectionobject.objects.get(id=collection_object.id)
+        self.assertEqual(fetched_object.accession, accession)
+        self.assertEqual(fetched_object.accession.accessionnumber, "New Test Accession")
+
+    def test_add_collectionobjectattribute_to_collectionobject(self):
+        collection_object = self.collectionobjects[0]
+
+        update_obj(
+            self.collection,
+            self.agent,
+            'collectionobject',
+            collection_object.id,
+            collection_object.version,
+            {
+                'collectionobjectattribute': {
+                    'text1': 'Test attribute',
+                }
+            },
+        )
+
+        collection_object.refresh_from_db()
+        self.assertIsNotNone(collection_object.collectionobjectattribute)
+        self.assertEqual(
+            collection_object.collectionobjectattribute.text1,
+            'Test attribute',
+        )
+
+    def test_add_paleocontext_to_collectionobject(self):
+        collection_object = self.collectionobjects[0]
+        update_obj(
+            self.collection,
+            self.agent,
+            'collectionobject',
+            collection_object.id,
+            collection_object.version,
+            {
+                'paleocontext': {
+                    'paleocontextname': 'Test Paleo Context',
+                    'discipline': uri_for_model(
+                        'discipline', self.discipline.id
+                    ),
+                }
+            },
+        )
+
+        collection_object.refresh_from_db()
+        self.assertIsNotNone(collection_object.paleocontext)
+        self.assertEqual(
+            collection_object.paleocontext.paleocontextname,
+            'Test Paleo Context',
+        )
+        self.assertEqual(
+            collection_object.paleocontext.discipline_id,
+            self.discipline.id,
+        )
+
+    def test_add_cataloger_with_existing_agent(self):
+        collection_object = Collectionobject.objects.create(
+            collection=self.collection,
+            cataloger=self.agent,
+        )
+
+        fetched_object = Collectionobject.objects.get(id=collection_object.id)
+        self.assertEqual(fetched_object.cataloger, self.agent)
+        self.assertEqual(fetched_object.cataloger.id, self.agent.id)
+
+    def test_add_new_cataloger_new_agent(self):
+        new_agent = Agent.objects.create(
+            agenttype=0,
+            firstname="New",
+            lastname="Cataloger",
+            division=self.division,
+        )
+
+        collection_object = Collectionobject.objects.create(
+            collection=self.collection,
+            cataloger=new_agent,
+        )
+
+        fetched_object = Collectionobject.objects.get(id=collection_object.id)
+        self.assertEqual(fetched_object.cataloger, new_agent)
+        self.assertEqual(fetched_object.cataloger.id, new_agent.id)
+
 
     def test_default_collectionobjecttype(self):
         default_type = Collectionobjecttype.objects.create(

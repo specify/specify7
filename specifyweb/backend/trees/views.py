@@ -268,8 +268,13 @@ def tree_stats(request, treedef, tree, parentid):
     "Returns tree stats (collection object count) for tree nodes parented by <parentid>."
 
     using_cte = (tree in ['geography', 'taxon', 'storage'])
+    include_synonym_count = (
+        tree == 'taxon'
+        and request.GET.get('includeSynonymCount', 'false') == 'true'
+    )
     results = get_tree_stats(
-        treedef, tree, parentid, request.specify_collection, sqlmodels.session_context, using_cte)
+        treedef, tree, parentid, request.specify_collection, sqlmodels.session_context, using_cte,
+        include_synonym_count)
 
     return HttpResponse(toJson(results), content_type="application/json")
 
@@ -584,7 +589,7 @@ def get_all_tree_information(collection, user_id) -> dict[str, list[TREE_INFORMA
         treedef_model = getattr(spmodels, f'{tree.lower().capitalize()}treedef')
         tree_defs = treedef_model.objects.filter(get_search_filters(collection, tree)).distinct()
         for definition in tree_defs:
-            ranks = definition.treedefitems.order_by('rankid')            
+            ranks = definition.treedefitems.order_by('rankid').iterator(chunk_size=2000)
             result[tree].append({
                 'definition': obj_to_data(definition),
                 'ranks': [obj_to_data(rank) for rank in ranks]

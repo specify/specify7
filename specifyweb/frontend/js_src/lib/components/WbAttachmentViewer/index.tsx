@@ -135,6 +135,7 @@ export function WbAttachmentViewerView(): JSX.Element {
           <Slider
             value={selectedAttachment}
             count={attachmentIds?.length ?? 1}
+            enableKeyboardShortcuts={false}
             onChange={(newValue: number) => {
               setSelectedAttachment(newValue);
             }}

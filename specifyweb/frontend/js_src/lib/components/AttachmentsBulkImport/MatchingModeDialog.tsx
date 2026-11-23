@@ -8,11 +8,7 @@ import { Button } from '../Atoms/Button';
 import { Submit } from '../Atoms/Submit';
 import { Dialog } from '../Molecules/Dialog';
 import { MappingFileSetup } from './MappingFileSetup';
-import type {
-  MappingFileColumns,
-  MappingFileRow,
-  MatchingMode,
-} from './types';
+import type { MappingFileColumns, MappingFileRow, MatchingMode } from './types';
 
 export function MatchingModeDialog({
   onContinue: handleContinue,
@@ -42,7 +38,8 @@ export function MatchingModeDialog({
   >(initialData);
 
   const canContinue =
-    (mode === null || mode === undefined) ||
+    mode === null ||
+    mode === undefined ||
     (mode === 'mappingFile' &&
       mappingColumns !== undefined &&
       mappingData !== undefined &&
@@ -56,9 +53,7 @@ export function MatchingModeDialog({
           <Button.DialogClose>{commonText.close()}</Button.DialogClose>
           <Submit.Success
             disabled={!canContinue}
-            onClick={() =>
-              handleContinue(mode, mappingColumns, mappingData)
-            }
+            onClick={() => handleContinue(mode, mappingColumns, mappingData)}
           >
             {commonText.proceed()}
           </Submit.Success>
@@ -72,9 +67,7 @@ export function MatchingModeDialog({
 
         <label
           className={`flex cursor-pointer items-start gap-3 rounded border p-3 ${
-            mode === null
-              ? 'border-brand-300 bg-brand-50'
-              : 'border-gray-300'
+            mode === null ? 'border-brand-300 bg-brand-50' : 'border-gray-300'
           }`}
         >
           <input

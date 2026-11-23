@@ -8,13 +8,34 @@ Object.defineProperty(globalThis, 'Response', {
     _body: string | undefined,
     {
       status,
-    }: { readonly status: number; readonly statusText: string | undefined }
+      headers = {},
+    }: {
+      readonly status: number;
+      readonly statusText: string | undefined;
+      readonly headers?: Readonly<Record<string, string>>;
+    }
   ) {
-    return {
-      status,
-      statusText: '',
-      ok: status >= 200 && status <= 299,
-    };
+    const normalizedHeaders = new Map(
+      Object.entries(headers).map(([name, value]) => [
+        name.toLowerCase(),
+        value,
+      ])
+    );
+    return Object.defineProperty(
+      {
+        status,
+        statusText: '',
+        ok: status >= 200 && status <= 299,
+      },
+      // Like a real Response, headers is not an own enumerable property
+      'headers',
+      {
+        value: {
+          get: (name: string) =>
+            normalizedHeaders.get(name.toLowerCase()) ?? null,
+        },
+      }
+    );
   },
 });
 

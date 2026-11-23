@@ -106,7 +106,7 @@ ordering_tables = {
 def fix_orderings(base_model: Table, new_record_data):
     for field_name, records in list(new_record_data.items()):
         try:
-            relationship = base_model.get_relationship(field_name)
+            relationship = base_model.get_relationship_strict(field_name)
         except FieldDoesNotExistError:
             continue
         ordering_fields = ordering_tables.get(relationship.relatedModelName.lower(), None)

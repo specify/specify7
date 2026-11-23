@@ -66,25 +66,25 @@ def scoping_relationships(collection, table: Table) -> dict[str, int]:
         pass
 
     try:
-        table.get_relationship("collection")
+        table.get_relationship_strict("collection")
         extra_static["collection_id"] = collection.id
     except DoesNotExistError:
         pass
 
     try:
-        table.get_relationship("discipline")
+        table.get_relationship_strict("discipline")
         extra_static["discipline_id"] = collection.discipline.id
     except DoesNotExistError:
         pass
 
     try:
-        table.get_relationship("division")
+        table.get_relationship_strict("division")
         extra_static["division_id"] = collection.discipline.division.id
     except DoesNotExistError:
         pass
 
     try:
-        table.get_relationship("institution")
+        table.get_relationship_strict("institution")
         extra_static["institution_id"] = collection.discipline.division.institution.id
     except DoesNotExistError:
         pass
@@ -123,7 +123,9 @@ def extend_columnoptions(
     picklists, schemaitem = get_picklists(collection, tablename, fieldname)
 
     # Picklists are already scoped by collection in get_picklists if possible
-    picklist = None if picklists is None else picklists[0]
+    picklist = None
+    if picklists is not None and len(picklists) > 0:
+        picklist = picklists[0]
 
     ui_formatter = get_or_defer_formatter(collection, tablename, fieldname, row, toOne, context)
     scoped_formatter = (
@@ -319,6 +321,7 @@ def apply_scoping_to_uploadtable(
         static=ut.static,
         toOne=to_ones,
         toMany=to_many,  # type: ignore
+        preserveIdentity=ut.preserveIdentity,
         scopingAttrs=scoping_relationships(collection, table),
         disambiguation=None,
         # Often, we'll need to recur down to clone (nested one-to-ones). Having this entire is handy in such a case

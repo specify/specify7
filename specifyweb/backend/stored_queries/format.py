@@ -1,3 +1,4 @@
+from __future__ import annotations
 
 import logging
 import re
@@ -24,13 +25,12 @@ from specifyweb.specify.utils.agent_types import agent_types
 from specifyweb.specify.models import datamodel, Splocalecontainer
 
 from specifyweb.specify.datamodel import Field, Relationship, Table
-from specifyweb.backend.stored_queries.queryfield import QueryField
 
 from . import models
 from .build_models import get_many_to_many_join_info
 from .group_concat import group_concat
 from .blank_nulls import blank_nulls
-from .query_construct import QueryConstruct
+from .query_construct_model import QueryConstruct
 from .queryfieldspec import QueryFieldSpec
 from typing import NamedTuple
 
@@ -194,6 +194,13 @@ class ObjectFormatter:
                   do_blank_null = True
                   ) -> tuple[
         QueryConstruct, blank_nulls, QueryFieldSpec]:
+        if path is None:
+            # A field without a mapped field is static text. The editor uses
+            # ``sep`` for these entries so that the text is retained when
+            # neighbouring fields are null.
+            static_text = fieldNodeAttrib.get('format', fieldNodeAttrib.get('sep', ''))
+            return query, blank_nulls(literal(static_text)), None
+
         path = path.split('.')
         path = [inspect(orm_table).class_.__name__, *path]
         formatter_field_spec = QueryFieldSpec.from_path(path)

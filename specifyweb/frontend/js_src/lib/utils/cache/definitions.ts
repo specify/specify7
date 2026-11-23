@@ -22,6 +22,7 @@ import type {
 import type { SortConfig } from '../../components/Molecules/Sorting';
 import type { PartialPreferences } from '../../components/Preferences/BasePreferences';
 import type { collectionPreferenceDefinitions } from '../../components/Preferences/CollectionDefinitions';
+import type { globalPreferenceDefinitions } from '../../components/Preferences/GlobalDefinitions';
 import type { userPreferenceDefinitions } from '../../components/Preferences/UserDefinitions';
 import type { Conformations } from '../../components/TreeView/helpers';
 import type { WbSearchPreferences } from '../../components/WorkBench/AdvancedSearch';
@@ -145,6 +146,9 @@ export type CacheDefinitions = {
   readonly collectionPreferences: {
     readonly cached: PartialPreferences<typeof collectionPreferenceDefinitions>;
   };
+  readonly globalPreferences: {
+    readonly cached: PartialPreferences<typeof globalPreferenceDefinitions>;
+  };
   readonly securityTool: {
     readonly policiesLayout: 'horizontal' | 'vertical';
     readonly previewCollapsed: boolean;
@@ -155,6 +159,8 @@ export type CacheDefinitions = {
     readonly conformation: RA<AppResourcesConformation>;
     readonly filters: AppResourceFilters;
     readonly showHiddenTables: boolean;
+    /** Last table selected in the DataViewQueries visual editor */
+    readonly dataViewQueriesTable: keyof Tables;
   };
   readonly pageSizes: RR<Paginators, (typeof pageSizes)[number]>;
   readonly formEditor: {

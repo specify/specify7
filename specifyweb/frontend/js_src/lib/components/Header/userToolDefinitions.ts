@@ -27,7 +27,7 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
   [userText.userAccount()]: {
     logOut: {
       title: userText.logOut(),
-      url: '/accounts/logout/',
+      url: '/specify/command/logout/',
       icon: icons.logout,
       enabled: () => userInformation.isauthenticated,
       onClick: async () =>
@@ -64,6 +64,12 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
       icon: icons.office,
       enabled: () =>
         hasPermission('/preferences/collection', 'edit_collection'),
+    },
+    globalPreferences: {
+      title: resourcesText.globalPreferences(),
+      url: '/specify/global-preferences/',
+      icon: icons.library,
+      enabled: () => hasPermission('/preferences/global', 'update'),
     },
     schemaConfig: {
       title: schemaText.schemaConfig(),

@@ -128,7 +128,7 @@ export const reportsText = createDictionary({
     'de-ch': 'Bericht ausführen',
     'pt-br': 'Executar relatório',
     'hr-hr': 'Pokreni izvješće',
-    nb: 'Kjør rapport',
+    nb: 'Lag rapport',
   },
   missingReportQuery: {
     'en-us': 'Missing Report Query',
@@ -139,7 +139,7 @@ export const reportsText = createDictionary({
     'de-ch': 'Fehlende Berichtsabfrage',
     'pt-br': 'Consulta de relatório ausente',
     'hr-hr': 'Nedostaje upit izvješća',
-    nb: 'Manglende rapportforespørsel',
+    nb: 'Manglende rapport søk',
   },
   missingReportQueryDescription: {
     'en-us': 'This report does not have an associated query',
@@ -150,7 +150,7 @@ export const reportsText = createDictionary({
     'de-ch': 'Dieser Bericht hat keine zugehörige Abfrage',
     'pt-br': 'Este relatório não possui uma consulta associada.',
     'hr-hr': 'Ovo izvješće nema pridruženi upit',
-    nb: 'Denne rapporten har ingen tilknyttet spørring',
+    nb: 'Denne rapporten er ikke tilknyttet et avansert søk',
   },
   missingReport: {
     'en-us': 'Missing report',

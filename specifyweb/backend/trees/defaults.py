@@ -9,7 +9,7 @@ import specifyweb.specify.models as spmodels
 from specifyweb.backend.trees.default_tree_files import stream_default_tree_csv
 from specifyweb.backend.trees.utils import get_models, TREE_ROOT_NODES
 from specifyweb.backend.trees.extras import renumber_tree, set_fullnames
-from specifyweb.backend.cache.redis import add_to_set, remove_from_set, set_members
+from specifyweb.backend.cache.redis.connect import RedisConnection, RedisSet
 from specifyweb.backend.trees.redis import ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY
 
 import logging
@@ -324,8 +324,6 @@ def add_default_tree_record(context: DefaultTreeContext, row: dict, tree_cfg: Tr
             if v:
                 defaults[model_field] = v
 
-        rank_title = rank_mapping.get('title', rank_name.capitalize())
-
         # Get the rank by the rank id, or column name as a fallback.
         # Skip creating on this rank if it doesn't exist
         if rank_mapping['rank']:
@@ -393,18 +391,21 @@ def add_default_tree_record(context: DefaultTreeContext, row: dict, tree_cfg: Tr
 
 def queue_create_default_tree_task(task_id):
     """Store queued (and active) default tree creation tasks so they can be reliably tracked later."""
-    add_to_set(ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY, task_id)
-    logger.debug(f"Queued task {task_id}. Current tasks: {set_members(ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY)}")
+    redis_set = RedisSet(RedisConnection())
+    redis_set.add(ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY, task_id)
+    logger.debug(f"Queued task {task_id}. Current tasks: {redis_set.members(ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY)}")
 
 def get_active_create_default_tree_tasks() -> list[str]:
-    tasks = set_members(ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY)
+    redis_set = RedisSet(RedisConnection())
+    tasks = redis_set.members(ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY)
     logger.debug(f"Active tree creation tasks: {tasks}")
     return list(tasks)
 
 def finish_create_default_tree_task(task_id):
     """Clear a finished tree creation task from redis cache."""
-    remove_from_set(ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY, task_id)
-    logger.debug(f"Finished task {task_id}. Current tasks: {set_members(ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY)}")
+    redis_set = RedisSet(RedisConnection())
+    redis_set.remove(ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY, task_id)
+    logger.debug(f"Finished task {task_id}. Current tasks: {redis_set.members(ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY)}")
 
 @app.task(base=LogErrorsTask, bind=True)
 def create_default_tree_task(self, url: str, discipline_id: int, tree_type: str, specify_collection_id: Optional[int],

@@ -21,13 +21,19 @@ import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { fetchCollection } from '../DataModel/collection';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { createResource, deleteResource, resourceEvents, saveResource } from '../DataModel/resource';
+import {
+  createResource,
+  deleteResource,
+  idFromUrl,
+  resourceEvents,
+  saveResource,
+} from '../DataModel/resource';
 import { getTableById, tables } from '../DataModel/tables';
 import type { SpQuery, SpQueryFolder } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { loadingGif } from '../Molecules';
 import { DateElement } from '../Molecules/DateElement';
-import { Dialog } from '../Molecules/Dialog';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { usePaginator } from '../Molecules/Paginator';
 import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import { TableIcon } from '../Molecules/TableIcon';
@@ -664,10 +670,13 @@ export function QueryListDialog({
     collectionFilters['name__icontains'] = debouncedSearch.trim();
   }
 
+  const searchFilter = debouncedSearch.trim();
+
   const [data, setData] = useAsyncState(
     React.useCallback(
       async () => fetchCollection('SpQuery', collectionFilters, advancedFilters),
       [
+        filters,
         limit,
         offset,
         orderBy,
@@ -689,19 +698,82 @@ export function QueryListDialog({
   React.useEffect(
     () =>
       resourceEvents.on('deleted', (resource) => {
-        if (resource.specifyTable.name === 'SpQuery')
-          setData(
-            data === undefined
-              ? undefined
-              : {
-                  records: data.records.filter(
-                    (query) => query.id !== resource.id
-                  ),
-                  totalCount: data.totalCount - 1,
-                }
-          );
+        if (resource.specifyTable.name !== 'SpQuery' || data === undefined)
+          return;
+        // Reconcile against searchFilter rather than current-page membership, since totalCount spans all pages
+        const name = (resource.get('name') as string | undefined) ?? '';
+        const matchesSearch =
+          searchFilter === '' ||
+          name.toLowerCase().includes(searchFilter.toLowerCase());
+        // Mirror every collection filter fetchCollection was called with,
+        // so an out-of-scope deletion doesn't decrement an unrelated count
+        const appliesUserFilters =
+          typeof selectedFolderId !== 'number' && selectedFolderId !== 'shared';
+        const activeFilters = filters ?? { specifyUser: userInformation.id };
+        const specifyUserId = idFromUrl(
+          (resource.get('specifyUser') as string | null) ?? ''
+        );
+        const matchesSpecifyUser =
+          !appliesUserFilters || specifyUserId === activeFilters.specifyUser;
+        const matchesContextTableId =
+          !appliesUserFilters ||
+          !('contextTableId' in activeFilters) ||
+          resource.get('contextTableId') === activeFilters.contextTableId;
+        const queryFolderId = idFromUrl(
+          (resource.get('spQueryFolder') as string | null) ?? ''
+        );
+        const matchesFolder =
+          typeof selectedFolderId !== 'number' ||
+          queryFolderId === selectedFolderId;
+        const matchesFavorite =
+          selectedFolderId !== 'favorites' || resource.get('isFavorite') === true;
+        const matchesArchive =
+          selectedFolderId === 'archive'
+            ? resource.get('isArchived') === true
+            : selectedFolderId === 'favorites' ||
+                typeof selectedFolderId === 'number' ||
+                selectedFolderId === 'shared' ||
+                selectedFolderId === null
+              ? resource.get('isArchived') !== true
+              : true;
+        const sharedFolderIds = (folders ?? [])
+          .filter(isSharedFolder)
+          .map(({ id }) => id);
+        const matchesShared =
+          selectedFolderId !== 'shared' ||
+          (queryFolderId !== null && sharedFolderIds.includes(queryFolderId));
+        if (
+          !matchesSearch ||
+          !matchesSpecifyUser ||
+          !matchesContextTableId ||
+          !matchesFolder ||
+          !matchesFavorite ||
+          !matchesArchive ||
+          !matchesShared
+        )
+          return;
+        const newTotalCount = Math.max(0, data.totalCount - 1);
+        currentPage[1](
+          Math.min(
+            currentPage[0],
+            Math.max(0, Math.ceil(newTotalCount / limit) - 1)
+          )
+        );
+        setData({
+          records: data.records.filter((query) => query.id !== resource.id),
+          totalCount: newTotalCount,
+        });
       }),
-    [data, setData]
+    [
+      currentPage,
+      data,
+      filters,
+      folders,
+      limit,
+      searchFilter,
+      selectedFolderId,
+      setData,
+    ]
   );
 
   const totalCountRef = React.useRef<number | undefined>(undefined);
@@ -949,6 +1021,21 @@ export function QueryListDialog({
       <Dialog
         buttons={
           <>
+            <Input.Text
+              aria-label={commonText.searchFor({
+                resource: queryText.queries(),
+              })}
+              className="min-w-0 max-w-sm flex-1"
+              placeholder={commonText.searchFor({
+                resource: queryText.queries(),
+              })}
+              value={searchQuery}
+              onValueChange={(value): void => {
+                setSearchQuery(value);
+                currentPage[1](0);
+              }}
+            />
+            <span className="flex-1" />
             <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
             {(hasToolPermission('queryBuilder', 'create') ||
               hasPermission('/querybuilder/query', 'execute')) && (
@@ -956,6 +1043,10 @@ export function QueryListDialog({
             )}
           </>
         }
+        className={{
+          container: `${dialogClassNames.narrowContainer}
+            h-[min(40rem)] w-[min(45rem)]`,
+        }}
         header={
           totalCount === undefined
             ? queryText.queries()

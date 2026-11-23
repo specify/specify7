@@ -131,6 +131,9 @@ function Row({
   );
   const viewUrl = typeof resource === 'object' ? resource.viewUrl() : undefined;
 
+  const rawId = result[queryIdField];
+  const hasValidId = typeof rawId === 'number' && Number.isFinite(rawId);
+
   const splitRecords: RA<number> | undefined = React.useMemo(
     () =>
       typeof result[0] === 'string' && result[0].includes(',')
@@ -154,11 +157,11 @@ function Row({
         typeof handleSelected === 'function'
           ? ({ target, shiftKey }): void =>
               /*
-               * Ignore clicks on the "View" links and formatted audit log cell
-               * links
+               * Ignore clicks on the "View" links, formatted audit log cell
+               * links, and record-list controls.
                */
-              (target as Element).closest('a') === null
-                ? handleSelected?.(!isSelected, shiftKey)
+              (target as Element).closest('a, button') === null && hasValidId
+                ? handleSelected?.(shiftKey || !isSelected, shiftKey)
                 : undefined
           : undefined
       }
@@ -181,12 +184,20 @@ function Row({
             className={`${getCellClassName(condenseQueryResults)} sticky`}
             role="cell"
           >
-            <Input.Checkbox
-              aria-label={commonText.select()}
-              checked={isSelected}
-              /* Ignore click event, as click would be handled by onClick on row */
-              onChange={f.undefined}
-            />
+            <div onClick={(event): void => event.stopPropagation()}>
+              <Input.Checkbox
+                aria-label={commonText.select()}
+                checked={isSelected}
+                isReadOnly={!hasValidId}
+                onChange={(event): void => {
+                  if (!hasValidId) return;
+                  handleSelected?.(
+                    event.currentTarget.checked,
+                    (event.nativeEvent as MouseEvent).shiftKey
+                  );
+                }}
+              />
+            </div>
           </div>
           <div
             className={`${getCellClassName(condenseQueryResults)} sticky`}

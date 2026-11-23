@@ -9,11 +9,14 @@ import type { SerializedResource } from '../DataModel/helperTypes';
 import { serializeResource } from '../DataModel/serializers';
 import type { LiteralField } from '../DataModel/specifyField';
 import type { SpLocaleContainer, Tables } from '../DataModel/types';
-import { fetchContext as fetchUiFormatters } from '../FieldFormatters';
-import { fetchFormatters } from '../Formatters/formatters';
+import {
+  fetchContext as fetchUiFormatters,
+  refreshUiFormatters,
+} from '../FieldFormatters';
+import { fetchFormatters, refreshFormatters } from '../Formatters/formatters';
 import { fetchPickLists } from '../PickLists/definitions';
 import { fetchSchemaLanguages } from '../Toolbar/Language';
-import { webLinks } from '../WebLinks';
+import { refreshWebLinks, webLinks } from '../WebLinks';
 import type { WebLink } from '../WebLinks/spec';
 import { formatAggregators } from './helpers';
 
@@ -82,6 +85,17 @@ export const fetchSchemaData = async (): Promise<RawSchemaData> =>
     pickLists: fetchSchemaPickLists(),
   });
 
+// Re-fetch schema data after editing app resources. Pick lists and tables
+// are fetched fresh on every call
+export const refreshSchemaData = async (): Promise<RawSchemaData> => {
+  await Promise.all([
+    refreshFormatters(),
+    refreshUiFormatters(),
+    refreshWebLinks(),
+  ]);
+  return fetchSchemaData();
+};
+
 export const fetchSchemaPickLists = async (): Promise<
   SchemaData['pickLists']
 > =>
@@ -89,14 +103,8 @@ export const fetchSchemaPickLists = async (): Promise<
     Object.fromEntries(
       filterArray(Object.values(pickLists))
         .map(serializeResource)
-        .map(({ id, name, isSystem }) => [
-          id,
-          {
-            name,
-            isSystem,
-          },
-          // Filter out front-end only pick lists
-        ])
-        .filter(([id]) => typeof id === 'number')
+        // Filter out front-end only pick lists
+        .filter(({ id }) => typeof id === 'number')
+        .map(({ id, name, isSystem }) => [id, { name, isSystem }])
     )
   );

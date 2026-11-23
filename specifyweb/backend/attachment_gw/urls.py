@@ -6,6 +6,7 @@ urlpatterns = [
     path('get_settings/', views.get_settings),
     path('get_upload_params/', views.get_upload_params),
     path('get_token/', views.get_token),
+    path('health/', views.health),
     path('proxy/', views.proxy),
     path('download_all/', views.download_all),
     path('dataset/', views.datasets),

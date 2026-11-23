@@ -16,11 +16,15 @@ const INTERVAL_MULTIPLIER = 1.1;
 export function useNotificationsFetch({
   freezeFetchPromise,
   isOpen,
+  onNewNotifications,
 }: {
   readonly freezeFetchPromise: React.MutableRefObject<
     Promise<void> | undefined
   >;
   readonly isOpen: boolean;
+  readonly onNewNotifications?: (
+    notifications: RA<GenericNotification>
+  ) => void;
 }): {
   readonly notifications: RA<GenericNotification> | undefined;
   readonly setNotifications: React.Dispatch<
@@ -32,6 +36,11 @@ export function useNotificationsFetch({
   >(undefined);
 
   const lastRawTimeRef = React.useRef<string | undefined>(undefined);
+  const knownMessageIds = React.useRef<ReadonlySet<string> | undefined>(
+    undefined
+  );
+  const onNewNotificationsRef = React.useRef(onNewNotifications);
+  onNewNotificationsRef.current = onNewNotifications;
 
   React.useEffect(() => {
     let pullInterval = INITIAL_INTERVAL;
@@ -92,6 +101,21 @@ export function useNotificationsFetch({
         )
         .then(({ data: newNotifications }) => {
           if (destructorCalled) return;
+
+          const unseenNotifications = newNotifications.filter(
+            ({ message_id }) => !knownMessageIds.current?.has(message_id)
+          );
+          if (
+            knownMessageIds.current !== undefined &&
+            unseenNotifications.length > 0
+          )
+            onNewNotificationsRef.current?.(
+              mergeAndSortNotifications(undefined, unseenNotifications)
+            );
+          knownMessageIds.current = new Set([
+            ...(knownMessageIds.current ?? []),
+            ...newNotifications.map(({ message_id }) => message_id),
+          ]);
 
           setNotifications((existingNotifications) =>
             mergeAndSortNotifications(existingNotifications, newNotifications)

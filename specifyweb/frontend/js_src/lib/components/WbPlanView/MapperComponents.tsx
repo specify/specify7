@@ -23,6 +23,7 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { userPreferences } from '../Preferences/userPreferences';
 import { ButtonWithConfirmation } from './Components';
+import { FieldSearch } from './FieldSearchComponent';
 import type {
   MapperComponentData,
   MappingElementProps,
@@ -34,6 +35,7 @@ import {
   DEFAULT_BATCH_EDIT_PREFS,
 } from './Mapper';
 import { getMappingLineData } from './navigator';
+import type { NavigatorSpec } from './navigatorSpecs';
 import { navigatorSpecs } from './navigatorSpecs';
 import type {
   ColumnOptions,
@@ -153,9 +155,17 @@ const defaultValue = 300;
 
 export function MappingView({
   mappingElementProps,
+  baseTableName,
+  showHiddenFields,
+  searchSpec = navigatorSpecs.wbPlanView,
+  onSelectSearchResult: handleSelectSearchResult,
   children,
 }: {
   readonly mappingElementProps: RA<MappingElementProps>;
+  readonly baseTableName?: keyof Tables;
+  readonly showHiddenFields?: boolean;
+  readonly searchSpec?: NavigatorSpec;
+  readonly onSelectSearchResult?: (mappingPath: MappingPath) => void;
   readonly children: JSX.Element | undefined;
 }): JSX.Element | null {
   // `resize` event listener for the mapping view
@@ -180,6 +190,20 @@ export function MappingView({
     return (): void => resizeObserver.disconnect();
   }, [mappingView, setMappingViewHeight]);
 
+  const fieldSearch = (
+    <FieldSearch
+      baseTableName={baseTableName}
+      searchSpec={searchSpec}
+      showHiddenFields={showHiddenFields}
+      onSelectSearchResult={handleSelectSearchResult}
+    />
+  );
+
+  const mappingElementPropsWithSearch = mappingElementProps.map(
+    (mappingElement, index) =>
+      index === 0 ? { ...mappingElement, fieldSearch } : mappingElement
+  );
+
   return (
     <section
       aria-label={wbPlanText.mappingEditor()}
@@ -196,7 +220,9 @@ export function MappingView({
     >
       <div className="flex h-full w-max gap-8">
         <div className="flex gap-1" role="list">
-          <MappingPathComponent mappingLineData={mappingElementProps} />
+          <MappingPathComponent
+            mappingLineData={mappingElementPropsWithSearch}
+          />
         </div>
         {children}
       </div>

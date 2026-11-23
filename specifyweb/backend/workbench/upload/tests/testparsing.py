@@ -184,6 +184,26 @@ class ParsingTests(UploadTestsBase):
                 for a in r.picklistAdditions:
                     self.assertEqual(1, get_table('Spauditlog').objects.filter(recordid=a.id, action=auditcodes.INSERT, tablenum=get_table('Picklistitem').specify_model.tableId).count(), "New picklistitem recorded in audit log.")
 
+    def test_duplicate_picklist_titles_use_first_match(self) -> None:
+        habitat = get_table('Picklist').objects.get(name='Habitat')
+        habitat.picklistitems.create(title='Marsh', value='marsh-duplicate')
+        expected_value = habitat.picklistitems.filter(title='Marsh').first().value
+
+        plan = UploadTable(
+            name='Collectionobject',
+            wbcols={'catalognumber': parse_column_options('catno'), 'text1': parse_column_options('habitat')},
+            overrideScope=None,
+            static={},
+            toOne={},
+            toMany={}
+        )
+        results = do_upload(self.collection, [{'catno': '1', 'habitat': 'Marsh'}], plan, self.agent.id)
+
+        self.assertIsInstance(results[0].record_result, Uploaded)
+        result = results[0].record_result
+        assert isinstance(result, Uploaded)
+        self.assertEqual(expected_value, get_table('Collectionobject').objects.get(id=result.get_id()).text1)
+
     def test_uiformatter_match(self) -> None:
         plan = UploadTable(
             name='Collectionobject',

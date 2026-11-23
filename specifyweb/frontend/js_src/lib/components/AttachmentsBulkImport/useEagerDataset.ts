@@ -92,8 +92,7 @@ export function useEagerDataSet(baseDataSet: AttachmentDataSet): {
     uploadplan: {
       ...generateUploadSpec(baseDataSet.uploadplan.staticPathKey),
       matchingMode:
-        baseDataSet.matchingmode ??
-        baseDataSet.uploadplan.matchingMode,
+        baseDataSet.matchingmode ?? baseDataSet.uploadplan.matchingMode,
       mappingFileColumns: baseDataSet.uploadplan.mappingFileColumns,
       mappingFileData: baseDataSet.uploadplan.mappingFileData,
     },

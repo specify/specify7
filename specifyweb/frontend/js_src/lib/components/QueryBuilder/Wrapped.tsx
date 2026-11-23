@@ -17,7 +17,6 @@ import { Container } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Form } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
-import { BatchEditFromQuery } from '../BatchEdit';
 import { ReadOnlyContext } from '../Core/Contexts';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -41,19 +40,18 @@ import {
 } from '../WbPlanView/mappingHelpers';
 import { getMappingLineData } from '../WbPlanView/navigator';
 import { navigatorSpecs } from '../WbPlanView/navigatorSpecs';
-import { datasetVariants } from '../WbUtils/datasetVariants';
 import { CheckReadAccess } from './CheckReadAccess';
-import { MakeRecordSetButton } from './Components';
 import { IsQueryBasicContext, useQueryViewPref } from './Context';
-import { QueryExportButtons } from './Export';
 import { QueryFields } from './Fields';
 import { QueryFromMap } from './FromMap';
 import { QueryHeader } from './Header';
 import { unParseQueryFields } from './helpers';
 import { getInitialState, reducer } from './reducer';
 import type { QueryResultRow } from './Results';
-import { QueryResultsWrapper } from './ResultsWrapper';
+import { QueryBuilderResults } from './QueryBuilderResults';
 import { QueryToolbar } from './Toolbar';
+import { useQueryExecution } from './useQueryExecution';
+import { useQuerySplitView } from './useQuerySplitView';
 
 const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 
@@ -76,7 +74,6 @@ export function QueryBuilder(
   return treeRanksLoaded ? <Wrapped {...props} /> : <QueryBuilderSkeleton />;
 }
 
-// REFACTOR: split this component
 function Wrapped({
   query: queryResource,
   recordSet,
@@ -106,9 +103,6 @@ function Wrapped({
   const [treeRanksLoaded = false] = useAsyncState(fetchTreeRanks, false);
 
   const table = getTableById(query.contextTableId);
-  const [selectedRows, setSelectedRows] = React.useState<ReadonlySet<number>>(
-    new Set()
-  );
 
   const buildInitialState = React.useCallback(
     () =>
@@ -159,6 +153,7 @@ function Wrapped({
   React.useEffect(checkForChanges, [state.fields]);
 
   React.useEffect(() => {
+    if (state === pendingState) return;
     handleChange?.({
       fields: unParseQueryFields(state.baseTableName, state.fields),
       isDistinct: query.selectDistinct,
@@ -210,36 +205,50 @@ function Wrapped({
       ],
     });
 
+  const serializeQueryFields = (
+    fields: typeof state.fields = state.fields
+  ): ReturnType<typeof unParseQueryFields> =>
+    unParseQueryFields(state.baseTableName, fields);
+
   /*
    * That function does not need to be called most of the time if query
    * fields haven't changed yet. This avoids triggering needless save blocker
    */
-  const getQueryFieldRecords = saveRequired
-    ? (
-        fields: typeof state.fields = state.fields
-      ): ReturnType<typeof unParseQueryFields> =>
-        unParseQueryFields(state.baseTableName, fields)
-    : undefined;
+  const getQueryFieldRecords = saveRequired ? serializeQueryFields : undefined;
 
-  /*
-   * REFACTOR: simplify this (move "executed query" state into this component
-   *    and get rid of queryRunCount)
-   */
-  function runQuery(
-    mode: 'count' | 'regular',
-    fields: typeof state.fields = state.fields
-  ): void {
-    if (!hasPermission('/querybuilder/query', 'execute')) return;
-    setQuery({
-      ...query,
-      fields: getQueryFieldRecords?.(fields) ?? query.fields,
-      countOnly: mode === 'count',
-    });
+  const { isCountOnly, runQuery } = useQueryExecution({
+    query,
+    onRun: (): void => dispatch({ type: 'RunQueryAction' }),
+  });
+
+  function scheduleRun(type: 'count' | 'regular'): void {
     /*
-     * Wait for new query to propagate before re running it
-     * TEST: check if this still works after updating to React 18
+     * If a filter for a query field was changed, and the <input> is
+     * still focused, the new value is not yet in global state.
+     * The value would be in global state after onBlur on <input>.
+     * If user hits "Enter", the form submission event is fired before
+     * onBlur (at least in Chrome and Firefox), and the query is run
+     * with the stale query field filter. This does not happen if query
+     * is run by pressing the "Query" button as that triggers onBlur
+     *
+     * The workaround is to check if input field is focused before
+     * submitting the query, and if it is, trigger blur, wait for
+     * global state to get updated and only then re run the query.
+     *
+     * See more: https://github.com/specify/specify7/issues/1647
      */
-    globalThis.setTimeout(() => dispatch({ type: 'RunQueryAction' }), 0);
+    const focusedInput =
+      document.activeElement?.tagName === 'INPUT'
+        ? (document.activeElement as HTMLInputElement)
+        : undefined;
+    if (typeof focusedInput === 'object' && focusedInput.type !== 'submit') {
+      // Trigger onBlur handler that parses the filter field value
+      focusedInput.blur();
+      // Return focus back to the field
+      focusedInput.focus();
+      // ReRun the query after React propagates the change
+      setPendingRun(type);
+    } else runQuery(type);
   }
 
   /*
@@ -273,15 +282,16 @@ function Wrapped({
 
   useTitle(localized(query.name));
 
-  const [isQueryRunPending, handleQueryRunPending, handleNoQueryRunPending] =
-    useBooleanState();
+  const [pendingRun, setPendingRun] = React.useState<
+    'count' | 'regular' | undefined
+  >(undefined);
   React.useEffect(() => {
-    if (!isQueryRunPending) return;
-    handleNoQueryRunPending();
-    runQuery('regular');
-    // Only reRun when isQueryRunPending is true, not when runQuery changes
+    if (pendingRun === undefined) return;
+    runQuery(pendingRun);
+    setPendingRun(undefined);
+    // Only reRun when pendingRun, not when runQuery changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isQueryRunPending, handleNoQueryRunPending]);
+  }, [pendingRun]);
 
   const [isScrolledTop, handleScrollTop, handleScrolledDown] =
     useBooleanState(true);
@@ -302,6 +312,20 @@ function Wrapped({
   const resultsRef = React.useRef<RA<QueryResultRow | undefined> | undefined>(
     undefined
   );
+  const {
+    selectedRows,
+    setSelectedRows,
+    selectedIndex,
+    setSelectedIndex,
+    isSplit,
+    canUseHorizontalSplit,
+    isHorizontal,
+    maximumPrimaryPaneWidth,
+    splitViewRef,
+    toggleSplit,
+    toggleOrientation,
+    onResults: handleSplitViewResults,
+  } = useQuerySplitView(state.queryRunCount);
 
   const showSeries = React.useMemo(
     () =>
@@ -374,14 +398,19 @@ function Wrapped({
               dispatch({ type: 'SavedQueryAction' });
             }}
             onTriedToSave={handleTriedToSave}
+            isSplit={isSplit}
+            canUseHorizontalSplit={canUseHorizontalSplit}
+            isHorizontal={isHorizontal}
+            onToggleSplit={toggleSplit}
+            onToggleOrientation={toggleOrientation}
           />
           <CheckReadAccess query={query} />
           <Form
             className={`
-          -mx-4 grid h-full gap-4 overflow-y-auto px-4
-          ${stickyScrolling ? 'snap-y snap-proximity' : ''}
-          ${resultsShown ? 'sm:grid-rows-[100%_100%]' : 'grid-rows-[100%]'}
-        `}
+              -mx-4 grid h-full gap-4 overflow-y-auto px-4
+              ${stickyScrolling ? 'snap-y snap-proximity' : ''}
+              ${resultsShown ? 'sm:grid-rows-[100%_100%]' : 'grid-rows-[100%]'}
+            `}
             forwardRef={setForm}
             onScroll={(): void =>
               /*
@@ -392,42 +421,12 @@ function Wrapped({
                 ? handleScrollTop()
                 : handleScrolledDown()
             }
-            onSubmit={(): void => {
-              /*
-               * If a filter for a query field was changed, and the <input> is
-               * still focused, the new value is not yet in global state.
-               * The value would be in global state after onBlur on <input>.
-               * If user hits "Enter", the form submission event is fired before
-               * onBlur (at least in Chrome and Firefox), and the query is run
-               * with the stale query field filter. This does not happen if query
-               * is run by pressing the "Query" button as that triggers onBlur
-               *
-               * The workaround is to check if input field is focused before
-               * submitting the query, and if it is, trigger blur, wait for
-               * global state to get updated and only then re run the query.
-               *
-               * See more: https://github.com/specify/specify7/issues/1647
-               */
-              const focusedInput =
-                document.activeElement?.tagName === 'INPUT'
-                  ? (document.activeElement as HTMLInputElement)
-                  : undefined;
-              if (
-                typeof focusedInput === 'object' &&
-                focusedInput.type !== 'submit'
-              ) {
-                // Trigger onBlur handler that parses the filter field value
-                focusedInput.blur();
-                // Return focus back to the field
-                focusedInput.focus();
-                // ReRun the query after React propagates the change
-                handleQueryRunPending();
-              } else runQuery('regular');
-            }}
+            onSubmit={(): void => scheduleRun('regular')}
           >
             <div className="flex snap-start flex-col gap-4 overflow-y-auto">
               {showMappingView && (
                 <MappingView
+                  baseTableName={state.baseTableName}
                   mappingElementProps={getMappingLineProps({
                     mappingLineData: getMappingLineData({
                       baseTableName: state.baseTableName,
@@ -480,6 +479,19 @@ function Wrapped({
                         });
                     },
                   })}
+                  showHiddenFields={showHiddenFields}
+                  searchSpec={navigatorSpecs.queryBuilder}
+                  onSelectSearchResult={(mappingPath): void => {
+                    dispatch({ type: 'SetMappingViewAction', mappingPath });
+                    if (
+                      !isReadOnly &&
+                      mappingPathIsComplete(mappingPath) &&
+                      !getMappedFieldsBind(mappingPath.slice(0, -1)).includes(
+                        mappingPath.at(-1)!
+                      )
+                    )
+                      handleAddField(mappingPath);
+                  }}
                 >
                   {isReadOnly ? undefined : (
                     <Button.Small
@@ -580,15 +592,23 @@ function Wrapped({
               />
               <QueryToolbar
                 isDistinct={query.selectDistinct ?? false}
+                isEmbedded={isEmbedded}
                 isSeries={query.smushed ?? false}
                 searchSynonymy={query.searchSynonymy ?? false}
                 showHiddenFields={showHiddenFields}
                 showSeries={showSeries}
                 tableName={table.name}
-                onRunCountOnly={(): void => runQuery('count')}
+                onScheduleCountOnlyRun={(): void => scheduleRun('count')}
+                onScheduleRun={(): void => scheduleRun('regular')}
                 onSubmitClick={(): void =>
-                  form?.checkValidity() === false
-                    ? runQuery('regular')
+                  /*
+                   * If form has no validation issues, the <Form onSubmit> will
+                   * take care of running the query. If form has issues, we
+                   * still want to execute the query (Form onSubmit is not fired
+                   * in that case so we have to do it manually)
+                   */
+                  isEmbedded || form?.checkValidity() === false
+                    ? scheduleRun('regular')
                     : undefined
                 }
                 onToggleDistinct={(): void => {
@@ -614,68 +634,37 @@ function Wrapped({
                 }}
               />
             </div>
-            {hasPermission('/querybuilder/query', 'execute') && (
-              <QueryResultsWrapper
-                createRecordSet={
-                  !isReadOnly &&
-                  hasPermission('/querybuilder/query', 'create_recordset') &&
-                  !queryResource.get('selectDistinct') ? (
-                    <MakeRecordSetButton
-                      baseTableName={state.baseTableName}
-                      fields={state.fields}
-                      getQueryFieldRecords={getQueryFieldRecords}
-                      queryResource={queryResource}
-                      sourceRecordSetId={recordSet?.id}
-                    />
-                  ) : undefined
-                }
-                extraButtons={
-                  <>
-                    {datasetVariants.batchEdit.canCreate() && (
-                      <BatchEditFromQuery
-                        baseTableName={state.baseTableName}
-                        fields={state.fields}
-                        query={queryResource}
-                        recordSetId={recordSet?.id}
-                        saveRequired={saveRequired}
-                      />
-                    )}
-                    {query.countOnly ? undefined : (
-                      <QueryExportButtons
-                        baseTableName={state.baseTableName}
-                        fields={state.fields}
-                        getQueryFieldRecords={getQueryFieldRecords}
-                        queryResource={queryResource}
-                        recordSetId={recordSet?.id}
-                        results={resultsRef}
-                        selectedRows={selectedRows}
-                      />
-                    )}
-                  </>
-                }
-                fields={state.fields}
-                forceCollection={forceCollection}
-                queryResource={queryResource}
-                queryRunCount={state.queryRunCount}
-                recordSetId={recordSet?.id}
-                resultsRef={resultsRef}
-                selectedRows={[selectedRows, setSelectedRows]}
-                table={table}
-                onReRun={(): void =>
-                  dispatch({
-                    type: 'RunQueryAction',
-                  })
-                }
-                onSelected={handleSelected}
-                onSortChange={(fields): void => {
-                  dispatch({
-                    type: 'ChangeFieldsAction',
-                    fields,
-                  });
-                  runQuery('regular', fields);
-                }}
-              />
-            )}
+            <QueryBuilderResults
+              forceCollection={forceCollection}
+              getQueryFieldRecords={getQueryFieldRecords}
+              isCountOnly={isCountOnly}
+              isHorizontal={isHorizontal}
+              isReadOnly={isReadOnly}
+              isSplit={isSplit}
+              maximumPrimaryPaneWidth={maximumPrimaryPaneWidth}
+              query={query}
+              queryResource={queryResource}
+              recordSet={recordSet}
+              resultsRef={resultsRef}
+              saveRequired={saveRequired}
+              selectedIndex={selectedIndex}
+              selectedRows={selectedRows}
+              setSelectedIndex={setSelectedIndex}
+              setSelectedRows={setSelectedRows}
+              splitViewRef={splitViewRef}
+              state={state}
+              table={table}
+              onReRun={(): void => dispatch({ type: 'RunQueryAction' })}
+              onResults={handleSplitViewResults}
+              onSelected={(ids): void => {
+                setSelectedIndex(Math.max(0, ids.length - 1));
+                handleSelected?.(ids);
+              }}
+              onSortChange={(fields): void => {
+                dispatch({ type: 'ChangeFieldsAction', fields });
+                runQuery('regular');
+              }}
+            />
           </Form>
         </Container.Full>
       </IsQueryBasicContext.Provider>
