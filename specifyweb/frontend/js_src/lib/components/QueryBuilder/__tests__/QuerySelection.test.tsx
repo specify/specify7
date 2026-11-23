@@ -3,6 +3,7 @@ import React from 'react';
 
 import { requireContext } from '../../../tests/helpers';
 import * as ajaxModule from '../../../utils/ajax';
+import { Http } from '../../../utils/ajax/definitions';
 import { interactionsText } from '../../../localization/interactions';
 import { tables } from '../../DataModel/tables';
 import { serializeResource } from '../../DataModel/serializers';
@@ -125,14 +126,14 @@ test('selects loaded and subsequently loaded records without fetching membership
   rerender(<Results rows={[[1], [2], [3]]} />);
   expect(screen.getByRole('checkbox', { name: 'Record 3' })).toBeChecked();
   expect(
-    screen.getByRole('heading', { name: /1000000 of 1000000/ })
+    screen.getByRole('heading', { name: 'Results: (1000000/1000000)' })
   ).toBeInTheDocument();
   fireEvent.click(
     screen.getByRole('button', { name: interactionsText.deselectAll() })
   );
   expect(screen.getByRole('checkbox', { name: 'Record 1' })).not.toBeChecked();
   expect(
-    screen.getByRole('heading', { name: /0 of 1000000/ })
+    screen.getByRole('heading', { name: 'Results: (0/1000000)' })
   ).toBeInTheDocument();
   expect(
     ajax.mock.calls.filter(([url]) => url === '/stored_query/ephemeral/')
@@ -153,7 +154,7 @@ test('deselect all stays empty instead of restoring implicit all-results selecti
     screen.getByRole('button', { name: interactionsText.deselectAll() })
   ).toBeDisabled();
   expect(
-    screen.getByRole('heading', { name: /0 of 1000000/ })
+    screen.getByRole('heading', { name: 'Results: (0/1000000)' })
   ).toBeInTheDocument();
 });
 
@@ -169,10 +170,35 @@ test('refreshes the count after deleting a selected record outside the loaded ta
   );
   await waitFor(() =>
     expect(
-      screen.getByRole('heading', { name: /999999 of 999999/ })
+      screen.getByRole('heading', { name: 'Results: (999999/999999)' })
     ).toBeInTheDocument()
   );
   expect(fetchCount).toHaveBeenCalledTimes(1);
+});
+
+test('shows the selected and total counts in compact form', async () => {
+  jest.spyOn(ajaxModule, 'ajax').mockResolvedValue({
+    data: { count: 1 },
+    status: Http.OK,
+    response: new Response('', { status: Http.OK }),
+  });
+  render(<Results />);
+  fireEvent.click(await screen.findByRole('checkbox', { name: 'Record 1' }));
+  await waitFor(() =>
+    expect(
+      screen.getByRole('heading', { name: 'Results: (1/1000000)' })
+    ).toHaveAttribute('title', '1 of 1000000 result rows selected')
+  );
+  const heading = screen.getByRole('heading', {
+    name: 'Results: (1/1000000)',
+  });
+  const toolbar = heading.parentElement;
+  expect(toolbar).toHaveClass('flex', 'items-center');
+  expect(toolbar).not.toHaveClass('items-stretch');
+  expect(
+    screen.getByRole('button', { name: interactionsText.selectAll() })
+      .parentElement
+  ).toBe(toolbar);
 });
 
 test.each([{ grouped: true }, { loading: true }])(

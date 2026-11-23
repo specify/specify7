@@ -553,18 +553,22 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     <Container.Base
       className={`w-full !bg-[color:var(--form-background)] ${containerClassName}`}
     >
-      <div className="flex items-center items-stretch gap-2">
-        <H3>
+      <div className="flex items-center gap-2">
+        <H3
+          title={
+            selectedQuery === undefined
+              ? undefined
+              : queryText.selectionCount({
+                  selected: (selectedCount ?? commonText.loading()).toString(),
+                  total: (totalCount ?? commonText.loading()).toString(),
+                })
+          }
+        >
           {commonText.colonLine({
             label,
             value:
               selectedQuery !== undefined
-                ? queryText.selectionCount({
-                    selected: (
-                      selectedCount ?? commonText.loading()
-                    ).toString(),
-                    total: (totalCount ?? commonText.loading()).toString(),
-                  })
+                ? `(${selectedCount ?? commonText.loading()}/${totalCount ?? commonText.loading()})`
                 : `(${
                     selectedRows.size === 0
                       ? (totalCount ?? commonText.loading())
