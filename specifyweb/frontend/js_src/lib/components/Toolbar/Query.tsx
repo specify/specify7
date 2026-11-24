@@ -252,6 +252,25 @@ export function QueryListDialog({
               <span>{label}</span>
             </Button.LikeLink>
           ))}
+          <hr className="my-2 w-full border-gray-200 dark:border-neutral-700" />
+          <section
+            aria-label={queryText.folders()}
+            className="flex min-h-0 flex-1 flex-col"
+          >
+            <div className="flex items-center justify-between gap-2">
+              <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-200">
+                {queryText.folders()}
+              </h2>
+              <Button.Icon
+                aria-label={queryText.addFolder()}
+                className="shrink-0 rounded-full p-0.5 hover:bg-brand-100 dark:hover:bg-neutral-700"
+                disabled
+                icon="plus"
+                title={queryText.addFolder()}
+                onClick={undefined}
+              />
+            </div>
+          </section>
         </nav>
         <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
           <div className="min-h-0 flex-1 overflow-auto">

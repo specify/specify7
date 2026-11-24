@@ -19,6 +19,12 @@ export const queryText = createDictionary({
   yourQueries: {
     'en-us': 'Your Queries',
   },
+  folders: {
+    'en-us': 'Folders',
+  },
+  addFolder: {
+    'en-us': 'Add folder',
+  },
   sharedQueries: {
     'en-us': 'Shared Queries',
   },

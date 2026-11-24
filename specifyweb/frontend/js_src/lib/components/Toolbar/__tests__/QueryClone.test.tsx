@@ -57,12 +57,13 @@ test('shows query sections as icon navigation on the left', async () => {
     name: queryText.queries(),
   });
   const sectionButtons = within(navigation).getAllByRole('button');
-  expect(sectionButtons.map(({ textContent }) => textContent?.trim())).toEqual([
+  const typeButtons = sectionButtons.slice(0, 3);
+  expect(typeButtons.map(({ textContent }) => textContent?.trim())).toEqual([
     queryText.yourQueries(),
     queryText.queriesIShare(),
     queryText.sharedQueries(),
   ]);
-  const sectionIcons = sectionButtons.map(
+  const sectionIcons = typeButtons.map(
     (button) => button.querySelector('svg')?.outerHTML
   );
   expect(sectionIcons).toEqual([
@@ -74,7 +75,25 @@ test('shows query sections as icon navigation on the left', async () => {
     navigation.compareDocumentPosition(screen.getByRole('table')) &
       Node.DOCUMENT_POSITION_FOLLOWING
   ).toBeTruthy();
-  expect(sectionButtons[0]).toHaveAttribute('aria-current', 'page');
+  expect(typeButtons[0]).toHaveAttribute('aria-current', 'page');
+  const folderSection = within(navigation).getByRole('region', {
+    name: queryText.folders(),
+  });
+  expect(
+    within(folderSection).getByRole('heading', {
+      name: queryText.folders(),
+    })
+  ).toBeVisible();
+  const divider = within(navigation).getByRole('separator');
+  expect(
+    divider.compareDocumentPosition(folderSection) &
+      Node.DOCUMENT_POSITION_FOLLOWING
+  ).toBeTruthy();
+  expect(
+    within(folderSection).getByRole('button', {
+      name: queryText.addFolder(),
+    })
+  ).toBeDisabled();
 });
 
 test('focus refresh ignores an older in-flight shared query result', async () => {
