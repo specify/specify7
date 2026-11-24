@@ -1,8 +1,9 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-11-23 17:13+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-11-24 13:51+0000\n"
+"Last-Translator: Gunnhild Marthinsen "
+"<gunnhilm@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/query/nb/>\n"
 "Language: nb_NO\n"
@@ -13,13 +14,11 @@ msgstr ""
 
 #. Used in: Components > Query Builder > Results
 #: components/QueryBuilder/Results.tsx:563
-#, fuzzy
 msgid "selectionCount"
 msgstr "{selected:string} av {total:string} resultatrader valgt"
 
 #. Used in: Components > Query Builder > Results
 #: components/QueryBuilder/Results.tsx:589
-#, fuzzy
 msgid "selectionUnavailable"
 msgstr ""
 "Valg av poster er ikke tilgjengelig for grupperte resultater eller "
@@ -27,7 +26,6 @@ msgstr ""
 
 #. Used in: Components > Query Builder > Results
 #: components/QueryBuilder/Results.tsx:825
-#, fuzzy
 msgid "selectionLimit"
 msgstr ""
 "Maksimalt {limit:number} individuelle valg eller ekskluderinger støttes. "
@@ -36,7 +34,6 @@ msgstr ""
 #. Used in: Components > Query Builder > To Map ⬤ Query Builder > __tests__ > To Map
 #: components/QueryBuilder/ToMap.tsx:96
 #: components/QueryBuilder/__tests__/ToMap.test.tsx:65
-#, fuzzy
 msgid "mapSelectionLimit"
 msgstr "Velg maksimalt {limit:number} resultatrader som skal vises på kartet."
 
