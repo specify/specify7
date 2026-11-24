@@ -1238,3 +1238,153 @@ describe('Children can only be added to synonymized nodes if stated in Collectio
     );
   });
 });
+
+describe('Add a child node to a parent then edit it to a lower rank', () => {
+  const parentId = 2;
+  const nodeId = 12;
+  const genusRankId = 9;
+  const speciesRankId = 2;
+  const subspeciesRankId = 22;
+  const saveRequest = jest.fn(() =>
+    addMissingFields('Taxon', {
+      id: nodeId,
+      name: 'velifer',
+      fullName: 'Carpiodes velifer',
+      rankId: 230,
+      version: 1,
+      isAccepted: true,
+      parent: getResourceApiUrl('Taxon', parentId),
+      definition: treeDefinitionUrl('Taxon'),
+      definitionItem: rankItemUrl('Taxon', subspeciesRankId),
+      resource_uri: getResourceApiUrl('Taxon', nodeId),
+    })
+  );
+  overrideTreeView('Taxon');
+  (
+    [
+      [genusRankId, 'Genus', 180],
+      [15, 'Subgenus', 190],
+      [speciesRankId, 'Species', 220],
+      [subspeciesRankId, 'Subspecies', 230],
+    ] as const
+  ).forEach(([id, name, rankId]) =>
+    overrideAjax(rankItemUrl('Taxon', id), () =>
+      addMissingFields('TaxonTreeDefItem', {
+        id,
+        name,
+        rankId,
+        treeDef: treeDefinitionUrl('Taxon'),
+        resource_uri: rankItemUrl('Taxon', id),
+      })
+    )
+  );
+  overrideAjax(getResourceApiUrl('Taxon', parentId), () =>
+    addMissingFields('Taxon', {
+      id: parentId,
+      name: 'Carpiodes',
+      fullName: 'Carpiodes',
+      rankId: 180,
+      isAccepted: true,
+      definition: treeDefinitionUrl('Taxon'),
+      definitionItem: rankItemUrl('Taxon', genusRankId),
+      resource_uri: getResourceApiUrl('Taxon', parentId),
+    })
+  );
+  overrideAjax(getResourceApiUrl('Taxon', nodeId), () =>
+    addMissingFields('Taxon', {
+      id: nodeId,
+      name: 'velifer',
+      fullName: 'Carpiodes velifer',
+      rankId: 220,
+      version: 0,
+      isAccepted: true,
+      parent: getResourceApiUrl('Taxon', parentId),
+      definition: treeDefinitionUrl('Taxon'),
+      definitionItem: rankItemUrl('Taxon', speciesRankId),
+      resource_uri: getResourceApiUrl('Taxon', nodeId),
+    })
+  );
+  mockNoDeleteBlockers('Taxon', nodeId);
+  const predictFullName = jest.fn(() => 'Carpiodes velifer');
+  overrideAjax(
+    `/trees/specify_tree/taxon/${parentId}/predict_fullname/?name=velifer&treedefitemid=${subspeciesRankId}`,
+    predictFullName
+  );
+  [
+    `/api/specify/taxon/?limit=1&parent=${nodeId}&orderby=rankid`,
+    `/api/specify/taxon/?limit=1&orderby=rankid&parent_id=${nodeId}`,
+  ].forEach((url) =>
+    overrideAjax(url, {
+      objects: [],
+      meta: { limit: 1, offset: 0, total_count: 0 },
+    })
+  );
+  overrideAjax(getResourceApiUrl('Taxon', nodeId), saveRequest, {
+    method: 'PUT',
+    body: jsonContaining({
+      definitionitem: rankItemUrl('Taxon', subspeciesRankId),
+    }),
+  });
+
+  test('"Edit" saves the node with a lower rank', async () => {
+    const handleRefresh = jest.fn();
+    const { user } = renderActions(
+      'Taxon',
+      makeRow({
+        nodeId,
+        name: 'velifer',
+        fullName: 'Carpiodes velifer',
+        rankId: 220,
+        children: 0,
+      }),
+      handleRefresh
+    );
+
+    await user.click(
+      screen.getByRole('link', {
+        name: new RegExp(`^${commonText.edit()}`, 'u'),
+      })
+    );
+    const dialog = await screen.findByRole('dialog');
+    const rank = within(dialog).getByRole('combobox', {
+      name: tables.Taxon.strictGetRelationship('definitionItem').label,
+    });
+    await waitFor(() => expect(rank).toHaveValue('Species'));
+    await waitFor(() =>
+      expect(within(dialog).getByRole('textbox')).toHaveValue('velifer')
+    );
+    await waitFor(() =>
+      expect(
+        within(dialog).getByRole('combobox', {
+          name: tables.Taxon.strictGetRelationship('parent').label,
+        })
+      ).toHaveValue('Carpiodes')
+    );
+
+    await user.click(
+      within(rank.parentElement!).getByRole('button', {
+        name: commonText.expand(),
+      })
+    );
+    const subspecies = await screen.findByRole('option', {
+      name: (_, element) => element.textContent === 'Subspecies',
+    });
+    await user.pointer([
+      { target: subspecies, coords: { screenX: 10, screenY: 10 } },
+      { target: subspecies, coords: { screenX: 12, screenY: 12 } },
+    ]);
+    await waitFor(() =>
+      expect(subspecies.dataset.headlessuiState).toContain('active')
+    );
+    await user.click(subspecies);
+    await waitFor(() => expect(rank).toHaveValue('Subspecies'));
+    await waitFor(() => expect(predictFullName).toHaveBeenCalled());
+
+    await user.click(
+      within(dialog).getByRole('button', { name: commonText.save() })
+    );
+
+    await waitFor(() => expect(handleRefresh).toHaveBeenCalled());
+    expect(saveRequest).toHaveBeenCalledTimes(1);
+  });
+});
