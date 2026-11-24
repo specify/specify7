@@ -1,137 +1,137 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-07-03 12:01+0000\n"
-"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
-"Language-Team: French "
-"<https://hosted.weblate.org/projects/specify-7/expressSearchConfig/fr/>\n"
+"PO-Revision-Date: 2026-11-24 15:51+0000\n"
+"Last-Translator: Maxime GRIVEAU <mgriveau@users.noreply.hosted.weblate.org>\n"
+"Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
+"expressSearchConfig/fr/>\n"
 "Language: fr\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 2026.7.1.dev0\n"
+"X-Generator: Weblate 2026.12.dev0\n"
 
-#: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:252
 #. Used in: Components > Express Search Config > Express Search Config Editor
+#: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:252
 msgid "loadingConfig"
 msgstr "Chargement..."
 
-#: components/ExpressSearchConfig/SearchFieldsTab.tsx:63
 #. Used in: Components > Express Search Config > Search Fields Tab
+#: components/ExpressSearchConfig/SearchFieldsTab.tsx:63
 msgid "loadingMetadata"
 msgstr "Chargement des métadonnées..."
 
-#: components/ExpressSearchConfig/ExpressSearchConfigDialog.tsx:74
 #. Used in: Components > Express Search Config > Express Search Config Dialog
+#: components/ExpressSearchConfig/ExpressSearchConfigDialog.tsx:74
 msgid "expressSearchConfigTitle"
 msgstr "Configuration de la recherche express"
 
+#. Used in: Components > Express Search Config > Express Search Config Editor ⬤ Components > Wb Plan View > Field Search Component
 #: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:256
 #: components/WbPlanView/FieldSearchComponent.tsx:164
-#. Used in: Components > Express Search Config > Express Search Config Editor ⬤ Components > Wb Plan View > Field Search Component
 msgid "searchFieldsTab"
-msgstr "Champs de recherche"
+msgstr "Champs recherchés"
 
-#: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:263
 #. Used in: Components > Express Search Config > Express Search Config Editor
+#: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:263
 msgid "relatedTablesTab"
 msgstr "Tables associés"
 
-#: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:272
 #. Used in: Components > Express Search Config > Express Search Config Editor
+#: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:272
 msgid "resultsOrderingTab"
 msgstr "Ordre des résultats"
 
-#: components/ExpressSearchConfig/SearchFieldsTab.tsx:289
 #. Used in: Components > Express Search Config > Search Fields Tab
+#: components/ExpressSearchConfig/SearchFieldsTab.tsx:289
 msgid "availableTables"
 msgstr "Tables disponibles"
 
-#: components/ExpressSearchConfig/SearchFieldsTab.tsx:310
 #. Used in: Components > Express Search Config > Search Fields Tab
+#: components/ExpressSearchConfig/SearchFieldsTab.tsx:310
 msgid "searchableFields"
 msgstr "Champs recherchables"
 
-#: components/ExpressSearchConfig/SearchFieldsTab.tsx:316
 #. Used in: Components > Express Search Config > Search Fields Tab
+#: components/ExpressSearchConfig/SearchFieldsTab.tsx:316
 msgid "searchLabel"
 msgstr "Recherche"
 
-#: components/ExpressSearchConfig/SearchFieldsTab.tsx:317
 #. Used in: Components > Express Search Config > Search Fields Tab
+#: components/ExpressSearchConfig/SearchFieldsTab.tsx:317
 msgid "fieldName"
 msgstr "Champ"
 
-#: components/ExpressSearchConfig/SearchFieldsTab.tsx:318
 #. Used in: Components > Express Search Config > Search Fields Tab
+#: components/ExpressSearchConfig/SearchFieldsTab.tsx:318
 msgid "sortMode"
 msgstr "Mode de tri"
 
-#: components/ExpressSearchConfig/SearchFieldsTab.tsx:354
 #. Used in: Components > Express Search Config > Search Fields Tab
+#: components/ExpressSearchConfig/SearchFieldsTab.tsx:354
 msgid "searchNone"
 msgstr "Aucun"
 
-#: components/ExpressSearchConfig/SearchFieldsTab.tsx:357
 #. Used in: Components > Express Search Config > Search Fields Tab
+#: components/ExpressSearchConfig/SearchFieldsTab.tsx:357
 msgid "ascendingOrder"
 msgstr "Ascendant"
 
-#: components/ExpressSearchConfig/SearchFieldsTab.tsx:360
 #. Used in: Components > Express Search Config > Search Fields Tab
+#: components/ExpressSearchConfig/SearchFieldsTab.tsx:360
 msgid "descendingOrder"
 msgstr "Descendant"
 
-#: components/ExpressSearchConfig/SearchFieldsTab.tsx:375
 #. Used in: Components > Express Search Config > Search Fields Tab
+#: components/ExpressSearchConfig/SearchFieldsTab.tsx:375
 msgid "displayFields"
 msgstr "Afficher les champs"
 
-#: components/ExpressSearchConfig/ResultsOrderingTab.tsx:99
 #. Used in: Components > Express Search Config > Results Ordering Tab
+#: components/ExpressSearchConfig/ResultsOrderingTab.tsx:99
 msgid "configureResultsOrdering"
 msgstr "Configurer le tri des résultats"
 
-#: components/ExpressSearchConfig/ResultsOrderingTab.tsx:102
 #. Used in: Components > Express Search Config > Results Ordering Tab
+#: components/ExpressSearchConfig/ResultsOrderingTab.tsx:102
 msgid "reorderResultsOrderingDescription"
 msgstr ""
 "Modifier l'ordre d'affichage des sections dans le volet des résultats de "
 "recherche."
 
-#: components/ExpressSearchConfig/ResultsOrderingTab.tsx:51
 #. Used in: Components > Express Search Config > Results Ordering Tab
+#: components/ExpressSearchConfig/ResultsOrderingTab.tsx:51
 msgid "relatedQueryLabel"
 msgstr "Requête associée : {query:string}"
 
-#: components/ExpressSearchConfig/ResultsOrderingTab.tsx:130
 #. Used in: Components > Express Search Config > Results Ordering Tab
+#: components/ExpressSearchConfig/ResultsOrderingTab.tsx:130
 msgid "noDisplayItemsConfigured"
 msgstr "Aucun élément d'affichage configuré."
 
-#: components/ExpressSearchConfig/RelatedTablesTab.tsx:80
 #. Used in: Components > Express Search Config > Related Tables Tab
+#: components/ExpressSearchConfig/RelatedTablesTab.tsx:80
 msgid "selectAllQueries"
 msgstr "Tout sélectionner"
 
-#: components/ExpressSearchConfig/RelatedTablesTab.tsx:83
 #. Used in: Components > Express Search Config > Related Tables Tab
+#: components/ExpressSearchConfig/RelatedTablesTab.tsx:83
 msgid "deselectAllQueries"
 msgstr "Désélectionnez tout"
 
-#: components/ExpressSearchConfig/RelatedTablesTab.tsx:117
 #. Used in: Components > Express Search Config > Related Tables Tab
+#: components/ExpressSearchConfig/RelatedTablesTab.tsx:117
 msgid "noRelatedQueriesAvailable"
 msgstr "Aucune requête associée disponible pour les tables sélectionnées."
 
+#. Used in: Components > Express Search Config > Related Tables Tab
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:63
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:133
-#. Used in: Components > Express Search Config > Related Tables Tab
 msgid "selectRelatedQueryDescription"
 msgstr "Sélectionnez une requête associée pour afficher sa description."
 
-#: components/ExpressSearchConfig/RelatedTablesTab.tsx:66
 #. Used in: Components > Express Search Config > Related Tables Tab
+#: components/ExpressSearchConfig/RelatedTablesTab.tsx:66
 msgid "noDescriptionAvailable"
 msgstr "Aucune description disponible."
 
@@ -217,7 +217,7 @@ msgstr "Taxon de l'objet (déterminé)"
 
 #. Used in: 
 msgid "CurrCollObject_desc"
-msgstr "Objets  avec leur détermination actuelle uniquement."
+msgstr "Objets avec leur détermination actuelle uniquement."
 
 #. Used in: 
 msgid "AgentFromAgentVariant"
@@ -257,7 +257,7 @@ msgstr "Événements de collecte et objets liés"
 
 #. Used in: 
 msgid "CEToCO_desc"
-msgstr "Événements de collecte et objets liés"
+msgstr "Événements de collecte et objets liés."
 
 #. Used in: 
 msgid "LocToCO"
@@ -265,7 +265,7 @@ msgstr "Localités et objets"
 
 #. Used in: 
 msgid "LocToCO_desc"
-msgstr "Localités et objets liés aux événements de collecte"
+msgstr "Localités et objets liés aux événements de collecte."
 
 #. Used in: 
 msgid "AccessionToCo"
@@ -293,7 +293,7 @@ msgstr "Agent empruteur"
 
 #. Used in: 
 msgid "BorrowToAgent_desc"
-msgstr "Emprunts et agents liés par le rôle d'emprunteur"
+msgstr "Emprunts et agents liés par le rôle d'emprunteur."
 
 #. Used in: 
 msgid "AppraisalToAgent"
@@ -319,7 +319,7 @@ msgstr "Collecteurs et événements de collecte"
 
 #. Used in: 
 msgid "CollEventToCollectors_desc"
-msgstr "Événements de collecte associés aux agents collecteurs"
+msgstr "Événements de collecte associés aux agents collecteurs."
 
 #. Used in: 
 msgid "AgentExchangeIn"
@@ -327,7 +327,7 @@ msgstr "Agents responsable de l'échange entrant"
 
 #. Used in: 
 msgid "AgentExchangeIn_desc"
-msgstr "Échanges entrants et agents donneurs"
+msgstr "Échanges entrants et agents donneurs."
 
 #. Used in: 
 msgid "AgentExchangeOut"
@@ -343,7 +343,8 @@ msgstr "Événements de collecte et lieux"
 
 #. Used in: 
 msgid "GeographyCE_desc"
-msgstr "Événéments de collecte avec les lieux géographiques associés aux localités"
+msgstr ""
+"Événéments de collecte avec les lieux géographiques associés aux localités."
 
 #. Used in: 
 msgid "GeographyCO"
@@ -351,7 +352,7 @@ msgstr "Objets et lieux"
 
 #. Used in: 
 msgid "GeographyCO_desc"
-msgstr "Objets liés aux lieux de leurs localités de collecte"
+msgstr "Objets liés aux lieux de leurs localités de collecte."
 
 #. Used in: 
 msgid "GiftCO"
@@ -359,7 +360,7 @@ msgstr "Objets reçus en dons"
 
 #. Used in: 
 msgid "GiftCO_desc"
-msgstr "Dons objets et préparations associées"
+msgstr "Dons avec les objets joints aux préparations de dons."
 
 #. Used in: 
 msgid "GiftAgent"
@@ -367,7 +368,7 @@ msgstr "Donateurs"
 
 #. Used in: 
 msgid "GiftAgent_desc"
-msgstr "Dons et agents associés"
+msgstr "Dons et agents associés aux dons."
 
 #. Used in: 
 msgid "LoanCO"
@@ -375,7 +376,7 @@ msgstr "Objets et prêts"
 
 #. Used in: 
 msgid "LoanCO_desc"
-msgstr "Prêts associés aux objets et à leurs préparations"
+msgstr "Prêts associés aux objets et à leurs préparations."
 
 #. Used in: 
 msgid "LoanAgent"
@@ -383,7 +384,7 @@ msgstr "Agents prêteur"
 
 #. Used in: 
 msgid "LoanAgent_desc"
-msgstr "Prêts et agents impliqués par leur rôle d'agent prêteur"
+msgstr "Prêts et agents impliqués par leur rôle d'agent prêteur."
 
 #. Used in: 
 msgid "LithoStratToCO"
@@ -425,7 +426,7 @@ msgstr "Agent et projets"
 
 #. Used in: 
 msgid "ProjectAgent_desc"
-msgstr "Projets et agents assignés"
+msgstr "Projets et agents assignés."
 
 #. Used in: 
 msgid "RepoAgreeAgent"
