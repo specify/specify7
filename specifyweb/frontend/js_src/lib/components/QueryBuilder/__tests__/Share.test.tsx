@@ -164,27 +164,23 @@ test('preselects recipients and preserves selection when returning from confirma
   expect(screen.getByRole('checkbox', { name: 'Bob' })).toBeChecked();
 });
 
-test('displays users under collapsible division, discipline, and collection nodes', async () => {
+test('displays a flat user list without collection hierarchy or collapsing', async () => {
   await renderActions();
   await user.click(
     await screen.findByRole('button', { name: queryText.shareQuery() })
   );
-  expect(screen.getByText('Division A')).toBeVisible();
-  expect(screen.getByText('Collection A')).toBeVisible();
-  expect(screen.getByText('Discipline A')).toBeVisible();
   expect(screen.getByRole('checkbox', { name: 'Alice' })).toBeVisible();
+  expect(screen.getByRole('checkbox', { name: 'Bob' })).toBeVisible();
+  expect(screen.getByRole('checkbox', { name: 'Carol' })).toBeVisible();
   expect(
     screen.getByRole('checkbox', { name: 'No collection user' })
   ).toBeVisible();
-
-  const collapseButtons = screen.getAllByRole('button', { name: 'collapse' });
-  await user.click(collapseButtons[0]);
   expect(
-    screen.queryByRole('checkbox', { name: 'Alice' })
+    screen.queryByRole('button', { name: 'collapse' })
   ).not.toBeInTheDocument();
-
-  await user.click(screen.getAllByRole('button', { name: 'collapse' })[0]);
-  expect(screen.getByRole('checkbox', { name: 'Alice' })).toBeVisible();
+  for (const label of ['Division A', 'Discipline A', 'Collection A']) {
+    expect(screen.queryByText(label)).not.toBeInTheDocument();
+  }
 });
 
 test('supports range selection, select all, deselect all, and confirmed saving', async () => {

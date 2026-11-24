@@ -11,24 +11,13 @@ import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { LoadingContext } from '../Core/Contexts';
-import { tables } from '../DataModel/tables';
 import { Dialog } from '../Molecules/Dialog';
-import { CollapsibleSection } from '../SystemConfigurationTool/CollapsibleSection';
-import {
-  colorByKind,
-  type HierarchyNodeKind,
-} from '../SystemConfigurationTool/hierarchyColors';
 
 type QueryShareUser = { readonly id: number; readonly name: string };
-type QueryShareNode = { readonly id: number; readonly name: string };
-type QueryShareCollection = QueryShareNode & {
-  readonly discipline: QueryShareNode & { readonly division: QueryShareNode };
-  readonly users: RA<QueryShareUser>;
-};
 type QueryShares = {
   readonly recipientIds: RA<number>;
   readonly version: number;
-  readonly collections: RA<QueryShareCollection>;
+  readonly collections: RA<{ readonly users: RA<QueryShareUser> }>;
   readonly usersWithoutCollection: RA<QueryShareUser>;
 };
 type QuerySharesUpdate = Pick<QueryShares, 'recipientIds' | 'version'>;
@@ -41,44 +30,6 @@ function hasRecipientOptions(
   return (
     shares?.collections !== undefined &&
     shares.usersWithoutCollection !== undefined
-  );
-}
-
-function groupBy<ITEM>(
-  items: RA<ITEM>,
-  getParent: (item: ITEM) => QueryShareNode
-): RA<QueryShareNode & { readonly children: RA<ITEM> }> {
-  return items.reduce<RA<QueryShareNode & { readonly children: RA<ITEM> }>>(
-    (groups, item) => {
-      const parent = getParent(item);
-      return groups.some(({ id }) => id === parent.id)
-        ? groups.map((group) =>
-            group.id === parent.id
-              ? { ...group, children: [...group.children, item] }
-              : group
-          )
-        : [...groups, { id: parent.id, name: parent.name, children: [item] }];
-    },
-    []
-  );
-}
-
-function QueryShareSectionTitle({
-  kind,
-  label,
-  name,
-}: {
-  readonly kind: HierarchyNodeKind;
-  readonly label: string;
-  readonly name: string;
-}): JSX.Element {
-  return (
-    <span className="flex items-baseline gap-2">
-      <span className="font-semibold" style={{ color: colorByKind[kind] }}>
-        {label}:
-      </span>
-      <span>{name}</span>
-    </span>
   );
 }
 
@@ -270,14 +221,6 @@ function QueryShareDialog({
     ],
     [recipients]
   );
-  const divisions = React.useMemo(
-    () =>
-      groupBy(
-        groupBy(recipients.collections, ({ discipline }) => discipline),
-        ({ children }) => children[0].discipline.division
-      ),
-    [recipients]
-  );
 
   return (
     <Dialog
@@ -369,81 +312,15 @@ function QueryShareDialog({
             className="flex flex-col gap-2 overflow-auto"
             data-query-share-users
           >
-            {divisions.map((division) => (
-              <CollapsibleSection
-                hasChildren={division.children.length > 0}
-                key={division.id}
-                title={
-                  <QueryShareSectionTitle
-                    kind="division"
-                    label={tables.Division.label}
-                    name={division.name}
-                  />
-                }
-              >
-                <div className="mt-2 flex flex-col gap-2">
-                  {division.children.map((discipline) => (
-                    <CollapsibleSection
-                      hasChildren={discipline.children.length > 0}
-                      key={discipline.id}
-                      title={
-                        <QueryShareSectionTitle
-                          kind="discipline"
-                          label={tables.Discipline.label}
-                          name={discipline.name}
-                        />
-                      }
-                    >
-                      <div className="mt-2 flex flex-col gap-2">
-                        {discipline.children.map((collection) => (
-                          <CollapsibleSection
-                            hasChildren={collection.users.length > 0}
-                            key={collection.id}
-                            title={
-                              <QueryShareSectionTitle
-                                kind="collection"
-                                label={tables.Collection.label}
-                                name={collection.name}
-                              />
-                            }
-                          >
-                            <div className="mt-2 flex flex-col gap-2">
-                              {collection.users.map((user) => (
-                                <QueryShareUserCheckbox
-                                  anchor={anchor}
-                                  key={user.id}
-                                  selected={selected}
-                                  setSelected={setSelected}
-                                  user={user}
-                                />
-                              ))}
-                            </div>
-                          </CollapsibleSection>
-                        ))}
-                      </div>
-                    </CollapsibleSection>
-                  ))}
-                </div>
-              </CollapsibleSection>
+            {allUsers.map((user) => (
+              <QueryShareUserCheckbox
+                anchor={anchor}
+                key={user.id}
+                selected={selected}
+                setSelected={setSelected}
+                user={user}
+              />
             ))}
-            {recipients.usersWithoutCollection.length > 0 && (
-              <CollapsibleSection
-                hasChildren
-                title={queryText.usersWithoutCollection()}
-              >
-                <div className="mt-2 flex flex-col gap-2">
-                  {recipients.usersWithoutCollection.map((user) => (
-                    <QueryShareUserCheckbox
-                      anchor={anchor}
-                      key={user.id}
-                      selected={selected}
-                      setSelected={setSelected}
-                      user={user}
-                    />
-                  ))}
-                </div>
-              </CollapsibleSection>
-            )}
           </div>
         </>
       )}
