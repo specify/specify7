@@ -126,6 +126,25 @@ class QueryFavorite(django_models.Model):
         ]
 
 
+class QueryArchive(django_models.Model):
+    owner = django_models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=django_models.CASCADE, related_name='+'
+    )
+    query = django_models.ForeignKey(
+        'specify.Spquery',
+        on_delete=django_models.CASCADE,
+        related_name='+',
+    )
+
+    class Meta:
+        db_table = 'stored_query_archive'
+        constraints = [
+            django_models.UniqueConstraint(
+                fields=['owner', 'query'], name='unique_query_archive_per_user'
+            ),
+        ]
+
+
 __all__ = [
     'session_context',
     'tables',

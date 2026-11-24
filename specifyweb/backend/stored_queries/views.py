@@ -9,6 +9,7 @@ from django.http import HttpResponse, HttpResponseBadRequest, \
 from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_http_methods, require_POST
 from django.db import transaction
+from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
 from specifyweb.middleware.general import require_GET
@@ -16,7 +17,9 @@ from specifyweb.backend.stats.coordination import (
     StatisticsBusy, busy_response, run_statistics_query, statistics_result,
 )
 from specifyweb.backend.stored_queries.batch_edit import run_batch_edit
-from specifyweb.backend.stored_queries.access import ensure_query_access, filter_queries_for_user
+from specifyweb.backend.stored_queries.access import (
+    ensure_query_access, ensure_query_write_access, filter_queries_for_user,
+)
 from specifyweb.specify.models_utils.models_by_table_id import model_names_by_table_id
 from specifyweb.specify.api.serializers import toJson, uri_for_model
 from specifyweb.specify.datamodel import datamodel
@@ -190,15 +193,88 @@ def query_favorites(request: HttpRequest) -> JsonResponse:
 @require_POST
 @login_maybe_required
 @never_cache
-def favorite_query(request: HttpRequest, id: int) -> JsonResponse:
+def favorite_query(request: HttpRequest, id: int) -> JsonResponse | HttpResponseBadRequest:
     """Add a visible query to personal favorites without modifying the query."""
     check_table_permissions(
         request.specify_collection, request.specify_user_agent, Spquery, 'read'
     )
     ensure_query_access(id, request.specify_user.id)
-    models.QueryFavorite.objects.get_or_create(
-        owner=request.specify_user, query_id=id
+    with transaction.atomic():
+        query = get_object_or_404(Spquery.objects.select_for_update(), pk=id)
+        if models.QueryArchive.objects.filter(
+            owner=request.specify_user, query=query
+        ).exists():
+            return HttpResponseBadRequest('Archived queries cannot be favorited.')
+        models.QueryFavorite.objects.get_or_create(
+            owner=request.specify_user, query=query
+        )
+    return JsonResponse({'queryId': id})
+
+
+@require_POST
+@login_maybe_required
+@never_cache
+def unfavorite_query(request: HttpRequest, id: int) -> JsonResponse:
+    """Remove only the current user's favorite, leaving the query unchanged."""
+    check_table_permissions(
+        request.specify_collection, request.specify_user_agent, Spquery, 'read'
     )
+    ensure_query_access(id, request.specify_user.id)
+    with transaction.atomic():
+        query = get_object_or_404(Spquery.objects.select_for_update(), pk=id)
+        models.QueryFavorite.objects.filter(
+            owner=request.specify_user, query=query
+        ).delete()
+    return JsonResponse({'queryId': id})
+
+
+@require_POST
+@login_maybe_required
+@never_cache
+def archive_query(request: HttpRequest, id: int) -> JsonResponse | HttpResponseBadRequest:
+    """Archive an unshared owned query and remove its personal favorite status."""
+    check_table_permissions(
+        request.specify_collection, request.specify_user_agent, Spquery, 'read'
+    )
+    ensure_query_access(id, request.specify_user.id)
+    with transaction.atomic():
+        query = get_object_or_404(Spquery.objects.select_for_update(), pk=id)
+        ensure_query_write_access(query, request.specify_user.id)
+        if query.share_grants.exists():
+            return HttpResponseBadRequest('Only queries in Your Queries can be archived.')
+        models.QueryArchive.objects.get_or_create(
+            owner=request.specify_user, query=query
+        )
+        models.QueryFavorite.objects.filter(
+            owner=request.specify_user, query=query
+        ).delete()
+    return JsonResponse({'queryId': id})
+
+
+@require_POST
+@login_maybe_required
+@never_cache
+def restore_query(request: HttpRequest, id: int) -> JsonResponse | HttpResponseBadRequest:
+    """Restore an archived personal query to the main Your Queries list."""
+    check_table_permissions(
+        request.specify_collection, request.specify_user_agent, Spquery, 'read'
+    )
+    ensure_query_access(id, request.specify_user.id)
+    with transaction.atomic():
+        query = get_object_or_404(Spquery.objects.select_for_update(), pk=id)
+        ensure_query_write_access(query, request.specify_user.id)
+        archived = models.QueryArchive.objects.filter(
+            owner=request.specify_user, query=query
+        )
+        if not archived.exists():
+            return HttpResponseBadRequest('Only archived queries can be restored.')
+        if query.share_grants.exists():
+            return HttpResponseBadRequest('Stop sharing this query before restoring it to Your Queries.')
+        models.QueryFolderMembership.objects.filter(
+            owner=request.specify_user, query=query,
+            section=models.QueryFolder.Section.PERSONAL,
+        ).delete()
+        archived.delete()
     return JsonResponse({'queryId': id})
 
 

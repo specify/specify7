@@ -52,6 +52,14 @@ overrideAjax(
   },
   { method: 'POST' }
 );
+overrideAjax(
+  '/stored_query/query/33/unfavorite/',
+  () => {
+    savedFavoriteIds = savedFavoriteIds.filter((id) => id !== 33);
+    return { queryId: 33 };
+  },
+  { method: 'POST' }
+);
 
 overrideAjax('/stored_query/folders/', {
   folders: [
@@ -103,7 +111,9 @@ test.each([false, true])(
     const favoriteIcon = within(actions).getByRole('button', {
       name: queryText.favoriteQuery({ queryName: query.get('name') }),
     });
-    const archiveIcon = within(actions).getByTitle(queryText.archive());
+    const archiveIcon = within(actions).getByRole('button', {
+      name: queryText.archiveQuery({ queryName: query.get('name') }),
+    });
     expect(folderIcon.nextElementSibling).toBe(favoriteIcon);
     expect(favoriteIcon.nextElementSibling).toBe(archiveIcon);
     expect(archiveIcon).toBe(actions.lastElementChild);
@@ -394,7 +404,10 @@ test('favorites include queries from folders and different types and persist aft
   expect(
     screen.getByRole('button', { name: queryText.favorites() })
   ).toHaveAttribute('aria-current', 'page');
-  expect(fetch.mock.calls.at(-1)?.[2]).toEqual({ query_favorites: 'true' });
+  expect(fetch.mock.calls.at(-1)?.[2]).toEqual({
+    query_favorites: 'true',
+    query_archive: 'false',
+  });
   expect(fetch.mock.calls.at(-1)?.[1]).not.toHaveProperty('specifyUser');
 
   unmount();
@@ -408,9 +421,36 @@ test('favorites include queries from folders and different types and persist aft
   expect(screen.getByRole('link', { name: /Owned favorite/ })).toBeVisible();
   expect(
     screen.getByRole('button', {
-      name: queryText.favoritedQuery({ queryName: shared.name }),
+      name: queryText.removeFavoriteQuery({ queryName: shared.name }),
     })
   ).toHaveAttribute('aria-pressed', 'true');
+  await act(async () => {
+    fireEvent.click(
+      screen.getByRole('button', {
+        name: queryText.removeFavoriteQuery({ queryName: shared.name }),
+      })
+    );
+  });
+  expect(
+    await screen.findByRole('link', { name: /Owned favorite/ })
+  ).toBeVisible();
+  expect(
+    screen.queryByRole('link', { name: /Shared favorite/ })
+  ).not.toBeInTheDocument();
+  await act(async () => {
+    fireEvent.click(
+      screen.getByRole('button', { name: queryText.sharedQueries() })
+    );
+  });
+  await act(async () => {
+    fireEvent.click(screen.getByRole('button', { name: 'Shared parent' }));
+  });
+  expect(screen.getByRole('link', { name: /Shared favorite/ })).toBeVisible();
+  expect(
+    screen.getByRole('button', {
+      name: queryText.favoriteQuery({ queryName: shared.name }),
+    })
+  ).toHaveAttribute('aria-pressed', 'false');
   await act(async () => {
     fireEvent.click(
       screen.getByRole('button', { name: queryText.yourQueries() })
@@ -425,8 +465,293 @@ test('favorites include queries from folders and different types and persist aft
   expect(handleError).not.toHaveBeenCalled();
 });
 
-test('a failed favorite request reports the error without marking the query', async () => {
-  const queryName = 'Favorite failure';
+test.each([false, true])(
+  'a failed favorite request preserves its status (removing: %s)',
+  async (removing) => {
+    const queryName = 'Favorite failure';
+    const query = serializeResource(
+      new tables.SpQuery.Resource<SpQuery>({
+        id: 34,
+        name: queryName,
+        contextName: 'CollectionObject',
+        contextTableId: tables.CollectionObject.tableId,
+        specifyUser: `/api/specify/specifyuser/${userInformation.id}/`,
+      })
+    );
+    jest
+      .spyOn(collection, 'fetchCollection')
+      .mockResolvedValue({ records: [query], totalCount: 1 });
+    const handleError = jest.fn();
+    if (removing) savedFavoriteIds = [query.id];
+    render(
+      <LoadingContext.Provider
+        value={(promise): void => {
+          void promise.catch(handleError);
+        }}
+      >
+        <QueryListDialog newQueryUrl="/specify/query/new/" onClose={jest.fn()}>
+          {({ children }) => children}
+        </QueryListDialog>
+      </LoadingContext.Provider>
+    );
+    if (removing) {
+      await screen.findByText('Parent');
+      await act(async () => {
+        fireEvent.click(
+          screen.getByRole('button', { name: queryText.favorites() })
+        );
+      });
+    }
+    const star = await screen.findByRole('button', {
+      name: removing
+        ? queryText.removeFavoriteQuery({ queryName })
+        : queryText.favoriteQuery({ queryName }),
+    });
+    await waitFor(() => expect(star).toBeEnabled());
+    const error = new Error('Favorite failed');
+    jest.spyOn(ajaxUtils, 'ajax').mockRejectedValueOnce(error);
+    fireEvent.click(star);
+    await waitFor(() => expect(handleError).toHaveBeenCalledWith(error));
+    await waitFor(() => expect(star).toBeEnabled());
+    expect(star).toHaveAttribute('aria-pressed', String(removing));
+    expect(
+      screen.getByRole('link', { name: /Favorite failure/ })
+    ).toBeVisible();
+  }
+);
+
+describe('archiving personal queries', () => {
+  const section = 'personal';
+  const label = queryText.yourQueries();
+  const folderName = 'Parent';
+  let archived = false;
+  overrideAjax(
+    '/stored_query/query/33/archive/',
+    () => {
+      archived = true;
+      savedFavoriteIds = savedFavoriteIds.filter((id) => id !== 33);
+      return { queryId: 33 };
+    },
+    { method: 'POST' }
+  );
+  overrideAjax(
+    '/stored_query/query/33/restore/',
+    () => {
+      archived = false;
+      return { queryId: 33 };
+    },
+    { method: 'POST' }
+  );
+
+  test('removes the query from normal lists and persists in Archive', async () => {
+    archived = false;
+    const queryName = 'Query to archive';
+    const query = serializeResource(
+      new tables.SpQuery.Resource<SpQuery>({
+        id: 33,
+        name: queryName,
+        contextName: 'CollectionObject',
+        contextTableId: tables.CollectionObject.tableId,
+        specifyUser: `/api/specify/specifyuser/${userInformation.id}/`,
+      })
+    );
+    savedFavoriteIds = [query.id];
+    const fetch = jest
+      .spyOn(collection, 'fetchCollection')
+      .mockImplementation(async (_table, _filters, advanced) => {
+        const visible =
+          advanced?.query_archive === 'true'
+            ? archived
+            : !archived &&
+              advanced?.query_folder_id === undefined &&
+              (advanced?.query_folder_section === section ||
+                advanced?.query_favorites === 'true');
+        return { records: visible ? [query] : [], totalCount: visible ? 1 : 0 };
+      });
+    const handleError = jest.fn();
+    const view = (
+      <LoadingContext.Provider
+        value={(promise): void => {
+          void promise.catch(handleError);
+        }}
+      >
+        <QueryListDialog newQueryUrl="/specify/query/new/" onClose={jest.fn()}>
+          {({ children }) => children}
+        </QueryListDialog>
+      </LoadingContext.Provider>
+    );
+    const { unmount } = render(view);
+    await screen.findByText('Parent');
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: label }));
+    });
+    const box = screen.getByRole('button', {
+      name: queryText.archiveQuery({ queryName }),
+    });
+    expect(box).toBeEnabled();
+    fireEvent.click(box);
+    await waitFor(() =>
+      expect(
+        screen.queryByRole('link', {
+          name: new RegExp(queryName),
+        })
+      ).not.toBeInTheDocument()
+    );
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: folderName }));
+    });
+    expect(
+      screen.queryByRole('link', { name: new RegExp(queryName) })
+    ).not.toBeInTheDocument();
+    await act(async () => {
+      fireEvent.click(
+        screen.getByRole('button', { name: queryText.favorites() })
+      );
+    });
+    expect(
+      screen.queryByRole('link', { name: new RegExp(queryName) })
+    ).not.toBeInTheDocument();
+    await act(async () => {
+      fireEvent.click(
+        screen.getByRole('button', { name: queryText.archive() })
+      );
+    });
+    expect(
+      screen.getByRole('link', { name: new RegExp(queryName) })
+    ).toBeVisible();
+    expect(
+      screen.getByRole('button', { name: queryText.archive() })
+    ).toHaveAttribute('aria-current', 'page');
+    expect(
+      screen.getByRole('button', {
+        name: queryText.restoreQuery({ queryName }),
+      })
+    ).toBeEnabled();
+    expect(
+      screen
+        .getByRole('button', {
+          name: queryText.restoreQuery({ queryName }),
+        })
+        .querySelector('svg')?.outerHTML
+    ).toBe(renderToStaticMarkup(icons.restore));
+    const archivedStar = screen.getByRole('button', {
+      name: queryText.favoriteQuery({ queryName }),
+    });
+    expect(archivedStar).toBeDisabled();
+    expect(archivedStar).toHaveAttribute('aria-pressed', 'false');
+    expect(fetch.mock.calls.at(-1)?.[2]).toEqual({ query_archive: 'true' });
+    unmount();
+    render(view);
+    await screen.findByText('Parent');
+    await act(async () => {
+      fireEvent.click(
+        screen.getByRole('button', { name: queryText.archive() })
+      );
+    });
+    expect(
+      screen.getByRole('link', { name: new RegExp(queryName) })
+    ).toBeVisible();
+    expect(
+      screen.getByRole('button', {
+        name: queryText.favoriteQuery({ queryName }),
+      })
+    ).toBeDisabled();
+    fireEvent.click(
+      screen.getByRole('button', {
+        name: queryText.restoreQuery({ queryName }),
+      })
+    );
+    await waitFor(() =>
+      expect(
+        screen.queryByRole('link', {
+          name: new RegExp(queryName),
+        })
+      ).not.toBeInTheDocument()
+    );
+    await act(async () => {
+      fireEvent.click(
+        screen.getByRole('button', { name: queryText.yourQueries() })
+      );
+    });
+    expect(
+      screen.getByRole('link', { name: new RegExp(queryName) })
+    ).toBeVisible();
+    expect(fetch.mock.calls.at(-1)?.[2]).toEqual({
+      query_archive: 'false',
+      query_folder_section: 'personal',
+      share_grants__isnull: 'true',
+    });
+    expect(handleError).not.toHaveBeenCalled();
+  });
+});
+
+test('owned queries cannot be archived from Queries I Share', async () => {
+  const queryName = 'Owned sharing query';
+  const query = serializeResource(
+    new tables.SpQuery.Resource<SpQuery>({
+      id: 33,
+      name: queryName,
+      contextName: 'CollectionObject',
+      contextTableId: tables.CollectionObject.tableId,
+      specifyUser: `/api/specify/specifyuser/${userInformation.id}/`,
+    })
+  );
+  jest
+    .spyOn(collection, 'fetchCollection')
+    .mockResolvedValue({ records: [query], totalCount: 1 });
+  render(
+    <QueryListDialog newQueryUrl="/specify/query/new/" onClose={jest.fn()}>
+      {({ children }) => children}
+    </QueryListDialog>
+  );
+  await screen.findByText('Parent');
+  await act(async () => {
+    fireEvent.click(
+      screen.getByRole('button', { name: queryText.queriesIShare() })
+    );
+  });
+  expect(
+    screen.getByRole('button', {
+      name: queryText.archiveQuery({ queryName }),
+    })
+  ).toBeDisabled();
+});
+
+test('shared queries cannot be archived, including from Favorites', async () => {
+  const queryName = 'Someone else query';
+  const query = serializeResource(
+    new tables.SpQuery.Resource<SpQuery>({
+      id: 33,
+      name: queryName,
+      contextName: 'CollectionObject',
+      contextTableId: tables.CollectionObject.tableId,
+      specifyUser: `/api/specify/specifyuser/${userInformation.id + 1}/`,
+    })
+  );
+  savedFavoriteIds = [query.id];
+  jest
+    .spyOn(collection, 'fetchCollection')
+    .mockResolvedValue({ records: [query], totalCount: 1 });
+  render(
+    <QueryListDialog newQueryUrl="/specify/query/new/" onClose={jest.fn()}>
+      {({ children }) => children}
+    </QueryListDialog>
+  );
+  await screen.findByText('Parent');
+  for (const label of [queryText.sharedQueries(), queryText.favorites()]) {
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: label }));
+    });
+    expect(
+      screen.getByRole('button', {
+        name: queryText.archiveQuery({ queryName }),
+      })
+    ).toBeDisabled();
+  }
+});
+
+test('a failed archive reports the error and keeps the query in its list', async () => {
+  const queryName = 'Archive failure';
   const query = serializeResource(
     new tables.SpQuery.Resource<SpQuery>({
       id: 34,
@@ -436,7 +761,7 @@ test('a failed favorite request reports the error without marking the query', as
       specifyUser: `/api/specify/specifyuser/${userInformation.id}/`,
     })
   );
-  jest
+  const fetch = jest
     .spyOn(collection, 'fetchCollection')
     .mockResolvedValue({ records: [query], totalCount: 1 });
   const handleError = jest.fn();
@@ -451,17 +776,18 @@ test('a failed favorite request reports the error without marking the query', as
       </QueryListDialog>
     </LoadingContext.Provider>
   );
-  const star = await screen.findByRole('button', {
-    name: queryText.favoriteQuery({ queryName }),
+  const box = await screen.findByRole('button', {
+    name: queryText.archiveQuery({ queryName }),
   });
-  await waitFor(() => expect(star).toBeEnabled());
-  const error = new Error('Favorite failed');
+  const error = new Error('Archive failed');
   jest.spyOn(ajaxUtils, 'ajax').mockRejectedValueOnce(error);
-  fireEvent.click(star);
+  fireEvent.click(box);
   await waitFor(() => expect(handleError).toHaveBeenCalledWith(error));
-  await waitFor(() => expect(star).toBeEnabled());
-  expect(star).toHaveAttribute('aria-pressed', 'false');
-  expect(screen.getByRole('link', { name: /Favorite failure/ })).toBeVisible();
+  await waitFor(() => expect(box).toBeEnabled());
+  expect(
+    screen.getByRole('link', { name: new RegExp(queryName) })
+  ).toBeVisible();
+  expect(fetch).toHaveBeenCalledTimes(1);
 });
 
 test('shows query sections as icon navigation on the left', async () => {

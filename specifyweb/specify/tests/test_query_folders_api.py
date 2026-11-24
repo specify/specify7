@@ -1,5 +1,8 @@
 import json
+from importlib import import_module
 
+from django.apps import apps
+from django.db import connection
 from django.test import Client
 
 from specifyweb.backend.permissions.models import SpqueryShare
@@ -419,3 +422,232 @@ class QueryFavoriteApiTests(SharedQueryFixture, ApiTests):
         for value in ("false", "invalid", ""):
             response = self.client.get(self.collection_url, {"query_favorites": value})
             self.assertEqual(response.status_code, 400, response.content)
+
+
+    def test_unfavorite_removes_only_the_current_users_bookmark(self):
+        grant = SpqueryShare.objects.create(query=self.query, recipient=self.recipient)
+        owner_favorite = stored_query_models.QueryFavorite.objects.create(
+            owner=self.specifyuser, query=self.query
+        )
+        stored_query_models.QueryFavorite.objects.create(owner=self.recipient, query=self.query)
+        recipient_client = self._recipient_client()
+        version = self.query.version
+        for _ in range(2):
+            response = recipient_client.post(f"/stored_query/query/{self.query.id}/unfavorite/")
+            self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual(
+            recipient_client.get(self.list_url).json(), {"queryIds": []}
+        )
+        self.assertTrue(stored_query_models.QueryFavorite.objects.filter(pk=owner_favorite.pk).exists())
+        self.assertTrue(SpqueryShare.objects.filter(pk=grant.pk).exists())
+        self.query.refresh_from_db()
+        self.assertEqual(self.query.version, version)
+
+
+class QueryArchiveApiTests(SharedQueryFixture, ApiTests):
+    def setUp(self):
+        super().setUp()
+        self.client.cookies["collection"] = str(self.collection.id)
+        self.archive_url = f"/stored_query/query/{self.query.id}/archive/"
+        self.collection_url = "/api/specify/spquery/"
+
+    def _list(self, client, archive, **filters):
+        response = client.get(self.collection_url, {
+            "domainfilter": "false", "query_archive": archive, "limit": 0, **filters,
+        })
+        self.assertEqual(response.status_code, 200, response.content)
+        return response.json()
+
+    def test_archives_personal_queries_without_deleting_them(self):
+        second_query = models.Spquery.objects.create(
+            name="Second personal query",
+            contextname=self.query.contextname,
+            contexttableid=self.query.contexttableid,
+            specifyuser=self.specifyuser,
+        )
+        folder = stored_query_models.QueryFolder.objects.create(
+            name="Source", owner=self.specifyuser, section="personal"
+        )
+        stored_query_models.QueryFolderMembership.objects.create(
+            owner=self.specifyuser, query=second_query, section="personal", folder=folder
+        )
+        stored_query_models.QueryFavorite.objects.create(owner=self.specifyuser, query=second_query)
+        versions = {query.id: query.version for query in (self.query, second_query)}
+        for query in (self.query, second_query, second_query):
+            response = self.client.post(f"/stored_query/query/{query.id}/archive/")
+            self.assertEqual(response.status_code, 200, response.content)
+            self.assertEqual(response.json(), {"queryId": query.id})
+        self.assertEqual(stored_query_models.QueryArchive.objects.count(), 2)
+        for query in (self.query, second_query):
+            query.refresh_from_db()
+            self.assertEqual(query.version, versions[query.id])
+        self.assertFalse(stored_query_models.QueryFavorite.objects.filter(query=second_query).exists())
+        self.assertTrue(stored_query_models.QueryFolderMembership.objects.filter(query=second_query).exists())
+        response = self.client.post(f"/stored_query/query/{second_query.id}/favorite/")
+        self.assertEqual(response.status_code, 400, response.content)
+        self.assertFalse(stored_query_models.QueryFavorite.objects.filter(query=second_query).exists())
+        self.assertEqual(
+            self.client.get("/stored_query/favorites/").json(), {"queryIds": []}
+        )
+
+        for filters in (
+            {"query_folder_section": "personal", "share_grants__isnull": "true"},
+            {"query_folder_section": "sharing", "share_grants__isnull": "false"},
+            {"query_folder_section": "personal", "query_folder_id": folder.id},
+            {"query_favorites": "true"},
+        ):
+            self.assertEqual(self._list(self.client, "false", **filters)["objects"], [])
+        archived = self._list(self.client, "true", limit=1, orderby="id")
+        self.assertEqual(archived["meta"]["total_count"], 2)
+        self.assertEqual([query["id"] for query in archived["objects"]], [self.query.id])
+        page_two = self._list(self.client, "true", limit=1, offset=1, orderby="id")
+        self.assertEqual([query["id"] for query in page_two["objects"]], [second_query.id])
+        self.assertEqual(
+            self._list(self.client, "true", name__icontains="missing")["objects"], []
+        )
+        # Existing API consumers and direct query access remain unchanged.
+        response = self.client.get(self.collection_url, {"domainfilter": "false", "limit": 0})
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertCountEqual(
+            [query["id"] for query in response.json()["objects"]], [self.query.id, second_query.id]
+        )
+
+    def test_neither_owner_nor_recipient_can_archive_a_shared_query(self):
+        grant = SpqueryShare.objects.create(query=self.query, recipient=self.recipient)
+        stored_query_models.QueryFavorite.objects.create(owner=self.specifyuser, query=self.query)
+        stored_query_models.QueryFavorite.objects.create(owner=self.recipient, query=self.query)
+        recipient_client = self._recipient_client()
+        response = recipient_client.post(self.archive_url)
+        self.assertEqual(response.status_code, 403, response.content)
+        self.assertFalse(stored_query_models.QueryArchive.objects.exists())
+        self.assertEqual(self.client.post(self.archive_url).status_code, 400)
+        self.assertEqual(
+            [query["id"] for query in self._list(
+                recipient_client, "false", share_grants__recipient=self.recipient.id
+            )["objects"]],
+            [self.query.id],
+        )
+        self.assertEqual(self._list(recipient_client, "true")["objects"], [])
+        self.assertEqual(
+            recipient_client.get(f"/api/specify/spquery/{self.query.id}/").status_code, 200
+        )
+        self.assertEqual(stored_query_models.QueryArchive.objects.count(), 0)
+        self.assertTrue(stored_query_models.QueryFavorite.objects.filter(
+            owner=self.specifyuser, query=self.query
+        ).exists())
+        self.assertTrue(stored_query_models.QueryFavorite.objects.filter(
+            owner=self.recipient, query=self.query
+        ).exists())
+        self.assertTrue(SpqueryShare.objects.filter(pk=grant.pk).exists())
+
+    def test_restore_returns_a_personal_query_to_the_main_list(self):
+        folder = stored_query_models.QueryFolder.objects.create(
+            name="Former folder", owner=self.specifyuser
+        )
+        stored_query_models.QueryFolderMembership.objects.create(
+            owner=self.specifyuser, query=self.query, folder=folder, section="personal"
+        )
+        self.assertEqual(self.client.post(self.archive_url).status_code, 200)
+        version = self.query.version
+        restore_url = f"/stored_query/query/{self.query.id}/restore/"
+        response = self.client.post(restore_url)
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertFalse(stored_query_models.QueryArchive.objects.filter(query=self.query).exists())
+        self.assertFalse(stored_query_models.QueryFolderMembership.objects.filter(query=self.query).exists())
+        self.assertFalse(stored_query_models.QueryFavorite.objects.filter(query=self.query).exists())
+        self.assertEqual(
+            [query["id"] for query in self._list(
+                self.client, "false", query_folder_section="personal",
+                share_grants__isnull="true",
+            )["objects"]],
+            [self.query.id],
+        )
+        self.query.refresh_from_db()
+        self.assertEqual(self.query.version, version)
+        self.assertEqual(self.client.post(restore_url).status_code, 400)
+
+    def test_restore_requires_an_archived_personal_query_owned_by_the_user(self):
+        self.assertEqual(self.client.post(self.archive_url).status_code, 200)
+        grant = SpqueryShare.objects.create(query=self.query, recipient=self.recipient)
+        restore_url = f"/stored_query/query/{self.query.id}/restore/"
+        response = self._recipient_client().post(restore_url)
+        self.assertEqual(response.status_code, 403, response.content)
+        response = self.client.post(restore_url)
+        self.assertEqual(response.status_code, 400, response.content)
+        self.assertTrue(stored_query_models.QueryArchive.objects.filter(query=self.query).exists())
+        self.assertTrue(SpqueryShare.objects.filter(pk=grant.pk).exists())
+
+    def test_rejects_inaccessible_queries_and_invalid_archive_filters(self):
+        response = self._recipient_client().post(self.archive_url)
+        self.assertEqual(response.status_code, 404, response.content)
+        self.assertFalse(stored_query_models.QueryArchive.objects.exists())
+        for value in ("invalid", ""):
+            response = self.client.get(self.collection_url, {"query_archive": value})
+            self.assertEqual(response.status_code, 400, response.content)
+
+    def test_cleanup_removes_only_the_archiving_users_existing_favorites(self):
+        archived_favorite = stored_query_models.QueryFavorite.objects.create(
+            owner=self.specifyuser, query=self.query
+        )
+        recipient_favorite = stored_query_models.QueryFavorite.objects.create(
+            owner=self.recipient, query=self.query
+        )
+        active_query = models.Spquery.objects.create(
+            name="Active favorite",
+            contextname=self.query.contextname,
+            contexttableid=self.query.contexttableid,
+            specifyuser=self.specifyuser,
+        )
+        active_favorite = stored_query_models.QueryFavorite.objects.create(
+            owner=self.specifyuser, query=active_query
+        )
+        stored_query_models.QueryArchive.objects.create(
+            owner=self.specifyuser, query=self.query
+        )
+        migration = import_module(
+            "specifyweb.backend.stored_queries.migrations.0005_remove_archived_favorites"
+        )
+        migration.remove_archived_favorites(apps, connection.schema_editor())
+        self.assertFalse(stored_query_models.QueryFavorite.objects.filter(
+            pk=archived_favorite.pk
+        ).exists())
+        self.assertTrue(stored_query_models.QueryFavorite.objects.filter(
+            pk=recipient_favorite.pk
+        ).exists())
+        self.assertTrue(stored_query_models.QueryFavorite.objects.filter(
+            pk=active_favorite.pk
+        ).exists())
+
+    def test_shared_archive_cleanup_preserves_grants_and_returns_to_sharing_main_list(self):
+        grant = SpqueryShare.objects.create(query=self.query, recipient=self.recipient)
+        stored_query_models.QueryArchive.objects.create(owner=self.specifyuser, query=self.query)
+        folder = stored_query_models.QueryFolder.objects.create(
+            name="Former sharing folder", owner=self.specifyuser, section="sharing"
+        )
+        stored_query_models.QueryFolderMembership.objects.create(
+            owner=self.specifyuser, query=self.query, folder=folder, section="sharing"
+        )
+        personal_query = models.Spquery.objects.create(
+            name="Personal archive", specifyuser=self.specifyuser,
+            contextname=self.query.contextname, contexttableid=self.query.contexttableid,
+        )
+        personal_archive = stored_query_models.QueryArchive.objects.create(
+            owner=self.specifyuser, query=personal_query
+        )
+        migration = import_module(
+            "specifyweb.backend.stored_queries.migrations.0006_unarchive_shared_queries"
+        )
+        migration.unarchive_shared_queries(apps, connection.schema_editor())
+        self.assertFalse(stored_query_models.QueryArchive.objects.filter(query=self.query).exists())
+        self.assertFalse(stored_query_models.QueryFolderMembership.objects.filter(
+            owner=self.specifyuser, query=self.query, section="sharing"
+        ).exists())
+        self.assertTrue(stored_query_models.QueryArchive.objects.filter(pk=personal_archive.pk).exists())
+        self.assertTrue(SpqueryShare.objects.filter(pk=grant.pk).exists())
+        self.assertEqual(
+            [query["id"] for query in self._list(
+                self.client, "false", query_folder_section="sharing",
+                share_grants__isnull="false",
+            )["objects"]],
+            [self.query.id],
+        )

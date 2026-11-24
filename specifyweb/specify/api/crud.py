@@ -540,6 +540,7 @@ def get_collection(
     For queries, query_folder_section restricts the current user's organization.
     Omit query_folder_id for the main list, or supply a folder ID for its contents.
     query_favorites=true shows all visible favorites belonging to the current user.
+    query_archive=true shows owned archived queries; false excludes personal archives.
     Without these parameters, existing collection behavior is unchanged.
     """
     from specifyweb.specify.api.serializers import _obj_to_data
@@ -550,6 +551,17 @@ def get_collection(
     folder_memberships = None
     folder_id = None
     favorites = None
+    archives = None
+    show_archive = False
+    if model._meta.model_name == 'spquery' and 'query_archive' in params:
+        from specifyweb.backend.stored_queries.models import QueryArchive
+
+        archive_value = params.get('query_archive')
+        if query_user_id is None or archive_value not in ('true', 'false'):
+            raise FilterError('query_archive must be true or false and requires the current user.')
+        archives = QueryArchive.objects.filter(owner_id=query_user_id)
+        show_archive = archive_value == 'true'
+        params = {key: value for key, value in params.items() if key != 'query_archive'}
     if model._meta.model_name == 'spquery' and 'query_favorites' in params:
         from specifyweb.backend.stored_queries.models import QueryFavorite
 
@@ -600,6 +612,13 @@ def get_collection(
         visible_queries = filter_queries_for_user(models.Spquery.objects.all(), query_user_id)
         objs = objs.filter(id__in=visible_queries).distinct()
 
+    if archives is not None:
+        archived_ids = archives.values('query_id')
+        objs = (
+            objs.filter(id__in=archived_ids, specifyuser_id=query_user_id)
+            if show_archive
+            else objs.exclude(id__in=archived_ids)
+        )
     if favorites is not None:
         objs = objs.filter(id__in=favorites.values('query_id'))
     if folder_memberships is not None:

@@ -28,11 +28,20 @@ export const queryText = createDictionary({
   favoriteQuery: {
     'en-us': 'Add "{queryName}" to favorites',
   },
+  removeFavoriteQuery: {
+    'en-us': 'Remove "{queryName}" from favorites',
+  },
   favoritedQuery: {
     'en-us': '"{queryName}" is in your favorites',
   },
   archive: {
     'en-us': 'Archive',
+  },
+  archiveQuery: {
+    'en-us': 'Archive "{queryName}"',
+  },
+  restoreQuery: {
+    'en-us': 'Restore "{queryName}" to Your Queries',
   },
   addFolder: {
     'en-us': 'Add folder',
