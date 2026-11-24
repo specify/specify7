@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-11-24 08:58+0000\n"
+"PO-Revision-Date: 2026-11-24 15:51+0000\n"
 "Last-Translator: Maxime GRIVEAU <mgriveau@users.noreply.hosted.weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/user/"
 "fr/>\n"
@@ -101,14 +101,14 @@ msgstr "Définir les agents utilisateurs"
 #. Used in: Components > Core > Main
 #: components/Core/Main.tsx:106
 msgid "noAgent"
-msgstr "L'utilisateur actuel n'a pas d'agent attribué."
+msgstr "L'utilisateur actuel n'a pas d'agent attribué"
 
 #. Used in: Components > Core > Main
 #: components/Core/Main.tsx:111
 msgid "noAgentDescription"
 msgstr ""
 "Veuillez vous connecter en tant qu'administrateur et attribuer un agent à "
-"cet utilisateur."
+"cet utilisateur"
 
 #. Used in: Components > Login > Oic Login ⬤ Components > Login > Index
 #: components/Login/OicLogin.tsx:46
@@ -174,8 +174,8 @@ msgstr "Le mot de passe était incorrect."
 #: components/Forms/OtherCollectionView.tsx:66
 msgid "noAccessToResource"
 msgstr ""
-"Vous n'avez accès à aucun {collectionTable:string} contenant cette "
-"ressource via le compte actuellement connecté."
+"Vous n'avez accès à aucun {collectionTable:string} contenant cette ressource "
+"via le compte actuellement connecté"
 
 #. Used in: Components > Forms > Other Collection View
 #: components/Forms/OtherCollectionView.tsx:71
@@ -260,7 +260,7 @@ msgstr "Supprimer l'administrateur"
 #. Used in: Components > Security > Admin Status Plugin
 #: components/Security/AdminStatusPlugin.tsx:52
 msgid "canNotRemoveYourself"
-msgstr "Vous ne pouvez pas révoquer votre propre statut d'administrateur."
+msgstr "Vous ne pouvez pas révoquer votre propre statut d'administrateur"
 
 #. Used in: Components > Security > Admin Status Plugin
 #: components/Security/AdminStatusPlugin.tsx:84
@@ -276,7 +276,7 @@ msgstr "Sauvegarder l'utilisateur d'abord"
 #. Used in: Components > Security > Admin Status Plugin
 #: components/Security/AdminStatusPlugin.tsx:55
 msgid "mustBeManager"
-msgstr "L'utilisateur doit d'abord être enregistré en tant que gestionnaire."
+msgstr "L'utilisateur doit d'abord être enregistré en tant que gestionnaire"
 
 #. Used in: Components > App Resources > Tree ⬤ Components > Security > Collection Role
 #: components/AppResources/tree.ts:231
@@ -393,7 +393,7 @@ msgstr "Profil d'autorisation de l'utilisateur (lecture seule)"
 msgid "outOfDateWarning"
 msgstr ""
 "Remarque : l’aperçu peut être obsolète. Enregistrez les modifications pour "
-"mettre à jour l’aperçu."
+"mettre à jour l’aperçu"
 
 #. Used in: Components > Security > Preview Components
 #: components/Security/PreviewComponents.tsx:173
