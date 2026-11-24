@@ -1202,7 +1202,7 @@ export const treeText = createDictionary({
     'es-es':
       'Estos datos de árbol no se pueden importar en su base de datos porque contienen caracteres UTF-8 y esta base de datos utiliza {encoding:string}.',
     'fr-fr':
-      "Ces données d'arbre ne peuvent pas être importées dans votre base de données car elles contiennent des caractères UTF-8 et cette base de données utilise {encoding:string}.",
+      "Ces données d'arbre ne peuvent pas être importées dans votre base de données car elles contiennent des caractères UTF-8 et cette base de données utilise {encoding:string}",
     'hr-hr':
       'Podaci o ovom stablu ne mogu se uvesti u vašu bazu podataka jer sadrže UTF-8 znakove, a ova baza podataka koristi {encoding:string}',
     nb: 'Disse tredataene kan ikke importeres i databasen din fordi de inneholder UTF‑8-tegn, og denne databasen bruker {encoding:string}',
