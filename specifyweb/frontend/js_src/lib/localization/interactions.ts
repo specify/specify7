@@ -182,7 +182,7 @@ export const interactionsText = createDictionary({
     'fr-fr': 'Ajouter un objet non associé',
     'uk-ua': "Додати непов'язаний елемент",
     'de-ch': 'Nicht assoziierter Gegenstand hinzufügen',
-    'pt-br': 'Adicionar item não associado',
+    'pt-br': 'Adicionar item não relacionado',
     'hr-hr': 'Dodaj nepovezanu stavku',
     nb: 'Legg til et ikke-tilknyttet objekt',
   },

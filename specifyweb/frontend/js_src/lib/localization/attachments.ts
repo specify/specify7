@@ -34,7 +34,7 @@ export const attachmentsText = createDictionary({
   attachmentServerUnavailable: {
     'en-us': 'Attachment server unavailable',
     'ru-ru': 'Сервер вложений недоступен',
-    'es-es': 'Servidor de adjuntos no disponible',
+    'es-es': 'Servidor de archivos adjuntos no disponible',
     'fr-fr': 'Serveur de pièces jointes indisponible',
     'uk-ua': 'Сервер вкладень недоступний',
     'de-ch': 'Attachment-Server nicht verfügbar',
@@ -414,7 +414,7 @@ export const attachmentsText = createDictionary({
     'pt-br':
       'O envio dos anexos os criará no servidor de ativos e no banco de dados especificado.',
     'hr-hr':
-      'Prijenosom privitaka stvorit će se privitci na poslužitelju imovine i u Navedite bazu podataka',
+      'Prijenosom privitaka stvorit će se privitci na poslužitelju imovine i u Navedite bazu podataka.',
     nb: 'Opplasting av vedlegg vil opprette vedlegg på ressursserveren og i Specify-databasen',
   },
   interrupted: {
@@ -461,7 +461,7 @@ export const attachmentsText = createDictionary({
       'La restauration supprimera les pièces jointes de la base de données Specify et du serveur de pièces jointes.',
     'ru-ru':
       'Функция отката удалит вложения из базы данных Specify и сервера активов.',
-    'uk-ua': 'Відкат видалить вкладення з бази даних Specify та Asset Server.',
+    'uk-ua': 'Відкат видалить вкладення з бази даних Specify та Asset Server',
     'pt-br':
       'A reversão excluirá os anexos do banco de dados especificado e do servidor de ativos.',
     'hr-hr':
@@ -831,7 +831,7 @@ export const attachmentsText = createDictionary({
     'ru-ru':
       'Удаление набора данных приводит к его безвозвратному удалению, а также к удалению пути загрузки. Кроме того, после удаления возможность отката для загруженного набора данных больше не будет доступна.',
     'uk-ua':
-      'Видалення набору даних видаляє його та шлях завантаження безповоротно. Також після видалення відкат більше не буде можливим для завантаженого набору даних.',
+      'Видалення набору даних остаточно видаляє його та шлях завантаження. Також після видалення відкат більше не буде можливим для завантаженого набору даних.',
     'pt-br':
       'A exclusão de um conjunto de dados remove permanentemente o conjunto e seu caminho de upload. Além disso, após a exclusão, a opção de reversão (rollback) não estará mais disponível para o conjunto de dados carregado.',
     'hr-hr':
@@ -1021,7 +1021,7 @@ export const attachmentsText = createDictionary({
   notInMappingFile: {
     'en-us': 'Not in Mapping File',
     'de-ch': 'Nicht in der Zuordnungsdatei',
-    'es-es': 'No se encuentra en el archivo de asignación.',
+    'es-es': 'No se encuentra en el archivo de mapeo.',
     'fr-fr': 'Non présent dans le fichier de mappage',
     'ru-ru': 'Отсутствует в файле сопоставления.',
     'uk-ua': 'Немає у файлі зіставлення',
@@ -1046,7 +1046,7 @@ export const attachmentsText = createDictionary({
     'es-es': 'Columna de valor coincidente',
     'fr-fr': 'Colonne de valeur correspondante',
     'ru-ru': 'Столбец «Значение совпадения»',
-    'uk-ua': 'Стовпець зі значенням відповідності',
+    'uk-ua': 'Стовпець зі значеннями відповідності',
     'pt-br': 'Coluna de valor correspondente',
     'hr-hr': 'Stupac vrijednosti podudaranja',
     nb: 'Match verdi kolonne',

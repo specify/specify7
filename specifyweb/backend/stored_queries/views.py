@@ -1,5 +1,7 @@
 import json
 import logging
+
+from django.core.exceptions import BadRequest
 from collections import defaultdict
 from datetime import datetime
 from threading import Thread
@@ -22,6 +24,7 @@ from specifyweb.specify.datamodel import datamodel
 from . import models
 from .execution import execute, run_ephemeral_query, do_export, recordset
 from .queryfield import QueryField, fields_from_json
+from .selection import parse_selection
 from specifyweb.backend.permissions.permissions import PermissionTarget, PermissionTargetAction, \
     check_permission_targets, check_table_permissions
 from specifyweb.specify.models import Collection, Recordset, Recordsetitem, \
@@ -103,6 +106,7 @@ def ephemeral_statistics_to_str(spquery):
         "limit": spquery.get("limit", 20),
         "offset": spquery.get("offset", 0),
         "recordsetid": spquery.get("recordsetid"),
+        "selection": parse_selection(spquery.get("selection")),
         "smushed": spquery.get("smushed"),
         "searchsynonymy": bool(spquery.get("searchsynonymy", False)),
         "formatauditrecids": spquery.get("formatauditrecids", False),
@@ -206,6 +210,7 @@ def get_query(request):
         collection = request.specify_collection
     
     check_permission_targets(collection.id, request.specify_user.id, [QueryBuilderPt.execute])
+    parse_selection(spquery.get("selection"))
     return spquery, collection
 
 @require_POST
@@ -227,6 +232,7 @@ def export_csv(request):
     except ValueError as e:
         return HttpResponseBadRequest(e)
 
+    parse_selection(spquery.get("selection"))
     logger.info('export query: %s', spquery)
 
     if 'collectionid' in spquery:
@@ -255,6 +261,7 @@ def export_kml(request):
     except ValueError as e:
         return HttpResponseBadRequest(e)
 
+    parse_selection(spquery.get("selection"))
     logger.info('export query: %s', spquery)
 
     abs_uri = request.build_absolute_uri('')
@@ -287,6 +294,11 @@ def export_to_web_portal(request):
     except ValueError:
         return HttpResponseBadRequest('Invalid query data.')
 
+    try:
+        parse_selection(spquery.get("selection"))
+    except BadRequest:
+        logger.warning("Invalid selection data provided for web portal export.", exc_info=True)
+        return HttpResponseBadRequest('Invalid selection data.')
     spquery_log_preview = str(spquery)[:200] if isinstance(spquery, dict) else spquery
     spquery_log_preview = str(spquery_log_preview).replace('\r', '').replace('\n', '')
     logger.info('export web portal query: %s', spquery_log_preview)
@@ -327,7 +339,18 @@ def make_recordset(request): # pragma: no cover
     except ValueError as e:
         return HttpResponseBadRequest(e)
 
-    new_rs_id = recordset(request.specify_collection, request.specify_user,
+    spquery = recordset_info["fromquery"]
+    parse_selection(spquery.get("selection"))
+    collection = (
+        Collection.objects.get(pk=spquery["collectionid"])
+        if spquery.get("collectionid") is not None
+        else request.specify_collection
+    )
+    check_permission_targets(collection.id, request.specify_user.id, [
+        QueryBuilderPt.execute, QueryBuilderPt.create_recordset,
+    ])
+    check_table_permissions(collection, request.specify_user, Recordset, "create")
+    new_rs_id = recordset(collection, request.specify_user,
                           request.specify_user_agent, recordset_info)
 
     return HttpResponseRedirect(uri_for_model('recordset', new_rs_id))

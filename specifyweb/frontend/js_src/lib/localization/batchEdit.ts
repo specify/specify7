@@ -121,7 +121,8 @@ export const batchEditText = createDictionary({
   },
   missingRanksInQuery: {
     'en-us': 'Query requires additional ranks for batch editing',
-    'de-ch': 'Für die Stapelbearbeitung sind zusätzliche Ränge erforderlich.',
+    'de-ch':
+      'Für die Stapelbearbeitung sind zusätzliche Rangfolgen erforderlich.',
     'es-es':
       'La consulta requiere rangos adicionales para la edición por lotes.',
     'fr-fr':
@@ -227,7 +228,7 @@ export const batchEditText = createDictionary({
     'uk-ua':
       'Відкат набору даних призведе до повторного оновлення значень, видалення створених записів та створення нових записів.',
     'hr-hr':
-      'Vraćanjem skupa podataka unatrag ponovno će se ažurirati vrijednosti, izbrisati kreirani zapisi i kreirati novi zapisi',
+      'Vraćanje skupa podataka ponovno će ažurirati vrijednosti, izbrisati kreirane zapise i kreirati nove zapise',
     nb: 'Tilbakerulling av datasettet vil oppdatere verdiene på nytt, slette opprettede poster og opprette nye poster',
   },
   commitSuccessfulDescription: {

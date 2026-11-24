@@ -113,6 +113,9 @@ jobs:
       - name: Install testing python dependencies
         run: ve/bin/pip install -r requirements-testing.txt
 
+      - name: Test Weblate PO charset utility
+        run: ve/bin/python -m unittest discover -s scripts/weblate/tests -v
+
       - name: Create settings file
         run: |
           echo "THICK_CLIENT_LOCATION = '${{ github.workspace }}'" >> specifyweb/settings/local_specify_settings.py
