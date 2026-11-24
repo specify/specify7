@@ -243,7 +243,7 @@ export const backEndText = createDictionary({
     'de-ch': 'Das Feld ist für die Upload-Planzuordnung erforderlich.',
     'pt-br': 'Este campo é obrigatório para o mapeamento do plano de upload.',
     'hr-hr': 'polje je obavezno za mapiranje plana prijenosa',
-    nb: 'feltet er obligatorisk for opplasting av plankartlegging',
+    nb: 'feltet er obligatorisk for opplasting av plan tilordning',
   },
   invalidTreeStructure: {
     'en-us': 'There are multiple "Uploaded" placeholder values in the tree!',
@@ -675,7 +675,7 @@ export const backEndText = createDictionary({
       'У цьому рядку виявлено зміну області застосування. Рекомендується видалити цей рядок з набору даних',
     'hr-hr':
       'U ovom retku otkrivena je promjena opsega. Preporučuje se brisanje ovog retka iz skupa podataka.',
-    nb: 'En endring i omfanget er oppdaget i denne raden. Det anbefales å slette denne raden fra datasettet',
+    nb: 'En endring i gyldighetsomfanget (scope) er oppdaget i denne raden. Det anbefales å slette denne raden fra datasettet',
   },
   multipleTreeDefsInRow: {
     'en-us': 'Multiple tree definitions in row',

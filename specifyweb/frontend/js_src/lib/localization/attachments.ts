@@ -691,7 +691,7 @@ export const attachmentsText = createDictionary({
     'es-es': 'Archivos faltantes en el archivo de mapeo',
     'fr-fr': 'Fichiers manquants dans le fichier de mappage',
     'hr-hr': 'Datoteke koje nedostaju u datoteci za mapiranje',
-    nb: 'Filer mangler fra kartleggingsfilen',
+    nb: 'Filer mangler fra tilordningsfilen',
     'pt-br': 'Arquivos ausentes no arquivo de mapeamento',
     'ru-ru': 'Файлы отсутствуют в файле сопоставления.',
     'uk-ua': 'Файли відсутні у файлі зіставлення',
@@ -707,7 +707,7 @@ export const attachmentsText = createDictionary({
       "Les fichiers suivants figurent dans le fichier de correspondance, mais n'ont pas été sélectionnés. Sélectionnez-les ou faites-les glisser pour lancer le chargement.",
     'hr-hr':
       'Sljedeće datoteke navedene su u datoteci za mapiranje, ali nisu odabrane. Odaberite ih ili povucite i ispustite da biste započeli prijenos.',
-    nb: 'Følgende filer er oppført i kartleggingsfilen, men er ikke valgt. Velg eller dra og slipp dem for å starte opplastingen.',
+    nb: 'Følgende filer er oppført i tilordningsfilen, men er ikke valgt. Velg eller dra og slipp dem for å starte opplastingen.',
     'pt-br':
       'Os seguintes arquivos estão listados no arquivo de mapeamento, mas não foram selecionados. Selecione-os ou arraste e solte-os para iniciar o upload.',
     'ru-ru':
@@ -981,7 +981,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Зіставлення за файлом зіставлення',
     'pt-br': 'Correspondência por arquivo de mapeamento',
     'hr-hr': 'Podudaranje prema datoteci mapiranja',
-    nb: 'Match med kartleggingsfil',
+    nb: 'Match med tilordningsfil',
   },
   fileMissing: {
     'en-us': 'File Missing',
@@ -1027,7 +1027,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Немає у файлі зіставлення',
     'pt-br': 'Não está no arquivo de mapeamento',
     'hr-hr': 'Nije u datoteci mapiranja',
-    nb: 'Ikke i kartleggingsfilen',
+    nb: 'Ikke i tilordningsfilen',
   },
   duplicateInMappingFile: {
     'en-us': 'Duplicate in Mapping File',
@@ -1038,7 +1038,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Дублікат у файлі зіставлення',
     'pt-br': 'Arquivo de mapeamento duplicado',
     'hr-hr': 'Duplikat u datoteci mapiranja',
-    nb: 'Duplikat i kartleggingsfil',
+    nb: 'Duplikat i tilordningsfil',
   },
   selectMatchValueColumn: {
     'en-us': 'Match Value Column',
@@ -1071,7 +1071,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Завантажено файл зіставлення (рядків {count:number})',
     'pt-br': 'Arquivo de mapeamento carregado ({count:number} linhas)',
     'hr-hr': 'Datoteka mapiranja učitana ({count:number} redaka)',
-    nb: 'Kartleggingsfil lastet inn ({count:number} rader)',
+    nb: 'Tilordningsfil lastet inn ({count:number} rader)',
   },
   mappingFileColumnsInfo: {
     'en-us': 'Match: {matchColumn:string} → File: {fileColumn:string}',

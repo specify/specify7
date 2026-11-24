@@ -419,7 +419,7 @@ export const interactionsText = createDictionary({
     'de-ch': 'Nicht verfügbar',
     'pt-br': 'Indisponível',
     'hr-hr': 'Nije dostupno',
-    nb: 'Utilgjengelig',
+    nb: 'Ikke tilgjengelig',
   },
   returnLoan: {
     comment: 'Example: Return Loan records',
