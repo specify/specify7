@@ -1625,7 +1625,7 @@ export const formsText = createDictionary({
     'en-us': 'View Parent Resource',
     'de-ch': 'Übergeordnete Ressource anzeigen',
     'es-es': 'Ver recurso para padres',
-    'fr-fr': 'Consulter les ressources pour les parents',
+    'fr-fr': 'Voir les ressources parent',
     'hr-hr': 'Prikaz roditeljskog resursa',
     nb: 'Vis overordnet ressurs',
     'pt-br': 'Ver recurso para pais',
