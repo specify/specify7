@@ -82,7 +82,7 @@ export const backEndText = createDictionary({
     'es-es':
       'malo {agentTypeField:string}: "{badType:string}". Se esperaba uno de {validTypes:string}',
     'fr-fr':
-      '{agentTypeField:string} non valide: "{badType:string}". L\'un des {validTypes:string} est attendu',
+      '{agentTypeField:string} non valide : "{badType:string}". L\'un des {validTypes:string} est attendu',
     'uk-ua':
       'поганий {agentTypeField:string}: "{badType:string}". Очікується один із {validTypes:string}',
     'de-ch':
@@ -154,7 +154,7 @@ export const backEndText = createDictionary({
     'es-es':
       'valor de fecha incorrecto: {value:string}. se esperaba: {format:string}',
     'fr-fr':
-      'valeur de date invalide: {value:string}. {format:string} est attendu',
+      'valeur de date invalide : {value:string}. {format:string} est attendu',
     'uk-ua':
       'неправильне значення дати: {value:string}. очікуваний формат: {format:string}',
     'de-ch':
@@ -336,7 +336,7 @@ export const backEndText = createDictionary({
     'en-us': 'Can not delete root level tree definition item',
     'es-es':
       'No se puede eliminar la definición del elemento de nivel raíz del árbol',
-    'fr-fr': "Impossible de supprimer l'élément racine de l'arbre.",
+    'fr-fr': "Impossible de supprimer l'élément racine de l'arbre",
     'ru-ru': 'Невозможно удалить элемент определения дерева корневого уровня.',
     'uk-ua': 'Неможливо видалити корінь дерева',
     'de-ch': 'Definitionselement der Wurzelstruktur kann nicht gelöscht werden',
@@ -707,7 +707,7 @@ export const backEndText = createDictionary({
     'es-es':
       'Tipo de componente no válido: cadena para el/los rango(s) de árbol seleccionado(s)',
     'fr-fr':
-      "{componentType: string} invalide pour le(s) rang(s) d'arbre sélectionné(s)",
+      "{componentType:string} invalide pour le(s) rang(s) d'arbre sélectionné(s)",
     'pt-br':
       'Componente inválido {componentType: string} para a(s) classificação(ões) da árvore selecionada(s)',
     'ru-ru':
@@ -723,7 +723,7 @@ export const backEndText = createDictionary({
     'es-es':
       'Uno o más archivos adjuntos no existen. Es posible que se hayan eliminado.',
     'fr-fr':
-      'Une ou plusieurs pièces jointes sont manquantes. Elles ont peut-être été supprimées ?',
+      'Une ou plusieurs pièces jointes sont manquantes. Elles ont peut-être été supprimées.',
     'pt-br': 'Um ou mais anexos não existem. Eles podem ter sido excluídos.',
     'ru-ru':
       'Одно или несколько вложений отсутствуют. Возможно, они были удалены.',

@@ -1096,7 +1096,7 @@ export const formsText = createDictionary({
     'ru-ru':
       'Это поле должно быть уникальным. Оно не может быть перенесено из одного места в другое.',
     'es-es': 'Este campo debe ser único. No se puede transferir.',
-    'fr-fr': 'Ce champ doit être unique. Il ne peut pas être reporté.',
+    'fr-fr': 'Ce champ doit être unique. Il ne peut pas être reporté',
     'uk-ua': 'Це поле має бути унікальним. Його не можна переносити',
     'de-ch':
       'Dieses Feld muss eindeutig sein. Es kann nicht übertragen werden.',
