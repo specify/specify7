@@ -1378,7 +1378,7 @@ msgstr ""
 #. 🟥Alt key on the keyboard. Used in: Components > Keyboard Shortcuts > Config
 #: components/KeyboardShortcuts/config.ts:54
 msgid "alt"
-msgstr "Alternativ"
+msgstr "Alt"
 
 #. 🟥Option key on the macOS keyboard. Used in: Components > Keyboard Shortcuts > Config
 #: components/KeyboardShortcuts/config.ts:53
