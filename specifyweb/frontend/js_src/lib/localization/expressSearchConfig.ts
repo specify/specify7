@@ -44,7 +44,7 @@ export const expressSearchConfigText = createDictionary({
     'en-us': 'Search Fields',
     'de-ch': 'Suchfelder',
     'es-es': 'Campos de búsqueda',
-    'fr-fr': 'Champs de recherche',
+    'fr-fr': 'Champs recherchés',
     'hr-hr': 'Polja za pretraživanje',
     nb: 'Søkefelter',
     'pt-br': 'Campos de pesquisa',
@@ -531,7 +531,7 @@ export const expressSearchConfigText = createDictionary({
     'de-ch': 'Nur Sammlungsobjekte mit ihrer aktuellen Taxonbestimmung.',
     'es-es':
       'Solo se incluyen en la colección los objetos con su determinación taxonómica actual.',
-    'fr-fr': 'Objets  avec leur détermination actuelle uniquement.',
+    'fr-fr': 'Objets avec leur détermination actuelle uniquement.',
     'hr-hr': 'Zbirni objekti samo s trenutnim određivanjem taksona.',
     nb: 'Samlingsobjekter, men kun med gjeldende taksonbestemmelse.',
     'pt-br':
@@ -656,7 +656,7 @@ export const expressSearchConfigText = createDictionary({
     'de-ch': 'Ereignisse sammeln, die mit Sammlungsobjekten verknüpft sind.',
     'es-es':
       'Recopilación de eventos vinculados a los objetos de la colección.',
-    'fr-fr': 'Événements de collecte et objets liés',
+    'fr-fr': 'Événements de collecte et objets liés.',
     'hr-hr': 'Prikupljanje događaja povezanih s objektima kolekcije.',
     nb: 'Innsamlingshendelser knyttet til samlingsobjekter.',
     'pt-br': 'Coletando eventos relacionados a objetos da coleção.',
@@ -681,7 +681,7 @@ export const expressSearchConfigText = createDictionary({
       'Fundorte und die bei den jeweiligen Sammelaktionen gefundenen Objekte.',
     'es-es':
       'Localidades y objetos de colección encontrados en sus eventos de recolección.',
-    'fr-fr': 'Localités et objets liés aux événements de collecte',
+    'fr-fr': 'Localités et objets liés aux événements de collecte.',
     'hr-hr':
       'Lokaliteti i predmeti sakupljanja pronađeni na njihovim sakupljačkim događajima.',
     nb: 'Lokaliteter og samlingsobjektene som ble funnet på deres innsamlingshendelser.',
@@ -765,7 +765,7 @@ export const expressSearchConfigText = createDictionary({
       'Die ausgeliehenen Personen und die über die Rolle des Ausleihagenten verbundenen Agenten.',
     'es-es':
       'Los prestatarios y los agentes vinculados a través de los roles de agente prestatario.',
-    'fr-fr': "Emprunts et agents liés par le rôle d'emprunteur",
+    'fr-fr': "Emprunts et agents liés par le rôle d'emprunteur.",
     'hr-hr': 'Posuđivači i agenti povezani putem uloga agenata posuđivača.',
     nb: 'Innlån og agentene som er koblet sammen gjennom låneagentrollene.',
     'pt-br':
@@ -844,7 +844,7 @@ export const expressSearchConfigText = createDictionary({
       'Sammelereignisse wurden den Agenten zugeordnet, die die Proben gesammelt haben.',
     'es-es':
       'Recopilación de datos vinculados con los agentes que recolectaron las muestras.',
-    'fr-fr': 'Événements de collecte associés aux agents collecteurs',
+    'fr-fr': 'Événements de collecte associés aux agents collecteurs.',
     'hr-hr':
       'Događaji prikupljanja upareni s agentima koji su prikupljali uzorke.',
     nb: 'Innsamlingshendelser koblet med agentene som samlet inn eksemplarer.',
@@ -870,7 +870,7 @@ export const expressSearchConfigText = createDictionary({
     'de-ch':
       'Eingehende Mitteilungen und das Material der Agenten wurden empfangen von.',
     'es-es': 'Intercambios entrantes y material de los agentes recibido de.',
-    'fr-fr': 'Échanges entrants et agents donneurs',
+    'fr-fr': 'Échanges entrants et agents donneurs.',
     'hr-hr': 'Dolazne razmjene i materijal agenata je primljen od.',
     nb: 'Innkommende utvekslingsmateriale og agentene det ble mottatt fra.',
     'pt-br': 'Trocas recebidas e material dos agentes.',
@@ -919,7 +919,7 @@ export const expressSearchConfigText = createDictionary({
     'es-es':
       'Recopilación de eventos con el área geográfica de la localidad de cada evento.',
     'fr-fr':
-      'Événéments de collecte avec les lieux géographiques associés aux localités',
+      'Événéments de collecte avec les lieux géographiques associés aux localités.',
     'hr-hr':
       'Prikupljanje događaja s geografskim područjem svake lokacije događaja.',
     nb: 'Innsamlingshendelse med geografisk avgrensning for hver hendelse.',
@@ -948,7 +948,7 @@ export const expressSearchConfigText = createDictionary({
       'Sammlungsobjekte sind mit den geografischen Gebieten ihrer Sammelorte verknüpft.',
     'es-es':
       'Los objetos de la colección están vinculados a las áreas geográficas de los lugares donde fueron recolectados.',
-    'fr-fr': 'Objets liés aux lieux de leurs localités de collecte',
+    'fr-fr': 'Objets liés aux lieux de leurs localités de collecte.',
     'hr-hr':
       'Predmeti zbirke povezani s geografskim područjima mjesta na kojima su se odvijali događaji zbirke.',
     nb: 'Samlingsobjekter knyttet til geografisk avgrensete innsamlingshendelser.',
@@ -975,7 +975,7 @@ export const expressSearchConfigText = createDictionary({
     'de-ch': 'Geschenke mit den dazugehörigen Sammlungsgegenständen.',
     'es-es':
       'Regalos con objetos de la colección adjuntos a los preparativos del regalo.',
-    'fr-fr': 'Dons objets et préparations associées',
+    'fr-fr': 'Dons avec les objets joints aux préparations de dons.',
     'hr-hr':
       'Pokloni s predmetima za sakupljanje priloženim uz pripreme poklona.',
     nb: 'Gaver med samlingsobjektene knyttet til gave-preparater.',
@@ -1001,7 +1001,7 @@ export const expressSearchConfigText = createDictionary({
     'en-us': 'Gifts and the agents associated with those gifts.',
     'de-ch': 'Geschenke und die mit diesen Geschenken verbundenen Personen.',
     'es-es': 'Regalos y los agentes asociados con esos regalos.',
-    'fr-fr': 'Dons et agents associés',
+    'fr-fr': 'Dons et agents associés aux dons.',
     'hr-hr': 'Darovi i agenti povezani s tim darovima.',
     nb: 'Gaver og agentene knyttet til disse gavene.',
     'pt-br': 'Doações e os agentes associados a essas doações.',
@@ -1024,7 +1024,7 @@ export const expressSearchConfigText = createDictionary({
     'de-ch': 'Leihgaben mit Sammlungsgegenständen auf Leihvorbereitungsbasis.',
     'es-es':
       'Préstamos con los objetos de la colección en preparación de préstamos.',
-    'fr-fr': 'Prêts associés aux objets et à leurs préparations',
+    'fr-fr': 'Prêts associés aux objets et à leurs préparations.',
     'hr-hr': 'Krediti s predmetima naplate na pripremi kredita.',
     nb: 'Utlån med samlingsobjektene på låne-preparater.',
     'pt-br':
@@ -1050,7 +1050,7 @@ export const expressSearchConfigText = createDictionary({
       'Kredite und die in ihrer Funktion als Kreditvermittler beteiligten Akteure.',
     'es-es':
       'Los préstamos y los agentes involucrados a través de sus funciones como agentes de préstamos.',
-    'fr-fr': "Prêts et agents impliqués par leur rôle d'agent prêteur",
+    'fr-fr': "Prêts et agents impliqués par leur rôle d'agent prêteur.",
     'hr-hr': 'Krediti i agenti uključeni kroz uloge agenata za kredite.',
     nb: 'Utlån og agentene som er involvert gjennom utlåns-agentrollene.',
     'pt-br':
@@ -1178,7 +1178,7 @@ export const expressSearchConfigText = createDictionary({
     'en-us': 'Projects and their assigned agents.',
     'de-ch': 'Projekte und die ihnen zugeordneten Agenten.',
     'es-es': 'Los proyectos y sus agentes asignados.',
-    'fr-fr': 'Projets et agents assignés',
+    'fr-fr': 'Projets et agents assignés.',
     'hr-hr': 'Projekti i njihovi dodijeljeni agenti.',
     nb: 'Prosjekter og deres tildelte agenter.',
     'pt-br': 'Projetos e seus respectivos agentes designados.',

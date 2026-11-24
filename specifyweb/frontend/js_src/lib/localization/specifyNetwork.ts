@@ -25,7 +25,7 @@ export const specifyNetworkText = createDictionary({
     'es-es':
       'Se debe proporcionar el nombre de especie o el GUID para mostrar esta página',
     'fr-fr':
-      "Le nom de l'espèce ou le GUID doit être fourni pour afficher cette page.",
+      "Le nom de l'espèce ou le GUID doit être fourni pour afficher cette page",
     'ru-ru':
       'Для отображения этой страницы необходимо указать название вида или GUID.',
     'uk-ua':
@@ -39,7 +39,7 @@ export const specifyNetworkText = createDictionary({
     'en-us': 'Unable to find any data for this request',
     'de-ch': 'Für diese Anfrage konnten keine Daten gefunden werden.',
     'es-es': 'No se encuentran datos para esta solicitud',
-    'fr-fr': "Aucune donnée n'a pu être trouvée pour cette requête.",
+    'fr-fr': "Aucune donnée n'a pu être trouvée pour cette requête",
     'ru-ru': 'Не удалось найти данные по этому запросу.',
     'uk-ua': 'Неможливо знайти дані для цього запиту',
     'pt-br':

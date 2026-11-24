@@ -209,7 +209,7 @@ export const setupToolText = createDictionary({
       'Глобальная область действия позволяет обмениваться данными о поступлении между всеми подразделениями. Область действия на уровне подразделений гарантирует, что данные о поступлении будут специфичны для каждого подразделения.',
     'uk-ua':
       'Глобальна область дії дозволяє вам ділитися приєднаннями між усіма підрозділами. Дивізіональна область дії гарантує, що приєднання є специфічними для кожного підрозділу.',
-    nb: 'Globalt omfang lar deg dele Aksesjoner mellom alle divisjoner. Divisjonsomfang sikrer at Aksesjoner er spesifikke for hver divisjon.',
+    nb: 'Globalt område (scope) lar deg dele Aksesjoner mellom alle divisjoner. Divisjons-område (scope) sikrer at Aksesjoner er spesifikke for hver divisjon.',
   },
   address: {
     'en-us': 'Address',
@@ -884,7 +884,7 @@ export const setupToolText = createDictionary({
     'en-us': 'An empty taxon tree will be created',
     'de-ch': 'Es wird ein leerer Taxonbaum erstellt.',
     'es-es': 'Se creará un árbol taxonómico vacío.',
-    'fr-fr': 'Un arbre taxonomique vide sera créé.',
+    'fr-fr': 'Un arbre taxonomique vide sera créé',
     'hr-hr': 'Bit će kreirano prazno stablo taksona',
     'pt-br': 'Uma árvore taxonômica vazia será criada.',
     'ru-ru': 'Будет создано пустое таксономическое дерево.',

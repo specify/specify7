@@ -62,7 +62,7 @@ export const notificationsText = createDictionary({
     'en-us': 'Error',
     'ru-ru': 'Ошибка',
     'es-es': 'Excepción',
-    'fr-fr': 'Notifications : …',
+    'fr-fr': 'Erreur',
     'uk-ua': 'Помилка',
     'de-ch': 'Fehler',
     'pt-br': 'Erro',
