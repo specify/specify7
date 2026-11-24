@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-11-23 17:11+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-11-24 08:58+0000\n"
+"Last-Translator: Maxime GRIVEAU <mgriveau@users.noreply.hosted.weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/query/"
 "fr/>\n"
 "Language: fr\n"
@@ -13,21 +13,18 @@ msgstr ""
 
 #. Used in: Components > Query Builder > Results
 #: components/QueryBuilder/Results.tsx:563
-#, fuzzy
 msgid "selectionCount"
 msgstr "{selected:string} des {total:string} lignes de résultats sélectionnées"
 
 #. Used in: Components > Query Builder > Results
 #: components/QueryBuilder/Results.tsx:589
-#, fuzzy
 msgid "selectionUnavailable"
 msgstr ""
 "La sélection des enregistrements n'est pas disponible pour les résultats "
-"groupés ou les résultats de comptage uniquement."
+"groupés ou les résultats comptabilisés."
 
 #. Used in: Components > Query Builder > Results
 #: components/QueryBuilder/Results.tsx:825
-#, fuzzy
 msgid "selectionLimit"
 msgstr ""
 "Au maximum {limit:number} sélections ou exclusions individuelles sont prises "
@@ -36,7 +33,6 @@ msgstr ""
 #. Used in: Components > Query Builder > To Map ⬤ Query Builder > __tests__ > To Map
 #: components/QueryBuilder/ToMap.tsx:96
 #: components/QueryBuilder/__tests__/ToMap.test.tsx:65
-#, fuzzy
 msgid "mapSelectionLimit"
 msgstr ""
 "Sélectionnez au maximum {limit:number} lignes de résultats à afficher sur la "
@@ -347,7 +343,6 @@ msgstr "Tri décroissant"
 #. 🟥as in negate query condition. Used in: Components > Query Builder > Field Filter Tool
 #: components/QueryBuilder/FieldFilterTool.tsx:113
 #: components/QueryBuilder/FieldFilterTool.tsx:117
-#, fuzzy
 msgid "negate"
 msgstr "Nier"
 
@@ -1049228,7 +1049223,7 @@ msgstr "Choisir le formateur"
 #: components/QueryBuilder/FieldFilterSpec.tsx:565
 #, fuzzy
 msgid "range"
-msgstr "Gamme"
+msgstr "Portée"
 
 #. Used in: Components > Query Builder > Field Filter Tool
 #: components/QueryBuilder/FieldFilterTool.tsx:137
