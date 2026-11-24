@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-11-23 17:11+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-11-24 08:58+0000\n"
+"Last-Translator: Maxime GRIVEAU <mgriveau@users.noreply.hosted.weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "preferences/fr/>\n"
 "Language: fr\n"
@@ -13,7 +13,6 @@ msgstr ""
 
 #. Used in: Components > Keyboard Shortcuts > Conflicts
 #: components/KeyboardShortcuts/Conflicts.tsx:159
-#, fuzzy
 msgid "shortcutConflict"
 msgstr ""
 "Également affectée aux actions suivantes. Une seule action peut être "
@@ -53,7 +52,6 @@ msgstr "Préférences utilisateur par défaut"
 #: components/Preferences/UserDefinitions.tsx:2060
 #: components/Preferences/UserDefinitions.tsx:2164
 #: components/Preferences/UserDefinitions.tsx:2479
-#, fuzzy
 msgid "general"
 msgstr "Général"
 
@@ -706,7 +704,6 @@ msgstr "Direction du mouvement lorsque la touche <key>Entrer</key> est enfoncée
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2223
-#, fuzzy
 msgid "enterMoveDirectionDescription"
 msgstr ""
 "Vous pouvez vous déplacer dans la direction opposée en appuyant sur <key>"
@@ -812,9 +809,8 @@ msgstr "Animer les transitions"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2436
-#, fuzzy
 msgid "panInertia"
-msgstr "Inertie de Pan"
+msgstr "Inertie du balayage"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2443
@@ -1105,19 +1101,16 @@ msgstr "Paramètres de la collection"
 
 #. Used in: Components > Preferences > Global Definitions
 #: components/Preferences/GlobalDefinitions.tsx:59
-#, fuzzy
 msgid "globalAuditing"
 msgstr "Audit"
 
 #. Used in: Components > Preferences > Global Definitions
 #: components/Preferences/GlobalDefinitions.tsx:62
-#, fuzzy
 msgid "enableAuditLog"
 msgstr "Activer le journal d'audit"
 
 #. Used in: Components > Preferences > Global Definitions
 #: components/Preferences/GlobalDefinitions.tsx:63
-#, fuzzy
 msgid "enableAuditLogDescription"
 msgstr ""
 "Enregistrer les événements de création, de suppression et de modification "
@@ -1125,13 +1118,11 @@ msgstr ""
 
 #. Used in: Components > Preferences > Global Definitions
 #: components/Preferences/GlobalDefinitions.tsx:70
-#, fuzzy
 msgid "logFieldLevelChanges"
 msgstr "Journal des modifications au niveau des champs"
 
 #. Used in: Components > Preferences > Global Definitions
 #: components/Preferences/GlobalDefinitions.tsx:71
-#, fuzzy
 msgid "logFieldLevelChangesDescription"
 msgstr ""
 "Consignez les modifications apportées aux valeurs de chaque champ dans le "
@@ -1139,31 +1130,26 @@ msgstr ""
 
 #. Used in: Components > Preferences > Global Definitions
 #: components/Preferences/GlobalDefinitions.tsx:80
-#, fuzzy
 msgid "formatting"
-msgstr "Formatage de date"
+msgstr "Format de date"
 
 #. Used in: Components > Preferences > Global Definitions
 #: components/Preferences/GlobalDefinitions.tsx:83
-#, fuzzy
 msgid "fullDateFormat"
 msgstr "Format de date complet"
 
 #. Used in: Components > Preferences > Global Definitions
 #: components/Preferences/GlobalDefinitions.tsx:84
-#, fuzzy
 msgid "fullDateFormatDescription"
 msgstr "Format utilisé pour l'affichage des dates complètes."
 
 #. Used in: Components > Preferences > Global Definitions
 #: components/Preferences/GlobalDefinitions.tsx:94
-#, fuzzy
 msgid "monthYearDateFormat"
-msgstr "format de date mois/année"
+msgstr "Format de date mois/année"
 
 #. Used in: Components > Preferences > Global Definitions
 #: components/Preferences/GlobalDefinitions.tsx:95
-#, fuzzy
 msgid "monthYearDateFormatDescription"
 msgstr ""
 "Format utilisé pour l'affichage des dates ne comportant que le mois et "
@@ -1171,13 +1157,11 @@ msgstr ""
 
 #. Used in: Components > Preferences > Global Definitions
 #: components/Preferences/GlobalDefinitions.tsx:110
-#, fuzzy
 msgid "attachmentThumbnailSize"
 msgstr "Taille de la miniature de la pièce jointe"
 
 #. Used in: Components > Preferences > Global Definitions
 #: components/Preferences/GlobalDefinitions.tsx:111
-#, fuzzy
 msgid "attachmentThumbnailSizeDescription"
 msgstr "Taille en pixels des vignettes des pièces jointes générées."
 
@@ -1409,56 +1393,47 @@ msgstr ""
 
 #. 🟥Alt key on the keyboard. Used in: Components > Keyboard Shortcuts > Config
 #: components/KeyboardShortcuts/config.ts:54
-#, fuzzy
 msgid "alt"
 msgstr "Alt"
 
 #. 🟥Option key on the macOS keyboard. Used in: Components > Keyboard Shortcuts > Config
 #: components/KeyboardShortcuts/config.ts:53
-#, fuzzy
 msgid "macOption"
 msgstr "⌥"
 
 #. 🟥Ctrl key on the keyboard. Used in: Components > Keyboard Shortcuts > Config
 #: components/KeyboardShortcuts/config.ts:58
-#, fuzzy
 msgid "ctrl"
 msgstr "Ctrl"
 
 #. 🟥Control key on the macOS keyboard. Used in: Components > Keyboard Shortcuts > Config
 #: components/KeyboardShortcuts/config.ts:57
-#, fuzzy
 msgid "macControl"
 msgstr "⌃"
 
 #. 🟥Meta/Command key on the macOS keyboard. Used in: Components > Keyboard Shortcuts > Config
 #: components/KeyboardShortcuts/config.ts:60
-#, fuzzy
 msgid "macMeta"
 msgstr "⌘"
 
 #. 🟥Shift key on the macOS keyboard. Used in: Components > Keyboard Shortcuts > Config
 #: components/KeyboardShortcuts/config.ts:63
-#, fuzzy
 msgid "macShift"
 msgstr "⇧"
 
 #. 🟥Shift key on the keyboard. Used in: Components > Keyboard Shortcuts > Config
 #: components/KeyboardShortcuts/config.ts:64
-#, fuzzy
 msgid "shift"
-msgstr "Changement"
+msgstr "Shift"
 
 #. Used in: Components > Keyboard Shortcuts > Shortcuts
 #: components/KeyboardShortcuts/Shortcuts.tsx:227
-#, fuzzy
 msgid "pressKeys"
 msgstr "Appuyez sur la combinaison de touches souhaitée..."
 
 #. Used in: Components > Keyboard Shortcuts > Shortcuts ⬤ Components > Keyboard Shortcuts > Url Shortcuts
 #: components/KeyboardShortcuts/Shortcuts.tsx:229
 #: components/KeyboardShortcuts/UrlShortcuts.tsx:133
-#, fuzzy
 msgid "noKeyAssigned"
 msgstr "Aucune touche n'est assignée."
 
@@ -1470,36 +1445,31 @@ msgstr "Aucune touche n'est assignée."
 #: components/KeyboardShortcuts/__tests__/CheatSheet.test.tsx:44
 #: components/Preferences/index.tsx:328
 #: components/Preferences/index.tsx:375
-#, fuzzy
 msgid "keyboardShortcuts"
 msgstr "Raccourcis clavier"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:711
-#, fuzzy
 msgid "shortcutsEnabled"
 msgstr "Activer les raccourcis clavier"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:712
-#, fuzzy
 msgid "shortcutsEnabledDescription"
 msgstr ""
 "Lorsque cette option est activée, les raccourcis clavier permettent "
-"d'effectuer diverses actions dans Specification. Vous pouvez maintenir la "
-"touche Ctrl (ou ⌘ sur Mac) enfoncée pour afficher la liste des raccourcis "
+"d'effectuer diverses actions dans Specify. Vous pouvez maintenir la touche "
+"Ctrl (ou ⌘ sur Mac) enfoncée pour afficher la liste des raccourcis "
 "disponibles. Lorsqu'elle est désactivée, tous les raccourcis clavier sont "
 "ignorés."
 
 #. Used in: Components > Preferences > Index
 #: components/Preferences/index.tsx:305
-#, fuzzy
 msgid "navigationAndTools"
-msgstr "Outils de navigation et d'utilisation"
+msgstr "Outils utilisateurs et de navigation"
 
 #. Used in: Components > Keyboard Shortcuts > Url Shortcuts
 #: components/KeyboardShortcuts/UrlShortcuts.tsx:227
-#, fuzzy
 msgid "navigationShortcutsDescription"
 msgstr ""
 "Ouvrez le menu de navigation ou la page correspondante, comme vous le feriez "
@@ -1507,13 +1477,11 @@ msgstr ""
 
 #. Used in: Components > Keyboard Shortcuts > Url Shortcuts
 #: components/KeyboardShortcuts/UrlShortcuts.tsx:240
-#, fuzzy
 msgid "userToolShortcutsDescription"
 msgstr "Exécutez l'action correspondante depuis le menu Outils utilisateur."
 
 #. Used in: Components > Preferences > Index
 #: components/Preferences/index.tsx:262
-#, fuzzy
 msgid "formActionsDescription"
 msgstr ""
 "Raccourcis pour les actions dans les formulaires de saisie de données "
@@ -1521,7 +1489,6 @@ msgstr ""
 
 #. Used in: Components > Preferences > Index
 #: components/Preferences/index.tsx:268
-#, fuzzy
 msgid "dialogActionsDescription"
 msgstr ""
 "Raccourcis pour les actions disponibles dans les boîtes de dialogue, comme "
@@ -1529,38 +1496,32 @@ msgstr ""
 
 #. Used in: Components > Preferences > Index
 #: components/Preferences/index.tsx:274
-#, fuzzy
 msgid "treeActionsDescription"
-msgstr "Raccourcis pour les actions dans l'éditeur d'arborescence."
+msgstr "Raccourcis pour les actions dans l'éditeur des arbres."
 
 #. Used in: Components > Preferences > Index
 #: components/Preferences/index.tsx:281
-#, fuzzy
 msgid "queryBuilderActionsDescription"
 msgstr "Raccourcis pour les actions dans le générateur de requêtes."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:965
-#, fuzzy
 msgid "openRelatedRecordInNewTab"
 msgstr "Ouvrir l'enregistrement associé dans un nouvel onglet"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:948
-#, fuzzy
 msgid "openFormMeta"
-msgstr "Méta de formulaire ouvert"
+msgstr "Ouvrir les paramètres du formulaire"
 
 #. Used in: Components > Keyboard Shortcuts > Url Shortcuts
 #: components/KeyboardShortcuts/UrlShortcuts.tsx:71
 #: components/KeyboardShortcuts/UrlShortcuts.tsx:178
-#, fuzzy
 msgid "urlShortcuts"
 msgstr "Raccourcis clavier vers les URL"
 
 #. Used in: Components > Keyboard Shortcuts > Url Shortcuts
 #: components/KeyboardShortcuts/UrlShortcuts.tsx:74
-#, fuzzy
 msgid "urlShortcutsDescription"
 msgstr ""
 "Raccourcis pour ouvrir des pages personnalisées ou d'autres URL depuis "
@@ -1568,25 +1529,21 @@ msgstr ""
 
 #. Used in: Components > Keyboard Shortcuts > Url Shortcuts
 #: components/KeyboardShortcuts/UrlShortcuts.tsx:187
-#, fuzzy
 msgid "pages"
 msgstr "Pages"
 
 #. Used in: Components > Keyboard Shortcuts > Url Shortcuts
 #: components/KeyboardShortcuts/UrlShortcuts.tsx:193
-#, fuzzy
 msgid "overlays"
 msgstr "Superpositions"
 
 #. Used in: Components > Keyboard Shortcuts > Url Shortcuts
 #: components/KeyboardShortcuts/UrlShortcuts.tsx:199
-#, fuzzy
 msgid "customPages"
 msgstr "Pages personnalisées"
 
 #. Used in: Components > Keyboard Shortcuts > Url Shortcuts
 #: components/KeyboardShortcuts/UrlShortcuts.tsx:534
 #: components/KeyboardShortcuts/UrlShortcuts.tsx:536
-#, fuzzy
 msgid "relativeOrAbsoluteUrl"
 msgstr "URL relative ou absolue"
