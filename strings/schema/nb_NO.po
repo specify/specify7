@@ -1,8 +1,9 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-11-23 17:13+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-11-24 13:51+0000\n"
+"Last-Translator: Gunnhild Marthinsen "
+"<gunnhilm@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/schema/nb/>\n"
 "Language: nb_NO\n"
@@ -43,10 +44,9 @@ msgstr ""
 
 #. Used in: Components > Schema Config > Layout
 #: components/SchemaConfig/Layout.tsx:182
-#, fuzzy
 msgid "importSchemaLimitations"
 msgstr ""
-"Denne importen vil ikke tilordne valglister, feltformater eller nettlenker "
+"Denne importen vil ikke tilordne plukklister, feltformater eller nettlenker "
 "med mindre de allerede finnes."
 
 #. Used in: Components > Schema Config > Layout
@@ -236,7 +236,7 @@ msgstr "Database"
 #: components/SchemaConfig/__tests__/TableUniquenessRules.test.tsx:220
 #: components/SchemaConfig/__tests__/UniquenessRuleRow.test.tsx:118
 msgid "setScope"
-msgstr "Angi omfang"
+msgstr "Angi område (scope)"
 
 #. Used in: Components > Schema Config > Field ⬤ Components > Schema Config > Fields ⬤ Components > Schema Config > Table ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Table ⬤ Components > Schema Viewer > Schema To Tsv
 #: components/SchemaConfig/Field.tsx:48
@@ -503,7 +503,7 @@ msgstr "Konfigurer unikhetsregel"
 #: components/SchemaConfig/UniquenessRuleRow.tsx:303
 #: components/SchemaViewer/Fields.tsx:37
 msgid "scope"
-msgstr "Omfang (scope)"
+msgstr "Område (scope)"
 
 #. Used in: Components > Schema Config > Uniqueness Rule Row
 #: components/SchemaConfig/UniquenessRuleRow.tsx:59
