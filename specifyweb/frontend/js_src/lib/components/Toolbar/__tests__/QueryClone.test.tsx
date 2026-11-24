@@ -12,6 +12,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { commonText } from '../../../localization/common';
 import { queryText } from '../../../localization/query';
 import { requireContext } from '../../../tests/helpers';
+import { overrideAjax } from '../../../tests/ajax';
 import { icons } from '../../Atoms/Icons';
 import * as collection from '../../DataModel/collection';
 import { serializeResource } from '../../DataModel/serializers';
@@ -34,6 +35,18 @@ const mockCloneSharedQuery = jest.mocked(cloneSharedQuery);
 
 requireContext();
 
+overrideAjax('/stored_query/folders/', {
+  folders: [
+    { id: 7, name: 'Parent', parentId: null, section: 'personal' },
+    { id: 9, name: 'Nested', parentId: 7, section: 'personal' },
+    { id: 10, name: 'Grandchild', parentId: 9, section: 'personal' },
+    { id: 11, name: 'Other parent', parentId: null, section: 'personal' },
+    { id: 12, name: 'Other child', parentId: 11, section: 'personal' },
+    { id: 20, name: 'Sharing parent', parentId: null, section: 'sharing' },
+    { id: 21, name: 'Shared parent', parentId: null, section: 'shared' },
+  ],
+});
+
 afterEach(() => {
   jest.clearAllMocks();
   jest.restoreAllMocks();
@@ -43,6 +56,7 @@ test('shows query sections as icon navigation on the left', async () => {
   jest
     .spyOn(collection, 'fetchCollection')
     .mockResolvedValue({ records: [], totalCount: 0 });
+  jest.spyOn(permissions, 'hasTablePermission').mockReturnValue(true);
 
   await act(async () => {
     render(
@@ -89,11 +103,205 @@ test('shows query sections as icon navigation on the left', async () => {
     divider.compareDocumentPosition(folderSection) &
       Node.DOCUMENT_POSITION_FOLLOWING
   ).toBeTruthy();
+  expect(await within(folderSection).findByText('Parent')).toBeVisible();
   expect(
     within(folderSection).getByRole('button', {
       name: queryText.addFolder(),
     })
-  ).toBeDisabled();
+  ).toBeEnabled();
+});
+
+describe('personal folder creation', () => {
+  overrideAjax(
+    '/stored_query/folders/',
+    { id: 8, name: 'Child', parentId: 7, section: 'personal' },
+    {
+      method: 'POST',
+      body: { name: 'Child', parentId: 7, section: 'personal' },
+    }
+  );
+
+  test('creates a named nested folder and rejects an empty name', async () => {
+    const handleError = jest.fn();
+    jest
+      .spyOn(collection, 'fetchCollection')
+      .mockResolvedValue({ records: [], totalCount: 0 });
+    jest.spyOn(permissions, 'hasTablePermission').mockReturnValue(true);
+
+    render(
+      <LoadingContext.Provider
+        value={(promise): void => {
+          void promise.catch(handleError);
+        }}
+      >
+        <UnloadProtectsContext.Provider value={[]}>
+          <QueryListDialog
+            newQueryUrl="/specify/query/new/"
+            onClose={jest.fn()}
+          >
+            {({ children }) => children}
+          </QueryListDialog>
+        </UnloadProtectsContext.Provider>
+      </LoadingContext.Provider>
+    );
+
+    await screen.findByText('Parent');
+    fireEvent.click(
+      screen.getByRole('button', { name: queryText.addFolder() })
+    );
+
+    const nameInput = screen.getByRole('textbox', {
+      name: queryText.folderName(),
+    });
+    const saveButton = screen.getByRole('button', { name: commonText.save() });
+    expect(saveButton).toBeDisabled();
+
+    fireEvent.change(nameInput, { target: { value: '   ' } });
+    expect(saveButton).toBeDisabled();
+    fireEvent.change(nameInput, { target: { value: ' Child ' } });
+    fireEvent.change(
+      screen.getByRole('combobox', { name: queryText.parentFolder() }),
+      { target: { value: '7' } }
+    );
+    expect(saveButton).toBeEnabled();
+    fireEvent.click(saveButton);
+
+    const child = await screen.findByText('Child');
+    const parentFolder = screen.getByText('Parent').closest('li');
+    if (parentFolder === null)
+      throw new Error('Parent folder list item missing.');
+    expect(within(parentFolder).getByText('Child')).toBeVisible();
+    expect(child).toBeVisible();
+    expect(handleError).not.toHaveBeenCalled();
+  });
+});
+
+describe.each([
+  [queryText.queriesIShare(), 'Sharing parent', 'Sharing child', 20, 'sharing'],
+  [queryText.sharedQueries(), 'Shared parent', 'Shared child', 21, 'shared'],
+])(
+  'keeps folders and parent options scoped to %s',
+  (label, parent, child, parentId, section) => {
+    overrideAjax(
+      '/stored_query/folders/',
+      { id: parentId + 2, name: child, parentId, section },
+      { method: 'POST', body: { name: child, parentId, section } }
+    );
+
+    test('keeps its tree and parent options separate', async () => {
+      const handleError = jest.fn();
+      jest
+        .spyOn(collection, 'fetchCollection')
+        .mockResolvedValue({ records: [], totalCount: 0 });
+      jest.spyOn(permissions, 'hasTablePermission').mockReturnValue(true);
+
+      render(
+        <LoadingContext.Provider
+          value={(promise): void => {
+            void promise.catch(handleError);
+          }}
+        >
+          <UnloadProtectsContext.Provider value={[]}>
+            <QueryListDialog
+              newQueryUrl="/specify/query/new/"
+              onClose={jest.fn()}
+            >
+              {({ children }) => children}
+            </QueryListDialog>
+          </UnloadProtectsContext.Provider>
+        </LoadingContext.Provider>
+      );
+
+      await screen.findByText('Parent');
+      expect(screen.queryByText(parent)).not.toBeInTheDocument();
+      await act(async () => {
+        fireEvent.click(screen.getByRole('button', { name: label }));
+      });
+      expect(screen.getByText(parent)).toBeVisible();
+      expect(screen.queryByText('Parent')).not.toBeInTheDocument();
+      expect(screen.queryByText('Nested')).not.toBeInTheDocument();
+      fireEvent.click(
+        screen.getByRole('button', { name: queryText.addFolder() })
+      );
+      const parentSelect = screen.getByRole('combobox', {
+        name: queryText.parentFolder(),
+      });
+      expect(
+        within(parentSelect)
+          .getAllByRole('option')
+          .map((option) => option.textContent)
+      ).toEqual([queryText.topLevelFolder(), parent]);
+      fireEvent.change(
+        screen.getByRole('textbox', {
+          name: queryText.folderName(),
+        }),
+        { target: { value: child } }
+      );
+      fireEvent.change(parentSelect, { target: { value: parentId } });
+      fireEvent.click(screen.getByRole('button', { name: commonText.save() }));
+      await screen.findByText(child);
+
+      for (const otherLabel of [
+        queryText.yourQueries(),
+        queryText.queriesIShare(),
+        queryText.sharedQueries(),
+      ].filter((otherLabel) => otherLabel !== label)) {
+        await act(async () => {
+          fireEvent.click(screen.getByRole('button', { name: otherLabel }));
+        });
+        expect(screen.queryByText(child)).not.toBeInTheDocument();
+      }
+      await act(async () => {
+        fireEvent.click(screen.getByRole('button', { name: label }));
+      });
+      expect(screen.getByText(child)).toBeVisible();
+      expect(handleError).not.toHaveBeenCalled();
+    });
+  }
+);
+
+test('collapses folders independently and preserves nested collapse state', async () => {
+  jest
+    .spyOn(collection, 'fetchCollection')
+    .mockResolvedValue({ records: [], totalCount: 0 });
+
+  render(
+    <QueryListDialog newQueryUrl="/specify/query/new/" onClose={jest.fn()}>
+      {({ children }) => children}
+    </QueryListDialog>
+  );
+
+  const parent = (await screen.findByText('Parent')).closest('li');
+  const nested = screen.getByText('Nested').closest('li');
+  if (parent === null || nested === null)
+    throw new Error('Folder list item missing.');
+  const nestedToggle = within(nested).getByRole('button', {
+    name: commonText.collapse(),
+  });
+  fireEvent.click(nestedToggle);
+  expect(nestedToggle).toHaveAttribute('aria-expanded', 'false');
+  expect(nestedToggle.querySelector('svg')?.outerHTML).toBe(
+    renderToStaticMarkup(icons.chevronRight)
+  );
+  expect(screen.getByText('Grandchild')).not.toBeVisible();
+
+  const parentToggle = within(parent).getByRole('button', {
+    name: commonText.collapse(),
+  });
+  fireEvent.click(parentToggle);
+  expect(screen.getByText('Nested')).not.toBeVisible();
+  expect(screen.getByText('Other child')).toBeVisible();
+  expect(screen.getByText('Parent')).toBeVisible();
+  fireEvent.click(parentToggle);
+  expect(parentToggle).toHaveAttribute('aria-expanded', 'true');
+  expect(parentToggle.querySelector('svg')?.outerHTML).toBe(
+    renderToStaticMarkup(icons.chevronDown)
+  );
+  expect(screen.getByText('Nested')).toBeVisible();
+  expect(screen.getByText('Grandchild')).not.toBeVisible();
+
+  fireEvent.click(nestedToggle);
+  expect(screen.getByText('Grandchild')).toBeVisible();
 });
 
 test('focus refresh ignores an older in-flight shared query result', async () => {

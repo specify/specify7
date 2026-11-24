@@ -6,6 +6,7 @@ import sqlalchemy
 from sqlalchemy.orm import sessionmaker
 
 from django.conf import settings
+from django.db import models as django_models
 
 # from specifyweb.specify.models import datamodel
 from specifyweb.specify.datamodel import datamodel
@@ -50,4 +51,38 @@ models_by_tableid: dict[int, build_models.Table] = {cls.tableid: cls for cls in 
 
 globals().update(classes)
 
-__all__ = ['session_context', 'tables', 'classes', 'models_by_tableid'] + list(classes.keys())
+
+class QueryFolder(django_models.Model):
+    name = django_models.CharField(max_length=256)
+    section = django_models.CharField(
+        max_length=8,
+        choices=[
+            ('personal', 'Your queries'),
+            ('sharing', 'Queries I share'),
+            ('shared', 'Shared queries'),
+        ],
+        default='personal',
+    )
+    owner = django_models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=django_models.CASCADE,
+        related_name='query_folders',
+    )
+    parent = django_models.ForeignKey(
+        'self',
+        on_delete=django_models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='children',
+    )
+
+    class Meta:
+        db_table = 'stored_query_folder'
+
+
+__all__ = [
+    'session_context',
+    'tables',
+    'classes',
+    'models_by_tableid',
+] + list(classes.keys())

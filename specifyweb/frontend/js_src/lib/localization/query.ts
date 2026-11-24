@@ -25,6 +25,21 @@ export const queryText = createDictionary({
   addFolder: {
     'en-us': 'Add folder',
   },
+  newFolder: {
+    'en-us': 'New folder',
+  },
+  folderName: {
+    'en-us': 'Folder name',
+  },
+  parentFolder: {
+    'en-us': 'Parent folder',
+  },
+  topLevelFolder: {
+    'en-us': 'Top level',
+  },
+  noFolders: {
+    'en-us': 'No folders yet',
+  },
   sharedQueries: {
     'en-us': 'Shared Queries',
   },

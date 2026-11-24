@@ -7,7 +7,7 @@ from threading import Thread
 from django.http import HttpResponse, HttpResponseBadRequest, \
     HttpResponseRedirect, JsonResponse, HttpRequest
 from django.views.decorators.cache import never_cache
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_http_methods, require_POST
 from django.db import transaction
 from django.utils import timezone
 
@@ -26,7 +26,7 @@ from .queryfield import QueryField, fields_from_json
 from specifyweb.backend.permissions.permissions import PermissionTarget, PermissionTargetAction, \
     check_permission_targets, check_table_permissions
 from specifyweb.specify.models import Collection, Recordset, Recordsetitem, \
-    Loanreturnpreparation, Loanpreparation, Loan
+    Loanreturnpreparation, Loanpreparation, Loan, Spquery
 from specifyweb.specify.views import login_maybe_required
 from .execution import execute, run_ephemeral_query, do_export, recordset, \
     return_loan_preps as rlp, get_query_tables
@@ -41,6 +41,91 @@ class QueryBuilderPt(PermissionTarget):
     export_kml = PermissionTargetAction()
     export_to_web_portal = PermissionTargetAction()
     create_recordset = PermissionTargetAction()
+
+@require_http_methods(['GET', 'POST'])
+@login_maybe_required
+@never_cache
+def query_folders(request: HttpRequest) -> JsonResponse | HttpResponseBadRequest:
+    """List the user's folders or create one; omitted sections default to personal."""
+    if request.method == 'GET':
+        check_table_permissions(
+            request.specify_collection, request.specify_user_agent, Spquery, 'read'
+        )
+        folders = models.QueryFolder.objects.filter(
+            owner=request.specify_user
+        ).order_by('name', 'id')
+        return JsonResponse(
+            {
+                'folders': [
+                    {
+                        'id': folder.id,
+                        'name': folder.name,
+                        'parentId': folder.parent_id,
+                        'section': folder.section,
+                    }
+                    for folder in folders
+                ]
+            }
+        )
+
+    check_table_permissions(
+        request.specify_collection, request.specify_user_agent, Spquery, 'create'
+    )
+    try:
+        data = json.loads(request.body)
+    except ValueError:
+        return HttpResponseBadRequest('Request body must contain valid JSON.')
+
+    if not isinstance(data, dict):
+        return HttpResponseBadRequest('Request body must be a JSON object.')
+
+    section = data.get('section', 'personal')
+    if not isinstance(section, str) or section not in dict(
+        models.QueryFolder._meta.get_field('section').choices
+    ):
+        return HttpResponseBadRequest(
+            'section must be personal, sharing, or shared.'
+        )
+
+    name = data.get('name')
+    if not isinstance(name, str) or not name.strip() or len(name.strip()) > 256:
+        return HttpResponseBadRequest(
+            'Folder name must contain 1 to 256 characters.'
+        )
+
+    parent_id = data.get('parentId')
+    if parent_id is not None and (type(parent_id) is not int or parent_id < 1):
+        return HttpResponseBadRequest(
+            'parentId must be a positive integer or null.'
+        )
+
+    parent = None
+    if parent_id is not None:
+        parent = models.QueryFolder.objects.filter(
+            id=parent_id, owner=request.specify_user, section=section
+        ).first()
+        if parent is None:
+            return HttpResponseBadRequest(
+                'parentId must reference a folder belonging to the current user '
+                'in the same query section.'
+            )
+
+    folder = models.QueryFolder.objects.create(
+        name=name.strip(),
+        parent=parent,
+        owner=request.specify_user,
+        section=section,
+    )
+    return JsonResponse(
+        {
+            'id': folder.id,
+            'name': folder.name,
+            'parentId': folder.parent_id,
+            'section': folder.section,
+        },
+        status=201,
+    )
+
 
 def value_from_request(field, get):
     try:

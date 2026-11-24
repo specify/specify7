@@ -9,9 +9,10 @@ import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
+import { ajax } from '../../utils/ajax';
 import { raise } from '../Errors/Crash';
 import { Button } from '../Atoms/Button';
-import { Input } from '../Atoms/Form';
+import { Input, Label } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { DataEntry } from '../Atoms/DataEntry';
@@ -31,7 +32,11 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { usePaginator } from '../Molecules/Paginator';
 import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import { TableIcon } from '../Molecules/TableIcon';
-import { hasPermission, hasToolPermission } from '../Permissions/helpers';
+import {
+  hasPermission,
+  hasTablePermission,
+  hasToolPermission,
+} from '../Permissions/helpers';
 import { QueryEditButton } from '../QueryBuilder/Edit';
 import { cloneSharedQuery } from '../QueryBuilder/Save';
 import { useQueryRefresh } from '../QueryBuilder/useQueryRefresh';
@@ -102,6 +107,115 @@ const defaultCloneState: CloneState = {
   clonePending: false,
 };
 
+type QuerySection = 'personal' | 'shared' | 'sharing';
+
+type QueryFolder = {
+  readonly id: number;
+  readonly name: string;
+  readonly parentId: number | null;
+  readonly section: QuerySection;
+};
+
+type QueryFolderNode = QueryFolder & {
+  readonly children: RA<QueryFolderNode>;
+};
+
+type QueryFolderOption = {
+  readonly folder: QueryFolder;
+  readonly depth: number;
+};
+
+function organizeQueryFolders(
+  folders: RA<QueryFolder>,
+  parentId: number | null = null
+): RA<QueryFolderNode> {
+  return folders
+    .filter((folder) => folder.parentId === parentId)
+    .sort((left, right) => left.name.localeCompare(right.name))
+    .map((folder) => ({
+      ...folder,
+      children: organizeQueryFolders(folders, folder.id),
+    }));
+}
+
+function flattenQueryFolders(
+  folders: RA<QueryFolderNode>,
+  depth = 0
+): RA<QueryFolderOption> {
+  return folders.flatMap((folder) => [
+    { folder, depth },
+    ...flattenQueryFolders(folder.children, depth + 1),
+  ]);
+}
+
+function QueryFolderTree({
+  folders,
+}: {
+  readonly folders: RA<QueryFolderNode>;
+}): JSX.Element {
+  const [collapsedFolders, setCollapsedFolders] = React.useState<RA<number>>(
+    []
+  );
+  const id = React.useId();
+
+  return folders.length === 0 ? (
+    <p className="py-2 text-sm text-gray-500">{queryText.noFolders()}</p>
+  ) : (
+    <ul className="mt-1 flex flex-col gap-1">
+      {folders.map((folder) => (
+        <li key={folder.id}>
+          <div className="flex items-center gap-1 py-1 text-sm">
+            {folder.children.length > 0 ? (
+              <Button.Icon
+                aria-controls={`${id}-${folder.id}`}
+                aria-expanded={!collapsedFolders.includes(folder.id)}
+                aria-label={
+                  collapsedFolders.includes(folder.id)
+                    ? commonText.expand()
+                    : commonText.collapse()
+                }
+                className="flex h-7 w-7 shrink-0 items-center justify-center rounded p-0.5"
+                icon={
+                  collapsedFolders.includes(folder.id)
+                    ? 'chevronRight'
+                    : 'chevronDown'
+                }
+                title={
+                  collapsedFolders.includes(folder.id)
+                    ? commonText.expand()
+                    : commonText.collapse()
+                }
+                onClick={(): void =>
+                  setCollapsedFolders((current) =>
+                    current.includes(folder.id)
+                      ? current.filter((folderId) => folderId !== folder.id)
+                      : [...current, folder.id]
+                  )
+                }
+              />
+            ) : (
+              <span aria-hidden className="h-7 w-7 shrink-0" />
+            )}
+            <span className="flex h-4 w-4 shrink-0 items-center justify-center">
+              {icons.folder}
+            </span>
+            <span>{folder.name}</span>
+          </div>
+          {folder.children.length > 0 && (
+            <div
+              className="ml-3 border-l border-gray-200 pl-2 dark:border-neutral-700"
+              hidden={collapsedFolders.includes(folder.id)}
+              id={`${id}-${folder.id}`}
+            >
+              <QueryFolderTree folders={folder.children} />
+            </div>
+          )}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 export function QueryListDialog({
   newQueryUrl,
   onClose: handleClose,
@@ -124,13 +238,13 @@ export function QueryListDialog({
 
   const [search, setSearch] = React.useState('');
   const searchFilter = search.trim();
-  const [section, setSection] = React.useState<
-    'personal' | 'shared' | 'sharing'
-  >('personal');
+  const [section, setSection] = React.useState<QuerySection>('personal');
   const [refreshToken, setRefreshToken] = React.useState(0);
   const [cloneStates, setCloneStates] = React.useState<
     Readonly<Record<number, CloneState>>
   >({});
+  const [folders, setFolders] = React.useState<RA<QueryFolder> | undefined>();
+  const [isCreatingFolder, setIsCreatingFolder] = React.useState(false);
   const ownerId = filters?.specifyUser ?? userInformation.id;
   const fetchQueries = React.useCallback(
     async (waitForPendingGet = false) =>
@@ -207,6 +321,20 @@ export function QueryListDialog({
   }, [section]);
 
   React.useEffect(() => {
+    let isCurrent = true;
+    void ajax<{ readonly folders: RA<QueryFolder> }>('/stored_query/folders/', {
+      headers: { Accept: 'application/json' },
+    })
+      .then(({ data: { folders: fetchedFolders } }) => {
+        if (isCurrent) setFolders(fetchedFolders);
+      })
+      .catch(raise);
+    return (): void => {
+      isCurrent = false;
+    };
+  }, []);
+
+  React.useEffect(() => {
     if (data === undefined) return;
     const lastPage = Math.max(0, Math.ceil(data.totalCount / limit) - 1);
     if (currentPage[0] > lastPage) currentPage[1](lastPage);
@@ -216,8 +344,34 @@ export function QueryListDialog({
   const totalCount = totalCountRef.current;
 
   const isReadOnly = React.useContext(ReadOnlyContext);
+  const loading = React.useContext(LoadingContext);
+  const folderTree = React.useMemo(
+    () =>
+      organizeQueryFolders(
+        folders?.filter((folder) => folder.section === section) ?? []
+      ),
+    [folders, section]
+  );
+  const folderOptions = React.useMemo(
+    () => flattenQueryFolders(folderTree),
+    [folderTree]
+  );
+  const handleCreateFolder = (name: string, parentId: number | null): void => {
+    loading(
+      ajax<QueryFolder>('/stored_query/folders/', {
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+        body: { name, parentId, section },
+      }).then(({ data }) => {
+        setFolders((current) =>
+          current === undefined ? [data] : [...current, data]
+        );
+        setIsCreatingFolder(false);
+      })
+    );
+  };
 
-  return children({
+  const content = children({
     totalCount,
     records: data?.records,
     children: (
@@ -243,6 +397,7 @@ export function QueryListDialog({
               key={value}
               onClick={(): void => {
                 currentPage[1](0);
+                setIsCreatingFolder(false);
                 setSection(value);
               }}
             >
@@ -264,12 +419,17 @@ export function QueryListDialog({
               <Button.Icon
                 aria-label={queryText.addFolder()}
                 className="shrink-0 rounded-full p-0.5 hover:bg-brand-100 dark:hover:bg-neutral-700"
-                disabled
+                disabled={
+                  isReadOnly ||
+                  folders === undefined ||
+                  !hasTablePermission('SpQuery', 'create')
+                }
                 icon="plus"
                 title={queryText.addFolder()}
-                onClick={undefined}
+                onClick={(): void => setIsCreatingFolder(true)}
               />
             </div>
+            {folders !== undefined && <QueryFolderTree folders={folderTree} />}
           </section>
         </nav>
         <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
@@ -396,6 +556,82 @@ export function QueryListDialog({
       </Dialog>
     ),
   });
+  return (
+    <>
+      {content}
+      {isCreatingFolder && folders !== undefined && (
+        <CreateQueryFolderDialog
+          folders={folderOptions}
+          onClose={(): void => setIsCreatingFolder(false)}
+          onCreate={handleCreateFolder}
+        />
+      )}
+    </>
+  );
+}
+
+function CreateQueryFolderDialog({
+  folders,
+  onClose,
+  onCreate,
+}: {
+  readonly folders: RA<QueryFolderOption>;
+  readonly onClose: () => void;
+  readonly onCreate: (name: string, parentId: number | null) => void;
+}): JSX.Element {
+  const [name, setName] = React.useState('');
+  const [parentId, setParentId] = React.useState('');
+  const trimmedName = name.trim();
+
+  return (
+    <Dialog
+      buttons={
+        <>
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+          <Button.Info
+            disabled={trimmedName.length === 0}
+            onClick={(): void =>
+              onCreate(trimmedName, parentId === '' ? null : Number(parentId))
+            }
+          >
+            {commonText.save()}
+          </Button.Info>
+        </>
+      }
+      header={queryText.newFolder()}
+      icon={icons.folder}
+      onClose={onClose}
+    >
+      <div className="flex flex-col gap-4">
+        <Label.Block>
+          {queryText.folderName()}
+          <Input.Text
+            autoFocus
+            maxLength={256}
+            required
+            value={name}
+            onValueChange={setName}
+          />
+        </Label.Block>
+        <Label.Block>
+          {queryText.parentFolder()}
+          <select
+            aria-label={queryText.parentFolder()}
+            className="w-full rounded border border-gray-300 bg-white p-2 dark:border-neutral-600 dark:bg-neutral-800"
+            value={parentId}
+            onChange={(event): void => setParentId(event.target.value)}
+          >
+            <option value="">{queryText.topLevelFolder()}</option>
+            {folders.map(({ folder, depth }) => (
+              <option key={folder.id} value={folder.id}>
+                {`${'-- '.repeat(depth)}${folder.name}`}
+              </option>
+            ))}
+          </select>
+        </Label.Block>
+      </div>
+    </Dialog>
+  );
 }
 
 export function QueryList({
