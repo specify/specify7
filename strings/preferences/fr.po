@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-11-24 08:58+0000\n"
+"PO-Revision-Date: 2026-11-24 15:51+0000\n"
 "Last-Translator: Maxime GRIVEAU <mgriveau@users.noreply.hosted.weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "preferences/fr/>\n"
@@ -902,7 +902,9 @@ msgstr ""
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:602
 msgid "altClickToSupressNewTabDescription"
-msgstr "Utiliser le sélecteur de mois accessible."
+msgstr ""
+"<key>{altKeyName:string}</key>+<key>Clic</key> un lien qui s'ouvre "
+"habituellement dans un nouvel onglet l'ouvre dans l'onglet actuel."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:929
@@ -1345,31 +1347,31 @@ msgstr "Ajouter une barre de recherche sur la page d'accueil"
 #: components/Preferences/CollectionDefinitions.tsx:232
 msgid "inheritanceCatNumberPrefDescription"
 msgstr ""
-"Seuls les enregistrements {collectionObjectTableName: string} sans "
-"{catalogNumberFieldName: string} hériteront d'un "
-"{collectionObjectTableName: string} principal dans un "
-"{collectionObjectGroupTableName: string}."
+"Seuls les enregistrements {collectionObjectTableName:string} sans "
+"{catalogNumberFieldName:string} hériteront d'un "
+"{collectionObjectTableName:string} principal dans un "
+"{collectionObjectGroupTableName:string}."
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:222
 msgid "inheritanceCatNumberPref"
 msgstr ""
-"Activer l'héritage de {catalogNumberFieldName: string} pour les éléments "
-"frères de {collectionObjectGroupTableName: string}"
+"Activer l'héritage de {catalogNumberFieldName:string} pour les éléments "
+"frères de {collectionObjectGroupTableName:string}"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:262
 msgid "inheritanceCatNumberParentCOPref"
 msgstr ""
-"Activer l'héritage {catalogNumberFieldName: string} pour les "
-"enregistrements {componentTableName: string}"
+"Activer l'héritage {catalogNumberFieldName:string} pour les enregistrements "
+"{componentTableName:string}"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:299
 msgid "uniqueCatNumberAcrossCompAndCo"
 msgstr ""
-"Imposer l'unicité du champ {catalogNumberFieldName: string} entre "
-"{componentTableName: string} et {collectionObjectTableName: string}."
+"Imposer l'unicité du champ {catalogNumberFieldName:string} entre "
+"{componentTableName:string} et {collectionObjectTableName:string}."
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:37
@@ -1387,9 +1389,9 @@ msgstr ""
 #: components/Preferences/CollectionDefinitions.tsx:270
 msgid "inheritanceCatNumberParentCOPrefDescription"
 msgstr ""
-"Seuls les enregistrements {componentTableName: string} sans "
-"{catalogNumberFieldName: string} hériteront de celui de leur "
-"{collectionObjectTableName: string} parent."
+"Seuls les enregistrements {componentTableName:string} sans "
+"{catalogNumberFieldName:string} hériteront de celui de leur "
+"{collectionObjectTableName:string} parent."
 
 #. 🟥Alt key on the keyboard. Used in: Components > Keyboard Shortcuts > Config
 #: components/KeyboardShortcuts/config.ts:54
@@ -1435,7 +1437,7 @@ msgstr "Appuyez sur la combinaison de touches souhaitée..."
 #: components/KeyboardShortcuts/Shortcuts.tsx:229
 #: components/KeyboardShortcuts/UrlShortcuts.tsx:133
 msgid "noKeyAssigned"
-msgstr "Aucune touche n'est assignée."
+msgstr "Aucune touche n'est assignée"
 
 #. Used in: Components > Keyboard Shortcuts > Cheat Sheet ⬤ Keyboard Shortcuts > __tests__ > Cheat Sheet ⬤ Components > Preferences > Index
 #: components/KeyboardShortcuts/CheatSheet.tsx:88
@@ -1459,9 +1461,9 @@ msgid "shortcutsEnabledDescription"
 msgstr ""
 "Lorsque cette option est activée, les raccourcis clavier permettent "
 "d'effectuer diverses actions dans Specify. Vous pouvez maintenir la touche "
-"Ctrl (ou ⌘ sur Mac) enfoncée pour afficher la liste des raccourcis "
-"disponibles. Lorsqu'elle est désactivée, tous les raccourcis clavier sont "
-"ignorés."
+"<key>Ctrl</key> (ou <key>⌘</key> sur Mac) enfoncée pour afficher la liste "
+"des raccourcis disponibles. Lorsqu'elle est désactivée, tous les raccourcis "
+"clavier sont ignorés."
 
 #. Used in: Components > Preferences > Index
 #: components/Preferences/index.tsx:305

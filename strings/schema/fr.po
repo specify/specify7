@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-11-24 08:58+0000\n"
+"PO-Revision-Date: 2026-11-24 15:51+0000\n"
 "Last-Translator: Maxime GRIVEAU <mgriveau@users.noreply.hosted.weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/schema/"
 "fr/>\n"
@@ -157,7 +157,7 @@ msgstr "Configuration du schéma"
 #. Used in: Components > Schema Config > Layout
 #: components/SchemaConfig/Layout.tsx:69
 msgid "unsavedSchemaUnloadProtect"
-msgstr "Les modifications de schéma n'ont pas été enregistrées."
+msgstr "Les modifications de schéma n'ont pas été enregistrées"
 
 #. Used in: Components > Schema Config > Sidebar
 #: components/SchemaConfig/Sidebar.tsx:22
@@ -494,7 +494,7 @@ msgstr "Portée"
 #: components/SchemaConfig/UniquenessRuleRow.tsx:59
 #: components/SchemaConfig/UniquenessRuleRow.tsx:173
 msgid "uniquenessDuplicatesFound"
-msgstr "Des doublons ont été trouvés dans la base de données."
+msgstr "Des doublons ont été trouvés dans la base de données"
 
 #. Used in: Components > Schema Config > Uniqueness Rule Row ⬤ Schema Config > __tests__ > Uniqueness Rule Row
 #: components/SchemaConfig/UniquenessRuleRow.tsx:236
