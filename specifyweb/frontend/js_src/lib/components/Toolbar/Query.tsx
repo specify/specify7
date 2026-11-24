@@ -205,7 +205,7 @@ function QueryFolderTree({
             )}
             <Button.LikeLink
               aria-current={selectedFolderId === folder.id ? 'page' : undefined}
-              className={`flex min-w-0 flex-1 items-center gap-1 rounded text-left ${
+              className={`flex min-w-0 flex-1 items-center gap-1 rounded px-2 text-left ${
                 selectedFolderId === folder.id
                   ? selectedQueryNavigationClassName
                   : ''
