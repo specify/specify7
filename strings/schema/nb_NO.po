@@ -14,13 +14,11 @@ msgstr ""
 
 #. Used in: Components > Schema Config > Layout
 #: components/SchemaConfig/Layout.tsx:171
-#, fuzzy
 msgid "importSchema"
 msgstr "Importer {schemaConfig:string}"
 
 #. Used in: Components > Schema Config > Layout
 #: components/SchemaConfig/Layout.tsx:177
-#, fuzzy
 msgid "importSchemaWarning"
 msgstr ""
 "Importering av en {schemaConfig:string} vil overskrive den gjeldende. Denne "
@@ -28,7 +26,6 @@ msgstr ""
 
 #. Used in: Components > Schema Config > Layout
 #: components/SchemaConfig/Layout.tsx:181
-#, fuzzy
 msgid "importSchemaLanguageWarning"
 msgstr ""
 "Det eksporterte skjemaspråket må samsvare med språket som konfigureres for "
@@ -36,7 +33,6 @@ msgstr ""
 
 #. Used in: Components > Schema Config > Layout
 #: components/SchemaConfig/Layout.tsx:184
-#, fuzzy
 msgid "importSchemaBackupPrompt"
 msgstr ""
 "Vi anbefaler på det sterkeste å laste ned en sikkerhetskopi av gjeldende "
@@ -51,19 +47,16 @@ msgstr ""
 
 #. Used in: Components > Schema Config > Layout
 #: components/SchemaConfig/Layout.tsx:159
-#, fuzzy
 msgid "downloadSchemaBackup"
 msgstr "Eksporter {schemaConfig:string}"
 
 #. Used in: Components > Schema Config > Layout
 #: components/SchemaConfig/Layout.tsx:166
-#, fuzzy
 msgid "importSchemaContinue"
 msgstr "Fortsett importen"
 
 #. Used in: Components > Schema Config > Layout
 #: components/SchemaConfig/Layout.tsx:105
-#, fuzzy
 msgid "importSchemaError"
 msgstr ""
 "{schemaConfig:string}-eksporten er ugyldig eller ble eksportert for et annet "
@@ -71,7 +64,6 @@ msgstr ""
 
 #. Used in: Components > Schema Config > Layout
 #: components/SchemaConfig/Layout.tsx:114
-#, fuzzy
 msgid "importSchemaErrorBadRequest"
 msgstr ""
 "{schemaConfig:string}-eksporten er ugyldig eller ble eksportert for et annet "
@@ -79,35 +71,30 @@ msgstr ""
 
 #. Used in: Components > Schema Config > Layout
 #: components/SchemaConfig/Layout.tsx:110
-#, fuzzy
 msgid "importSchemaErrorTimeout"
 msgstr ""
-"Nettverksforespørselen er tidsavbrutt. Spesifiser om {schemaConfig:string}-"
-"eksporten fortsatt kan importeres i bakgrunnen. Sjekk tilbake senere for å "
-"se om endringene dine er implementert."
+"Nettverksforespørselen er avbrutt, Specify kan eller kan ikke fortsatt "
+"importere {schemaConfig:string}-eksporten i bakgrunnen. Sjekk igjen senere "
+"for å se om endringene dine er implementert."
 
 #. Used in: Components > Schema Config > Layout
 #: components/SchemaConfig/Layout.tsx:117
-#, fuzzy
 msgid "importSchemaErrorInternalError"
-msgstr "Spesifiser opplevde en feil. Tøm hurtigbufferen og prøv på nytt."
+msgstr "Specify opplevde en feil. Tøm hurtigbufferen og prøv på nytt."
 
 #. Used in: Components > Schema Config > Layout
 #: components/SchemaConfig/Layout.tsx:196
 #: components/SchemaConfig/Layout.tsx:216
-#, fuzzy
 msgid "importSchemaSuccess"
-msgstr "{schemaConfig:string} importert"
+msgstr "{schemaConfig:string} vellykket importert"
 
 #. Used in: Components > Schema Config > Layout
 #: components/SchemaConfig/Layout.tsx:202
-#, fuzzy
 msgid "importSchemaSuccessDescription"
 msgstr "Den importerte {schemaConfig:string} er lagret."
 
 #. Used in: Components > Schema Config > Layout
 #: components/SchemaConfig/Layout.tsx:221
-#, fuzzy
 msgid "importSchemaRefreshError"
 msgstr ""
 "Importen var vellykket, men siden kunne ikke oppdateres automatisk. Last inn "
@@ -115,7 +102,6 @@ msgstr ""
 
 #. Used in: Components > Schema Config > Layout
 #: components/SchemaConfig/Layout.tsx:212
-#, fuzzy
 msgid "reloadSchemaConfig"
 msgstr "Last inn siden på nytt"
 
@@ -545,6 +531,5 @@ msgstr "Synlig"
 
 #. Used in: Components > Schema Config > Tables
 #: components/SchemaConfig/Tables.tsx:177
-#, fuzzy
 msgid "useTableCaptions"
 msgstr "Bruk tabelltekster"
