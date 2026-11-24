@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-11-24 09:51+0000\n"
+"PO-Revision-Date: 2026-11-24 15:51+0000\n"
 "Last-Translator: Maxime GRIVEAU <mgriveau@users.noreply.hosted.weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/forms/"
 "fr/>\n"
@@ -534,7 +534,7 @@ msgstr "Configurer les champs pour un report en masse ({tableName:string})"
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:464
 msgid "carryForwardUniqueField"
-msgstr "Ce champ doit être unique. Il ne peut pas être reporté."
+msgstr "Ce champ doit être unique. Il ne peut pas être reporté"
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:466
