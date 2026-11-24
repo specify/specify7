@@ -680,7 +680,7 @@ class SharedQueryMergeApiTests(SharedQueryFixture, ApiTests):
         self.assertEqual(self.query.version, original_version)
         self.assertEqual(other_query.version, other_original_version + 1)
 
-    def test_user_merge_denies_grants_to_non_admin_survivor(self):
+    def test_user_merge_skips_unapproved_grants_to_non_admin_survivor(self):
         survivor = models.Specifyuser.objects.create(
             name="non_admin_survivor", password="unusable"
         )
@@ -700,41 +700,40 @@ class SharedQueryMergeApiTests(SharedQueryFixture, ApiTests):
             specifyuser=query_owner,
         )
         grant = SpqueryShare.objects.create(query=other_query, recipient=source)
+        authorized_grant = SpqueryShare.objects.create(
+            query=self.query, recipient=source
+        )
+        original_authorized_version = self.query.version
         original_version = other_query.version
         self.assertFalse(survivor.is_admin())
 
-        for duplicate in (False, True):
-            with self.subTest(duplicate=duplicate):
-                if duplicate:
-                    SpqueryShare.objects.create(query=other_query, recipient=survivor)
-                original_grants = set(
-                    other_query.share_grants.values_list("id", flat=True)
-                )
-                response = self.client.post(
-                    f"/merge/specifyuser/replace/{survivor.id}/",
-                    data={
-                        "old_record_ids": [self.recipient.id, source.id],
-                        "background": False,
-                    },
-                    content_type="application/json",
-                )
+        response = self.client.post(
+            f"/merge/specifyuser/replace/{survivor.id}/",
+            data={
+                "old_record_ids": [self.recipient.id, source.id],
+                "background": False,
+            },
+            content_type="application/json",
+        )
 
-                self.assertEqual(response.status_code, 403, response.content)
-                self.assertIn("Specify Administrator", response.json()["QueryWriteDenied"])
-                self.assertEqual(
-                    models.Specifyuser.objects.filter(
-                        pk__in=[self.recipient.id, source.id, survivor.id]
-                    ).count(),
-                    3,
-                )
-                grant.refresh_from_db()
-                self.assertEqual(grant.recipient_id, source.id)
-                self.assertEqual(
-                    set(other_query.share_grants.values_list("id", flat=True)),
-                    original_grants,
-                )
-                other_query.refresh_from_db()
-                self.assertEqual(other_query.version, original_version)
+        self.assertEqual(response.status_code, 204, response.content)
+        self.assertFalse(models.Specifyuser.objects.filter(pk=source.id).exists())
+        self.assertTrue(
+            SpqueryShare.objects.filter(
+                query=self.query, recipient=survivor
+            ).exists()
+        )
+        self.assertFalse(
+            SpqueryShare.objects.filter(
+                query=other_query, recipient=survivor
+            ).exists()
+        )
+        self.assertFalse(SpqueryShare.objects.filter(pk=grant.id).exists())
+        self.assertFalse(SpqueryShare.objects.filter(pk=authorized_grant.id).exists())
+        self.query.refresh_from_db()
+        other_query.refresh_from_db()
+        self.assertEqual(self.query.version, original_authorized_version + 1)
+        self.assertEqual(other_query.version, original_version)
 
     def test_user_merge_does_not_transfer_unowned_query_grants_to_admin(self):
         source = models.Specifyuser.objects.create(
@@ -777,11 +776,9 @@ class SharedQueryMergeApiTests(SharedQueryFixture, ApiTests):
             content_type="application/json",
         )
 
-        self.assertEqual(response.status_code, 403, response.content)
-        self.assertIn("Only the query owner", response.json()["QueryWriteDenied"])
-        self.assertTrue(models.Specifyuser.objects.filter(pk=source.id).exists())
-        grant.refresh_from_db()
-        self.assertEqual(grant.recipient_id, source.id)
+        self.assertEqual(response.status_code, 204, response.content)
+        self.assertFalse(models.Specifyuser.objects.filter(pk=source.id).exists())
+        self.assertFalse(SpqueryShare.objects.filter(pk=grant.id).exists())
         self.assertFalse(
             SpqueryShare.objects.filter(
                 query=other_query, recipient=admin_survivor

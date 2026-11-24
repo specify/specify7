@@ -262,18 +262,14 @@ def _record_merge(model_name: str, old_model_ids: list[int], new_model_id: int,
         source_grants = list(SpqueryShare.objects.filter(
             recipient_id__in=old_model_ids
         ).select_for_update())
-        if source_grants and not target_object.is_admin() and any(
-            locked_queries_by_id[grant.query_id].specifyuser_id != specify_user.id
-            for grant in source_grants
-        ):
-            raise QueryWriteDenied(
-                "Only a query owner or a Specify Administrator can transfer sharing grants."
-            )
 
         # Copy missing grants before source-user deletion cascades the originals.
         for grant in source_grants:
             query = locked_queries_by_id[grant.query_id]
-            ensure_query_write_access(query, specify_user.id)
+            try:
+                ensure_query_write_access(query, specify_user.id)
+            except QueryWriteDenied:
+                continue
             _, created = SpqueryShare.objects.get_or_create(
                 query_id=grant.query_id, recipient_id=new_model_id
             )
