@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 
@@ -9,7 +9,7 @@ import { LoadingContext } from '../../Core/Contexts';
 import { addMissingFields } from '../../DataModel/addMissingFields';
 import type { SpecifyResource } from '../../DataModel/legacyTypes';
 import { tables } from '../../DataModel/tables';
-import type { Locality } from '../../DataModel/types';
+import type { CollectingEvent, Locality } from '../../DataModel/types';
 import { UnloadProtectsContext } from '../../Router/UnloadProtect';
 import type * as generators from '../generateFormDefinition';
 import { SubView } from '../SubView';
@@ -103,21 +103,15 @@ beforeAll(() => {
   portalRoot.id = 'portal-root';
   document.body.append(portalRoot);
 });
+beforeEach(() => mockSave.mockClear());
 afterEach(() => jest.restoreAllMocks());
 afterAll(() => portalRoot.remove());
 
-test('creates and links a saved Locality through an independent subview', async () => {
-  const collectingEvent = new tables.CollectingEvent.Resource(
-    {},
-    { noBusinessRules: true }
-  );
+function renderIndependentSubview(
+  collectingEvent: SpecifyResource<CollectingEvent>
+): ReturnType<typeof mount> {
   const relationship = tables.CollectingEvent.strictGetRelationship('locality');
-  mockSave.mockImplementation(async (resource: SpecifyResource<Locality>) => {
-    await Promise.resolve();
-    resource.set('id', mockLocalityId);
-    return resource;
-  });
-  const { user } = mount(
+  return mount(
     <MemoryRouterWithFuture
       future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
     >
@@ -137,6 +131,20 @@ test('creates and links a saved Locality through an independent subview', async 
       </UnloadProtectsContext.Provider>
     </MemoryRouterWithFuture>
   );
+}
+
+test('creates and links a saved Locality through an independent subview', async () => {
+  const collectingEvent = new tables.CollectingEvent.Resource(
+    {},
+    { noBusinessRules: true }
+  );
+  const relationship = tables.CollectingEvent.strictGetRelationship('locality');
+  mockSave.mockImplementation(async (resource: SpecifyResource<Locality>) => {
+    await Promise.resolve();
+    resource.set('id', mockLocalityId);
+    return resource;
+  });
+  const { user } = renderIndependentSubview(collectingEvent);
   expect(relationship.isDependent()).toBe(false);
   await user.click(await screen.findByRole('button', { name: 'Add' }));
   await user.type(
@@ -153,6 +161,49 @@ test('creates and links a saved Locality through an independent subview', async 
     name: locality?.get('localityName'),
     isNew: locality?.isNew(),
   }).toEqual({ id: 123, name: 'Lawrence', isNew: false });
+  await expect(
+    screen.findByRole('textbox', { name: 'Locality Name' })
+  ).resolves.toHaveValue('Lawrence');
+});
+
+overrideAjax('/express_search/querycbx/locality/?localityname=Lawrence', () => [
+  addMissingFields('Locality', {
+    id: mockLocalityId,
+    localityName: 'Lawrence',
+    resource_uri: '/api/specify/locality/123/',
+  }),
+]);
+
+test('links an existing Locality selected through independent subview search', async () => {
+  const collectingEvent = new tables.CollectingEvent.Resource(
+    {},
+    { noBusinessRules: true }
+  );
+  const { user } = renderIndependentSubview(collectingEvent);
+  await user.click(await screen.findByRole('button', { name: 'Search' }));
+  const searchDialog = await screen.findByRole('dialog', { name: 'Search' });
+  await user.type(
+    within(searchDialog).getByRole('textbox', { name: 'Locality Name' }),
+    'Lawrence'
+  );
+  await user.click(
+    within(searchDialog).getByRole('button', { name: 'Search' })
+  );
+  const result = await within(searchDialog).findByRole('link', {
+    name: 'Lawrence',
+  });
+  await expect(collectingEvent.rgetPromise('locality')).resolves.toBeNull();
+  await user.click(result);
+  const locality = await collectingEvent.rgetPromise('locality');
+  expect({
+    id: locality?.id,
+    name: locality?.get('localityName'),
+    isNew: locality?.isNew(),
+  }).toEqual({ id: mockLocalityId, name: 'Lawrence', isNew: false });
+  expect(mockSave).not.toHaveBeenCalled();
+  expect(
+    screen.queryByRole('dialog', { name: 'Search' })
+  ).not.toBeInTheDocument();
   await expect(
     screen.findByRole('textbox', { name: 'Locality Name' })
   ).resolves.toHaveValue('Lawrence');
