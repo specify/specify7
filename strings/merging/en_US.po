@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Content-Type: text/plain; charset=UTF-8\n"
+msgstr "Content-Type: text/plain; charset=utf-8\n"
 
 #: components/Preferences/UserDefinitions.tsx:2099
 #. Used in: Components > Preferences > User Definitions
@@ -150,6 +150,11 @@ msgstr "Something went wrong during the merging process."
 #: components/Molecules/LinkedRecords.tsx:94
 #: components/Molecules/LinkedRecords.tsx:98
 #: components/Molecules/LinkedRecords.tsx:134
-#. Used in: Components > Forms > Delete Button ⬤ Components > Merging > Usages ⬤ Components > Molecules > Linked Records
+#: components/Molecules/__tests__/LinkedRecords.test.tsx:58
+#: components/Molecules/__tests__/LinkedRecords.test.tsx:72
+#: components/Molecules/__tests__/LinkedRecords.test.tsx:91
+#: components/Molecules/__tests__/LinkedRecords.test.tsx:104
+#: components/Molecules/__tests__/LinkedRecords.test.tsx:118
+#. Used in: Components > Forms > Delete Button ⬤ Components > Merging > Usages ⬤ Components > Molecules > Linked Records ⬤ Molecules > __tests__ > Linked Records
 msgid "linkedRecords"
 msgstr "Linked Records"

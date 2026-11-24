@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "PO-Revision-Date: 2026-10-21 16:04+0000\n"
 "Last-Translator: Eirik Rindal <rindis@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Norwegian Bokmål "

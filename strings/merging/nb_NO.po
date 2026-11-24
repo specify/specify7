@@ -6,7 +6,7 @@ msgstr ""
 "Language-Team: Norwegian Bokmål "
 "<https://hosted.weblate.org/projects/specify-7/merging/nb_NO/>\n"
 "Language: nb_NO\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 2026.10.dev0\n"
@@ -161,6 +161,11 @@ msgstr "Noe gikk galt under sammenslåingsprosessen."
 #: components/Molecules/LinkedRecords.tsx:94
 #: components/Molecules/LinkedRecords.tsx:98
 #: components/Molecules/LinkedRecords.tsx:134
-#. Used in: Components > Forms > Delete Button ⬤ Components > Merging > Usages ⬤ Components > Molecules > Linked Records
+#: components/Molecules/__tests__/LinkedRecords.test.tsx:58
+#: components/Molecules/__tests__/LinkedRecords.test.tsx:72
+#: components/Molecules/__tests__/LinkedRecords.test.tsx:91
+#: components/Molecules/__tests__/LinkedRecords.test.tsx:104
+#: components/Molecules/__tests__/LinkedRecords.test.tsx:118
+#. Used in: Components > Forms > Delete Button ⬤ Components > Merging > Usages ⬤ Components > Molecules > Linked Records ⬤ Molecules > __tests__ > Linked Records
 msgid "linkedRecords"
 msgstr "Tilknyttede poster"

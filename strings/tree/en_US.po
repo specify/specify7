@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Content-Type: text/plain; charset=UTF-8\n"
+msgstr "Content-Type: text/plain; charset=utf-8\n"
 
 #: components/Header/menuItemDefinitions.ts:51
 #: components/Router/OverlayRoutes.tsx:89

@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Content-Type: text/plain; charset=UTF-8\n"
+msgstr "Content-Type: text/plain; charset=utf-8\n"
 
 #: components/Core/Main.tsx:67
 #. 🟥For accessibility purposes. Allows jumping to page content. Used in: Components > Core > Main

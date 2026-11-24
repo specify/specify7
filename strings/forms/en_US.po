@@ -6,7 +6,7 @@ msgstr ""
 "Language-Team: English (United States) "
 "<https://hosted.weblate.org/projects/specify-7/forms/en_US/>\n"
 "Language: en_US\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.4-dev\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -67,7 +67,8 @@ msgstr "Checking if this record is currently in use…"
 
 #: components/Molecules/LinkedRecords.tsx:66
 #: components/Molecules/LinkedRecords.tsx:123
-#. Used in: Components > Molecules > Linked Records
+#: components/Molecules/__tests__/LinkedRecords.test.tsx:94
+#. Used in: Components > Molecules > Linked Records ⬤ Molecules > __tests__ > Linked Records
 msgid "noLinkedRecords"
 msgstr "No linked records"
 
