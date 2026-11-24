@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-11-24 15:51+0000\n"
-"Last-Translator: Maxime GRIVEAU <mgriveau@users.noreply.hosted.weblate.org>\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "notifications/fr/>\n"
 "Language: fr\n"
@@ -53,6 +53,7 @@ msgstr "Erreur"
 #: components/Notifications/NotificationRenderers.tsx:486
 #: components/Toolbar/BackupDatabase.tsx:76
 #: components/Toolbar/BackupStatus.tsx:74
+#, fuzzy
 msgid "download"
 msgstr "Télécharger"
 
