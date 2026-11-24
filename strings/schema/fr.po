@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-11-23 17:11+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-11-24 08:58+0000\n"
+"Last-Translator: Maxime GRIVEAU <mgriveau@users.noreply.hosted.weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/schema/"
 "fr/>\n"
 "Language: fr\n"
@@ -13,13 +13,11 @@ msgstr ""
 
 #. Used in: Components > Schema Config > Layout
 #: components/SchemaConfig/Layout.tsx:171
-#, fuzzy
 msgid "importSchema"
 msgstr "Importer {schemaConfig:string}"
 
 #. Used in: Components > Schema Config > Layout
 #: components/SchemaConfig/Layout.tsx:177
-#, fuzzy
 msgid "importSchemaWarning"
 msgstr ""
 "L'importation d'un fichier {schemaConfig:string} écrasera le fichier actuel. "
@@ -27,7 +25,6 @@ msgstr ""
 
 #. Used in: Components > Schema Config > Layout
 #: components/SchemaConfig/Layout.tsx:181
-#, fuzzy
 msgid "importSchemaLanguageWarning"
 msgstr ""
 "La langue du schéma exporté doit correspondre à la langue actuellement "
@@ -35,7 +32,6 @@ msgstr ""
 
 #. Used in: Components > Schema Config > Layout
 #: components/SchemaConfig/Layout.tsx:184
-#, fuzzy
 msgid "importSchemaBackupPrompt"
 msgstr ""
 "Nous vous recommandons fortement de télécharger une sauvegarde de la version "
@@ -43,7 +39,6 @@ msgstr ""
 
 #. Used in: Components > Schema Config > Layout
 #: components/SchemaConfig/Layout.tsx:182
-#, fuzzy
 msgid "importSchemaLimitations"
 msgstr ""
 "Cette importation n'attribuera pas de listes de sélection, de formats de "
@@ -51,19 +46,16 @@ msgstr ""
 
 #. Used in: Components > Schema Config > Layout
 #: components/SchemaConfig/Layout.tsx:159
-#, fuzzy
 msgid "downloadSchemaBackup"
 msgstr "Exporter {schemaConfig:string}"
 
 #. Used in: Components > Schema Config > Layout
 #: components/SchemaConfig/Layout.tsx:166
-#, fuzzy
 msgid "importSchemaContinue"
-msgstr "Continuer l'importation"
+msgstr "Continuer l'import"
 
 #. Used in: Components > Schema Config > Layout
 #: components/SchemaConfig/Layout.tsx:105
-#, fuzzy
 msgid "importSchemaError"
 msgstr ""
 "L'exportation {schemaConfig:string} est invalide ou a été exportée pour une "
@@ -71,7 +63,6 @@ msgstr ""
 
 #. Used in: Components > Schema Config > Layout
 #: components/SchemaConfig/Layout.tsx:114
-#, fuzzy
 msgid "importSchemaErrorBadRequest"
 msgstr ""
 "L'exportation {schemaConfig:string} est invalide ou a été exportée pour une "
@@ -79,7 +70,6 @@ msgstr ""
 
 #. Used in: Components > Schema Config > Layout
 #: components/SchemaConfig/Layout.tsx:110
-#, fuzzy
 msgid "importSchemaErrorTimeout"
 msgstr ""
 "La requête réseau a expiré. L'importation de l'export {schemaConfig:string} "
@@ -88,26 +78,22 @@ msgstr ""
 
 #. Used in: Components > Schema Config > Layout
 #: components/SchemaConfig/Layout.tsx:117
-#, fuzzy
 msgid "importSchemaErrorInternalError"
 msgstr "Une erreur s'est produite. Veuillez vider votre cache et réessayer."
 
 #. Used in: Components > Schema Config > Layout
 #: components/SchemaConfig/Layout.tsx:196
 #: components/SchemaConfig/Layout.tsx:216
-#, fuzzy
 msgid "importSchemaSuccess"
 msgstr "{schemaConfig:string} importé avec succès"
 
 #. Used in: Components > Schema Config > Layout
 #: components/SchemaConfig/Layout.tsx:202
-#, fuzzy
 msgid "importSchemaSuccessDescription"
 msgstr "Le fichier {schemaConfig:string} importé a été enregistré."
 
 #. Used in: Components > Schema Config > Layout
 #: components/SchemaConfig/Layout.tsx:221
-#, fuzzy
 msgid "importSchemaRefreshError"
 msgstr ""
 "L'importation a réussi, mais la page n'a pas pu se rafraîchir "
@@ -115,7 +101,6 @@ msgstr ""
 
 #. Used in: Components > Schema Config > Layout
 #: components/SchemaConfig/Layout.tsx:212
-#, fuzzy
 msgid "reloadSchemaConfig"
 msgstr "Recharger la page"
 
@@ -545,6 +530,5 @@ msgstr "Visible"
 
 #. Used in: Components > Schema Config > Tables
 #: components/SchemaConfig/Tables.tsx:177
-#, fuzzy
 msgid "useTableCaptions"
-msgstr "Utilisez des légendes de tableau"
+msgstr "Utilisez des légendes des tables"
