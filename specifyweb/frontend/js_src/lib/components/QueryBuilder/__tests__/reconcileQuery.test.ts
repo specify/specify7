@@ -1,7 +1,12 @@
 import { requireContext } from '../../../tests/helpers';
 import { addMissingFields } from '../../DataModel/addMissingFields';
 import { tables } from '../../DataModel/tables';
-import { queryPropertiesEqual, reconcileQuery } from '../reconcileQuery';
+import { parseQueryFields, unParseQueryFields } from '../helpers';
+import {
+  completeQueryFields,
+  queryPropertiesEqual,
+  reconcileQuery,
+} from '../reconcileQuery';
 
 requireContext();
 
@@ -148,6 +153,57 @@ test('merges independent changes to the same field', () => {
     startValue: 'Local filter',
     columnAlias: 'Server alias',
   });
+});
+
+test('preserves each OR filter identity when the first saved filter is Any', () => {
+  const base = definition();
+  const anyFilter = {
+    ...base.fields[0],
+    id: 101,
+    version: 4,
+    columnAlias: 'Any filter metadata',
+    position: 0,
+    operStart: 8,
+    startValue: '',
+  };
+  const savedFilter = {
+    ...base.fields[0],
+    id: 102,
+    version: 7,
+    columnAlias: 'OR filter metadata',
+    position: 1,
+    operStart: 1,
+    startValue: 'Original',
+  };
+  const query = {
+    ...base,
+    fields: [anyFilter, savedFilter, base.fields[1]],
+  };
+  const parsed = parseQueryFields(query.fields);
+  const edited = parsed.map((field, index) =>
+    index === 0
+      ? {
+          ...field,
+          filters: field.filters.map((filter, filterIndex) =>
+            filterIndex === 1
+              ? { ...filter, startValue: 'Edited OR filter' }
+              : filter
+          ),
+        }
+      : field
+  );
+  const serialized = completeQueryFields(
+    query,
+    unParseQueryFields('CollectionObject', edited)
+  );
+
+  expect(serialized[0]).toMatchObject({
+    id: 102,
+    version: 7,
+    columnAlias: 'OR filter metadata',
+    startValue: 'Edited OR filter',
+  });
+  expect(serialized.map(({ id }) => id)).not.toContain(101);
 });
 
 test.each(['local', 'server'] as const)(

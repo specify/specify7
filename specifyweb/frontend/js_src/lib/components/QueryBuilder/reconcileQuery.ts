@@ -30,9 +30,13 @@ export function completeQueryFields(
 ): RA<SerializedResource<SpQueryField>> {
   const remaining = [...query.fields];
   return fields.map((field) => {
-    const index = remaining.findIndex(
-      (saved) => saved.stringId.toLowerCase() === field.stringId.toLowerCase()
-    );
+    const index =
+      field.id > 0
+        ? remaining.findIndex((saved) => saved.id === field.id)
+        : remaining.findIndex(
+            (saved) =>
+              saved.stringId.toLowerCase() === field.stringId.toLowerCase()
+          );
     const saved = index < 0 ? undefined : remaining.splice(index, 1)[0];
     return { ...saved, ...field };
   });

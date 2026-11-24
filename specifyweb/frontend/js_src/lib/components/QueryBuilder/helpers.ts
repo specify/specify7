@@ -48,6 +48,7 @@ export type QueryField = {
     readonly startValue: string;
     readonly isNot: boolean;
     readonly isStrict: boolean;
+    readonly savedFieldId?: number;
     /**
      * Can either be a Record Formatter (for formatted/aggregated query fields)
      * or a Field Formatter that can be set for each filter
@@ -112,6 +113,7 @@ export function parseQueryFields(
                 ),
                 `Unknown SpQueryField.operStart value: ${field.operStart}`
               )[KEY],
+              ...(field.id > 0 ? { savedFieldId: field.id } : {}),
               fieldFormat: field.formatName ?? undefined,
               isNot,
               isStrict,
@@ -322,9 +324,13 @@ export const unParseQueryFields = (
           hasFilters ? filter.type !== 'any' : index === 0
         )
         .map(
-          ({ type, startValue, isNot, isStrict, fieldFormat }, index) =>
+          (
+            { type, startValue, isNot, isStrict, fieldFormat, savedFieldId },
+            index
+          ) =>
             ({
               ...commonData,
+              ...(savedFieldId === undefined ? {} : { id: savedFieldId }),
               formatName: fieldFormat,
               operStart: defined(
                 // Back-end treats "equal" with blank startValue as "any"
