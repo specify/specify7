@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-11-24 08:58+0000\n"
-"Last-Translator: Maxime GRIVEAU <mgriveau@users.noreply.hosted.weblate.org>\n"
+"PO-Revision-Date: 2026-11-24 15:51+0000\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/common/"
 "fr/>\n"
 "Language: fr\n"
@@ -1038,6 +1038,7 @@ msgstr "Inutilisé"
 
 #. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:60
+#, fuzzy
 msgid "ordinal"
 msgstr "Ordinal"
 
