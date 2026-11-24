@@ -55,7 +55,7 @@ afterEach(() => {
 });
 
 test.each([false, true])(
-  'shows a folder icon at the end of a query row (read-only: %s)',
+  'shows folder, favorite and archive icons in order (read-only: %s)',
   (isReadOnly) => {
     const handleMove = jest.fn();
     const query = new tables.SpQuery.Resource<SpQuery>({
@@ -84,7 +84,17 @@ test.each([false, true])(
     const folderIcon = within(actions).getByRole('button', {
       name: queryText.moveQueryToFolder({ queryName: query.get('name') }),
     });
-    expect(folderIcon).toBe(actions.lastElementChild);
+    const favoriteIcon = within(actions).getByTitle(queryText.favorites());
+    const archiveIcon = within(actions).getByTitle(queryText.archive());
+    expect(folderIcon.nextElementSibling).toBe(favoriteIcon);
+    expect(favoriteIcon.nextElementSibling).toBe(archiveIcon);
+    expect(archiveIcon).toBe(actions.lastElementChild);
+    expect(favoriteIcon.querySelector('svg')?.outerHTML).toBe(
+      renderToStaticMarkup(icons.star)
+    );
+    expect(archiveIcon.querySelector('svg')?.outerHTML).toBe(
+      renderToStaticMarkup(icons.archive)
+    );
     expect(folderIcon.querySelector('svg')?.outerHTML).toBe(
       renderToStaticMarkup(icons.folder)
     );
@@ -338,11 +348,32 @@ test('shows query sections as icon navigation on the left', async () => {
       name: queryText.folders(),
     })
   ).toBeVisible();
-  const divider = within(navigation).getByRole('separator');
+  const [divider, footerDivider] = within(navigation).getAllByRole('separator');
   expect(
     divider.compareDocumentPosition(folderSection) &
       Node.DOCUMENT_POSITION_FOLLOWING
   ).toBeTruthy();
+  const favoriteHeading = within(navigation).getByRole('heading', {
+    name: queryText.favorites(),
+  });
+  const archiveHeading = within(navigation).getByRole('heading', {
+    name: queryText.archive(),
+  });
+  expect(
+    footerDivider.compareDocumentPosition(favoriteHeading) &
+      Node.DOCUMENT_POSITION_FOLLOWING
+  ).toBeTruthy();
+  expect(
+    favoriteHeading.compareDocumentPosition(archiveHeading) &
+      Node.DOCUMENT_POSITION_FOLLOWING
+  ).toBeTruthy();
+  expect(archiveHeading.parentElement).toBe(navigation.lastElementChild);
+  expect(favoriteHeading.querySelector('svg')?.outerHTML).toBe(
+    renderToStaticMarkup(icons.star)
+  );
+  expect(archiveHeading.querySelector('svg')?.outerHTML).toBe(
+    renderToStaticMarkup(icons.archive)
+  );
   expect(await within(folderSection).findByText('Parent')).toBeVisible();
   expect(
     within(folderSection).getByRole('button', {

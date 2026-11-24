@@ -22,6 +22,12 @@ export const queryText = createDictionary({
   folders: {
     'en-us': 'Folders',
   },
+  favorites: {
+    'en-us': 'Favorites',
+  },
+  archive: {
+    'en-us': 'Archive',
+  },
   addFolder: {
     'en-us': 'Add folder',
   },

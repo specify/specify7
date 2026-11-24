@@ -493,16 +493,29 @@ export function QueryListDialog({
                 onClick={(): void => setIsCreatingFolder(true)}
               />
             </div>
-            {folders !== undefined && (
-              <QueryFolderTree
-                folders={folderTree}
-                selectedFolderId={selectedFolderId}
-                onSelect={(folderId): void => {
-                  currentPage[1](0);
-                  setSelectedFolderId(folderId);
-                }}
-              />
-            )}
+            <div className="min-h-0 flex-1 overflow-auto">
+              {folders !== undefined && (
+                <QueryFolderTree
+                  folders={folderTree}
+                  selectedFolderId={selectedFolderId}
+                  onSelect={(folderId): void => {
+                    currentPage[1](0);
+                    setSelectedFolderId(folderId);
+                  }}
+                />
+              )}
+            </div>
+          </section>
+          <hr className="my-2 w-full border-gray-200 dark:border-neutral-700" />
+          <section className="flex shrink-0 flex-col gap-1">
+            <h2 className="flex items-center gap-2 py-1 text-sm font-semibold text-gray-700 dark:text-gray-200">
+              {icons.star}
+              {queryText.favorites()}
+            </h2>
+            <h2 className="flex items-center gap-2 py-1 text-sm font-semibold text-gray-700 dark:text-gray-200">
+              {icons.archive}
+              {queryText.archive()}
+            </h2>
           </section>
         </nav>
         <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
@@ -865,6 +878,20 @@ export function QueryList({
             title={queryText.moveQueryToFolder({ queryName: query.name })}
             onClick={onMoveToFolder}
           />
+          <span
+            aria-hidden
+            className="flex h-6 w-6 shrink-0 items-center justify-center"
+            title={queryText.favorites()}
+          >
+            {icons.star}
+          </span>
+          <span
+            aria-hidden
+            className="flex h-6 w-6 shrink-0 items-center justify-center"
+            title={queryText.archive()}
+          >
+            {icons.archive}
+          </span>
         </td>
       </tr>
       {conflictDialog}
