@@ -16,7 +16,7 @@ from specifyweb.backend.stats.coordination import (
     StatisticsBusy, busy_response, run_statistics_query, statistics_result,
 )
 from specifyweb.backend.stored_queries.batch_edit import run_batch_edit
-from specifyweb.backend.stored_queries.access import ensure_query_access
+from specifyweb.backend.stored_queries.access import ensure_query_access, filter_queries_for_user
 from specifyweb.specify.models_utils.models_by_table_id import model_names_by_table_id
 from specifyweb.specify.api.serializers import toJson, uri_for_model
 from specifyweb.specify.datamodel import datamodel
@@ -168,6 +168,38 @@ def move_query_to_folder(request: HttpRequest, id: int) -> JsonResponse | HttpRe
         defaults={'folder': folder},
     )
     return JsonResponse({'queryId': id, 'folderId': folder.id, 'section': folder.section})
+
+
+@require_GET
+@login_maybe_required
+@never_cache
+def query_favorites(request: HttpRequest) -> JsonResponse:
+    """Return the current user's favorites that they can still access."""
+    check_table_permissions(
+        request.specify_collection, request.specify_user_agent, Spquery, 'read'
+    )
+    visible_queries = filter_queries_for_user(
+        Spquery.objects.all(), request.specify_user.id
+    )
+    query_ids = models.QueryFavorite.objects.filter(
+        owner=request.specify_user, query__in=visible_queries
+    ).order_by('query_id').values_list('query_id', flat=True)
+    return JsonResponse({'queryIds': list(query_ids)})
+
+
+@require_POST
+@login_maybe_required
+@never_cache
+def favorite_query(request: HttpRequest, id: int) -> JsonResponse:
+    """Add a visible query to personal favorites without modifying the query."""
+    check_table_permissions(
+        request.specify_collection, request.specify_user_agent, Spquery, 'read'
+    )
+    ensure_query_access(id, request.specify_user.id)
+    models.QueryFavorite.objects.get_or_create(
+        owner=request.specify_user, query_id=id
+    )
+    return JsonResponse({'queryId': id})
 
 
 def value_from_request(field, get):

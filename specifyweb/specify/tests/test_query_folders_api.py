@@ -315,3 +315,107 @@ class QueryFolderMoveTests(SharedQueryFixture, ApiTests):
         ):
             response = self.client.get(self.collection_url, params)
             self.assertEqual(response.status_code, 400, response.content)
+
+
+class QueryFavoriteApiTests(SharedQueryFixture, ApiTests):
+    def setUp(self):
+        super().setUp()
+        self.client.cookies["collection"] = str(self.collection.id)
+        self.favorite_url = f"/stored_query/query/{self.query.id}/favorite/"
+        self.list_url = "/stored_query/favorites/"
+        self.collection_url = "/api/specify/spquery/"
+
+    def test_favorites_are_idempotent_persistent_and_independent_of_folders(self):
+        folder = stored_query_models.QueryFolder.objects.create(
+            name="Favorites source", owner=self.specifyuser
+        )
+        stored_query_models.QueryFolderMembership.objects.create(
+            owner=self.specifyuser, query=self.query, section="personal", folder=folder
+        )
+        version = self.query.version
+        for _ in range(2):
+            response = self.client.post(self.favorite_url)
+            self.assertEqual(response.status_code, 200, response.content)
+            self.assertEqual(response.json(), {"queryId": self.query.id})
+        self.assertEqual(stored_query_models.QueryFavorite.objects.count(), 1)
+        self.query.refresh_from_db()
+        self.assertEqual(self.query.version, version)
+        self.assertTrue(
+            stored_query_models.QueryFolderMembership.objects.filter(
+                query=self.query, folder=folder
+            ).exists()
+        )
+        response = self.client.get(self.list_url)
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual(response.json(), {"queryIds": [self.query.id]})
+
+        models.Spquery.objects.create(
+            name="Not favorited",
+            contextname=self.query.contextname,
+            contexttableid=self.query.contexttableid,
+            specifyuser=self.specifyuser,
+        )
+        params = {"domainfilter": "false", "query_favorites": "true", "limit": 1}
+        response = self.client.get(self.collection_url, params)
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual(response.json()["meta"]["total_count"], 1)
+        self.assertEqual(
+            [query["id"] for query in response.json()["objects"]], [self.query.id]
+        )
+        for filters in ({"name__icontains": "missing"}, {"offset": 1}):
+            response = self.client.get(self.collection_url, {**params, **filters})
+            self.assertEqual(response.status_code, 200, response.content)
+            self.assertEqual(response.json()["objects"], [])
+
+    def test_shared_favorites_are_private_and_respect_visibility(self):
+        grant = SpqueryShare.objects.create(query=self.query, recipient=self.recipient)
+        recipient_client = self._recipient_client()
+        response = recipient_client.post(self.favorite_url)
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual(
+            self.client.get(self.list_url).json(), {"queryIds": []}
+        )
+        self.assertEqual(
+            recipient_client.get(self.list_url).json(), {"queryIds": [self.query.id]}
+        )
+        response = self.client.get(self.collection_url, {
+            "query_favorites": "true", "domainfilter": "false",
+        })
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual(response.json()["objects"], [])
+        # Owned and shared queries can coexist in the same user's favorites.
+        owned = models.Spquery.objects.create(
+            name="Recipient query",
+            contextname=self.query.contextname,
+            contexttableid=self.query.contexttableid,
+            specifyuser=self.recipient,
+        )
+        response = recipient_client.post(f"/stored_query/query/{owned.id}/favorite/")
+        self.assertEqual(response.status_code, 200, response.content)
+        response = recipient_client.get(self.collection_url, {
+            "query_favorites": "true", "domainfilter": "false", "limit": 0,
+        })
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertCountEqual(
+            [query["id"] for query in response.json()["objects"]],
+            [self.query.id, owned.id],
+        )
+        grant.delete()
+        response = recipient_client.get(self.list_url)
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual(response.json(), {"queryIds": [owned.id]})
+        response = recipient_client.get(self.collection_url, {
+            "query_favorites": "true", "domainfilter": "false",
+        })
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual([query["id"] for query in response.json()["objects"]], [owned.id])
+        self.assertEqual(recipient_client.post(self.favorite_url).status_code, 404)
+
+    def test_rejects_inaccessible_queries_and_invalid_favorite_filters(self):
+        recipient_client = self._recipient_client()
+        response = recipient_client.post(self.favorite_url)
+        self.assertEqual(response.status_code, 404, response.content)
+        self.assertFalse(stored_query_models.QueryFavorite.objects.exists())
+        for value in ("false", "invalid", ""):
+            response = self.client.get(self.collection_url, {"query_favorites": value})
+            self.assertEqual(response.status_code, 400, response.content)

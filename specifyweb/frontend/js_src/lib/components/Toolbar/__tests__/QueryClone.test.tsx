@@ -37,6 +37,22 @@ const mockCloneSharedQuery = jest.mocked(cloneSharedQuery);
 
 requireContext();
 
+let savedFavoriteIds: number[] = [];
+beforeEach(() => {
+  savedFavoriteIds = [];
+});
+overrideAjax('/stored_query/favorites/', () => ({
+  queryIds: [...savedFavoriteIds],
+}));
+overrideAjax(
+  '/stored_query/query/33/favorite/',
+  () => {
+    savedFavoriteIds = [...new Set([...savedFavoriteIds, 33])];
+    return { queryId: 33 };
+  },
+  { method: 'POST' }
+);
+
 overrideAjax('/stored_query/folders/', {
   folders: [
     { id: 7, name: 'Parent', parentId: null, section: 'personal' },
@@ -84,7 +100,9 @@ test.each([false, true])(
     const folderIcon = within(actions).getByRole('button', {
       name: queryText.moveQueryToFolder({ queryName: query.get('name') }),
     });
-    const favoriteIcon = within(actions).getByTitle(queryText.favorites());
+    const favoriteIcon = within(actions).getByRole('button', {
+      name: queryText.favoriteQuery({ queryName: query.get('name') }),
+    });
     const archiveIcon = within(actions).getByTitle(queryText.archive());
     expect(folderIcon.nextElementSibling).toBe(favoriteIcon);
     expect(favoriteIcon.nextElementSibling).toBe(archiveIcon);
@@ -300,6 +318,150 @@ test('a failed move keeps the query in its list and allows retrying', async () =
     screen.getByRole('link', { name: new RegExp(queryName) })
   ).toBeVisible();
   expect(fetch).toHaveBeenCalledTimes(1);
+});
+
+test('favorites include queries from folders and different types and persist after reopening', async () => {
+  const owned = serializeResource(
+    new tables.SpQuery.Resource<SpQuery>({
+      id: 34,
+      name: 'Owned favorite',
+      contextName: 'CollectionObject',
+      contextTableId: tables.CollectionObject.tableId,
+      specifyUser: `/api/specify/specifyuser/${userInformation.id}/`,
+    })
+  );
+  const shared = serializeResource(
+    new tables.SpQuery.Resource<SpQuery>({
+      id: 33,
+      name: 'Shared favorite',
+      contextName: 'CollectionObject',
+      contextTableId: tables.CollectionObject.tableId,
+      specifyUser: `/api/specify/specifyuser/${userInformation.id + 1}/`,
+    })
+  );
+  savedFavoriteIds = [owned.id];
+  const fetch = jest
+    .spyOn(collection, 'fetchCollection')
+    .mockImplementation(async (_table, _filters, advanced) => {
+      const records =
+        advanced?.query_favorites === 'true'
+          ? [owned, shared].filter((query) =>
+              savedFavoriteIds.includes(query.id)
+            )
+          : advanced?.query_folder_section === 'shared' &&
+              advanced.query_folder_id === 21
+            ? [shared]
+            : [];
+      return { records, totalCount: records.length };
+    });
+  const handleError = jest.fn();
+  const view = (
+    <LoadingContext.Provider
+      value={(promise): void => {
+        void promise.catch(handleError);
+      }}
+    >
+      <QueryListDialog newQueryUrl="/specify/query/new/" onClose={jest.fn()}>
+        {({ children }) => children}
+      </QueryListDialog>
+    </LoadingContext.Provider>
+  );
+  const { unmount } = render(view);
+  await screen.findByText('Parent');
+  await act(async () => {
+    fireEvent.click(
+      screen.getByRole('button', { name: queryText.sharedQueries() })
+    );
+  });
+  await act(async () => {
+    fireEvent.click(screen.getByRole('button', { name: 'Shared parent' }));
+  });
+  const star = screen.getByRole('button', {
+    name: queryText.favoriteQuery({ queryName: shared.name }),
+  });
+  await waitFor(() => expect(star).toBeEnabled());
+  fireEvent.click(star);
+  await waitFor(() => expect(star).toHaveAttribute('aria-pressed', 'true'));
+  expect(star).toBeDisabled();
+  expect(screen.getByRole('link', { name: /Shared favorite/ })).toBeVisible();
+  await act(async () => {
+    fireEvent.click(
+      screen.getByRole('button', { name: queryText.favorites() })
+    );
+  });
+  expect(screen.getByRole('link', { name: /Owned favorite/ })).toBeVisible();
+  expect(screen.getByRole('link', { name: /Shared favorite/ })).toBeVisible();
+  expect(
+    screen.getByRole('button', { name: queryText.favorites() })
+  ).toHaveAttribute('aria-current', 'page');
+  expect(fetch.mock.calls.at(-1)?.[2]).toEqual({ query_favorites: 'true' });
+  expect(fetch.mock.calls.at(-1)?.[1]).not.toHaveProperty('specifyUser');
+
+  unmount();
+  render(view);
+  await screen.findByText('Parent');
+  await act(async () => {
+    fireEvent.click(
+      screen.getByRole('button', { name: queryText.favorites() })
+    );
+  });
+  expect(screen.getByRole('link', { name: /Owned favorite/ })).toBeVisible();
+  expect(
+    screen.getByRole('button', {
+      name: queryText.favoritedQuery({ queryName: shared.name }),
+    })
+  ).toHaveAttribute('aria-pressed', 'true');
+  await act(async () => {
+    fireEvent.click(
+      screen.getByRole('button', { name: queryText.yourQueries() })
+    );
+  });
+  expect(
+    screen.getByRole('button', { name: queryText.favorites() })
+  ).not.toHaveAttribute('aria-current');
+  expect(
+    screen.queryByRole('link', { name: /Owned favorite/ })
+  ).not.toBeInTheDocument();
+  expect(handleError).not.toHaveBeenCalled();
+});
+
+test('a failed favorite request reports the error without marking the query', async () => {
+  const queryName = 'Favorite failure';
+  const query = serializeResource(
+    new tables.SpQuery.Resource<SpQuery>({
+      id: 34,
+      name: queryName,
+      contextName: 'CollectionObject',
+      contextTableId: tables.CollectionObject.tableId,
+      specifyUser: `/api/specify/specifyuser/${userInformation.id}/`,
+    })
+  );
+  jest
+    .spyOn(collection, 'fetchCollection')
+    .mockResolvedValue({ records: [query], totalCount: 1 });
+  const handleError = jest.fn();
+  render(
+    <LoadingContext.Provider
+      value={(promise): void => {
+        void promise.catch(handleError);
+      }}
+    >
+      <QueryListDialog newQueryUrl="/specify/query/new/" onClose={jest.fn()}>
+        {({ children }) => children}
+      </QueryListDialog>
+    </LoadingContext.Provider>
+  );
+  const star = await screen.findByRole('button', {
+    name: queryText.favoriteQuery({ queryName }),
+  });
+  await waitFor(() => expect(star).toBeEnabled());
+  const error = new Error('Favorite failed');
+  jest.spyOn(ajaxUtils, 'ajax').mockRejectedValueOnce(error);
+  fireEvent.click(star);
+  await waitFor(() => expect(handleError).toHaveBeenCalledWith(error));
+  await waitFor(() => expect(star).toBeEnabled());
+  expect(star).toHaveAttribute('aria-pressed', 'false');
+  expect(screen.getByRole('link', { name: /Favorite failure/ })).toBeVisible();
 });
 
 test('shows query sections as icon navigation on the left', async () => {

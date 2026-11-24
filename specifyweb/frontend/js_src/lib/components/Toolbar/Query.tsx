@@ -260,6 +260,13 @@ export function QueryListDialog({
   const [search, setSearch] = React.useState('');
   const searchFilter = search.trim();
   const [section, setSection] = React.useState<QuerySection>('personal');
+  const [showFavorites, setShowFavorites] = React.useState(false);
+  const [favoriteIds, setFavoriteIds] = React.useState<
+    RA<number> | undefined
+  >();
+  const [favoritePendingIds, setFavoritePendingIds] = React.useState<
+    RA<number>
+  >([]);
   const [selectedFolderId, setSelectedFolderId] = React.useState<number | null>(
     null
   );
@@ -281,21 +288,26 @@ export function QueryListDialog({
         {
           limit,
           domainFilter: false,
-          ...(section === 'shared'
+          ...(showFavorites || section === 'shared'
             ? { contextTableId: filters?.contextTableId }
             : { ...filters, specifyUser: ownerId }),
           offset,
           orderBy,
         },
         {
-          query_folder_section: section,
-          ...(selectedFolderId === null
-            ? {}
-            : { query_folder_id: selectedFolderId }),
-          ...(section === 'shared'
-            ? { share_grants__recipient: userInformation.id }
+          ...(showFavorites
+            ? { query_favorites: 'true' }
             : {
-                share_grants__isnull: section === 'personal' ? 'true' : 'false',
+                query_folder_section: section,
+                ...(selectedFolderId === null
+                  ? {}
+                  : { query_folder_id: selectedFolderId }),
+                ...(section === 'shared'
+                  ? { share_grants__recipient: userInformation.id }
+                  : {
+                      share_grants__isnull:
+                        section === 'personal' ? 'true' : 'false',
+                    }),
               }),
           ...(searchFilter === ''
             ? {}
@@ -312,6 +324,7 @@ export function QueryListDialog({
       searchFilter,
       section,
       selectedFolderId,
+      showFavorites,
     ]
   );
   const [data, setData] = React.useState<
@@ -352,14 +365,28 @@ export function QueryListDialog({
     const handleFocus = (): void => setRefreshToken((token) => token + 1);
     window.addEventListener('focus', handleFocus);
     const interval =
-      section === 'shared' || section === 'sharing'
+      showFavorites || section === 'shared' || section === 'sharing'
         ? window.setInterval(handleFocus, 30_000)
         : undefined;
     return () => {
       if (interval !== undefined) window.clearInterval(interval);
       window.removeEventListener('focus', handleFocus);
     };
-  }, [section]);
+  }, [section, showFavorites]);
+
+  React.useEffect(() => {
+    let isCurrent = true;
+    void ajax<{ readonly queryIds: RA<number> }>('/stored_query/favorites/', {
+      headers: { Accept: 'application/json' },
+    })
+      .then(({ data: { queryIds } }) => {
+        if (isCurrent) setFavoriteIds(queryIds);
+      })
+      .catch(raise);
+    return (): void => {
+      isCurrent = false;
+    };
+  }, []);
 
   React.useEffect(() => {
     let isCurrent = true;
@@ -428,6 +455,25 @@ export function QueryListDialog({
         .finally(() => setMovePending(false))
     );
   };
+  const handleFavoriteQuery = (queryId: number): void => {
+    setFavoritePendingIds((current) => [...current, queryId]);
+    loading(
+      ajax(`/stored_query/query/${queryId}/favorite/`, {
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+      })
+        .then(() =>
+          setFavoriteIds((current) => [
+            ...new Set([...(current ?? []), queryId]),
+          ])
+        )
+        .finally(() =>
+          setFavoritePendingIds((current) =>
+            current.filter((id) => id !== queryId)
+          )
+        )
+    );
+  };
 
   const content = children({
     totalCount,
@@ -447,12 +493,12 @@ export function QueryListDialog({
           ).map(([value, label, icon]) => (
             <Button.LikeLink
               aria-current={
-                section === value && selectedFolderId === null
+                !showFavorites && section === value && selectedFolderId === null
                   ? 'page'
                   : undefined
               }
               className={`flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left ${
-                section === value
+                !showFavorites && section === value
                   ? selectedQueryNavigationClassName
                   : 'hover:bg-brand-50 dark:hover:bg-neutral-700'
               }`}
@@ -463,6 +509,7 @@ export function QueryListDialog({
                 setMovingQuery(undefined);
                 setSelectedFolderId(null);
                 setSection(value);
+                setShowFavorites(false);
               }}
             >
               <span className="flex h-5 w-5 shrink-0 items-center justify-center">
@@ -501,6 +548,7 @@ export function QueryListDialog({
                   onSelect={(folderId): void => {
                     currentPage[1](0);
                     setSelectedFolderId(folderId);
+                    setShowFavorites(false);
                   }}
                 />
               )}
@@ -508,11 +556,25 @@ export function QueryListDialog({
           </section>
           <hr className="my-2 w-full border-gray-200 dark:border-neutral-700" />
           <section className="flex shrink-0 flex-col gap-1">
-            <h2 className="flex items-center gap-2 py-1 text-sm font-semibold text-gray-700 dark:text-gray-200">
-              {icons.star}
-              {queryText.favorites()}
+            <h2 className="text-sm font-semibold">
+              <Button.LikeLink
+                aria-current={showFavorites ? 'page' : undefined}
+                className={`flex w-full items-center gap-2 rounded px-2 py-1 ${
+                  showFavorites ? selectedQueryNavigationClassName : ''
+                }`}
+                onClick={(): void => {
+                  currentPage[1](0);
+                  setSelectedFolderId(null);
+                  setShowFavorites(true);
+                  setIsCreatingFolder(false);
+                  setMovingQuery(undefined);
+                }}
+              >
+                {icons.star}
+                {queryText.favorites()}
+              </Button.LikeLink>
             </h2>
-            <h2 className="flex items-center gap-2 py-1 text-sm font-semibold text-gray-700 dark:text-gray-200">
+            <h2 className="flex items-center gap-2 px-2 py-1 text-sm font-semibold text-gray-700 dark:text-gray-200">
               {icons.archive}
               {queryText.archive()}
             </h2>
@@ -571,7 +633,9 @@ export function QueryListDialog({
                       idFromUrl(query.specifyUser) !== userInformation.id
                     }
                     canClone={
-                      section === 'shared' &&
+                      (showFavorites
+                        ? idFromUrl(query.specifyUser) !== userInformation.id
+                        : section === 'shared') &&
                       !isReadOnly &&
                       hasToolPermission('queryBuilder', 'create')
                     }
@@ -588,9 +652,16 @@ export function QueryListDialog({
                       }))
                     }
                     onMoveToFolder={
-                      isReadOnly || folders === undefined
+                      showFavorites || isReadOnly || folders === undefined
                         ? undefined
                         : (): void => setMovingQuery(query)
+                    }
+                    isFavorite={favoriteIds?.includes(query.id) === true}
+                    favoritePending={favoritePendingIds.includes(query.id)}
+                    onFavorite={
+                      isReadOnly || favoriteIds === undefined
+                        ? undefined
+                        : (): void => handleFavoriteQuery(query.id)
                     }
                   />
                 ))}
@@ -802,6 +873,9 @@ export function QueryList({
   cloneState: { confirmClone, clonePending },
   onCloneStateChange: handleCloneStateChange,
   onMoveToFolder,
+  isFavorite = false,
+  favoritePending = false,
+  onFavorite,
 }: {
   readonly query: SerializedResource<SpQuery>;
   readonly getQuerySelectCallback?: (
@@ -812,6 +886,9 @@ export function QueryList({
   readonly cloneState: CloneState;
   readonly onCloneStateChange: (state: Partial<CloneState>) => void;
   readonly onMoveToFolder?: () => void;
+  readonly isFavorite?: boolean;
+  readonly favoritePending?: boolean;
+  readonly onFavorite?: () => void;
 }): JSX.Element {
   const loading = React.useContext(LoadingContext);
   const queryResource = React.useMemo(
@@ -878,13 +955,22 @@ export function QueryList({
             title={queryText.moveQueryToFolder({ queryName: query.name })}
             onClick={onMoveToFolder}
           />
-          <span
-            aria-hidden
-            className="flex h-6 w-6 shrink-0 items-center justify-center"
-            title={queryText.favorites()}
-          >
-            {icons.star}
-          </span>
+          <Button.Icon
+            aria-pressed={isFavorite}
+            className={`aria-handled ${
+              isFavorite
+                ? 'disabled:!text-amber-700 dark:disabled:!text-yellow-300'
+                : ''
+            }`}
+            disabled={isFavorite || favoritePending}
+            icon="star"
+            title={
+              isFavorite
+                ? queryText.favoritedQuery({ queryName: query.name })
+                : queryText.favoriteQuery({ queryName: query.name })
+            }
+            onClick={onFavorite}
+          />
           <span
             aria-hidden
             className="flex h-6 w-6 shrink-0 items-center justify-center"

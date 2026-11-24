@@ -6,6 +6,8 @@ urlpatterns = [
     path('query/<int:id>/', views.query),
     path('query/<int:id>/shares/', sharing.manage_query_shares),
     path('query/<int:id>/folder/', views.move_query_to_folder),
+    path('query/<int:id>/favorite/', views.favorite_query),
+    path('favorites/', views.query_favorites),
     path('folders/', views.query_folders),
     path('ephemeral/', views.ephemeral),
     path('exportcsv/', views.export_csv),

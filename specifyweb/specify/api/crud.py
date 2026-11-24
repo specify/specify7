@@ -539,6 +539,7 @@ def get_collection(
 
     For queries, query_folder_section restricts the current user's organization.
     Omit query_folder_id for the main list, or supply a folder ID for its contents.
+    query_favorites=true shows all visible favorites belonging to the current user.
     Without these parameters, existing collection behavior is unchanged.
     """
     from specifyweb.specify.api.serializers import _obj_to_data
@@ -548,6 +549,14 @@ def get_collection(
 
     folder_memberships = None
     folder_id = None
+    favorites = None
+    if model._meta.model_name == 'spquery' and 'query_favorites' in params:
+        from specifyweb.backend.stored_queries.models import QueryFavorite
+
+        if query_user_id is None or params.get('query_favorites') != 'true':
+            raise FilterError('query_favorites must be true and requires the current user.')
+        favorites = QueryFavorite.objects.filter(owner_id=query_user_id)
+        params = {key: value for key, value in params.items() if key != 'query_favorites'}
     if model._meta.model_name == 'spquery' and (
         'query_folder_section' in params or 'query_folder_id' in params
     ):
@@ -591,6 +600,8 @@ def get_collection(
         visible_queries = filter_queries_for_user(models.Spquery.objects.all(), query_user_id)
         objs = objs.filter(id__in=visible_queries).distinct()
 
+    if favorites is not None:
+        objs = objs.filter(id__in=favorites.values('query_id'))
     if folder_memberships is not None:
         # Apply organization before counting/pagination, without changing query visibility.
         query_ids = folder_memberships.values('query_id')

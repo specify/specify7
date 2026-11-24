@@ -107,6 +107,25 @@ class QueryFolderMembership(django_models.Model):
         ]
 
 
+class QueryFavorite(django_models.Model):
+    owner = django_models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=django_models.CASCADE
+    )
+    query = django_models.ForeignKey(
+        'specify.Spquery',
+        on_delete=django_models.CASCADE,
+        related_name='favorites',
+    )
+
+    class Meta:
+        db_table = 'stored_query_favorite'
+        constraints = [
+            django_models.UniqueConstraint(
+                fields=['owner', 'query'], name='unique_query_favorite_per_user'
+            ),
+        ]
+
+
 __all__ = [
     'session_context',
     'tables',

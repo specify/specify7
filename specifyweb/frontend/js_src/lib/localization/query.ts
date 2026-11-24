@@ -25,6 +25,12 @@ export const queryText = createDictionary({
   favorites: {
     'en-us': 'Favorites',
   },
+  favoriteQuery: {
+    'en-us': 'Add "{queryName}" to favorites',
+  },
+  favoritedQuery: {
+    'en-us': '"{queryName}" is in your favorites',
+  },
   archive: {
     'en-us': 'Archive',
   },
