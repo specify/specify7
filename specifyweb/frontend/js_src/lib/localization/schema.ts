@@ -88,7 +88,7 @@ export const schemaText = createDictionary({
       "Cette importation n'attribuera pas de listes de sélection, de formats de champs ou de liens Web s'ils n'existent pas déjà.",
     'hr-hr':
       'Ovaj uvoz neće dodijeliti liste za odabir, formate polja ili web-veze osim ako već ne postoje.',
-    nb: 'Denne importen vil ikke tilordne valglister, feltformater eller nettlenker med mindre de allerede finnes.',
+    nb: 'Denne importen vil ikke tilordne plukklister, feltformater eller nettlenker med mindre de allerede finnes.',
     'pt-br':
       'Esta importação não atribuirá listas de opções, formatos de campo ou links da web, a menos que eles já existam.',
     'ru-ru':
@@ -111,7 +111,7 @@ export const schemaText = createDictionary({
     'en-us': 'Continue Import',
     'de-ch': 'Import fortsetzen',
     'es-es': 'Continuar importando',
-    'fr-fr': "Continuer l'importation",
+    'fr-fr': "Continuer l'import",
     'hr-hr': 'Nastavi uvoz',
     nb: 'Fortsett importen',
     'pt-br': 'Continuar a importação',
@@ -167,7 +167,7 @@ export const schemaText = createDictionary({
       "La requête réseau a expiré. L'importation de l'export {schemaConfig:string} en arrière-plan peut échouer. Veuillez réessayer ultérieurement pour vérifier si vos modifications ont été prises en compte.",
     'hr-hr':
       'Isteklo je vrijeme za mrežni zahtjev. Navedite hoće li i dalje uvoziti izvoz {schemaConfig:string} u pozadini, a možda i neće. Molimo provjerite kasnije jesu li vaše promjene primijenjene.',
-    nb: 'Nettverksforespørselen er tidsavbrutt. Spesifiser om {schemaConfig:string}-eksporten fortsatt kan importeres i bakgrunnen. Sjekk tilbake senere for å se om endringene dine er implementert.',
+    nb: 'Nettverksforespørselen er avbrutt, Specify kan eller kan ikke fortsatt importere {schemaConfig:string}-eksporten i bakgrunnen. Sjekk igjen senere for å se om endringene dine er implementert.',
     'pt-br':
       'A solicitação de rede expirou. Especificar pode ou não importar a exportação {schemaConfig:string} em segundo plano. Verifique novamente mais tarde para ver se as alterações foram aplicadas.',
     'ru-ru':
@@ -186,7 +186,7 @@ export const schemaText = createDictionary({
       "Une erreur s'est produite. Veuillez vider votre cache et réessayer.",
     'hr-hr':
       'Došlo je do pogreške, molimo vas da obrišete predmemoriju i pokušate ponovno.',
-    nb: 'Spesifiser opplevde en feil. Tøm hurtigbufferen og prøv på nytt.',
+    nb: 'Specify opplevde en feil. Tøm hurtigbufferen og prøv på nytt.',
     'pt-br': 'Ocorreu um erro. Limpe o cache e tente novamente.',
     'ru-ru':
       'Укажите, что произошла ошибка. Пожалуйста, очистите кеш и попробуйте снова.',
@@ -199,7 +199,7 @@ export const schemaText = createDictionary({
     'es-es': '{schemaConfig:string} Importado correctamente',
     'fr-fr': '{schemaConfig:string} importé avec succès',
     'hr-hr': '{schemaConfig:string} uspješno uvezeno',
-    nb: '{schemaConfig:string} importert',
+    nb: '{schemaConfig:string} vellykket importert',
     'pt-br': '{schemaConfig:string} importado com sucesso',
     'ru-ru': '{schemaConfig:string} успешно импортировано',
     'uk-ua': '{schemaConfig:string} успішно імпортовано',
@@ -304,7 +304,7 @@ export const schemaText = createDictionary({
     'en-us': 'Schema changes have not been saved',
     'ru-ru': 'Изменения в схеме не были сохранены.',
     'es-es': 'Los cambios de esquema no se han guardado.',
-    'fr-fr': "Les modifications de schéma n'ont pas été enregistrées.",
+    'fr-fr': "Les modifications de schéma n'ont pas été enregistrées",
     'uk-ua': 'Зміни схеми не збережено',
     'de-ch': 'Schema Änderungen wurden nicht gespeichert',
     'pt-br': 'As alterações de esquema não foram salvas.',
@@ -397,7 +397,7 @@ export const schemaText = createDictionary({
     'uk-ua': 'Встановити область дії',
     'pt-br': 'Definir Escopo',
     'hr-hr': 'Postavi opseg',
-    nb: 'Angi omfang',
+    nb: 'Angi område (scope)',
   },
   caption: {
     'en-us': 'Caption',
@@ -892,13 +892,13 @@ export const schemaText = createDictionary({
     'de-ch': 'Anwendungsbereich',
     'pt-br': 'Escopo',
     'hr-hr': 'Opseg',
-    nb: 'Omfang (scope)',
+    nb: 'Område (scope)',
   },
   uniquenessDuplicatesFound: {
     'en-us': 'Duplicates found in database',
     'de-ch': 'In der Datenbank gefundene Duplikate',
     'es-es': 'Se encontraron duplicados en la base de datos.',
-    'fr-fr': 'Des doublons ont été trouvés dans la base de données.',
+    'fr-fr': 'Des doublons ont été trouvés dans la base de données',
     'ru-ru': 'В базе данных обнаружены дубликаты.',
     'uk-ua': 'У базі даних знайдено дублікати',
     'pt-br': 'Foram encontrados duplicados no banco de dados.',
@@ -975,7 +975,7 @@ export const schemaText = createDictionary({
     'en-us': 'Use table captions',
     'de-ch': 'Tabellenüberschriften verwenden',
     'es-es': 'Utilice títulos de tabla',
-    'fr-fr': 'Utilisez des légendes de tableau',
+    'fr-fr': 'Utilisez des légendes des tables',
     'hr-hr': 'Koristite natpise tablica',
     nb: 'Bruk tabelltekster',
     'pt-br': 'Use legendas de tabela',

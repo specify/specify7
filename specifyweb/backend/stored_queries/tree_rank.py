@@ -240,6 +240,8 @@ def resolve_page(query, order, ranks, limit, offset):
         _, _, remaining = rank_path(query_field.fieldspec)
         column = getattr(aliases[key], remaining[0].name)
         replacements[index] = formatter.fieldformat(query_field, column)
+    # REFACTOR: We can remove the specify_tree_ranks execution option
+    # Only tests are using it at the moment
     return result.with_entities(*[
         replacements.get(i, walk.c[f"value_{i}"]) for i in range(len(columns))
     ]).order_by(walk.c.page_order).execution_options(specify_tree_ranks=ranks)

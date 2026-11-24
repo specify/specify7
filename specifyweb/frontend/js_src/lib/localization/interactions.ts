@@ -146,7 +146,7 @@ export const interactionsText = createDictionary({
     'en-us': 'Enter {fieldName: string}s',
     'de-ch': 'Geben Sie {fieldName: string}s ein',
     'es-es': 'Ingrese {fieldName: string}s',
-    'fr-fr': 'Saisir des {fieldName: string}s',
+    'fr-fr': 'Saisir des {fieldName:string}s',
     'ru-ru': 'Введите {fieldName: string}s',
     'uk-ua': 'Введіть {fieldName: string}s',
     'pt-br': 'Insira {fieldName: string}s',
@@ -182,7 +182,7 @@ export const interactionsText = createDictionary({
     'fr-fr': 'Ajouter un objet non associé',
     'uk-ua': "Додати непов'язаний елемент",
     'de-ch': 'Nicht assoziierter Gegenstand hinzufügen',
-    'pt-br': 'Adicionar item não associado',
+    'pt-br': 'Adicionar item não relacionado',
     'hr-hr': 'Dodaj nepovezanu stavku',
     nb: 'Legg til et ikke-tilknyttet objekt',
   },
@@ -237,7 +237,7 @@ export const interactionsText = createDictionary({
     'en-us': 'Return',
     'ru-ru': 'Возвращаться',
     'es-es': 'Devolver',
-    'fr-fr': 'Retour',
+    'fr-fr': 'Retour arrière',
     'uk-ua': 'Повернення',
     'de-ch': 'Rückgabe',
     'pt-br': 'Retornar',
@@ -375,7 +375,7 @@ export const interactionsText = createDictionary({
     'es-es':
       '{count:number|formatted} {tablePreparation:string} Los registros han sido devueltos y guardados.',
     'fr-fr':
-      'Les enregistrements {count:number|formatted} {tablePreparation:string} ont été renvoyés et sauvegardés.',
+      'Les enregistrements {count:number|formatted} {tablePreparation:string} ont été renvoyés et sauvegardés',
     'ru-ru':
       '{count:number|formatted} {tablePreparation:string} записи были возвращены и сохранены',
     'uk-ua':
@@ -419,7 +419,7 @@ export const interactionsText = createDictionary({
     'de-ch': 'Nicht verfügbar',
     'pt-br': 'Indisponível',
     'hr-hr': 'Nije dostupno',
-    nb: 'Utilgjengelig',
+    nb: 'Ikke tilgjengelig',
   },
   returnLoan: {
     comment: 'Example: Return Loan records',

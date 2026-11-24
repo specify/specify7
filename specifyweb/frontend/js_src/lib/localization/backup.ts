@@ -22,7 +22,7 @@ export const backupText = createDictionary({
   },
   failed: {
     'en-us': 'Backup failed.',
-    'de-ch': 'Datensicherung fehlgeschlagen.',
+    'de-ch': 'Die Datensicherung ist fehlgeschlagen.',
     'es-es': 'La copia de seguridad falló.',
     'fr-fr': 'La sauvegarde a échoué.',
     'pt-br': 'O backup falhou.',
