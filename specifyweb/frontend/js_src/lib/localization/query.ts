@@ -16,8 +16,8 @@ export const queryText = createDictionary({
   localQueryChanges: { 'en-us': 'Your changes' },
   serverQueryChanges: { 'en-us': 'Server changes' },
   chooseQueryChanges: { 'en-us': 'Choose a value' },
-  personalQueries: {
-    'en-us': 'Personal Queries',
+  yourQueries: {
+    'en-us': 'Your Queries',
   },
   sharedQueries: {
     'en-us': 'Shared Queries',

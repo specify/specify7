@@ -4,12 +4,15 @@ import {
   render,
   screen,
   waitFor,
+  within,
 } from '@testing-library/react';
 import React from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
 
 import { commonText } from '../../../localization/common';
 import { queryText } from '../../../localization/query';
 import { requireContext } from '../../../tests/helpers';
+import { icons } from '../../Atoms/Icons';
 import * as collection from '../../DataModel/collection';
 import { serializeResource } from '../../DataModel/serializers';
 import { tables } from '../../DataModel/tables';
@@ -34,6 +37,44 @@ requireContext();
 afterEach(() => {
   jest.clearAllMocks();
   jest.restoreAllMocks();
+});
+
+test('shows query sections as icon navigation on the left', async () => {
+  jest
+    .spyOn(collection, 'fetchCollection')
+    .mockResolvedValue({ records: [], totalCount: 0 });
+
+  await act(async () => {
+    render(
+      <QueryListDialog newQueryUrl="/specify/query/new/" onClose={jest.fn()}>
+        {({ children }) => children}
+      </QueryListDialog>
+    );
+    await Promise.resolve();
+  });
+
+  const navigation = screen.getByRole('navigation', {
+    name: queryText.queries(),
+  });
+  const sectionButtons = within(navigation).getAllByRole('button');
+  expect(sectionButtons.map(({ textContent }) => textContent?.trim())).toEqual([
+    queryText.yourQueries(),
+    queryText.queriesIShare(),
+    queryText.sharedQueries(),
+  ]);
+  const sectionIcons = sectionButtons.map(
+    (button) => button.querySelector('svg')?.outerHTML
+  );
+  expect(sectionIcons).toEqual([
+    renderToStaticMarkup(icons.folder),
+    renderToStaticMarkup(icons.documentSearch),
+    renderToStaticMarkup(icons.globe),
+  ]);
+  expect(
+    navigation.compareDocumentPosition(screen.getByRole('table')) &
+      Node.DOCUMENT_POSITION_FOLLOWING
+  ).toBeTruthy();
+  expect(sectionButtons[0]).toHaveAttribute('aria-current', 'page');
 });
 
 test('focus refresh ignores an older in-flight shared query result', async () => {

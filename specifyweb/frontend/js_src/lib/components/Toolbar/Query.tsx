@@ -221,99 +221,116 @@ export function QueryListDialog({
     totalCount,
     records: data?.records,
     children: (
-      <>
-        <div aria-label={queryText.queries()} className="flex gap-2">
+      <div className="flex min-h-0 min-w-0 flex-1 gap-4 overflow-hidden">
+        <nav
+          aria-label={queryText.queries()}
+          className="flex w-44 shrink-0 flex-col gap-1 border-r border-gray-200 pr-3 dark:border-neutral-700"
+        >
           {(
             [
-              ['personal', queryText.personalQueries()],
-              ['shared', queryText.sharedQueries()],
-              ['sharing', queryText.queriesIShare()],
+              ['personal', queryText.yourQueries(), icons.folder],
+              ['sharing', queryText.queriesIShare(), icons.documentSearch],
+              ['shared', queryText.sharedQueries(), icons.globe],
             ] as const
-          ).map(([value, label]) => (
-            <Button.Secondary
-              aria-pressed={section === value}
+          ).map(([value, label, icon]) => (
+            <Button.LikeLink
+              aria-current={section === value ? 'page' : undefined}
+              className={`flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left ${
+                section === value
+                  ? 'bg-brand-100 font-semibold dark:bg-brand-400 dark:text-white dark:hover:text-white'
+                  : 'hover:bg-brand-50 dark:hover:bg-neutral-700'
+              }`}
               key={value}
               onClick={(): void => {
                 currentPage[1](0);
                 setSection(value);
               }}
             >
-              {label}
-            </Button.Secondary>
+              <span className="flex h-5 w-5 shrink-0 items-center justify-center">
+                {icon}
+              </span>
+              <span>{label}</span>
+            </Button.LikeLink>
           ))}
+        </nav>
+        <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
+          <div className="min-h-0 flex-1 overflow-auto">
+            <table className="grid-table grid-cols-[repeat(3,auto)_min-content] gap-2">
+              <thead>
+                <tr>
+                  <th
+                    className="pl-[calc(theme(spacing.table-icon)_+_theme(spacing.2))]"
+                    scope="col"
+                  >
+                    <Button.LikeLink onClick={(): void => handleSort('name')}>
+                      {getField(tables.SpQuery, 'name').label}
+                      <SortIndicator fieldName="name" sortConfig={sortConfig} />
+                    </Button.LikeLink>
+                  </th>
+                  <th scope="col">
+                    <Button.LikeLink
+                      onClick={(): void => handleSort('timestampCreated')}
+                    >
+                      {getField(tables.SpQuery, 'timestampCreated').label}
+                      <SortIndicator
+                        fieldName="timestampCreated"
+                        sortConfig={sortConfig}
+                      />
+                    </Button.LikeLink>
+                  </th>
+                  <th scope="col">
+                    <Button.LikeLink
+                      onClick={(): void => handleSort('timestampModified')}
+                    >
+                      {getField(tables.SpQuery, 'timestampModified').label}
+                      <SortIndicator
+                        fieldName="timestampModified"
+                        sortConfig={sortConfig}
+                      />
+                    </Button.LikeLink>
+                  </th>
+                  <td />
+                </tr>
+              </thead>
+              <tbody>
+                {data?.records.map((query) => (
+                  <QueryList
+                    getQuerySelectCallback={getQuerySelectCallback}
+                    isReadOnly={
+                      isReadOnly ||
+                      idFromUrl(query.specifyUser) !== userInformation.id
+                    }
+                    canClone={
+                      section === 'shared' &&
+                      !isReadOnly &&
+                      hasToolPermission('queryBuilder', 'create')
+                    }
+                    key={query.id}
+                    query={query}
+                    cloneState={cloneStates[query.id] ?? defaultCloneState}
+                    onCloneStateChange={(state): void =>
+                      setCloneStates((states) => ({
+                        ...states,
+                        [query.id]: {
+                          ...(states[query.id] ?? defaultCloneState),
+                          ...state,
+                        },
+                      }))
+                    }
+                  />
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="flex flex-shrink-0 items-center pt-2">
+            <span className="-ml-2 flex-1" />
+            {data === undefined && loadingGif}
+            {data !== undefined && data.records.length > 0
+              ? paginator(data?.totalCount)
+              : null}
+          </div>
         </div>
-        <table className="grid-table grid-cols-[repeat(3,auto)_min-content] gap-2">
-          <thead>
-            <tr>
-              <th
-                className="pl-[calc(theme(spacing.table-icon)_+_theme(spacing.2))]"
-                scope="col"
-              >
-                <Button.LikeLink onClick={(): void => handleSort('name')}>
-                  {getField(tables.SpQuery, 'name').label}
-                  <SortIndicator fieldName="name" sortConfig={sortConfig} />
-                </Button.LikeLink>
-              </th>
-              <th scope="col">
-                <Button.LikeLink
-                  onClick={(): void => handleSort('timestampCreated')}
-                >
-                  {getField(tables.SpQuery, 'timestampCreated').label}
-                  <SortIndicator
-                    fieldName="timestampCreated"
-                    sortConfig={sortConfig}
-                  />
-                </Button.LikeLink>
-              </th>
-              <th scope="col">
-                <Button.LikeLink
-                  onClick={(): void => handleSort('timestampModified')}
-                >
-                  {getField(tables.SpQuery, 'timestampModified').label}
-                  <SortIndicator
-                    fieldName="timestampModified"
-                    sortConfig={sortConfig}
-                  />
-                </Button.LikeLink>
-              </th>
-              <td />
-            </tr>
-          </thead>
-          <tbody>
-            {data?.records.map((query) => (
-              <QueryList
-                getQuerySelectCallback={getQuerySelectCallback}
-                isReadOnly={
-                  isReadOnly ||
-                  idFromUrl(query.specifyUser) !== userInformation.id
-                }
-                canClone={
-                  section === 'shared' &&
-                  !isReadOnly &&
-                  hasToolPermission('queryBuilder', 'create')
-                }
-                key={query.id}
-                query={query}
-                cloneState={cloneStates[query.id] ?? defaultCloneState}
-                onCloneStateChange={(state): void =>
-                  setCloneStates((states) => ({
-                    ...states,
-                    [query.id]: {
-                      ...(states[query.id] ?? defaultCloneState),
-                      ...state,
-                    },
-                  }))
-                }
-              />
-            ))}
-          </tbody>
-        </table>
-        <span className="-ml-2 flex-1" />
-        {data === undefined && loadingGif}
-        {data !== undefined && data.records.length > 0
-          ? paginator(data?.totalCount)
-          : null}
-      </>
+      </div>
     ),
     dialog: (children) => (
       <Dialog
@@ -342,8 +359,8 @@ export function QueryListDialog({
           </>
         }
         className={{
-          container: `${dialogClassNames.narrowContainer}
-            h-[min(40rem)] w-[min(45rem)]`,
+          container: `${dialogClassNames.normalContainer}
+            h-[min(40rem)] w-[min(55rem,90vw)]`,
         }}
         header={
           totalCount === undefined
