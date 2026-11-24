@@ -13,15 +13,17 @@ import { commonText } from '../../../localization/common';
 import { queryText } from '../../../localization/query';
 import { requireContext } from '../../../tests/helpers';
 import { overrideAjax } from '../../../tests/ajax';
+import * as ajaxUtils from '../../../utils/ajax';
 import { icons } from '../../Atoms/Icons';
 import * as collection from '../../DataModel/collection';
 import { serializeResource } from '../../DataModel/serializers';
 import { tables } from '../../DataModel/tables';
+import { userInformation } from '../../InitialContext/userInformation';
 import type { SpQuery } from '../../DataModel/types';
 import { LoadingContext } from '../../Core/Contexts';
 import { UnloadProtectsContext } from '../../Router/UnloadProtect';
 import * as permissions from '../../Permissions/helpers';
-import { QueryListDialog } from '../Query';
+import { QueryList, QueryListDialog } from '../Query';
 
 jest.mock('../../QueryBuilder/Save', () => ({
   ...jest.requireActual('../../QueryBuilder/Save'),
@@ -50,6 +52,244 @@ overrideAjax('/stored_query/folders/', {
 afterEach(() => {
   jest.clearAllMocks();
   jest.restoreAllMocks();
+});
+
+test.each([false, true])(
+  'shows a folder icon at the end of a query row (read-only: %s)',
+  (isReadOnly) => {
+    const handleMove = jest.fn();
+    const query = new tables.SpQuery.Resource<SpQuery>({
+      id: 33,
+      name: 'Organized query',
+      contextName: 'CollectionObject',
+      contextTableId: tables.CollectionObject.tableId,
+      specifyUser: `/api/specify/specifyuser/${userInformation.id}/`,
+    });
+    render(
+      <table>
+        <tbody>
+          <QueryList
+            query={serializeResource(query)}
+            isReadOnly={isReadOnly}
+            cloneState={{ confirmClone: false, clonePending: false }}
+            onCloneStateChange={jest.fn()}
+            onMoveToFolder={handleMove}
+          />
+        </tbody>
+      </table>
+    );
+
+    const cells = screen.getAllByRole('cell');
+    const actions = cells[cells.length - 1];
+    const folderIcon = within(actions).getByRole('button', {
+      name: queryText.moveQueryToFolder({ queryName: query.get('name') }),
+    });
+    expect(folderIcon).toBe(actions.lastElementChild);
+    expect(folderIcon.querySelector('svg')?.outerHTML).toBe(
+      renderToStaticMarkup(icons.folder)
+    );
+    fireEvent.click(folderIcon);
+    expect(handleMove).toHaveBeenCalledTimes(1);
+    const edit = within(actions).queryByRole('button', {
+      name: commonText.edit(),
+    });
+    if (isReadOnly) expect(edit).not.toBeInTheDocument();
+    else {
+      if (edit === null) throw new Error('Query edit button missing.');
+      expect(edit).toBeVisible();
+      expect(
+        edit.compareDocumentPosition(folderIcon) &
+          Node.DOCUMENT_POSITION_FOLLOWING
+      ).toBeTruthy();
+    }
+  }
+);
+
+describe.each([
+  ['personal', queryText.yourQueries(), 9, 'Nested'],
+  ['sharing', queryText.queriesIShare(), 20, 'Sharing parent'],
+  ['shared', queryText.sharedQueries(), 21, 'Shared parent'],
+] as const)('moving queries in %s', (section, label, folderId, folderName) => {
+  let moved = false;
+  overrideAjax(
+    '/stored_query/query/33/folder/',
+    () => {
+      moved = true;
+      return { queryId: 33, folderId, section };
+    },
+    { method: 'POST', body: { folderId } }
+  );
+
+  test('moves out of the main list and persists in the selected folder', async () => {
+    moved = false;
+    const queryName = 'Query to organize';
+    const query = serializeResource(
+      new tables.SpQuery.Resource<SpQuery>({
+        id: 33,
+        name: queryName,
+        contextName: 'CollectionObject',
+        contextTableId: tables.CollectionObject.tableId,
+        specifyUser: `/api/specify/specifyuser/${section === 'shared' ? 2 : userInformation.id}/`,
+      })
+    );
+    const fetch = jest
+      .spyOn(collection, 'fetchCollection')
+      .mockImplementation(async (_table, _filters, advancedFilters) => {
+        const visible =
+          advancedFilters?.query_folder_section === section &&
+          (advancedFilters?.query_folder_id === folderId
+            ? moved
+            : advancedFilters?.query_folder_id === undefined && !moved);
+        return { records: visible ? [query] : [], totalCount: visible ? 1 : 0 };
+      });
+    const handleError = jest.fn();
+    const view = (
+      <LoadingContext.Provider
+        value={(promise): void => {
+          void promise.catch(handleError);
+        }}
+      >
+        <UnloadProtectsContext.Provider value={[]}>
+          <QueryListDialog
+            newQueryUrl="/specify/query/new/"
+            onClose={jest.fn()}
+          >
+            {({ children }) => children}
+          </QueryListDialog>
+        </UnloadProtectsContext.Provider>
+      </LoadingContext.Provider>
+    );
+    const { unmount } = render(view);
+    await screen.findByText('Parent');
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: label }));
+    });
+    await screen.findByRole('link', { name: new RegExp(queryName) });
+    fireEvent.click(
+      screen.getByRole('button', {
+        name: queryText.moveQueryToFolder({ queryName }),
+      })
+    );
+    const move = screen.getByRole('button', { name: queryText.move() });
+    expect(move).toBeDisabled();
+    const select = screen.getByRole('combobox', { name: queryText.folders() });
+    expect(
+      within(select).getByRole('option', { name: new RegExp(folderName) })
+    ).toBeInTheDocument();
+    for (const otherName of [
+      'Parent',
+      'Sharing parent',
+      'Shared parent',
+    ].filter(
+      (name) => name !== (section === 'personal' ? 'Parent' : folderName)
+    )) {
+      expect(
+        within(select).queryByRole('option', { name: otherName })
+      ).not.toBeInTheDocument();
+    }
+    fireEvent.change(select, { target: { value: String(folderId) } });
+    fireEvent.click(move);
+    await waitFor(() =>
+      expect(
+        screen.queryByRole('link', {
+          name: new RegExp(queryName),
+        })
+      ).not.toBeInTheDocument()
+    );
+    expect(handleError).not.toHaveBeenCalled();
+
+    const navigation = screen.getByRole('navigation', {
+      name: queryText.queries(),
+    });
+    await act(async () => {
+      fireEvent.click(
+        within(navigation).getByRole('button', { name: folderName })
+      );
+    });
+    expect(
+      await screen.findByRole('link', { name: new RegExp(queryName) })
+    ).toBeVisible();
+    expect(fetch).toHaveBeenLastCalledWith(
+      'SpQuery',
+      expect.anything(),
+      expect.objectContaining({
+        query_folder_section: section,
+        query_folder_id: folderId,
+      }),
+      expect.anything()
+    );
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: label }));
+    });
+    expect(
+      screen.queryByRole('link', { name: new RegExp(queryName) })
+    ).not.toBeInTheDocument();
+
+    unmount();
+    render(view);
+    await screen.findByText('Parent');
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: label }));
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: folderName }));
+    });
+    expect(
+      await screen.findByRole('link', { name: new RegExp(queryName) })
+    ).toBeVisible();
+  });
+});
+
+test('a failed move keeps the query in its list and allows retrying', async () => {
+  const queryName = 'Query with failed move';
+  const query = serializeResource(
+    new tables.SpQuery.Resource<SpQuery>({
+      id: 34,
+      name: queryName,
+      contextName: 'CollectionObject',
+      contextTableId: tables.CollectionObject.tableId,
+      specifyUser: `/api/specify/specifyuser/${userInformation.id}/`,
+    })
+  );
+  const fetch = jest
+    .spyOn(collection, 'fetchCollection')
+    .mockResolvedValue({ records: [query], totalCount: 1 });
+  const handleError = jest.fn();
+  render(
+    <LoadingContext.Provider
+      value={(promise): void => {
+        void promise.catch(handleError);
+      }}
+    >
+      <UnloadProtectsContext.Provider value={[]}>
+        <QueryListDialog newQueryUrl="/specify/query/new/" onClose={jest.fn()}>
+          {({ children }) => children}
+        </QueryListDialog>
+      </UnloadProtectsContext.Provider>
+    </LoadingContext.Provider>
+  );
+  await screen.findByText('Parent');
+  await screen.findByRole('link', { name: new RegExp(queryName) });
+  fireEvent.click(
+    screen.getByRole('button', {
+      name: queryText.moveQueryToFolder({ queryName }),
+    })
+  );
+  fireEvent.change(
+    screen.getByRole('combobox', { name: queryText.folders() }),
+    {
+      target: { value: '9' },
+    }
+  );
+  const error = new Error('Move failed');
+  jest.spyOn(ajaxUtils, 'ajax').mockRejectedValueOnce(error);
+  fireEvent.click(screen.getByRole('button', { name: queryText.move() }));
+  await waitFor(() => expect(handleError).toHaveBeenCalledWith(error));
+  expect(screen.getByRole('button', { name: queryText.move() })).toBeEnabled();
+  expect(
+    screen.getByRole('link', { name: new RegExp(queryName) })
+  ).toBeVisible();
+  expect(fetch).toHaveBeenCalledTimes(1);
 });
 
 test('shows query sections as icon navigation on the left', async () => {

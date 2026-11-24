@@ -535,13 +535,49 @@ def get_collection(
     params={},
     query_user_id: int | None = None,
 ) -> CollectionPayload:
+    """Return filtered, paginated resources.
+
+    For queries, query_folder_section restricts the current user's organization.
+    Omit query_folder_id for the main list, or supply a folder ID for its contents.
+    Without these parameters, existing collection behavior is unchanged.
+    """
     from specifyweb.specify.api.serializers import _obj_to_data
-    
-    """Return a list of structured data for the objects from 'model'
-    subject to the request 'params'."""
 
     if isinstance(model, str):
         model = get_model_or_404(model)
+
+    folder_memberships = None
+    folder_id = None
+    if model._meta.model_name == 'spquery' and (
+        'query_folder_section' in params or 'query_folder_id' in params
+    ):
+        from specifyweb.backend.stored_queries.models import (
+            QueryFolder, QueryFolderMembership,
+        )
+
+        section = params.get('query_folder_section')
+        folder_id = params.get('query_folder_id')
+        if query_user_id is None or section not in QueryFolder.Section.values:
+            raise FilterError('A valid query_folder_section and current user are required.')
+        folder_memberships = QueryFolderMembership.objects.filter(
+            owner_id=query_user_id, section=section
+        )
+        if folder_id is not None:
+            if (
+                not isinstance(folder_id, str)
+                or not folder_id.isdecimal()
+                or int(folder_id) < 1
+            ):
+                raise FilterError('query_folder_id must be a positive integer.')
+            if not QueryFolder.objects.filter(
+                pk=int(folder_id), owner_id=query_user_id, section=section
+            ).exists():
+                raise FilterError('The folder must belong to the current user and query section.')
+            folder_memberships = folder_memberships.filter(folder_id=int(folder_id))
+        params = {
+            key: value for key, value in params.items()
+            if key not in ('query_folder_section', 'query_folder_id')
+        }
 
     objs = apply_filters(logged_in_collection, params, model, control_params)
     if query_user_id is not None and model._meta.model_name == 'spqueryfield':
@@ -554,6 +590,15 @@ def get_collection(
 
         visible_queries = filter_queries_for_user(models.Spquery.objects.all(), query_user_id)
         objs = objs.filter(id__in=visible_queries).distinct()
+
+    if folder_memberships is not None:
+        # Apply organization before counting/pagination, without changing query visibility.
+        query_ids = folder_memberships.values('query_id')
+        objs = (
+            objs.exclude(id__in=query_ids)
+            if folder_id is None
+            else objs.filter(id__in=query_ids)
+        )
 
     try:
         return objs_to_data_(objs, objs.count(), lambda o: _obj_to_data(o, checker), control_params['offset'], control_params['limit'])

@@ -2,9 +2,11 @@ import json
 
 from django.test import Client
 
+from specifyweb.backend.permissions.models import SpqueryShare
 from specifyweb.backend.stored_queries import models as stored_query_models
 from specifyweb.specify import models
 from specifyweb.specify.tests.test_api import ApiTests
+from specifyweb.specify.tests.test_query_sharing_api import SharedQueryFixture
 
 
 class QueryFolderApiTests(ApiTests):
@@ -163,3 +165,153 @@ class QueryFolderApiTests(ApiTests):
                 )
                 self.assertEqual(response.status_code, 400, response.content)
         self.assertFalse(stored_query_models.QueryFolder.objects.exists())
+
+
+class QueryFolderMoveTests(SharedQueryFixture, ApiTests):
+    def setUp(self):
+        super().setUp()
+        self.client.cookies["collection"] = str(self.collection.id)
+        self.move_url = f"/stored_query/query/{self.query.id}/folder/"
+        self.collection_url = "/api/specify/spquery/"
+
+    def _list_queries(self, client, section, folder=None, **filters):
+        params = {
+            "domainfilter": "false",
+            "query_folder_section": section,
+            "limit": 0,
+            **filters,
+        }
+        if folder is not None:
+            params["query_folder_id"] = folder.id
+        response = client.get(self.collection_url, params)
+        self.assertEqual(response.status_code, 200, response.content)
+        return response.json()
+
+    def _move(self, client, folder):
+        return client.post(
+            self.move_url,
+            data=json.dumps({"folderId": folder.id}),
+            content_type="application/json",
+        )
+
+    def test_moves_and_reassigns_query_without_changing_definition(self):
+        parent = stored_query_models.QueryFolder.objects.create(
+            name="Parent", owner=self.specifyuser
+        )
+        nested = stored_query_models.QueryFolder.objects.create(
+            name="Nested", owner=self.specifyuser, parent=parent
+        )
+        other_query = models.Spquery.objects.create(
+            name="Another query",
+            contextname=self.query.contextname,
+            contexttableid=self.query.contexttableid,
+            specifyuser=self.specifyuser,
+        )
+        version = self.query.version
+        for folder in (parent, nested, nested):
+            response = self._move(self.client, folder)
+            self.assertEqual(response.status_code, 200, response.content)
+            self.assertEqual(
+                response.json(),
+                {"queryId": self.query.id, "folderId": folder.id, "section": "personal"},
+            )
+
+        membership = stored_query_models.QueryFolderMembership.objects.get(
+            owner=self.specifyuser, query=self.query, section="personal"
+        )
+        self.assertEqual(membership.folder_id, nested.id)
+        self.assertEqual(stored_query_models.QueryFolderMembership.objects.count(), 1)
+        self.query.refresh_from_db()
+        self.assertEqual(self.query.version, version)
+
+        main = self._list_queries(
+            self.client, "personal", limit=1, orderby="name",
+            specifyuser=self.specifyuser.id, share_grants__isnull="true",
+        )
+        self.assertEqual(main["meta"]["total_count"], 1)
+        self.assertEqual([query["id"] for query in main["objects"]], [other_query.id])
+        nested_list = self._list_queries(self.client, "personal", nested)
+        self.assertEqual([query["id"] for query in nested_list["objects"]], [self.query.id])
+        self.assertEqual(self._list_queries(self.client, "personal", parent)["objects"], [])
+        self.assertEqual(
+            self._list_queries(self.client, "personal", nested, name__icontains="missing")["objects"],
+            [],
+        )
+        self.assertEqual(
+            self._list_queries(self.client, "personal", nested, offset=1)["objects"], []
+        )
+        # Without the organizer parameters, existing API clients still receive every query.
+        response = self.client.get(self.collection_url, {"domainfilter": "false", "limit": 0})
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertIn(self.query.id, [query["id"] for query in response.json()["objects"]])
+
+    def test_shared_query_organization_is_private_and_respects_revoked_access(self):
+        grant = SpqueryShare.objects.create(query=self.query, recipient=self.recipient)
+        owner_folder = stored_query_models.QueryFolder.objects.create(
+            name="Owner folder", owner=self.specifyuser, section="sharing"
+        )
+        recipient_folder = stored_query_models.QueryFolder.objects.create(
+            name="Recipient folder", owner=self.recipient, section="shared"
+        )
+        recipient_client = self._recipient_client()
+        version = self.query.version
+        response = self._move(recipient_client, recipient_folder)
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual(
+            self._list_queries(recipient_client, "shared", share_grants__recipient=self.recipient.id)["objects"],
+            [],
+        )
+        self.assertEqual(
+            [query["id"] for query in self._list_queries(
+                self.client, "sharing", specifyuser=self.specifyuser.id,
+                share_grants__isnull="false",
+            )["objects"]],
+            [self.query.id],
+        )
+        self.assertEqual(self._move(self.client, owner_folder).status_code, 200)
+        self.assertEqual(
+            [query["id"] for query in self._list_queries(
+                recipient_client, "shared", recipient_folder
+            )["objects"]],
+            [self.query.id],
+        )
+        self.query.refresh_from_db()
+        self.assertEqual(self.query.version, version)
+        self.assertTrue(SpqueryShare.objects.filter(pk=grant.id).exists())
+        self.assertEqual(stored_query_models.QueryFolderMembership.objects.count(), 2)
+
+        grant.delete()
+        self.assertEqual(
+            self._list_queries(recipient_client, "shared", recipient_folder)["objects"], []
+        )
+        self.assertEqual(self._move(recipient_client, recipient_folder).status_code, 404)
+
+    def test_rejects_foreign_folders_wrong_sections_and_invalid_input(self):
+        foreign_folder = stored_query_models.QueryFolder.objects.create(
+            name="Private", owner=self.recipient
+        )
+        wrong_section = stored_query_models.QueryFolder.objects.create(
+            name="Sharing", owner=self.specifyuser, section="sharing"
+        )
+        for folder in (foreign_folder, wrong_section):
+            response = self._move(self.client, folder)
+            self.assertEqual(response.status_code, 400, response.content)
+        for body in (
+            "invalid JSON", "[]", "{}",
+            *[json.dumps({"folderId": value}) for value in (None, True, 0, -1, "1", [])],
+        ):
+            response = self.client.post(
+                self.move_url, data=body, content_type="application/json"
+            )
+            self.assertEqual(response.status_code, 400, response.content)
+        self.assertFalse(stored_query_models.QueryFolderMembership.objects.exists())
+
+        for params in (
+            {"query_folder_section": "invalid"},
+            {"query_folder_id": foreign_folder.id},
+            {"query_folder_section": "personal", "query_folder_id": foreign_folder.id},
+            {"query_folder_section": "personal", "query_folder_id": wrong_section.id},
+            {"query_folder_section": "personal", "query_folder_id": "-1"},
+        ):
+            response = self.client.get(self.collection_url, params)
+            self.assertEqual(response.status_code, 400, response.content)

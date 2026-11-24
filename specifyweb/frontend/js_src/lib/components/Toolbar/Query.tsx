@@ -109,6 +109,9 @@ const defaultCloneState: CloneState = {
 
 type QuerySection = 'personal' | 'shared' | 'sharing';
 
+const selectedQueryNavigationClassName =
+  'aria-handled bg-gray-800 font-semibold text-white enabled:hover:text-white dark:bg-gray-200 dark:text-gray-900 dark:enabled:hover:text-gray-900';
+
 type QueryFolder = {
   readonly id: number;
   readonly name: string;
@@ -150,8 +153,12 @@ function flattenQueryFolders(
 
 function QueryFolderTree({
   folders,
+  selectedFolderId,
+  onSelect,
 }: {
   readonly folders: RA<QueryFolderNode>;
+  readonly selectedFolderId: number | null;
+  readonly onSelect: (folderId: number) => void;
 }): JSX.Element {
   const [collapsedFolders, setCollapsedFolders] = React.useState<RA<number>>(
     []
@@ -196,10 +203,20 @@ function QueryFolderTree({
             ) : (
               <span aria-hidden className="h-7 w-7 shrink-0" />
             )}
-            <span className="flex h-4 w-4 shrink-0 items-center justify-center">
-              {icons.folder}
-            </span>
-            <span>{folder.name}</span>
+            <Button.LikeLink
+              aria-current={selectedFolderId === folder.id ? 'page' : undefined}
+              className={`flex min-w-0 flex-1 items-center gap-1 rounded text-left ${
+                selectedFolderId === folder.id
+                  ? selectedQueryNavigationClassName
+                  : ''
+              }`}
+              onClick={(): void => onSelect(folder.id)}
+            >
+              <span className="flex h-4 w-4 shrink-0 items-center justify-center">
+                {icons.folder}
+              </span>
+              <span>{folder.name}</span>
+            </Button.LikeLink>
           </div>
           {folder.children.length > 0 && (
             <div
@@ -207,7 +224,11 @@ function QueryFolderTree({
               hidden={collapsedFolders.includes(folder.id)}
               id={`${id}-${folder.id}`}
             >
-              <QueryFolderTree folders={folder.children} />
+              <QueryFolderTree
+                folders={folder.children}
+                selectedFolderId={selectedFolderId}
+                onSelect={onSelect}
+              />
             </div>
           )}
         </li>
@@ -239,12 +260,19 @@ export function QueryListDialog({
   const [search, setSearch] = React.useState('');
   const searchFilter = search.trim();
   const [section, setSection] = React.useState<QuerySection>('personal');
+  const [selectedFolderId, setSelectedFolderId] = React.useState<number | null>(
+    null
+  );
   const [refreshToken, setRefreshToken] = React.useState(0);
   const [cloneStates, setCloneStates] = React.useState<
     Readonly<Record<number, CloneState>>
   >({});
   const [folders, setFolders] = React.useState<RA<QueryFolder> | undefined>();
   const [isCreatingFolder, setIsCreatingFolder] = React.useState(false);
+  const [movingQuery, setMovingQuery] = React.useState<
+    SerializedResource<SpQuery> | undefined
+  >();
+  const [movePending, setMovePending] = React.useState(false);
   const ownerId = filters?.specifyUser ?? userInformation.id;
   const fetchQueries = React.useCallback(
     async (waitForPendingGet = false) =>
@@ -260,6 +288,10 @@ export function QueryListDialog({
           orderBy,
         },
         {
+          query_folder_section: section,
+          ...(selectedFolderId === null
+            ? {}
+            : { query_folder_id: selectedFolderId }),
           ...(section === 'shared'
             ? { share_grants__recipient: userInformation.id }
             : {
@@ -271,7 +303,16 @@ export function QueryListDialog({
         },
         { waitForPendingGet }
       ),
-    [filters, ownerId, limit, offset, orderBy, searchFilter, section]
+    [
+      filters,
+      ownerId,
+      limit,
+      offset,
+      orderBy,
+      searchFilter,
+      section,
+      selectedFolderId,
+    ]
   );
   const [data, setData] = React.useState<
     SerializedCollection<SpQuery> | undefined
@@ -370,6 +411,23 @@ export function QueryListDialog({
       })
     );
   };
+  const handleMoveQuery = (folderId: number): void => {
+    if (movingQuery === undefined || movePending) return;
+    setMovePending(true);
+    loading(
+      ajax(`/stored_query/query/${movingQuery.id}/folder/`, {
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+        body: { folderId },
+      })
+        .then(() => {
+          setMovingQuery(undefined);
+          setData(undefined);
+          setRefreshToken((token) => token + 1);
+        })
+        .finally(() => setMovePending(false))
+    );
+  };
 
   const content = children({
     totalCount,
@@ -388,16 +446,22 @@ export function QueryListDialog({
             ] as const
           ).map(([value, label, icon]) => (
             <Button.LikeLink
-              aria-current={section === value ? 'page' : undefined}
+              aria-current={
+                section === value && selectedFolderId === null
+                  ? 'page'
+                  : undefined
+              }
               className={`flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left ${
                 section === value
-                  ? 'bg-brand-100 font-semibold dark:bg-brand-400 dark:text-white dark:hover:text-white'
+                  ? selectedQueryNavigationClassName
                   : 'hover:bg-brand-50 dark:hover:bg-neutral-700'
               }`}
               key={value}
               onClick={(): void => {
                 currentPage[1](0);
                 setIsCreatingFolder(false);
+                setMovingQuery(undefined);
+                setSelectedFolderId(null);
                 setSection(value);
               }}
             >
@@ -429,10 +493,24 @@ export function QueryListDialog({
                 onClick={(): void => setIsCreatingFolder(true)}
               />
             </div>
-            {folders !== undefined && <QueryFolderTree folders={folderTree} />}
+            {folders !== undefined && (
+              <QueryFolderTree
+                folders={folderTree}
+                selectedFolderId={selectedFolderId}
+                onSelect={(folderId): void => {
+                  currentPage[1](0);
+                  setSelectedFolderId(folderId);
+                }}
+              />
+            )}
           </section>
         </nav>
         <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
+          {selectedFolderId !== null && (
+            <h2 className="pb-2 text-sm font-semibold">
+              {folders?.find((folder) => folder.id === selectedFolderId)?.name}
+            </h2>
+          )}
           <div className="min-h-0 flex-1 overflow-auto">
             <table className="grid-table grid-cols-[repeat(3,auto)_min-content] gap-2">
               <thead>
@@ -495,6 +573,11 @@ export function QueryListDialog({
                           ...state,
                         },
                       }))
+                    }
+                    onMoveToFolder={
+                      isReadOnly || folders === undefined
+                        ? undefined
+                        : (): void => setMovingQuery(query)
                     }
                   />
                 ))}
@@ -566,7 +649,71 @@ export function QueryListDialog({
           onCreate={handleCreateFolder}
         />
       )}
+      {movingQuery !== undefined && (
+        <MoveQueryToFolderDialog
+          folders={folderOptions}
+          queryName={movingQuery.name}
+          pending={movePending}
+          onClose={(): void => setMovingQuery(undefined)}
+          onMove={handleMoveQuery}
+        />
+      )}
     </>
+  );
+}
+
+function MoveQueryToFolderDialog({
+  folders,
+  queryName,
+  pending,
+  onClose,
+  onMove,
+}: {
+  readonly folders: RA<QueryFolderOption>;
+  readonly queryName: string;
+  readonly pending: boolean;
+  readonly onClose: () => void;
+  readonly onMove: (folderId: number) => void;
+}): JSX.Element {
+  const [folderId, setFolderId] = React.useState('');
+  return (
+    <Dialog
+      header={queryText.moveQueryToFolder({ queryName })}
+      icon={icons.folder}
+      onClose={onClose}
+      buttons={
+        <>
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+          <Button.Info
+            disabled={folderId === '' || pending}
+            onClick={(): void => onMove(Number(folderId))}
+          >
+            {queryText.move()}
+          </Button.Info>
+        </>
+      }
+    >
+      {folders.length === 0 ? (
+        <p>{queryText.noFolders()}</p>
+      ) : (
+        <Label.Block>
+          {queryText.folders()}
+          <select
+            className="w-full rounded border border-gray-300 bg-white p-2 dark:border-neutral-600 dark:bg-neutral-800"
+            value={folderId}
+            disabled={pending}
+            onChange={(event): void => setFolderId(event.target.value)}
+          >
+            <option value="">{queryText.chooseFolder()}</option>
+            {folders.map(({ folder, depth }) => (
+              <option key={folder.id} value={folder.id}>
+                {`${'-- '.repeat(depth)}${folder.name}`}
+              </option>
+            ))}
+          </select>
+        </Label.Block>
+      )}
+    </Dialog>
   );
 }
 
@@ -641,6 +788,7 @@ export function QueryList({
   canClone = false,
   cloneState: { confirmClone, clonePending },
   onCloneStateChange: handleCloneStateChange,
+  onMoveToFolder,
 }: {
   readonly query: SerializedResource<SpQuery>;
   readonly getQuerySelectCallback?: (
@@ -650,6 +798,7 @@ export function QueryList({
   readonly canClone?: boolean;
   readonly cloneState: CloneState;
   readonly onCloneStateChange: (state: Partial<CloneState>) => void;
+  readonly onMoveToFolder?: () => void;
 }): JSX.Element {
   const loading = React.useContext(LoadingContext);
   const queryResource = React.useMemo(
@@ -704,13 +853,18 @@ export function QueryList({
             <DateElement date={query.timestampModified} />
           )}
         </td>
-        <td className="justify-end">
+        <td className="items-center justify-end gap-2">
           {!isReadOnly && (
             <QueryEditButton
               queryResource={queryResource}
               onRefresh={refreshQuery}
             />
           )}
+          <Button.Icon
+            icon="folder"
+            title={queryText.moveQueryToFolder({ queryName: query.name })}
+            onClick={onMoveToFolder}
+          />
         </td>
       </tr>
       {conflictDialog}

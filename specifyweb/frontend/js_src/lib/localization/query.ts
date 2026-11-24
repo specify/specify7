@@ -40,6 +40,15 @@ export const queryText = createDictionary({
   noFolders: {
     'en-us': 'No folders yet',
   },
+  moveQueryToFolder: {
+    'en-us': 'Move "{queryName}" to a folder',
+  },
+  chooseFolder: {
+    'en-us': 'Choose a folder',
+  },
+  move: {
+    'en-us': 'Move',
+  },
   sharedQueries: {
     'en-us': 'Shared Queries',
   },

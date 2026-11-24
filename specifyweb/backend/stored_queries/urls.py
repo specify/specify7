@@ -5,6 +5,7 @@ from . import sharing, views
 urlpatterns = [
     path('query/<int:id>/', views.query),
     path('query/<int:id>/shares/', sharing.manage_query_shares),
+    path('query/<int:id>/folder/', views.move_query_to_folder),
     path('folders/', views.query_folders),
     path('ephemeral/', views.ephemeral),
     path('exportcsv/', views.export_csv),

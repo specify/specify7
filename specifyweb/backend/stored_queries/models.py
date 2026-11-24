@@ -53,15 +53,16 @@ globals().update(classes)
 
 
 class QueryFolder(django_models.Model):
+    class Section(django_models.TextChoices):
+        PERSONAL = 'personal', 'Your queries'
+        SHARING = 'sharing', 'Queries I share'
+        SHARED = 'shared', 'Shared queries'
+
     name = django_models.CharField(max_length=256)
     section = django_models.CharField(
         max_length=8,
-        choices=[
-            ('personal', 'Your queries'),
-            ('sharing', 'Queries I share'),
-            ('shared', 'Shared queries'),
-        ],
-        default='personal',
+        choices=Section.choices,
+        default=Section.PERSONAL,
     )
     owner = django_models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -78,6 +79,32 @@ class QueryFolder(django_models.Model):
 
     class Meta:
         db_table = 'stored_query_folder'
+
+
+class QueryFolderMembership(django_models.Model):
+    owner = django_models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=django_models.CASCADE
+    )
+    query = django_models.ForeignKey(
+        'specify.Spquery',
+        on_delete=django_models.CASCADE,
+        related_name='folder_memberships',
+    )
+    section = django_models.CharField(
+        max_length=8, choices=QueryFolder.Section.choices
+    )
+    folder = django_models.ForeignKey(
+        QueryFolder, on_delete=django_models.CASCADE, related_name='memberships'
+    )
+
+    class Meta:
+        db_table = 'stored_query_folder_membership'
+        constraints = [
+            django_models.UniqueConstraint(
+                fields=['owner', 'query', 'section'],
+                name='unique_query_folder_per_user_section',
+            ),
+        ]
 
 
 __all__ = [

@@ -80,9 +80,7 @@ def query_folders(request: HttpRequest) -> JsonResponse | HttpResponseBadRequest
         return HttpResponseBadRequest('Request body must be a JSON object.')
 
     section = data.get('section', 'personal')
-    if not isinstance(section, str) or section not in dict(
-        models.QueryFolder._meta.get_field('section').choices
-    ):
+    if not isinstance(section, str) or section not in models.QueryFolder.Section.values:
         return HttpResponseBadRequest(
             'section must be personal, sharing, or shared.'
         )
@@ -125,6 +123,51 @@ def query_folders(request: HttpRequest) -> JsonResponse | HttpResponseBadRequest
         },
         status=201,
     )
+
+
+@require_POST
+@login_maybe_required
+@never_cache
+def move_query_to_folder(request: HttpRequest, id: int) -> JsonResponse | HttpResponseBadRequest:
+    """Organize a visible query without changing its definition or sharing grants."""
+    check_table_permissions(
+        request.specify_collection, request.specify_user_agent, Spquery, 'read'
+    )
+    ensure_query_access(id, request.specify_user.id)
+    try:
+        data = json.loads(request.body)
+    except ValueError:
+        return HttpResponseBadRequest('Request body must contain valid JSON.')
+    if not isinstance(data, dict):
+        return HttpResponseBadRequest('Request body must be a JSON object.')
+    folder_id = data.get('folderId')
+    if type(folder_id) is not int or folder_id < 1:
+        return HttpResponseBadRequest('folderId must be a positive integer.')
+    folder = models.QueryFolder.objects.filter(
+        pk=folder_id, owner=request.specify_user
+    ).first()
+    if folder is None:
+        return HttpResponseBadRequest(
+            'folderId must reference a folder belonging to the current user.'
+        )
+    query = Spquery.objects.filter(pk=id)
+    if folder.section == models.QueryFolder.Section.SHARED:
+        query = query.filter(share_grants__recipient=request.specify_user)
+    else:
+        query = query.filter(
+            specifyuser=request.specify_user,
+            share_grants__isnull=folder.section == models.QueryFolder.Section.PERSONAL,
+        )
+    if not query.exists():
+        return HttpResponseBadRequest('The query does not belong to this query section.')
+
+    models.QueryFolderMembership.objects.update_or_create(
+        owner=request.specify_user,
+        query_id=id,
+        section=folder.section,
+        defaults={'folder': folder},
+    )
+    return JsonResponse({'queryId': id, 'folderId': folder.id, 'section': folder.section})
 
 
 def value_from_request(field, get):
