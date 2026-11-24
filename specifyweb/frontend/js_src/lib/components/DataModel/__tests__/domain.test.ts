@@ -226,13 +226,60 @@ describe('Resource initialization preferences', () => {
     expect(original.get('text1')).toBe('copied field');
   });
 
+  test('Cloning a TectonicUnit copies fields and omits unique fields', async () => {
+    const original = new tables.TectonicUnit.Resource(
+      addMissingFields('TectonicUnit', {
+        resource_uri: getResourceApiUrl('TectonicUnit', 1),
+        id: 1,
+        name: 'Test tectonic unit',
+        rankId: 1,
+        definition: getResourceApiUrl('TectonicUnitTreeDef', 1),
+        definitionItem: getResourceApiUrl('TectonicUnitTreeDefItem', 1),
+        parent: getResourceApiUrl('TectonicUnit', 2),
+        isAccepted: true,
+        remarks: 'Test remarks',
+        text1: 'Lower unit',
+        text2: 'Upper unit',
+        number1: 12.5,
+        number2: 7.25,
+        yesno1: true,
+        yesno2: false,
+        guid: 'test-guid',
+        version: 3,
+      })
+    );
+
+    const cloned = await original.clone(true);
+
+    expect(cloned.specifyTable.name).toBe('TectonicUnit');
+    expect(cloned.id).toBeUndefined();
+    expect(original.id).toBe(1);
+    expect(cloned.get('name')).toBe('Test tectonic unit');
+    expect(cloned.get('rankId')).toBe(1);
+    expect(cloned.get('definition')).toBe(original.get('definition'));
+    expect(cloned.get('definitionItem')).toBe(original.get('definitionItem'));
+    expect(cloned.get('parent')).toBe(original.get('parent'));
+    expect(cloned.get('isAccepted')).toBe(true);
+    expect(cloned.get('remarks')).toBe('Test remarks');
+    expect(cloned.get('text1')).toBe('Lower unit');
+    expect(cloned.get('text2')).toBe('Upper unit');
+    expect(cloned.get('number1')).toBe(12.5);
+    expect(cloned.get('number2')).toBe(7.25);
+    expect(cloned.get('yesno1')).toBe(true);
+    expect(cloned.get('yesno2')).toBe(false);
+
+    expect(cloned.get('guid')).toBeUndefined();
+    expect(cloned.get('version')).toBeUndefined();
+    expect(original.get('guid')).toBe('test-guid');
+    expect(original.get('version')).toBe(3);
+  });
+
   test.each([
     'Attachment',
     'TaxonTreeDefItem',
     'GeologicTimePeriodTreeDefItem',
     'LithoStratTreeDefItem',
     'TectonicUnitTreeDefItem',
-    'TectonicUnit',
     'Agent',
     'CollectingEvent',
     'Geography',
