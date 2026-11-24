@@ -679,7 +679,7 @@ export const resourcesText = createDictionary({
     'es-es':
       'Busque en los registros de su colección para obtener una vista previa del formateador de registros.',
     'fr-fr':
-      'Recherchez les enregistrements de votre collection pour prévisualiser le formatage des enregistrements.',
+      'Recherchez les enregistrements de votre collection pour prévisualiser le formatage des enregistrements',
     'ru-ru':
       'Найдите записи в своей коллекции, чтобы просмотреть их форматирование.',
     'uk-ua':
@@ -694,7 +694,7 @@ export const resourcesText = createDictionary({
     'en-us': 'Visual editor is not available for this resource',
     'de-ch': 'Für diese Ressource ist kein visueller Editor verfügbar.',
     'es-es': 'El editor visual no está disponible para este recurso.',
-    'fr-fr': "L'éditeur visuel n'est pas disponible pour cette ressource.",
+    'fr-fr': "L'éditeur visuel n'est pas disponible pour cette ressource",
     'ru-ru': 'Визуальный редактор для этого ресурса недоступен.',
     'uk-ua': 'Візуальний редактор недоступний для цього ресурсу',
     'pt-br': 'O editor visual não está disponível para este recurso.',
@@ -816,7 +816,7 @@ export const resourcesText = createDictionary({
     'es-es':
       'Este recurso pertenece a una colección/disciplina diferente a la que estás utilizando actualmente. Se recomienda cambiar de colección antes de editar este recurso.',
     'fr-fr':
-      'Cette ressource appartient à une collection/discipline différente de celle dans laquelle vous vous trouvez actuellement. Il est recommandé de changer de collection avant de modifier cette ressource.',
+      'Cette ressource appartient à une collection/discipline différente de celle dans laquelle vous vous trouvez actuellement. Il est recommandé de changer de collection avant de modifier cette ressource',
     'ru-ru':
       'Этот ресурс относится к другой коллекции/дисциплине, нежели та, в которой вы сейчас находитесь. Рекомендуется переключиться на другую коллекцию перед редактированием этого ресурса.',
     'uk-ua':
@@ -965,7 +965,7 @@ export const resourcesText = createDictionary({
       'Sie müssen dieses Formular speichern, bevor Sie ein anderes bearbeiten können.',
     'es-es': 'Debes guardar este formulario antes de editar otro.',
     'fr-fr':
-      "Vous devez enregistrer ce formulaire avant d'en modifier un autre.",
+      "Vous devez enregistrer ce formulaire avant d'en modifier un autre",
     'ru-ru': 'Перед редактированием следующей формы необходимо сохранить её.',
     'uk-ua': 'Вам потрібно зберегти цю форму, перш ніж редагувати іншу',
     'pt-br': 'Você precisa salvar este formulário antes de editar outro.',
@@ -1079,7 +1079,7 @@ export const resourcesText = createDictionary({
     'es-es':
       'Un grupo de objetos de colección consolidados debe tener un objeto de colección primario secundario.',
     'fr-fr':
-      'Un COG de type "Consolidated" (i. e. correspondant à un groupe d\'objets liés physiquement) doit avoir un objet enfant principal.',
+      'Un groupe d\'objet de type "Consolidated" (i. e. correspondant à un groupe d\'objets liés physiquement) doit avoir un objet enfant principal',
     'pt-br':
       'Um Grupo de Objetos de Coleção Consolidado deve ter um Objeto de Coleção filho primário.',
     'ru-ru':
@@ -1128,7 +1128,7 @@ export const resourcesText = createDictionary({
     'en-us': 'A disposed preparation cannot be deleted',
     'de-ch': 'Eine verworfene Zubereitung kann nicht gelöscht werden.',
     'es-es': 'Una preparación desechada no se puede eliminar.',
-    'fr-fr': 'Une préparation détruite ne peut pas être supprimée.',
+    'fr-fr': 'Une préparation détruite ne peut pas être supprimée',
     'pt-br': 'Uma preparação descartada não pode ser apagada.',
     'ru-ru': 'Утилизированный препарат удалить невозможно.',
     'uk-ua': 'Викинутий препарат не можна видалити',
@@ -1151,7 +1151,7 @@ export const resourcesText = createDictionary({
     'de-ch':
       'Ein im Vorfeld ausgetauschter Eintrag kann nicht gelöscht werden.',
     'es-es': 'Un intercambio en preparación no se puede eliminar',
-    'fr-fr': 'Un échange sortant de préparation ne peut pas être supprimé.',
+    'fr-fr': 'Un échange sortant de préparation ne peut pas être supprimé',
     'pt-br': 'Uma troca realizada em preparação não pode ser excluída.',
     'ru-ru': 'Подготовленный обмен не может быть удален.',
     'uk-ua': 'Обмін, що готується, не можна видалити',
@@ -1179,7 +1179,7 @@ export const resourcesText = createDictionary({
     'es-es':
       'La determinación no pertenece al árbol taxonómico asociado con el tipo de objeto de colección.',
     'fr-fr':
-      "La détermination n'appartient pas à l'arbre taxonomique associé au COT (type d'objet)",
+      "La détermination n'appartient pas à l'arbre taxonomique associé au Type d'objet (Cot)",
     'pt-br':
       'A determinação não pertence à árvore taxonômica associada ao tipo de objeto Coleção.',
     'ru-ru':
@@ -1198,7 +1198,7 @@ export const resourcesText = createDictionary({
     'es-es':
       '{taxonName: string} no pertenece al árbol {taxonTableLabel: string} asociado con {typeName: string}',
     'fr-fr':
-      "{taxonName: string} n'appartient pas à l'arbre {taxonTableLabel: string} associé à {typeName: string}",
+      "{taxonName:string} n'appartient pas à l'arbre {taxonTableLabel:string} associé à {typeName:string}",
     'pt-br':
       '{taxonName: string} não pertence à árvore {taxonTableLabel: string} associada a {typeName: string}',
     'ru-ru':
@@ -1217,7 +1217,7 @@ export const resourcesText = createDictionary({
     'es-es':
       '{catalogNumberFieldName: string} {catalogNumber: string} ya está en uso para otro Componente u Objeto de Colección en esta colección.',
     'fr-fr':
-      '{catalogNumberFieldName: string} {catalogNumber: string} est déjà utilisé pour un autre composant ou objet de collection dans cette collection.',
+      '{catalogNumberFieldName:string} {catalogNumber:string} est déjà utilisé pour un autre composant ou objet de collection dans cette collection.',
     'pt-br':
       '{catalogNumberFieldName: string} {catalogNumber: string} já está em uso para outro componente ou objeto de coleção nesta coleção.',
     'ru-ru':
@@ -1243,7 +1243,7 @@ export const resourcesText = createDictionary({
     'en-us': 'Preparation count cannot be negative',
     'de-ch': 'Die Anzahl der Vorbereitungen darf nicht negativ sein.',
     'es-es': 'El recuento de preparaciones no puede ser negativo.',
-    'fr-fr': 'Le nombre de préparations ne peut pas être négatif.',
+    'fr-fr': 'Le nombre de préparations ne peut pas être négatif',
     'pt-br': 'A contagem de preparações não pode ser negativa.',
     'ru-ru': 'Количество подготовленных образцов не может быть отрицательным.',
     'uk-ua': "Кількість підготовок не може бути від'ємним значенням",
@@ -1288,7 +1288,7 @@ export const resourcesText = createDictionary({
     'de-ch': 'Eine Vorschau für diesen Formatierertyp ist nicht verfügbar.',
     'es-es':
       'La vista previa para este tipo de formateador no está disponible.',
-    'fr-fr': "L'aperçu pour ce type de formateur n'est pas disponible.",
+    'fr-fr': "L'aperçu pour ce type de formateur n'est pas disponible",
     'pt-br':
       'A pré-visualização para formatadores deste tipo não está disponível.',
     'ru-ru':

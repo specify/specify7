@@ -884,7 +884,7 @@ export const setupToolText = createDictionary({
     'en-us': 'An empty taxon tree will be created',
     'de-ch': 'Es wird ein leerer Taxonbaum erstellt.',
     'es-es': 'Se creará un árbol taxonómico vacío.',
-    'fr-fr': 'Un arbre taxonomique vide sera créé.',
+    'fr-fr': 'Un arbre taxonomique vide sera créé',
     'hr-hr': 'Bit će kreirano prazno stablo taksona',
     'pt-br': 'Uma árvore taxonômica vazia será criada.',
     'ru-ru': 'Будет создано пустое таксономическое дерево.',

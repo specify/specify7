@@ -1826,7 +1826,8 @@ export const preferencesText = createDictionary({
       '<key>{altKeyName:string}</key>+<key>Щелкните</key> ссылку, которая обычно открывается в новой вкладке, чтобы открыть ее в текущей вкладке.',
     'es-es':
       '<key>{altKeyName:string}</key>+<key>Haz clic</key> en un enlace que normalmente se abre en una pestaña nueva para abrirlo en la pestaña actual.',
-    'fr-fr': 'Utiliser le sélecteur de mois accessible.',
+    'fr-fr':
+      "<key>{altKeyName:string}</key>+<key>Clic</key> un lien qui s'ouvre habituellement dans un nouvel onglet l'ouvre dans l'onglet actuel.",
     'uk-ua':
       '<key>{altKeyName:string}</key>+<key>Натисніть</key> посилання, яке зазвичай відкривається в новій вкладці, щоб відкрити його в поточній вкладці.',
     'de-ch':
@@ -2789,7 +2790,7 @@ export const preferencesText = createDictionary({
     'es-es':
       'Solo los registros {collectionObjectTableName: string} que no tengan un {catalogNumberFieldName: string} heredarán uno del {collectionObjectTableName: string} principal en un {collectionObjectGroupTableName: string}.',
     'fr-fr':
-      "Seuls les enregistrements {collectionObjectTableName: string} sans {catalogNumberFieldName: string} hériteront d'un {collectionObjectTableName: string} principal dans un {collectionObjectGroupTableName: string}.",
+      "Seuls les enregistrements {collectionObjectTableName:string} sans {catalogNumberFieldName:string} hériteront d'un {collectionObjectTableName:string} principal dans un {collectionObjectGroupTableName:string}.",
     'pt-br':
       'Somente os registros {collectionObjectTableName: string} sem um {catalogNumberFieldName: string} herdarão um do {collectionObjectTableName: string} primário em um {collectionObjectGroupTableName: string}.',
     'ru-ru':
@@ -2808,7 +2809,7 @@ export const preferencesText = createDictionary({
     'es-es':
       'Habilitar la herencia de {catalogNumberFieldName: string} para los elementos hermanos de {collectionObjectGroupTableName: string}',
     'fr-fr':
-      "Activer l'héritage de {catalogNumberFieldName: string} pour les éléments frères de {collectionObjectGroupTableName: string}",
+      "Activer l'héritage de {catalogNumberFieldName:string} pour les éléments frères de {collectionObjectGroupTableName:string}",
     'pt-br':
       'Habilitar herança de {catalogNumberFieldName: string} para os elementos irmãos de {collectionObjectGroupTableName: string}',
     'ru-ru':
@@ -2827,7 +2828,7 @@ export const preferencesText = createDictionary({
     'es-es':
       'Habilitar la herencia de {catalogNumberFieldName: string} para los registros {componentTableName: string}',
     'fr-fr':
-      "Activer l'héritage {catalogNumberFieldName: string} pour les enregistrements {componentTableName: string}",
+      "Activer l'héritage {catalogNumberFieldName:string} pour les enregistrements {componentTableName:string}",
     'pt-br':
       'Habilitar herança de {catalogNumberFieldName: string} para registros de {componentTableName: string}',
     'ru-ru':
@@ -2846,7 +2847,7 @@ export const preferencesText = createDictionary({
     'es-es':
       'Garantizar la unicidad del campo {catalogNumberFieldName: string} en {componentTableName: string} y {collectionObjectTableName: string}.',
     'fr-fr':
-      "Imposer l'unicité du champ {catalogNumberFieldName: string} entre {componentTableName: string} et {collectionObjectTableName: string}.",
+      "Imposer l'unicité du champ {catalogNumberFieldName:string} entre {componentTableName:string} et {collectionObjectTableName:string}.",
     'pt-br':
       'Garanta a unicidade do campo {catalogNumberFieldName: string} em {componentTableName: string} e {collectionObjectTableName: string}.',
     'ru-ru':
@@ -2895,7 +2896,7 @@ export const preferencesText = createDictionary({
     'es-es':
       'Solo los registros {componentTableName: string} que no tengan un {catalogNumberFieldName: string} heredarán uno de su padre {collectionObjectTableName: string}.',
     'fr-fr':
-      'Seuls les enregistrements {componentTableName: string} sans {catalogNumberFieldName: string} hériteront de celui de leur {collectionObjectTableName: string} parent.',
+      'Seuls les enregistrements {componentTableName:string} sans {catalogNumberFieldName:string} hériteront de celui de leur {collectionObjectTableName:string} parent.',
     'pt-br':
       'Somente os registros {componentTableName: string} sem um {catalogNumberFieldName: string} herdarão um de seu pai {collectionObjectTableName: string}.',
     'ru-ru':
@@ -3005,7 +3006,7 @@ export const preferencesText = createDictionary({
     'en-us': 'No key binding assigned',
     'de-ch': 'Keine Tastenbelegung zugewiesen',
     'es-es': 'No se ha asignado ninguna combinación de teclas.',
-    'fr-fr': "Aucune touche n'est assignée.",
+    'fr-fr': "Aucune touche n'est assignée",
     'hr-hr': 'Nije dodijeljena veza tipke',
     nb: 'Ingen tast-binding tilordnet',
     'pt-br': 'Nenhuma tecla de atalho atribuída',
@@ -3042,7 +3043,7 @@ export const preferencesText = createDictionary({
     'es-es':
       'Cuando están activados, los atajos de teclado permiten realizar diversas acciones en Specify. Mantén pulsada la tecla Ctrl (o la tecla ⌘ en Mac) para ver la lista de atajos disponibles. Cuando están desactivados, se ignoran todos los atajos de teclado.',
     'fr-fr':
-      "Lorsque cette option est activée, les raccourcis clavier permettent d'effectuer diverses actions dans Specify. Vous pouvez maintenir la touche Ctrl (ou ⌘ sur Mac) enfoncée pour afficher la liste des raccourcis disponibles. Lorsqu'elle est désactivée, tous les raccourcis clavier sont ignorés.",
+      "Lorsque cette option est activée, les raccourcis clavier permettent d'effectuer diverses actions dans Specify. Vous pouvez maintenir la touche <key>Ctrl</key> (ou <key>⌘</key> sur Mac) enfoncée pour afficher la liste des raccourcis disponibles. Lorsqu'elle est désactivée, tous les raccourcis clavier sont ignorés.",
     'hr-hr':
       'Kada su omogućeni, tipkovnički prečaci mogu se koristiti za izvođenje raznih radnji u Specifyju. Možete pritisnuti i držati tipku <key>Ctrl</key> (ili tipku <key>⌘</key> na Macu) da biste vidjeli popis dostupnih prečaca. Kada su onemogućeni, svi tipkovnički prečaci se zanemaruju.',
     nb: 'Når de er aktivert, kan hurtigtaster brukes til å utføre forskjellige handlinger i Specify. Du kan trykke og holde nede <key>Ctrl</key>-tasten (eller <key>⌘</key>-tasten på Mac) for å se en liste over tilgjengelige snarveier. Når de er deaktivert, ignoreres alle hurtigtaster.',
