@@ -156,9 +156,7 @@
     "@eslint/eslintrc": {
       "minimatch": "3.1.4"
     },
-    "glob": {
-      "minimatch": "^11.0.1"
-    },
+    "glob": "^14.0.6",
     "worker-loader": {
       "loader-utils": "2.0.3"
     },
