@@ -459,7 +459,7 @@ export const wbText = createDictionary({
       'A exclusão de um conjunto de dados remove permanentemente o conjunto e seu plano de upload. Esse mapeamento não estará mais disponível para reutilização com outros conjuntos de dados. Uma vez excluído, o recurso de reversão não estará mais disponível.',
     'hr-hr':
       'Trajnim brisanjem skupa podataka uklanja se on i njegov plan prijenosa. Ovo mapiranje više neće biti dostupno za ponovnu upotrebu s drugim skupovima podataka. Nakon brisanja, vraćanje na prethodno stanje više neće biti moguće.',
-    nb: 'Hvis du sletter et datasett permanent, fjernes det og opplastingsplanen. Denne kartleggingen vil ikke lenger være tilgjengelig for gjenbruk med andre datasett. Når den er slettet, vil det ikke lenger være mulig å rulle tilbake.',
+    nb: 'Hvis du sletter et datasett permanent, fjernes det og opplastingsplanen. Denne tilordningen vil ikke lenger være tilgjengelig for gjenbruk med andre datasett. Når den er slettet, vil det ikke lenger være mulig å rulle tilbake.',
   },
   dataSetDeleted: {
     'en-us': 'Data set successfully deleted',
@@ -902,7 +902,7 @@ export const wbText = createDictionary({
       'É necessário definir um mapeamento antes que este conjunto de dados possa ser validado.',
     'hr-hr':
       'Mapiranje je potrebno definirati prije nego što se ovaj skup podataka može validirati',
-    nb: 'En kartlegging må defineres før dette datasettet kan valideres',
+    nb: 'En tilordning må defineres før dette datasettet kan valideres',
   },
   unavailableWhileEditing: {
     'en-us': 'This action requires all changes to be saved',

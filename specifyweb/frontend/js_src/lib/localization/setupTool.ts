@@ -209,7 +209,7 @@ export const setupToolText = createDictionary({
       'Глобальная область действия позволяет обмениваться данными о поступлении между всеми подразделениями. Область действия на уровне подразделений гарантирует, что данные о поступлении будут специфичны для каждого подразделения.',
     'uk-ua':
       'Глобальна область дії дозволяє вам ділитися приєднаннями між усіма підрозділами. Дивізіональна область дії гарантує, що приєднання є специфічними для кожного підрозділу.',
-    nb: 'Globalt omfang lar deg dele Aksesjoner mellom alle divisjoner. Divisjonsomfang sikrer at Aksesjoner er spesifikke for hver divisjon.',
+    nb: 'Globalt område (scope) lar deg dele Aksesjoner mellom alle divisjoner. Divisjons-område (scope) sikrer at Aksesjoner er spesifikke for hver divisjon.',
   },
   address: {
     'en-us': 'Address',

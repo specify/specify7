@@ -2291,7 +2291,7 @@ export const preferencesText = createDictionary({
     'fr-fr':
       "Enregistrer les événements de création, de suppression et de modification d'enregistrements.",
     'hr-hr': 'Zabilježite događaje stvaranja, brisanja i izmjene zapisa.',
-    nb: 'Hendelser for opprettelse, sletting og endring av poster.',
+    nb: 'Loggfør opprettelse, sletting og endring av poster.',
     'pt-br':
       'Registrar eventos de criação, exclusão e modificação de registros.',
     'ru-ru': 'Записывайте события создания, удаления и изменения записей.',
@@ -2866,7 +2866,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Область действия: Списки выбора "Вся таблица"',
     'uk-ua': 'Списки вибору «Уся таблиця»',
     'hr-hr': 'Popisi za odabir "Cijela tablica"',
-    nb: 'Omfang «Hele tabellen»-valglister',
+    nb: 'Område «Hele tabellen»-plukklister',
   },
   scopeEntireTablePicklistsDescription: {
     'en-us':
@@ -2985,7 +2985,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Cambio',
     'fr-fr': 'Shift',
     'hr-hr': 'Pomak',
-    nb: 'Skifte',
+    nb: 'Shift',
     'pt-br': 'Mudança',
     'ru-ru': 'Сдвиг',
     'uk-ua': 'Зсув',
@@ -3007,7 +3007,7 @@ export const preferencesText = createDictionary({
     'es-es': 'No se ha asignado ninguna combinación de teclas.',
     'fr-fr': "Aucune touche n'est assignée.",
     'hr-hr': 'Nije dodijeljena veza tipke',
-    nb: 'Ingen tastebinding tilordnet',
+    nb: 'Ingen tast-binding tilordnet',
     'pt-br': 'Nenhuma tecla de atalho atribuída',
     'ru-ru': 'Назначение клавиш не задано',
     'uk-ua': "Немає призначеного зв'язку клавіш",
@@ -3018,7 +3018,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Atajos de teclado',
     'fr-fr': 'Raccourcis clavier',
     'hr-hr': 'Prečaci na tipkovnici',
-    nb: 'Tastatursnarveier',
+    nb: 'Tastatur-snarveier',
     'pt-br': 'Atalhos de teclado',
     'ru-ru': 'Клавиатурные сочетания',
     'uk-ua': 'Комбінації клавіш',
@@ -3029,7 +3029,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Habilitar atajos de teclado',
     'fr-fr': 'Activer les raccourcis clavier',
     'hr-hr': 'Omogući prečace na tipkovnici',
-    nb: 'Aktiver hurtigtaster',
+    nb: 'Aktiver tastatur-snarveier',
     'pt-br': 'Ativar Atalhos de Teclado',
     'ru-ru': 'Включить сочетания клавиш',
     'uk-ua': 'Увімкнути комбінації клавіш',
@@ -3045,7 +3045,7 @@ export const preferencesText = createDictionary({
       "Lorsque cette option est activée, les raccourcis clavier permettent d'effectuer diverses actions dans Specify. Vous pouvez maintenir la touche Ctrl (ou ⌘ sur Mac) enfoncée pour afficher la liste des raccourcis disponibles. Lorsqu'elle est désactivée, tous les raccourcis clavier sont ignorés.",
     'hr-hr':
       'Kada su omogućeni, tipkovnički prečaci mogu se koristiti za izvođenje raznih radnji u Specifyju. Možete pritisnuti i držati tipku <key>Ctrl</key> (ili tipku <key>⌘</key> na Macu) da biste vidjeli popis dostupnih prečaca. Kada su onemogućeni, svi tipkovnički prečaci se zanemaruju.',
-    nb: 'Når de er aktivert, kan hurtigtaster brukes til å utføre forskjellige handlinger i Spesifiser. Du kan trykke og holde nede <key>Ctrl</key>-tasten (eller <key>⌘</key>-tasten på Mac) for å se en liste over tilgjengelige snarveier. Når de er deaktivert, ignoreres alle hurtigtaster.',
+    nb: 'Når de er aktivert, kan hurtigtaster brukes til å utføre forskjellige handlinger i Specify. Du kan trykke og holde nede <key>Ctrl</key>-tasten (eller <key>⌘</key>-tasten på Mac) for å se en liste over tilgjengelige snarveier. Når de er deaktivert, ignoreres alle hurtigtaster.',
     'pt-br':
       'Quando ativados, os atalhos de teclado podem ser usados para executar várias ações no Specify. Você pode pressionar e segurar a tecla <key>Ctrl</key> (ou <key>⌘</key> no Mac) para ver uma lista de atalhos disponíveis. Quando desativados, todos os atalhos de teclado são ignorados.',
     'ru-ru':
@@ -3171,7 +3171,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Formulario abierto meta',
     'fr-fr': 'Ouvrir les paramètres du formulaire',
     'hr-hr': 'Otvori metapodatke obrasca',
-    nb: 'Åpne skjemameta',
+    nb: 'Åpne skjema meta',
     'pt-br': 'Abrir formulário meta',
     'ru-ru': 'Открытая форма мета',
     'uk-ua': 'Відкрити метаформу',
