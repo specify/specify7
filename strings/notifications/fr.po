@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-11-24 15:51+0000\n"
-"Last-Translator: Maxime GRIVEAU <mgriveau@users.noreply.hosted.weblate.org>\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "notifications/fr/>\n"
 "Language: fr\n"
@@ -38,8 +38,9 @@ msgstr "(Classé du plus récent au plus ancien.)"
 #: components/Notifications/NotificationRenderers.tsx:196
 #: components/Notifications/NotificationRenderers.tsx:217
 #: components/Notifications/NotificationRenderers.tsx:270
+#, fuzzy
 msgid "exception"
-msgstr ""
+msgstr "Erreur"
 
 #. Used in: Components > App Resources > Editor Components ⬤ Components > Attachments > Cell ⬤ Components > Attachments > Viewer ⬤ Components > Locality Update > Status ⬤ Components > Notifications > Notification Renderers ⬤ Components > Toolbar > Backup Database ⬤ Components > Toolbar > Backup Status
 #: components/AppResources/EditorComponents.tsx:161
