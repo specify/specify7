@@ -220,19 +220,31 @@ function QueryFolderTree({
               <span className="flex h-4 w-4 shrink-0 items-center justify-center">
                 {icons.folder}
               </span>
-              <span>
+              <span className="min-w-0 truncate" title={folder.name}>
                 {folder.name}
-                {(folder.sharingGroup ?? inheritedGroup) !== undefined && (
-                  <span className="text-gray-500 dark:text-gray-400">
-                    {' '}
-                    (
+              </span>
+              {(folder.sharingGroup ?? inheritedGroup) !== undefined && (
+                <>
+                  <span
+                    aria-hidden
+                    className="shrink-0 rounded bg-gray-100 px-1 text-xs text-gray-700 dark:bg-neutral-700 dark:text-gray-200"
+                    title={
+                      (folder.sharingGroup ?? inheritedGroup) === 'everyone'
+                        ? queryText.sharedWithEveryone()
+                        : queryText.sharedWithAdmins()
+                    }
+                  >
+                    {(folder.sharingGroup ?? inheritedGroup) === 'everyone'
+                      ? commonText.all()
+                      : queryText.sharingBadgeAdmins()}
+                  </span>
+                  <span className="sr-only">
                     {(folder.sharingGroup ?? inheritedGroup) === 'everyone'
                       ? queryText.sharedWithEveryone()
                       : queryText.sharedWithAdmins()}
-                    )
                   </span>
-                )}
-              </span>
+                </>
+              )}
             </Button.LikeLink>
             {onShare !== undefined && (
               <Button.Icon
@@ -310,13 +322,18 @@ export function QueryListDialog({
 
   const [search, setSearch] = React.useState('');
   const searchFilter = search.trim();
-  const [section, setSection] = React.useState<QuerySection>('personal');
+  const [section, setSection] = React.useState<'personal' | 'shared'>(
+    'personal'
+  );
   const [showFavorites, setShowFavorites] = React.useState(false);
   const [showArchive, setShowArchive] = React.useState(false);
   const [archivePendingIds, setArchivePendingIds] = React.useState<RA<number>>(
     []
   );
   const [favoriteIds, setFavoriteIds] = React.useState<
+    RA<number> | undefined
+  >();
+  const [sharedOwnedIds, setSharedOwnedIds] = React.useState<
     RA<number> | undefined
   >();
   const [favoritePendingIds, setFavoritePendingIds] = React.useState<
@@ -326,6 +343,7 @@ export function QueryListDialog({
     null
   );
   const [refreshToken, setRefreshToken] = React.useState(0);
+  const [sharingRefreshToken, setSharingRefreshToken] = React.useState(0);
   const [cloneStates, setCloneStates] = React.useState<
     Readonly<Record<number, CloneState>>
   >({});
@@ -364,7 +382,7 @@ export function QueryListDialog({
                   ...(selectedFolderId === null
                     ? {}
                     : { query_folder_id: selectedFolderId }),
-                  query_sharing: section,
+                  query_sharing: section === 'personal' ? 'owned' : 'shared',
                 }),
           ...(searchFilter === ''
             ? {}
@@ -423,7 +441,7 @@ export function QueryListDialog({
     const handleFocus = (): void => setRefreshToken((token) => token + 1);
     window.addEventListener('focus', handleFocus);
     const interval =
-      showFavorites || section === 'shared' || section === 'sharing'
+      showFavorites || section === 'shared'
         ? window.setInterval(handleFocus, 30_000)
         : undefined;
     return () => {
@@ -431,6 +449,25 @@ export function QueryListDialog({
       window.removeEventListener('focus', handleFocus);
     };
   }, [section, showFavorites]);
+
+  React.useEffect(() => {
+    let isCurrent = true;
+    setSharedOwnedIds(undefined);
+    void ajax<{ readonly queryIds: RA<number> }>(
+      '/stored_query/shared-owned/',
+      {
+        headers: { Accept: 'application/json' },
+        waitForPendingGet: refreshToken > 0 || sharingRefreshToken > 0,
+      }
+    )
+      .then(({ data: { queryIds } }) => {
+        if (isCurrent) setSharedOwnedIds(queryIds);
+      })
+      .catch(raise);
+    return (): void => {
+      isCurrent = false;
+    };
+  }, [refreshToken, sharingRefreshToken]);
 
   React.useEffect(() => {
     let isCurrent = true;
@@ -482,14 +519,22 @@ export function QueryListDialog({
     () => flattenQueryFolders(folderTree),
     [folderTree]
   );
-  const selectedFolderIsShared = React.useMemo(() => {
-    let folder = folders?.find((item) => item.id === selectedFolderId);
-    while (folder !== undefined) {
-      if (folder.sharingGroup !== undefined) return true;
-      folder = folders?.find((item) => item.id === folder?.parentId);
-    }
-    return false;
-  }, [folders, selectedFolderId]);
+  const sharedFolderIds = React.useMemo(
+    () =>
+      (folders ?? [])
+        .filter((item) => {
+          let folder: QueryFolder | undefined = item;
+          while (folder !== undefined) {
+            if (folder.sharingGroup !== undefined) return true;
+            folder = folders?.find(
+              (candidate) => candidate.id === folder?.parentId
+            );
+          }
+          return false;
+        })
+        .map(({ id }) => id),
+    [folders]
+  );
   const handleCreateFolder = (name: string, parentId: number | null): void => {
     loading(
       ajax<QueryFolder>('/stored_query/folders/', {
@@ -504,14 +549,14 @@ export function QueryListDialog({
       })
     );
   };
-  const handleMoveQuery = (folderId: number): void => {
+  const handleMoveQuery = (folderId: number, overwrite: boolean): void => {
     if (movingQuery === undefined || movePending) return;
     setMovePending(true);
     loading(
       ajax(`/stored_query/query/${movingQuery.id}/folder/`, {
         method: 'POST',
         headers: { Accept: 'application/json' },
-        body: { folderId },
+        body: { folderId, ...(overwrite ? { overwrite: true } : {}) },
       })
         .then(() => {
           setMovingQuery(undefined);
@@ -631,7 +676,6 @@ export function QueryListDialog({
           {(
             [
               ['personal', queryText.yourQueries(), icons.folder],
-              ['sharing', queryText.queriesIShare(), icons.documentSearch],
               ['shared', queryText.sharedQueries(), icons.globe],
             ] as const
           ).map(([value, label, icon]) => (
@@ -811,6 +855,10 @@ export function QueryListDialog({
                     }
                     key={query.id}
                     query={query}
+                    isShared={sharedOwnedIds?.includes(query.id) === true}
+                    onSharingChange={(): void =>
+                      setSharingRefreshToken((token) => token + 1)
+                    }
                     cloneState={cloneStates[query.id] ?? defaultCloneState}
                     onCloneStateChange={(state): void =>
                       setCloneStates((states) => ({
@@ -825,6 +873,8 @@ export function QueryListDialog({
                       showArchive ||
                       showFavorites ||
                       isReadOnly ||
+                      (section === 'personal' &&
+                        sharedOwnedIds === undefined) ||
                       folders === undefined
                         ? undefined
                         : (): void => setMovingQuery(query)
@@ -853,7 +903,9 @@ export function QueryListDialog({
                     }
                     onArchive={
                       isReadOnly ||
-                      selectedFolderIsShared ||
+                      (!showArchive &&
+                        (sharedOwnedIds === undefined ||
+                          sharedOwnedIds.includes(query.id))) ||
                       (!showArchive &&
                         (showFavorites || section !== 'personal')) ||
                       idFromUrl(query.specifyUser) !== userInformation.id
@@ -940,6 +992,8 @@ export function QueryListDialog({
           folders={folderOptions}
           queryName={movingQuery.name}
           pending={movePending}
+          isShared={sharedOwnedIds?.includes(movingQuery.id) === true}
+          sharedFolderIds={sharedFolderIds}
           onClose={(): void => setMovingQuery(undefined)}
           onMove={handleMoveQuery}
         />
@@ -1017,16 +1071,21 @@ function MoveQueryToFolderDialog({
   folders,
   queryName,
   pending,
+  isShared,
+  sharedFolderIds,
   onClose,
   onMove,
 }: {
   readonly folders: RA<QueryFolderOption>;
   readonly queryName: string;
   readonly pending: boolean;
+  readonly isShared: boolean;
+  readonly sharedFolderIds: RA<number>;
   readonly onClose: () => void;
-  readonly onMove: (folderId: number) => void;
+  readonly onMove: (folderId: number, overwrite: boolean) => void;
 }): JSX.Element {
   const [folderId, setFolderId] = React.useState('');
+  const [confirmOverwrite, setConfirmOverwrite] = React.useState(false);
   return (
     <Dialog
       header={queryText.moveQueryToFolder({ queryName })}
@@ -1035,16 +1094,31 @@ function MoveQueryToFolderDialog({
       buttons={
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Button.Info
-            disabled={folderId === '' || pending}
-            onClick={(): void => onMove(Number(folderId))}
-          >
-            {queryText.move()}
-          </Button.Info>
+          {confirmOverwrite ? (
+            <Button.Warning
+              disabled={pending}
+              onClick={(): void => onMove(Number(folderId), true)}
+            >
+              {commonText.proceed()}
+            </Button.Warning>
+          ) : (
+            <Button.Info
+              disabled={folderId === '' || pending}
+              onClick={(): void => {
+                if (isShared && sharedFolderIds.includes(Number(folderId)))
+                  setConfirmOverwrite(true);
+                else onMove(Number(folderId), false);
+              }}
+            >
+              {queryText.move()}
+            </Button.Info>
+          )}
         </>
       }
     >
-      {folders.length === 0 ? (
+      {confirmOverwrite ? (
+        <p role="alert">{queryText.folderSharingWarning()}</p>
+      ) : folders.length === 0 ? (
         <p>{queryText.noFolders()}</p>
       ) : (
         <Label.Block>
@@ -1147,6 +1221,8 @@ export function QueryList({
   archivePending = false,
   onArchive,
   isArchived = false,
+  isShared = false,
+  onSharingChange,
 }: {
   readonly query: SerializedResource<SpQuery>;
   readonly getQuerySelectCallback?: (
@@ -1164,6 +1240,8 @@ export function QueryList({
   readonly archivePending?: boolean;
   readonly onArchive?: () => void;
   readonly isArchived?: boolean;
+  readonly isShared?: boolean;
+  readonly onSharingChange?: () => void;
 }): JSX.Element {
   const loading = React.useContext(LoadingContext);
   const queryResource = React.useMemo(
@@ -1200,6 +1278,15 @@ export function QueryList({
                 {text}
               </Button.LikeLink>
             )}
+            {isShared && (
+              <span
+                role="img"
+                aria-label={queryText.queryIsShared()}
+                title={queryText.queryIsShared()}
+              >
+                {icons.share}
+              </span>
+            )}
             {canClone && (
               <DataEntry.Clone
                 aria-label={queryText.cloneSharedQuery()}
@@ -1222,7 +1309,10 @@ export function QueryList({
           {!isReadOnly && (
             <QueryEditButton
               queryResource={queryResource}
-              onRefresh={refreshQuery}
+              onRefresh={(): void => {
+                refreshQuery();
+                onSharingChange?.();
+              }}
             />
           )}
           <Button.Icon

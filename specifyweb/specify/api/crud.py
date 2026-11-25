@@ -541,6 +541,7 @@ def get_collection(
     Omit query_folder_id for the main list, or supply a folder ID for its contents.
     query_favorites=true shows all visible favorites belonging to the current user.
     query_archive=true shows owned archived queries; false excludes personal archives.
+    query_sharing=owned includes all owned queries regardless of sharing state.
     Without these parameters, existing collection behavior is unchanged.
     """
     from specifyweb.specify.api.serializers import _obj_to_data
@@ -556,7 +557,7 @@ def get_collection(
     sharing = None
     if model._meta.model_name == 'spquery' and 'query_sharing' in params:
         sharing = params.get('query_sharing')
-        if query_user_id is None or sharing not in ('personal', 'sharing', 'shared'):
+        if query_user_id is None or sharing not in ('personal', 'sharing', 'shared', 'owned'):
             raise FilterError('query_sharing requires a valid section and current user.')
         params = {key: value for key, value in params.items() if key != 'query_sharing'}
     if model._meta.model_name == 'spquery' and 'query_archive' in params:
@@ -623,7 +624,9 @@ def get_collection(
 
         grants, groups = shared_query_ids()
         shared = Q(pk__in=grants) | Q(pk__in=groups)
-        if sharing == 'personal':
+        if sharing == 'owned':
+            objs = objs.filter(specifyuser_id=query_user_id)
+        elif sharing == 'personal':
             objs = objs.filter(specifyuser_id=query_user_id)
             objs = (
                 objs.filter(~shared | Q(pk__in=groups))

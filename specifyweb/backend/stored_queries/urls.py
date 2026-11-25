@@ -11,6 +11,7 @@ urlpatterns = [
     path('query/<int:id>/archive/', views.archive_query),
     path('query/<int:id>/restore/', views.restore_query),
     path('favorites/', views.query_favorites),
+    path('shared-owned/', views.shared_owned_queries),
     path('folders/', views.query_folders),
     path('folders/<int:id>/sharing/', folder_sharing.manage_folder_sharing),
     path('ephemeral/', views.ephemeral),

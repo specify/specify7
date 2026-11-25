@@ -19,7 +19,7 @@ from specifyweb.backend.stats.coordination import (
 from specifyweb.backend.stored_queries.batch_edit import run_batch_edit
 from specifyweb.backend.stored_queries.access import (
     ensure_query_access, ensure_query_write_access, filter_queries_for_user,
-    query_is_shared,
+    query_is_shared, shared_query_ids,
 )
 from specifyweb.specify.models_utils.models_by_table_id import model_names_by_table_id
 from specifyweb.specify.api.serializers import toJson, uri_for_model
@@ -31,7 +31,7 @@ from specifyweb.backend.permissions.permissions import PermissionTarget, Permiss
     check_permission_targets, check_table_permissions
 from specifyweb.specify.models import Collection, Recordset, Recordsetitem, \
     Loanreturnpreparation, Loanpreparation, Loan, Spquery
-from specifyweb.specify.views import login_maybe_required
+from specifyweb.specify.views import HttpResponseConflict, login_maybe_required
 from .execution import execute, run_ephemeral_query, do_export, recordset, \
     return_loan_preps as rlp, get_query_tables
 
@@ -182,11 +182,17 @@ def move_query_to_folder(request: HttpRequest, id: int) -> HttpResponse:
         if current_folder is None:
             return HttpResponseBadRequest('The destination folder no longer exists.')
         shared_folder = sharing_ancestor(folders, current_folder)
+        removed_grants = False
         if folder.section == models.QueryFolder.Section.PERSONAL:
-            if previous_sharing is None and query_is_shared(id):
-                return HttpResponseBadRequest('Shared queries cannot be moved into Your Queries.')
             if (previous_sharing is not None or shared_folder is not None) and not request.specify_user.is_admin():
                 return HttpResponseForbidden('Only a Specify Administrator can change folder sharing.')
+            if shared_folder is not None:
+                grants = locked_query.share_grants.all()
+                if grants.exists() and data.get('overwrite') is not True:
+                    return HttpResponseConflict(
+                        'Existing query sharing must be confirmed before it is overwritten.'
+                    )
+                removed_grants = grants.delete()[0] > 0
         elif folder.section == models.QueryFolder.Section.SHARING and not query_is_shared(id):
             return HttpResponseBadRequest('The query does not belong to this query section.')
         models.QueryFolderMembership.objects.update_or_create(
@@ -195,9 +201,26 @@ def move_query_to_folder(request: HttpRequest, id: int) -> HttpResponse:
             section=folder.section,
             defaults={'folder': folder, 'sharing_folder': shared_folder},
         )
-        if previous_sharing != (shared_folder.id if shared_folder else None):
+        if removed_grants or previous_sharing != (shared_folder.id if shared_folder else None):
             Spquery.objects.filter(pk=locked_query.pk).update(version=F('version') + 1)
     return JsonResponse({'queryId': id, 'folderId': folder.id, 'section': folder.section})
+
+
+@require_GET
+@login_maybe_required
+@never_cache
+def shared_owned_queries(request: HttpRequest) -> JsonResponse:
+    """Return owned query IDs shared individually or through a folder."""
+    from django.db.models import Q
+
+    check_table_permissions(
+        request.specify_collection, request.specify_user_agent, Spquery, 'read'
+    )
+    grants, groups = shared_query_ids()
+    query_ids = Spquery.objects.filter(specifyuser=request.specify_user).filter(
+        Q(pk__in=grants) | Q(pk__in=groups)
+    ).order_by('pk').values_list('pk', flat=True)
+    return JsonResponse({'queryIds': list(query_ids)})
 
 
 @require_GET

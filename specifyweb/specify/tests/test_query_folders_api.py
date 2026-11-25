@@ -317,6 +317,83 @@ class QueryFolderMoveTests(SharedQueryFixture, ApiTests):
             self.assertEqual(response.status_code, 400, response.content)
 
 
+class UnifiedOwnedQueriesTests(SharedQueryFixture, ApiTests):
+    def setUp(self):
+        super().setUp()
+        self.client.cookies["collection"] = str(self.collection.id)
+        self.personal = stored_query_models.QueryFolder.objects.create(
+            name="Personal", owner=self.specifyuser
+        )
+        self.old_folder = stored_query_models.QueryFolder.objects.create(
+            name="Old sharing folder", owner=self.specifyuser, section="sharing"
+        )
+        self.group = stored_query_models.QueryFolder.objects.create(
+            name="Group", owner=self.specifyuser, sharing_group="everyone"
+        )
+        self.group_query = models.Spquery.objects.create(
+            name="Group query", contextname=self.query.contextname,
+            contexttableid=self.query.contexttableid, specifyuser=self.specifyuser,
+        )
+        self.group_membership = stored_query_models.QueryFolderMembership.objects.create(
+            owner=self.specifyuser, query=self.group_query, section="personal",
+            folder=self.group, sharing_folder=self.group,
+        )
+        stored_query_models.QueryFolderMembership.objects.create(
+            owner=self.specifyuser, query=self.query, section="sharing", folder=self.old_folder,
+        )
+        self.grant = SpqueryShare.objects.create(query=self.query, recipient=self.recipient)
+
+    def _owned(self, folder=None):
+        params = {
+            "domainfilter": "false", "limit": 0, "query_folder_section": "personal",
+            "query_sharing": "owned", "query_archive": "false",
+        }
+        if folder is not None:
+            params["query_folder_id"] = folder.id
+        response = self.client.get("/api/specify/spquery/", params)
+        self.assertEqual(response.status_code, 200, response.content)
+        return {query["id"] for query in response.json()["objects"]}
+
+    def test_owned_queries_include_individual_and_folder_shares(self):
+        received = models.Spquery.objects.create(
+            name="Received", contextname=self.query.contextname,
+            contexttableid=self.query.contexttableid, specifyuser=self.recipient,
+        )
+        SpqueryShare.objects.create(query=received, recipient=self.specifyuser)
+        self.assertEqual(self._owned(), {self.query.id})
+        self.assertEqual(self._owned(self.group), {self.group_query.id})
+        response = self.client.get("/stored_query/shared-owned/")
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertCountEqual(response.json()["queryIds"], [self.query.id, self.group_query.id])
+
+        self.grant.delete()
+        self.assertCountEqual(
+            self.client.get("/stored_query/shared-owned/").json()["queryIds"],
+            [self.group_query.id],
+        )
+
+    def test_move_individually_shared_query_preserves_or_confirms_grants(self):
+        url = f"/stored_query/query/{self.query.id}/folder/"
+        def move(folder, **extra):
+            return self.client.post(
+                url, data=json.dumps({"folderId": folder.id, **extra}),
+                content_type="application/json",
+            )
+
+        self.assertEqual(move(self.personal).status_code, 200)
+        self.assertTrue(SpqueryShare.objects.filter(pk=self.grant.id).exists())
+        self.assertEqual(self._owned(self.personal), {self.query.id})
+        self.assertEqual(move(self.group).status_code, 409)
+        self.assertTrue(SpqueryShare.objects.filter(pk=self.grant.id).exists())
+        self.assertEqual(move(self.group, overwrite=True).status_code, 200)
+        self.assertFalse(SpqueryShare.objects.filter(pk=self.grant.id).exists())
+        self.assertEqual(self._owned(self.group), {self.query.id, self.group_query.id})
+        membership = stored_query_models.QueryFolderMembership.objects.get(
+            owner=self.specifyuser, query=self.query, section="personal"
+        )
+        self.assertEqual(membership.sharing_folder_id, self.group.id)
+
+
 class QueryFolderSharingTests(SharedQueryFixture, ApiTests):
     def setUp(self):
         super().setUp()

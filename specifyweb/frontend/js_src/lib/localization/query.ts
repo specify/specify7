@@ -23,6 +23,7 @@ export const queryText = createDictionary({
     'en-us': 'Folders',
   },
   shareFolder: { 'en-us': 'Share folder' },
+  queryIsShared: { 'en-us': 'Shared query' },
   folderSharingDescription: {
     'en-us':
       'Share every query in this folder and its subfolders with a group. Queries added later are shared automatically.',
@@ -41,6 +42,7 @@ export const queryText = createDictionary({
   },
   shareWithEveryone: { 'en-us': 'Share with all users' },
   shareWithAdmins: { 'en-us': 'Share with Admins' },
+  sharingBadgeAdmins: { 'en-us': 'Admins' },
   sharedWithEveryone: { 'en-us': 'Shared with everyone' },
   sharedWithAdmins: { 'en-us': 'Shared with Admins' },
   favorites: {

@@ -311,7 +311,11 @@ test.each([
   }
 );
 
-test('switches between personal, incoming shared, and outgoing shared query filters', async () => {
+overrideAjax('/stored_query/shared-owned/', { queryIds: [] });
+overrideAjax('/stored_query/favorites/', { queryIds: [] });
+overrideAjax('/stored_query/folders/', { folders: [] });
+
+test('switches between owned and incoming shared query filters', async () => {
   Object.defineProperty(userInformation, 'isadmin', {
     configurable: true,
     value: false,
@@ -329,7 +333,8 @@ test('switches between personal, incoming shared, and outgoing shared query filt
     expect(fetch).toHaveBeenLastCalledWith(
       'SpQuery',
       expect.objectContaining({ specifyUser: userInformation.id }),
-      expect.objectContaining({ share_grants__isnull: 'true' })
+      expect.objectContaining({ query_sharing: 'owned' }),
+      expect.anything()
     )
   );
   await act(async () => {
@@ -340,18 +345,12 @@ test('switches between personal, incoming shared, and outgoing shared query filt
   expect(fetch).toHaveBeenLastCalledWith(
     'SpQuery',
     expect.not.objectContaining({ specifyUser: userInformation.id }),
-    expect.objectContaining({ share_grants__recipient: userInformation.id })
+    expect.objectContaining({ query_sharing: 'shared' }),
+    expect.anything()
   );
-  await act(async () => {
-    fireEvent.click(
-      screen.getByRole('button', { name: queryText.queriesIShare() })
-    );
-  });
-  expect(fetch).toHaveBeenLastCalledWith(
-    'SpQuery',
-    expect.objectContaining({ specifyUser: userInformation.id }),
-    expect.objectContaining({ share_grants__isnull: 'false' })
-  );
+  expect(
+    screen.queryByRole('button', { name: queryText.queriesIShare() })
+  ).toBeNull();
 });
 
 test('shared originals retain exports and Save As in read-only mode', () => {

@@ -23,6 +23,8 @@ import type { SpQuery } from '../../DataModel/types';
 import { LoadingContext } from '../../Core/Contexts';
 import { UnloadProtectsContext } from '../../Router/UnloadProtect';
 import * as permissions from '../../Permissions/helpers';
+import * as queryEdit from '../../QueryBuilder/Edit';
+import * as queryRefresh from '../../QueryBuilder/useQueryRefresh';
 import { QueryList, QueryListDialog } from '../Query';
 
 jest.mock('../../QueryBuilder/Save', () => ({
@@ -38,9 +40,16 @@ const mockCloneSharedQuery = jest.mocked(cloneSharedQuery);
 requireContext();
 
 let savedFavoriteIds: number[] = [];
+let sharedOwnedIds: number[] = [];
+let sharedParent = false;
 beforeEach(() => {
   savedFavoriteIds = [];
+  sharedOwnedIds = [];
+  sharedParent = false;
 });
+overrideAjax('/stored_query/shared-owned/', () => ({
+  queryIds: [...sharedOwnedIds],
+}));
 overrideAjax('/stored_query/favorites/', () => ({
   queryIds: [...savedFavoriteIds],
 }));
@@ -61,9 +70,15 @@ overrideAjax(
   { method: 'POST' }
 );
 
-overrideAjax('/stored_query/folders/', {
+overrideAjax('/stored_query/folders/', () => ({
   folders: [
-    { id: 7, name: 'Parent', parentId: null, section: 'personal' },
+    {
+      id: 7,
+      name: 'Parent',
+      parentId: null,
+      section: 'personal',
+      ...(sharedParent ? { sharingGroup: 'everyone' } : {}),
+    },
     { id: 9, name: 'Nested', parentId: 7, section: 'personal' },
     { id: 10, name: 'Grandchild', parentId: 9, section: 'personal' },
     { id: 11, name: 'Other parent', parentId: null, section: 'personal' },
@@ -71,7 +86,7 @@ overrideAjax('/stored_query/folders/', {
     { id: 20, name: 'Sharing parent', parentId: null, section: 'sharing' },
     { id: 21, name: 'Shared parent', parentId: null, section: 'shared' },
   ],
-});
+}));
 
 overrideAjax('/stored_query/folders/7/sharing/', { hasSharedQueries: true });
 overrideAjax(
@@ -143,9 +158,14 @@ test('shares nested folders after warning and removes group sharing', async () =
     });
     expect(remove).toHaveClass('text-red-600');
     expect(remove).toHaveAttribute('title', 'Revoke sharing');
+    const badges = within(parent).getAllByText(queryText.sharingBadgeAdmins());
+    expect(badges).toHaveLength(3);
+    badges.forEach((badge) =>
+      expect(badge).toHaveAttribute('title', queryText.sharedWithAdmins())
+    );
     expect(
-      within(parent).getAllByText(`(${queryText.sharedWithAdmins()})`).length
-    ).toBeGreaterThan(1);
+      within(parent).getByRole('button', { name: /Parent Shared with Admins/ })
+    ).toBeVisible();
     await act(async () => {
       fireEvent.click(remove);
     });
@@ -228,7 +248,6 @@ test.each([false, true])(
 
 describe.each([
   ['personal', queryText.yourQueries(), 9, 'Nested'],
-  ['sharing', queryText.queriesIShare(), 20, 'Sharing parent'],
   ['shared', queryText.sharedQueries(), 21, 'Shared parent'],
 ] as const)('moving queries in %s', (section, label, folderId, folderName) => {
   let moved = false;
@@ -764,13 +783,13 @@ describe('archiving personal queries', () => {
     expect(fetch.mock.calls.at(-1)?.[2]).toEqual({
       query_archive: 'false',
       query_folder_section: 'personal',
-      query_sharing: 'personal',
+      query_sharing: 'owned',
     });
     expect(handleError).not.toHaveBeenCalled();
   });
 });
 
-test('owned queries cannot be archived from Queries I Share', async () => {
+test('owned shared queries appear in Your Queries with sharing indicators', async () => {
   const queryName = 'Owned sharing query';
   const query = serializeResource(
     new tables.SpQuery.Resource<SpQuery>({
@@ -781,25 +800,200 @@ test('owned queries cannot be archived from Queries I Share', async () => {
       specifyUser: `/api/specify/specifyuser/${userInformation.id}/`,
     })
   );
-  jest
-    .spyOn(collection, 'fetchCollection')
-    .mockResolvedValue({ records: [query], totalCount: 1 });
+  const groupedQuery = serializeResource(
+    new tables.SpQuery.Resource<SpQuery>({
+      id: 34,
+      name: 'Folder shared query',
+      contextName: 'CollectionObject',
+      contextTableId: tables.CollectionObject.tableId,
+      specifyUser: `/api/specify/specifyuser/${userInformation.id}/`,
+    })
+  );
+  const privateQuery = serializeResource(
+    new tables.SpQuery.Resource<SpQuery>({
+      id: 35,
+      name: 'Private query',
+      contextName: 'CollectionObject',
+      contextTableId: tables.CollectionObject.tableId,
+      specifyUser: `/api/specify/specifyuser/${userInformation.id}/`,
+    })
+  );
+  sharedOwnedIds = [query.id, groupedQuery.id];
+  jest.spyOn(collection, 'fetchCollection').mockResolvedValue({
+    records: [query, groupedQuery, privateQuery],
+    totalCount: 3,
+  });
   render(
     <QueryListDialog newQueryUrl="/specify/query/new/" onClose={jest.fn()}>
       {({ children }) => children}
     </QueryListDialog>
   );
   await screen.findByText('Parent');
-  await act(async () => {
-    fireEvent.click(
-      screen.getByRole('button', { name: queryText.queriesIShare() })
-    );
-  });
+  expect(
+    screen.queryByRole('button', { name: queryText.queriesIShare() })
+  ).toBeNull();
+  await waitFor(() =>
+    expect(
+      screen.getAllByRole('img', { name: queryText.queryIsShared() })
+    ).toHaveLength(2)
+  );
+  for (const name of [queryName, groupedQuery.name]) {
+    const row = screen
+      .getByRole('link', { name: new RegExp(name) })
+      .closest('tr');
+    if (row === null) throw new Error('Query row missing');
+    expect(
+      within(row).getByRole('img', { name: queryText.queryIsShared() })
+    ).toBeVisible();
+  }
+  const privateRow = screen
+    .getByRole('link', { name: /Private query/ })
+    .closest('tr');
+  if (privateRow === null) throw new Error('Private query row missing');
+  expect(
+    within(privateRow).queryByRole('img', { name: queryText.queryIsShared() })
+  ).toBeNull();
   expect(
     screen.getByRole('button', {
       name: queryText.archiveQuery({ queryName }),
     })
   ).toBeDisabled();
+});
+
+test('refreshes the sharing indicator after individual sharing changes', async () => {
+  const query = serializeResource(
+    new tables.SpQuery.Resource<SpQuery>({
+      id: 33,
+      name: 'Updated query',
+      contextName: 'CollectionObject',
+      contextTableId: tables.CollectionObject.tableId,
+      specifyUser: `/api/specify/specifyuser/${userInformation.id}/`,
+    })
+  );
+  jest.spyOn(collection, 'fetchCollection').mockResolvedValue({
+    records: [query],
+    totalCount: 1,
+  });
+  jest.spyOn(queryRefresh, 'useQueryRefresh').mockReturnValue({
+    savedQuery: { current: query },
+    refreshQuery: jest.fn(),
+    conflictDialog: null,
+  });
+  jest
+    .spyOn(queryEdit, 'QueryEditButton')
+    .mockImplementation(({ onRefresh }) => (
+      <button type="button" onClick={onRefresh}>
+        Update sharing
+      </button>
+    ));
+  render(
+    <QueryListDialog newQueryUrl="/specify/query/new/" onClose={jest.fn()}>
+      {({ children }) => children}
+    </QueryListDialog>
+  );
+  const archive = await screen.findByRole('button', {
+    name: queryText.archiveQuery({ queryName: query.name }),
+  });
+  await waitFor(() => expect(archive).toBeEnabled());
+  expect(
+    screen.queryByRole('img', { name: queryText.queryIsShared() })
+  ).toBeNull();
+  sharedOwnedIds = [query.id];
+  fireEvent.click(screen.getByRole('button', { name: 'Update sharing' }));
+  await screen.findByRole('img', { name: queryText.queryIsShared() });
+  expect(archive).toBeDisabled();
+  sharedOwnedIds = [];
+  fireEvent.click(screen.getByRole('button', { name: 'Update sharing' }));
+  await waitFor(() => expect(archive).toBeEnabled());
+  expect(
+    screen.queryByRole('img', { name: queryText.queryIsShared() })
+  ).toBeNull();
+});
+
+describe('moving an individually shared query into a shared folder', () => {
+  overrideAjax(
+    '/stored_query/query/33/folder/',
+    { queryId: 33, folderId: 9, section: 'personal' },
+    { method: 'POST', body: { folderId: 9, overwrite: true } }
+  );
+
+  test('asks before overwriting the existing shares', async () => {
+    sharedParent = true;
+    sharedOwnedIds = [33];
+    const query = serializeResource(
+      new tables.SpQuery.Resource<SpQuery>({
+        id: 33,
+        name: 'Individually shared',
+        contextName: 'CollectionObject',
+        contextTableId: tables.CollectionObject.tableId,
+        specifyUser: `/api/specify/specifyuser/${userInformation.id}/`,
+      })
+    );
+    jest.spyOn(collection, 'fetchCollection').mockResolvedValue({
+      records: [query],
+      totalCount: 1,
+    });
+    const ajax = jest.spyOn(ajaxUtils, 'ajax');
+    render(
+      <LoadingContext.Provider
+        value={(promise): void => {
+          void promise;
+        }}
+      >
+        <UnloadProtectsContext.Provider value={[]}>
+          <QueryListDialog
+            newQueryUrl="/specify/query/new/"
+            onClose={jest.fn()}
+          >
+            {({ children }) => children}
+          </QueryListDialog>
+        </UnloadProtectsContext.Provider>
+      </LoadingContext.Provider>
+    );
+    await screen.findByRole('img', { name: queryText.queryIsShared() });
+    const parent = screen.getByText('Parent').closest('li');
+    if (parent === null) throw new Error('Parent folder missing');
+    const badges = within(parent).getAllByText(commonText.all());
+    expect(badges).toHaveLength(3);
+    badges.forEach((badge) =>
+      expect(badge).toHaveAttribute('title', queryText.sharedWithEveryone())
+    );
+    expect(
+      within(parent).getByRole('button', {
+        name: 'Nested Shared with everyone',
+      })
+    ).toBeVisible();
+    fireEvent.click(
+      screen.getByRole('button', {
+        name: queryText.moveQueryToFolder({ queryName: query.name }),
+      })
+    );
+    fireEvent.change(
+      screen.getByRole('combobox', { name: queryText.folders() }),
+      {
+        target: { value: '9' },
+      }
+    );
+    fireEvent.click(screen.getByRole('button', { name: queryText.move() }));
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      queryText.folderSharingWarning()
+    );
+    expect(
+      ajax.mock.calls.some(
+        ([url, options]) =>
+          url === '/stored_query/query/33/folder/' && options.method === 'POST'
+      )
+    ).toBe(false);
+    await act(async () => {
+      fireEvent.click(
+        screen.getByRole('button', { name: commonText.proceed() })
+      );
+    });
+    expect(ajax).toHaveBeenCalledWith(
+      '/stored_query/query/33/folder/',
+      expect.objectContaining({ body: { folderId: 9, overwrite: true } })
+    );
+  });
 });
 
 test('shared queries cannot be archived, including from Favorites', async () => {
@@ -894,10 +1088,9 @@ test('shows query sections as icon navigation on the left', async () => {
     name: queryText.queries(),
   });
   const sectionButtons = within(navigation).getAllByRole('button');
-  const typeButtons = sectionButtons.slice(0, 3);
+  const typeButtons = sectionButtons.slice(0, 2);
   expect(typeButtons.map(({ textContent }) => textContent?.trim())).toEqual([
     queryText.yourQueries(),
-    queryText.queriesIShare(),
     queryText.sharedQueries(),
   ]);
   const sectionIcons = typeButtons.map(
@@ -905,7 +1098,6 @@ test('shows query sections as icon navigation on the left', async () => {
   );
   expect(sectionIcons).toEqual([
     renderToStaticMarkup(icons.folder),
-    renderToStaticMarkup(icons.documentSearch),
     renderToStaticMarkup(icons.globe),
   ]);
   expect(
@@ -1021,7 +1213,6 @@ describe('personal folder creation', () => {
 });
 
 describe.each([
-  [queryText.queriesIShare(), 'Sharing parent', 'Sharing child', 20, 'sharing'],
   [queryText.sharedQueries(), 'Shared parent', 'Shared child', 21, 'shared'],
 ])(
   'keeps folders and parent options scoped to %s',
@@ -1087,7 +1278,6 @@ describe.each([
 
       for (const otherLabel of [
         queryText.yourQueries(),
-        queryText.queriesIShare(),
         queryText.sharedQueries(),
       ].filter((otherLabel) => otherLabel !== label)) {
         await act(async () => {
