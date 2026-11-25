@@ -75,12 +75,18 @@ class ContextMiddleware:
         # These can be set by middleware "higher" in the chain/before this one,
         # particularly when using a different authentiation scheme, such as via
         # JWT Auth token
+
+        # The order of these attributes is important. specify_collection can
+        # depend on specify_user being set and specify_user_agent depends on
+        # both specify_collection and specify_user being set
+        if not hasattr(request, "specify_user"):
+            request.specify_user = SimpleLazyObject(lambda: get_cached('_cached_specify_user', get_user, request))
+
         if not hasattr(request, "specify_collection"):
             request.specify_collection = SimpleLazyObject(lambda: get_cached('_cached_collection', get_collection, request))
+
         if not hasattr(request, "specify_user_agent"):
             request.specify_user_agent = SimpleLazyObject(lambda: get_cached('_cached_agent', get_agent, request))
-        if not hasattr(request, "specify_user"):
-            request.specify_user       = SimpleLazyObject(lambda: get_cached('_cached_specify_user', get_user, request))
 
         return self.get_response(request)
 
