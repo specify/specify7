@@ -13,7 +13,20 @@ from specifyweb.specify.models import Collection, Specifyuser
 from specifyweb.backend.cache.redis.connect import RedisConnection, RedisString
 from specifyweb.backend.context.collection_access import has_collection_access
 
-DEFAULT_AUTH_LIFESPAN_SECONDS = 1800
+# REFACTOR: There should probably be a central backend utility for this
+SECONDS_IN_HOUR = 3600
+SECONDS_IN_DAY = 24 * SECONDS_IN_HOUR
+SECONDS_IN_WEEK = 7 * SECONDS_IN_DAY
+
+# The default token life span
+# REFACTOR: Reduce this when refresh tokens are implemented or when there's an
+# easier way of issuing access tokens
+DEFAULT_AUTH_LIFESPAN_SECONDS = SECONDS_IN_DAY
+# For security reasons, we only allow tokens to be valid up to one week from
+# the time they are issued
+# If someone has lost an access token and wants to immediately revoke it, they
+# can change their SECRET_KEY and restart their Specify instance
+MAX_TOKEN_LIFESPAN = SECONDS_IN_WEEK
 
 # See https://pyjwt.readthedocs.io/en/latest/api.html#jwt.decode
 AUTH_JWT_DECODE_OPTIONS: jwt.types.Options = {
@@ -29,13 +42,14 @@ AUTH_TOKEN_ALGORITHMS = ["HS256"]
 def generate_access_token(user, collection_id: int, expires_in: int = DEFAULT_AUTH_LIFESPAN_SECONDS):
     jti = str(uuid.uuid4())
 
+    token_issue_time = datetime.now(timezone.utc)
     jwt_payload = {
         "sub": str(user.id),
         "username": user.name,
         "collection": collection_id,
         "jti": jti,
-        "iat": datetime.now(timezone.utc),
-        "exp": datetime.now(timezone.utc) + timedelta(seconds=expires_in)
+        "iat": token_issue_time,
+        "exp": token_issue_time + timedelta(seconds=expires_in)
     }
     token = jwt.encode(jwt_payload, settings.SECRET_KEY,
                        algorithm=AUTH_TOKEN_ALGORITHMS[0])
@@ -51,7 +65,7 @@ def revoke_access_token(token: dict[str, Any]):
     authorization
     """
     required_claims = ("jti", "exp")
-    if not all(k in token for k in required_claims):
+    if not all(key in token for key in required_claims):
         raise ValueError(f"Token missing required claims: {required_claims}")
     jti = token["jti"]
     expires_at = token["exp"]
@@ -112,6 +126,28 @@ def decode_access_token(encoded_token: str) -> dict[str, Any] | None:
         return None
     return token
 
+def token_lifespan_invalid(token: dict) -> bool:
+    """
+    If a valid access token is manufacted by the user and has a configured
+    lifespan of greater than our max lifespan, we reject the token.
+    This does mean if we change the max lifespan in the future and someone
+    updates, their tokens could suddenly be invalid.
+    Access tokens are meant to be short lived and readily re-issued, so this
+    shouldn't be too big of an Issue.
+
+    This function assumes the token has been decoded and that the claims are
+    validated.
+    """
+    token_expires_at = datetime.fromtimestamp(token["exp"], tz=timezone.utc)
+    token_issued_at = datetime.fromtimestamp(token["iat"], tz=timezone.utc)
+
+    token_time_difference = token_expires_at - token_issued_at
+
+    # This ensures the token's configured lifespan is within our maximum bound
+    # e.g., if a token is configured to be alive for longer than
+    # MAX_TOKEN_LIFESPAN, we reject it
+    return token_time_difference <= timedelta(seconds=MAX_TOKEN_LIFESPAN)
+
 def token_is_revoked(token: dict):
     token_identifier = token["jti"]
     redis_string = RedisString(RedisConnection())
@@ -161,6 +197,13 @@ def handle_password_token_grant(request: http.HttpRequest) -> http.HttpResponse:
         error_response = {
             "error": "invalid_request",
             "error_description": "Expiry time could not be parsed as integer"
+        }
+        return http.JsonResponse(error_response, status=400)
+
+    if expires_in > MAX_TOKEN_LIFESPAN:
+        error_response = {
+            "error": "invalid_request",
+            "error_description": f"Expiry time is greater than the allowed maximum of {MAX_TOKEN_LIFESPAN} seconds"
         }
         return http.JsonResponse(error_response, status=400)
 

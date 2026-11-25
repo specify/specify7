@@ -4,7 +4,7 @@ from django.http import HttpResponse
 
 from specifyweb.specify.models import Collection, Specifyuser, Agent
 from specifyweb.specify.api.filter_by_col import filter_by_collection
-from specifyweb.backend.accounts.access_token_utils import get_token_from_request, token_is_revoked
+from specifyweb.backend.accounts.access_token_utils import MAX_TOKEN_LIFESPAN, get_token_from_request, token_is_revoked, token_lifespan_invalid
 from specifyweb.backend.context.collection_access import has_collection_access
 
 
@@ -43,6 +43,17 @@ class JWTAuthMiddleware:
             # See https://www.rfc-editor.org/info/rfc6749/#section-5.2 and
             # https://www.rfc-editor.org/info/rfc6750/#section-3
             response["WWW-Authenticate"] = 'Bearer error=\"invalid_token\", error_description=\"The access token is expired, revoked, or invalid\"'
+            return response
+
+        token_lifespan_not_valid = token_lifespan_invalid(token)
+
+        if token_lifespan_not_valid:
+            response = HttpResponse('Invalid access token', status=401)
+            # This header is formatted per OAuth 2.0, see section 5.2 of RFC
+            # 6749 and section 3 of RFC 6750
+            # See https://www.rfc-editor.org/info/rfc6749/#section-5.2 and
+            # https://www.rfc-editor.org/info/rfc6750/#section-3
+            response["WWW-Authenticate"] = f'Bearer error=\"invalid_token\", error_description=\"The access token is configured to live longer than the maximum {MAX_TOKEN_LIFESPAN} seconds\"'
             return response
 
         # REFACTOR: explicitly handle cases where these values can't be cast as
