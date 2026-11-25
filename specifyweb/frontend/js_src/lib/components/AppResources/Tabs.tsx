@@ -6,7 +6,7 @@ import { resourcesText } from '../../localization/resources';
 import { f } from '../../utils/functools';
 import type { GetSet, IR, RA, RR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import { WarningMessage } from '../Atoms';
+import { CollapsibleAlert } from '../Molecules/CollapsibleAlert';
 import { toResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -41,7 +41,9 @@ export function AppResourcesTab({
   data,
   isFullScreen: [isFullScreen, _],
   onChange: handleChange,
+  onSwitchToXmlEditor,
   onSetCleanup: setCleanup,
+  onSetSaveConfirmation: setSaveConfirmation,
   footer,
 }: {
   readonly tab: Component;
@@ -55,7 +57,9 @@ export function AppResourcesTab({
   readonly onChange: (
     data: string | (() => string | null | undefined) | null
   ) => void;
+  readonly onSwitchToXmlEditor?: () => void;
   readonly onSetCleanup: (callback: () => Promise<void>) => void;
+  readonly onSetSaveConfirmation: AppResourceTabProps['onSetSaveConfirmation'];
   readonly footer: JSX.Element;
 }): JSX.Element {
   const children = (
@@ -66,7 +70,9 @@ export function AppResourcesTab({
         directory={directory}
         resource={resource}
         onChange={handleChange}
+        onSwitchToXmlEditor={onSwitchToXmlEditor}
         onSetCleanup={setCleanup}
+        onSetSaveConfirmation={setSaveConfirmation}
       />
     </ErrorBoundary>
   );
@@ -122,6 +128,13 @@ export function useEditorTabs(
               ? {
                   label: labels[type],
                   component(props): JSX.Element {
+                    if (type === 'visual' && subType === 'dwcaDefinition')
+                      return (
+                        <div className="flex min-h-0 min-w-0 max-w-full flex-1 flex-col gap-1">
+                          <OtherCollectionWarning directory={props.directory} />
+                          <Editor {...props} />
+                        </div>
+                      );
                     return (
                       <>
                         {type === 'visual' && (
@@ -151,6 +164,7 @@ function OtherCollectionWarning({
 }: {
   readonly directory: SerializedResource<SpAppResourceDir>;
 }): JSX.Element | null {
+  const [expanded, setExpanded] = React.useState(false);
   const isOtherScope = React.useMemo(
     () =>
       (typeof directory.collection === 'string' &&
@@ -162,7 +176,14 @@ function OtherCollectionWarning({
     [directory]
   );
   return isOtherScope ? (
-    <WarningMessage>{resourcesText.wrongScopeWarning()}</WarningMessage>
+    <CollapsibleAlert
+      expanded={expanded}
+      summary={resourcesText.wrongScopeWarningSummary()}
+      variant="warning"
+      onToggle={(): void => setExpanded((current) => !current)}
+    >
+      {resourcesText.wrongScopeWarningDetails()}
+    </CollapsibleAlert>
   ) : null;
 }
 
@@ -202,9 +223,12 @@ export function Tabs({
           </Tab>
         ))}
       </Tab.List>
-      <Tab.Panels className="flex flex-1 overflow-hidden">
+      <Tab.Panels className="flex min-w-0 flex-1 overflow-hidden">
         {Object.values(tabs).map((element, index) => (
-          <Tab.Panel className="flex flex-1 flex-col gap-4" key={index}>
+          <Tab.Panel
+            className="flex min-w-0 max-w-full flex-1 flex-col gap-4"
+            key={index}
+          >
             <ErrorBoundary dismissible>{element}</ErrorBoundary>
           </Tab.Panel>
         ))}

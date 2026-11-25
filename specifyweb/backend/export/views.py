@@ -10,11 +10,11 @@ from xml.etree import ElementTree as ET
 from zipfile import ZipFile
 
 from django.conf import settings
-from django.http import HttpResponse, HttpResponseBadRequest, Http404
+from django.http import HttpResponse, HttpResponseBadRequest, Http404, JsonResponse
 from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_POST
 
-from .dwca import make_dwca, prettify
+from .dwca import DwCAException, make_dwca, prettify, validate_definition
 from .extract_query import extract_query as extract
 from .feed import FEED_DIR, get_feed_resource, update_feed
 from specifyweb.backend.context.app_resource import get_app_resource
@@ -118,7 +118,18 @@ def export(request):
 
     eml_resource = request.POST.get('metadata', None)
 
-    definition, _, __ = get_app_resource(collection, user, dwca_resource)
+    resolved_definition = get_app_resource(collection, user, dwca_resource)
+    if resolved_definition is None:
+        return HttpResponseBadRequest('DwCA definition resource was not found')
+    definition, _, __ = resolved_definition
+    try:
+        validate_definition(definition)
+    except DwCAException:
+        logger.exception('DwCA definition validation failed')
+        return JsonResponse({
+            'exception': 'DwCAException',
+            'message': 'Invalid DwCA definition.',
+        }, status=400)
 
     if eml_resource is not None:
         eml, _, __ = get_app_resource(collection, user, eml_resource)
@@ -138,6 +149,7 @@ def export(request):
                 'type': 'dwca-export-failed',
                 'exception': str(e),
                 'traceback': tb if settings.DEBUG else None,
+                **(e.data if isinstance(e, DwCAException) else {}),
             }))
         else:
             Message.objects.create(user=user, content=json.dumps({
@@ -174,6 +186,7 @@ def force_update(request):
                 'type': 'update-feed-failed',
                 'exception': str(e),
                 'traceback': tb if settings.DEBUG else None,
+                **(e.data if isinstance(e, DwCAException) else {}),
             }))
 
     thread = Thread(target=try_update_feed)

@@ -139,13 +139,15 @@ export function Wrapper({
       }}
     >
       {({ headerJsx, headerButtons, form, footer }): JSX.Element => (
-        <Container.Base className="flex-1 overflow-auto">
-          <DataEntry.Header className="flex-wrap">
+        <Container.Base className="min-h-0 min-w-0 flex-1 !gap-2 !overflow-hidden !p-2">
+          <DataEntry.Header className="shrink-0 !flex-row flex-wrap !justify-start !gap-2">
             {headerJsx}
             {headerButtons}
           </DataEntry.Header>
           {form}
-          <DataEntry.Footer>{footer}</DataEntry.Footer>
+          <DataEntry.Footer className="shrink-0 !flex-row !justify-start">
+            {footer}
+          </DataEntry.Footer>
         </Container.Base>
       )}
     </AppResourceEditor>

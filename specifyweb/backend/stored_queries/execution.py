@@ -300,7 +300,6 @@ def do_export(spquery, collection, user, filename, exporttype, host):
                     distinct=spquery['selectdistinct'],
                     selection=selection,
                     search_synonymy=spquery.get("searchsynonymy", False),
-                    
                 )
                 message_type = 'query-export-to-webportal-complete'
             else:
@@ -341,7 +340,6 @@ def query_to_web_portal_zip(
     distinct=False,
     selection=None,
     search_synonymy=False,
-    
 ):
     query, _ = build_query(
         session=session,
@@ -420,8 +418,8 @@ def query_to_csv(
     distinct=False,
     delimiter=",",
     bom=False,
-    selection=None,
     search_synonymy=False,
+    selection=None,
 ):
     """Build a sqlalchemy query using the QueryField objects given by
     field_specs and send the results to a CSV file at the given

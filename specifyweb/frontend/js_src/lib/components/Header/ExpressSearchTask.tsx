@@ -379,6 +379,7 @@ function TableResult({
           fetchSize={expressSearchFetchSize}
           fieldSpecs={fieldSpecs}
           initialData={tableResults.results}
+          isExpressSearch
           label={table.label}
           queryResource={undefined}
           selectedRows={[selectedRows, setSelectedRows]}

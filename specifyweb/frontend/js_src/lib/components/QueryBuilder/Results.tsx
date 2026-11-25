@@ -1,21 +1,23 @@
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
-import { useAsyncState } from '../../hooks/useAsyncState';
+import { useAsyncState, usePromise } from '../../hooks/useAsyncState';
 import { useInfiniteScroll } from '../../hooks/useInfiniteScroll';
 import { usePaginatedCollection } from '../../hooks/usePaginatedCollection';
 import { commonText } from '../../localization/common';
 import { interactionsText } from '../../localization/interactions';
 import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
-import { type GetSet, type RA } from '../../utils/types';
+import { defined, type GetSet, type RA } from '../../utils/types';
 import { Container, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { RecordMergingContext } from '../Core/Contexts';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { serializeResource } from '../DataModel/serializers';
 import { schema } from '../DataModel/schema';
 import type { SpecifyTable } from '../DataModel/specifyTable';
-import type { SpQuery } from '../DataModel/types';
+import type { SpQuery, Tables } from '../DataModel/types';
+import { fetchFormatters } from '../Formatters/formatters';
 import { treeRanksPromise } from '../InitialContext/treeRanks';
 import { RecordMergingLink } from '../Merging';
 import { loadingGif } from '../Molecules';
@@ -29,11 +31,12 @@ import {
 import { fetchPickList } from '../PickLists/fetch';
 import { userPreferences } from '../Preferences/userPreferences';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
+import { mappingPathToString } from '../WbPlanView/mappingHelpers';
 import { recordSetFromQueryLoading } from './Components';
 import { CreateRecordSet } from './CreateRecordSet';
 import type { QueryFieldSpec } from './fieldSpec';
 import type { QueryField } from './helpers';
-import { sortTypes } from './helpers';
+import { parseQueryFields, queryFieldFormatType, sortTypes } from './helpers';
 import { QueryResultsTable } from './ResultsTable';
 import { QueryToMap } from './ToMap';
 import { SplitView } from './SplitView';
@@ -50,6 +53,47 @@ import { useSelectedQueryCount } from './useSelectedQuery';
 import { SelectedQueryForms } from './SelectedQueryForms';
 
 export type QueryResultRow = RA<number | string | null>;
+
+type ResultFormatDefinition = {
+  readonly table: { readonly name: string } | undefined;
+  readonly name: string;
+  readonly isDefault: boolean;
+};
+
+export function getResultHeaderFormatSuffix(
+  field: QueryField,
+  visibleFields: RA<QueryField>,
+  tableName: string,
+  formatters:
+    | {
+        readonly formatters: RA<ResultFormatDefinition>;
+        readonly aggregators: RA<ResultFormatDefinition>;
+      }
+    | undefined,
+  baseTableName: keyof Tables = 'CollectionObject'
+): string | undefined {
+  const type = queryFieldFormatType(field.mappingPath, baseTableName);
+  const formatName = field.filters.find(
+    ({ type }) => type === 'any'
+  )?.fieldFormat;
+  if (type === undefined || !formatName || formatters === undefined)
+    return undefined;
+  const definitions =
+    type === 'aggregator' ? formatters.aggregators : formatters.formatters;
+  if (
+    definitions.some(
+      ({ table, name, isDefault }) =>
+        table?.name === tableName && name === formatName && isDefault
+    )
+  )
+    return undefined;
+  const path = mappingPathToString(field.mappingPath);
+  return visibleFields.filter(
+    (other) => mappingPathToString(other.mappingPath) === path
+  ).length > 1
+    ? ` (${formatName})`
+    : undefined;
+}
 
 /*
  * These values are somewhat arbitrary but are based on testing with real queries.
@@ -88,6 +132,7 @@ export type QueryResultsProps = {
   readonly totalCount: number | undefined;
   readonly fieldSpecs: RA<QueryFieldSpec>;
   readonly displayedFields: RA<QueryField>;
+  readonly isExpressSearch?: boolean;
   readonly allFields: RA<QueryField>;
   // This is undefined when running query in countOnly mode
   readonly initialData: RA<QueryResultRow> | undefined;
@@ -165,6 +210,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     refreshToken,
     resultsRef,
     displayedFields,
+    isExpressSearch = false,
     isLoading = false,
   } = props;
   const explicitSelection = props.selection?.[0];
@@ -282,6 +328,23 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
         )
         .map((column, visibleIndex) => ({ ...column, visibleIndex })),
     [fieldSpecs]
+  );
+  const resultFields = React.useMemo(
+    () =>
+      isExpressSearch
+        ? fieldSpecs.map((fieldSpec) =>
+            defined(
+              parseQueryFields([
+                serializeResource(fieldSpec.toSpQueryField()),
+              ])[0]
+            )
+          )
+        : displayedFields,
+    [displayedFields, fieldSpecs, isExpressSearch]
+  );
+  const [formatters] = usePromise(fetchFormatters, false);
+  const visibleFields = visibleColumns.map(
+    ({ fieldIndex }) => resultFields[fieldIndex]
   );
   if (resultsRef !== undefined) resultsRef.current = results;
 
@@ -614,7 +677,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
           </Button.Small>
         )}
         <div className="-ml-2 flex-1" />
-        {displayedFields.length > 0 &&
+        {resultFields.length > 0 &&
         visibleColumns.length > 0 &&
         totalCount !== 0 ? (
           <fieldset disabled={isLoading} className="contents">
@@ -760,6 +823,13 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
                 <TableHeaderCell
                   columnIndex={visibleIndex}
                   fieldSpec={fieldSpec}
+                  formatSuffix={getResultHeaderFormatSuffix(
+                    defined(resultFields[fieldIndex]),
+                    visibleFields,
+                    fieldSpec.table.name,
+                    formatters,
+                    fieldSpec.baseTable.name
+                  )}
                   key={fieldIndex}
                   sortConfig={sortConfig?.[fieldIndex]}
                   onResizeStart={(event): void =>
@@ -889,12 +959,14 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
 function TableHeaderCell({
   columnIndex,
   fieldSpec,
+  formatSuffix,
   sortConfig,
   onSortChange: handleSortChange,
   onResizeStart: handleResizeStart,
 }: {
   readonly columnIndex?: number;
   readonly fieldSpec: QueryFieldSpec | undefined;
+  readonly formatSuffix?: string;
   readonly sortConfig: QueryField['sortType'];
   readonly onSortChange?: (sortType: QueryField['sortType']) => void;
   readonly onResizeStart?: (event: React.MouseEvent<HTMLDivElement>) => void;
@@ -911,6 +983,7 @@ function TableHeaderCell({
             fieldSpec.baseTable.name,
             fieldSpec.toMappingPath()
           )}
+          {formatSuffix}
         </span>
       </span>
     ) : undefined;

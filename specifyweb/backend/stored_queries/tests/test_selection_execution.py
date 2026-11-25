@@ -1,6 +1,8 @@
+from pathlib import Path
+from tempfile import TemporaryDirectory
+from types import SimpleNamespace
 from unittest import TestCase
 from unittest.mock import Mock, patch
-from types import SimpleNamespace
 
 from django.core.exceptions import BadRequest
 from django.test import RequestFactory
@@ -145,6 +147,24 @@ class TestSelectionExecution(TestCase):
                     self.assertEqual(exporter.call_args.kwargs["selection"], selection)
                     self.assertEqual(exporter.call_args.kwargs["recordsetid"], 42)
                     self.assertTrue(exporter.call_args.kwargs["search_synonymy"])
+
+    @patch.object(execution, "DefaultQueryProcessors", return_value=[])
+    @patch.object(execution, "apply_special_post_query_processing", return_value=[])
+    @patch.object(execution, "set_group_concat_max_len")
+    @patch.object(execution, "build_query")
+    def test_csv_combines_selection_and_synonymy(
+        self, build_query, _group_concat, _process, _processors
+    ):
+        build_query.return_value = (Mock(), [])
+        selection = {"mode": "include", "ids": [2]}
+        with TemporaryDirectory() as directory:
+            execution.query_to_csv(
+                Mock(), Mock(), Mock(), 1, [], str(Path(directory) / "query.csv"),
+                search_synonymy=True, selection=selection,
+            )
+        props = build_query.call_args.args[-1]
+        self.assertEqual(props.selection, selection)
+        self.assertTrue(props.search_synonymy)
 
     @patch.object(execution.models, "session_context")
     @patch.object(execution.models, "RecordSet")

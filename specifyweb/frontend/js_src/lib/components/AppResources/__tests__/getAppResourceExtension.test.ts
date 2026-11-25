@@ -11,6 +11,17 @@ describe('getAppResourceExtension', () => {
     expect(getAppResourceExtension(staticAppResources.viewSets[0])).toBe('xml');
   });
 
+  test('DwCA definitions use XML validation', () => {
+    expect(
+      getAppResourceExtension(
+        addMissingFields('SpAppResource', {
+          name: 'DwCA',
+          mimeType: 'application/vnd.specify.dwca+xml',
+        })
+      )
+    ).toBe('xml');
+  });
+
   test('appresource type', () => {
     testAppResourcesTypes.forEach(
       ({ extenstion, expectedType, ...partialResource }) => {

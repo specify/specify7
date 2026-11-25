@@ -8,6 +8,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
+import { resourcesText } from '../../localization/resources';
 import { formData } from '../../utils/ajax/helpers';
 import { ping } from '../../utils/ajax/ping';
 import { f } from '../../utils/functools';
@@ -18,6 +19,7 @@ import type { AppResourceFilters } from '../AppResources/filtersHelpers';
 import type { AppResources } from '../AppResources/hooks';
 import { useAppResources } from '../AppResources/hooks';
 import { Button } from '../Atoms/Button';
+import { Input, Label } from '../Atoms/Form';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { toResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
@@ -38,6 +40,7 @@ export function MakeDwcaOverlay(): JSX.Element | null {
 
   return resources === undefined ? null : definition === undefined ? (
     <PickAppResource
+      key="definition"
       filters={dwcaAppResourceFilter}
       header={headerText.chooseDwca()}
       resources={resources}
@@ -48,14 +51,14 @@ export function MakeDwcaOverlay(): JSX.Element | null {
     <ExportStarted onClose={handleClose} />
   ) : (
     <PickAppResource
+      key="metadata"
       filters={dwcaAppResourceFilter}
       header={headerText.chooseMetadataResource()}
       resources={resources}
       skippable
       onClose={(): void => setDefinition(undefined)}
       onSelected={(metadata): void => {
-        handleExporting();
-        loading(startExport(definition, metadata?.name));
+        loading(startExport(definition, metadata?.name).then(handleExporting));
       }}
     />
   );
@@ -63,7 +66,7 @@ export function MakeDwcaOverlay(): JSX.Element | null {
 
 export const dwcaAppResourceFilter: AppResourceFilters = {
   viewSets: false,
-  appResources: ['otherXmlResource', 'otherAppResources'],
+  appResources: ['dwcaDefinition', 'otherXmlResource', 'otherAppResources'],
 };
 
 export function PickAppResource({
@@ -83,6 +86,7 @@ export function PickAppResource({
   ) => void;
   readonly onClose: () => void;
 }): JSX.Element {
+  const [searchQuery, setSearchQuery] = React.useState('');
   const conformations = React.useState<
     RA<AppResourcesConformation> | undefined
   >(undefined);
@@ -104,11 +108,24 @@ export function PickAppResource({
       onClose={handleClose}
     >
       <ReadOnlyContext.Provider value>
+        <Label.Block className="gap-1">
+          <span className="text-sm text-gray-600 dark:text-neutral-400">
+            {resourcesText.searchResources()}
+          </span>
+          <Input.Generic
+            autoFocus
+            type="search"
+            placeholder={commonText.search()}
+            value={searchQuery}
+            onValueChange={setSearchQuery}
+          />
+        </Label.Block>
         <AppResourcesAside
           conformations={conformations}
           filters={filters}
           isEmbedded
           resources={resources}
+          searchQuery={searchQuery}
           onOpen={(selected): void => {
             f.maybe(toResource(selected, 'SpAppResource'), handleSelected);
           }}
