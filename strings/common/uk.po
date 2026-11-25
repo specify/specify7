@@ -432,6 +432,8 @@ msgstr "Видалити незіставлені стовпці"
 
 #: components/AttachmentsBulkImport/Datasets.tsx:271
 #: components/AttachmentsBulkImport/Import.tsx:441
+#: components/AttachmentsBulkImport/__tests__/UpdatePermission.test.tsx:104
+#: components/AttachmentsBulkImport/__tests__/UpdatePermission.test.tsx:127
 #: components/DataViews/DataViewTables.tsx:85
 #: components/DataViews/index.tsx:245
 #: components/ExpressSearchConfig/ExpressSearchConfigDialog.tsx:59
@@ -481,7 +483,9 @@ msgstr "Видалити незіставлені стовпці"
 #: components/WbPlanView/Mapper.tsx:482
 #: components/WbToolkit/DevShowPlan.tsx:201
 #: components/WorkBench/DataSetMeta.tsx:191
-#. Used in: Components > Attachments Bulk Import > Datasets ⬤ Components > Attachments Bulk Import > Import ⬤ Components > Data Views > Data View Tables ⬤ Components > Data Views > Index ⬤ Components > Express Search Config > Express Search Config Dialog ⬤ Components > Forms > Save ⬤ Keyboard Shortcuts > __tests__ > Conflicts ⬤ Components > Preferences > User Definitions ⬤ Components > Preferences > Index ⬤ Preferences > __tests__ > Section Scroll ⬤ Components > Query Builder > From Map ⬤ Components > Query Builder > Save ⬤ Query Combo Box > __tests__ > Component Taxon ⬤ Components > Reports > Report ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Table Uniqueness Rules ⬤ Schema Config > __tests__ > Table Uniqueness Rules ⬤ Components > Security > Missing Agents Dialog ⬤ Components > Security > Role ⬤ Components > Security > User Collections ⬤ Components > Statistics > Results Dialog ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Statistics > Index ⬤ Statistics > __tests__ > Stats Edit Permission Grant ⬤ Statistics > __tests__ > Stats Page Button Colors ⬤ Statistics > __tests__ > Stats Page Create Statistic ⬤ Statistics > __tests__ > Stats Page No Edit Permission ⬤ Statistics > __tests__ > Stats Page Pages ⬤ Statistics > __tests__ > Stats Page Test Utils ⬤ Components > System Configuration Tool > Hierarchy ⬤ Components > Wb Actions > Wb Save ⬤ Components > Wb Plan View > Mapper ⬤ Components > Wb Toolkit > Dev Show Plan ⬤ Components > Work Bench > Data Set Meta
+#: components/WorkBench/__tests__/DataSetMetaPermissions.test.tsx:90
+#: components/WorkBench/__tests__/DataSetMetaPermissions.test.tsx:140
+#. Used in: Components > Attachments Bulk Import > Datasets ⬤ Components > Attachments Bulk Import > Import ⬤ Attachments Bulk Import > __tests__ > Update Permission ⬤ Components > Data Views > Data View Tables ⬤ Components > Data Views > Index ⬤ Components > Express Search Config > Express Search Config Dialog ⬤ Components > Forms > Save ⬤ Keyboard Shortcuts > __tests__ > Conflicts ⬤ Components > Preferences > User Definitions ⬤ Components > Preferences > Index ⬤ Preferences > __tests__ > Section Scroll ⬤ Components > Query Builder > From Map ⬤ Components > Query Builder > Save ⬤ Query Combo Box > __tests__ > Component Taxon ⬤ Components > Reports > Report ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Table Uniqueness Rules ⬤ Schema Config > __tests__ > Table Uniqueness Rules ⬤ Components > Security > Missing Agents Dialog ⬤ Components > Security > Role ⬤ Components > Security > User Collections ⬤ Components > Statistics > Results Dialog ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Statistics > Index ⬤ Statistics > __tests__ > Stats Edit Permission Grant ⬤ Statistics > __tests__ > Stats Page Button Colors ⬤ Statistics > __tests__ > Stats Page Create Statistic ⬤ Statistics > __tests__ > Stats Page No Edit Permission ⬤ Statistics > __tests__ > Stats Page Pages ⬤ Statistics > __tests__ > Stats Page Test Utils ⬤ Components > System Configuration Tool > Hierarchy ⬤ Components > Wb Actions > Wb Save ⬤ Components > Wb Plan View > Mapper ⬤ Components > Wb Toolkit > Dev Show Plan ⬤ Components > Work Bench > Data Set Meta ⬤ Work Bench > __tests__ > Data Set Meta Permissions
 #, fuzzy
 msgid "save"
 msgstr "Зберегти"
@@ -554,7 +558,9 @@ msgstr "ВІДЧИНЕНО"
 #: components/WorkBench/DataSetMeta.tsx:159
 #: components/WorkBench/DataSetMeta.tsx:185
 #: components/WorkBench/WbAttachmentsPreview.tsx:317
-#. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Formatters > Element ⬤ Components > Forms > Delete Button ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Notifications > Notifications ⬤ Components > Pick Lists > Definitions ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Security > Preview Tables ⬤ Components > Security > Role ⬤ Components > Statistics > Delete Category ⬤ Statistics > __tests__ > Stats Page Button Colors ⬤ Components > Tree View > Actions ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Wb Attachments Preview
+#: components/WorkBench/__tests__/DataSetMetaPermissions.test.tsx:63
+#: components/WorkBench/__tests__/DataSetMetaPermissions.test.tsx:117
+#. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Formatters > Element ⬤ Components > Forms > Delete Button ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Notifications > Notifications ⬤ Components > Pick Lists > Definitions ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Security > Preview Tables ⬤ Components > Security > Role ⬤ Components > Statistics > Delete Category ⬤ Statistics > __tests__ > Stats Page Button Colors ⬤ Components > Tree View > Actions ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Wb Attachments Preview ⬤ Work Bench > __tests__ > Data Set Meta Permissions
 #, fuzzy
 msgid "delete"
 msgstr "Видалити"
@@ -788,6 +794,8 @@ msgstr "Немає даних"
 
 #: components/AppResources/Create.tsx:231
 #: components/AttachmentsBulkImport/Datasets.tsx:264
+#: components/AttachmentsBulkImport/__tests__/CreatePermission.test.tsx:47
+#: components/AttachmentsBulkImport/__tests__/CreatePermission.test.tsx:69
 #: components/FormEditor/Create.tsx:69
 #: components/Security/RoleTemplate.tsx:89
 #: components/Statistics/AddStatDialog.tsx:73
@@ -796,7 +804,7 @@ msgstr "Немає даних"
 #: components/Toolbar/BackupDatabase.tsx:80
 #: components/Toolbar/Query.tsx:258
 #: components/Toolbar/RecordSets.tsx:223
-#. Used in: Components > App Resources > Create ⬤ Components > Attachments Bulk Import > Datasets ⬤ Components > Form Editor > Create ⬤ Components > Security > Role Template ⬤ Components > Statistics > Add Stat Dialog ⬤ Statistics > __tests__ > Stats Page Button Colors ⬤ Statistics > __tests__ > Stats Page Create Statistic ⬤ Components > Toolbar > Backup Database ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets
+#. Used in: Components > App Resources > Create ⬤ Components > Attachments Bulk Import > Datasets ⬤ Attachments Bulk Import > __tests__ > Create Permission ⬤ Components > Form Editor > Create ⬤ Components > Security > Role Template ⬤ Components > Statistics > Add Stat Dialog ⬤ Statistics > __tests__ > Stats Page Button Colors ⬤ Statistics > __tests__ > Stats Page Create Statistic ⬤ Components > Toolbar > Backup Database ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets
 #, fuzzy
 msgid "new"
 msgstr "Новий"

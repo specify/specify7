@@ -24,10 +24,12 @@ msgstr "Bancada de trabalho"
 #: components/AttachmentsBulkImport/Rollback.tsx:93
 #: components/AttachmentsBulkImport/Rollback.tsx:130
 #: components/AttachmentsBulkImport/utils.ts:615
+#: components/AttachmentsBulkImport/__tests__/AttachmentPermissions.test.tsx:68
+#: components/AttachmentsBulkImport/__tests__/AttachmentPermissions.test.tsx:106
 #: components/WbUtils/datasetVariants.tsx:48
 #: components/WbUtils/datasetVariants.tsx:122
 #: components/WorkBench/Status.tsx:80
-#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Wb Utils > Dataset Variants ⬤ Components > Work Bench > Status
+#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Utils ⬤ Attachments Bulk Import > __tests__ > Attachment Permissions ⬤ Components > Wb Utils > Dataset Variants ⬤ Components > Work Bench > Status
 #, fuzzy
 msgid "rollback"
 msgstr "Reverter"
@@ -49,9 +51,11 @@ msgstr "Validação"
 #: components/AttachmentsBulkImport/Upload.tsx:217
 #: components/AttachmentsBulkImport/Upload.tsx:243
 #: components/AttachmentsBulkImport/utils.ts:612
+#: components/AttachmentsBulkImport/__tests__/AttachmentPermissions.test.tsx:47
+#: components/AttachmentsBulkImport/__tests__/AttachmentPermissions.test.tsx:89
 #: components/Molecules/SyncAttachmentPicker.tsx:111
 #: components/WbUtils/datasetVariants.tsx:41
-#. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Wb Utils > Dataset Variants
+#. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Attachments Bulk Import > Utils ⬤ Attachments Bulk Import > __tests__ > Attachment Permissions ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Wb Utils > Dataset Variants
 #, fuzzy
 msgid "upload"
 msgstr "Carregar"
