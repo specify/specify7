@@ -1,11 +1,14 @@
 from decimal import Decimal
+from contextlib import nullcontext
 import logging
 from typing import Any, NamedTuple, Literal, Union, Callable
 
 from django.db import transaction, IntegrityError
 
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
+from specifyweb.backend.permissions.permissions import check_field_permissions, check_table_permissions
 from specifyweb.specify import models
+from specifyweb.specify.models_utils.relationships import authorize_dependent_scope_update
 from specifyweb.specify.models_utils.model_extras import ModelWithTable
 from specifyweb.specify.utils.func import Func
 from specifyweb.specify.utils.field_change_info import FieldChangeInfo
@@ -480,14 +483,19 @@ class BoundUploadTable(NamedTuple):
             return DjangoPredicates()
 
         combined_filters = combined_filters._replace(
-            filters={**combined_filters.filters, **self.scopingAttrs, **self.static}
+            filters={**combined_filters.filters, **self.scopingAttrs, **self.static},
+            scope_fields=tuple(
+                name for name in self.scopingAttrs
+                if name not in self.static and name not in direct_filters and name not in to_ones
+            ),
         )
 
         return combined_filters
 
     def get_to_remove(self) -> ToRemove:
         return ToRemove(
-            model_name=self.name, filter_on={**self.scopingAttrs, **self.static}
+            model_name=self.name, filter_on={**self.scopingAttrs, **self.static},
+            scope_fields=tuple(name for name in self.scopingAttrs if name not in self.static),
         )
 
     def process_row(self) -> UploadResult:
@@ -510,7 +518,9 @@ class BoundUploadTable(NamedTuple):
             else update_table.process_row_with_null()
         )
 
-    def _get_reference(self, should_cache=True) -> ModelWithTable | None:
+    def _get_reference(
+        self, should_cache=True, *, check_read: bool = True,
+    ) -> ModelWithTable | None:
         model: ModelWithTable = self.django_model
         current_id = self.current_id
 
@@ -529,9 +539,13 @@ class BoundUploadTable(NamedTuple):
                 # Using pop as a _different_ memory optimization.
                 assert self.cache is not None
                 self.cache.pop(cache_key)
+            if check_read:
+                self.auditor.read(cache_hit)
             return cache_hit
 
         reference_record = safe_fetch(model, {"id": current_id}, self.current_version)
+        if check_read:
+            self.auditor.read(reference_record)
 
         if should_cache and self.cache is not None:
             self.cache[cache_key] = reference_record
@@ -554,7 +568,9 @@ class BoundUploadTable(NamedTuple):
     def _handle_row(self, skip_match: bool, allow_null: bool) -> UploadResult:
         model = self.django_model
         if self.disambiguation is not None:
-            if model.objects.filter(pk=self.disambiguation).exists():
+            matched = model.objects.filter(pk=self.disambiguation).first()
+            if matched is not None:
+                self.auditor.read(matched)
                 return UploadResult(
                     Matched(
                         id=self.disambiguation, info=ReportInfo(self.name, [], None)
@@ -652,6 +668,15 @@ class BoundUploadTable(NamedTuple):
             if not to_one_def.is_one_to_one()
         }
 
+    def _authorize_match(self, matched) -> None:
+        self.auditor.read(matched)
+        # One-to-one records are matched inline, rather than by _process_to_ones.
+        for name, uploadable in self.toOne.items():
+            if isinstance(uploadable, BoundOneToOneTable):
+                related = getattr(matched, name)
+                if related is not None:
+                    uploadable._authorize_match(related)
+
     def _match(
         self, predicates: DjangoPredicates, info: ReportInfo
     ) -> Matched | MatchedMultiple | None:
@@ -661,10 +686,13 @@ class BoundUploadTable(NamedTuple):
         cache_hit: list[int] | None = (
             self.cache.get(cache_key, None) if self.cache is not None else None
         )
-        if cache_hit is not None:
+        # Actor-backed matches must re-evaluate indirect witnesses after earlier rows write.
+        if cache_hit is not None and self.auditor.agent is None:
             ids = cache_hit
         else:
-            query = predicates.apply_to_query(self.name).values_list("id", flat=True)
+            query = predicates.apply_to_query(
+                self.name, actor=self.auditor.agent,
+            ).values_list("id", flat=True).distinct()
             current_id = self.current_id
             ids = []
             if current_id is not None:
@@ -677,8 +705,12 @@ class BoundUploadTable(NamedTuple):
             if not ids:
                 query = query[:10]
                 ids = list(query.values_list("id", flat=True))
-                if self.cache is not None and ids:
+                if self.cache is not None and ids and self.auditor.agent is None:
                     self.cache[cache_key] = ids
+
+        if self.auditor.agent is not None:
+            for matched in self.django_model.objects.filter(pk__in=ids):
+                self._authorize_match(matched)
 
         n_matched = len(ids)
         if n_matched > 1:
@@ -813,12 +845,25 @@ class BoundUploadTable(NamedTuple):
             *self.toMany.keys(),  # Don't touch mapped to-manys
         ]
         return clone_record(
-            self._get_reference(), inserter, self.to_one_fields, to_ignore, attrs
+            self._get_reference(), inserter, self.to_one_fields, to_ignore, attrs,
+            authorize_read=self.auditor.read,
         )
 
     def _get_inserter(self):
         def _inserter(model, attrs):
             uploaded = model.objects.create(**attrs)
+            self.auditor.read_references(
+                uploaded,
+                (
+                    name for name in attrs
+                    if name not in self.scopingAttrs
+                    and (
+                        name != "createdbyagent_id"
+                        or "createdbyagent_id" in self.static
+                        or "createdbyagent" in self.toOne
+                    )
+                ),
+            )
             self.auditor.insert(uploaded, None)
             return uploaded
 
@@ -842,6 +887,7 @@ class BoundUploadTable(NamedTuple):
                 )
         return added_picklist_items
 
+    @transaction.atomic
     def delete_row(self, parent_obj=None) -> UploadResult:
 
         info = ReportInfo(
@@ -856,7 +902,9 @@ class BoundUploadTable(NamedTuple):
         # So, we can just go ahead and follow the general delete protocol. Don't need version-control here.
         # Also caching still works (we'll, always, get a hit) because updates and deletes are independent (update wouldn't have been called).
         reference_record = self._get_reference(
-            should_cache=False  # Need to evict the last copy, in case someone tries accessing it, we'll then get a stale record
+            should_cache=False,
+            check_read=False,
+            # Evict cached data so subsequent access cannot observe stale state.
         )
 
         assert reference_record is not None
@@ -873,6 +921,7 @@ class BoundUploadTable(NamedTuple):
             for (results_per_key) in to_many_deleted.values()
             for result in results_per_key
         ):
+            transaction.set_rollback(True)
             return UploadResult(PropagatedFailure(), {}, to_many_deleted)
 
         with transaction.atomic():
@@ -982,6 +1031,20 @@ class BoundUpdateTable(BoundUploadTable):
 
         if current_id == NULL_RECORD:
             return UploadResult(NoChange(current_id, info), {}, {})
+
+        reference_record = self._get_reference()
+        if (
+            self.auditor.agent is not None
+            and not self.auditor.skip_create_permission_check
+            and (self.toOne or self.toMany)
+        ):
+            check_table_permissions(
+                self.auditor.collection, self.auditor.agent, reference_record, "update",
+            )
+            check_field_permissions(
+                self.auditor.collection, self.auditor.agent, reference_record,
+                [*self.toOne, *self.toMany], "update",
+            )
 
         return super()._handle_row(skip_match=True, allow_null=allow_null)
 
@@ -1158,15 +1221,39 @@ class BoundUpdateTable(BoundUploadTable):
         return False
 
     def _do_update(self, reference_obj, dirty_fields, **attrs):
-        # TODO: Try handling parent_obj. Quite complicated and ugly.
-        self.auditor.update(reference_obj, None, dirty_fields)
-        for key, value in attrs.items():
-            setattr(reference_obj, key, value)
-        if hasattr(reference_obj, "version"):
-            # Consider using bump_version here.
-            # I'm not doing it for performance reasons -- we already checked our version at this point, and have a lock, so can just increment the version.
-            setattr(reference_obj, "version", getattr(reference_obj, "version") + 1)
-        reference_obj.save()
+        """Authorize actual changed fields, FK targets, and both record scopes."""
+        collection, agent = self.auditor.collection, self.auditor.agent
+        enforce_permissions = agent is not None and not self.auditor.skip_create_permission_check
+        fields = [
+            reference_obj._meta.get_field(change["field_name"]).name
+            for change in dirty_fields
+        ]
+        updated_fields = list(dict.fromkeys([*fields, *self.toOne, *self.toMany]))
+        if enforce_permissions:
+            check_table_permissions(collection, agent, reference_obj, "update")
+            check_field_permissions(collection, agent, reference_obj, updated_fields, "update")
+        authorization = (
+            authorize_dependent_scope_update(collection, agent, reference_obj)
+            if enforce_permissions else nullcontext()
+        )
+        with authorization:
+            for key, value in attrs.items():
+                setattr(reference_obj, key, value)
+            if enforce_permissions:
+                check_table_permissions(collection, agent, reference_obj, "update")
+                check_field_permissions(collection, agent, reference_obj, updated_fields, "update")
+                for name in fields:
+                    field = reference_obj._meta.get_field(name)
+                    if field.concrete and (field.many_to_one or field.one_to_one):
+                        related = getattr(reference_obj, field.name)
+                        if related is not None:
+                            check_table_permissions(collection, agent, related, "read")
+            # TODO: Try handling parent_obj. Quite complicated and ugly.
+            self.auditor.update(reference_obj, None, dirty_fields)
+            if hasattr(reference_obj, "version"):
+                # The reference was already version-checked and locked.
+                setattr(reference_obj, "version", getattr(reference_obj, "version") + 1)
+            reference_obj.save()
         return reference_obj
 
     def _do_insert(self):

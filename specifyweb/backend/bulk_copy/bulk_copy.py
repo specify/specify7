@@ -1,5 +1,6 @@
 import json
 
+from django.db import transaction
 from specifyweb.backend.permissions.permissions import table_permissions_checker, cache_permission_queries
 from django.http import (HttpResponse, HttpResponseNotAllowed)
 
@@ -11,7 +12,9 @@ from specifyweb.backend.businessrules.uniqueness_rules import cache_uniqueness_r
 from specifyweb.backend.context.remote_prefs import cache_remote_preferences
 
 
+@transaction.atomic
 def collection_dispatch_bulk_copy(request, model, copies) -> HttpResponse:
+    """Create and serialize all requested copies atomically."""
     checker = table_permissions_checker(request.specify_collection, request.specify_user_agent, "read")
 
     if request.method != 'POST':
@@ -38,11 +41,13 @@ def collection_dispatch_bulk_copy(request, model, copies) -> HttpResponse:
 
     return HttpResponseCreated(toJson(resp_objs), content_type='application/json')
 
+@transaction.atomic
 def collection_dispatch_bulk(request, model) -> HttpResponse:
     """
     Do the same as collection_dispatch, but for bulk POST operations.
     Call this endpoint with a list of objects of the same type to create.
     This reduces the amount of API calls needed to create multiple objects, like when creating multiple carry forwards.
+    Creation and response serialization are atomic across the whole batch.
     """
     checker = table_permissions_checker(request.specify_collection, request.specify_user_agent, "read")
 

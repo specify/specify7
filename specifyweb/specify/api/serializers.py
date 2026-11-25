@@ -1,5 +1,7 @@
 import json
+import logging
 from typing import Any
+from specifyweb.backend.permissions.permissions import NoMatchingRuleException
 from specifyweb.specify import models
 from specifyweb.specify.api.calculated_fields import calculate_extra_fields
 from specifyweb.specify.api.crud import ReadPermChecker
@@ -7,6 +9,8 @@ from specifyweb.specify.models_utils.relationships import is_dependent_field
 from sqlalchemy.engine import Row
 from django.db.models.fields import DateTimeField
 from urllib.parse import urlencode
+
+logger = logging.getLogger(__name__)
 
 
 class JsonEncoder(json.JSONEncoder):
@@ -80,8 +84,10 @@ def obj_to_data(obj) -> dict[str, Any]:
 
 
 def to_many_to_data(obj, rel, checker: ReadPermChecker) -> str | list[dict[str, Any]]:
-    """Return the URI or nested data of the 'rel' collection
-    depending on if the field is included in the 'inlined_fields' global.
+    """Return a relationship URI or readable dependent children.
+
+    A denied child is omitted without hiding its readable parent. Errors
+    encountered while serializing an authorized child still propagate.
     """
     parent_model = rel.model.specify_model
     field_name = rel.get_accessor_name()
@@ -89,12 +95,20 @@ def to_many_to_data(obj, rel, checker: ReadPermChecker) -> str | list[dict[str, 
     if field is not None and field.dependent:
         objs = getattr(obj, field_name)
         related_objects = objs.all()
-        if field_name in getattr(obj, "_prefetched_objects_cache", {}):
-            return [_obj_to_data(o, checker) for o in related_objects]
-        return [
-            _obj_to_data(o, checker)
-            for o in related_objects.iterator(chunk_size=2000)
-        ]
+        if field_name not in getattr(obj, "_prefetched_objects_cache", {}):
+            related_objects = related_objects.iterator(chunk_size=2000)
+        data = []
+        for related_obj in related_objects:
+            try:
+                checker(related_obj)
+            except NoMatchingRuleException:
+                logger.debug(
+                    "omitting unreadable inline child: %s pk=%s relationship=%s",
+                    related_obj._meta.label, related_obj.pk, field_name,
+                )
+                continue
+            data.append(_obj_to_data(related_obj, checker))
+        return data
 
     collection_uri = uri_for_model(rel.related_model)
     return collection_uri + '?' + urlencode([(rel.field.name.lower(), str(obj.id))])

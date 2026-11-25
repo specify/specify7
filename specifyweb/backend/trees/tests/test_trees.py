@@ -11,6 +11,7 @@ from specifyweb.backend.trees.views import get_tree_rows
 from specifyweb.backend.stored_queries.execution import set_group_concat_max_len
 from specifyweb.backend.stored_queries.tests.tests import SQLAlchemySetup
 from specifyweb.backend.workbench.upload.auditcodes import REMOVE
+from specifyweb.backend.permissions.models import UserPolicy
 from contextlib import contextmanager
 from django.db import connection
 
@@ -304,6 +305,104 @@ class TreeViewsTest(SqlTreeSetup):
                 _run_nn_and_cte(*args, **kwargs), true_results
             )
         )
+
+    def test_path_denies_tree_from_unavailable_discipline(self):
+        other_division = models.Division.objects.create(
+            institution=self.institution,
+            name='Restricted Division',
+        )
+        other_discipline = models.Discipline.objects.create(
+            division=other_division,
+            datatype=self.datatype,
+            geographytreedef=self.geographytreedef,
+            geologictimeperiodtreedef=self.geologictimeperiodtreedef,
+        )
+        other_collection = models.Collection.objects.create(
+            catalognumformatname='test',
+            collectionname='Restricted Collection',
+            isembeddedcollectingevent=False,
+            discipline=other_discipline,
+        )
+        other_definition = models.Geographytreedef.objects.create(
+            name='Restricted Geography',
+            discipline=other_discipline,
+        )
+        root_rank = models.Geographytreedefitem.objects.create(
+            treedef=other_definition,
+            name='Root',
+            rankid=0,
+        )
+        child_rank = models.Geographytreedefitem.objects.create(
+            treedef=other_definition,
+            name='Child',
+            rankid=10,
+            parent=root_rank,
+        )
+        root = models.Geography.objects.create(
+            definition=other_definition,
+            definitionitem=root_rank,
+            name='Restricted Root',
+            parent=None,
+        )
+        child = models.Geography.objects.create(
+            definition=other_definition,
+            definitionitem=child_rank,
+            name='Restricted Child',
+            parent=root,
+        )
+        UserPolicy.objects.all().delete()
+        UserPolicy.objects.bulk_create([
+            UserPolicy(
+                collection=self.collection,
+                specifyuser=self.specifyuser,
+                resource='/system/sp7/collection',
+                action='access',
+            ),
+            UserPolicy(
+                collection=self.collection,
+                specifyuser=self.specifyuser,
+                resource='/table/geography',
+                action='read',
+            ),
+        ])
+        client = Client()
+        client.force_login(self.specifyuser)
+
+        response = client.get(
+            f'/trees/specify_tree/geography/{child.id}/path/',
+        )
+
+        self.assertEqual(response.status_code, 403)
+        self.assertIn(str(other_collection.id), response.content.decode())
+
+    def test_default_tree_creation_requires_actual_scope_permission(self):
+        UserPolicy.objects.all().delete()
+        UserPolicy.objects.create(
+            collection=self.collection,
+            specifyuser=self.specifyuser,
+            resource='/system/sp7/collection',
+            action='access',
+        )
+        client = Client()
+        client.force_login(self.specifyuser)
+
+        response = client.post(
+            '/trees/create_default_tree/',
+            data=json.dumps({
+                'disciplineName': 'taxon',
+                'url': 'https://example.test/tree.csv',
+                'mapping': {
+                    'ranks': [{
+                        'name': 'Kingdom',
+                        'column': 'Kingdom',
+                        'fields': {},
+                    }],
+                },
+            }),
+            content_type='application/json',
+        )
+
+        self.assertEqual(response.status_code, 403)
 
     def test_counts_correctness(self):
         correct_results = {
@@ -1064,9 +1163,26 @@ class AddDeleteRankResourcesTest(ApiTests):
     def test_add_root_taxon(self):
         c = Client()
         c.force_login(self.specifyuser)
+        UserPolicy.objects.bulk_create([
+            UserPolicy(
+                collection=self.collection,
+                specifyuser=self.specifyuser,
+                resource='/table/taxon',
+                action='create',
+            ),
+            UserPolicy(
+                collection=self.collection,
+                specifyuser=self.specifyuser,
+                resource='/table/taxontreedefitem',
+                action='create',
+            ),
+        ])
 
         tree = "taxon"
-        tree_def = models.Taxontreedef.objects.create(name="New Blank Tree")
+        tree_def = models.Taxontreedef.objects.create(
+            name="New Blank Tree",
+            discipline=self.discipline,
+        )
         tree_def_id = tree_def.id
         root_rank = models.Taxontreedefitem.objects.create(
             treedef=tree_def, rankid=0, name="Root"
@@ -1109,6 +1225,7 @@ class AddDeleteRankResourcesTest(ApiTests):
                     "author": None,
                     "source": None,
                     "guid": None,
+                    "definition": f"/api/specify/taxontreedef/{tree_def.id}/",
                     "definitionitem": f"/api/specify/taxontreedefitem/{first_rank.id}/",
                     "taxoncitations": [],
                     "taxonattachments": [],
@@ -1137,9 +1254,26 @@ class AddDeleteRankResourcesTest(ApiTests):
     def test_add_root_geo(self):
         c = Client()
         c.force_login(self.specifyuser)
+        UserPolicy.objects.bulk_create([
+            UserPolicy(
+                collection=self.collection,
+                specifyuser=self.specifyuser,
+                resource='/table/geography',
+                action='create',
+            ),
+            UserPolicy(
+                collection=self.collection,
+                specifyuser=self.specifyuser,
+                resource='/table/geographytreedefitem',
+                action='create',
+            ),
+        ])
 
         tree = "geography"
-        tree_def = models.Geographytreedef.objects.create(name="New Blank Tree")
+        tree_def = models.Geographytreedef.objects.create(
+            name="New Blank Tree",
+            discipline=self.discipline,
+        )
         tree_def_id = tree_def.id
         root_rank = models.Geographytreedefitem.objects.create(
             treedef=tree_def, rankid=0, name="Root"

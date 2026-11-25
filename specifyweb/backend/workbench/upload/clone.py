@@ -39,7 +39,11 @@ def clone_record(
     one_to_ones={},
     to_ignore: list[str] = [],
     override_attrs={},
+    *,
+    authorize_read: Callable[[ModelWithTable], None] | None = None,
 ) -> ModelWithTable:
+    if authorize_read is not None:
+        authorize_read(reference_record)
     model: ModelWithTable = type(reference_record)  # type: ignore
     model_name = model._meta.model_name
     assert model_name is not None
@@ -78,7 +82,8 @@ def clone_record(
         if not is_dependent:
             return value
         return clone_record(
-            getattr(reference_record, field.name), inserter, one_to_ones
+            getattr(reference_record, field.name), inserter, one_to_ones,
+            authorize_read=authorize_read,
         ).pk
 
     attrs = {
@@ -94,7 +99,7 @@ def clone_record(
 
     to_many_cloned = [
         [
-            clone_record(to_many_record, inserter, one_to_ones, override_attrs={field.remote_field.attname: inserted.pk})  # type: ignore
+            clone_record(to_many_record, inserter, one_to_ones, override_attrs={field.remote_field.attname: inserted.pk}, authorize_read=authorize_read)  # type: ignore
             for to_many_record in getattr(
                 reference_record, field.name
             ).all()  # Clone all records separatetly

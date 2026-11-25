@@ -9,8 +9,12 @@ from specifyweb.backend.notifications.models import Message, Spmerging
 from django.views.decorators.http import require_POST
 
 from specifyweb.middleware.general import require_GET
-from specifyweb.backend.permissions.permissions import PermissionTarget, \
-    PermissionTargetAction, check_permission_targets, table_permissions_checker
+from specifyweb.backend.permissions.permissions import (
+    PermissionTarget,
+    PermissionTargetAction,
+    check_permission_targets,
+    check_table_permissions,
+)
 from specifyweb.celery_tasks import app
 from specifyweb.backend.merge.record_merging import record_merge_fx, record_merge_task, resolve_record_merge_response
 from specifyweb.specify.views import login_maybe_required, openapi
@@ -82,22 +86,46 @@ def record_merge(
     """Replaces all the foreign keys referencing the old record IDs
     with the new record ID, and deletes the old records.
     """
-    record_version = getattr(spmodels, model_name.title()).objects.get(
-        id=new_model_id).version
-    get_version = request.GET.get('version', record_version)
-    version = get_version if isinstance(get_version, int) else 0
-
-    table_permissions_checker(
-        request.specify_collection, request.specify_user_agent, "read")
-    check_permission_targets(request.specify_collection.id, request.specify_user.id, [
-                             ReplaceRecordPT.update, ReplaceRecordPT.delete])
-
     data = json.loads(request.body)
     old_model_ids = data['old_record_ids']
     new_record_data = data['new_record_data'] if 'new_record_data' in data else None
 
     if old_model_ids is None or len(old_model_ids) < 1:
         return http.HttpResponseBadRequest('There were no old record IDs given to be replaced by the new ID.')
+    try:
+        new_id = int(new_model_id)
+        old_ids = [int(i) for i in old_model_ids]
+    except (TypeError, ValueError, OverflowError):
+        return http.HttpResponseBadRequest('Record IDs must be integers.')
+    if (
+        len(set(old_ids)) != len(old_ids)
+        or new_id in old_ids
+    ):
+        return http.HttpResponseBadRequest(
+            'Old record IDs must be unique and cannot include the replacement ID.',
+        )
+
+    target_model = getattr(spmodels, model_name.title())
+    target_record = target_model.objects.get(id=new_model_id)
+    record_version = target_record.version
+    get_version = request.GET.get('version', record_version)
+    version = get_version if isinstance(get_version, int) else 0
+
+    check_permission_targets(request.specify_collection.id, request.specify_user.id, [
+                             ReplaceRecordPT.update, ReplaceRecordPT.delete])
+    if new_record_data is not None:
+        check_table_permissions(
+            request.specify_collection, request.specify_user_agent,
+            target_record, "update",
+        )
+    old_records = target_model.objects.filter(id__in=old_model_ids)
+    if old_records.count() != len(set(old_model_ids)):
+        return http.HttpResponseNotFound("One or more records to merge were not found.")
+    for old_record in old_records.iterator(chunk_size=2000):
+        check_table_permissions(
+            request.specify_collection, request.specify_user_agent,
+            old_record, "delete",
+        )
 
     background = True
     if 'background' in data:
@@ -180,7 +208,8 @@ def record_merge(
 
         response = resolve_record_merge_response(
             lambda: record_merge_fx(model_name, old_model_ids, int(
-                new_model_id), None, new_record_info),
+                new_model_id), None, new_record_info,
+                authorization=(request.specify_collection, request.specify_user_agent)),
             # If not doing merge in background, raise all unexpected errors
             silent=False
         )
@@ -245,6 +274,7 @@ def record_merge(
         }
     },
 })
+@login_maybe_required
 @require_GET
 def merging_status(request, merge_id: int) -> http.HttpResponse:
     """Returns the merging status for the record merging celery tasks"""
@@ -254,6 +284,9 @@ def merging_status(request, merge_id: int) -> http.HttpResponse:
         merge = Spmerging.objects.get(taskid=merge_id)
     except Spmerging.DoesNotExist:
         return http.HttpResponseNotFound(f'The merge task id is not found: {merge_id}')
+
+    if merge.specifyuser_id != request.specify_user.id:
+        return http.HttpResponseForbidden()
 
     result = record_merge_task.AsyncResult(merge.taskid)
 
@@ -295,6 +328,7 @@ def merging_status(request, merge_id: int) -> http.HttpResponse:
         },
     },
 })
+@login_maybe_required
 @require_POST
 def abort_merge_task(
     request,
@@ -305,9 +339,11 @@ def abort_merge_task(
 
     # BUG: This should not be a .get. It should instead be something like .filter(...).first()
     # Currently, it is a 500 error (because .get() fails when no Spmerging found)
-    merge = Spmerging.objects.get(taskid=merge_id)
+    merge = Spmerging.objects.filter(taskid=merge_id).first()
     if merge is None:
         return http.HttpResponseNotFound(f'The merge task id is not found: {merge_id}')
+    if merge.specifyuser_id != request.specify_user.id:
+        return http.HttpResponseForbidden()
 
     # This condition is not possible.
     if merge.taskid is None:

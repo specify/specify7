@@ -4,6 +4,7 @@ from django.test import Client
 from specifyweb.backend.notifications.models import Spmerging, Message
 from specifyweb.backend.permissions.models import UserPolicy
 from specifyweb.specify.models import Agent
+from specifyweb.specify import models
 from specifyweb.specify.tests.test_api import ApiTests
 
 import json
@@ -92,6 +93,12 @@ class TestRecordMergeRequests(ApiTests):
                 resource=resource,
                 action=action
             )
+        UserPolicy.objects.create(
+            collection_id=self.collection.id,
+            specifyuser_id=self.specifyuser.id,
+            resource='/table/agent',
+            action='delete',
+        )
 
         response = self.c.post(
             f'/merge/agent/replace/{agent_2.id}/',
@@ -148,6 +155,125 @@ class TestRecordMergeRequests(ApiTests):
     def test_permissions_enforced_foreground(self):
         response = self._check_permission_enforced(background=False)
         self._assertStatusCodeEqual(response, 204)
+
+    def test_merge_rejects_old_record_from_another_scope(self):
+        UserPolicy.objects.all().delete()
+        other_division = models.Division.objects.create(
+            institution=self.institution,
+            name='Other Division',
+        )
+        other_discipline = models.Discipline.objects.create(
+            division=other_division,
+            datatype=self.datatype,
+            geographytreedef=self.geographytreedef,
+            geologictimeperiodtreedef=self.geologictimeperiodtreedef,
+        )
+        other_collection = models.Collection.objects.create(
+            catalognumformatname='test',
+            collectionname='Other Collection',
+            isembeddedcollectingevent=False,
+            discipline=other_discipline,
+        )
+        for resource, action in [
+            ('/system/sp7/collection', 'access'),
+            ('/record/merge', 'update'),
+            ('/record/merge', 'delete'),
+            ('/table/agent', 'delete'),
+        ]:
+            UserPolicy.objects.create(
+                collection=self.collection,
+                specifyuser=self.specifyuser,
+                resource=resource,
+                action=action,
+            )
+
+        target = Agent.objects.create(agenttype=0, division=self.division)
+        old_record = Agent.objects.create(
+            agenttype=0,
+            division=other_division,
+        )
+        response = self.c.post(
+            f'/merge/agent/replace/{target.id}/',
+            data=json.dumps({
+                'old_record_ids': [old_record.id],
+                'background': False,
+            }),
+            content_type='application/json',
+        )
+
+        self.assertEqual(response.status_code, http.HttpResponseForbidden.status_code)
+        self.assertIn(
+            {
+                'collectionid': other_collection.id,
+                'userid': self.specifyuser.id,
+                'resource': '/table/agent',
+                'action': 'delete',
+            },
+            json.loads(response.content.decode())['NoMatchingRuleException'],
+        )
+
+    def test_merge_rejects_foreign_updates_outside_user_scope(self):
+        UserPolicy.objects.all().delete()
+        other_collection = models.Collection.objects.create(
+            catalognumformatname='test',
+            collectionname='Other Collection',
+            isembeddedcollectingevent=False,
+            discipline=self.discipline,
+        )
+        for resource, action in [
+            ('/system/sp7/collection', 'access'),
+            ('/record/merge', 'update'),
+            ('/record/merge', 'delete'),
+            ('/table/agent', 'delete'),
+            ('/table/collectionobject', 'update'),
+            ('/field/collectionobject/createdbyagent', 'update'),
+        ]:
+            UserPolicy.objects.create(
+                collection=self.collection,
+                specifyuser=self.specifyuser,
+                resource=resource,
+                action=action,
+            )
+
+        old_record = Agent.objects.create(agenttype=0, division=self.division)
+        target = Agent.objects.create(agenttype=0, division=self.division)
+        object_type = models.Collectionobjecttype.objects.create(
+            name='Other collection type',
+            collection=other_collection,
+            taxontreedef=self.taxontreedef,
+        )
+        collection_object = models.Collectionobject.objects.create(
+            collection=other_collection,
+            collectionobjecttype=object_type,
+            catalognumber='restricted-record',
+            createdbyagent=old_record,
+        )
+
+        response = self.c.post(
+            f'/merge/agent/replace/{target.id}/',
+            data=json.dumps({
+                'old_record_ids': [old_record.id],
+                'background': False,
+            }),
+            content_type='application/json',
+        )
+
+        self.assertEqual(response.status_code, http.HttpResponseForbidden.status_code)
+        self.assertEqual(
+            collection_object.__class__.objects.get(
+                pk=collection_object.pk,
+            ).createdbyagent_id,
+            old_record.id,
+        )
+        self.assertIn(
+            {
+                'collectionid': other_collection.id,
+                'userid': self.specifyuser.id,
+                'resource': '/table/collectionobject',
+                'action': 'update',
+            },
+            json.loads(response.content.decode())['NoMatchingRuleException'],
+        )
 
     def test_check_no_old_record_id_background(self):
         self._check_no_old_record_id(background=True)

@@ -2,6 +2,7 @@ from celery import Task # type: ignore
 from celery.utils.log import get_task_logger # type: ignore
 
 from django.db import transaction
+from django.core.exceptions import PermissionDenied
 
 from specifyweb.specify.models import Collection, Agent
 from specifyweb.celery_tasks import LogErrorsTask, app
@@ -67,6 +68,9 @@ def unupload(self, collection_id: int, ds_id: int, agent_id: int) -> None:
         ds = Spdataset.objects.select_for_update().get(id=ds_id)
         agent = Agent.objects.get(id=agent_id)
         collection = Collection.objects.get(id=collection_id)
+
+        if ds.collection_id != collection.id or ds.specifyuser_id != agent.specifyuser_id:
+            raise PermissionDenied("Dataset is not owned by the requesting collection and agent.")
 
         if ds.uploaderstatus is None:
             logger.info("dataset is not assigned to an upload task")
