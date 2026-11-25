@@ -124,12 +124,11 @@ def export(request):
     definition, _, __ = resolved_definition
     try:
         validate_definition(definition)
-    except DwCAException as error:
+    except DwCAException:
         logger.exception('DwCA definition validation failed')
         return JsonResponse({
             'exception': 'DwCAException',
-            'message': str(error),
-            'data': error.data,
+            'message': 'Invalid DwCA definition.',
         }, status=400)
 
     if eml_resource is not None:
