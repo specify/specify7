@@ -13,6 +13,7 @@ import type { IR, RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { getTable } from '../DataModel/tables';
+import { resolveBackendLocalization } from '../Errors/JsonError';
 import { userInformation } from '../InitialContext/userInformation';
 import {
   LocalityUpdateFailed,
@@ -122,6 +123,9 @@ export const notificationRenderers: IR<
     return (
       <>
         {getNotificationHeading(notification)}
+        {typeof notification.payload.localizationKey === 'string' && (
+          <p>{resolveBackendLocalization(notification.payload)}</p>
+        )}
         <Link.Success
           className="w-fit"
           download
@@ -152,6 +156,9 @@ export const notificationRenderers: IR<
     return (
       <>
         {getNotificationHeading(notification)}
+        {typeof notification.payload.localizationKey === 'string' && (
+          <p>{resolveBackendLocalization(notification.payload)}</p>
+        )}
         <Link.Success
           className="w-fit"
           download

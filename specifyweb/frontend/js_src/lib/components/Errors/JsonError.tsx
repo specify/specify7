@@ -144,9 +144,51 @@ function formatTreeBusinessRuleException(response: JsonResponse): JSX.Element {
  * If the backend has a localizationKey that the frontend can not resolve,
  * instead return the raw exception message from the backend
  */
-function resolveBackendLocalization(jsonResponseData: any): string {
+export function resolveBackendLocalization(jsonResponseData: any): string {
   const localizationKey: string = jsonResponseData.localizationKey;
-  if (localizationKey === 'badTreeStructureInvalidRanks')
+  if (localizationKey === 'dwcaMissingRowType')
+    return backEndText.dwcaMissingRowType();
+  else if (localizationKey === 'dwcaMissingQueries')
+    return backEndText.dwcaMissingQueries();
+  else if (localizationKey === 'dwcaConflictingFields')
+    return backEndText.dwcaConflictingFields();
+  else if (localizationKey === 'dwcaMissingIdField')
+    return backEndText.dwcaMissingIdField();
+  else if (localizationKey === 'dwcaMultipleIdFields')
+    return backEndText.dwcaMultipleIdFields();
+  else if (localizationKey === 'dwcaMissingQueryTableOrFile')
+    return backEndText.dwcaMissingQueryTableOrFile();
+  else if (localizationKey === 'dwcaEmptyFileName')
+    return backEndText.dwcaEmptyFileName();
+  else if (localizationKey === 'dwcaInvalidFileName')
+    return backEndText.dwcaInvalidFileName();
+  else if (localizationKey === 'dwcaInvalidQueryAttributes')
+    return backEndText.dwcaInvalidQueryAttributes();
+  else if (localizationKey === 'dwcaDuplicateCoreIdentifier')
+    return backEndText.dwcaDuplicateCoreIdentifier({
+      identifierTerm: jsonResponseData.identifierTerm,
+    });
+  else if (localizationKey === 'dwcaOneCoreRequired')
+    return backEndText.dwcaOneCoreRequired();
+  else if (localizationKey === 'dwcaInvalidCoreIdentifier')
+    return backEndText.dwcaInvalidCoreIdentifier();
+  else if (localizationKey === 'dwcaMissingCoreFieldTerm')
+    return backEndText.dwcaMissingCoreFieldTerm();
+  else if (localizationKey === 'dwcaInvalidExtensionIdentifier')
+    return backEndText.dwcaInvalidExtensionIdentifier();
+  else if (localizationKey === 'dwcaMissingExtensionFieldTerm')
+    return backEndText.dwcaMissingExtensionFieldTerm();
+  else if (localizationKey === 'dwcaInvalidXml')
+    return backEndText.dwcaInvalidXml();
+  else if (localizationKey === 'dwcaInvalidDefinitionAttributes')
+    return backEndText.dwcaInvalidDefinitionAttributes();
+  else if (localizationKey === 'dwcaIncorrectBaseTable')
+    return backEndText.dwcaIncorrectBaseTable();
+  else if (localizationKey === 'dwcaReservedFileName')
+    return backEndText.dwcaReservedFileName();
+  else if (localizationKey === 'dwcaDuplicateFileName')
+    return backEndText.dwcaDuplicateFileName();
+  else if (localizationKey === 'badTreeStructureInvalidRanks')
     return backEndText.badTreeStructureInvalidRanks({
       badRanks: jsonResponseData.badRanks,
     });

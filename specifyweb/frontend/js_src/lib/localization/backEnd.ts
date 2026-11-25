@@ -10,6 +10,57 @@ import { createDictionary } from './utils';
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
 export const backEndText = createDictionary({
+  dwcaMissingRowType: { 'en-us': 'Definition is missing a row type.' },
+  dwcaMissingQueries: { 'en-us': "Definition doesn't include any queries." },
+  dwcaConflictingFields: {
+    'en-us': 'Query definitions have conflicting fields.',
+  },
+  dwcaMissingIdField: { 'en-us': "Definition doesn't include id field." },
+  dwcaMultipleIdFields: { 'en-us': 'Definition includes multiple id fields.' },
+  dwcaMissingQueryTableOrFile: {
+    'en-us': 'Query is missing its table or file name.',
+  },
+  dwcaEmptyFileName: { 'en-us': 'Query file name must not be empty.' },
+  dwcaInvalidFileName: {
+    'en-us': 'Query file name must be a file name without a path.',
+  },
+  dwcaInvalidQueryAttributes: {
+    'en-us': 'Query contains invalid attributes.',
+  },
+  dwcaDuplicateCoreIdentifier: {
+    'en-us':
+      'The core query returned duplicate {identifierTerm:string} values. Each core row must have a unique {identifierTerm:string}.',
+  },
+  dwcaOneCoreRequired: {
+    'en-us': 'Definition must include exactly one core.',
+  },
+  dwcaInvalidCoreIdentifier: {
+    'en-us':
+      'The core identifier must use the identifier term for its core row type.',
+  },
+  dwcaMissingCoreFieldTerm: {
+    'en-us': 'Every displayed core field must have a term.',
+  },
+  dwcaInvalidExtensionIdentifier: {
+    'en-us': 'Every extension identifier must use the core identifier term.',
+  },
+  dwcaMissingExtensionFieldTerm: {
+    'en-us': 'Every displayed extension field must have a term.',
+  },
+  dwcaInvalidXml: { 'en-us': 'Definition is not valid XML.' },
+  dwcaInvalidDefinitionAttributes: {
+    'en-us': 'Definition contains invalid query attributes.',
+  },
+  dwcaIncorrectBaseTable: {
+    'en-us':
+      'All Darwin Core queries must use the base table associated with the core row type.',
+  },
+  dwcaReservedFileName: {
+    'en-us': 'Query file name is reserved for archive metadata.',
+  },
+  dwcaDuplicateFileName: {
+    'en-us': 'Archive queries must have unique file names.',
+  },
   failedParsingBoolean: {
     'en-us': 'value "{value:string}" not resolvable to True or False',
     'ru-ru': 'значение "{value:string}" не разрешается to True or False',

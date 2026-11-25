@@ -10,7 +10,7 @@ from xml.etree import ElementTree as ET
 from zipfile import ZipFile
 
 from django.conf import settings
-from django.http import HttpResponse, HttpResponseBadRequest, Http404
+from django.http import HttpResponse, HttpResponseBadRequest, Http404, JsonResponse
 from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_POST
 
@@ -126,7 +126,11 @@ def export(request):
         validate_definition(definition)
     except DwCAException as error:
         logger.exception('DwCA definition validation failed')
-        return HttpResponseBadRequest(str(error))
+        return JsonResponse({
+            'exception': 'DwCAException',
+            'message': str(error),
+            'data': error.data,
+        }, status=400)
 
     if eml_resource is not None:
         eml, _, __ = get_app_resource(collection, user, eml_resource)
@@ -146,6 +150,7 @@ def export(request):
                 'type': 'dwca-export-failed',
                 'exception': str(e),
                 'traceback': tb if settings.DEBUG else None,
+                **(e.data if isinstance(e, DwCAException) else {}),
             }))
         else:
             Message.objects.create(user=user, content=json.dumps({
@@ -182,6 +187,7 @@ def force_update(request):
                 'type': 'update-feed-failed',
                 'exception': str(e),
                 'traceback': tb if settings.DEBUG else None,
+                **(e.data if isinstance(e, DwCAException) else {}),
             }))
 
     thread = Thread(target=try_update_feed)

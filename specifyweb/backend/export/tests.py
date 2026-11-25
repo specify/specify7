@@ -5,6 +5,7 @@ when you run "manage.py test".
 Replace this with more appropriate tests for your application.
 """
 
+import json
 import os
 import tempfile
 from collections import namedtuple
@@ -12,7 +13,7 @@ from unittest.mock import Mock, patch
 from zipfile import ZipFile
 from xml.etree import ElementTree as ET
 
-from django.test import Client, TestCase
+from django.test import Client, RequestFactory, TestCase
 
 from specifyweb.backend.export.feed import update_feed
 from specifyweb.backend.notifications.models import Message
@@ -34,6 +35,7 @@ from .dwca import (
     validate_definition,
     validate_stanzas,
 )
+from . import views as export_views
 
 class SimpleTest(TestCase):
     def test_basic_addition(self):
@@ -43,6 +45,72 @@ class SimpleTest(TestCase):
         self.assertEqual(1 + 1, 2)
 
 class DwcaValidationTest(TestCase):
+    def test_validation_errors_include_a_localization_key(self):
+        for definition, key in (
+            ('<invalid', 'dwcaInvalidXml'),
+            ('<definition><core><queries/></core></definition>', 'dwcaMissingRowType'),
+            ('<definition/>', 'dwcaOneCoreRequired'),
+        ):
+            with self.subTest(key=key), self.assertRaises(DwCAException) as caught:
+                validate_definition(definition)
+            self.assertEqual(caught.exception.data['localizationKey'], key)
+            self.assertEqual(caught.exception.data['message'], str(caught.exception))
+
+    @patch('specifyweb.backend.export.views.Thread')
+    @patch('specifyweb.backend.export.views.get_app_resource')
+    @patch('specifyweb.backend.export.views.check_permission_targets')
+    def test_export_returns_localizable_validation_error(self, _permission, get_resource, thread):
+        request = RequestFactory().post('/export/make_dwca/', {'definition': 'invalid'})
+        request.user = Mock(is_authenticated=True)
+        request.specify_user = Mock(id=1)
+        request.specify_collection = Mock(id=1)
+        get_resource.return_value = ('<invalid', None, None)
+
+        with self.assertLogs('specifyweb.backend.export.views', level='ERROR'):
+            response = export_views.export(request)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            json.loads(response.content),
+            {
+                'exception': 'DwCAException',
+                'message': 'Definition is not valid XML.',
+                'data': {
+                    'localizationKey': 'dwcaInvalidXml',
+                    'message': 'Definition is not valid XML.',
+                },
+            },
+        )
+        thread.assert_not_called()
+
+    def test_background_failures_include_localization_data(self):
+        error = DwCAException(
+            'Duplicate identifier.',
+            'dwcaDuplicateCoreIdentifier',
+            identifierTerm='occurrenceID',
+        )
+        for endpoint in ('export', 'force_update'):
+            with self.subTest(endpoint=endpoint), \
+                 patch('specifyweb.backend.export.views.Thread') as thread, \
+                 patch('specifyweb.backend.export.views.check_permission_targets'), \
+                 patch('specifyweb.backend.export.views.get_app_resource',
+                       return_value=(DWCA_DEFINITION, None, None)), \
+                 patch('specifyweb.backend.export.views.make_dwca', side_effect=error), \
+                 patch('specifyweb.backend.export.views.update_feed', side_effect=error), \
+                 patch('specifyweb.backend.export.views.Message.objects.create') as notify, \
+                 self.assertLogs('specifyweb.backend.export.views', level='ERROR'):
+                request = RequestFactory().post(
+                    '/export/', {'definition': 'valid'}
+                )
+                request.user = Mock(is_authenticated=True)
+                request.specify_user = Mock(id=1)
+                request.specify_collection = Mock(id=1)
+                self.assertEqual(getattr(export_views, endpoint)(request).status_code, 200)
+                thread.call_args.kwargs['target']()
+                payload = json.loads(notify.call_args.kwargs['content'])
+                self.assertEqual(payload['localizationKey'], 'dwcaDuplicateCoreIdentifier')
+                self.assertEqual(payload['identifierTerm'], 'occurrenceID')
+                self.assertEqual(payload['exception'], 'Duplicate identifier.')
+
     def test_preserves_search_synonymy_in_export_queries(self):
         node = ET.fromstring(DWCA_DEFINITION).find('core/queries/query')
         self.assertFalse(Query.from_xml(node).search_synonymy)
@@ -155,8 +223,11 @@ class DwcaValidationTest(TestCase):
         self.assertEqual(core_ids, {'valid-id'})
         self.assertNotIn(None, core_ids)
         self.assertNotIn('', core_ids)
-        with self.assertRaises(DwCAException):
+        with self.assertRaises(DwCAException) as caught:
             _collect_core_id('valid-id', core_ids, row_type)
+        self.assertEqual(caught.exception.data['localizationKey'], 'dwcaDuplicateCoreIdentifier')
+        self.assertEqual(caught.exception.data['identifierTerm'],
+                         'http://rs.tdwg.org/dwc/terms/occurrenceID')
 
     def test_uses_core_row_type_base_table(self):
         collecting_event_id = datamodel.get_table_strict('collectingevent').tableId

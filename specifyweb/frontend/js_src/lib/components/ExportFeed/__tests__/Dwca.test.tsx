@@ -2,6 +2,7 @@ import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 
 import { resourcesText } from '../../../localization/resources';
+import { backEndText } from '../../../localization/backEnd';
 import { requireContext } from '../../../tests/helpers';
 import { mount } from '../../../tests/reactUtils';
 import { localized } from '../../../utils/types';
@@ -15,8 +16,96 @@ import { act } from '@testing-library/react';
 import { commonText } from '../../../localization/common';
 import { headerText } from '../../../localization/header';
 import { testAppResources } from '../../AppResources/__tests__/testAppResources';
+import {
+  formatJsonBackendResponse,
+  resolveBackendLocalization,
+} from '../../Errors/JsonError';
+import {
+  notificationRenderers,
+  type GenericNotification,
+} from '../../Notifications/NotificationRenderers';
 
 requireContext();
+
+test('resolves DwCA validation keys and preserves unknown error messages', () => {
+  const keys = [
+    'dwcaMissingRowType',
+    'dwcaMissingQueries',
+    'dwcaConflictingFields',
+    'dwcaMissingIdField',
+    'dwcaMultipleIdFields',
+    'dwcaMissingQueryTableOrFile',
+    'dwcaEmptyFileName',
+    'dwcaInvalidFileName',
+    'dwcaInvalidQueryAttributes',
+    'dwcaDuplicateCoreIdentifier',
+    'dwcaOneCoreRequired',
+    'dwcaInvalidCoreIdentifier',
+    'dwcaMissingCoreFieldTerm',
+    'dwcaInvalidExtensionIdentifier',
+    'dwcaMissingExtensionFieldTerm',
+    'dwcaInvalidXml',
+    'dwcaInvalidDefinitionAttributes',
+    'dwcaIncorrectBaseTable',
+    'dwcaReservedFileName',
+    'dwcaDuplicateFileName',
+  ];
+  keys.forEach((localizationKey) =>
+    expect(
+      resolveBackendLocalization({
+        localizationKey,
+        message: 'Fallback message',
+        identifierTerm: 'occurrenceID',
+      })
+    ).not.toBe('Fallback message')
+  );
+  expect(
+    resolveBackendLocalization({
+      localizationKey: 'unknown',
+      message: 'Fallback message',
+    })
+  ).toBe('Fallback message');
+  const { getByText } = mount(
+    formatJsonBackendResponse(
+      JSON.stringify({
+        exception: 'DwCAException',
+        message: 'Fallback message',
+        data: {
+          localizationKey: 'dwcaInvalidXml',
+          message: 'Fallback message',
+        },
+      })
+    )
+  );
+  expect(getByText(backEndText.dwcaInvalidXml())).toBeInTheDocument();
+});
+
+test.each(['dwca-export-failed', 'update-feed-failed'])(
+  'localizes DwCA errors in %s notifications',
+  (type) => {
+    const notification: GenericNotification = {
+      messageId: '1',
+      read: false,
+      timestamp: '2023-01-01',
+      type,
+      payload: {
+        localizationKey: localized('dwcaDuplicateCoreIdentifier'),
+        identifierTerm: localized('occurrenceID'),
+        message: localized('Fallback message'),
+      },
+    };
+    const { getByText } = mount(
+      <>{notificationRenderers[type](notification)}</>
+    );
+    expect(
+      getByText(
+        backEndText.dwcaDuplicateCoreIdentifier({
+          identifierTerm: 'occurrenceID',
+        })
+      )
+    ).toBeInTheDocument();
+  }
+);
 
 test('shows export started only on success and keeps the metadata picker after rejection', async () => {
   jest
