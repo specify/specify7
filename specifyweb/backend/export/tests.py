@@ -59,27 +59,24 @@ class DwcaValidationTest(TestCase):
     @patch('specifyweb.backend.export.views.Thread')
     @patch('specifyweb.backend.export.views.get_app_resource')
     @patch('specifyweb.backend.export.views.check_permission_targets')
-    def test_export_returns_localizable_validation_error(self, _permission, get_resource, thread):
+    def test_export_returns_generic_validation_error(self, _permission, get_resource, thread):
         request = RequestFactory().post('/export/make_dwca/', {'definition': 'invalid'})
         request.user = Mock(is_authenticated=True)
         request.specify_user = Mock(id=1)
         request.specify_collection = Mock(id=1)
-        get_resource.return_value = ('<invalid', None, None)
-
-        with self.assertLogs('specifyweb.backend.export.views', level='ERROR'):
-            response = export_views.export(request)
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(
-            json.loads(response.content),
-            {
-                'exception': 'DwCAException',
-                'message': 'Definition is not valid XML.',
-                'data': {
-                    'localizationKey': 'dwcaInvalidXml',
-                    'message': 'Definition is not valid XML.',
-                },
-            },
-        )
+        for definition in ('<invalid', '<definition/>'):
+            with self.subTest(definition=definition):
+                get_resource.return_value = (definition, None, None)
+                with self.assertLogs('specifyweb.backend.export.views', level='ERROR'):
+                    response = export_views.export(request)
+                self.assertEqual(response.status_code, 400)
+                self.assertEqual(
+                    json.loads(response.content),
+                    {
+                        'exception': 'DwCAException',
+                        'message': 'Invalid DwCA definition.',
+                    },
+                )
         thread.assert_not_called()
 
     def test_background_failures_include_localization_data(self):
