@@ -7,7 +7,7 @@ import gettextParser from 'gettext-parser';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { filterArray, localized } from '../../utils/types';
-import type { Language } from './config';
+import { DEFAULT_LANGUAGE, type Language } from './config';
 import { whitespaceSensitive } from './index';
 import type { DictionaryUsages } from './scanUsages';
 
@@ -83,7 +83,11 @@ export const syncStrings = async (
           directoryPath,
           `${mappers.languageCode(language)}${gettextExtension}`
         );
-        const merged = await mergePoSpec(spec, fileName);
+        const merged = await mergePoSpec(
+          spec,
+          fileName,
+          language === DEFAULT_LANGUAGE
+        );
         const po = gettextParser.po.compile(merged);
         await fs.promises.writeFile(fileName, po);
         console.log(fileName);
@@ -98,7 +102,8 @@ export const gettextExtension = '.po';
  */
 export async function mergePoSpec(
   po: GetTextTranslations,
-  fileName: string
+  fileName: string,
+  refreshSourceComments = true
 ): Promise<GetTextTranslations> {
   const weblatePo = await fs.promises
     .readFile(fileName)
@@ -112,7 +117,7 @@ export async function mergePoSpec(
         `creating a new component.`
     );
     return po;
-  } else return mergeSpecs(po, weblatePo);
+  } else return mergeSpecs(po, weblatePo, refreshSourceComments);
 }
 
 /**
@@ -121,7 +126,8 @@ export async function mergePoSpec(
  */
 const mergeSpecs = (
   po: GetTextTranslations,
-  weblatePo: GetTextTranslations
+  weblatePo: GetTextTranslations,
+  refreshSourceComments: boolean
 ): GetTextTranslations => ({
   ...po,
   ...weblatePo,
@@ -142,9 +148,14 @@ const mergeSpecs = (
                 ...local.comments,
               }).map((key) => [
                 key as keyof typeof local.comments,
-                local.comments?.[key as 'flag'] ||
-                  weblate?.comments?.[key as 'flag'] ||
-                  '',
+                // Refresh generated usage metadata only in the source catalog.
+                // Weblate edits target catalogs independently of source exports.
+                !refreshSourceComments &&
+                (key === 'reference' || key === 'extracted')
+                  ? weblate?.comments?.[key] ?? ''
+                  : local.comments?.[key as 'flag'] ||
+                    weblate?.comments?.[key as 'flag'] ||
+                    '',
               ])
             ) as (typeof local)['comments'],
           },
