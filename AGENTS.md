@@ -10,11 +10,13 @@ environment, install host dependencies, or create a new virtual environment.
   `docker-compose.yml`; currently named `specify7`).
 - The container's working directory is `/opt/specify7`. Compose mounts only this
   workspace's `specifyweb` directory at `/opt/specify7/specifyweb`; it does not
-  mount the workspace root. Changes under `specifyweb` are picked up without
-  rebuilding, but `manage.py` is copied into the image. After changing
-  `manage.py`, ensure `mariadb`, `redis`, and `webpack` are running, rebuild the
-  image, then recreate only the `specify7` service before running tests so they
-  use the updated file:
+  mount the workspace root. Changes under `specifyweb` (except
+  `specifyweb/settings`) are picked up without rebuilding, but `manage.py` and
+  the settings copy are baked into the image. The image copies
+  `specifyweb/settings` to `/opt/specify7/settings`, and Django loads that copy.
+  After changing `manage.py` or `specifyweb/settings`, ensure `mariadb`,
+  `redis`, and `webpack` are running, rebuild the image, then recreate only the
+  `specify7` service before running tests so they use the updated files:
 
   ```sh
   set -e
