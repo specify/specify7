@@ -67,7 +67,9 @@ environment, install host dependencies, or create a new virtual environment.
   between runs. After applying a migration, omit `--keepdb` so Django recreates
   the test database with the updated schema. If Django asks whether to delete
   the existing test database, answer `yes` (or type `yes` at the prompt) to
-  allow recreation.
+  allow recreation. For non-interactive runs after a migration, replace
+  `--keepdb` with `--noinput` so Django deletes the test database without
+  prompting.
 
 Interactive workflow:
 
