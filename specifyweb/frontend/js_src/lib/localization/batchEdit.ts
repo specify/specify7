@@ -121,7 +121,8 @@ export const batchEditText = createDictionary({
   },
   missingRanksInQuery: {
     'en-us': 'Query requires additional ranks for batch editing',
-    'de-ch': 'Für die Stapelbearbeitung sind zusätzliche Ränge erforderlich.',
+    'de-ch':
+      'Für die Stapelbearbeitung sind zusätzliche Rangfolgen erforderlich.',
     'es-es':
       'La consulta requiere rangos adicionales para la edición por lotes.',
     'fr-fr':
@@ -140,7 +141,7 @@ export const batchEditText = createDictionary({
     'es-es':
       'Utilice el generador de consultas para crear un nuevo conjunto de datos de edición por lotes.',
     'fr-fr':
-      "Utilisez le générateur de requêtes pour créer un nouveau jeu de données d'édition par lots.",
+      "Utilisez le générateur de requêtes pour créer un nouveau jeu de données d'édition par lots",
     'pt-br':
       'Use o construtor de consultas para criar um novo conjunto de dados para edição em lote.',
     'ru-ru':
@@ -170,7 +171,7 @@ export const batchEditText = createDictionary({
     'es-es':
       'La función de reversión en la edición por lotes es una función experimental. Esta preferencia ocultará el botón.',
     'fr-fr':
-      'La fonction « Annuler » dans l’édition par lots est expérimentale. Cette préférence masquera le bouton.',
+      'La fonction « Annuler » dans l’édition par lots est expérimentale. Cette préférence masquera le bouton',
     'pt-br':
       'A reversão na edição em lote é um recurso experimental. Esta preferência ocultará o botão.',
     'ru-ru':
@@ -219,7 +220,7 @@ export const batchEditText = createDictionary({
     'es-es':
       'Revertir el conjunto de datos actualizará los valores, eliminará los registros creados y creará nuevos registros.',
     'fr-fr':
-      "La restauration des données permettra de mettre à jour les valeurs, de supprimer les enregistrements créés et d'en créer de nouveaux.",
+      "La restauration des données permettra de mettre à jour les valeurs, de supprimer les enregistrements créés et d'en créer de nouveaux",
     'pt-br':
       'Reverter o conjunto de dados atualizará os valores, excluirá os registros criados e criará novos registros.',
     'ru-ru':
@@ -227,7 +228,7 @@ export const batchEditText = createDictionary({
     'uk-ua':
       'Відкат набору даних призведе до повторного оновлення значень, видалення створених записів та створення нових записів.',
     'hr-hr':
-      'Vraćanjem skupa podataka unatrag ponovno će se ažurirati vrijednosti, izbrisati kreirani zapisi i kreirati novi zapisi',
+      'Vraćanje skupa podataka ponovno će ažurirati vrijednosti, izbrisati kreirane zapise i kreirati nove zapise',
     nb: 'Tilbakerulling av datasettet vil oppdatere verdiene på nytt, slette opprettede poster og opprette nye poster',
   },
   commitSuccessfulDescription: {
@@ -238,7 +239,7 @@ export const batchEditText = createDictionary({
     'es-es':
       'Los cambios se han aplicado a la base de datos. Consulte el número de registros afectados en cada tabla a continuación:',
     'fr-fr':
-      "Vos modifications ont été appliquées à la base de données. Pour voir le nombre d'enregistrements affectés dans chaque table, cliquez sur « Résultats » dans la barre d'outils au-dessus de la grille de données.",
+      "Vos modifications ont été appliquées à la base de données. Pour voir le nombre d'enregistrements affectés dans chaque table, cliquez sur « Résultats » dans la barre d'outils au-dessus de la grille de données :",
     'pt-br':
       'As suas alterações foram aplicadas à base de dados. Veja abaixo o número de registos afetados em cada tabela:',
     'ru-ru':
@@ -257,7 +258,7 @@ export const batchEditText = createDictionary({
     'es-es':
       'Este conjunto de datos revertido se ha guardado, pero no se puede editar. Vuelva a ejecutar la consulta.',
     'fr-fr':
-      'Ce jeu de données restauré est enregistré, mais ne peut pas être modifié. Veuillez exécuter à nouveau la requête.',
+      'Ce jeu de données restauré est enregistré, mais ne peut pas être modifié. Veuillez exécuter à nouveau la requête',
     'pt-br':
       'Este conjunto de dados revertido foi salvo, porém não pode ser editado. Por favor, execute a consulta novamente.',
     'ru-ru':
@@ -393,7 +394,7 @@ export const batchEditText = createDictionary({
     'es-es':
       'Si es verdadero, los campos de base de datos invisibles no se utilizarán para la coincidencia. El valor predeterminado es {default:boolean}.',
     'fr-fr':
-      'Si cette option est activée, les champs invisibles de la base de données ne seront pas utilisés pour la correspondance. La valeur par défaut est {default:boolean}.',
+      'Si cette option est activée, les champs invisibles de la base de données ne seront pas utilisés pour la correspondance. La valeur par défaut est {default:boolean}',
     'pt-br':
       'Se verdadeiro, os campos invisíveis do banco de dados não serão usados para correspondência. O valor padrão é {default:boolean}.',
     'ru-ru':
@@ -427,7 +428,7 @@ export const batchEditText = createDictionary({
     'es-es':
       'Si es verdadero, los campos invisibles de la base de datos no se utilizarán para determinar si el registro está vacío o no. El valor predeterminado es {default: boolean}.',
     'fr-fr':
-      "Si cette option est activée, les champs invisibles de la base de données ne seront pas utilisés pour déterminer si l'enregistrement est vide ou non. La valeur par défaut est {default: boolean}.",
+      "Si cette option est activée, les champs invisibles de la base de données ne seront pas utilisés pour déterminer si l'enregistrement est vide ou non. La valeur par défaut est {default:boolean}",
     'pt-br':
       'Se verdadeiro, os campos invisíveis do banco de dados não serão usados para determinar se o registro está vazio ou não. O valor padrão é {default: boolean}.',
     'ru-ru':
@@ -446,7 +447,7 @@ export const batchEditText = createDictionary({
     'es-es':
       'La edición por lotes está deshabilitada para las tablas del sistema y las tablas de jerarquía de ámbito.',
     'fr-fr':
-      "L'édition par lots est désactivée pour les tables système et les tables de hiérarchie de portée.",
+      "L'édition par lots est désactivée pour les tables système et les tables de hiérarchie de portée",
     'pt-br':
       'A edição em lote está desativada para tabelas do sistema e tabelas de hierarquia de escopo.',
     'ru-ru':
@@ -495,7 +496,7 @@ export const batchEditText = createDictionary({
     'es-es':
       'Permite la edición por lotes de las relaciones de la tabla base. La reversión se desactiva cuando las relaciones están habilitadas.',
     'fr-fr':
-      'Permet la modification par lots des tables liées à la table de base. La restauration est désactivée lorsque les relations sont activées.',
+      'Permet la modification par lots des tables liées à la table de base. La restauration est désactivée lorsque les relations sont activées',
     'pt-br':
       'Permite a edição em lote de relacionamentos da tabela base. O rollback é desativado quando os relacionamentos estão ativados.',
     'ru-ru':
@@ -510,7 +511,7 @@ export const batchEditText = createDictionary({
     'en-us': 'Commit Data Set',
     'de-ch': 'Datensatz übertragen',
     'es-es': 'Confirmar conjunto de datos',
-    'fr-fr': 'Verser le jeu de données.',
+    'fr-fr': 'Verser le jeu de données',
     'pt-br': 'Conjunto de dados de confirmação',
     'ru-ru': 'Набор данных для фиксации',
     'uk-ua': 'Набір даних для фіксації',

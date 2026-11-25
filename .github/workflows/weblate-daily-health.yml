@@ -1,0 +1,328 @@
+name: Weblate daily repository health
+
+on:
+  schedule:
+    - cron: "0 9 * * *"
+      timezone: "America/Chicago"
+  workflow_dispatch:
+    inputs:
+      repair_po_headers:
+        description: "Repair missing UTF-8 charset declarations once"
+        required: false
+        default: false
+        type: boolean
+      repair_target_branch:
+        description: "Use weblate-localization-test-* to test without changing production translations"
+        required: false
+        default: weblate-localization
+        type: string
+      unlock_all_components:
+        description: "Unlock every component only when repository and PO checks are healthy"
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: weblate-daily-health
+  cancel-in-progress: false
+
+jobs:
+  repository-health:
+    name: Check Weblate repository health
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout Specify 7
+        uses: actions/checkout@v4
+
+      - name: Check default-branch PO headers
+        id: app_po_check
+        continue-on-error: true
+        run: python3 scripts/weblate/po_charset.py specifyweb/frontend/locale --check
+
+      - name: Checkout Weblate localization branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.repair_po_headers && inputs.repair_target_branch || 'weblate-localization' }}
+          path: weblate-localization
+          token: ${{ inputs.repair_po_headers && secrets.WEBLATE_PUSH_TO_GITHUB || github.token }}
+
+      - name: Repair PO charset headers
+        id: po_repair
+        if: inputs.repair_po_headers == true
+        continue-on-error: true
+        env:
+          PO_REPAIR_BRANCH: ${{ inputs.repair_target_branch || 'weblate-localization' }}
+        run: |
+          case "$PO_REPAIR_BRANCH" in
+            weblate-localization|weblate-localization-test-*) ;;
+            *) echo "Repair target must be weblate-localization or weblate-localization-test-*" >&2; exit 1 ;;
+          esac
+          if [ "$PO_REPAIR_BRANCH" = "weblate-localization" ] && [ "$GITHUB_REF_NAME" != "main" ]; then
+            echo "Production PO repair can only run from the main branch." >&2
+            exit 1
+          fi
+          git check-ref-format --branch "$PO_REPAIR_BRANCH"
+          python3 scripts/weblate/po_charset.py weblate-localization/strings
+          cd weblate-localization
+          if git diff --quiet -- strings; then
+            echo "PO headers are already valid; no commit needed."
+          else
+            git config user.name "github-actions"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add strings
+            git commit -m "Ensure gettext PO files declare UTF-8"
+            git push origin "HEAD:$PO_REPAIR_BRANCH"
+          fi
+
+      - name: Check PO charset headers
+        id: po_check
+        continue-on-error: true
+        run: |
+          python3 scripts/weblate/po_charset.py weblate-localization/strings --check
+
+      - name: Check Weblate and notify Slack
+        if: always()
+        env:
+          WEBLATE_API_TOKEN: ${{ secrets.WEBLATE_API_TOKEN }}
+          SLACK_WEBLATE_WEBHOOK_URL: ${{ secrets.SLACK_WEBLATE_WEBHOOK_URL }}
+          GITHUB_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          APP_PO_CHECK_OUTCOME: ${{ steps.app_po_check.outcome }}
+          PO_CHECK_OUTCOME: ${{ steps.po_check.outcome }}
+          PO_REPAIR_OUTCOME: ${{ steps.po_repair.outcome }}
+          UNLOCK_ALL_COMPONENTS: ${{ inputs.unlock_all_components }}
+        run: |
+          set -u
+
+          api_url="https://hosted.weblate.org/api/projects/specify-7/repository/"
+          api_file="$RUNNER_TEMP/weblate-repository.json"
+          components_url="https://hosted.weblate.org/api/projects/specify-7/components/"
+          components_file="$RUNNER_TEMP/weblate-components.json"
+          component_status_file="$RUNNER_TEMP/weblate-component-status.tsv"
+          result="healthy"
+          detail=""
+          unlock_safe="false"
+
+          if [ -z "$WEBLATE_API_TOKEN" ]; then
+            result="error"
+            detail="WEBLATE_API_TOKEN is not configured."
+          elif ! http_code=$(curl --silent --show-error \
+            --connect-timeout 10 --max-time 30 \
+            --output "$api_file" --write-out '%{http_code}' \
+            --header "Authorization: Token $WEBLATE_API_TOKEN" \
+            "$api_url"); then
+            result="error"
+            detail="Could not reach the Weblate repository status API."
+          elif [ "$http_code" != "200" ]; then
+            result="error"
+            detail="Weblate repository status API returned HTTP $http_code."
+          elif ! jq -e 'type == "object" and has("needs_merge") and has("needs_push") and has("needs_commit")' "$api_file" >/dev/null; then
+            result="error"
+            detail="Weblate returned an unexpected repository status response."
+          else
+            detail=$(jq -r '
+              [
+                (if .needs_merge then "upstream changes need merging" else empty end),
+                (if .needs_push then "Weblate changes need pushing" else empty end),
+                (if .needs_commit then "translations need committing" else empty end),
+                (if ((.skipped_components // []) | length) > 0 then "some repositories were skipped because the API token lacks access" else empty end),
+                (if ((.permission_blockers // []) | length) > 0 then "repository permissions block a complete status check" else empty end)
+              ] | join("; ")
+            ' "$api_file")
+            if [ -n "$detail" ]; then
+              result="attention"
+              unlock_safe="false"
+            else
+              unlock_safe="true"
+              detail="No pending commits, merges, pushes, or repository permission gaps were reported."
+            fi
+          fi
+
+          if [ -n "$WEBLATE_API_TOKEN" ]; then
+            : >"$component_status_file"
+            component_total=""
+            component_error=""
+            while [ -n "$components_url" ]; do
+              case "$components_url" in
+                https://hosted.weblate.org/api/projects/specify-7/components/*) ;;
+                *)
+                  component_error="Weblate returned an unexpected component-list URL."
+                  break
+                  ;;
+              esac
+
+              if ! components_http_code=$(curl --silent --show-error \
+                --connect-timeout 10 --max-time 30 \
+                --output "$components_file" --write-out '%{http_code}' \
+                --header "Authorization: Token $WEBLATE_API_TOKEN" \
+                "$components_url"); then
+                component_error="Could not query the Weblate component list."
+                break
+              elif [ "$components_http_code" != "200" ]; then
+                component_error="Weblate component API returned HTTP $components_http_code."
+                break
+              elif ! jq -e '
+                type == "object" and
+                has("count") and has("next") and has("results") and
+                (.count | type == "number") and
+                (.results | type == "array") and
+                (.next == null or (.next | type == "string")) and
+                all(.results[];
+                  (.slug | type == "string" and test("^[A-Za-z0-9_.-]+$")) and
+                  (.locked | type == "boolean")
+                )
+              ' "$components_file" >/dev/null; then
+                component_error="Weblate returned an unexpected component lock response."
+                break
+              fi
+
+              page_total=$(jq -r '.count' "$components_file")
+              if [ -z "$component_total" ]; then
+                component_total="$page_total"
+              elif [ "$component_total" != "$page_total" ]; then
+                component_error="Weblate component count changed during the status check."
+                break
+              fi
+
+              jq -r '.results[] | [.slug, (.locked | tostring)] | @tsv' \
+                "$components_file" >>"$component_status_file"
+              components_next=$(jq -r '.next // empty' "$components_file")
+              if [ -z "$components_next" ]; then
+                components_url=""
+              elif [ "${components_next#/}" != "$components_next" ]; then
+                components_url="https://hosted.weblate.org$components_next"
+              else
+                components_url="$components_next"
+              fi
+            done
+
+            if [ -n "$component_error" ]; then
+              result="error"
+              detail="$component_error"
+              unlock_safe="false"
+            else
+              component_count=$(awk 'END { print NR + 0 }' "$component_status_file")
+              unique_component_count=$(cut -f1 "$component_status_file" | sort -u | awk 'END { print NR + 0 }')
+              if [ "$component_count" != "$component_total" ] || [ "$unique_component_count" != "$component_total" ]; then
+                result="error"
+                detail="Weblate returned $unique_component_count unique components out of $component_total; lock status is incomplete."
+                unlock_safe="false"
+              else
+                locked_count=$(awk -F '\t' '$2 == "true" { count++ } END { print count + 0 }' "$component_status_file")
+                locked_components=$(awk -F '\t' '$2 == "true" { printf "%s%s", separator, $1; separator = ", " } END { print "" }' "$component_status_file")
+                if [ "$locked_count" -gt 0 ]; then
+                  if [ "$result" = "healthy" ]; then
+                    result="attention"
+                    detail="$locked_count of $component_count components are locked: $locked_components"
+                  else
+                    detail="$detail; $locked_count of $component_count components are locked: $locked_components"
+                  fi
+                fi
+              fi
+            fi
+          fi
+
+          if [ "$APP_PO_CHECK_OUTCOME" != "success" ]; then
+            unlock_safe="false"
+            if [ "$result" = "healthy" ]; then
+              result="attention"
+              detail="Default-branch PO check failed or found no PO files at specifyweb/frontend/locale."
+            else
+              detail="$detail; default-branch PO check failed or found no PO files"
+            fi
+          fi
+
+          if [ "$PO_CHECK_OUTCOME" != "success" ]; then
+            unlock_safe="false"
+            if [ "$result" = "healthy" ]; then
+              result="attention"
+              detail="PO files are missing UTF-8 charset headers; run the Weblate repair workflow."
+            else
+              detail="$detail; PO files are missing UTF-8 charset headers"
+            fi
+          fi
+
+          if [ "$PO_REPAIR_OUTCOME" = "failure" ]; then
+            unlock_safe="false"
+            result="error"
+            detail="PO header repair failed; review the workflow run."
+          fi
+
+          if [ "$UNLOCK_ALL_COMPONENTS" = "true" ]; then
+            if [ "$GITHUB_REF_NAME" != "main" ]; then
+              result="error"
+              detail="Unlock canceled; run the workflow from the main branch."
+            elif [ "$unlock_safe" != "true" ]; then
+              result="error"
+              detail="Unlock canceled because repository or PO health checks did not pass: $detail"
+            else
+              unlock_count=0
+              unlock_failures=""
+              unlock_response_file="$RUNNER_TEMP/weblate-unlock-response.json"
+              while IFS=$'\t' read -r component_slug component_locked; do
+                [ "$component_locked" = "true" ] || continue
+                component_lock_url="https://hosted.weblate.org/api/components/specify-7/$component_slug/lock/"
+                if ! unlock_http_code=$(curl --silent --show-error \
+                  --connect-timeout 5 --max-time 10 \
+                  --output "$unlock_response_file" --write-out '%{http_code}' \
+                  --request POST \
+                  --header "Authorization: Token $WEBLATE_API_TOKEN" \
+                  --header 'Content-Type: application/json' \
+                  --data '{"lock":false}' \
+                  "$component_lock_url"); then
+                  unlock_failures="${unlock_failures}${unlock_failures:+, }$component_slug (request failed)"
+                elif [ "$unlock_http_code" != "200" ] || ! jq -e '.locked == false' "$unlock_response_file" >/dev/null; then
+                  unlock_failures="${unlock_failures}${unlock_failures:+, }$component_slug (HTTP $unlock_http_code)"
+                else
+                  unlock_count=$((unlock_count + 1))
+                fi
+              done <"$component_status_file"
+
+              if [ -n "$unlock_failures" ]; then
+                result="error"
+                detail="Could not unlock all components; succeeded for $unlock_count. Failures: $unlock_failures"
+              else
+                result="healthy"
+                detail="Health checks passed; unlocked $unlock_count components."
+                echo "$detail"
+              fi
+            fi
+          fi
+
+          if [ "$result" = "healthy" ]; then
+            echo "Weblate is healthy; no Slack message sent."
+            exit 0
+          elif [ "$result" = "attention" ]; then
+            message=$(printf '%s\n%s' \
+              ":warning: *Daily Weblate check needs attention:* $detail" \
+              "<https://hosted.weblate.org/projects/specify-7/|Open Specify 7 on Weblate> · <${GITHUB_RUN_URL}|Workflow run>")
+          else
+            message=$(printf '%s\n%s' \
+              ":x: *Daily Weblate check failed:* $detail" \
+              "<${GITHUB_RUN_URL}|Workflow run>")
+          fi
+
+          payload=$(jq -n --arg text "$message" '{text: $text}')
+          if [ -z "$SLACK_WEBLATE_WEBHOOK_URL" ]; then
+            if [ "$GITHUB_REF_NAME" = "main" ]; then
+              echo "SLACK_WEBLATE_WEBHOOK_URL is not configured; cannot send daily report." >&2
+              exit 1
+            fi
+          fi
+          if [ "$GITHUB_REF_NAME" = "main" ]; then
+            curl --fail --silent --show-error \
+              --connect-timeout 10 --max-time 30 \
+              --header 'Content-Type: application/json' \
+              --data "$payload" \
+              "$SLACK_WEBLATE_WEBHOOK_URL"
+          else
+            echo "Slack preview (not sent from a non-main branch):"
+            printf '%s\n' "$message"
+          fi
+
+          if [ "$result" = "error" ] || [ "$APP_PO_CHECK_OUTCOME" != "success" ] || [ "$PO_CHECK_OUTCOME" != "success" ]; then
+            exit 1
+          fi

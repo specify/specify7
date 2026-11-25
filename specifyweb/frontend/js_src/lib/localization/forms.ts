@@ -86,7 +86,7 @@ export const formsText = createDictionary({
   valuesOfMustBeUniqueToDatabase: {
     'en-us': 'Values of {values:string} must be unique to database',
     'ru-ru':
-      'Значения {values:string} должны быть уникальными для всей базы данных.',
+      'Значения {values:string} должны быть уникальными для базы данных.',
     'es-es':
       'Los valores de {values:string} deben ser únicos en la base de datos.',
     'fr-fr':
@@ -575,7 +575,7 @@ export const formsText = createDictionary({
     'uk-ua':
       'Ймовірно, це було включено до цієї форми з Specify 6 і може бути підтримано в майбутньому.',
     'de-ch':
-      'Es wurde wahrscheinlich in Specify 6 in dieses Formular aufgenommen und wird möglicherweise auch in Zukunft unterstützt.',
+      'Es wurde wahrscheinlich in dieser Version von Specify 6 übernommen und wird möglicherweise auch in Zukunft unterstützt.',
     'pt-br':
       'Provavelmente foi incluído neste formulário a partir da versão 6 do Specify e poderá ser suportado no futuro.',
     'hr-hr':
@@ -865,7 +865,7 @@ export const formsText = createDictionary({
     'uk-ua':
       'Можливо, ви захочете зберегти цей запис, перш ніж залишати сторінку.',
     'de-ch':
-      'Sie sollten diesen Eintrag speichern, bevor Sie die Seite verlassen.',
+      'Sie sollten diesen Eintrag möglicherweise speichern, bevor Sie die Seite verlassen.',
     'pt-br': 'Você pode querer salvar este registro antes de sair.',
     'hr-hr':
       'Možda biste željeli spremiti ovaj zapis prije nego što napustite stranicu.',
@@ -1057,7 +1057,7 @@ export const formsText = createDictionary({
   bulkCarryForwardSettingsDescription: {
     'en-us': 'Configure fields to bulk carry forward',
     'de-ch': 'Felder für den Massenübertrag konfigurieren',
-    'es-es': 'Configure los campos para transferirlos masivamente.',
+    'es-es': 'Configure los campos para transferir masivamente.',
     'fr-fr': 'Configurer les champs pour un report en masse',
     'pt-br': 'Configure os campos para transferência em massa.',
     'ru-ru': 'Настройте поля для массового переноса.',
@@ -1096,11 +1096,11 @@ export const formsText = createDictionary({
     'ru-ru':
       'Это поле должно быть уникальным. Оно не может быть перенесено из одного места в другое.',
     'es-es': 'Este campo debe ser único. No se puede transferir.',
-    'fr-fr': 'Ce champ doit être unique. Il ne peut pas être reporté.',
+    'fr-fr': 'Ce champ doit être unique. Il ne peut pas être reporté',
     'uk-ua': 'Це поле має бути унікальним. Його не можна переносити',
     'de-ch':
       'Dieses Feld muss eindeutig sein. Es kann nicht übertragen werden.',
-    'pt-br': 'Este campo deve ser único. Ele não pode ser repetido.',
+    'pt-br': 'Este campo deve ser único. Não pode ser repetido.',
     'hr-hr': 'Ovo polje mora biti jedinstveno. Ne može se prenijeti.',
     nb: 'Dette feltet må være unikt. Det kan ikke tas med videre',
   },
@@ -1136,7 +1136,7 @@ export const formsText = createDictionary({
     'fr-fr':
       "Impossible de reporter l'enregistrement sur la plage {field:string} spécifiée.",
     'pt-br':
-      'Não é possível prosseguir com o registro através do intervalo especificado {field:string}.',
+      'Não é possível prosseguir com o registro através do intervalo {field:string} especificado.',
     'ru-ru':
       'Невозможно перенести запись через указанный диапазон {field:string}.',
     'uk-ua': 'Неможливо перенести запис у вказаний діапазон {field:string}.',
@@ -1437,7 +1437,7 @@ export const formsText = createDictionary({
     'uk-ua': 'Підвид',
     'de-ch': 'Unteransicht',
     'fr-fr': 'Sous-vue',
-    'pt-br': 'Subvisualização',
+    'pt-br': 'Subvista',
     'hr-hr': 'Podprikaz',
     nb: 'Delvisning',
   },
@@ -1459,7 +1459,7 @@ export const formsText = createDictionary({
     'fr-fr': 'Activer le mode lecture seule',
     'uk-ua': 'Увімкнути режим лише для читання',
     'de-ch': 'Nur-Lese-Modus aktivieren',
-    'pt-br': 'Ativar modo somente leitura',
+    'pt-br': 'Ativar o modo somente leitura',
     'hr-hr': 'Omogući način samo za čitanje',
     nb: 'Aktiver skrivebeskyttet modus',
   },
@@ -1574,7 +1574,7 @@ export const formsText = createDictionary({
     'pt-br': 'Adicionar COG Children',
     'ru-ru': 'Добавить детей COG',
     'uk-ua': 'Додати дочірні елементи COG',
-    'hr-hr': 'Dodajte COG djecu',
+    'hr-hr': 'Dodajte djecu COG-a',
     nb: 'Legg til COG-underelementer',
   },
   goToFirstRecord: {
@@ -1625,20 +1625,20 @@ export const formsText = createDictionary({
     'en-us': 'View Parent Resource',
     'de-ch': 'Übergeordnete Ressource anzeigen',
     'es-es': 'Ver recurso para padres',
-    'fr-fr': 'Consulter les ressources pour les parents',
+    'fr-fr': 'Voir les ressources parent',
     'hr-hr': 'Prikaz roditeljskog resursa',
-    nb: 'Vis overordnet ressurs',
+    nb: 'Vis foreldre-ressurs',
     'pt-br': 'Ver recurso para pais',
     'ru-ru': 'Просмотреть родительский ресурс',
     'uk-ua': 'Переглянути батьківський ресурс',
   },
   noParentFound: {
     'en-us': 'Could not find parent resource',
-    'de-ch': 'Die übergeordnete Ressource konnte nicht gefunden werden.',
+    'de-ch': 'Übergeordnete Ressource konnte nicht gefunden werden',
     'es-es': 'No se pudo encontrar el recurso principal',
     'fr-fr': 'Impossible de trouver la ressource parente',
     'hr-hr': 'Nije moguće pronaći nadređeni resurs',
-    nb: 'Finner ikke den overordnede ressursen',
+    nb: 'Finner ikke foreldre-ressursen',
     'pt-br': 'Não foi possível encontrar o recurso pai.',
     'ru-ru': 'Не удалось найти родительский ресурс',
     'uk-ua': 'Не вдалося знайти батьківський ресурс',

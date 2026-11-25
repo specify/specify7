@@ -143,7 +143,7 @@ export const setupToolText = createDictionary({
     'en-us':
       'A short, unique code or acronym for the institution (e.g., "KUBI").',
     'de-ch':
-      'Ein kurzer, eindeutiger Code oder ein Akronym für die Institution (z.B. "KUBI").',
+      'Ein kurzer, eindeutiger Code oder ein Akronym für die Institution (z. B. „KUBI“).',
     'es-es':
       'Un código o acrónimo corto y único para la institución (por ejemplo, "KUBI").',
     'fr-fr':
@@ -196,7 +196,7 @@ export const setupToolText = createDictionary({
     'en-us':
       'Global scope allows you to share Accessions between all divisions. Divisional scope ensures Accessions are specific to each division.',
     'de-ch':
-      'Globaler Geltungsbereich ermöglicht die gemeinsame Nutzung von Zugängen zwischen allen Abteilungen. Bereichsbezogener Geltungsbereich stellt sicher, dass Zugänge spezifisch für die jeweilige Abteilung sind.',
+      'Der globale Geltungsbereich ermöglicht die gemeinsame Nutzung von Zugängen zwischen allen Abteilungen. Der abteilungsbezogene Geltungsbereich stellt sicher, dass Zugänge spezifisch für die jeweilige Abteilung sind.',
     'es-es':
       'El alcance global permite compartir las adquisiciones entre todas las divisiones. El alcance divisional garantiza que las adquisiciones sean específicas de cada división.',
     'fr-fr':
@@ -209,7 +209,7 @@ export const setupToolText = createDictionary({
       'Глобальная область действия позволяет обмениваться данными о поступлении между всеми подразделениями. Область действия на уровне подразделений гарантирует, что данные о поступлении будут специфичны для каждого подразделения.',
     'uk-ua':
       'Глобальна область дії дозволяє вам ділитися приєднаннями між усіма підрозділами. Дивізіональна область дії гарантує, що приєднання є специфічними для кожного підрозділу.',
-    nb: 'Globalt omfang lar deg dele Aksesjoner mellom alle divisjoner. Divisjonsomfang sikrer at Aksesjoner er spesifikke for hver divisjon.',
+    nb: 'Globalt område (scope) lar deg dele Aksesjoner mellom alle divisjoner. Divisjons-område (scope) sikrer at Aksesjoner er spesifikke for hver divisjon.',
   },
   address: {
     'en-us': 'Address',
@@ -499,7 +499,7 @@ export const setupToolText = createDictionary({
     'pt-br':
       '"Está no nome completo" inclui o nível ao construir uma expressão de nome completo, que pode ser consultada e usada em relatórios.',
     'ru-ru':
-      'Функция Is in Full Name включает уровень детализации при построении выражения для полного имени, которое можно запрашивать и использовать в отчетах.',
+      'Функция «Указание полного имени» включает уровень детализации при построении выражения для полного имени, которое можно запрашивать и использовать в отчетах.',
     'uk-ua':
       '«У повному імені» враховує рівень під час створення виразу повного імені, який можна запитувати та використовувати у звітах.',
     nb: '«Er i fullt navn» inkluderer nivået når du bygger et fullt-navn-uttrykk, som kan spørres og brukes i rapporter.',
@@ -832,8 +832,7 @@ export const setupToolText = createDictionary({
     'hr-hr':
       'Kliknite bilo koji blok da biste otvorili njegov obrazac za uređivanje.',
     'pt-br': 'Clique em qualquer bloco para abrir o formulário de edição.',
-    'ru-ru':
-      'Щелкните по любому блоку, чтобы открыть форму его редактирования.',
+    'ru-ru': 'Нажмите на любой блок, чтобы открыть форму его редактирования.',
     'uk-ua': 'Клацніть будь-який блок, щоб відкрити його форму редагування.',
     nb: 'Klikk på en hvilken som helst blokk for å åpne redigeringsskjemaet.',
   },
@@ -885,7 +884,7 @@ export const setupToolText = createDictionary({
     'en-us': 'An empty taxon tree will be created',
     'de-ch': 'Es wird ein leerer Taxonbaum erstellt.',
     'es-es': 'Se creará un árbol taxonómico vacío.',
-    'fr-fr': 'Un arbre taxonomique vide sera créé.',
+    'fr-fr': 'Un arbre taxonomique vide sera créé',
     'hr-hr': 'Bit će kreirano prazno stablo taksona',
     'pt-br': 'Uma árvore taxonômica vazia será criada.',
     'ru-ru': 'Будет создано пустое таксономическое дерево.',
