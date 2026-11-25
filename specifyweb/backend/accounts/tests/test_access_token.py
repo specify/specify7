@@ -6,11 +6,12 @@ from datetime import datetime, timezone, timedelta
 from typing import cast, Any
 
 from django.test import Client
+from django.conf import settings
 
 from specifyweb.specify.models import Collection, Specifyuser, Agent
 from specifyweb.backend.permissions.models import UserPolicy
 from specifyweb.specify.api.serializers import toJson, _obj_to_data
-from specifyweb.backend.accounts.access_token_utils import generate_access_token, decode_access_token, DEFAULT_AUTH_LIFESPAN_SECONDS, AUTH_TOKEN_ALGORITHMS
+from specifyweb.backend.accounts.access_token_utils import generate_access_token, decode_access_token, DEFAULT_AUTH_LIFESPAN_SECONDS, AUTH_TOKEN_ALGORITHMS, MAX_TOKEN_LIFESPAN
 from specifyweb.specify.tests.test_api import ApiTests
 
 
@@ -126,6 +127,21 @@ class AccessTokenApiTests(AccessTokenTests):
             client, grant_type="unknown")
         self.assertEqual(status_code, 400)
         self.assertEqual(response["error"], "unsupported_grant_type")
+
+
+    def test_expiry_time_capped_to_max(self) -> None:
+        client = Client()
+        client.force_login(self.specifyuser)
+        status_code, response = self.acquire_access_token(
+            client,
+            grant_type="password",
+            username=self.specifyuser.name,
+            password=self.password,
+            collectionid=self.collection.id,
+            expires_in=MAX_TOKEN_LIFESPAN + 1
+        )
+        self.assertEqual(status_code, 400)
+        self.assertEqual(response["error"], "invalid_request")
 
     def test_acquire_access_token_rejects_invalid_password(self) -> None:
         client = Client()
@@ -367,5 +383,29 @@ class AccessTokenAuthorizationTests(AccessTokenTests):
             headers=self.get_auth_header(access_token)
         )
 
+        self.assertEqual(object_response.status_code, 401)
+        self.assertTrue(object_response.has_header("WWW-Authenticate"))
+
+    def test_tokens_capped_to_max_lifespan(self):
+        client = Client()
+        # This is a valid Specify Access Token (JWT) payload, save for the
+        # expiration time being past our defined max
+        token_issue_time = datetime.now(timezone.utc)
+        jwt_payload = {
+            "sub": str(self.specifyuser.id),
+            "username": self.specifyuser.name,
+            "collection": self.collection.id,
+            "jti": str(uuid.uuid4()),
+            "iat": token_issue_time,
+            "exp": token_issue_time + timedelta(seconds=MAX_TOKEN_LIFESPAN + 1)
+        }
+        access_token = jwt.encode(
+            jwt_payload, settings.SECRET_KEY, algorithm=AUTH_TOKEN_ALGORITHMS[0]
+        )
+
+        object_response = client.get(
+            f"/api/specify/collectionobject/",
+            headers=self.get_auth_header(access_token)
+        )
         self.assertEqual(object_response.status_code, 401)
         self.assertTrue(object_response.has_header("WWW-Authenticate"))
