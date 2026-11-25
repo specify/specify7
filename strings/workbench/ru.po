@@ -20,14 +20,3 @@ msgstr ""
 #, fuzzy
 msgid "workBench"
 msgstr "Рабочий стол"
-
-#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Wb Utils > Dataset Variants ⬤ Components > Work Bench > Status
-#: components/AttachmentsBulkImport/Rollback.tsx:29
-#: components/AttachmentsBulkImport/Rollback.tsx:93
-#: components/AttachmentsBulkImport/Rollback.tsx:130
-#: components/AttachmentsBulkImport/utils.ts:615
-#: components/AttachmentsBulkImport/__tests__/AttachmentPermissions.test.tsx:68
-#: components/AttachmentsBulkImport/__tests__/AttachmentPermissions.test.tsx:106
-#: components/WbUtils/datasetVariants.tsx:48
-#: components/WbUtils/datasetVariants.tsx:122
-#: components/WorkBench/Status.tsx:80
