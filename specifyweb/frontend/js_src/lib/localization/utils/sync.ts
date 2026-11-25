@@ -169,7 +169,7 @@ type PoComments = GetTextTranslations['translations'][string][string]['comments'
 function mergeComment(
   key: keyof NonNullable<PoComments>,
   local: PoComments,
-  existing: PoComments,
+  existing: Partial<NonNullable<PoComments>> | undefined,
   refreshSourceComments: boolean
 ): string {
   if (!refreshSourceComments && existing !== undefined) {
