@@ -16,9 +16,12 @@ environment, install host dependencies, or create a new virtual environment.
   `specifyweb/settings` to `/opt/specify7/settings`, and Django loads that copy.
   The build excludes `specifyweb/settings/local_*`, `debug.py`, `secret_key.py`,
   and `build_version.py` from the source copy, and generates
-  `local_specify_settings.py` from build environment variables. Those generated
-  values override `specify_settings.py`, so change the environment variable or
-  build input and rebuild instead of editing the file.
+  `local_specify_settings.py` with `os.getenv` calls. Those values resolve from
+  the process environment at start, not at build time, and override
+  `specify_settings.py`. Set the environment variable instead of editing the
+  file: set it in Compose and recreate `specify7` for the server, or use
+  `docker exec -e VAR=value` for a one-off test. Rebuild only when the settings
+  source, the generated file, or a build input changes.
   After changing `manage.py` or `specifyweb/settings`, ensure `mariadb`,
   `redis`, and `webpack` are running, rebuild the image, then recreate only the
   `specify7` service before running tests so they use the updated files:
