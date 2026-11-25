@@ -144,9 +144,11 @@ def token_lifespan_invalid(token: dict) -> bool:
     token_time_difference = token_expires_at - token_issued_at
 
     # This ensures the token's configured lifespan is within our maximum bound
+    # Specifically, this returns true when the token is configured to be alive
+    # longer than our set max token life span and false otherwise
     # e.g., if a token is configured to be alive for longer than
     # MAX_TOKEN_LIFESPAN, we reject it
-    return token_time_difference <= timedelta(seconds=MAX_TOKEN_LIFESPAN)
+    return token_time_difference > timedelta(seconds=MAX_TOKEN_LIFESPAN)
 
 def token_is_revoked(token: dict):
     token_identifier = token["jti"]
