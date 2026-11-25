@@ -38,7 +38,7 @@ environment, install host dependencies, or create a new virtual environment.
   Stop with an error if either service is not ready within 30 seconds:
 
   ```sh
-  docker compose -p specify7 up -d mariadb redis webpack
+  docker compose -p specify7 up -d mariadb redis
   attempt=0
   until docker compose -p specify7 exec -T mariadb mariadb-admin ping --protocol=tcp --host=127.0.0.1 --silent >/dev/null 2>&1; do
     attempt=$((attempt + 1))
