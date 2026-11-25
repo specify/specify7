@@ -29,6 +29,7 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { downloadFile } from '../Molecules/FilePicker';
 import { hasPermission } from '../Permissions/helpers';
 import { QuerySharingActions } from './Share';
+import type { QueryRefreshEvent } from './useQueryRefresh';
 
 export function QueryEditButton({
   queryResource,
@@ -77,6 +78,29 @@ function EditQueryDialog({
   >('default');
   const originalName = React.useRef(queryResource.get('name'));
   const originalRemarks = React.useRef(queryResource.get('remarks'));
+  React.useEffect(() => {
+    const handleRefresh = ({
+      baseline,
+      server,
+      resolutions,
+    }: QueryRefreshEvent): void => {
+      // Rebase the cancel snapshot without retaining edits made in this dialog.
+      if (
+        originalName.current === baseline.name ||
+        resolutions.name === 'server'
+      )
+        originalName.current = server.name;
+      if (
+        originalRemarks.current === baseline.remarks ||
+        resolutions.remarks === 'server'
+      )
+        originalRemarks.current = server.remarks;
+    };
+    queryResource.on('query:refreshed', handleRefresh);
+    return (): void => {
+      queryResource.off('query:refreshed', handleRefresh);
+    };
+  }, [queryResource]);
   const handleDialogClose = React.useCallback((): void => {
     queryResource.set('name', originalName.current, { silent: true });
     queryResource.set('remarks', originalRemarks.current, { silent: true });

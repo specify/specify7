@@ -14,6 +14,12 @@ import type { SpQuery } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import { reconcileQuery, type QueryResolutions } from './reconcileQuery';
 
+export type QueryRefreshEvent = {
+  readonly baseline: SerializedResource<SpQuery>;
+  readonly server: SerializedResource<SpQuery>;
+  readonly resolutions: QueryResolutions;
+};
+
 export function useQueryRefresh(
   resource: SpecifyResource<SpQuery>,
   getLocal = (): SerializedResource<SpQuery> => serializeResource(resource),
@@ -48,8 +54,15 @@ export function useQueryRefresh(
       setPending(server);
       setResolutions(choices);
     } else {
+      const baseline = savedQuery.current;
       savedQuery.current = server;
       resource.bulkSet(result.definition);
+      const event: QueryRefreshEvent = {
+        baseline,
+        server,
+        resolutions: choices,
+      };
+      resource.trigger('query:refreshed', event);
       latest.current.onRefreshed?.(result.definition);
       setPending(undefined);
     }

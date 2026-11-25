@@ -372,5 +372,53 @@ test.each(['local', 'server', 'cancel'] as const)(
     expect(
       screen.queryByText(queryText.queryRefreshConflict())
     ).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Close editor' }));
+    expect(original.get('name')).toBe('Server name');
+    expect(original.get('remarks')).toBe('Server remarks');
+  }
+);
+
+test.each(['local', 'server'] as const)(
+  'preserves the %s conflict resolution for edits made before opening the editor',
+  async (choice) => {
+    const resource = new tables.SpQuery.Resource<SpQuery>(
+      addMissingFields('SpQuery', {
+        id: 100,
+        version: 1,
+        name: 'Original',
+        contextTableId: tables.CollectionObject.tableId,
+        specifyUser: userInformation.resource_uri,
+        fields: [],
+      })
+    );
+    const server = new tables.SpQuery.Resource<SpQuery>({
+      ...serializeResource(resource),
+      version: 8,
+      name: 'Server name',
+    });
+    jest
+      .spyOn(tables.SpQuery.Resource.prototype, 'fetch')
+      .mockResolvedValue(server);
+    render(
+      <LoadingContext.Provider value={(promise): void => void promise}>
+        <UnloadProtectsContext.Provider value={[]}>
+          <Editor resource={resource} onRefreshed={jest.fn()} />
+        </UnloadProtectsContext.Provider>
+      </LoadingContext.Provider>
+    );
+    resource.set('name', 'Earlier local name');
+    fireEvent.click(screen.getByRole('button', { name: commonText.edit() }));
+    resource.set('name', 'Dialog name');
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Update sharing' }));
+    });
+    fireEvent.change(screen.getByRole('combobox'), {
+      target: { value: choice },
+    });
+    fireEvent.click(screen.getByRole('button', { name: commonText.apply() }));
+    fireEvent.click(screen.getByRole('button', { name: 'Close editor' }));
+    expect(resource.get('name')).toBe(
+      choice === 'local' ? 'Earlier local name' : 'Server name'
+    );
   }
 );

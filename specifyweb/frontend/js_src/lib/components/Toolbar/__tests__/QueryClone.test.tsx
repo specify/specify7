@@ -310,7 +310,7 @@ describe.each([
         name: queryText.moveQueryToFolder({ queryName }),
       })
     );
-    const move = screen.getByRole('button', { name: queryText.move() });
+    const move = screen.getByRole('button', { name: queryText.moveQuery() });
     expect(move).toBeDisabled();
     const select = screen.getByRole('combobox', { name: queryText.folders() });
     expect(
@@ -423,10 +423,12 @@ test('a failed move keeps the query in its list and allows retrying', async () =
   );
   const error = new Error('Move failed');
   jest.spyOn(ajaxUtils, 'ajax').mockRejectedValueOnce(error);
-  fireEvent.click(screen.getByRole('button', { name: queryText.move() }));
+  fireEvent.click(screen.getByRole('button', { name: queryText.moveQuery() }));
   await waitFor(() => expect(handleError).toHaveBeenCalledWith(error));
   await waitFor(() =>
-    expect(screen.getByRole('button', { name: queryText.move() })).toBeEnabled()
+    expect(
+      screen.getByRole('button', { name: queryText.moveQuery() })
+    ).toBeEnabled()
   );
   expect(
     screen.getByRole('link', { name: new RegExp(queryName) })
@@ -974,7 +976,9 @@ describe('moving an individually shared query into a shared folder', () => {
         target: { value: '9' },
       }
     );
-    fireEvent.click(screen.getByRole('button', { name: queryText.move() }));
+    fireEvent.click(
+      screen.getByRole('button', { name: queryText.moveQuery() })
+    );
     expect(screen.getByRole('alert')).toHaveTextContent(
       queryText.folderSharingWarning()
     );

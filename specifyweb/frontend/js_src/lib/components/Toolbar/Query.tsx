@@ -1110,7 +1110,7 @@ function MoveQueryToFolderDialog({
                 else onMove(Number(folderId), false);
               }}
             >
-              {queryText.move()}
+              {queryText.moveQuery()}
             </Button.Info>
           )}
         </>

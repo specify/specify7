@@ -90,7 +90,7 @@ export const queryText = createDictionary({
   chooseFolder: {
     'en-us': 'Choose a folder',
   },
-  move: {
+  moveQuery: {
     'en-us': 'Move',
   },
   sharedQueries: {
@@ -134,9 +134,6 @@ export const queryText = createDictionary({
   },
   noQueryRecipients: {
     'en-us': 'No recipients selected. Saving will revoke all sharing.',
-  },
-  usersWithoutCollection: {
-    'en-us': 'Users without collection access',
   },
   query: {
     'en-us': 'Query',
