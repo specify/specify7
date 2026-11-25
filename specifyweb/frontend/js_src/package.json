@@ -134,6 +134,15 @@
     "worker-loader": "^3.0.8"
   },
   "overrides": {
+    "test-exclude": {
+      "minimatch": "^11.0.1"
+    },
+    "babel-jest": {
+      "minimatch": "^11.0.1"
+    },
+    "jest": {
+      "minimatch": "^11.0.1"
+    },
     "moment": "^2.31.0",
     "baseline-browser-mapping": "^2.11.0",
     "decode-uri-component": "^0.5.1",
@@ -147,14 +156,15 @@
     "@eslint/eslintrc": {
       "minimatch": "3.1.4"
     },
-    "glob@10.3.10": {
-      "minimatch": "9.0.9"
-    },
+    "glob": "^14.0.6",
     "worker-loader": {
       "loader-utils": "2.0.3"
     },
     "babel-plugin-istanbul": {
-      "test-exclude": "^7.0.1"
+      "test-exclude": {
+        ".": "^7.0.1",
+        "minimatch": "^11.0.1"
+      }
     },
     "eslint": {
       "file-entry-cache": "^8.0.0"
