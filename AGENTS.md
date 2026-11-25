@@ -74,6 +74,13 @@ environment, install host dependencies, or create a new virtual environment.
   `--keepdb` with `--noinput` so Django deletes the test database without
   prompting.
 
+Install the test-only dependencies once per container, and again after
+recreating it:
+
+```sh
+docker exec CONTAINER_ID_NAME /bin/bash -c 'source ve/bin/activate && pip install -q -r /home/specify/requirements-testing.txt'
+```
+
 Interactive workflow:
 
 ```sh
