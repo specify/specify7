@@ -33,7 +33,7 @@ def get_express_search_config(collection, user):
 def build_primary_query(session, searchtable, terms, collection, user, as_scalar=False):
     from specifyweb.backend.stored_queries.query_construct_model import QueryConstruct
 
-    table = datamodel.get_table(searchtable.find('tableName').text)
+    table = datamodel.get_table_strict(searchtable.find('tableName').text)
     check_table_permissions(collection, user, table, "read")
 
     model = getattr(models, table.name)
@@ -46,6 +46,7 @@ def build_primary_query(session, searchtable, terms, collection, user, as_scalar
         collection=collection,
         objectformatter=ObjectFormatter(collection, user, False, props=DefaultQueryFormatterProps()),
         query=session.query(id_field),
+        base_table=table
     )
 
     if not as_scalar:

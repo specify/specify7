@@ -486,6 +486,14 @@ def import_model(model_name):
         if model_name in model_names:
             def get_model():
                 from importlib import import_module
+                # BUG: If new Django apps are added they would have to be added
+                # to this array.
+                # Or if Django apps are renamed, this list would also need to
+                # be modified.
+                # We should be able to read all of the apps from the
+                # SPECIFY_APPS variable in our Django settings, or through a
+                # utility like apps.get_app_configs or similar.
+                # That would be more maintainable than this hardcoded list.
                 if app_name in ['accounts', 'permissions', 'attachment_gw', 'barvis', 'raven_placeholder', 'notifications', 'express_search', 'hibernateboolsbackend', 'stats', 'interactions', 'report_runner', 'export', 'businessrules', 'patches', 'stored_queries', 'workbench', 'context']:
                     module = import_module(f"specifyweb.backend.{app_name}.models")
                 else:

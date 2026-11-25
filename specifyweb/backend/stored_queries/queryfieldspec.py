@@ -232,8 +232,6 @@ class QueryFieldSpec(
             join_path.append(field)
             node = table
 
-        extracted_fieldname, date_part = extract_date_part(field_name)
-
         if is_relation:
             relation = None
             if join_path and isinstance(join_path[-1], Relationship):
