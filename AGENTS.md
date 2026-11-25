@@ -49,7 +49,7 @@ environment, install host dependencies, or create a new virtual environment.
     sleep 1
   done
   attempt=0
-  until [ "$(docker compose -p specify7 exec -T redis redis-cli ping 2>/dev/null)" = "PONG" ]; do
+  until [ "$(docker compose -p specify7 exec -T redis timeout 1 redis-cli ping 2>/dev/null)" = "PONG" ]; do
     attempt=$((attempt + 1))
     if [ "$attempt" -ge 30 ]; then
       echo "Redis did not become ready within 30 seconds" >&2
