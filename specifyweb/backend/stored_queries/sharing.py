@@ -100,8 +100,11 @@ def get_query_share_recipients() -> dict[str, object]:
 @never_cache
 def manage_query_shares(request: HttpRequest, id: int) -> HttpResponse:
     from specifyweb.backend.permissions.models import SpqueryShare
+    from specifyweb.backend.stored_queries.models import QueryFolderMembership
 
     with transaction.atomic():
+        if request.method != "GET":
+            Specifyuser.objects.select_for_update().get(pk=request.specify_user.id)
         query = get_object_or_404(Spquery.objects.select_for_update(), pk=id)
         user = request.specify_user
         if query.specifyuser_id != user.id:
@@ -116,9 +119,20 @@ def manage_query_shares(request: HttpRequest, id: int) -> HttpResponse:
                 )
             )
             response = {"recipientIds": recipient_ids, "version": query.version}
+            if QueryFolderMembership.objects.filter(
+                query=query, owner=user, sharing_folder__sharing_group__isnull=False,
+            ).exists():
+                response["folderSharing"] = True
             if user.is_admin():
                 response.update(get_query_share_recipients())
             return JsonResponse(response)
+
+        if QueryFolderMembership.objects.filter(
+            query=query, owner=user, sharing_folder__sharing_group__isnull=False,
+        ).exists():
+            return HttpResponseConflict(
+                "Remove folder sharing before changing individual query sharing."
+            )
 
         if request.method == "DELETE":
             bump_version(query, query.version)

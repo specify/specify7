@@ -4,7 +4,7 @@ from collections import defaultdict
 from datetime import datetime
 from threading import Thread
 
-from django.http import HttpResponse, HttpResponseBadRequest, \
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseForbidden, \
     HttpResponseRedirect, JsonResponse, HttpRequest
 from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_http_methods, require_POST
@@ -19,6 +19,7 @@ from specifyweb.backend.stats.coordination import (
 from specifyweb.backend.stored_queries.batch_edit import run_batch_edit
 from specifyweb.backend.stored_queries.access import (
     ensure_query_access, ensure_query_write_access, filter_queries_for_user,
+    query_is_shared,
 )
 from specifyweb.specify.models_utils.models_by_table_id import model_names_by_table_id
 from specifyweb.specify.api.serializers import toJson, uri_for_model
@@ -65,6 +66,7 @@ def query_folders(request: HttpRequest) -> JsonResponse | HttpResponseBadRequest
                         'name': folder.name,
                         'parentId': folder.parent_id,
                         'section': folder.section,
+                        **({'sharingGroup': folder.sharing_group} if folder.sharing_group else {}),
                     }
                     for folder in folders
                 ]
@@ -131,8 +133,8 @@ def query_folders(request: HttpRequest) -> JsonResponse | HttpResponseBadRequest
 @require_POST
 @login_maybe_required
 @never_cache
-def move_query_to_folder(request: HttpRequest, id: int) -> JsonResponse | HttpResponseBadRequest:
-    """Organize a visible query without changing its definition or sharing grants."""
+def move_query_to_folder(request: HttpRequest, id: int) -> HttpResponse:
+    """Organize a visible query, updating inherited folder sharing as needed."""
     check_table_permissions(
         request.specify_collection, request.specify_user_agent, Spquery, 'read'
     )
@@ -155,21 +157,46 @@ def move_query_to_folder(request: HttpRequest, id: int) -> JsonResponse | HttpRe
         )
     query = Spquery.objects.filter(pk=id)
     if folder.section == models.QueryFolder.Section.SHARED:
-        query = query.filter(share_grants__recipient=request.specify_user)
-    else:
-        query = query.filter(
-            specifyuser=request.specify_user,
-            share_grants__isnull=folder.section == models.QueryFolder.Section.PERSONAL,
+        query = filter_queries_for_user(query, request.specify_user.id).exclude(
+            specifyuser=request.specify_user
         )
+    else:
+        query = query.filter(specifyuser=request.specify_user)
     if not query.exists():
         return HttpResponseBadRequest('The query does not belong to this query section.')
+    from .folder_sharing import sharing_ancestor
+    from specifyweb.specify.models import Specifyuser
+    from django.db.models import F
 
-    models.QueryFolderMembership.objects.update_or_create(
-        owner=request.specify_user,
-        query_id=id,
-        section=folder.section,
-        defaults={'folder': folder},
-    )
+    with transaction.atomic():
+        Specifyuser.objects.select_for_update().get(pk=request.specify_user.id)
+        locked_query = get_object_or_404(Spquery.objects.select_for_update(), pk=id)
+        membership = models.QueryFolderMembership.objects.filter(
+            owner=request.specify_user, query_id=id, section=folder.section
+        ).first()
+        previous_sharing = membership.sharing_folder_id if membership else None
+        folders = list(models.QueryFolder.objects.filter(
+            owner=request.specify_user, section=folder.section
+        ))
+        current_folder = next((item for item in folders if item.id == folder.id), None)
+        if current_folder is None:
+            return HttpResponseBadRequest('The destination folder no longer exists.')
+        shared_folder = sharing_ancestor(folders, current_folder)
+        if folder.section == models.QueryFolder.Section.PERSONAL:
+            if previous_sharing is None and query_is_shared(id):
+                return HttpResponseBadRequest('Shared queries cannot be moved into Your Queries.')
+            if (previous_sharing is not None or shared_folder is not None) and not request.specify_user.is_admin():
+                return HttpResponseForbidden('Only a Specify Administrator can change folder sharing.')
+        elif folder.section == models.QueryFolder.Section.SHARING and not query_is_shared(id):
+            return HttpResponseBadRequest('The query does not belong to this query section.')
+        models.QueryFolderMembership.objects.update_or_create(
+            owner=request.specify_user,
+            query_id=id,
+            section=folder.section,
+            defaults={'folder': folder, 'sharing_folder': shared_folder},
+        )
+        if previous_sharing != (shared_folder.id if shared_folder else None):
+            Spquery.objects.filter(pk=locked_query.pk).update(version=F('version') + 1)
     return JsonResponse({'queryId': id, 'folderId': folder.id, 'section': folder.section})
 
 
@@ -240,7 +267,7 @@ def archive_query(request: HttpRequest, id: int) -> JsonResponse | HttpResponseB
     with transaction.atomic():
         query = get_object_or_404(Spquery.objects.select_for_update(), pk=id)
         ensure_query_write_access(query, request.specify_user.id)
-        if query.share_grants.exists():
+        if query_is_shared(query.id):
             return HttpResponseBadRequest('Only queries in Your Queries can be archived.')
         models.QueryArchive.objects.get_or_create(
             owner=request.specify_user, query=query
@@ -268,7 +295,7 @@ def restore_query(request: HttpRequest, id: int) -> JsonResponse | HttpResponseB
         )
         if not archived.exists():
             return HttpResponseBadRequest('Only archived queries can be restored.')
-        if query.share_grants.exists():
+        if query_is_shared(query.id):
             return HttpResponseBadRequest('Stop sharing this query before restoring it to Your Queries.')
         models.QueryFolderMembership.objects.filter(
             owner=request.specify_user, query=query,

@@ -22,6 +22,27 @@ export const queryText = createDictionary({
   folders: {
     'en-us': 'Folders',
   },
+  shareFolder: { 'en-us': 'Share folder' },
+  folderSharingDescription: {
+    'en-us':
+      'Share every query in this folder and its subfolders with a group. Queries added later are shared automatically.',
+  },
+  folderSharingWarning: {
+    'en-us':
+      'Some queries are already shared. Their existing sharing will be overwritten by folder sharing.',
+  },
+  folderSharingManaged: {
+    'en-us':
+      'Sharing is managed by a shared folder. Remove folder sharing before changing individual sharing.',
+  },
+  folderSharingOverlap: {
+    'en-us':
+      'Remove sharing from the related folder before sharing this folder.',
+  },
+  shareWithEveryone: { 'en-us': 'Share with all users' },
+  shareWithAdmins: { 'en-us': 'Share with Admins' },
+  sharedWithEveryone: { 'en-us': 'Shared with everyone' },
+  sharedWithAdmins: { 'en-us': 'Shared with Admins' },
   favorites: {
     'en-us': 'Favorites',
   },

@@ -76,6 +76,7 @@ class QueryFolder(django_models.Model):
         blank=True,
         related_name='children',
     )
+    sharing_group = django_models.CharField(max_length=8, null=True, blank=True)
 
     class Meta:
         db_table = 'stored_query_folder'
@@ -95,6 +96,10 @@ class QueryFolderMembership(django_models.Model):
     )
     folder = django_models.ForeignKey(
         QueryFolder, on_delete=django_models.CASCADE, related_name='memberships'
+    )
+    sharing_folder = django_models.ForeignKey(
+        QueryFolder, on_delete=django_models.SET_NULL, null=True, blank=True,
+        related_name='shared_memberships',
     )
 
     class Meta:

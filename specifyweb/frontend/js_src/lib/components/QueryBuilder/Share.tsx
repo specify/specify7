@@ -22,7 +22,9 @@ type QueryShares = {
 };
 type QuerySharesUpdate = Pick<QueryShares, 'recipientIds' | 'version'>;
 type QuerySharesResponse = QuerySharesUpdate &
-  Partial<Pick<QueryShares, 'collections' | 'usersWithoutCollection'>>;
+  Partial<Pick<QueryShares, 'collections' | 'usersWithoutCollection'>> & {
+    readonly folderSharing?: boolean;
+  };
 
 function hasRecipientOptions(
   shares: QuerySharesResponse | undefined
@@ -118,7 +120,10 @@ export function QuerySharingActions({
 
   return (
     <>
-      {canShare && (
+      {shares?.folderSharing === true && (
+        <p>{queryText.folderSharingManaged()}</p>
+      )}
+      {canShare && shares?.folderSharing !== true && (
         <Button.LikeLink
           disabled={shares === undefined}
           onClick={(): void => setMode('share')}
@@ -126,11 +131,13 @@ export function QuerySharingActions({
           {queryText.shareQuery()}
         </Button.LikeLink>
       )}
-      {shares !== undefined && shares.recipientIds.length > 0 && (
-        <Button.LikeLink onClick={(): void => setMode('revoke')}>
-          {queryText.revokeQuerySharing()}
-        </Button.LikeLink>
-      )}
+      {shares !== undefined &&
+        shares.folderSharing !== true &&
+        shares.recipientIds.length > 0 && (
+          <Button.LikeLink onClick={(): void => setMode('revoke')}>
+            {queryText.revokeQuerySharing()}
+          </Button.LikeLink>
+        )}
       {mode === 'share' && canShare && hasRecipientOptions(shares) && (
         <QueryShareDialog
           initialRecipients={shares.recipientIds}

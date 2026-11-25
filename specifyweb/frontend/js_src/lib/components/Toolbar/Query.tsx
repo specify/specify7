@@ -117,6 +117,7 @@ type QueryFolder = {
   readonly name: string;
   readonly parentId: number | null;
   readonly section: QuerySection;
+  readonly sharingGroup?: 'everyone' | 'admins';
 };
 
 type QueryFolderNode = QueryFolder & {
@@ -155,10 +156,16 @@ function QueryFolderTree({
   folders,
   selectedFolderId,
   onSelect,
+  onShare,
+  inheritedGroup,
+  shareDisabled,
 }: {
   readonly folders: RA<QueryFolderNode>;
   readonly selectedFolderId: number | null;
   readonly onSelect: (folderId: number) => void;
+  readonly onShare?: (folder: QueryFolder) => void;
+  readonly inheritedGroup?: QueryFolder['sharingGroup'];
+  readonly shareDisabled: boolean;
 }): JSX.Element {
   const [collapsedFolders, setCollapsedFolders] = React.useState<RA<number>>(
     []
@@ -172,7 +179,7 @@ function QueryFolderTree({
       {folders.map((folder) => (
         <li key={folder.id}>
           <div className="flex items-center gap-1 py-1 text-sm">
-            {folder.children.length > 0 ? (
+            {folder.children.length > 0 && (
               <Button.Icon
                 aria-controls={`${id}-${folder.id}`}
                 aria-expanded={!collapsedFolders.includes(folder.id)}
@@ -200,8 +207,6 @@ function QueryFolderTree({
                   )
                 }
               />
-            ) : (
-              <span aria-hidden className="h-7 w-7 shrink-0" />
             )}
             <Button.LikeLink
               aria-current={selectedFolderId === folder.id ? 'page' : undefined}
@@ -215,8 +220,51 @@ function QueryFolderTree({
               <span className="flex h-4 w-4 shrink-0 items-center justify-center">
                 {icons.folder}
               </span>
-              <span>{folder.name}</span>
+              <span>
+                {folder.name}
+                {(folder.sharingGroup ?? inheritedGroup) !== undefined && (
+                  <span className="text-gray-500 dark:text-gray-400">
+                    {' '}
+                    (
+                    {(folder.sharingGroup ?? inheritedGroup) === 'everyone'
+                      ? queryText.sharedWithEveryone()
+                      : queryText.sharedWithAdmins()}
+                    )
+                  </span>
+                )}
+              </span>
             </Button.LikeLink>
+            {onShare !== undefined && (
+              <Button.Icon
+                className={
+                  folder.sharingGroup !== undefined ||
+                  inheritedGroup !== undefined
+                    ? 'text-red-600 dark:text-red-400'
+                    : ''
+                }
+                disabled={
+                  shareDisabled ||
+                  inheritedGroup !== undefined ||
+                  (folder.sharingGroup === undefined &&
+                    flattenQueryFolders(folder.children).some(
+                      ({ folder: child }) => child.sharingGroup !== undefined
+                    ))
+                }
+                icon="share"
+                title={
+                  inheritedGroup !== undefined ||
+                  (folder.sharingGroup === undefined &&
+                    flattenQueryFolders(folder.children).some(
+                      ({ folder: child }) => child.sharingGroup !== undefined
+                    ))
+                    ? queryText.folderSharingOverlap()
+                    : folder.sharingGroup === undefined
+                      ? queryText.shareFolder()
+                      : queryText.revokeQuerySharing()
+                }
+                onClick={(): void => onShare(folder)}
+              />
+            )}
           </div>
           {folder.children.length > 0 && (
             <div
@@ -227,6 +275,9 @@ function QueryFolderTree({
               <QueryFolderTree
                 folders={folder.children}
                 selectedFolderId={selectedFolderId}
+                onShare={onShare}
+                inheritedGroup={folder.sharingGroup ?? inheritedGroup}
+                shareDisabled={shareDisabled}
                 onSelect={onSelect}
               />
             </div>
@@ -284,6 +335,10 @@ export function QueryListDialog({
     SerializedResource<SpQuery> | undefined
   >();
   const [movePending, setMovePending] = React.useState(false);
+  const [sharingFolder, setSharingFolder] = React.useState<{
+    readonly folder: QueryFolder;
+    readonly warning: boolean;
+  }>();
   const ownerId = filters?.specifyUser ?? userInformation.id;
   const fetchQueries = React.useCallback(
     async (waitForPendingGet = false) =>
@@ -309,12 +364,7 @@ export function QueryListDialog({
                   ...(selectedFolderId === null
                     ? {}
                     : { query_folder_id: selectedFolderId }),
-                  ...(section === 'shared'
-                    ? { share_grants__recipient: userInformation.id }
-                    : {
-                        share_grants__isnull:
-                          section === 'personal' ? 'true' : 'false',
-                      }),
+                  query_sharing: section,
                 }),
           ...(searchFilter === ''
             ? {}
@@ -432,6 +482,14 @@ export function QueryListDialog({
     () => flattenQueryFolders(folderTree),
     [folderTree]
   );
+  const selectedFolderIsShared = React.useMemo(() => {
+    let folder = folders?.find((item) => item.id === selectedFolderId);
+    while (folder !== undefined) {
+      if (folder.sharingGroup !== undefined) return true;
+      folder = folders?.find((item) => item.id === folder?.parentId);
+    }
+    return false;
+  }, [folders, selectedFolderId]);
   const handleCreateFolder = (name: string, parentId: number | null): void => {
     loading(
       ajax<QueryFolder>('/stored_query/folders/', {
@@ -461,6 +519,53 @@ export function QueryListDialog({
           setRefreshToken((token) => token + 1);
         })
         .finally(() => setMovePending(false))
+    );
+  };
+  const handleFolderSharing = (folder: QueryFolder): void => {
+    const url = `/stored_query/folders/${folder.id}/sharing/`;
+    if (folder.sharingGroup !== undefined) {
+      loading(
+        ajax(url, {
+          method: 'DELETE',
+          headers: { Accept: 'application/json' },
+        }).then(() => {
+          setFolders((current) =>
+            current?.map((item) =>
+              item.id === folder.id
+                ? { ...item, sharingGroup: undefined }
+                : item
+            )
+          );
+          setRefreshToken((token) => token + 1);
+        })
+      );
+    } else {
+      loading(
+        ajax<{ readonly hasSharedQueries: boolean }>(url, {
+          headers: { Accept: 'application/json' },
+        }).then(({ data }) =>
+          setSharingFolder({ folder, warning: data.hasSharedQueries })
+        )
+      );
+    }
+  };
+  const handleShareFolder = (group: 'everyone' | 'admins'): void => {
+    if (sharingFolder === undefined) return;
+    const { folder, warning } = sharingFolder;
+    loading(
+      ajax(`/stored_query/folders/${folder.id}/sharing/`, {
+        method: 'PUT',
+        headers: { Accept: 'application/json' },
+        body: { sharingGroup: group, overwrite: warning },
+      }).then(() => {
+        setFolders((current) =>
+          current?.map((item) =>
+            item.id === folder.id ? { ...item, sharingGroup: group } : item
+          )
+        );
+        setSharingFolder(undefined);
+        setRefreshToken((token) => token + 1);
+      })
     );
   };
   const handleFavoriteQuery = (
@@ -588,6 +693,10 @@ export function QueryListDialog({
                 <QueryFolderTree
                   folders={folderTree}
                   selectedFolderId={selectedFolderId}
+                  onShare={
+                    section === 'personal' ? handleFolderSharing : undefined
+                  }
+                  shareDisabled={isReadOnly || !userInformation.isadmin}
                   onSelect={(folderId): void => {
                     currentPage[1](0);
                     setSelectedFolderId(folderId);
@@ -744,6 +853,7 @@ export function QueryListDialog({
                     }
                     onArchive={
                       isReadOnly ||
+                      selectedFolderIsShared ||
                       (!showArchive &&
                         (showFavorites || section !== 'personal')) ||
                       idFromUrl(query.specifyUser) !== userInformation.id
@@ -834,7 +944,72 @@ export function QueryListDialog({
           onMove={handleMoveQuery}
         />
       )}
+      {sharingFolder !== undefined && (
+        <ShareQueryFolderDialog
+          warning={sharingFolder.warning}
+          onClose={(): void => setSharingFolder(undefined)}
+          onShare={handleShareFolder}
+        />
+      )}
     </>
+  );
+}
+
+function ShareQueryFolderDialog({
+  warning,
+  onClose,
+  onShare,
+}: {
+  readonly warning: boolean;
+  readonly onClose: () => void;
+  readonly onShare: (group: 'everyone' | 'admins') => void;
+}): JSX.Element {
+  const [reviewWarning, setReviewWarning] = React.useState(warning);
+  const [group, setGroup] = React.useState<'everyone' | 'admins'>('everyone');
+  const name = React.useId();
+  return (
+    <Dialog
+      header={queryText.shareFolder()}
+      onClose={onClose}
+      buttons={
+        <>
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+          {reviewWarning ? (
+            <Button.Warning onClick={(): void => setReviewWarning(false)}>
+              {commonText.proceed()}
+            </Button.Warning>
+          ) : (
+            <Button.Success onClick={(): void => onShare(group)}>
+              {commonText.save()}
+            </Button.Success>
+          )}
+        </>
+      }
+    >
+      {reviewWarning ? (
+        <p role="alert">{queryText.folderSharingWarning()}</p>
+      ) : (
+        <div className="flex flex-col gap-2">
+          <p>{queryText.folderSharingDescription()}</p>
+          <Label.Inline>
+            <Input.Radio
+              name={name}
+              checked={group === 'everyone'}
+              onChange={(): void => setGroup('everyone')}
+            />
+            {queryText.shareWithEveryone()}
+          </Label.Inline>
+          <Label.Inline>
+            <Input.Radio
+              name={name}
+              checked={group === 'admins'}
+              onChange={(): void => setGroup('admins')}
+            />
+            {queryText.shareWithAdmins()}
+          </Label.Inline>
+        </div>
+      )}
+    </Dialog>
   );
 }
 

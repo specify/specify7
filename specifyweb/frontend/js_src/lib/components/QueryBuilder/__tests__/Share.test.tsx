@@ -60,6 +60,11 @@ overrideAjax('/stored_query/query/11/shares/', {
   ...recipients,
   recipientIds: [],
 });
+overrideAjax('/stored_query/query/13/shares/', {
+  ...recipients,
+  recipientIds: [],
+  folderSharing: true,
+});
 overrideAjax(
   '/stored_query/query/11/shares/',
   { recipientIds: [1, 2, 3, 4], version: 1 },
@@ -99,6 +104,17 @@ const user = {
     });
   },
 };
+
+test('prevents individual sharing changes for folder-managed queries', async () => {
+  await renderActions(13);
+  expect(screen.getByText(queryText.folderSharingManaged())).toBeVisible();
+  expect(
+    screen.queryByRole('button', { name: queryText.shareQuery() })
+  ).toBeNull();
+  expect(
+    screen.queryByRole('button', { name: queryText.revokeQuerySharing() })
+  ).toBeNull();
+});
 
 test('non-admin owners can revoke existing grants but cannot change them', async () => {
   const ajax = jest.spyOn(ajaxModule, 'ajax');

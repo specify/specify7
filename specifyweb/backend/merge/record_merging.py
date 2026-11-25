@@ -16,7 +16,7 @@ from specifyweb.backend.permissions.models import SpqueryShare
 from django.db.models import Q
 
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
-from specifyweb.backend.stored_queries.access import QueryWriteDenied, ensure_query_write_access
+from specifyweb.backend.stored_queries.access import QueryWriteDenied, ensure_query_write_access, query_is_shared
 from specifyweb.celery_tasks import LogErrorsTask, app
 from specifyweb.specify import models as spmodels
 from specifyweb.specify.models_utils.build_models import orderings
@@ -228,7 +228,7 @@ def _record_merge(model_name: str, old_model_ids: list[int], new_model_id: int,
             ensure_query_write_access(old_object, specify_user.id)
             # Deleting a shared source would cascade its grants. Do not silently
             # revoke access or extend it to a different query definition.
-            if isinstance(old_object, spmodels.Spquery) and old_object.share_grants.exists():
+            if isinstance(old_object, spmodels.Spquery) and query_is_shared(old_object.id):
                 raise QueryWriteDenied(
                     "Shared source queries cannot be merged. Remove their sharing grants first."
                 )

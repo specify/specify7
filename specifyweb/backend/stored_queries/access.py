@@ -2,7 +2,7 @@ from typing import TypeVar
 
 from django.apps import apps
 from django.core.exceptions import PermissionDenied
-from django.db.models import Model, Q, QuerySet
+from django.db.models import F, Model, Q, QuerySet
 from django.http import Http404
 
 from specifyweb.backend.permissions.exceptions import PermissionsException
@@ -17,11 +17,45 @@ class QueryWriteDenied(PermissionDenied, PermissionsException):
         return {"QueryWriteDenied": str(self)}
 
 
+def shared_query_ids():
+    from specifyweb.backend.permissions.models import SpqueryShare
+    from specifyweb.backend.stored_queries.models import QueryFolderMembership
+
+    return (
+        SpqueryShare.objects.values('query_id'),
+        QueryFolderMembership.objects.filter(
+            sharing_folder__sharing_group__isnull=False,
+            owner_id=F('query__specifyuser_id'),
+        ).values('query_id'),
+    )
+
+
+def query_is_shared(query_id: int) -> bool:
+    grants, groups = shared_query_ids()
+    query_model = apps.get_model("specify", "Spquery")
+    return query_model.objects.filter(pk=query_id).filter(
+        Q(pk__in=grants) | Q(pk__in=groups)
+    ).exists()
+
+
 def filter_queries_for_user(
     queries: QuerySet[QueryModel], user_id: int
 ) -> QuerySet[QueryModel]:
+    from specifyweb.backend.permissions.models import UserPolicy
+    from specifyweb.backend.stored_queries.models import QueryFolderMembership
+
+    groups = ['everyone']
+    if UserPolicy.objects.filter(
+        specifyuser_id=user_id, collection=None, resource='%', action='%'
+    ).exists():
+        groups.append('admins')
+    group_queries = QueryFolderMembership.objects.filter(
+        sharing_folder__sharing_group__in=groups,
+        owner_id=F('query__specifyuser_id'),
+    ).values('query_id')
     return queries.filter(
         Q(specifyuser_id=user_id) | Q(share_grants__recipient_id=user_id)
+        | Q(pk__in=group_queries)
     ).distinct()
 
 

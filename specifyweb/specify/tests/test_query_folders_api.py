@@ -317,6 +317,128 @@ class QueryFolderMoveTests(SharedQueryFixture, ApiTests):
             self.assertEqual(response.status_code, 400, response.content)
 
 
+class QueryFolderSharingTests(SharedQueryFixture, ApiTests):
+    def setUp(self):
+        super().setUp()
+        self.client.cookies["collection"] = str(self.collection.id)
+        self.parent = stored_query_models.QueryFolder.objects.create(
+            name="Parent", owner=self.specifyuser
+        )
+        self.child = stored_query_models.QueryFolder.objects.create(
+            name="Child", owner=self.specifyuser, parent=self.parent
+        )
+        self.other = stored_query_models.QueryFolder.objects.create(
+            name="Other", owner=self.specifyuser
+        )
+        self.membership = stored_query_models.QueryFolderMembership.objects.create(
+            owner=self.specifyuser, query=self.query, section="personal", folder=self.child
+        )
+        self.folder_url = f"/stored_query/folders/{self.parent.id}/sharing/"
+
+    def _share(self, group, overwrite=False, url=None):
+        return self.client.put(
+            url or self.folder_url,
+            data=json.dumps({"sharingGroup": group, "overwrite": overwrite}),
+            content_type="application/json",
+        )
+
+    def test_nested_sharing_overwrites_grants_and_tracks_new_users_and_moves(self):
+        SpqueryShare.objects.create(query=self.query, recipient=self.recipient)
+        self.assertTrue(self.client.get(self.folder_url).json()["hasSharedQueries"])
+        self.assertEqual(self._share("everyone").status_code, 409)
+        self.assertTrue(self.query.share_grants.exists())
+        self.assertEqual(self._share("everyone", True).status_code, 200)
+        self.assertFalse(self.query.share_grants.exists())
+        recipient_client = self._recipient_client()
+        self.assertEqual(recipient_client.get(f"/api/specify/spquery/{self.query.id}/").status_code, 200)
+        for client, section, folder_id in (
+            (self.client, "personal", self.child.id),
+            (self.client, "sharing", None),
+            (recipient_client, "shared", None),
+        ):
+            params = {
+                "domainfilter": "false", "limit": 0,
+                "query_folder_section": section, "query_sharing": section,
+            }
+            if folder_id is not None:
+                params["query_folder_id"] = folder_id
+            response = client.get("/api/specify/spquery/", params)
+            self.assertEqual(response.status_code, 200, response.content)
+            self.assertIn(self.query.id, [query["id"] for query in response.json()["objects"]])
+
+        later = models.Specifyuser.objects.create(
+            name="later_folder_recipient", password="unusable",
+            isloggedin=False, isloggedinreport=False,
+        )
+        from specifyweb.backend.stored_queries.access import filter_queries_for_user
+        self.assertTrue(filter_queries_for_user(
+            models.Spquery.objects.filter(pk=self.query.id), later.id
+        ).exists())
+        self.assertEqual(self.client.delete(self.url).status_code, 409)
+        self.assertEqual(self._share(
+            "admins", url=f"/stored_query/folders/{self.child.id}/sharing/"
+        ).status_code, 409)
+        response = self.client.post(
+            f"/stored_query/query/{self.query.id}/folder/",
+            data=json.dumps({"folderId": self.other.id}), content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertFalse(filter_queries_for_user(
+            models.Spquery.objects.filter(pk=self.query.id), later.id
+        ).exists())
+        response = self.client.post(
+            f"/stored_query/query/{self.query.id}/folder/",
+            data=json.dumps({"folderId": self.child.id}), content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertTrue(filter_queries_for_user(
+            models.Spquery.objects.filter(pk=self.query.id), later.id
+        ).exists())
+        self.assertEqual(self.client.delete(self.folder_url).status_code, 200)
+        self.assertFalse(filter_queries_for_user(
+            models.Spquery.objects.filter(pk=self.query.id), later.id
+        ).exists())
+
+    def test_admin_group_follows_admin_policy_and_revokes_on_removal(self):
+        from specifyweb.backend.permissions.models import UserPolicy
+        from specifyweb.backend.stored_queries.access import filter_queries_for_user
+
+        self.assertEqual(self._share("admins").status_code, 200)
+        visible = lambda: filter_queries_for_user(
+            models.Spquery.objects.filter(pk=self.query.id), self.recipient.id
+        ).exists()
+        self.assertFalse(visible())
+        policy = UserPolicy.objects.create(
+            specifyuser=self.recipient, collection=None, resource="%", action="%"
+        )
+        self.assertTrue(visible())
+        policy.delete()
+        self.assertFalse(visible())
+        self.assertEqual(self.client.delete(self.folder_url).status_code, 200)
+        self.membership.refresh_from_db()
+        self.assertIsNone(self.membership.sharing_folder_id)
+
+    def test_non_admin_and_non_owner_cannot_share_folder(self):
+        from specifyweb.backend.permissions.models import UserPolicy
+
+        recipient_client = self._recipient_client()
+        response = recipient_client.put(
+            self.folder_url, data=json.dumps({"sharingGroup": "everyone"}),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 403)
+        UserPolicy.objects.create(
+            specifyuser=self.recipient, collection=None, resource="%", action="%"
+        )
+        response = recipient_client.put(
+            self.folder_url, data=json.dumps({"sharingGroup": "everyone"}),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 404)
+        self.parent.refresh_from_db()
+        self.assertIsNone(self.parent.sharing_group)
+
+
 class QueryFavoriteApiTests(SharedQueryFixture, ApiTests):
     def setUp(self):
         super().setUp()

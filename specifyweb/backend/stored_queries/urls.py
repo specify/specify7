@@ -1,6 +1,6 @@
 from django.urls import path
 
-from . import sharing, views
+from . import folder_sharing, sharing, views
 
 urlpatterns = [
     path('query/<int:id>/', views.query),
@@ -12,6 +12,7 @@ urlpatterns = [
     path('query/<int:id>/restore/', views.restore_query),
     path('favorites/', views.query_favorites),
     path('folders/', views.query_folders),
+    path('folders/<int:id>/sharing/', folder_sharing.manage_folder_sharing),
     path('ephemeral/', views.ephemeral),
     path('exportcsv/', views.export_csv),
     path('exportkml/', views.export_kml),

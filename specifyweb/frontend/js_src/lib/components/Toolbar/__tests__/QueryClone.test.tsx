@@ -73,9 +73,92 @@ overrideAjax('/stored_query/folders/', {
   ],
 });
 
+overrideAjax('/stored_query/folders/7/sharing/', { hasSharedQueries: true });
+overrideAjax(
+  '/stored_query/folders/7/sharing/',
+  { sharingGroup: 'admins' },
+  { method: 'PUT', body: { sharingGroup: 'admins', overwrite: true } }
+);
+overrideAjax(
+  '/stored_query/folders/7/sharing/',
+  { sharingGroup: null },
+  { method: 'DELETE' }
+);
+
 afterEach(() => {
   jest.clearAllMocks();
   jest.restoreAllMocks();
+});
+
+test('shares nested folders after warning and removes group sharing', async () => {
+  const descriptor = Object.getOwnPropertyDescriptor(
+    userInformation,
+    'isadmin'
+  );
+  Object.defineProperty(userInformation, 'isadmin', {
+    configurable: true,
+    value: true,
+  });
+  jest.spyOn(collection, 'fetchCollection').mockResolvedValue({
+    records: [],
+    totalCount: 0,
+  });
+  try {
+    render(
+      <LoadingContext.Provider
+        value={(promise): void => {
+          void promise;
+        }}
+      >
+        <UnloadProtectsContext.Provider value={[]}>
+          <QueryListDialog
+            newQueryUrl="/specify/query/new/"
+            onClose={jest.fn()}
+          >
+            {({ children }) => children}
+          </QueryListDialog>
+        </UnloadProtectsContext.Provider>
+      </LoadingContext.Provider>
+    );
+    const parentName = await screen.findByText('Parent');
+    const parent = parentName.closest('li');
+    if (parent === null) throw new Error('Parent folder missing');
+    fireEvent.click(
+      within(parent).getAllByRole('button', {
+        name: queryText.shareFolder(),
+      })[0]
+    );
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      queryText.folderSharingWarning()
+    );
+    fireEvent.click(screen.getByRole('button', { name: commonText.proceed() }));
+    fireEvent.click(
+      screen.getByRole('radio', { name: queryText.shareWithAdmins() })
+    );
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: commonText.save() }));
+    });
+    const remove = await screen.findByRole('button', {
+      name: queryText.revokeQuerySharing(),
+    });
+    expect(remove).toHaveClass('text-red-600');
+    expect(remove).toHaveAttribute('title', 'Revoke sharing');
+    expect(
+      within(parent).getAllByText(`(${queryText.sharedWithAdmins()})`).length
+    ).toBeGreaterThan(1);
+    await act(async () => {
+      fireEvent.click(remove);
+    });
+    await waitFor(() =>
+      expect(
+        screen.queryByRole('button', { name: queryText.revokeQuerySharing() })
+      ).not.toBeInTheDocument()
+    );
+  } finally {
+    if (descriptor === undefined)
+      Reflect.deleteProperty(userInformation, 'isadmin');
+    else Object.defineProperty(userInformation, 'isadmin', descriptor);
+  }
 });
 
 test.each([false, true])(
@@ -323,7 +406,9 @@ test('a failed move keeps the query in its list and allows retrying', async () =
   jest.spyOn(ajaxUtils, 'ajax').mockRejectedValueOnce(error);
   fireEvent.click(screen.getByRole('button', { name: queryText.move() }));
   await waitFor(() => expect(handleError).toHaveBeenCalledWith(error));
-  expect(screen.getByRole('button', { name: queryText.move() })).toBeEnabled();
+  await waitFor(() =>
+    expect(screen.getByRole('button', { name: queryText.move() })).toBeEnabled()
+  );
   expect(
     screen.getByRole('link', { name: new RegExp(queryName) })
   ).toBeVisible();
@@ -679,7 +764,7 @@ describe('archiving personal queries', () => {
     expect(fetch.mock.calls.at(-1)?.[2]).toEqual({
       query_archive: 'false',
       query_folder_section: 'personal',
-      share_grants__isnull: 'true',
+      query_sharing: 'personal',
     });
     expect(handleError).not.toHaveBeenCalled();
   });

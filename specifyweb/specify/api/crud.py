@@ -553,6 +553,12 @@ def get_collection(
     favorites = None
     archives = None
     show_archive = False
+    sharing = None
+    if model._meta.model_name == 'spquery' and 'query_sharing' in params:
+        sharing = params.get('query_sharing')
+        if query_user_id is None or sharing not in ('personal', 'sharing', 'shared'):
+            raise FilterError('query_sharing requires a valid section and current user.')
+        params = {key: value for key, value in params.items() if key != 'query_sharing'}
     if model._meta.model_name == 'spquery' and 'query_archive' in params:
         from specifyweb.backend.stored_queries.models import QueryArchive
 
@@ -611,6 +617,23 @@ def get_collection(
 
         visible_queries = filter_queries_for_user(models.Spquery.objects.all(), query_user_id)
         objs = objs.filter(id__in=visible_queries).distinct()
+
+    if sharing is not None:
+        from specifyweb.backend.stored_queries.access import shared_query_ids
+
+        grants, groups = shared_query_ids()
+        shared = Q(pk__in=grants) | Q(pk__in=groups)
+        if sharing == 'personal':
+            objs = objs.filter(specifyuser_id=query_user_id)
+            objs = (
+                objs.filter(~shared | Q(pk__in=groups))
+                if folder_id is not None
+                else objs.exclude(shared)
+            )
+        elif sharing == 'sharing':
+            objs = objs.filter(specifyuser_id=query_user_id).filter(shared)
+        else:
+            objs = objs.exclude(specifyuser_id=query_user_id)
 
     if archives is not None:
         archived_ids = archives.values('query_id')
