@@ -5,6 +5,7 @@ from sqlalchemy.dialects import mysql
 from sqlalchemy.orm import Session
 
 from specifyweb.backend.stored_queries import models
+from specifyweb.specify.datamodel import datamodel
 from specifyweb.backend.stored_queries.execution import add_fields_to_query
 from specifyweb.backend.stored_queries.query_construct_model import QueryConstruct
 from specifyweb.backend.stored_queries.queryfield import fields_from_json
@@ -66,13 +67,20 @@ class TestAgeQueryColumns(TestCase):
                 return_value=None,
             ),
         ):
+            co_table = datamodel.get_table_strict("Collectionobject")
             periods.filter.return_value.first.return_value = period
             query = QueryConstruct(
                 collection=None,
                 objectformatter=formatter,
                 query=session.query(models.CollectionObject._id),
+                base_table=co_table
             )
-            return add_fields_to_query(None, None, query, fields)
+            return add_fields_to_query(
+                collection=None,
+                user=None,
+                query=query,
+                query_fields=fields
+            )
 
     def test_displayed_age_has_one_column_in_field_order(self):
         for sql_type in ("meta", "modify"):

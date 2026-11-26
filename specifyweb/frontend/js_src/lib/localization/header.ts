@@ -446,7 +446,7 @@ export const headerText = createDictionary({
     'en-us': 'Tables API',
     'ru-ru': 'API таблиц',
     'es-es': 'API de tablas',
-    'fr-fr': 'API des tableaux',
+    'fr-fr': 'API des tables',
     'uk-ua': 'API таблиць',
     'de-ch': 'Tabellen-API',
     'pt-br': 'API de tabelas',
