@@ -17,7 +17,7 @@ from unittest import skip
 
 from specifyweb.specify.tests.test_api import ApiTests
 from specifyweb.backend.trees.tests.test_tree_utils import TestMultipleTaxonTreeContext
-from specifyweb.backend.trees.utils import get_search_filters
+from specifyweb.backend.trees.utils import get_treedef_scope_filters
 
 
 class TestGetSearchFilters(TestMultipleTaxonTreeContext, ApiTests):
@@ -76,7 +76,7 @@ class TestGetSearchFilters(TestMultipleTaxonTreeContext, ApiTests):
         self.assertEqual(
             list(
                 Geographytreedef.objects.filter(
-                    get_search_filters(self.collection, "geography")
+                    get_treedef_scope_filters(self.collection, "geography")
                 ).values_list("id", flat=True)
             ),
             [self.geographytreedef.id],
@@ -85,7 +85,7 @@ class TestGetSearchFilters(TestMultipleTaxonTreeContext, ApiTests):
         self.assertEqual(
             list(
                 Geographytreedef.objects.filter(
-                    get_search_filters(collection_2, "geography")
+                    get_treedef_scope_filters(collection_2, "geography")
                 ).values_list("id", flat=True)
             ),
             [geotreedef_2.id],
@@ -98,7 +98,7 @@ class TestGetSearchFilters(TestMultipleTaxonTreeContext, ApiTests):
         self.assertEqual(
             list(
                 Taxontreedef.objects.filter(
-                    get_search_filters(self.collection, "taxon")
+                    get_treedef_scope_filters(self.collection, "taxon")
                 ).values_list("id", flat=True)
             ),
             [taxontreedef_1.id],
@@ -107,7 +107,7 @@ class TestGetSearchFilters(TestMultipleTaxonTreeContext, ApiTests):
         self.assertEqual(
             list(
                 Taxontreedef.objects.filter(
-                    get_search_filters(collection_2, "taxon")
+                    get_treedef_scope_filters(collection_2, "taxon")
                 ).values_list("id", flat=True)
             ),
             [taxontreedef_2.id],
@@ -121,7 +121,7 @@ class TestGetSearchFilters(TestMultipleTaxonTreeContext, ApiTests):
             set(
                 list(
                     Taxontreedef.objects.filter(
-                        get_search_filters(self.collection, "taxon")
+                        get_treedef_scope_filters(self.collection, "taxon")
                     ).values_list("id", flat=True)
                 )
             ),
@@ -132,7 +132,7 @@ class TestGetSearchFilters(TestMultipleTaxonTreeContext, ApiTests):
             set(
                 list(
                     Taxontreedef.objects.filter(
-                        get_search_filters(collection_2, "taxon")
+                        get_treedef_scope_filters(collection_2, "taxon")
                     ).values_list("id", flat=True)
                 )
             ),

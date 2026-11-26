@@ -99,6 +99,10 @@ def parse(value: Any | None, query_field: QueryField) -> Any:
 def get_tree_rank_record(key) -> TreeRankRecord:
     from specifyweb.backend.workbench.upload.treerecord import RANK_KEY_DELIMITER
 
+    # BUG: If a field like "taxon -> (any rank) -> definition -> name" or
+    # similar is mapped, this results in a ValueError as the key will not
+    # include the RANK_KEY_DELIMITER.
+    # In the aforementioned case for example, the key will just be "definition"
     tree_name, rank_name, tree_def_id = tuple(key.split(RANK_KEY_DELIMITER))
     return TreeRankRecord(RANK_KEY_DELIMITER.join([tree_name, rank_name]), int(tree_def_id))
 

@@ -28,7 +28,7 @@ from specifyweb.backend.stored_queries.group_concat import group_concat
 from specifyweb.backend.notifications.models import Message
 
 from specifyweb.backend.trees.default_tree_files import load_default_tree_json
-from specifyweb.backend.trees.utils import get_search_filters
+from specifyweb.backend.trees.utils import get_tree_defs_in_collection
 from specifyweb.backend.trees.defaults import create_default_tree_task, queue_create_default_tree_task, get_active_create_default_tree_tasks
 from specifyweb.specify.utils.field_change_info import FieldChangeInfo
 from specifyweb.backend.trees.ranks import tree_rank_count
@@ -584,16 +584,8 @@ def get_all_tree_information(collection, user_id) -> dict[str, list[TREE_INFORMA
     result = {}
 
     for tree in accessible_trees:
-        result[tree] = []
-
-        treedef_model = getattr(spmodels, f'{tree.lower().capitalize()}treedef')
-        tree_defs = treedef_model.objects.filter(get_search_filters(collection, tree)).distinct()
-        for definition in tree_defs:
-            ranks = definition.treedefitems.order_by('rankid').iterator(chunk_size=2000)
-            result[tree].append({
-                'definition': obj_to_data(definition),
-                'ranks': [obj_to_data(rank) for rank in ranks]
-            })
+        scoped_tree_defs = get_tree_defs_in_collection(collection, tree)
+        result[tree] = scoped_tree_defs
 
     return result
 

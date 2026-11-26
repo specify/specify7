@@ -7,6 +7,7 @@ from django.test import RequestFactory
 from sqlalchemy import Column, Integer, MetaData, Table, create_engine
 from sqlalchemy.orm import Session
 
+from specifyweb.specify.datamodel import datamodel
 from specifyweb.backend.stored_queries import execution, views
 from specifyweb.backend.stored_queries.query_construct_model import QueryConstruct
 
@@ -40,10 +41,12 @@ class TestSelectionExecution(TestCase):
                 session.execute(rows.insert(), [
                     {"record_id": record_id} for record_id in [1, 2, 2, 3, 4]
                 ])
+                base_table = datamodel.get_table_strict("Collectionobject")
                 base = QueryConstruct(
                     collection=None,
                     objectformatter=None,
                     query=session.query(rows.c.record_id),
+                    base_table=base_table
                 )
                 with (
                     patch.dict(execution.models.models_by_tableid, {1: SimpleNamespace(_id=rows.c.record_id)}),
