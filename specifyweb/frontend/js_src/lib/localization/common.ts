@@ -16,7 +16,7 @@ export const commonText = createDictionary({
     `,
     'en-us': 'Specify 7',
     'ru-ru': 'Укажите 7',
-    'es-es': 'Especificar 7',
+    'es-es': 'Specify7',
     'fr-fr': 'Specify 7',
     'uk-ua': 'Вкажіть 7',
     'de-ch': 'Specify 7',
@@ -82,7 +82,7 @@ export const commonText = createDictionary({
   close: {
     'en-us': 'Close',
     'ru-ru': 'Закрывать',
-    'es-es': 'Cerca',
+    'es-es': 'Cerrar',
     'fr-fr': 'Fermer',
     'uk-ua': 'Закрити',
     'de-ch': 'Schliessen',
@@ -214,7 +214,7 @@ export const commonText = createDictionary({
   save: {
     'en-us': 'Save',
     'ru-ru': 'Сохранять',
-    'es-es': 'Ahorrar',
+    'es-es': 'Guardar',
     'fr-fr': 'Sauvegarder',
     'uk-ua': 'Зберегти',
     'de-ch': 'Speichern',
@@ -784,7 +784,7 @@ export const commonText = createDictionary({
   id: {
     'en-us': 'ID',
     'ru-ru': 'ИДЕНТИФИКАТОР',
-    'es-es': 'IDENTIFICACIÓN',
+    'es-es': 'ID',
     'fr-fr': 'IDENTIFIANT',
     'uk-ua': 'Ідентифікатор',
     'de-ch': 'AUSWEIS',
