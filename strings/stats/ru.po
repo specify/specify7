@@ -1,10 +1,10 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-11-25 19:46+0000\n"
+"PO-Revision-Date: 2026-11-26 15:52+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: Russian "
-"<https://hosted.weblate.org/projects/specify-7/stats/ru/>\n"
+"Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/stats/"
+"ru/>\n"
 "Language: ru\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -12,138 +12,139 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 2026.12.dev0\n"
 
+#. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
 #: components/Statistics/StatsSpec.tsx:29
 #: components/Statistics/__tests__/layout.tests.ts:18
-#. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
 msgid "holdings"
 msgstr "Холдинги"
 
+#. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
 #: components/Statistics/StatsSpec.tsx:32
 #: components/Statistics/__tests__/layout.tests.ts:21
-#. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
 msgid "collectionObjects"
 msgstr "Объекты коллекции"
 
+#. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Stats Page Initial Load ⬤ Statistics > __tests__ > Layout
 #: components/Statistics/StatsSpec.tsx:63
 #: components/Statistics/StatsSpec.tsx:398
 #: components/Statistics/StatsSpec.tsx:401
 #: components/Statistics/__tests__/StatsPageInitialLoad.test.tsx:94
 #: components/Statistics/__tests__/layout.tests.ts:83
 #: components/Statistics/__tests__/layout.tests.ts:86
-#. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Stats Page Initial Load ⬤ Statistics > __tests__ > Layout
 #, fuzzy
 msgid "typeSpecimens"
 msgstr "Типовые образцы"
 
-#: components/Statistics/StatsSpec.tsx:569
 #. Used in: Components > Statistics > Stats Spec
+#: components/Statistics/StatsSpec.tsx:569
 #, fuzzy
 msgid "curation"
 msgstr "Кураторство"
 
-#: components/Statistics/StatsSpec.tsx:137
 #. Used in: Components > Statistics > Stats Spec
+#: components/Statistics/StatsSpec.tsx:137
 msgid "loans"
 msgstr "Заемы"
 
-#: components/Statistics/StatsSpec.tsx:140
 #. Used in: Components > Statistics > Stats Spec
+#: components/Statistics/StatsSpec.tsx:140
 msgid "itemsOnLoans"
 msgstr "Предметы в Займы"
 
-#: components/Statistics/StatsSpec.tsx:159
 #. Used in: Components > Statistics > Stats Spec
+#: components/Statistics/StatsSpec.tsx:159
 msgid "openLoansStat"
 msgstr "Открытые Займы"
 
-#: components/Statistics/StatsSpec.tsx:178
 #. Used in: Components > Statistics > Stats Spec
+#: components/Statistics/StatsSpec.tsx:178
 msgid "overdueLoans"
 msgstr "Просроченные Займы"
 
+#. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
 #: components/Statistics/StatsSpec.tsx:267
 #: components/Statistics/__tests__/layout.tests.ts:68
-#. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
 msgid "localityGeography"
 msgstr "Местность / География"
 
-#: components/Statistics/StatsSpec.tsx:270
 #. Used in: Components > Statistics > Stats Spec
+#: components/Statistics/StatsSpec.tsx:270
 msgid "localities"
 msgstr "Местности"
 
-#: components/Statistics/StatsSpec.tsx:296
 #. Used in: Components > Statistics > Stats Spec
+#: components/Statistics/StatsSpec.tsx:296
 msgid "geographyEntries"
 msgstr "География Записи"
 
-#: components/Statistics/__tests__/layout.tests.ts:71
 #. Used in: Statistics > __tests__ > Layout
+#: components/Statistics/__tests__/layout.tests.ts:71
 msgid "countries"
 msgstr "Страны"
 
-#: components/Statistics/StatsSpec.tsx:314
 #. Used in: Components > Statistics > Stats Spec
+#: components/Statistics/StatsSpec.tsx:314
 msgid "georeferencedLocalities"
 msgstr "Места с географической привязкой"
 
-#: components/Statistics/StatsSpec.tsx:446
 #. Used in: Components > Statistics > Stats Spec
+#: components/Statistics/StatsSpec.tsx:446
 #, fuzzy
 msgid "digitization"
 msgstr "Оцифровка"
 
-#: components/Statistics/StatsSpec.tsx:449
 #. Used in: Components > Statistics > Stats Spec
+#: components/Statistics/StatsSpec.tsx:449
 #, fuzzy
 msgid "digitizedLastSevenDays"
 msgstr "Оцифровано за последние 7 дней"
 
-#: components/Statistics/StatsSpec.tsx:468
 #. Used in: Components > Statistics > Stats Spec
+#: components/Statistics/StatsSpec.tsx:468
 #, fuzzy
 msgid "digitizedLastMonth"
 msgstr "Оцифровано в прошлом месяце"
 
-#: components/Statistics/StatsSpec.tsx:487
 #. Used in: Components > Statistics > Stats Spec
+#: components/Statistics/StatsSpec.tsx:487
 #, fuzzy
 msgid "digitizedLastYear"
 msgstr "Оцифровано в прошлом году"
 
+#. Used in: Components > Statistics > Add Stat Dialog ⬤ Statistics > __tests__ > Stats Page Stat Items ⬤ Statistics > __tests__ > Stats Page Test Utils
 #: components/Statistics/AddStatDialog.tsx:82
 #: components/Statistics/__tests__/StatsPageStatItems.test.tsx:162
 #: components/Statistics/__tests__/statsPageTestUtils.tsx:260
-#. Used in: Components > Statistics > Add Stat Dialog ⬤ Statistics > __tests__ > Stats Page Stat Items ⬤ Statistics > __tests__ > Stats Page Test Utils
 msgid "chooseStatistics"
 msgstr "Выберите статистику"
 
-#: components/Statistics/AddStatDialog.tsx:86
 #. Used in: Components > Statistics > Add Stat Dialog
+#: components/Statistics/AddStatDialog.tsx:86
 #, fuzzy
 msgid "selectFromQueries"
 msgstr "Выберите из запросов"
 
-#: components/Statistics/AddStatDialog.tsx:110
 #. Used in: Components > Statistics > Add Stat Dialog
+#: components/Statistics/AddStatDialog.tsx:110
 #, fuzzy
 msgid "selectFromAvailableDefault"
 msgstr "Выберите из доступных статистических данных по умолчанию."
 
+#. Used in: Components > Setup Tool > Setup Resources ⬤ Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
 #: components/SetupTool/setupResources.ts:415
 #: components/Statistics/StatsSpec.tsx:25
 #: components/Statistics/__tests__/layout.tests.ts:14
 #: components/Statistics/__tests__/layout.tests.ts:103
-#. Used in: Components > Setup Tool > Setup Resources ⬤ Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
 msgid "collection"
 msgstr "Коллекция"
 
+#. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
 #: components/Statistics/StatsSpec.tsx:565
 #: components/Statistics/__tests__/layout.tests.ts:99
-#. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
 msgid "personal"
 msgstr "Личный"
 
+#. Used in: Components > Statistics > Index ⬤ Statistics > __tests__ > Stats Page Button Colors ⬤ Statistics > __tests__ > Stats Page Download Tsv ⬤ Statistics > __tests__ > Stats Page Initial Load ⬤ Statistics > __tests__ > Stats Page No Edit Permission ⬤ Statistics > __tests__ > Stats Page Pages
 #: components/Statistics/index.tsx:142
 #: components/Statistics/index.tsx:499
 #: components/Statistics/__tests__/StatsPageButtonColors.test.tsx:119
@@ -157,56 +158,56 @@ msgstr "Личный"
 #: components/Statistics/__tests__/StatsPageNoEditPermission.test.tsx:298
 #: components/Statistics/__tests__/StatsPagePages.test.tsx:25
 #: components/Statistics/__tests__/StatsPagePages.test.tsx:199
-#. Used in: Components > Statistics > Index ⬤ Statistics > __tests__ > Stats Page Button Colors ⬤ Statistics > __tests__ > Stats Page Download Tsv ⬤ Statistics > __tests__ > Stats Page Initial Load ⬤ Statistics > __tests__ > Stats Page No Edit Permission ⬤ Statistics > __tests__ > Stats Page Pages
 #, fuzzy
 msgid "private"
 msgstr "Частный"
 
+#. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
 #: components/Statistics/StatsSpec.tsx:572
 #: components/Statistics/__tests__/layout.tests.ts:106
-#. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
 msgid "collectionObjectsCataloged"
 msgstr "Объекты коллекции каталогизированы"
 
-#: components/Statistics/StatsSpec.tsx:588
 #. Used in: Components > Statistics > Stats Spec
+#: components/Statistics/StatsSpec.tsx:588
 msgid "collectionObjectsDetermined"
 msgstr "Объекты коллекции определены"
 
+#. Used in: Components > Statistics > Index ⬤ Statistics > __tests__ > Stats Page Initial Load
 #: components/Statistics/index.tsx:521
 #: components/Statistics/__tests__/StatsPageInitialLoad.test.tsx:36
-#. Used in: Components > Statistics > Index ⬤ Statistics > __tests__ > Stats Page Initial Load
 #, fuzzy
 msgid "lastRefreshed"
 msgstr "Последнее обновление"
 
+#. Used in: Components > Statistics > Hooks ⬤ Statistics > __tests__ > Stats Page Download Tsv
 #: components/Statistics/hooks.tsx:389
 #: components/Statistics/__tests__/StatsPageDownloadTsv.test.tsx:44
-#. Used in: Components > Statistics > Hooks ⬤ Statistics > __tests__ > Stats Page Download Tsv
 msgid "categoryName"
 msgstr "Название категории"
 
+#. Used in: Components > Statistics > Hooks ⬤ Statistics > __tests__ > Stats Page Download Tsv
 #: components/Statistics/hooks.tsx:390
 #: components/Statistics/__tests__/StatsPageDownloadTsv.test.tsx:45
-#. Used in: Components > Statistics > Hooks ⬤ Statistics > __tests__ > Stats Page Download Tsv
 msgid "itemName"
 msgstr "Название предмета"
 
+#. Used in: Components > Statistics > Hooks ⬤ Statistics > __tests__ > Stats Page Download Tsv
 #: components/Statistics/hooks.tsx:391
 #: components/Statistics/__tests__/StatsPageDownloadTsv.test.tsx:46
-#. Used in: Components > Statistics > Hooks ⬤ Statistics > __tests__ > Stats Page Download Tsv
 msgid "itemValue"
 msgstr "Стоимость товара"
 
+#. Used in: Components > Statistics > Index ⬤ Statistics > __tests__ > Stats Page Button Colors ⬤ Statistics > __tests__ > Stats Page Download Tsv ⬤ Statistics > __tests__ > Stats Page No Edit Permission
 #: components/Statistics/index.tsx:548
 #: components/Statistics/__tests__/StatsPageButtonColors.test.tsx:103
 #: components/Statistics/__tests__/StatsPageDownloadTsv.test.tsx:52
 #: components/Statistics/__tests__/StatsPageDownloadTsv.test.tsx:61
 #: components/Statistics/__tests__/StatsPageNoEditPermission.test.tsx:105
-#. Used in: Components > Statistics > Index ⬤ Statistics > __tests__ > Stats Page Button Colors ⬤ Statistics > __tests__ > Stats Page Download Tsv ⬤ Statistics > __tests__ > Stats Page No Edit Permission
 msgid "downloadAsTSV"
 msgstr "Скачать как TSV"
 
+#. Used in: Components > Statistics > Index ⬤ Statistics > __tests__ > Stats Page Button Colors ⬤ Statistics > __tests__ > Stats Page Download Tsv ⬤ Statistics > __tests__ > Stats Page Initial Load ⬤ Statistics > __tests__ > Stats Page No Edit Permission ⬤ Statistics > __tests__ > Stats Page Pages ⬤ Statistics > __tests__ > Stats Page Test Utils
 #: components/Statistics/index.tsx:141
 #: components/Statistics/index.tsx:499
 #: components/Statistics/__tests__/StatsPageButtonColors.test.tsx:118
@@ -237,49 +238,49 @@ msgstr "Скачать как TSV"
 #: components/Statistics/__tests__/statsPageTestUtils.tsx:211
 #: components/Statistics/__tests__/statsPageTestUtils.tsx:216
 #: components/Statistics/__tests__/statsPageTestUtils.tsx:231
-#. Used in: Components > Statistics > Index ⬤ Statistics > __tests__ > Stats Page Button Colors ⬤ Statistics > __tests__ > Stats Page Download Tsv ⬤ Statistics > __tests__ > Stats Page Initial Load ⬤ Statistics > __tests__ > Stats Page No Edit Permission ⬤ Statistics > __tests__ > Stats Page Pages ⬤ Statistics > __tests__ > Stats Page Test Utils
 msgid "shared"
 msgstr "Общий"
 
+#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Statistics > Hooks ⬤ Components > Statistics > Index
 #: components/Header/menuItemDefinitions.ts:111
 #: components/Preferences/CollectionDefinitions.tsx:147
 #: components/Preferences/UserDefinitions.tsx:2391
 #: components/Router/Routes.tsx:500
 #: components/Statistics/hooks.tsx:120
 #: components/Statistics/index.tsx:517
-#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Statistics > Hooks ⬤ Components > Statistics > Index
 #, fuzzy
 msgid "statistics"
 msgstr "Статистика"
 
+#. Used in: Components > Statistics > Delete Category ⬤ Statistics > __tests__ > Stats Page Button Colors ⬤ Statistics > __tests__ > Stats Page No Edit Permission
 #: components/Statistics/DeleteCategory.tsx:26
 #: components/Statistics/DeleteCategory.tsx:45
 #: components/Statistics/__tests__/StatsPageButtonColors.test.tsx:146
 #: components/Statistics/__tests__/StatsPageNoEditPermission.test.tsx:158
-#. Used in: Components > Statistics > Delete Category ⬤ Statistics > __tests__ > Stats Page Button Colors ⬤ Statistics > __tests__ > Stats Page No Edit Permission
 #, fuzzy
 msgid "deleteCategory"
 msgstr "Удалить категорию"
 
+#. Used in: Components > Statistics > Stats Page Editing ⬤ Statistics > __tests__ > Stats Page Pages ⬤ Statistics > __tests__ > Stats Page Test Utils
 #: components/Statistics/StatsPageEditing.tsx:52
 #: components/Statistics/__tests__/StatsPagePages.test.tsx:160
 #: components/Statistics/__tests__/StatsPagePages.test.tsx:235
 #: components/Statistics/__tests__/StatsPagePages.test.tsx:470
 #: components/Statistics/__tests__/statsPageTestUtils.tsx:225
-#. Used in: Components > Statistics > Stats Page Editing ⬤ Statistics > __tests__ > Stats Page Pages ⬤ Statistics > __tests__ > Stats Page Test Utils
 #, fuzzy
 msgid "editPage"
 msgstr "Редактировать страницу"
 
+#. Used in: Components > Statistics > Stats Page Editing ⬤ Statistics > __tests__ > Stats Page Pages ⬤ Statistics > __tests__ > Stats Page Test Utils
 #: components/Statistics/StatsPageEditing.tsx:52
 #: components/Statistics/__tests__/StatsPagePages.test.tsx:44
 #: components/Statistics/__tests__/StatsPagePages.test.tsx:360
 #: components/Statistics/__tests__/statsPageTestUtils.tsx:195
-#. Used in: Components > Statistics > Stats Page Editing ⬤ Statistics > __tests__ > Stats Page Pages ⬤ Statistics > __tests__ > Stats Page Test Utils
 #, fuzzy
 msgid "addPage"
 msgstr "Добавить страницу"
 
+#. Used in: Components > Statistics > Categories ⬤ Statistics > __tests__ > Stats Page Download Tsv ⬤ Statistics > __tests__ > Stats Page No Edit Permission ⬤ Statistics > __tests__ > Stats Page Pages ⬤ Statistics > __tests__ > Stats Page Stat Items ⬤ Statistics > __tests__ > Stats Page Test Utils
 #: components/Statistics/Categories.tsx:298
 #: components/Statistics/__tests__/StatsPageDownloadTsv.test.tsx:109
 #: components/Statistics/__tests__/StatsPageNoEditPermission.test.tsx:155
@@ -287,111 +288,110 @@ msgstr "Добавить страницу"
 #: components/Statistics/__tests__/StatsPagePages.test.tsx:374
 #: components/Statistics/__tests__/StatsPageStatItems.test.tsx:31
 #: components/Statistics/__tests__/statsPageTestUtils.tsx:247
-#. Used in: Components > Statistics > Categories ⬤ Statistics > __tests__ > Stats Page Download Tsv ⬤ Statistics > __tests__ > Stats Page No Edit Permission ⬤ Statistics > __tests__ > Stats Page Pages ⬤ Statistics > __tests__ > Stats Page Stat Items ⬤ Statistics > __tests__ > Stats Page Test Utils
 #, fuzzy
 msgid "addACategory"
 msgstr "Добавить категорию"
 
+#. Used in: Components > Statistics > Buttons ⬤ Statistics > __tests__ > Buttons ⬤ Statistics > __tests__ > Stats Page Button Colors ⬤ Statistics > __tests__ > Stats Page No Edit Permission
 #: components/Statistics/Buttons.tsx:22
 #: components/Statistics/__tests__/Buttons.test.tsx:32
 #: components/Statistics/__tests__/Buttons.test.tsx:70
 #: components/Statistics/__tests__/StatsPageButtonColors.test.tsx:103
 #: components/Statistics/__tests__/StatsPageButtonColors.test.tsx:209
 #: components/Statistics/__tests__/StatsPageNoEditPermission.test.tsx:102
-#. Used in: Components > Statistics > Buttons ⬤ Statistics > __tests__ > Buttons ⬤ Statistics > __tests__ > Stats Page Button Colors ⬤ Statistics > __tests__ > Stats Page No Edit Permission
 #, fuzzy
 msgid "refresh"
 msgstr "Обновить"
 
-#: components/Statistics/StatsSpec.tsx:532
 #. Used in: Components > Statistics > Stats Spec
+#: components/Statistics/StatsSpec.tsx:532
 #, fuzzy
 msgid "collectionObjectsWithImages"
 msgstr "Коллекция объектов с изображениями"
 
-#: components/Statistics/StatsSpec.tsx:511
 #. Used in: Components > Statistics > Stats Spec
+#: components/Statistics/StatsSpec.tsx:511
 #, fuzzy
 msgid "collectionObjectsWithAttachments"
 msgstr "Объекты коллекции с вложениями"
 
-#: components/Statistics/StatItems.tsx:274
 #. Used in: Components > Statistics > Stat Items
+#: components/Statistics/StatItems.tsx:274
 #, fuzzy
 msgid "error"
 msgstr "Ошибка"
 
+#. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:204
 #: components/Statistics/StatsSpec.tsx:207
-#. Used in: Components > Statistics > Stats Spec
 #, fuzzy
 msgid "taxonRepresented"
 msgstr "Представленные таксоны"
 
+#. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:345
 #: components/Statistics/StatsSpec.tsx:348
-#. Used in: Components > Statistics > Stats Spec
 #, fuzzy
 msgid "geographiesRepresented"
 msgstr "Представленные географические регионы"
 
+#. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Stats Page Initial Load
 #: components/Statistics/StatsSpec.tsx:334
 #: components/Statistics/__tests__/StatsPageInitialLoad.test.tsx:86
-#. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Stats Page Initial Load
 #, fuzzy
 msgid "percentGeoReferenced"
 msgstr "Процент географически привязанных данных"
 
+#. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Stats Page Initial Load
 #: components/Statistics/StatsSpec.tsx:553
 #: components/Statistics/__tests__/StatsPageInitialLoad.test.tsx:87
-#. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Stats Page Initial Load
 #, fuzzy
 msgid "percentImaged"
 msgstr "Процент изображений"
 
-#: components/Statistics/DeleteCategory.tsx:49
 #. Used in: Components > Statistics > Delete Category
+#: components/Statistics/DeleteCategory.tsx:49
 #, fuzzy
 msgid "deleteWarning"
 msgstr "Вы уверены, что хотите удалить категорию?"
 
-#: components/Statistics/DeleteCategory.tsx:55
 #. Used in: Components > Statistics > Delete Category
+#: components/Statistics/DeleteCategory.tsx:55
 #, fuzzy
 msgid "categoryToDelete"
 msgstr "Это навсегда удалит следующую категорию."
 
-#: components/Preferences/CollectionDefinitions.tsx:153
 #. Used in: Components > Preferences > Collection Definitions
+#: components/Preferences/CollectionDefinitions.tsx:153
 #, fuzzy
 msgid "layoutPreference"
 msgstr "Определяет структуру страницы статистики."
 
-#: components/Preferences/CollectionDefinitions.tsx:162
 #. Used in: Components > Preferences > Collection Definitions
+#: components/Preferences/CollectionDefinitions.tsx:162
 #, fuzzy
 msgid "showPreparationsTotal"
 msgstr "Показать {preparationTableName:string} Итоги"
 
-#: components/Preferences/CollectionDefinitions.tsx:166
 #. Used in: Components > Preferences > Collection Definitions
+#: components/Preferences/CollectionDefinitions.tsx:166
 #, fuzzy
 msgid "showPreparationsTotalDescription"
 msgstr ""
 "Если эта функция включена, на панели статистики "
 "{preparationTableName:string} по умолчанию будет отображаться общее "
 "количество для каждого {lowerPreparationTableName:string} конкретного "
-"{prepTypeTableName:string} наряду с общим итогом. Это полезно для "
-"коллекций, основанных на партиях."
+"{prepTypeTableName:string} наряду с общим итогом. Это полезно для коллекций, "
+"основанных на партиях."
 
-#: components/Preferences/CollectionDefinitions.tsx:178
 #. Used in: Components > Preferences > Collection Definitions
+#: components/Preferences/CollectionDefinitions.tsx:178
 #, fuzzy
 msgid "autoRefreshRate"
 msgstr "Частота автоматического обновления (в часах)"
 
-#: components/Preferences/CollectionDefinitions.tsx:179
 #. Used in: Components > Preferences > Collection Definitions
+#: components/Preferences/CollectionDefinitions.tsx:179
 #, fuzzy
 msgid "autoRefreshRateDescription"
 msgstr ""
