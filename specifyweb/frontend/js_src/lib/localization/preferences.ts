@@ -222,7 +222,7 @@ export const preferencesText = createDictionary({
     'es-es':
       'Si se deben deshabilitar los fondos translúcidos para los componentes de la interfaz de usuario siempre que sea posible (por ejemplo, los encabezados de tabla en la vista de árbol).',
     'fr-fr':
-      "Désactiver les arrière-plans translucides pour les composants de l'interface utilisateur chaque fois que possible (par exemple, les en-têtes de tableau dans l'arborescence).",
+      "Désactiver les arrière-plans translucides pour les composants de l'interface utilisateur chaque fois que possible (par exemple, les en-têtes de tables dans l'arborescence).",
     'uk-ua':
       'Чи слід вимикати напівпрозорі фони для компонентів інтерфейсу користувача, коли це можливо (наприклад, заголовки таблиць у деревоподібному поданні).',
     'de-ch':
@@ -842,7 +842,7 @@ export const preferencesText = createDictionary({
     'es-es':
       'Determina los títulos de los campos, las notas de uso y los títulos de las tablas.',
     'fr-fr':
-      "Détermine les légendes des champs, les notes d'utilisation et les légendes des tableaux.",
+      "Détermine les légendes des champs, les notes d'utilisation et les légendes des tables.",
     'uk-ua':
       'Визначає підписи до полів, примітки щодо використання та підписи до таблиць.',
     'de-ch':
@@ -1470,7 +1470,7 @@ export const preferencesText = createDictionary({
     'en-us': 'Show tables without "Read" access',
     'ru-ru': 'Показать таблицы без доступа на чтение.',
     'es-es': 'Mostrar tablas sin acceso de "Lectura"',
-    'fr-fr': 'Afficher les tableaux sans accès "Lecture"',
+    'fr-fr': 'Afficher les tables sans accès "Lecture"',
     'uk-ua': 'Показати таблиці без доступу "Читання"',
     'de-ch': 'Tabellen ohne Lesezugriff anzeigen',
     'pt-br': 'Exibir tabelas sem acesso de "Leitura"',
@@ -1481,7 +1481,7 @@ export const preferencesText = createDictionary({
     'en-us': 'Show tables without "Create" access',
     'ru-ru': 'Показать таблицы без доступа "Создать".',
     'es-es': 'Mostrar tablas sin acceso "Crear"',
-    'fr-fr': 'Afficher les tableaux sans accès "Créer"',
+    'fr-fr': 'Afficher les tables sans accès "Créer"',
     'uk-ua': 'Показати таблиці без доступу "Створити"',
     'de-ch': 'Tabellen ohne "Erstellen"-Zugriff anzeigen',
     'pt-br': 'Exibir tabelas sem permissão de "Criar"',

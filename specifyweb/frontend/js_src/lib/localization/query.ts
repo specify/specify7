@@ -328,7 +328,7 @@ export const queryText = createDictionary({
     'es-es':
       'Aparecerá una notificación cuando el archivo de exportación esté completo y listo para su descarga.',
     'uk-ua':
-      'З’явиться сповіщення, коли експорт файлу буде завершено та готово до завантаження.',
+      'З’явиться сповіщення, коли експорт файлу буде завершено та він буде готовий до завантаження.',
     'de-ch':
       'Eine Benachrichtigung wird angezeigt, sobald die Exportdatei fertiggestellt und zum Download bereit ist.',
     'fr-fr':
@@ -577,7 +577,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Перемістити вгору',
     'de-ch': 'Aufsteigen',
     'pt-br': 'Subir de nível',
-    'hr-hr': 'Pomakni se gore',
+    'hr-hr': 'Pomakni gore',
     nb: 'Flytt opp',
   },
   moveDown: {
@@ -686,9 +686,9 @@ export const queryText = createDictionary({
     'en-us':
       'Use "%" to match any number of characters.\n\nUse "_" to match a single character',
     'ru-ru':
-      'Используйте символ "%" для сопоставления любого количества символов.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nИспользуйте символ "_" для сопоставления одного символа.',
+      'Используйте символ "%" для сопоставления любого количества символов.\n\n\n\n\n\nИспользуйте символ "_" для сопоставления одного символа.',
     'es-es':
-      'Usa "%" para que coincida con cualquier número de caracteres.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nUsa "_" para que coincida con un solo carácter.',
+      'Usa "%" para que coincida con cualquier número de caracteres.\n\n\n\n\n\nUsa "_" para que coincida con un solo carácter.',
     'fr-fr':
       'Utiliser "%" pour remplacer n\'importe quel nombre de caractères.\n\nUtiliser "_" pour remplacer un seul caractère',
     'uk-ua':
@@ -714,7 +714,7 @@ export const queryText = createDictionary({
   },
   greaterThan: {
     'en-us': 'Greater than',
-    'ru-ru': 'Больше чем',
+    'ru-ru': 'Больше, чем',
     'es-es': 'Más que',
     'fr-fr': 'Supérieur à',
     'uk-ua': 'Більше ніж',
@@ -786,7 +786,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Правда або порожньо',
     'de-ch': 'Wahr oder leer',
     'pt-br': 'Verdadeiro ou Vazio',
-    'hr-hr': 'True ili Prazno',
+    'hr-hr': 'Točno ili prazno',
     nb: 'Sant eller tom',
   },
   falseOrNull: {
@@ -940,7 +940,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Налаштування видимих таблиць запитів',
     'de-ch': 'Sichtbare Abfragetabellen konfigurieren',
     'pt-br': 'Configurar tabelas de consulta visíveis',
-    'hr-hr': 'Konfiguriraj vidljive tablice upita',
+    'hr-hr': 'Konfiguriranje vidljivih tablica upita',
     nb: 'Konfigurer synlige søketabeller',
   },
   exportQueryForDwca: {
@@ -950,7 +950,7 @@ export const queryText = createDictionary({
     'fr-fr': 'Exporter la requête pour créer une archive DwC',
     'uk-ua': 'Експорт запиту для визначення DwCA',
     'de-ch': 'Exportabfrage für DwCA-Definition',
-    'pt-br': 'Exportar consulta para definição de DwCA',
+    'pt-br': 'Consulta de exportação para definição de DwCA',
     'hr-hr': 'Izvoz upita za definiciju DwCA-a',
     nb: 'Eksportforespørsel for DwCA-definisjon',
   },
@@ -1183,7 +1183,8 @@ export const queryText = createDictionary({
       'Die importierte Abfrage enthält Tabellen, für die Sie keine Leseberechtigung haben:',
     'pt-br':
       'A consulta que você importou contém tabelas às quais você não tem acesso de leitura:',
-    'hr-hr': 'Uvezeni upit sadrži tablice za koje nemate pristup za čitanje:',
+    'hr-hr':
+      'Upit koji ste uvezli sadrži tablice za koje nemate pristup za čitanje:',
     nb: 'Søket du importerte inneholder tabeller du ikke har lesetilgang til:',
   },
   noReadPermission: {

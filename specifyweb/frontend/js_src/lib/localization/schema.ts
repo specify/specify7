@@ -249,7 +249,7 @@ export const schemaText = createDictionary({
     'en-us': 'Table',
     'ru-ru': 'Стол',
     'es-es': 'Mesa',
-    'fr-fr': 'Tableau',
+    'fr-fr': 'Table',
     'uk-ua': 'Таблиця',
     'de-ch': 'Tabelle',
     'pt-br': 'Mesa',

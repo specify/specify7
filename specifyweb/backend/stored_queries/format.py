@@ -32,7 +32,10 @@ from .group_concat import group_concat
 from .blank_nulls import blank_nulls
 from .query_construct_model import QueryConstruct
 from .queryfieldspec import QueryFieldSpec
-from typing import NamedTuple
+from typing import NamedTuple, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from specifyweb.backend.stored_queries.queryfield import QueryField
 
 logger = logging.getLogger(__name__)
 
@@ -344,7 +347,7 @@ class ObjectFormatter:
 
         logger.info('aggregating field %s on %s using %s', field, rel_table,
                     aggregator_formatter_name)
-        specify_model = datamodel.get_table(field.relatedModelName, strict=True)
+        specify_model = datamodel.get_table_strict(field.relatedModelName)
         aggregatorNode = self.getAggregatorDef(specify_model, aggregator_formatter_name)
         cycle_with_self = [*cycle_detector, (field.relatedModelName, 'aggregating')] if (
                 cycle_detector is not None) else None
@@ -413,7 +416,13 @@ class ObjectFormatter:
         subquery = QueryConstruct(
             collection=query.collection,
             objectformatter=self,
-            query=subquery_query
+            query=subquery_query,
+            # This should probably remain the related table of the relationship,
+            # though I think this can either be specify_model or
+            # query.base_table.
+            # Both should theoretically return the same query, though there
+            # might be some edge cases with relationships that self-join
+            base_table=specify_model
         )
 
         subquery, formatted = self.objformat(subquery, orm_table, formatter_name, cycle_with_self) \
@@ -432,7 +441,7 @@ class ObjectFormatter:
         self.aggregator_count += 1
         return subquery.query.add_column(aggregated).limit(limit).label(aggregator_label)
 
-    def fieldformat(self, query_field: QueryField,
+    def fieldformat(self, query_field: "QueryField",
                     field: blank_nulls) -> blank_nulls:
         field_spec = query_field.fieldspec
         if field_spec.get_field() is not None:

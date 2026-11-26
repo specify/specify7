@@ -555,7 +555,7 @@ export const localityText = createDictionary({
     'fr-fr':
       "Mise à jour des localités {taskId:chaîne} Rapport d'incident - {date:chaîne}",
     'ru-ru':
-      'Обновление локальной среды {taskId: string} Отчет о сбое - {date: string}',
+      'Обновление локальной инфраструктуры {taskId: string} Отчет о сбое - {date: string}',
     'uk-ua':
       'Оновлення місцевості {taskId: string} Звіт про збій - {date: string}',
     'pt-br':
@@ -609,7 +609,7 @@ export const localityText = createDictionary({
     'en-us':
       'The following number of {localityTabelLabel: string} records will be affected by the update and {geoCoordDetailTableLabel: string} records will be created:',
     'de-ch':
-      'Die folgende Anzahl von {localityTabelLabel: string} Datensätzen wird von der Aktualisierung betroffen sein und {geoCoordDetailTableLabel: string} Datensätze werden erstellt:',
+      'Die folgende Anzahl von {localityTabelLabel: string} Datensätzen wird von der Aktualisierung betroffen sein und es werden {geoCoordDetailTableLabel: string} Datensätze erstellt:',
     'es-es':
       'La siguiente cantidad de registros {localityTabelLabel: string} se verán afectados por la actualización y se crearán registros {geoCoordDetailTableLabel: string}:',
     'fr-fr':
@@ -645,7 +645,7 @@ export const localityText = createDictionary({
   },
   localityUpdateStarted: {
     'en-us': 'The Locality Update process has started',
-    'de-ch': 'Der Aktualisierungsprozess der Ortsdaten wurde gestartet.',
+    'de-ch': 'Der Prozess zur Aktualisierung der Ortsdaten wurde gestartet.',
     'es-es': 'El proceso de actualización de localidades ha comenzado.',
     'fr-fr': 'Le processus de mise à jour des localités a commencé',
     'ru-ru': 'Начался процесс обновления информации о местности.',
