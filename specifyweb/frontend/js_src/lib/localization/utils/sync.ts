@@ -151,7 +151,7 @@ const mergeSpecs = (
                 mergeComment(
                   key as keyof typeof local.comments,
                   local.comments,
-                  weblate === undefined ? undefined : weblate.comments ?? {},
+                  weblate === undefined ? undefined : (weblate.comments ?? {}),
                   refreshSourceComments
                 ),
               ])
@@ -163,7 +163,8 @@ const mergeSpecs = (
   },
 });
 
-type PoComments = GetTextTranslations['translations'][string][string]['comments'];
+type PoComments =
+  GetTextTranslations['translations'][string][string]['comments'];
 
 /** Keep generated locations stable in target catalogs while updating notes. */
 function mergeComment(
