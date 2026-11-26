@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-11-25 19:44+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-11-26 12:51+0000\n"
+"Last-Translator: silvia lusa <silvialusa@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/common/"
 "es/>\n"
 "Language: es\n"
@@ -13,9 +13,8 @@ msgstr ""
 
 #. 🟥This is an example of how to provide comments. Comments are visible to translators. Used in: Components > Core > Splash Screen
 #: components/Core/SplashScreen.tsx:28
-#, fuzzy
 msgid "specifySeven"
-msgstr "Especificar 7"
+msgstr "Specify7"
 
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Setup Tool > Setup Overview ⬤ Components > Tree View > Create Tree ⬤ Components > Work Bench > Data Set Meta ⬤ Utils > Parser > Definitions
 #: components/Preferences/UserDefinitions.tsx:2255
@@ -350,9 +349,8 @@ msgstr "Crear"
 #: components/WorkBench/WbAttachmentsPreview.tsx:261
 #: components/WorkBench/WbAttachmentsPreview.tsx:561
 #: components/WorkBench/useDisambiguationDialog.tsx:104
-#, fuzzy
 msgid "close"
-msgstr "Cerca"
+msgstr "Cerrar"
 
 #. Used in: Components > Header > Express Search Task ⬤ Components > Home Page > Index
 #: components/Header/ExpressSearchTask.tsx:76
@@ -486,9 +484,8 @@ msgstr "Eliminar columnas no asignadas"
 #: components/WorkBench/DataSetMeta.tsx:191
 #: components/WorkBench/__tests__/DataSetMetaPermissions.test.tsx:90
 #: components/WorkBench/__tests__/DataSetMetaPermissions.test.tsx:140
-#, fuzzy
 msgid "save"
-msgstr "Ahorrar"
+msgstr "Guardar"
 
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Export Feed > Editor ⬤ Components > Form Sliders > Record Selector From Ids ⬤ Components > Formatters > List ⬤ Components > Forms > Save ⬤ Forms > __tests__ > Save ⬤ Components > Keyboard Shortcuts > Shortcuts ⬤ Components > Keyboard Shortcuts > Url Shortcuts ⬤ Keyboard Shortcuts > __tests__ > Conflicts ⬤ Components > Merging > Compare Sub View ⬤ Components > Molecules > Auto Complete ⬤ Components > Pick Lists > Index ⬤ Components > Query Builder > Wrapped ⬤ Components > Schema Config > Format ⬤ Components > Schema Config > Languages ⬤ Components > Schema Config > Table ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Schema Config > __tests__ > Table Uniqueness Rules ⬤ Schema Config > __tests__ > Uniqueness Rule Row ⬤ Components > Search Dialog > Select Record Set ⬤ Components > Security > Collection Role ⬤ Components > Security > Policies ⬤ Components > Statistics > Categories ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Statistics > Index ⬤ Statistics > __tests__ > Stats Edit Permission Grant ⬤ Statistics > __tests__ > Stats Page No Edit Permission ⬤ Statistics > __tests__ > Stats Page Pages ⬤ Statistics > __tests__ > Stats Page Test Utils ⬤ Components > Toolbar > List Edit ⬤ Components > Wb Plan View > Navigator ⬤ Components > Web Links > Definition ⬤ Components > Web Links > List
 #: components/Atoms/DataEntry.tsx:62
@@ -1158,9 +1155,8 @@ msgstr "Despedir"
 #: components/ExportFeed/Editor.tsx:194
 #: components/WbPlanView/fieldSearch.ts:188
 #: components/WbPlanView/navigator.ts:547
-#, fuzzy
 msgid "id"
-msgstr "IDENTIFICACIÓN"
+msgstr "ID"
 
 #. Used in: Components > Attachments > Index ⬤ Components > Query Builder > Query Line Filters
 #: components/Attachments/index.tsx:170
