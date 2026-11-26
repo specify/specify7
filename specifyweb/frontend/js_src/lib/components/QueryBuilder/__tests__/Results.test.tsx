@@ -1,11 +1,25 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react';
 import React from 'react';
 
+import { commonText } from '../../../localization/common';
 import { requireContext } from '../../../tests/helpers';
+import { serializeResource } from '../../DataModel/serializers';
 import { tables } from '../../DataModel/tables';
+import {
+  defaultDataViewQuery,
+  makeDataViewQuery,
+} from '../../DataViews/queries';
 import type { QueryField } from '../helpers';
 import { queryFieldsToFieldSpecs } from '../helpers';
 import { QueryResults } from '../Results';
+import type { QuerySelection } from '../selection';
+import { emptySelection } from '../selection';
 
 requireContext();
 
@@ -16,7 +30,7 @@ jest.mock('../../Permissions/helpers', () => ({
   hasToolPermission: () => false,
 }));
 jest.mock('../../Merging', () => ({ RecordMergingLink: () => null }));
-jest.mock('../ToForms', () => ({ QueryToForms: () => null }));
+jest.mock('../SelectedQueryForms', () => ({ SelectedQueryForms: () => null }));
 jest.mock('../ToMap', () => ({ QueryToMap: () => null }));
 
 function makeFields(names: readonly string[]): readonly QueryField[] {
@@ -89,57 +103,124 @@ test.each([
   expect(screen.getByText('Old last')).toBeInTheDocument();
 });
 
-test('row clicks add, range-select, and toggle result selections', async () => {
+// [QueryBuilder] Click result heading to change sort
+test('clicking a results heading cycles the sort order', async () => {
   const fields = makeFields(['lastName']);
+  const fieldSpecs = queryFieldsToFieldSpecs('Agent', fields).map(
+    ([, fieldSpec]) => fieldSpec
+  );
+  const onSortChange = jest.fn();
   const props = {
     table: tables.Agent,
     queryResource: undefined,
     fetchSize: 40,
     fetchResults: undefined,
     fetchCount: undefined,
-    totalCount: 3,
-    fieldSpecs: queryFieldsToFieldSpecs('Agent', fields).map(
-      ([, fieldSpec]) => fieldSpec
-    ),
+    totalCount: 1,
+    fieldSpecs,
     displayedFields: fields,
     allFields: fields,
-    initialData: [
-      [1, 'First'],
-      [2, 'Second'],
-      [3, 'Third'],
-    ],
+    initialData: [[1, 'Old last']],
+    selectedRows: [new Set<number>(), jest.fn()] as const,
     onReRun: jest.fn(),
     createRecordSet: undefined,
     extraButtons: undefined,
   };
+  const { rerender } = render(
+    <QueryResults
+      {...props}
+      sortConfig={[undefined]}
+      onSortChange={onSortChange}
+    />
+  );
+  await screen.findByText('Old last');
 
-  function ResultsWithSelection(): JSX.Element {
-    const selectedRows = React.useState<ReadonlySet<number>>(new Set());
-    return <QueryResults {...props} selectedRows={selectedRows} />;
-  }
+  fireEvent.click(within(screen.getByRole('columnheader')).getByRole('button'));
+  expect(onSortChange).toHaveBeenLastCalledWith(fieldSpecs[0], 'ascending');
+  expect(onSortChange).toHaveBeenCalledTimes(1);
 
-  render(<ResultsWithSelection />);
-  const firstResult = await screen.findByText('First');
-  const secondResult = screen.getByText('Second');
-  const thirdResult = screen.getByText('Third');
-  const checkboxes = screen.getAllByRole('checkbox');
+  rerender(
+    <QueryResults
+      {...props}
+      sortConfig={['ascending']}
+      onSortChange={onSortChange}
+    />
+  );
+  expect(screen.getByText(commonText.ascending())).toBeInTheDocument();
 
-  fireEvent.click(firstResult);
-  fireEvent.click(secondResult);
-  expect(checkboxes[0]).toBeChecked();
-  expect(checkboxes[1]).toBeChecked();
-  expect(checkboxes[2]).not.toBeChecked();
-
-  fireEvent.click(thirdResult, { shiftKey: true });
-  expect(checkboxes[0]).toBeChecked();
-  expect(checkboxes[1]).toBeChecked();
-  expect(checkboxes[2]).toBeChecked();
-
-  fireEvent.click(secondResult);
-  expect(checkboxes[0]).toBeChecked();
-  expect(checkboxes[1]).not.toBeChecked();
-  expect(checkboxes[2]).toBeChecked();
+  fireEvent.click(within(screen.getByRole('columnheader')).getByRole('button'));
+  expect(onSortChange).toHaveBeenLastCalledWith(fieldSpecs[0], 'descending');
+  expect(onSortChange).toHaveBeenCalledTimes(2);
 });
+
+test.each([false, true])(
+  'row clicks add, range-select, and toggle result selections (query selection: %s)',
+  async (useQuerySelection) => {
+    const fields = makeFields(['lastName']);
+    const props = {
+      table: tables.Agent,
+      queryResource: undefined,
+      fetchSize: 40,
+      fetchResults: undefined,
+      fetchCount: undefined,
+      totalCount: 3,
+      fieldSpecs: queryFieldsToFieldSpecs('Agent', fields).map(
+        ([, fieldSpec]) => fieldSpec
+      ),
+      displayedFields: fields,
+      allFields: fields,
+      initialData: [
+        [1, 'First'],
+        [2, 'Second'],
+        [3, 'Third'],
+      ],
+      onReRun: jest.fn(),
+      createRecordSet: undefined,
+      extraButtons: undefined,
+    };
+
+    function ResultsWithSelection(): JSX.Element {
+      const selectedRows = React.useState<ReadonlySet<number>>(new Set());
+      const selection = React.useState<QuerySelection>(emptySelection);
+      const executedQuery = React.useMemo(
+        () =>
+          serializeResource(
+            makeDataViewQuery('Agent', defaultDataViewQuery('Agent'))
+          ),
+        []
+      );
+      return (
+        <QueryResults
+          {...props}
+          selectedRows={selectedRows}
+          {...(useQuerySelection ? { selection, executedQuery } : {})}
+        />
+      );
+    }
+
+    render(<ResultsWithSelection />);
+    const firstResult = await screen.findByText('First');
+    const secondResult = screen.getByText('Second');
+    const thirdResult = screen.getByText('Third');
+    const checkboxes = screen.getAllByRole('checkbox');
+
+    fireEvent.click(firstResult);
+    fireEvent.click(secondResult);
+    expect(checkboxes[0]).toBeChecked();
+    expect(checkboxes[1]).toBeChecked();
+    expect(checkboxes[2]).not.toBeChecked();
+
+    fireEvent.click(thirdResult, { shiftKey: true });
+    expect(checkboxes[0]).toBeChecked();
+    expect(checkboxes[1]).toBeChecked();
+    expect(checkboxes[2]).toBeChecked();
+
+    fireEvent.click(secondResult);
+    expect(checkboxes[0]).toBeChecked();
+    expect(checkboxes[1]).not.toBeChecked();
+    expect(checkboxes[2]).toBeChecked();
+  }
+);
 
 test.each([1, 3])(
   'preserves loaded pages and updates the count after deleting record %i',

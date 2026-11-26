@@ -1,30 +1,84 @@
 from __future__ import annotations
 
 import logging
+from typing import TYPE_CHECKING
 from collections import namedtuple, deque
 
+from django.db.models import QuerySet, Count, Q
 from sqlalchemy import orm, sql, or_
 
-import specifyweb.specify.models as spmodels
-from specifyweb.backend.trees.utils import get_treedefs
+from specifyweb.specify.datamodel import datamodel, is_tree_table
+from specifyweb.specify.models_utils.load_datamodel import Table
+from specifyweb.backend.trees.utils import get_tree_ranks_in_collection, get_treedef_scope_filters, get_treedef_model, SPECIFY_TREES
 
 from specifyweb.backend.stored_queries import models
 from specifyweb.backend.stored_queries.tree_rank import TreeRankQuery
 
 logger = logging.getLogger(__name__)
 
+if TYPE_CHECKING:
+    from specifyweb.backend.stored_queries.queryfieldspec import QueryFieldSpec
 
-def _safe_filter(query):
-    count = query.count()
-    if count <= 1:
-        return query.first()
-    raise Exception(f"Got more than one matching: {list(query)}")
+def tree_depths_in_collection(collection, tree_name: str) -> QuerySet:
+    """
+    Returns a QuerySet that returns the IDs and number of ranks for each tree
+    scopable to the given collection
+    """
+    if tree_name.lower() not in SPECIFY_TREES:
+        raise ValueError(f"unexpected tree type: {tree_name}")
 
+    treedef_model = get_treedef_model(tree_name)
+    scoping_filters = get_treedef_scope_filters(collection, tree_name)
+    query = (
+        treedef_model.objects.filter(scoping_filters)
+        .annotate(rank_count=Count("treedefitems", distinct=True))
+        .distinct()
+        .values_list("pk", "rank_count")
+    )
+    return query
+
+def resolve_tree_ranks(
+        collection,
+        tree_table_name: str,
+        rank_name: str,
+        tree_def_id: int | None = None) -> list[tuple[int, int]]:
+    """
+    This is just a helper function to map trees scoped to the collection to a
+    list containing objects of the form (definition_id, rank_id) given some
+    particular rank name.
+    In other words, this creates a mapping of ranks with a specific name to
+    their tree definitions.
+
+    For example: if there are two trees (a Tree A and Tree B) in the
+    collection's discipline that both have a Genus rank (Rank A for Genus in
+    Tree A and Rank B for Genus in Tree B), this function will return:
+        [(tree_a_id, rank_a_id), (tree_b_id, rank_b_id)]
+
+    The helper will only return tree and rank ids where the rank exists with
+    the given name.
+    e.g., if only Tree A has a "Genus" rank, the function will only return:
+        [(tree_a_id, rank_a_id)]
+    """
+    if collection is None:
+        raise AssertionError(f"No Collection found in Query for {tree_table_name}")
+
+    rank_filters = None
+    if tree_def_id is not None:
+        rank_filters = Q(treedef_id=tree_def_id)
+
+    tree_ranks = get_tree_ranks_in_collection(
+        collection,
+        tree_table_name,
+        rank_name,
+        additional_rank_filters=rank_filters
+    )
+    formatted_results = tree_ranks.values_list("treedef_id", "pk")
+    return list(formatted_results)
 
 class QueryConstruct(
     namedtuple(
         "QueryConstruct",
-        "collection objectformatter query join_cache tree_rank_count internal_filters",
+        "collection objectformatter base_table query join_cache tree_rank_count internal_filters",
     )
 ):
     def __new__(cls, *args, **kwargs):
@@ -35,14 +89,24 @@ class QueryConstruct(
         kwargs["internal_filters"] = []
         return super().__new__(cls, *args, **kwargs)
 
-    def handle_tree_field(
+    def _handle_tree_self_join(
         self,
         node,
-        table,
+        table: Table,
         tree_rank: TreeRankQuery,
         next_join_path,
-        current_field_spec,
+        current_field_spec: QueryFieldSpec
     ):
+        """
+        This function handles adding a tree field to a Query that has a tree base
+        table.
+        This is distinct at the moment largely due to performance reasons:
+        building a query on a tree table using the algorithm for non-tree
+        tables will result in a very expensive query that takes far too long
+        to run.
+
+        See https://github.com/specify/specify7/pull/8670
+        """
         query = self
         query_before_tree_joins = query
         if query.collection is None:  # Not sure it makes sense to query across collections
@@ -60,16 +124,28 @@ class QueryConstruct(
         treedefitem_column = table.name + "TreeDefItemID"
         treedef_column = table.name + "TreeDefID"
 
-        cache_key = (table, "TreeRanks")
+        cache_key = (table, "TreeAncestors")
         if cache_key in query.join_cache:
             logger.debug("using join cache for %r tree ranks.", node)
-            ancestors, treedefs = query.join_cache[cache_key]
+            ancestors = query.join_cache[cache_key]
         else:
-            treedefs = get_treedefs(query.collection, table.name)
+            tree_depths = tree_depths_in_collection(query.collection, table.name)
+            # Not using exists here because we want to use the return value of
+            # the Query. This will evaluate it and cache the results, which
+            # we'll use soon.
+            if len(tree_depths) == 0:
+                logger.warning(
+                    "Didn't find tree rank %r across any %s tree; skipping field",
+                    tree_rank.name,
+                    table.name,
+                )
+                return query_before_tree_joins, None, None, table
 
             # We need to take the max here. Otherwise, it is possible that the same rank
             # name may not occur at the same level across tree defs.
-            max_depth = max(depth for _, depth in treedefs)
+            max_depth = max(
+                depth for _, depth in tree_depths
+            )
 
             ancestors = [node]
             for _ in range(max_depth - 1):
@@ -79,30 +155,17 @@ class QueryConstruct(
 
             logger.debug("adding to join cache for %r tree ranks.", node)
             query = query._replace(join_cache=query.join_cache.copy())
-            query.join_cache[cache_key] = (ancestors, treedefs)
+            query.join_cache[cache_key] = ancestors
 
-        item_model = getattr(spmodels, table.django_name + "treedefitem")
+        # FEAT: Cache this rank lookup on the Query?
+        treedefs_with_rank_ids = resolve_tree_ranks(
+            collection=query.collection,
+            tree_table_name=table.name,
+            rank_name=tree_rank.name,
+            tree_def_id=tree_rank.treedef_id
+        )
 
-        # TODO: optimize out the ranks that appear? cache them
-        treedefs_with_ranks: list[tuple[int, int]] = [
-            tup
-            for tup in [
-                (
-                    treedef_id,
-                    _safe_filter(
-                        item_model.objects.filter(
-                            treedef_id=treedef_id, name=tree_rank.name
-                        ).values_list("id", flat=True)
-                    ),
-                )
-                for treedef_id, _ in treedefs
-                # For constructing tree queries for batch edit
-                if tree_rank.treedef_id is None or tree_rank.treedef_id == treedef_id
-            ]
-            if tup[1] is not None
-        ]
-
-        if not treedefs_with_ranks:
+        if not treedefs_with_rank_ids:
             logger.warning(
                 "Didn't find tree rank %r across any %s tree; skipping field",
                 tree_rank.name,
@@ -110,7 +173,7 @@ class QueryConstruct(
             )
             return query_before_tree_joins, None, None, table
 
-        treedefitem_params = [treedefitem_id for (_, treedefitem_id) in treedefs_with_ranks]
+        treedefitem_params = [treedefitem_id for (_, treedefitem_id) in treedefs_with_rank_ids]
 
         def make_tree_field_spec(tree_node):
             return current_field_spec._replace(
@@ -132,7 +195,7 @@ class QueryConstruct(
 
         column = sql.case(cases)
 
-        defs_to_filter_on = [def_id for (def_id, _) in treedefs_with_ranks]
+        defs_to_filter_on = [def_id for (def_id, _) in treedefs_with_rank_ids]
         # We don't want to include treedef if the rank is not present.
         new_filters = [
             *query.internal_filters,
@@ -145,7 +208,108 @@ class QueryConstruct(
 
         return query, column, field, table
 
-    def build_join(self, table, model, join_path):
+    def _handle_tree_relationship(    
+        self,
+        node,
+        table: Table,
+        tree_rank: TreeRankQuery,
+        next_join_path,
+        current_field_spec: QueryFieldSpec,  
+    ):
+        """
+        This function handles adding a tree field to a query that does not have
+        a tree base table.
+        The general approach is to build a CTE that starts with the direct join
+        to the node (e.g., a determination's taxon), and recurse up the tree to
+        retrieve the required rank's information.
+        See prepare_tree_ranks and resolve_page in tree_ranks.py for a lot of
+        the heavy-lifting when it comes to building the query.
+
+        Additionally, see https://github.com/specify/specify7/pull/8670
+        """
+        query = self
+        if query.collection is None:  # Not sure it makes sense to query across collections
+            raise AssertionError(
+                f"No Collection found in Query for {table}",
+                {"table": table, "localizationKey": "noCollectionInQuery"},
+            )
+        logger.info(
+            "handling treefield %s rank: %s field: %s",
+            table,
+            tree_rank.name,
+            next_join_path,
+        )
+
+        treedef_column = table.name + 'TreeDefID'
+
+        # FEAT: Cache this rank lookup on the Query?
+        treedefs_with_ranks = resolve_tree_ranks(
+            collection=query.collection,
+            tree_table_name=table.name,
+            rank_name=tree_rank.name,
+            tree_def_id=tree_rank.treedef_id
+        )
+
+        if not treedefs_with_ranks:
+            logger.warning(
+                "Didn't find tree rank %r across any %s tree; skipping field",
+                tree_rank.name,
+                table.name,
+            )
+            return query, None, None, table
+
+        treedefitem_params = tuple(sorted(
+            treedefitem_id for (_, treedefitem_id) in treedefs_with_ranks
+        ))
+        defs_to_filter_on = [def_id for (def_id, _) in treedefs_with_ranks]
+        cache_key = (node, table, treedefitem_params, 'TreeRank')
+        ranks = query.join_cache.get("tree_ranks")
+        if ranks is None:
+            raise ValueError("expected tree_ranks to be in the join cache. Did you forget to call prepare_tree_ranks?")
+        ranks.current_rank = (node, table, treedefitem_params)
+        if cache_key in query.join_cache:
+            ancestor = query.join_cache[cache_key]
+        else:
+            ancestor = orm.aliased(getattr(models, table.name))
+            query = ranks.join(query, node, ancestor, table, treedefitem_params)
+            query = query._replace(join_cache=query.join_cache.copy())
+            query.join_cache[cache_key] = ancestor
+
+        # We don't want to include treedef if the rank is not present.
+        new_filters = [
+            *query.internal_filters,
+            or_(
+                getattr(node, treedef_column).in_(defs_to_filter_on),
+                getattr(node, treedef_column).is_(None),
+            ),
+        ]
+        query = query._replace(internal_filters=new_filters)
+
+        field_spec = current_field_spec._replace(
+            root_table=table,
+            root_sql_table=ancestor,
+            join_path=next_join_path,
+        )
+        query, column, field, table = field_spec.add_spec_to_query(query)
+        return query, column, field, table
+
+    def handle_tree_field(
+        self,
+        node,
+        table: Table,
+        tree_rank: TreeRankQuery,
+        next_join_path,
+        current_field_spec: QueryFieldSpec,
+    ):
+        if is_tree_table(self.base_table):
+            return self._handle_tree_self_join(
+                node, table, tree_rank, next_join_path, current_field_spec
+            )
+        return self._handle_tree_relationship(
+            node, table, tree_rank, next_join_path, current_field_spec
+        )
+
+    def build_join(self, table: Table, model, join_path):
         query = self
         path = deque(join_path)
         field = None
@@ -154,10 +318,9 @@ class QueryConstruct(
             if isinstance(field, str):
                 field = table.get_field(field, strict=True)
             # basically, tree ranks act as forks.
-            is_tree_rank_query = field.__class__.__name__ == "TreeRankQuery"
-            if not field.is_relationship or is_tree_rank_query:
+            if not field.is_relationship or isinstance(field, TreeRankQuery):
                 break
-            next_table = spmodels.datamodel.get_table(field.relatedModelName, strict=True)
+            next_table = datamodel.get_table_strict(field.relatedModelName)
             logger.debug("joining: %r to %r via %r", table, next_table, field)
             if (model, field.name) in query.join_cache:
                 aliased = query.join_cache[(model, field.name)]

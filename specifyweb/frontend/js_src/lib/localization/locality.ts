@@ -388,7 +388,7 @@ export const localityText = createDictionary({
     'es-es':
       'Las siguientes columnas son obligatorias pero faltan en el conjunto de datos.',
     'fr-fr':
-      "Les colonnes suivantes sont obligatoires mais absentes de l'ensemble de données.",
+      "Les colonnes suivantes sont obligatoires mais absentes de l'ensemble de données",
     'ru-ru': 'Следующие столбцы необходимы, но отсутствуют в наборе данных.',
     'uk-ua': 'Наступні стовпці є обов’язковими, але відсутні в наборі даних',
     'pt-br':
@@ -404,7 +404,7 @@ export const localityText = createDictionary({
     'es-es':
       'Las siguientes columnas del conjunto de datos no se reconocen y se ignorarán durante la importación.',
     'fr-fr':
-      "Les colonnes suivantes du jeu de données ne sont pas reconnues et seront ignorées lors de l'importation.",
+      "Les colonnes suivantes du jeu de données ne sont pas reconnues et seront ignorées lors de l'import",
     'ru-ru':
       'Следующие столбцы в наборе данных не распознаются и будут проигнорированы при импорте.',
     'uk-ua':
@@ -520,7 +520,7 @@ export const localityText = createDictionary({
     'de-ch': 'Bei der Aktualisierung der Ortsdaten ist ein Fehler aufgetreten.',
     'es-es': 'Algo salió mal durante el proceso de actualización de localidad.',
     'fr-fr':
-      "Une erreur s'est produite lors du processus de mise à jour des localités.",
+      "Une erreur s'est produite lors du processus de mise à jour des localités",
     'ru-ru': 'В процессе обновления данных о местности произошла ошибка.',
     'uk-ua': 'Щось пішло не так під час процесу оновлення місцевості',
     'pt-br': 'Algo deu errado durante o processo de atualização de localidade.',
@@ -553,7 +553,7 @@ export const localityText = createDictionary({
     'es-es':
       'Actualización de localidad {taskId: string} Informe de fallos - {date: string}',
     'fr-fr':
-      "Mise à jour des localités {taskId : chaîne} Rapport d'incident - {date : chaîne}",
+      "Mise à jour des localités {taskId:chaîne} Rapport d'incident - {date:chaîne}",
     'ru-ru':
       'Обновление локальной среды {taskId: string} Отчет о сбое - {date: string}',
     'uk-ua':
@@ -568,7 +568,7 @@ export const localityText = createDictionary({
     'en-us': "The Dataset must contain a 'guid' header",
     'de-ch': 'Das Dataset muss einen „guid“-Header enthalten.',
     'es-es': "El conjunto de datos debe contener un encabezado 'guid'.",
-    'fr-fr': 'Le jeu de données doit contenir un en-tête « guid ».',
+    'fr-fr': 'Le jeu de données doit contenir un en-tête "guid"',
     'ru-ru': "Набор данных должен содержать заголовок 'guid'.",
     'uk-ua': 'Набір даних має містити заголовок «guid».',
     'pt-br': "O conjunto de dados deve conter um cabeçalho 'guid'.",
@@ -594,7 +594,7 @@ export const localityText = createDictionary({
     'es-es':
       'Se encontró más de una localidad con el identificador GUID: {guid:string}. Identificadores de localidad: {localityIds: string}',
     'fr-fr':
-      "Plusieurs localités ont été trouvées avec l'identifiant GUID : {guid:string}. Identifiants des localités : {localityIds: string}",
+      "Plusieurs localités ont été trouvées avec l'identifiant GUID : {guid:string}. Identifiants des localités : {localityIds:string}",
     'ru-ru':
       'Найдено более одного населенного пункта с guid: {guid:string}. Идентификаторы населенных пунктов: {localityIds: string}',
     'uk-ua':
@@ -609,11 +609,11 @@ export const localityText = createDictionary({
     'en-us':
       'The following number of {localityTabelLabel: string} records will be affected by the update and {geoCoordDetailTableLabel: string} records will be created:',
     'de-ch':
-      'Die folgende Anzahl von {localityTabelLabel: string} Datensätzen wird von der Aktualisierung betroffen sein und es werden {geoCoordDetailTableLabel: string} Datensätze erstellt:',
+      'Die folgende Anzahl von {localityTabelLabel: string} Datensätzen wird von der Aktualisierung betroffen sein und {geoCoordDetailTableLabel: string} Datensätze werden erstellt:',
     'es-es':
       'La siguiente cantidad de registros {localityTabelLabel: string} se verán afectados por la actualización y se crearán registros {geoCoordDetailTableLabel: string}:',
     'fr-fr':
-      "La mise à jour affectera le nombre suivant d'enregistrements {localityTabelLabel: string} et des enregistrements {geoCoordDetailTableLabel: string} seront créés :",
+      "La mise à jour affectera le nombre suivant d'enregistrements {localityTabelLabel:string} et des enregistrements {geoCoordDetailTableLabel:string} seront créés :",
     'ru-ru':
       'Обновление затронет следующее количество записей типа {localityTabelLabel: string}, и будут созданы записи типа {geoCoordDetailTableLabel: string}:',
     'uk-ua':
@@ -632,7 +632,7 @@ export const localityText = createDictionary({
     'es-es':
       'Se actualizaron los siguientes registros {localityTabelLabel: string} y se crearon registros {geoCoordDetailTableLabel: string}:',
     'fr-fr':
-      "Le nombre suivant d'enregistrements {localityTableLabel: string} a été mis à jour et d'enregistrements {geoCoordDetailTableLabel: string} a été créé :",
+      "Le nombre suivant d'enregistrements {localityTableLabel:string} a été mis à jour et d'enregistrements {geoCoordDetailTableLabel:string} a été créé :",
     'ru-ru':
       'Было обновлено следующее количество записей в формате {localityTabelLabel: string} и создано следующее количество записей в формате {geoCoordDetailTableLabel: string}:',
     'uk-ua':
@@ -645,9 +645,9 @@ export const localityText = createDictionary({
   },
   localityUpdateStarted: {
     'en-us': 'The Locality Update process has started',
-    'de-ch': 'Der Prozess zur Aktualisierung der Ortsdaten wurde gestartet.',
-    'es-es': 'El proceso de actualización de localidad ha comenzado.',
-    'fr-fr': 'Le processus de mise à jour des localités a commencé.',
+    'de-ch': 'Der Aktualisierungsprozess der Ortsdaten wurde gestartet.',
+    'es-es': 'El proceso de actualización de localidades ha comenzado.',
+    'fr-fr': 'Le processus de mise à jour des localités a commencé',
     'ru-ru': 'Начался процесс обновления информации о местности.',
     'uk-ua': 'Розпочато процес оновлення місцевості',
     'pt-br': 'O processo de atualização de localidades foi iniciado.',
@@ -691,7 +691,7 @@ export const localityText = createDictionary({
     'en-us': 'Latitude needs to have a value between -90° and 90°',
     'de-ch': 'Der Breitengrad muss einen Wert zwischen -90° und 90° haben.',
     'es-es': 'La latitud debe tener un valor entre -90° y 90°.',
-    'fr-fr': 'La latitude doit avoir une valeur comprise entre -90° et 90°.',
+    'fr-fr': 'La latitude doit avoir une valeur comprise entre -90° et 90°',
     'ru-ru': 'Широта должна иметь значение от -90° до 90°.',
     'uk-ua': 'Значення широти має бути від -90° до 90°',
     'pt-br': 'A latitude deve ter um valor entre -90° e 90°.',
@@ -703,7 +703,7 @@ export const localityText = createDictionary({
     'de-ch': 'Der Längengrad muss einen Wert zwischen -180° und 180° haben.',
     'es-es':
       'La siguiente cantidad de registros {localityTabelLabel: string} se verán afectados por la actualización y se crearán registros {geoCoordDetailTableLabel: string}:',
-    'fr-fr': 'La longitude doit avoir une valeur comprise entre -180° et 180°.',
+    'fr-fr': 'La longitude doit avoir une valeur comprise entre -180° et 180°',
     'ru-ru': 'Долгота должна иметь значение от -180° до 180°.',
     'uk-ua':
       'Оновлення вплине на таку кількість записів {localityTabelLabel: string} і буде створено записи {geoCoordDetailTableLabel: string}:',

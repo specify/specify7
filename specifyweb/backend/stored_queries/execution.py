@@ -13,6 +13,7 @@ from collections import namedtuple, defaultdict
 from functools import reduce
 
 from django.conf import settings
+from django.core.exceptions import BadRequest
 from django.db import transaction
 from django.utils import timezone
 from specifyweb.backend.inheritance.api import DefaultQueryProcessors
@@ -23,10 +24,11 @@ from sqlalchemy.sql.expression import asc, desc, insert, literal
 
 from specifyweb.specify.models_utils.models_by_table_id import get_table_id_by_model_name
 from specifyweb.backend.stored_queries.group_concat import group_by_displayed_fields
-from specifyweb.backend.trees.utils import get_search_filters
+from specifyweb.backend.trees.utils import get_treedef_scope_filters
 
 from . import models
 from .format import ObjectFormatter, ObjectFormatterProps
+from .selection import QuerySelection, apply_selection, parse_selection
 from .field_spec_maps import transform_field_specs
 from .query_path import tables_in_path
 from .web_portal_export import query_to_web_portal_zip as _query_to_web_portal_zip, WebportalQueryResultProcessors
@@ -36,8 +38,9 @@ from specifyweb.specify.models import Loan, Loanpreparation, Loanreturnpreparati
 from specifyweb.backend.workbench.upload.auditlog import auditlog
 from specifyweb.backend.stored_queries.group_concat import group_by_displayed_fields
 from specifyweb.backend.stored_queries.queryfield import fields_from_json, QUREYFIELD_SORT_T
+from specifyweb.backend.stored_queries.query_construct_model import QueryConstruct
 from specifyweb.backend.stored_queries.synonomy import synonymize_tree_query
-
+from specifyweb.backend.stored_queries.tree_rank import prepare_tree_ranks, rank_path, path_key, resolve_page
 from specifyweb.specify.datamodel import datamodel, is_tree_table
 from specifyweb.specify.models_utils.load_datamodel import Table
 
@@ -46,12 +49,10 @@ from specifyweb.specify.models_utils.load_datamodel import Table
 # import it would already be handled.
 if TYPE_CHECKING:
     from specifyweb.backend.stored_queries.queryfield import QueryField
-    from specifyweb.backend.stored_queries.query_construct_model import QueryConstruct
 
 logger = logging.getLogger(__name__)
 
 SERIES_MAX_ROWS = 10000
-
 
 class QuerySort:
     SORT_TYPES = [None, asc, desc]
@@ -82,6 +83,9 @@ class BuildQueryProps(NamedTuple):
     search_synonymy: bool = False
     implicit_or: bool = True
     formatter_props: ObjectFormatterProps = DefaultQueryFormatterProps()
+    defer_tree_display: bool = False
+    count_only: bool = False
+    selection: QuerySelection | None = None
 
 
 def set_group_concat_max_len(connection):
@@ -122,12 +126,12 @@ def filter_by_collection(model, query, collection):
 
     if model is models.Taxon:
         logger.info("filtering taxon to discipline: %s", collection.discipline.name)
-        treedef_ids = Taxontreedef.objects.filter(get_search_filters(collection, 'taxon')).values_list('id', flat=True)
+        treedef_ids = Taxontreedef.objects.filter(get_treedef_scope_filters(collection, 'taxon')).values_list('id', flat=True)
         return query.filter(model.TaxonTreeDefID.in_(tuple(treedef_ids)))
 
     if model is models.TaxonTreeDefItem:
         logger.info("filtering taxon rank to discipline: %s", collection.discipline.name)
-        treedef_ids = Taxontreedef.objects.filter(get_search_filters(collection, 'taxon')).values_list('id', flat=True)
+        treedef_ids = Taxontreedef.objects.filter(get_treedef_scope_filters(collection, 'taxon')).values_list('id', flat=True)
         return query.filter(model.TaxonTreeDefID.in_(tuple(treedef_ids)))
 
     if model is models.Geography:
@@ -261,6 +265,7 @@ def do_export(spquery, collection, user, filename, exporttype, host):
     See query_to_csv for details of the other accepted arguments.
     """
     recordsetid = spquery.get("recordsetid", None)
+    selection = parse_selection(spquery.get("selection"))
 
     distinct = spquery["selectdistinct"]
     tableid = spquery["contexttableid"]
@@ -275,11 +280,13 @@ def do_export(spquery, collection, user, filename, exporttype, host):
                 query_to_csv(session, collection, user, tableid, field_specs, path,
                              recordsetid=recordsetid, 
                              captions=spquery['captions'], strip_id=True,
-                             distinct=spquery['selectdistinct'], delimiter=spquery['delimiter'], bom=spquery['bom'])
+                             distinct=spquery['selectdistinct'], delimiter=spquery['delimiter'], bom=spquery['bom'],
+                             selection=selection, search_synonymy=spquery.get("searchsynonymy", False))
                 message_type = 'query-export-to-csv-complete'
             elif exporttype == 'kml':
                 query_to_kml(session, collection, user, tableid, field_specs, path, spquery['captions'], host,
-                             recordsetid=recordsetid, strip_id=False, selected_rows=spquery.get('selectedrows', None))
+                             recordsetid=recordsetid, strip_id=False, selected_rows=spquery.get('selectedrows', None),
+                             selection=selection, search_synonymy=spquery.get("searchsynonymy", False))
                 message_type = 'query-export-to-kml-complete'
             elif exporttype == 'webportal':
                 query_to_web_portal_zip(
@@ -292,6 +299,9 @@ def do_export(spquery, collection, user, filename, exporttype, host):
                     spquery['captions'],
                     recordsetid=recordsetid,
                     distinct=spquery['selectdistinct'],
+                    selection=selection,
+                    search_synonymy=spquery.get("searchsynonymy", False),
+                    
                 )
                 message_type = 'query-export-to-webportal-complete'
             else:
@@ -330,6 +340,9 @@ def query_to_web_portal_zip(
     captions,
     recordsetid=None,
     distinct=False,
+    selection=None,
+    search_synonymy=False,
+    
 ):
     query, _ = build_query(
         session=session,
@@ -337,7 +350,13 @@ def query_to_web_portal_zip(
         user=user,
         tableid=tableid,
         query_fields=field_specs,
-        props=BuildQueryProps(recordsetid=recordsetid, replace_nulls=True, distinct=distinct),
+        props=BuildQueryProps(
+            recordsetid=recordsetid,
+            replace_nulls=True,
+            distinct=distinct,
+            selection=selection,
+            search_synonymy=search_synonymy,
+        )
     )
 
     processors = [
@@ -402,6 +421,8 @@ def query_to_csv(
     distinct=False,
     delimiter=",",
     bom=False,
+    selection=None,
+    search_synonymy=False,
 ):
     """Build a sqlalchemy query using the QueryField objects given by
     field_specs and send the results to a CSV file at the given
@@ -416,7 +437,8 @@ def query_to_csv(
         user,
         tableid,
         field_specs,
-        BuildQueryProps(recordsetid=recordsetid, replace_nulls=True, distinct=distinct),
+        BuildQueryProps(recordsetid=recordsetid, replace_nulls=True, distinct=distinct,
+                        selection=selection, search_synonymy=search_synonymy),
     )
     query = query.order_by(*order_by_exprs)
     query_rows = apply_special_post_query_processing(
@@ -477,6 +499,8 @@ def query_to_kml(
     recordsetid=None,
     strip_id=False,
     selected_rows=None,
+    selection=None,
+    search_synonymy=False,
 ):
     """Build a sqlalchemy query using the QueryField objects given by
     field_specs and send the results to a kml file at the given
@@ -491,7 +515,8 @@ def query_to_kml(
         user,
         tableid,
         field_specs,
-        BuildQueryProps(recordsetid=recordsetid, replace_nulls=True),
+        BuildQueryProps(recordsetid=recordsetid, replace_nulls=True,
+                        selection=selection, search_synonymy=search_synonymy),
     )
     if selected_rows:
         model = models.models_by_tableid[tableid]
@@ -728,6 +753,7 @@ def run_ephemeral_query(collection, user, spquery):
             offset=offset,
             recordsetid=recordsetid,
             formatauditobjs=format_audits,
+            selection=parse_selection(spquery.get("selection")),
         )
 
 
@@ -762,7 +788,11 @@ def recordset(collection, user, user_agent, recordset_info): # pragma: no cover
             user,
             tableid,
             field_specs,
-            BuildQueryProps(recordsetid=spquery.get("recordsetid", None)),
+            BuildQueryProps(
+                recordsetid=spquery.get("recordsetid", None),
+                search_synonymy=spquery.get("searchsynonymy", False),
+                selection=parse_selection(spquery.get("selection")),
+            ),
         )
         query = query.with_entities(model._id, literal(new_rs_id)).distinct()
         RSI = models.RecordSetItem
@@ -887,11 +917,12 @@ def execute(
     search_synonymy: bool,
     count_only: bool,
     query_fields: list[QueryField],
-    limit,
-    offset,
-    recordsetid=None,
-    formatauditobjs=False,
-    formatter_props=None,
+    limit: int,
+    offset: int,
+    recordsetid: int | None = None,
+    formatauditobjs: bool = False,
+    formatter_props: ObjectFormatterProps | None = None,
+    selection: QuerySelection | None = None,
 ):
     "Build and execute a query, returning the results as a data structure for json serialization"
 
@@ -899,23 +930,26 @@ def execute(
         formatter_props = DefaultQueryFormatterProps()
 
     set_group_concat_max_len(session.info["connection"])
-    query, order_by_exprs = build_query(
-        session,
-        collection,
-        user,
-        tableid,
-        query_fields,
-        BuildQueryProps(
-            recordsetid=recordsetid,
-            formatauditobjs=formatauditobjs,
-            distinct=distinct,
-            series=series,
-            search_synonymy=search_synonymy,
-            formatter_props=formatter_props,
-        ),
+    query_props = BuildQueryProps(
+        recordsetid=recordsetid,
+        formatauditobjs=formatauditobjs,
+        distinct=distinct,
+        series=series,
+        search_synonymy=search_synonymy,
+        formatter_props=formatter_props,
+        defer_tree_display=(count_only or bool(limit)) and not (
+            distinct or series or search_synonymy or formatauditobjs),
+        count_only=count_only,
+        selection=selection,
     )
-
-    log_sqlalchemy_query(query)
+    query, order_by_exprs = build_query(
+        session=session,
+        collection=collection,
+        user=user,
+        tableid=tableid,
+        query_fields=query_fields,
+        props=query_props,
+    )
 
     if count_only:
         if series:
@@ -924,7 +958,8 @@ def execute(
                 if query_field.fieldspec.get_field() and query_field.fieldspec.get_field().name.lower() == 'catalognumber':
                     cat_num_sort_type = query_field.sort_type
                     break
-            return {'count': len(series_post_query(query, limit=SERIES_MAX_ROWS, offset=0, sort_type=cat_num_sort_type, is_count=True))}
+            series_query = series_post_query(query, limit=SERIES_MAX_ROWS, offset=0, sort_type=cat_num_sort_type, is_count=True)
+            return {'count': len(series_query)}
         else:
             return {'count': query.count()}
     else:
@@ -950,14 +985,19 @@ def execute(
             order_by_exprs.insert(0, text("collectionobject.`CatalogNumber`"))
 
             # query = query.limit(SERIES_MAX_ROWS)
+            log_sqlalchemy_query(query, logger=logger)
             return {'results': series_post_query(query, limit=limit, offset=offset, sort_type=cat_num_sort_type)}
         
         logger.debug("order by: %s", order_by_exprs)
-        query = query.order_by(*order_by_exprs).offset(offset)
+        ranks = query.get_execution_options().get("specify_tree_ranks")
+        if ranks is not None:
+            query = resolve_page(query, order_by_exprs, ranks, limit, offset)
+        else:
+            query = query.order_by(*order_by_exprs).offset(offset)
+            if limit:
+                query = query.limit(limit)
 
-        if limit:
-            query = query.limit(limit)
-
+        log_sqlalchemy_query(query, logger=logger)
         results = list(
             apply_special_post_query_processing(
                 query=query,
@@ -981,9 +1021,9 @@ def build_query_construct_base(
     collection,
     user,
     model,
+    base_table: Table,
     props: BuildQueryProps,
 ):
-    from .query_construct_model import QueryConstruct
 
     id_field = model._id
     catalognumber_field = model.catalogNumber if hasattr(model, 'catalogNumber') else None
@@ -1011,7 +1051,8 @@ def build_query_construct_base(
             props.replace_nulls,
             props=props.formatter_props,
         ),
-        query=query_construct_query
+        query=query_construct_query,
+        base_table=base_table
     )
     return query
 
@@ -1076,8 +1117,9 @@ def apply_where_condition_to_query(
             where = reduce(sql.and_, implicit_ors)
             query = query.filter(where)
     else:
-        where = reduce(sql.and_, (p for ps in predicates_by_fieldspec.values() for p in ps))
-        query = query.filter(where)
+        predicates = [p for ps in predicates_by_fieldspec.values() for p in ps]
+        if predicates:
+            query = query.filter(reduce(sql.and_, predicates))
     return query
 
 # REFACTOR: Clean up this and the other QueryConstruct functions
@@ -1091,17 +1133,48 @@ def add_fields_to_query(
     query_fields: list[QueryField],
     series: bool = False,
     formatauditobjs: bool = False,
-    use_implicit_ors: bool = True
+    use_implicit_ors: bool = True,
+    defer_tree_display: bool = False,
+    count_only: bool = False,
 ):
+    query_fields = list(query_fields)
+    ordinary_predicates = defaultdict(list)
+    # BUG: for Queries based on tree tables, #8560 might still occur
+    # See https://github.com/specify/specify7/pull/8670
+    if not is_tree_table(query.base_table) and any(rank_path(f.fieldspec) is not None for f in query_fields):
+        for query_field in query_fields:
+            if (rank_path(query_field.fieldspec) is None
+                    and (query_field.op_num != 8 or query_field.negate)):
+                query, _, predicate = query_field.add_to_query(
+                    query, formatauditobjs=formatauditobjs, collection=collection, user=user)
+                if predicate is not None:
+                    ordinary_predicates[query_field.fieldspec].append(predicate)
+        query = apply_where_condition_to_query(query, ordinary_predicates, use_implicit_ors)
+        tree_tables = {
+            rank_path(f.fieldspec)[1].relatedModelName
+            for f in query_fields if rank_path(f.fieldspec) is not None
+        }
+        # Grouped/formatted object queries retain eager resolution. A page may
+        # defer scalar ranks from one tree table without changing row semantics.
+        defer_tree_display = defer_tree_display and len(tree_tables) == 1 and all(
+            not f.fieldspec.is_relationship() and f.fieldspec.get_field() is not None
+            for f in query_fields
+        )
+        query = prepare_tree_ranks(query, query_fields, defer_tree_display, count_only)
+    ranks = query.join_cache.get("tree_ranks")
     order_by_exprs = []
     selected_fields = []
     predicates_by_fieldspec = defaultdict(list)
     for query_field in query_fields:
+        if ranks is not None:
+            ranks.current_field = query_field
+            ranks.current_rank = None
         sort_type = QuerySort.by_id(query_field.sort_type)
 
         if series and query_field.fieldspec.get_field() and query_field.fieldspec.get_field().name.lower() == 'catalognumber':
             _, _, predicate = query_field.add_to_query(query, formatauditobjs=formatauditobjs)
-            predicates_by_fieldspec[query_field.fieldspec].append(predicate) if predicate is not None else None
+            if predicate is not None and query_field.fieldspec not in ordinary_predicates:
+                predicates_by_fieldspec[query_field.fieldspec].append(predicate)
             continue
 
         query, field, predicate = query_field.add_to_query(
@@ -1120,12 +1193,17 @@ def add_fields_to_query(
             formatted_field = query.objectformatter.fieldformat(query_field, field)
             query = query.add_columns(formatted_field)
             selected_fields.append(formatted_field)
+            if (ranks is not None and ranks.current_rank is not None
+                    and rank_path(query_field.fieldspec) is not None
+                    and path_key(query_field.fieldspec) in ranks.deferred):
+                ranks.displays[len(query.query.column_descriptions) - 1] = (
+                    query_field, ranks.current_rank, query.objectformatter)
 
 
         if sort_type is not None:
             order_by_exprs.append(sort_type(field))
 
-        if predicate is not None:
+        if predicate is not None and query_field.fieldspec not in ordinary_predicates:
             predicates_by_fieldspec[query_field.fieldspec].append(predicate)
     query = apply_where_condition_to_query(query, predicates_by_fieldspec, use_implicit_ors)
     return query, selected_fields, order_by_exprs
@@ -1185,13 +1263,21 @@ def build_query(
     Return all record IDs associated with a row.
 
     search_synonymy = if True, search synonym nodes as well, and return all record IDs associated with parent node
+
+    defer_tree_display = internal execution mode: display-only scalar ranks
+    remain unresolved until resolve_page() selects the requested page. Direct
+    callers that execute the returned query must leave this disabled.
     """
+    base_table = datamodel.get_table_by_id_strict(tableid)
     model = models.models_by_tableid[tableid]
+    if props.selection is not None and (props.distinct or props.series):
+        raise BadRequest("Record selection is not supported for grouped query results.")
     id_field = model._id
     query = build_query_construct_base(
         session=session,
         collection=collection,
         user=user,
+        base_table=base_table,
         model=model,
         props=props,
     )
@@ -1220,7 +1306,10 @@ def build_query(
         query_fields=query_fields,
         series=props.series,
         formatauditobjs=props.formatauditobjs,
-        use_implicit_ors=props.implicit_or
+        use_implicit_ors=props.implicit_or,
+        defer_tree_display=props.defer_tree_display and not (
+            props.distinct or props.series or props.search_synonymy or props.formatauditobjs),
+        count_only=props.count_only,
     )
 
     if props.series:
@@ -1229,13 +1318,26 @@ def build_query(
         query = group_by_displayed_fields(query, selected_fields)
 
     if props.search_synonymy:
-        base_table = datamodel.get_table_by_id_strict(tableid)
         query = search_on_synonyms(query, query_fields, base_table)
 
     internal_predicate = query.get_internal_filters()
     query = query.filter(internal_predicate)
 
-    return query.query, order_by_exprs
+    ranks = query.join_cache.get("tree_ranks")
+    if ranks is not None and props.defer_tree_display and not (
+            props.distinct or props.series or props.search_synonymy or props.formatauditobjs):
+        ranks.row_ids = [id_field, *[
+            alias._id for key, alias in query.join_cache.items()
+            if isinstance(key, tuple) and len(key) == 2
+            and isinstance(key[1], str)
+            and getattr(key[0], key[1]).property.uselist
+        ]]
+    query_with_selection = apply_selection(query.query, id_field, props.selection)
+    # REFACTOR: We can remove the specify_tree_ranks execution option
+    # Only tests are using it at the moment
+    return query_with_selection.execution_options(
+        specify_tree_ranks=ranks
+    ), order_by_exprs
 
 def series_post_query(query, limit=40, offset=0, sort_type=0, co_id_cat_num_pair_col_index=0, is_count=False):
     """Transform the query results by removing the co_id:catnum pair column
@@ -1285,14 +1387,6 @@ def series_post_query(query, limit=40, offset=0, sort_type=0, co_id_cat_num_pair
                 return (int(number), prefix, postfix)
             
             return (None, s, '')
-
-    # REFACTOR: Remove this if it really is and should be unused
-    def parse_catalog_for_sorting(catalog): # pragma: no cover
-        m = re.match(r'^([A-Za-z]*)(\d+)$', catalog)
-        if m:
-            return m.group(1), int(m.group(2))
-        else:
-            return catalog, None
 
     def catalog_sort_key(x):
         num, prefix, postfix = parse_catalog_for_comparing(x[1])

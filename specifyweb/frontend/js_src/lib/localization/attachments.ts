@@ -34,7 +34,7 @@ export const attachmentsText = createDictionary({
   attachmentServerUnavailable: {
     'en-us': 'Attachment server unavailable',
     'ru-ru': 'Сервер вложений недоступен',
-    'es-es': 'Servidor de adjuntos no disponible',
+    'es-es': 'Servidor de archivos adjuntos no disponible',
     'fr-fr': 'Serveur de pièces jointes indisponible',
     'uk-ua': 'Сервер вкладень недоступний',
     'de-ch': 'Attachment-Server nicht verfügbar',
@@ -230,7 +230,7 @@ export const attachmentsText = createDictionary({
     'de-ch': '{action:string} war im Gange, als es zu einer Unterbrechung kam.',
     'es-es': '{action:string} estaba en curso cuando ocurrió la interrupción.',
     'fr-fr':
-      "{action:string} était en cours lorsqu'une interruption s'est produite.",
+      "{action:string} était en cours lorsqu'une interruption s'est produite",
     'ru-ru': '{action:string} выполнялся, когда произошло прерывание.',
     'uk-ua': '{action:string} відбувався, коли сталося переривання',
     'pt-br':
@@ -287,7 +287,7 @@ export const attachmentsText = createDictionary({
     'en-us': 'New Attachment Data Set {date: string}',
     'de-ch': 'Neuer Anhangsdatensatz {date: string}',
     'es-es': 'Nuevo conjunto de datos adjuntos {fecha: cadena}',
-    'fr-fr': 'Nouveau jeu de données de pièce jointe {date: chaîne}',
+    'fr-fr': 'Nouveau jeu de données de pièces jointes {date:string}',
     'ru-ru': 'Новый набор данных вложения {дата: строка}',
     'uk-ua': 'Новий набір даних вкладень {date: string}',
     'pt-br': 'Novo conjunto de dados de anexos {date: string}',
@@ -352,7 +352,7 @@ export const attachmentsText = createDictionary({
     'de-ch':
       'Der Rollback war im Gange, als es zu einer Unterbrechung kam. Einige Dateien wurden möglicherweise gelöscht.',
     'fr-fr':
-      "La restauration était en cours lorsqu'une interruption s'est produite. Certains fichiers ont pu être supprimés.",
+      "La restauration était en cours lorsqu'une interruption s'est produite. Certains fichiers ont pu être supprimés",
     'ru-ru':
       'В момент прерывания процесса отката выполнялся откат. Возможно, некоторые файлы были удалены.',
     'uk-ua':
@@ -406,7 +406,7 @@ export const attachmentsText = createDictionary({
     'es-es':
       'Al cargar los archivos adjuntos, estos se guardarán en el servidor de activos y en la base de datos de Specify.',
     'fr-fr':
-      'Le chargement des pièces jointes les ajoutera au serveur de ressources et à la base de données Specify.',
+      'Le chargement des pièces jointes les ajoutera au serveur de ressources et à la base de données Specify',
     'ru-ru':
       'Загрузка вложений создаст их на сервере активов и в базе данных Specify.',
     'uk-ua':
@@ -414,7 +414,7 @@ export const attachmentsText = createDictionary({
     'pt-br':
       'O envio dos anexos os criará no servidor de ativos e no banco de dados especificado.',
     'hr-hr':
-      'Prijenosom privitaka stvorit će se privitci na poslužitelju imovine i u Navedite bazu podataka',
+      'Prijenosom privitaka stvorit će se privitci na poslužitelju imovine i u Navedite bazu podataka.',
     nb: 'Opplasting av vedlegg vil opprette vedlegg på ressursserveren og i Specify-databasen',
   },
   interrupted: {
@@ -458,10 +458,10 @@ export const attachmentsText = createDictionary({
     'es-es':
       'La reversión eliminará los archivos adjuntos de la base de datos Specify y del servidor de activos.',
     'fr-fr':
-      'La restauration supprimera les pièces jointes de la base de données Specify et du serveur de pièces jointes.',
+      'La restauration supprimera les pièces jointes de la base de données Specify et du serveur de pièces jointes',
     'ru-ru':
       'Функция отката удалит вложения из базы данных Specify и сервера активов.',
-    'uk-ua': 'Відкат видалить вкладення з бази даних Specify та Asset Server.',
+    'uk-ua': 'Відкат видалить вкладення з бази даних Specify та Asset Server',
     'pt-br':
       'A reversão excluirá os anexos do banco de dados especificado e do servidor de ativos.',
     'hr-hr':
@@ -593,7 +593,7 @@ export const attachmentsText = createDictionary({
     'de-ch':
       'Mehrere Treffer. Klicken Sie hier, um die Begriffsbestimmungen aufzulösen.',
     'es-es': 'Múltiples coincidencias. Haga clic para aclarar.',
-    'fr-fr': "Plusieurs correspondances. Cliquez pour lever l'ambiguïté.",
+    'fr-fr': "Plusieurs correspondances. Cliquez pour lever l'ambiguïté",
     'ru-ru': 'Несколько совпадений. Нажмите, чтобы уточнить.',
     'uk-ua': 'Кілька збігів. Натисніть, щоб усунути неоднозначність.',
     'pt-br': 'Vários resultados. Clique para desambiguar.',
@@ -691,7 +691,7 @@ export const attachmentsText = createDictionary({
     'es-es': 'Archivos faltantes en el archivo de mapeo',
     'fr-fr': 'Fichiers manquants dans le fichier de mappage',
     'hr-hr': 'Datoteke koje nedostaju u datoteci za mapiranje',
-    nb: 'Filer mangler fra kartleggingsfilen',
+    nb: 'Filer mangler fra tilordningsfilen',
     'pt-br': 'Arquivos ausentes no arquivo de mapeamento',
     'ru-ru': 'Файлы отсутствуют в файле сопоставления.',
     'uk-ua': 'Файли відсутні у файлі зіставлення',
@@ -707,7 +707,7 @@ export const attachmentsText = createDictionary({
       "Les fichiers suivants figurent dans le fichier de correspondance, mais n'ont pas été sélectionnés. Sélectionnez-les ou faites-les glisser pour lancer le chargement.",
     'hr-hr':
       'Sljedeće datoteke navedene su u datoteci za mapiranje, ali nisu odabrane. Odaberite ih ili povucite i ispustite da biste započeli prijenos.',
-    nb: 'Følgende filer er oppført i kartleggingsfilen, men er ikke valgt. Velg eller dra og slipp dem for å starte opplastingen.',
+    nb: 'Følgende filer er oppført i tilordningsfilen, men er ikke valgt. Velg eller dra og slipp dem for å starte opplastingen.',
     'pt-br':
       'Os seguintes arquivos estão listados no arquivo de mapeamento, mas não foram selecionados. Selecione-os ou arraste e solte-os para iniciar o upload.',
     'ru-ru':
@@ -743,7 +743,7 @@ export const attachmentsText = createDictionary({
       'Der Vorgang wurde aufgrund eines Fehlers beim Hochladen einer vorherigen Datei abgebrochen.',
     'es-es': 'Se detuvo debido a un error al cargar un archivo anterior.',
     'fr-fr':
-      "Arrêt de l'opération suite à une erreur lors du chargement d'un fichier précédent.",
+      "Arrêt de l'opération suite à une erreur lors du chargement d'un fichier précédent",
     'ru-ru': 'Загрузка предыдущего файла остановлена из-за ошибки.',
     'uk-ua': 'Зупинено через помилку завантаження попереднього файлу',
     'pt-br': 'Interrompido devido a erro ao carregar um arquivo anterior.',
@@ -808,7 +808,7 @@ export const attachmentsText = createDictionary({
     'es-es':
       '{success: number} de los {total: number} archivos adjuntos en el conjunto de datos han sido {action: string}.',
     'fr-fr':
-      "{success: number} sur les {total: number} pièces jointes de l'ensemble de données ont été {action: string}.",
+      "{success:number} sur les {total:number} pièces jointes de l'ensemble de données ont été {action:string}.",
     'ru-ru':
       '{success: number} из {total: number} вложений в наборе данных были {action: string}.',
     'uk-ua':
@@ -831,7 +831,7 @@ export const attachmentsText = createDictionary({
     'ru-ru':
       'Удаление набора данных приводит к его безвозвратному удалению, а также к удалению пути загрузки. Кроме того, после удаления возможность отката для загруженного набора данных больше не будет доступна.',
     'uk-ua':
-      'Видалення набору даних видаляє його та шлях завантаження безповоротно. Також після видалення відкат більше не буде можливим для завантаженого набору даних.',
+      'Видалення набору даних остаточно видаляє його та шлях завантаження. Також після видалення відкат більше не буде можливим для завантаженого набору даних.',
     'pt-br':
       'A exclusão de um conjunto de dados remove permanentemente o conjunto e seu caminho de upload. Além disso, após a exclusão, a opção de reversão (rollback) não estará mais disponível para o conjunto de dados carregado.',
     'hr-hr':
@@ -981,7 +981,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Зіставлення за файлом зіставлення',
     'pt-br': 'Correspondência por arquivo de mapeamento',
     'hr-hr': 'Podudaranje prema datoteci mapiranja',
-    nb: 'Match med kartleggingsfil',
+    nb: 'Match med tilordningsfil',
   },
   fileMissing: {
     'en-us': 'File Missing',
@@ -1021,13 +1021,13 @@ export const attachmentsText = createDictionary({
   notInMappingFile: {
     'en-us': 'Not in Mapping File',
     'de-ch': 'Nicht in der Zuordnungsdatei',
-    'es-es': 'No se encuentra en el archivo de asignación.',
+    'es-es': 'No se encuentra en el archivo de mapeo.',
     'fr-fr': 'Non présent dans le fichier de mappage',
     'ru-ru': 'Отсутствует в файле сопоставления.',
     'uk-ua': 'Немає у файлі зіставлення',
     'pt-br': 'Não está no arquivo de mapeamento',
     'hr-hr': 'Nije u datoteci mapiranja',
-    nb: 'Ikke i kartleggingsfilen',
+    nb: 'Ikke i tilordningsfilen',
   },
   duplicateInMappingFile: {
     'en-us': 'Duplicate in Mapping File',
@@ -1038,7 +1038,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Дублікат у файлі зіставлення',
     'pt-br': 'Arquivo de mapeamento duplicado',
     'hr-hr': 'Duplikat u datoteci mapiranja',
-    nb: 'Duplikat i kartleggingsfil',
+    nb: 'Duplikat i tilordningsfil',
   },
   selectMatchValueColumn: {
     'en-us': 'Match Value Column',
@@ -1046,7 +1046,7 @@ export const attachmentsText = createDictionary({
     'es-es': 'Columna de valor coincidente',
     'fr-fr': 'Colonne de valeur correspondante',
     'ru-ru': 'Столбец «Значение совпадения»',
-    'uk-ua': 'Стовпець зі значенням відповідності',
+    'uk-ua': 'Стовпець зі значеннями відповідності',
     'pt-br': 'Coluna de valor correspondente',
     'hr-hr': 'Stupac vrijednosti podudaranja',
     nb: 'Match verdi kolonne',
@@ -1071,7 +1071,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Завантажено файл зіставлення (рядків {count:number})',
     'pt-br': 'Arquivo de mapeamento carregado ({count:number} linhas)',
     'hr-hr': 'Datoteka mapiranja učitana ({count:number} redaka)',
-    nb: 'Kartleggingsfil lastet inn ({count:number} rader)',
+    nb: 'Tilordningsfil lastet inn ({count:number} rader)',
   },
   mappingFileColumnsInfo: {
     'en-us': 'Match: {matchColumn:string} → File: {fileColumn:string}',

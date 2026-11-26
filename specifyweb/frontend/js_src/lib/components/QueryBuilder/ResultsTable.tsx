@@ -34,6 +34,7 @@ export function QueryResultsTable({
   showCellEllipsis,
   wrapQueryResults,
   selectedRows,
+  isRecordSelected,
   onSelected: handleSelected,
 }: {
   readonly table: SpecifyTable;
@@ -42,6 +43,7 @@ export function QueryResultsTable({
   readonly showCellEllipsis: boolean;
   readonly wrapQueryResults: boolean;
   readonly selectedRows: ReadonlySet<number>;
+  readonly isRecordSelected?: (id: number) => boolean;
   readonly onSelected: (
     index: number,
     isSelected: boolean,
@@ -63,7 +65,10 @@ export function QueryResultsTable({
         <Row
           fieldSpecs={fieldSpecs}
           isLast={index + 1 === length}
-          isSelected={selectedRows.has(results[index][queryIdField] as number)}
+          isSelected={
+            isRecordSelected?.(results[index][queryIdField] as number) ??
+            selectedRows.has(results[index][queryIdField] as number)
+          }
           key={index}
           lineIndex={showLineNumber ? index : undefined}
           recordFormatter={recordFormatter}

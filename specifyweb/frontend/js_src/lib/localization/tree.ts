@@ -352,7 +352,7 @@ export const treeText = createDictionary({
     'ru-ru':
       'Выберите целевой объект для "{nodeName:string}", который будет синонимизирован.',
     'es-es':
-      'Seleccione un destino para que "{nodeName:string}" se convierta en sinónimo.',
+      'Seleccione un destino para que "{nodeName:string}" sea sinonimizado.',
     'fr-fr':
       'Sélectionnez une cible pour que « {nodeName:string} » y soit synonymisé',
     'uk-ua': 'Виберіть ціль для синонімізації "{nodeName:string}"',
@@ -558,7 +558,7 @@ export const treeText = createDictionary({
     `,
     'en-us': 'Synonymized {collectionObjectTable:string} Count',
     'de-ch': 'Synonymisiert {collectionObjectTable:string} Zählung',
-    'es-es': 'Conteo de sinónimos {collectionObjectTable:string}',
+    'es-es': 'Conteo {collectionObjectTable:string} Sinonimizado',
     'fr-fr': 'Compte synonymisé {collectionObjectTable:string}',
     'hr-hr': 'Sinonimizirani {collectionObjectTable:string} broj',
     nb: 'Synonymisert {collectionObjectTable:string}-antall',
@@ -1202,7 +1202,7 @@ export const treeText = createDictionary({
     'es-es':
       'Estos datos de árbol no se pueden importar en su base de datos porque contienen caracteres UTF-8 y esta base de datos utiliza {encoding:string}.',
     'fr-fr':
-      "Ces données d'arbre ne peuvent pas être importées dans votre base de données car elles contiennent des caractères UTF-8 et cette base de données utilise {encoding:string}.",
+      "Ces données d'arbre ne peuvent pas être importées dans votre base de données car elles contiennent des caractères UTF-8 et cette base de données utilise {encoding:string}",
     'hr-hr':
       'Podaci o ovom stablu ne mogu se uvesti u vašu bazu podataka jer sadrže UTF-8 znakove, a ova baza podataka koristi {encoding:string}',
     nb: 'Disse tredataene kan ikke importeres i databasen din fordi de inneholder UTF‑8-tegn, og denne databasen bruker {encoding:string}',

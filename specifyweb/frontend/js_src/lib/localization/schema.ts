@@ -11,183 +11,245 @@ import { createDictionary } from './utils';
 export const schemaText = createDictionary({
   importSchema: {
     'en-us': 'Import {schemaConfig:string}',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'hr-hr': '',
-    nb: '',
-    'pt-br': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'de-ch': 'Importieren {schemaConfig:string}',
+    'es-es': 'Importar {schemaConfig:string}',
+    'fr-fr': 'Importer {schemaConfig:string}',
+    'hr-hr': 'Uvoz {schemaConfig:string}',
+    nb: 'Importer {schemaConfig:string}',
+    'pt-br': 'Importar {schemaConfig:string}',
+    'ru-ru': 'Импорт {schemaConfig:string}',
+    'uk-ua': 'Імпорт {schemaConfig:string}',
   },
   importSchemaWarning: {
     'en-us':
       'Importing a {schemaConfig:string} will overwrite the current one. This action cannot be undone.',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'hr-hr': '',
-    nb: '',
-    'pt-br': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'de-ch':
+      'Beim Importieren einer {schemaConfig:string}-Datei wird die vorhandene Datei überschrieben. Dieser Vorgang kann nicht rückgängig gemacht werden.',
+    'es-es':
+      'Importar un {schemaConfig:string} sobrescribirá el actual. Esta acción no se puede deshacer.',
+    'fr-fr':
+      "L'importation d'un fichier {schemaConfig:string} écrasera le fichier actuel. Cette action est irréversible.",
+    'hr-hr':
+      'Uvoz {schemaConfig:string} će prebrisati trenutni. Ova se radnja ne može poništiti.',
+    nb: 'Importering av en {schemaConfig:string} vil overskrive den gjeldende. Denne handlingen kan ikke angres.',
+    'pt-br':
+      'A importação de um arquivo {schemaConfig:string} sobrescreverá o arquivo atual. Esta ação não pode ser desfeita.',
+    'ru-ru':
+      'Импорт файла {schemaConfig:string} перезапишет текущий файл. Это действие необратимо.',
+    'uk-ua':
+      'Імпорт {schemaConfig:string} перезапише поточний. Цю дію не можна скасувати.',
   },
   importSchemaLanguageWarning: {
     'en-us':
       'The exported schema language must match the language currently being configured.',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'hr-hr': '',
-    nb: '',
-    'pt-br': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'de-ch':
+      'Die exportierte Schemasprache muss mit der aktuell konfigurierten Sprache übereinstimmen.',
+    'es-es':
+      'El idioma del esquema exportado debe coincidir con el idioma que se está configurando actualmente.',
+    'fr-fr':
+      'La langue du schéma exporté doit correspondre à la langue actuellement configurée.',
+    'hr-hr':
+      'Izvezeni jezik sheme mora odgovarati jeziku koji se trenutno konfigurira.',
+    nb: 'Det eksporterte skjemaspråket må samsvare med språket som konfigureres for øyeblikket.',
+    'pt-br':
+      'O idioma do esquema exportado deve corresponder ao idioma que está sendo configurado no momento.',
+    'ru-ru':
+      'Язык экспортируемой схемы должен совпадать с языком, который в данный момент настраивается.',
+    'uk-ua':
+      'Мова експортованої схеми має відповідати мові, яка наразі налаштовується.',
   },
   importSchemaBackupPrompt: {
     'en-us':
       'We strongly recommend downloading a backup of the current {schemaConfig:string} before importing.',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'hr-hr': '',
-    nb: '',
-    'pt-br': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'de-ch':
+      'Wir empfehlen dringend, vor dem Import eine Sicherungskopie der aktuellen {schemaConfig:string} herunterzuladen.',
+    'es-es':
+      'Recomendamos encarecidamente descargar una copia de seguridad del {schemaConfig:string} actual antes de importarlo.',
+    'fr-fr':
+      "Nous vous recommandons fortement de télécharger une sauvegarde de la version actuelle {schemaConfig:string} avant l'importation.",
+    'hr-hr':
+      'Prije uvoza toplo preporučujemo preuzimanje sigurnosne kopije trenutne verzije {schemaConfig:string}.',
+    nb: 'Vi anbefaler på det sterkeste å laste ned en sikkerhetskopi av gjeldende {schemaConfig:string} før import.',
+    'pt-br':
+      'Recomendamos vivamente que faça o download de uma cópia de segurança do {schemaConfig:string} atual antes de importar.',
+    'ru-ru':
+      'Настоятельно рекомендуем перед импортом загрузить резервную копию текущей версии {schemaConfig:string}.',
+    'uk-ua':
+      'Ми наполегливо рекомендуємо завантажити резервну копію поточної версії {schemaConfig:string} перед імпортом.',
   },
   importSchemaLimitations: {
     'en-us':
       'This import will not assign pick lists, field formats, or web links unless they already exist.',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'hr-hr': '',
-    nb: '',
-    'pt-br': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'de-ch':
+      'Bei diesem Import werden keine Auswahllisten, Feldformate oder Weblinks zugewiesen, es sei denn, diese sind bereits vorhanden.',
+    'es-es':
+      'Esta importación no asignará listas desplegables, formatos de campo ni enlaces web a menos que ya existan.',
+    'fr-fr':
+      "Cette importation n'attribuera pas de listes de sélection, de formats de champs ou de liens Web s'ils n'existent pas déjà.",
+    'hr-hr':
+      'Ovaj uvoz neće dodijeliti liste za odabir, formate polja ili web-veze osim ako već ne postoje.',
+    nb: 'Denne importen vil ikke tilordne plukklister, feltformater eller nettlenker med mindre de allerede finnes.',
+    'pt-br':
+      'Esta importação não atribuirá listas de opções, formatos de campo ou links da web, a menos que eles já existam.',
+    'ru-ru':
+      'При этом импорте не будут назначаться списки выбора, форматы полей или веб-ссылки, если они еще не существуют.',
+    'uk-ua':
+      'Цей імпорт не призначить списки вибору, формати полів або веб-посилання, якщо вони ще не існують.',
   },
   downloadSchemaBackup: {
     'en-us': 'Export {schemaConfig:string}',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'hr-hr': '',
-    nb: '',
-    'pt-br': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'de-ch': 'Export {schemaConfig:string}',
+    'es-es': 'Exportar {schemaConfig:string}',
+    'fr-fr': 'Exporter {schemaConfig:string}',
+    'hr-hr': 'Izvoz {schemaConfig:string}',
+    nb: 'Eksporter {schemaConfig:string}',
+    'pt-br': 'Exportar {schemaConfig:string}',
+    'ru-ru': 'Экспорт {schemaConfig:string}',
+    'uk-ua': 'Експорт {schemaConfig:string}',
   },
   importSchemaContinue: {
     'en-us': 'Continue Import',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'hr-hr': '',
-    nb: '',
-    'pt-br': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'de-ch': 'Import fortsetzen',
+    'es-es': 'Continuar importando',
+    'fr-fr': "Continuer l'import",
+    'hr-hr': 'Nastavi uvoz',
+    nb: 'Fortsett importen',
+    'pt-br': 'Continuar a importação',
+    'ru-ru': 'Продолжить импорт',
+    'uk-ua': 'Продовжити імпорт',
   },
   importSchemaError: {
     'en-us':
       'The {schemaConfig:string} export is invalid or was exported for a different language and cannot be imported.',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'hr-hr': '',
-    nb: '',
-    'pt-br': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'de-ch':
+      'Der {schemaConfig:string}-Export ist ungültig oder wurde für eine andere Sprache exportiert und kann nicht importiert werden.',
+    'es-es':
+      'La exportación {schemaConfig:string} no es válida o se exportó para un idioma diferente y no se puede importar.',
+    'fr-fr':
+      "L'exportation {schemaConfig:string} est invalide ou a été exportée pour une autre langue et ne peut pas être importée.",
+    'hr-hr':
+      'Izvoz {schemaConfig:string} nije valjan ili je izvezen za drugi jezik i ne može se uvesti.',
+    nb: '{schemaConfig:string}-eksporten er ugyldig eller ble eksportert for et annet språk og kan ikke importeres.',
+    'pt-br':
+      'A exportação {schemaConfig:string} é inválida ou foi exportada para um idioma diferente e não pode ser importada.',
+    'ru-ru':
+      'Экспорт {schemaConfig:string} недействителен или был экспортирован для другого языка и не может быть импортирован.',
+    'uk-ua':
+      'Експорт {schemaConfig:string} недійсний або був експортований для іншої мови та не може бути імпортований.',
   },
   importSchemaErrorBadRequest: {
     'en-us':
       'The {schemaConfig:string} export is invalid or was exported for a different language and cannot be imported.',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'hr-hr': '',
-    nb: '',
-    'pt-br': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'de-ch':
+      'Der {schemaConfig:string}-Export ist ungültig oder wurde für eine andere Sprache exportiert und kann nicht importiert werden.',
+    'es-es':
+      'La exportación {schemaConfig:string} no es válida o se exportó para un idioma diferente y no se puede importar.',
+    'fr-fr':
+      "L'exportation {schemaConfig:string} est invalide ou a été exportée pour une autre langue et ne peut pas être importée.",
+    'hr-hr':
+      'Izvoz {schemaConfig:string} nije valjan ili je izvezen za drugi jezik i ne može se uvesti.',
+    nb: '{schemaConfig:string}-eksporten er ugyldig eller ble eksportert for et annet språk og kan ikke importeres.',
+    'pt-br':
+      'A exportação {schemaConfig:string} é inválida ou foi exportada para um idioma diferente e não pode ser importada.',
+    'ru-ru':
+      'Экспорт {schemaConfig:string} недействителен или был экспортирован для другого языка и не может быть импортирован.',
+    'uk-ua':
+      'Експорт {schemaConfig:string} недійсний або був експортований для іншої мови та не може бути імпортований.',
   },
   importSchemaErrorTimeout: {
     'en-us':
       'Network request timed out, Specify may or may not still import the {schemaConfig:string} export in the background. Please check back in later to see if your changes have been applied.',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'hr-hr': '',
-    nb: '',
-    'pt-br': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'de-ch':
+      'Die Netzwerkanfrage ist abgelaufen. Die {schemaConfig:string}-Exportdatei wird möglicherweise weiterhin im Hintergrund importiert. Bitte prüfen Sie später erneut, ob Ihre Änderungen übernommen wurden.',
+    'es-es':
+      'La solicitud de red ha caducado. Es posible que Specify siga importando o no la exportación {schemaConfig:string} en segundo plano. Vuelva a comprobarlo más tarde para ver si se han aplicado los cambios.',
+    'fr-fr':
+      "La requête réseau a expiré. L'importation de l'export {schemaConfig:string} en arrière-plan peut échouer. Veuillez réessayer ultérieurement pour vérifier si vos modifications ont été prises en compte.",
+    'hr-hr':
+      'Isteklo je vrijeme za mrežni zahtjev. Navedite hoće li i dalje uvoziti izvoz {schemaConfig:string} u pozadini, a možda i neće. Molimo provjerite kasnije jesu li vaše promjene primijenjene.',
+    nb: 'Nettverksforespørselen er avbrutt, Specify kan eller kan ikke fortsatt importere {schemaConfig:string}-eksporten i bakgrunnen. Sjekk igjen senere for å se om endringene dine er implementert.',
+    'pt-br':
+      'A solicitação de rede expirou. Especificar pode ou não importar a exportação {schemaConfig:string} em segundo plano. Verifique novamente mais tarde para ver se as alterações foram aplicadas.',
+    'ru-ru':
+      'Сетевой запрос истек по времени. Указание может привести к тому, что экспорт {schemaConfig:string} все еще будет выполняться в фоновом режиме, а может и нет. Пожалуйста, проверьте позже, были ли применены ваши изменения.',
+    'uk-ua':
+      'Час очікування мережевого запиту минув. Укажіть, чи може експорт {schemaConfig:string} все ще імпортуватися у фоновому режимі, чи ні. Будь ласка, перевірте пізніше, чи застосовано ваші зміни.',
   },
   importSchemaErrorInternalError: {
     'en-us':
       'Specify experienced an error, please clear your cache and try again.',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'hr-hr': '',
-    nb: '',
-    'pt-br': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'de-ch':
+      'Falls ein Fehler aufgetreten ist, leeren Sie bitte Ihren Cache und versuchen Sie es erneut.',
+    'es-es':
+      'Se ha producido un error. Por favor, borre la caché e inténtelo de nuevo.',
+    'fr-fr':
+      "Une erreur s'est produite. Veuillez vider votre cache et réessayer.",
+    'hr-hr':
+      'Došlo je do pogreške, molimo vas da obrišete predmemoriju i pokušate ponovno.',
+    nb: 'Specify opplevde en feil. Tøm hurtigbufferen og prøv på nytt.',
+    'pt-br': 'Ocorreu um erro. Limpe o cache e tente novamente.',
+    'ru-ru':
+      'Укажите, что произошла ошибка. Пожалуйста, очистите кеш и попробуйте снова.',
+    'uk-ua':
+      'Вкажіть, чи сталася помилка. Будь ласка, очистіть кеш і спробуйте ще раз.',
   },
   importSchemaSuccess: {
     'en-us': '{schemaConfig:string} imported successfully',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'hr-hr': '',
-    nb: '',
-    'pt-br': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'de-ch': '{schemaConfig:string} erfolgreich importiert',
+    'es-es': '{schemaConfig:string} Importado correctamente',
+    'fr-fr': '{schemaConfig:string} importé avec succès',
+    'hr-hr': '{schemaConfig:string} uspješno uvezeno',
+    nb: '{schemaConfig:string} vellykket importert',
+    'pt-br': '{schemaConfig:string} importado com sucesso',
+    'ru-ru': '{schemaConfig:string} успешно импортировано',
+    'uk-ua': '{schemaConfig:string} успішно імпортовано',
   },
   importSchemaSuccessDescription: {
     'en-us': 'The imported {schemaConfig:string} has been saved.',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'hr-hr': '',
-    nb: '',
-    'pt-br': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'de-ch': 'Die importierte {schemaConfig:string}-Datei wurde gespeichert.',
+    'es-es': 'El archivo {schemaConfig:string} importado se ha guardado.',
+    'fr-fr': 'Le fichier {schemaConfig:string} importé a été enregistré.',
+    'hr-hr': 'Uvezeni {schemaConfig:string} je spremljen.',
+    nb: 'Den importerte {schemaConfig:string} er lagret.',
+    'pt-br': 'O {schemaConfig:string} importado foi salvo.',
+    'ru-ru': 'Импортированный файл {schemaConfig:string} сохранен.',
+    'uk-ua': 'Імпортований {schemaConfig:string} збережено.',
   },
   importSchemaRefreshError: {
     'en-us':
       'The import succeeded, but the page could not refresh automatically. Reload the page to see the imported changes.',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'hr-hr': '',
-    nb: '',
-    'pt-br': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'de-ch':
+      'Der Import war erfolgreich, die Seite konnte jedoch nicht automatisch aktualisiert werden. Laden Sie die Seite neu, um die importierten Änderungen zu sehen.',
+    'es-es':
+      'La importación se realizó correctamente, pero la página no se actualizó automáticamente. Recargue la página para ver los cambios importados.',
+    'fr-fr':
+      "L'importation a réussi, mais la page n'a pas pu se rafraîchir automatiquement. Rechargez la page pour voir les modifications importées.",
+    'hr-hr':
+      'Uvoz je uspio, ali stranica se nije mogla automatski osvježiti. Ponovno učitajte stranicu da biste vidjeli uvezene promjene.',
+    nb: 'Importen var vellykket, men siden kunne ikke oppdateres automatisk. Last inn siden på nytt for å se de importerte endringene.',
+    'pt-br':
+      'A importação foi concluída com sucesso, mas a página não pôde ser atualizada automaticamente. Recarregue a página para visualizar as alterações importadas.',
+    'ru-ru':
+      'Импорт прошел успешно, но страница не обновилась автоматически. Перезагрузите страницу, чтобы увидеть внесенные изменения.',
+    'uk-ua':
+      'Імпорт успішно виконано, але сторінку не вдалося автоматично оновити. Перезавантажте сторінку, щоб побачити імпортовані зміни.',
   },
   reloadSchemaConfig: {
     'en-us': 'Reload Page',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'hr-hr': '',
-    nb: '',
-    'pt-br': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'de-ch': 'Seite neu laden',
+    'es-es': 'Recargar página',
+    'fr-fr': 'Recharger la page',
+    'hr-hr': 'Ponovno učitavanje stranice',
+    nb: 'Last inn siden på nytt',
+    'pt-br': 'Recarregar página',
+    'ru-ru': 'Перезагрузить страницу',
+    'uk-ua': 'Перезавантажити сторінку',
   },
   table: {
     'en-us': 'Table',
     'ru-ru': 'Стол',
     'es-es': 'Mesa',
-    'fr-fr': 'Tableau',
+    'fr-fr': 'Table',
     'uk-ua': 'Таблиця',
     'de-ch': 'Tabelle',
     'pt-br': 'Mesa',
@@ -242,7 +304,7 @@ export const schemaText = createDictionary({
     'en-us': 'Schema changes have not been saved',
     'ru-ru': 'Изменения в схеме не были сохранены.',
     'es-es': 'Los cambios de esquema no se han guardado.',
-    'fr-fr': "Les modifications de schéma n'ont pas été enregistrées.",
+    'fr-fr': "Les modifications de schéma n'ont pas été enregistrées",
     'uk-ua': 'Зміни схеми не збережено',
     'de-ch': 'Schema Änderungen wurden nicht gespeichert',
     'pt-br': 'As alterações de esquema não foram salvas.',
@@ -335,7 +397,7 @@ export const schemaText = createDictionary({
     'uk-ua': 'Встановити область дії',
     'pt-br': 'Definir Escopo',
     'hr-hr': 'Postavi opseg',
-    nb: 'Angi omfang',
+    nb: 'Angi område (scope)',
   },
   caption: {
     'en-us': 'Caption',
@@ -830,13 +892,13 @@ export const schemaText = createDictionary({
     'de-ch': 'Anwendungsbereich',
     'pt-br': 'Escopo',
     'hr-hr': 'Opseg',
-    nb: 'Omfang (scope)',
+    nb: 'Område (scope)',
   },
   uniquenessDuplicatesFound: {
     'en-us': 'Duplicates found in database',
     'de-ch': 'In der Datenbank gefundene Duplikate',
     'es-es': 'Se encontraron duplicados en la base de datos.',
-    'fr-fr': 'Des doublons ont été trouvés dans la base de données.',
+    'fr-fr': 'Des doublons ont été trouvés dans la base de données',
     'ru-ru': 'В базе данных обнаружены дубликаты.',
     'uk-ua': 'У базі даних знайдено дублікати',
     'pt-br': 'Foram encontrados duplicados no banco de dados.',
@@ -884,7 +946,7 @@ export const schemaText = createDictionary({
     'uk-ua': 'Specify 7 моделей даних',
     'de-ch': 'Specify 7 Datenmodell',
     'pt-br': 'Especifique 7 modelos de dados',
-    'hr-hr': 'Navedite 7 podatkovnih modela',
+    'hr-hr': 'Navedite 7 modela podataka',
     nb: 'Specify 7 datamodell',
   },
   hidden: {
@@ -911,13 +973,13 @@ export const schemaText = createDictionary({
   },
   useTableCaptions: {
     'en-us': 'Use table captions',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'hr-hr': '',
-    nb: '',
-    'pt-br': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'de-ch': 'Tabellenüberschriften verwenden',
+    'es-es': 'Utilice títulos de tabla',
+    'fr-fr': 'Utilisez des légendes des tables',
+    'hr-hr': 'Koristite natpise tablica',
+    nb: 'Bruk tabelltekster',
+    'pt-br': 'Use legendas de tabela',
+    'ru-ru': 'Используйте подписи к таблицам.',
+    'uk-ua': 'Використання підписів до таблиць',
   },
 } as const);

@@ -85,36 +85,36 @@ export const userText = createDictionary({
   },
   presenceActive: {
     'en-us': 'Active',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'hr-hr': '',
-    nb: '',
-    'pt-br': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'de-ch': 'Aktiv',
+    'es-es': 'Activo',
+    'fr-fr': 'Actif',
+    'hr-hr': 'Aktivan',
+    nb: 'Aktiv',
+    'pt-br': 'Ativo',
+    'ru-ru': 'Активный',
+    'uk-ua': 'Активний',
   },
   presenceInactive: {
     'en-us': 'Inactive',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'hr-hr': '',
-    nb: '',
-    'pt-br': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'de-ch': 'Inaktiv',
+    'es-es': 'Inactivo',
+    'fr-fr': 'Inactif',
+    'hr-hr': 'Neaktivno',
+    nb: 'Inaktiv',
+    'pt-br': 'Inativo',
+    'ru-ru': 'Неактивный',
+    'uk-ua': 'Неактивний',
   },
   presenceOffline: {
     'en-us': 'Offline',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'hr-hr': '',
-    nb: '',
-    'pt-br': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'de-ch': 'Offline',
+    'es-es': 'Desconectado',
+    'fr-fr': 'Hors ligne',
+    'hr-hr': 'Izvan mreže',
+    nb: 'Frakoblet',
+    'pt-br': 'Offline',
+    'ru-ru': 'Офлайн',
+    'uk-ua': 'Офлайн',
   },
   oldPassword: {
     'en-us': 'Old password',
@@ -175,7 +175,7 @@ export const userText = createDictionary({
     'en-us': 'Current user does not have an agent assigned',
     'ru-ru': 'У текущего пользователя нет назначенного агента.',
     'es-es': 'El usuario actual no tiene un agente asignado',
-    'fr-fr': "L'utilisateur actuel n'a pas d'agent attribué.",
+    'fr-fr': "L'utilisateur actuel n'a pas d'agent attribué",
     'uk-ua': 'Поточному користувачеві не призначено агента',
     'de-ch': 'Dem aktuellen Benutzer ist kein Agent zugewiesen.',
     'pt-br': 'O usuário atual não possui um agente atribuído.',
@@ -189,7 +189,7 @@ export const userText = createDictionary({
     'es-es':
       'Iniciar sesión como administrador y asignar un agente a este usuario',
     'fr-fr':
-      "Veuillez vous connecter en tant qu'administrateur et attribuer un agent à cet utilisateur.",
+      "Veuillez vous connecter en tant qu'administrateur et attribuer un agent à cet utilisateur",
     'uk-ua':
       'Будь ласка, увійдіть як адміністратор і призначте агента цьому користувачеві',
     'de-ch':
@@ -334,7 +334,7 @@ export const userText = createDictionary({
     'es-es':
       'No tiene acceso a ningún {collectionTable:string} que contenga este recurso a través de la cuenta actualmente iniciada',
     'fr-fr':
-      "Vous n'avez accès à aucun {collectionTable:string} contenant cette ressource via le compte actuellement connecté.",
+      "Vous n'avez accès à aucun {collectionTable:string} contenant cette ressource via le compte actuellement connecté",
     'uk-ua':
       'Ви не маєте доступу до жодного {collectionTable:string}, що містить цей ресурс, через обліковий запис, у який ви зараз увійшли',
     'de-ch':
@@ -539,8 +539,7 @@ export const userText = createDictionary({
     'en-us': 'You cannot revoke your own admin status',
     'ru-ru': 'Вы не можете отозвать свой собственный административный статус.',
     'es-es': 'No puede revocar su propio estatus de administrador',
-    'fr-fr':
-      "Vous ne pouvez pas révoquer votre propre statut d'administrateur.",
+    'fr-fr': "Vous ne pouvez pas révoquer votre propre statut d'administrateur",
     'uk-ua': 'Ви не можете скасувати свій власний статус адміністратора',
     'de-ch': 'Sie können Ihren eigenen Administratorstatus nicht widerrufen.',
     'pt-br': 'Você não pode revogar seu próprio status de administrador.',
@@ -575,7 +574,7 @@ export const userText = createDictionary({
     'es-es': 'El usuario debe guardarse primero como administrador',
     'de-ch': 'Der Benutzer muss zuerst als Manager gespeichert werden.',
     'fr-fr':
-      "L'utilisateur doit d'abord être enregistré en tant que gestionnaire.",
+      "L'utilisateur doit d'abord être enregistré en tant que gestionnaire",
     'uk-ua': 'Спочатку користувача потрібно зберегти як менеджера',
     'pt-br': 'O usuário deve ser salvo como Gerente primeiro.',
     'hr-hr': 'Korisnik prvo mora biti spremljen kao Upravitelj',
@@ -811,7 +810,7 @@ export const userText = createDictionary({
     'es-es':
       'Nota: la vista previa puede estar desactualizada. Guarde los cambios para actualizar la vista previa',
     'fr-fr':
-      'Remarque : l’aperçu peut être obsolète. Enregistrez les modifications pour mettre à jour l’aperçu.',
+      'Remarque : l’aperçu peut être obsolète. Enregistrez les modifications pour mettre à jour l’aperçu',
     'uk-ua':
       'Примітка: попередній перегляд може бути застарілим. Збережіть зміни, щоб оновити попередній перегляд',
     'de-ch':
@@ -1175,7 +1174,7 @@ export const userText = createDictionary({
     'en-us': 'All tables',
     'ru-ru': 'Все таблицы',
     'es-es': 'Todas las tablas',
-    'fr-fr': 'Tous les tableaux',
+    'fr-fr': 'Toutes les tables',
     'uk-ua': 'Усі столи',
     'de-ch': 'Alle Tabellen',
     'pt-br': 'Todas as tabelas',
@@ -1314,7 +1313,7 @@ export const userText = createDictionary({
     'en-us': 'Advanced tables',
     'ru-ru': 'Расширенные таблицы',
     'es-es': 'Tablas avanzadas',
-    'fr-fr': 'Tableaux avancés',
+    'fr-fr': 'Tables avancées',
     'uk-ua': 'Розширені таблиці',
     'de-ch': 'Erweiterte Tabellen',
     'pt-br': 'Tabelas avançadas',
