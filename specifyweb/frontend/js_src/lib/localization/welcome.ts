@@ -114,13 +114,13 @@ export const welcomeText = createDictionary({
     'en-us':
       'Specify 7, Copyright 2026, University of Kansas Center for Research. Specify comes with ABSOLUTELY NO WARRANTY. This is free, open-source software licensed under GNU General Public License v3.',
     'de-ch':
-      'Specify 7, Copyright 2026, University of Kansas Center for Research. Specify wird ohne jegliche Gewährleistung bereitgestellt. Es handelt sich um freie Open-Source-Software, lizenziert unter der GNU General Public License v3.',
+      'Specify 7, Copyright 2026, University of Kansas Center for Research. Specify wird OHNE JEGLICHE GEWÄHRLEISTUNG bereitgestellt. Dies ist freie Open-Source-Software, lizenziert unter der GNU General Public License v3.',
     'es-es':
       'Specify 7, Copyright 2026, Centro de Investigación de la Universidad de Kansas. Specify se distribuye SIN GARANTÍA ALGUNA. Este es un software libre de código abierto, licenciado bajo la Licencia Pública General GNU v3.',
     'fr-fr':
       "Specify 7, © 2026, Centre de recherche de l'Université du Kansas. Specify est fourni SANS AUCUNE GARANTIE. Il s'agit d'un logiciel libre et open source distribué sous licence GNU GPL v3.",
     'hr-hr':
-      'Specify 7, Autorsko pravo 2026., Istraživački centar Sveučilišta u Kansasu. Specify dolazi APSOLUTNO BEZ JAMSTVA. Ovo je besplatni softver otvorenog koda licenciran pod GNU General Public License v3.',
+      'Specify 7, autorsko pravo 2026., Istraživački centar Sveučilišta u Kansasu. Specify dolazi APSOLUTNO BEZ JAMSTVA. Ovo je besplatni softver otvorenog koda licenciran pod GNU General Public License v3.',
     nb: 'Specify 7, Copyright 2025, University of Kansas Center for Research. Specify leveres UTEN NOEN FORM FOR GARANTI. Dette er fri, åpen kildekode-programvare, lisensiert under GNU General Public License v2.',
     'pt-br':
       'Specify 7, Copyright 2026, Centro de Pesquisa da Universidade do Kansas. Specify é fornecido SEM QUALQUER GARANTIA. Este é um software livre e de código aberto licenciado sob a Licença Pública Geral GNU v3.',
