@@ -6441,9 +6441,23 @@ class Migration(migrations.Migration):
             name='localitycitation',
             unique_together={('referencework', 'locality')},
         ),
-        migrations.AddIndex(
-            model_name='locality',
-            index=models.Index(fields=['localityname'], name='localityNameIDX'),
+        # LocalityName is varchar(1024) (4096 bytes in utf8mb4), which exceeds InnoDB's
+        # 3072-byte key limit. MariaDB silently shortens the key, but MySQL 8 raises
+        # error 1071 in strict mode, so create the 768-character prefix index that
+        # Specify 6 used.
+        migrations.SeparateDatabaseAndState(
+            database_operations=[
+                migrations.RunSQL(
+                    sql='CREATE INDEX `localityNameIDX` ON `locality` (`LocalityName`(768))',
+                    reverse_sql='DROP INDEX `localityNameIDX` ON `locality`',
+                ),
+            ],
+            state_operations=[
+                migrations.AddIndex(
+                    model_name='locality',
+                    index=models.Index(fields=['localityname'], name='localityNameIDX'),
+                ),
+            ],
         ),
         migrations.AddIndex(
             model_name='locality',
@@ -6721,9 +6735,20 @@ class Migration(migrations.Migration):
             model_name='deaccession',
             index=models.Index(fields=['deaccessiondate'], name='DeaccessionDateIDX'),
         ),
-        migrations.AddIndex(
-            model_name='container',
-            index=models.Index(fields=['name'], name='ContainerNameIDX'),
+        # Container.Name is varchar(1024); see localityNameIDX above.
+        migrations.SeparateDatabaseAndState(
+            database_operations=[
+                migrations.RunSQL(
+                    sql='CREATE INDEX `ContainerNameIDX` ON `container` (`Name`(768))',
+                    reverse_sql='DROP INDEX `ContainerNameIDX` ON `container`',
+                ),
+            ],
+            state_operations=[
+                migrations.AddIndex(
+                    model_name='container',
+                    index=models.Index(fields=['name'], name='ContainerNameIDX'),
+                ),
+            ],
         ),
         migrations.AddIndex(
             model_name='container',
