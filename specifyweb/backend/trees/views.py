@@ -19,7 +19,7 @@ from jsonschema import validate  # type: ignore
 from jsonschema.exceptions import ValidationError  # type: ignore
 
 from specifyweb.middleware.general import require_GET
-from specifyweb.backend.businessrules.exceptions import BusinessRuleException
+from specifyweb.backend.businessrules.exceptions import BusinessRuleException, TreeBusinessRuleException
 from specifyweb.backend.permissions.permissions import check_permission_targets, has_table_permission
 
 from specifyweb.backend.stored_queries import models as sqlmodels
@@ -56,13 +56,16 @@ ALL_TREES: tuple[TREE_TABLE, ...] = (
 def tree_mutation(mutation):
     @login_maybe_required
     @require_POST
-    @transaction.atomic
     @wraps(mutation)
     def wrapper(*args, **kwargs):
         try:
-            mutation(*args, **kwargs)
-            result = {"success": True}
-        except BusinessRuleException as e:
+            with transaction.atomic():
+                try:
+                    mutation(*args, **kwargs)
+                    result = {"success": True}
+                except BusinessRuleException as e:
+                    result = {"success": False, "error": str(e)}
+        except TreeBusinessRuleException as e:
             result = {"success": False, "error": str(e)}
         return HttpResponse(toJson(result), content_type="application/json")
 

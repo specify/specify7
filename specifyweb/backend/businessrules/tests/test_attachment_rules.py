@@ -1,5 +1,6 @@
 from unittest.mock import patch
 
+from specifyweb.backend.businessrules.rules.attachment_rules import get_attachment_owners
 from specifyweb.backend.workbench.models import Spdataset, Spdatasetattachment
 from specifyweb.specify import models
 from specifyweb.specify.tests.test_api import ApiTests
@@ -26,6 +27,23 @@ class TestAttachmentRules(ApiTests):
         )
         self.assertEqual(attachment.scopetype, ScopeType.COLLECTION.value)
         self.assertEqual(attachment.scopeid, self.collection.id)
+
+    def test_get_attachment_owners_scans_all_links_and_loads_by_model(self):
+        attachment = models.Attachment.objects.create()
+        collection_objects = self.collectionobjects[:2]
+        for ordinal, collection_object in enumerate(collection_objects):
+            models.Collectionobjectattachment.objects.create(
+                collectionmemberid=self.collection.pk,
+                ordinal=ordinal,
+                attachment=attachment,
+                collectionobject=collection_object,
+            )
+        models.Agentattachment.objects.create(attachment=attachment, agent=self.agent, ordinal=0)
+        attachment.refresh_from_db()
+
+        with self.assertNumQueries(3):
+            owners = get_attachment_owners(attachment)
+        self.assertCountEqual(owners, [*collection_objects, self.agent])
 
     def test_delete_join_keeps_attachment_while_dataset_references_it(self):
         attachment = models.Attachment.objects.create(
@@ -54,10 +72,14 @@ class TestAttachmentRules(ApiTests):
             spdataset=dataset,
         )
 
+        with self.assertNumQueries(2):
+            self.assertEqual(get_attachment_owners(attachment), [self.collectionobjects[0]])
         collectionobject_attachment.delete()
 
         attachment.refresh_from_db()
         self.assertEqual(attachment.tableid, Spdataset.specify_model.tableId)
+        with self.assertNumQueries(2):
+            self.assertEqual(get_attachment_owners(attachment), [dataset])
 
     @patch(
         "specifyweb.backend.attachment_gw.views.delete_attachment_file"

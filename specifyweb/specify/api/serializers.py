@@ -1,5 +1,6 @@
 import json
 from typing import Any
+from specifyweb.backend.permissions.permissions import NoMatchingRuleException
 from specifyweb.specify import models
 from specifyweb.specify.api.calculated_fields import calculate_extra_fields
 from specifyweb.specify.api.crud import ReadPermChecker
@@ -78,22 +79,27 @@ def obj_to_data(obj) -> dict[str, Any]:
     return _obj_to_data(obj, lambda o: None)
 
 
+def _embedded_obj_to_data(obj, checker: ReadPermChecker) -> dict[str, Any] | None:
+    """Mask a denied embedded record without changing direct record reads."""
+    try:
+        return _obj_to_data(obj, checker)
+    except NoMatchingRuleException:
+        return None
+
 
 def to_many_to_data(obj, rel, checker: ReadPermChecker) -> str | list[dict[str, Any]]:
-    """Return the URI or nested data of the 'rel' collection
-    depending on if the field is included in the 'inlined_fields' global.
-    """
+    """Return an independent relation's URI or its readable dependent rows."""
     parent_model = rel.model.specify_model
     field_name = rel.get_accessor_name()
     field = parent_model.get_field(field_name)
     if field is not None and field.dependent:
         objs = getattr(obj, field_name)
         related_objects = objs.all()
-        if field_name in getattr(obj, "_prefetched_objects_cache", {}):
-            return [_obj_to_data(o, checker) for o in related_objects]
+        if field_name not in getattr(obj, "_prefetched_objects_cache", {}):
+            related_objects = related_objects.iterator(chunk_size=2000)
         return [
-            _obj_to_data(o, checker)
-            for o in related_objects.iterator(chunk_size=2000)
+            data for o in related_objects
+            if (data := _embedded_obj_to_data(o, checker)) is not None
         ]
 
     collection_uri = uri_for_model(rel.related_model)
@@ -108,7 +114,7 @@ def field_to_val(obj, field, checker: ReadPermChecker) -> Any:
         if is_dependent_field(obj, field.name):
             related_obj = getattr(obj, field.name, None)
             if related_obj is None: return None
-            return _obj_to_data(related_obj, checker)
+            return _embedded_obj_to_data(related_obj, checker)
         
         # The FK can exist on the other side in the case of one_to_one 
         # relationships

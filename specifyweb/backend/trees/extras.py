@@ -20,11 +20,14 @@ from  specifyweb.backend.workbench.upload.auditcodes import TREE_BULK_MOVE, TREE
 
 @contextmanager
 def validate_node_numbers(table: str, revalidate_after=True):
+    """Repair invalid numbering and report whether intervals were renumbered."""
+    renumbered = False
     try:
         validate_tree_numbering(table)
     except AssertionError:
         renumber_tree(table)
-    yield
+        renumbered = True
+    yield renumbered
     if revalidate_after:
         validate_tree_numbering(table)
 
@@ -33,6 +36,11 @@ class Tree(ModelWithTable):
 
     class Meta:
         abstract = True
+
+    def set_rank_and_definition(self):
+        """Resolve rank-derived fields before authorization or persistence."""
+        self.rankid = self.definitionitem.rankid
+        self.definition = self.definitionitem.treedef
 
     def save(self, *args, skip_tree_extras=False, **kwargs):
         collection = kwargs.pop("collection", None)
@@ -45,11 +53,55 @@ class Tree(ModelWithTable):
             return save()
 
         model = type(self)
-        self.rankid = self.definitionitem.rankid
-        self.definition = self.definitionitem.treedef
-
+        self.set_rank_and_definition()
         prev_self = None if self.id is None \
                     else model.objects.select_for_update().get(id=self.id)
+        # Additions and moves validate the destination under lock. Leave legacy
+        # cross-definition links alone when neither side of the link changes.
+        if (
+            prev_self is not None
+            and prev_self.definition_id != self.definition_id
+            and self.parent_id is not None
+            and prev_self.parent_id == self.parent_id
+            and model.objects.select_for_update().values_list('definition_id', flat=True)
+            .get(id=self.parent_id) != self.definition_id
+        ):
+            raise TreeBusinessRuleException(
+                "Tree node's parent belongs to a different tree definition",
+                {"tree": self.__class__.__name__,
+                 "localizationKey": "operationAcrossTrees",
+                 "operation": "save",
+                 "node": {"id": self.id, "fullName": self.fullname}})
+
+        if prev_self is not None and prev_self.definition_id != self.definition_id \
+                and model.objects.filter(parent=self).exists():
+            raise TreeBusinessRuleException(
+                "Tree node with children cannot change tree definition",
+                {"tree": self.__class__.__name__,
+                 "localizationKey": "operationAcrossTrees",
+                 "operation": "save",
+                 "node": {"id": self.id, "fullName": self.fullname}})
+
+        if prev_self is not None and prev_self.definition_id != self.definition_id \
+                and self.acceptedchildren.exists():
+            raise TreeBusinessRuleException(
+                "Tree node with synonyms cannot change tree definition",
+                {"tree": self.__class__.__name__,
+                 "localizationKey": "operationAcrossTrees",
+                 "operation": "save",
+                 "node": {"id": self.id, "fullName": self.fullname}})
+
+        if prev_self is not None and prev_self.definition_id != self.definition_id \
+                and self.accepted_id is not None:
+            raise TreeBusinessRuleException(
+                "Tree node with an accepted node cannot change tree definition",
+                {"tree": self.__class__.__name__,
+                 "localizationKey": "operationAcrossTrees",
+                 "operation": "save",
+                 "node": {"id": self.id, "fullName": self.fullname}})
+
+        if prev_self is not None and prev_self.accepted_id != self.accepted_id:
+            self._validate_accepted_target()
 
         if prev_self is None:
             self.nodenumber = None
@@ -64,12 +116,12 @@ class Tree(ModelWithTable):
                 # Not sure if anything else needs to be
                 # done here, but the validation stuff won't
                 # work so skipping it.
+                self._validate_accepted_target()
                 save()
                 return
 
-            with validate_node_numbers(self._meta.db_table, revalidate_after=False):
-                adding_node(self, collection, user)
-                save()
+            adding_node(self, collection, user)
+            save()
         elif prev_self.parent_id != self.parent_id:
             with validate_node_numbers(self._meta.db_table):
                 moving_node(self)
@@ -121,6 +173,21 @@ class Tree(ModelWithTable):
             or prev_self.parent_id != self.parent_id
         ):
             set_fullnames(self.definition, node_number_range=[self.nodenumber, self.highestchildnodenumber])
+
+    def _validate_accepted_target(self):
+        if self.accepted_id is None:
+            return
+        accepted_definition_id = (
+            type(self).objects.select_for_update().values_list('definition_id', flat=True)
+            .get(pk=self.accepted_id)
+        )
+        if accepted_definition_id != self.definition_id:
+            raise TreeBusinessRuleException(
+                "Tree node's accepted node belongs to a different tree definition",
+                {"tree": self.__class__.__name__,
+                 "localizationKey": "operationAcrossTrees",
+                 "operation": "save",
+                 "node": {"id": self.id, "fullName": self.fullname}})
 
     def accepted_id_attr(self):
         return f'accepted{self._meta.db_table}_id'
@@ -251,7 +318,18 @@ def _allow_adding_child_to_synonymized_parent(node, collection=None, user=None):
 def adding_node(node,collection=None, user=None):
     logger.info('adding node %s', node)
     model = type(node)
-    parent = model.objects.select_for_update().get(id=node.parent.id)
+    parent = model.objects.select_for_update().get(id=node.parent_id)
+
+    if parent.definition_id != node.definition_id:
+        raise TreeBusinessRuleException(
+            "Tree node's parent belongs to a different tree definition",
+            {"tree": node.__class__.__name__,
+             "localizationKey": "operationAcrossTrees",
+             "operation": "save",
+             "node": {"id": node.id, "fullName": node.fullname}})
+
+    # Ordinary inserts lock the parent before shifting child intervals.
+    node._validate_accepted_target()
 
     if parent.accepted_id is not None:
         allow_adding_child = _allow_adding_child_to_synonymized_parent(node, collection, user)
@@ -276,7 +354,10 @@ def adding_node(node,collection=None, user=None):
                     "children": list(parent.children.values('id', 'fullname'))
                  }})
 
-    insertion_point = open_interval(model, parent.nodenumber, 1)
+    with validate_node_numbers(node._meta.db_table, revalidate_after=False) as renumbered:
+        if renumbered:
+            parent.refresh_from_db(fields=['nodenumber'])
+        insertion_point = open_interval(model, parent.nodenumber, 1)
     node.highestchildnodenumber = node.nodenumber = insertion_point
 
 def moving_node(to_save):
@@ -284,7 +365,14 @@ def moving_node(to_save):
     model = type(to_save)
     current = model.objects.get(id=to_save.id)
     size = current.highestchildnodenumber - current.nodenumber + 1
-    new_parent = model.objects.select_for_update().get(id=to_save.parent.id)
+    new_parent = model.objects.select_for_update().get(id=to_save.parent_id)
+    if new_parent.definition_id != to_save.definition_id:
+        raise TreeBusinessRuleException(
+            "Tree node's parent belongs to a different tree definition",
+            {"tree": to_save.__class__.__name__,
+             "localizationKey": "operationAcrossTrees",
+             "operation": "Moving",
+             "node": {"id": to_save.id, "fullName": to_save.fullname}})
     if new_parent.accepted_id is not None:
         raise TreeBusinessRuleException(
             f'Moving node "{to_save.fullname}" to synonymized parent "{new_parent.fullname}"',

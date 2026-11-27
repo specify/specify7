@@ -1,13 +1,15 @@
 from specifyweb.backend.businessrules.exceptions import TreeBusinessRuleException
-from specifyweb.backend.trees.extras import renumber_tree, validate_tree_numbering
-from specifyweb.specify.models import Taxon, Taxontreedefitem
+from specifyweb.backend.trees.extras import moving_node, renumber_tree, validate_tree_numbering
+from specifyweb.specify.models import Taxon, Taxontreedef, Taxontreedefitem
 from specifyweb.backend.trees.tests.test_trees import GeographyTree
 
 import random
 from unittest import skip
 from unittest.mock import Mock, patch
 
+from django.db import connection
 from django.db.models import F, Q
+from django.test import skipUnlessDBFeature
 
 class TestTreeSave(GeographyTree):
 
@@ -79,6 +81,147 @@ class TestTreeSave(GeographyTree):
         test_phylum.save()
         test_phylum.refresh_from_db()
         self.assertEqual(test_phylum.fullname, "PlantaeTestPhylum")
+
+    def test_adding_and_moving_validate_the_persisted_parent_definition(self):
+        root = self._create_life()
+        other_definition = Taxontreedef.objects.create(name="Other taxonomy")
+        animalia = self.make_taxontree("Animalia", "Kingdom", parent=root)
+        plantae = self.make_taxontree("Plantae", "Kingdom", parent=root)
+
+        animalia.definition = other_definition
+        phylum = self.make_taxontree("TestPhylum", "Phylum", parent=animalia)
+        self.assertEqual(phylum.parent_id, animalia.id)
+
+        plantae.definition = other_definition
+        phylum.parent = plantae
+        phylum.save()
+        phylum.refresh_from_db()
+        self.assertEqual(phylum.parent_id, plantae.id)
+
+    def test_move_endpoint_rolls_back_rejected_cross_definition_move(self):
+        root = self._create_life()
+        animalia = self.make_taxontree("Animalia", "Kingdom", parent=root)
+        plantae = self.make_taxontree("Plantae", "Kingdom", parent=root)
+        phylum = self.make_taxontree("TestPhylum", "Phylum", parent=animalia)
+        other_definition = Taxontreedef.objects.create(name="Other taxonomy")
+        other_rank = other_definition.treedefitems.create(name="Other root", rankid=0)
+        foreign_root = Taxon.objects.create(name="Other life", definitionitem=other_rank)
+        original_text = phylum.text1
+
+        def move_with_partial_write(node):
+            Taxon.objects.filter(pk=node.pk).update(text1="Partial move")
+            return moving_node(node)
+
+        self.client.force_login(self.specifyuser)
+        self.client.cookies["collection"] = self.collection.id
+        url = f"/trees/specify_tree/taxon/{phylum.pk}/move/"
+        with patch(
+            "specifyweb.backend.trees.extras.moving_node", side_effect=move_with_partial_write,
+        ):
+            response = self.client.post(url, {"target": foreign_root.pk})
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertIs(response.json()["success"], False)
+        self.assertIn("different tree definition", response.json()["error"])
+        phylum.refresh_from_db()
+        self.assertEqual(phylum.parent_id, animalia.pk)
+        self.assertEqual(phylum.text1, original_text)
+
+        response = self.client.post(url, {"target": plantae.pk})
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual(response.json(), {"success": True})
+        phylum.refresh_from_db()
+        self.assertEqual(phylum.parent_id, plantae.pk)
+
+    def test_unchanged_cross_definition_link_allows_unrelated_edits(self):
+        root = self._create_life()
+        kingdom = self.make_taxontree("Animalia", "Kingdom", parent=root)
+        other_definition = Taxontreedef.objects.create(name="Other taxonomy")
+        Taxon.objects.filter(pk=root.pk).update(definition=other_definition)
+        kingdom.refresh_from_db()
+
+        kingdom.text1 = "Updated description"
+        kingdom.save()
+        kingdom.refresh_from_db()
+        self.assertEqual(kingdom.text1, "Updated description")
+        self.assertEqual(kingdom.parent_id, root.id)
+        self.assertEqual(kingdom.definition_id, self.taxontreedef.id)
+
+    def test_changing_definition_checks_the_unchanged_parent_in_database(self):
+        root = self._create_life()
+        kingdom = self.make_taxontree("Animalia", "Kingdom", parent=root)
+        other_definition = Taxontreedef.objects.create(name="Other taxonomy")
+        other_definition.treedefitems.create(name="Other root", rankid=0)
+        kingdom.definitionitem = other_definition.treedefitems.create(
+            name="Other kingdom", rankid=10,
+        )
+        root.definition = other_definition
+
+        with self.assertRaises(TreeBusinessRuleException) as context:
+            kingdom.save()
+
+        self.assertEqual(context.exception.args[1]['localizationKey'], "operationAcrossTrees")
+        kingdom.refresh_from_db()
+        self.assertEqual(kingdom.definition_id, self.taxontreedef.id)
+
+    def test_saving_new_or_changed_accepted_link_checks_target_definition(self):
+        root = self._create_life()
+        first_target = self.make_taxontree("Animalia", "Kingdom", parent=root)
+        second_target = self.make_taxontree("Plantae", "Kingdom", parent=root)
+        other_definition = Taxontreedef.objects.create(name="Other taxonomy")
+        other_rank = other_definition.treedefitems.create(name="Other root", rankid=0)
+        foreign_target = Taxon.objects.create(name="Other life", definitionitem=other_rank)
+        foreign_target.definition = self.taxontreedef
+
+        with self.assertRaises(TreeBusinessRuleException) as context:
+            Taxon.objects.create(
+                name="Synonym root", definitionitem=self.taxon_root, acceptedtaxon=foreign_target,
+            )
+        self.assertEqual(context.exception.args[1]['localizationKey'], "operationAcrossTrees")
+
+        synonym = Taxon(name="Synonym", definitionitem=self.taxon_kingdom, parent=root)
+        synonym.acceptedtaxon = foreign_target
+        with self.assertRaises(TreeBusinessRuleException) as context:
+            synonym.save()
+        self.assertEqual(context.exception.args[1]['localizationKey'], "operationAcrossTrees")
+        self.assertIsNone(synonym.pk)
+
+        synonym.acceptedtaxon = first_target
+        synonym.save()
+        synonym.refresh_from_db()
+        self.assertEqual(synonym.accepted_id, first_target.pk)
+
+        synonym.acceptedtaxon = foreign_target
+        with self.assertRaises(TreeBusinessRuleException) as context:
+            synonym.save()
+        self.assertEqual(context.exception.args[1]['localizationKey'], "operationAcrossTrees")
+        synonym.refresh_from_db()
+        self.assertEqual(synonym.accepted_id, first_target.pk)
+
+        synonym.acceptedtaxon = second_target
+        synonym.save()
+        synonym.refresh_from_db()
+        self.assertEqual(synonym.accepted_id, second_target.pk)
+
+    @skipUnlessDBFeature("has_select_for_update")
+    def test_inserting_synonym_locks_parent_then_accepted_target_before_updating_intervals(self):
+        root = self._create_life()
+        accepted = self.make_taxontree("Animalia", "Kingdom", parent=root)
+        operations = []
+
+        def record_tree_operations(execute, sql, params, many, context):
+            if '`taxon`' in sql:
+                if sql.endswith("FOR UPDATE"):
+                    operations.append(("lock", params[0]))
+                elif sql.startswith("UPDATE"):
+                    operations.append(("update", None))
+            return execute(sql, params, many, context)
+
+        with connection.execute_wrapper(record_tree_operations):
+            Taxon.objects.create(
+                name="Synonym", definitionitem=self.taxon_kingdom, parent=root, acceptedtaxon=accepted,
+            )
+
+        self.assertEqual(operations[:3], [("lock", root.pk), ("lock", accepted.pk), ("update", None)])
 
     def _create_tree_structure(self):
 
