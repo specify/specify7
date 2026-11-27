@@ -6091,7 +6091,8 @@
       "createdbyagent": {"name": "Created By Agent", "desc": "Created By Agent", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "fields": {"name": "Fields", "desc": "Fields", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "formatauditrecids": {"name": "Format Audit Rec Ids", "desc": "Format Audit Rec Ids", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
-      "isfavorite": {"name": "Is Favorite", "desc": "Is Favorite", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
+      "isfavorite": {"name": "Is Favorite", "desc": "Mark this query as a favorite", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
+      "isarchived": {"name": "Archived", "desc": "Whether this query is archived", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "modifiedbyagent": {"name": "Modified By Agent", "desc": "Modified By Agent", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "name": {"name": "Name", "desc": "Name", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": true, "weblinkname": null},
       "ordinal": {"name": "Ordinal", "desc": "Ordinal", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
@@ -6153,6 +6154,35 @@
     "defaultui": null,
     "name": "Sp Query Field",
     "desc": "System table: Stores individual field definitions within a saved query."
+  },
+  "spqueryfolder": {
+    "items": {
+      "children": {"name": "Subfolders", "desc": "Child folders within this folder", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "OneToMany", "isrequired": false, "weblinkname": null},
+      "collection": {"name": "Collection", "desc": "Collection scope for shared folder", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
+      "createdbyagent": {"name": "Created By Agent", "desc": "Created By Agent", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
+      "discipline": {"name": "Discipline", "desc": "Discipline scope for shared folder", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
+      "isarchived": {"name": "Is Archived", "desc": "Is Archived", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
+      "modifiedbyagent": {"name": "Modified By Agent", "desc": "Modified By Agent", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
+      "name": {"name": "Name", "desc": "Folder name", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": true, "weblinkname": null},
+      "ordinal": {"name": "Ordinal", "desc": "Sort order for the folder", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
+      "parent": {"name": "Parent", "desc": "Parent folder for hierarchical organization", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
+      "remarks": {"name": "Remarks", "desc": "Folder description or notes", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
+      "scopetype": {"name": "Scope Type", "desc": "Sharing scope of the folder", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
+      "specifyuser": {"name": "Specify User", "desc": "Specify User", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
+      "spquerys": {"name": "Queries", "desc": "Queries contained in this folder", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "OneToMany", "isrequired": false, "weblinkname": null},
+      "timestampcreated": {"name": "Timestamp Created", "desc": "Timestamp Created", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
+      "timestampmodified": {"name": "Timestamp Modified", "desc": "Timestamp Modified", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
+      "version": {"name": "Version", "desc": "Version", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null}
+    },
+    "format": null,
+    "ishidden": false,
+    "isuiformatter": null,
+    "picklistname": null,
+    "type": null,
+    "aggregator": null,
+    "defaultui": null,
+    "name": "Sp Query Folder",
+    "desc": "Organizational folder for categorizing saved queries."
   },
   "spreport": {
     "items": {

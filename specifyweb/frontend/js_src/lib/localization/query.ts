@@ -1393,4 +1393,71 @@ export const queryText = createDictionary({
     'hr-hr': 'Stavke su vraćene',
     nb: 'Elementene har blitt returnert',
   },
+  // Enhanced Query Management
+  searchQueries: {
+    'en-us': 'Search Queries',
+  },
+  allQueries: {
+    'en-us': 'All Queries',
+  },
+  archived: {
+    'en-us': 'Archive',
+  },
+  favorites: {
+    'en-us': 'Favorites',
+  },
+  archiveQuery: {
+    'en-us': 'Archive Query',
+  },
+  unarchiveQuery: {
+    'en-us': 'Restore Query',
+  },
+  folders: {
+    'en-us': 'Folders',
+  },
+  folder: {
+    'en-us': 'Folder',
+  },
+  newFolder: {
+    'en-us': 'New Folder',
+  },
+  folderName: {
+    'en-us': 'Folder Name',
+  },
+  editFolder: {
+    'en-us': 'Edit Folder',
+  },
+  parentFolder: {
+    'en-us': 'Parent Folder',
+  },
+  scope: {
+    'en-us': 'Scope',
+  },
+  personal: {
+    'en-us': 'Personal',
+  },
+  createFolder: {
+    'en-us': 'Create Folder',
+  },
+  all: {
+    'en-us': 'All',
+  },
+  yourQueries: {
+    'en-us': 'Your Queries',
+  },
+  sharedQueries: {
+    'en-us': 'Shared Queries',
+  },
+  favorite: {
+    'en-us': 'Favorite',
+  },
+  unfavorite: {
+    'en-us': 'Unfavorite',
+  },
+  moveToFolder: {
+    'en-us': 'Move to Folder',
+  },
+  currentFolder: {
+    'en-us': 'Current Folder',
+  },
 } as const);

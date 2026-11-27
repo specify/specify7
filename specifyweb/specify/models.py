@@ -6502,6 +6502,7 @@ class Spquery(models.Model):
     countonly = models.BooleanField(blank=True, null=True, unique=False, db_column='CountOnly', db_index=False, default=False)
     formatauditrecids = models.BooleanField(blank=True, null=True, unique=False, db_column='FormatAuditRecIds', db_index=False)
     isfavorite = models.BooleanField(blank=True, null=True, unique=False, db_column='IsFavorite', db_index=False)
+    isarchived = models.BooleanField(blank=True, null=True, unique=False, db_column='IsArchived', db_index=False, default=False)
     name = models.CharField(blank=False, max_length=256, null=False, unique=False, db_column='Name', db_index=False)
     ordinal = models.SmallIntegerField(blank=True, null=True, unique=False, db_column='Ordinal', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
@@ -6517,6 +6518,7 @@ class Spquery(models.Model):
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     specifyuser = models.ForeignKey('SpecifyUser', db_column='SpecifyUserID', related_name='spquerys', null=False, on_delete=protect_with_blockers)
+    spqueryfolder = models.ForeignKey('SpQueryFolder', db_column='SpQueryFolderID', related_name='spquerys', null=True, on_delete=models.SET_NULL)
 
     class Meta:
         db_table = 'spquery'
@@ -6527,6 +6529,36 @@ class Spquery(models.Model):
         ]
 
     
+    save = partialmethod(custom_save)
+
+class Spqueryfolder(models.Model):
+    specify_model = datamodel.get_table_strict('spqueryfolder')
+
+    id = models.AutoField(primary_key=True, db_column='spqueryfolderid')
+
+    isarchived = models.BooleanField(blank=True, null=True, unique=False, db_column='IsArchived', db_index=False, default=False)
+    name = models.CharField(blank=False, max_length=256, null=False, unique=False, db_column='Name', db_index=False)
+    ordinal = models.SmallIntegerField(blank=True, null=True, unique=False, db_column='Ordinal', db_index=False)
+    remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
+    scopetype = models.CharField(blank=True, max_length=32, null=True, unique=False, db_column='ScopeType', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now)
+    version = models.IntegerField(blank=True, null=False, unique=False, db_column='Version', db_index=False, default=0)
+
+    collection = models.ForeignKey('Collection', db_column='CollectionID', related_name='+', null=True, on_delete=models.CASCADE)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='+', null=True, on_delete=models.CASCADE)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    parent = models.ForeignKey('self', db_column='ParentFolderID', related_name='children', null=True, on_delete=models.CASCADE)
+    specifyuser = models.ForeignKey('SpecifyUser', db_column='SpecifyUserID', related_name='spqueryfolders', null=True, on_delete=protect_with_blockers)
+
+    class Meta:
+        db_table = 'spqueryfolder'
+        ordering = ()
+        indexes = [
+            models.Index(fields=['name'], name='SpQueryFolderNameIDX'),
+        ]
+
     save = partialmethod(custom_save)
 
 class Spqueryfield(models.Model):

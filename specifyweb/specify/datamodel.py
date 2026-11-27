@@ -6682,6 +6682,7 @@ datamodel = Datamodel(tables=[
             Field(name='countOnly', column='CountOnly', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='formatAuditRecIds', column='FormatAuditRecIds', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='isFavorite', column='IsFavorite', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='isArchived', column='IsArchived', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='name', column='Name', indexed=True, unique=False, required=True, type='java.lang.String', length=256),
             Field(name='ordinal', column='Ordinal', indexed=False, unique=False, required=False, type='java.lang.Short'),
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=4096),
@@ -6701,7 +6702,43 @@ datamodel = Datamodel(tables=[
             Relationship(name='fields', type='one-to-many',required=False, relatedModelName='SpQueryField', otherSideName='query', dependent=True),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
             Relationship(name='reports', type='one-to-many',required=False, relatedModelName='SpReport', otherSideName='query'),
-            Relationship(name='specifyUser', type='many-to-one',required=True, relatedModelName='SpecifyUser', column='SpecifyUserID', otherSideName='spQuerys')
+            Relationship(name='specifyUser', type='many-to-one',required=True, relatedModelName='SpecifyUser', column='SpecifyUserID', otherSideName='spQuerys'),
+            Relationship(name='spQueryFolder', type='many-to-one',required=False, relatedModelName='SpQueryFolder', column='SpQueryFolderID', otherSideName='spQuerys')
+        ],
+        fieldAliases=[
+
+        ]
+    ),
+    Table(
+        classname='edu.ku.brc.specify.datamodel.SpQueryFolder',
+        table='spqueryfolder',
+        tableId=534,
+        system=True,
+        idColumn='SpQueryFolderID',
+        idFieldName='spQueryFolderId',
+        idField=IdField(name='spQueryFolderId', column='SpQueryFolderID', type='java.lang.Integer'),
+        fields=[
+            Field(name='isArchived', column='IsArchived', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='name', column='Name', indexed=True, unique=False, required=True, type='java.lang.String', length=256),
+            Field(name='ordinal', column='Ordinal', indexed=False, unique=False, required=False, type='java.lang.Short'),
+            Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=4096),
+            Field(name='scopeType', column='ScopeType', indexed=False, unique=False, required=False, type='java.lang.String', length=32),
+            Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+            Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+        ],
+        indexes=[
+            Index(name='SpQueryFolderNameIDX', column_names=['Name'])
+        ],
+        relationships=[
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='collection', type='many-to-one',required=False, relatedModelName='Collection', column='CollectionID'),
+            Relationship(name='discipline', type='many-to-one',required=False, relatedModelName='Discipline', column='DisciplineID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='parent', type='many-to-one',required=False, relatedModelName='SpQueryFolder', column='ParentFolderID', otherSideName='children'),
+            Relationship(name='children', type='one-to-many',required=False, relatedModelName='SpQueryFolder', otherSideName='parent', dependent=True),
+            Relationship(name='spQuerys', type='one-to-many',required=False, relatedModelName='SpQuery', otherSideName='spQueryFolder'),
+            Relationship(name='specifyUser', type='many-to-one',required=False, relatedModelName='SpecifyUser', column='SpecifyUserID', otherSideName='spQueryFolders')
         ],
         fieldAliases=[
 

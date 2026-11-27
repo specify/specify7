@@ -13,7 +13,6 @@ from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 from specifyweb.backend.permissions.permissions import enforce, table_permissions_checker
 from specifyweb.specify.api.crud import apply_filters, delete_resource, get_collection, get_resource, post_resource, put_resource
 from specifyweb.specify.api.exceptions import FilterError, OrderByError
-from specifyweb.specify.api.filter_by_col import filter_by_collection
 from specifyweb.specify.api.serializers import _obj_to_data, toJson
 from specifyweb.specify.api.validators import GetCollectionForm, RowsForm
 
@@ -122,7 +121,8 @@ def collection_dispatch(request, model) -> HttpResponse:
                                           content_type='application/json')
         try:
             data = get_collection(request.specify_collection, model, checker,
-                                  control_params.cleaned_data, request.GET)
+                                  control_params.cleaned_data, request.GET,
+                                  user=request.specify_user)
         except (FilterError, OrderByError) as e:
             return HttpResponseBadRequest(e)
         resp = HttpResponse(toJson(data), content_type='application/json')
@@ -153,14 +153,18 @@ def rows(request, model_name: str) -> HttpResponse:
     if not form.is_valid():
         return HttpResponseBadRequest(toJson(form.errors), content_type='application/json')
 
-    query = apply_filters(request.specify_collection, request.GET, model_name, form.cleaned_data)
+    query = apply_filters(
+        request.specify_collection,
+        request.GET,
+        model_name,
+        form.cleaned_data,
+        user=request.specify_user,
+    )
     fields = form.cleaned_data['fields'].split(',')
     try:
         query = query.values_list(*fields).order_by(*fields)
     except FieldError as e:
         return HttpResponseBadRequest(e)
-    if form.cleaned_data['domainfilter'] == 'true':
-        query = filter_by_collection(query, request.specify_collection)
     if form.cleaned_data['orderby']:
         try:
             query = query.order_by(form.cleaned_data['orderby'])

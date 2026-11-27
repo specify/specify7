@@ -1231,6 +1231,10 @@
 					<cell type="label" label="Owner"/>
 					<cell type="field" id="owner" name="specifyUser" uitype="querycbx" isrequired="true" initialize="editbtn=false;newbtn=false"/>
 				</row>
+				<row>
+					<cell type="label" label="Folder"/>
+					<cell type="field" id="2" name="spQueryFolder" uitype="querycbx" initialize="name=SpQueryFolder;title=Folder"/>
+				</row>
 			</rows>
 		</viewdef>
 		<viewdef name="TaxonCitation" type="form" class="edu.ku.brc.specify.datamodel.TaxonCitation" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
