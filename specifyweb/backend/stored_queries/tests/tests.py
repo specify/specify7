@@ -54,6 +54,7 @@ def setup_sqlalchemy(url: str, use_blank_nulls=False, use_decimal_format=False):
     engine = sqlalchemy.create_engine(
         url,
         pool_recycle=settings.SA_POOL_RECYCLE,
+        pool_pre_ping=settings.SA_POOL_PRE_PING,
         connect_args={"cursorclass": SSCursor},
     )
 
