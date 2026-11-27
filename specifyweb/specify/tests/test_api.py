@@ -976,10 +976,10 @@ class UserApiTests(ApiTests):
         super().setUp()
 
         # Because the test database doesn't have specifyuser_spprincipal
-        from specifyweb.backend.context import views
+        from specifyweb.backend.context import collection_access
 
         # TODO: Replace this with a mock.
-        views.users_collections_for_sp6 = lambda cursor, userid: []
+        collection_access.users_collections_for_sp6 = lambda cursor, userid: []
 
     def test_set_user_agents(self):
         c = Client()

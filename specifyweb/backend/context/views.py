@@ -53,7 +53,11 @@ from specifyweb.specify.views import login_maybe_required, openapi
 from .app_resource import get_app_resource, FORM_RESOURCE_EXCLUDED_LST
 from .schema_localization import get_schema_languages, get_schema_localization
 from .viewsets import get_views
-from .collection_access import users_collections_for_sp6, users_collections_for_sp7, set_users_collections_for_sp6
+from specifyweb.backend.context.collection_access import (
+    users_collections_for_sp6,
+    users_collections_for_sp7,
+    set_users_collections_for_sp6
+)
 from specifyweb.backend.setup_tool.api import (
     get_config_progress,
     filter_ready_disciplines_for_config_tasks,
