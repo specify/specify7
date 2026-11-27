@@ -90,7 +90,7 @@ export function PaleoLocationMapPlugin({
           onClose={(): void => setState({ type: 'MainState' })}
         >
           <iframe
-            src={`https://paleolocation.org/map?lat=${state.latitude}&amp;lng=${state.longitude}&amp;ma=${state.age}&amp;embed`}
+            src={`https://paleolocation.org/map?lat=${state.latitude}&lng=${state.longitude}&ma=${state.age}&embed`}
             style={{
               width: '800px',
               height: '600px',
@@ -150,8 +150,9 @@ async function fetchPaleoData(
   const startPeriod = chronosStrat?.get('startPeriod') ?? undefined;
   const endPeriod = chronosStrat?.get('endPeriod') ?? undefined;
 
-  // Calculate the mid-point of the age if possible
-  const periods = filterArray([startPeriod, endPeriod]);
+  // Calculate the mid-point of the age if possible. The periods are decimal
+  // fields, which the API serializes as strings, so convert before summing.
+  const periods = filterArray([startPeriod, endPeriod]).map(Number);
   return periods.length === 0
     ? { type: 'NoDataState' }
     : {
