@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-11-26 15:51+0000\n"
+"PO-Revision-Date: 2026-11-28 17:51+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "preferences/uk/>\n"
@@ -912,7 +912,7 @@ msgstr "Двічі клацніть, щоб збільшити"
 #: components/Preferences/UserDefinitions.tsx:2422
 #, fuzzy
 msgid "closePopupOnClick"
-msgstr "Закривати спливаюче вікно при зовнішньому кліку"
+msgstr "Закрити спливаюче вікно при зовнішньому кліку"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2429
@@ -966,7 +966,7 @@ msgstr "Вкажіть значок мережі"
 #: components/Preferences/UserDefinitions.tsx:1047
 #, fuzzy
 msgid "useAccessibleFullDatePicker"
-msgstr "Використовуйте доступний засіб вибору повної дати"
+msgstr "Використовуйте доступний повний вибір дати"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1054
