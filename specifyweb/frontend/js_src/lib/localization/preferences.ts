@@ -315,7 +315,7 @@ export const preferencesText = createDictionary({
     'pt-br':
       'Você pode especificar qualquer fonte que esteja instalada no seu computador, mesmo que ela não esteja na lista. Também é possível usar uma lista de fontes separadas por vírgulas, em que cada fonte subsequente será usada caso a anterior não esteja disponível.',
     'hr-hr':
-      'Možete odrediti bilo koji font koji se nalazi na vašem računalu, čak i ako nije na popisu. Podržan je i popis fontova odvojen zarezima, gdje će se svaki sljedeći font koristiti ako prethodni nije dostupan.',
+      'Možete odrediti bilo koji font koji se nalazi na vašem računalu, čak i ako nije na popisu. Također je podržan popis fontova odvojen zarezima, gdje će se svaki sljedeći font koristiti ako prethodni nije dostupan.',
     nb: 'Du kan angi hvilken som helst skrift-font som finnes på datamaskinen din, selv om den ikke er i listen. En kommaseparert liste over skrift-fonter støttes også, der hver påfølgende skrift-font vil bli brukt hvis den forrige ikke er tilgjengelig.',
   },
   defaultFont: {
@@ -507,7 +507,7 @@ export const preferencesText = createDictionary({
   },
   alwaysPrompt: {
     'en-us': 'Always prompt to choose collection',
-    'ru-ru': 'Всегда оперативно выбирайте коллекцию.',
+    'ru-ru': 'Всегда на связи, выбирайте коллекцию',
     'es-es': 'Siempre solicitando elegir la colección',
     'fr-fr': 'Toujours invité à choisir la collection',
     'uk-ua': 'Завжди пропонувати вибрати колекцію',
@@ -541,7 +541,7 @@ export const preferencesText = createDictionary({
   synonymColor: {
     'en-us': 'Synonym color',
     'ru-ru': 'Синоним цвета',
-    'es-es': 'color sinónimo',
+    'es-es': 'Sinónimo color',
     'fr-fr': 'Couleur des synonymes',
     'uk-ua': 'Синонім кольору',
     'de-ch': 'Synonymfarbe',
@@ -832,7 +832,7 @@ export const preferencesText = createDictionary({
     'uk-ua': 'Виділіть збіг підрядка',
     'de-ch': 'Übereinstimmende Teilzeichenkette hervorheben',
     'pt-br': 'Destacar a substring correspondente',
-    'hr-hr': 'Označi odgovarajući podniz',
+    'hr-hr': 'Označi podudarni podniz',
     nb: 'Marker matchede delstreng',
   },
   languageDescription: {
@@ -925,7 +925,7 @@ export const preferencesText = createDictionary({
     'de-ch':
       'Wählen Sie aus, ob die Schaltfläche „Taxonbaum-Abfrage“ nach Taxon oder bevorzugtem Taxon filtert. Das bevorzugte Taxon entspricht den Baumzählungen; das Standard-Taxon folgt dem ursprünglich ermittelten Taxon.',
     'es-es':
-      'Elija si el botón de consulta del árbol de taxones filtra por taxón o por taxón preferido. El taxón preferido coincide con el recuento del árbol; el taxón sigue el taxón de determinación original.',
+      'Seleccione si el botón de consulta del árbol de taxones filtra por taxón o por taxón preferido. El taxón preferido coincide con el recuento del árbol; el taxón sigue el taxón de determinación original.',
     'fr-fr':
       "Choisissez si le bouton « Requête sur l'arbre taxonomique » doit filtrer par « Taxon » ou par « Taxon préféré ». L'option « Taxon préféré » correspondra au compteur de l'arbre ; l'option « Taxon » suit le taxon de la détermination d'origine.",
     'hr-hr':
@@ -1596,7 +1596,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Закрыть всплывающее окно при внешнем клике',
     'es-es': 'Cerrar ventana emergente al hacer clic fuera',
     'fr-fr': "Fermer la pop-up lors d'un clic extérieur",
-    'uk-ua': 'Закривати спливаюче вікно при зовнішньому кліку',
+    'uk-ua': 'Закрити спливаюче вікно при зовнішньому кліку',
     'de-ch': 'Pop-up bei Klick von außen schließen',
     'pt-br': 'Fechar janela pop-up ao clicar fora dela',
     'hr-hr': 'Zatvori skočni prozor vanjskim klikom',
@@ -1695,7 +1695,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Используйте удобный полнофункциональный инструмент выбора даты.',
     'es-es': 'Utilice el selector de fecha completo accesible',
     'fr-fr': 'Utiliser un sélecteur de date complet accessible',
-    'uk-ua': 'Використовуйте доступний засіб вибору повної дати',
+    'uk-ua': 'Використовуйте доступний повний вибір дати',
     'de-ch': 'Verwenden Sie die barrierefreie Datumsauswahl.',
     'pt-br': 'Use o seletor de datas completo e acessível.',
     'hr-hr': 'Koristite pristupačan alat za odabir cijelog datuma',
@@ -1764,7 +1764,7 @@ export const preferencesText = createDictionary({
     'uk-ua': 'Стиснути результати запиту',
     'de-ch': 'Suchergebnisse zusammenfassen',
     'pt-br': 'Condensar resultados da consulta',
-    'hr-hr': 'Sažetak rezultata upita',
+    'hr-hr': 'Sažeti rezultati upita',
     nb: 'Kondenser søkeresultatene',
   },
   blurContentBehindDialog: {
@@ -1964,7 +1964,7 @@ export const preferencesText = createDictionary({
   },
   searchCaseSensitive: {
     'en-us': 'Case-sensitive search',
-    'es-es': 'Búsqueda que distingue entre mayúsculas y minúsculas',
+    'es-es': 'Búsqueda sensible a mayúsculas y minúsculas',
     'fr-fr': 'Recherche sensible à la casse',
     'uk-ua': 'Пошук з урахуванням регістру',
     'de-ch': 'Suche mit Berücksichtigung der Groß-/Kleinschreibung',
@@ -2811,7 +2811,7 @@ export const preferencesText = createDictionary({
     'fr-fr':
       "Activer l'héritage de {catalogNumberFieldName:string} pour les éléments frères de {collectionObjectGroupTableName:string}",
     'pt-br':
-      'Habilitar herança de {catalogNumberFieldName: string} para os elementos irmãos de {collectionObjectGroupTableName: string}',
+      'Habilitar herança de {catalogNumberFieldName: string} para itens irmãos de {collectionObjectGroupTableName: string}',
     'ru-ru':
       'Включить наследование {catalogNumberFieldName: string} для соседних элементов {collectionObjectGroupTableName: string}',
     'uk-ua':
