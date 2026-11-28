@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-11-26 15:52+0000\n"
+"PO-Revision-Date: 2026-11-28 17:51+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Croatian <https://hosted.weblate.org/projects/specify-7/"
 "preferences/hr/>\n"
@@ -206,8 +206,8 @@ msgstr "Obitelj fontova"
 msgid "fontFamilyDescription"
 msgstr ""
 "Možete odrediti bilo koji font koji se nalazi na vašem računalu, čak i ako "
-"nije na popisu. Podržan je i popis fontova odvojen zarezima, gdje će se "
-"svaki sljedeći font koristiti ako prethodni nije dostupan."
+"nije na popisu. Također je podržan popis fontova odvojen zarezima, gdje će "
+"se svaki sljedeći font koristiti ako prethodni nije dostupan."
 
 #. Used in: Components > Preferences > Renderers
 #: components/Preferences/Renderers.tsx:224
@@ -504,7 +504,7 @@ msgstr ""
 #: components/Preferences/UserDefinitions.tsx:1213
 #, fuzzy
 msgid "highlightMatch"
-msgstr "Označi odgovarajući podniz"
+msgstr "Označi podudarni podniz"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:867
@@ -1001,7 +1001,7 @@ msgstr "Ograniči maksimalnu širinu polja"
 #: components/Preferences/UserDefinitions.tsx:2032
 #, fuzzy
 msgid "condenseQueryResults"
-msgstr "Sažetak rezultata upita"
+msgstr "Sažeti rezultati upita"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:561
