@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-11-26 15:52+0000\n"
+"PO-Revision-Date: 2026-11-28 17:51+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/preferences/pt_BR/>\n"
@@ -1566,8 +1566,8 @@ msgstr ""
 #, fuzzy
 msgid "inheritanceCatNumberPref"
 msgstr ""
-"Habilitar herança de {catalogNumberFieldName: string} para os elementos "
-"irmãos de {collectionObjectGroupTableName: string}"
+"Habilitar herança de {catalogNumberFieldName: string} para itens irmãos de "
+"{collectionObjectGroupTableName: string}"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:262
