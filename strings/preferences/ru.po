@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-11-26 15:51+0000\n"
+"PO-Revision-Date: 2026-11-28 17:51+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/"
 "preferences/ru/>\n"
@@ -329,7 +329,7 @@ msgstr "Есть ли у диалогов полупрозрачный фон."
 #: components/Preferences/UserDefinitions.tsx:1487
 #, fuzzy
 msgid "alwaysPrompt"
-msgstr "Всегда оперативно выбирайте коллекцию."
+msgstr "Всегда на связи, выбирайте коллекцию"
 
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Preferences > Index
 #: components/Preferences/UserDefinitions.tsx:1558
