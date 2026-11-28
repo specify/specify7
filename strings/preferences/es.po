@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-11-26 15:51+0000\n"
+"PO-Revision-Date: 2026-11-28 17:51+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "preferences/es/>\n"
@@ -356,7 +356,7 @@ msgstr "Color de acento del árbol"
 #: components/Preferences/UserDefinitions.tsx:1865
 #, fuzzy
 msgid "synonymColor"
-msgstr "color sinónimo"
+msgstr "Sinónimo color"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2301
@@ -561,9 +561,9 @@ msgstr "Campo utilizado por el botón de consulta de taxones"
 #, fuzzy
 msgid "queryButtonTaxonFieldDescription"
 msgstr ""
-"Elija si el botón de consulta del árbol de taxones filtra por taxón o por "
-"taxón preferido. El taxón preferido coincide con el recuento del árbol; el "
-"taxón sigue el taxón de determinación original."
+"Seleccione si el botón de consulta del árbol de taxones filtra por taxón o "
+"por taxón preferido. El taxón preferido coincide con el recuento del árbol; "
+"el taxón sigue el taxón de determinación original."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1715
@@ -1120,7 +1120,7 @@ msgstr "Autocompletar"
 #: components/Preferences/UserDefinitions.tsx:1571
 #, fuzzy
 msgid "searchCaseSensitive"
-msgstr "Búsqueda que distingue entre mayúsculas y minúsculas"
+msgstr "Búsqueda sensible a mayúsculas y minúsculas"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1604
